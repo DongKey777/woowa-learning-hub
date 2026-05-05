@@ -1,18 +1,96 @@
 {
+  "'@async를 붙였는데 caller 로그와 worker 로그가 같은 스레드에서 찍혀요'": [
+    "spring/async-looks-synchronous-cause-router"
+  ],
+  "'@conditionalonbean(name=...)을 쓰면 그 이름 bean이 바로 주입된다고 생각해요'": [
+    "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer"
+  ],
+  "'@conditionalonsinglecandidate를 @primary의 다른 이름처럼 이해하고 있어요'": [
+    "spring/conditionalonsinglecandidate-vs-primary-primer"
+  ],
+  "'@configuration, @bean, auto-configuration이 한꺼번에 나와서 누가 bean을 만드는지 헷갈려요'": [
+    "spring/spring-configuration-vs-autoconfiguration-primer"
+  ],
+  "'@enableasync도 붙였는데 왜 동기처럼 보여요?'": [
+    "spring/async-looks-synchronous-cause-router"
+  ],
+  "'@exceptionhandler랑 @restcontrolleradvice를 언제 나눠 써야 하는지 모르겠어'": [
+    "spring/spring-exception-handling-basics"
+  ],
+  "'@modelattribute와 @requestbody 중 무엇을 써야 할지 처음부터 헷갈려요'": [
+    "spring/modelattribute-vs-requestbody-binding-primer"
+  ],
+  "'@notblank 붙였는데 메시지가 안 보여'": [
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "'@primary가 bean 등록 여부까지 바꾼다고 이해하고 있어요'": [
+    "spring/spring-conditionalonmissingbean-vs-primary-primer"
+  ],
+  "'@primary를 붙였는데도 테스트나 실행 환경에서 엉뚱한 bean이 선택돼요'": [
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "'@primary를 붙이면 bean 이름 충돌도 같이 풀릴 거라고 생각해요'": [
+    "spring/spring-primary-vs-bean-override-primer"
+  ],
+  "'@service를 붙였는데도 no qualifying bean of type available이 보인다'": [
+    "spring/bean-not-found-cause-router"
+  ],
   "'@springbootapplication이 있는데 다른 모듈의 bean이 안 떠요'": [
     "spring/component-scan-failure-patterns"
+  ],
+  "'@transactional 붙였는데도 중복 주문이 나요'": [
+    "database/shopping-cart-payment-idempotency-stock-bridge"
+  ],
+  "'@transactional 이 보이는데 이게 db 에서 정확히 무슨 경계를 잡는지 감이 안 온다'": [
+    "database/database-first-step-bridge"
+  ],
+  "'@transactional을 붙였는데 this.method()로 부르면 트랜잭션이 안 열리는 것 같아요'": [
+    "spring/transactional-not-applied-cause-router"
   ],
   "'@transactional이 붙었는데 같은 클래스 내부 호출하면 트랜잭션이 안 열려요'": [
     "spring/self-invocation-proxy-misconception"
   ],
+  "'@valid를 붙였는데도 validation 메시지 대신 json parse error만 보여요'": [
+    "spring/requestbody-400-before-controller-primer"
+  ],
+  "'@valid만 붙이면 도메인 규칙도 다 지켜진다고 느껴져요'": [
+    "software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge"
+  ],
+  "'@webmvctest에서는 service bean not found가 뜨는데 앱 실행은 된다'": [
+    "spring/bean-not-found-cause-router"
+  ],
+  "'`421 -> 403`처럼 연속으로 보이는 trace를 보고 첫 번째 실패와 실제 앱 결과를 어떻게 나눠 읽어야 할지 감이 안 잡힌다'": [
+    "network/http-421-troubleshooting-trace-examples"
+  ],
+  "'`421 misdirected request`가 뜬 다음 새로고침 없이도 다시 성공하는 흐름을 어떻게 읽어야 할지 헷갈린다'": [
+    "network/http2-http3-421-retry-after-wrong-coalescing"
+  ],
+  "'`421`, `403`, `404`가 번갈아 보여서 권한 문제를 봐야 하는지 connection 문제를 봐야 하는지 헷갈린다'": [
+    "network/http-421-troubleshooting-trace-examples"
+  ],
+  "'`@qualifier`로 카드와 간편결제를 나누려는데 요청마다 값이 달라져서 꼬여요'": [
+    "spring/shopping-cart-payment-method-router-qualifier-bridge"
+  ],
+  "'`options`가 `401`, `403`, `405`처럼 실패한 뒤 actual 요청이 안 나가서 인증 문제인지 preflight 문제인지 구분이 안 된다'": [
+    "network/options-only-no-actual-request-symptom-router"
+  ],
   "'cpu/db 부하는 낮은데 api 응답이 느려지고 timeout이 발생한다'": [
     "database/connection-pool-starvation-symptom-router"
+  ],
+  "'devtools network 탭에서 `options` 요청만 보이고 같은 path의 실제 `get`/`post`/`put` 요청이 아예 안 보인다'": [
+    "network/options-only-no-actual-request-symptom-router"
   ],
   "'hikaripool: connection is not available, request timed out after 30000ms 에러가 반복된다'": [
     "database/connection-pool-starvation-symptom-router"
   ],
+  "'lock wait timeout exceeded' 에러가 특정 시간대에 자주 뜬다": [
+    "database/lock-timeout-blocker-first-check"
+  ],
   "'nosuchbeandefinitionexception: bean을 못 찾아요'": [
     "spring/component-scan-failure-patterns"
+  ],
+  "'testcontainers 값을 넣는데 @dynamicpropertysource까지 필요한지 판단이 안 돼요'": [
+    "spring/test-profile-vs-property-override-decision-guide"
   ],
   "'관리자 권한 부여 직후에도 사용자가 403 forbidden을 받는다'": [
     "security/forbidden-after-role-change-symptom-router"
@@ -26,22 +104,4567 @@
   "'평소엔 멀쩡하다가 트래픽이 늘면 응답 시간이 급격히 늘어난다'": [
     "database/connection-pool-starvation-symptom-router"
   ],
+  "/admin 요청이 로그인 페이지로 튕기는데 권한 문제인지 인증 문제인지 모르겠어요": [
+    "spring/admin-302-login-vs-403-beginner-bridge"
+  ],
+  "0 비용 간선을 앞에 넣어야 한다는 규칙이 코드에서 자꾸 섞여": [
+    "algorithm/zero-one-bfs-implementation-mistake-check-template"
+  ],
+  "0 비용 이동이 섞이면 dist 배열로 바꿔야 하는지 헷갈려": [
+    "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card"
+  ],
+  "0-1 bfs 코드를 그대로 쳤는데 답이 한두 케이스에서 틀려": [
+    "algorithm/zero-one-bfs-implementation-mistake-check-template"
+  ],
+  "0-1 bfs까지 같이 나오면 어떤 기준으로 갈라야 할지 모르겠어": [
+    "algorithm/bfs-vs-dijkstra-shortest-path-mini-card"
+  ],
+  "0-1 bfs를 코드 전에 예제로 먼저 익히고 싶어": [
+    "algorithm/zero-one-bfs-hand-calculation-worksheet"
+  ],
+  "0-1 bfs에서 중복 후보를 다 넣으면 뭐가 문제인지 확인하고 싶어": [
+    "algorithm/zero-one-bfs-equal-distance-reinsert-mini-note"
+  ],
+  "0-1 bfs와 일반 dijkstra를 가중치 분포 기준으로 언제 나눠야 하는지 헷갈려": [
+    "algorithm/sparse-graph-shortest-paths"
+  ],
+  "0-1 bfs인데 bfs처럼 처음 방문에서 끝내고 있어": [
+    "algorithm/zero-one-bfs-dist-vs-visited-counterexamples"
+  ],
+  "1.0과 1.00 때문에 중복 결제 방지 키가 자꾸 어긋나": [
+    "language/bigdecimal-money-equality-rounding-serialization-pitfalls"
+  ],
+  "1062 또는 23505 이후 select 했더니 null 이라서 다시 insert 하고 싶어진다": [
+    "database/duplicate-key-then-not-found-symptom-router"
+  ],
+  "1페이지에서 본 row가 2페이지에 또 나온다": [
+    "database/pagination-duplicates-missing-symptom-router"
+  ],
+  "200인데 json 대신 login 페이지가 보여요": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser"
+  ],
+  "23505랑 40001을 같은 재시도로 처리해도 되는지 모르겠어": [
+    "database/duplicate-key-vs-serialization-failure-mini-card"
+  ],
+  "2>&1로 합쳤는데도 로그 순서가 뒤죽박죽처럼 보여요": [
+    "operating-system/stdio-buffering-after-redirect"
+  ],
+  "2차원 배열을 비교했는데 arrays.equals를 써도 기대한 값 비교가 안 돼": [
+    "language/java-array-equality-basics"
+  ],
+  "304 이후에만 파일 길이나 내용이 이상하게 보인다": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "3스트라이크 뒤 재시작 여부를 묻는 분기가 controller while문에 계속 붙어요": [
+    "design-pattern/baseball-restart-flow-state-pattern-bridge"
+  ],
+  "404가 떴는데 멘토가 bean 문제는 아니라고 해서 어디부터 봐야 할지 모르겠어요": [
+    "spring/http-404-405-vs-bean-wiring-confusion-card"
+  ],
+  "405랑 nosuchbeandefinitionexception을 같은 종류 에러로 보고 있었어요": [
+    "spring/http-404-405-vs-bean-wiring-confusion-card"
+  ],
+  "4xx라서 비슷해 보이는데 왜 `421`만 따로 connection 문맥으로 봐야 하는지 설명이 필요하다": [
+    "network/http-421-troubleshooting-trace-examples"
+  ],
+  "504 보고 다시 눌러도 되는지 모르겠어": [
+    "network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge"
+  ],
+  "99.9% 가용성이 실제로 얼마나 자주 깨지는지 감이 안 와": [
+    "system-design/availability-and-sla-basics"
+  ],
+  "==, array.equals, arrays.equals 중 무엇이 같은 배열이고 무엇이 같은 값인지 자꾸 섞여": [
+    "language/java-array-equality-basics"
+  ],
+  "`421`, `302`, `304`, `504` ê°ì statusê° ìì´ë©° ê°ì pathê° ë°ë³μë¼ì ê°ì ìì²­ì ë³μêμ¬ì¸ì§ ë¤ë¥¸ ìì²­ì¸ì§ íë¨ì´ ì ëë¤": [
+    "network/same-url-request-twice-symptom-router"
+  ],
+  "`504` ë¤ì ì¬ìëíë ¤ëë° ì²« ìì²­ì´ ì´ë¯¸ ì²ë¦¬ëëì§ íì ì´ ìì§ ìëë¤": [
+    "network/browser-504-app-200-symptom-router"
+  ],
+  "`@eventlistener`ë¡ ì¶©ë¶íì§ `@transactionaleventlistener(after_commit)`ë¡ ì®ê²¨ì¼ íëì§ ê³ì í·ê°ë ¤ì": [
+    "spring/post-commit-side-effect-routing-decision-guide"
+  ],
+  "`@qualifier` 문자열이 어디서 온 이름인지 몰라서 rename이 무서워요": [
+    "spring/bean-naming-qualifier-rename-pitfalls-primer"
+  ],
+  "`@webmvctest`나 `@datajpatest`에서만 서비스 bean이 없다고 떠요": [
+    "spring/di-exception-quick-triage"
+  ],
+  "`[start, end)`ë¥¼ ë³¸ ì ì ìëë° ì¤ì  ìì½ ë¡ì§ì ì´ë»ê² ì½ëì§ ê°ì´ ì ì¨ë¤": [
+    "data-structure/reservation-interval-half-open-boundary-card"
+  ],
+  "`curl`은 한 번에 성공하는데 브라우저에서는 `421 -> 200` 또는 `421 -> 403`처럼 두 줄 trace가 보여 프런트 중복 호출인지 edge 교정인지 구분이 안 된다": [
+    "network/browser-421-but-curl-200-symptom-router"
+  ],
+  "`floorentry(start)`ì `ceilingentry(start)`ê° exact matchìì ì´ëë¥¼ ê°ë¦¬í¤ëì§ í·ê°ë¦°ë¤": [
+    "data-structure/treemap-interval-entry-primer"
+  ],
+  "`found 2`가 보이는데 `@primary`, `@qualifier` 중 뭘 먼저 봐야 할지 헷갈려요": [
+    "spring/di-exception-quick-triage"
+  ],
+  "`nosuchbeandefinitionexception`이 떠서 bean이 없는 건지 이름이 안 맞는 건지 모르겠어요": [
+    "spring/di-exception-quick-triage"
+  ],
+  "`treemap<start, reservation>`ìì valueê¹ì§ ì½ì´ì¼ íëë° priorityqueueë¡ íë ¤ë¤ ë§íë¤": [
+    "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge"
+  ],
+  "a@1이 남아 있는데 a@0으로 갱신돼도 괜찮은지 모르겠어": [
+    "algorithm/zero-one-bfs-stale-entry-mini-card"
+  ],
+  "accept queue, cq backlog, session-init queue를 어느 순서로 admission control에 묶어야 할지 모르겠어요": [
+    "operating-system/listener-overload-thresholds-accept-pause-policy"
+  ],
+  "accept는 application/json인데 response content-type이 text/html로 보인다": [
+    "network/json-expected-but-html-response-symptom-router"
+  ],
+  "accept와 content-type을 헷갈려서 왜 html이 왔는지 설명이 안 돼": [
+    "spring/spring-content-negotiation-pitfalls"
+  ],
+  "access log는 200인데 body가 중간에 끊긴 것 같아 status와 bytes sent를 함께 읽는 법이 필요하다": [
+    "spring/partial-response-access-log-interpretation"
+  ],
+  "access_group_id와 event_id와 started_event_id를 무엇에 써야 하는지 헷갈려요": [
+    "security/aobo-start-end-event-contract"
+  ],
+  "ace 계산, hit/stand 흐름, 승패 비교가 한 클래스에 다 붙어 있어 어디부터 쪼개야 할지 모르겠어요": [
+    "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide"
+  ],
+  "ace가 1인지 11인지 if 문이 여기저기 흩어져요": [
+    "software-engineering/blackjack-ace-scoring-domain-invariant-bridge"
+  ],
+  "acl을 그냥 adapter 하나 더 만든 정도로 이해하고 있어": [
+    "design-pattern/gof-adapter-vs-ports-and-adapters-vs-anti-corruption-layer-decision-guide"
+  ],
+  "add remove 비용을 줄이려면 질의를 어떻게 묶어야 하는지 모르겠어": [
+    "algorithm/offline-query-ordering-patterns"
+  ],
+  "add to cart를 빠르게 두 번 누르면 수량 합치기 대신 row가 복제돼요": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge"
+  ],
+  "add to cart를 빠르게 두 번 눌렀더니 같은 상품 row가 두 줄 생겨요": [
+    "database/shopping-cart-reclick-concurrent-write-cause-router"
+  ],
+  "add가 안 돼요": [
+    "language/array-to-list-conversion-entrypoint-primer"
+  ],
+  "admin 페이지로 복귀한 뒤 막히는데 role prefix나 authority 매핑을 어디서 봐야 할지 모르겠어요": [
+    "spring/admin-login-success-final-403-savedrequest-role-mapping-primer"
+  ],
+  "after_commit 리스너를 붙였는데 테스트나 스케줄러 경로에서는 반응하지 않아요": [
+    "spring/event-listener-not-firing-cause-router"
+  ],
+  "after_commit이면 충분한지 outbox까지 가야 하는지 감이 안 와요": [
+    "spring/shopping-cart-order-complete-after-commit-outbox-bridge"
+  ],
+  "alter table 이 몇 분째 끝나지 않고 waiting for table metadata lock 상태로 남아 있다": [
+    "database/alter-table-not-finishing-symptom-router"
+  ],
+  "analyze를 언제 다시 해야 하는지 감이 안 와요": [
+    "database/histogram-drift-auto-analyze-thresholds"
+  ],
+  "api 계약은 json이라고 믿었는데 브라우저에서만 `/login`, `text/html`, cors console 오류가 섞여 보여 원인 축을 못 잡겠다": [
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "api 와 운영툴이 같은 시간대를 각각 저장해서 둘 다 살아남는다": [
+    "database/overlapping-bookings-both-succeed-symptom-router"
+  ],
+  "api 호출인데 로그인 html이 와요": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser"
+  ],
+  "api인 줄 알았는데 login html이나 text/html 응답이 와서 negotiation 문제인지 헷갈려": [
+    "spring/spring-content-negotiation-pitfalls"
+  ],
+  "application 탭에는 세션 쿠키가 보이는데 왜 요청에서는 이상하게 실패하는지 헷갈려": [
+    "security/duplicate-cookie-vs-proxy-login-loop-bridge"
+  ],
+  "application 탭에는 쿠키가 둘 다 보이는데 어느 값이 실제로 쓰이는지 모르겠어요": [
+    "security/duplicate-cookie-name-shadowing"
+  ],
+  "application-test.yml을 써야 하는지 properties 한 줄이면 되는지 계속 헷갈려요": [
+    "spring/test-profile-vs-property-override-decision-guide"
+  ],
+  "application-test.yml이나 profile 파일을 만들었는데 기대한 값으로 안 바뀌어요": [
+    "spring/config-value-not-changing-cause-router"
+  ],
+  "application.yml 값을 바꿨는데 실행하면 예전 값이 그대로 보여요": [
+    "spring/config-value-not-changing-cause-router"
+  ],
+  "applicationcontext getbean으로 plugin을 찾는 코드가 왜 냄새인지 헷갈려": [
+    "design-pattern/plugin-registry-boundary-primer"
+  ],
+  "applied watermark와 required watermark를 어디에 저장할지 모르겠어": [
+    "system-design/watermark-metadata-persistence-basics"
+  ],
+  "architecture review가 결정만 늦추고 실제 설계 개선은 못 하는 것 같아요": [
+    "software-engineering/architecture-review-anti-patterns"
+  ],
+  "archunit을 넣고 싶은데 기존 위반이 너무 많아 첫날부터 ci를 막을 수 없어요": [
+    "software-engineering/archunit-brownfield-rollout-playbook"
+  ],
+  "arraylist랑 linkedlist 차이를 면접처럼 설명하려면 기준이 안 잡혀": [
+    "data-structure/array-vs-linked-list"
+  ],
+  "arrays.aslist 했는데 add에서 예외가 나요": [
+    "language/arrays-aslist-fixed-size-list-checklist"
+  ],
+  "asyncrequestnotusableexception만 보여서 spring 버그인지 클라이언트 disconnect인지 분류가 어렵다": [
+    "spring/servlet-container-disconnect-exception-mapping"
+  ],
+  "attempt_no를 max + 1로 만들었더니 중복 저장이 나요": [
+    "database/baseball-guess-attempt-unique-constraint-bridge"
+  ],
+  "aud도 맞는 것 같은데 계속 403이 나와요": [
+    "security/oauth-scope-vs-api-audience-vs-application-permission"
+  ],
+  "auth.example.com callback은 성공했는데 app.example.com 첫 요청이 비로그인이에요": [
+    "security/subdomain-callback-handoff-chooser"
+  ],
+  "auto-configuration과 내가 직접 쓰는 @configuration을 같은 개념으로 이해하고 있어요": [
+    "spring/boot-autoconfiguration-basics"
+  ],
+  "autoconfiguration.imports와 autoconfigurationimportselector가 bean 등록 흐름에서 어떻게 이어지는지 감이 없어요": [
+    "spring/boot-autoconfiguration-internals"
+  ],
+  "autovacuum이 못 따라오고 dead tuple이 계속 늘어난다": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
+  ],
+  "badge freshness와 source freshness를 같은 문제로 보고 있어": [
+    "system-design/notification-badge-vs-source-freshness-primer"
+  ],
+  "badge 숫자가 한참 뒤에 크게 보정돼": [
+    "system-design/badge-freshness-observability-primer"
+  ],
+  "badge 숫자는 맞는데 row 내용이 뒤로 가서 더 헷갈려": [
+    "system-design/notification-inbox-row-monotonicity-primer"
+  ],
+  "baggage랑 trace attribute를 어떻게 나누는지 모르겠어": [
+    "system-design/trace-attribute-freshness-read-source-bridge"
+  ],
+  "baseball 리뷰에서 지금 고쳐야 할 축이 입력 규칙인지 턴 흐름인지 재시작 단계인지 헷갈려요": [
+    "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide"
+  ],
+  "baseball 미션 코드에서 if 문이 계속 길어져요": [
+    "design-pattern/baseball-big-if-responsibility-cause-router"
+  ],
+  "baseline 파일이 영구 면죄부처럼 남을까 봐 rollout 순서를 모르겠어요": [
+    "software-engineering/archunit-brownfield-rollout-playbook"
+  ],
+  "bean 이름 문자열을 api의 `paymentmethod` 값에 그대로 붙여도 되나 헷갈려요": [
+    "spring/shopping-cart-payment-method-router-qualifier-bridge"
+  ],
+  "bean 이름, alias, qualifier 값이 같은 건지 다른 건지 헷갈려요": [
+    "spring/bean-naming-qualifier-rename-pitfalls-primer"
+  ],
+  "bean 이름을 바꾸자마자 주입이 줄줄이 깨졌어요": [
+    "spring/spring-custom-qualifier-primer"
+  ],
+  "bean이 두 개인데 왜 condition은 통과하고 주입은 또 헷갈리는지 모르겠어요": [
+    "spring/conditionalonsinglecandidate-vs-primary-primer"
+  ],
+  "bean이 이미 있을 때 기본값을 물러나게 해야 하는지, 특정 선행 bean이 있어야 하는지 자꾸 섞여요": [
+    "spring/conditional-activation-annotation-decision-guide"
+  ],
+  "before after hook가 계속 늘어나서 부모 클래스 순서를 외워야 해": [
+    "design-pattern/template-hook-smells"
+  ],
+  "bfs 큐 예제마다 arraydeque와 linkedlist가 섞여 보여서 기본값을 못 정하겠다": [
+    "data-structure/arraydeque-vs-linkedlist-queue-choice-card"
+  ],
+  "bfs를 배울 때 queue가 왜 같이 나오고 visited가 어디 역할인지 분리해서 보고 싶어": [
+    "algorithm/dfs-bfs-intro"
+  ],
+  "bfs에서 쓰는 queue와 서비스 작업 큐를 같은 개념으로 섞어 설명하게 된다": [
+    "data-structure/queue-vs-deque-vs-priority-queue-primer"
+  ],
+  "bigdecimal만 쓰다 보니 이 숫자가 돈인지 할인율인지 코드만 보고 헷갈려": [
+    "language/money-value-object-basics"
+  ],
+  "bindingresult가 붙으면 왜 메서드 안으로 들어오고 어떤 경우는 예외로 번지는지 모르겠어": [
+    "spring/spring-validation-binding-error-pipeline"
+  ],
+  "bindingresult를 붙여도 body 파싱 실패는 왜 못 잡는지 헷갈려요": [
+    "spring/requestbody-400-before-controller-primer"
+  ],
+  "bitset까지는 알겠는데 왜 갑자기 compressed bitmap이 필요한지 감이 안 온다": [
+    "data-structure/plain-bitset-vs-compressed-bitmap-decision-card"
+  ],
+  "blackjack push 규칙을 어디서 판단해야 할지 모르겠어요": [
+    "design-pattern/blackjack-winner-decision-policy-object-bridge"
+  ],
+  "blackjack 리뷰에서 상태 패턴과 정책 객체 이야기가 같이 나와서 같은 말처럼 들려요": [
+    "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide"
+  ],
+  "blackjack 서비스 if 문이 계속 길어져요": [
+    "software-engineering/blackjack-big-if-responsibility-cause-router"
+  ],
+  "blackjack 웹 미션에서 gameid를 url path에 둘지 session에 숨길지 body에 같이 넣을지 기준이 헷갈려요": [
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide"
+  ],
+  "blackjack 테스트를 하나 추가하면 다른 테스트가 같이 깨져요": [
+    "software-engineering/blackjack-testability-cause-router"
+  ],
+  "blackjack을 웹으로 옮겼더니 다른 요청의 카드 상태가 같이 보여요": [
+    "spring/blackjack-web-state-mixing-cause-router"
+  ],
+  "blocking이 정확히 무엇을 기다린다는 뜻인지 timer 개념과 자꾸 섞인다": [
+    "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer"
+  ],
+  "booking overlap 설계를 할 때 read-then-insert 대신 write-time arbitration으로 바꾸는 기준이 필요하다": [
+    "database/phantom-safe-booking-patterns-primer"
+  ],
+  "booking 설계에서 slot row 와 guard row 중 어느 쪽이 더 단순한지 빨리 고르고 싶다": [
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "boolean 검증 말고 결정 결과 객체를 왜 따로 만드는지 감이 안 와요": [
+    "design-pattern/policy-object-pattern"
+  ],
+  "boolean 하나로 상태를 표현했는데 true가 정확히 무엇인지 점점 설명이 길어져": [
+    "language/domain-state-type-primer-enum-record-value-object"
+  ],
+  "boolean만 반환하는 규칙도 policy라고 불러야 하는지 헷갈려": [
+    "design-pattern/policy-object-naming-primer"
+  ],
+  "break-glass 알림을 일반 지원 조회 알림처럼 보내도 되는지 헷갈려요": [
+    "security/support-access-alert-router-primer"
+  ],
+  "bridge와 articulation point를 scc나 단순 연결 여부와 자꾸 섞어 생각해": [
+    "algorithm/bridges-and-articulation-points"
+  ],
+  "broken pipe가 tomcat과 jetty, undertow에서 다른 예외 이름으로 보여서 같은 incident인지 헷갈린다": [
+    "spring/servlet-container-disconnect-exception-mapping"
+  ],
+  "bst 문제에서만 inorder가 정렬 느낌을 준다는 점을 자꾸 놓친다": [
+    "data-structure/binary-tree-traversal-routing-guide"
+  ],
+  "bust 판정을 서비스와 view가 둘 다 하고 있어요": [
+    "software-engineering/blackjack-ace-scoring-domain-invariant-bridge"
+  ],
+  "bust나 blackjack 처리 때문에 if 문이 계속 늘어나요": [
+    "design-pattern/blackjack-turn-flow-state-pattern-bridge"
+  ],
+  "busy 응답이 나왔는데 pool 대기인지 같은 row 경합인지 바로 구분하고 싶다": [
+    "database/connection-timeout-vs-lock-timeout-card"
+  ],
+  "cache hit 때는 최신인데 miss 때는 옛값이다": [
+    "database/cache-replica-split-read-inconsistency"
+  ],
+  "cache hit을 왜 버리고 primary로 가는지 causal token 흐름으로 보고 싶어": [
+    "system-design/notification-causal-token-walkthrough"
+  ],
+  "cache hit이 났는데 왜 버렸는지 로그에 안 남아": [
+    "system-design/rejected-hit-observability-primer"
+  ],
+  "cache hit인데 왜 stale인지 증명할 수 없어": [
+    "system-design/watermark-metadata-persistence-basics"
+  ],
+  "cache miss면 fresh read라고 생각했는데 아닌 것 같아": [
+    "system-design/cache-hit-miss-session-policy-bridge"
+  ],
+  "cache refill에 payload만 넣으면 안 되는지 헷갈려": [
+    "system-design/watermark-metadata-persistence-basics"
+  ],
+  "cache 값이 오래됐는지 이벤트 유실인지 헷갈려": [
+    "system-design/badge-freshness-observability-primer"
+  ],
+  "cache 장애가 왜 결국 db 부하로 번지는지 한 번에 정리가 안 돼": [
+    "system-design/request-path-failure-modes-primer"
+  ],
+  "cache나 queue가 죽었을 때 어느 레이어가 먼저 흔들리는지 모르겠어": [
+    "system-design/request-path-failure-modes-primer"
+  ],
+  "callback 응답에서 set-cookie와 location 중 무엇을 먼저 봐야 하는지 모르겠어요": [
+    "security/subdomain-callback-handoff-chooser"
+  ],
+  "callback이 끝났는데 첫 화면 요청이 anonymous로 잡혀요": [
+    "security/social-login-to-local-session-bridge"
+  ],
+  "canary는 녹색인데 2페이지 이후에서 duplicate나 gap이 나서 rollback 기준이 흔들린다": [
+    "design-pattern/strict-list-canary-metrics-rollback-triggers"
+  ],
+  "canary를 열었는데 freshness와 error budget을 같이 어떻게 묶어야 할지 애매하다": [
+    "design-pattern/read-model-cutover-guardrails"
+  ],
+  "cancelorderevent처럼 이름을 지었는데 요청인지 완료 사실인지 애매하다는 피드백을 받아요": [
+    "design-pattern/event-vs-command-naming-primer"
+  ],
+  "cannotacquirelockexception이 떴는데 재시도해야 할지 모르겠어": [
+    "database/timeout-errorcode-mapping-mini-card"
+  ],
+  "catch 했는데 마지막 commit에서 unexpectedrollbackexception이 터져요": [
+    "spring/transaction-propagation-deep-dive"
+  ],
+  "causal token으로 입장만 시키고 다음 화면 기준선은 안 올리고 있어": [
+    "system-design/notification-read-to-min-version-bridge"
+  ],
+  "cd나 export 같은 명령이 왜 child process에서는 기대대로 안 먹히는지 모르겠어요": [
+    "operating-system/shell-builtins-vs-external-commands-primer"
+  ],
+  "checkout 서비스 분기는 많은데 strategy, state, policy object, process manager 중 무엇을 골라야 할지 모르겠어요": [
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide"
+  ],
+  "checkout 서비스에 쿠폰 적용 if 문이 계속 늘어나요": [
+    "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge"
+  ],
+  "child가 쓰는 중인데 갑자기 brokenpipeerror나 epipe가 떠요": [
+    "operating-system/broken-pipe-sigpipe-bridge"
+  ],
+  "child는 끝난 것 같은데 parent read가 eof를 못 받아요": [
+    "operating-system/subprocess-fd-hygiene-basics"
+  ],
+  "ci나 쿠버네티스에서 long-lived key 대신 뭘 써야 할지 모르겠어요": [
+    "security/workload-identity-vs-long-lived-service-account-keys"
+  ],
+  "cleanup_confirmed가 end event를 대체하는지 구분이 안 서요": [
+    "security/aobo-start-end-event-contract"
+  ],
+  "clock이랑 lru를 왜 따로 배우는지 감이 안 와요": [
+    "operating-system/page-replacement-clock-vs-lru"
+  ],
+  "clone state가 왜 생기는지 모르겠어서 구현 설명을 읽어도 끊겨": [
+    "algorithm/suffix-automaton"
+  ],
+  "close_fds, pass_fds, cloexec, dup2가 한 그림으로 안 잡혀요": [
+    "operating-system/subprocess-fd-hygiene-basics"
+  ],
+  "command랑 response가 다 dto라서 이름을 어떻게 나눌지 모르겠어요": [
+    "software-engineering/command-dto-vs-query-view-naming-checklist"
+  ],
+  "conditionevaluationreport를 열어도 positive match와 negative match를 어디부터 읽어야 할지 모르겠어요": [
+    "spring/boot-autoconfiguration-internals"
+  ],
+  "condition은 맞는다는데 주입은 found 2로 터져서 왜 둘이 따로 노는지 모르겠어요": [
+    "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer"
+  ],
+  "connection is not available 와 lock wait timeout exceeded 가 같이 보이면 어디부터 봐야 할지 모르겠다": [
+    "database/connection-timeout-vs-lock-timeout-card"
+  ],
+  "connection is not available와 lock wait timeout exceeded를 같은 원인으로 보고 있다": [
+    "database/db-timeout-first-splitter"
+  ],
+  "containskey를 언제 put 앞에 봐야 하는지 감이 안 와": [
+    "language/map-put-null-containskey-distinction-bridge"
+  ],
+  "content-type 헤더를 뭘 줘야 할지 모르겠어": [
+    "spring/requestbody-415-unsupported-media-type-primer"
+  ],
+  "context switch가 느리다는 말이 나오면 스케줄링 문제인지 메모리 문제인지 감이 안 와요": [
+    "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics"
+  ],
+  "controller adapter와 classic adapter를 같은 층위로 설명하고 있어": [
+    "design-pattern/gof-adapter-vs-ports-and-adapters-vs-anti-corruption-layer-decision-guide"
+  ],
+  "controller service repository 다음 단계가 뭔지 모르겠어요": [
+    "software-engineering/ports-and-adapters-beginner-primer"
+  ],
+  "controller service repository는 있는데 왜 계속 복잡한지 모르겠어요": [
+    "software-engineering/architecture-layering-fundamentals"
+  ],
+  "controller 테스트를 쓰려는데 `@webmvctest`에서 어디까지 검증하고 멈춰야 하는지 감이 안 와요": [
+    "software-engineering/inbound-adapter-test-slices-primer"
+  ],
+  "controller 테스트를 짜려는데 security filter와 interceptor 경계가 흐려요": [
+    "software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge"
+  ],
+  "controller 필드 currentgame 대신 gameid를 넘기라는데 왜 필요한지 모르겠어요": [
+    "spring/baseball-game-id-session-boundary-bridge",
+    "spring/blackjack-game-id-session-boundary-bridge"
+  ],
+  "controller 필드에 game을 넣었는데 요청이 바뀌면 상태가 섞여요": [
+    "spring/baseball-game-state-singleton-bean-scope-bridge"
+  ],
+  "controller 필드에 game을 넣었더니 새 요청에서 이전 카드 상태가 남아요": [
+    "spring/blackjack-game-state-singleton-bean-scope-bridge"
+  ],
+  "controller 하나가 입력 파싱부터 게임 종료까지 다 들고 있어서 고칠 순서를 못 잡겠어요": [
+    "design-pattern/baseball-big-if-responsibility-cause-router"
+  ],
+  "controller, service, domain이 서로 너무 많이 알아요": [
+    "software-engineering/lotto-boundary-mixing-cause-router"
+  ],
+  "controller가 gameid 조회부터 hit 처리와 응답 조립까지 다 하고 있어요": [
+    "software-engineering/blackjack-turn-processing-service-layer-bridge"
+  ],
+  "controller가 guess 생성부터 strike ball 계산까지 다 하고 있어요": [
+    "software-engineering/baseball-turn-processing-service-layer-bridge"
+  ],
+  "controller가 map에서 게임을 직접 꺼내 수정하고 다시 넣고 있어요": [
+    "software-engineering/blackjack-current-game-load-save-repository-bridge"
+  ],
+  "controller가 map이나 세션에서 게임을 직접 꺼내 수정하고 다시 넣고 있어요": [
+    "software-engineering/baseball-current-game-load-save-repository-bridge"
+  ],
+  "controller가 현재 점수와 bust 여부를 다시 조립해 응답 json을 만들고 있어요": [
+    "software-engineering/blackjack-turn-result-response-boundary-bridge"
+  ],
+  "controller나 service 필드에 game을 넣었더니 탭을 두 개 열면 진행이 헷갈려요": [
+    "spring/blackjack-web-state-mixing-cause-router"
+  ],
+  "controller나 service 한 곳이 로또 생성부터 결과 출력 직전 계산까지 다 들고 있어요": [
+    "design-pattern/lotto-big-if-responsibility-cause-router"
+  ],
+  "controller나 service가 숫자 생성 책임까지 들고 있어요": [
+    "design-pattern/baseball-random-number-generator-strategy-bridge"
+  ],
+  "controller나 service에서 new randomnumbergenerator()를 직접 만들지 말라는 리뷰를 받았어요": [
+    "spring/lotto-number-generator-bean-injection-bridge"
+  ],
+  "controller는 뜨는데 jparepository bean만 못 찾겠어요": [
+    "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+  ],
+  "controller에서 split과 lotto 생성을 같이 하다 보니 어디까지가 http 책임인지 헷갈려요": [
+    "spring/lotto-mvc-controller-binding-validation-bridge"
+  ],
+  "controller에서 strike와 ball 숫자를 다시 조립해 응답 문구를 만들고 있어요": [
+    "software-engineering/baseball-turn-result-response-boundary-bridge"
+  ],
+  "controller에서 while문으로 게임 종료까지 한 번에 돌리고 있어요": [
+    "spring/baseball-console-game-loop-http-request-lifecycle-bridge"
+  ],
+  "controller에서 구매 흐름을 돌리는데 트랜잭션을 어디에 둬야 하냐는 리뷰를 받았어요": [
+    "spring/lotto-purchase-ticket-transaction-boundary-bridge"
+  ],
+  "controller에서 문자열을 파싱하다 보니 숫자 검증과 도메인 생성이 같이 섞여요": [
+    "software-engineering/lotto-inputview-domain-conversion-boundary-bridge"
+  ],
+  "copyof랑 unmodifiablelist를 같은 걸로 써도 되나요": [
+    "language/list-copyof-listof-unmodifiablelist-beginner-bridge"
+  ],
+  "cors 설정을 두 군데에 넣었더니 누가 실제 주인인지 판단이 안 돼요": [
+    "spring/cors-security-vs-mvc-ownership"
+  ],
+  "cors 에러 때문에 프론트에서 secret key로 직접 붙여야 할지 헷갈려요": [
+    "security/browser-direct-call-vs-server-proxy-decision-tree"
+  ],
+  "cpu가 높은데 flame graph를 봐야 하는지 jfr을 먼저 켜야 하는지 판단이 안 서": [
+    "language/async-profiler-vs-jfr-comparison"
+  ],
+  "cpu는 낮은데 active thread와 queue만 같이 늘어나서 왜 느린지 헷갈려요": [
+    "operating-system/blocking-io-thread-pool-backpressure-primer"
+  ],
+  "cpu는 바쁘지 않아 보이는데 응답이 느릴 때 스케줄링 관점에서 어떻게 봐야 하는지 모르겠어요": [
+    "operating-system/cpu-scheduling-basics"
+  ],
+  "created_at으로만 정렬했더니 예약 목록 새로고침마다 순서가 조금씩 달라져요": [
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge"
+  ],
+  "crud 위주 서비스인데 jdbc부터 직접 짜야 하는지 고민한다": [
+    "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+  ],
+  "ctrl-c, terminal 입력, shell 종료가 각각 누구에게 영향을 주는지 감이 안 와요": [
+    "operating-system/shell-job-control-command-bridge"
+  ],
+  "custom jwt filter에서 인증한 것 같은데 다음 api 호출에서는 @authenticationprincipal이 비어 있어요": [
+    "spring/login-state-not-persisted-cause-router"
+  ],
+  "datasource가 여러 개인데 auto-configuration이 언제 켜지는지 감이 안 와요": [
+    "spring/conditionalonsinglecandidate-vs-primary-primer"
+  ],
+  "db row는 purchase와 ticket으로 나뉘는데 도메인에서는 어디까지 하나로 묶어 읽어야 하는지 헷갈려요": [
+    "software-engineering/lotto-purchase-history-repository-boundary-bridge"
+  ],
+  "db 저장과 이벤트 발행을 같이 맞추려는데 outbox, cdc, saga를 같은 계층 선택지로 보고 있다": [
+    "database/outbox-vs-cdc-vs-saga-decision-guide"
+  ],
+  "db가 느린 줄 알았는데 실제로는 같은 row나 key를 서로 오래 기다리는 것처럼 보인다": [
+    "database/lock-wait-timeout-symptom-router"
+  ],
+  "db가 느릴 때 캐시를 볼지 replica를 볼지 헷갈려": [
+    "system-design/caching-vs-read-replica-primer"
+  ],
+  "db가 있는데 cache나 queue를 왜 더 두는지 감이 안 와": [
+    "system-design/queue-vs-cache-vs-db-decision-drill"
+  ],
+  "db가 잠겨서 요청이 계속 멈추는데 row lock인지 deadlock인지 구분이 안 된다": [
+    "database/lock-wait-deadlock-latch-triage-playbook"
+  ],
+  "ddl 배포 중 suddenly 멈췄는데 metadata lock인지 모르겠다": [
+    "database/lock-wait-deadlock-latch-triage-playbook"
+  ],
+  "deadlock error와 lock timeout이 섞여 보여서 retry 정책을 못 정하겠다": [
+    "database/lock-wait-deadlock-latch-triage-playbook"
+  ],
+  "dealer hit 로직을 테스트하려는데 랜덤 카드 순서 때문에 결과가 계속 흔들려요": [
+    "design-pattern/blackjack-deck-shuffle-random-strategy-bridge"
+  ],
+  "dealer 규칙과 bust 계산을 분리하라는 말이 추상적으로 들려요": [
+    "software-engineering/blackjack-big-if-responsibility-cause-router"
+  ],
+  "dealer가 한 장 더 뽑는 규칙과 bust 계산을 같은 책임으로 묶어도 되나 헷갈려요": [
+    "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide"
+  ],
+  "debezium을 붙이면 saga까지 해결된다고 생각해서 설계 축이 뒤엉킨다": [
+    "database/outbox-vs-cdc-vs-saga-decision-guide"
+  ],
+  "deck이 생성자 안에서 random으로 바로 섞여서 테스트할 때 카드 순서를 고정하기 어려워요": [
+    "design-pattern/blackjack-deck-shuffle-random-strategy-bridge"
+  ],
+  "dedicated cell cutover와 trust domain 변경이 겹쳐 verifier overlap을 어디까지 유지해야 할지 모르겠다": [
+    "system-design/trust-bundle-rollback-during-cell-cutover-design"
+  ],
+  "default method가 생겼다는데 추상 클래스랑 뭐가 다른지 모르겠어": [
+    "language/java-abstract-class-vs-interface-basics"
+  ],
+  "default method랑 sealed interface까지 섞이면 어느 축으로 판단해야 할지 모르겠어": [
+    "language/abstract-class-vs-interface"
+  ],
+  "default method를 볼 때 계약 진화용 기본값인지 충돌 해결 문제인지 바로 구분이 안 돼": [
+    "language/default-method-contract-evolution-vs-conflict-mini-drill"
+  ],
+  "default package 코드가 import 안 되는 이유를 짧게 알고 싶어": [
+    "language/java-default-package-avoid-bridge"
+  ],
+  "delete cookie 헤더는 보냈는데 proxy 뒤에서만 cleanup이 안 먹는 것처럼 보여요": [
+    "security/secure-cookie-cleanup-behind-proxy"
+  ],
+  "dense냐 sparse냐만 보고 구조를 고르다가 exact 집합 연산 요구를 놓친다": [
+    "data-structure/plain-bitset-vs-compressed-bitmap-decision-card"
+  ],
+  "deque cht와 li chao tree를 언제 갈라야 하는지 모르겠어": [
+    "algorithm/convex-hull-trick-basics"
+  ],
+  "deque가 앞뒤로 어떻게 바뀌는지 손으로 못 따라가겠어": [
+    "algorithm/zero-one-bfs-hand-calculation-worksheet"
+  ],
+  "deque에 같은 정점이 두 번 들어가면 버그인지 판단이 안 돼": [
+    "algorithm/zero-one-bfs-implementation-mistake-check-template"
+  ],
+  "deque에 같은 정점이 두 번 들어가서 버그처럼 보여": [
+    "algorithm/zero-one-bfs-stale-entry-mini-card"
+  ],
+  "devtools network í­ìì ìì²­ rowê° ì¤ë `pending`ì¼ë¡ ë¨ì ìëë° ì´ë ë¨ê³ìì ë©ì·ëì§ ëª¨ë¥´ê² ë¤": [
+    "network/request-pending-forever-symptom-router"
+  ],
+  "devtools network 탭에서 같은 url이 연속으로 두 줄 보여서 프론트가 중복 호출한 건지 브라우저나 프록시가 다시 보낸 건지 헷갈린다": [
+    "network/same-url-request-twice-symptom-router"
+  ],
+  "devtools network 탭에서 상태 코드 대신 `(blocked)`, `canceled`, `(failed)`가 떠서 서버 에러인지 브라우저 문제인지 구분이 안 된다": [
+    "network/browser-devtools-blocked-canceled-failed-symptom-router"
+  ],
+  "devtools에서 같은 사이트를 봤는데 첫 요청 row는 `h2`이고 다음 요청이나 새로고침 뒤 row는 `h3`라서 downgrade인지 upgrade인지 헷갈린다": [
+    "network/first-request-h2-next-request-h3-symptom-router"
+  ],
+  "devtools에서는 200처럼 보이는데 body를 열어 보니 로그인 페이지나 bad gateway html이다": [
+    "network/json-expected-but-html-response-symptom-router"
+  ],
+  "dfs low-link 값이 왜 끊기는 간선과 정점을 찾아 주는지 직관이 잘 안 와": [
+    "algorithm/bridges-and-articulation-points"
+  ],
+  "dfs랑 bfs를 외웠는데 문제에서 언제 어느 쪽을 먼저 떠올려야 할지 모르겠어": [
+    "algorithm/dfs-bfs-intro"
+  ],
+  "dip와 di를 같은 말로 이해하고 있었어요": [
+    "software-engineering/solid-principles-basics"
+  ],
+  "dispatcherservlet이랑 인터셉터 순서가 헷갈려": [
+    "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+  ],
+  "dist 표가 언제 갱신되는지 줄 단위로 보고 싶어": [
+    "algorithm/zero-one-bfs-hand-calculation-worksheet"
+  ],
+  "dns를 바꿨다고 들었는데 어떤 사용자만 계속 이전 서버나 이전 ip로 붙어서 배포가 안 끝난 것처럼 보인다": [
+    "network/dns-change-some-users-old-server-symptom-router"
+  ],
+  "donor를 언제 read-only로 남기고 언제 cleanup으로 넘겨도 되는지 헷갈린다": [
+    "system-design/write-freeze-rollback-window-design"
+  ],
+  "download api에서 `broken pipe`, `clientabortexception`, `asyncrequestnotusableexception`이 보이는데 이게 실제 서버 회귀인지 응답 커밋 뒤 종료인지 바로 설명하기 어렵다": [
+    "network/download-starts-then-cuts-off-symptom-router"
+  ],
+  "dp 식은 있는데 왜 갑자기 직선 집합으로 바꾸는지 연결이 안 돼": [
+    "algorithm/convex-hull-trick-basics"
+  ],
+  "dto 문자열을 서비스 끝까지 들고 가도 되는지 모르겠어": [
+    "language/request-dto-to-value-object-boundary-primer"
+  ],
+  "dto를 못 만든 경우와 @valid 실패를 같은 400으로 읽어서 계속 헷갈려": [
+    "spring/spring-validation-binding-error-pipeline"
+  ],
+  "dup, close-on-exec, fd leak 같은 말이 나오면 같은 층의 개념인지 모르겠어요": [
+    "operating-system/file-descriptor-basics"
+  ],
+  "duplicate key 로 끝낼지 잠깐 줄 세워 재검사할지 선택 기준이 헷갈린다": [
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "duplicate key가 아니라 timeout으로 끝나서 이미 저장된 건지 아직 막힌 건지 헷갈린다": [
+    "database/lock-wait-timeout-symptom-router"
+  ],
+  "duplicate key는 안 났는데도 결과적으로 두 번 팔린 것처럼 보여서 어디부터 봐야 할지 모르겠어요": [
+    "database/last-stock-sold-twice-symptom-router"
+  ],
+  "duplicate key와 lock timeout과 deadlock을 전부 같은 재시도로 처리해서 응답 의미가 자꾸 섞인다": [
+    "database/already-exists-vs-busy-vs-retryable-decision-guide"
+  ],
+  "duplicate 뒤 replica 나 같은 트랜잭션 조회에서는 없고 나중에만 보인다": [
+    "database/duplicate-key-then-not-found-symptom-router"
+  ],
+  "duplicate 뒤에 다시 읽었는데 row가 안 보여서 막혔어": [
+    "database/duplicate-key-fresh-read-classifier-mini-card"
+  ],
+  "duplicatekeyexception 이 났는데 바로 조회하면 row가 없다고 나온다": [
+    "database/duplicate-key-then-not-found-symptom-router"
+  ],
+  "duplicatekeyexception이 나면 멱등성 처리가 끝난 줄 알거나, 반대로 pending row만 있으면 무조건 takeover해야 한다고 생각한다": [
+    "database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide"
+  ],
+  "duplicatekeyexception이 났는데 이걸 409로 바꿔야 하는지 service에서 잡아야 하는지 헷갈려요": [
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "echo로 값을 넘겼는데도 비밀번호나 확인 prompt가 계속 떠요": [
+    "operating-system/why-some-prompts-use-dev-tty"
+  ],
+  "edge에서는 `499`나 reset 흔적이 보이는데 origin access log는 `200`으로 남아 partial delivery인지 late write인지 해석이 갈린다": [
+    "network/download-starts-then-cuts-off-symptom-router"
+  ],
+  "email이랑 timeline 중 어디에 먼저 보여야 하는지 모르겠어요": [
+    "security/support-access-alert-router-primer"
+  ],
+  "emfile랑 enfile을 언제 다르게 의심해야 하나요": [
+    "operating-system/container-fd-pressure-emfile-enfile-bridge"
+  ],
+  "endpoint 전체 fallback rate만 보고 있어서 strict list failure가 묻힌다": [
+    "design-pattern/strict-list-canary-metrics-rollback-triggers"
+  ],
+  "entity 와 table, repository 와 mapper 가 한꺼번에 나와서 무엇부터 읽어야 할지 모르겠다": [
+    "database/database-first-step-bridge"
+  ],
+  "entity, dto, repository 경계를 어디서 끊어야 하는지 감이 안 와요": [
+    "software-engineering/architecture-layering-fundamentals"
+  ],
+  "enum 값마다 전략을 골라야 하는데 @qualifier로 버티고 있어요": [
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "enum 키만 쓰는데 왜 그냥 hashmap을 쓰는지 설명이 안 돼": [
+    "language/enummap-status-policy-lookup-primer"
+  ],
+  "enum, record, 값 객체 중 어디까지 타입을 올려야 하는지 기준이 안 잡혀": [
+    "language/domain-state-type-primer-enum-record-value-object"
+  ],
+  "equals를 손봤는데도 set.contains 결과가 이상해서 hashcode까지 봐야 하는지 헷갈려": [
+    "language/list-contains-vs-set-contains-symptom-card"
+  ],
+  "event loop 이야기를 들으면 readiness 모델과 completion 모델이 한꺼번에 섞여요": [
+    "operating-system/epoll-kqueue-io-uring"
+  ],
+  "exact lookup 질문인데 자동완성 구조를 먼저 가져와서 설명이 꼬인다": [
+    "data-structure/trie-vs-hashmap-exact-lookup-beginner-card"
+  ],
+  "exclusion constraint, slot row, guard row 중 어느 갈래로 이어질지 먼저 정하고 싶어": [
+    "database/constraint-first-booking-primer"
+  ],
+  "execute 메서드만 보고 command인지 strategy인지 구분이 안 돼요": [
+    "design-pattern/command-vs-strategy-quick-bridge"
+  ],
+  "expected single matching bean but found 2가 떠서 @primary를 붙여야 할지 @qualifier를 써야 할지 모르겠어요": [
+    "spring/primary-qualifier-collection-injection"
+  ],
+  "explain rows 추정치가 실제 row 수와 너무 달라요": [
+    "database/histogram-drift-auto-analyze-thresholds"
+  ],
+  "eytzinger가 빠르다는 말만 듣고 iterator workload에도 그대로 들이밀게 된다": [
+    "data-structure/ordered-search-workload-matrix"
+  ],
+  "factory라는 말이 다 같은 뜻처럼 보여": [
+    "design-pattern/factory-vs-abstract-factory-vs-builder"
+  ],
+  "fail-new-only gate와 allowlist를 어떻게 나눠야 하는지 헷갈려요": [
+    "software-engineering/archunit-brownfield-rollout-playbook"
+  ],
+  "failover 뒤 stale cache와 실제 데이터 드리프트를 같은 복구 절차로 다루고 있다": [
+    "database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide"
+  ],
+  "failover 직후 새로고침할 때마다 어떤 요청은 새 값이고 어떤 요청은 옛 값이다": [
+    "database/failover-after-old-new-flip-symptom-router"
+  ],
+  "fd가 파일 자체인지 번호표인지부터 자꾸 헷갈려요": [
+    "operating-system/file-descriptor-basics"
+  ],
+  "feature branch가 안전해 보이는데 왜 통합 부채라고 부르는지 감이 안 와요": [
+    "software-engineering/trunk-based-development-vs-feature-branch-tradeoffs"
+  ],
+  "fetch join을 붙였더니 페이지네이션이 이상해졌다는 리뷰를 받았어요": [
+    "spring/roomescape-admin-reservation-list-fetch-plan-bridge"
+  ],
+  "fetch 실패가 401인지 302인지 헷갈려요": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser"
+  ],
+  "fetch나 axios로 api를 호출했는데 json 대신 login html이나 에러 html이 내려온다": [
+    "network/json-expected-but-html-response-symptom-router"
+  ],
+  "filter나 interceptor 때문에 controller slice가 자꾸 깨져서 inbound adapter 책임과 runtime wiring 책임을 분리하고 싶어요": [
+    "software-engineering/inbound-adapter-test-slices-primer"
+  ],
+  "filter와 interceptor가 둘 다 중간에서 끼어드는 코드처럼 보여 어디에 둘지 모르겠어요": [
+    "software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge"
+  ],
+  "final url이 /login으로 바뀌었는데 어디부터 봐야 할지 모르겠어요": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser"
+  ],
+  "final이 값 고정인지 상속 금지인지 섞여서 헷갈려": [
+    "language/java-access-modifiers-member-model-basics"
+  ],
+  "first와 pollfirst가 둘 다 맨 앞을 보는 것처럼 보여서 제거 여부를 자꾸 놓쳐": [
+    "language/pollfirst-polllast-vs-first-last-beginner-bridge"
+  ],
+  "fixed window를 썼더니 창 경계에서 요청이 몰려도 통과돼": [
+    "algorithm/rate-limiter-algorithms"
+  ],
+  "floorentry가 exact match를 포함하는지 확신이 안 서서 value를 읽는 코드로 못 옮기겠어": [
+    "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill"
+  ],
+  "floorentry를 본 뒤 lowerentry도 exact match를 포함한다고 착각한다": [
+    "data-structure/treemap-key-entry-strictness-bridge"
+  ],
+  "floorentry와 ceilingentry를 찾고도 빈 구간 길이를 어디서 재야 하는지 막혀": [
+    "data-structure/treemap-gap-detection-mini-drill"
+  ],
+  "floorkey나 ceilingkey로 시작 시각은 찾았는데 종료 시각을 어디서 읽는지 모르겠어": [
+    "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill"
+  ],
+  "floorkey와 ceilingkey가 scale이 다른 값에도 같은 자리처럼 동작해": [
+    "language/bigdecimal-navigablemap-lookup-bridge"
+  ],
+  "flush까지 했는데 after_commit 리스너가 안 돌아서 왜 그런지 모르겠어요": [
+    "software-engineering/transactional-test-rollback-vs-commit-boundary-card"
+  ],
+  "flush까지 했는데 listener가 안 돌아서 commit과 같은 줄 알았어요": [
+    "software-engineering/after-commit-listener-rollback-test-beginner-bridge"
+  ],
+  "flush했는데도 결과가 안 나와요": [
+    "operating-system/subprocess-stdin-eof-primer"
+  ],
+  "for update 결과가 0건이면 그 자리가 예약된 줄 알았는데 동시 요청이 같이 insert 까지 간다": [
+    "database/for-update-zero-row-duplicate-insert-symptom-router"
+  ],
+  "for update를 넣었는데 duplicate key가 계속 보여서 어떤 문이 진짜 승자를 정하는지 헷갈린다": [
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
+  "for-each 안에서 remove 하다가 예외가 나거나 side effect 범위가 커져서 어떤 전략을 먼저 떠올려야 할지 모르겠어요": [
+    "language/collection-update-strategy-primer"
+  ],
+  "form login이나 oauth2login을 붙인 뒤부터 api 요청에도 hidden session이 숨어든 것 같아요": [
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "freeze 신호와 hard rollback 신호를 같은 대시보드 칸에 넣어 의사결정이 늦어진다": [
+    "design-pattern/strict-list-canary-metrics-rollback-triggers"
+  ],
+  "game.hit가 바로 카드 문자열이나 승패 문구를 만들어 반환하고 있어요": [
+    "software-engineering/blackjack-turn-result-response-boundary-bridge"
+  ],
+  "game.play가 바로 \"1볼 2스트라이크\" 같은 문자열을 반환하고 있어요": [
+    "software-engineering/baseball-turn-result-response-boundary-bridge"
+  ],
+  "gameid는 있는데 현재 게임을 다시 읽는 계약이 코드에 안 보여요": [
+    "software-engineering/baseball-current-game-load-save-repository-bridge"
+  ],
+  "gamerepository가 현재 상태와 guess history를 한 번에 화면 dto로 반환하고 있어요": [
+    "design-pattern/baseball-game-view-aggregate-vs-read-model-bridge"
+  ],
+  "gap search는 알겠는데 disjoint interval set으로 왜 이어지는지 연결이 안 돼": [
+    "data-structure/treemap-nearest-slot-disjoint-interval-bridge"
+  ],
+  "gateway access log와 app trace를 맞춰 보는데 어느 홉이 사용자에게 실패를 선언했는지 헷갈린다": [
+    "network/browser-504-app-200-symptom-router"
+  ],
+  "gc, lock, allocation, thread state가 한꺼번에 얽혀 보여서 초동 분석 순서를 잡고 싶어": [
+    "language/jfr-jmc-performance-playbook"
+  ],
+  "gc, lock, socket, safepoint 이벤트가 각각 무엇을 뜻하는지 해석 기준이 필요해": [
+    "language/jfr-event-interpretation"
+  ],
+  "get 검색 dto와 post 생성 dto가 같은 바인딩이라고 생각해서 디버깅 출발점을 못 잡겠어요": [
+    "spring/modelattribute-vs-requestbody-binding-primer"
+  ],
+  "getbean을 써도 괜찮은지 코드 리뷰에서 막혀요": [
+    "design-pattern/injected-registry-vs-service-locator-checklist"
+  ],
+  "gh-ost 나 pt-online-schema-change 는 거의 끝났는데 cutover 단계에서만 멈춘다": [
+    "database/alter-table-not-finishing-symptom-router"
+  ],
+  "graph, bfs, queue가 같은 말처럼 보여서 처음 분기가 잘 안 된다": [
+    "data-structure/graph-basics"
+  ],
+  "group by id로 줄이면 숫자는 맞는 것 같은데 왜 그런지 설명이 안 된다": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "grpc 호출만 깨지고 같은 호스트의 일반 http 요청은 살아 있다": [
+    "network/alpn-negotiation-failure-routing-mismatch"
+  ],
+  "grpc 호출이 느린데 socket보다 stream slot이 부족한 것 같아요": [
+    "network/http2-max-concurrent-streams-pending-queue-saturation"
+  ],
+  "guess 검증, 턴 처리, 재시작 분기, 판정 로직이 한 메서드에 다 붙어 있어요": [
+    "design-pattern/baseball-big-if-responsibility-cause-router"
+  ],
+  "guess_history만 쌓고 현재 게임 상태는 어디서 믿어야 할지 모르겠어요": [
+    "database/baseball-guess-history-current-state-transaction-bridge"
+  ],
+  "guess를 만들라는 말과 service로 빼라는 말과 상태 패턴 얘기가 한꺼번에 나와서 같은 말처럼 들려요": [
+    "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide"
+  ],
+  "h s 같은 입력 문자열을 service까지 그대로 넘기고 있어요": [
+    "design-pattern/blackjack-action-input-command-bridge"
+  ],
+  "h2와 h3 둘 다 `421 -> retry`가 나온다는데 어떤 경우가 wrong connection 복구인지 감이 안 잡힌다": [
+    "network/http2-http3-421-retry-after-wrong-coalescing"
+  ],
+  "hashmap으로 충분한 장면과 trie가 필요한 장면을 한 문장으로 못 가른다": [
+    "data-structure/trie-vs-hashmap-exact-lookup-beginner-card"
+  ],
+  "hashmap이 우연히 일정해 보여서 순서 보장으로 착각한다": [
+    "data-structure/map-order-symptom-router-card"
+  ],
+  "hashset으로 충분한지 treeset으로 넘어가야 하는지 기준이 모호해": [
+    "data-structure/hashset-vs-treeset-beginner-bridge"
+  ],
+  "headmap 경계에서 exact match를 빼야 하는지 포함해야 하는지 헷갈려": [
+    "language/bigdecimal-navigablemap-lookup-bridge"
+  ],
+  "heap dump를 떴는데 dominator tree와 histogram을 어떤 순서로 읽어야 할지 감이 안 와": [
+    "language/oom-heap-dump-playbook"
+  ],
+  "heartbeat는 정상이라 서버는 살아 있다고 보이는데 실제 데이터 frame만 느려서 \"연결 문제는 아닌데 왜 체감이 느리지\"가 핵심 질문이 된다": [
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "hello world는 되는데 파일 두 개부터 왜 연결이 꼬이는지 모르겠어": [
+    "language/java-default-package-avoid-bridge"
+  ],
+  "hikari request timed out after 로그가 데드락이랑 같은 건지 헷갈려": [
+    "database/timeout-errorcode-mapping-mini-card"
+  ],
+  "history list length가 줄지 않고 undo tablespace가 계속 커진다": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
+  ],
+  "hit stand 시나리오를 검증하려면 너무 많은 객체를 같이 세팅해야 해요": [
+    "software-engineering/blackjack-testability-cause-router"
+  ],
+  "hit stand 요청마다 insert와 update가 흩어져 있어 어디를 진실 원천으로 봐야 할지 모르겠어요": [
+    "database/blackjack-action-history-current-state-transaction-bridge"
+  ],
+  "hit stand 입력 분기가 controller switch 문에 계속 늘어나요": [
+    "design-pattern/blackjack-action-input-command-bridge"
+  ],
+  "hit stand 처리, 점수 계산, 승패 판정이 한 메서드에 다 붙어 있어요": [
+    "software-engineering/blackjack-big-if-responsibility-cause-router"
+  ],
+  "hit 버튼을 두 번 눌렀더니 카드가 한 장이 아니라 두 장 들어가요": [
+    "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge"
+  ],
+  "hit 요청이 400으로 끝나는 문제와 이미 종료된 게임에 hit한 문제를 같은 검증으로 보고 있어요": [
+    "spring/blackjack-mvc-controller-binding-validation-bridge"
+  ],
+  "hit 하고 새로고침했더니 브라우저가 같은 요청을 다시 보내려 해요": [
+    "spring/blackjack-post-redirect-get-refresh-replay-bridge"
+  ],
+  "hit 한 번 처리할 때 어느 계층이 게임을 조회하고 저장해야 할지 헷갈려요": [
+    "software-engineering/blackjack-current-game-load-save-repository-bridge"
+  ],
+  "hit 한 번 처리했는데 행동 이력은 남았는데 현재 점수가 안 맞아요": [
+    "database/blackjack-action-history-current-state-transaction-bridge"
+  ],
+  "hit은 한 번만 눌렀는데 행동 로그에는 남아 있고 현재 점수는 이전 값으로 보여요": [
+    "database/blackjack-action-log-state-mismatch-symptom-router"
+  ],
+  "http/2로 붙어야 하는데 앞단을 지나면 계속 1.1처럼 동작한다": [
+    "network/alpn-negotiation-failure-routing-mismatch"
+  ],
+  "http/2에서 요청이 시작도 못 한 채 내부 대기열에 쌓여요": [
+    "network/http2-max-concurrent-streams-pending-queue-saturation"
+  ],
+  "id token은 받았는데 local session이 어디서 생기는지 모르겠어요": [
+    "security/social-login-to-local-session-bridge"
+  ],
+  "if 문을 없앴는데 클래스만 늘고 분기 기준은 그대로 남아 있어": [
+    "design-pattern/strategy-explosion-smell"
+  ],
+  "if-else를 줄이고 싶은데 클래스까지 만드는 건 과한지 모르겠어": [
+    "design-pattern/strategy-vs-function-chooser"
+  ],
+  "if-match를 붙였는데도 저장 순서가 꼬일 수 있는지 모르겠어": [
+    "system-design/write-order-vs-precondition-primer"
+  ],
+  "if-match를 안 보냈는데 428을 써야 하는지 감이 안 와": [
+    "system-design/conditional-write-status-code-bridge"
+  ],
+  "iframe 로그인은 되는데 첫 post 요청이 403이에요": [
+    "security/embedded-login-csrf-bridge"
+  ],
+  "inbound port와 outbound port를 이름만 봐서는 구분하기 어려워요": [
+    "software-engineering/ports-and-adapters-beginner-primer"
+  ],
+  "index only scan이 갑자기 약해지고 heap fetch가 늘어난다": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
+  ],
+  "indexof가 -1인 문제와 set 삭제 실패가 같은 축인지 구분이 안 돼": [
+    "language/list-indexof-remove-vs-set-remove-symptom-bridge"
+  ],
+  "inputview가 lotto를 만들고 service도 검증해서 어디가 주인인지 모르겠어요": [
+    "software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide"
+  ],
+  "inputview가 쉼표로 나눈 뒤 바로 lotto를 만들어도 되나 헷갈려요": [
+    "software-engineering/lotto-inputview-domain-conversion-boundary-bridge"
+  ],
+  "int money로 넘기니 0원이나 999원 같은 예외 기준이 자꾸 흔들려요": [
+    "software-engineering/lotto-purchase-amount-value-object-bridge"
+  ],
+  "int 배열을 aslist 했더니 요소가 하나만 보여요": [
+    "language/arrays-aslist-fixed-size-list-checklist"
+  ],
+  "interface private helper까지 나오면 밖에서 부르는 메서드와 안에서만 쓰는 메서드가 더 헷갈려": [
+    "language/interface-default-vs-static-method-primer"
+  ],
+  "io_uring이 무조건 최신 정답처럼 보이는데 언제 과한 선택인지 판단이 안 돼요": [
+    "operating-system/epoll-kqueue-io-uring"
+  ],
+  "isfinished, shouldrestart 같은 boolean이 같이 늘어나요": [
+    "design-pattern/baseball-restart-flow-state-pattern-bridge"
+  ],
+  "java bfs에서 방문 체크를 배열로 둘지 set으로 둘지 기준이 안 서": [
+    "algorithm/bfs-visited-array-vs-set-java-beginner-card"
+  ],
+  "java 큐 구현체를 고를 때 linkedlist를 습관처럼 붙여도 되는지 헷갈린다": [
+    "data-structure/arraydeque-vs-linkedlist-queue-choice-card"
+  ],
+  "jfr 파일은 뽑았는데 jmc에서 무엇부터 읽어야 병목을 좁힐 수 있는지 막막해": [
+    "language/jfr-jmc-performance-playbook"
+  ],
+  "jfr 파일은 있는데 duration 숫자만 보고 원인을 단정해도 되는지 불안해": [
+    "language/jfr-event-interpretation"
+  ],
+  "jobs, fg, bg, nohup, disown이 전부 \"백그라운드 실행\"처럼 보여서 차이를 모르겠어요": [
+    "operating-system/shell-job-control-command-bridge"
+  ],
+  "jobs에서는 사라졌는데 ps에는 남아 있어서 detach된 건지 헷갈려요": [
+    "operating-system/shell-job-control-command-bridge"
+  ],
+  "join만 붙였는데 결과 row 수가 갑자기 몇 배로 늘었다": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "join이 많아서 느린데 정규화를 풀지 summary table을 둘지 모르겠다": [
+    "database/normalization-vs-denormalization-vs-summary-table-decision-guide"
+  ],
+  "json 로그 파싱과 색상 있는 cli 재생을 한 통로로 처리하려니 계속 깨져요": [
+    "operating-system/tty-aware-output-capture-patterns"
+  ],
+  "json 요청을 보냈는데 서비스까지 가지도 않고 바로 400이나 415가 떠요": [
+    "spring/controller-not-hit-cause-router"
+  ],
+  "json 요청인데 415나 406이 번갈아 보여서 어디부터 봐야 할지 모르겠어": [
+    "spring/spring-content-negotiation-pitfalls"
+  ],
+  "json이나 db를 한번 거치면 금액 비교가 이상해져": [
+    "language/bigdecimal-money-equality-rounding-serialization-pitfalls"
+  ],
+  "json인데 415가 떠": [
+    "spring/requestbody-415-unsupported-media-type-primer"
+  ],
+  "jvm 힙을 크게 줬는데 rss가 바로 안 늘어나는 이유를 가상 메모리로 설명하고 싶어요": [
+    "operating-system/virtual-memory-basics"
+  ],
+  "jwks가 죽었을 때 stale key를 어디까지 써도 되는지 모르겠어요": [
+    "security/jwt-jwks-outage-recovery-failover-drills"
+  ],
+  "jwt 검증 장애 drill을 어떤 시나리오로 연습해야 하는지 감이 안 와요": [
+    "security/jwt-jwks-outage-recovery-failover-drills"
+  ],
+  "jwt를 쓰면 정말 완전히 stateless한 건지 헷갈려": [
+    "system-design/stateless-vs-stateful-basics"
+  ],
+  "key lookup과 도메인 판정을 같은 선택 문제로 보고 있어": [
+    "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide"
+  ],
+  "key rotation이 자꾸 깨져서 정적 키를 계속 들고 가고 있어요": [
+    "security/workload-identity-vs-long-lived-service-account-keys"
+  ],
+  "key만 필요할 때와 entry 전체가 필요할 때의 기준이 머리에 안 잡혀": [
+    "language/firstentry-lastentry-vs-firstkey-lastkey-bridge"
+  ],
+  "key와 entry 차이보다 strict와 inclusive 차이를 놓쳐서 api를 섞는다": [
+    "data-structure/treemap-key-entry-strictness-bridge"
+  ],
+  "kid miss가 쏟아질 때 signer rollback과 verifier refresh 중 뭘 먼저 해야 할지 헷갈려요": [
+    "security/jwt-jwks-outage-recovery-failover-drills"
+  ],
+  "knuth optimization이랑 divide and conquer dp를 같은 것으로 읽고 있어": [
+    "algorithm/divide-and-conquer-dp-optimization"
+  ],
+  "kubernetes에서 oomkilled라고 뜨는데 memory.events랑 어떻게 연결해 읽어야 할지 모르겠어요": [
+    "operating-system/killed-oomkilled-memory-events-beginner-bridge"
+  ],
+  "l4랑 l7을 어디 기준으로 나누는지 헷갈려": [
+    "system-design/load-balancer-basics"
+  ],
+  "lambda로 끝낼 수 있는지 strategy 타입까지 올려야 하는지 헷갈려": [
+    "design-pattern/strategy-vs-function-chooser"
+  ],
+  "late event나 누락 이벤트 때문에 어디까지 다시 돌려야 할지 모르겠어요": [
+    "database/summary-drift-detection-bounded-rebuild"
+  ],
+  "layered, clean, modular monolith가 서로 대체 관계인지 헷갈려요": [
+    "software-engineering/architecture-layering-fundamentals"
+  ],
+  "layered랑 clean이 대체 관계인지 같이 써도 되는지 헷갈려요": [
+    "software-engineering/clean-architecture-layered-modular-monolith"
+  ],
+  "left join 뒤에 결과가 중복처럼 보여서 distinct를 바로 붙이고 싶다": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "list.contains는 되는데 hashset.contains는 기대와 다르게 나와서 어디부터 봐야 할지 모르겠어": [
+    "language/list-contains-vs-set-contains-symptom-card"
+  ],
+  "listen queue가 찬 것 같은데 accept loop 문제인지 커널 backlog 문제인지 먼저 갈라야 해요": [
+    "operating-system/socket-accept-queue-kernel-diagnostics"
+  ],
+  "listener 알림 문제를 outbox나 broker 문제처럼 풀려고 해": [
+    "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide"
+  ],
+  "listener는 살아 있는데 새 연결만 유독 늦거나 빠지는 이유를 어디서부터 봐야 할지 모르겠어요": [
+    "operating-system/accept-overload-observability-playbook"
+  ],
+  "listenoverflows가 늘 때 accept pause나 rearm 누락을 어떻게 의심해야 하는지 헷갈려요": [
+    "operating-system/accept-overload-observability-playbook"
+  ],
+  "listenoverflows와 listendrops가 늘 때 어디까지가 커널 queue 진단 문서인지 헷갈려요": [
+    "operating-system/socket-accept-queue-kernel-diagnostics"
+  ],
+  "list에서는 remove가 엉뚱한 원소를 지우는데 set에서는 그냥 false만 나와": [
+    "language/list-indexof-remove-vs-set-remove-symptom-bridge"
+  ],
+  "lo hi mid는 외웠는데 종료 조건을 어디에 둬야 하는지 감이 안 와": [
+    "algorithm/binary-search-intro"
+  ],
+  "lock timeout이 떨어지는데 그 sql은 평소엔 빠르다": [
+    "database/lock-timeout-blocker-first-check"
+  ],
+  "lock wait timeout exceeded 에러가 반복해서 뜬다": [
+    "database/lock-wait-timeout-symptom-router"
+  ],
+  "logout이나 migration cleanup 뒤 old cookie가 prod에서만 남아 보여요": [
+    "security/secure-cookie-cleanup-behind-proxy"
+  ],
+  "logout이나 마이그레이션 후에도 오래된 세션 쿠키가 계속 따라와요": [
+    "security/duplicate-cookie-name-shadowing"
+  ],
+  "lookup과 create가 한 클래스에 섞여 있어서 리뷰 포인트가 흐려져요": [
+    "design-pattern/registry-vs-factory-injected-handler-maps"
+  ],
+  "lotto 미션 코드에서 if 문이나 switch가 계속 길어져요": [
+    "design-pattern/lotto-big-if-responsibility-cause-router"
+  ],
+  "lotto 서비스는 하나인데 생성기 구현체가 여러 개라 @primary를 붙일지 @qualifier를 붙일지 헷갈려요": [
+    "spring/lotto-manual-auto-generator-qualifier-bridge"
+  ],
+  "lotto 자동 번호 생성기를 테스트용 구현으로 바꿔 끼우고 싶은데 어디를 열어야 할지 모르겠어요": [
+    "spring/lotto-number-generator-bean-injection-bridge"
+  ],
+  "lotto 한 클래스가 입력 파싱, 번호 생성, 결과 계산까지 다 하고 있어요": [
+    "software-engineering/lotto-boundary-mixing-cause-router"
+  ],
+  "lower floor ceiling higher가 exact match에서 자꾸 섞인다": [
+    "data-structure/treeset-exact-match-drill"
+  ],
+  "lower floor ceiling 같은 이웃 값 api가 왜 set 선택 문제로 이어지는지 헷갈려": [
+    "data-structure/hashset-vs-treeset-beginner-bridge"
+  ],
+  "lower_bound 뒤에 몇 개를 더 읽는지가 중요한데 layout 선택 기준이 머리에 안 잡힌다": [
+    "data-structure/ordered-search-workload-matrix"
+  ],
+  "lowerkey와 floorkey가 exact match에서 왜 달라지는지 자꾸 헷갈린다": [
+    "data-structure/treemap-neighbor-query-micro-drill"
+  ],
+  "maintenance drain 중에 노드를 어떤 순서로 비워야 안전한지 감이 안 와": [
+    "system-design/stateful-workload-placement-failover-control-plane-design"
+  ],
+  "map<key, handler>가 있는데 registry인지 strategy map인지 이름을 못 정하겠어": [
+    "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide"
+  ],
+  "map<string, bean>으로 받았는데 key를 bean 이름으로 써도 되는지 헷갈려요": [
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "map에 값이 들어갔는지 덮어쓴 건지 구분이 안 돼": [
+    "language/map-put-null-containskey-distinction-bridge"
+  ],
+  "map에서 전략을 고르는 코드가 커지는데 어디서부터 policy로 봐야 할지 모르겠어요": [
+    "design-pattern/policy-object-vs-strategy-map-beginner-bridge"
+  ],
+  "map으로 구현을 찾는 코드가 strategy인지 registry인지 헷갈려요": [
+    "design-pattern/strategy-pattern-basics"
+  ],
+  "map으로 구현했는데 클래스 이름을 뭘로 지어야 할지 모르겠어요": [
+    "design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist"
+  ],
+  "map이랑 set 차이를 이름으로만 외워서 요구사항 문장으로 못 자르겠어": [
+    "data-structure/map-vs-set-requirement-bridge"
+  ],
+  "mesh나 gateway를 붙인 뒤 일부 route에서만 `503`이 늘어 app capacity 부족인지 sidecar overload 정책인지 구분이 안 된다": [
+    "network/browser-503-no-app-log-symptom-router"
+  ],
+  "message handler 테스트가 단위 테스트인지 앱 통합 테스트인지 헷갈려서 브로커와 트랜잭션을 한 번에 다 올리게 돼요": [
+    "software-engineering/inbound-adapter-test-slices-primer"
+  ],
+  "middleware랑 chain of responsibility를 같은 말처럼 쓰고 있어": [
+    "design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide"
+  ],
+  "migration cutover 뒤에 rollback window를 얼마나 열어 둬야 할지 감이 안 온다": [
+    "system-design/write-freeze-rollback-window-design"
+  ],
+  "min-version floor를 걸었더니 page size가 줄어드는 이유를 모르겠어": [
+    "system-design/pagination-monotonicity-primer"
+  ],
+  "min-version을 어디에서 검사해야 할지 모르겠어": [
+    "system-design/cache-hit-miss-session-policy-bridge"
+  ],
+  "mo's algorithm은 외웠는데 왜 오프라인 재정렬이 본질인지 감이 안 와": [
+    "algorithm/offline-query-ordering-patterns"
+  ],
+  "money / 1000 계산이 controller와 service에 같이 있어요": [
+    "software-engineering/lotto-purchase-amount-value-object-bridge"
+  ],
+  "monotonic deque에서 만료 제거와 뒤쪽 pop 순서를 자꾸 섞어 써": [
+    "data-structure/monotonic-deque-walkthrough"
+  ],
+  "monotonic reads와 causal consistency를 둘 다 그냥 최신성 보장으로 기억하고 있다": [
+    "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide"
+  ],
+  "mst 문제인데 탐색 말고 분리 집합이 왜 나오는지 감이 안 와": [
+    "algorithm/kruskal-union-find-beginner-bridge"
+  ],
+  "msw로 막은 컴포넌트 테스트와 실제 브라우저 테스트 경계가 흐려요": [
+    "software-engineering/component-test-vs-browser-e2e-boundary-card"
+  ],
+  "multishot accept를 멈출 때 cq reserve를 왜 남겨야 하는지 감이 안 와요": [
+    "operating-system/listener-overload-thresholds-accept-pause-policy"
+  ],
+  "mysql deadlock log를 보고 lock ordering을 어떻게 고쳐야 할지 모르겠다": [
+    "database/deadlock-case-study"
+  ],
+  "mysql 에서 read committed 로 바꾼 뒤 exact-key pre-check 가 더 이상 안 막히는 것처럼 보인다": [
+    "database/for-update-zero-row-duplicate-insert-symptom-router"
+  ],
+  "mysql에서 read committed로 바꿨더니 예약이나 중복 체크가 새기 시작한 이유를 isolation 이름만으로 설명하려고 한다": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "native frame, safepoint, lock contention이 섞여 보여서 어떤 도구를 먼저 써야 할지 모르겠어": [
+    "language/async-profiler-vs-jfr-comparison"
+  ],
+  "new 대신 create를 쓰라는 리뷰 이유가 헷갈려": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern"
+  ],
+  "newdist == dist[next]인 경우를 왜 그냥 넘겨도 되는지 감이 안 와": [
+    "algorithm/zero-one-bfs-equal-distance-reinsert-mini-note"
+  ],
+  "newdist == dist[next]일 때만 왜 추가 비교가 붙는지 감을 잡고 싶어": [
+    "algorithm/zero-one-bfs-lexicographic-tie-mini-note"
+  ],
+  "new로 만들면 되는지 of 같은 정적 팩토리로 올려야 하는지 헷갈려": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide"
+  ],
+  "notification read 성공 후 session floor를 어디서 갱신할지 모르겠어": [
+    "system-design/notification-read-to-min-version-bridge"
+  ],
+  "notifier 테스트를 unit에서 어디까지 보고 outbox나 통합 테스트로 언제 올려야 할지 모르겠어요": [
+    "software-engineering/outbound-notifier-mock-boundary-primer"
+  ],
+  "nouniquebeandefinitionexception과 beandefinitionoverrideexception을 같은 축으로 읽고 있어요": [
+    "spring/spring-primary-vs-bean-override-primer"
+  ],
+  "null이 미입력인지 정책상 없음인지 구분이 안 돼서 분기가 계속 늘어나": [
+    "language/domain-state-type-primer-enum-record-value-object"
+  ],
+  "numbergenerator 인터페이스를 만들었는데 spring에서 어떤 구현체가 들어가는지 감이 안 와요": [
+    "spring/lotto-number-generator-bean-injection-bridge"
+  ],
+  "oauth callback url이 외부 도메인이 아니라 내부 주소로 만들어져요": [
+    "security/absolute-redirect-url-behind-load-balancer-guide"
+  ],
+  "objectmapper나 webclient builder 기본 bean이 갑자기 사라진 것 같아요": [
+    "spring/starter-bean-missing-cause-router"
+  ],
+  "of/from이 왜 생성자보다 낫다는지 모르겠어": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern"
+  ],
+  "of나 from 같은 팩터리 메서드가 생성자랑 무엇이 다른지 처음 배울 때 자꾸 섞여": [
+    "language/java-instance-static-factory-methods-primer"
+  ],
+  "osiv를 끄니까 갑자기 lazy initialization exception이 보여요": [
+    "spring/lazyinitializationexception-cause-router"
+  ],
+  "outbox 숫자를 왜 read freshness 기준선으로 써도 되는지 모르겠어": [
+    "system-design/outbox-watermark-token-primer"
+  ],
+  "outofmemoryerror가 났는데 heap 문제인지 native 문제인지부터 어떻게 갈라야 할지 모르겠어": [
+    "language/oom-heap-dump-playbook"
+  ],
+  "overriding is disabled가 나오면서 앱이 시작 전에 멈춘다": [
+    "spring/same-name-bean-collision-cause-router"
+  ],
+  "p99가 튀는데 cpu만 봐서는 원인이 안 보여서 어떤 관측부터 해야 할지 모르겠어": [
+    "language/jfr-jmc-performance-playbook"
+  ],
   "package 구조는 맞는데 특정 환경에서만 bean이 사라져요": [
     "spring/component-scan-failure-patterns"
+  ],
+  "package 선언을 생략하면 뭐가 불편한지 감이 안 와": [
+    "language/java-default-package-avoid-bridge"
+  ],
+  "package-private이 상속하면 보일 거라고 착각해": [
+    "language/java-package-boundary-quickcheck-card"
+  ],
+  "package랑 import가 각각 뭘 담당하는지 섞여": [
+    "language/java-package-import-boundary-basics"
+  ],
+  "page cache eviction이 lru cache 구현이랑 같은 말인가요": [
+    "operating-system/page-replacement-clock-vs-lru"
+  ],
+  "page fault가 뜨면 무조건 메모리 오류라고 이해해서 계속 헷갈려요": [
+    "operating-system/virtual-memory-basics"
+  ],
+  "page replacement를 볼 때 working set이 더 중요하다는 말이 헷갈려요": [
+    "operating-system/page-replacement-clock-vs-lru"
+  ],
+  "paid에서 다시 결제되거나 cancelled가 뒤늦게 확정돼요": [
+    "design-pattern/shopping-cart-order-status-state-pattern-bridge"
+  ],
+  "parameter, return type, overloading이 왜 생성자 이야기랑 같이 나오는지 헷갈려": [
+    "language/java-methods-constructors-practice-primer"
+  ],
+  "parent 번호만 비교했는데 사전순 최단 경로가 틀려": [
+    "algorithm/zero-one-bfs-full-path-lexicographic-bridge"
+  ],
+  "parent를 어디서 갱신해야 경로 복원이 맞는지 모르겠어": [
+    "algorithm/zero-one-bfs-implementation-mistake-check-template"
+  ],
+  "parent를 언제 갱신해야 하는지 bfs랑 다익스트라에서 헷갈려": [
+    "algorithm/shortest-path-reconstruction-bridge"
+  ],
+  "parity가 대충 맞아 보여도 rollback window를 언제 닫아야 할지 불안하다": [
+    "design-pattern/read-model-cutover-guardrails"
+  ],
+  "partial outage일 때 어느 리전으로 얼마나 옮겨야 할지 감이 안 와": [
+    "system-design/global-traffic-failover-control-plane-design"
+  ],
+  "participant 타입 if else로 결과 문자열을 조립하고 있어요": [
+    "design-pattern/blackjack-player-dealer-result-view-template-method-bridge"
+  ],
+  "pass-by-reference처럼 보이는데 왜 java는 값 전달이라고 하는지 헷갈려": [
+    "language/java-parameter-passing-pass-by-value-side-effects-primer"
+  ],
+  "path compression이 왜 빨라지는지 코드만 보고는 감이 안 와": [
+    "data-structure/union-find-deep-dive"
+  ],
+  "path를 보여 달라는 문장이 나오면 shortest path까지 같이 구해야 하는지 헷갈려": [
+    "algorithm/path-vs-shortest-path-micro-drill"
+  ],
+  "pause와 resume threshold를 backlog 요청값 기준으로 잡아도 되는지 헷갈려요": [
+    "operating-system/listener-overload-thresholds-accept-pause-policy"
+  ],
+  "paymentmethod 빈값이랑 품절을 왜 같은 검증으로 다루면 안 되나요": [
+    "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge"
+  ],
+  "pending acquire나 worker queue 중 어디서 밀리는지 모르겠어요": [
+    "network/queue-saturation-attribution-metrics-runbook"
+  ],
+  "pending paid canceled refunded 전이를 어디서 막아야 할지 모르겠어요": [
+    "design-pattern/shopping-cart-order-status-state-pattern-bridge"
+  ],
+  "pending 주문과 재고 timeout이 따로 놀아서 언제 release해야 할지 헷갈려요": [
+    "design-pattern/shopping-cart-stock-hold-before-payment-bridge"
+  ],
+  "pg 응답 dto를 그대로 order나 payment 엔티티에 넣어도 되는지 모르겠어요": [
+    "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge"
+  ],
+  "pg_blocking_pids에 다른 트랜잭션이 보인다": [
+    "database/lock-timeout-blocker-first-check"
+  ],
+  "pipe로 받으면 색상이나 progress bar가 사라져서 출력이 깨진 것처럼 보여요": [
+    "operating-system/pseudo-tty-vs-pipe-behavior"
+  ],
+  "playwright 테스트가 자꾸 flaky해서 pr 피드백이 느려져요": [
+    "software-engineering/browser-e2e-cost-vs-signal-checklist"
+  ],
+  "plugin registry가 service locator와 뭐가 다른지 모르겠어": [
+    "design-pattern/plugin-registry-boundary-primer"
+  ],
+  "pluginmanager라는 이름이 좁은 registry인지 전역 locator인지 구분이 안 돼": [
+    "design-pattern/plugin-registry-boundary-primer"
+  ],
+  "pod에서는 멀쩡해 보이는데 노드 전체 fd가 찼다는 말이 헷갈려요": [
+    "operating-system/container-fd-pressure-emfile-enfile-bridge"
+  ],
+  "policy와 strategy 이름을 언제 갈라야 하는지 모르겠어": [
+    "design-pattern/policy-object-naming-primer"
+  ],
+  "pop한 값이 예전 후보일 때 무엇을 기준으로 봐야 하는지 헷갈려": [
+    "algorithm/zero-one-bfs-stale-entry-mini-card"
+  ],
+  "post json을 보내면 컨트롤러 첫 줄 로그도 없이 바로 400이 나와요": [
+    "spring/json-request-400-cause-router"
+  ],
+  "postgresql exclusion constraint 와 slot row 중 뭐가 더 자연스러운지 빨리 고르고 싶다": [
+    "database/exclusion-constraint-vs-slot-row-quick-chooser"
+  ],
+  "postman, curl, 브라우저가 서로 다르게 보이고 lte로 바꾸면 즉시 정상이라 애플리케이션 버그보다 네트워크 정책을 먼저 의심해야 하는지 모르겠다": [
+    "network/corporate-wifi-https-fails-symptom-router"
+  ],
+  "postman에서는 json인데 브라우저 fetch에서는 html이 와서 인증·쿠키 문제인지 헷갈린다": [
+    "network/json-expected-but-html-response-symptom-router"
+  ],
+  "postman에서는 되는데 브라우저 fetch나 테스트에서는 json 요청이 400으로 끝나요": [
+    "spring/json-request-400-cause-router"
+  ],
+  "postman에서는 되는데 브라우저 요청은 media type에서 막혀": [
+    "spring/requestbody-415-unsupported-media-type-primer"
+  ],
+  "postman이나 curl에서는 같은 api가 바로 성공하는데 브라우저 fetch나 axios에서는 막혀서 어디 차이부터 봐야 할지 모르겠다": [
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "postman이나 curl은 되는데 브라우저 fetch만 cors 에러로 막혀요": [
+    "spring/browser-only-cors-error-cause-router"
+  ],
+  "precision이랑 scale을 같은 규칙으로 다뤄도 되는지 헷갈려": [
+    "language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps"
+  ],
+  "preflight options가 401이나 403으로 끝나고 실제 post는 아예 안 나가요": [
+    "spring/browser-only-cors-error-cause-router"
+  ],
+  "preflight options가 막힐 때 인증 문제인지 cors 설정 위치 문제인지 헷갈려요": [
+    "spring/cors-security-vs-mvc-ownership"
+  ],
+  "preorder inorder postorder level-order가 이름만 비슷하게 보여서 문제를 읽을 때 바로 안 갈라진다": [
+    "data-structure/binary-tree-traversal-routing-guide"
+  ],
+  "prim이랑 kruskal 중 무엇을 먼저 고를지 기준이 안 잡혀": [
+    "algorithm/minimum-spanning-tree-prim-vs-kruskal"
+  ],
+  "private class를 본 기억이 있는데 왜 어떤 코드는 컴파일이 안 되는지 모르겠어": [
+    "language/java-access-modifier-top-level-member-mini-quiz"
+  ],
+  "private 메서드나 직접 new 한 객체에 @transactional을 붙였는데 변화가 없어요": [
+    "spring/transactional-not-applied-cause-router"
+  ],
+  "private랑 protected를 언제 나눠 써야 하는지 감이 안 와": [
+    "language/java-access-modifiers-member-model-basics"
+  ],
+  "protected가 같은 패키지일 때랑 상속일 때 언제 되는지 자꾸 헷갈려": [
+    "language/java-package-boundary-quickcheck-card"
+  ],
+  "protected가 하위 클래스 안이면 무조건 되는 줄 알았는데 참조에 따라 달라져": [
+    "language/java-access-modifier-boundary-lab"
+  ],
+  "pty를 붙였더니 prompt는 살아났는데 로그 파싱이 어려워졌어요": [
+    "operating-system/pseudo-tty-vs-pipe-behavior"
+  ],
+  "public class 파일명 규칙이 enum이랑 record에도 같은지 헷갈려": [
+    "language/top-level-type-access-modifier-bridge"
+  ],
+  "public class 파일명 규칙이 package 개념이랑 따로 노는 것 같아": [
+    "language/java-package-import-boundary-basics"
+  ],
+  "publishable key와 server secret을 같은 것으로 보고 있어요": [
+    "security/browser-direct-call-vs-server-proxy-decision-tree"
+  ],
+  "publishevent는 호출됐는데 @eventlistener나 @transactionaleventlistener 로그가 전혀 안 보여요": [
+    "spring/event-listener-not-firing-cause-router"
+  ],
+  "purchase 먼저 save하고 ticket를 저장하다 중간에 실패하면 어디까지 롤백돼요": [
+    "spring/lotto-purchase-ticket-transaction-boundary-bridge"
+  ],
+  "purge backlog와 bloat가 같이 보여서 어디부터 봐야 할지 헷갈린다": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
+  ],
+  "put 결과가 null이라 새 key인 줄 알았는데 기존 값이 null이었대": [
+    "language/map-put-null-containskey-distinction-bridge"
+  ],
+  "qualifier 문자열이 여기저기 반복돼요": [
+    "spring/spring-custom-qualifier-primer"
+  ],
+  "qualifier가 서비스마다 계속 반복되는데 이게 맞는지 모르겠어요": [
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "queue deque priority queue를 다 queue 비슷한 걸로만 외워서 처음 분기가 안 된다": [
+    "data-structure/queue-vs-deque-vs-priority-queue-primer"
+  ],
+  "queue가 길어질 때 튜닝 문제인지 backpressure 문제인지 구분이 안 돼요": [
+    "operating-system/blocking-io-thread-pool-backpressure-primer"
+  ],
+  "queue가 보여서 운영 문서로 가야 하는지 자료구조 얘기인지 헷갈려요": [
+    "software-engineering/ports-and-adapters-beginner-primer"
+  ],
+  "quota window 보정이 들어가는데 prefix sum 구조로 버틸 수 있는지 헷갈린다": [
+    "data-structure/fenwick-segment-tree-operations-playbook"
+  ],
+  "random 호출이 lotto 안에 숨어 있어서 테스트가 어려워요": [
+    "design-pattern/lotto-manual-auto-number-generator-strategy-bridge"
+  ],
+  "random이 game 안에 박혀 있어서 테스트가 흔들려요": [
+    "design-pattern/baseball-random-number-generator-strategy-bridge"
+  ],
+  "rank enum이 있는데도 보너스 번호 여부와 상금 계산을 다른 클래스가 다시 판단해요": [
+    "software-engineering/lotto-rank-prize-enum-boundary-bridge"
+  ],
+  "rate limit은 걸어야 하는데 burst를 너무 딱딱하게 막는 것 같아": [
+    "algorithm/rate-limiter-algorithms"
+  ],
+  "raw input을 도메인 값으로 올리는 입구에 이름을 붙여야 하는 순간이 언제인지 감이 안 와": [
+    "language/constructor-to-value-object-factory-bridge"
+  ],
+  "raw version을 trace에 넣어도 되는지 헷갈려": [
+    "system-design/trace-attribute-freshness-read-source-bridge"
+  ],
+  "read committed로 충분한지 repeatable read나 serializable까지 올려야 하는지 판단이 안 선다": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "read model cutover를 했는데 일부 화면만 stale해서 어디를 gate로 봐야 할지 모르겠다": [
+    "design-pattern/read-model-cutover-guardrails"
+  ],
+  "read-after-write만 고치면 세션 일관성 문제가 다 끝난다고 생각한다": [
+    "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide"
+  ],
+  "readiness는 내렸는데도 old version tail이 길게 남아": [
+    "system-design/load-balancer-drain-and-affinity-primer"
+  ],
+  "readiness는 붙어 있는데 부분 장애 인스턴스를 왜 더 빨리 빼야 하는지 헷갈려": [
+    "system-design/service-discovery-health-routing-design"
+  ],
+  "ready queue와 runnable 상태가 같은 말인지부터 헷갈려요": [
+    "operating-system/cpu-scheduling-basics"
+  ],
+  "reason code는 유지해야 하는데 내부 판정은 늘어나서 롤아웃 기준이 흔들려요": [
+    "design-pattern/normalization-version-rollout-playbook"
+  ],
+  "record 안에 배열이나 list를 넣었더니 같은 값 판단이 기대와 달라": [
+    "language/record-value-object-equality-basics"
+  ],
+  "record로 충분해 보이는데 정적 팩토리나 builder로 올리라는 리뷰를 받았어": [
+    "design-pattern/record-vs-builder-request-model-chooser"
+  ],
+  "record를 set 원소나 map key로 써도 되는지 자신이 없어": [
+    "language/record-value-object-equality-basics"
+  ],
+  "record를 써도 되는 값 객체인지 엔티티인지 경계가 잘 안 잡혀": [
+    "language/record-value-object-equality-basics"
+  ],
+  "redirect_uri mismatch가 운영에서만 나고 로컬에서는 안 나요": [
+    "security/absolute-redirect-url-behind-load-balancer-guide"
+  ],
+  "redirect가 꼬였는데 secure cookie 문제인지 origin 문제인지 모르겠어요": [
+    "security/wrong-scheme-vs-wrong-origin-redirect-shortcut"
+  ],
+  "redirect만 했는데 출력이 늦게 몰려 나와서 배선 문제인지 버퍼링 문제인지 모르겠어요": [
+    "operating-system/stdio-buffering-after-redirect"
+  ],
+  "refill까지 했는데 다음 요청에서도 stale이 반복돼": [
+    "system-design/mixed-cache-replica-freshness-bridge"
+  ],
+  "refill을 안 한 이유가 unknown으로만 보여": [
+    "system-design/rejected-hit-observability-primer"
+  ],
+  "rehearsal evidence가 없어 rollout speed와 승인 깊이를 정하지 못한다": [
+    "software-engineering/operational-readiness-drills-and-change-safety"
+  ],
+  "replica 대신 primary로 간 이유가 추적되지 않아": [
+    "system-design/rejected-hit-observability-primer"
+  ],
+  "repository가 lotto 한 장이나 list만 돌려줘서 service가 구매 1회를 다시 조립하고 있어요": [
+    "software-engineering/lotto-purchase-history-repository-boundary-bridge"
+  ],
+  "repository가 저장뿐 아니라 게임 화면용 join과 메시지 조립까지 맡고 있어요": [
+    "design-pattern/baseball-game-view-aggregate-vs-read-model-bridge"
+  ],
+  "repository는 fake를 쓰는데 알림 발송이나 이벤트 발행은 왜 mock이나 spy를 쓰는지 헷갈려요": [
+    "software-engineering/outbound-notifier-mock-boundary-primer"
+  ],
+  "repository는 fake를 쓰라는데 notifier는 mock을 쓰라 해서 왜 다른지 헷갈려요": [
+    "software-engineering/fake-vs-mock-first-test-primer"
+  ],
+  "request 상태를 singleton bean에 넣어도 되는지 헷갈려": [
+    "design-pattern/singleton-vs-di-container-scope"
+  ],
+  "requestbody dto에서 막을 것과 game이 직접 막아야 할 규칙이 섞여 보여요": [
+    "spring/blackjack-mvc-controller-binding-validation-bridge"
+  ],
+  "requestbody 검증과 service 규칙 검증이 뒤섞여 pr에서 지적받았어요": [
+    "spring/roomescape-reservation-request-validation-binding-bridge"
+  ],
+  "required watermark가 실제 read path에서 어디에 쓰이는지 감이 안 와": [
+    "system-design/notification-causal-token-walkthrough"
+  ],
+  "required watermark와 applied watermark가 자꾸 같은 값처럼 보여": [
+    "system-design/outbox-watermark-token-primer"
+  ],
+  "reservationservice if 문을 쪼개고 싶은데 무엇이 규칙이고 무엇이 생성이고 무엇이 상태인지 헷갈려요": [
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide"
+  ],
+  "reservationservice가 너무 얇아서 뭐를 더 넣어야 할지 모르겠어": [
+    "software-engineering/roomescape-reservation-flow-service-layer-bridge"
+  ],
+  "reservationservice가 상태 확인, 규칙 판정, 구현 선택을 한 메서드에서 다 하고 있어요": [
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router"
+  ],
+  "reservationservice가 커지는 이유가 책임 배치 실수인지부터 판단하고 싶어요": [
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide"
+  ],
+  "response headers는 이미 보이는데 row가 닫히지 않아 waiting인지 content download인지 분간이 안 된다": [
+    "network/request-pending-forever-symptom-router"
+  ],
+  "response preview 첫 줄이 `<!doctype html>`이나 `<html`로 시작해서 json 파싱 전에 이미 이상하다": [
+    "network/json-expected-but-html-response-symptom-router"
+  ],
+  "rest api라고 생각했는데 401 대신 login redirect와 세션 쿠키가 같이 보여요": [
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "restclient랑 http interface가 같은 건지 다른 건지 모르겠어요": [
+    "spring/restclient-webclient-http-interface-decision-guide"
+  ],
+  "restclient랑 webclient를 같은 방식으로 timeout이나 로깅 설정해도 되는지 모르겠어요": [
+    "spring/spring-restclient-vs-webclient-lifecycle-boundaries"
+  ],
+  "reviewer가 에러 문자열 비교 말고 spring 예외 번역 계층을 쓰라고 했어요": [
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "rfc를 쓰다가 그대로 adr처럼 굳혀 버려서 토론과 기록이 섞여 버려요": [
+    "software-engineering/rfc-vs-adr-decision-flow"
+  ],
+  "role, scope, permission을 같은 뜻으로 읽고 있어요": [
+    "security/oauth-scope-vs-api-audience-vs-application-permission"
+  ],
+  "role을 뺐는데도 아직 admin api가 돼요": [
+    "security/role-change-session-freshness-basics"
+  ],
+  "rollback window와 db transaction rollback을 같은 뜻으로 이해해서 문서를 잘못 찾고 있다": [
+    "system-design/write-freeze-rollback-window-design"
+  ],
+  "rollback 테스트는 초록인데 after_commit 리스너가 안 보여서 구현이 틀린 줄 알겠어요": [
+    "software-engineering/after-commit-listener-rollback-test-beginner-bridge"
+  ],
+  "rollback 테스트는 초록인데 커밋 뒤에 남아야 하는 데이터 검증이 불안해요": [
+    "software-engineering/transactional-test-rollback-vs-commit-boundary-card"
+  ],
+  "rollback하려는데 old root가 너무 빨리 빠져 donor path를 다시 열 수 없다": [
+    "system-design/trust-bundle-rollback-during-cell-cutover-design"
+  ],
+  "roomescape 400이랑 409를 어디서 나눠요": [
+    "software-engineering/roomescape-validation-vs-domain-rule-bridge"
+  ],
+  "roomescape admin 로그인은 됐는데 다음 요청에서 다시 anonymous처럼 보여요": [
+    "spring/roomescape-admin-login-final-403-securitycontext-bridge"
+  ],
+  "roomescape reservationservice 메서드 하나에 조회, 검증, 저장, 응답 조립이 다 붙어 있어요": [
+    "software-engineering/roomescape-reservation-service-bloat-cause-router"
+  ],
+  "roomescape ìì½ ì¶©ë ì¡°ê±´ìì `<`ì `<=` ì¤ ë¬´ìì´ ë§ëì§ í·ê°ë¦°ë¤": [
+    "data-structure/reservation-interval-half-open-boundary-card"
+  ],
+  "roomescape ìì½íìì ë¤ì ìì½ì ì°¾ëë° `poll()`ì´ ë¨¼ì  ë ì¬ë¼ ì¡°í ë¡ì§ì´ ê¼¬ì¸ë¤": [
+    "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge"
+  ],
+  "roomescape 관리자 예약 목록에서 1페이지 끝과 2페이지 시작이 자꾸 겹쳐 보여요": [
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge"
+  ],
+  "roomescape 관리자 예약 목록을 만들 때 엔티티를 그대로 읽을지 조회 전용 모델을 둘지 응답 dto만 만들지 기준이 헷갈려요": [
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide"
+  ],
+  "roomescape 관리자 예약 추가 버튼을 두 번 눌렀더니 같은 예약이 두 번 잡힐까 불안해요": [
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge"
+  ],
+  "roomescape 관리자 예약을 추가한 뒤 목록 화면에서 f5를 누르면 같은 요청이 다시 나갈까 불안해요": [
+    "spring/roomescape-admin-reservation-post-redirect-get-bridge"
+  ],
+  "roomescape 예약 목록 api만 호출하면 sql이 예상보다 많이 찍혀요": [
+    "spring/roomescape-admin-reservation-list-fetch-plan-bridge"
+  ],
+  "roomescape 예약 목록 코드에서 entity, rowview, response가 다 비슷해 보여 무엇을 남길지 판단이 안 돼요": [
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide"
+  ],
+  "roomescape 예약 변경에서 기존 슬롯을 먼저 풀고 새 슬롯을 다시 잡아도 되나요": [
+    "database/reservation-reschedule-cancellation-transition-patterns"
+  ],
+  "roomescape 예약 생성 코드에서 컨트롤러, 서비스, 리포지토리 중 어디에 로직을 둬야 할지 자꾸 헷갈려요": [
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide"
+  ],
+  "roomescape 예약 생성과 변경 로직에 if 문이 계속 늘어나는데 어떤 패턴으로 나눠야 할지 모르겠어요": [
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router"
+  ],
+  "roomescape 예약 생성에서 @valid를 어디에 붙여야 할지 모르겠어요": [
+    "spring/roomescape-reservation-request-validation-binding-bridge"
+  ],
+  "roomescape 예약 생성에서 같은 실패처럼 보이는데 왜 400이랑 409를 나눠요?": [
+    "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer"
+  ],
+  "roomescape 예약 추가 로직에서 양옆 예약만 보면 된다는 말을 코드로 못 옮기겠다": [
+    "data-structure/treemap-interval-entry-primer"
+  ],
+  "roomescape에서 confirmed canceled 같은 상태가 늘수록 service if 문이 길어져요": [
+    "design-pattern/roomescape-reservation-status-state-pattern-bridge"
+  ],
+  "roomescape에서 가능한 시간은 열려 보이는데 예약 생성은 충돌로 실패해요": [
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide"
+  ],
+  "roomescape에서 같은 시간 예약이 겹치면 sqlexception을 그대로 던져도 되는지 모르겠어요": [
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "roomescape에서 예약 가능 여부 if 문이 reservationservice 안에서 계속 길어져요": [
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge"
+  ],
+  "roomescape에서 예약 가능한 시간 목록을 조회했는데 하루가 통째로 비어 보여요": [
+    "database/roomescape-available-times-empty-cause-router"
+  ],
+  "roomescape에서 예약 변경할 때 기존 슬롯을 먼저 지워도 되는지 모르겠어요": [
+    "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge"
+  ],
+  "roomescape에서 예약 생성은 성공했는데 관리자 목록에는 방금 예약이 바로 안 보여요": [
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "roomescape에서 예약 생성은 성공했는데 목록이나 가능 시간 첫 조회만 이전 상태처럼 보여 read path를 어떻게 나눌지 모르겠다": [
+    "database/read-after-write-routing-decision-guide"
+  ],
+  "roomescape에서 예약 시간을 옮겼는데 예전 시간대가 계속 막혀 있어요": [
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router"
+  ],
+  "roomescape에서 예약 코드를 나누려는데 strategy, factory, policy object, state 중 이름을 뭘 붙여야 할지 모르겠어요": [
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide"
+  ],
+  "roomescape에서 예약된 시간만 빼고 조회했는데 가능한 시간이 너무 적게 나와요": [
+    "database/roomescape-available-times-active-predicate-antijoin-bridge"
+  ],
+  "round robin, time slice, fairness 얘기가 나오면 무엇을 비교하는 문서인지 감이 안 와요": [
+    "operating-system/cpu-scheduling-basics"
+  ],
+  "route flip 뒤에 일부 cell만 unknown_ca가 나서 trust bundle 전파 순서를 의심하고 있다": [
+    "system-design/trust-bundle-rollback-during-cell-cutover-design"
+  ],
+  "row freshness와 source detail causal read를 같은 규칙으로 보고 있어": [
+    "system-design/notification-inbox-row-monotonicity-primer"
+  ],
+  "row lock 화면에서는 안 보이는데 schema change 를 거는 순간 서비스가 같이 버벅인다": [
+    "database/alter-table-not-finishing-symptom-router"
+  ],
+  "row 재조회 문제와 범위 불변식 문제를 같은 격리 수준 질문으로 뭉뚱그리고 있다": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "same package인지 다른 package subclass인지 빠르게 못 가르겠어": [
+    "language/java-package-boundary-quickcheck-card"
+  ],
+  "samesite=none까지 맞췄는데 상태 변경 요청을 왜 또 막아야 하는지 모르겠어요": [
+    "security/embedded-login-csrf-bridge"
+  ],
+  "save 는 보이는데 실제 sql 이 어디서 만들어지는지 모르겠다": [
+    "database/database-first-step-bridge"
+  ],
+  "savedrequest로 복귀는 됐는데 권한 없음이 나와서 세션 문제인지 역할 문제인지 헷갈려요": [
+    "spring/admin-login-success-final-403-savedrequest-role-mapping-primer"
+  ],
+  "savedrequest를 안 쓴 줄 알았는데 로그인 전 url이 기억되고 세션이 생겨요": [
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "save는 보이는데 sql 위치와 수정 지점을 같이 헷갈린다": [
+    "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+  ],
+  "scanbasepackages를 넓혔는데 entity나 repository는 여전히 안 잡혀요": [
+    "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+  ],
+  "scheduleatfixedrate 같은 api를 봤는데 executor와 queue를 같은 층위로 이해하고 있다": [
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router"
+  ],
+  "scheduledexecutorservice와 delayqueue가 같은 건지 다른 층인지 헷갈려": [
+    "data-structure/scheduledexecutorservice-vs-delayqueue-bridge"
+  ],
+  "schedule로 등록한 작업이 내부에서 어떻게 기다리는지 감이 안 와": [
+    "data-structure/scheduledexecutorservice-vs-delayqueue-bridge"
+  ],
+  "scope는 있는데 왜 api가 토큰을 안 받는지 모르겠어요": [
+    "security/oauth-scope-vs-api-audience-vs-application-permission"
+  ],
+  "secure 쿠키가 분명 발급됐는데 다음 요청에서 사라진 것처럼 보여요": [
+    "security/secure-cookie-behind-proxy-guide"
+  ],
+  "securitycontext가 언제 세션에서 살아나는지 몰라서 세션 저장 위치가 헷갈려요": [
+    "spring/spring-admin-session-cookie-flow-primer"
+  ],
+  "select for update 를 넣었는데도 같은 key insert 가 둘 다 성공한다": [
+    "database/for-update-zero-row-duplicate-insert-symptom-router"
+  ],
+  "select for update 를 넣었는데도 겹치는 예약이 저장된다": [
+    "database/overlapping-bookings-both-succeed-symptom-router"
+  ],
+  "select for update를 붙일지 serializable로 올릴지 그냥 select로 놔둘지 기준이 헷갈린다": [
+    "database/plain-select-vs-locking-read-vs-serializable-decision-guide"
+  ],
+  "selector resolver strategy 이름이 다 비슷해서 못 고르겠어요": [
+    "design-pattern/strategy-policy-selector-naming"
+  ],
+  "selector인지 rule object인지 이름이 안 잡혀요": [
+    "design-pattern/policy-object-vs-strategy-map-beginner-bridge"
+  ],
+  "sequence를 어디 기준으로 끊어야 할지 감이 안 와": [
+    "system-design/monotonic-writes-ordering-primer"
+  ],
+  "serializable 같은 marker interface가 그냥 빈 인터페이스처럼 보여서 의미를 모르겠어": [
+    "language/marker-interface-vs-capability-method-bridge"
+  ],
+  "service 필드에 currentcart를 뒀더니 다른 요청의 장바구니가 섞여요": [
+    "spring/shopping-cart-current-cart-singleton-bean-scope-bridge"
+  ],
+  "service가 dto만 넘기고 너무 얇은데 맞나": [
+    "software-engineering/shopping-cart-checkout-service-layer-bridge"
+  ],
+  "service가 너무 얇아 보여서 hit stand 흐름도 controller에 두고 싶어요": [
+    "software-engineering/blackjack-turn-processing-service-layer-bridge"
+  ],
+  "service가 너무 얇아 보여서 판정 로직도 controller에 두고 싶어요": [
+    "software-engineering/baseball-turn-processing-service-layer-bridge"
+  ],
+  "service가 얇아 보여서 반복문을 domain에 넣어야 하나": [
+    "software-engineering/lotto-purchase-flow-service-layer-bridge"
+  ],
+  "service는 scan이라는데 objectmapper는 왜 @bean으로 등록하는지 감이 안 와요": [
+    "spring/spring-configuration-vs-autoconfiguration-primer"
+  ],
+  "service는 뜨는데 not a managed type이 나요": [
+    "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+  ],
+  "service는 잘 뜨는데 objectmapper 같은 건 어디서 등록해야 할지 모르겠어요": [
+    "spring/bean-registration-path-decision-guide"
+  ],
+  "sessioncreationpolicy.stateless로 설정했는데도 응답에 jsessionid가 생겨요": [
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "setup teardown에 준비 로직이 쌓여서 하위 테스트가 숨은 부작용에 묶여": [
+    "design-pattern/template-hook-smells"
+  ],
+  "set으로 시작했다가 나중에 count나 상태를 붙여야 해서 구조 선택이 흔들려": [
+    "data-structure/map-vs-set-requirement-bridge"
+  ],
+  "set을 써야 하는 건 알겠는데 중복 체크만 하면 되는지 정렬까지 필요한지 판단이 안 돼": [
+    "data-structure/hashset-vs-treeset-beginner-bridge"
+  ],
+  "shard가 나뉘면 outbox id를 그대로 비교해도 되는지 헷갈려": [
+    "system-design/outbox-watermark-token-primer"
+  ],
+  "shared cookie 문제인지 handoff 누락인지 감이 안 와요": [
+    "security/subdomain-callback-handoff-chooser"
+  ],
+  "shared module 하나 붙이려고 scanbasepackages를 크게 열고 있는데 이게 맞는지 확신이 없어요": [
+    "spring/scanbasepackages-import-autoconfiguration-decision-guide"
+  ],
+  "shell helper를 붙였더니 listener나 socket이 계속 살아 있어요": [
+    "operating-system/subprocess-fd-hygiene-basics"
+  ],
+  "shopping-cart checkout 코드를 나누고 싶은데 패턴 이름이 계속 바뀌어요": [
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide"
+  ],
+  "shopping-cart checkoutservice에 if 문이 계속 늘어나는데 어떤 기준으로 쪼개야 할지 모르겠어요": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router"
+  ],
+  "shopping-cart 같은 미션 리팩터링에서 stream으로 새 목록을 만들지 원본을 바로 고칠지 자꾸 헷갈려요": [
+    "language/collection-update-strategy-primer"
+  ],
+  "shopping-cart나 lotto 금액 코드를 바꾸다가 hashmap 조회와 treemap 조회 결과가 달라져서 왜 그런지 모르겠어요": [
+    "language/bigdecimal-key-policy-30-second-checklist"
+  ],
+  "shopping-cart에서 400이랑 409를 어디서 나눠야 할지 모르겠어요": [
+    "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge"
+  ],
+  "shopping-cart에서 재클릭 뒤 중복 주문, 중복 할인, 수량 꼬임이 번갈아 보여서 어느 종류의 race인지 먼저 못 가르겠어요": [
+    "database/shopping-cart-reclick-concurrent-write-cause-router"
+  ],
+  "shopping-cart에서 주문은 저장됐는데 메일 발송이나 슬랙 알림이 가끔 빠져요": [
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "shouldnotfilter 같은 hook 하나가 요청 정책 엔진처럼 커지고 있어": [
+    "design-pattern/template-hook-smells"
+  ],
+  "singleton bean에 회원별 cart를 저장해도 되는지 모르겠어요": [
+    "spring/shopping-cart-current-cart-singleton-bean-scope-bridge"
+  ],
+  "singleton service에 현재 게임 상태를 저장해도 되는지 모르겠어요": [
+    "spring/baseball-game-state-singleton-bean-scope-bridge"
+  ],
+  "singleton service에 현재 블랙잭 게임을 저장해도 되는지 모르겠어요": [
+    "spring/blackjack-game-state-singleton-bean-scope-bridge"
+  ],
+  "skip locked와 nowait를 둘 다 대기 안 하는 옵션 정도로만 외워서 queue 동작이 섞인다": [
+    "database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide"
+  ],
+  "sli, slo, sla가 맨날 섞여서 뭐가 목표고 뭐가 계약인지 헷갈려": [
+    "system-design/availability-and-sla-basics"
+  ],
+  "sliding log가 정확하긴 한데 메모리가 너무 많이 드는 이유가 궁금해": [
+    "algorithm/rate-limiter-algorithms"
+  ],
+  "sliding window maximum을 손으로 추적해도 deque가 왜 답을 주는지 감이 안 와": [
+    "data-structure/monotonic-deque-walkthrough"
+  ],
+  "sliding window랑 two pointer를 같은 말로 외워서 문제를 자꾸 잘못 고른다": [
+    "algorithm/two-pointer-intro"
+  ],
+  "solid 다섯 원칙이 각각 어떤 문제를 막는지 연결이 안 돼요": [
+    "software-engineering/solid-principles-basics"
+  ],
+  "sort나 cat 같은 명령에서 parent child가 같이 멈춰요": [
+    "operating-system/subprocess-bidirectional-pipe-deadlock-primer"
+  ],
+  "sparse 정수 id 집합이면 무조건 set으로 가야 하는지 bitmap으로 더 가야 하는지 헷갈린다": [
+    "data-structure/plain-bitset-vs-compressed-bitmap-decision-card"
+  ],
+  "sparse한 시간축에 tree를 바로 얹다가 메모리와 구현 복잡도가 같이 커진다": [
+    "data-structure/fenwick-segment-tree-operations-playbook"
+  ],
+  "split한 list<integer>가 여기저기 돌아다녀요": [
+    "software-engineering/baseball-guess-value-object-boundary-bridge"
+  ],
+  "spring aop를 wrapper 패턴으로 설명하다가 decorator랑 proxy를 섞어 말하고 있어": [
+    "design-pattern/decorator-vs-proxy-decision-guide"
+  ],
+  "spring applicationevent를 도메인 이벤트랑 같은 말로 쓰고 있어": [
+    "design-pattern/application-event-vs-domain-event-vs-integration-event-decision-guide"
+  ],
+  "spring validation이 정확히 어느 순서로 동작하는지 내부 흐름을 보고 싶어": [
+    "spring/spring-validation-binding-error-pipeline"
+  ],
+  "spring 이벤트랑 kafka 이벤트랑 domain event를 같은 개념으로 설명하고 있어": [
+    "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide"
+  ],
+  "spring이 주입한 handler map을 factory라고 불러도 되는지 모르겠어요": [
+    "design-pattern/registry-vs-factory-injected-handler-maps"
+  ],
+  "ss -ltn 수치와 io_uring cq 지표를 같은 문제로 읽어도 되는지 구분이 안 돼요": [
+    "operating-system/socket-accept-queue-kernel-diagnostics"
+  ],
+  "sse나 파일 다운로드가 아닌데도 탭에서 요청이 끝나지 않아 브라우저 메모를 잘못 읽는 건지 헷갈린다": [
+    "network/request-pending-forever-symptom-router"
+  ],
+  "ss에서는 backlog가 높고 io_uring cq도 밀려 보여서 어느 층이 병목인지 구분이 안 돼요": [
+    "operating-system/accept-overload-observability-playbook"
+  ],
+  "stack heap fd socket을 따로는 아는데 한 장면으로 연결이 안 돼요": [
+    "operating-system/process-thread-stack-heap-fd-socket-backend-primer"
+  ],
+  "stack overflow, page fault, oom이 서로 어떤 층의 문제인지 구분이 안 돼요": [
+    "operating-system/memory-management-basics"
+  ],
+  "stack, heap, rss, vsz를 같이 보는데 각각이 무슨 층의 개념인지 헷갈려요": [
+    "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics"
+  ],
+  "stale read trace에서 어떤 source를 읽었는지 안 보여": [
+    "system-design/trace-attribute-freshness-read-source-bridge"
+  ],
+  "stale read랑 causal consistency를 같은 문제로 보고 있어": [
+    "system-design/causal-consistency-notification-primer"
+  ],
+  "stale row를 버리면 cursor를 어디까지 전진시켜야 하는지 헷갈려": [
+    "system-design/pagination-monotonicity-primer"
+  ],
+  "stale save 막기랑 write ordering 보장을 자꾸 같은 문제로 봐": [
+    "system-design/write-order-vs-precondition-primer"
+  ],
+  "stale 저장 실패와 도메인 충돌 실패를 같은 에러로 내려보내고 있어": [
+    "system-design/conditional-write-status-code-bridge"
+  ],
+  "stand 결과와 dealer turn 결과 문구 규칙이 여기저기 흩어져 보여요": [
+    "software-engineering/blackjack-turn-result-response-boundary-bridge"
+  ],
+  "stand가 처리됐다고 보이는데 다음 요청에서 아직 내 차례처럼 동작해요": [
+    "database/blackjack-action-log-state-mismatch-symptom-router"
+  ],
+  "starter bean이 안 떠서 @primary를 붙여야 하나 헷갈려요": [
+    "spring/primary-conditionalonmissingbean-bean-override-decision-guide"
+  ],
+  "starter dependency는 있는데 condition report를 보면 auto-configuration이 negative match예요": [
+    "spring/starter-bean-missing-cause-router"
+  ],
+  "starter 기본 bean이 들어오는 것 같고 내가 만든 bean이 안 써져요": [
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "starter가 만든 bean인지 제가 @bean으로 만들어야 하는지 헷갈려요": [
+    "spring/bean-registration-path-decision-guide"
+  ],
+  "starter가 만든 기본 bean과 내가 만든 설정 bean의 경계가 안 잡혀요": [
+    "spring/spring-configuration-vs-autoconfiguration-primer"
+  ],
+  "starter나 설정 bean을 만들 때 어떤 conditional annotation을 붙여야 할지 모르겠어요": [
+    "spring/conditional-activation-annotation-decision-guide"
+  ],
+  "starter는 넣었는데 어떤 auto-configuration이 실제로 켜졌는지 추적이 안 돼요": [
+    "spring/boot-autoconfiguration-internals"
+  ],
+  "starter를 넣었는데 기본 bean이 안 떠서 @primary를 붙이면 되는지 헷갈려요": [
+    "spring/spring-conditionalonmissingbean-vs-primary-primer"
+  ],
+  "starter를 추가했는데 기대한 bean이 생성되지 않아요": [
+    "spring/starter-bean-missing-cause-router"
+  ],
+  "starter만 추가했는데 bean이 왜 바로 생기는지 감이 안 와요": [
+    "spring/boot-autoconfiguration-basics"
+  ],
+  "startswith와 submap이 비슷해 보여서 treemap이 prefix 검색 구조라고 착각한다": [
+    "data-structure/treemap-string-prefix-range-mini-drill"
+  ],
+  "startup 로그에 beancreationexception만 길게 보여서 어디서부터 읽어야 할지 모르겠어요": [
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "startup 로그에 nouniquebeandefinitionexception이 보이고 bean 이름 두 개가 같이 찍힌다": [
+    "spring/same-type-bean-injection-failure-cause-router"
+  ],
+  "startup 로그에 parameter 0 of constructor required a bean of type ... that could not be found가 뜬다": [
+    "spring/bean-not-found-cause-router"
+  ],
+  "startup 로그에 the bean 'paymentclient' could not be registered because a bean with that name has already been defined가 뜬다": [
+    "spring/same-name-bean-collision-cause-router"
+  ],
+  "state 검증이 끝났는데 csrf token을 왜 따로 보라는지 헷갈려요": [
+    "security/embedded-login-csrf-bridge"
+  ],
+  "statement timeout이 보이면 무조건 느린 쿼리라고 생각한다": [
+    "database/db-timeout-first-splitter"
+  ],
+  "stdin close를 안 하면 왜 eof가 안 가죠": [
+    "operating-system/subprocess-stdin-eof-primer"
+  ],
+  "stdin write, stdout read, close 순서가 꼬인 건지 첫 분기가 필요해요": [
+    "operating-system/subprocess-symptom-first-branch-guide"
+  ],
+  "stdin, stdout, stderr 번호와 리다이렉션이 어떻게 이어지는지 감이 안 와요": [
+    "operating-system/file-descriptor-basics"
+  ],
+  "stdin으로 답을 보냈다고 생각했는데 cli가 실제 터미널 입력만 기다려요": [
+    "operating-system/why-some-prompts-use-dev-tty"
+  ],
+  "stdin이랑 stdout을 둘 다 pipe로 잡으면 왜 더 잘 멈추죠": [
+    "operating-system/subprocess-bidirectional-pipe-deadlock-primer"
+  ],
+  "stdout stderr를 나중에 읽으면 왜 멈추죠": [
+    "operating-system/subprocess-pipe-backpressure-primer"
+  ],
+  "stdout 지연 문제와 interactive terminal 모드 차이를 어떻게 갈라야 할지 모르겠어요": [
+    "operating-system/pseudo-tty-vs-pipe-behavior"
+  ],
+  "stdout과 stderr를 나눠 받아야 할지 합쳐야 할지 판단이 안 돼요": [
+    "operating-system/tty-aware-output-capture-patterns"
+  ],
+  "sticky session 때문에 새 인스턴스를 올려도 트래픽이 안 옮겨와": [
+    "system-design/load-balancer-drain-and-affinity-primer"
+  ],
+  "sticky session 말고 외부 세션 저장소를 언제 써야 할지 감이 안 와": [
+    "system-design/stateless-vs-stateful-basics"
+  ],
+  "sticky session이 왜 필요하고 왜 위험한지 한 번에 정리가 안 돼": [
+    "system-design/load-balancer-basics"
+  ],
+  "stream.sorted랑도 섞여 보여서 제자리 정렬인지 새 결과인지 구분이 안 돼": [
+    "language/arrays-sort-vs-list-sort-bridge"
+  ],
+  "streaming disconnect incident에서 status, bytes, duration, disconnect exception을 같은 timeline으로 묶고 싶다": [
+    "spring/partial-response-access-log-interpretation"
+  ],
+  "strike와 ball 계산 if 문이 game 안에서 계속 길어져요": [
+    "design-pattern/baseball-strike-ball-judging-policy-object-bridge"
+  ],
+  "striptrailingzeros를 썼더니 로그나 json 표기가 갑자기 바뀌어 보여": [
+    "language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps"
+  ],
+  "striptrailingzeros를 여기저기 붙였더니 어느 경계가 진짜 정책인지 더 헷갈려졌어요": [
+    "language/bigdecimal-key-policy-30-second-checklist"
+  ],
+  "stub과 spy가 둘 다 가짜 객체처럼 보여서 언제 어느 쪽이 맞는지 모르겠어요": [
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "submap 결과가 우연히 같아서 의도를 잘못 읽는다": [
+    "data-structure/treemap-string-prefix-range-mini-drill"
+  ],
+  "subprocess.run에서 리스트 인자로 충분한지 shell이 필요한지 헷갈려요": [
+    "operating-system/shell-builtins-vs-external-commands-primer"
+  ],
+  "subprocess가 멈춘 것 같은데 fd 누수인지 pipe backpressure인지 구분이 안 돼요": [
+    "operating-system/subprocess-symptom-first-branch-guide"
+  ],
+  "substring 인덱스를 고르려는데 suffix array와 suffix tree 중 어디서 갈라야 할지 모르겠어": [
+    "algorithm/suffix-array-vs-suffix-tree-comparison"
+  ],
+  "suffix automaton이 substring 문제에 좋다는데 state가 무엇을 압축하는지 감이 안 와": [
+    "algorithm/suffix-automaton"
+  ],
+  "suffix tree를 trie로 이해해도 되는지 모르겠고 compression이 왜 필요한지 헷갈려": [
+    "algorithm/suffix-tree-intuition"
+  ],
+  "suffix를 정렬하면 뭐가 쉬워지는지 모르겠고 lcp 배열은 더 낯설어": [
+    "algorithm/suffix-array-lcp"
+  ],
+  "support access 시작 알림은 있는데 종료 상태가 어떻게 닫히는지 모르겠어요": [
+    "security/aobo-start-end-event-contract"
+  ],
+  "supportsnapshot 같은 이름이 왜 필요한지 감이 안 와요": [
+    "software-engineering/command-dto-vs-query-view-naming-checklist"
+  ],
+  "supportsretry 같은 메서드를 둘지 marker interface를 둘지 기준이 안 잡혀": [
+    "language/marker-interface-vs-capability-method-bridge"
+  ],
+  "switch가 반복되는데 map으로 옮길지 enum 메서드로 갈지 감이 안 와": [
+    "language/enummap-status-policy-lookup-primer"
+  ],
+  "switch를 map으로 바꿨더니 이번에는 전역 registry 조회가 퍼지고 있어": [
+    "design-pattern/factory-switch-registry-smell"
+  ],
+  "teleport나 route planning 같은 표현이 나오면 sparse shortest path 문맥으로 읽어야 하는지 모르겠어": [
+    "algorithm/sparse-graph-shortest-paths"
+  ],
+  "terminal `dig` 결과와 브라우저 실제 접속 서버가 달라서 dns가 안 바뀐 건지 브라우저가 다른 힌트를 쓰는 건지 판단이 안 된다": [
+    "network/dns-change-some-users-old-server-symptom-router"
+  ],
+  "testtransaction.end()와 @commit 중 뭘 써야 할지 감이 안 와요": [
+    "software-engineering/transactional-test-rollback-vs-commit-boundary-card"
   ],
   "this.method() 호출하면 @async가 동기처럼 실행돼요": [
     "spring/self-invocation-proxy-misconception"
   ],
+  "this가 필요한 로직과 입력만 받는 유틸리티를 구분하기 어렵다": [
+    "language/java-instance-static-factory-methods-primer"
+  ],
+  "thread state, stack trace, allocation context를 같이 읽어야 한다는데 어디를 묶어 봐야 할지 모르겠어": [
+    "language/jfr-event-interpretation"
+  ],
+  "thread가 heap을 공유한다는 말이 왜 중요한지 모르겠어요": [
+    "operating-system/process-thread-stack-heap-fd-socket-backend-primer"
+  ],
+  "ticket row는 많은데 통계 화면에서는 왜 group by가 필요하다는 리뷰를 받았어요": [
+    "database/lotto-winning-statistics-group-by-aggregation-bridge"
+  ],
+  "tie-break가 전체 경로 비교인지 마지막 한 칸 비교인지 헷갈려": [
+    "algorithm/zero-one-bfs-full-path-lexicographic-bridge"
+  ],
+  "timeout 뒤 같은 payment event가 다시 오면 새 승인으로 처리해야 하는지 헷갈려요": [
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge"
+  ],
+  "timeout 만료 처리까지 checkout 서비스가 직접 분기해서 코드가 자꾸 옆으로 퍼져요": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router"
+  ],
+  "timeout 이 둘 다 떠서 커넥션 풀 문제인지 db 락 문제인지 분간이 안 간다": [
+    "database/connection-timeout-vs-lock-timeout-card"
+  ],
+  "timeout 이름은 많은데 어디서 막힌 건지 모르겠다": [
+    "database/db-timeout-first-splitter"
+  ],
+  "timeout이 처리 전에 먼저 나가서 원인 위치를 못 잡겠어요": [
+    "network/queue-saturation-attribution-metrics-runbook"
+  ],
+  "timeout인데 락 대기인지 느린 쿼리인지 구분이 안 돼": [
+    "database/timeout-errorcode-mapping-mini-card"
+  ],
+  "tls를 끝내는 지점마다 backend가 다르게 골라지는 것 같다": [
+    "network/alpn-negotiation-failure-routing-mismatch"
+  ],
+  "token bucket이랑 leaky bucket이 둘 다 비슷해 보여서 어떤 상황에 써야 할지 모르겠어": [
+    "algorithm/rate-limiter-algorithms"
+  ],
+  "tombstone scope 문제인지 redirect가 http로 꺾인 문제인지 한 번에 헷갈려요": [
+    "security/secure-cookie-cleanup-behind-proxy"
+  ],
+  "top-level 규칙과 멤버 규칙이 자꾸 섞여": [
+    "language/top-level-type-access-modifier-bridge"
+  ],
+  "top-level에서는 안 되는데 멤버에서는 되는 modifier가 자꾸 헷갈려": [
+    "language/java-access-modifier-top-level-member-mini-quiz"
+  ],
+  "tps가 plateau인데 blocker sql은 안 보여서 latch contention이 의심된다": [
+    "database/lock-wait-deadlock-latch-triage-playbook"
+  ],
+  "treemap 양 끝을 읽으려는데 firstkey와 firstentry 중 무엇을 골라야 할지 모르겠어": [
+    "language/firstentry-lastentry-vs-firstkey-lastkey-bridge"
+  ],
+  "treemap에 1.0을 넣었는데 1이나 1.00으로도 조회돼서 이상해": [
+    "language/bigdecimal-navigablemap-lookup-bridge"
+  ],
+  "treemap에서 firstentry와 pollfirstentry 차이까지 한 번에 섞여서 헷갈려": [
+    "language/pollfirst-polllast-vs-first-last-beginner-bridge"
+  ],
+  "treeset에서 익힌 감각을 treemap으로 옮길 때 이름만 바뀌어도 흔들린다": [
+    "data-structure/treeset-exact-match-drill"
+  ],
+  "treeset에서는 알겠는데 treemap으로 오면 같은 이름 규칙이 흔들린다": [
+    "data-structure/treemap-neighbor-query-micro-drill"
+  ],
+  "trie 말고 suffix array를 써야 하는 정적 문자열 검색 상황이 감이 안 와": [
+    "algorithm/suffix-array-lcp"
+  ],
+  "trie나 suffix array와 비교할 때 suffix automaton을 언제 떠올려야 하는지 헷갈려": [
+    "algorithm/suffix-automaton"
+  ],
+  "trim이나 소문자화 같은 정규화를 생성자 안에 둘지 별도 팩터리로 뺄지 헷갈려": [
+    "language/constructor-to-value-object-factory-bridge"
+  ],
+  "trim이나 소문자화 규칙을 어디서 묶어야 하는지 헷갈려": [
+    "language/request-dto-to-value-object-boundary-primer"
+  ],
+  "truncated download에서 app log 예외와 access log bytes가 서로 모순처럼 보여 해석이 막힌다": [
+    "spring/partial-response-access-log-interpretation"
+  ],
+  "trunk-based를 하려면 feature flag와 ci가 왜 같이 필요하다는지 모르겠어요": [
+    "software-engineering/trunk-based-development-vs-feature-branch-tradeoffs"
+  ],
+  "ukkonen을 보기 전에 suffix link와 edge compression을 어느 수준까지 이해해야 할지 막혀": [
+    "algorithm/suffix-tree-intuition"
+  ],
+  "undertow에서 closedchannelexception만 남아 response write 실패와 request read 종료를 섞어 읽는다": [
+    "spring/servlet-container-disconnect-exception-mapping"
+  ],
+  "undo나 retry 얘기가 나오면 command 패턴이 갑자기 너무 커 보여요": [
+    "design-pattern/command-pattern-basics"
+  ],
+  "union-find가 연결 여부까지만 답하는데도 bfs랑 자꾸 같은 범주로 느껴져": [
+    "data-structure/union-find-deep-dive"
+  ],
+  "union-find와 bfs를 언제 갈라야 하는지 한 번에 정리하고 싶다": [
+    "data-structure/connectivity-question-router"
+  ],
+  "union-find의 parent 배열이 실제 이동 경로처럼 보여서 감이 안 와": [
+    "data-structure/union-find-standalone-beginner-primer"
+  ],
+  "unique slot, exclusion constraint, guard row 중 무엇이 phantom-safe한지 한 번에 비교하고 싶다": [
+    "database/phantom-safe-booking-patterns-primer"
+  ],
+  "unread badge가 늦게 따라와": [
+    "system-design/badge-freshness-observability-primer"
+  ],
+  "unread count는 늦는데 source 상세는 바로 보여": [
+    "system-design/notification-badge-vs-source-freshness-primer"
+  ],
+  "upstream이 느린 줄 알았는데 요청이 시작도 못 하고 대기해요": [
+    "network/queue-saturation-attribution-metrics-runbook"
+  ],
+  "validation 단계와 auth 차단 단계를 한 패턴으로 묶어도 되는지 모르겠어": [
+    "design-pattern/pipeline-vs-chain-of-responsibility"
+  ],
+  "validation 에러를 컨트롤러에서 처리할지 전역에서 처리할지 감이 안 와": [
+    "spring/spring-exception-handling-basics"
+  ],
+  "version check와 if-match가 왜 필요한지 감이 안 와": [
+    "system-design/writes-follow-reads-primer"
+  ],
+  "version column으로 막을 문제인지 guard row나 serializable로 가야 할 문제인지 분류가 안 된다": [
+    "database/lost-update-vs-write-skew-vs-phantom-chooser"
+  ],
+  "version 체크만 하면 checkout 순서도 안전한 줄 알았어": [
+    "system-design/write-order-vs-precondition-primer"
+  ],
+  "visited로 막았더니 더 짧은 경로를 놓쳐": [
+    "algorithm/zero-one-bfs-dist-vs-visited-counterexamples"
+  ],
+  "visited를 2차원으로 두면 왜 틀리는지 설명이 필요해": [
+    "algorithm/zero-one-bfs-state-space-bridge"
+  ],
+  "visited를 썼더니 더 짧은 경로를 놓치는 것 같아": [
+    "algorithm/zero-one-bfs-implementation-mistake-check-template"
+  ],
+  "visited만 썼는데 반례가 나와서 왜 틀렸는지 모르겠어": [
+    "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card"
+  ],
+  "wait는 끝나지 않는데 child 로그도 안 늘어요": [
+    "operating-system/subprocess-pipe-backpressure-primer"
+  ],
+  "wait에서 안 끝나고 eof도 안 와서 어느 문서부터 봐야 할지 모르겠어요": [
+    "operating-system/subprocess-symptom-first-branch-guide"
+  ],
+  "wakeup만 필요할 때도 pipe를 써서 eventfd가 왜 따로 있는지 감이 안 와요": [
+    "operating-system/pipe-socketpair-eventfd-memfd-ipc-selection"
+  ],
+  "warm-up, drain, zone failover를 누가 한 정책으로 묶는지 감이 안 와": [
+    "system-design/service-discovery-health-routing-design"
+  ],
+  "webclient를 써야 하는지 그냥 동기 호출로 가도 되는지 결정 기준이 없어요": [
+    "spring/restclient-webclient-http-interface-decision-guide"
+  ],
+  "webclient를 쓰는데 결국 block()을 넣게 돼서 이게 왜 문제인지 감이 안 와요": [
+    "spring/spring-restclient-vs-webclient-lifecycle-boundaries"
+  ],
+  "websocket 연결 상태는 open이고 ping/pong도 도는데 사용자 메시지나 실시간 이벤트만 몇 초씩 늦게 도착한다": [
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "wildcard certificate도 맞고 host도 맞아 보이는데 왜 브라우저만 `421`을 보고 `curl`은 통과하는지 설명이 필요하다": [
+    "network/browser-421-but-curl-200-symptom-router"
+  ],
+  "worker takeover가 필요한 작업인데 advisory lock만으로 충분한지 모르겠다": [
+    "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide"
+  ],
+  "workflow 조정 로직과 상태 변화 알림을 한 구조로 묶어 버리고 있어": [
+    "design-pattern/mediator-vs-observer-vs-pubsub"
+  ],
+  "wrapper 패턴이 전부 비슷해 보여서 첫 분기 기준이 필요해": [
+    "design-pattern/adapter-vs-facade-vs-decorator-beginner-router"
+  ],
+  "write하고 read하는 순서가 왜 서로를 기다리나요": [
+    "operating-system/subprocess-bidirectional-pipe-deadlock-primer"
+  ],
+  "x-forwarded-proto나 x-forwarded-for를 언제 믿어야 하는지 모르겠어요": [
+    "security/forwarded-header-trust-boundary-primer"
+  ],
+  "yes | head 같은 파이프라인에서 왜 sigpipe가 나는지 처음 설명이 필요해요": [
+    "operating-system/broken-pipe-sigpipe-bridge"
+  ],
+  "ê°ì apiê° ì´ë¤ ëë ê¸ë°© ëëëë° ì´ë¤ ëë `pending`ì¼ë¡ ì¤ë ë§¤ë¬ë ¤ queue ëê¸°ì¸ì§ streamingì¸ì§ í·ê°ë¦°ë¤": [
+    "network/request-pending-forever-symptom-router"
+  ],
+  "ë¸ë¼ì°ì ë devtoolsììë `504 gateway timeout`ì¸ë° ìë² ë¡ê·¸ìë ê°ì ìì²­ì´ `200`ì¼ë¡ ëë íì ì´ ë³´ì¸ë¤": [
+    "network/browser-504-app-200-symptom-router"
+  ],
+  "ë¸ë¡ì»¤ ì ì¡ì´ ê°ë ë¹ ì§ ì ìë¤ëë° ê·¸ë¥ ì»¤ë° í ì´ë²¤í¸ë¡ ëë´ë ëëì§ íë¨ì´ ì ë¼ì": [
+    "spring/post-commit-side-effect-routing-decision-guide"
+  ],
+  "ì£¼ë¬¸ ì ì¥ ë¤ ë©ì¼ ë°ì¡ì´ë ì¬ë ìë¦¼ì ì´ëì ë¶ì¬ì¼ í ì§ ëª¨ë¥´ê² ì´ì": [
+    "spring/post-commit-side-effect-routing-decision-guide"
+  ],
+  "ì£¼ë¬¸â·ê²°ì â·ìì½ ê°ì ì°ê¸° ìì²­ì´ `504`ë¡ ëë ì¬ìë ì ì ì¤ë³μ ì²ë¦¬ ì¬ë¶ê° ê±±ì ëë¤": [
+    "network/browser-504-app-200-symptom-router"
+  ],
+  "가상 주소와 물리 주소가 왜 따로 있는지 직관이 안 와요": [
+    "operating-system/virtual-memory-basics"
+  ],
+  "가상 주소와 실제 ram이 어떻게 연결되는지 말로 풀어 설명하기 어려워요": [
+    "operating-system/memory-management-basics"
+  ],
+  "가장 가까운 1시간 슬롯을 찾으라는데 전체 순회를 해야 하는지 양옆만 보면 되는지 헷갈려": [
+    "data-structure/treemap-gap-detection-mini-drill"
+  ],
+  "가장 가까운 빈 슬롯을 찾을 때 왜 다음 시작이 아니라 다음 종료 시각으로 점프하는지 납득이 안 돼": [
+    "data-structure/treemap-nearest-slot-disjoint-interval-bridge"
+  ],
+  "간선 리스트가 있을 때와 인접 행렬이 있을 때 mst 접근이 왜 달라지는지 모르겠어": [
+    "algorithm/minimum-spanning-tree-prim-vs-kruskal"
+  ],
+  "간선 정렬과 사이클 판별 중 무엇이 크루스칼이고 무엇이 union-find인지 헷갈려": [
+    "algorithm/kruskal-union-find-beginner-bridge"
+  ],
+  "갈 수 있나와 실제 경로를 보여줘를 같은 질문처럼 읽어서 헷갈린다": [
+    "data-structure/connectivity-question-router"
+  ],
+  "갈 수 있는지만 묻는 문제와 최소 이동을 묻는 문제를 같은 걸로 읽고 있어": [
+    "algorithm/path-vs-shortest-path-micro-drill"
+  ],
+  "감사 로그만 따로 남기려고 requires_new를 쓰려는데 어디서 경계를 끊어야 할지 모르겠어요": [
+    "spring/transaction-propagation-deep-dive"
+  ],
+  "감싸긴 했는데 adapter인지 facade인지 decorator인지 모르겠어": [
+    "design-pattern/adapter-vs-facade-vs-decorator-beginner-router"
+  ],
+  "갑자기 트랜잭션이 다 lock timeout으로 떨어지고 있다": [
+    "database/lock-timeout-blocker-first-check"
+  ],
+  "값 객체 생성 규칙과 구현체 선택 문제를 한 기준으로 설명하고 있어": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide"
+  ],
+  "값 객체로 감쌌는데도 trim이나 scale 규칙이 호출자마다 달라져서 의미가 흔들려": [
+    "language/value-object-invariants-canonicalization-boundary-design"
+  ],
+  "값 객체를 만들 때 생성자로 충분한지 아니면 of 같은 팩터리가 필요한지 모르겠어": [
+    "language/constructor-to-value-object-factory-bridge"
+  ],
+  "값 하나 찾기 문제인데 two pointer를 써야 하는지 binary search를 써야 하는지 헷갈린다": [
+    "algorithm/sort-to-binary-search-bridge"
+  ],
+  "값은 같은데 배열 비교 결과가 false라서 어디서 잘못 본 건지 모르겠어": [
+    "language/java-array-equality-basics"
+  ],
+  "같은 400인데 검증 에러인지 변환 에러인지 모르겠어": [
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "같은 400인데 어떤 건 body 형식 문제 같고 어떤 건 validation 같아서 첫 분기가 안 돼요": [
+    "spring/json-request-400-cause-router"
+  ],
+  "같은 action 요청 재전송을 service if 문으로만 막았는데 상태가 또 진행돼요": [
+    "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge"
+  ],
+  "같은 api 호출이 어떤 때는 canceled, 어떤 때는 failed로 보여서 원인이 한 가지인지 헷갈린다": [
+    "network/browser-devtools-blocked-canceled-failed-symptom-router"
+  ],
+  "같은 api를 연속 호출했는데 pod나 요청마다 결과가 달라진다": [
+    "database/failover-after-old-new-flip-symptom-router"
+  ],
+  "같은 comparator를 배열과 리스트에서 그대로 써도 되는지 자신이 없어": [
+    "language/arrays-sort-vs-list-sort-bridge"
+  ],
+  "같은 contains인데 list와 set이 왜 다르게 느껴지는지 설명이 필요해": [
+    "language/list-contains-vs-set-contains-symptom-card"
+  ],
+  "같은 idempotency key 재요청을 성공으로 돌려줘야 하는지 모르겠어": [
+    "database/duplicate-key-fresh-read-classifier-mini-card"
+  ],
+  "같은 queue라도 로컬 fifo와 worker handoff를 언제 갈라야 하는지 모르겠다": [
+    "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer"
+  ],
+  "같은 row 덮어쓰기와 집합 규칙 깨짐과 빈 범위 판단 실패가 한 덩어리로 들린다": [
+    "database/lost-update-vs-write-skew-vs-phantom-chooser"
+  ],
+  "같은 url이 `421 -> 200`으로 보이는데 브라우저가 예전 `alt-svc`를 아직 믿는 상황인지 모르겠다": [
+    "network/h3-stale-alt-svc-421-recovery-primer"
+  ],
+  "같은 url이 devtools에서 짧게 `421`로 한 번 찍힌 뒤 바로 다시 나와서 중복 호출인지 브라우저 재시도인지 모르겠다": [
+    "network/http2-http3-421-retry-after-wrong-coalescing"
+  ],
+  "같은 url이 어떤 네트워크에서는 json으로 오는데 회사 와이파이에서는 `407`, `302`, html 차단 페이지, tls 경고처럼 다른 표면으로 보여 원인이 한 가지인지 헷갈린다": [
+    "network/corporate-wifi-https-fails-symptom-router"
+  ],
+  "같은 값처럼 보여도 equals나 캐시 키 결과가 달라져서 canonicalization이 왜 필요한지 모르겠어": [
+    "language/value-object-invariants-canonicalization-boundary-design"
+  ],
+  "같은 거리 후보가 또 나오면 덱에 다시 넣어야 하는지 헷갈려": [
+    "algorithm/zero-one-bfs-equal-distance-reinsert-mini-note"
+  ],
+  "같은 게임을 두 탭에서 추측했더니 마지막 저장만 남아요": [
+    "database/baseball-current-game-state-lost-update-version-cas-bridge"
+  ],
+  "같은 그룹인지 확인하면 된다는데 왜 bfs랑 자꾸 헷갈리는지 모르겠어": [
+    "data-structure/union-find-standalone-beginner-primer"
+  ],
+  "같은 동시성 버그를 매번 lost update라고 부르는데 리뷰에서는 phantom이나 write skew라고 한다": [
+    "database/lost-update-vs-write-skew-vs-phantom-chooser"
+  ],
+  "같은 메서드를 다른 bean으로 빼니까 갑자기 비동기처럼 동작해요": [
+    "spring/async-looks-synchronous-cause-router"
+  ],
+  "같은 변경마다 여러 팀 승인이 필요해서 경계가 맞는지 의심돼요": [
+    "software-engineering/team-cognitive-load-boundary-design"
+  ],
+  "같은 사용자가 눌렀는데 저장 결과가 뒤죽박죽으로 적용돼": [
+    "system-design/monotonic-writes-ordering-primer"
+  ],
+  "같은 상태에 더 싼 비용으로 다시 와도 되는지 감이 안 와": [
+    "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card"
+  ],
+  "같은 상품 수량을 두 탭에서 수정했더니 한쪽 변경이 사라져요": [
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge"
+  ],
+  "같은 상품을 두 번 담았더니 장바구니 row가 두 줄 생겨요": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge"
+  ],
+  "같은 수치인데 캐시 키나 문자열 비교 결과가 자꾸 달라져": [
+    "language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps"
+  ],
+  "같은 시간대 예약 두 건이 모두 성공해서 double booking 이 났다": [
+    "database/overlapping-bookings-both-succeed-symptom-router"
+  ],
+  "같은 실패처럼 보이는데 어떤 건 400이고 어떤 건 409인지 헷갈려": [
+    "spring/spring-exception-handling-basics"
+  ],
+  "같은 업로드 api가 어떤 환경에서는 빨리 막히고 어떤 환경에서는 다 보낸 뒤 실패해서 gateway buffering인지 multipart parsing인지 구분이 안 된다": [
+    "network/upload-finishes-then-rejected-symptom-router"
+  ],
+  "같은 역할 구현체를 여러 곳에 고정 주입해야 하는데 이름 문자열이 불안해요": [
+    "spring/spring-custom-qualifier-primer"
+  ],
+  "같은 예약을 수정하는데 자기 자신과 충돌했다고 나와요": [
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router"
+  ],
+  "같은 요청 실패인데 어떤 때는 400이고 어떤 때는 409라서 어디부터 봐야 할지 모르겠어요": [
+    "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide"
+  ],
+  "같은 요청을 다시 보냈더니 두 번 처리돼": [
+    "system-design/consistency-idempotency-async-workflow-foundations"
+  ],
+  "같은 이름 세션 쿠키가 두 개 남아서 어떤 요청만 다시 로그인돼요": [
+    "security/duplicate-cookie-name-shadowing"
+  ],
+  "같은 이름의 메서드가 둘이면 무조건 충돌이라고 착각해": [
+    "language/default-method-contract-evolution-vs-conflict-mini-drill"
+  ],
+  "같은 인터페이스 구현이 여러 개인데 내가 기대한 bean 대신 다른 구현체가 들어가요": [
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "같은 인터페이스 구현체가 둘인데 spring이 무엇을 넣을지 모르겠다고 한다": [
+    "spring/same-type-bean-injection-failure-cause-router"
+  ],
+  "같은 장면에서 연결성, 경로 복원, 전체 연결 비용 질문을 서로 다른 알고리즘으로 나눠 읽고 싶다": [
+    "algorithm/graph"
+  ],
+  "같은 저장 api가 평소엔 되다가 특정 시간대에만 오래 기다린 뒤 실패한다": [
+    "database/lock-wait-timeout-symptom-router"
+  ],
+  "같은 조건인데 새로고침할 때마다 페이지 구성원이 조금씩 달라진다": [
+    "database/pagination-duplicates-missing-symptom-router"
+  ],
+  "같은 중복 제출 문제로 보이는데 unique 제약, idempotency key, pending row recovery를 같은 단계에서 고르려 한다": [
+    "database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide"
+  ],
+  "같은 최단 거리 후보가 나오면 parent[next]를 덮어써야 하는지 모르겠어": [
+    "algorithm/zero-one-bfs-parent-tie-mini-note"
+  ],
+  "같은 추측 요청이 두 번 들어오면 시도 횟수가 꼬여요": [
+    "database/baseball-guess-attempt-unique-constraint-bridge"
+  ],
+  "같은 칸인데 왜 다시 방문해야 하는지 직관이 안 잡혀": [
+    "algorithm/zero-one-bfs-state-space-bridge"
+  ],
+  "같은 컴포넌트 확인과 실제 경로 복원을 한 구조로 해결하려다 막혀": [
+    "data-structure/union-find-deep-dive"
+  ],
+  "같은 타입 bean이 두 개인데 overriding을 켜면 되는지 모르겠어요": [
+    "spring/primary-conditionalonmissingbean-bean-override-decision-guide"
+  ],
+  "같은 타입 bean이 여러 개인 문제와 같은 이름 bean 충돌을 같은 문제로 보고 있어요": [
+    "spring/spring-primary-vs-bean-override-primer"
+  ],
+  "같은 타입 bean이 여러 개인데 이번 주입만 특정 구현체를 고르고 싶어요": [
+    "spring/primary-qualifier-collection-injection"
+  ],
+  "같은 타입 bean이 있는데 왜 boot 기본 bean이 사라졌는지 모르겠어요": [
+    "spring/spring-conditionalonmissingbean-vs-primary-primer"
+  ],
+  "같은 패키지와 다른 패키지 접근 결과를 손으로 확인하고 싶어": [
+    "language/java-access-modifier-boundary-lab"
+  ],
+  "같은 패키지인데 왜 import를 안 써도 되는지 모르겠어": [
+    "language/java-package-import-boundary-basics"
+  ],
+  "같은 프로세스 event bus를 쓰면 observer인지 pubsub인지 계속 헷갈려": [
+    "design-pattern/mediator-vs-observer-vs-pubsub"
+  ],
+  "같은 회원이 같은 쿠폰을 다시 적용할 때 실패 대신 기존 결과를 재사용하고 싶어요": [
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge"
+  ],
+  "객체 상태랑 static 공유 상태를 한 장으로 정리하고 싶어": [
+    "language/java-access-modifiers-member-model-basics"
+  ],
+  "객체 하나 전달하는 구조는 다 이벤트처럼 보여서 네이밍 기준이 안 잡혀요": [
+    "design-pattern/event-vs-command-naming-primer"
+  ],
+  "객체를 만들고 상태를 바꾸는 흐름이 한 번에 안 잡혀": [
+    "language/java-methods-constructors-practice-primer"
+  ],
+  "거리는 그대로인데 부모만 바뀌어야 하는 상황이 기본형에도 있는지 헷갈려": [
+    "algorithm/zero-one-bfs-parent-tie-mini-note"
+  ],
+  "거리표와 경로표를 같이 관리하는 그림이 안 잡혀": [
+    "algorithm/shortest-path-reconstruction-bridge"
+  ],
+  "검색 결과가 방금 본 상세보다 더 오래돼 보여": [
+    "system-design/list-detail-monotonicity-bridge"
+  ],
+  "검색 요청은 되는데 json 생성 요청에서만 자꾸 400이나 415가 나요": [
+    "spring/modelattribute-vs-requestbody-binding-primer"
+  ],
+  "검색 정규화 규칙을 바꿨더니 예전 커서가 갑자기 이상하게 동작해요": [
+    "design-pattern/normalization-version-rollout-playbook"
+  ],
+  "검색 조건 객체가 커질 때 생성자에서 builder로 넘어가는 기준이 헷갈려": [
+    "design-pattern/record-vs-builder-request-model-chooser"
+  ],
+  "검증 단계와 요청 차단 단계를 한 패턴으로 묶어서 헷갈려": [
+    "design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide"
+  ],
+  "게이트웨이는 timeout인데 뒤 서비스는 아직 일하고 있어": [
+    "network/timeout-budget-propagation-proxy-gateway-service-hop-chain"
+  ],
+  "게이트웨이는 실패인데 애플리케이션은 성공으로 찍혀": [
+    "network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge"
+  ],
+  "게이트웨이에 비즈니스 로직을 넣어도 되는지 판단이 안 서": [
+    "system-design/api-gateway-basics"
+  ],
+  "게임 시작 post 응답에서 바로 화면을 렌더했더니 f5가 불안해요": [
+    "spring/blackjack-post-redirect-get-refresh-replay-bridge"
+  ],
+  "게임 시작 뒤 hit 요청이 어느 게임을 가리키는지 연결이 안 돼요": [
+    "spring/blackjack-game-id-session-boundary-bridge"
+  ],
+  "게임 시작, 추측, 재시작을 endpoint로 나누라는 리뷰가 추상적으로 들려요": [
+    "spring/baseball-console-game-loop-http-request-lifecycle-bridge"
+  ],
+  "게임 시작이나 재시작 post 응답에서 바로 뷰를 렌더했더니 브라우저가 같은 요청을 다시 보내려 해요": [
+    "spring/baseball-guess-post-redirect-get-refresh-replay-bridge"
+  ],
+  "게임 시작할 때마다 새 덱을 어디서 만들고 셔플해야 하는지 책임이 헷갈려요": [
+    "design-pattern/blackjack-deck-shuffle-random-strategy-bridge"
+  ],
+  "게임 조회 화면 때문에 aggregate나 entity에 화면 전용 필드가 계속 붙어요": [
+    "design-pattern/baseball-game-view-aggregate-vs-read-model-bridge"
+  ],
+  "게임을 시작한 뒤 다음 추측 요청이 어느 게임인지 연결이 안 돼요": [
+    "spring/baseball-game-id-session-boundary-bridge"
+  ],
+  "결과 출력 직전에 등수 규칙을 또 해석하느라 책임이 흩어져 보여요": [
+    "software-engineering/lotto-rank-prize-enum-boundary-bridge"
+  ],
+  "결과는 먼저 봤는데 원인 데이터가 아직 안 따라와": [
+    "system-design/causal-consistency-notification-primer"
+  ],
+  "결과를 검증하는 테스트와 호출을 검증하는 테스트를 자꾸 섞어서 읽게 돼요": [
+    "software-engineering/fake-vs-mock-first-test-primer"
+  ],
+  "결제 api를 @transactional 안에서 호출해도 되는지 헷갈려요": [
+    "spring/shopping-cart-payment-transaction-boundary-bridge"
+  ],
+  "결제 금액은 같은데 set이나 캐시 키 결과가 다르게 나와": [
+    "language/bigdecimal-money-equality-rounding-serialization-pitfalls"
+  ],
+  "결제 버튼 두 번 눌렀더니 주문이 두 개 생겨요": [
+    "database/shopping-cart-payment-idempotency-stock-bridge"
+  ],
+  "결제 성공 뒤 db 실패를 rollback으로 막을 수 있다고 생각했어요": [
+    "spring/shopping-cart-payment-transaction-boundary-bridge"
+  ],
+  "결제 성공 뒤 장바구니 비우기나 메일 발송을 service 메서드 안에서 같이 해도 되나 헷갈려요": [
+    "spring/shopping-cart-order-complete-after-commit-outbox-bridge"
+  ],
+  "결제 성공 뒤 장바구니 비우기나 포인트 적립 같은 후속 작업이 어떤 요청에서는 실행되지 않아요": [
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "결제 수단 선택, 할인 규칙, 주문 상태 전이가 한 메서드 switch 문에 다 들어 있어요": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router"
+  ],
+  "결제 수단 선택과 주문 상태 전이를 같은 패턴으로 설명하고 있다": [
+    "design-pattern/strategy-state-policy-object-decision-guide"
+  ],
+  "결제 승인 콜백에 200을 언제 보내야 하는지 감이 안 와요": [
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge"
+  ],
+  "결제 안 된 주문을 30분 뒤 자동 취소하려는데 어디가 이 흐름을 가져야 할지 모르겠어요": [
+    "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge"
+  ],
+  "결제 전에 재고를 바로 차감하면 취소나 실패 때 복구가 복잡해 보여요": [
+    "design-pattern/shopping-cart-stock-hold-before-payment-bridge"
+  ],
+  "결제 직전에 가격이나 쿠폰 상태가 바뀌면 서버가 어디까지 다시 계산해야 하는지 헷갈려요": [
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge"
+  ],
+  "결제 직후 상세는 최신인데 목록이나 다른 화면은 흔들려 strict read 범위를 어디까지 잡아야 할지 모르겠다": [
+    "database/read-after-write-routing-decision-guide"
+  ],
+  "결제 후 리다이렉트된 주문 상세 페이지가 비어 있다가 새로고침하면 보여요": [
+    "database/shopping-cart-order-complete-read-your-writes-bridge"
+  ],
+  "결제는 성공했는데 늦게 온 만료 스케줄러가 주문을 취소할까 봐 불안해요": [
+    "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge"
+  ],
+  "결제는 성공했는데 주문 완료 화면에 방금 만든 주문이 안 보여요": [
+    "database/shopping-cart-order-complete-read-your-writes-bridge"
+  ],
+  "결제는 성공했는데 주문 완료 화면이나 주문 상세에 방금 만든 주문이 안 보여요": [
+    "database/payment-succeeded-but-order-not-visible-symptom-router"
+  ],
+  "결제사 status code와 error code가 서비스 전역으로 퍼져서 리뷰에서 경계가 흐리다고 해요": [
+    "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge"
+  ],
+  "결제사 웹훅이 두 번 오면 주문 상태가 두 번 바뀔까 봐 불안해요": [
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge"
+  ],
+  "결제수단마다 다른 paymentclient를 어디서 골라야 할지 모르겠어요": [
+    "spring/shopping-cart-payment-method-router-qualifier-bridge"
+  ],
+  "겹침 조회 후 insert 하는 예약 코드가 왜 샐 수 있는지 감이 안 온다": [
+    "database/phantom-safe-booking-patterns-primer"
+  ],
+  "경로 복원용 parent를 dist 갱신과 언제 같이 움직여야 하는지 정리하고 싶어": [
+    "algorithm/zero-one-bfs-parent-tie-mini-note"
+  ],
+  "경로를 출력하라길래 dfs로 풀었는데 왜 최단 조건에서 틀리는지 모르겠어": [
+    "algorithm/path-vs-shortest-path-micro-drill"
+  ],
+  "계산 방식만 바꾸면 되는데 command 클래스를 너무 많이 만들고 있어요": [
+    "design-pattern/command-vs-strategy-quick-bridge"
+  ],
+  "고객 한 명만 기대했는데 같은 고객이 여러 줄로 반복돼 보인다": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "공급지와 수요지가 여러 개일 때 왜 shortest path가 아니라 flow로 모델링하는지 감이 안 와": [
+    "algorithm/min-cost-max-flow-intuition"
+  ],
+  "공통 상태와 계약만 필요한 경우를 손으로 빠르게 구분하는 연습이 필요해": [
+    "language/abstract-class-vs-interface-follow-up-drill"
+  ],
+  "공통 설정 모듈을 여러 앱에서 쓰는데 starter로 뺄지 그냥 설정 클래스를 가져올지 헷갈려요": [
+    "spring/scanbasepackages-import-autoconfiguration-decision-guide"
+  ],
+  "관리자 페이지처럼 페이지 번호 점프도 필요하고 무한 스크롤처럼 안정성도 원하는데 무엇을 우선해야 하는지 헷갈린다": [
+    "database/offset-vs-seek-pagination-decision-guide"
+  ],
+  "관리자 화면에서는 예약 가능하다고 봤는데 생성 api에서는 다시 충돌이 나요": [
+    "database/roomescape-available-times-empty-cause-router"
+  ],
+  "구간 집계를 해야 하는데 fenwick과 segment tree 중 어디서부터 나눠야 할지 모르겠다": [
+    "data-structure/fenwick-segment-tree-operations-playbook"
+  ],
+  "구매 금액 형식 오류와 로또 번호 규칙 오류를 같은 검증으로 처리하고 있어요": [
+    "spring/lotto-mvc-controller-binding-validation-bridge"
+  ],
+  "구매 금액과 티켓 번호 6개를 한 row에 다 넣으려니 컬럼이 이상하게 늘어나요": [
+    "database/lotto-purchase-ticket-parent-child-modeling-bridge"
+  ],
+  "구매 금액으로 몇 장 살지 어디서 계산해": [
+    "software-engineering/lotto-purchase-flow-service-layer-bridge"
+  ],
+  "구매 금액이 1000원 단위인지 검사하는 코드가 여기저기 흩어져 있어요": [
+    "software-engineering/lotto-purchase-amount-value-object-bridge"
+  ],
+  "구매 버튼을 두 번 눌렀더니 같은 로또 세트가 두 번 저장돼요": [
+    "database/lotto-purchase-duplicate-submit-idempotency-bridge"
+  ],
+  "구매 완료 화면에서 f5를 누르면 브라우저가 같은 요청을 다시 보내려 해요": [
+    "spring/lotto-purchase-post-redirect-get-refresh-replay-bridge"
+  ],
+  "구매내역 조회인데 금액과 티켓 목록이 따로 놀아서 어떤 객체를 반환해야 할지 모르겠어요": [
+    "software-engineering/lotto-purchase-history-repository-boundary-bridge"
+  ],
+  "구현 난이도와 메모리 차이 때문에 둘을 어떻게 비교해야 할지 막혀": [
+    "algorithm/suffix-array-vs-suffix-tree-comparison"
+  ],
+  "구현 중 바로 같이 보는 게 좋은지 pr 리뷰만으로도 충분한지 판단이 안 돼요": [
+    "software-engineering/pair-programming-code-review-tradeoffs"
+  ],
+  "구현을 갈아끼우고 싶은데 상속부터 떠올라요": [
+    "design-pattern/abstract-class-vs-interface-injection-bridge"
+  ],
+  "구현체 추가할 때마다 factory와 호출부 규칙이 같이 커져서 책임이 안 보여": [
+    "design-pattern/factory-switch-registry-smell"
+  ],
+  "구현체가 상속받는 동작과 인터페이스 옆 헬퍼를 어디서 갈라야 하는지 모르겠어": [
+    "language/interface-default-vs-static-method-primer"
+  ],
+  "권한을 줬는데도 계속 403이 나와요": [
+    "security/role-change-session-freshness-basics"
+  ],
+  "그래프 기초는 알겠는데 다음에 shortest path, mst, flow 중 어디로 가야 할지 분기가 안 돼": [
+    "algorithm/graph"
+  ],
+  "그래프가 구조인지 알고리즘인지부터 헷갈려서 bfs 문서를 읽어도 감이 안 잡혀": [
+    "data-structure/graph-basics"
+  ],
+  "글로는 알겠는데 짧은 예제를 보면 아직도 추상 클래스와 인터페이스가 섞여 보여": [
+    "language/abstract-class-vs-interface-follow-up-drill"
+  ],
+  "글로는 이해했는데 짧은 코드 예제로 보면 evolution과 conflict가 다시 섞여 보여": [
+    "language/default-method-contract-evolution-vs-conflict-mini-drill"
+  ],
+  "금액 말고 거절 이유까지 내려야 하는데 strategy만 늘고 있어요": [
+    "design-pattern/policy-object-vs-strategy-map-beginner-bridge"
+  ],
+  "금액 비교나 직렬화 기준을 타입으로 묶어야 하는 순간이 언제인지 감이 안 와": [
+    "language/money-value-object-basics"
+  ],
+  "기울기 정렬이나 질의 순서 조건이 깨지면 cht를 써도 되는지 헷갈려": [
+    "algorithm/convex-hull-trick-basics"
+  ],
+  "기준 시각 주변 이웃 조회와 전체 최소값 꺼내기를 같은 질문처럼 읽는다": [
+    "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge"
+  ],
+  "긴 배치를 db row lock으로 잡아 두려다가 어디까지 잠가야 하는지 헷갈린다": [
+    "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide"
+  ],
+  "나중에 실행하는 작업이 priority queue처럼 정렬된다는 설명이 추상적으로 느껴져": [
+    "data-structure/scheduledexecutorservice-vs-delayqueue-bridge"
+  ],
+  "날짜나 시간 필드가 들어간 요청만 보내면 `@valid` 전에 실패하는 것 같아요": [
+    "spring/json-request-400-cause-router"
+  ],
+  "남은 시간을 안 넘겨서 요청이 낭비되는 것 같아": [
+    "network/timeout-budget-propagation-proxy-gateway-service-hop-chain"
+  ],
+  "낫싱, 3스트라이크, 게임 종료 메시지 규칙이 여기저기 흩어져 있어요": [
+    "software-engineering/baseball-turn-result-response-boundary-bridge"
+  ],
+  "내 bean을 추가했더니 boot 기본 bean이 사라진 것 같아요": [
+    "spring/primary-conditionalonmissingbean-bean-override-decision-guide"
+  ],
+  "내 계정에서만 알림 source가 안 보여": [
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "내 브라우저에서는 새 서버가 보이는데 동료 브라우저나 특정 네트워크에서는 아직 예전 화면이 떠서 어느 캐시가 남았는지 헷갈린다": [
+    "network/dns-change-some-users-old-server-symptom-router"
+  ],
+  "내가 방금 본 화면 기준으로 저장해도 되는지 확신이 안 서": [
+    "system-design/writes-follow-reads-primer"
+  ],
+  "내가 설정 클래스를 안 만들었는데 datasource나 objectmapper가 보여서 누가 등록했는지 모르겠어요": [
+    "spring/boot-autoconfiguration-basics"
+  ],
+  "내부 알림, 도메인 사실, 외부 계약을 한 이벤트 클래스로 다 처리하고 있어": [
+    "design-pattern/application-event-vs-domain-event-vs-integration-event-decision-guide"
+  ],
+  "넣은 순서로 보여야 하는데 key 정렬처럼 보인다": [
+    "data-structure/map-order-symptom-router-card"
+  ],
+  "누가 전략을 고르는지와 context 책임이 자꾸 섞여 보여요": [
+    "design-pattern/strategy-pattern-basics"
+  ],
+  "느림, oom, fd 에러가 다 비슷하게 보여서 첫 분기가 안 돼요": [
+    "operating-system/beginner-symptom-to-doc-map"
+  ],
+  "다 static으로 만들면 더 쉬워 보이는데 왜 인스턴스 메서드가 필요한지 감이 안 와": [
+    "language/java-instance-static-factory-methods-primer"
+  ],
+  "다른 사람이 먼저 바꾼 뒤에도 예전 값으로 저장될까 봐 걱정돼": [
+    "system-design/writes-follow-reads-primer"
+  ],
+  "다음 요청에서 principal이 비는 장면을 savedrequest, session, bearer token 중 무엇으로 읽어야 할지 모르겠어요": [
+    "spring/login-state-routing-decision-guide"
+  ],
+  "단방향이랑 양방향 연결 리스트를 언제 구분해서 써야 하는지 모르겠어": [
+    "data-structure/linked-list-basics"
+  ],
+  "당첨 개수 map이 service와 outputview 사이를 계속 돌아다녀요": [
+    "software-engineering/lotto-winning-statistics-result-object-bridge"
+  ],
+  "당첨 번호 6개와 보너스 번호를 한 문자열 컬럼에 넣어도 되나 고민돼요": [
+    "database/lotto-winning-round-storage-normalization-bridge"
+  ],
+  "당첨 번호 list와 보너스 번호 int를 service와 view가 같이 들고 다녀요": [
+    "software-engineering/lotto-winning-numbers-value-object-boundary-bridge"
+  ],
+  "당첨 번호 비교 전에 이미 유효한 값인지 계속 확인하게 돼요": [
+    "software-engineering/lotto-winning-numbers-value-object-boundary-bridge"
+  ],
+  "데이터를 다 보냈는데 child가 계속 입력을 기다려요": [
+    "operating-system/subprocess-stdin-eof-primer"
+  ],
+  "데이터를 흘려보내는 구조와 요청을 중간에 끊는 구조를 자꾸 같은 걸로 설명하게 돼": [
+    "design-pattern/pipeline-vs-chain-of-responsibility"
+  ],
+  "덱이라는 이름 때문에 arraydeque를 fifo 큐로 써도 되는지 확신이 안 선다": [
+    "data-structure/arraydeque-vs-linkedlist-queue-choice-card"
+  ],
+  "도메인 규칙을 안쪽에 둬야 한다는 말이 실무 구조 선택과 어떻게 연결되는지 감이 안 와요": [
+    "software-engineering/clean-architecture-layered-modular-monolith"
+  ],
+  "도메인 이벤트를 그대로 kafka에 내보내도 된다고 느껴": [
+    "design-pattern/application-event-vs-domain-event-vs-integration-event-decision-guide"
+  ],
+  "동시 booking 요청이 서로 막혀 deadlock으로 돌아간다": [
+    "database/deadlock-case-study"
+  ],
+  "동전 문제처럼 greedy가 깨지는 상황을 보고도 언제 dp로 넘어갈지 막혀": [
+    "algorithm/greedy-vs-dp-decision-card"
+  ],
+  "둘 다 stale하다는데 원인 구분이 안 돼": [
+    "system-design/caching-vs-read-replica-primer"
+  ],
+  "둘 다 아닌 조합 사례를 문제에서 만나면 바로 못 자르겠어": [
+    "language/abstract-class-vs-interface-follow-up-drill"
+  ],
+  "등수별 상금과 일치 개수 조건이 service if문에 길게 늘어져 있어요": [
+    "software-engineering/lotto-rank-prize-enum-boundary-bridge"
+  ],
+  "딜러는 16 이하 hit 규칙과 승패 판정이 한 메서드에 섞여요": [
+    "design-pattern/blackjack-winner-decision-policy-object-bridge"
+  ],
+  "딜러와 플레이어 결과 출력 메서드가 거의 같은데 한 줄만 달라요": [
+    "design-pattern/blackjack-player-dealer-result-view-template-method-bridge"
+  ],
+  "레벨 단위 문제인데도 재귀 dfs부터 떠올라 queue 신호를 놓친다": [
+    "data-structure/binary-tree-traversal-routing-guide"
+  ],
+  "로그를 붙였는데 decorator라고 해야 할지 proxy라고 해야 할지 모르겠어": [
+    "design-pattern/decorator-vs-proxy-decision-guide"
+  ],
+  "로그인 리다이렉트가 아닌데 e2e로 올리는 게 맞는지 헷갈려요": [
+    "software-engineering/component-test-vs-browser-e2e-boundary-card"
+  ],
+  "로그인 성공 뒤 app-internal이나 staging host로 리다이렉트돼요": [
+    "security/absolute-redirect-url-behind-load-balancer-guide"
+  ],
+  "로그인 성공 뒤 리다이렉트 주소가 갑자기 http로 내려가요": [
+    "security/wrong-scheme-vs-wrong-origin-redirect-shortcut"
+  ],
+  "로그인 성공 후 roomescape 관리자 예약 페이지로 돌아왔는데 마지막에 403이 떠요": [
+    "spring/roomescape-admin-login-final-403-securitycontext-bridge"
+  ],
+  "로그인 성공 후 원래 관리자 url로 돌아왔는데 마지막에 403이 떠서 어디 단계가 실패했는지 모르겠어요": [
+    "spring/admin-302-login-vs-403-beginner-bridge"
+  ],
+  "로그인 성공 후 원래 관리자 url로 돌아왔는데 마지막에 403이 떠요": [
+    "spring/admin-login-success-final-403-savedrequest-role-mapping-primer"
+  ],
+  "로그인 직후 다른 사용자 데이터가 섞여 보이거나 locale 응답이 뒤바뀐다": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "로그인 직후 원래 페이지로 돌아오지 못하거나 /login으로 다시 튀어서 로그인 유지가 안 되는 것처럼 보여요": [
+    "spring/login-state-not-persisted-cause-router"
+  ],
+  "로그인 체크나 공통 로깅을 filter에 둘지 interceptor에 둘지 헷갈려요": [
+    "software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge"
+  ],
+  "로그인 페이지로 리다이렉트된 것 같은데 화면에서는 그냥 cors 에러처럼 보여요": [
+    "spring/browser-only-cors-error-cause-router"
+  ],
+  "로그인 후 app-internal이나 staging host로 이동해요": [
+    "security/wrong-scheme-vs-wrong-origin-redirect-shortcut"
+  ],
+  "로그인은 됐는데 다시 /login으로 튀어서 쿠키 중복인지 프록시 문제인지 모르겠어": [
+    "security/duplicate-cookie-vs-proxy-login-loop-bridge"
+  ],
+  "로그인은 성공한 것 같은데 redirect 문제인지 세션 복원 문제인지 모르겠어요": [
+    "spring/login-state-routing-decision-guide"
+  ],
+  "로그인은 성공했는데 다음 요청에서 다시 anonymous로 보여요": [
+    "spring/login-state-not-persisted-cause-router",
+    "spring/spring-admin-session-cookie-flow-primer"
+  ],
+  "로그인은 한 것 같은데 관리자 api가 302나 403으로 먼저 끝나요": [
+    "spring/controller-not-hit-cause-router"
+  ],
+  "로깅을 필터에 넣어야 하는지 인터셉터에 넣어야 하는지 매번 바뀌어요": [
+    "spring/request-cross-cutting-hook-decision-guide"
+  ],
+  "로드 밸런서랑 api gateway가 같은 역할처럼 보여서 구분이 안 돼": [
+    "system-design/api-gateway-basics"
+  ],
+  "로또 결과를 list나 map으로만 넘기니 의미가 흐려져요": [
+    "software-engineering/lotto-winning-statistics-result-object-bridge"
+  ],
+  "로또 구매 1건과 티켓 여러 장을 저장할 때 어디에 @transactional을 붙여야 할지 모르겠어요": [
+    "spring/lotto-purchase-ticket-transaction-boundary-bridge"
+  ],
+  "로또 구매내역 조회를 붙이려는데 purchase와 ticket을 왜 나누라는 리뷰를 받았어요": [
+    "database/lotto-purchase-ticket-parent-child-modeling-bridge"
+  ],
+  "로또 구매를 post로 처리한 뒤 결과를 바로 렌더했더니 새로고침이 불안해요": [
+    "spring/lotto-purchase-post-redirect-get-refresh-replay-bridge"
+  ],
+  "로또 당첨 건수 집계 조건을 where에 둘지 having에 둘지 헷갈려요": [
+    "database/lotto-winning-statistics-group-by-aggregation-bridge"
+  ],
+  "로또 당첨 결과 재조회용 스키마에서 bonus 번호 규칙을 db가 어디까지 알아야 하는지 모르겠어요": [
+    "database/lotto-winning-round-storage-normalization-bridge"
+  ],
+  "로또 당첨 결과를 db에서 다시 보여주려는데 등수별 개수를 어떻게 세야 할지 모르겠어요": [
+    "database/lotto-winning-statistics-group-by-aggregation-bridge"
+  ],
+  "로또 코드가 길어졌는데 지금 잘라야 할 축이 입력인지 규칙인지 유스케이스 순서인지 헷갈려요": [
+    "software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide"
+  ],
+  "로또를 한 번 사면 여러 장인데 테이블을 하나로 둬야 할지 둘로 나눠야 할지 모르겠어요": [
+    "database/lotto-purchase-ticket-parent-child-modeling-bridge"
+  ],
+  "로컬 ipc가 다 fd처럼 보여서 pipe와 socketpair를 언제 갈라야 할지 모르겠어요": [
+    "operating-system/pipe-socketpair-eventfd-memfd-ipc-selection"
+  ],
+  "로컬에서는 되는데 test나 prod profile에서만 bean이 사라진다": [
+    "spring/bean-not-found-cause-router"
+  ],
+  "로컬에서는 되는데 test나 prod에서는 같은 설정 key가 다르게 읽혀요": [
+    "spring/config-value-not-changing-cause-router"
+  ],
+  "로컬에서는 되는데 test나 prod에서만 starter 기본 bean이 안 보여요": [
+    "spring/starter-bean-missing-cause-router"
+  ],
+  "로컬은 되는데 alb나 nginx 뒤에 올리면 로그인 루프가 나요": [
+    "security/secure-cookie-behind-proxy-guide"
+  ],
+  "리뷰가 자꾸 밀려서 배포가 느린데 pair programming을 늘리면 나아질지 모르겠어요": [
+    "software-engineering/pair-programming-code-review-tradeoffs"
+  ],
+  "리뷰를 통과해도 장애가 나는 이유가 기준 부재인지 운영 맥락 누락인지 헷갈려요": [
+    "software-engineering/architecture-review-anti-patterns"
+  ],
+  "리뷰어가 anti-join 버그와 recent write freshness와 동시성 문제를 먼저 갈라 보라고 했어요": [
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide"
+  ],
+  "리뷰어가 bookingpolicy 같은 객체로 규칙을 올리라고 했는데 왜 service 메서드로는 부족한지 모르겠어요": [
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge"
+  ],
+  "리뷰어가 busy와 retryable을 나누라고 하는데 지금 예외가 어느 버킷인지 감이 안 온다": [
+    "database/already-exists-vs-busy-vs-retryable-decision-guide"
+  ],
+  "리뷰어가 filter chain에서 먼저 끊긴다고 했는데 controller 코드를 봐도 이유를 모르겠어요": [
+    "spring/roomescape-admin-login-final-403-securitycontext-bridge"
+  ],
+  "리뷰어가 left join 조건 위치와 active predicate를 같이 보라고 했는데 왜인지 모르겠어요": [
+    "database/roomescape-available-times-empty-cause-router"
+  ],
+  "리뷰어가 offset 대신 seek를 보라고 했는데 왜 그런지 감이 안 온다": [
+    "database/offset-vs-seek-pagination-decision-guide"
+  ],
+  "리뷰어가 projection이나 query model을 보라고 했는데 response dto만 나누면 안 되는지 모르겠어요": [
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide"
+  ],
+  "리뷰어가 관리자 목록에는 tie-breaker 정렬이 필요하다고 했는데 이유를 모르겠어요": [
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge"
+  ],
+  "리뷰어가 이 검증은 service가 아니라 controller나 domain이 더 가깝다고 했는데 기준을 모르겠어요": [
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide"
+  ],
+  "리뷰에서 400과 409를 나누라는데 baseball api에서 어디서 갈라야 할지 모르겠어요": [
+    "spring/baseball-invalid-guess-400-vs-finished-game-409-exception-bridge"
+  ],
+  "리뷰에서 bigdecimal을 map key로 쓸 거면 1.0과 1을 같은 값으로 볼지 먼저 적으라고 해요": [
+    "language/bigdecimal-key-policy-30-second-checklist"
+  ],
+  "리뷰에서 gameid는 path variable로 빼고 action body는 따로 두라는데 왜 나누는지 모르겠어요": [
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide"
+  ],
+  "리뷰에서 prg만으로는 부족하고 멱등성 키를 따로 보라고 했는데 왜인지 모르겠어요": [
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge"
+  ],
+  "리뷰에서 redirect after post를 하라는데 lotto에 왜 필요한지 모르겠어요": [
+    "spring/lotto-purchase-post-redirect-get-refresh-replay-bridge"
+  ],
+  "리뷰에서 redirect after post를 하라는데 roomescape에서는 왜 필요한지 감이 안 와요": [
+    "spring/roomescape-admin-reservation-post-redirect-get-bridge"
+  ],
+  "리뷰에서 redirect after post를 하라는데 블랙잭에 왜 필요한지 모르겠어요": [
+    "spring/blackjack-post-redirect-get-refresh-replay-bridge"
+  ],
+  "리뷰에서 removeif를 쓸지 복사본을 만들어 교체할지 기준이 없어서 코드 의도가 흐린다고 해요": [
+    "language/collection-update-strategy-primer"
+  ],
+  "리뷰에서 setstatus 열어 두지 말고 confirm 같은 행동 메서드로 바꾸라고 해요": [
+    "language/enum-to-state-transition-beginner-bridge"
+  ],
+  "리뷰에서 값 객체, service, 상태 패턴, policy object 얘기가 같이 나와서 어디부터 봐야 할지 모르겠어요": [
+    "design-pattern/baseball-big-if-responsibility-cause-router"
+  ],
+  "리뷰에서 결과 화면은 get 주소를 가져야 한다는데 왜 필요한지 모르겠어요": [
+    "spring/baseball-guess-post-redirect-get-refresh-replay-bridge"
+  ],
+  "리뷰에서 분기 축이 섞였다고 하는데 strategy로 갈지 state로 갈지 policy object로 갈지 헷갈려요": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router"
+  ],
+  "리뷰에서 분기 축이 섞였다고 하는데 strategy로 갈지 state로 갈지 감이 안 와요": [
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router"
+  ],
+  "리뷰에서 분기 축이 섞였다고 하는데 결제수단, 할인, 상태, 만료를 어떤 기준으로 분리해야 할지 헷갈려요": [
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide"
+  ],
+  "리뷰에서 분기 축이 섞였다고 하는데 예약 검증, 슬롯 생성, 상태 변경을 같은 패턴으로 설명하고 있어요": [
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide"
+  ],
+  "리뷰에서 상태 패턴, 커맨드, 정책 객체 얘기가 같이 나와서 어디부터 고쳐야 할지 모르겠어요": [
+    "software-engineering/blackjack-big-if-responsibility-cause-router"
+  ],
+  "리뷰에서 생성 책임과 검증 책임, 출력 책임을 나누라고 하는데 어디부터 잘라야 할지 모르겠어요": [
+    "software-engineering/lotto-boundary-mixing-cause-router"
+  ],
+  "리뷰에서 서비스가 너무 많은 걸 안다거나 비대하다는 말을 들었는데 어디부터 쪼개야 할지 모르겠어요": [
+    "software-engineering/roomescape-reservation-service-bloat-cause-router"
+  ],
+  "리뷰에서 정적 팩토리, 전략, 결과 객체 얘기가 같이 나와서 무엇부터 봐야 할지 모르겠어요": [
+    "design-pattern/lotto-big-if-responsibility-cause-router"
+  ],
+  "리뷰에서 주문은 cart를 참조하지 말고 snapshot을 남기라고 하는데 이유가 헷갈려요": [
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge"
+  ],
+  "리뷰에서 추상화가 어색하다는 말을 들었는데 무엇부터 다시 읽어야 할지 모르겠어요": [
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "리뷰에서 클라이언트가 준 최종 금액을 믿지 말라고 하는데 왜인지 감이 안 와요": [
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge"
+  ],
+  "리뷰에서 테스트하기 어려운 구조라고 했는데 정확히 뭐가 엉킨 건지 모르겠어요": [
+    "software-engineering/blackjack-testability-cause-router"
+  ],
+  "리뷰에서 파싱은 밖으로, 불변식은 도메인으로, 구매 흐름은 service로 나누라는데 같은 말처럼 들려요": [
+    "software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide"
+  ],
+  "리스너로 퍼뜨리는 구조와 큐에 넣는 작업 요청이 자꾸 같은 걸로 보여요": [
+    "design-pattern/observer-vs-command-beginner-bridge"
+  ],
+  "리전 장애면 dns만 바꾸면 끝나는 거 아닌지 헷갈려": [
+    "system-design/global-traffic-failover-control-plane-design"
+  ],
+  "리팩토링이 무섭다는 상태에서 첫 움직임을 무엇으로 잡아야 할지 막혀 있어요": [
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "마지막 1개 재고인데 두 요청이 모두 성공한 것처럼 보여요": [
+    "database/last-stock-sold-twice-symptom-router"
+  ],
+  "마지막 재고를 주문 단계에서 잡아 두고 결제 성공 때만 확정해야 하는지 모르겠어요": [
+    "design-pattern/shopping-cart-stock-hold-before-payment-bridge"
+  ],
+  "막힌 예약 구간 안쪽 시각들을 다시 안 봐도 되는 이유를 자료구조 관점에서 설명하고 싶어": [
+    "data-structure/treemap-nearest-slot-disjoint-interval-bridge"
+  ],
+  "먼저 들어온 순서와 가장 급한 순서를 같은 규칙으로 착각한다": [
+    "data-structure/queue-vs-deque-vs-priority-queue-primer"
+  ],
+  "멀티모듈에서 bean이 안 보여서 scan 범위를 넓혀야 하는지 import 해야 하는지 모르겠어요": [
+    "spring/scanbasepackages-import-autoconfiguration-decision-guide"
+  ],
+  "메서드 하나로 묶은 클래스와 호출을 가로채는 클래스를 같은 패턴으로 설명하고 있어": [
+    "design-pattern/facade-vs-adapter-vs-proxy-decision-guide"
+  ],
+  "메서드를 바로 호출하던 코드를 왜 굳이 객체로 감싸는지 모르겠어요": [
+    "design-pattern/command-pattern-basics"
+  ],
+  "메서드에 객체를 넘겼는데 호출자 쪽 상태도 같이 바뀌어서 당황했어": [
+    "language/java-parameter-passing-pass-by-value-side-effects-primer"
+  ],
+  "메서드와 생성자를 따로 외웠는데 실제 클래스에서는 무엇을 먼저 봐야 할지 모르겠어": [
+    "language/java-methods-constructors-practice-primer"
+  ],
+  "몇 초 뒤 실행만 하면 되는데 delayqueue까지 직접 구현해야 할 것 같아 헷갈린다": [
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router"
+  ],
+  "모든 read를 primary로 보낼지, 세션만 묶을지, token으로 판정할지 결정 축이 섞인다": [
+    "database/read-after-write-routing-decision-guide"
+  ],
+  "모든 suffix를 넣는다고 하는데 substring 검색이 왜 빨라지는지 직관이 안 잡혀": [
+    "algorithm/suffix-tree-intuition"
+  ],
+  "모든 정점을 잇는 문제인데 자꾸 최단 경로 알고리즘을 떠올리게 돼": [
+    "algorithm/minimum-spanning-tree-prim-vs-kruskal"
+  ],
+  "목록과 상세가 서로 다른 상태로 보인다": [
+    "database/cache-replica-split-read-inconsistency"
+  ],
+  "목록은 보이는데 뒤 페이지로 갈수록 느려지고 중복이나 누락까지 보여서 어떤 pagination 방식을 골라야 할지 모르겠다": [
+    "database/offset-vs-seek-pagination-decision-guide"
+  ],
+  "목표 정점이 하나일 때 다익스트라 대신 a*를 써도 되는 기준이 헷갈려": [
+    "algorithm/a-star-vs-dijkstra"
+  ],
+  "무향 그래프 기준인지 방향 그래프에서도 바로 쓸 수 있는지 헷갈려": [
+    "algorithm/bridges-and-articulation-points"
+  ],
+  "문자열 key 그래프를 bfs로 돌릴 때 visited 표현을 어떻게 바꿔야 할지 모르겠어": [
+    "algorithm/bfs-visited-array-vs-set-java-beginner-card"
+  ],
+  "문자열 key를 다룬다고 바로 trie를 떠올려서 구조를 과하게 잡는다": [
+    "data-structure/trie-vs-hashmap-exact-lookup-beginner-card"
+  ],
+  "문자열 key에서 prefix 질문인지 ordered neighbor/range 질문인지 분기가 안 된다": [
+    "data-structure/treemap-string-prefix-range-mini-drill"
+  ],
+  "문자열을 service까지 그대로 넘기고 있어요": [
+    "software-engineering/baseball-guess-value-object-boundary-bridge"
+  ],
+  "문제로 바로 확인하면서 접근 제한자 경계를 점검하고 싶어": [
+    "language/java-access-modifier-top-level-member-mini-quiz"
+  ],
+  "문제를 보면 어떤 자료구조를 먼저 떠올려야 할지 감이 안 와": [
+    "data-structure/basic"
+  ],
+  "미로, 지하철, 친구 관계가 왜 다 그래프로 묶이는지 한 줄로 이해하고 싶어": [
+    "data-structure/graph-basics"
+  ],
+  "반례를 먼저 찾아야 하는지 상태를 먼저 잡아야 하는지 판단이 안 서": [
+    "algorithm/greedy-vs-dp-decision-card"
+  ],
+  "반복 substring 문제라는데 suffix array와 lcp를 왜 같이 봐야 하는지 연결이 안 돼": [
+    "algorithm/suffix-array-lcp"
+  ],
+  "방금 구현체를 하나 더 추가했더니 startup di 예외가 갑자기 생겼어요": [
+    "spring/di-exception-quick-triage"
+  ],
+  "방금 읽은 조건을 믿고 쓰려는데 mvcc 스냅샷과 락과 retry가 각각 어디서 필요한지 구분이 안 된다": [
+    "database/plain-select-vs-locking-read-vs-serializable-decision-guide"
+  ],
+  "방금 저장한 게 목록에는 안 보이고 새로고침해야 보인다": [
+    "database/cache-replica-split-read-inconsistency"
+  ],
+  "방금 저장한 뒤에는 cache hit도 못 믿어야 하는지 헷갈려": [
+    "system-design/cache-hit-miss-session-policy-bridge"
+  ],
+  "방금까지는 잘 막히던 예약 코드가 read committed 전환 뒤부터 샌다": [
+    "database/overlapping-bookings-both-succeed-symptom-router"
+  ],
+  "배열 값 바꿨더니 리스트도 같이 바뀌어요": [
+    "language/arrays-aslist-fixed-size-list-checklist"
+  ],
+  "배열 정렬 코드와 리스트 정렬 코드가 비슷해 보여서 어느 쪽 api를 써야 할지 헷갈려": [
+    "language/arrays-sort-vs-list-sort-bridge"
+  ],
+  "배열을 리스트로 바꿨는데 같이 바뀌어요": [
+    "language/array-to-list-conversion-entrypoint-primer"
+  ],
+  "배열이랑 연결 리스트 중에 뭘 기본값으로 골라야 할지 모르겠어": [
+    "data-structure/array-vs-linked-list"
+  ],
+  "배열이랑 큐랑 트리가 한꺼번에 나와서 머릿속에 정리가 안 돼": [
+    "data-structure/basic"
+  ],
+  "배정 문제를 헝가리안으로 볼지 min-cost max-flow로 볼지 경계가 헷갈려": [
+    "algorithm/min-cost-max-flow-intuition"
+  ],
+  "배치 자동화를 만들었는데 어떤 질문은 pipe로 안 먹어서 막혀요": [
+    "operating-system/why-some-prompts-use-dev-tty"
+  ],
+  "배포 빈도보다 검증 통제를 어디에 둘지가 더 중요하다는 말을 이해하기 어렵습니다": [
+    "software-engineering/release-trains-vs-continuous-delivery"
+  ],
+  "배포 직후나 scale-in 직후에만 `502`가 튀고 앱 예외는 안 남아 connection reset, draining, upstream 선택 실패 중 무엇을 먼저 볼지 헷갈린다": [
+    "network/browser-502-no-app-log-symptom-router"
+  ],
+  "배포 직후나 target 교체 구간에만 `503`이 튀고 앱 예외는 안 남아 no healthy upstream, draining gap, readiness flap 중 무엇을 먼저 봐야 할지 헷갈린다": [
+    "network/browser-503-no-app-log-symptom-router"
+  ],
+  "배포 직후부터 특정 테이블 관련 요청이 줄줄이 느려지고 ddl 세션만 계속 pending 으로 보인다": [
+    "database/alter-table-not-finishing-symptom-router"
+  ],
+  "배포 후 같은 sql인데 갑자기 실행 계획이 바뀌었어요": [
+    "database/histogram-drift-auto-analyze-thresholds"
+  ],
+  "배포할 때 인스턴스를 내렸는데 왜 기존 요청이 중간에 끊기는지 모르겠어": [
+    "system-design/load-balancer-drain-and-affinity-primer"
+  ],
+  "백엔드 미션 코드를 읽는데 queue가 보여서 알고리즘 문제인지 서비스 흐름인지부터 헷갈려": [
+    "algorithm/backend-algorithm-starter-pack"
+  ],
+  "버전 체크가 필요한 문제를 read 경로 문제로만 보고 있어": [
+    "system-design/session-guarantees-decision-matrix"
+  ],
+  "버튼 비활성화 같은 것도 전부 브라우저 e2e로 올려야 하나 헷갈려요": [
+    "software-engineering/browser-e2e-cost-vs-signal-checklist"
+  ],
+  "버튼 비활성화나 스피너 확인도 playwright로 짜야 하나 고민돼요": [
+    "software-engineering/component-test-vs-browser-e2e-boundary-card"
+  ],
+  "벽 한 번 부수기 같은 문제를 그래프로 어떻게 바꿔야 할지 막혀": [
+    "algorithm/zero-one-bfs-grid-conversion-primer"
+  ],
+  "보너스 번호가 당첨 번호와 중복되면 안 된다는 검증이 여러 군데 흩어져 있어요": [
+    "software-engineering/lotto-winning-numbers-value-object-boundary-bridge"
+  ],
+  "복구된 리전을 언제 다시 트래픽에 넣어야 안전한지 모르겠어": [
+    "system-design/global-traffic-failover-control-plane-design"
+  ],
+  "복잡한 조회가 많은데 jpa와 mybatis 중 어디에 두어야 할지 막힌다": [
+    "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+  ],
+  "부모 번호 비교와 전체 경로 사전순 비교가 어떻게 다른지 헷갈려": [
+    "algorithm/zero-one-bfs-lexicographic-tie-mini-note"
+  ],
+  "분할 dp 식은 보이는데 왜 탐색 구간을 줄여도 되는지 근거가 안 보여": [
+    "algorithm/divide-and-conquer-dp-optimization"
+  ],
+  "브라우저 devtools에서는 `502 bad gateway`가 보이는데 애플리케이션 access log나 trace에는 같은 시각 요청 흔적이 거의 없어 어디서 끊겼는지 감이 안 잡힌다": [
+    "network/browser-502-no-app-log-symptom-router"
+  ],
+  "브라우저 devtools에서는 `503 service unavailable`이 보이는데 애플리케이션 access log나 trace에는 같은 시각 요청 흔적이 거의 없어 어디서 막혔는지 감이 안 잡힌다": [
+    "network/browser-503-no-app-log-symptom-router"
+  ],
+  "브라우저 devtools에서는 같은 url이 `421 misdirected request`로 보이는데 터미널에서 `curl`로 치면 바로 `200`이 나와서 서버가 진짜 고장인지 브라우저만 이상한지 헷갈린다": [
+    "network/browser-421-but-curl-200-symptom-router"
+  ],
+  "브라우저 network 탭에서 같은 url이 두 줄 보이는데 첫 줄은 실패, 다음 줄은 `200`이라 서버 버그인지 연결 재사용 문제인지 헷갈린다": [
+    "network/idle-first-fail-second-success-symptom-router"
+  ],
+  "브라우저 로그인 이슈와 jwt 필터 이슈가 같은 문제처럼 보여서 어디부터 봐야 할지 헷갈려요": [
+    "spring/login-state-routing-decision-guide"
+  ],
+  "브라우저 새로고침이나 특정 탭에서만 `421`이 재현되고 `curl -v` 결과는 멀쩡해서 auth 문제인지 connection reuse 문제인지 감이 안 잡힌다": [
+    "network/browser-421-but-curl-200-symptom-router"
+  ],
+  "브라우저 콘솔에는 reconnect 흔적이 없는데 큰 payload나 특정 화면에서만 실시간 업데이트가 늦어 네트워크 손실인지 수신 측 backpressure인지 구분이 안 된다": [
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "브라우저나 api 클라이언트에서는 `429 too many requests`가 반복되는데 애플리케이션 로그에는 같은 요청이 거의 보이지 않아 어디서 막혔는지 헷갈린다": [
+    "network/http-429-no-app-log-symptom-router"
+  ],
+  "브라우저는 504인데 서버 로그는 200이야": [
+    "network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge"
+  ],
+  "브라우저는 `421`인데 `curl`은 바로 성공해서 오래된 h3 endpoint 메모를 의심해야 하는지 알고 싶다": [
+    "network/h3-stale-alt-svc-421-recovery-primer"
+  ],
+  "브라우저는 https인데 로그인 뒤 요청이 http로 꺾이면서 쿠키가 안 붙어요": [
+    "security/secure-cookie-behind-proxy-guide"
+  ],
+  "브라우저에 jsessionid나 쿠키가 있는데도 관리자 페이지를 누르면 다시 로그인하래요": [
+    "spring/login-state-not-persisted-cause-router"
+  ],
+  "브라우저에 쿠키가 있는데도 관리자 페이지를 누르면 다시 로그인하래요": [
+    "spring/spring-admin-session-cookie-flow-primer"
+  ],
+  "브라우저에서 파일 다운로드나 큰 응답 body가 시작되긴 했는데 중간에 멈추거나 네트워크 오류로 끝나서 서버가 실패한 건지 사용자가 먼저 떠난 건지 모르겠다": [
+    "network/download-starts-then-cuts-off-symptom-router"
+  ],
+  "브라우저에서는 `421`인데 `curl`이나 proxy log에서는 다른 힌트가 보여 어디가 진짜 분기점인지 모르겠다": [
+    "network/http-421-troubleshooting-trace-examples"
+  ],
+  "브라우저에서는 `options`만 보이거나 login html이 오거나 `(blocked)`처럼 떠서 postman과 왜 다르게 보이는지 설명이 필요하다": [
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "브라우저에서는 로그인 페이지나 인증서 경고가 뜨고 앱 팀은 서버 장애가 아니라는데 어디서 막히는지 감이 안 온다": [
+    "network/corporate-wifi-https-fails-symptom-router"
+  ],
+  "브라우저에서는 요청이 나가는데 컨트롤러 breakpoint가 한 번도 안 걸려요": [
+    "spring/controller-not-hit-cause-router"
+  ],
+  "브라우저에서만 cors 에러가 나는데 security를 봐야 하는지 mvc를 봐야 하는지 모르겠어요": [
+    "spring/cors-security-vs-mvc-ownership"
+  ],
+  "브랜치를 짧게 가져가라는 말은 듣는데 왜 자주 머지해야 하는지 설득이 안 돼요": [
+    "software-engineering/trunk-based-development-vs-feature-branch-tradeoffs"
+  ],
+  "블랙잭 웹 버전에서 새로고침하거나 두 탭으로 테스트하면 로그와 현재 상태가 서로 안 맞아요": [
+    "database/blackjack-action-log-state-mismatch-symptom-router"
+  ],
+  "블랙잭 웹 버전에서 이전 행동 로그와 지금 손패 상태가 따로 놀아요": [
+    "database/blackjack-action-history-current-state-transaction-bridge"
+  ],
+  "블랙잭 웹 전환 뒤 game 객체와 저장 모델 경계가 흐려 보여요": [
+    "software-engineering/blackjack-current-game-load-save-repository-bridge"
+  ],
+  "블랙잭 한 턴 요청의 순서를 어디까지 service가 가져가야 할지 헷갈려요": [
+    "software-engineering/blackjack-turn-processing-service-layer-bridge"
+  ],
+  "블랙잭에서 hit/stand 분기가 서비스에 몰려요": [
+    "design-pattern/blackjack-turn-flow-state-pattern-bridge"
+  ],
+  "비동기 이벤트로 바꾼 뒤 호출자는 성공처럼 끝나는데 실제 후속 작업은 실행되지 않은 것 같아요": [
+    "spring/event-listener-not-firing-cause-router"
+  ],
+  "비동기로 넘겼다고 생각했는데 응답이 끝날 때까지 메서드가 같이 붙어 있어요": [
+    "spring/async-looks-synchronous-cause-router"
+  ],
+  "빈 treemap에서 어떤 메서드는 예외가 나고 어떤 메서드는 null이라서 규칙이 헷갈려": [
+    "language/firstentry-lastentry-vs-firstkey-lastkey-bridge"
+  ],
+  "빈 treeset에서 어떤 메서드는 null이고 어떤 메서드는 예외라서 외우기가 안 돼": [
+    "language/pollfirst-polllast-vs-first-last-beginner-bridge"
+  ],
+  "빈 시간대를 먼저 조회하고 insert하는 코드가 왜 위험한지 감이 안 와": [
+    "database/constraint-first-booking-primer"
+  ],
+  "빈은 등록된 것 같은데 주입 시점에 못 고르거나 다른 bean으로 연결돼요": [
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "사용자는 `502`를 봤다고 하는데 백엔드 팀은 요청 자체를 못 받았다고 해서 gateway 앞단 문제인지 app 로그 누락인지 서로 말이 엇갈린다": [
+    "network/browser-502-no-app-log-symptom-router"
+  ],
+  "사용자는 `503`을 봤다고 하는데 백엔드 팀은 요청 자체를 못 받았다고 해서 app 다운인지 proxy local reply인지 서로 말이 엇갈린다": [
+    "network/browser-503-no-app-log-symptom-router"
+  ],
+  "사용자는 실패 화면을 봤는데 백엔드 팀은 성공 로그가 있다며 서로 같은 요청을 다르게 설명한다": [
+    "network/browser-504-app-200-symptom-router"
+  ],
+  "사용자는 실패했는데 서버는 처리된 것 같아": [
+    "network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge"
+  ],
+  "삽입 삭제가 빠르다는데 왜 실무에서는 배열 리스트를 더 많이 쓰는지 헷갈려": [
+    "data-structure/array-vs-linked-list"
+  ],
+  "삽입 삭제가 빠르다면서 왜 위치 찾기 비용까지 같이 보라고 하는지 헷갈려": [
+    "data-structure/linked-list-basics"
+  ],
+  "상세에서는 paid였는데 목록에서 다시 pending으로 보여": [
+    "system-design/list-detail-monotonicity-bridge"
+  ],
+  "상세에서는 보였는데 목록이나 다음 행동에서 시간선이 꼬여": [
+    "system-design/session-guarantees-decision-matrix"
+  ],
+  "상속 경계와 계약 경계를 같이 봐야 한다는데 무엇이 더 본질인지 헷갈려": [
+    "language/abstract-class-vs-interface"
+  ],
+  "상속으로 풀지 인터페이스 계약으로 열지 자꾸 헷갈려": [
+    "language/java-abstract-class-vs-interface-basics"
+  ],
+  "상수 리스트를 만들고 싶은데 뭘 써야 할지 모르겠어요": [
+    "language/list-copyof-listof-unmodifiablelist-beginner-bridge"
+  ],
+  "상태 enum은 만들었는데 전이 규칙이 service if문마다 흩어져 보여요": [
+    "language/enum-to-state-transition-beginner-bridge"
+  ],
+  "상태 enum은 있는데 어떤 전이가 허용되는지 controller와 service가 같이 알고 있어요": [
+    "design-pattern/roomescape-reservation-status-state-pattern-bridge"
+  ],
+  "상태 있는 서비스도 그냥 오토스케일링하면 되는 거 아닌지 모르겠어": [
+    "system-design/stateful-workload-placement-failover-control-plane-design"
+  ],
+  "상태 코드는 `200`이나 `206`으로 보이는데 받은 파일이 일부만 오거나 깨져 있어서 app 버그, proxy timeout, client disconnect 중 어디부터 봐야 할지 헷갈린다": [
+    "network/download-starts-then-cuts-off-symptom-router"
+  ],
+  "상태 코드보다 error code를 먼저 고정하라는 피드백이 왜 나오는지 이해가 안 돼요": [
+    "software-engineering/http-409-vs-422-selection-guide"
+  ],
+  "상태별 라벨이나 정책을 저장할 때 enummap을 언제 떠올려야 할지 모르겠어": [
+    "language/enummap-status-policy-lookup-primer"
+  ],
+  "상태에 따라 달라지는데 strategy로 뺐더니 이름이 어색하다": [
+    "design-pattern/strategy-state-policy-object-decision-guide"
+  ],
+  "상품 가격이 바뀐 뒤 예전 주문 금액까지 같이 달라져 보여요": [
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge"
+  ],
+  "새 객체를 대입했는데 바깥 변수는 왜 그대로인지 설명이 안 돼": [
+    "language/java-parameter-passing-pass-by-value-side-effects-primer"
+  ],
+  "새 게임 시작과 재시작을 service if 문으로만 막았는데 새로고침 뒤 중복 전이가 나요": [
+    "database/baseball-restart-duplicate-submit-idempotency-bridge"
+  ],
+  "새 게임을 시작했는데 다른 사용자의 진행 상태와 헷갈려요": [
+    "spring/baseball-game-state-singleton-bean-scope-bridge"
+  ],
+  "새 게임을 시작했는데 이전 라운드 점수나 덱이 남아 있어요": [
+    "spring/blackjack-web-state-mixing-cause-router"
+  ],
+  "새 글이 들어오면 다음 페이지 결과가 밀리거나 빠진다": [
+    "database/pagination-duplicates-missing-symptom-router"
+  ],
+  "새 코드 기본값을 골라야 하는데 timer 예제가 먼저 보여서 선택이 흔들린다": [
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router"
+  ],
+  "새로 안 만드는데 factory라고 불러도 되는지 헷갈려요": [
+    "design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist"
+  ],
+  "새로고침 한 번 더 하면 맞아지는데 첫 조회만 이전 상태처럼 보여서 헷갈려요": [
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "새로고침 한두 번 뒤에는 보이는데 리다이렉트 직후만 404 또는 빈 화면처럼 보여요": [
+    "database/payment-succeeded-but-order-not-visible-symptom-router"
+  ],
+  "새로고침이나 재전송 뒤 같은 턴이 두 번 기록돼요": [
+    "database/baseball-guess-attempt-unique-constraint-bridge"
+  ],
+  "새로고침하면 보일 때도 있고 계속 안 보일 때도 있어": [
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "새로고침했더니 같은 요청이 또 간 것 같아": [
+    "network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge"
+  ],
+  "생성도 안 하는데 factory라고 이름 붙여도 되는지 감이 안 와": [
+    "design-pattern/policy-object-naming-primer"
+  ],
+  "생성자 인자 순서를 자꾸 헷갈려": [
+    "design-pattern/builder-pattern-basics"
+  ],
+  "생성자 주입에서 expected single matching bean but found 2가 뜬다": [
+    "spring/same-type-bean-injection-failure-cause-router"
+  ],
+  "생성자에는 안 보이는데 메서드 안에서 구현체를 찾아 써요": [
+    "design-pattern/injected-registry-vs-service-locator-checklist"
+  ],
+  "생성자에는 없는데 컨테이너에서 직접 꺼내 써서 의존성이 숨어 보여요": [
+    "design-pattern/service-locator-antipattern"
+  ],
+  "서버 로그에는 요청이 온 것 같기도 하고 안 온 것 같기도 해서 cors, cookie, login redirect, 브라우저 정책 차단 중 무엇이 먼저인지 헷갈린다": [
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "서버를 여러 대 띄웠는데 요청을 어디로 나눠 보내야 하는지 모르겠어": [
+    "system-design/load-balancer-basics"
+  ],
+  "서버를 여러 대로 늘리면 세션이 왜 꼬이는지 잘 모르겠어": [
+    "system-design/stateless-vs-stateful-basics"
+  ],
+  "서비스 계정 키 파일을 배포에 넣어도 되는지 불안해요": [
+    "security/workload-identity-vs-long-lived-service-account-keys"
+  ],
+  "서비스 메서드에 @transactional이 있는데 예외가 나도 rollback이 안 된 것처럼 보여요": [
+    "spring/transactional-not-applied-cause-router"
+  ],
+  "서비스 이름만 알면 호출되는 줄 알았는데 실제 endpoint 선택이 어떻게 되는지 모르겠어": [
+    "system-design/service-discovery-health-routing-design"
+  ],
+  "서비스를 나눴는데 오히려 팀이 알아야 할 것과 협업 상대가 너무 많아졌어요": [
+    "software-engineering/team-cognitive-load-boundary-design"
+  ],
+  "서비스에서 조회는 했는데 controller에서 연관 필드 읽다가 지연 로딩 예외가 나요": [
+    "spring/lazyinitializationexception-cause-router"
+  ],
+  "선택 필드가 많아서 생성자가 너무 길어": [
+    "design-pattern/builder-pattern-basics"
+  ],
+  "설정 클래스를 하나 더 추가했더니 같은 bean 이름 충돌 에러가 난다": [
+    "spring/same-name-bean-collision-cause-router"
+  ],
+  "세그먼트 트리도 bst나 힙처럼 생각해 버려서 선택이 꼬여": [
+    "data-structure/binary-tree-vs-bst-vs-heap-bridge"
+  ],
+  "세션에 gameid만 둘지 매 요청마다 보내게 할지 정하지 못해서 api 모양이 흔들려요": [
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide"
+  ],
+  "세션에 뭘 넣고 요청 바디에는 뭘 넣어야 하는지 헷갈려요": [
+    "spring/baseball-game-id-session-boundary-bridge",
+    "spring/blackjack-game-id-session-boundary-bridge"
+  ],
+  "세션은 살아 있는데 permission 변경이 반영되지 않아요": [
+    "security/role-change-session-freshness-basics"
+  ],
+  "소셜 로그인은 성공했는데 우리 서비스에서는 아직 비로그인처럼 보여요": [
+    "security/social-login-to-local-session-bridge"
+  ],
+  "소수 승인자에게 모든 결정이 몰려 팀 속도가 너무 느려졌어요": [
+    "software-engineering/architecture-review-anti-patterns"
+  ],
+  "수동 번호와 자동 번호를 같은 생성자에 다 넣으니 분기가 커져요": [
+    "design-pattern/lotto-manual-auto-number-generator-strategy-bridge"
+  ],
+  "수동 입력, 자동 생성, 등수 판정, 통계 출력 분기가 한 메서드에 다 붙어 있어요": [
+    "design-pattern/lotto-big-if-responsibility-cause-router"
+  ],
+  "수동/자동 생성, 구매 흐름, 통계 출력이 한 메서드에 붙어 있어요": [
+    "software-engineering/lotto-boundary-mixing-cause-router"
+  ],
+  "수량 증가와 삭제가 동시에 오면 결과가 이상하게 섞여요": [
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge"
+  ],
+  "수익률 계산을 출력할 때마다 다시 하고 있어요": [
+    "software-engineering/lotto-winning-statistics-result-object-bridge"
+  ],
+  "수정은 됐는데 목록 화면에는 옛날 데이터가 보인다": [
+    "database/cache-replica-split-read-inconsistency"
+  ],
+  "순간이동이 있는데 bfs로 푸는지 0-1 bfs로 푸는지 판단이 안 돼": [
+    "algorithm/zero-one-bfs-grid-conversion-primer"
+  ],
+  "순환 참조인지 조건 탈락인지 헷갈려서 startup 장애를 계속 잘못 짚고 있어요": [
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "숫자 3개 검증이 controller와 domain에 둘 다 있어요": [
+    "software-engineering/baseball-guess-value-object-boundary-bridge"
+  ],
+  "숫자 비교 규칙을 값 객체로 둘지 별도 판정 객체로 둘지 헷갈려요": [
+    "design-pattern/baseball-strike-ball-judging-policy-object-bridge"
+  ],
+  "스크롤을 내리면 어떤 row는 건너뛰고 어떤 row는 중복해서 보인다": [
+    "database/pagination-duplicates-missing-symptom-router"
+  ],
+  "스타터는 넣었는데 어떤 자동 구성이 빠졌는지 몰라서 앱이 안 떠요": [
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "승격은 끝났다는데 관리자 화면에서는 상태가 보였다가 사라진다": [
+    "database/failover-after-old-new-flip-symptom-router"
+  ],
+  "승패 비교 if 문이 roundservice에 계속 늘어나요": [
+    "design-pattern/blackjack-winner-decision-policy-object-bridge"
+  ],
+  "시간이 칸처럼 잘려 있지 않은데 slot row 로 가도 되는지 모르겠다": [
+    "database/exclusion-constraint-vs-slot-row-quick-chooser"
+  ],
+  "실패 순간 트래픽이 폭증해": [
+    "network/proxy-retry-budget-discipline"
+  ],
+  "실패하자마자 재시도했더니 오히려 `429` 비율이 더 올라가 첫 실패가 원인인지 재시도가 quota를 더 태운 건지 모르겠다": [
+    "network/http-429-no-app-log-symptom-router"
+  ],
+  "실행할 때마다 map 출력 순서가 기대와 다르게 나온다": [
+    "data-structure/map-order-symptom-router-card"
+  ],
+  "심판이나 referee 같은 객체를 만들라는 리뷰가 왜 나왔는지 모르겠어요": [
+    "design-pattern/baseball-strike-ball-judging-policy-object-bridge"
+  ],
+  "싱글톤 패턴이랑 스프링 singleton bean을 같은 말로 써도 되는지 모르겠어": [
+    "design-pattern/singleton-vs-di-container-scope"
+  ],
+  "안쪽 @transactional 예외를 잡았는데 바깥 트랜잭션까지 같이 롤백돼요": [
+    "spring/transaction-propagation-deep-dive"
+  ],
+  "알림 inbox에서 방금 본 row가 새로고침 후 더 예전 상태로 내려가": [
+    "system-design/notification-inbox-row-monotonicity-primer"
+  ],
+  "알림 배지는 1인데 클릭한 원본이 안 보여": [
+    "system-design/notification-badge-vs-source-freshness-primer"
+  ],
+  "알림 상세는 성공했는데 다음 목록에서 다시 예전 값이 보여": [
+    "system-design/notification-read-to-min-version-bridge"
+  ],
+  "알림 전송처럼 호출 흔적이 중요한데도 stub만 두거나 반대로 spy를 과하게 붙이게 돼요": [
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "알림은 왔는데 눌러 보면 댓글이나 주문 원문이 안 보여": [
+    "system-design/causal-consistency-notification-primer"
+  ],
+  "알림은 왔는데 댓글이나 주문 상세가 404로 떠": [
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "알림을 눌렀는데 어떤 요청에 어떤 기준선을 실어야 하는지 모르겠어": [
+    "system-design/notification-causal-token-walkthrough"
+  ],
+  "알림을 눌렀는데 원문이 안 보여": [
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "애플리케이션이 부팅하다가 죽는데 bean 그래프 문제인지 설정 바인딩 문제인지 구분이 안 돼요": [
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "앱 로그에는 killed만 보이는데 진짜 oom인지 감이 안 와요": [
+    "operating-system/killed-oomkilled-memory-events-beginner-bridge"
+  ],
+  "앱은 떴는데 요청만 실패할 때 매핑 문제인지 주입 문제인지 헷갈려요": [
+    "spring/http-404-405-vs-bean-wiring-confusion-card"
+  ],
+  "어디 timeout을 먼저 줄여야 할지 모르겠어": [
+    "system-design/request-deadline-timeout-budget-primer"
+  ],
+  "어떤 계정은 바로 403이고 어떤 경우는 먼저 /login으로 가서 분기가 헷갈려요": [
+    "spring/admin-302-login-vs-403-beginner-bridge"
+  ],
+  "어떤 브라우저에서만 응답 body가 깨지거나 압축이 풀리지 않는다": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "어떤 사용자만이 아니라 같은 사무실, 같은 nat, 같은 테스트 계정 묶음에서만 갑자기 `429`가 많이 떠서 사용자별 제한인지 ip 기반 제한인지 구분이 안 된다": [
+    "network/http-429-no-app-log-symptom-router"
+  ],
+  "어떤 알고리즘을 써야 하는지보다 문제를 어떻게 분류해야 할지 모르겠어": [
+    "algorithm/backend-algorithm-starter-pack"
+  ],
+  "어떤 화면은 최신인데 다른 화면에서 값이 뒤로 가": [
+    "system-design/list-detail-monotonicity-bridge"
+  ],
+  "어떤 환경에서는 계속 `h2`인데 어떤 브라우저나 새 연결에서는 `h3`로 바뀌어 cache 문제인지 protocol 선택 문제인지 섞여 보인다": [
+    "network/first-request-h2-next-request-h3-symptom-router"
+  ],
+  "어제까지 되던 h3 경로가 오늘 첫 요청에서만 `421`을 주고 다시 보내면 성공해서 캐시인지 라우팅인지 헷갈린다": [
+    "network/h3-stale-alt-svc-421-recovery-primer"
+  ],
+  "어제까지 되던 주입이 구현체 하나 추가한 뒤부터 갑자기 깨진다": [
+    "spring/same-type-bean-injection-failure-cause-router"
+  ],
+  "없으면 insert 하는데 unique 만으로 끝나는지 guard row 까지 필요한지 모르겠다": [
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "없으면 insert 하려고 먼저 조회했는데 중복 row 가 생기거나 duplicate key 가 갑자기 늘었다": [
+    "database/for-update-zero-row-duplicate-insert-symptom-router"
+  ],
+  "에러 버짓을 왜 배포 중단 기준으로 쓰는지 모르겠어": [
+    "system-design/availability-and-sla-basics"
+  ],
+  "엔티티를 그대로 반환했더니 jackson 근처 stack trace에서 예외가 나요": [
+    "spring/lazyinitializationexception-cause-router"
+  ],
+  "여러 서비스 앞단에서 인증이랑 라우팅을 어디서 처리해야 할지 모르겠어": [
+    "system-design/api-gateway-basics"
+  ],
+  "여러 스레드가 작업을 주고받는데 arraydeque로도 되는지 헷갈린다": [
+    "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer"
+  ],
+  "여러 팀 승인 절차가 있는데 continuous delivery를 하자는 말이 현실적인지 모르겠어요": [
+    "software-engineering/release-trains-vs-continuous-delivery"
+  ],
+  "역직렬화 뒤에 invalid value object가 생기는데 경계를 어디서 잠가야 할지 막혀": [
+    "language/value-object-invariants-canonicalization-boundary-design"
+  ],
+  "연결 리스트가 노드랑 포인터라는 말까진 알겠는데 그림이 안 그려져": [
+    "data-structure/linked-list-basics"
+  ],
+  "연결 수가 많아질 때 epoll, kqueue, io_uring 중 무엇을 먼저 떠올려야 할지 모르겠어요": [
+    "operating-system/epoll-kqueue-io-uring"
+  ],
+  "연결 여부만 묻는 문제를 그래프 탐색으로 풀어야 할지 대표 비교로 풀어야 할지 헷갈려": [
+    "data-structure/union-find-standalone-beginner-primer"
+  ],
+  "연결돼 있나만 묻는 건데 bfs부터 떠올라서 자꾸 과하게 푼다": [
+    "data-structure/connectivity-question-router"
+  ],
+  "연결돼 있나와 최소 몇 번 만에 가나를 같은 탐색 질문으로 읽어서 헷갈려": [
+    "algorithm/dfs-bfs-intro"
+  ],
+  "연결은 살아 있는데 요청이 바로 안 나가요": [
+    "network/http2-max-concurrent-streams-pending-queue-saturation"
+  ],
+  "열쇠나 방향을 배열 차원에 넣어야 하는지 헷갈려": [
+    "algorithm/zero-one-bfs-state-space-bridge"
+  ],
+  "예약 api가 400인지 409인지 헷갈려서 어디를 고쳐야 할지 모르겠어요": [
+    "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer"
+  ],
+  "예약 reschedule에서 old scope와 new scope를 같이 잠가야 하는 이유가 궁금해요": [
+    "database/reservation-reschedule-cancellation-transition-patterns"
+  ],
+  "예약 가능 시간 조회는 됐는데 실제 예약 생성과 기준이 달라 보여요": [
+    "database/roomescape-available-times-active-predicate-antijoin-bridge"
+  ],
+  "예약 검증기를 늘렸는데도 서비스 switch 문이 줄지 않고 오히려 더 헷갈려졌어요": [
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router"
+  ],
+  "예약 겹침을 막아야 하는데 unique 로 충분한지 헷갈린다": [
+    "database/exclusion-constraint-vs-slot-row-quick-chooser"
+  ],
+  "예약 끝 시각과 다음 시작 시각이 같을 때 겹친다고 처리해서 테스트가 자꾸 틀린다": [
+    "data-structure/reservation-interval-half-open-boundary-card"
+  ],
+  "예약 목록 dto를 만들 때 member나 theme를 꺼내는 순간 쿼리가 계속 추가돼요": [
+    "spring/roomescape-admin-reservation-list-fetch-plan-bridge"
+  ],
+  "예약 변경은 성공했는데 available times에는 이전 슬롯도 새 슬롯도 둘 다 막힌 것처럼 보여요": [
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router"
+  ],
+  "예약 상태만 canceled로 바꿨는데 슬롯이 계속 막혀 있는 것 같아요": [
+    "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge"
+  ],
+  "예약 생성 api가 controller에 오기 전에 400으로 떨어져서 어디를 봐야 할지 헷갈려요": [
+    "spring/roomescape-reservation-request-validation-binding-bridge"
+  ],
+  "예약 생성 post 응답에서 바로 html을 그렸더니 브라우저가 양식 재전송을 묻는 이유를 모르겠어요": [
+    "spring/roomescape-admin-reservation-post-redirect-get-bridge"
+  ],
+  "예약 생성 순서를 controller에서 짜면 왜 안 되는지 헷갈려": [
+    "software-engineering/roomescape-reservation-flow-service-layer-bridge"
+  ],
+  "예약 생성과 조회 로직이 한 서비스에 섞여 있어서 수정할수록 메서드가 길어져요": [
+    "software-engineering/roomescape-reservation-service-bloat-cause-router"
+  ],
+  "예약 중복 방지를 처음 잡는데 unique와 for update 중 어디서 시작할지 헷갈려": [
+    "database/constraint-first-booking-primer"
+  ],
+  "예약 중복도 그냥 400으로 봐야 하는지 헷갈려요": [
+    "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide"
+  ],
+  "예약 중복인데 왜 @valid로 막지 말래요": [
+    "software-engineering/roomescape-validation-vs-domain-rule-bridge"
+  ],
+  "예약 취소 뒤에 다시 변경이 되거나 이미 지난 예약을 또 취소해도 되는 것처럼 보여요": [
+    "design-pattern/roomescape-reservation-status-state-pattern-bridge"
+  ],
+  "예약 취소와 변경 요청이 같이 오면 어떤 게 먼저 반영돼야 하나요": [
+    "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge"
+  ],
+  "예약 취소와 변경 요청이 동시에 오면 drift 없이 어떻게 직렬화하나요": [
+    "database/reservation-reschedule-cancellation-transition-patterns"
+  ],
+  "예약을 막 만들었는데 가능 시간 재조회에서는 방금 잡은 슬롯이 아직 열려 보여요": [
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "예약을 만든 직후 목록이나 가능 시간이 이전 상태처럼 보여서 쿼리 문제인지 헷갈려요": [
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide"
+  ],
+  "예약이나 쿠폰 발급은 개별 row가 정상인데 전체 capacity만 초과돼요": [
+    "database/last-stock-sold-twice-symptom-router"
+  ],
+  "예약표는 treemap으로 들고 있는데 overlap 판단식을 어떻게 세우는지 막힌다": [
+    "data-structure/treemap-interval-entry-primer"
+  ],
+  "예약표에서 바로 이전 시작 시각과 같거나 이전 시작 시각을 구분하지 못한다": [
+    "data-structure/treemap-neighbor-query-micro-drill"
+  ],
+  "예약표에서 시작 시각만 읽을지 종료 시각까지 읽을지 기준이 흐려진다": [
+    "data-structure/treemap-key-entry-strictness-bridge"
+  ],
+  "예약표에서 양옆 이웃의 끝 시각까지 바로 꺼내고 싶은데 key와 entry 차이가 헷갈려": [
+    "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill"
+  ],
+  "온보딩이나 위험한 변경에서 왜 pair를 권하는지 코드 리뷰와 차이가 헷갈려요": [
+    "software-engineering/pair-programming-code-review-tradeoffs"
+  ],
+  "왜 @valid가 안 타지": [
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "왜 dist를 보고 다시 넣는지 반례로 확인하고 싶어": [
+    "algorithm/zero-one-bfs-dist-vs-visited-counterexamples"
+  ],
+  "왜 앞에서 처음 갈라지는 칸을 봐야 하는지 감이 안 와": [
+    "algorithm/zero-one-bfs-full-path-lexicographic-bridge"
+  ],
+  "외부 api 번역이랑 기능 추가를 자꾸 같은 패턴으로 부르게 돼": [
+    "design-pattern/adapter-vs-facade-vs-decorator-beginner-router"
+  ],
+  "외부 api 호출에서 trace나 securitycontext 전파가 두 클라이언트에서 왜 다르게 느껴지는지 헷갈려요": [
+    "spring/spring-restclient-vs-webclient-lifecycle-boundaries"
+  ],
+  "외부 api를 붙여야 하는데 restclient로 끝낼지 webclient로 갈지 감이 안 와요": [
+    "spring/restclient-webclient-http-interface-decision-guide"
+  ],
+  "외부 api를 브라우저에서 바로 호출해도 되는지 판단이 안 서요": [
+    "security/browser-direct-call-vs-server-proxy-decision-tree"
+  ],
+  "외부 i/o가 느려질 때 thread pool이 왜 먼저 꽉 차는지 감이 안 와요": [
+    "operating-system/blocking-io-thread-pool-backpressure-primer"
+  ],
+  "외부 sdk wrapper를 만들었는데 hexagonal이라고 부르고 있어": [
+    "design-pattern/gof-adapter-vs-ports-and-adapters-vs-anti-corruption-layer-decision-guide"
+  ],
+  "외부 sdk를 감쌌는데 facade인지 adapter인지 proxy인지 모르겠어": [
+    "design-pattern/facade-vs-adapter-vs-proxy-decision-guide"
+  ],
+  "요약 테이블 값이 원본 테이블과 안 맞아요": [
+    "database/summary-drift-detection-bounded-rebuild"
+  ],
+  "요약 테이블 값이 틀렸을 때 한 건 보정, 범위 스캔, bounded rebuild 중 무엇을 먼저 선택할지 모르겠다": [
+    "database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide"
+  ],
+  "요청 dto마다 builder를 붙여야 하는지 모르겠어": [
+    "design-pattern/record-vs-builder-request-model-chooser"
+  ],
+  "요청 row는 빨간데 response headers나 body가 거의 없어서 어디부터 봐야 할지 모르겠다": [
+    "network/browser-devtools-blocked-canceled-failed-symptom-router"
+  ],
+  "요청 값마다 구현체를 바꿔야 하는데 생성자 주입에서 해결하려고 해요": [
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "요청 하나가 서버 안에서 어디를 지나가는지 그림이 안 그려져요": [
+    "operating-system/process-thread-stack-heap-fd-socket-backend-primer"
+  ],
+  "요청마다 게임 상태가 사라지거나 반대로 사용자끼리 섞여요": [
+    "spring/blackjack-web-state-mixing-cause-router"
+  ],
+  "요청마다 구현체가 바뀌는데 qualifier로 풀어야 하는지 router로 가야 하는지 헷갈려요": [
+    "spring/primary-qualifier-collection-injection"
+  ],
+  "요청이 어디서 컨트롤러로 가는지 모르겠어": [
+    "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+  ],
+  "용어가 섞여서 primer로 돌아가야 할지 deep dive로 가야 할지 헷갈려요": [
+    "operating-system/beginner-symptom-to-doc-map"
+  ],
+  "우리 코드 클래스도 @bean으로 만들고 있는데 이게 맞는지 확신이 없어요": [
+    "spring/bean-registration-path-decision-guide"
+  ],
+  "운영에서만 간헐적으로 후속 작업이 누락돼서 트랜잭션 문제인지 비동기 문제인지 모르겠어요": [
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "운영체제에서 막혔는데 어느 문서부터 읽어야 할지 모르겠어요": [
+    "operating-system/beginner-symptom-to-doc-map"
+  ],
+  "음수 간선이 있다는 말만 보고도 dag 여부나 all-pairs 여부를 같이 봐야 하는지 헷갈려": [
+    "algorithm/dijkstra-bellman-ford-floyd-warshall"
+  ],
+  "응답 body는 html 차단 페이지처럼 보이는데 팀에서는 비즈니스 로직의 rate limit인지 edge 정책인지 서로 다르게 말한다": [
+    "network/http-429-no-app-log-symptom-router"
+  ],
+  "응답 body는 짧은 `bad gateway`인데 app 공통 에러 json이 아니라서 proxy가 대신 응답한 것 같지만 어느 홉이 owner인지 바로 설명하기 어렵다": [
+    "network/browser-502-no-app-log-symptom-router"
+  ],
+  "응답 json을 만들 때 lazyinitializationexception이 터져요": [
+    "spring/lazyinitializationexception-cause-router"
+  ],
+  "응답 헤더에 `alt-svc`가 보이는데 왜 그 응답 자체는 `h2`인지, 왜 다음 요청부터만 `h3`인지 감이 안 잡힌다": [
+    "network/first-request-h2-next-request-h3-symptom-router"
+  ],
+  "응답은 200 같은데 브라우저 콘솔에는 access-control-allow-origin 관련 에러만 보여요": [
+    "spring/browser-only-cors-error-cause-router"
+  ],
+  "응답이 느린데 cache를 붙여야 할지 queue로 빼야 할지 모르겠어": [
+    "system-design/queue-vs-cache-vs-db-decision-drill"
+  ],
+  "응답이 늦어서 stand를 다시 보냈더니 같은 게임이 두 번 종료 처리돼요": [
+    "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge"
+  ],
+  "응답이 늦어서 다시 시작 요청을 한 번 더 보냈더니 이미 끝난 게임이 또 바뀌어요": [
+    "database/baseball-restart-duplicate-submit-idempotency-bridge"
+  ],
+  "응답이 늦어서 다시 요청했더니 purchase row와 ticket row가 둘 다 늘어났어요": [
+    "database/lotto-purchase-duplicate-submit-idempotency-bridge"
+  ],
+  "응답이 늦어서 예약 생성 요청을 다시 보냈는데 같은 요청을 한 번만 인정하려면 어떻게 해야 하나요": [
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge"
+  ],
+  "이동 비용이 0 아니면 1인지 문제에서 읽어내는 감각이 없어": [
+    "algorithm/zero-one-bfs-grid-conversion-primer"
+  ],
+  "이동 횟수 최소와 비용 합 최소를 같은 뜻으로 읽고 있어": [
+    "algorithm/bfs-vs-dijkstra-shortest-path-mini-card"
+  ],
+  "이메일이나 닉네임을 언제 값 객체로 올려야 하는지 감이 안 와": [
+    "language/request-dto-to-value-object-boundary-primer"
+  ],
+  "이미 끝난 게임에 다른 요청이 들어와 finished 상태가 다시 꼬여요": [
+    "database/baseball-current-game-state-lost-update-version-cas-bridge"
+  ],
+  "이미 찬 슬롯인지, 영업시간인지, 휴무일인지 판단이 한 메서드에 섞여 있어 테스트가 어려워요": [
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge"
+  ],
+  "이벤트 이름을 붙였는데 사실 실행 명령처럼 읽혀서 리뷰에서 자주 걸려요": [
+    "design-pattern/observer-vs-command-beginner-bridge"
+  ],
+  "이벤트는 발행된 것 같은데 어떤 요청에서는 리스너가 돌고 어떤 요청에서는 조용히 빠져요": [
+    "spring/event-listener-not-firing-cause-router"
+  ],
+  "이벤트는 발행했는데 commit 뒤 동작이 왜 검증되지 않는지 감이 안 와요": [
+    "software-engineering/after-commit-listener-rollback-test-beginner-bridge"
+  ],
+  "이벤트로 분리했는데 주문 롤백과 알림 발송 타이밍이 자꾸 어긋나 보여요": [
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "이분 탐색인데 exact match와 lower bound를 같은 코드로 처리하다가 자꾸 틀려": [
+    "algorithm/binary-search-intro"
+  ],
+  "이진 트리랑 bst랑 힙이 다 트리처럼 보여서 뭐가 다른지 자꾸 섞여": [
+    "data-structure/binary-tree-vs-bst-vs-heap-bridge"
+  ],
+  "인덱스 추가 직후 deadlock이 자주 난다": [
+    "database/deadlock-case-study"
+  ],
+  "인증 검사와 예외 응답 포맷을 같은 레이어에서 처리하려다가 꼬여요": [
+    "spring/request-cross-cutting-hook-decision-guide"
+  ],
+  "인터페이스 안에 몸체가 있는 메서드가 둘 다 보여서 default와 static 역할이 한꺼번에 섞여 보여": [
+    "language/interface-default-vs-static-method-primer"
+  ],
+  "일부 요청만 옛값을 보는데 read repair로 끝낼지 별도 reconciliation job이 필요한지 헷갈린다": [
+    "database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide"
+  ],
+  "읽기 전용 리스트인데 원본 바꾸니 같이 바뀌어요": [
+    "language/list-copyof-listof-unmodifiablelist-beginner-bridge"
+  ],
+  "읽기 전용인지 수정 가능한지 헷갈려요": [
+    "language/array-to-list-conversion-entrypoint-primer"
+  ],
+  "입력 계층이 lotto나 winningnumbers를 직접 만들지 말라는 리뷰가 무슨 뜻인지 모르겠어요": [
+    "software-engineering/lotto-inputview-domain-conversion-boundary-bridge"
+  ],
+  "입력 단계와 게임 종료 단계가 한 메서드에 섞여서 읽기 어려워요": [
+    "design-pattern/baseball-restart-flow-state-pattern-bridge"
+  ],
+  "입문 기준은 알겠는데 실무 설계로 가면 추상 클래스와 인터페이스 경계가 다시 흐려져": [
+    "language/abstract-class-vs-interface"
+  ],
+  "자동 생성 로직을 바꾸고 싶은데 어디를 갈아끼워야 할지 모르겠어요": [
+    "design-pattern/lotto-manual-auto-number-generator-strategy-bridge"
+  ],
+  "자동 생성기와 수동 입력용 생성기를 둘 다 bean으로 올렸더니 spring이 무엇을 넣을지 모르겠다고 해요": [
+    "spring/lotto-manual-auto-generator-qualifier-bridge"
+  ],
+  "자료구조가 너무 많아서 어디서부터 봐야 할지 모르겠어": [
+    "data-structure/basic"
+  ],
+  "작은 계산식도 전부 전략 패턴으로 만들어야 하는지 감이 안 와": [
+    "design-pattern/strategy-vs-function-chooser"
+  ],
+  "잘못된 입력도 종료된 게임도 전부 illegalargumentexception으로만 처리하고 있어요": [
+    "spring/baseball-invalid-guess-400-vs-finished-game-409-exception-bridge"
+  ],
+  "잠긴 row를 만나면 바로 실패해야 하는지 다른 row를 집어야 하는지 조금 기다려야 하는지 기준이 흐린다": [
+    "database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide"
+  ],
+  "장바구니 수량을 동시에 바꾸면 마지막 저장만 남아요": [
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge"
+  ],
+  "장바구니 수량을 여러 탭에서 바꾸면 마지막 요청만 남고 한쪽 변경이 사라져요": [
+    "database/shopping-cart-reclick-concurrent-write-cause-router"
+  ],
+  "장바구니 화면에서 본 총액을 그대로 보내도 되는지 모르겠어요": [
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge"
+  ],
+  "장바구니를 메모리에 들고 있었는데 새로고침이나 다른 탭에서 상태가 이상해져요": [
+    "spring/shopping-cart-current-cart-singleton-bean-scope-bridge"
+  ],
+  "장바구니에 이미 있는 상품인지 조회하고 저장했는데 중복 row가 생겨요": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge"
+  ],
+  "장애 났을 때 어떤 replica를 leader로 올려야 하는지 기준이 헷갈려": [
+    "system-design/stateful-workload-placement-failover-control-plane-design"
+  ],
+  "장애 때 재시도할수록 더 느려져": [
+    "network/proxy-retry-budget-discipline"
+  ],
+  "장애가 나면 바로 fail해야 하는지 기능을 줄여 버텨야 하는지 판단이 안 돼": [
+    "system-design/request-path-failure-modes-primer"
+  ],
+  "재고 1개인데 동시에 결제 성공이 떠요": [
+    "database/shopping-cart-payment-idempotency-stock-bridge"
+  ],
+  "재고 수량 업데이트와 쿠폰 1회 발급을 같은 동시성 문제로 설명하다가 리뷰에서 계속 되돌아온다": [
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
   "재고가 1개 남는데 두 요청이 동시에 성공해버렸어요": [
     "database/transaction-case-studies"
+  ],
+  "재시도 요청에 기존 성공 결과를 재사용해야 하는지 아직 처리 중이라고 돌려야 하는지 판단이 안 선다": [
+    "database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide"
+  ],
+  "재시도는 막았는데 다른 write가 앞질러 가는 이유를 모르겠어": [
+    "system-design/monotonic-writes-ordering-primer"
+  ],
+  "재시도하면 성공과 옛 결과가 번갈아 나와서 실제 저장 여부를 헷갈린다": [
+    "database/failover-after-old-new-flip-symptom-router"
+  ],
+  "재시작 버튼을 두 번 눌렀더니 새 게임이 두 개 생기거나 상태가 두 번 넘어가요": [
+    "database/baseball-restart-duplicate-submit-idempotency-bridge"
+  ],
+  "저장 직후 안 보이는 문제와 새로고침할수록 옛값이 나오는 문제와 원인보다 결과가 먼저 보이는 문제를 한 가지 일관성 이슈로 뭉뚱그린다": [
+    "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide"
+  ],
+  "저장 직후 조회부터 다음 write까지 어떤 보장을 묶어야 할지 모르겠어": [
+    "system-design/session-guarantees-decision-matrix"
+  ],
+  "저장은 성공했는데 직후 조회만 가끔 옛값이라 어떤 읽기 전략을 먼저 써야 할지 헷갈린다": [
+    "database/read-after-write-routing-decision-guide"
+  ],
+  "전략 클래스를 계속 추가하는데 코드가 더 단순해지지 않아": [
+    "design-pattern/strategy-explosion-smell"
+  ],
+  "전역 객체 하나 두는 것과 컨테이너가 관리하는 생명주기 차이가 잘 안 잡혀": [
+    "design-pattern/singleton-vs-di-container-scope"
+  ],
+  "전체 rebuild 말고 일부 bucket만 다시 계산하고 싶어요": [
+    "database/summary-drift-detection-bounded-rebuild"
+  ],
+  "전체 거리표가 필요한 문제와 목적지 하나만 찾는 문제를 어떻게 나눠야 할지 모르겠어": [
+    "algorithm/a-star-vs-dijkstra"
+  ],
+  "점수 계산 테스트를 하려는데 입력 처리나 턴 흐름까지 같이 끌려와요": [
+    "software-engineering/blackjack-testability-cause-router"
+  ],
+  "정렬 탐색용인지 최소값 꺼내기용인지 문제를 읽어도 구분이 안 돼": [
+    "data-structure/binary-tree-vs-bst-vs-heap-bridge"
+  ],
+  "정렬, 이분 탐색, bfs, dp 중 어디부터 의심해야 할지 첫 분기가 안 잡혀": [
+    "algorithm/backend-algorithm-starter-pack"
+  ],
+  "정렬된 배열 문제라는데 왜 양끝에서 줄여도 되는지 감이 안 와": [
+    "algorithm/two-pointer-intro"
+  ],
+  "정렬은 했는데 어느 절반을 버릴 수 있는지 판단이 매번 흔들려": [
+    "algorithm/binary-search-intro"
+  ],
+  "정렬은 했는데 왜 이제 절반을 버릴 수 있는지 연결이 안 된다": [
+    "algorithm/sort-to-binary-search-bridge"
+  ],
+  "정렬한 다음 무엇을 얻는지 모르겠어서 sort를 하고도 풀이가 막힌다": [
+    "algorithm/sort-to-binary-search-bridge"
+  ],
+  "정적 ordered index를 고를 때 o(log n)만 보다가 scan 길이에 따른 차이를 놓친다": [
+    "data-structure/ordered-search-workload-matrix"
+  ],
+  "정적 인덱스와 구조적 검색 트리의 차이를 한 번에 설명하고 싶어": [
+    "algorithm/suffix-array-vs-suffix-tree-comparison"
+  ],
+  "정적 팩토리 메서드와 factory 패턴을 둘 다 factory라고 불러서 같은 걸로 느껴져": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide"
+  ],
+  "정적 팩토리랑 factory 패턴이 같은 말처럼 보여": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern"
+  ],
+  "정점 번호가 듬성듬성할 때도 boolean 배열을 써도 되는지 헷갈려": [
+    "algorithm/bfs-visited-array-vs-set-java-beginner-card"
+  ],
+  "정책을 고르는 클래스인데 factory라고 불러도 되는지 헷갈려요": [
+    "design-pattern/strategy-policy-selector-naming"
+  ],
+  "정해진 릴리스 열차가 답인지 준비되는 즉시 내보내는 방식이 답인지 판단이 안 돼요": [
+    "software-engineering/release-trains-vs-continuous-delivery"
+  ],
+  "제안 문서와 결정 문서를 따로 써야 한다는 말이 왜 필요한지 모르겠어요": [
+    "software-engineering/rfc-vs-adr-decision-flow"
+  ],
+  "제품군 생성이 뭔지 모르겠어": [
+    "design-pattern/factory-vs-abstract-factory-vs-builder"
+  ],
+  "조건 통과와 실제 주입 대상을 같은 문제로 보고 있어요": [
+    "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer"
+  ],
+  "조건부 저장에서 왜 어떤 때는 412고 어떤 때는 409인지 모르겠어": [
+    "system-design/conditional-write-status-code-bridge"
+  ],
+  "조회 화면이 무거워졌을 때 write model을 바꿔야 하는지 읽기 전용 테이블을 따로 둬야 하는지 헷갈린다": [
+    "database/normalization-vs-denormalization-vs-summary-table-decision-guide"
+  ],
+  "조회가 안 흔들리면 되는지 아니면 다른 요청을 기다리게 해야 하는지 한 질문으로 섞여 있다": [
+    "database/plain-select-vs-locking-read-vs-serializable-decision-guide"
+  ],
+  "조회만 했는데 linkedhashmap 항목이 뒤로 밀린다": [
+    "data-structure/map-order-symptom-router-card"
+  ],
+  "조회용 view를 그대로 api 응답으로 내보내도 되는지 헷갈려요": [
+    "software-engineering/command-dto-vs-query-view-naming-checklist"
+  ],
+  "종료 코드 137과 java outofmemoryerror를 같은 뜻으로 봐도 되는지 헷갈려요": [
+    "operating-system/killed-oomkilled-memory-events-beginner-bridge"
+  ],
+  "주문 상세가 예전 결제 내용이 아니라 현재 장바구니 상태를 따라 바뀌어요": [
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge"
+  ],
+  "주문 상태가 늘수록 service switch 문이 계속 커져요": [
+    "design-pattern/shopping-cart-order-status-state-pattern-bridge"
+  ],
+  "주문 생성 api 응답은 200인데 바로 목록을 열면 방금 주문만 빠져 있어요": [
+    "database/payment-succeeded-but-order-not-visible-symptom-router"
+  ],
+  "주문 생성 api는 성공인데 목록 조회가 가끔 이전 상태를 보여줘요": [
+    "database/shopping-cart-order-complete-read-your-writes-bridge"
+  ],
+  "주문 서비스, 결제 서비스, 스케줄러가 모두 timeout 규칙을 조금씩 알고 있어요": [
+    "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge"
+  ],
+  "주문 성공 시 알림을 보냈는지 확인할 때 상태 검증과 호출 검증을 자꾸 섞어요": [
+    "software-engineering/outbound-notifier-mock-boundary-primer"
+  ],
+  "주문 완료 알림이랑 주문 취소 요청을 같은 메시지로 다뤄도 되는지 모르겠어요": [
+    "design-pattern/observer-vs-command-beginner-bridge"
+  ],
+  "주문 완료 이벤트를 말하는데 패턴인지 메시지 계약인지 대화가 계속 섞여": [
+    "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide"
+  ],
+  "주문 저장 전에 승인할지 후에 승인할지 감이 안 와요": [
+    "spring/shopping-cart-payment-transaction-boundary-bridge"
+  ],
+  "주문 저장 후 메시지 누락이 걱정되는데 어느 패턴이 발행 보장이고 어느 패턴이 보상 흐름인지 섞인다": [
+    "database/outbox-vs-cdc-vs-saga-decision-guide"
+  ],
+  "주문 저장과 결제 승인 순서를 어디서 묶어야 해": [
+    "software-engineering/shopping-cart-checkout-service-layer-bridge"
+  ],
+  "주문·예약 같은 쓰기 요청에서 같은 endpoint가 두 번 보여 재시도 전에 첫 요청이 이미 처리됐는지 걱정된다": [
+    "network/same-url-request-twice-symptom-router"
+  ],
+  "주문은 됐는데 메일이 아직 안 와": [
+    "system-design/consistency-idempotency-async-workflow-foundations"
+  ],
+  "주문은 둘 다 완료됐는데 재고 수량이 0 아래로 내려가거나 덜 차감돼요": [
+    "database/last-stock-sold-twice-symptom-router"
+  ],
+  "주문은 저장됐는데 알림이나 후속 작업을 어디서 실행해야 할지 모르겠어요": [
+    "spring/shopping-cart-order-complete-after-commit-outbox-bridge"
+  ],
+  "주문은 저장된 것 같은데 관리자 조회와 사용자 조회가 잠깐 서로 다른 결과를 보여요": [
+    "database/payment-succeeded-but-order-not-visible-symptom-router"
+  ],
+  "주문이 두 번 생성됐는지 헷갈려": [
+    "network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge"
   ],
   "중복 결제 요청이 두 번 처리됐어요": [
     "database/transaction-case-studies"
   ],
+  "중복 구매 방지를 service if 문으로만 했는데 새로고침 뒤 duplicate가 나요": [
+    "database/lotto-purchase-duplicate-submit-idempotency-bridge"
+  ],
+  "중복 생성 방지와 같은 row 덮어쓰기 방지를 같은 도구로 풀려다가 자꾸 섞인다": [
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
+  "중복 생성 실패를 conflict로 내려야 하는지 잠깐 뒤 재시도로 봐야 하는지 결정 축이 헷갈린다": [
+    "database/already-exists-vs-busy-vs-retryable-decision-guide"
+  ],
+  "중복 숫자 추측과 이미 끝난 게임 재요청이 둘 다 500으로 내려가요": [
+    "spring/baseball-invalid-guess-400-vs-finished-game-409-exception-bridge"
+  ],
+  "중복 예약 에러를 controller에서 처리해야 하나요": [
+    "software-engineering/roomescape-validation-vs-domain-rule-bridge"
+  ],
+  "중복 예약도 잘못된 입력 같은데 왜 @valid 말고 service에서 보래요?": [
+    "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer"
+  ],
+  "중복 예약이 409인지 422인지 리뷰 때마다 헷갈려요": [
+    "software-engineering/http-409-vs-422-selection-guide"
+  ],
+  "중복 저장이 싫은데 목록 성능이 안 나와서 어디까지 반정규화해야 할지 판단이 안 선다": [
+    "database/normalization-vs-denormalization-vs-summary-table-decision-guide"
+  ],
+  "중복만 막으면 되는지 값까지 같이 저장해야 하는지 자꾸 헷갈려": [
+    "data-structure/map-vs-set-requirement-bridge"
+  ],
+  "중복키 에러 직후에는 이미 존재한다는데 api 응답은 not found 처럼 보인다": [
+    "database/duplicate-key-then-not-found-symptom-router"
+  ],
+  "중복키 예외가 나면 바로 409로 끝내야 하는지 헷갈려": [
+    "database/duplicate-key-fresh-read-classifier-mini-card"
+  ],
+  "중복키면 재조회해야 하는지 전체 재시도해야 하는지 헷갈려": [
+    "database/duplicate-key-vs-serialization-failure-mini-card"
+  ],
+  "중앙 coordinator를 둘지 이벤트로 풀지 판단이 안 서": [
+    "design-pattern/mediator-vs-observer-vs-pubsub"
+  ],
+  "지금 시각부터 30분 빈 시간이 있는지 예약표에서 어떻게 계산하는지 모르겠어": [
+    "data-structure/treemap-gap-detection-mini-drill"
+  ],
+  "지연 스파이크 원인을 찾고 싶은데 async-profiler와 jfr 중 어떤 질문에 더 맞는지 헷갈려": [
+    "language/async-profiler-vs-jfr-comparison"
+  ],
+  "지연 실행 도구와 스케줄러 재료를 한 번에 배우려다 기준이 안 선다": [
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router"
+  ],
+  "지원 접근 알림을 누구에게 보내야 할지 헷갈려요": [
+    "security/support-access-alert-router-primer"
+  ],
+  "직렬화 실패를 409처럼 내려도 되는지 판단이 안 서": [
+    "database/duplicate-key-vs-serialization-failure-mini-card"
+  ],
+  "질의 순서를 바꿔도 되는 문제인지부터 판단이 안 서": [
+    "algorithm/offline-query-ordering-patterns"
+  ],
+  "집이나 lte에서는 잘 되는데 회사 와이파이, 사내망, 공용 wi-fi처럼 특정 네트워크에서만 https api 호출이 실패한다": [
+    "network/corporate-wifi-https-fails-symptom-router"
+  ],
+  "짧은 lock timeout을 work stealing 대체재처럼 써도 되는지 리뷰에서 자꾸 막힌다": [
+    "database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide"
+  ],
+  "채팅이나 알림이 끊긴 것은 아닌데 메시지가 한 건씩 안 오고 묶여서 몰아서 와 proxy buffering인지 서버 flush 문제인지 헷갈린다": [
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "책임이 섞였다는 코멘트를 받았는데 controller, service, repository 중 어디가 문제인지 못 잡겠어요": [
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "첫 failing test를 짜려는데 fake로 시작할지 mock으로 시작할지 기준이 없어요": [
+    "software-engineering/fake-vs-mock-first-test-primer"
+  ],
+  "첫 방문에서는 http/2로 보였는데 다시 요청하니 http/3가 붙어서 브라우저가 방금 실패했다가 복구한 건지 정상 학습 패턴인지 모르겠다": [
+    "network/first-request-h2-next-request-h3-symptom-router"
+  ],
+  "첫 카드 숨김과 최종 공개 분기가 outputview 곳곳에 흩어져요": [
+    "design-pattern/blackjack-player-dealer-result-view-template-method-bridge"
+  ],
+  "체이닝이면 다 builder인지 헷갈려": [
+    "design-pattern/builder-pattern-basics"
+  ],
+  "체크리스트는 있는데 rollback과 kill switch를 실제로 연습한 적이 없다": [
+    "software-engineering/operational-readiness-drills-and-change-safety"
+  ],
+  "최근 k개 최대값 문제에서 plain deque로는 왜 안 되는지 헷갈려": [
+    "data-structure/monotonic-deque-walkthrough"
+  ],
+  "최단 거리는 같은데 사전순으로 더 작은 경로를 어떻게 고르는지 모르겠어": [
+    "algorithm/zero-one-bfs-lexicographic-tie-mini-note"
+  ],
+  "최단 거리는 구했는데 실제 경로를 어떻게 복원하는지 모르겠어": [
+    "algorithm/shortest-path-reconstruction-bridge"
+  ],
+  "최단 경로 문제를 봤는데 bfs, dijkstra, bellman-ford, floyd-warshall 중 어디서 잘라야 할지 모르겠어": [
+    "algorithm/dijkstra-bellman-ford-floyd-warshall"
+  ],
+  "최단 경로 문제인지 그냥 같은 그룹 확인인지 분기가 안 된다": [
+    "data-structure/connectivity-question-router"
+  ],
+  "최단 경로라는데 bfs인지 다익스트라인지 첫 분기부터 헷갈려": [
+    "algorithm/bfs-vs-dijkstra-shortest-path-mini-card"
+  ],
+  "최대 유량은 알겠는데 비용까지 최소화하려면 무엇이 추가되는지 모르겠어": [
+    "algorithm/min-cost-max-flow-intuition"
+  ],
+  "최소라는 말만 보면 bfs부터 떠올라서 weighted shortest path와 섞어 버린다": [
+    "algorithm/graph"
+  ],
+  "최적 분할점이 단조적이라는 말이 코드에서 어떤 의미인지 모르겠어": [
+    "algorithm/divide-and-conquer-dp-optimization"
+  ],
+  "최적화 문제만 보면 그리디와 dp 중 뭘 먼저 의심해야 할지 모르겠어": [
+    "algorithm/greedy-vs-dp-decision-card"
+  ],
+  "추상 클래스만 보이면 템플릿 메소드로 봐야 하는지 헷갈려요": [
+    "design-pattern/abstract-class-vs-interface-injection-bridge"
+  ],
+  "추상 클래스와 인터페이스를 언제 고르는지 큰 기준이 안 잡혀": [
+    "language/java-abstract-class-vs-interface-basics"
+  ],
+  "추측 결과를 저장하고 게임 종료 여부를 바꾸는 코드가 따로 놀아요": [
+    "database/baseball-guess-history-current-state-transaction-bridge"
+  ],
+  "추측 이력은 두 줄인데 games 현재 상태가 한쪽 결과로 덮여요": [
+    "database/baseball-current-game-state-lost-update-version-cas-bridge"
+  ],
+  "추측 제출 뒤 화면에서 f5를 누르기 무서워요": [
+    "spring/baseball-guess-post-redirect-get-refresh-replay-bridge"
+  ],
+  "추측 한 번 처리할 때 어느 계층이 게임을 조회하고 저장해야 할지 헷갈려요": [
+    "software-engineering/baseball-current-game-load-save-repository-bridge"
+  ],
+  "출력에는 원소가 보이는데 hashset remove가 실패해서 어디부터 봐야 할지 모르겠어": [
+    "language/list-indexof-remove-vs-set-remove-symptom-bridge"
+  ],
+  "출력이 많을 때만 subprocess가 안 끝나요": [
+    "operating-system/subprocess-pipe-backpressure-primer"
+  ],
+  "취소나 변경 직후에만 이전 시간이 늦게 풀리거나 다시 막혀 보여서 어디부터 봐야 할지 모르겠어요": [
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router"
+  ],
+  "취소나 완료 뒤에도 다시 진행 상태로 바뀌어서 어디서 막아야 할지 모르겠어요": [
+    "language/enum-to-state-transition-beginner-bridge"
+  ],
+  "취소된 예약은 무시하고 싶은데 left join 쿼리가 자꾸 inner join처럼 동작해요": [
+    "database/roomescape-available-times-active-predicate-antijoin-bridge"
+  ],
+  "취소된 예약은 무시해야 하는데 가능한 시간이 하나도 안 남아요": [
+    "database/roomescape-available-times-empty-cause-router"
+  ],
+  "카드 한 장 뽑을 때마다 점수 계산이 계속 꼬여요": [
+    "software-engineering/blackjack-ace-scoring-domain-invariant-bridge"
+  ],
+  "카드가 두 장 들어간 것처럼 보일 때도 있고, 로그는 한 줄인데 상태만 두 번 진행된 것처럼 보일 때도 있어요": [
+    "database/blackjack-action-log-state-mismatch-symptom-router"
+  ],
+  "캐시 미스 뒤 replica로 갔는데 방금 본 값보다 뒤로 가": [
+    "system-design/mixed-cache-replica-freshness-bridge"
+  ],
+  "캐시 키만 바꿨는데 응답 의미가 섞인 것 같아 원인을 모르겠어요": [
+    "design-pattern/normalization-version-rollout-playbook"
+  ],
+  "캐시 히트인데도 왜 오래된 값처럼 보여?": [
+    "system-design/mixed-cache-replica-freshness-bridge"
+  ],
+  "캐시나 권한 체크를 넣은 래퍼를 기능 추가 패턴으로만 이해하고 있어": [
+    "design-pattern/decorator-vs-proxy-decision-guide"
+  ],
+  "캐시랑 db가 둘 다 오래 기다리다가 전체 요청이 터져": [
+    "system-design/request-deadline-timeout-budget-primer"
+  ],
+  "캐시를 붙였는데도 방금 저장한 값이 안 보여": [
+    "system-design/caching-vs-read-replica-primer"
+  ],
+  "컨테이너 안 fd 수는 낮은데 too many open files가 나요": [
+    "operating-system/container-fd-pressure-emfile-enfile-bridge"
+  ],
+  "컨트롤러 로그가 안 찍힌 400이랑 검증 메시지가 보이는 400을 자꾸 같은 원인으로 봐요": [
+    "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide"
+  ],
+  "컨트롤러 전 공통 처리와 실패 응답 통일을 어디서 나눠야 할지 모르겠어요": [
+    "spring/request-cross-cutting-hook-decision-guide"
+  ],
+  "컨트롤러 첫 줄 로그가 아예 안 찍혀요": [
+    "spring/controller-not-hit-cause-router"
+  ],
+  "컨트롤러 첫 줄 로그가 안 찍히는데 post 요청이 바로 400으로 끝나요": [
+    "spring/requestbody-400-before-controller-primer"
+  ],
+  "컨트롤러는 거의 안 탔다고 들었는데 사용자는 파일을 오래 올린 뒤에야 실패를 봐서 왜 늦게 거절됐는지 감이 안 잡힌다": [
+    "network/upload-finishes-then-rejected-symptom-router"
+  ],
+  "컨트롤러에 예약 생성 로직이 너무 많다고 리뷰를 받았어": [
+    "software-engineering/roomescape-reservation-flow-service-layer-bridge"
+  ],
+  "컨트롤러에서 결제 api까지 불러도 되나": [
+    "software-engineering/shopping-cart-checkout-service-layer-bridge"
+  ],
+  "컨트롤러에서 로또를 여러 장 만들어도 되나": [
+    "software-engineering/lotto-purchase-flow-service-layer-bridge"
+  ],
+  "컨트롤러에서 막을 값과 도메인 안에서 끝까지 지킬 규칙이 섞여 보여요": [
+    "software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge"
+  ],
+  "컨트롤러에서 뺀 코드를 서비스로 옮겼는데 여전히 역할이 뒤엉킨 느낌이에요": [
+    "software-engineering/roomescape-reservation-service-bloat-cause-router"
+  ],
+  "컴파일 성공 실패를 직접 예측해 보면서 접근 제한자를 익히고 싶어": [
+    "language/java-access-modifier-boundary-lab"
+  ],
+  "컴퓨터 숫자를 고정하고 싶은데 생성 로직을 바꿀 곳이 없어요": [
+    "design-pattern/baseball-random-number-generator-strategy-bridge"
+  ],
+  "코드에서는 stdout을 먼저 찍었는데 화면에는 stderr가 먼저 보여요": [
+    "operating-system/stdio-buffering-after-redirect"
+  ],
+  "콘솔 로또 입력을 스프링 controller에서 어떤 dto로 받아야 할지 모르겠어요": [
+    "spring/lotto-mvc-controller-binding-validation-bridge"
+  ],
+  "콘솔 블랙잭의 hit stand 입력을 spring controller에서 어떻게 받아야 할지 모르겠어요": [
+    "spring/blackjack-mvc-controller-binding-validation-bridge"
+  ],
+  "콘솔에는 cors 에러가 뜨는데 api 서버 로그에는 본 요청이 도착한 흔적이 없어 어디서 막혔는지 헷갈린다": [
+    "network/options-only-no-actual-request-symptom-router"
+  ],
+  "콘솔에서는 한 메서드였는데 웹에서는 어디서 요청을 끊어야 할지 모르겠어요": [
+    "spring/baseball-console-game-loop-http-request-lifecycle-bridge"
+  ],
+  "쿠폰 이미 사용됨을 dto validator에서 막아도 되나 헷갈려요": [
+    "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge"
+  ],
+  "쿠폰 적용 버튼을 두 번 누르면 같은 쿠폰이 두 번 먹어요": [
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge"
+  ],
+  "쿠폰 적용 요청이 timeout 뒤 재시도되면 할인 row가 중복돼요": [
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge"
+  ],
+  "쿠폰 적용이나 결제 요청을 재시도하면 실패 대신 같은 결과를 재사용해야 할지 새로 처리해야 할지 헷갈려요": [
+    "database/shopping-cart-reclick-concurrent-write-cause-router"
+  ],
+  "큐에 넣고 재시도할 작업인데 전략 패턴처럼 이름 붙였어요": [
+    "design-pattern/command-vs-strategy-quick-bridge"
+  ],
+  "큐에 넣는 작업이 단순 요청 dto인지 command인지 구분이 안 돼요": [
+    "design-pattern/command-pattern-basics"
+  ],
+  "큐에 넣었는데 왜 작업이 끝난 게 아니야": [
+    "system-design/consistency-idempotency-async-workflow-foundations"
+  ],
+  "크루스칼에서 왜 union-find가 필요한지 역할이 분리돼서 안 보여": [
+    "algorithm/kruskal-union-find-beginner-bridge"
+  ],
+  "큰 payload 전달, 제어 메시지, stdout capture를 한 기준으로 분리하지 못하겠어요": [
+    "operating-system/pipe-socketpair-eventfd-memfd-ipc-selection"
+  ],
+  "큰 아키텍처 변경에서 언제 rfc로 열고 언제 adr로 닫아야 하는지 헷갈려요": [
+    "software-engineering/rfc-vs-adr-decision-flow"
+  ],
+  "큰 파일 업로드에서 progress는 거의 다 찼는데 마지막에 `401`, `403`, `413`, `499` 같은 거절 응답이 떠서 인증 문제인지 업로드 경로 문제인지 헷갈린다": [
+    "network/upload-finishes-then-rejected-symptom-router"
+  ],
+  "클라이언트가 넣은 forwarded 헤더와 lb가 넣은 헤더를 구분 못 하겠어요": [
+    "security/forwarded-header-trust-boundary-primer"
+  ],
+  "클래스 이름이 event인지 command인지 붙일 때마다 시제가 헷갈려요": [
+    "design-pattern/event-vs-command-naming-primer"
+  ],
+  "클래스 이름이나 `@bean` 메서드 이름을 바꿨더니 주입이 갑자기 깨졌어요": [
+    "spring/bean-naming-qualifier-rename-pitfalls-primer"
+  ],
+  "클래스가 많아지면 무조건 solid를 잘 지킨 건지 헷갈려요": [
+    "software-engineering/solid-principles-basics"
+  ],
+  "클래스는 늘었는데 왜 분리가 좋아졌는지 설명을 못 하겠어요": [
+    "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide"
+  ],
+  "타임아웃을 다 1초로 맞췄는데도 요청이 겹쳐": [
+    "system-design/request-deadline-timeout-budget-primer"
+  ],
+  "타입 분류를 해야 하는지 런타임 지원 여부를 물어야 하는지 헷갈려": [
+    "language/marker-interface-vs-capability-method-bridge"
+  ],
+  "탭 두 개로 테스트하면 블랙잭 진행 상태가 서로 섞여요": [
+    "spring/blackjack-game-state-singleton-bean-scope-bridge"
+  ],
+  "터미널처럼 다시 보여 줘야 하는데 로그 수집까지 같이 하려다 설계가 꼬여요": [
+    "operating-system/tty-aware-output-capture-patterns"
+  ],
+  "테스트 더블을 고를 때 값만 고정하면 되는지 호출 기록까지 봐야 하는지 헷갈려요": [
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "테스트 더블을 넣고 싶은데 부모 클래스가 흐름까지 쥐고 있어요": [
+    "design-pattern/abstract-class-vs-interface-injection-bridge"
+  ],
+  "테스트가 너무 무겁다는 피드백을 받았는데 어떤 테스트부터 가볍게 해야 할지 모르겠어요": [
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "테스트에서 값이 안 바뀌는데 profile 문제인지 override 문제인지 모르겠어요": [
+    "spring/test-profile-vs-property-override-decision-guide"
+  ],
+  "테스트에서는 service가 보이는데 실제로는 트랜잭션이 적용되지 않는 느낌이에요": [
+    "spring/transactional-not-applied-cause-router"
+  ],
+  "테스트용 고정 생성기까지 추가하니 numbergenerator 주입이 갑자기 깨졌어요": [
+    "spring/lotto-manual-auto-generator-qualifier-bridge"
+  ],
+  "테스트용 설정을 붙인 뒤부터 운영 bean과 이름이 겹친다고 나온다": [
+    "spring/same-name-bean-collision-cause-router"
+  ],
+  "테스트하려면 전역 컨텍스트부터 띄워야 해서 너무 무거워요": [
+    "design-pattern/service-locator-antipattern"
+  ],
+  "통화와 소수 자릿수 규칙이 여기저기 흩어져서 어디서 맞춰야 하는지 모르겠어": [
+    "language/money-value-object-basics"
+  ],
+  "트랜잭션 격리 수준 이름은 아는데 어떤 상황에서 뭘 먼저 골라야 하는지 헷갈린다": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "트랜잭션이나 캐시 래퍼를 facade처럼 이해하고 있어": [
+    "design-pattern/facade-vs-adapter-vs-proxy-decision-guide"
+  ],
+  "특정 query나 header를 한번 보낸 뒤 같은 url 응답이 계속 오염된 것 같다": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "파이프가 꽉 찬 건지 reader가 먼저 닫힌 건지 구분이 안 돼요": [
+    "operating-system/broken-pipe-sigpipe-bridge"
+  ],
+  "파이프나 리다이렉션 때문에 shell이 필요한 경우와 아닌 경우를 구분하고 싶어요": [
+    "operating-system/shell-builtins-vs-external-commands-primer"
+  ],
+  "파일 맨 위 타입에는 왜 private를 못 붙이는지 모르겠어": [
+    "language/top-level-type-access-modifier-bridge"
+  ],
+  "패키지는 나눴는데 왜 modular monolith 같지 않다는 피드백을 받는지 모르겠어요": [
+    "software-engineering/clean-architecture-layered-modular-monolith"
+  ],
+  "팩토리 switch가 계속 길어지는데 어디까지가 팩토리고 어디서 구조를 갈라야 할지 모르겠어": [
+    "design-pattern/factory-switch-registry-smell"
+  ],
+  "팩토리랑 빌더 차이가 머리에 안 잡혀": [
+    "design-pattern/factory-vs-abstract-factory-vs-builder"
+  ],
+  "페이지를 넘길수록 본 row가 다시 뒤로 가거나 사라져 보여": [
+    "system-design/pagination-monotonicity-primer"
+  ],
+  "평소에는 잘 되다가 idle 뒤 첫 호출만 간헐적으로 터져서 재현이 어렵고 재시도하면 괜찮아 보인다": [
+    "network/idle-first-fail-second-success-symptom-router"
+  ],
   "포인트는 차감됐는데 주문 생성이 실패해서 데이터가 꼬였어요": [
     "database/transaction-case-studies"
   ],
+  "프로세스, 스레드, 가상 메모리, 스케줄러가 한꺼번에 섞여서 어디서부터 정리해야 할지 모르겠어요": [
+    "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics"
+  ],
+  "프로세스를 재시작하기 전에 어떤 증거를 먼저 남겨야 하는지 헷갈려": [
+    "language/oom-heap-dump-playbook"
+  ],
+  "프록시 뒤에서만 로그인 루프가 나서 duplicate cookie와 scheme 문제를 어떻게 갈라야 할지 모르겠어": [
+    "security/duplicate-cookie-vs-proxy-login-loop-bridge"
+  ],
+  "프록시 헤더를 그대로 믿어도 되는지 불안해요": [
+    "security/forwarded-header-trust-boundary-primer"
+  ],
   "프록시를 우회하니까 @cacheable, @validated 같은 기능이 안 먹어요": [
     "spring/self-invocation-proxy-misconception"
+  ],
+  "프록시와 앱이 둘 다 retry하는 것 같아": [
+    "network/proxy-retry-budget-discipline"
+  ],
+  "플랫폼이 복잡도를 줄여 주는 건지 다른 방식으로 부담을 늘리는 건지 판단이 안 돼요": [
+    "software-engineering/team-cognitive-load-boundary-design"
+  ],
+  "플레이어 차례와 딜러 차례가 boolean 여러 개로 얽혀요": [
+    "design-pattern/blackjack-turn-flow-state-pattern-bridge"
+  ],
+  "필터 체인 코드를 pipeline이라고 불러도 되는지 헷갈려": [
+    "design-pattern/pipeline-vs-chain-of-responsibility"
+  ],
+  "필터 체인을 pipeline이라고 부르는데 뭔가 설명이 안 맞아": [
+    "design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide"
+  ],
+  "필터랑 인터셉터를 어디에 써야 할지 감이 안 와": [
+    "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+  ],
+  "한 번만 실행되게 하고 싶은데 for update와 advisory lock과 lease를 같은 도구로 보고 있다": [
+    "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide"
+  ],
+  "한 번만 클릭했는데 같은 api가 두 번 찍히고 첫 줄과 둘째 줄의 status가 달라 원인을 어디서 잘라야 할지 모르겠다": [
+    "network/same-url-request-twice-symptom-router"
+  ],
+  "한 번의 추측 요청인데 insert 여러 개와 update가 흩어져 있어요": [
+    "database/baseball-guess-history-current-state-transaction-bridge"
+  ],
+  "한 번의 추측 처리 순서를 어디까지 service가 가져가야 할지 헷갈려요": [
+    "software-engineering/baseball-turn-processing-service-layer-bridge"
+  ],
+  "한 시작점 전체 거리표와 모든 정점 쌍 거리표를 같은 shortest path 문제로 뭉뚱그려 읽고 있어": [
+    "algorithm/dijkstra-bellman-ford-floyd-warshall"
+  ],
+  "한동안 조용하다가 같은 api를 다시 호출하면 첫 요청만 `(failed)`나 reset 계열로 깨지고 바로 다시 보내면 성공한다": [
+    "network/idle-first-fail-second-success-symptom-router"
+  ],
+  "할인 가능 여부와 거절 이유를 서비스가 다 조립하고 있어요": [
+    "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge"
+  ],
+  "할인 규칙 map이 커지는데 policy object로 올려야 하는지 모르겠어": [
+    "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide"
+  ],
+  "할인이나 결제 규칙마다 구현체를 만들다 보니 이름이 조합 설명서가 됐어": [
+    "design-pattern/strategy-explosion-smell"
+  ],
+  "할인이나 결제 규칙이 늘어나는데 언제 if 문을 전략으로 빼야 할지 모르겠어요": [
+    "design-pattern/strategy-pattern-basics"
+  ],
+  "합이 target보다 크면 어느 포인터를 움직여야 하는지 매번 헷갈린다": [
+    "algorithm/two-pointer-intro"
+  ],
+  "핵심 사용자 흐름만 남기라는데 어떤 시나리오를 골라야 할지 모르겠어요": [
+    "software-engineering/browser-e2e-cost-vs-signal-checklist"
+  ],
+  "행동이 늘 때마다 if 문과 테스트가 같이 터져요": [
+    "design-pattern/blackjack-action-input-command-bridge"
+  ],
+  "허용 여부랑 이유를 같이 내려야 하는데 strategy와 뭐가 다른지 모르겠어요": [
+    "design-pattern/policy-object-pattern"
+  ],
+  "형식 오류와 상태 전이 오류를 같은 검증으로 처리해도 되는지 모르겠어요": [
+    "software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge"
+  ],
+  "형식은 맞는데 business rule에 걸리면 무슨 상태 코드를 줘야 할지 모르겠어요": [
+    "software-engineering/http-409-vs-422-selection-guide"
+  ],
+  "홉이 늘수록 504가 자꾸 앞단에서 나": [
+    "network/timeout-budget-propagation-proxy-gateway-service-hop-chain"
+  ],
+  "화면은 계속 로딩 중인데 업로드가 느린 건지, 서버가 첫 바이트를 안 주는 건지, 다운로드가 안 끝나는 건지 구분이 안 된다": [
+    "network/request-pending-forever-symptom-router"
+  ],
+  "환경변수로 값을 넣었다고 생각했는데 spring이 기본값만 보는 것 같아요": [
+    "spring/config-value-not-changing-cause-router"
+  ],
+  "환불 규칙을 state로 만들었는데 전이가 없다": [
+    "design-pattern/strategy-state-policy-object-decision-guide"
+  ],
+  "환불 사유나 승인 실패 코드를 어디서 우리 언어로 바꿔야 할지 헷갈려요": [
+    "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge"
+  ],
+  "환불이나 승인 규칙이 서비스 if 문으로 퍼져서 이름을 못 붙이겠어요": [
+    "design-pattern/policy-object-pattern"
+  ],
+  "회사 vpn이나 사무실 와이파이에서만 예전 경로로 가고 집이나 모바일망에서는 새 경로로 가서 dns view가 갈린 것처럼 보인다": [
+    "network/dns-change-some-users-old-server-symptom-router"
+  ],
+  "회사망에서 집망으로 바꾼 뒤 h3 첫 시도만 꼬이는 현상을 stale hint로 봐야 하는지 감이 안 잡힌다": [
+    "network/h3-stale-alt-svc-421-recovery-primer"
+  ],
+  "회원 등급 할인과 쿠폰 중복 규칙을 어디서 판단해야 할지 모르겠어요": [
+    "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge"
+  ],
+  "회차별 당첨 번호를 저장하려는데 winning_numbers 테이블을 따로 둘지 한 row에 다 둘지 헷갈려요": [
+    "database/lotto-winning-round-storage-normalization-bridge"
+  ],
+  "후보 bean이 여러 개인 상황에서 조건 통과와 실제 주입 선택을 같은 문제로 보고 있어요": [
+    "spring/conditional-activation-annotation-decision-guide"
+  ],
+  "후처리 작업도 그냥 db에만 넣으면 되는지 헷갈려": [
+    "system-design/queue-vs-cache-vs-db-decision-drill"
+  ],
+  "휴리스틱이 있으면 왜 탐색이 줄어드는지 감이 안 와": [
+    "algorithm/a-star-vs-dijkstra"
+  ],
+  "희소 그래프라는 말을 들었는데 왜 adjacency list와 priority queue 조합이 먼저 나오는지 감이 안 와": [
+    "algorithm/sparse-graph-shortest-paths"
+  ],
+  "힙, 스택, 페이지 테이블, rss가 한꺼번에 나와서 메모리 설명이 자꾸 꼬여요": [
+    "operating-system/memory-management-basics"
   ]
 }

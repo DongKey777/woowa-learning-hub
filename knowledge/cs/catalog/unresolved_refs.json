@@ -6,6 +6,21 @@
       "source": "database/connection-pool"
     },
     {
+      "doc_path": "database/jdbc-vs-jpa-vs-mybatis-decision-guide.md",
+      "ref": "database/jdbc",
+      "source": "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+    },
+    {
+      "doc_path": "database/jdbc-vs-jpa-vs-mybatis-decision-guide.md",
+      "ref": "database/jpa",
+      "source": "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+    },
+    {
+      "doc_path": "database/jdbc-vs-jpa-vs-mybatis-decision-guide.md",
+      "ref": "database/mybatis",
+      "source": "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+    },
+    {
       "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
       "ref": "database/mvcc",
       "source": "database/mvcc-snapshot-vs-locking-read-portability"
@@ -31,9 +46,94 @@
       "source": "design-pattern/factory"
     },
     {
+      "doc_path": "design-pattern/singleton-vs-di-container-scope.md",
+      "ref": "spring/spring-bean-di-basics",
+      "source": "design-pattern/singleton-vs-di-container-scope"
+    },
+    {
+      "doc_path": "software-engineering/ports-and-adapters-beginner-primer.md",
+      "ref": "software-engineering/repository-interface-contract-primer",
+      "source": "software-engineering/ports-and-adapters-beginner-primer"
+    },
+    {
+      "doc_path": "spring/blackjack-web-state-mixing-cause-router.md",
+      "ref": "spring/request-scope-proxy-pitfalls",
+      "source": "spring/blackjack-web-state-mixing-cause-router"
+    },
+    {
+      "doc_path": "spring/shopping-cart-current-cart-singleton-bean-scope-bridge.md",
+      "ref": "spring/request-scope-proxy-pitfalls",
+      "source": "spring/shopping-cart-current-cart-singleton-bean-scope-bridge"
+    },
+    {
+      "doc_path": "spring/spring-404-405-vs-bean-wiring-confusion-card.md",
+      "ref": "spring/spring-di-exception-quick-triage",
+      "source": "spring/http-404-405-vs-bean-wiring-confusion-card"
+    },
+    {
       "doc_path": "spring/spring-bean-di-basics.md",
       "ref": "design-pattern/service-locator",
       "source": "spring/bean-di-basics"
+    },
+    {
+      "doc_path": "spring/spring-componentscan-entityscan-enablejparepositories-decision-guide.md",
+      "ref": "spring/jpa-scan-boundaries",
+      "source": "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-componentscan-entityscan-enablejparepositories-decision-guide.md",
+      "ref": "spring/scanbasepackages-import-autoconfiguration-selection",
+      "source": "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md",
+      "ref": "spring/spring-mvc-controller-basics",
+      "source": "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+    },
+    {
+      "doc_path": "spring/spring-lazyinitializationexception-cause-router.md",
+      "ref": "spring/controller-entity-return-vs-dto-return-primer",
+      "source": "spring/lazyinitializationexception-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-partial-response-access-log-interpretation.md",
+      "ref": "network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb",
+      "source": "spring/partial-response-access-log-interpretation"
+    },
+    {
+      "doc_path": "spring/spring-restclient-webclient-http-interface-decision-guide.md",
+      "ref": "spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer",
+      "source": "spring/restclient-webclient-http-interface-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-restclient-webclient-http-interface-decision-guide.md",
+      "ref": "spring/restclient-vs-webclient-lifecycle-boundaries",
+      "source": "spring/restclient-webclient-http-interface-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-restclient-webclient-http-interface-decision-guide.md",
+      "ref": "spring/async-context-propagation-restclient-http-interface-clients",
+      "source": "spring/restclient-webclient-http-interface-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-starter-bean-missing-cause-router.md",
+      "ref": "spring/conditionalonmissingbean-vs-primary-primer",
+      "source": "spring/starter-bean-missing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/activeprofiles-vs-test-overrides-primer",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/test-property-override-boundaries-primer",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/dynamicpropertysource-vs-serviceconnection-primer",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
     }
   ],
   "mission_ids": [],
@@ -54,6 +154,11 @@
       "source": "database/mvcc-snapshot-vs-locking-read-portability"
     },
     {
+      "doc_path": "database/vacuum-purge-debt-forensics-symptom-map.md",
+      "ref": "database/purge-backlog-remediation-throttle",
+      "source": "database/vacuum-purge-debt-forensics-symptom-map"
+    },
+    {
       "doc_path": "design-pattern/factory-basics.md",
       "ref": "design-pattern/factory-vs-static-factory",
       "source": "design-pattern/factory"
@@ -64,6 +169,41 @@
       "source": "design-pattern/factory"
     },
     {
+      "doc_path": "design-pattern/singleton-vs-di-container-scope.md",
+      "ref": "spring/ioc-di-container",
+      "source": "design-pattern/singleton-vs-di-container-scope"
+    },
+    {
+      "doc_path": "language/java/java-instance-static-factory-methods-primer.md",
+      "ref": "design-pattern/factory-basics",
+      "source": "language/java-instance-static-factory-methods-primer"
+    },
+    {
+      "doc_path": "spring/blackjack-web-state-mixing-cause-router.md",
+      "ref": "spring/request-scope-proxy-pitfalls",
+      "source": "spring/blackjack-web-state-mixing-cause-router"
+    },
+    {
+      "doc_path": "spring/blackjack-web-state-mixing-cause-router.md",
+      "ref": "spring/mvc-request-lifecycle-basics",
+      "source": "spring/blackjack-web-state-mixing-cause-router"
+    },
+    {
+      "doc_path": "spring/shopping-cart-current-cart-singleton-bean-scope-bridge.md",
+      "ref": "spring/request-scope-proxy-pitfalls",
+      "source": "spring/shopping-cart-current-cart-singleton-bean-scope-bridge"
+    },
+    {
+      "doc_path": "spring/spring-404-405-vs-bean-wiring-confusion-card.md",
+      "ref": "spring/spring-di-exception-quick-triage",
+      "source": "spring/http-404-405-vs-bean-wiring-confusion-card"
+    },
+    {
+      "doc_path": "spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md",
+      "ref": "spring/security-requestcache-savedrequest-boundaries",
+      "source": "spring/admin-login-success-final-403-savedrequest-role-mapping-primer"
+    },
+    {
       "doc_path": "spring/spring-bean-di-basics.md",
       "ref": "spring/transactional",
       "source": "spring/bean-di-basics"
@@ -72,9 +212,134 @@
       "doc_path": "spring/spring-bean-lifecycle-basics.md",
       "ref": "spring/bean-lifecycle-scope-traps",
       "source": "spring/bean-lifecycle-basics"
+    },
+    {
+      "doc_path": "spring/spring-boot-autoconfiguration.md",
+      "ref": "spring/spring-startup-bean-graph-debugging-playbook",
+      "source": "spring/boot-autoconfiguration-internals"
+    },
+    {
+      "doc_path": "spring/spring-boot-autoconfiguration.md",
+      "ref": "spring/spring-conditional-activation-annotation-decision-guide",
+      "source": "spring/boot-autoconfiguration-internals"
+    },
+    {
+      "doc_path": "spring/spring-componentscan-entityscan-enablejparepositories-decision-guide.md",
+      "ref": "spring/jpa-scan-boundaries",
+      "source": "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-componentscan-entityscan-enablejparepositories-decision-guide.md",
+      "ref": "spring/scanbasepackages-import-autoconfiguration-selection",
+      "source": "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-config-value-not-changing-cause-router.md",
+      "ref": "spring/property-source-precedence-quick-guide",
+      "source": "spring/config-value-not-changing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-config-value-not-changing-cause-router.md",
+      "ref": "spring/activeprofiles-vs-test-overrides-primer",
+      "source": "spring/config-value-not-changing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-config-value-not-changing-cause-router.md",
+      "ref": "spring/relaxed-binding-env-var-cheatsheet",
+      "source": "spring/config-value-not-changing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-config-value-not-changing-cause-router.md",
+      "ref": "spring/config-additional-location-primer",
+      "source": "spring/config-value-not-changing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-configuration-vs-autoconfiguration-primer.md",
+      "ref": "spring/spring-boot-autoconfiguration",
+      "source": "spring/spring-configuration-vs-autoconfiguration-primer"
+    },
+    {
+      "doc_path": "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md",
+      "ref": "spring/spring-request-pipeline-bean-container-foundations-primer",
+      "source": "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+    },
+    {
+      "doc_path": "spring/spring-lazyinitializationexception-cause-router.md",
+      "ref": "spring/controller-entity-return-vs-dto-return-primer",
+      "source": "spring/lazyinitializationexception-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-restclient-webclient-http-interface-decision-guide.md",
+      "ref": "spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer",
+      "source": "spring/restclient-webclient-http-interface-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-restclient-webclient-http-interface-decision-guide.md",
+      "ref": "spring/restclient-vs-webclient-lifecycle-boundaries",
+      "source": "spring/restclient-webclient-http-interface-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-restclient-webclient-http-interface-decision-guide.md",
+      "ref": "spring/async-context-propagation-restclient-http-interface-clients",
+      "source": "spring/restclient-webclient-http-interface-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-starter-bean-missing-cause-router.md",
+      "ref": "spring/boot-condition-evaluation-report-first-debug-checklist",
+      "source": "spring/starter-bean-missing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-starter-bean-missing-cause-router.md",
+      "ref": "spring/conditionalonclass-classpath-scope-optional-test-slice-primer",
+      "source": "spring/starter-bean-missing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-starter-bean-missing-cause-router.md",
+      "ref": "spring/conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer",
+      "source": "spring/starter-bean-missing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-starter-bean-missing-cause-router.md",
+      "ref": "spring/conditionalonmissingbean-vs-primary-primer",
+      "source": "spring/starter-bean-missing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/activeprofiles-vs-test-overrides-primer",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/test-property-override-boundaries-primer",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/dynamicpropertysource-vs-serviceconnection-primer",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-transaction-propagation-deep-dive.md",
+      "ref": "spring/transaction-debugging-playbook",
+      "source": "spring/transaction-propagation-deep-dive"
+    },
+    {
+      "doc_path": "spring/spring-transaction-propagation-deep-dive.md",
+      "ref": "spring/transaction-synchronization-aftercommit-pitfalls",
+      "source": "spring/transaction-propagation-deep-dive"
     }
   ],
   "prerequisites": [
+    {
+      "doc_path": "database/baseball-guess-history-current-state-transaction-bridge.md",
+      "ref": "database/sql-reading-relational-modeling-primer",
+      "source": "database/baseball-guess-history-current-state-transaction-bridge"
+    },
+    {
+      "doc_path": "database/last-stock-sold-twice-symptom-router.md",
+      "ref": "database/sql-reading-relational-modeling-primer",
+      "source": "database/last-stock-sold-twice-symptom-router"
+    },
     {
       "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
       "ref": "database/mvcc",
@@ -89,7 +354,82 @@
       "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
       "ref": "database/transaction-isolation",
       "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    },
+    {
+      "doc_path": "database/roomescape-available-times-empty-cause-router.md",
+      "ref": "database/sql-reading-relational-modeling-primer",
+      "source": "database/roomescape-available-times-empty-cause-router"
+    },
+    {
+      "doc_path": "database/timeout-errorcode-mapping-mini-card.md",
+      "ref": "database/connection-pool-basics",
+      "source": "database/timeout-errorcode-mapping-mini-card"
+    },
+    {
+      "doc_path": "design-pattern/policy-object-naming-primer.md",
+      "ref": "design-pattern/factory-basics",
+      "source": "design-pattern/policy-object-naming-primer"
+    },
+    {
+      "doc_path": "design-pattern/singleton-vs-di-container-scope.md",
+      "ref": "spring/spring-bean-di-basics",
+      "source": "design-pattern/singleton-vs-di-container-scope"
+    },
+    {
+      "doc_path": "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide.md",
+      "ref": "spring/spring-mvc-controller-basics",
+      "source": "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide"
+    },
+    {
+      "doc_path": "spring/blackjack-web-state-mixing-cause-router.md",
+      "ref": "spring/mvc-request-lifecycle-basics",
+      "source": "spring/blackjack-web-state-mixing-cause-router"
+    },
+    {
+      "doc_path": "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md",
+      "ref": "spring/spring-mvc-controller-basics",
+      "source": "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+    },
+    {
+      "doc_path": "spring/spring-modelattribute-vs-requestbody-binding-primer.md",
+      "ref": "spring/spring-mvc-controller-basics",
+      "source": "spring/modelattribute-vs-requestbody-binding-primer"
+    },
+    {
+      "doc_path": "spring/spring-partial-response-access-log-interpretation.md",
+      "ref": "spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle",
+      "source": "spring/partial-response-access-log-interpretation"
+    },
+    {
+      "doc_path": "spring/spring-partial-response-access-log-interpretation.md",
+      "ref": "network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb",
+      "source": "spring/partial-response-access-log-interpretation"
+    },
+    {
+      "doc_path": "spring/spring-request-cross-cutting-hook-decision-guide.md",
+      "ref": "spring/spring-mvc-controller-basics",
+      "source": "spring/request-cross-cutting-hook-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-servlet-container-disconnect-exception-mapping.md",
+      "ref": "spring/request-lifecycle-timeout-disconnect-cancellation-bridges",
+      "source": "spring/servlet-container-disconnect-exception-mapping"
+    },
+    {
+      "doc_path": "spring/spring-servlet-container-disconnect-exception-mapping.md",
+      "ref": "spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle",
+      "source": "spring/servlet-container-disconnect-exception-mapping"
+    },
+    {
+      "doc_path": "spring/spring-test-profile-vs-property-override-decision-guide.md",
+      "ref": "spring/testing-basics",
+      "source": "spring/test-profile-vs-property-override-decision-guide"
+    },
+    {
+      "doc_path": "spring/spring-wrong-bean-injected-cause-router.md",
+      "ref": "spring/spring-bean-di-basics",
+      "source": "spring/wrong-bean-injected-cause-router"
     }
   ],
-  "total": 17
+  "total": 85
 }

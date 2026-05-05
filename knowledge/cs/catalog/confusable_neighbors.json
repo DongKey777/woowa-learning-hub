@@ -1,18 +1,804 @@
 {
+  "algorithm/a-star-vs-dijkstra": [
+    "algorithm/dijkstra-bellman-ford-floyd-warshall",
+    "algorithm/sparse-graph-shortest-paths"
+  ],
+  "algorithm/bfs-vs-dijkstra-shortest-path-mini-card": [
+    "algorithm/dfs-bfs-intro",
+    "algorithm/dijkstra-bellman-ford-floyd-warshall",
+    "algorithm/graph",
+    "algorithm/path-vs-shortest-path-micro-drill",
+    "algorithm/zero-one-bfs-grid-conversion-primer",
+    "data-structure/connectivity-question-router"
+  ],
+  "algorithm/binary-search-intro": [
+    "algorithm/sort-to-binary-search-bridge",
+    "algorithm/two-pointer-intro"
+  ],
+  "algorithm/bitmask-dp": [
+    "algorithm/min-cost-max-flow-intuition"
+  ],
+  "algorithm/convex-hull-trick-basics": [
+    "algorithm/divide-and-conquer-dp-optimization"
+  ],
+  "algorithm/dfs-bfs-intro": [
+    "algorithm/zero-one-bfs-dist-vs-visited-counterexamples",
+    "algorithm/zero-one-bfs-grid-conversion-primer",
+    "algorithm/zero-one-bfs-state-space-bridge",
+    "data-structure/binary-tree-traversal-routing-guide",
+    "data-structure/graph-basics",
+    "data-structure/union-find-standalone-beginner-primer"
+  ],
+  "algorithm/dijkstra-bellman-ford-floyd-warshall": [
+    "algorithm/bfs-vs-dijkstra-shortest-path-mini-card",
+    "algorithm/minimum-spanning-tree-prim-vs-kruskal",
+    "algorithm/shortest-path-reconstruction-bridge",
+    "algorithm/sparse-graph-shortest-paths"
+  ],
+  "algorithm/divide-and-conquer-dp-optimization": [
+    "algorithm/convex-hull-trick-basics"
+  ],
+  "algorithm/dp-intro": [
+    "algorithm/greedy-vs-dp-decision-card"
+  ],
+  "algorithm/greedy-intro": [
+    "algorithm/greedy-vs-dp-decision-card"
+  ],
+  "algorithm/hungarian-algorithm-intuition": [
+    "algorithm/min-cost-max-flow-intuition"
+  ],
+  "algorithm/knuth-optimization-intuition": [
+    "algorithm/divide-and-conquer-dp-optimization"
+  ],
+  "algorithm/kruskal-union-find-beginner-bridge": [
+    "algorithm/minimum-spanning-tree-prim-vs-kruskal",
+    "data-structure/union-find-standalone-beginner-primer"
+  ],
+  "algorithm/minimum-spanning-tree-prim-vs-kruskal": [
+    "algorithm/graph",
+    "algorithm/kruskal-union-find-beginner-bridge"
+  ],
+  "algorithm/mo-algorithm-basics": [
+    "algorithm/offline-query-ordering-patterns"
+  ],
+  "algorithm/monotone-deque-proof-intuition": [
+    "algorithm/rate-limiter-algorithms"
+  ],
+  "algorithm/monotone-queue-dp": [
+    "algorithm/convex-hull-trick-basics"
+  ],
+  "algorithm/network-flow-intuition": [
+    "algorithm/min-cost-max-flow-intuition"
+  ],
+  "algorithm/scc-tarjan-kosaraju": [
+    "algorithm/bridges-and-articulation-points"
+  ],
+  "algorithm/shortest-path-reconstruction-bridge": [
+    "algorithm/a-star-vs-dijkstra",
+    "algorithm/zero-one-bfs-full-path-lexicographic-bridge",
+    "algorithm/zero-one-bfs-implementation-mistake-check-template",
+    "algorithm/zero-one-bfs-lexicographic-tie-mini-note",
+    "data-structure/connectivity-question-router"
+  ],
+  "algorithm/sliding-window-patterns": [
+    "algorithm/two-pointer-intro"
+  ],
+  "algorithm/sort-to-binary-search-bridge": [
+    "algorithm/binary-search-intro"
+  ],
+  "algorithm/sparse-graph-shortest-paths": [
+    "algorithm/dijkstra-bellman-ford-floyd-warshall",
+    "algorithm/minimum-spanning-tree-prim-vs-kruskal"
+  ],
+  "algorithm/suffix-array-lcp": [
+    "algorithm/suffix-array-vs-suffix-tree-comparison",
+    "algorithm/suffix-automaton",
+    "algorithm/suffix-tree-intuition"
+  ],
+  "algorithm/suffix-automaton": [
+    "algorithm/suffix-array-lcp",
+    "algorithm/suffix-array-vs-suffix-tree-comparison",
+    "algorithm/suffix-tree-intuition"
+  ],
+  "algorithm/suffix-tree-intuition": [
+    "algorithm/suffix-array-lcp",
+    "algorithm/suffix-array-vs-suffix-tree-comparison",
+    "algorithm/suffix-automaton"
+  ],
+  "algorithm/sweep-line-overlap-counting": [
+    "algorithm/offline-query-ordering-patterns"
+  ],
+  "algorithm/top-k-streaming-heavy-hitters": [
+    "algorithm/rate-limiter-algorithms"
+  ],
+  "algorithm/two-pointer-intro": [
+    "algorithm/binary-search-intro",
+    "algorithm/sort-to-binary-search-bridge"
+  ],
+  "algorithm/union-find-amortized-proof-intuition": [
+    "algorithm/bridges-and-articulation-points",
+    "data-structure/union-find-deep-dive"
+  ],
+  "algorithm/zero-one-bfs-dist-vs-visited-counterexamples": [
+    "algorithm/zero-one-bfs-hand-calculation-worksheet",
+    "algorithm/zero-one-bfs-stale-entry-mini-card",
+    "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card"
+  ],
+  "algorithm/zero-one-bfs-equal-distance-reinsert-mini-note": [
+    "algorithm/zero-one-bfs-parent-tie-mini-note",
+    "algorithm/zero-one-bfs-stale-entry-mini-card"
+  ],
+  "algorithm/zero-one-bfs-full-path-lexicographic-bridge": [
+    "algorithm/zero-one-bfs-lexicographic-tie-mini-note"
+  ],
+  "algorithm/zero-one-bfs-grid-conversion-primer": [
+    "algorithm/a-star-vs-dijkstra",
+    "algorithm/bfs-vs-dijkstra-shortest-path-mini-card",
+    "algorithm/zero-one-bfs-dist-vs-visited-counterexamples",
+    "algorithm/zero-one-bfs-state-space-bridge",
+    "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card"
+  ],
+  "algorithm/zero-one-bfs-lexicographic-tie-mini-note": [
+    "algorithm/zero-one-bfs-full-path-lexicographic-bridge",
+    "algorithm/zero-one-bfs-parent-tie-mini-note"
+  ],
+  "algorithm/zero-one-bfs-parent-tie-mini-note": [
+    "algorithm/zero-one-bfs-equal-distance-reinsert-mini-note",
+    "algorithm/zero-one-bfs-full-path-lexicographic-bridge",
+    "algorithm/zero-one-bfs-lexicographic-tie-mini-note"
+  ],
+  "algorithm/zero-one-bfs-stale-entry-mini-card": [
+    "algorithm/zero-one-bfs-equal-distance-reinsert-mini-note",
+    "algorithm/zero-one-bfs-hand-calculation-worksheet"
+  ],
+  "algorithm/zero-one-bfs-state-space-bridge": [
+    "algorithm/zero-one-bfs-grid-conversion-primer",
+    "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card"
+  ],
+  "algorithm/zero-one-bfs-state-visited-vs-dist-starter-card": [
+    "algorithm/shortest-path-reconstruction-bridge",
+    "algorithm/zero-one-bfs-dist-vs-visited-counterexamples",
+    "algorithm/zero-one-bfs-implementation-mistake-check-template",
+    "algorithm/zero-one-bfs-state-space-bridge"
+  ],
+  "data-structure/array-vs-linked-list": [
+    "data-structure/arraydeque-vs-linkedlist-queue-choice-card",
+    "data-structure/basic",
+    "data-structure/linked-list-basics"
+  ],
+  "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer": [
+    "data-structure/arraydeque-vs-linkedlist-queue-choice-card"
+  ],
+  "data-structure/arraydeque-vs-linkedlist-queue-choice-card": [
+    "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer"
+  ],
+  "data-structure/backend-data-structure-starter-pack": [
+    "algorithm/backend-algorithm-starter-pack"
+  ],
+  "data-structure/balanced-bst-vs-unbalanced-bst-primer": [
+    "data-structure/binary-tree-vs-bst-vs-heap-bridge"
+  ],
+  "data-structure/basic": [
+    "data-structure/array-vs-linked-list",
+    "data-structure/linked-list-basics"
+  ],
+  "data-structure/binary-tree-vs-bst-vs-heap-bridge": [
+    "data-structure/binary-tree-traversal-routing-guide"
+  ],
+  "data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge": [
+    "data-structure/plain-bitset-vs-compressed-bitmap-decision-card"
+  ],
+  "data-structure/bitset-vs-roaring-bitmap-beginner-handoff": [
+    "data-structure/plain-bitset-vs-compressed-bitmap-decision-card"
+  ],
+  "data-structure/cache-aware-data-structure-layouts": [
+    "data-structure/ordered-search-workload-matrix"
+  ],
+  "data-structure/cache-oblivious-b-tree-vs-plain-veb-layout": [
+    "data-structure/ordered-search-workload-matrix"
+  ],
+  "data-structure/connectivity-question-router": [
+    "algorithm/dfs-bfs-intro",
+    "algorithm/graph",
+    "algorithm/path-vs-shortest-path-micro-drill",
+    "data-structure/union-find-deep-dive",
+    "data-structure/union-find-standalone-beginner-primer"
+  ],
+  "data-structure/coordinate-compression-patterns": [
+    "data-structure/fenwick-segment-tree-operations-playbook"
+  ],
+  "data-structure/delayqueue-delayed-contract-primer": [
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router"
+  ],
+  "data-structure/deque-router-example-pack": [
+    "data-structure/queue-vs-deque-vs-priority-queue-primer"
+  ],
+  "data-structure/disjoint-interval-set": [
+    "data-structure/treemap-nearest-slot-disjoint-interval-bridge"
+  ],
+  "data-structure/fenwick-vs-segment-tree": [
+    "data-structure/fenwick-segment-tree-operations-playbook"
+  ],
+  "data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer": [
+    "algorithm/bfs-visited-array-vs-set-java-beginner-card",
+    "data-structure/map-order-symptom-router-card",
+    "data-structure/map-vs-set-requirement-bridge",
+    "data-structure/trie-vs-hashmap-exact-lookup-beginner-card"
+  ],
+  "data-structure/hashset-vs-treeset-beginner-bridge": [
+    "data-structure/map-vs-set-requirement-bridge"
+  ],
+  "data-structure/heap-variants": [
+    "data-structure/binary-tree-vs-bst-vs-heap-bridge"
+  ],
+  "data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge": [
+    "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge",
+    "data-structure/queue-vs-deque-vs-priority-queue-primer"
+  ],
+  "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router": [
+    "data-structure/scheduledexecutorservice-vs-delayqueue-bridge"
+  ],
+  "data-structure/linked-list-basics": [
+    "data-structure/array-vs-linked-list",
+    "data-structure/basic"
+  ],
+  "data-structure/linkedhashmap-access-order-mini-primer": [
+    "data-structure/map-order-symptom-router-card"
+  ],
+  "data-structure/lru-cache-basics": [
+    "operating-system/page-replacement-clock-vs-lru"
+  ],
+  "data-structure/map-vs-set-requirement-bridge": [
+    "algorithm/bfs-visited-array-vs-set-java-beginner-card",
+    "data-structure/hashset-vs-treeset-beginner-bridge",
+    "language/list-contains-vs-set-contains-symptom-card"
+  ],
+  "data-structure/monotonic-queue-and-stack": [
+    "data-structure/monotonic-deque-walkthrough"
+  ],
+  "data-structure/monotonic-stack-walkthrough": [
+    "data-structure/monotonic-deque-walkthrough"
+  ],
+  "data-structure/priorityblockingqueue-timer-misuse-primer": [
+    "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer",
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router",
+    "data-structure/scheduledexecutorservice-vs-delayqueue-bridge"
+  ],
+  "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge": [
+    "data-structure/treemap-interval-entry-primer",
+    "data-structure/treemap-nearest-slot-disjoint-interval-bridge"
+  ],
+  "data-structure/queue-basics": [
+    "data-structure/graph-basics",
+    "data-structure/queue-vs-deque-vs-priority-queue-primer"
+  ],
+  "data-structure/queue-vs-deque-vs-priority-queue-primer": [
+    "data-structure/arraydeque-vs-blockingqueue-service-handoff-primer",
+    "data-structure/arraydeque-vs-linkedlist-queue-choice-card",
+    "data-structure/monotonic-deque-walkthrough"
+  ],
+  "data-structure/roaring-bitmap": [
+    "data-structure/plain-bitset-vs-compressed-bitmap-decision-card"
+  ],
+  "data-structure/scheduledexecutorservice-vs-delayqueue-bridge": [
+    "data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router"
+  ],
+  "data-structure/segment-tree-lazy-propagation": [
+    "data-structure/fenwick-segment-tree-operations-playbook"
+  ],
+  "data-structure/segment-tree-not-bst-or-heap-bridge": [
+    "data-structure/binary-tree-vs-bst-vs-heap-bridge"
+  ],
+  "data-structure/timer-priority-policy-split": [
+    "data-structure/scheduledexecutorservice-vs-delayqueue-bridge"
+  ],
+  "data-structure/tree-basics": [
+    "data-structure/binary-tree-traversal-routing-guide",
+    "data-structure/graph-basics"
+  ],
+  "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill": [
+    "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge",
+    "data-structure/treemap-key-entry-strictness-bridge"
+  ],
+  "data-structure/treemap-gap-detection-mini-drill": [
+    "data-structure/treemap-interval-entry-primer",
+    "data-structure/treemap-nearest-slot-disjoint-interval-bridge"
+  ],
+  "data-structure/treemap-interval-entry-primer": [
+    "data-structure/hashset-vs-treeset-beginner-bridge",
+    "data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge",
+    "data-structure/reservation-interval-half-open-boundary-card",
+    "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill",
+    "data-structure/treemap-gap-detection-mini-drill",
+    "data-structure/treemap-key-entry-strictness-bridge"
+  ],
+  "data-structure/treemap-key-entry-strictness-bridge": [
+    "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill",
+    "data-structure/treemap-neighbor-query-micro-drill"
+  ],
+  "data-structure/treemap-nearest-slot-disjoint-interval-bridge": [
+    "data-structure/treemap-gap-detection-mini-drill"
+  ],
+  "data-structure/treemap-neighbor-query-micro-drill": [
+    "data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill",
+    "data-structure/treemap-key-entry-strictness-bridge",
+    "data-structure/treemap-string-prefix-range-mini-drill",
+    "data-structure/treeset-exact-match-drill"
+  ],
+  "data-structure/treemap-string-prefix-range-mini-drill": [
+    "data-structure/treemap-neighbor-query-micro-drill"
+  ],
+  "data-structure/treemap-submap-schedule-window-mini-drill": [
+    "data-structure/treemap-string-prefix-range-mini-drill"
+  ],
+  "data-structure/treemap-vs-hashmap-vs-linkedhashmap": [
+    "data-structure/map-order-symptom-router-card"
+  ],
+  "data-structure/treeset-exact-match-drill": [
+    "data-structure/treemap-neighbor-query-micro-drill"
+  ],
+  "data-structure/treeset-range-view-mini-drill": [
+    "data-structure/treeset-exact-match-drill"
+  ],
+  "data-structure/treeset-treemap-null-boundary-quick-reference": [
+    "data-structure/treeset-exact-match-drill"
+  ],
+  "data-structure/trie-prefix-search-autocomplete": [
+    "data-structure/trie-vs-hashmap-exact-lookup-beginner-card"
+  ],
+  "data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card": [
+    "data-structure/treemap-string-prefix-range-mini-drill",
+    "data-structure/trie-vs-hashmap-exact-lookup-beginner-card"
+  ],
+  "data-structure/union-find-standalone-beginner-primer": [
+    "algorithm/kruskal-union-find-beginner-bridge",
+    "data-structure/connectivity-question-router",
+    "data-structure/union-find-deep-dive"
+  ],
+  "data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays": [
+    "data-structure/ordered-search-workload-matrix"
+  ],
+  "database/advisory-locks-vs-row-locks": [
+    "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide"
+  ],
+  "database/already-exists-vs-busy-vs-retryable-decision-guide": [
+    "database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide"
+  ],
+  "database/autovacuum-freeze-debt-wraparound-playbook": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
+  ],
+  "database/baseball-guess-attempt-unique-constraint-bridge": [
+    "database/baseball-current-game-state-lost-update-version-cas-bridge",
+    "database/baseball-restart-duplicate-submit-idempotency-bridge",
+    "spring/baseball-guess-post-redirect-get-refresh-replay-bridge"
+  ],
+  "database/baseball-guess-history-current-state-transaction-bridge": [
+    "database/baseball-current-game-state-lost-update-version-cas-bridge",
+    "database/baseball-guess-attempt-unique-constraint-bridge",
+    "database/blackjack-action-history-current-state-transaction-bridge",
+    "design-pattern/baseball-game-view-aggregate-vs-read-model-bridge",
+    "software-engineering/baseball-current-game-load-save-repository-bridge",
+    "spring/baseball-console-game-loop-http-request-lifecycle-bridge",
+    "spring/baseball-game-state-singleton-bean-scope-bridge",
+    "spring/blackjack-game-state-singleton-bean-scope-bridge"
+  ],
+  "database/blackjack-action-history-current-state-transaction-bridge": [
+    "database/blackjack-action-log-state-mismatch-symptom-router",
+    "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge",
+    "software-engineering/blackjack-current-game-load-save-repository-bridge",
+    "spring/blackjack-game-id-session-boundary-bridge"
+  ],
+  "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge": [
+    "database/blackjack-action-log-state-mismatch-symptom-router",
+    "spring/blackjack-post-redirect-get-refresh-replay-bridge"
+  ],
+  "database/cache-replica-split-read-inconsistency": [
+    "database/duplicate-key-then-not-found-symptom-router",
+    "database/failover-after-old-new-flip-symptom-router",
+    "database/pagination-duplicates-missing-symptom-router",
+    "database/read-after-write-routing-decision-guide"
+  ],
+  "database/causal-consistency-intuition": [
+    "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide",
+    "system-design/causal-consistency-notification-primer"
+  ],
+  "database/cdc-debezium-outbox-binlog": [
+    "database/outbox-vs-cdc-vs-saga-decision-guide"
+  ],
+  "database/cdc-gap-repair-reconciliation-playbook": [
+    "database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide",
+    "database/summary-drift-detection-bounded-rebuild"
+  ],
+  "database/compare-and-set-version-columns": [
+    "system-design/conditional-write-status-code-bridge"
+  ],
+  "database/connection-pool": [
+    "database/db-timeout-first-splitter"
+  ],
+  "database/connection-timeout-vs-lock-timeout-card": [
+    "database/timeout-errorcode-mapping-mini-card"
+  ],
+  "database/constraint-first-booking-primer": [
+    "database/exclusion-constraint-vs-slot-row-quick-chooser",
+    "database/phantom-safe-booking-patterns-primer",
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "database/db-lease-fencing-coordination": [
+    "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide"
+  ],
+  "database/db-timeout-first-splitter": [
+    "database/already-exists-vs-busy-vs-retryable-decision-guide",
+    "database/connection-timeout-vs-lock-timeout-card",
+    "database/deadlock-vs-lock-wait-timeout-primer",
+    "database/lock-timeout-blocker-first-check",
+    "database/lock-wait-timeout-symptom-router"
+  ],
+  "database/deadlock-vs-lock-wait-timeout-primer": [
+    "database/db-timeout-first-splitter",
+    "database/lock-basics",
+    "database/lock-timeout-blocker-first-check",
+    "database/lock-wait-deadlock-latch-triage-playbook",
+    "database/lock-wait-timeout-symptom-router"
+  ],
+  "database/distinct-vs-group-by-beginner-card": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "database/duplicate-key-fresh-read-classifier-mini-card": [
+    "database/duplicate-key-vs-serialization-failure-mini-card"
+  ],
+  "database/duplicate-key-then-not-found-symptom-router": [
+    "database/for-update-zero-row-duplicate-insert-symptom-router",
+    "database/last-stock-sold-twice-symptom-router",
+    "database/payment-succeeded-but-order-not-visible-symptom-router"
+  ],
+  "database/duplicate-key-vs-busy-response-mapping": [
+    "database/duplicate-key-fresh-read-classifier-mini-card",
+    "database/duplicate-key-vs-serialization-failure-mini-card"
+  ],
+  "database/duplicate-key-vs-serialization-failure-mini-card": [
+    "database/already-exists-vs-busy-vs-retryable-decision-guide",
+    "database/duplicate-key-fresh-read-classifier-mini-card",
+    "database/timeout-errorcode-mapping-mini-card"
+  ],
+  "database/exclusion-constraint-vs-slot-row-quick-chooser": [
+    "database/constraint-first-booking-primer",
+    "database/phantom-safe-booking-patterns-primer",
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide": [
+    "database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide"
+  ],
+  "database/for-update-zero-row-duplicate-insert-symptom-router": [
+    "database/duplicate-key-then-not-found-symptom-router",
+    "database/overlapping-bookings-both-succeed-symptom-router"
+  ],
+  "database/having-vs-where-beginner-card": [
+    "database/lotto-winning-statistics-group-by-aggregation-bridge"
+  ],
+  "database/idempotency-key-and-deduplication": [
+    "database/baseball-guess-attempt-unique-constraint-bridge",
+    "database/baseball-restart-duplicate-submit-idempotency-bridge",
+    "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge",
+    "database/lotto-purchase-duplicate-submit-idempotency-bridge",
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge",
+    "database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide",
+    "spring/roomescape-admin-reservation-post-redirect-get-bridge",
+    "system-design/monotonic-writes-ordering-primer"
+  ],
+  "database/incremental-summary-table-refresh-watermark": [
+    "database/normalization-vs-denormalization-vs-summary-table-decision-guide",
+    "database/summary-drift-detection-bounded-rebuild"
+  ],
+  "database/jdbc": [
+    "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+  ],
+  "database/jpa": [
+    "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+  ],
   "database/lock": [
     "database/mvcc-snapshot-vs-locking-read-portability"
   ],
   "database/lock-basics": [
+    "database/deadlock-vs-lock-wait-timeout-primer",
+    "database/plain-select-vs-locking-read-vs-serializable-decision-guide"
+  ],
+  "database/lock-timeout-blocker-first-check": [
+    "database/db-timeout-first-splitter",
     "database/deadlock-vs-lock-wait-timeout-primer"
   ],
   "database/lock-timeout-not-already-exists-common-confusion-card": [
     "database/deadlock-vs-lock-wait-timeout-primer"
   ],
   "database/lock-wait-deadlock-latch-triage-playbook": [
+    "database/alter-table-not-finishing-symptom-router",
+    "database/lock-wait-timeout-symptom-router",
     "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "database/lock-wait-timeout-symptom-router": [
+    "database/connection-timeout-vs-lock-timeout-card"
+  ],
+  "database/lost-update-detection-patterns": [
+    "database/lost-update-vs-write-skew-vs-phantom-chooser",
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
+  "database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge": [
+    "database/last-stock-sold-twice-symptom-router"
+  ],
+  "database/lotto-purchase-duplicate-submit-idempotency-bridge": [
+    "spring/lotto-purchase-post-redirect-get-refresh-replay-bridge",
+    "spring/lotto-purchase-ticket-transaction-boundary-bridge"
+  ],
+  "database/lotto-purchase-ticket-parent-child-modeling-bridge": [
+    "database/lotto-purchase-duplicate-submit-idempotency-bridge",
+    "software-engineering/lotto-purchase-history-repository-boundary-bridge",
+    "spring/lotto-purchase-ticket-transaction-boundary-bridge"
+  ],
+  "database/mission-code-reading-db-checklist": [
+    "database/database-first-step-bridge"
+  ],
+  "database/monotonic-reads-session-guarantees": [
+    "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide"
   ],
   "database/mvcc": [
     "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "database/mvcc-history-list-snapshot-too-old": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
+  ],
+  "database/mvcc-snapshot-vs-locking-read-portability": [
+    "database/plain-select-vs-locking-read-vs-serializable-decision-guide"
+  ],
+  "database/mybatis": [
+    "database/jdbc-vs-jpa-vs-mybatis-decision-guide"
+  ],
+  "database/mysql-overlap-fallback-beginner-bridge": [
+    "data-structure/reservation-interval-half-open-boundary-card",
+    "data-structure/treemap-gap-detection-mini-drill",
+    "data-structure/treemap-interval-entry-primer"
+  ],
+  "database/n-plus-one-query-detection-solutions": [
+    "spring/roomescape-admin-reservation-list-fetch-plan-bridge"
+  ],
+  "database/normalization-basics": [
+    "database/lotto-purchase-ticket-parent-child-modeling-bridge",
+    "database/lotto-winning-round-storage-normalization-bridge"
+  ],
+  "database/normalization-denormalization-tradeoffs": [
+    "database/normalization-vs-denormalization-vs-summary-table-decision-guide"
+  ],
+  "database/normalization-vs-denormalization-vs-summary-table-decision-guide": [
+    "database/lotto-winning-round-storage-normalization-bridge"
+  ],
+  "database/online-schema-change-strategies": [
+    "database/alter-table-not-finishing-symptom-router"
+  ],
+  "database/outbox-saga-eventual-consistency": [
+    "database/outbox-vs-cdc-vs-saga-decision-guide"
+  ],
+  "database/overlapping-bookings-both-succeed-symptom-router": [
+    "database/for-update-zero-row-duplicate-insert-symptom-router",
+    "database/last-stock-sold-twice-symptom-router",
+    "database/phantom-safe-booking-patterns-primer",
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router",
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "database/pagination-duplicates-missing-symptom-router": [
+    "database/offset-vs-seek-pagination-decision-guide",
+    "database/payment-succeeded-but-order-not-visible-symptom-router",
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge"
+  ],
+  "database/pagination-offset-vs-seek": [
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge"
+  ],
+  "database/pending-row-recovery-primer": [
+    "database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide"
+  ],
+  "database/phantom-safe-booking-patterns-primer": [
+    "database/constraint-first-booking-primer",
+    "database/exclusion-constraint-vs-slot-row-quick-chooser",
+    "database/overlapping-bookings-both-succeed-symptom-router",
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "database/postgresql-serializable-retry-playbook": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "database/query-tuning-checklist": [
+    "database/histogram-drift-auto-analyze-thresholds"
+  ],
+  "database/queue-claim-skip-locked-fairness": [
+    "database/for-update-vs-advisory-lock-vs-lease-fencing-decision-guide",
+    "database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide"
+  ],
+  "database/range-invariant-enforcement-write-skew-phantom": [
+    "database/lost-update-vs-write-skew-vs-phantom-chooser"
+  ],
+  "database/read-after-write-routing-decision-guide": [
+    "database/offset-vs-seek-pagination-decision-guide",
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "database/read-committed-vs-repeatable-read-anomalies": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide": [
+    "database/lost-update-vs-write-skew-vs-phantom-chooser",
+    "database/plain-select-vs-locking-read-vs-serializable-decision-guide"
+  ],
+  "database/read-repair-reconciliation-after-failover": [
+    "database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide"
+  ],
+  "database/read-your-writes-session-pinning": [
+    "database/pagination-duplicates-missing-symptom-router",
+    "database/read-after-write-routing-decision-guide",
+    "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide",
+    "database/roomescape-reservation-create-read-after-write-bridge",
+    "database/shopping-cart-order-complete-read-your-writes-bridge",
+    "system-design/caching-vs-read-replica-primer",
+    "system-design/session-guarantees-decision-matrix"
+  ],
+  "database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide": [
+    "database/duplicate-key-then-not-found-symptom-router",
+    "database/read-after-write-routing-decision-guide"
+  ],
+  "database/replica-lag-read-after-write-strategies": [
+    "database/failover-after-old-new-flip-symptom-router",
+    "database/pagination-duplicates-missing-symptom-router",
+    "database/read-after-write-routing-decision-guide",
+    "database/shopping-cart-order-complete-read-your-writes-bridge"
+  ],
+  "database/replica-read-routing-anomalies": [
+    "database/failover-after-old-new-flip-symptom-router"
+  ],
+  "database/reservation-reschedule-cancellation-transition-patterns": [
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router",
+    "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge"
+  ],
+  "database/result-row-explosion-debugging-checklist": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "database/roomescape-admin-reservation-list-pagination-stability-bridge": [
+    "database/offset-vs-seek-pagination-decision-guide",
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide": [
+    "database/roomescape-available-times-active-predicate-antijoin-bridge",
+    "database/roomescape-available-times-empty-cause-router",
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "database/roomescape-available-times-active-predicate-antijoin-bridge": [
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide",
+    "database/roomescape-available-times-empty-cause-router",
+    "database/roomescape-reservation-create-read-after-write-bridge"
+  ],
+  "database/roomescape-available-times-empty-cause-router": [
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide",
+    "database/roomescape-available-times-active-predicate-antijoin-bridge",
+    "database/roomescape-reschedule-old-slot-still-blocked-symptom-router",
+    "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge"
+  ],
+  "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge": [
+    "database/reservation-reschedule-cancellation-transition-patterns",
+    "database/roomescape-available-times-active-predicate-antijoin-bridge",
+    "database/roomescape-available-times-empty-cause-router",
+    "design-pattern/roomescape-reservation-status-state-pattern-bridge"
+  ],
+  "database/roomescape-reservation-concurrency-bridge": [
+    "database/reservation-reschedule-cancellation-transition-patterns",
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge",
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide",
+    "database/roomescape-available-times-empty-cause-router",
+    "software-engineering/roomescape-validation-vs-domain-rule-bridge",
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "database/roomescape-reservation-create-read-after-write-bridge": [
+    "database/read-after-write-routing-decision-guide",
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge",
+    "database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide",
+    "database/roomescape-available-times-active-predicate-antijoin-bridge",
+    "spring/roomescape-admin-reservation-post-redirect-get-bridge"
+  ],
+  "database/saga-pivot-transaction-design": [
+    "database/outbox-vs-cdc-vs-saga-decision-guide"
+  ],
+  "database/shopping-cart-cart-item-merge-unique-upsert-bridge": [
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge",
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge",
+    "database/shopping-cart-payment-idempotency-stock-bridge",
+    "database/shopping-cart-reclick-concurrent-write-cause-router"
+  ],
+  "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge",
+    "database/shopping-cart-payment-idempotency-stock-bridge",
+    "database/shopping-cart-reclick-concurrent-write-cause-router"
+  ],
+  "database/shopping-cart-coupon-apply-once-unique-claim-bridge": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge",
+    "database/shopping-cart-payment-idempotency-stock-bridge",
+    "database/shopping-cart-reclick-concurrent-write-cause-router",
+    "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge"
+  ],
+  "database/shopping-cart-order-complete-read-your-writes-bridge": [
+    "database/payment-succeeded-but-order-not-visible-symptom-router",
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge"
+  ],
+  "database/shopping-cart-payment-idempotency-stock-bridge": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge",
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge",
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge",
+    "database/shopping-cart-reclick-concurrent-write-cause-router",
+    "design-pattern/shopping-cart-stock-hold-before-payment-bridge",
+    "software-engineering/shopping-cart-checkout-service-layer-bridge",
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge",
+    "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge",
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge",
+    "spring/shopping-cart-order-complete-after-commit-outbox-bridge",
+    "spring/shopping-cart-payment-transaction-boundary-bridge"
+  ],
+  "database/shopping-cart-reclick-concurrent-write-cause-router": [
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge",
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge",
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge",
+    "database/shopping-cart-payment-idempotency-stock-bridge",
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
+  "database/sql-aggregate-groupby-basics": [
+    "database/lotto-winning-statistics-group-by-aggregation-bridge"
+  ],
+  "database/sql-join-basics": [
+    "database/join-row-explosion-symptom-router"
+  ],
+  "database/sql-relational-modeling-basics": [
+    "database/lotto-purchase-ticket-parent-child-modeling-bridge"
+  ],
+  "database/statement-timeout-vs-lock-timeout-card": [
+    "database/timeout-errorcode-mapping-mini-card"
+  ],
+  "database/statistics-histograms-cardinality-estimation": [
+    "database/histogram-drift-auto-analyze-thresholds"
+  ],
+  "database/summary-drift-detection-bounded-rebuild": [
+    "database/normalization-vs-denormalization-vs-summary-table-decision-guide",
+    "database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide"
+  ],
+  "database/timeout-errorcode-mapping-mini-card": [
+    "database/already-exists-vs-busy-vs-retryable-decision-guide",
+    "database/connection-timeout-vs-lock-timeout-card",
+    "database/duplicate-key-vs-serialization-failure-mini-card"
+  ],
+  "database/transaction-basics": [
+    "database/baseball-guess-history-current-state-transaction-bridge",
+    "system-design/write-freeze-rollback-window-design"
+  ],
+  "database/transaction-isolation-basics": [
+    "database/read-committed-vs-repeatable-read-vs-serializable-decision-guide"
+  ],
+  "database/transaction-timeout-vs-lock-timeout": [
+    "database/alter-table-not-finishing-symptom-router"
+  ],
+  "database/unique-vs-locking-read-duplicate-primer": [
+    "database/baseball-guess-attempt-unique-constraint-bridge",
+    "database/blackjack-hit-stand-duplicate-submit-idempotency-bridge",
+    "database/for-update-zero-row-duplicate-insert-symptom-router",
+    "database/lotto-purchase-duplicate-submit-idempotency-bridge",
+    "database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide",
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
+  "database/unique-vs-slot-row-vs-guard-row-quick-chooser": [
+    "database/constraint-first-booking-primer",
+    "database/exclusion-constraint-vs-slot-row-quick-chooser",
+    "database/overlapping-bookings-both-succeed-symptom-router",
+    "database/phantom-safe-booking-patterns-primer",
+    "database/unique-vs-version-cas-vs-for-update-chooser"
+  ],
+  "database/unique-vs-version-cas-vs-for-update-chooser": [
+    "database/baseball-current-game-state-lost-update-version-cas-bridge",
+    "database/lock-basics",
+    "database/shopping-cart-cart-item-merge-unique-upsert-bridge",
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge",
+    "database/shopping-cart-reclick-concurrent-write-cause-router",
+    "database/unique-vs-slot-row-vs-guard-row-quick-chooser"
+  ],
+  "database/vacuum-purge-freeze-risk-runbook-routing": [
+    "database/vacuum-purge-debt-forensics-symptom-map"
   ],
   "design-pattern/abstract-class-vs-interface-injection-bridge": [
     "design-pattern/template-method-vs-strategy"
@@ -20,48 +806,960 @@
   "design-pattern/abstract-factory": [
     "design-pattern/factory"
   ],
+  "design-pattern/adapter-basics": [
+    "design-pattern/adapter-vs-facade-vs-decorator-beginner-router",
+    "design-pattern/gof-adapter-vs-ports-and-adapters-vs-anti-corruption-layer-decision-guide"
+  ],
+  "design-pattern/adapter-vs-facade-vs-decorator-beginner-router": [
+    "design-pattern/facade-vs-adapter-vs-proxy-decision-guide"
+  ],
+  "design-pattern/anti-corruption-adapter-layering": [
+    "design-pattern/gof-adapter-vs-ports-and-adapters-vs-anti-corruption-layer-decision-guide",
+    "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge"
+  ],
+  "design-pattern/baseball-random-number-generator-strategy-bridge": [
+    "design-pattern/baseball-restart-flow-state-pattern-bridge",
+    "design-pattern/blackjack-deck-shuffle-random-strategy-bridge"
+  ],
+  "design-pattern/baseball-restart-flow-state-pattern-bridge": [
+    "database/baseball-restart-duplicate-submit-idempotency-bridge",
+    "design-pattern/baseball-big-if-responsibility-cause-router",
+    "design-pattern/baseball-strike-ball-judging-policy-object-bridge",
+    "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide"
+  ],
+  "design-pattern/baseball-strike-ball-judging-policy-object-bridge": [
+    "design-pattern/baseball-big-if-responsibility-cause-router",
+    "software-engineering/baseball-turn-result-response-boundary-bridge"
+  ],
+  "design-pattern/bean-name-vs-domain-key-lookup": [
+    "spring/shopping-cart-payment-method-router-qualifier-bridge"
+  ],
+  "design-pattern/blackjack-turn-flow-state-pattern-bridge": [
+    "design-pattern/blackjack-action-input-command-bridge",
+    "design-pattern/blackjack-deck-shuffle-random-strategy-bridge",
+    "design-pattern/blackjack-winner-decision-policy-object-bridge",
+    "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide",
+    "software-engineering/blackjack-ace-scoring-domain-invariant-bridge",
+    "software-engineering/blackjack-big-if-responsibility-cause-router",
+    "software-engineering/blackjack-testability-cause-router",
+    "software-engineering/blackjack-turn-processing-service-layer-bridge"
+  ],
+  "design-pattern/blackjack-winner-decision-policy-object-bridge": [
+    "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide",
+    "software-engineering/blackjack-big-if-responsibility-cause-router",
+    "software-engineering/blackjack-turn-result-response-boundary-bridge"
+  ],
+  "design-pattern/bridge-strategy-vs-factory-runtime-selection": [
+    "design-pattern/factory-vs-abstract-factory-vs-builder"
+  ],
   "design-pattern/builder": [
     "design-pattern/factory"
   ],
+  "design-pattern/builder-pattern-basics": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern",
+    "design-pattern/record-vs-builder-request-model-chooser"
+  ],
+  "design-pattern/chain-of-responsibility-filters-interceptors": [
+    "design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide",
+    "design-pattern/pipeline-vs-chain-of-responsibility"
+  ],
+  "design-pattern/command-pattern-basics": [
+    "design-pattern/blackjack-action-input-command-bridge",
+    "design-pattern/command-vs-strategy-quick-bridge"
+  ],
+  "design-pattern/command-pattern-undo-queue": [
+    "design-pattern/command-pattern-basics"
+  ],
+  "design-pattern/command-vs-strategy-quick-bridge": [
+    "design-pattern/blackjack-action-input-command-bridge",
+    "design-pattern/command-pattern-basics"
+  ],
   "design-pattern/composition-over-inheritance-basics": [
-    "design-pattern/template-method-vs-strategy"
+    "design-pattern/abstract-class-vs-interface-injection-bridge",
+    "design-pattern/template-method-vs-strategy",
+    "language/java-abstract-class-vs-interface-basics"
+  ],
+  "design-pattern/constructor-vs-static-factory-vs-factory-pattern": [
+    "design-pattern/builder-pattern-basics",
+    "design-pattern/factory-vs-abstract-factory-vs-builder",
+    "design-pattern/record-vs-builder-request-model-chooser"
+  ],
+  "design-pattern/decorator-proxy-basics": [
+    "design-pattern/adapter-vs-facade-vs-decorator-beginner-router",
+    "design-pattern/decorator-vs-proxy-decision-guide"
+  ],
+  "design-pattern/decorator-vs-proxy": [
+    "design-pattern/decorator-vs-proxy-decision-guide"
+  ],
+  "design-pattern/domain-events-vs-integration-events": [
+    "design-pattern/application-event-vs-domain-event-vs-integration-event-decision-guide",
+    "design-pattern/event-vs-command-naming-primer",
+    "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide"
+  ],
+  "design-pattern/event-vs-command-naming-primer": [
+    "design-pattern/observer-vs-command-beginner-bridge"
+  ],
+  "design-pattern/facade-vs-adapter-vs-proxy": [
+    "design-pattern/adapter-vs-facade-vs-decorator-beginner-router",
+    "design-pattern/facade-vs-adapter-vs-proxy-decision-guide"
   ],
   "design-pattern/factory": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide",
     "spring/bean-di-basics"
   ],
   "design-pattern/factory-selector-resolver-beginner-entrypoint": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator",
     "design-pattern/strategy-map-vs-registry-primer"
   ],
+  "design-pattern/factory-vs-abstract-factory-vs-builder": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern",
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide"
+  ],
+  "design-pattern/hexagonal-ports-pattern-language": [
+    "design-pattern/gof-adapter-vs-ports-and-adapters-vs-anti-corruption-layer-decision-guide"
+  ],
   "design-pattern/injected-registry-vs-service-locator-checklist": [
-    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+    "design-pattern/plugin-registry-boundary-primer",
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator",
+    "design-pattern/registry-vs-factory-injected-handler-maps",
+    "design-pattern/service-locator-antipattern"
+  ],
+  "design-pattern/lotto-manual-auto-number-generator-strategy-bridge": [
+    "design-pattern/lotto-big-if-responsibility-cause-router",
+    "software-engineering/lotto-boundary-mixing-cause-router",
+    "spring/lotto-number-generator-bean-injection-bridge"
+  ],
+  "design-pattern/lotto-static-factory-bridge": [
+    "design-pattern/lotto-big-if-responsibility-cause-router",
+    "design-pattern/lotto-manual-auto-number-generator-strategy-bridge"
+  ],
+  "design-pattern/lotto-strategy-rank-decision-bridge": [
+    "design-pattern/lotto-big-if-responsibility-cause-router",
+    "software-engineering/lotto-rank-prize-enum-boundary-bridge"
+  ],
+  "design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist": [
+    "design-pattern/registry-vs-factory-injected-handler-maps",
+    "design-pattern/strategy-policy-selector-naming"
+  ],
+  "design-pattern/middleware-pattern-language": [
+    "design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide",
+    "design-pattern/pipeline-vs-chain-of-responsibility"
+  ],
+  "design-pattern/observer-pubsub-application-events": [
+    "design-pattern/application-event-vs-domain-event-vs-integration-event-decision-guide",
+    "design-pattern/mediator-vs-observer-vs-pubsub",
+    "design-pattern/observer-vs-command-beginner-bridge",
+    "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide",
+    "software-engineering/outbound-notifier-mock-boundary-primer"
+  ],
+  "design-pattern/observer-vs-command-beginner-bridge": [
+    "design-pattern/command-pattern-basics",
+    "design-pattern/event-vs-command-naming-primer"
+  ],
+  "design-pattern/observer-vs-pubsub-quick-bridge": [
+    "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide"
+  ],
+  "design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide": [
+    "design-pattern/application-event-vs-domain-event-vs-integration-event-decision-guide",
+    "design-pattern/mediator-vs-observer-vs-pubsub"
+  ],
+  "design-pattern/pipeline-vs-chain-of-responsibility": [
+    "design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide"
+  ],
+  "design-pattern/policy-object-pattern": [
+    "design-pattern/baseball-strike-ball-judging-policy-object-bridge",
+    "design-pattern/policy-object-naming-primer",
+    "design-pattern/policy-object-vs-strategy-map-beginner-bridge",
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge",
+    "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge",
+    "design-pattern/strategy-state-policy-object-decision-guide"
+  ],
+  "design-pattern/policy-object-vs-strategy-map-beginner-bridge": [
+    "design-pattern/policy-object-pattern",
+    "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide",
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "design-pattern/ports-and-adapters-vs-classic-patterns": [
+    "software-engineering/ports-and-adapters-beginner-primer"
+  ],
+  "design-pattern/read-model-cutover-guardrails": [
+    "design-pattern/normalization-version-rollout-playbook",
+    "design-pattern/strict-list-canary-metrics-rollback-triggers"
+  ],
+  "design-pattern/record-vs-builder-request-model-chooser": [
+    "design-pattern/builder-pattern-basics",
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide",
+    "design-pattern/factory-vs-abstract-factory-vs-builder"
   ],
   "design-pattern/registry-pattern": [
-    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+    "design-pattern/factory-selector-resolver-beginner-entrypoint",
+    "design-pattern/factory-switch-registry-smell"
+  ],
+  "design-pattern/registry-primer-lookup-table-resolver-router-service-locator": [
+    "design-pattern/injected-registry-vs-service-locator-checklist",
+    "design-pattern/plugin-registry-boundary-primer",
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "design-pattern/registry-vs-factory-injected-handler-maps": [
+    "design-pattern/injected-registry-vs-service-locator-checklist",
+    "design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist",
+    "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide",
+    "design-pattern/strategy-policy-selector-naming",
+    "design-pattern/strategy-vs-function-chooser"
+  ],
+  "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide": [
+    "design-pattern/registry-vs-factory-injected-handler-maps"
+  ],
+  "design-pattern/repository-boundary-aggregate-vs-read-model": [
+    "design-pattern/baseball-game-view-aggregate-vs-read-model-bridge"
+  ],
+  "design-pattern/request-object-creation-vs-di-container": [
+    "design-pattern/constructor-vs-static-factory-vs-factory-pattern",
+    "design-pattern/record-vs-builder-request-model-chooser"
+  ],
+  "design-pattern/request-scope-vs-plain-request-objects": [
+    "design-pattern/singleton-vs-di-container-scope"
+  ],
+  "design-pattern/reservation-hold-expiry-consistency-seam": [
+    "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge",
+    "design-pattern/shopping-cart-stock-hold-before-payment-bridge"
+  ],
+  "design-pattern/roomescape-reservation-booking-policy-object-bridge": [
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide"
+  ],
+  "design-pattern/roomescape-reservation-status-state-pattern-bridge": [
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge",
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide",
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router",
+    "language/enum-to-state-transition-beginner-bridge"
+  ],
+  "design-pattern/roomescape-strategy-vs-factory-bridge": [
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide",
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router",
+    "design-pattern/roomescape-reservation-status-state-pattern-bridge"
+  ],
+  "design-pattern/saga-coordinator-pattern-language": [
+    "design-pattern/mediator-vs-observer-vs-pubsub"
   ],
   "design-pattern/service-locator": [
     "spring/bean-di-basics"
   ],
+  "design-pattern/service-locator-antipattern": [
+    "design-pattern/factory-switch-registry-smell",
+    "design-pattern/injected-registry-vs-service-locator-checklist",
+    "design-pattern/plugin-registry-boundary-primer",
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router"
+  ],
+  "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge": [
+    "database/shopping-cart-coupon-apply-once-unique-claim-bridge",
+    "design-pattern/shopping-cart-checkout-if-else-cause-router",
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide",
+    "design-pattern/shopping-cart-order-status-state-pattern-bridge",
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge"
+  ],
+  "design-pattern/shopping-cart-order-status-state-pattern-bridge": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router",
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide",
+    "language/enum-to-state-transition-beginner-bridge",
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge"
+  ],
+  "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge": [
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge"
+  ],
+  "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router",
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide",
+    "design-pattern/shopping-cart-stock-hold-before-payment-bridge"
+  ],
+  "design-pattern/singleton-java": [
+    "design-pattern/singleton-vs-di-container-scope"
+  ],
+  "design-pattern/specification-pattern": [
+    "design-pattern/policy-object-naming-primer",
+    "design-pattern/policy-object-pattern"
+  ],
+  "design-pattern/state-machine-library-vs-state-pattern": [
+    "design-pattern/baseball-restart-flow-state-pattern-bridge"
+  ],
+  "design-pattern/state-pattern-workflow-payment": [
+    "design-pattern/strategy-state-policy-object-decision-guide"
+  ],
   "design-pattern/strategy": [
     "design-pattern/factory"
   ],
+  "design-pattern/strategy-explosion-smell": [
+    "design-pattern/template-hook-smells"
+  ],
   "design-pattern/strategy-map-vs-registry-primer": [
-    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+    "design-pattern/factory-selector-resolver-beginner-entrypoint",
+    "design-pattern/policy-object-vs-strategy-map-beginner-bridge",
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator",
+    "design-pattern/strategy-pattern-basics"
+  ],
+  "design-pattern/strategy-pattern": [
+    "design-pattern/blackjack-turn-flow-state-pattern-bridge",
+    "design-pattern/factory-switch-registry-smell",
+    "design-pattern/strategy-vs-function-chooser",
+    "software-engineering/solid-principles-basics"
   ],
   "design-pattern/strategy-pattern-basics": [
+    "design-pattern/command-vs-strategy-quick-bridge",
     "design-pattern/factory-selector-resolver-beginner-entrypoint",
-    "design-pattern/strategy-map-vs-registry-primer"
+    "design-pattern/strategy-explosion-smell",
+    "design-pattern/strategy-map-vs-registry-primer",
+    "design-pattern/strategy-state-policy-object-decision-guide"
+  ],
+  "design-pattern/strategy-policy-selector-naming": [
+    "design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist",
+    "design-pattern/policy-object-naming-primer",
+    "design-pattern/registry-vs-factory-injected-handler-maps"
+  ],
+  "design-pattern/strategy-state-policy-object-decision-guide": [
+    "design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide",
+    "design-pattern/roomescape-reservation-branching-if-else-cause-router",
+    "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge"
+  ],
+  "design-pattern/strategy-vs-function-chooser": [
+    "design-pattern/baseball-random-number-generator-strategy-bridge",
+    "design-pattern/lotto-manual-auto-number-generator-strategy-bridge",
+    "design-pattern/strategy-explosion-smell",
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "design-pattern/strategy-vs-state-vs-policy-object": [
+    "design-pattern/baseball-restart-flow-state-pattern-bridge",
+    "design-pattern/blackjack-turn-flow-state-pattern-bridge",
+    "design-pattern/policy-object-pattern",
+    "design-pattern/roomescape-reservation-status-state-pattern-bridge",
+    "design-pattern/shopping-cart-order-status-state-pattern-bridge",
+    "design-pattern/strategy-explosion-smell",
+    "design-pattern/strategy-pattern-basics"
+  ],
+  "design-pattern/strict-pagination-fallback-contracts": [
+    "design-pattern/normalization-version-rollout-playbook",
+    "design-pattern/strict-list-canary-metrics-rollback-triggers"
+  ],
+  "design-pattern/template-method-basics": [
+    "design-pattern/blackjack-player-dealer-result-view-template-method-bridge",
+    "design-pattern/template-hook-smells"
+  ],
+  "design-pattern/template-method-vs-filter-interceptor-chain": [
+    "design-pattern/pipeline-vs-chain-of-responsibility"
+  ],
+  "design-pattern/template-method-vs-strategy": [
+    "design-pattern/abstract-class-vs-interface-injection-bridge",
+    "design-pattern/blackjack-player-dealer-result-view-template-method-bridge",
+    "design-pattern/strategy-pattern-basics",
+    "design-pattern/strategy-vs-function-chooser",
+    "design-pattern/template-hook-smells"
+  ],
+  "language/abstract-class-vs-interface": [
+    "language/abstract-class-vs-interface-follow-up-drill",
+    "language/java-abstract-class-vs-interface-basics"
+  ],
+  "language/array-to-list-conversion-entrypoint-primer": [
+    "language/arrays-aslist-fixed-size-list-checklist"
+  ],
+  "language/arrays-aslist-fixed-size-list-checklist": [
+    "language/array-to-list-conversion-entrypoint-primer",
+    "language/list-copyof-listof-unmodifiablelist-beginner-bridge"
+  ],
+  "language/arrays-sort-comparator-reuse-bridge": [
+    "language/arrays-sort-vs-list-sort-bridge"
+  ],
+  "language/async-profiler-vs-jfr-comparison": [
+    "language/jfr-event-interpretation",
+    "language/jfr-jmc-performance-playbook"
+  ],
+  "language/bigdecimal-construction-policy-beginner-bridge": [
+    "language/money-value-object-basics"
+  ],
+  "language/bigdecimal-hashmap-treemap-lookup-mini-drill": [
+    "language/bigdecimal-navigablemap-lookup-bridge"
+  ],
+  "language/bigdecimal-money-equality-rounding-serialization-pitfalls": [
+    "language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps",
+    "language/money-value-object-basics"
+  ],
+  "language/bigdecimal-setscale-unnecessary-validation-primer": [
+    "language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps"
+  ],
+  "language/bigdecimal-sorted-collection-bridge": [
+    "language/bigdecimal-key-policy-30-second-checklist",
+    "language/bigdecimal-money-equality-rounding-serialization-pitfalls"
+  ],
+  "language/bigdecimal-striptrailingzeros-input-boundary-bridge": [
+    "language/bigdecimal-key-policy-30-second-checklist"
+  ],
+  "language/classloader-memory-leak-playbook": [
+    "language/oom-heap-dump-playbook"
+  ],
+  "language/collection-vs-collections-vs-arrays-utility-mini-bridge": [
+    "language/interface-default-vs-static-method-primer"
+  ],
+  "language/collections-equality-mutable-state-foundations": [
+    "language/list-contains-vs-set-contains-symptom-card",
+    "language/list-indexof-remove-vs-set-remove-symptom-bridge",
+    "language/record-value-object-equality-basics"
+  ],
+  "language/constructor-to-value-object-factory-bridge": [
+    "language/java-instance-static-factory-methods-primer",
+    "language/request-dto-to-value-object-boundary-primer"
+  ],
+  "language/domain-state-type-primer-enum-record-value-object": [
+    "language/enum-to-state-transition-beginner-bridge"
+  ],
+  "language/enum-to-state-transition-beginner-bridge": [
+    "language/enummap-status-policy-lookup-primer"
+  ],
+  "language/firstentry-lastentry-vs-firstkey-lastkey-bridge": [
+    "language/pollfirst-polllast-vs-first-last-beginner-bridge"
+  ],
+  "language/gc-root-retention-analysis": [
+    "language/oom-heap-dump-playbook"
+  ],
+  "language/hashset-vs-treeset-duplicate-semantics": [
+    "data-structure/hashset-vs-treeset-beginner-bridge"
+  ],
+  "language/immutable-objects-and-defensive-copying": [
+    "language/value-object-invariants-canonicalization-boundary-design"
+  ],
+  "language/interface-default-method-contract-evolution-primer": [
+    "language/abstract-class-vs-interface",
+    "language/abstract-class-vs-interface-follow-up-drill",
+    "language/default-method-contract-evolution-vs-conflict-mini-drill",
+    "language/interface-default-vs-static-method-primer",
+    "language/java-abstract-class-vs-interface-basics",
+    "language/marker-interface-vs-capability-method-bridge"
+  ],
+  "language/interface-default-method-diamond-conflict-basics": [
+    "language/default-method-contract-evolution-vs-conflict-mini-drill"
+  ],
+  "language/interface-default-vs-static-method-primer": [
+    "language/default-method-contract-evolution-vs-conflict-mini-drill",
+    "language/marker-interface-vs-capability-method-bridge"
+  ],
+  "language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge": [
+    "language/java-array-equality-basics"
+  ],
+  "language/java-abstract-class-vs-interface-basics": [
+    "language/abstract-class-vs-interface",
+    "language/abstract-class-vs-interface-follow-up-drill",
+    "language/marker-interface-vs-capability-method-bridge"
+  ],
+  "language/java-access-modifier-boundary-lab": [
+    "language/java-access-modifier-top-level-member-mini-quiz",
+    "language/java-package-boundary-quickcheck-card"
+  ],
+  "language/java-access-modifier-top-level-member-mini-quiz": [
+    "language/java-access-modifier-boundary-lab"
+  ],
+  "language/java-access-modifiers-member-model-basics": [
+    "language/java-instance-static-factory-methods-primer",
+    "language/top-level-type-access-modifier-bridge"
+  ],
+  "language/java-array-copy-clone-basics": [
+    "language/java-array-equality-basics",
+    "language/java-parameter-passing-pass-by-value-side-effects-primer"
+  ],
+  "language/java-constructors-initialization-order-basics": [
+    "language/java-methods-constructors-practice-primer"
+  ],
+  "language/java-enum-basics": [
+    "language/domain-state-type-primer-enum-record-value-object",
+    "language/enum-to-state-transition-beginner-bridge"
+  ],
+  "language/java-equality-identity-basics": [
+    "language/java-parameter-passing-pass-by-value-side-effects-primer",
+    "language/record-value-object-equality-basics"
+  ],
+  "language/java-instance-static-factory-methods-primer": [
+    "language/constructor-to-value-object-factory-bridge",
+    "language/interface-default-vs-static-method-primer",
+    "language/java-access-modifiers-member-model-basics",
+    "language/java-methods-constructors-practice-primer"
+  ],
+  "language/java-overloading-vs-overriding-beginner-primer": [
+    "language/java-methods-constructors-practice-primer"
+  ],
+  "language/java-package-boundary-quickcheck-card": [
+    "language/java-access-modifier-boundary-lab",
+    "language/java-package-import-boundary-basics"
+  ],
+  "language/java-package-import-boundary-basics": [
+    "language/java-access-modifiers-member-model-basics",
+    "language/java-default-package-avoid-bridge",
+    "language/java-package-boundary-quickcheck-card",
+    "language/top-level-type-access-modifier-bridge"
+  ],
+  "language/jfr-event-interpretation": [
+    "language/async-profiler-vs-jfr-comparison",
+    "language/jfr-jmc-performance-playbook"
+  ],
+  "language/jfr-jmc-performance-playbook": [
+    "language/async-profiler-vs-jfr-comparison",
+    "language/jfr-event-interpretation",
+    "language/oom-heap-dump-playbook"
+  ],
+  "language/jfr-loom-incident-signal-map": [
+    "language/jfr-event-interpretation"
+  ],
+  "language/list-contains-vs-set-contains-symptom-card": [
+    "language/list-indexof-remove-vs-set-remove-symptom-bridge"
+  ],
+  "language/list-copyof-listof-unmodifiablelist-beginner-bridge": [
+    "language/array-to-list-conversion-entrypoint-primer",
+    "language/arrays-aslist-fixed-size-list-checklist"
+  ],
+  "language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge": [
+    "language/list-copyof-listof-unmodifiablelist-beginner-bridge"
+  ],
+  "language/list-indexof-remove-vs-set-remove-symptom-bridge": [
+    "language/list-contains-vs-set-contains-symptom-card"
+  ],
+  "language/list-sort-vs-collections-sort-mini-bridge": [
+    "language/arrays-sort-vs-list-sort-bridge"
+  ],
+  "language/list-sort-vs-stream-sorted-comparator-bridge": [
+    "language/arrays-sort-vs-list-sort-bridge"
+  ],
+  "language/lower-vs-floor-exact-match-mini-drill": [
+    "language/bigdecimal-navigablemap-lookup-bridge"
+  ],
+  "language/map-get-null-containskey-getordefault-primer": [
+    "language/map-put-null-containskey-distinction-bridge"
+  ],
+  "language/map-implementation-selection-mini-drill": [
+    "language/enummap-status-policy-lookup-primer"
+  ],
+  "language/map-of-copyof-unmodifiablemap-readonly-bridge": [
+    "language/list-copyof-listof-unmodifiablelist-beginner-bridge"
+  ],
+  "language/map-remove-during-iteration-safety-primer": [
+    "language/collection-update-strategy-primer"
+  ],
+  "language/money-value-object-basics": [
+    "language/bigdecimal-key-policy-30-second-checklist",
+    "language/bigdecimal-money-equality-rounding-serialization-pitfalls",
+    "language/value-object-invariants-canonicalization-boundary-design"
+  ],
+  "language/navigablemap-navigableset-mental-model": [
+    "language/firstentry-lastentry-vs-firstkey-lastkey-bridge",
+    "language/pollfirst-polllast-vs-first-last-beginner-bridge"
+  ],
+  "language/oom-heap-dump-playbook": [
+    "language/jfr-jmc-performance-playbook"
+  ],
+  "language/pollfirst-polllast-view-semantics-primer": [
+    "language/pollfirst-polllast-vs-first-last-beginner-bridge"
+  ],
+  "language/pollfirst-polllast-vs-first-last-beginner-bridge": [
+    "language/firstentry-lastentry-vs-firstkey-lastkey-bridge"
+  ],
+  "language/record-value-object-equality-basics": [
+    "language/constructor-to-value-object-factory-bridge",
+    "language/domain-state-type-primer-enum-record-value-object",
+    "language/money-value-object-basics",
+    "language/value-object-invariants-canonicalization-boundary-design"
+  ],
+  "language/request-dto-to-value-object-boundary-primer": [
+    "language/constructor-to-value-object-factory-bridge",
+    "language/domain-state-type-primer-enum-record-value-object",
+    "language/java-instance-static-factory-methods-primer"
+  ],
+  "language/safepoint-stop-the-world-diagnostics": [
+    "language/async-profiler-vs-jfr-comparison"
+  ],
+  "language/sealed-interfaces-exhaustive-switch-design": [
+    "language/abstract-class-vs-interface"
+  ],
+  "language/stream-tolist-vs-collectors-tolist-mutability-bridge": [
+    "language/collection-update-strategy-primer"
+  ],
+  "language/top-level-type-access-modifier-bridge": [
+    "language/java-access-modifier-top-level-member-mini-quiz",
+    "language/java-default-package-avoid-bridge",
+    "language/java-package-import-boundary-basics"
+  ],
+  "language/treemap-put-return-value-overwrite-bridge": [
+    "language/map-put-null-containskey-distinction-bridge"
+  ],
+  "network/alb-elb-retry-amplification-proxy-chain": [
+    "network/proxy-retry-budget-discipline"
+  ],
+  "network/api-gateway-auth-failure-surface-map": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser"
+  ],
+  "network/browser-421-but-curl-200-symptom-router": [
+    "network/dns-change-some-users-old-server-symptom-router",
+    "network/h3-stale-alt-svc-421-recovery-primer",
+    "network/http-421-troubleshooting-trace-examples",
+    "network/http2-http3-421-retry-after-wrong-coalescing",
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "network/browser-502-no-app-log-symptom-router": [
+    "network/browser-503-no-app-log-symptom-router"
+  ],
+  "network/browser-504-app-200-symptom-router": [
+    "network/browser-502-no-app-log-symptom-router",
+    "network/browser-503-no-app-log-symptom-router",
+    "network/http-429-no-app-log-symptom-router",
+    "network/idle-first-fail-second-success-symptom-router",
+    "network/request-pending-forever-symptom-router",
+    "network/upload-finishes-then-rejected-symptom-router"
+  ],
+  "network/browser-devtools-502-504-app-500-decision-card": [
+    "network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge"
+  ],
+  "network/browser-devtools-blocked-canceled-failed-symptom-router": [
+    "network/browser-502-no-app-log-symptom-router",
+    "network/browser-504-app-200-symptom-router",
+    "network/corporate-wifi-https-fails-symptom-router",
+    "network/download-starts-then-cuts-off-symptom-router",
+    "network/first-request-h2-next-request-h3-symptom-router",
+    "network/idle-first-fail-second-success-symptom-router",
+    "network/json-expected-but-html-response-symptom-router",
+    "network/options-only-no-actual-request-symptom-router",
+    "network/request-pending-forever-symptom-router",
+    "network/same-url-request-twice-symptom-router",
+    "network/upload-finishes-then-rejected-symptom-router",
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "network/browser-fetch-vs-page-navigation-redirect-trace-card": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser"
+  ],
+  "network/browser-http-version-selection-alpn-alt-svc-fallback": [
+    "network/alpn-negotiation-failure-routing-mismatch"
+  ],
+  "network/cache-control-practical": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "network/client-disconnect-499-broken-pipe-cancellation-proxy-chain": [
+    "spring/servlet-container-disconnect-exception-mapping"
+  ],
+  "network/compression-cache-vary-accept-encoding-personalization": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "network/connection-keepalive-loadbalancing-circuit-breaker": [
+    "system-design/load-balancer-drain-and-affinity-primer"
   ],
   "network/cross-origin-cookie-credentials-cors-primer": [
     "security/fetch-credentials-vs-cookie-scope"
   ],
+  "network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge": [
+    "network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge"
+  ],
+  "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser": [
+    "network/browser-devtools-blocked-canceled-failed-symptom-router",
+    "network/json-expected-but-html-response-symptom-router",
+    "network/same-url-request-twice-symptom-router"
+  ],
+  "network/first-request-h2-next-request-h3-symptom-router": [
+    "network/browser-421-but-curl-200-symptom-router",
+    "network/dns-change-some-users-old-server-symptom-router",
+    "network/h3-stale-alt-svc-421-recovery-primer"
+  ],
+  "network/h2c-cleartext-upgrade-prior-knowledge-routing": [
+    "network/alpn-negotiation-failure-routing-mismatch"
+  ],
+  "network/h3-stale-alt-svc-421-recovery-primer": [
+    "network/http2-http3-421-retry-after-wrong-coalescing"
+  ],
+  "network/http-403-vs-404-concealment-beginner-bridge": [
+    "network/http-421-troubleshooting-trace-examples"
+  ],
+  "network/http-421-troubleshooting-trace-examples": [
+    "network/http2-http3-421-retry-after-wrong-coalescing"
+  ],
+  "network/http-429-no-app-log-symptom-router": [
+    "network/browser-502-no-app-log-symptom-router",
+    "network/browser-503-no-app-log-symptom-router"
+  ],
+  "network/http2-http3-421-retry-after-wrong-coalescing": [
+    "network/h3-stale-alt-svc-421-recovery-primer",
+    "network/http-421-troubleshooting-trace-examples"
+  ],
+  "network/http2-max-concurrent-streams-pending-queue-saturation": [
+    "network/queue-saturation-attribution-metrics-runbook"
+  ],
+  "network/idle-first-fail-second-success-symptom-router": [
+    "network/browser-421-but-curl-200-symptom-router",
+    "network/first-request-h2-next-request-h3-symptom-router",
+    "network/request-pending-forever-symptom-router",
+    "network/same-url-request-twice-symptom-router",
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "network/idle-timeout-mismatch-lb-proxy-app": [
+    "network/timeout-budget-propagation-proxy-gateway-service-hop-chain"
+  ],
+  "network/json-expected-but-html-response-symptom-router": [
+    "network/browser-504-app-200-symptom-router",
+    "network/browser-devtools-blocked-canceled-failed-symptom-router",
+    "network/corporate-wifi-https-fails-symptom-router",
+    "network/http-429-no-app-log-symptom-router",
+    "network/postman-works-browser-fails-symptom-router"
+  ],
   "network/login-redirect-hidden-jsessionid-savedrequest-primer": [
     "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "network/options-only-no-actual-request-symptom-router": [
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "network/post-redirect-get-prg-beginner-primer": [
+    "network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge"
+  ],
+  "network/postman-works-browser-fails-symptom-router": [
+    "network/dns-change-some-users-old-server-symptom-router"
+  ],
+  "network/proxy-local-reply-vs-upstream-error-attribution": [
+    "network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge",
+    "network/timeout-budget-propagation-proxy-gateway-service-hop-chain"
+  ],
+  "network/proxy-reverse-proxy-basics": [
+    "system-design/api-gateway-basics"
+  ],
+  "network/queue-saturation-attribution-metrics-runbook": [
+    "network/http2-max-concurrent-streams-pending-queue-saturation"
+  ],
+  "network/request-pending-forever-symptom-router": [
+    "network/corporate-wifi-https-fails-symptom-router",
+    "network/download-starts-then-cuts-off-symptom-router",
+    "network/upload-finishes-then-rejected-symptom-router",
+    "network/websocket-connected-but-messages-delayed-symptom-router"
+  ],
+  "network/request-timing-decomposition": [
+    "network/http2-max-concurrent-streams-pending-queue-saturation",
+    "network/queue-saturation-attribution-metrics-runbook"
+  ],
+  "network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb": [
+    "spring/partial-response-access-log-interpretation"
+  ],
+  "network/same-url-request-twice-symptom-router": [
+    "network/browser-421-but-curl-200-symptom-router",
+    "network/first-request-h2-next-request-h3-symptom-router",
+    "network/http-429-no-app-log-symptom-router"
+  ],
+  "network/shopping-cart-rate-limit-bridge": [
+    "database/shopping-cart-payment-idempotency-stock-bridge",
+    "software-engineering/shopping-cart-checkout-service-layer-bridge",
+    "spring/shopping-cart-payment-transaction-boundary-bridge"
+  ],
+  "network/sni-routing-mismatch-hostname-failure": [
+    "network/alpn-negotiation-failure-routing-mismatch"
+  ],
+  "network/ssr-view-render-vs-json-api-response-basics": [
+    "network/json-expected-but-html-response-symptom-router"
+  ],
+  "network/strong-vs-weak-etag-validator-precision-cache-correctness": [
+    "network/cache-vary-accept-encoding-edge-case"
+  ],
+  "network/timeout-budget-propagation-proxy-gateway-service-hop-chain": [
+    "network/proxy-retry-budget-discipline"
+  ],
+  "network/timeout-retry-backoff-practical": [
+    "system-design/request-deadline-timeout-budget-primer"
+  ],
+  "network/upload-finishes-then-rejected-symptom-router": [
+    "network/download-starts-then-cuts-off-symptom-router"
+  ],
+  "operating-system/accept-overload-observability-playbook": [
+    "operating-system/listener-overload-thresholds-accept-pause-policy",
+    "operating-system/socket-accept-queue-kernel-diagnostics"
+  ],
+  "operating-system/beginner-triage-quick-check-snippet-pack": [
+    "operating-system/beginner-symptom-to-doc-map"
+  ],
+  "operating-system/container-cgroup-namespace": [
+    "operating-system/container-fd-pressure-emfile-enfile-bridge"
+  ],
+  "operating-system/cpu-scheduling-basics": [
+    "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics"
+  ],
+  "operating-system/daemonization-checklist-primer": [
+    "operating-system/shell-job-control-command-bridge"
+  ],
+  "operating-system/demand-paging-page-fault-primer": [
+    "operating-system/memory-management-basics",
+    "operating-system/virtual-memory-basics"
+  ],
+  "operating-system/epoll-level-edge-oneshot-wakeup-semantics": [
+    "operating-system/epoll-kqueue-io-uring"
+  ],
+  "operating-system/eventfd-signalfd-epoll-control-plane-integration": [
+    "operating-system/pipe-socketpair-eventfd-memfd-ipc-selection"
+  ],
+  "operating-system/fd-exhaustion-ulimit-diagnostics": [
+    "operating-system/container-fd-pressure-emfile-enfile-bridge",
+    "operating-system/file-descriptor-basics"
+  ],
+  "operating-system/file-descriptor-basics": [
+    "operating-system/process-thread-stack-heap-fd-socket-backend-primer"
+  ],
+  "operating-system/io-models-and-event-loop": [
+    "operating-system/blocking-io-thread-pool-backpressure-primer",
+    "operating-system/epoll-kqueue-io-uring"
+  ],
+  "operating-system/io-uring-operational-hazards-registered-resources-sqpoll": [
+    "operating-system/epoll-kqueue-io-uring"
+  ],
+  "operating-system/listener-overload-thresholds-accept-pause-policy": [
+    "operating-system/accept-overload-observability-playbook",
+    "operating-system/socket-accept-queue-kernel-diagnostics"
+  ],
+  "operating-system/memory-management-basics": [
+    "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics",
+    "operating-system/virtual-memory-basics"
+  ],
+  "operating-system/memory-management-numa-page-replacement-thrashing": [
+    "operating-system/page-replacement-clock-vs-lru"
+  ],
+  "operating-system/o-cloexec-fd-inheritance-exec-leaks": [
+    "operating-system/subprocess-fd-hygiene-basics"
+  ],
+  "operating-system/oom-killer-cgroup-memory-pressure": [
+    "operating-system/killed-oomkilled-memory-events-beginner-bridge"
+  ],
+  "operating-system/open-file-description-dup-fork-shared-offsets": [
+    "operating-system/file-descriptor-basics"
+  ],
+  "operating-system/page-table-overhead-memory-footprint": [
+    "operating-system/memory-management-basics",
+    "operating-system/virtual-memory-basics"
+  ],
+  "operating-system/popen-runtime-wrapper-mapping": [
+    "operating-system/shell-builtins-vs-external-commands-primer"
+  ],
+  "operating-system/process-lifecycle-and-ipc-basics": [
+    "operating-system/pipe-socketpair-eventfd-memfd-ipc-selection"
+  ],
+  "operating-system/process-thread-basics": [
+    "operating-system/process-thread-stack-heap-fd-socket-backend-primer",
+    "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics"
+  ],
+  "operating-system/process-thread-virtual-memory-context-switch-scheduler-basics": [
+    "operating-system/cpu-scheduling-basics"
+  ],
+  "operating-system/pseudo-tty-vs-pipe-behavior": [
+    "operating-system/stdio-buffering-after-redirect",
+    "operating-system/tty-aware-output-capture-patterns",
+    "operating-system/why-some-prompts-use-dev-tty"
+  ],
+  "operating-system/reuseport-shard-watermark-tuning": [
+    "operating-system/listener-overload-thresholds-accept-pause-policy"
+  ],
+  "operating-system/run-queue-load-average-cpu-saturation": [
+    "operating-system/cpu-scheduling-basics"
+  ],
+  "operating-system/scheduler-observation-starter-guide": [
+    "operating-system/beginner-symptom-to-doc-map",
+    "operating-system/cpu-scheduling-basics"
+  ],
+  "operating-system/session-vs-process-group-primer": [
+    "operating-system/shell-job-control-command-bridge"
+  ],
+  "operating-system/shell-redirection-order-primer": [
+    "operating-system/stdio-buffering-after-redirect"
+  ],
+  "operating-system/shell-wrapper-boundary-primer": [
+    "operating-system/shell-builtins-vs-external-commands-primer"
+  ],
+  "operating-system/signals-process-supervision": [
+    "operating-system/killed-oomkilled-memory-events-beginner-bridge"
+  ],
+  "operating-system/socket-accept-queue-kernel-diagnostics": [
+    "operating-system/accept-overload-observability-playbook",
+    "operating-system/listener-overload-thresholds-accept-pause-policy"
+  ],
+  "operating-system/stdio-buffering-after-redirect": [
+    "operating-system/pseudo-tty-vs-pipe-behavior",
+    "operating-system/subprocess-fd-hygiene-basics",
+    "operating-system/tty-aware-output-capture-patterns"
+  ],
+  "operating-system/subprocess-bidirectional-pipe-deadlock-primer": [
+    "operating-system/subprocess-pipe-backpressure-primer",
+    "operating-system/subprocess-stdin-eof-primer",
+    "operating-system/subprocess-symptom-first-branch-guide"
+  ],
+  "operating-system/subprocess-fd-hygiene-basics": [
+    "operating-system/file-descriptor-basics",
+    "operating-system/subprocess-symptom-first-branch-guide"
+  ],
+  "operating-system/subprocess-pipe-backpressure-primer": [
+    "operating-system/broken-pipe-sigpipe-bridge",
+    "operating-system/stdio-buffering-after-redirect",
+    "operating-system/subprocess-bidirectional-pipe-deadlock-primer",
+    "operating-system/subprocess-fd-hygiene-basics",
+    "operating-system/subprocess-stdin-eof-primer",
+    "operating-system/subprocess-symptom-first-branch-guide",
+    "operating-system/tty-aware-output-capture-patterns"
+  ],
+  "operating-system/subprocess-stdin-eof-primer": [
+    "operating-system/broken-pipe-sigpipe-bridge",
+    "operating-system/subprocess-bidirectional-pipe-deadlock-primer",
+    "operating-system/subprocess-pipe-backpressure-primer",
+    "operating-system/why-some-prompts-use-dev-tty"
+  ],
+  "operating-system/sync-async-blocking-nonblocking-basics": [
+    "operating-system/blocking-io-thread-pool-backpressure-primer"
+  ],
+  "operating-system/tcp-backlog-somaxconn-listen-queue": [
+    "operating-system/socket-accept-queue-kernel-diagnostics"
   ],
   "operating-system/thread-pool": [
     "database/connection-pool"
   ],
+  "operating-system/tty-aware-output-capture-patterns": [
+    "operating-system/pseudo-tty-vs-pipe-behavior",
+    "operating-system/why-some-prompts-use-dev-tty"
+  ],
+  "operating-system/unix-domain-socket-fd-passing-credentials": [
+    "operating-system/pipe-socketpair-eventfd-memfd-ipc-selection"
+  ],
+  "operating-system/virtual-memory-basics": [
+    "operating-system/memory-management-basics"
+  ],
+  "operating-system/why-some-prompts-use-dev-tty": [
+    "operating-system/pseudo-tty-vs-pipe-behavior"
+  ],
+  "security/absolute-redirect-url-behind-load-balancer-guide": [
+    "security/forwarded-header-trust-boundary-primer",
+    "security/secure-cookie-behind-proxy-guide",
+    "security/wrong-scheme-vs-wrong-origin-redirect-shortcut"
+  ],
+  "security/aobo-revocation-audit-event-schema": [
+    "security/aobo-start-end-event-contract"
+  ],
+  "security/api-key-vs-oauth-vs-client-credentials-primer": [
+    "security/browser-direct-call-vs-server-proxy-decision-tree"
+  ],
+  "security/audience-matrix-for-support-access-events": [
+    "security/support-access-alert-router-primer"
+  ],
+  "security/auth-failure-response-401-403-404": [
+    "network/options-only-no-actual-request-symptom-router",
+    "security/forbidden-after-role-change-symptom-router"
+  ],
   "security/authentication-vs-authorization": [
     "security/auth-failure-response-401-403-404"
+  ],
+  "security/browser-401-vs-302-login-redirect-guide": [
+    "network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser",
+    "spring/browser-only-cors-error-cause-router",
+    "spring/login-state-not-persisted-cause-router",
+    "spring/login-state-routing-decision-guide",
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "security/browser-bff-token-boundary-session-translation": [
+    "security/browser-direct-call-vs-server-proxy-decision-tree",
+    "security/social-login-to-local-session-bridge"
+  ],
+  "security/callback-cookie-name-splitter": [
+    "security/duplicate-cookie-name-shadowing"
+  ],
+  "security/canonical-security-timeline-event-schema": [
+    "security/aobo-start-end-event-contract"
+  ],
+  "security/claim-freshness-after-permission-changes": [
+    "security/role-change-session-freshness-basics"
   ],
   "security/cookie-failure-three-way-splitter": [
     "security/browser-401-vs-302-login-redirect-guide"
@@ -69,22 +1767,1142 @@
   "security/cookie-rejection-reason-primer": [
     "security/cookie-failure-three-way-splitter"
   ],
+  "security/cookie-scope-migration-cleanup": [
+    "security/secure-cookie-cleanup-behind-proxy"
+  ],
   "security/cookie-scope-mismatch-guide": [
-    "security/cookie-failure-three-way-splitter"
+    "security/cookie-failure-three-way-splitter",
+    "security/duplicate-cookie-name-shadowing",
+    "security/duplicate-cookie-vs-proxy-login-loop-bridge",
+    "security/secure-cookie-behind-proxy-guide",
+    "security/wrong-scheme-vs-wrong-origin-redirect-shortcut"
+  ],
+  "security/cors-basics": [
+    "security/browser-direct-call-vs-server-proxy-decision-tree"
+  ],
+  "security/customer-facing-support-access-notifications": [
+    "security/support-access-alert-router-primer"
+  ],
+  "security/delegated-session-tail-cleanup": [
+    "security/aobo-start-end-event-contract"
+  ],
+  "security/delivery-surface-policy-for-support-access-alerts": [
+    "security/support-access-alert-router-primer"
+  ],
+  "security/duplicate-cookie-name-shadowing": [
+    "security/duplicate-cookie-vs-proxy-login-loop-bridge"
+  ],
+  "security/duplicate-cookie-vs-proxy-login-loop-bridge": [
+    "security/duplicate-cookie-name-shadowing",
+    "security/secure-cookie-cleanup-behind-proxy"
+  ],
+  "security/fetch-credentials-vs-cookie-scope": [
+    "network/options-only-no-actual-request-symptom-router",
+    "network/postman-works-browser-fails-symptom-router"
+  ],
+  "security/forwarded-header-trust-boundary-primer": [
+    "security/absolute-redirect-url-behind-load-balancer-guide"
+  ],
+  "security/gateway-auth-context-header-trust-boundary": [
+    "security/forwarded-header-trust-boundary-primer"
+  ],
+  "security/grant-path-freshness-stale-deny-basics": [
+    "security/role-change-session-freshness-basics"
+  ],
+  "security/hardware-backed-keys-attestation": [
+    "security/workload-identity-vs-long-lived-service-account-keys"
+  ],
+  "security/iframe-login-privacy-controls-primer": [
+    "security/embedded-login-csrf-bridge"
+  ],
+  "security/input-validation-basics": [
+    "software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge"
+  ],
+  "security/jwks-rotation-cutover-failure-recovery": [
+    "security/jwt-jwks-outage-recovery-failover-drills"
+  ],
+  "security/jwt-claims-roles-authorities-permissions-mapping": [
+    "security/oauth-scope-vs-api-audience-vs-application-permission"
+  ],
+  "security/jwt-signature-verification-failure-playbook": [
+    "security/jwt-jwks-outage-recovery-failover-drills"
+  ],
+  "security/oauth2-authorization-code-grant": [
+    "security/social-login-to-local-session-bridge"
+  ],
+  "security/open-redirect-hardening": [
+    "security/absolute-redirect-url-behind-load-balancer-guide"
   ],
   "security/permission-model-bridge-authn-to-role-scope-ownership": [
-    "security/auth-failure-response-401-403-404"
+    "security/auth-failure-response-401-403-404",
+    "security/oauth-scope-vs-api-audience-vs-application-permission"
   ],
   "security/preflight-debug-checklist": [
     "security/fetch-credentials-vs-cookie-scope"
   ],
+  "security/role-vs-scope-vs-ownership-primer": [
+    "security/oauth-scope-vs-api-audience-vs-application-permission"
+  ],
+  "security/samesite-login-callback-primer": [
+    "security/subdomain-callback-handoff-chooser"
+  ],
+  "security/samesite-none-cross-site-login-primer": [
+    "security/embedded-login-csrf-bridge"
+  ],
+  "security/secret-management-rotation-leak-patterns": [
+    "security/workload-identity-vs-long-lived-service-account-keys"
+  ],
+  "security/secure-cookie-behind-proxy-guide": [
+    "security/absolute-redirect-url-behind-load-balancer-guide",
+    "security/duplicate-cookie-vs-proxy-login-loop-bridge",
+    "security/forwarded-header-trust-boundary-primer",
+    "security/secure-cookie-cleanup-behind-proxy",
+    "security/wrong-scheme-vs-wrong-origin-redirect-shortcut"
+  ],
+  "security/secure-cookie-cleanup-behind-proxy": [
+    "security/secure-cookie-behind-proxy-guide"
+  ],
+  "security/service-to-service-auth-mtls-jwt-spiffe": [
+    "security/workload-identity-vs-long-lived-service-account-keys",
+    "system-design/trust-bundle-rollback-during-cell-cutover-design"
+  ],
+  "security/session-revocation-at-scale": [
+    "security/role-change-session-freshness-basics"
+  ],
+  "security/signed-cookies-server-sessions-jwt-tradeoffs": [
+    "system-design/stateless-vs-stateful-basics"
+  ],
+  "security/signing-key-compromise-recovery-playbook": [
+    "security/jwt-jwks-outage-recovery-failover-drills"
+  ],
+  "security/social-login-to-local-session-bridge": [
+    "security/subdomain-callback-handoff-chooser"
+  ],
+  "security/subdomain-callback-handoff-chooser": [
+    "security/social-login-to-local-session-bridge"
+  ],
+  "security/subdomain-login-callback-boundaries": [
+    "security/social-login-to-local-session-bridge",
+    "security/subdomain-callback-handoff-chooser"
+  ],
+  "security/wrong-scheme-vs-wrong-origin-redirect-shortcut": [
+    "security/secure-cookie-behind-proxy-guide"
+  ],
+  "security/xss-csrf-basics": [
+    "security/embedded-login-csrf-bridge"
+  ],
+  "software-engineering/adr-decision-records-at-scale": [
+    "software-engineering/rfc-vs-adr-decision-flow"
+  ],
+  "software-engineering/after-commit-listener-rollback-test-beginner-bridge": [
+    "software-engineering/transactional-test-rollback-vs-commit-boundary-card"
+  ],
+  "software-engineering/api-design-error-handling": [
+    "software-engineering/http-409-vs-422-selection-guide"
+  ],
+  "software-engineering/architectural-fitness-functions": [
+    "software-engineering/architecture-review-anti-patterns"
+  ],
+  "software-engineering/architectural-governance-operating-model": [
+    "software-engineering/architecture-review-anti-patterns",
+    "software-engineering/rfc-vs-adr-decision-flow"
+  ],
+  "software-engineering/architecture-layering-fundamentals": [
+    "software-engineering/clean-architecture-layered-modular-monolith",
+    "software-engineering/solid-principles-basics"
+  ],
+  "software-engineering/baseball-guess-value-object-boundary-bridge": [
+    "database/baseball-guess-history-current-state-transaction-bridge",
+    "design-pattern/baseball-random-number-generator-strategy-bridge",
+    "design-pattern/baseball-strike-ball-judging-policy-object-bridge",
+    "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide",
+    "software-engineering/baseball-turn-processing-service-layer-bridge"
+  ],
+  "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide": [
+    "design-pattern/baseball-big-if-responsibility-cause-router"
+  ],
+  "software-engineering/baseball-turn-processing-service-layer-bridge": [
+    "design-pattern/baseball-big-if-responsibility-cause-router",
+    "software-engineering/baseball-current-game-load-save-repository-bridge",
+    "software-engineering/baseball-guess-vo-vs-service-flow-vs-state-transition-decision-guide",
+    "software-engineering/baseball-turn-result-response-boundary-bridge"
+  ],
+  "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide": [
+    "software-engineering/blackjack-big-if-responsibility-cause-router"
+  ],
+  "software-engineering/blackjack-ace-scoring-domain-invariant-bridge": [
+    "database/blackjack-action-history-current-state-transaction-bridge",
+    "design-pattern/blackjack-deck-shuffle-random-strategy-bridge",
+    "design-pattern/blackjack-player-dealer-result-view-template-method-bridge",
+    "design-pattern/blackjack-winner-decision-policy-object-bridge",
+    "software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide",
+    "software-engineering/blackjack-testability-cause-router"
+  ],
+  "software-engineering/blackjack-big-if-responsibility-cause-router": [
+    "software-engineering/blackjack-testability-cause-router"
+  ],
+  "software-engineering/blackjack-current-game-load-save-repository-bridge": [
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide"
+  ],
+  "software-engineering/blackjack-turn-processing-service-layer-bridge": [
+    "software-engineering/blackjack-current-game-load-save-repository-bridge",
+    "software-engineering/blackjack-turn-result-response-boundary-bridge"
+  ],
+  "software-engineering/brownfield-modularization-strategy": [
+    "software-engineering/archunit-brownfield-rollout-playbook"
+  ],
+  "software-engineering/browser-e2e-cost-vs-signal-checklist": [
+    "software-engineering/component-test-vs-browser-e2e-boundary-card"
+  ],
+  "software-engineering/change-ownership-handoff-boundaries": [
+    "software-engineering/pair-programming-code-review-tradeoffs"
+  ],
+  "software-engineering/clean-architecture-layered-modular-monolith": [
+    "software-engineering/architecture-layering-fundamentals"
+  ],
+  "software-engineering/code-review-basics": [
+    "software-engineering/pair-programming-code-review-tradeoffs"
+  ],
+  "software-engineering/command-dto-vs-query-view-naming-checklist": [
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide"
+  ],
+  "software-engineering/component-test-vs-browser-e2e-boundary-card": [
+    "software-engineering/browser-e2e-cost-vs-signal-checklist"
+  ],
+  "software-engineering/datajpatest-flush-clear-batch-checklist": [
+    "software-engineering/transactional-test-rollback-vs-commit-boundary-card"
+  ],
+  "software-engineering/ddd-hexagonal-consistency": [
+    "software-engineering/architecture-layering-fundamentals",
+    "software-engineering/clean-architecture-layered-modular-monolith"
+  ],
+  "software-engineering/decision-revalidation-supersession-lifecycle": [
+    "software-engineering/rfc-vs-adr-decision-flow"
+  ],
+  "software-engineering/dependency-injection-basics": [
+    "software-engineering/solid-principles-basics"
+  ],
+  "software-engineering/deployment-rollout-rollback-canary-blue-green": [
+    "software-engineering/release-trains-vs-continuous-delivery"
+  ],
+  "software-engineering/domain-invariants-as-contracts": [
+    "software-engineering/baseball-guess-value-object-boundary-bridge",
+    "software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge"
+  ],
+  "software-engineering/dto-vo-entity-basics": [
+    "language/request-dto-to-value-object-boundary-primer",
+    "software-engineering/baseball-guess-value-object-boundary-bridge",
+    "software-engineering/baseball-turn-result-response-boundary-bridge",
+    "software-engineering/blackjack-turn-result-response-boundary-bridge",
+    "software-engineering/lotto-inputview-domain-conversion-boundary-bridge",
+    "software-engineering/lotto-purchase-amount-value-object-bridge",
+    "software-engineering/lotto-winning-numbers-value-object-boundary-bridge",
+    "software-engineering/lotto-winning-statistics-result-object-bridge"
+  ],
+  "software-engineering/dummy-vs-stub-beginner-mini-card": [
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "software-engineering/fake-vs-mock-first-test-primer": [
+    "software-engineering/outbound-notifier-mock-boundary-primer",
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "software-engineering/feature-flags-rollout-dependency-management": [
+    "software-engineering/release-trains-vs-continuous-delivery",
+    "software-engineering/trunk-based-development-vs-feature-branch-tradeoffs"
+  ],
+  "software-engineering/git-workflow-basics": [
+    "software-engineering/trunk-based-development-vs-feature-branch-tradeoffs"
+  ],
+  "software-engineering/helper-snapshot-bloat-vs-response-dto-separation": [
+    "software-engineering/command-dto-vs-query-view-naming-checklist"
+  ],
+  "software-engineering/hexagonal-testing-seams-primer": [
+    "software-engineering/inbound-adapter-test-slices-primer"
+  ],
+  "software-engineering/http-409-vs-422-selection-guide": [
+    "system-design/conditional-write-status-code-bridge"
+  ],
+  "software-engineering/inbound-adapter-testing-matrix": [
+    "software-engineering/inbound-adapter-test-slices-primer"
+  ],
+  "software-engineering/layered-architecture-basics": [
+    "software-engineering/architecture-layering-fundamentals"
+  ],
+  "software-engineering/lead-time-change-failure-recovery-loop": [
+    "software-engineering/trunk-based-development-vs-feature-branch-tradeoffs"
+  ],
+  "software-engineering/lotto-domain-invariant-bridge": [
+    "software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide",
+    "software-engineering/lotto-inputview-domain-conversion-boundary-bridge",
+    "software-engineering/lotto-purchase-amount-value-object-bridge",
+    "software-engineering/lotto-purchase-flow-service-layer-bridge",
+    "software-engineering/lotto-winning-numbers-value-object-boundary-bridge"
+  ],
+  "software-engineering/lotto-inputview-domain-conversion-boundary-bridge": [
+    "software-engineering/lotto-boundary-mixing-cause-router",
+    "software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide",
+    "spring/lotto-mvc-controller-binding-validation-bridge"
+  ],
+  "software-engineering/lotto-purchase-amount-value-object-bridge": [
+    "language/bigdecimal-key-policy-30-second-checklist"
+  ],
+  "software-engineering/lotto-purchase-flow-service-layer-bridge": [
+    "database/lotto-purchase-ticket-parent-child-modeling-bridge",
+    "software-engineering/lotto-boundary-mixing-cause-router",
+    "software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide",
+    "software-engineering/lotto-inputview-domain-conversion-boundary-bridge",
+    "software-engineering/lotto-purchase-amount-value-object-bridge",
+    "software-engineering/lotto-purchase-history-repository-boundary-bridge",
+    "spring/lotto-purchase-post-redirect-get-refresh-replay-bridge",
+    "spring/lotto-purchase-ticket-transaction-boundary-bridge"
+  ],
+  "software-engineering/lotto-winning-numbers-value-object-boundary-bridge": [
+    "database/lotto-winning-round-storage-normalization-bridge",
+    "software-engineering/lotto-rank-prize-enum-boundary-bridge"
+  ],
+  "software-engineering/lotto-winning-statistics-result-object-bridge": [
+    "database/lotto-winning-statistics-group-by-aggregation-bridge",
+    "design-pattern/lotto-big-if-responsibility-cause-router",
+    "software-engineering/lotto-boundary-mixing-cause-router",
+    "software-engineering/lotto-rank-prize-enum-boundary-bridge",
+    "software-engineering/lotto-winning-numbers-value-object-boundary-bridge"
+  ],
+  "software-engineering/message-driven-adapter-example": [
+    "software-engineering/ports-and-adapters-beginner-primer"
+  ],
+  "software-engineering/mission-review-vocabulary-primer": [
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "software-engineering/modular-monolith-boundary-enforcement": [
+    "software-engineering/archunit-brownfield-rollout-playbook"
+  ],
+  "software-engineering/module-api-dto-patterns": [
+    "software-engineering/command-dto-vs-query-view-naming-checklist"
+  ],
+  "software-engineering/organizational-coupling-conway-effects": [
+    "software-engineering/team-cognitive-load-boundary-design"
+  ],
+  "software-engineering/outbound-notifier-mock-boundary-primer": [
+    "software-engineering/fake-vs-mock-first-test-primer",
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "software-engineering/outbox-inbox-domain-events": [
+    "software-engineering/outbound-notifier-mock-boundary-primer"
+  ],
+  "software-engineering/platform-team-product-team-capability-boundaries": [
+    "software-engineering/team-cognitive-load-boundary-design"
+  ],
+  "software-engineering/policy-as-code-rollout-adoption-stages": [
+    "software-engineering/archunit-brownfield-rollout-playbook"
+  ],
+  "software-engineering/ports-and-adapters-beginner-primer": [
+    "software-engineering/clean-architecture-layered-modular-monolith"
+  ],
+  "software-engineering/production-readiness-review": [
+    "software-engineering/operational-readiness-drills-and-change-safety"
+  ],
+  "software-engineering/query-model-separation-read-heavy-apis": [
+    "design-pattern/baseball-game-view-aggregate-vs-read-model-bridge",
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide",
+    "spring/roomescape-admin-reservation-list-fetch-plan-bridge"
+  ],
+  "software-engineering/readable-code-layering-test-feedback-loop-primer": [
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "software-engineering/release-policy-change-freeze-error-budget-coupling": [
+    "software-engineering/release-trains-vs-continuous-delivery"
+  ],
+  "software-engineering/repository-fake-design-guide": [
+    "software-engineering/fake-vs-mock-first-test-primer"
+  ],
+  "software-engineering/repository-interface-contract": [
+    "software-engineering/baseball-current-game-load-save-repository-bridge",
+    "software-engineering/blackjack-current-game-load-save-repository-bridge",
+    "software-engineering/lotto-purchase-history-repository-boundary-bridge"
+  ],
+  "software-engineering/repository-interface-contract-primer": [
+    "software-engineering/ports-and-adapters-beginner-primer"
+  ],
+  "software-engineering/rfc-vs-adr-decision-flow": [
+    "software-engineering/architecture-review-anti-patterns"
+  ],
+  "software-engineering/roomescape-dao-vs-repository-bridge": [
+    "software-engineering/roomescape-reservation-flow-service-layer-bridge",
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide",
+    "software-engineering/roomescape-reservation-service-bloat-cause-router"
+  ],
+  "software-engineering/roomescape-reservation-flow-service-layer-bridge": [
+    "database/roomescape-reservation-cancel-reschedule-active-predicate-bridge",
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge",
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide",
+    "software-engineering/roomescape-reservation-service-bloat-cause-router"
+  ],
+  "software-engineering/roomescape-reservation-responsibility-placement-decision-guide": [
+    "design-pattern/roomescape-reservation-branch-pattern-decision-guide"
+  ],
+  "software-engineering/roomescape-validation-vs-domain-rule-bridge": [
+    "design-pattern/roomescape-reservation-booking-policy-object-bridge",
+    "software-engineering/http-409-vs-422-selection-guide",
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide",
+    "software-engineering/roomescape-reservation-service-bloat-cause-router",
+    "spring/roomescape-reservation-request-validation-binding-bridge",
+    "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer"
+  ],
+  "software-engineering/runbook-playbook-automation-boundaries": [
+    "software-engineering/operational-readiness-drills-and-change-safety"
+  ],
+  "software-engineering/service-layer-basics": [
+    "software-engineering/baseball-turn-processing-service-layer-bridge",
+    "software-engineering/blackjack-turn-processing-service-layer-bridge",
+    "software-engineering/lotto-purchase-flow-service-layer-bridge",
+    "software-engineering/lotto-winning-statistics-result-object-bridge",
+    "software-engineering/roomescape-reservation-flow-service-layer-bridge"
+  ],
+  "software-engineering/service-split-merge-absorb-evolution-framework": [
+    "software-engineering/team-cognitive-load-boundary-design"
+  ],
+  "software-engineering/shopping-cart-checkout-service-layer-bridge": [
+    "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge",
+    "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge",
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge",
+    "spring/shopping-cart-current-cart-singleton-bean-scope-bridge",
+    "spring/shopping-cart-order-complete-after-commit-outbox-bridge",
+    "spring/shopping-cart-payment-transaction-boundary-bridge"
+  ],
+  "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge": [
+    "software-engineering/shopping-cart-order-snapshot-from-cart-bridge"
+  ],
+  "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge": [
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge"
+  ],
+  "software-engineering/shopping-cart-order-snapshot-from-cart-bridge": [
+    "language/collection-update-strategy-primer"
+  ],
+  "software-engineering/stub-vs-spy-first-test-primer": [
+    "software-engineering/fake-vs-mock-first-test-primer",
+    "software-engineering/outbound-notifier-mock-boundary-primer"
+  ],
+  "software-engineering/test-strategy-basics": [
+    "software-engineering/inbound-adapter-test-slices-primer",
+    "software-engineering/refactoring-feedback-phrase-router"
+  ],
+  "software-engineering/testing-strategy-and-test-doubles": [
+    "software-engineering/browser-e2e-cost-vs-signal-checklist",
+    "software-engineering/component-test-vs-browser-e2e-boundary-card",
+    "software-engineering/fake-vs-mock-first-test-primer",
+    "software-engineering/pair-programming-code-review-tradeoffs",
+    "software-engineering/stub-vs-spy-first-test-primer"
+  ],
+  "software-engineering/testtransaction-vs-commit-choice-mini-card": [
+    "software-engineering/after-commit-listener-rollback-test-beginner-bridge",
+    "software-engineering/transactional-test-rollback-vs-commit-boundary-card"
+  ],
+  "software-engineering/tombstone-response-template-and-consumer-guidance": [
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "software-engineering/transactional-test-rollback-vs-commit-boundary-card": [
+    "software-engineering/after-commit-listener-rollback-test-beginner-bridge"
+  ],
+  "software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge": [
+    "software-engineering/blackjack-ace-scoring-domain-invariant-bridge",
+    "software-engineering/shopping-cart-checkout-validation-domain-invariant-bridge",
+    "spring/blackjack-mvc-controller-binding-validation-bridge"
+  ],
+  "software-engineering/woowacourse-backend-mission-prerequisite-primer": [
+    "algorithm/backend-algorithm-starter-pack"
+  ],
+  "spring/activeprofiles-vs-test-overrides-primer": [
+    "spring/test-profile-vs-property-override-decision-guide"
+  ],
+  "spring/admin-302-login-vs-403-beginner-bridge": [
+    "spring/admin-login-success-final-403-savedrequest-role-mapping-primer",
+    "spring/roomescape-admin-login-final-403-securitycontext-bridge",
+    "spring/spring-admin-session-cookie-flow-primer"
+  ],
+  "spring/admin-login-success-final-403-savedrequest-role-mapping-primer": [
+    "security/forbidden-after-role-change-symptom-router",
+    "spring/admin-302-login-vs-403-beginner-bridge",
+    "spring/roomescape-admin-login-final-403-securitycontext-bridge",
+    "spring/spring-admin-session-cookie-flow-primer"
+  ],
+  "spring/aop-basics": [
+    "spring/transactional-not-applied-cause-router"
+  ],
+  "spring/aop-proxy-mechanism": [
+    "design-pattern/decorator-vs-proxy-decision-guide",
+    "design-pattern/facade-vs-adapter-vs-proxy-decision-guide"
+  ],
+  "spring/async-context-propagation-restclient-http-interface-clients": [
+    "spring/restclient-webclient-http-interface-decision-guide"
+  ],
+  "spring/async-looks-synchronous-cause-router": [
+    "spring/event-listener-not-firing-cause-router"
+  ],
+  "spring/baseball-console-game-loop-http-request-lifecycle-bridge": [
+    "spring/baseball-game-id-session-boundary-bridge",
+    "spring/baseball-guess-post-redirect-get-refresh-replay-bridge"
+  ],
+  "spring/baseball-game-id-session-boundary-bridge": [
+    "spring/baseball-guess-post-redirect-get-refresh-replay-bridge"
+  ],
+  "spring/baseball-game-state-singleton-bean-scope-bridge": [
+    "spring/baseball-console-game-loop-http-request-lifecycle-bridge",
+    "spring/baseball-game-id-session-boundary-bridge",
+    "spring/blackjack-game-state-singleton-bean-scope-bridge",
+    "spring/blackjack-web-state-mixing-cause-router"
+  ],
+  "spring/baseball-mvc-controller-binding-bridge": [
+    "database/baseball-guess-history-current-state-transaction-bridge",
+    "software-engineering/baseball-turn-processing-service-layer-bridge",
+    "spring/baseball-console-game-loop-http-request-lifecycle-bridge",
+    "spring/baseball-game-id-session-boundary-bridge",
+    "spring/baseball-game-state-singleton-bean-scope-bridge",
+    "spring/baseball-invalid-guess-400-vs-finished-game-409-exception-bridge",
+    "spring/blackjack-mvc-controller-binding-validation-bridge",
+    "spring/lotto-mvc-controller-binding-validation-bridge"
+  ],
+  "spring/bean-di-basics": [
+    "spring/baseball-game-state-singleton-bean-scope-bridge",
+    "spring/bean-not-found-cause-router",
+    "spring/bean-registration-path-decision-guide"
+  ],
+  "spring/bean-lifecycle-basics": [
+    "spring/blackjack-web-state-mixing-cause-router"
+  ],
+  "spring/bean-naming-qualifier-rename-pitfalls-primer": [
+    "spring/di-exception-quick-triage"
+  ],
+  "spring/bean-not-found-cause-router": [
+    "spring/config-value-not-changing-cause-router",
+    "spring/same-name-bean-collision-cause-router",
+    "spring/starter-bean-missing-cause-router",
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "spring/bean-registration-path-decision-guide": [
+    "spring/conditional-activation-annotation-decision-guide",
+    "spring/lotto-number-generator-bean-injection-bridge",
+    "spring/scanbasepackages-import-autoconfiguration-decision-guide",
+    "spring/spring-configuration-vs-autoconfiguration-primer",
+    "spring/starter-bean-missing-cause-router"
+  ],
+  "spring/blackjack-game-id-session-boundary-bridge": [
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide",
+    "spring/blackjack-post-redirect-get-refresh-replay-bridge"
+  ],
+  "spring/blackjack-game-state-singleton-bean-scope-bridge": [
+    "database/blackjack-action-history-current-state-transaction-bridge",
+    "database/blackjack-action-log-state-mismatch-symptom-router",
+    "spring/blackjack-game-id-session-boundary-bridge"
+  ],
+  "spring/blackjack-mvc-controller-binding-validation-bridge": [
+    "software-engineering/blackjack-turn-processing-service-layer-bridge",
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide",
+    "spring/blackjack-game-id-session-boundary-bridge",
+    "spring/blackjack-post-redirect-get-refresh-replay-bridge",
+    "spring/lotto-mvc-controller-binding-validation-bridge"
+  ],
+  "spring/blackjack-web-state-mixing-cause-router": [
+    "spring/blackjack-game-state-singleton-bean-scope-bridge"
+  ],
+  "spring/boot-autoconfiguration-basics": [
+    "spring/bean-registration-path-decision-guide",
+    "spring/boot-autoconfiguration-internals",
+    "spring/scanbasepackages-import-autoconfiguration-decision-guide",
+    "spring/spring-configuration-vs-autoconfiguration-primer"
+  ],
+  "spring/boot-autoconfiguration-internals": [
+    "spring/boot-autoconfiguration-basics",
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "spring/component-scan-failure-patterns": [
+    "spring/bean-not-found-cause-router",
+    "spring/bean-registration-path-decision-guide",
+    "spring/componentscan-entityscan-enablejparepositories-decision-guide",
+    "spring/di-exception-quick-triage",
+    "spring/http-404-405-vs-bean-wiring-confusion-card",
+    "spring/same-type-bean-injection-failure-cause-router",
+    "spring/startup-bean-graph-debugging-playbook"
+  ],
+  "spring/componentscan-entityscan-enablejparepositories-decision-guide": [
+    "spring/scanbasepackages-import-autoconfiguration-decision-guide"
+  ],
+  "spring/conditionalonmissingbean-vs-primary-primer": [
+    "spring/starter-bean-missing-cause-router"
+  ],
+  "spring/conditionalonsinglecandidate-vs-primary-primer": [
+    "spring/primary-qualifier-collection-injection",
+    "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer",
+    "spring/spring-conditionalonmissingbean-vs-primary-primer",
+    "spring/spring-primary-vs-bean-override-primer"
+  ],
+  "spring/controller-entity-return-vs-dto-return-primer": [
+    "spring/lazyinitializationexception-cause-router"
+  ],
+  "spring/controller-not-hit-cause-router": [
+    "spring/browser-only-cors-error-cause-router",
+    "spring/json-request-400-cause-router",
+    "spring/requestbody-400-before-controller-primer",
+    "spring/requestbody-415-unsupported-media-type-primer",
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "spring/cors-security-vs-mvc-ownership": [
+    "spring/browser-only-cors-error-cause-router",
+    "spring/request-cross-cutting-hook-decision-guide"
+  ],
+  "spring/di-exception-quick-triage": [
+    "spring/bean-naming-qualifier-rename-pitfalls-primer"
+  ],
+  "spring/dynamicpropertysource-vs-serviceconnection-primer": [
+    "spring/test-profile-vs-property-override-decision-guide"
+  ],
+  "spring/jpa-scan-boundaries": [
+    "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+  ],
+  "spring/json-request-400-cause-router": [
+    "spring/controller-not-hit-cause-router",
+    "spring/requestbody-400-before-controller-primer",
+    "spring/requestbody-415-unsupported-media-type-primer",
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "spring/login-state-not-persisted-cause-router": [
+    "spring/login-state-routing-decision-guide",
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "spring/lotto-manual-auto-generator-qualifier-bridge": [
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "spring/lotto-purchase-ticket-transaction-boundary-bridge": [
+    "spring/lotto-purchase-post-redirect-get-refresh-replay-bridge"
+  ],
+  "spring/modelattribute-vs-requestbody-binding-primer": [
+    "spring/blackjack-game-id-path-vs-session-vs-requestbody-decision-guide",
+    "spring/blackjack-mvc-controller-binding-validation-bridge",
+    "spring/requestbody-415-unsupported-media-type-primer"
+  ],
+  "spring/mvc-controller-basics": [
+    "spring/roomescape-reservation-request-validation-binding-bridge"
+  ],
+  "spring/partial-response-access-log-interpretation": [
+    "spring/servlet-container-disconnect-exception-mapping"
+  ],
+  "spring/post-commit-side-effect-routing-decision-guide": [
+    "spring/event-listener-not-firing-cause-router"
+  ],
+  "spring/primary-conditionalonmissingbean-bean-override-decision-guide": [
+    "spring/conditional-activation-annotation-decision-guide",
+    "spring/primary-qualifier-collection-injection",
+    "spring/spring-conditionalonmissingbean-vs-primary-primer",
+    "spring/spring-primary-vs-bean-override-primer",
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "spring/primary-qualifier-collection-injection": [
+    "spring/bean-naming-qualifier-rename-pitfalls-primer",
+    "spring/conditional-activation-annotation-decision-guide",
+    "spring/conditionalonsinglecandidate-vs-primary-primer",
+    "spring/di-exception-quick-triage",
+    "spring/lotto-manual-auto-generator-qualifier-bridge",
+    "spring/lotto-number-generator-bean-injection-bridge",
+    "spring/primary-conditionalonmissingbean-bean-override-decision-guide",
+    "spring/same-type-bean-injection-failure-cause-router",
+    "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer",
+    "spring/spring-conditionalonmissingbean-vs-primary-primer",
+    "spring/spring-custom-qualifier-primer",
+    "spring/spring-primary-vs-bean-override-primer",
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries",
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "spring/request-pipeline-bean-container": [
+    "database/database-first-step-bridge",
+    "spring/lazyinitializationexception-cause-router"
+  ],
+  "spring/request-scope-proxy-pitfalls": [
+    "spring/blackjack-web-state-mixing-cause-router",
+    "spring/shopping-cart-current-cart-singleton-bean-scope-bridge"
+  ],
+  "spring/requestbody-400-before-controller-primer": [
+    "spring/controller-not-hit-cause-router",
+    "spring/json-request-400-cause-router",
+    "spring/modelattribute-vs-requestbody-binding-primer",
+    "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide",
+    "spring/requestbody-415-unsupported-media-type-primer",
+    "spring/spring-content-negotiation-pitfalls",
+    "spring/spring-exception-handling-basics",
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide": [
+    "spring/baseball-invalid-guess-400-vs-finished-game-409-exception-bridge",
+    "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer",
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "spring/requestbody-415-unsupported-media-type-primer": [
+    "spring/controller-not-hit-cause-router",
+    "spring/json-request-400-cause-router",
+    "spring/modelattribute-vs-requestbody-binding-primer",
+    "spring/requestbody-400-before-controller-primer",
+    "spring/spring-content-negotiation-pitfalls"
+  ],
+  "spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer": [
+    "spring/restclient-webclient-http-interface-decision-guide"
+  ],
+  "spring/restclient-vs-webclient-lifecycle-boundaries": [
+    "spring/restclient-webclient-http-interface-decision-guide"
+  ],
+  "spring/roomescape-admin-login-final-403-securitycontext-bridge": [
+    "spring/admin-302-login-vs-403-beginner-bridge",
+    "spring/admin-login-success-final-403-savedrequest-role-mapping-primer",
+    "spring/spring-admin-session-cookie-flow-primer"
+  ],
+  "spring/roomescape-admin-reservation-list-fetch-plan-bridge": [
+    "database/roomescape-admin-reservation-list-pagination-stability-bridge",
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide"
+  ],
+  "spring/roomescape-admin-reservation-post-redirect-get-bridge": [
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge"
+  ],
+  "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge": [
+    "database/roomescape-admin-reservation-duplicate-submit-idempotency-bridge"
+  ],
+  "spring/roomescape-reservation-request-validation-binding-bridge": [
+    "spring/roomescape-admin-reservation-post-redirect-get-bridge"
+  ],
+  "spring/roomescape-transactional-boundary-bridge": [
+    "software-engineering/roomescape-reservation-flow-service-layer-bridge",
+    "software-engineering/roomescape-reservation-responsibility-placement-decision-guide",
+    "software-engineering/roomescape-validation-vs-domain-rule-bridge",
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "spring/same-name-bean-collision-cause-router": [
+    "spring/same-type-bean-injection-failure-cause-router"
+  ],
+  "spring/same-type-bean-injection-failure-cause-router": [
+    "spring/bean-not-found-cause-router",
+    "spring/di-exception-quick-triage",
+    "spring/lotto-manual-auto-generator-qualifier-bridge",
+    "spring/primary-qualifier-collection-injection",
+    "spring/same-name-bean-collision-cause-router",
+    "spring/spring-custom-qualifier-primer",
+    "spring/spring-primary-vs-bean-override-primer",
+    "spring/wrong-bean-injected-cause-router"
+  ],
+  "spring/scanbasepackages-import-autoconfiguration-selection": [
+    "spring/componentscan-entityscan-enablejparepositories-decision-guide"
+  ],
   "spring/self-invocation-proxy-misconception": [
-    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+    "spring/async-looks-synchronous-cause-router",
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix",
+    "spring/transactional-not-applied-cause-router"
+  ],
+  "spring/servlet-container-disconnect-exception-mapping": [
+    "spring/partial-response-access-log-interpretation"
+  ],
+  "spring/shopping-cart-current-cart-singleton-bean-scope-bridge": [
+    "software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge"
+  ],
+  "spring/shopping-cart-order-complete-after-commit-outbox-bridge": [
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge",
+    "spring/post-commit-side-effect-routing-decision-guide",
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "spring/shopping-cart-order-complete-follow-up-missing-cause-router": [
+    "spring/event-listener-not-firing-cause-router",
+    "spring/post-commit-side-effect-routing-decision-guide"
+  ],
+  "spring/shopping-cart-payment-method-router-qualifier-bridge": [
+    "design-pattern/shopping-cart-checkout-if-else-cause-router",
+    "design-pattern/shopping-cart-checkout-pattern-decision-guide",
+    "design-pattern/shopping-cart-coupon-promotion-policy-object-bridge",
+    "design-pattern/shopping-cart-order-status-state-pattern-bridge",
+    "design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge",
+    "spring/shopping-cart-current-cart-singleton-bean-scope-bridge",
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "spring/shopping-cart-payment-transaction-boundary-bridge": [
+    "database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge",
+    "database/shopping-cart-order-complete-read-your-writes-bridge",
+    "design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge",
+    "software-engineering/shopping-cart-payment-webhook-idempotency-bridge",
+    "spring/post-commit-side-effect-routing-decision-guide",
+    "spring/shopping-cart-order-complete-after-commit-outbox-bridge",
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "spring/spring-admin-session-cookie-flow-primer": [
+    "spring/admin-302-login-vs-403-beginner-bridge",
+    "spring/admin-login-success-final-403-savedrequest-role-mapping-primer",
+    "spring/login-state-not-persisted-cause-router",
+    "spring/login-state-routing-decision-guide",
+    "spring/roomescape-admin-login-final-403-securitycontext-bridge",
+    "spring/stateless-jsessionid-hidden-session-cause-router"
+  ],
+  "spring/spring-after-commit-rollback-slice-test-mini-card": [
+    "software-engineering/after-commit-listener-rollback-test-beginner-bridge"
+  ],
+  "spring/spring-api-401-vs-browser-302-beginner-bridge": [
+    "spring/spring-content-negotiation-pitfalls"
+  ],
+  "spring/spring-bean-di-basics": [
+    "design-pattern/singleton-vs-di-container-scope"
+  ],
+  "spring/spring-bindingresult-local-validation-400-primer": [
+    "spring/requestbody-400-before-controller-primer",
+    "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide",
+    "spring/spring-exception-handling-basics",
+    "spring/spring-validation-binding-error-pipeline",
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "spring/spring-boot-condition-evaluation-report-debugging": [
+    "spring/boot-autoconfiguration-internals"
+  ],
+  "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer": [
+    "spring/conditionalonsinglecandidate-vs-primary-primer",
+    "spring/primary-qualifier-collection-injection",
+    "spring/spring-conditionalonmissingbean-vs-primary-primer"
+  ],
+  "spring/spring-conditionalonmissingbean-vs-primary-primer": [
+    "spring/boot-autoconfiguration-basics",
+    "spring/conditionalonsinglecandidate-vs-primary-primer",
+    "spring/primary-conditionalonmissingbean-bean-override-decision-guide",
+    "spring/primary-qualifier-collection-injection",
+    "spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer",
+    "spring/spring-primary-vs-bean-override-primer"
+  ],
+  "spring/spring-configuration-vs-autoconfiguration-primer": [
+    "spring/boot-autoconfiguration-basics",
+    "spring/boot-autoconfiguration-internals"
+  ],
+  "spring/spring-content-negotiation-pitfalls": [
+    "spring/cors-security-vs-mvc-ownership",
+    "spring/requestbody-415-unsupported-media-type-primer"
+  ],
+  "spring/spring-controller-entity-return-vs-dto-return-primer": [
+    "software-engineering/command-dto-vs-query-view-naming-checklist",
+    "software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide"
+  ],
+  "spring/spring-conversion-service-formatter-binder-pipeline": [
+    "spring/spring-validation-binding-error-pipeline"
+  ],
+  "spring/spring-custom-error-dto-to-problemdetail-handoff-primer": [
+    "spring/spring-exception-handling-basics"
+  ],
+  "spring/spring-custom-qualifier-primer": [
+    "spring/bean-naming-qualifier-rename-pitfalls-primer",
+    "spring/shopping-cart-payment-method-router-qualifier-bridge",
+    "spring/spring-runtime-strategy-router-vs-qualifier-boundaries"
+  ],
+  "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix": [
+    "database/lock-wait-deadlock-latch-triage-playbook"
+  ],
+  "spring/spring-di-exception-quick-triage": [
+    "spring/http-404-405-vs-bean-wiring-confusion-card"
+  ],
+  "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge": [
+    "software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge",
+    "spring/request-cross-cutting-hook-decision-guide"
+  ],
+  "spring/spring-eventlistener-ordering-async-traps": [
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "spring/spring-eventlistener-transaction-phase-outbox": [
+    "spring/shopping-cart-order-complete-follow-up-missing-cause-router"
+  ],
+  "spring/spring-exception-handling-basics": [
+    "spring/baseball-invalid-guess-400-vs-finished-game-409-exception-bridge"
+  ],
+  "spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card": [
+    "spring/roomescape-admin-reservation-list-fetch-plan-bridge"
+  ],
+  "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge": [
+    "spring/controller-not-hit-cause-router",
+    "spring/request-cross-cutting-hook-decision-guide",
+    "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+  ],
+  "spring/spring-full-vs-lite-configuration-examples": [
+    "spring/spring-configuration-vs-autoconfiguration-primer"
+  ],
+  "spring/spring-handlermethodreturnvaluehandler-chain": [
+    "spring/spring-content-negotiation-pitfalls"
+  ],
+  "spring/spring-jdbctemplate-sqlexception-translation": [
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card": [
+    "spring/login-state-not-persisted-cause-router",
+    "spring/login-state-routing-decision-guide"
+  ],
+  "spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge": [
+    "spring/valid-400-vs-message-conversion-400-primer"
+  ],
+  "spring/spring-mvc-controller-basics": [
+    "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+  ],
+  "spring/spring-mvc-exception-resolver-chain-contract": [
+    "spring/spring-validation-binding-error-pipeline"
+  ],
+  "spring/spring-mvc-filter-interceptor-controlleradvice-boundaries": [
+    "software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge",
+    "spring/cors-security-vs-mvc-ownership"
+  ],
+  "spring/spring-mvc-request-lifecycle": [
+    "spring/http-404-405-vs-bean-wiring-confusion-card"
+  ],
+  "spring/spring-mvc-request-lifecycle-basics": [
+    "spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge"
+  ],
+  "spring/spring-primary-vs-bean-override-primer": [
+    "spring/conditionalonsinglecandidate-vs-primary-primer",
+    "spring/primary-conditionalonmissingbean-bean-override-decision-guide",
+    "spring/primary-qualifier-collection-injection",
+    "spring/same-name-bean-collision-cause-router",
+    "spring/spring-conditionalonmissingbean-vs-primary-primer"
+  ],
+  "spring/spring-reactive-blocking-bridge-boundedelastic-block-traps": [
+    "spring/spring-restclient-vs-webclient-lifecycle-boundaries"
+  ],
+  "spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer": [
+    "spring/spring-restclient-vs-webclient-lifecycle-boundaries"
+  ],
+  "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer": [
+    "spring/roomescape-duplicate-reservation-sqlexception-translation-bridge"
+  ],
+  "spring/spring-runtime-strategy-router-vs-qualifier-boundaries": [
+    "spring/lotto-manual-auto-generator-qualifier-bridge",
+    "spring/primary-qualifier-collection-injection",
+    "spring/shopping-cart-payment-method-router-qualifier-bridge",
+    "spring/spring-custom-qualifier-primer"
+  ],
+  "spring/spring-scheduler-async-boundaries": [
+    "spring/async-looks-synchronous-cause-router"
+  ],
+  "spring/spring-security-filter-chain": [
+    "software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge"
   ],
   "spring/spring-security-filter-chain-ordering": [
+    "spring/cors-security-vs-mvc-ownership",
     "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
   ],
   "spring/spring-security-requestcache-savedrequest-boundaries": [
     "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "spring/spring-transactional-async-composition-traps": [
+    "spring/async-looks-synchronous-cause-router"
+  ],
+  "spring/spring-webclient-vs-resttemplate": [
+    "spring/spring-restclient-vs-webclient-lifecycle-boundaries"
+  ],
+  "spring/starter-bean-missing-cause-router": [
+    "spring/config-value-not-changing-cause-router"
+  ],
+  "spring/test-profile-vs-property-override-decision-guide": [
+    "spring/config-value-not-changing-cause-router"
+  ],
+  "spring/test-property-override-boundaries-primer": [
+    "spring/test-profile-vs-property-override-decision-guide"
+  ],
+  "spring/transactional-basics": [
+    "database/shopping-cart-payment-idempotency-stock-bridge",
+    "software-engineering/shopping-cart-checkout-service-layer-bridge",
+    "spring/lazyinitializationexception-cause-router",
+    "spring/transaction-propagation-deep-dive",
+    "spring/transactional-not-applied-cause-router"
+  ],
+  "spring/transactional-deep-dive": [
+    "spring/transaction-propagation-deep-dive"
+  ],
+  "spring/transactional-not-applied-cause-router": [
+    "spring/transaction-propagation-deep-dive"
+  ],
+  "spring/valid-400-vs-message-conversion-400-primer": [
+    "software-engineering/http-409-vs-422-selection-guide",
+    "spring/controller-not-hit-cause-router",
+    "spring/json-request-400-cause-router",
+    "spring/modelattribute-vs-requestbody-binding-primer",
+    "spring/requestbody-400-before-controller-primer",
+    "spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide",
+    "spring/spring-roomescape-validation-400-vs-business-conflict-409-primer",
+    "spring/spring-validation-binding-error-pipeline"
+  ],
+  "system-design/api-gateway-basics": [
+    "system-design/load-balancer-basics"
+  ],
+  "system-design/backpressure-and-load-shedding-design": [
+    "system-design/availability-and-sla-basics",
+    "system-design/request-path-failure-modes-primer"
+  ],
+  "system-design/badge-freshness-observability-primer": [
+    "system-design/notification-badge-vs-source-freshness-primer",
+    "system-design/trace-attribute-freshness-read-source-bridge"
+  ],
+  "system-design/cache-acceptance-rules-for-causal-reads": [
+    "system-design/cache-hit-miss-session-policy-bridge",
+    "system-design/watermark-metadata-persistence-basics"
+  ],
+  "system-design/caching-basics": [
+    "system-design/queue-vs-cache-vs-db-decision-drill"
+  ],
+  "system-design/causal-consistency-notification-primer": [
+    "system-design/notification-badge-vs-source-freshness-primer",
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "system-design/causal-watermark-propagation-sketches": [
+    "system-design/notification-causal-token-walkthrough"
+  ],
+  "system-design/cleanup-point-of-no-return-design": [
+    "system-design/write-freeze-rollback-window-design"
+  ],
+  "system-design/conditional-write-status-code-bridge": [
+    "system-design/write-order-vs-precondition-primer"
+  ],
+  "system-design/database-security-identity-bridge-cutover-design": [
+    "system-design/trust-bundle-rollback-during-cell-cutover-design"
+  ],
+  "system-design/dual-read-comparison-verification-platform-design": [
+    "design-pattern/read-model-cutover-guardrails"
+  ],
+  "system-design/global-traffic-failover-control-plane-design": [
+    "system-design/service-discovery-health-routing-design",
+    "system-design/stateful-workload-placement-failover-control-plane-design"
+  ],
+  "system-design/list-detail-monotonicity-bridge": [
+    "system-design/mixed-cache-replica-freshness-bridge",
+    "system-design/notification-inbox-row-monotonicity-primer",
+    "system-design/notification-read-to-min-version-bridge",
+    "system-design/pagination-monotonicity-primer",
+    "system-design/session-guarantees-decision-matrix"
+  ],
+  "system-design/load-balancer-basics": [
+    "system-design/api-gateway-basics",
+    "system-design/availability-and-sla-basics",
+    "system-design/stateless-vs-stateful-basics"
+  ],
+  "system-design/load-balancer-drain-and-affinity-primer": [
+    "system-design/service-discovery-health-routing-design"
+  ],
+  "system-design/message-queue-basics": [
+    "system-design/consistency-idempotency-async-workflow-foundations",
+    "system-design/queue-vs-cache-vs-db-decision-drill"
+  ],
+  "system-design/mixed-cache-replica-freshness-bridge": [
+    "system-design/cache-hit-miss-session-policy-bridge",
+    "system-design/caching-vs-read-replica-primer",
+    "system-design/list-detail-monotonicity-bridge",
+    "system-design/rejected-hit-observability-primer"
+  ],
+  "system-design/monotonic-reads-and-session-guarantees-primer": [
+    "system-design/notification-read-to-min-version-bridge",
+    "system-design/pagination-monotonicity-primer"
+  ],
+  "system-design/monotonic-writes-ordering-primer": [
+    "system-design/write-order-vs-precondition-primer",
+    "system-design/writes-follow-reads-primer"
+  ],
+  "system-design/multi-region-active-active-design": [
+    "system-design/global-traffic-failover-control-plane-design"
+  ],
+  "system-design/notification-badge-vs-source-freshness-primer": [
+    "system-design/badge-freshness-observability-primer",
+    "system-design/causal-consistency-notification-primer",
+    "system-design/notification-inbox-row-monotonicity-primer",
+    "system-design/notification-source-missing-decision-table"
+  ],
+  "system-design/notification-causal-token-walkthrough": [
+    "system-design/notification-read-to-min-version-bridge",
+    "system-design/outbox-watermark-token-primer"
+  ],
+  "system-design/notification-read-to-min-version-bridge": [
+    "system-design/list-detail-monotonicity-bridge",
+    "system-design/notification-causal-token-walkthrough",
+    "system-design/notification-inbox-row-monotonicity-primer"
+  ],
+  "system-design/notification-source-missing-decision-table": [
+    "system-design/notification-badge-vs-source-freshness-primer"
+  ],
+  "system-design/outbox-watermark-token-primer": [
+    "system-design/consistency-idempotency-async-workflow-foundations",
+    "system-design/notification-causal-token-walkthrough",
+    "system-design/watermark-metadata-persistence-basics"
+  ],
+  "system-design/per-key-queue-vs-direct-api-primer": [
+    "system-design/queue-vs-cache-vs-db-decision-drill"
+  ],
+  "system-design/projection-applied-watermark-basics": [
+    "system-design/mixed-cache-replica-freshness-bridge",
+    "system-design/outbox-watermark-token-primer",
+    "system-design/watermark-metadata-persistence-basics"
+  ],
+  "system-design/read-after-write-consistency-basics": [
+    "system-design/writes-follow-reads-primer"
+  ],
+  "system-design/read-after-write-routing-primer": [
+    "system-design/cache-hit-miss-session-policy-bridge",
+    "system-design/caching-vs-read-replica-primer",
+    "system-design/causal-consistency-notification-primer",
+    "system-design/list-detail-monotonicity-bridge",
+    "system-design/mixed-cache-replica-freshness-bridge",
+    "system-design/session-guarantees-decision-matrix",
+    "system-design/write-freeze-rollback-window-design"
+  ],
+  "system-design/read-only-and-graceful-degradation-patterns": [
+    "system-design/request-path-failure-modes-primer"
+  ],
+  "system-design/rejected-hit-observability-primer": [
+    "system-design/badge-freshness-observability-primer",
+    "system-design/trace-attribute-freshness-read-source-bridge"
+  ],
+  "system-design/request-deadline-timeout-budget-primer": [
+    "system-design/request-path-failure-modes-primer"
+  ],
+  "system-design/request-path-failure-modes-primer": [
+    "system-design/request-deadline-timeout-budget-primer"
+  ],
+  "system-design/retry-amplification-and-backpressure-primer": [
+    "system-design/request-deadline-timeout-budget-primer"
+  ],
+  "system-design/search-hit-overlay-pattern": [
+    "system-design/pagination-monotonicity-primer"
+  ],
+  "system-design/service-discovery-health-routing-design": [
+    "system-design/api-gateway-basics",
+    "system-design/global-traffic-failover-control-plane-design",
+    "system-design/load-balancer-basics",
+    "system-design/load-balancer-drain-and-affinity-primer",
+    "system-design/stateful-workload-placement-failover-control-plane-design"
+  ],
+  "system-design/service-mesh-control-plane-design": [
+    "system-design/service-discovery-health-routing-design"
+  ],
+  "system-design/session-guarantees-decision-matrix": [
+    "system-design/list-detail-monotonicity-bridge"
+  ],
+  "system-design/shard-rebalancing-partition-relocation-design": [
+    "system-design/stateful-workload-placement-failover-control-plane-design"
+  ],
+  "system-design/stateful-workload-placement-failover-control-plane-design": [
+    "system-design/global-traffic-failover-control-plane-design"
+  ],
+  "system-design/stateless-sessions-primer": [
+    "system-design/load-balancer-drain-and-affinity-primer",
+    "system-design/stateless-vs-stateful-basics"
+  ],
+  "system-design/stateless-vs-stateful-basics": [
+    "system-design/load-balancer-basics"
+  ],
+  "system-design/trace-attribute-freshness-read-source-bridge": [
+    "system-design/badge-freshness-observability-primer",
+    "system-design/rejected-hit-observability-primer"
+  ],
+  "system-design/traffic-shadowing-progressive-cutover-design": [
+    "design-pattern/read-model-cutover-guardrails"
+  ],
+  "system-design/watermark-metadata-persistence-basics": [
+    "system-design/outbox-watermark-token-primer",
+    "system-design/rejected-hit-observability-primer"
+  ],
+  "system-design/write-order-vs-precondition-primer": [
+    "system-design/conditional-write-status-code-bridge",
+    "system-design/monotonic-writes-ordering-primer",
+    "system-design/writes-follow-reads-primer"
+  ],
+  "system-design/writes-follow-reads-primer": [
+    "system-design/monotonic-writes-ordering-primer",
+    "system-design/write-order-vs-precondition-primer"
   ]
 }
