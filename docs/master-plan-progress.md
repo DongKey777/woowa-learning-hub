@@ -68,7 +68,7 @@ The original Pilot target was 0.85.
 | 9.3-EF | cohort_eval reform + calibration script + agent docs | ✅ done | `9199c06` `feat(rag-9.3): cohort_eval reform (tier_downgraded vs silent_failure) + calibration script + agent docs` |
 | 9.1 | production R3 anaphora — reformulation primary, regex fallback | ✅ done | `d2c6471` `feat(rag-9.1): production R3 anaphora — reformulation primary, regex fallback` |
 | 9.2 | personalization-aware fusion-stage ranking (default off) | ✅ done | `39b95de` `feat(rag-9.2): personalization-aware fusion-stage ranking (default off)` |
-| 9.3-active | calibration → threshold=0.10 활성화 + honest cohort_eval | ✅ done | `<this commit>` — F1=0.974 at threshold 0.10, OVERALL 95.5%(sham)→94.0%(honest), corpus_gap_probe 19 tier_downgraded + 1 silent_failure, 다른 cohort에 sentinel false-positive 0 |
+| 9.3-active | calibration → threshold=0.10 활성화 + honest cohort_eval | ✅ done | `1b593d8` `feat(rag-9.3): activate refusal threshold (calibrated 0.10) + honest cohort_eval` — F1=0.974 at threshold 0.10, OVERALL 95.5%(sham)→94.0%(honest), corpus_gap_probe 19 tier_downgraded + 1 silent_failure, 다른 cohort에 sentinel false-positive 0 |
 
 Activation knobs (default off — ship safe, opt in):
 - `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` — calibrate first via `python -m scripts.learning.rag.r3.eval.calibrate_refusal_threshold`
