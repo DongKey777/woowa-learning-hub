@@ -25,6 +25,11 @@ jobs:
     name: rag-eval --fast + unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      # Make `from scripts.learning...` resolvable without a heavy
+      # `pip install -e .` (which would pull torch + sentence-transformers
+      # — overkill for the schema/metric/manifest unit tests).
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - uses: actions/checkout@v4
@@ -47,8 +52,11 @@ jobs:
           python -m pip install jsonschema pytest
 
       - name: Run rag-eval unit suite
+        # `python -m pytest` (not bare `pytest`) so the cwd is on
+        # sys.path; bare `pytest` does not implicitly add it and the
+        # tests fail to import scripts.learning.rag.eval.*.
         run: |
-          pytest tests/unit/test_rag_eval_metrics.py \
+          python -m pytest tests/unit/test_rag_eval_metrics.py \
                  tests/unit/test_rag_eval_dataset.py \
                  tests/unit/test_rag_eval_buckets.py \
                  tests/unit/test_rag_eval_manifest.py \
