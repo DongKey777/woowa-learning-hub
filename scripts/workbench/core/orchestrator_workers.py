@@ -15,6 +15,9 @@ from typing import Any
 from .file_lock import lock_exclusive, unlock
 from .orchestrator import Orchestrator, _isoformat, _pid_alive, _utc_now
 from .orchestrator_migration_workers import (
+    MIGRATION_V3_60_FLEET,
+    MIGRATION_V3_60_FLEET_SIZE,
+    MIGRATION_V3_60_WORKER_PENDING_CAP,
     MIGRATION_V3_FLEET,
     MIGRATION_V3_FLEET_SIZE,
     MIGRATION_V3_WORKER_PENDING_CAP,
@@ -890,6 +893,12 @@ FLEET_PROFILES: dict[str, list[dict[str, Any]]] = {
     # into the R3 v3 frontmatter contract. Created but intentionally
     # unstarted — see docs/master-plan-progress.md Phase 8.
     "migration_v3": MIGRATION_V3_FLEET,
+    # migration_v3_60: 60-worker high-throughput variant for ChatGPT
+    # Pro quota. Wave C topology direct-attacks the cohort_eval weak
+    # spots (mission_bridge 83.3%, confusable_pairs 90%,
+    # symptom_to_cause 93.3%) with 5 mission_bridge + 3 chooser + 3
+    # symptom_router new-doc writers. See docs/migration-v3-runbook.md.
+    "migration_v3_60": MIGRATION_V3_60_FLEET,
 }
 
 WORKER_FLEET = QUALITY_REPAIR_FLEET
@@ -1492,6 +1501,381 @@ def _lane_prompt(lane: str) -> str:
     return LANE_SCOPE.get(lane, "knowledge/cs/**")
 
 
+# ---------------------------------------------------------------------------
+# Phase 8 — migration_v3 / migration_v3_60 prompt builder
+# ---------------------------------------------------------------------------
+
+_MIGRATION_V3_HEADER = """\
+You are {worker}, the persistent migration worker for {lane}.
+
+Worker profile:
+- Role: {role}
+- Mode: {mode}
+- Target paths: {target_paths}
+- Write scopes: {write_scopes}
+- Claim tags: {claim_tags}
+- Quality gates: {quality_gates}
+
+Task:
+- Item ID: {item_id}
+- Title: {title}
+- Goal: {goal}
+- Tags: {tags}
+
+PHASE 8 V3 MIGRATION CONTRACT (DO NOT mix with the legacy expansion contract)
+=============================================================================
+This work transforms existing docs to the v3 frontmatter contract defined
+in `docs/worklogs/rag-r3-corpus-v3-contract.md` (18 fields) plus the
+`contextual_chunk_prefix` per-doc Korean string. **You are NOT writing
+the legacy retrieval-anchor-keywords / 7-element Beginner-primer
+contract** — that contract is being phased out for the docs you touch.
+
+Hard rules (gate failure = automatic backlog return):
+1. Pilot lock — read `config/migration_v3/locked_pilot_paths.json`
+   before editing. If any path you would change is in `locked_paths`,
+   STOP and return changed_files=[] with a summary explaining the
+   conflict. The Pilot 50 + Phase 4 wave 69 docs hold the OVERALL
+   95.5%/94.0% baseline — touching them invalidates the eval contract.
+2. Body bytes — preserve the markdown body byte-for-byte unless your
+   mode is `migrate_new_doc`. `migrate_v0_to_v3` and `migrate_prefix`
+   modes ONLY edit the YAML frontmatter block (between the leading and
+   trailing `---` lines).
+3. v3 contract lint — `python -m scripts.learning.rag.corpus_lint
+   --strict --strict-v3 --corpus knowledge/cs/contents` must pass for
+   every doc you touch. Missing role-conditional fields are warnings,
+   not errors, in Wave A.
+4. Aliases ⊥ expected_queries — no phrase may appear in both lists
+   (case-folded, whitespace-normalized).
+5. Korean prose — Korean fields (`symptoms`, `contextual_chunk_prefix`)
+   must be Korean; English technical terms (lock, primary, MVCC) are
+   acceptable inside Korean sentences.
+6. Output schema — final response is JSON only, with `summary`,
+   `changed_files`, `next_candidates`. Every modified file MUST appear
+   in `changed_files`; missing entries hide gate failures.
+
+V3 frontmatter field map (canonical order from `migrate_frontmatter_v3.V3_FIELD_ORDER`):
+   schema_version (always 3) ; title ; concept_id (`category/slug`,
+   kebab-case lowercase) ; canonical (true for the canonical primer per
+   concept_id) ; category ; difficulty ; doc_role (one of: primer /
+   chooser / bridge / deep_dive / playbook / drill / symptom_router /
+   mission_bridge) ; level (beginner / intermediate / advanced) ;
+   language (ko / mixed / en) ; source_priority (0..100, primer 90 /
+   chooser 88 / bridge 85 / deep_dive 80 / playbook 78 / drill 75 /
+   symptom_router 80 / mission_bridge 78) ; mission_ids ;
+   review_feedback_tags ; aliases ; symptoms ; intents ;
+   prerequisites ; next_docs ; linked_paths ; confusable_with ;
+   forbidden_neighbors ; expected_queries ; contextual_chunk_prefix.
+"""
+
+
+def _build_migration_v3_prompt(
+    *,
+    worker: str,
+    lane: str,
+    item: dict[str, Any],
+    profile: dict[str, Any],
+    target_paths: list[str],
+    write_scopes: list[str],
+    claim_tags: list[str],
+    quality_gates: list[str],
+    mode: str,
+    role: str,
+    tags: str,
+) -> str:
+    """Compose the v3-migration-aware codex prompt.
+
+    Three prompt modes share a common header (Pilot lock, v3 lint,
+    output contract) and diverge in the per-mode authoring guide:
+
+      * ``migrate_v0_to_v3`` — Wave A: the deterministic baseline
+        from ``create_v3_frontmatter.py`` is already on disk; this
+        worker fills the LLM-required authorial fields (mission_ids,
+        symptoms, intents, prerequisites, next_docs, linked_paths,
+        confusable_with, forbidden_neighbors, expected_queries).
+      * ``migrate_prefix`` — Wave B: author the
+        ``contextual_chunk_prefix`` block (50-100 token Korean prose)
+        for v3 docs that have all other fields filled but an empty
+        prefix. Uses ``synthesize_chunk_prefix.build_authoring_prompt``
+        as the single-doc seed.
+      * ``migrate_new_doc`` — Wave C: write a brand new doc of one of
+        three high-impact roles (chooser / symptom_router /
+        mission_bridge) — the cohorts that scored weakest in
+        post-9.3 cohort_eval (mission_bridge 83.3%, confusable_pairs
+        90%, symptom_to_cause 93.3%).
+    """
+    header = _MIGRATION_V3_HEADER.format(
+        worker=worker, lane=lane, role=role, mode=mode,
+        target_paths=", ".join(target_paths),
+        write_scopes=", ".join(write_scopes) if write_scopes else "report-only",
+        claim_tags=", ".join(claim_tags) if claim_tags else "none",
+        quality_gates=", ".join(quality_gates) if quality_gates else "none",
+        item_id=item.get("item_id", ""),
+        title=item.get("title", ""),
+        goal=item.get("goal", ""),
+        tags=tags or "none",
+    )
+
+    if mode == "migrate_v0_to_v3":
+        body = _MIGRATION_V0_TO_V3_BODY
+    elif mode == "migrate_prefix":
+        body = _MIGRATION_PREFIX_BODY
+    elif mode == "migrate_new_doc":
+        body = _MIGRATION_NEW_DOC_BODY
+    else:
+        # Defensive — _worker_prompt only routes the three known modes
+        # here, but a future enum addition without a body should fail
+        # closed.
+        body = (
+            f"Unknown migration mode {mode!r}. Return changed_files=[] "
+            "and summary explaining the misconfiguration."
+        )
+
+    return header + "\n" + body
+
+
+_MIGRATION_V0_TO_V3_BODY = """\
+WAVE A — v0 → v3 frontmatter authoring
+=======================================
+This worker runs after `create_v3_frontmatter.py --apply` has
+deposited a deterministic baseline on the target docs. The baseline
+fills the fields that need NO LLM judgment: schema_version=3, title,
+concept_id, canonical (heuristic primer=true), category, difficulty,
+doc_role (filename-suffix heuristic), level, language, source_priority,
+aliases (lifted from legacy `retrieval-anchor-keywords` if present),
+intents (default-by-role), and the empty containers for the fields
+below.
+
+Your job: fill the authorial fields the baseline left empty.
+
+Authorial fields to write (preserve everything else exactly):
+
+  mission_ids — list[string] of `missions/<slug>` IDs the doc connects
+    to. Empty list when not mission-relevant. Examples:
+    `missions/roomescape`, `missions/baseball`, `missions/lotto`,
+    `missions/shopping-cart`. ONLY use mission slugs that actually
+    exist in this repo's mission registry.
+  review_feedback_tags — list[string] short tags from common reviewer
+    comment patterns. Examples: `DI-vs-locator`, `repository-boundary`,
+    `transactional-self-invocation`, `controller-binding-direction`.
+    Empty when no specific reviewer pattern applies.
+  symptoms — list[string] short Korean phrases of how a confused
+    learner would describe the problem. Examples: `구현체를 어떻게
+    골라?`, `같은 트랜잭션인데 왜 격리가 안 돼?`, `403이 떴는데
+    원인을 모르겠어`. doc_role=symptom_router needs ≥3, playbook ≥1.
+  prerequisites — list[string] concept_id of docs that should be
+    learned before this one. Stay within the same corpus
+    (`spring/bean`, `database/transaction-basics`, etc.).
+  next_docs — list[string] concept_id of docs the learner should read
+    next after mastering this. Same constraint as prerequisites.
+  linked_paths — list[string] repo-relative .md paths that are
+    related but not in the prerequisites/next_docs graph (siblings,
+    cross-category bridges). Must be real files in the repo.
+  confusable_with — list[string] concept_id of docs that confused
+    learners often substitute for this one. doc_role=chooser needs ≥2.
+  forbidden_neighbors — list[string] repo-relative .md paths that
+    must NEVER be top-1 retrieval for this doc's concept. The
+    `r3.search` post-rerank forbidden_filter consumes this. Be
+    conservative — only list docs that would actively mislead the
+    learner if surfaced for this concept's queries.
+  expected_queries — list[string] of 5-10 raw Korean/English learner
+    query strings. THESE ARE QREL SEEDS FOR EVAL ONLY — do NOT
+    duplicate alias terms here (the v3 contract enforces aliases ⊥
+    expected_queries). Use phrasing the learner would actually type:
+    `Spring DI가 뭐야?`, `처음 배우는 트랜잭션 정리`,
+    `MVCC와 락 비교 좀`, etc. Frame the query so this doc would be
+    the TOP-1 expected hit.
+
+Role-conditional minimums (Wave 2 lint warnings):
+  - doc_role=symptom_router → symptoms ≥ 3
+  - doc_role=playbook       → symptoms ≥ 1
+  - doc_role=mission_bridge → mission_ids ≥ 1
+  - doc_role=chooser        → confusable_with ≥ 2
+
+What NOT to do:
+  - DO NOT modify the markdown body. Tests assert byte-level
+    preservation outside the frontmatter block.
+  - DO NOT add the legacy `retrieval-anchor-keywords:` body line. It
+    is being phased out; the baseline already lifted any present
+    anchors into the `aliases` frontmatter field.
+  - DO NOT regenerate the deterministic fields the baseline produced
+    (schema_version, concept_id, category, language, aliases, etc.) —
+    re-running the script is the safe way to refresh those.
+  - DO NOT touch `contextual_chunk_prefix` — that is Wave B.
+
+Output:
+  - summary: "{N} docs migrated v0→v3, mission_ids/symptoms/intents/...
+    filled per role contract. Pilot lock checked."
+  - changed_files: every doc you edited, repo-relative.
+  - next_candidates: 1-3 concrete follow-up gaps in the same lane,
+    e.g. "Wave B prefix authoring for the same {category} batch"
+    or "QA pass for confusable_with bidirectional consistency".
+"""
+
+
+_MIGRATION_PREFIX_BODY = """\
+WAVE B — contextual_chunk_prefix authoring
+==========================================
+The v3 frontmatter is fully populated for the target docs. Your job is
+to author the doc-level `contextual_chunk_prefix` block — the 50-100
+token Korean prose string that the indexer prepends to every chunk's
+embedding text. This is the SINGLE biggest dense-retrieval lever per
+the Phase 4 closing report (+35.5pp OVERALL on Pilot, from 41
+prefix-authored docs).
+
+Format:
+   contextual_chunk_prefix: |
+     이 문서는 [doc_role 톤에 맞춰 누구에게/무엇을/왜] [doc의 의도]
+     [tone-specific verb]. [paraphrase 표현 4-6개], [more] 같은
+     자연어 paraphrase가 본 문서의 [핵심 개념]에 매핑된다.
+
+doc_role tone guide:
+   primer       → "처음 잡는다" / "기초를 잡는다"
+   deep_dive    → "깊이 잡는다" / "내부 메커니즘을 본다"
+   playbook     → "전략으로 막는다" / "결정 가이드를 따른다"
+   chooser      → "결정한다" / "A vs B를 골라준다"
+   bridge       → "연결한다" / "두 개념을 잇는다"
+   drill        → "확인 질문으로 굳힌다"
+   symptom_router → "증상 → 원인으로 이어진다"
+   mission_bridge → "Woowa 미션 ↔ CS concept를 잇는다"
+
+Reference samples (from existing Pilot v3 docs — match this density
+and style, NOT longer):
+
+   contents/database/lock-basics.md:
+     이 문서는 데이터베이스 학습자가 여러 사용자가 같은 데이터를
+     동시에 바꾸려 할 때 충돌을 어떻게 막는지, 동시성 제어 메커니즘
+     으로서 lock이 무엇이고 왜 필요한지 처음 잡는 primer다. 동시
+     변경 충돌 방지, 동시성 충돌, 같은 데이터 동시에 수정, 락이
+     뭐야, optimistic vs pessimistic, shared vs exclusive lock 같은
+     자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+
+   contents/database/replica-lag-read-after-write-strategies.md:
+     이 문서는 학습자가 DB를 여러 대로 복사해서 읽기 부담을 나누면
+     일관성이 어떻게 깨지는지, replica lag로 인한 read-after-write
+     불일치를 어떤 설계로 막는지 깊이 잡는 deep_dive다. DB 여러 대
+     복사, 읽기 부담 나누기, 복제 지연으로 인한 일관성 깨짐, write
+     직후 read stale, primary fallback 같은 자연어 paraphrase가 본
+     문서의 전략에 매핑된다.
+
+Critical rules:
+  - 50-100 token (한국어 약 30-60글자 × 2~3문장). Hard cap 400 chars.
+  - paraphrase 표현은 alias와 표면형이 다른 것 — alias는 별도 indexed
+    채널, prefix는 dense semantic anchor. 만약 alias에 "락"이 있으면
+    prefix paraphrase에는 "락이 뭐야", "잠금 메커니즘", "동시 변경
+    방지" 같이 다른 표면형으로.
+  - 본문에 없는 사실 추가 금지. 추측 금지. 본문 H2 제목과 한 줄
+    요약을 근거로 작성.
+  - 영어는 corpus의 기술 용어일 때만 (lock, primary, MVCC, etc.) —
+    의역으로 풀면 paraphrase 매핑이 약해진다.
+  - 따옴표 / 마크다운 / 코드 펜스 / 헤더 ❌. YAML 멀티라인 (`|`)
+    안의 plain Korean prose만.
+
+Tooling: `synthesize_chunk_prefix.build_authoring_prompt(file_path)`
+returns a per-doc seeding prompt with H2 headings + body excerpt
+extracted; use it as the input frame when stuck.
+
+What NOT to do:
+  - DO NOT modify any other frontmatter field.
+  - DO NOT modify the markdown body.
+  - DO NOT generate per-chunk prefixes (the v3 contract is doc-level
+    only — `corpus_loader.py:110,482` consumes one prefix per doc).
+  - DO NOT skip docs that already have a non-empty
+    `contextual_chunk_prefix` (those are Pilot — Pilot lock will
+    catch this anyway).
+
+Output:
+  - summary: "{N} docs prefix-authored. Token range A-B avg C.
+    doc_role distribution: ..."
+  - changed_files: every doc you edited.
+  - next_candidates: 1-3 concrete next batches in the same category.
+"""
+
+
+_MIGRATION_NEW_DOC_BODY = """\
+WAVE C — new doc authoring (chooser / symptom_router / mission_bridge)
+======================================================================
+The post-9.3 cohort_eval ranked these doc_roles' cohorts as the three
+weakest spots in the corpus:
+
+   mission_bridge cohort  83.3% (5/30 fail) — corpus has no docs for
+     baseball / lotto / shopping-cart / blackjack mission ↔ CS bridges
+     in 2 of 5 fail cases (sentinel emit). 3 of 5 are qrel
+     definition issues that will resolve when bridge docs become
+     canonical.
+   confusable_pairs       90.0% — 4 fails are paired-doc ranking
+     drift; chooser docs disambiguate explicitly.
+   symptom_to_cause       93.3% — 2 fails route incorrectly when no
+     symptom_router doc exists for that symptom.
+
+Your job: write a NEW doc of the role specified in the task tags.
+
+doc_role-specific structure:
+
+CHOOSER ("X vs Y vs Z 결정")
+   Title: `{Topic} 결정 가이드`
+   Body:
+     ## 한 줄 요약 (블록쿼트, 1줄)
+     ## 결정 매트릭스 (표 — 4-6 행 max, 결정 축 ≤ 3)
+     ## 흔한 오선택 (각 옵션이 잘못 선택되는 패턴 + 학습자 표현)
+     ## 다음 학습 (next_docs 후보)
+   Frontmatter must set:
+     doc_role: chooser
+     confusable_with: ≥ 2 concept_id of the alternatives
+     symptoms: ≥ 1 (학습자의 결정 실패 표현)
+
+SYMPTOM_ROUTER ("증상 → 원인")
+   Title: `{Symptom} 원인 라우터` (symptom 명사형)
+   Body:
+     ## 한 줄 요약 (증상 한 줄)
+     ## 가능한 원인 (3-6 항목, 각 1-2문장 + 다음 doc 링크)
+     ## 빠른 자기 진단 (3-5 step, 각 step → 다음 항목으로 가지치기)
+     ## 다음 학습
+   Frontmatter:
+     doc_role: symptom_router
+     symptoms: ≥ 3 (학습자가 칠 가능한 증상 phrasing)
+     next_docs: ≥ 3 (cause-side concept_id)
+
+MISSION_BRIDGE (Woowa 미션 ↔ CS concept)
+   Title: `{Mission} {기능} ↔ {CS concept} 브릿지`
+   Body:
+     ## 한 줄 요약
+     ## 미션 시나리오 (학습자가 미션에서 마주치는 구체 상황)
+     ## CS concept 매핑 (이 미션의 X가 일반 CS의 Y와 어떻게 닿는지)
+     ## 미션 PR 코멘트 패턴 (자주 받는 리뷰 — 짧게)
+     ## 다음 학습
+   Frontmatter:
+     doc_role: mission_bridge
+     mission_ids: ≥ 1 (해당 미션 slug — `missions/roomescape` 등)
+     review_feedback_tags: ≥ 1 (PR 코멘트 패턴 tag)
+
+Hard rules (all roles):
+  - Body Korean prose, 한 단락 ≤ 7줄.
+  - 코드 dump 금지. SQL/Java 한두 줄 + 그 줄의 의미만.
+  - 다른 doc 본문 베끼기 금지 — 새 각도 (정의 / 결정 / 증상 / 미션
+    매핑) 로 다뤄야 가치 있음.
+  - frontmatter 18 fields 모두 채워라 (Wave A 가이드 참조). Wave 2
+    role-conditional 최소치 충족.
+  - `contextual_chunk_prefix`는 빈 문자열로 두지 말고 같이 작성하라
+    — 새 doc은 Wave A+B를 한 번에 끝낸다.
+  - corpus_lint --strict --strict-v3가 에러 0으로 통과해야 한다.
+  - concept_id 충돌 검증: 같은 concept_id를 가진 doc이 이미 있으면
+    `canonical: false`로 설정.
+
+What NOT to do:
+  - DO NOT touch any other doc unless adding it to a `linked_paths`
+    list. Cross-doc references stay one-way (link out from this new
+    doc).
+  - DO NOT add the doc to a category README — that is QA worker
+    territory.
+
+Output:
+  - summary: "New {role} doc {filename}. concept_id={cid}, links: ..."
+  - changed_files: ["knowledge/cs/contents/{category}/{slug}.md"]
+  - next_candidates: 1-3 — the next sibling in the same gap (other
+    missions / other confusable sets / other symptoms).
+"""
+
+
 def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: str | None = None) -> str:
     profile = _profile_for_worker(worker, lane, fleet_profile)
     scope = _lane_prompt(lane)
@@ -1502,6 +1886,19 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
     mode = str(profile.get("mode", "write"))
     role = str(profile.get("role", "ad-hoc"))
     tags = ", ".join(item.get("tags", []))
+
+    # Phase 8 migration profiles use a completely different prompt body
+    # — the legacy expansion prompt pushes the *retrieval-anchor-keywords
+    # + 7-element* legacy authoring contract, which directly contradicts
+    # the v3 frontmatter (18 fields, contextual_chunk_prefix, no body
+    # anchors) the migration is supposed to introduce.
+    if mode in ("migrate_v0_to_v3", "migrate_prefix", "migrate_new_doc"):
+        return _build_migration_v3_prompt(
+            worker=worker, lane=lane, item=item, profile=profile,
+            target_paths=target_paths, write_scopes=write_scopes,
+            claim_tags=claim_tags, quality_gates=quality_gates,
+            mode=mode, role=role, tags=tags,
+        )
     balance_snapshot = _corpus_balance_snapshot()
     lowered_text = f"{item['title']} {item['goal']} {' '.join(item.get('tags', []))}".lower()
     beginner_rules = ""
