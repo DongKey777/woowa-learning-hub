@@ -432,6 +432,30 @@ def _migration_v3_60_wave_b_workers() -> list[dict[str, Any]]:
     return workers
 
 
+def _migration_v3_60_wave_d_workers() -> list[dict[str, Any]]:
+    """1 quality revisit worker — the "always-on" loop closer.
+
+    When all underweight cells are filled and Wave A/B/C have nothing
+    productive to do, the revisit worker picks an existing v3 doc with
+    weak aliases / linked_paths / forbidden_neighbors / undersized
+    contextual_chunk_prefix and deepens it. This keeps the fleet from
+    spinning on an empty queue and from creating speculative low-value
+    new docs (the failure mode the user explicitly flagged: bias
+    accumulation when the fleet is left running indefinitely).
+    """
+    return [_migration_v3_60_profile(
+        "migration-v3-60-revisit-quality-deepen",
+        "migration-content-revisit",
+        "migration",
+        "migrate_revisit",
+        ["revisit", "wave-d", "quality", "alias-thin",
+         "linked-paths-empty", "prefix-out-of-band"],
+        ["knowledge/cs/contents/**/*.md"],
+        write_scopes=["migration_v3_60:wave-d:revisit"],
+        batch_size=1,
+    )]
+
+
 def _migration_v3_60_wave_c_workers() -> list[dict[str, Any]]:
     """11 new-doc authoring workers (5 mission_bridge + 3 chooser +
     3 symptom_router) — direct-attack the cohort_eval weak spots."""
@@ -519,6 +543,9 @@ MIGRATION_V3_60_FLEET: list[dict[str, Any]] = [
 
     # ── 11 Wave C (new doc — 5 mission_bridge + 3 chooser + 3 symptom_router)
     *_migration_v3_60_wave_c_workers(),
+
+    # ── 1 Wave D (revisit existing v3 doc to deepen quality)
+    *_migration_v3_60_wave_d_workers(),
 
     # ── 14 QA (v3-specific invariants)
     _migration_v3_60_profile(
@@ -624,15 +651,6 @@ MIGRATION_V3_60_FLEET: list[dict[str, Any]] = [
         quality_gates=["v3_frontmatter_complete"],
     ),
     _migration_v3_60_profile(
-        "migration-v3-60-qa-prerequisite-graph",
-        "migration-qa",
-        "qa", "fix",
-        ["prerequisites", "graph", "cycles"],
-        ["knowledge/cs/contents/**/*.md"],
-        write_scopes=["migration_v3_60:qa:prereq-graph"],
-        quality_gates=["v3_frontmatter_complete"],
-    ),
-    _migration_v3_60_profile(
         "migration-v3-60-qa-next-doc-graph",
         "migration-qa",
         "qa", "fix",
@@ -725,15 +743,17 @@ MIGRATION_V3_60_FLEET: list[dict[str, Any]] = [
         write_scopes=["migration_v3_60:rag:paraphrase"],
     ),
     _migration_v3_60_profile(
-        "migration-v3-60-rag-confusable-disambiguation",
+        "migration-v3-60-rag-balance-monitor",
         "migration-rag",
         "rag", "script",
-        ["confusable", "disambiguation", "cohort", "90%"],
+        ["balance", "monitor", "drift", "saturation", "alarm"],
         [
-            "tests/fixtures/r3_qrels_real_v1.json",
+            "state/orchestrator/migration_v3/**",
             "reports/rag_eval/**",
+            "knowledge/cs/contents/**/*.md",
         ],
-        write_scopes=["migration_v3_60:rag:confusable"],
+        write_scopes=["migration_v3_60:rag:balance-monitor"],
+        quality_gates=["v3_frontmatter_complete"],
     ),
 
     # ── 4 ops
