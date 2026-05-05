@@ -163,17 +163,22 @@ def _collect_top1_scores(
         if not hits:
             continue
         top = hits[0]
-        # Sentinel hits: still record the rejected score (it's the
-        # ce_score of what would have been top-1).
+        # Sentinel hits carry the rejected raw cross-encoder score
+        # in `rejected_score` (the gate's threshold check uses the
+        # raw ce_score, not the hybrid RRF). Normal hits expose it
+        # via `cross_encoder_score` (Phase 9.3 hit shape extension).
         if top.get("sentinel") == "no_confident_match":
             score = top.get("rejected_score")
         else:
-            score = top.get("score")
+            score = top.get("cross_encoder_score")
         try:
             score_float = float(score) if score is not None else None
         except (TypeError, ValueError):
             score_float = None
         if score_float is None:
+            # Reranker did not run for this query (e.g. mode != full
+            # or sidecar gating). Skip — calibration only meaningful
+            # over reranked queries.
             continue
         out.append(score_float)
     return out

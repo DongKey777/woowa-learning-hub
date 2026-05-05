@@ -318,6 +318,12 @@ def _hit_from_candidate(candidate) -> dict:
         # learner profile entries. None when the corpus chunk
         # carries no concept_id (pre-Phase-8 v3 migration docs).
         "concept_id": candidate.metadata.get("concept_id"),
+        # Phase 9.3 — surface cross_encoder_score (the raw reranker
+        # logit) separately from the fused/hybrid `score`. Calibration
+        # and the refusal sentinel both compare against this raw
+        # value, not the RRF-saturated hybrid. None when the candidate
+        # was outside the rerank window or rerank did not run.
+        "cross_encoder_score": candidate.metadata.get("cross_encoder_score"),
     }
 
 

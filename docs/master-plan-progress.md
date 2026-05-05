@@ -12,12 +12,21 @@
 
 ## Headline
 
-**Pilot baseline locked at OVERALL 95.5%** on 200q × 6 cohort, 200q
-real qrel suite, three of six cohorts at 100%. Retrieval is locally
-production-runnable (state/cs_rag/), distribution to other learners
-is wired through GitHub Releases, query reformulation + forbidden
-filter run end-to-end through `bin/rag-ask`, daemon mode is the
-default so warm latency holds at ~1.3s.
+**Pilot baseline OVERALL 95.5%** on 200q × 6 cohort under the
+pre-9.3-active metric (corpus_gap_probe auto-passed without measuring
+actual refusal). With Phase 9.3 sentinel activated (threshold 0.10
+calibrated), **honest OVERALL is 94.0%** — corpus_gap_probe drops to
+95% (19/20 tier_downgraded, 1 silent_failure), other cohorts mostly
+unchanged, sentinel false-positive across non-refusal cohorts is 0.
+Three cohorts still at 100% (paraphrase_human, forbidden_neighbor —
++1 cohort vs pre: corpus_gap_probe shifted from sham 100% to
+honest 95%).
+
+Retrieval is locally production-runnable (state/cs_rag/), distribution
+to other learners is wired through GitHub Releases, query
+reformulation + forbidden filter + 9.3 refusal sentinel + 9.4 citation
+block + 9.1 anaphora all run end-to-end through `bin/rag-ask`, daemon
+mode is the default so warm latency holds at ~1.3s.
 
 The original Pilot target was 0.85.
 
@@ -59,6 +68,7 @@ The original Pilot target was 0.85.
 | 9.3-EF | cohort_eval reform + calibration script + agent docs | ✅ done | `9199c06` `feat(rag-9.3): cohort_eval reform (tier_downgraded vs silent_failure) + calibration script + agent docs` |
 | 9.1 | production R3 anaphora — reformulation primary, regex fallback | ✅ done | `d2c6471` `feat(rag-9.1): production R3 anaphora — reformulation primary, regex fallback` |
 | 9.2 | personalization-aware fusion-stage ranking (default off) | ✅ done | `39b95de` `feat(rag-9.2): personalization-aware fusion-stage ranking (default off)` |
+| 9.3-active | calibration → threshold=0.10 활성화 + honest cohort_eval | ✅ done | `<this commit>` — F1=0.974 at threshold 0.10, OVERALL 95.5%(sham)→94.0%(honest), corpus_gap_probe 19 tier_downgraded + 1 silent_failure, 다른 cohort에 sentinel false-positive 0 |
 
 Activation knobs (default off — ship safe, opt in):
 - `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` — calibrate first via `python -m scripts.learning.rag.r3.eval.calibrate_refusal_threshold`
