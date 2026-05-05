@@ -179,6 +179,110 @@ class AntiDriftV3CoverageTest(unittest.TestCase):
         self.assertEqual(len(out), len(cands))
 
 
+class R3RoutingMapInPromptTest(unittest.TestCase):
+    """Every migration prompt must explain *what the field actually does*
+    at retrieval time. Without this, a worker can write structurally
+    valid frontmatter with zero retrieval impact (the
+    forbidden_neighbors-as-similar-topic misuse pattern is the
+    canonical failure)."""
+
+    modes = [
+        ("migration-v3-60-frontmatter-spring", "migration-content-spring"),
+        ("migration-v3-60-prefix-spring", "migration-content-spring"),
+        ("migration-v3-60-new-mission-bridge-roomescape", "migration-content-mission-bridge"),
+        ("migration-v3-60-revisit-quality-deepen", "migration-content-revisit"),
+    ]
+
+    def _prompt(self, worker, lane):
+        return OW._worker_prompt(
+            worker, lane,
+            {"item_id": "t", "title": "x", "goal": "y", "tags": []},
+            fleet_profile="migration_v3_60",
+        )
+
+    def test_all_modes_include_routing_map(self):
+        for worker, lane in self.modes:
+            with self.subTest(worker=worker):
+                p = self._prompt(worker, lane)
+                self.assertIn("R3 ROUTING MAP", p)
+
+    def test_routing_map_distinguishes_direct_vs_catalog_vs_eval_vs_inert(self):
+        p = self._prompt(*self.modes[0])
+        for marker in ("DIRECT", "CATALOG-DERIVED", "EVAL-ONLY",
+                        "CURRENTLY INERT"):
+            self.assertIn(marker, p)
+
+    def test_routing_map_traces_aliases_to_lexical_sidecar(self):
+        p = self._prompt(*self.modes[0])
+        self.assertIn("lexical sidecar", p)
+        self.assertIn("BM25", p)
+
+    def test_routing_map_traces_prefix_to_dense_embed(self):
+        p = self._prompt(*self.modes[0])
+        self.assertIn("BGE-M3 dense embed prepend", p)
+        self.assertIn("+35.5pp", p)
+
+    def test_routing_map_warns_about_forbidden_neighbors_misuse(self):
+        """The forbidden_neighbors-as-similar-topic misuse is the
+        single most common failure mode — the prompt must explicitly
+        say 'misleading' (not 'similar topic') so the worker fills
+        this field correctly."""
+        p = self._prompt(*self.modes[0])
+        self.assertIn("actively mislead", p)
+        self.assertIn("Do NOT use for", p)
+
+    def test_routing_map_marks_expected_queries_as_eval_only(self):
+        p = self._prompt(*self.modes[0])
+        self.assertIn("retrieval impact = 0", p)
+        self.assertIn("expected_queries", p)
+
+
+class ChunkerAndTitleGuideTest(unittest.TestCase):
+    """Wave C (new-doc) and Wave D (revisit) workers may write or
+    rewrite body; they must know about H2 chunking + 1600-char
+    hard-split. Wave A/B don't touch body, so the guide is suppressed
+    to keep the prompt budget tight."""
+
+    def _prompt(self, worker, lane):
+        return OW._worker_prompt(
+            worker, lane,
+            {"item_id": "t", "title": "x", "goal": "y", "tags": []},
+            fleet_profile="migration_v3_60",
+        )
+
+    def test_new_doc_carries_chunker_guide(self):
+        p = self._prompt(
+            "migration-v3-60-new-mission-bridge-roomescape",
+            "migration-content-mission-bridge",
+        )
+        self.assertIn("CHUNKER + TITLE BEHAVIOR", p)
+        self.assertIn("MAX_CHARS_PER_CHUNK=1600", p)
+        self.assertIn("hard-split", p)
+
+    def test_revisit_carries_chunker_guide(self):
+        p = self._prompt(
+            "migration-v3-60-revisit-quality-deepen",
+            "migration-content-revisit",
+        )
+        self.assertIn("CHUNKER + TITLE BEHAVIOR", p)
+
+    def test_frontmatter_mode_does_not_carry_chunker_guide(self):
+        """Wave A workers don't write body; chunker guide would just
+        be context noise that pushes the prompt over budget."""
+        p = self._prompt(
+            "migration-v3-60-frontmatter-spring",
+            "migration-content-spring",
+        )
+        self.assertNotIn("CHUNKER + TITLE BEHAVIOR", p)
+
+    def test_prefix_mode_does_not_carry_chunker_guide(self):
+        p = self._prompt(
+            "migration-v3-60-prefix-spring",
+            "migration-content-spring",
+        )
+        self.assertNotIn("CHUNKER + TITLE BEHAVIOR", p)
+
+
 class V3DriftTagsRegisteredTest(unittest.TestCase):
     """Migration tags must be in the anti-drift accept list so a
     well-formed next_candidate isn't rejected for missing the tag

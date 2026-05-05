@@ -1785,6 +1785,96 @@ def _v3_saturation_ceilings_block() -> str:
 # Phase 8 — migration_v3 / migration_v3_60 prompt builder
 # ---------------------------------------------------------------------------
 
+# This block is prepended to every migration prompt so the worker
+# understands *why* it is filling each frontmatter field — not just
+# what shape the field has. The legacy prompt body did not connect
+# field → retriever; that lets a worker write structurally valid
+# frontmatter that has zero retrieval impact (e.g. forbidden_neighbors
+# misused for similar-topic docs instead of misleading docs).
+_R3_ROUTING_MAP = """\
+=== R3 ROUTING MAP — what each field actually does at retrieval time ===
+
+DIRECT (corpus_loader reads frontmatter → indexer ships it):
+  aliases                     → lexical sidecar (BM25)
+                                Learner query term matching `aliases[i]`
+                                gets a direct BM25 hit. Fill with 5-15
+                                surface-form-different paraphrases.
+  contextual_chunk_prefix     → BGE-M3 dense embed prepend
+                                Prepended to every chunk's embed text.
+                                This is the +35.5pp lever from Pilot.
+  concept_id, doc_role,
+  level, difficulty           → chunk metadata
+                                Carried in index. Phase 9.2 ranking key
+                                (off until corpus ≥30% concept_id).
+  title (H1)                  → lexical sidecar field
+                                Direct BM25 match on learner query.
+                                Title that is *too generic* loses to
+                                more specific peers — make H1 carry
+                                a discriminating phrase.
+
+CATALOG-DERIVED (frontmatter → corpus_catalog_v3 → catalog json → retriever):
+  mission_ids                 → catalog/mission_ids_to_concepts.json
+                                → mission_bridge retriever
+                                "roomescape DI" learner phrase routes
+                                here. mission_ids that don't appear in
+                                a real Woowa mission do NOTHING.
+  symptoms                    → catalog/symptom_to_concepts.json
+                                → symptom_router retriever
+                                Learner symptom phrase ("list가 안 보여")
+                                routes here. Symptom must be a phrasing
+                                a confused learner would type, not a
+                                technical name.
+  forbidden_neighbors         → catalog/concepts.v3.json
+                                → post-rerank forbidden_filter
+                                When top-1 reranked doc lists a path in
+                                forbidden_neighbors, the candidate
+                                appearing later in top-K is DROPPED.
+                                Use ONLY for docs that would *actively
+                                mislead* a learner of THIS concept (e.g.
+                                primer for the canonical pattern lists
+                                the *anti-pattern primer* as forbidden).
+                                Do NOT use for "similar topic" — that
+                                is `linked_paths` or `confusable_with`.
+  confusable_with             → catalog/confusable_neighbors.json
+                                Auxiliary signal for chooser ranking.
+
+EVAL-ONLY (retrieval impact = 0):
+  expected_queries            → qrel seed for cohort_eval
+                                These ARE NOT indexed. They are the
+                                paraphrases the eval suite measures
+                                against. List 5-10 distinct shapes
+                                a learner would type. Aliases ⊥
+                                expected_queries — do NOT duplicate.
+
+CURRENTLY INERT (metadata only — Phase 9 deferred):
+  linked_paths, next_docs,    → graph metadata in catalog
+  prerequisites,                Not consumed by any retriever today.
+  review_feedback_tags          Fill conservatively; future-graph
+                                features will use them.
+"""
+
+
+_CHUNKER_AND_TITLE_GUIDE = """\
+=== CHUNKER + TITLE BEHAVIOR (matters for body authoring in new-doc / revisit) ===
+
+corpus_loader (scripts/learning/rag/corpus_loader.py) chunks markdown:
+  - One chunk per H2 section (`## heading` … next H2 boundary).
+  - If an H2 body exceeds MAX_CHARS_PER_CHUNK=1600 chars (~400 tokens),
+    it is hard-split into multiple chunks. Hard-split fragments the
+    retrieval unit — the learner sees only one fragment of your H2
+    when their query lands in it.
+  - WRITE EACH H2 BODY ≤ 1600 chars. If a section is long, split into
+    H2/H2 with distinct headings rather than letting hard-split decide.
+
+Title (H1):
+  - Indexed in the lexical sidecar (BM25 hit on learner query token).
+  - Make H1 carry the discriminating phrase. Bad: "Spring DI". Good:
+    "Spring DI 기초 — Bean 컨테이너의 의존성 주입".
+  - Section title (`## heading`) is also lexical-indexed; choose
+    headings that match learner symptom/intent, not generic ones.
+"""
+
+
 _MIGRATION_V3_HEADER = """\
 You are {worker}, the persistent migration worker for {lane}.
 
@@ -1912,6 +2002,15 @@ def _build_migration_v3_prompt(
             "and summary explaining the misconfiguration."
         )
 
+    # System-grounded guides — explain the retrieval consequences of
+    # each field so the worker fills frontmatter / writes body for the
+    # *actual* R3 system, not just for v3 schema validity. Without
+    # these, a worker can write structurally correct frontmatter that
+    # has zero retrieval impact (the `forbidden_neighbors` misuse mode
+    # is the canonical example).
+    routing_map = _R3_ROUTING_MAP
+    chunker_guide = _CHUNKER_AND_TITLE_GUIDE if mode in ("migrate_new_doc", "migrate_revisit") else ""
+
     # Long-running balance defenses: every migration prompt carries
     # the live balance snapshot, recent cohort_eval weak-cohort
     # feedback, and the saturation ceiling rules. The worker reads
@@ -1922,6 +2021,8 @@ def _build_migration_v3_prompt(
     saturation_block = _v3_saturation_ceilings_block()
 
     long_running_guard = f"""
+{routing_map}
+{chunker_guide}
 ==== LONG-RUNNING BALANCE GUARD (read before choosing what to write) ====
 
 {balance_block}
