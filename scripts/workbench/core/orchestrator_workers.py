@@ -61,6 +61,17 @@ ANTI_DRIFT_NEXT_CANDIDATE_TAGS = {
     "qa",
     "recovery",
     "retrieval",
+    # Phase 8 long-running balance guard — at least one of these
+    # tags must appear on every migration_v3 next_candidate so the
+    # platform anti-drift filter accepts it.
+    "v3-frontmatter",
+    "v3-prefix",
+    "v3-new-doc",
+    "v3-revisit",
+    "cohort-weak",
+    "mission-bridge",
+    "chooser",
+    "symptom-router",
 }
 GENERIC_DRIFT_TAGS = {
     "beginner",
@@ -976,12 +987,41 @@ def _non_generic_tags(tags: set[str]) -> set[str]:
     return {tag for tag in tags if tag not in GENERIC_DRIFT_TAGS}
 
 
+_MIGRATION_V3_DRIFT_MODES = {
+    "migrate_v0_to_v3",
+    "migrate_prefix",
+    "migrate_new_doc",
+    "migrate_revisit",
+}
+
+
 def _anti_drift_next_candidates(
     item: dict[str, Any],
     candidates: list[dict[str, Any]],
     profile: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    if profile.get("role") != "content" or profile.get("mode") != "expand":
+    """Reject next_candidates that re-walk the angle just completed.
+
+    Two profile gates open this filter:
+
+      * legacy expansion fleet — ``role=content`` AND ``mode=expand``
+      * Phase 8 migration fleet — any of the four migrate_* modes
+        (regardless of role) so a Wave A worker proposing the same
+        (category, doc_role) combo gets rejected before the planner
+        re-enqueues it.
+
+    A candidate must (a) carry at least one tag from
+    ``ANTI_DRIFT_NEXT_CANDIDATE_TAGS`` (proves the worker thought
+    about balance / cohort weakness) and (b) introduce a non-generic
+    angle the current item didn't already have.
+    """
+    role = profile.get("role")
+    mode = profile.get("mode")
+
+    is_legacy_expansion = role == "content" and mode == "expand"
+    is_migration_v3 = mode in _MIGRATION_V3_DRIFT_MODES
+
+    if not (is_legacy_expansion or is_migration_v3):
         return candidates
 
     current_tags = _non_generic_tags({str(tag).strip().lower() for tag in item.get("tags", []) if str(tag).strip()})
@@ -1502,6 +1542,246 @@ def _lane_prompt(lane: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Phase 8 — long-running balance + cohort feedback + saturation
+# ---------------------------------------------------------------------------
+#
+# When the migration_v3_60 fleet is left running indefinitely the
+# corpus can drift toward whatever cell the workers most easily fill
+# — typically `primer` in the densest category. These helpers feed
+# *live* corpus state and the latest cohort_eval result into every
+# migration worker prompt so each codex call sees the gap it should
+# close *next*, not just the gap that was named when the queue item
+# was enqueued days ago.
+#
+# Coupled with the `_anti_drift_next_candidates` filter, this gives us
+# three layers of bias defense:
+#   1. snapshot — workers are told the live distribution
+#   2. saturation ceiling — categories at cap are explicitly marked
+#   3. cohort feedback — the prompt cites the cohort_eval cells where
+#      pass_rate is below the 94.0% baseline so workers prioritize
+#      doc_roles that move those cells
+
+import time as _time
+
+# Saturation ceilings — hard caps per (category, doc_role) cell. These
+# are NOT thresholds for refusing work; they are signals that get
+# surfaced in the prompt so the worker shifts to a different cell.
+# Wave 8.5 review can tune these once the first migration cycle
+# finishes.
+V3_SATURATION_CAPS: dict[str, int] = {
+    "primer": 30,         # one canonical primer per concept; 30 covers most categories
+    "deep_dive": 20,
+    "playbook": 15,
+    "chooser": 10,
+    "bridge": 25,
+    "drill": 10,
+    "symptom_router": 8,
+    "mission_bridge": 8,
+}
+V3_DOC_ROLE_SHARE_CEILING = 0.60  # one doc_role can't hold > 60% of a category
+
+# Live snapshot cache — the corpus walk is ~50ms but each fleet cycle
+# can hit it 60× / second when 60 workers all spawn. 30s TTL keeps
+# the prompt freshness inside a single user-attention window.
+_V3_SNAPSHOT_CACHE: dict[str, tuple[float, str]] = {}
+_V3_SNAPSHOT_TTL_SECONDS = 30.0
+
+
+def _v3_balance_snapshot() -> str:
+    """Live category × doc_role × frontmatter-coverage snapshot.
+
+    Returns a short text block injected into the migration worker
+    prompt. The snapshot is recomputed on a 30-second TTL so 60
+    parallel workers don't each scan 2,286 markdown files.
+    """
+    cache = _V3_SNAPSHOT_CACHE.get("v3")
+    if cache and cache[0] + _V3_SNAPSHOT_TTL_SECONDS > _time.monotonic():
+        return cache[1]
+
+    contents_root = ROOT / CONTENT_DOC_PREFIX
+    if not contents_root.exists():
+        block = "v3 balance snapshot: unavailable (knowledge/cs/contents missing)."
+        _V3_SNAPSHOT_CACHE["v3"] = (_time.monotonic(), block)
+        return block
+
+    schema_v3_re = re.compile(r"^schema_version:\s*3\b", re.MULTILINE)
+    prefix_re = re.compile(r"^contextual_chunk_prefix:", re.MULTILINE)
+    doc_role_re = re.compile(r"^doc_role:\s*([a-z_]+)", re.MULTILINE)
+    level_re = re.compile(r"^level:\s*([a-z]+)", re.MULTILINE)
+
+    total = 0
+    v3_count = 0
+    prefix_count = 0
+    by_category: dict[str, dict[str, int]] = {}
+    by_category_total: dict[str, int] = {}
+    by_doc_role: dict[str, int] = {}
+    by_level: dict[str, int] = {}
+    no_frontmatter = 0
+
+    for path in contents_root.rglob("*.md"):
+        if path.name == "README.md":
+            continue
+        total += 1
+        category = _doc_category(path, contents_root)
+        by_category_total[category] = by_category_total.get(category, 0) + 1
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        if schema_v3_re.search(text):
+            v3_count += 1
+            if prefix_re.search(text):
+                prefix_count += 1
+            role_match = doc_role_re.search(text)
+            if role_match:
+                role = role_match.group(1)
+                by_doc_role[role] = by_doc_role.get(role, 0) + 1
+                bucket = by_category.setdefault(category, {})
+                bucket[role] = bucket.get(role, 0) + 1
+            level_match = level_re.search(text)
+            if level_match:
+                lvl = level_match.group(1)
+                by_level[lvl] = by_level.get(lvl, 0) + 1
+        elif text.lstrip().startswith("---"):
+            pass  # legacy v2 / partial frontmatter
+        else:
+            no_frontmatter += 1
+
+    v3_pct = v3_count / total if total else 0.0
+    prefix_pct = prefix_count / v3_count if v3_count else 0.0
+
+    # Find the 5 most underweight (category, doc_role) cells — these
+    # are the next-action candidates for content workers.
+    underweight: list[tuple[str, str, int]] = []
+    for category in sorted(by_category_total):
+        cat_total = by_category_total[category]
+        cells = by_category.get(category, {})
+        for role in sorted(V3_SATURATION_CAPS):
+            count = cells.get(role, 0)
+            cap = V3_SATURATION_CAPS[role]
+            if count < cap:
+                underweight.append((category, role, count))
+    underweight.sort(key=lambda t: t[2])
+    underweight_lines = [
+        f"  {cat}/{role} = {count}" for cat, role, count in underweight[:6]
+    ]
+
+    # Saturated cells — workers should NOT add more here.
+    saturated: list[tuple[str, str, int, int]] = []
+    for category, cells in by_category.items():
+        cat_total = by_category_total.get(category, 1)
+        for role, count in cells.items():
+            cap = V3_SATURATION_CAPS.get(role)
+            if cap and count >= cap:
+                saturated.append((category, role, count, cap))
+            elif count / cat_total > V3_DOC_ROLE_SHARE_CEILING:
+                saturated.append((category, role, count, int(cat_total * V3_DOC_ROLE_SHARE_CEILING)))
+    saturated.sort(key=lambda t: -(t[2] / t[3] if t[3] else 0))
+    saturated_lines = [
+        f"  {cat}/{role} = {count} (cap {cap})"
+        for cat, role, count, cap in saturated[:5]
+    ] or ["  none"]
+
+    # doc_role share — top 3 most-represented roles in v3 docs
+    role_share_lines = []
+    for role, n in sorted(by_doc_role.items(), key=lambda kv: -kv[1])[:5]:
+        role_share_lines.append(f"  {role}: {n} ({n / v3_count:.0%})" if v3_count else f"  {role}: {n}")
+
+    block = "\n".join([
+        "v3 balance snapshot (live, 30s TTL):",
+        f"- corpus total: {total} docs",
+        f"- v3 frontmatter coverage: {v3_count}/{total} ({v3_pct:.1%})",
+        f"- contextual_chunk_prefix coverage: {prefix_count}/{v3_count if v3_count else 1} ({prefix_pct:.1%})",
+        f"- no frontmatter (v0): {no_frontmatter}",
+        "- v3 doc_role share:",
+        *role_share_lines,
+        "- underweight cells (prefer these):",
+        *underweight_lines,
+        "- saturated cells (avoid; pivot to chooser / symptom_router / bridge):",
+        *saturated_lines,
+    ])
+    _V3_SNAPSHOT_CACHE["v3"] = (_time.monotonic(), block)
+    return block
+
+
+def _recent_cohort_eval_feedback() -> str:
+    """Pull the most recent cohort_eval JSON and surface fail patterns.
+
+    Looks first for ``reports/rag_eval/post_phase_9_3_active.json``
+    (the honest baseline written by the activation cycle), then falls
+    back to any newer cohort_eval result. The block is short — only
+    the cells that are below 100% and the failure_class breakdown for
+    those — so the prompt stays under the codex context budget.
+    """
+    candidates = [
+        ROOT / "reports" / "rag_eval" / "post_phase_9_3_active.json",
+        ROOT / "reports" / "rag_eval" / "phase9_done.json",
+    ]
+    eval_path = next((p for p in candidates if p.exists()), None)
+    if eval_path is None:
+        return "Recent cohort_eval feedback: no recent JSON found — run cohort_eval to refresh."
+
+    try:
+        data = json.loads(eval_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return f"Recent cohort_eval feedback: unable to parse {eval_path.name}."
+
+    overall = data.get("overall_pass_rate")
+    per_cohort = data.get("per_cohort") or {}
+    weak_cohorts: list[tuple[str, float, dict]] = []
+    for tag, metrics in per_cohort.items():
+        rate = metrics.get("pass_rate")
+        if rate is None or rate >= 1.0:
+            continue
+        weak_cohorts.append((tag, rate, metrics))
+    weak_cohorts.sort(key=lambda t: t[1])
+
+    fail_outcomes: dict[str, dict[str, int]] = {}
+    for q in data.get("per_query") or []:
+        if q.get("pass_status"):
+            continue
+        tag = q.get("cohort_tag") or "unknown"
+        outcome = q.get("actual_outcome") or "unknown"
+        fail_outcomes.setdefault(tag, {})[outcome] = (
+            fail_outcomes.setdefault(tag, {}).get(outcome, 0) + 1
+        )
+
+    lines = [
+        f"Recent cohort_eval feedback (source: {eval_path.name}):",
+        f"- OVERALL: {overall:.1%}" if isinstance(overall, (int, float)) else "- OVERALL: n/a",
+        "- Weak cohorts (pass < 100%, weakest first):",
+    ]
+    for tag, rate, metrics in weak_cohorts[:6]:
+        outcomes = fail_outcomes.get(tag, {})
+        outcome_str = ", ".join(f"{k}:{v}" for k, v in sorted(outcomes.items())) or "n/a"
+        lines.append(f"  {tag}: {rate:.1%} (fails → {outcome_str})")
+    if not weak_cohorts:
+        lines.append("  none — all cohorts at 100% (recompute with newer index)")
+    return "\n".join(lines)
+
+
+def _v3_saturation_ceilings_block() -> str:
+    """Static text describing the per-doc_role caps.
+
+    The ``_v3_balance_snapshot`` already lists *which* cells are
+    saturated. This block tells the worker the *rules* by which
+    saturation is decided, so the codex prompt is self-contained
+    even when the snapshot is unavailable.
+    """
+    cap_lines = [
+        f"  {role}: ≤ {cap} per category"
+        for role, cap in sorted(V3_SATURATION_CAPS.items(),
+                                key=lambda kv: -kv[1])
+    ]
+    return "\n".join([
+        "Saturation ceiling rules:",
+        *cap_lines,
+        f"- Plus: any doc_role > {V3_DOC_ROLE_SHARE_CEILING:.0%} of a category total is saturated",
+        "  → pivot to underweight doc_role even if the cap isn't reached",
+    ])
+
+
+# ---------------------------------------------------------------------------
 # Phase 8 — migration_v3 / migration_v3_60 prompt builder
 # ---------------------------------------------------------------------------
 
@@ -1621,8 +1901,10 @@ def _build_migration_v3_prompt(
         body = _MIGRATION_PREFIX_BODY
     elif mode == "migrate_new_doc":
         body = _MIGRATION_NEW_DOC_BODY
+    elif mode == "migrate_revisit":
+        body = _MIGRATION_REVISIT_BODY
     else:
-        # Defensive — _worker_prompt only routes the three known modes
+        # Defensive — _worker_prompt only routes the four known modes
         # here, but a future enum addition without a body should fail
         # closed.
         body = (
@@ -1630,7 +1912,41 @@ def _build_migration_v3_prompt(
             "and summary explaining the misconfiguration."
         )
 
-    return header + "\n" + body
+    # Long-running balance defenses: every migration prompt carries
+    # the live balance snapshot, recent cohort_eval weak-cohort
+    # feedback, and the saturation ceiling rules. The worker reads
+    # these BEFORE deciding which doc to author / which authorial
+    # field to fill / which new doc role to write.
+    balance_block = _v3_balance_snapshot()
+    cohort_block = _recent_cohort_eval_feedback()
+    saturation_block = _v3_saturation_ceilings_block()
+
+    long_running_guard = f"""
+==== LONG-RUNNING BALANCE GUARD (read before choosing what to write) ====
+
+{balance_block}
+
+{cohort_block}
+
+{saturation_block}
+
+How to use these:
+- Prefer underweight cells. If your queue item targets a cell that
+  is already saturated, summarize the conflict and propose a
+  next_candidate in an underweight cell instead.
+- If a weak cohort points at a cell you can move (e.g.
+  mission_bridge 83.3% + mission_ids:roomescape underweight), bias
+  toward that cell.
+- next_candidates MUST add a different angle from the current item.
+  Repeating the same (category, doc_role) pair within 5 turns is
+  enqueue-rejected by the platform anti-drift filter.
+- If every queue option you can take is saturated AND no weak
+  cohort improves with more docs, return changed_files=[] and a
+  next_candidate of `migrate_revisit` (existing-doc quality boost
+  on the doc with the weakest aliases / linked_paths / forbidden_neighbors).
+"""
+
+    return header + long_running_guard + "\n" + body
 
 
 _MIGRATION_V0_TO_V3_BODY = """\
@@ -1791,6 +2107,62 @@ Output:
 """
 
 
+_MIGRATION_REVISIT_BODY = """\
+WAVE D — existing-doc quality revisit
+======================================
+The fleet has been running long enough that all underweight cells
+are filled or saturated. Your job in this mode is to *deepen* an
+existing v3 doc's quality so the cohort_eval has more high-quality
+hits per query, without authoring a new doc.
+
+Pick ONE existing v3 doc that scores low on these checks:
+
+  - aliases length < 5 → learner paraphrase coverage thin
+  - expected_queries length < 4 → qrel seed thin (cohort_eval can't
+    measure improvement on this doc)
+  - linked_paths == [] AND next_docs == [] → doc is graph-isolated
+  - confusable_with == [] for chooser/bridge → ranking drift risk
+  - forbidden_neighbors == [] for primer with confusable_with set
+    → forbidden_filter has no work to do
+  - contextual_chunk_prefix < 30 chars or > 400 chars → prefix is
+    out of the 50-100 token target band
+
+Allowed authorial actions on the chosen doc:
+
+  - Add 2-4 alias terms that are paraphrase-distinct from existing
+    aliases (different surface form, same concept).
+  - Add 2-3 expected_queries that are realistic learner phrasings
+    NOT covered by current entries (different intent: definition vs
+    comparison vs symptom).
+  - Add 1-3 linked_paths to genuinely related docs (cross-category
+    bridge preferred when it widens the learning path).
+  - Add 1-3 next_docs that the learner should read next.
+  - Add 1-2 confusable_with for chooser/bridge if the doc is
+    silent on alternatives.
+  - Add 1-2 forbidden_neighbors when a confusable doc's primer
+    would actively mislead a learner of THIS concept.
+  - Rewrite contextual_chunk_prefix only if it is out of the token
+    target band (50-100 token, ~30-60 글자 × 2-3 문장).
+
+What NOT to do:
+  - DO NOT modify the markdown body bytes.
+  - DO NOT touch the deterministic baseline fields (schema_version,
+    concept_id, category, language, level, source_priority).
+  - DO NOT add fields just to add them. Each addition must improve
+    one of the cohort_eval failure_class buckets
+    (`candidate_absent`, `qrel_incomplete`).
+  - DO NOT revisit a doc that was modified in the last 24 hours
+    (check `git log --since='24 hours ago' -- <path>`).
+
+Output:
+  - summary: "Revisit: {doc_path}. Aliases +{n}, expected_queries
+    +{m}, linked_paths +{p}. Targeted gap: {failure_class}."
+  - changed_files: [the one revisited doc]
+  - next_candidates: 1-3 — other revisit candidates with the same
+    weak field, prefer different categories.
+"""
+
+
 _MIGRATION_NEW_DOC_BODY = """\
 WAVE C — new doc authoring (chooser / symptom_router / mission_bridge)
 ======================================================================
@@ -1892,7 +2264,12 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
     # + 7-element* legacy authoring contract, which directly contradicts
     # the v3 frontmatter (18 fields, contextual_chunk_prefix, no body
     # anchors) the migration is supposed to introduce.
-    if mode in ("migrate_v0_to_v3", "migrate_prefix", "migrate_new_doc"):
+    if mode in (
+        "migrate_v0_to_v3",
+        "migrate_prefix",
+        "migrate_new_doc",
+        "migrate_revisit",
+    ):
         return _build_migration_v3_prompt(
             worker=worker, lane=lane, item=item, profile=profile,
             target_paths=target_paths, write_scopes=write_scopes,
