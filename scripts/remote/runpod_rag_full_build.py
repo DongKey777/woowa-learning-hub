@@ -1360,9 +1360,19 @@ class RunPodHarness:
         if r_phase == "r3":
             build_extra.append(f"--r3-qrels {shlex.quote(R3_QREL_PATH)}")
         build_extra_str = (" " + " ".join(build_extra)) if build_extra else ""
+        # `--no-release-fetch` is mandatory on RunPod: the release-fetch
+        # path short-circuits cli_cs_index_build into downloading the
+        # *previously published* tar.zst from GitHub Releases — which
+        # is exactly the corpus snapshot we are trying to *replace* with
+        # a fresh build of the new commit. Without this flag, step 7 is
+        # a no-op (downloads the old release and skips the build), so
+        # the resulting artifact carries the old corpus_hash and
+        # cohort_eval against it measures the pre-fleet baseline. This
+        # was a real silent failure on the 2026-05-06 r3-e7672e4 build
+        # before this fix.
         build_command = (
             "python -m scripts.learning.cli_cs_index_build "
-            f"--backend lance --modalities {modalities_arg} --out /workspace/cs_rag/"
+            f"--backend lance --no-release-fetch --modalities {modalities_arg} --out /workspace/cs_rag/"
             f"{build_extra_str}"
         )
         strict_package_args = ""
