@@ -46,6 +46,22 @@ Wave 정의:
 - **Wave D** (1 워커): 기존 v3 doc 품질 보강 (loop closer, 무한 운영
   시 활성)
 
+### 직전 cycle 결과 (2026-05-05, 새 세션이 알아야 할 사실)
+
+- 워커 시스템 정상 동작 확인 (회귀 159 passed)
+- Pilot lock guard 정상: 6건 위반 fail-fast로 catch → blocked 처리
+- `completion_summary` 필드에 blocked reason 기록 ("pilot lock
+  violation: N file(s) — first: ...") — `bin/orchestrator queue`로
+  확인 가능
+- prompt 결함 1건 발견 + 수정 (commit `0becf39`):
+  `linked_paths` / `forbidden_neighbors` 형식이 prompt에 명시되지
+  않아 워커가 파일명만 적는 결함. 이번 prompt에는
+  `contents/<category>/<slug>.md` 형식 강제 + revisit 모드의
+  hard violations (strict-v3 fail) 우선순위 명시.
+- 차단 doc 1건 남음 (`database/vacuum-purge-debt-forensics-symptom-map.md`):
+  expected_queries 빈 list + linked_paths 8건 형식 위반. 다음
+  fleet 가동 시 revisit 워커가 자동 fix.
+
 ### 첫 명령 — 사용자가 *"시작"* / *"v3 마이그레이션 시작"* 던지면
 
 ```bash
@@ -72,6 +88,28 @@ bin/orchestrator fleet-status --profile migration_v3_60
 
 보고 형식: 활성 워커 수 / claim된 batch / 완료 batch 수 / 회귀 alarm
 유무. 1-2줄.
+
+### Blocked items 디버깅 — *"왜 막혔어"* / *"blocked 이유"* 던지면
+
+queue.json 안 blocked 항목들의 `completion_summary` 필드 읽어 보고:
+
+```python
+import json, pathlib
+queue = json.loads(pathlib.Path("state/orchestrator/queue.json").read_text())
+items = queue if isinstance(queue, list) else queue.get("items", [])
+for b in items:
+    if b.get("fleet_profile") == "migration_v3_60" and b.get("status") == "blocked":
+        print(f"{b.get('item_id')}: {b.get('completion_summary')}")
+```
+
+가장 흔한 blocked 사유:
+- *pilot lock violation* — 워커가 Pilot 69 doc 건드리려 함. **정상
+  동작** (gate가 막은 것). 같은 path가 큐에 다시 enqueue되지 않게
+  batch-planner가 학습해야 — fleet stop + 큐 청소 권장.
+- *strict-v3 lint fail* — 워커가 형식 위반 frontmatter 작성.
+  `linked_paths` / `forbidden_neighbors` 형식 또는 `expected_queries`
+  빈 list가 흔한 원인. revisit 워커 prompt가 hard violations
+  우선 처리하므로 다음 batch에 자동 fix.
 
 ### 비상 명령 — 사용자가 *"멈춰"* / *"중단"* 던지면
 
