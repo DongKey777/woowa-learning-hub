@@ -42,14 +42,15 @@ jobs:
 
       - name: Install minimal eval dependencies
         # Intentionally minimal — the eval harness modules under
-        # scripts/learning/rag/eval/ depend only on stdlib + jsonschema.
-        # We add pytest for the unit suite. Heavy ML deps
+        # scripts/learning/rag/eval/ depend only on stdlib + jsonschema
+        # + numpy (the embedding-precheck unit tests pass a fake encoder
+        # whose .encode() returns numpy arrays). Heavy ML deps
         # (sentence-transformers, torch) are NOT needed for --fast or
         # the unit tests; they live on a separate path exercised by
         # bin/rag-eval --regression locally.
         run: |
           python -m pip install --upgrade pip
-          python -m pip install jsonschema pytest
+          python -m pip install jsonschema pytest numpy
 
       - name: Run rag-eval unit suite
         # `python -m pytest` (not bare `pytest`) so the cwd is on
