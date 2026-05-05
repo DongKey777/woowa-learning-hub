@@ -26,14 +26,15 @@ class FleetCompositionTest(unittest.TestCase):
         roles = Counter(w["role"] for w in MW.MIGRATION_V3_60_FLEET)
         self.assertEqual(
             dict(roles),
-            {"curriculum": 2, "migration": 33, "qa": 13, "rag": 8, "ops": 4},
+            {"curriculum": 2, "migration": 34, "qa": 12, "rag": 8, "ops": 4},
         )
 
-    def test_three_waves_each_eleven(self):
+    def test_four_waves_with_revisit_loop_closer(self):
         modes = Counter(w["mode"] for w in MW.MIGRATION_V3_60_FLEET)
         self.assertEqual(modes["migrate_v0_to_v3"], 11)
         self.assertEqual(modes["migrate_prefix"], 11)
         self.assertEqual(modes["migrate_new_doc"], 11)
+        self.assertEqual(modes["migrate_revisit"], 1)
 
 
 class WaveCCohortAttackTest(unittest.TestCase):

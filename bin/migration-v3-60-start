@@ -78,6 +78,7 @@ echo "[migration_v3_60] preflight: topology + prompt regression"
     tests/unit/test_migration_v3_prompt_rendering.py \
     tests/unit/test_migration_v3_workers_topology.py \
     tests/unit/test_migration_v3_pilot_lock.py \
+    tests/unit/test_migration_v3_long_running_balance.py \
     -q
 
 # 3. Baseline cohort_eval (optional)

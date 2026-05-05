@@ -222,6 +222,45 @@ jq '.locked_count, (.locked_paths | length)' config/migration_v3/locked_pilot_pa
 # 두 숫자 같아야 함
 ```
 
+## Long-running balance — 그냥 켜놔도 균형 유지되는 메커니즘
+
+워커가 무한 운영되어도 코퍼스가 한쪽으로 쏠리지 않게 6개 layer 가드:
+
+**1. Live balance snapshot** — 매 prompt에 주입.
+`_v3_balance_snapshot()`이 30초 TTL 캐시로 워커 호출마다 v3 / prefix
+coverage 비율 + doc_role 분포 + (category × doc_role) 매트릭스
+underweight 6개 + saturated 5개 cell 추출. 워커가 *지금 가장
+비어있는 cell부터* 우선 처리.
+
+**2. Cohort_eval 약점 feedback** — 매 prompt에 주입.
+`_recent_cohort_eval_feedback()`이 최신 cohort_eval JSON 읽어서
+pass_rate < 100% cohort + fail outcome 분포 (silent_failure /
+candidate_absent / miss) 추출. 워커가 *어느 cohort 끌어올릴지* 안다.
+
+**3. Saturation ceiling**.
+`V3_SATURATION_CAPS` (primer 30 / deep_dive 20 / playbook 15 /
+chooser 10 / bridge 25 / drill 10 / symptom_router 8 /
+mission_bridge 8). 한 doc_role이 카테고리 총수 60% 초과해도
+saturated 처리. prompt에 "이 cell 피하라" 명시.
+
+**4. Anti-drift next_candidates (코드 enforcement)**.
+`_anti_drift_next_candidates`가 migration_v3 4 모드 모두에 적용.
+워커의 next_candidates가 *현재 작업과 같은 (category, doc_role)
+조합*이면 platform이 enqueue 거부. 인정 태그: `v3-frontmatter`,
+`v3-prefix`, `v3-new-doc`, `v3-revisit`, `cohort-weak`,
+`mission-bridge`, `chooser`, `symptom-router`, `balance-gap` 등.
+
+**5. Wave D — `migrate_revisit` 모드 (loop closer)**.
+모든 underweight cell이 채워지고 saturated 도달 시 자동으로 *기존
+doc 품질 보강*으로 전환. alias < 5 / linked_paths == [] /
+forbidden_neighbors == [] (chooser/bridge) / prefix out-of-band
+patterns 감지 + 보강. *새 doc 만들기 한계 도달 후 quality 개선
+으로 자동 전환*.
+
+**6. balance-monitor 워커**.
+`migration-v3-60-rag-balance-monitor` (singleton, RAG 그룹) —
+정기 분포 측정 + imbalance alarm.
+
 ## 참고
 
 - 코드: `scripts/workbench/core/orchestrator_migration_workers.py:MIGRATION_V3_60_FLEET`
