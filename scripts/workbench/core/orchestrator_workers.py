@@ -2762,8 +2762,16 @@ def run_worker_loop(
                         refresh_backlog=refresh_backlog,
                         blocked=blocked,
                     )
-                    if blocked:
-                        orchestrator.request_stop()
+                    # Pre-fix: a single blocked task here would call
+                    # ``orchestrator.request_stop()``, writing the global
+                    # stop.request flag and shutting down all 60 workers.
+                    # Pilot lock fail-fast is a *task-level* signal — the
+                    # gate already caught the violation and routed the
+                    # item to blocked status. Escalating to fleet-wide
+                    # stop turns one rogue codex output into a 60-worker
+                    # outage. fleet-stop stays on the user's explicit
+                    # `bin/orchestrator fleet-stop` command (or the
+                    # fleet-stop CLI path).
                     status["last_error"] = error_summary
                     status["last_error_detail"] = validation
                     status["last_changed_files"] = validation.get("changed_files", [])
