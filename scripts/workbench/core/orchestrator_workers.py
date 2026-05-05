@@ -1453,6 +1453,7 @@ def _run_completion_gates(
         if violations:
             return {
                 "ok": False,
+                "blocked": True,
                 "summary": (
                     f"pilot lock violation: {len(violations)} file(s) — "
                     f"first: {violations[0]}"
@@ -2087,6 +2088,14 @@ Authorial fields to write (preserve everything else exactly):
   linked_paths — list[string] repo-relative .md paths that are
     related but not in the prerequisites/next_docs graph (siblings,
     cross-category bridges). Must be real files in the repo.
+    **Path format is mandatory — corpus_lint --strict-v3 rejects
+    anything that is not `contents/<category>/<slug>.md` exactly**:
+        ✓ "contents/database/lock-basics.md"
+        ✓ "contents/spring/spring-bean-di-basics.md"
+        ✗ "lock-basics.md"             ← bare filename rejected
+        ✗ "../database/lock-basics.md" ← relative path rejected
+        ✗ "knowledge/cs/contents/..."  ← repo-rooted prefix rejected
+        ✗ "spring/spring-bean-di-basics.md" ← missing `contents/` prefix
   confusable_with — list[string] concept_id of docs that confused
     learners often substitute for this one. doc_role=chooser needs ≥2.
   forbidden_neighbors — list[string] repo-relative .md paths that
@@ -2094,6 +2103,8 @@ Authorial fields to write (preserve everything else exactly):
     `r3.search` post-rerank forbidden_filter consumes this. Be
     conservative — only list docs that would actively mislead the
     learner if surfaced for this concept's queries.
+    **Same `contents/<category>/<slug>.md` format as linked_paths
+    above — corpus_lint --strict-v3 enforces both with one rule.**
   expected_queries — list[string] of 5-10 raw Korean/English learner
     query strings. THESE ARE QREL SEEDS FOR EVAL ONLY — do NOT
     duplicate alias terms here (the v3 contract enforces aliases ⊥
@@ -2216,8 +2227,18 @@ are filled or saturated. Your job in this mode is to *deepen* an
 existing v3 doc's quality so the cohort_eval has more high-quality
 hits per query, without authoring a new doc.
 
-Pick ONE existing v3 doc that scores low on these checks:
+Pick ONE existing v3 doc that scores low on these checks (in
+priority order — fix the highest-priority gap first):
 
+  HARD violations (corpus_lint --strict-v3 fail; gate-blocking):
+  - expected_queries == [] → strict-v3 requires non-empty list
+    (Wave A may have left this empty; revisit fills 5-10 entries)
+  - linked_paths entries that are not `contents/<category>/<slug>.md`
+    → strict-v3 path pattern violation. Common Wave A bug: bare
+    filename or `../` relative path. Rewrite to absolute form.
+  - forbidden_neighbors entries with the same path-format violation.
+
+  SOFT gaps (no lint failure but cohort_eval impact):
   - aliases length < 5 → learner paraphrase coverage thin
   - expected_queries length < 4 → qrel seed thin (cohort_eval can't
     measure improvement on this doc)
@@ -2711,7 +2732,16 @@ def run_worker_loop(
                 status["last_validation"] = validation
                 if not validation["ok"]:
                     error_summary = validation.get("summary") or "completion gate failed"
-                    orchestrator.requeue(item["item_id"], worker, error_summary, refresh_backlog=refresh_backlog)
+                    blocked = bool(validation.get("blocked"))
+                    orchestrator.requeue(
+                        item["item_id"],
+                        worker,
+                        error_summary,
+                        refresh_backlog=refresh_backlog,
+                        blocked=blocked,
+                    )
+                    if blocked:
+                        orchestrator.request_stop()
                     status["last_error"] = error_summary
                     status["last_error_detail"] = validation
                     status["last_changed_files"] = validation.get("changed_files", [])
