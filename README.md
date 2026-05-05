@@ -1,202 +1,111 @@
 # woowa-learning-hub
 
-우아한테크코스 미션 학습과 CS 이론 학습을 하나의 한국어 대화 세션으로 묶은 AI 코칭 워크벤치.
-환경 셋업(의존성, 모델 캐시, RAG 인덱스), 미션 저장소 클론, peer PR 수집, drill 채점 같은
-운영 단계는 AI 세션이 처리하고, 학습자는 한국어로 학습 흐름에 집중한다.
+우아한테크코스 미션을 풀면서 옆에서 코칭해주는 한국어 AI 워크벤치입니다.
+PR 리뷰 같이 봐주고, 막히는 CS 개념을 자료에서 찾아서 설명해주고, 학습 테스트
+채점도 같이 하는, 그런 도구예요.
 
----
+학습자는 한국어로 의도만 던지면 되고, 명령어는 AI가 알아서 칩니다.
 
-## 무엇을 하는가
-
-학습 입력 네 가지가 단일 학습자 stream(`state/learner/`)에 누적된다.
-
-1. **다른 크루들의 PR + 리뷰** — upstream `woowacourse/<repo>`에서 같은 미션을 푼 다른
-   학습자들의 PR, 리뷰, 멘토 코멘트를 SQLite 아카이브로 수집. 학습자 질문에 같은 단계
-   peer PR과 멘토 리뷰 맥락에서 학습 포인트를 추출.
-2. **CS 지식 베이스** — 학습자가 *"Bean이 뭐야?"*, *"MVCC랑 락 차이는?"* 같은 자연어 질문을
-   던지면 AI 세션이 관련 문서에서 답을 찾아 한국어로 설명. 정의 / 비교 / 깊이 단계에 따라
-   답변 깊이가 자동으로 조절되고, 학습자가 같은 표현을 안 써도 의미 매핑이 된다.
-3. **학습 테스트 결과** — `spring-learning-test` 모듈의 JUnit XML을 파싱해 모듈별 통과율
-   과 concept 매핑을 누적.
-4. **Drill 채점** — 4차원(정확도 / 깊이 / 실전성 / 완결성) 채점으로 mastery / uncertainty
-   산출.
-
-같은 개념을 반복 질문하면 답이 점차 깊어지고, 정착된 개념은 기본 정의를 생략한다
-(closed-loop personalization). 누적된 프로필은 cross-mission 패턴까지 함께 본다.
-
----
-
-## 1분 안에 시작
-
-**1) 이 저장소만 직접 클론** (한 번만, 위치 자유, 모든 OS 동일)
+## 빨리 시작
 
 ```bash
 git clone https://github.com/DongKey777/woowa-learning-hub.git
 cd woowa-learning-hub
 ```
 
-**2) AI 세션 열기** — 권한 자동 승인 옵션으로 시작 (학습자가 매 명령마다 y/n 안 묻게)
+이 폴더에서 AI CLI를 엽니다. 매번 y/n 안 묻게 자동 승인 모드로 시작하면 편해요.
 
-| AI | 명령 | 비고 |
-|---|---|---|
-| **Claude Code** | `claude --dangerously-skip-permissions` | 모든 권한 자동 승인 |
-| **Codex (OpenAI)** | `codex --full-auto` | full-auto 모드 |
-| **Gemini CLI** | `gemini --yolo` | YOLO 모드 (자동 승인) |
+| AI | 명령 |
+|---|---|
+| Claude Code | `claude --dangerously-skip-permissions` |
+| Codex (OpenAI) | `codex --full-auto` |
+| Gemini CLI | `gemini --yolo` |
 
-> **주의**: 권한 자동 승인은 **신뢰하는 저장소에서만** 사용. 이 워크벤치는 `bin/`, `scripts/`,
-> `state/`, `missions/` 만 건드리고 시스템 설정/외부 API 호출은 학습자에게 명시적으로
-> 묻는다. 의심스러우면 옵션 빼고 일반 모드로 시작해도 동작은 동일 — 권한 prompt만 늘어남.
+> 자동 승인은 신뢰하는 저장소에서만 쓰세요. 이 워크벤치는 자기 폴더 안에서만
+> 동작하지만, 의심되면 옵션 빼고 시작해도 됩니다.
 
-**3) 한국어 의도 한 줄 던지기**
+그리고 한국어로 한 줄.
 
-> *"이 저장소로 학습 시작하자. spring-core-1부터 가고 싶어."*
+> *"이 저장소로 학습 시작하자. spring-core-1부터."*
 
-AI가 환경 셋업과 첫 학습 가이드까지 처리하면 이후엔 답변 따라 한국어로 진행하면 된다.
+처음에는 의존성 설치, 모델 캐시, RAG 인덱스 다운로드까지 5~10분 정도 걸립니다.
+그 뒤로는 질문 한 번에 1~2초.
 
----
+## 뭘 해주나요
+
+**peer PR 코칭.** 자기 미션 저장소를 알려주면 upstream `woowacourse/<repo>`에
+다른 크루들이 올린 PR이랑 멘토 리뷰를 모아둡니다. *"다른 사람들은 Repository
+경계를 어떻게 잡았어?"* 같은 질문에 같은 단계 PR 기준으로 답해줍니다.
+
+**CS 개념 질문.** *"Bean이 뭐야?"* 같은 질문이 들어오면 `knowledge/cs/` 안에서
+관련 문서를 찾아서 한국어로 설명합니다. 정의/비교/깊이에 따라 답이 자동으로
+얕아지거나 깊어져요. 코퍼스에 없는 주제는 일반 지식으로 답하되 그 사실을
+명시합니다.
+
+**학습 테스트.** `spring-learning-test` 모듈을 자동으로 클론하고, 코드 짜고
+*"테스트 통과했어"* 하면 JUnit XML을 파싱해 모듈별 통과율로 누적합니다.
+
+**Drill 채점.** *"DI drill 풀어볼래"* 하면 4문장 답변 요구 질문이 나오고,
+정확도/깊이/실전성/완결성 4축으로 채점합니다. 8점 ×2 + 테스트 통과면 mastered.
+
+**기억합니다.** 같은 개념을 7일 안에 ≥3번 물어보면 다음 답이 자동으로
+깊어지고, mastered된 개념은 기본 정의를 생략합니다. 다른 미션에서 본 패턴까지
+같이 봐요.
 
 ## 학습자 노트북 배치
 
 ```
-woowa-learning-hub/                  ← (1) 직접 클론
-├─ bin/, scripts/, knowledge/        ← 도구
-├─ state/                            ← AI 자동 생성 (gitignored, 노트북에만)
-└─ missions/                         ← AI 자동 클론 (gitignored)
-   ├─ spring-learning-test/          ← (2) 학습 테스트 (자동)
-   └─ <자기 미션 fork>/              ← (3) 자기 fork — PR 보낼 곳 (자동)
+woowa-learning-hub/                  ← 직접 클론한 한 곳
+├─ bin/, scripts/, knowledge/        ← 도구 + CS 자료
+├─ state/                            ← 런타임 상태 (gitignore, 노트북 안에만)
+└─ missions/                         ← AI가 자동 클론
+   ├─ spring-learning-test/
+   └─ <자기 미션 fork>/              ← upstream은 woowacourse/<repo>
 ```
 
-| 저장소 | 역할 | 누가 클론 |
-|---|---|---|
-| **woowa-learning-hub** | AI 코칭 워크벤치 | 학습자 직접 (1회) |
-| **spring-learning-test** | Spring 개념 검증용 학습 테스트 | AI 자동 |
-| **자기 미션 fork** (java-janggi 등) | PR 보낼 자기 저장소. upstream은 `woowacourse/<repo>` | AI 자동 |
+이미 다른 폴더에 미션 저장소를 클론해뒀으면 위치만 알려주면 됩니다 —
+*"내 미션 저장소는 `~/code/java-janggi`에 있어."*
 
-이미 다른 곳에 미션 저장소 클론해뒀으면 한국어로 경로만 알려주면 됨:
-*"내 미션 저장소는 `~/code/java-janggi`에 있어."* → AI가 `--path`로 등록.
+## 미리 깔아두면 좋은 것
 
----
+- Python 3.10 이상, `git`, `gh` CLI (`gh auth login` 한 번)
+- AI CLI 한 종류 (Claude Code / Codex / Gemini 중 아무거나)
 
-## 필요한 것
+운영체제는 macOS, Linux, WSL2, Windows native 다 됩니다. AI가 OS 감지해서
+`bin/*` (Unix)나 `.\bin\*.ps1` (Windows native)을 골라 씁니다. 의존성 설치,
+모델 캐시, gh 인증까지 첫 세션에 알아서 해요.
 
-- Python 3.10+, `git`, `gh` CLI (`gh auth login` 완료)
-- AI CLI 한 종류 (Claude Code / Codex / Gemini)
-- 셸 환경: macOS / Linux / WSL2 / **Native Windows** 모두 지원 — AI가 OS 감지해서
-  `bin/*` (Unix) 또는 `.\bin\*.ps1` (Windows native) 자동 선택. ExecutionPolicy /
-  의존성 설치 / gh 인증 모두 AI가 First-Run Protocol에서 자동 처리. 자세한 OS별
-  가이드: [`docs/platform-compatibility.md`](docs/platform-compatibility.md)
+## 명령어
 
-의존성 / 모델 / 인덱스는 첫 세션에서 AI가 자동 처리.
-
----
-
-## 학습 흐름
-
-학습자는 모두 한국어 의도만 던지고, AI가 자동으로 적절한 명령을 호출한다.
-
-**개념 학습** — *"Bean이 뭐야?"* → AI가 Tier 0~3 자동 분류 + RAG 답변 + 학습자 history 누적.
-같은 개념 7일 내 ≥3회 질문하면 다음 답변이 자동으로 깊어진다.
-
-**학습 테스트** — *"spring-core-1 모듈 시작하자"* → AI가 `missions/spring-learning-test`
-클론 + 첫 도전 안내. 코드 짜고 *"테스트 통과했어"* → AI가 JUnit XML 자동 파싱 → 결과 기록.
-
-**Drill (이해도 객관 검증)** — *"DI drill 풀어볼래"* → AI가 4문장 답변 요구 질문 발행 →
-학습자 답 → 4차원 채점 (정확도 / 깊이 / 실전성 / 완결성). 8점 ×2 + 테스트 통과 → mastered.
-
-**PR 코칭 (peer 데이터 활용)** — *"내 미션 저장소를 코칭해줘.
-https://github.com/내계정/java-janggi, upstream은 woowacourse/java-janggi"* → AI가
-다음을 자동 처리:
-
-- 학습자 자기 fork를 `missions/`에 클론 + upstream `woowacourse/java-janggi` 등록
-- upstream에서 **다른 크루들의 PR / 리뷰 / 멘토 코멘트**를 SQLite로 수집
-  (`state/repos/<repo>/archive/prs.sqlite3`)
-- 학습자 브랜치 + 열린 PR + 미해결 리뷰 thread 직접 관찰
-  (`contexts/learner-state.json`)
-- 학습자 질문에 따라 **같은 단계 peer PR** 추출 → 멘토 리뷰 맥락에서 **학습 포인트 도출**
-  → 학습자 코드와 비교 → 답변 생성
-
-후속 질문 예시: *"다른 크루들은 Repository 경계를 어떻게 잡았어?"*, *"이 리뷰 기준 다음
-액션 뭐야?"*, *"같은 단계에서 자주 지적된 학습 포인트가 뭐야?"* — 모두 peer PR 데이터에
-근거해 답.
-
-세부 명세: [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) (Response
-Contract, Learner State Assessment), [`docs/artifact-catalog.md`](docs/artifact-catalog.md)
-(coach-run.json + packets 구조).
-
-**프로필 확인** — *"지금까지 뭘 학습했어?"* / *"다음에 뭐 하면 좋을까?"* → mastered /
-uncertain / underexplored 분석 + 다음 동선 추천.
-
-전체 명세: [`docs/onboarding.md`](docs/onboarding.md).
-
----
-
-## 환경 점검 / 복구
-
-학습 흐름엔 불필요. 환경이 깨졌을 때만:
+학습자가 직접 칠 일은 거의 없습니다. AI가 호출하니까요. 환경이 깨졌을 때만:
 
 ```bash
-bin/doctor                          # Python / gh 인증 / 디렉터리 상태
-bin/cs-index-build                  # CS 인덱스 강제 재빌드
-bin/learner-profile clear --yes     # 학습 데이터 초기화 (privacy reset)
-bin/learner-profile redact "..."    # 특정 문자열 포함 이벤트 제거
-HF_HUB_OFFLINE=1 bin/rag-ask "..."  # HF 네트워크 차단 (cold latency 절약)
+bin/doctor                          # 환경 점검
+bin/cs-index-build                  # 인덱스 다시 받기
+bin/learner-profile clear --yes     # 학습 데이터 초기화
 ```
-
-`state/`, `missions/`는 모두 `.gitignore` — 노트북에만 존재, 절대 커밋 안 됨.
-
----
 
 ## AI 시작 파일
 
-저장소 루트에서 AI를 실행하면 해당 시작 파일을 자동으로 읽는다.
+저장소 루트에서 AI를 띄우면 자기에게 맞는 시작 파일을 자동으로 읽습니다.
 
-| AI | 시작 파일 | 스킬 / 에이전트 |
-|---|---|---|
-| Claude Code | [`CLAUDE.md`](CLAUDE.md) | [`.claude/agents/`](.claude/agents/), [`.claude/commands/`](.claude/commands/) |
-| Codex (OpenAI) | [`AGENTS.md`](AGENTS.md) | [`skills/`](skills/) |
-| Gemini | [`GEMINI.md`](GEMINI.md) | [`gemini-skills/`](gemini-skills/) |
+| AI | 시작 파일 |
+|---|---|
+| Claude Code | [`CLAUDE.md`](CLAUDE.md) |
+| Codex | [`AGENTS.md`](AGENTS.md) |
+| Gemini | [`GEMINI.md`](GEMINI.md) |
 
-각 시작 파일에 권장 모델 / 첫 응답 모델 확인 규약이 명시되어 있다.
+권장 모델이랑 첫 응답에서 모델 확인하는 규약은 각 파일 안에 적혀 있어요.
 
----
+## 더 읽기
 
-## 저장소 구조
-
-```
-bin/                  명령어 래퍼 (AI가 호출 — 학습자가 직접 실행 X)
-  rag-ask                개념 질문 → Tier 0~3 자동 분류 + RAG 답변
-  coach-run              PR 코칭 (peer 분석 + 멘토 맥락)
-  learn-test             JUnit XML → test_result event 자동 기록
-  learn-drill            4차원 채점 drill (offer / answer / status / cancel)
-  learn-record-code      AI가 코드 수정 도움 시 code_attempt event 기록
-  learner-profile        프로필 (show / suggest / clear / redact / set)
-  cs-index-build         CS RAG 인덱스 빌드 (첫 세션 자동)
-  doctor                 환경 점검
-scripts/workbench/    파이프라인 엔진
-schemas/              JSON 스키마
-knowledge/cs/         CS 지식 베이스 (Spring / DB / 디자인 패턴 등 도메인별 markdown)
-docs/                 운영 문서
-.claude/, gemini-skills/, skills/   AI별 에이전트/스킬
-missions/             학습자 미션 저장소 (gitignored)
-state/                런타임 상태: archive, packets, memory, learner (gitignored)
-```
-
----
-
-## 더 읽을거리
-
-- [`docs/onboarding.md`](docs/onboarding.md) — 학습 흐름 7단계 (학습자 prompt + AI 자동 호출)
-- [`docs/learner-memory.md`](docs/learner-memory.md) — 학습자 단일 source of truth
+- [`docs/onboarding.md`](docs/onboarding.md) — 학습 흐름 7단계
 - [`docs/rag-runtime.md`](docs/rag-runtime.md) — Tier 분류 + RAG 런타임
-- [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) — Response Contract,
-  Learner State Assessment, First-Run Protocol
-- [`docs/artifact-catalog.md`](docs/artifact-catalog.md) — 생성되는 artifact 카탈로그
+- [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) — Response Contract, First-Run Protocol
 - [`docs/architecture.md`](docs/architecture.md) — 파이프라인 구조
 
----
+## 라이선스
 
-## 라이선스 / 피드백
+[MIT](LICENSE). 우테코 학습 도구라 자유 사용/포크/변경/재배포 OK.
 
-[MIT License](LICENSE). 우테코 학습 도구라 자유 사용/포크/변경/재배포.
-
-개선 제안 / 버그 / 사용 후기는 이슈로. 아직 초기 단계라 미흡한 부분 많습니다.
+피드백/버그는 이슈로 부탁드려요. 아직 다듬을 부분이 많습니다.
