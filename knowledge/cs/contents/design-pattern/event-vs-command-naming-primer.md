@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Event vs Command Naming Primer
+concept_id: design-pattern/event-vs-command-naming-primer
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- event-name-tense
+- command-name-tense
+- request-vs-fact-modeling
+aliases:
+- event vs command naming primer
+- ordercompletedevent cancelordercommand
+- event naming past fact
+- command naming future request
+- event vs command beginner naming
+- 이벤트 커맨드 네이밍
+- event command 이름 차이
+- 과거 사실 vs 미래 요청
+- event는 이미 일어난 일
+- command는 실행 요청
+- 주문 완료 이벤트 이름
+- 주문 취소 커맨드 이름
+- ordercancelledevent vs cancelordercommand
+- facts vs requests naming
+- event suffix command suffix beginner
+symptoms:
+- 클래스 이름이 Event인지 Command인지 붙일 때마다 시제가 헷갈려요
+- CancelOrderEvent처럼 이름을 지었는데 요청인지 완료 사실인지 애매하다는 피드백을 받아요
+- 객체 하나 전달하는 구조는 다 이벤트처럼 보여서 네이밍 기준이 안 잡혀요
+intents:
+- definition
+prerequisites:
+- design-pattern/observer-basics
+- design-pattern/command-pattern-basics
+next_docs:
+- design-pattern/observer-vs-command-beginner-bridge
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/command-pattern-basics
+linked_paths:
+- contents/design-pattern/observer-vs-command-beginner-bridge.md
+- contents/design-pattern/command-pattern-basics.md
+- contents/design-pattern/observer-basics.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/observer-pubsub-application-events.md
+confusable_with:
+- design-pattern/observer-vs-command-beginner-bridge
+- design-pattern/domain-events-vs-integration-events
+forbidden_neighbors:
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/software-engineering/command-dto-vs-query-view-naming-checklist.md
+expected_queries:
+- 주문 완료를 이름 붙일 때 Event로 써야 하는지 Command로 써야 하는지 알려줘
+- CancelOrderEvent가 왜 어색한 이름인지 시제 기준으로 설명해줘
+- 완료 사실 이름과 실행 요청 이름을 초보자 기준으로 빨리 가르는 법이 뭐야
+- create와 created가 붙은 메시지 이름을 언제 다르게 써야 해?
+- 요청 DTO랑 Command 이름이 어떻게 달라져야 하는지 예시로 보여줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 메시지 이름을 지을 때 이미 끝난 사실 알림과 이제 수행할 요청을 구분하도록, Event와 Command의 시제 차이와 읽는 문장을 처음 잡는 primer다. 완료 사실을 알리는 이름, 작업을 시키는 이름, 과거형으로 읽히는 객체, 실행 요청 메시지, 이벤트인지 명령인지 헷갈림 같은 자연어 paraphrase가 본 문서의 핵심 구분에 매핑된다.
+---
 # Event vs Command Naming Primer
 
 > 한 줄 요약: `OrderCompletedEvent`는 이미 끝난 사실을 알리는 이름이고, `CancelOrderCommand`는 이제 실행해 달라는 요청을 담은 이름이다.

@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: Union-Find Deep Dive
+concept_id: data-structure/union-find-deep-dive
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- union-find-vs-bfs-boundary
+- path-compression-purpose
+- connectivity-vs-path-reconstruction
+aliases:
+- union find
+- union-find basics
+- disjoint set union
+- dsu basics
+- same component query
+- connectivity yes no
+- union find vs bfs
+- actual path reconstruction
+- path compression
+- kruskal union find
+- 유니온 파인드
+- 서로소 집합
+- 유니온 파인드 뭐예요
+- 처음 배우는 union find
+- union find deep dive basics
+symptoms:
+- union-find가 연결 여부까지만 답하는데도 BFS랑 자꾸 같은 범주로 느껴져
+- path compression이 왜 빨라지는지 코드만 보고는 감이 안 와
+- 같은 컴포넌트 확인과 실제 경로 복원을 한 구조로 해결하려다 막혀
+intents:
+- deep_dive
+prerequisites:
+- data-structure/union-find-standalone-beginner-primer
+- data-structure/connectivity-question-router
+next_docs:
+- data-structure/union-find-component-metadata-walkthrough
+- algorithm/union-find-amortized-proof-intuition
+- algorithm/dsu-rollback
+linked_paths:
+- contents/data-structure/union-find-standalone-beginner-primer.md
+- contents/data-structure/connectivity-question-router.md
+- contents/algorithm/graph.md
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+- contents/data-structure/union-find-component-metadata-walkthrough.md
+- contents/data-structure/deletion-aware-connectivity-bridge.md
+- contents/algorithm/dsu-rollback.md
+- contents/algorithm/union-find-amortized-proof-intuition.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+confusable_with:
+- data-structure/connectivity-question-router
+- data-structure/union-find-standalone-beginner-primer
+- algorithm/union-find-amortized-proof-intuition
+forbidden_neighbors:
+- contents/data-structure/union-find-standalone-beginner-primer.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+expected_queries:
+- union find가 BFS 대신 쓰이는 조건을 깊게 이해하고 싶어
+- path compression과 union by rank가 왜 거의 상수 시간처럼 느껴지는지 설명해줘
+- 같은 컴포넌트 확인과 실제 경로 복원을 왜 분리해서 봐야 해
+- 크루스칼에서 union find가 하는 일을 자료구조 관점으로 정리해줘
+- union find 부모 포인터가 경로 정보가 아니라는 말이 무슨 뜻이야
+- 간선 삭제가 들어오면 plain union find가 왜 깨지는지 궁금해
+- DSU를 배웠는데 shortest path 문제에는 왜 바로 못 쓰는지 알고 싶어
+- union find를 입문 설명 말고 한 단계 깊게 다시 정리하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 union-find가 같은 그룹 판별에는 왜 강하고 실제
+  경로 복원이나 간선 삭제에는 왜 약한지 내부 메커니즘을 깊이 잡는
+  deep_dive다. 대표 노드 따라가기, 부모 사슬 납작하게 만들기, 높이
+  기준으로 합치기, Kruskal에서 묶기, 삭제가 섞이면 깨짐 같은 자연어
+  paraphrase가 본 문서의 메커니즘과 한계에 매핑된다.
+---
 # Union-Find Deep Dive
 
 > 한 줄 요약: 유니온 파인드는 집합을 병합하고 대표 원소를 찾는 문제를 거의 상수 시간에 처리하는 자료구조다.

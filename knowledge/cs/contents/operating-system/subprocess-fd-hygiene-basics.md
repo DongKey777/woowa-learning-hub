@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Subprocess FD Hygiene Basics
+concept_id: operating-system/subprocess-fd-hygiene-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- fd-inheritance-across-exec
+- pipe-close-ordering
+- stdio-vs-fd-hygiene
+aliases:
+- subprocess fd hygiene basics
+- fd inheritance across exec
+- subprocess eof wait
+- pipe eof after child exit
+- close_fds pass_fds cloexec mental model
+- cloexec 뭐예요
+- dup2 redirect basics
+- subprocess stdout stderr redirect
+- subprocess stdin stdout mapping
+- shell helper fd leak
+- listener inherited across exec
+- parent pipe end not closed
+- pipe mapping parent child
+- close-on-exec basics
+- child pipe end still open
+- pipe close ordering basics
+symptoms:
+- child는 끝난 것 같은데 parent read가 EOF를 못 받아요
+- shell helper를 붙였더니 listener나 socket이 계속 살아 있어요
+- close_fds, pass_fds, CLOEXEC, dup2가 한 그림으로 안 잡혀요
+intents:
+- definition
+prerequisites:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/process-spawn-api-comparison
+next_docs:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/stdio-buffering-after-redirect
+- operating-system/o-cloexec-fd-inheritance-exec-leaks
+- operating-system/subprocess-bidirectional-pipe-deadlock-primer
+linked_paths:
+- contents/operating-system/subprocess-symptom-first-branch-guide.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/shell-wrapper-boundary-primer.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/posix-spawn-file-actions-primer.md
+- contents/operating-system/posix-spawn-attributes-primer.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/signals-process-supervision.md
+- contents/language/java/java-thread-basics.md
+confusable_with:
+- operating-system/stdio-buffering-after-redirect
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/o-cloexec-fd-inheritance-exec-leaks
+forbidden_neighbors:
+- contents/operating-system/stdio-buffering-after-redirect.md
+expected_queries:
+- subprocess에서 EOF가 왜 안 와요?
+- close_fds pass_fds CLOEXEC 차이를 어떻게 이해하면 돼요?
+- child가 끝났는데 pipe가 안 닫히는 이유가 뭐예요?
+- subprocess stdout redirect에서 fd leak를 어떻게 막아요?
+- fork/exec 경계에서 어떤 fd를 닫고 어떤 fd를 남겨야 해?
+contextual_chunk_prefix: |
+  이 문서는 subprocess 입문자가 stdout/stderr redirect와 pipe EOF 문제를 볼 때 child에 남길 fd와 exec 경계에서 사라질 fd를 어떻게 구분하는지 기초를 잡는 primer다. 자식 종료 뒤 read가 안 끝남, 실행 후 소켓이 계속 남음, 표준입출력 배선, 실행 경계 핸들 정리, 헬퍼 프로세스가 fd를 물고 감 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Subprocess FD Hygiene Basics
 
 > 한 줄 요약: subprocess I/O에서 spawn API 모양이 달라도 가장 안전한 기본값은 "pipe/socket은 생성 시점부터 `CLOEXEC`, child에 남길 것은 `0/1/2`만 명시하고, parent/child 모두 안 쓰는 pipe end를 즉시 닫기"다.
@@ -22,7 +98,14 @@
 - [signals, process supervision](./signals-process-supervision.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: subprocess fd hygiene basics, subprocess symptom first branch guide, subprocess comparison table, subprocess pipe redirection, subprocess stdout redirect, subprocess stdin redirect, stdout buffering after redirect, child output delayed pipe, fd wiring vs stdio buffering, popen runtime wrapper mapping, popen pipe fd mapping, subprocess pipe mapping, pipe redirection basics, dup2 redirect basics, close-on-exec basics
+retrieval-anchor-keywords: subprocess fd hygiene basics, fd leak across exec, eof가 왜 안 와요, child finished but pipe not closed, close_fds pass_fds mental model, cloexec 뭐예요, dup2 redirect basics, subprocess stdout redirect, subprocess stdin redirect, shell helper fd leak, listener inherited by child, parent forgot pipe close, subprocess pipe mapping, close-on-exec basics, subprocess basics
+
+## 이 문서가 먼저 맞는 질문
+
+- child는 끝난 것 같은데 parent `read()`가 EOF를 못 받아 계속 기다릴 때
+- `close_fds`, `pass_fds`, `CLOEXEC`, `dup2()`가 이름만 다르고 머릿속에서 같은 그림으로 안 묶일 때
+- shell wrapper나 helper를 끼운 뒤에만 socket/listener가 안 닫히는 것처럼 보일 때
+- "`stdio buffering` 문제인가 `fd 상속` 문제인가"를 먼저 갈라야 할 때
 
 ## Subprocess Primer Handoff
 

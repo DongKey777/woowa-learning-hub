@@ -1,6 +1,85 @@
-# Strict List Canary Metrics and Rollback Triggers
+---
+schema_version: 3
+title: Strict List Canary 지표와 롤백 트리거
+concept_id: design-pattern/strict-list-canary-metrics-rollback-triggers
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- page-depth-split-metrics
+- freeze-vs-hard-rollback
+- cursor-verdict-drift
+aliases:
+- strict list canary metrics
+- strict list rollback trigger
+- strict list fallback observability
+- strict list page depth canary
+- first page fallback rate
+- first page parity drift
+- second page continuity mismatch
+- reissue restart success rate
+- legacy cursor drift alert
+- allowlist outside accept
+- pinned chain duplicate gap
+- pinned chain saturation
+- fallback source headroom
+- strict list canary freeze threshold
+- strict list hard rollback
+- projection migration strict list metrics
+- projection cutover strict list rollback
+- page1 page2 split canary
+- cursor verdict drift
+- strict list rollback packet
+- strict list canary dashboard
+symptoms:
+- canary는 녹색인데 2페이지 이후에서 duplicate나 gap이 나서 rollback 기준이 흔들린다
+- endpoint 전체 fallback rate만 보고 있어서 strict list failure가 묻힌다
+- freeze 신호와 hard rollback 신호를 같은 대시보드 칸에 넣어 의사결정이 늦어진다
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/canary-promotion-thresholds-projection-cutover
+next_docs:
+- design-pattern/projection-rollback-window-exit-criteria
+- system-design/dual-read-comparison-verification-platform-design
+linked_paths:
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+confusable_with:
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/read-model-cutover-guardrails
+forbidden_neighbors: []
+expected_queries:
+- strict list canary에서 어떤 지표가 나빠지면 freeze하고 언제 hard rollback해야 해?
+- page depth별 fallback rate를 왜 분리해서 봐야 하는지 설명해줘
+- cursor verdict drift와 pinned chain duplicate를 rollback trigger로 다루는 이유가 뭐야?
+- strict list rollback packet에 어떤 질문을 남겨야 다음 canary가 빨라져?
+- 1페이지는 괜찮은데 다음 페이지에서만 깨질 때 canary 판정을 어떻게 해야 해?
+contextual_chunk_prefix: |
+  이 문서는 strict list projection cutover에서 "1페이지는 멀쩡한데
+  2페이지부터 duplicate나 gap이 나요", "freeze는 했는데 언제 hard
+  rollback해야 해요?", "cursor verdict drift는 어디서 봐요?" 같은 질문을
+  page_depth, cursor verdict, pinned chain, fallback source 기준으로
+  나눠 보는 deep_dive다. strict list canary 지표와 롤백 트리거를 어떤
+  slice로 설계해야 하는지 찾을 때 읽는 운영 가이드다.
+---
+# Strict List Canary 지표와 롤백 트리거
 
-> 한 줄 요약: projection migration 중 strict list fallback은 endpoint 전체 fallback rate 하나로 보면 안 되고, `page_depth=1` visibility, `page_depth>=2` continuity, cursor verdict drift, fallback source saturation을 분리해 canary freeze와 hard rollback trigger를 따로 고정해야 한다.
+> 한 줄 요약: projection migration 중 strict list fallback은 endpoint 전체 fallback rate 하나로 보면 안 되고, `page_depth=1` visibility, `page_depth>=2` continuity, cursor verdict drift, fallback source saturation을 분리해 canary freeze와 hard rollback 트리거를 따로 고정해야 한다.
 
 **난이도: 🔴 Expert**
 
@@ -16,8 +95,7 @@
 > - [Read Model Cutover Guardrails](./read-model-cutover-guardrails.md)
 > - [Rollback Window Exit Criteria](./projection-rollback-window-exit-criteria.md)
 
-retrieval-anchor-keywords: strict list canary metrics, strict list rollback trigger, strict list fallback observability, strict list page depth canary, first page fallback rate, first page parity drift, second page continuity mismatch, reissue restart success rate, legacy cursor drift alert, allowlist outside accept, pinned chain duplicate gap, pinned chain saturation, fallback source headroom, strict list canary freeze threshold, strict list hard rollback, projection migration strict list metrics, projection cutover strict list rollback, page1 page2 split canary, cursor verdict drift, strict list rollback packet, strict list canary dashboard
-retrieval-anchor-keywords: strict list canary 지표, strict list 롤백 기준, strict list canary dashboard 한국어, page depth별 fallback rate, 1페이지 parity drift, 2페이지 continuity mismatch, cursor verdict drift 확인, reissue restart 성공률, pinned chain 포화, fallback source headroom 부족, projection cutover canary freeze, strict list hard rollback 언제, 롤백 트리거를 어떻게 잡아요, canary에서 어떤 지표가 나빠지면 멈춰요
+retrieval-anchor-keywords: strict list canary metrics, strict list rollback trigger, strict list canary 지표, strict list 롤백 기준, page depth별 fallback rate, 1페이지 parity drift, 2페이지 continuity mismatch, cursor verdict drift 확인, pinned chain duplicate gap, pinned chain saturation, fallback source headroom 부족, projection cutover canary freeze, strict list hard rollback 언제, 롤백 트리거를 어떻게 잡아요, canary에서 어떤 지표가 나빠지면 멈춰요
 
 ---
 

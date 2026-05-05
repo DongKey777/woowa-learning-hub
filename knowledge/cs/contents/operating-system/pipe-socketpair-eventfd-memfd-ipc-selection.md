@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: pipe, socketpair, eventfd, memfd IPC Selection
+concept_id: operating-system/pipe-socketpair-eventfd-memfd-ipc-selection
+canonical: false
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- ipc-primitive-selection
+- control-plane-vs-data-plane
+- pipe-vs-socketpair-boundary
+aliases:
+- pipe socketpair eventfd memfd chooser
+- local ipc primitive selection
+- pipe vs socketpair
+- eventfd wakeup fd basics
+- memfd local payload handoff
+- local control plane ipc
+- backend runtime ipc chooser
+- 로컬 ipc primitive 비교
+- wakeup fd 선택 기준
+- control plane data plane 분리
+symptoms:
+- 로컬 IPC가 다 fd처럼 보여서 pipe와 socketpair를 언제 갈라야 할지 모르겠어요
+- wakeup만 필요할 때도 pipe를 써서 eventfd가 왜 따로 있는지 감이 안 와요
+- 큰 payload 전달, 제어 메시지, stdout capture를 한 기준으로 분리하지 못하겠어요
+intents:
+- comparison
+- design
+prerequisites:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/subprocess-fd-hygiene-basics
+next_docs:
+- operating-system/eventfd-signalfd-epoll-control-plane-integration
+- operating-system/unix-domain-socket-fd-passing-credentials
+- operating-system/tmpfs-shmem-cgroup-memory-accounting
+linked_paths:
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/unix-domain-socket-fd-passing-credentials.md
+- contents/operating-system/tmpfs-shmem-cgroup-memory-accounting.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/io-models-and-event-loop.md
+confusable_with:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/eventfd-signalfd-epoll-control-plane-integration
+- operating-system/unix-domain-socket-fd-passing-credentials
+forbidden_neighbors:
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/unix-domain-socket-fd-passing-credentials.md
+expected_queries:
+- 부모 자식 프로세스 통신에서 pipe, socketpair, eventfd, memfd를 어떤 질문으로 골라야 해?
+- stdout 캡처, 제어 메시지, wakeup 신호, 큰 payload 전달을 IPC primitive 기준으로 나눠서 설명해줘
+- eventfd는 언제 pipe보다 맞고 memfd는 왜 데이터 전달 도구로 따로 보나?
+- 로컬 IPC 설계에서 socketpair와 pipe를 헷갈리지 않게 선택 기준을 알려줘
+- fd처럼 보이는 IPC 도구들을 control plane과 data plane 관점으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 운영체제 학습자가 로컬 IPC에서 pipe, socketpair, eventfd,
+  memfd를 어떤 역할로 나눌지 결정하게 돕는 chooser다. 한쪽으로 흘리는
+  바이트 통로, 서로 주고받는 제어 채널, 깨우기 전용 신호, 큰 payload
+  handoff, control plane과 data plane 분리, EOF와 shutdown 차이,
+  출력 가로채기와 제어 메시지 구분 같은 자연어 paraphrase가 본 문서의
+  선택 기준에 매핑된다.
+---
 # pipe, socketpair, eventfd, memfd IPC Selection
 
 > 한 줄 요약: 로컬 IPC primitive는 모두 fd처럼 보이지만 payload 모델, backpressure, epoll 적합성, lifecycle이 달라서 backend 런타임의 wakeup 경로와 데이터 전달 경로를 완전히 다르게 만든다.

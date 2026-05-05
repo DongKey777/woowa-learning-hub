@@ -10,16 +10,9 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
-
-> 관련 문서:
-> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
-> - [빌더 패턴 기초 (Builder Pattern Basics)](./builder-pattern-basics.md)
-> - [팩토리 (Factory)](./factory.md)
-> - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
-> - [요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까](./record-vs-builder-request-model-chooser.md)
-> - [전략 (Strategy)](./strategy-pattern.md)
-> - [템플릿 메소드 (Template Method)](./template-method.md)
-> - [안티 패턴](./anti-pattern.md)
+- [빌더 패턴 기초 (Builder Pattern Basics)](./builder-pattern-basics.md)
+- [팩토리 (Factory)](./factory.md)
+- [요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까](./record-vs-builder-request-model-chooser.md)
 
 retrieval-anchor-keywords: builder pattern, step by step object construction, builder vs constructor, builder vs factory, builder vs setter, immutable object builder, build method validation, when to use builder, beginner builder pattern, fluent builder mutation smell, lombok builder confusion, builder pattern mental model, builder 선택 기준, builder decision checklist, builder pattern basics
 

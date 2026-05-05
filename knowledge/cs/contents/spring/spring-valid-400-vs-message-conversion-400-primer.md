@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: '2단계 `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer'
+concept_id: spring/valid-400-vs-message-conversion-400-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- validation-phase-order
+- binding-vs-validation
+- bindingresult-usage
+aliases:
+- spring validation 400 phase split
+- spring @valid execution phase
+- spring binding failure vs validation failure
+- spring 400 first branch
+- methodargumentnotvalidexception
+- httpmessagenotreadableexception
+- dto binding failure
+- validation failure after binding
+- requestbody validation order
+- json parse error 400 spring
+- date parse failure before validation
+- requestbody 400 validation primer
+symptoms:
+- 왜 @Valid가 안 타지
+- 같은 400인데 검증 에러인지 변환 에러인지 모르겠어
+- '@NotBlank 붙였는데 메시지가 안 보여'
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- spring/requestbody-400-before-controller-primer
+- spring/modelattribute-vs-requestbody-binding-primer
+next_docs:
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+- spring/spring-exception-handling-basics
+linked_paths:
+- contents/spring/spring-requestbody-400-vs-validation-400-vs-business-409-decision-guide.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-roomescape-validation-400-vs-business-conflict-409-primer.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/network/http-request-response-headers-basics.md
+confusable_with:
+- spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide
+- spring/requestbody-400-before-controller-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+- spring/controller-not-hit-cause-router
+- spring/json-request-400-cause-router
+forbidden_neighbors: []
+expected_queries:
+- DTO 바인딩 실패와 Bean Validation 실패를 어떻게 나눠 봐?
+- Spring에서 @Valid는 정확히 어느 단계 뒤에 실행돼?
+- request body는 읽혔는데 검증에서 막힌 400을 설명해줘
+- MethodArgumentNotValidException이 뜨기 전에 어떤 조건이 필요해?
+- 날짜 파싱 실패랑 @NotBlank 실패를 같은 400 안에서 어떻게 구분해?
+- validation 에러가 BindingResult로 갈지 예외로 갈지 보는 첫 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC `400` 초급 라우트에서 `@Valid`가 왜 안 타는지,
+  같은 `400`인데 DTO 변환 실패와 validation 실패를 어떻게 갈라 읽는지
+  먼저 잡게 하는 primer다. `날짜 형식 틀리면 @Valid 안 타요`,
+  `@NotBlank가 왜 안 먹어요`, `json parse error 뒤에 validation이 또 도나`
+  같은 한국어 질문을 message conversion 선행 단계와 validation 후행 단계
+  구분으로 매핑한다.
+---
 # 2단계 `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer
 
 > 한 줄 요약: README의 validation `400` 주 라우트에서 이 문서는 **2단계 `@Valid` 분기**를 맡는다. "`왜 @Valid 안 타요?`", "`같은 400인데 뭐가 다른가요?`", "`@NotBlank가 왜 안 먹어요?`" 같은 검색형 증상은 `@Valid`가 DTO 바인딩 뒤에만 돈다는 사실로 풀린다. 먼저 DTO를 못 만든 **DTO 변환 실패**인지 DTO를 만든 뒤 규칙을 어긴 **validation 실패**인지부터 가른다.

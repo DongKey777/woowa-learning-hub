@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Pair Programming and Code Review Trade-offs
+concept_id: software-engineering/pair-programming-code-review-tradeoffs
+canonical: false
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- pair-vs-review-choice
+- review-latency-reduction
+- high-risk-change-collaboration
+aliases:
+- pair programming
+- code review tradeoff
+- pair vs code review
+- mob programming
+- asynchronous review
+- review latency
+- collaboration quality gate
+- 실시간 피드백 협업
+- 페어 프로그래밍 리뷰 차이
+- 위험한 작업 같이 코딩
+- 코드 리뷰만으로 충분한가
+symptoms:
+- 구현 중 바로 같이 보는 게 좋은지 PR 리뷰만으로도 충분한지 판단이 안 돼요
+- 리뷰가 자꾸 밀려서 배포가 느린데 pair programming을 늘리면 나아질지 모르겠어요
+- 온보딩이나 위험한 변경에서 왜 pair를 권하는지 코드 리뷰와 차이가 헷갈려요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/code-review-basics
+- software-engineering/testing-strategy-and-test-doubles
+next_docs:
+- software-engineering/change-ownership-handoff-boundaries
+- software-engineering/production-readiness-review
+- software-engineering/architectural-fitness-functions
+linked_paths:
+- contents/software-engineering/code-review-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/lead-time-change-failure-recovery-loop.md
+confusable_with:
+- software-engineering/code-review-basics
+- software-engineering/change-ownership-handoff-boundaries
+- software-engineering/testing-strategy-and-test-doubles
+forbidden_neighbors:
+- contents/software-engineering/code-review-basics.md
+expected_queries:
+- 위험한 변경을 할 때 pair programming이 code review보다 먼저 필요한 순간은 언제야?
+- 리뷰가 자꾸 밀리는 팀이면 pair와 review 비율을 어떻게 조정해야 해?
+- 온보딩 중인 개발자에게 pair를 붙이는 것과 PR 리뷰를 자세히 남기는 것 중 뭐가 더 효과적이야?
+- mob programming까지 가야 하는 상황과 그냥 pair면 충분한 상황을 어떻게 나눠?
+- code review가 있는데도 구현 단계에서 같이 코딩해야 한다는 말은 어떤 비용을 줄이려는 거야?
+contextual_chunk_prefix: |
+  이 문서는 pair programming과 code review를 대체재로 오해하는 학습자를 위한
+  chooser다. 구현 중 즉시 설계 보정이 필요한지, PR 대기열과 review latency가
+  더 큰 문제인지, 온보딩이나 장애 대응처럼 맥락 전파 속도가 중요한지, 기록과
+  확장성이 더 중요한지 같은 질문을 실시간 피드백과 비동기 검토의 차이로
+  연결한다.
+---
 # Pair Programming and Code Review Trade-offs
 
 > 한 줄 요약: pair programming과 code review는 둘 다 품질 장치지만, 하나는 실시간 설계 보정에 강하고 다른 하나는 비동기적 검토와 지식 축적에 강하다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Marker Interface vs Capability Method 브리지
+concept_id: language/marker-interface-vs-capability-method-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- marker-interface-overuse
+- supportsx-api-shape
+- type-tag-vs-runtime-capability
+aliases:
+- marker interface vs capability method
+- marker interface beginner
+- capability method beginner
+- supportsRetry design
+- marker interface 언제 쓰는지
+- capability method 언제 쓰는지
+- marker interface와 supports 차이
+- marker interface vs supports method
+- serializable marker interface meaning
+- runtime capability check beginner
+- 타입 표지 vs 런타임 질문
+- supportsX method design
+symptoms:
+- Serializable 같은 marker interface가 그냥 빈 인터페이스처럼 보여서 의미를 모르겠어
+- supportsRetry 같은 메서드를 둘지 marker interface를 둘지 기준이 안 잡혀
+- 타입 분류를 해야 하는지 런타임 지원 여부를 물어야 하는지 헷갈려
+intents:
+- comparison
+prerequisites:
+- language/java-abstract-class-vs-interface-basics
+- language/interface-default-method-contract-evolution-primer
+next_docs:
+- language/interface-default-vs-static-method-primer
+- design-pattern/composition-over-inheritance-basics
+- language/abstract-class-vs-interface-follow-up-drill
+linked_paths:
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/interface-default-vs-static-method-primer.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- language/interface-default-method-contract-evolution-primer
+- language/interface-default-vs-static-method-primer
+- language/java-abstract-class-vs-interface-basics
+forbidden_neighbors: []
+expected_queries:
+- marker interface와 supports 메서드를 언제 다르게 써야 하는지 초보자 기준으로 설명해줘
+- Serializable 같은 빈 인터페이스가 왜 존재하는지 capability 메서드와 비교해서 알고 싶어
+- 타입 표지와 런타임 기능 지원 여부를 어떤 질문으로 구분하면 돼?
+- supportsRetry를 둘지 marker interface를 둘지 판단 기준이 필요해
+- marker interface 남용과 capability method 남용을 같이 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 marker interface와 supportsX 같은 capability
+  method를 둘 다 기능 표시처럼 읽을 때, 타입 분류 표지와 런타임 지원
+  여부 질문을 구분하게 돕는 bridge다. Serializable 같은 빈 인터페이스는
+  왜 존재하나, supportsRetry는 무엇을 묻는가, 타입에 배지를 붙일지 지금
+  가능한지를 물을지 헷갈린다 같은 자연어 paraphrase가 본 문서의 판단
+  축에 매핑된다.
+---
 # Marker Interface vs Capability Method 브리지
 
 > 한 줄 요약: 처음 배우는데 `Serializable` 같은 marker interface와 `supportsRetry()` 같은 capability-style method가 비슷해 보인다면, marker는 "이 타입은 이 분류에 속한다"를 타입 자체에 붙이는 표지이고, capability method는 "지금 이 객체가 이 기능을 지원하나"를 런타임에 묻는 답변창이라고 먼저 나누면 된다.

@@ -1,3 +1,88 @@
+---
+schema_version: 3
+title: Inbound Adapter Test Slices Primer
+concept_id: software-engineering/inbound-adapter-test-slices-primer
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/shopping-cart
+review_feedback_tags:
+- controller-slice-vs-app-integration
+- message-handler-slice-boundary
+- filter-interceptor-test-scope
+aliases:
+- inbound adapter test slice
+- inbound adapter test slices primer
+- controller slice test
+- message handler slice test
+- slice vs app integration test
+- springboottest inbound integration
+- hexagonal inbound adapter test
+- web adapter slice test
+- request binding validation test
+- webmvctest first test checklist
+- controller input validation first test
+- 처음 배우는데 filter interceptor 때문에 controller test 헷갈림
+- filter interceptor basics before controller test
+- filter vs interceptor before controller test
+- inbound adapter test slices primer basics
+symptoms:
+- controller 테스트를 쓰려는데 `@WebMvcTest`에서 어디까지 검증하고 멈춰야 하는지 감이 안 와요
+- message handler 테스트가 단위 테스트인지 앱 통합 테스트인지 헷갈려서 브로커와 트랜잭션을 한 번에 다 올리게 돼요
+- filter나 interceptor 때문에 controller slice가 자꾸 깨져서 inbound adapter 책임과 runtime wiring 책임을 분리하고 싶어요
+intents:
+- definition
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/hexagonal-testing-seams-primer
+next_docs:
+- software-engineering/inbound-adapter-testing-matrix
+- software-engineering/message-driven-adapter-example
+- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+confusable_with:
+- software-engineering/test-strategy-basics
+- software-engineering/hexagonal-testing-seams-primer
+- software-engineering/inbound-adapter-testing-matrix
+forbidden_neighbors:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+expected_queries:
+- controller 테스트를 짤 때 `@WebMvcTest`로 어디까지 보고 언제 `@SpringBootTest`로 올려야 해?
+- inbound adapter 테스트에서 slice test와 앱 통합 테스트를 나누는 기준을 한 문장으로 설명해줘
+- message handler 테스트는 port 호출만 검증해도 되는지 아니면 브로커와 트랜잭션까지 붙여야 하는지 헷갈려
+- filter랑 interceptor 때문에 controller 테스트가 실패할 때 adapter 책임과 runtime wiring 책임을 어떻게 분리해 읽어야 해?
+- hexagonal architecture에서 inbound adapter 테스트 범위를 결정하는 빠른 체크리스트가 필요해
+contextual_chunk_prefix: |
+  이 문서는 hexagonal architecture 문맥에서 inbound adapter 테스트를
+  slice test와 앱 통합 테스트로 나누는 intermediate primer다. controller
+  입력 검증과 응답 직렬화만 보면 되는지, message handler에서 broker와
+  transaction wiring까지 같이 검증해야 하는지, filter interceptor 때문에
+  controller test scope가 흐려질 때 어디서 경계를 끊어야 하는지 같은 학습자
+  질문을 adapter translation 책임과 runtime wiring 책임 구분으로 매핑한다.
+---
+
 # Inbound Adapter Test Slices Primer
 
 > 한 줄 요약: Hexagonal Architecture에서 controller와 message handler test는 port 경계에서 멈춰 adapter 번역 책임만 볼 때는 slice test로, 실제 트랜잭션/브로커/보안 wiring까지 실패 모드가 이어질 때는 앱 통합 테스트(app integration test)로 나눈다.

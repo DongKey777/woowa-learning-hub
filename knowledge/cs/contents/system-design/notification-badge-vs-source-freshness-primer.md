@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Notification Badge vs Source Freshness Primer
+concept_id: system-design/notification-badge-vs-source-freshness-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- badge-vs-source-freshness
+- click-read-causal-gap
+- count-vs-detail-contract
+aliases:
+- unread badge count read model
+- badge count stale source detail
+- notification count projection lag
+- source detail causal guarantee
+- notification badge vs source freshness basics
+symptoms:
+- 알림 배지는 1인데 클릭한 원본이 안 보여
+- unread count는 늦는데 source 상세는 바로 보여
+- badge freshness와 source freshness를 같은 문제로 보고 있어
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/causal-consistency-notification-primer
+- system-design/badge-freshness-observability-primer
+next_docs:
+- system-design/notification-causal-token-walkthrough
+- system-design/rejected-hit-observability-primer
+linked_paths:
+- contents/system-design/badge-freshness-observability-primer.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/system-design/notification-system-design.md
+- contents/system-design/mobile-push-notification-pipeline-design.md
+confusable_with:
+- system-design/badge-freshness-observability-primer
+- system-design/causal-consistency-notification-primer
+- system-design/notification-source-missing-decision-table
+forbidden_neighbors:
+- contents/system-design/badge-freshness-observability-primer.md
+expected_queries:
+- 알림 badge와 클릭 후 source 상세는 왜 freshness 계약이 달라?
+- badge는 stale해도 되는데 source detail은 왜 안 돼?
+- unread count와 causal token을 같은 걸로 보면 왜 헷갈려?
+- 알림 숫자는 맞는데 클릭한 주문 상세가 안 보이면 어떤 신선도 문제를 의심해야 해?
+- notification badge projection lag와 source causal consistency를 한 번에 구분하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 notification badge의 count freshness와 클릭 후 source
+  detail의 causal freshness를 같은 문제로 뭉개지 않도록 돕는 beginner primer다.
+  badge는 늦는데 원본은 보임, badge는 1인데 상세가 안 보임, unread count와
+  causal token 차이 같은 자연어 질문이 본 문서의 요약판 vs 본판 mental
+  model에 매핑된다.
+---
+
 # Notification Badge vs Source Freshness Primer
 
 > 한 줄 요약: 알림 배지나 unread count는 빠른 요약 read model이라 조금 stale할 수 있지만, 알림을 눌러 들어간 source 상세는 알림이 전제로 한 원인 데이터를 보여 주는 별도 causal 보장이 필요하다.

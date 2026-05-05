@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Value Object Invariants, Canonicalization, and Boundary Design
+concept_id: language/value-object-invariants-canonicalization-boundary-design
+canonical: true
+category: language
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- value-object-invariant-leak
+- canonicalization-missing
+- serialization-boundary-invariant
+aliases:
+- value object invariant boundary
+- canonicalization equality boundary
+- value object normalization design
+- domain primitive invariant design
+- value object serialization invariant
+- 값객체 불변식 경계 설계
+- canonicalization 왜 필요한가
+- 값 의미 equality 경계
+- 직렬화 이후 값객체 규칙
+- advanced value object design
+symptoms:
+- 값 객체로 감쌌는데도 trim이나 scale 규칙이 호출자마다 달라져서 의미가 흔들려
+- 같은 값처럼 보여도 equals나 캐시 키 결과가 달라져서 canonicalization이 왜 필요한지 모르겠어
+- 역직렬화 뒤에 invalid value object가 생기는데 경계를 어디서 잠가야 할지 막혀
+intents:
+- definition
+prerequisites:
+- language/money-value-object-basics
+- language/record-value-object-equality-basics
+- language/immutable-objects-and-defensive-copying
+next_docs:
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/locale-root-case-mapping-unicode-normalization
+- language/record-serialization-evolution
+linked_paths:
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/money-value-object-basics.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/money-value-object-basics
+- language/record-value-object-equality-basics
+- language/immutable-objects-and-defensive-copying
+forbidden_neighbors:
+- contents/language/java/immutable-objects-and-defensive-copying.md
+expected_queries:
+- 값 객체를 만들었는데도 비교 기준과 직렬화 경계가 흔들릴 때 무엇을 점검해야 해
+- canonicalization이 equals hashCode 계약의 일부라는 말을 자바 예제로 이해하고 싶어
+- trim lower-case scale 정책을 생성 시점에 잠그는 고급 value object 설계 문서를 찾고 있어
+- invalid state가 역직렬화로 다시 들어오는 문제를 value object 관점에서 설명해줘
+- 캐시 키와 중복 제거가 깨질 때 값 객체 경계를 어떻게 다시 잡아야 하는지 알고 싶어
+- 불변 객체와 진짜 value object의 차이를 invariant 관점으로 정리한 글이 필요해
+contextual_chunk_prefix: 이 문서는 Java 학습자가 value object를 단순 불변 DTO가 아니라
+  생성 시점 불변식과 canonicalization을 잠그는 도메인 경계로 이해하도록 돕는 advanced
+  primer다. 비교 기준, 캐시 키, 중복 제거, 직렬화 이후에도 같은 의미를 유지하는 설계와
+  raw String이나 BigDecimal을 언제 값 객체로 올릴지 같은 질문이 이 문서의 핵심 개념에
+  매핑된다.
+---
 # Value Object Invariants, Canonicalization, and Boundary Design
 
 > 한 줄 요약: 좋은 value object는 "immutable DTO"보다 더 많다. 생성 시점에 invariant를 잠그고, 비교 기준을 canonicalize하고, 직렬화/역직렬화 경계에서도 같은 의미를 유지해야 캐시 키, 중복 제거, 금액/시간/식별자 모델이 흔들리지 않는다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 'HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기'
+concept_id: network/http-421-troubleshooting-trace-examples
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- 421-vs-403-404
+- connection-context-before-auth
+- devtools-curl-proxy-crosscheck
+aliases:
+- 421 troubleshooting trace
+- 421 vs 403 vs 404
+- browser devtools 421
+- curl 421 misdirected request
+- proxy log 421
+- wrong connection failure
+- authority mismatch 421
+symptoms:
+- '`421`, `403`, `404`가 번갈아 보여서 권한 문제를 봐야 하는지 connection 문제를 봐야 하는지 헷갈린다'
+- 브라우저에서는 `421`인데 `curl`이나 proxy log에서는 다른 힌트가 보여 어디가 진짜 분기점인지 모르겠다
+- '`421 -> 403`처럼 연속으로 보이는 trace를 보고 첫 번째 실패와 실제 앱 결과를 어떻게 나눠 읽어야 할지 감이 안 잡힌다'
+- 4xx라서 비슷해 보이는데 왜 `421`만 따로 connection 문맥으로 봐야 하는지 설명이 필요하다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http-status-codes-basics
+- network/http2-origin-frame-421-primer
+- network/http2-http3-connection-reuse-coalescing
+next_docs:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http3-421-observability-primer
+- network/browser-421-but-curl-200-symptom-router
+linked_paths:
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/421-trace-mini-lab-wildcard-cert-coalescing.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/vendor-edge-421-field-map.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+confusable_with:
+- network/http-403-vs-404-concealment-beginner-bridge
+- network/browser-421-but-curl-200-symptom-router
+- network/http2-http3-421-retry-after-wrong-coalescing
+forbidden_neighbors:
+- contents/network/http-403-vs-404-concealment-beginner-bridge.md
+expected_queries:
+- 421이 403이나 404랑 어떻게 다르고 어디부터 구분해야 해?
+- DevTools에서 421 trace를 봤을 때 auth 문제랑 connection 문제를 어떻게 나눠?
+- 브라우저는 421인데 curl 결과랑 같이 보면 무엇을 먼저 확인해야 해?
+- 421 다음에 403이 이어지는 mixed trace는 어떻게 해석해?
+- proxy log와 DevTools를 같이 보고 421 원인을 좁히는 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 `421 Misdirected Request`를 `403`이나 `404`와 섞지
+  않고 DevTools, `curl`, proxy log의 작은 trace 차이로 분기하는 법을
+  익히도록 돕는 network primer다. 421 vs 403 vs 404, browser devtools
+  421, curl은 다르게 보임, mixed trace `421 -> 403`, wrong connection
+  failure 같은 자연어 표현이 connection 문맥과 app 결과를 분리하는
+  체크포인트에 직접 매핑되도록 설계했다.
+---
 # HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기
 
 

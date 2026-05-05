@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Proxy Retry Budget Discipline
+concept_id: network/proxy-retry-budget-discipline
+canonical: true
+category: network
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- idempotent-retry-boundary
+- retry-amplification
+- retry-budget-missing
+aliases:
+- retry budget
+- proxy retry
+- budget exhaustion
+- backoff
+- jitter
+- amplification control
+- idempotency
+- upstream failover
+- request storm
+symptoms:
+- 장애 때 재시도할수록 더 느려져
+- 프록시와 앱이 둘 다 retry하는 것 같아
+- 실패 순간 트래픽이 폭증해
+intents:
+- definition
+prerequisites:
+- network/timeout-retry-backoff-practical
+- network/http-methods-rest-idempotency-basics
+next_docs:
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+linked_paths:
+- contents/network/alb-elb-retry-amplification-proxy-chain.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+confusable_with:
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/alb-elb-retry-amplification-proxy-chain
+forbidden_neighbors:
+- contents/network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge.md
+expected_queries:
+- proxy retry budget은 왜 필요하고 어디에서 소진되나요?
+- 여러 계층이 같이 재시도할 때 트래픽 증폭을 어떻게 막나요?
+- 멱등하지 않은 요청까지 프록시가 재시도하면 왜 위험한가요?
+- retry budget을 다 쓰면 그냥 실패시키는 게 맞나요?
+- 재시도 예산과 backoff를 같이 보는 이유가 궁금해요
+contextual_chunk_prefix: |
+  이 문서는 운영 학습자가 장애 순간 프록시와 애플리케이션의 재시도가 복구인지 증폭인지 판단하고 제한 규칙을 이해하도록 기초를 잡는 primer다. 실패할수록 더 느려짐, 여러 계층이 동시에 다시 보냄, 잠깐 흔들린 호출만 제한적으로 살리기, 멱등 요청만 조심해서 재전송하기, 복구 시도가 트래픽 폭증으로 번지는 장면 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Proxy Retry Budget Discipline
 
 > 한 줄 요약: retry budget은 프록시와 앱이 실패를 얼마나 재시도할지 정하는 안전장치로, 예산을 넘기면 복구가 아니라 증폭이 된다.

@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Consistency, Idempotency, and Async Workflow Foundations
+concept_id: system-design/consistency-idempotency-async-workflow-foundations
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- sync-async-boundary
+- idempotency-key-missing
+- outbox-after-commit-gap
+aliases:
+- consistency idempotency async workflow foundations
+- sync vs async workflow primer
+- eventual consistency primer
+- idempotency primer
+- duplicate handling basics
+- outbox primer beginner
+- retry duplicate handling
+- backend workflow consistency basics
+- queue duplicate handling
+- order created email search lag
+- woowacourse backend async flow
+- curriculum foundation async workflow
+- system-design-00092
+- queue insert not done
+- async workflow beginner route
+symptoms:
+- 주문은 됐는데 메일이 아직 안 와
+- 같은 요청을 다시 보냈더니 두 번 처리돼
+- 큐에 넣었는데 왜 작업이 끝난 게 아니야
+intents:
+- definition
+prerequisites:
+- system-design/system-design-foundations
+- system-design/stateless-backend-cache-database-queue-starter-pack
+next_docs:
+- system-design/outbox-watermark-token-primer
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+- system-design/workflow-orchestration-saga-design
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/caching-basics.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/outbox-watermark-token-primer.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/workflow-orchestration-saga-design.md
+confusable_with:
+- system-design/message-queue-basics
+- system-design/outbox-watermark-token-primer
+forbidden_neighbors:
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+expected_queries:
+- 주문 생성은 성공했는데 메일이 늦게 오는 이유를 큰 그림으로 알고 싶어
+- 같은 POST를 다시 보내도 한 번만 처리되게 하려면 어디서 막아야 해
+- sync 처리와 async 후처리를 처음부터 같이 설명해주는 문서가 필요해
+- outbox랑 idempotency가 왜 항상 같이 나오지?
+- 큐에 넣었는데 왜 업무 완료가 아닌지 입문자 관점에서 정리해줘
+- eventual consistency를 주문 흐름 예시로 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 백엔드 입문 학습자가 핵심 상태를 sync 경로에서 먼저 확정하고, 나머지 후처리를 async로 넘길 때 eventual consistency와 duplicate를 정상 흐름으로 받아들이는 기준을 처음 잡는 primer다.
+  주문은 끝났는데 메일이나 검색 반영은 늦는 이유, 재시도했더니 왜 두 번 처리될 수 있는지, 큐에 넣은 시점과 업무 완료 시점을 어떻게 구분하는지, outbox 없이 발행이 비면 어디가 깨지는지, 한 번의 결과로 수렴시키려면 어디를 묶어야 하는지 같은 자연어 paraphrase가 본 문서의 workflow 기본선에 매핑된다.
+---
 # Consistency, Idempotency, and Async Workflow Foundations
 
 > 한 줄 요약: 핵심 상태는 sync 경로에서 먼저 확정하고, 나머지 후처리는 async로 따라오게 하되, eventual consistency와 retry/duplicate는 정상 상황으로 받아들이고 outbox와 idempotency로 안전하게 흡수하는 것이 백엔드 workflow 입문의 기본이다.

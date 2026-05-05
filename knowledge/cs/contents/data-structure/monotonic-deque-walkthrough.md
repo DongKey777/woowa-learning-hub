@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Monotonic Deque Walkthrough
+concept_id: data-structure/monotonic-deque-walkthrough
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- sliding-window-extrema-choice
+- deque-expiration-rule
+- monotonic-duplicate-tie-break
+aliases:
+- monotonic deque walkthrough
+- monotonic deque trace
+- monotonic queue walkthrough
+- sliding window maximum trace
+- sliding window minimum trace
+- plain deque to monotonic deque
+- deque candidate pruning
+- deque expiration
+- recent k maximum
+- recent k minimum
+- monotonic deque duplicates
+- deque index trace
+symptoms:
+- sliding window maximum을 손으로 추적해도 deque가 왜 답을 주는지 감이 안 와
+- 최근 k개 최대값 문제에서 plain deque로는 왜 안 되는지 헷갈려
+- monotonic deque에서 만료 제거와 뒤쪽 pop 순서를 자꾸 섞어 써
+intents:
+- definition
+prerequisites:
+- data-structure/deque-basics
+- algorithm/sliding-window-patterns
+next_docs:
+- data-structure/monotonic-deque-vs-heap-for-window-extrema
+- data-structure/sliding-window-duplicate-extrema-index-drill
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+linked_paths:
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-deque-vs-heap-for-window-extrema.md
+- contents/data-structure/sliding-window-duplicate-extrema-index-drill.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+confusable_with:
+- data-structure/monotonic-stack-walkthrough
+- data-structure/monotonic-queue-and-stack
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+forbidden_neighbors:
+- contents/data-structure/monotonic-stack-walkthrough.md
+expected_queries:
+- sliding window maximum을 처음부터 표로 따라가며 설명해줘
+- monotonic deque가 plain deque와 뭐가 달라지는지 입문자 기준으로 보고 싶어
+- 최근 k개 최댓값 문제에서 만료 제거와 뒤쪽 pop 순서를 같이 정리해줘
+- monotonic deque에서 index를 저장해야 하는 이유를 walkthrough로 알고 싶어
+- sliding window minimum도 같은 규칙으로 추적하는 예제를 보고 싶어
+- 단조 덱 중복값 처리에서 < 와 <= 중 무엇을 쓰는지 초보자용으로 설명해줘
+- deque front가 현재 답이 되려면 어떤 후보 정리가 필요한지 단계별로 보여줘
+- window max 문제에서 heap 대신 monotonic deque를 먼저 배우는 이유가 궁금해
+contextual_chunk_prefix: |
+  이 문서는 sliding window 최대값과 최소값 문제를 배우는 학습자가
+  monotonic deque가 plain deque에 만료 제거와 뒤쪽 후보 정리 규칙을
+  더해 답을 읽게 만드는 흐름을 처음 잡는 primer다. 최근 k개 최댓값,
+  index를 왜 저장하는지, 뒤에서 약한 후보 버리기, 중복값에서 < 와 <=
+  선택, front가 현재 답이 되는 이유 같은 자연어 paraphrase가 본
+  문서의 핵심 개념에 매핑된다.
+---
 # Monotonic Deque Walkthrough
 
 > 한 줄 요약: monotonic deque는 plain deque에 `만료 제거`와 `뒤쪽 후보 정리` 규칙을 더해, sliding window의 최대/최소를 즉시 읽게 만든다.

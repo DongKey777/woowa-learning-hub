@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: 추상 클래스 vs 인터페이스
+concept_id: language/abstract-class-vs-interface
+canonical: false
+category: language
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- abstract-class-vs-interface-choice
+- inheritance-boundary-design
+- default-method-overreach
+aliases:
+- abstract class interface deep dive
+- abstract class interface primer first
+- abstract class interface beginner route
+- abstract class interface basics first
+- abstract class interface when to use beginner
+- 처음 배우는데 추상 클래스 인터페이스 차이
+- 추상 클래스 인터페이스 큰 그림
+- 추상 클래스 인터페이스 기초 먼저
+- 추상 클래스 인터페이스 언제 쓰는지
+- 추상 클래스 인터페이스 입문 먼저
+- stateful base class
+- contract evolution
+- template method design boundary
+- composition before template method beginner route
+- abstract class vs interface basics
+symptoms:
+- 입문 기준은 알겠는데 실무 설계로 가면 추상 클래스와 인터페이스 경계가 다시 흐려져
+- default method랑 sealed interface까지 섞이면 어느 축으로 판단해야 할지 모르겠어
+- 상속 경계와 계약 경계를 같이 봐야 한다는데 무엇이 더 본질인지 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- language/java-abstract-class-vs-interface-basics
+- language/interface-default-method-contract-evolution-primer
+- language/object-oriented-core-principles
+next_docs:
+- language/interface-default-vs-static-method-primer
+- language/abstract-class-vs-interface-follow-up-drill
+- language/sealed-interfaces-exhaustive-switch-design
+linked_paths:
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/interface-default-vs-static-method-primer.md
+- contents/language/java/abstract-class-vs-interface-follow-up-drill.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/sealed-interfaces-exhaustive-switch-design.md
+- contents/language/java/records-sealed-pattern-matching.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+- contents/language/java/java-module-system-runtime-boundaries.md
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method-vs-strategy.md
+confusable_with:
+- language/java-abstract-class-vs-interface-basics
+- language/interface-default-method-contract-evolution-primer
+- language/sealed-interfaces-exhaustive-switch-design
+forbidden_neighbors: []
+expected_queries:
+- 추상 클래스와 인터페이스를 기초 다음 단계에서 어떻게 다시 판단해야 하는지 설명해줘
+- Java에서 상속 경계와 계약 경계를 같이 볼 때 어떤 기준으로 설계 결정을 내려야 해?
+- default method와 sealed interface까지 포함해서 추상 클래스 인터페이스 차이를 깊게 보고 싶어
+- 단순 비교표 말고 추상 클래스와 인터페이스의 확장성 차이를 중급 관점에서 정리한 문서가 필요해
+- 템플릿 메서드, 조합, 인터페이스 계약을 한 축에서 비교해 주는 자바 문서가 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 추상 클래스와 인터페이스를 문법 비교에서 끝내지
+  않고 상태 공유, 부모가 쥔 실행 순서, 계약 확장, 조합으로의 피벗까지 함께
+  깊이 잡는 deep_dive다. 공통 필드와 생성자를 부모에 둘지, 여러 타입에 같은
+  역할만 붙일지, default method를 어디까지 허용할지, 템플릿 메서드 대신
+  조합이 더 안전한지 같은 자연어 표현이 본 문서의 설계 판단 축에 매핑된다.
+---
 # 추상 클래스 vs 인터페이스
 
 > 작성자 : [서그림](https://github.com/Seogeurim)

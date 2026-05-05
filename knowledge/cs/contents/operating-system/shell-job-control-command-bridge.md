@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Shell Job-Control Command Bridge
+concept_id: operating-system/shell-job-control-command-bridge
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- job-control-vs-detach
+- shell-bookkeeping-vs-kernel-state
+- nohup-vs-disown
+aliases:
+- operating-system-00061
+- shell job-control command bridge
+- shell job control commands
+- shell job control mental model
+- shell job table mental model
+- shell suspend-resume-hangup mental model
+- jobs builtin vs ps
+- jobs -l pgid
+- fg bg tpgid
+- foreground process group shell command
+- background job controlling terminal
+- nohup vs disown
+- nohup not setsid
+- disown not detach
+- shell job table basics
+symptoms:
+- jobs, fg, bg, nohup, disown이 전부 "백그라운드 실행"처럼 보여서 차이를 모르겠어요
+- jobs에서는 사라졌는데 ps에는 남아 있어서 detach된 건지 헷갈려요
+- Ctrl-C, terminal 입력, shell 종료가 각각 누구에게 영향을 주는지 감이 안 와요
+intents:
+- comparison
+prerequisites:
+- operating-system/session-vs-process-group-primer
+- operating-system/process-lifecycle-and-ipc-basics
+next_docs:
+- operating-system/signals-process-supervision
+- operating-system/pseudo-tty-vs-pipe-behavior
+- operating-system/daemonization-checklist-primer
+linked_paths:
+- contents/operating-system/session-vs-process-group-primer.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+confusable_with:
+- operating-system/session-vs-process-group-primer
+- operating-system/daemonization-checklist-primer
+forbidden_neighbors: []
+expected_queries:
+- jobs fg bg nohup disown 차이가 뭐예요?
+- shell job control을 처음 배울 때 어떤 그림으로 봐야 해요?
+- nohup과 disown은 어떻게 달라요?
+- foreground process group과 shell job table은 뭐가 달라요?
+- jobs에서는 사라졌는데 ps에는 남아 있는 프로세스를 어떻게 이해해야 해?
+- Ctrl-C를 누를 때 fg/bg job과 shell 종료 영향 범위를 같이 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shell 명령인 jobs, fg, bg, nohup, disown이 커널의 프로세스 상태를
+  직접 바꾸는지, 아니면 shell의 job 기억 방식만 바꾸는지 연결하는 bridge다.
+  백그라운드로 보냈는데 누가 키보드를 잡는지, jobs에서는 없어졌는데 ps에는 왜
+  남는지, 셸을 닫아도 계속 도는지, 다시 앞으로 가져오려면 무엇이 바뀌는지 같은
+  자연어 paraphrase가 본 문서의 job-control 비교에 매핑된다.
+---
 # Shell Job-Control Command Bridge
 
 > 한 줄 요약: `jobs`, `fg`, `bg`는 shell의 job table과 terminal foreground를 다루는 명령이고, `nohup`, `disown`는 "shell이 끝날 때 이 job을 어떻게 남길까" 쪽을 건드린다. 초보자는 `PGID`, `SID`, `TPGID`, `TTY` 네 칸만 같이 보면 shell job-control이 magic처럼 보이지 않는다.
@@ -16,7 +84,7 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: operating-system-00061, shell job-control command bridge, shell job control commands, shell job control mental model, shell job table mental model, jobs fg bg nohup disown basics, jobs builtin vs ps, jobs -l pgid, fg bg tpgid, foreground process group shell command, background job controlling terminal, nohup vs disown, nohup not setsid, disown not detach, shell job table basics
+retrieval-anchor-keywords: operating-system-00061, shell job-control command bridge, shell job control commands, shell job control mental model, shell job table mental model, shell suspend-resume-hangup mental model, jobs builtin vs ps, jobs -l pgid, fg bg tpgid, foreground process group shell command, background job controlling terminal, nohup vs disown, nohup not setsid, disown not detach, shell job table basics
 
 ## 먼저 잡는 멘탈 모델
 

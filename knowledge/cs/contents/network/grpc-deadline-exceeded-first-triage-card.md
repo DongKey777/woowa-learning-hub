@@ -1,8 +1,10 @@
-# gRPC `DEADLINE_EXCEEDED` 첫 분류 카드
+# gRPC `DEADLINE_EXCEEDED`가 뜰 때 첫 분류 카드
 
-> 한 줄 요약: gRPC `DEADLINE_EXCEEDED`가 보이면 먼저 "못 보낸 쪽인가, 못 처리한 쪽인가, 중간에서 잃어버린 쪽인가"를 나눠야 다음 확인이 빨라진다.
+> 한 줄 요약: "`gRPC deadline exceeded`가 왜 나요?"라는 질문에는 먼저 "못 보낸 쪽인가, 못 처리한 쪽인가, 중간에서 잃어버린 쪽인가"를 나눠 답해야 다음 확인이 빨라진다.
 
 **난이도: 🟢 Beginner**
+
+이 문서는 "gRPC `DEADLINE_EXCEEDED`가 떴는데 서버가 느린 건가요?", "처음 보면 timeout이랑 뭐가 다른지 모르겠어요", "network 문제인지 app backpressure인지 어디서 갈라야 해요?" 같은 **초급 첫 분류 질문**에 바로 답하려는 트리아지 카드다.
 
 관련 문서:
 
@@ -14,7 +16,7 @@
 - [Request Deadline / Timeout Budget Primer](../system-design/request-deadline-timeout-budget-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: grpc deadline exceeded triage, grpc timeout first check, grpc flow control stall, grpc app backpressure, grpc network loss, grpc deadline exceeded beginner, grpc deadline triage card, http2 window_update grpc, grpc trailers missing, grpc unary slow, deadline exceeded first signals, grpc receiver slow, deadline exceeded 뭐예요, 처음 배우는데 grpc deadline
+retrieval-anchor-keywords: grpc deadline exceeded triage, grpc timeout first check, grpc flow control stall, grpc app backpressure, grpc network loss, grpc deadline exceeded beginner, grpc deadline triage card, http2 window_update grpc, grpc trailers missing, grpc unary slow, deadline exceeded 뭐예요, grpc deadline exceeded 왜 나요, timeout 이랑 뭐가 달라요, 처음 배우는데 grpc deadline
 
 ## 먼저 잡는 멘탈 모델
 
@@ -91,6 +93,7 @@ retrieval-anchor-keywords: grpc deadline exceeded triage, grpc timeout first che
 ## 자주 헷갈리는 포인트
 
 - "`DEADLINE_EXCEEDED`면 서버가 느리다" -> 항상 그렇지 않다. 흐름 제어나 네트워크 손실도 같은 결과를 만든다.
+- "`CANCELLED`와 `DEADLINE_EXCEEDED`는 비슷한 timeout 이름이다" -> 다르다. 상위 호출자나 사용자가 먼저 끊으면 `CANCELLED`, 정해 둔 시간 안에 못 끝내면 `DEADLINE_EXCEEDED`다.
 - "retry하면 풀린다" -> 원인이 `app backpressure`면 retry storm으로 더 나빠질 수 있다.
 - "headers를 받았으니 서버 처리는 끝났다" -> 아니다. body/trailers가 막힌 `flow control stall`일 수 있다.
 - "loss가 조금 보이니 무조건 network 원인" -> 같은 시각의 queue/pool wait가 더 먼저 튀었는지도 같이 봐야 한다.

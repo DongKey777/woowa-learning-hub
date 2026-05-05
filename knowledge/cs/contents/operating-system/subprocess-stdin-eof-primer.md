@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Subprocess Stdin EOF Primer
+concept_id: operating-system/subprocess-stdin-eof-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- subprocess-stdin-close-semantics
+- eof-vs-flush-confusion
+aliases:
+- operating-system-00068
+- subprocess stdin eof primer
+- stdin eof primer
+- child waits for stdin eof
+- child blocked waiting for stdin
+- child waiting on read stdin pipe
+- parent keeps write end open
+- stdin pipe write end still open
+- close stdin to signal eof
+- subprocess stdin close semantics
+- flush is not eof
+- stdin pipe eof mental model
+- sort waits for eof
+- beginner stdin eof mental model
+- subprocess stdin eof primer basics
+symptoms:
+- 데이터를 다 보냈는데 child가 계속 입력을 기다려요
+- flush했는데도 결과가 안 나와요
+- stdin close를 안 하면 왜 EOF가 안 가죠
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/subprocess-fd-hygiene-basics
+- operating-system/subprocess-bidirectional-pipe-deadlock-primer
+next_docs:
+- operating-system/popen-runtime-wrapper-mapping
+- operating-system/pipe-socketpair-eventfd-memfd-ipc-selection
+linked_paths:
+- contents/operating-system/subprocess-symptom-first-branch-guide.md
+- contents/operating-system/subprocess-bidirectional-pipe-deadlock-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/network/grpc-vs-rest.md
+confusable_with:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/subprocess-bidirectional-pipe-deadlock-primer
+forbidden_neighbors:
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+expected_queries:
+- subprocess에 입력은 다 보냈는데 child가 왜 안 끝나요?
+- flush했는데 sort 결과가 안 나오면 뭘 의심해야 해?
+- stdin close가 EOF 전달이랑 어떻게 연결돼?
+- child가 stdin read에서 기다리는 상황을 처음 설명해줘
+- write end를 누가 들고 있으면 EOF가 안 오는 거야?
+contextual_chunk_prefix: |
+  이 문서는 subprocess 입력은 다 보냈는데 child가 왜 아직 더 읽을 수 있다고
+  생각하는지, flush와 close가 왜 다른지 처음 잡는 primer다. 결과를 기다리는데
+  child가 stdin에서 안 끝남, sort가 EOF를 기다림, write end가 남아 있어
+  입력 종료 신호가 안 감, close해야 끝난다는 자연어 표현이 본 문서의 stdin EOF
+  대기 원인에 매핑된다.
+---
+
 # Subprocess Stdin EOF Primer
 
 > 한 줄 요약: child가 stdin EOF를 받아야 다음 단계로 가는 타입인데 parent나 helper가 pipe write end를 계속 들고 있으면, child는 입력이 아직 안 끝났다고 보고 `read()` 쪽에서 계속 기다릴 수 있다.

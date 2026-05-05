@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: '421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문'
+concept_id: network/http2-http3-421-retry-after-wrong-coalescing
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- coalescing-retry-trace
+- same-url-second-row
+- wrong-connection-context
+aliases:
+- 421 retry after wrong coalescing
+- wrong connection reuse
+- browser 421 retry
+- devtools same url retried
+- http/2 421 retry example
+- http/3 421 retry example
+- same url 421 then retry
+symptoms:
+- 같은 URL이 DevTools에서 짧게 `421`로 한 번 찍힌 뒤 바로 다시 나와서 중복 호출인지 브라우저 재시도인지 모르겠다
+- '`421 Misdirected Request`가 뜬 다음 새로고침 없이도 다시 성공하는 흐름을 어떻게 읽어야 할지 헷갈린다'
+- H2와 H3 둘 다 `421 -> retry`가 나온다는데 어떤 경우가 wrong connection 복구인지 감이 안 잡힌다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http2-http3-connection-reuse-coalescing
+- network/http2-origin-frame-421-primer
+- network/http3-cross-origin-reuse-guardrails-primer
+next_docs:
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/http3-421-observability-primer
+- network/http-421-troubleshooting-trace-examples
+linked_paths:
+- contents/network/421-retry-path-mini-guide-fresh-h3-vs-h2-fallback.md
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/chrome-netlog-h3-421-drilldown.md
+- contents/network/http-421-non-idempotent-retry-guardrail-primer.md
+confusable_with:
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/http-421-troubleshooting-trace-examples
+- network/browser-421-but-curl-200-symptom-router
+forbidden_neighbors:
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+expected_queries:
+- 브라우저에서 421 뒤에 같은 URL이 한 번 더 뜨면 중복 호출이야 재시도야?
+- wrong connection 때문에 421이 뜬 뒤 새 connection으로 다시 가는 흐름을 설명해줘
+- HTTP/2랑 HTTP/3에서 421 retry trace를 어떻게 읽어?
+- DevTools에서 same URL 두 줄이 421 recovery인지 확인하는 기준이 뭐야?
+- 421이 뜬 다음 바로 성공하면 브라우저가 무엇을 교정한 거야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 브라우저에서 같은 URL이 `421 Misdirected Request`
+  뒤 새 connection에서 다시 보이는 장면을 중복 호출이 아니라 wrong
+  coalescing recovery 관점으로 이해하도록 돕는 network primer다. 421 뒤
+  같은 URL 두 줄, browser 421 retry, wrong connection reuse, H2/H3 재시도
+  trace, 새 connection으로 다시 감 같은 자연어 표현이 connection 문맥
+  교정과 관찰 포인트에 직접 매핑되도록 설계했다.
+---
 # 421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문
 
 > 한 줄 요약: 잘못된 H2/H3 connection reuse는 `421 Misdirected Request`를 부르고, 브라우저에서는 같은 URL이 새 connection에서 다시 보이는 흐름으로 나타날 수 있다.

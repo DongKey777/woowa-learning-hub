@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Spring RoomEscape validation `400` vs business conflict `409` 분리 primer
+concept_id: spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- input-vs-domain-validation
+- conflict-status-mapping
+- exception-translation
+aliases:
+- roomescape validation 400 vs 409
+- roomescape 예약 400 409 차이
+- spring roomescape conflict 409 primer
+- duplicate reservation slot 409
+- reservation conflict vs bad request
+- roomescape 예약 중복 conflict
+- 입력 검증 vs 비즈니스 규칙
+- spring validation vs domain invariant
+symptoms:
+- roomescape 예약 생성에서 같은 실패처럼 보이는데 왜 400이랑 409를 나눠요?
+- 중복 예약도 잘못된 입력 같은데 왜 @valid 말고 service에서 보래요?
+- 예약 API가 400인지 409인지 헷갈려서 어디를 고쳐야 할지 모르겠어요
+intents:
+- comparison
+- troubleshooting
+- mission_bridge
+prerequisites:
+- spring/valid-400-vs-message-conversion-400-primer
+- spring/modelattribute-vs-requestbody-binding-primer
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+next_docs:
+- spring/spring-exception-handling-basics
+- software-engineering/roomescape-validation-vs-domain-rule-bridge
+- spring/roomescape-reservation-request-validation-binding-bridge
+linked_paths:
+- contents/spring/spring-valid-400-vs-message-conversion-400-primer.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+- contents/software-engineering/roomescape-validation-vs-domain-rule-bridge.md
+confusable_with:
+- spring/valid-400-vs-message-conversion-400-primer
+- software-engineering/roomescape-validation-vs-domain-rule-bridge
+- spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide
+forbidden_neighbors: []
+expected_queries:
+- roomescape 예약 생성에서 400 bad request랑 409 conflict를 어떤 기준으로 나눠야 해?
+- 중복 예약 슬롯이 생기면 왜 bean validation이 아니라 service 규칙으로 보라고 해?
+- 같은 create reservation api인데 입력 오류와 상태 충돌을 어디서 갈라서 디버깅해?
+- reviewer가 @valid와 business rule을 분리하라고 했는데 roomescape에서는 무슨 뜻이야?
+- 예약 생성 요청은 정상인데 이미 찬 시간이라 실패할 때 http status를 어떻게 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 Woowa roomescape 미션에서 관리자 예약 생성 API를 만들 때
+  learner가 validation 400과 business conflict 409를 같은 실패로 섞어
+  보는 상황을 정리하는 primer다. 빈 값과 형식 오류는 controller 입구
+  검증으로, 이미 찬 슬롯 충돌은 service 정책과 상태 충돌로 읽어야 한다는
+  리뷰 맥락을 roomescape 예약 생성 장면에 맞춰 빠르게 복원한다.
+---
+
 # Spring RoomEscape validation `400` vs business conflict `409` 분리 primer
 
 > 한 줄 요약: RoomEscape 예약 생성에서 `400`은 대개 "요청 값 자체가 규칙을 못 넘었다"는 뜻이고, `409`는 "요청 모양은 맞지만 이미 존재하는 예약 슬롯과 부딪혔다"는 뜻이라서 실패 층과 고칠 위치를 다르게 봐야 한다.
@@ -9,10 +76,12 @@
 - [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)
 - [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)
 - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
+- [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
+- [Spring validation `400` 4단계 `ProblemDetail` handoff primer: 커스텀 Error DTO에서 표준 오류 바디로 넘어가기](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: roomescape validation 400 vs 409, spring business conflict 409 beginner, duplicate reservation slot 409, bean validation 400 spring mvc, reservation conflict vs bad request, 같은 요청인데 400 409 왜 달라요, roomescape 예약 중복 conflict, methodargumentnotvalidexception vs reservationconflictexception, 입력 검증 vs 비즈니스 규칙 처음, spring validation vs domain invariant, duplicate slot validation 아니에요, beginner conflict status code
+retrieval-anchor-keywords: roomescape validation 400 vs 409, spring-roomescape-admin 400 vs 409, spring business conflict 409 beginner, duplicate reservation slot 409, bean validation 400 spring mvc, reservation conflict vs bad request, 같은 요청인데 400 409 왜 달라요, roomescape 예약 중복 conflict, spring-roomescape-admin reservation conflict, methodargumentnotvalidexception vs reservationconflictexception, 입력 검증 vs 비즈니스 규칙 처음, spring validation vs domain invariant, duplicate slot validation 아니에요, beginner conflict status code
 
 ## 핵심 개념
 
@@ -97,7 +166,7 @@ Bean Validation은 주로 request DTO가 최소 규칙을 만족하는지 본다
 
 ## 실무에서 쓰는 모습
 
-RoomEscape 관리자 예약 생성 API를 단순화하면 아래처럼 나뉜다.
+`spring-roomescape-admin` 관리자 예약 생성 API를 단순화하면 아래처럼 나뉜다.
 
 1. 요청 JSON을 `CreateReservationRequest`로 받는다.
 2. `@NotBlank`, `@Positive`, 날짜/시간 형식 같은 최소 규칙을 먼저 통과시키지 못하면 `400`으로 끝난다.

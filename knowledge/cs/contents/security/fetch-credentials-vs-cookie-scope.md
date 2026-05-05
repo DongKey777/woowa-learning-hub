@@ -32,6 +32,8 @@ expected_queries:
 - credentials include와 cookie scope는 어떻게 달라?
 - Application에는 cookie가 있는데 cross-origin request header가 비면 어디서 시작해?
 - CORS credential policy와 cookie scope를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 cross-origin fetch에서 cookie가 안 붙을 때 fetch 옵션 문제인지 cookie 범위 문제인지, 또 응답 읽기 CORS 문제인지 처음 골라 주는 chooser다. 브라우저에는 저장됐는데 이번 요청은 비어 있음, include를 줬는지 어디서 보나, 전송 실패와 응답 차단을 어떻게 나누나, actual request 전에 무엇부터 확인하나 같은 자연어 paraphrase가 본 문서의 분기 기준에 매핑된다.
 ---
 
 # Fetch Credentials vs Cookie Scope

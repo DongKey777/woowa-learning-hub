@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: ScheduledExecutorService vs DelayQueue Bridge
+concept_id: data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- scheduler-queue-mental-model
+- deadline-vs-business-priority
+- delayqueue-vs-priorityblockingqueue
+aliases:
+- scheduledexecutorservice vs delayqueue
+- scheduled executor service delayqueue bridge
+- scheduledthreadpoolexecutor delayed work queue
+- java scheduled executor data structure
+- schedule runnable after delay
+- fixed rate vs fixed delay queue mental model
+- scheduled executor priority after due
+- scheduler priority after due
+- due task business priority
+- scheduled executor business priority
+- delay-aware priority queue
+- deadline ticket queue
+- not one sleeping thread per task
+- 처음 배우는데 scheduledexecutorservice
+- what is scheduled executor priority after due
+symptoms:
+- schedule로 등록한 작업이 내부에서 어떻게 기다리는지 감이 안 와
+- ScheduledExecutorService와 DelayQueue가 같은 건지 다른 층인지 헷갈려
+- 나중에 실행하는 작업이 priority queue처럼 정렬된다는 설명이 추상적으로 느껴져
+intents:
+- comparison
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge
+next_docs:
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+linked_paths:
+- contents/data-structure/timer-priority-policy-split.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/java-timer-clock-choice-primer.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+confusable_with:
+- data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/timer-priority-policy-split
+forbidden_neighbors:
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+expected_queries:
+- scheduledexecutorservice랑 delayqueue를 같이 이해하면 뭐가 쉬워져?
+- 자바에서 나중에 실행할 작업을 예약할 때 scheduledexecutorservice 아래 자료구조 감각이 궁금해
+- delayqueue를 배웠는데 scheduled executor와 어떻게 연결되는지 beginner 관점으로 설명해줘
+- 스케줄러가 작업마다 스레드 하나씩 자게 만드는 건 아닌가요?
+- due 시간이 된 작업이 어떤 순서로 실행되는지 queue 관점에서 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 지연 실행 API를 처음 보는 학습자가 ScheduledExecutorService
+  호출과 그 아래 delay-aware queue 감각을 연결해 이해하도록 잇는 bridge다.
+  나중에 실행 예약, deadline 빠른 작업부터 대기, 시간이 되면 꺼내 실행,
+  스레드가 계속 자는 게 아님, due task 순서가 왜 정해지나 같은 자연어
+  paraphrase가 본 문서의 mental model에 매핑된다.
+---
 # ScheduledExecutorService vs DelayQueue Bridge
 
 > 한 줄 요약: `ScheduledExecutorService`는 "나중에 실행해 주세요"라는 executor API이고, 그 아래 mental model은 deadline이 가장 이른 작업만 head에 두고 시간이 될 때까지 숨기는 delay-aware priority queue다.

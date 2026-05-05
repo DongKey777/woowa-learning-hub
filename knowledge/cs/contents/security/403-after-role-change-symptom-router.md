@@ -9,6 +9,11 @@ doc_role: symptom_router
 level: intermediate
 language: ko
 source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- stale-authority-after-role-change
+- role-prefix-mapping
+- securitycontext-cache-invalidation
 aliases:
 - 역할 변경 후 403
 - role change 403
@@ -22,13 +27,39 @@ symptoms:
 - '관리자 권한 부여 직후에도 사용자가 403 Forbidden을 받는다'
 - '역할 변경했는데 로그아웃 후 다시 로그인해야 반영된다'
 - '백엔드 DB의 user_roles는 바뀌었는데 API 호출 시 권한이 그대로다'
+prerequisites:
+- security/auth-failure-response-401-403-404
+- security/role-change-session-freshness-basics
+next_docs:
+- security/claim-freshness-after-permission-changes
+- security/grant-path-freshness-stale-deny-basics
+- security/authz-session-versioning-patterns
 linked_paths:
 - contents/security/auth-failure-response-401-403-404.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/claim-freshness-after-permission-changes.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/authz-session-versioning-patterns.md
+- contents/security/authorization-caching-staleness.md
 - contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md
+confusable_with:
+- security/auth-failure-response-401-403-404
+- spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+forbidden_neighbors:
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/session-cookie-jwt-basics.md
 expected_queries:
 - 권한 변경 직후에 403이 뜨는 이유가 뭐야?
 - JWT를 바꾸지 않고도 새 역할이 반영되게 하려면?
 - DB는 admin인데 API는 USER로 보는 이유는?
+- 로그인은 유지되는데 역할만 바뀐 뒤 왜 forbidden이 남아?
+- role grant 이후에도 재로그인 전까지 403이면 어디부터 봐?
+contextual_chunk_prefix: |
+  이 문서는 role grant나 role change 뒤에도 403이 남을 때 원인을 token
+  claim, SecurityContext/권한 캐시, DB role mapping 세 갈래로 자르는
+  symptom_router다. DB는 admin인데 API는 USER로 보임, 재로그인 전까지만
+  403, 역할 변경 후 forbidden이 계속됨 같은 learner phrasing을 원인별 다음
+  문서로 연결한다.
 ---
 
 # 역할 변경 직후 403 — token TTL / cache / role mapping 어디에 원인이 있나

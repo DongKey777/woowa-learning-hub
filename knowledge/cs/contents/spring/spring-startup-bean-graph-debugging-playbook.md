@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Spring Startup Bean Graph Debugging Playbook
+concept_id: spring/startup-bean-graph-debugging-playbook
+canonical: false
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- startup-root-cause-triage
+- condition-report-first
+- bean-graph-vs-config-binding
+aliases:
+- startup debugging
+- BeanCreationException
+- UnsatisfiedDependencyException
+- condition evaluation report
+- config properties binding
+- bean graph
+symptoms:
+- 애플리케이션이 부팅하다가 죽는데 Bean 그래프 문제인지 설정 바인딩 문제인지 구분이 안 돼요
+- startup 로그에 BeanCreationException만 길게 보여서 어디서부터 읽어야 할지 모르겠어요
+- 스타터는 넣었는데 어떤 자동 구성이 빠졌는지 몰라서 앱이 안 떠요
+- 순환 참조인지 조건 탈락인지 헷갈려서 startup 장애를 계속 잘못 짚고 있어요
+intents:
+- troubleshooting
+- design
+prerequisites:
+- spring/ioc-container-internals
+- spring/boot-autoconfiguration-internals
+- spring/application-context-refresh-phases
+next_docs:
+- spring/boot-autoconfiguration-internals
+- spring/ioc-container-internals
+- spring/component-scan-failure-patterns
+linked_paths:
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-application-context-refresh-phases.md
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-early-bean-reference-circular-proxy-traps.md
+- contents/spring/spring-configurationproperties-binding-internals.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with:
+- spring/bean-not-found-cause-router
+- spring/component-scan-failure-patterns
+- spring/boot-autoconfiguration-internals
+forbidden_neighbors: []
+expected_queries:
+- Spring startup failure가 났을 때 Bean 그래프, condition, config binding 중 어디부터 분기해야 해?
+- BeanCreationException만 보이는 부팅 실패를 root cause까지 어떻게 추적해?
+- 스타터를 넣었는데 앱이 안 뜰 때 condition report를 먼저 봐야 하는 이유가 뭐야?
+- 순환 참조와 설정 바인딩 실패가 섞여 보일 때 startup 장애를 어떻게 분류해?
+- Spring 애플리케이션이 시작 중 죽으면 로그를 어떤 순서로 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 애플리케이션이 startup 중 죽을 때 Bean graph, 조건부 자동 구성,
+  프록시와 후처리 순서, configuration properties binding 실패를 먼저 어떤 질문으로
+  분기해야 하는지 정리한 playbook이다. BeanCreationException만 길게 보이는 부팅
+  실패, ConditionEvaluationReport를 어디서 읽어야 하는지, 순환 참조인지 설정
+  바인딩 실패인지 헷갈리는 상황 같은 자연어 증상을 startup root-cause triage
+  순서로 연결한다.
+---
+
 # Spring Startup Bean Graph Debugging Playbook
 
 > 한 줄 요약: Spring startup 장애는 대개 Bean 그래프, 조건부 자동 구성, 프록시/후처리 순서, 설정 바인딩 중 어디서 깨졌는지 분류하면 풀리며, 로그를 끝까지 읽지 않으면 원인보다 증상만 좇게 된다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Accept Overload Observability Playbook
+concept_id: operating-system/accept-overload-observability-playbook
+canonical: false
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- backlog-vs-cq-backlog
+- reuseport-hot-shard
+- accept-pause-rearm-gap
+aliases:
+- accept overload observability playbook
+- listener overload observability
+- listener overload playbook
+- accept queue diagnosis
+- ss -ltn listener queue
+- ss -ltn backlog ratio
+- /proc/net/netstat ListenOverflows ListenDrops
+- ListenOverflows delta
+- ListenDrops delta
+- io_uring accept CQ backlog
+- io_uring accept overload
+- multishot accept overload
+- accept drain lag
+- backlog fill ratio
+- backlog vs CQ backlog
+symptoms:
+- listener는 살아 있는데 새 연결만 유독 늦거나 빠지는 이유를 어디서부터 봐야 할지 모르겠어요
+- ss에서는 backlog가 높고 io_uring CQ도 밀려 보여서 어느 층이 병목인지 구분이 안 돼요
+- ListenOverflows가 늘 때 accept pause나 rearm 누락을 어떻게 의심해야 하는지 헷갈려요
+intents:
+- troubleshooting
+- design
+prerequisites:
+- operating-system/socket-accept-queue-kernel-diagnostics
+- operating-system/tcp-backlog-somaxconn-listen-queue
+next_docs:
+- operating-system/reuseport-shard-watermark-tuning
+- operating-system/io-uring-multishot-cancel-rearm-drain-shutdown
+- operating-system/softirq-hardirq-latency-server-debugging
+linked_paths:
+- contents/operating-system/socket-accept-queue-kernel-diagnostics.md
+- contents/operating-system/listener-overload-thresholds-accept-pause-policy.md
+- contents/operating-system/reuseport-shard-watermark-tuning.md
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+confusable_with:
+- operating-system/socket-accept-queue-kernel-diagnostics
+- operating-system/listener-overload-thresholds-accept-pause-policy
+forbidden_neighbors: []
+expected_queries:
+- accept overload를 볼 때 ss, netstat, io_uring fdinfo를 어떤 순서로 묶어야 해?
+- listener backlog 포화와 CQ drain 지연을 한 번에 triage하는 문서가 필요해
+- ListenOverflows와 ListenDrops delta가 늘면 다음으로 무엇을 확인해야 해?
+- SO_REUSEPORT 환경에서 hot listener만 꽉 차는 현상을 어떻게 관찰해?
+- accept pause가 너무 오래 걸린 건지 rearm 누락인지 구분하는 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 고부하 listener를 디버깅하는 학습자가 ss -ltn snapshot, ListenOverflows delta, io_uring CQ backlog를 같은 순서로 묶어 backlog 포화인지 accept drain 지연인지 pause/rearm 문제인지 전략으로 막는 playbook이다. 새 연결만 늦어, backlog는 차는데 어디가 병목이야, ListenDrops가 왜 늘어, CQ가 안 비워져, hot listener만 꽉 차 같은 자연어 paraphrase가 본 문서의 관찰 순서에 매핑된다.
+---
 # Accept Overload Observability Playbook
 
 > 한 줄 요약: listener overload는 `ss -ltn` 한 장면만으로 보면 자주 놓친다. LISTEN queue snapshot, `/proc/net/netstat`의 `ListenOverflows`/`ListenDrops` delta, `io_uring` ring `fdinfo`의 CQ backlog를 같은 순서로 묶어 봐야 "커널 backlog 포화", "accept CQ drain 지연", "pause/rearm 또는 arming 누락"을 구분할 수 있다.

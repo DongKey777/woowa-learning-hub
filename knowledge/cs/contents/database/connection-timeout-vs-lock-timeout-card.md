@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Connection Timeout vs Lock Timeout 비교 카드
+concept_id: database/connection-timeout-vs-lock-timeout-card
+canonical: false
+category: database
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- pool-vs-lock-wait-confusion
+- first-failure-timeline
+- transaction-boundary-holding-connection
+aliases:
+- connection timeout vs lock timeout
+- pool timeout vs db lock timeout
+- borrow timeout vs lock wait timeout
+- connection is not available lock wait timeout exceeded
+- busy pool wait vs lock wait
+- service busy classifier pool lock
+- 커넥션 타임아웃 락 타임아웃 차이
+- 앱 대기 db 락 대기 구분
+symptoms:
+- timeout 이 둘 다 떠서 커넥션 풀 문제인지 DB 락 문제인지 분간이 안 간다
+- Connection is not available 와 Lock wait timeout exceeded 가 같이 보이면 어디부터 봐야 할지 모르겠다
+- busy 응답이 나왔는데 pool 대기인지 같은 row 경합인지 바로 구분하고 싶다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- database/connection-pool
+- database/lock-basics
+- database/transaction-basics
+next_docs:
+- database/db-timeout-first-splitter
+- database/timeout-errorcode-mapping-mini-card
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/pool-timeout-term-matching-card.md
+- contents/database/timeout-log-timeline-first-failure-checklist-card.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/db-timeout-first-splitter
+- database/timeout-errorcode-mapping-mini-card
+- database/lock-wait-timeout-symptom-router
+forbidden_neighbors: []
+expected_queries:
+- Hikari Connection is not available 와 lock wait timeout exceeded 를 같은 원인으로 봐도 돼?
+- 커넥션 풀 대기 실패랑 DB 락 대기 실패를 초보자 기준으로 빨리 구분해줘
+- busy 응답이 났을 때 pool 부족인지 hot row 경합인지 어디 로그부터 봐야 해?
+- timeout 로그가 둘 다 찍히면 어떤 timeout이 먼저였는지로 해석하는 법 알려줘
+- 애플리케이션 입구 대기와 데이터베이스 안쪽 락 줄 대기를 한 장으로 비교하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 timeout 사건에서 connection timeout과 lock timeout을 같은
+  "DB가 느림"으로 뭉뚱그리지 않고, 앱 커넥션 풀 입구 대기 실패와 DB 내부
+  락 줄 대기 실패를 분리해 읽도록 돕는 beginner drill이다. Connection is
+  not available, lock wait timeout exceeded, busy 응답, 어떤 timeout이
+  먼저였는지, 긴 트랜잭션이나 hot row가 어디서 줄을 세우는지 같은 자연어
+  질문이 pool 대기와 lock 대기를 가르는 확인 순서로 매핑된다.
+---
+
 # Connection Timeout vs Lock Timeout 비교 카드
 
 > 한 줄 요약: `connection timeout`은 **앱의 커넥션 풀 입구 대기 실패**, `lock timeout`은 **DB 내부 락 대기 실패**다.

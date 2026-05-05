@@ -9,6 +9,8 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+mission_ids:
+- missions/roomescape
 aliases:
 - Filter vs SecurityFilterChain vs HandlerInterceptor
 - spring security filter chain beginner

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Suffix Tree Intuition
+concept_id: algorithm/suffix-tree-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+  - compressed-suffix-trie-mental-model
+  - ukkonen-entrypoint
+aliases:
+  - suffix tree
+  - compressed suffix trie
+  - suffix tree intuition
+  - substring tree index
+  - ukkonen intuition
+  - suffix link tree
+  - edge compression tree
+  - online suffix tree
+symptoms:
+  - suffix tree를 trie로 이해해도 되는지 모르겠고 compression이 왜 필요한지 헷갈려
+  - 모든 suffix를 넣는다고 하는데 substring 검색이 왜 빨라지는지 직관이 안 잡혀
+  - Ukkonen을 보기 전에 suffix link와 edge compression을 어느 수준까지 이해해야 할지 막혀
+intents:
+  - definition
+  - deep_dive
+  - comparison
+prerequisites:
+  - algorithm/string
+next_docs:
+  - algorithm/suffix-array-lcp
+  - algorithm/suffix-array-vs-suffix-tree-comparison
+  - algorithm/suffix-automaton
+linked_paths:
+  - contents/algorithm/string.md
+  - contents/algorithm/suffix-array-lcp.md
+  - contents/algorithm/suffix-array-vs-suffix-tree-comparison.md
+  - contents/algorithm/suffix-automaton.md
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+confusable_with:
+  - algorithm/suffix-array-lcp
+  - algorithm/suffix-automaton
+forbidden_neighbors:
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+expected_queries:
+  - suffix tree를 compressed trie로 이해해도 되는지 어디까지 맞는지 설명해줘
+  - suffix tree가 substring 검색에 강하다는 말을 intuition 중심으로 알고 싶어
+  - ukkonen을 배우기 전에 suffix tree에서 edge compression과 suffix link를 왜 먼저 보는지 궁금해
+  - suffix array 대신 suffix tree를 떠올릴 만한 상황이 무엇인지 비교해줘
+  - 모든 suffix를 넣으면 substring 문제가 자연스러워진다는 설명을 예시로 풀어줘
+contextual_chunk_prefix: |
+  이 문서는 문자열 학습자가 모든 suffix를 넣으면 왜 substring 검색이
+  빨라지고, 긴 경로를 edge 단위로 접어 넣는 이유가 무엇인지 깊이 잡는
+  deep_dive다. 접미사 전부 펼쳐 놓기, 길게 이어진 글자 압축, 경로를 따라
+  포함 여부 찾기, suffix link로 짧은 꼬리로 이동, 배열 인덱스 말고 트리
+  구조로 이해하기 같은 자연어 paraphrase가 본 문서의 suffix tree
+  직관에 매핑된다.
+---
 # Suffix Tree Intuition
 
 > 한 줄 요약: Suffix Tree는 문자열의 모든 suffix를 압축된 트리로 담아 substring 질의를 빠르게 하려는 고급 문자열 구조다.

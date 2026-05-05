@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Notification Read to Min-Version Bridge
+concept_id: system-design/notification-read-to-min-version-bridge
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- notification-success-raises-floor
+- response-metadata-propagation
+- detail-then-list-regression
+aliases:
+- notification read to min-version bridge
+- notification source read session floor
+- notification click raises min version
+- response metadata min version
+- causal token to monotonic bridge
+- notification detail then list stale
+- notification response watermark propagation
+- detail success then list pending
+symptoms:
+- 알림 상세는 성공했는데 다음 목록에서 다시 예전 값이 보여
+- causal token으로 입장만 시키고 다음 화면 기준선은 안 올리고 있어
+- notification read 성공 후 session floor를 어디서 갱신할지 모르겠어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- system-design/notification-causal-token-walkthrough
+- system-design/list-detail-monotonicity-bridge
+next_docs:
+- system-design/session-policy-implementation-sketches
+- system-design/session-guarantees-decision-matrix
+- system-design/search-hit-overlay-pattern
+linked_paths:
+- contents/system-design/causal-watermark-propagation-sketches.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/session-policy-implementation-sketches.md
+confusable_with:
+- system-design/list-detail-monotonicity-bridge
+- system-design/notification-causal-token-walkthrough
+- system-design/monotonic-reads-and-session-guarantees-primer
+forbidden_neighbors:
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/notification-causal-token-walkthrough.md
+expected_queries:
+- 알림 상세를 성공적으로 본 뒤 다음 목록도 안 뒤로 가게 하려면 뭘 올려야 해?
+- causal token을 min-version floor로 바꾸는 시점을 notification 흐름으로 설명해줘
+- detail은 PAID였는데 list가 다시 PENDING이면 session 기준선을 어디서 놓친 거야?
+- notification read success 후 response metadata로 무엇을 남겨야 해?
+- 알림 클릭 후 상세는 맞는데 다음 검색 결과가 stale할 때 이 bridge를 어떻게 적용해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 notification causal token을 입장권으로만 보지 않고,
+  성공한 source read 뒤 세션의 min-version 기준선으로 승격하는 과정을 이해하게
+  돕는 beginner bridge다. 상세는 맞는데 다음 목록이 뒤로 감, response
+  metadata로 무엇을 올려야 하나, causal token 다음에 왜 monotonic floor가
+  필요한가 같은 자연어 질문이 본 문서의 bridge 설명으로 매핑된다.
+---
 # Notification Read to Min-Version Bridge
 
 > 한 줄 요약: 알림을 눌러 source 상세를 성공적으로 읽었다면 그 순간을 "끝"으로 보면 안 되고, 세션의 `min-version`이나 응답 metadata를 올려서 다음 목록/상세/검색 화면도 그 값 아래로 내려가지 않게 이어 줘야 한다.

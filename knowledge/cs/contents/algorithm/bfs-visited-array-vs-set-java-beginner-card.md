@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java BFS visited 배열 vs Set beginner card
+concept_id: algorithm/bfs-visited-array-vs-set-java-beginner-card
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- visited-representation-choice
+- sparse-id-modeling
+- boolean-array-vs-hashset
+aliases:
+- java bfs visited array vs set
+- bfs boolean array or hashset
+- visited boolean array java
+- visited set java bfs
+- sparse id bfs visited
+- string key bfs visited
+- bfs visited 뭐 써요
+- bfs set 말고 배열 써도 되나
+- bfs visited 처음 배우는데
+- java graph traversal visited choice
+- unweighted graph visited tracking
+- java bfs beginner visited
+- boolean array vs hashset bfs
+symptoms:
+- Java BFS에서 방문 체크를 배열로 둘지 Set으로 둘지 기준이 안 서
+- 정점 번호가 듬성듬성할 때도 boolean 배열을 써도 되는지 헷갈려
+- 문자열 key 그래프를 BFS로 돌릴 때 visited 표현을 어떻게 바꿔야 할지 모르겠어
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/dfs-bfs-intro
+- data-structure/map-vs-set-requirement-bridge
+next_docs:
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/data-structure/graph-basics.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+confusable_with:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+forbidden_neighbors:
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+expected_queries:
+- Java BFS에서 정점 번호가 0부터 촘촘할 때 visited를 왜 boolean 배열로 두는 게 편해?
+- 노드 id가 sparse하면 BFS 방문 체크를 배열 대신 Set으로 바꿔야 하는 이유를 알려줘
+- 문자열 key 그래프를 BFS로 돌릴 때 visited 자료구조를 어떻게 선택해?
+- boolean[] visited와 HashSet visited를 고르는 기준을 BFS 초보자 관점으로 비교해줘
+- 방문 여부 말고 거리나 parent도 같이 저장해야 할 때는 언제 Map 쪽으로 넘어가야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java BFS를 처음 구현할 때 visited를 boolean 배열로 둘지 Set으로 고르는 chooser다. 번호를 바로 칸 위치로 써도 되는지, 노드 이름이 듬성듬성하거나 문자열인지, 본 적 있나만 기억하면 되는지, 거리와 parent까지 함께 들고 가야 하는지, 배열 접근과 key 기반 저장 중 무엇이 자연스러운지 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Java BFS visited 배열 vs Set beginner card
 
 > 한 줄 요약: Java BFS에서 노드 번호가 `0..n-1`처럼 촘촘하고 크기를 알면 `boolean[]`이 가장 단순하고, id가 듬성듬성하거나 문자열 key면 `Set`이 더 자연스럽다.

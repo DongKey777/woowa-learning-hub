@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 0-1 BFS equal-distance reinsert mini note
+concept_id: algorithm/zero-one-bfs-equal-distance-reinsert-mini-note
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- equal-distance-reinsert
+- strict-less-than-relax
+aliases:
+- 0-1 bfs equal distance
+- zero one bfs equal distance
+- 0-1 bfs equal-distance reinsert
+- zero one bfs reinsert same distance
+- 0-1 bfs newdist equals dist
+- 0-1 bfs newdist == dist
+- 0-1 bfs strict less than
+- 0-1 bfs duplicate equal cost
+- 0-1 bfs tie update
+- 0-1 bfs same distance no requeue
+- 0-1 bfs same distance no reinsert
+- deque shortest path equal distance
+- binary weight shortest path equal distance
+- 0-1 bfs beginner equality case
+- zero one bfs equal distance reinsert mini note basics
+symptoms:
+- 같은 거리 후보가 또 나오면 덱에 다시 넣어야 하는지 헷갈려
+- newDist == dist[next]인 경우를 왜 그냥 넘겨도 되는지 감이 안 와
+- 0-1 BFS에서 중복 후보를 다 넣으면 뭐가 문제인지 확인하고 싶어
+intents:
+- troubleshooting
+- drill
+prerequisites:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+next_docs:
+- algorithm/zero-one-bfs-parent-tie-mini-note
+- algorithm/zero-one-bfs-lexicographic-tie-mini-note
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+linked_paths:
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/zero-one-bfs-parent-tie-mini-note.md
+- contents/algorithm/zero-one-bfs-lexicographic-tie-mini-note.md
+- contents/algorithm/zero-one-bfs-stale-entry-mini-card.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+confusable_with:
+- algorithm/zero-one-bfs-parent-tie-mini-note
+- algorithm/zero-one-bfs-stale-entry-mini-card
+forbidden_neighbors:
+- contents/algorithm/zero-one-bfs-full-path-lexicographic-bridge.md
+expected_queries:
+- 0-1 BFS에서 같은 비용으로 다시 도착했을 때 왜 보통 다시 안 넣는지 설명해줘
+- newDist와 기존 거리값이 같으면 relax를 생략해도 되는 이유를 짧게 알고 싶어
+- 최단 거리값은 안 변하는데 덱에 중복으로 넣는 코드를 줄여도 되는지 확인하고 싶어
+- 동일 거리 후보를 또 봤을 때 beginner 구현이 어떤 기준으로 멈추는지 궁금해
+- 0비용 간선이 있어도 같은 거리 재삽입을 기본형에서 생략하는 근거가 뭐야
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS beginner 구현에서 같은 거리 후보를 다시 덱에 넣어야
+  하는지 헷갈릴 때, newDist == dist[next]는 보통 새 최단 정보가 아니라는
+  drill이다. 같은 비용 재삽입, strict less-than relax, 중복 후보를
+  그냥 넘겨도 되는 이유 같은 자연어 질문이 이 문서의 판단 규칙으로
+  매핑된다.
+---
 # 0-1 BFS equal-distance reinsert mini note
 
 > 한 줄 요약: 초보자용 `0-1 BFS`에서 `newDist == dist[next]`라면 보통 "더 좋아진 것"이 아니므로 덱에 다시 넣지 않고 `newDist < dist[next]`만 잡아도 충분하다.

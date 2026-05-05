@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Java Top-level 타입 접근 제한자 브리지
+concept_id: language/top-level-type-access-modifier-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- top-level-visibility-rule
+aliases:
+- java top-level access modifier bridge
+- java top-level type public package-private
+- java top-level class interface enum record
+- java top-level protected private compile error
+- java one public top-level type per file
+- java public top-level type file name rule
+- java package-private top-level helper
+- java public interface enum record file name
+- java top-level type card
+- java top-level type quick card
+- java source file type rule
+- top-level type basics
+- top-level type beginner
+- java top-level vs member private protected
+- java top-level member mini quiz bridge
+symptoms:
+- 파일 맨 위 타입에는 왜 private를 못 붙이는지 모르겠어
+- public class 파일명 규칙이 enum이랑 record에도 같은지 헷갈려
+- top-level 규칙과 멤버 규칙이 자꾸 섞여
+intents:
+- comparison
+prerequisites:
+- language/java-access-modifiers-member-model-basics
+- language/java-package-import-boundary-basics
+next_docs:
+- language/java-access-modifier-top-level-member-mini-quiz
+- language/java-access-modifier-boundary-lab
+- language/java-enum-basics
+linked_paths:
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/java-default-package-avoid-bridge.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-access-modifier-top-level-member-mini-quiz.md
+- contents/language/java/java-enum-basics.md
+- contents/language/java/records-sealed-pattern-matching.md
+- contents/language/java/java-access-modifier-boundary-lab.md
+confusable_with:
+- language/java-package-import-boundary-basics
+- language/java-access-modifiers-member-model-basics
+forbidden_neighbors:
+- contents/language/java/java-package-boundary-quickcheck-card.md
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+expected_queries:
+- Java top-level 타입에 붙일 수 있는 접근 제한자만 빠르게 정리해줘
+- record랑 enum도 파일 최상단이면 public 아니면 package-private만 되나?
+- private class를 파일 맨 위에 쓰면 왜 안 되는지 설명해줘
+- public 타입과 파일 이름 규칙을 같이 외우는 방법이 필요해
+- top-level class 규칙과 nested class 규칙 차이를 먼저 보고 싶어
+- 인터페이스도 최상단이면 같은 visibility 규칙을 따르는지 궁금해
+contextual_chunk_prefix: |
+  이 문서는 학습자가 파일 최상단 선언 규칙과 클래스 내부 선언 규칙을
+  연결해 class, interface, enum, record가 top-level일 때 허용되는
+  공개 범위와 public 파일명 규칙을 함께 판단하게 돕는 bridge다. 파일
+  맨 위에는 왜 private가 안 되나, 바깥 선언과 안쪽 선언은 뭐가 다른가,
+  record도 같은 규칙을 따르나, public이면 파일 이름을 왜 맞추나 같은
+  자연어 paraphrase가 본 문서의 경계 판단에 매핑된다.
+---
 # Java Top-level 타입 접근 제한자 브리지
 
 > 한 줄 요약: 파일 최상단에 두는 타입은 `class`든 `interface`든 `enum`이든 `record`든 똑같이 `public` 또는 package-private만 가능하다고 보면, 파일명 규칙까지 한 번에 정리된다.

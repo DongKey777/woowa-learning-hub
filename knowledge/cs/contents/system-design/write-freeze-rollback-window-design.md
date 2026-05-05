@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Write-Freeze Rollback Window 설계
+concept_id: system-design/write-freeze-rollback-window-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- rollback-window-vs-transaction-rollback
+- donor-read-only-drain
+- reversible-soak-cutover-gate
+aliases:
+- write freeze rollback window
+- reversible soak window
+- donor read only drain
+- cutover rollback window
+- stateful cutover rollback soak
+- freeze handoff rollback
+- rollback window vs transaction rollback
+symptoms:
+- migration cutover 뒤에 rollback window를 얼마나 열어 둬야 할지 감이 안 온다
+- rollback window와 DB transaction rollback을 같은 뜻으로 이해해서 문서를 잘못 찾고 있다
+- donor를 언제 read-only로 남기고 언제 cleanup으로 넘겨도 되는지 헷갈린다
+intents:
+- design
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design
+- system-design/traffic-shadowing-progressive-cutover-design
+- system-design/cleanup-point-of-no-return-design
+next_docs:
+- system-design/dedicated-cell-drain-retirement-design
+- system-design/config-rollback-safety-design
+linked_paths:
+- contents/system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/database/transaction-basics.md
+confusable_with:
+- database/transaction-basics
+- system-design/read-after-write-routing-primer
+- system-design/cleanup-point-of-no-return-design
+forbidden_neighbors: []
+expected_queries:
+- write freeze rollback window은 무엇이고 cutover 뒤에 왜 따로 필요해?
+- rollback window와 transaction rollback은 무엇이 다른가?
+- donor를 read-only로 남기는 reversible soak은 언제 끝내야 해?
+- stateful cutover 뒤 fast rollback trigger를 어떻게 정하나?
+contextual_chunk_prefix: |
+  이 문서는 stateful cutover에서 짧은 write freeze 뒤 donor를 바로 지우지 않고
+  reversible soak과 donor read-only drain을 얼마나 유지할지 설명하는
+  deep_dive다. rollback window가 transaction rollback이랑 뭐가 달라,
+  donor를 언제 정리해, cutover 직후 fast rollback trigger를 어떻게 잡아 같은
+  질문을 post-cutover 상태 모델과 exit gate로 연결한다.
+---
 # Write-Freeze Rollback Window 설계
 
 > 한 줄 요약: write-freeze rollback window 설계는 최종 handoff를 위해 잠깐 쓰기를 동결한 뒤 얼마나 오랫동안 빠른 rollback을 허용할지, donor/receiver를 어떤 상태로 유지할지 정하는 stateful cutover 운영 설계다.
@@ -13,6 +78,8 @@ retrieval-anchor-keywords: write freeze rollback window, fenced rollback window,
 > - [Deploy Rollback Safety / Compatibility Envelope 설계](./deploy-rollback-safety-compatibility-envelope-design.md)
 > - [Stateful Workload Placement / Failover Control Plane 설계](./stateful-workload-placement-failover-control-plane-design.md)
 > - [Traffic Shadowing / Progressive Cutover 설계](./traffic-shadowing-progressive-cutover-design.md)
+> - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+> - [Transaction Basics](../database/transaction-basics.md)
 
 ## 핵심 개념
 
@@ -25,6 +92,12 @@ retrieval-anchor-keywords: write freeze rollback window, fenced rollback window,
 - rollback 필요 여부가 몇 분 뒤에 보임
 
 그래서 실전에서는 freeze 자체보다 **freeze 이후 얼마 동안 reversible 상태를 유지할 것인가**가 중요하다.
+
+여기서 말하는 rollback window는 **DB transaction의 `commit/rollback` 버튼**이 아니다.
+이 문서는 이미 끝난 cutover를 운영적으로 얼마나 오래 되돌릴 수 있게 둘지 다루며,
+DB 안의 트랜잭션 경계가 헷갈리면 [Transaction Basics](../database/transaction-basics.md)를 먼저 보는 편이 맞다.
+또 "방금 쓴 값이 왜 안 보여?"처럼 read path 신선도 문제가 핵심이면
+[Read-After-Write Routing Primer](./read-after-write-routing-primer.md)로 내려가는 편이 빠르다.
 
 ## 깊이 들어가기
 

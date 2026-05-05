@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: 정렬에서 이분 탐색으로 넘어가는 브리지
+concept_id: algorithm/sort-to-binary-search-bridge
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- binary-search-precondition
+- sort-as-preprocessing
+aliases:
+- sort to binary search bridge
+- sorting as preprocessing
+- binary search precondition basics
+- 정렬 다음 이분 탐색
+- 정렬이 끝이 아닌 이유
+- 이분 탐색 전에 왜 정렬해요
+- 정렬은 했는데 뭘 얻나요
+- binary search 처음 배우는데
+- sorted array why binary search
+- 절반을 버려도 되는 이유
+- what is sorted preprocessing
+- beginner sort search bridge
+symptoms:
+- 정렬은 했는데 왜 이제 절반을 버릴 수 있는지 연결이 안 된다
+- 값 하나 찾기 문제인데 two pointer를 써야 하는지 binary search를 써야 하는지 헷갈린다
+- 정렬한 다음 무엇을 얻는지 모르겠어서 sort를 하고도 풀이가 막힌다
+intents:
+- comparison
+prerequisites:
+- algorithm/sort-intro
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/binary-search-intro
+- algorithm/binary-search-patterns
+- algorithm/two-pointer-intro
+linked_paths:
+- contents/algorithm/sort-intro.md
+- contents/algorithm/binary-search-intro.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/sort.md
+confusable_with:
+- algorithm/binary-search-intro
+- algorithm/two-pointer-intro
+forbidden_neighbors:
+- contents/algorithm/sort-intro.md
+- contents/algorithm/binary-search-intro.md
+expected_queries:
+- 정렬이 끝이 아니라 이분 탐색 전처리라는 말이 왜 맞는지 처음부터 연결해줘
+- 절반을 버릴 수 있다는 말이 정렬과 어떤 관계인지 예시로 이해하고 싶어
+- 정렬한 다음에 바로 이분 탐색으로 가는 문제와 아닌 문제를 구분하는 기준이 뭐야
+- sort를 했는데 다음으로 two pointer나 scan으로 가야 하는 순간도 있는지 알려줘
+- beginner가 정렬 다음에 binary search를 붙일 때 어떤 사고 흐름으로 이어가면 되는지 궁금해
+contextual_chunk_prefix: |
+  이 문서는 정렬을 배운 직후 learner가 왜 다음 칸으로 이분 탐색을 배우는지 연결해 주는 beginner bridge다. 정렬이 절반 버리기 근거를 만든다는 설명, sorted array와 binary search 전제의 관계, 정렬 뒤에 exact search로 가는지 lower bound나 two pointer로 갈지 고르는 기준, search precondition을 한 문장으로 이해하고 싶은 질문을 이 브리지의 핵심 연결로 매핑한다.
+---
 # 정렬에서 이분 탐색으로 넘어가는 브리지
 
 > 한 줄 요약: 정렬은 끝이 아니라 "절반을 버려도 되는 상태"를 만드는 전처리이고, 이분 탐색은 그 전처리 위에서만 안전하게 성립한다.

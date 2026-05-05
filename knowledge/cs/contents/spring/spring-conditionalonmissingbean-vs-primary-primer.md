@@ -1,3 +1,85 @@
+---
+schema_version: 3
+title: 'Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다'
+concept_id: spring/spring-conditionalonmissingbean-vs-primary-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- conditional-backoff-vs-primary
+- bean-registration-vs-injection
+- starter-default-bean-backoff
+aliases:
+- conditionalonmissingbean
+- conditionalonmissingbean backoff
+- auto-configuration backoff
+- starter default bean backoff
+- boot default bean missing
+- user bean disables default bean
+- primary does not restore boot bean
+- bean registration vs injection
+- boot default bean skipped existing bean
+- conditional bean registration backoff
+- bean registration phase vs injection phase
+- boot bean candidate selection
+- starter bean missing by existing bean
+symptoms:
+- starter를 넣었는데 기본 bean이 안 떠서 @Primary를 붙이면 되는지 헷갈려요
+- 같은 타입 bean이 있는데 왜 Boot 기본 bean이 사라졌는지 모르겠어요
+- '@Primary가 bean 등록 여부까지 바꾼다고 이해하고 있어요'
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- spring/bean-di-basics
+- spring/boot-autoconfiguration-basics
+next_docs:
+- spring/primary-qualifier-collection-injection
+- spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
+- spring/conditionalonsinglecandidate-vs-primary-primer
+linked_paths:
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-primary-vs-bean-override-primer.md
+- contents/spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md
+- contents/spring/spring-conditionalonsinglecandidate-vs-primary-primer.md
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-bean-definition-overriding-semantics.md
+confusable_with:
+- spring/primary-conditionalonmissingbean-bean-override-decision-guide
+- spring/primary-qualifier-collection-injection
+- spring/conditionalonsinglecandidate-vs-primary-primer
+- spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
+- spring/spring-primary-vs-bean-override-primer
+forbidden_neighbors:
+- contents/spring/spring-primary-vs-bean-override-primer.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+expected_queries:
+- '@ConditionalOnMissingBean이 뭐예요?'
+- auto-configuration back off는 언제 일어나?
+- starter 넣었는데 bean이 왜 없어요?
+- boot 기본 bean이 왜 안 떠요?
+- Boot 기본 bean이 안 생기는데 @Primary 붙이면 해결돼?
+- 내가 만든 bean이 있으면 auto-configuration 기본값은 왜 빠져?
+- '@ConditionalOnMissingBean이랑 @Primary를 시간 순서로 어떻게 구분해?'
+- starter 넣었는데 existing bean 때문에 back off 됐는지 어떻게 봐?
+- 등록 단계 조건과 주입 단계 우선순위가 왜 다른 문제야?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 Boot 기본 bean이 안 뜨는 이유를 찾을 때,
+  ConditionalOnMissingBean의 back-off와 Primary의 주입 우선순위를
+  시간축으로 나눠 처음 잡는 primer다. starter 넣었는데 기본 bean이 안
+  생김, 내 bean 만들었더니 Boot 기본값이 빠짐, 등록 단계 조건과 주입 단계
+  선택 차이, existing bean 때문에 auto-configuration이 물러남,
+  Primary를 붙여도 기본 bean은 복구되지 않음 같은 자연어 paraphrase가 본
+  문서의 핵심 구분에 매핑된다.
+---
 # Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다
 
 > 한 줄 요약: `@ConditionalOnMissingBean`은 "Boot 기본 bean을 등록할까?"를 묻고, `@Primary`는 "이미 등록된 후보 중 기본으로 무엇을 주입할까?"를 묻는다.
@@ -9,20 +91,18 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+- [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)
+- [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
+- [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
+- [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+- [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+- [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
+- [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
+- [JDBC · JPA · MyBatis 기초: 접근 기술을 왜 나누는가](../database/jdbc-jpa-mybatis-basics.md)
+- [spring 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
-> - [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)
-> - [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
-> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
-> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
-> - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
-> - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
-
-retrieval-anchor-keywords: @conditionalonmissingbean 뭐예요, conditionalonmissingbean vs @primary, starter 넣었는데 bean 왜 없어요, boot 기본 bean 왜 안 떠요, 내 bean 만들었더니 기본 bean 사라졌어요, @primary 붙였는데 기본 bean 왜 안 생겨요, auto configuration back off 뭐예요, bean 등록이랑 주입 차이, user bean 있으면 boot bean 어떻게 돼요, spring boot bean 선택 헷갈려요, existing bean found back off, primary does not restore boot bean, conditional bean registration beginner, boot default bean skipped existing bean, 조건부 bean 등록 언제 쓰나요
+retrieval-anchor-keywords: @conditionalonmissingbean 뭐예요, conditionalonmissingbean back off, starter 넣었는데 bean 왜 없어요, boot 기본 bean 왜 안 떠요, 내 bean 만들었더니 기본 bean 사라졌어요, primary does not restore boot bean, auto configuration back off 뭐예요, bean registration vs injection, user bean 있으면 boot bean 어떻게 돼요, boot default bean skipped existing bean, existing bean found back off, conditional bean registration backoff, starter default bean missing, existing user bean disables default bean, boot auto configuration backoff
 
 ## 이 문서가 먼저 잡는 질문
 

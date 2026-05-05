@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Plugin Registry Boundary Primer: 좁은 injected registry와 application-wide locator drift 구분하기"
+concept_id: design-pattern/plugin-registry-boundary-primer
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- plugin-registry-boundary
+- service-locator-drift
+- injected-registry
+aliases:
+- plugin registry boundary primer
+- plugin registry vs service locator
+- injected plugin registry
+- plugin manager locator smell
+- applicationcontext getbean 왜 문제
+- plugin registry beginner
+- 주입받은 registry와 전역 locator 차이
+symptoms:
+- plugin registry가 service locator와 뭐가 다른지 모르겠어
+- ApplicationContext getBean으로 plugin을 찾는 코드가 왜 냄새인지 헷갈려
+- PluginManager라는 이름이 좁은 registry인지 전역 locator인지 구분이 안 돼
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/dependency-injection-basics
+- design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+next_docs:
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/strategy-registry-vs-service-locator-drift
+- design-pattern/plugin-architecture-pattern-language
+linked_paths:
+- contents/design-pattern/plugin-architecture-pattern-language.md
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+- contents/design-pattern/strategy-registry-vs-service-locator-drift.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/software-engineering/oop-design-basics.md
+- contents/software-engineering/dependency-injection-basics.md
+confusable_with:
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/service-locator-antipattern
+- design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+forbidden_neighbors:
+- contents/design-pattern/service-locator-antipattern.md
+expected_queries:
+- plugin registry와 service locator 차이가 뭐야?
+- ApplicationContext getBean으로 plugin 찾는 게 왜 문제야?
+- PluginManager가 좁은 registry인지 locator drift인지 어떻게 봐?
+- 처음 배우는데 plugin registry 뭐예요?
+contextual_chunk_prefix: |
+  이 문서는 beginner가 plugin registry와 service locator drift를 처음
+  구분하도록 돕는 primer다. plugin registry vs service locator,
+  ApplicationContext getBean smell, PluginManager boundary, injected registry
+  vs app-wide locator 같은 자연어 질문이 이 문서의 범위, 반환 타입,
+  생성자 주입 기준에 매핑된다.
+---
 # Plugin Registry Boundary Primer: 좁은 injected registry와 application-wide locator drift 구분하기
 
 > 한 줄 요약: plugin lookup은 host가 자기 extension point를 위해 주입받은 좁은 registry일 때는 괜찮지만, 앱 어디서나 아무 plugin이나 service를 꺼내는 통로가 되면 service locator 쪽으로 미끄러진다.
@@ -7,22 +73,29 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [Plugin Architecture: 기능을 꽂아 넣는 패턴 언어](./plugin-architecture-pattern-language.md)
+- [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
+- [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
+- [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
+- [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [카테고리 README](./README.md)
 
-> 관련 문서:
-> - [Plugin Architecture: 기능을 꽂아 넣는 패턴 언어](./plugin-architecture-pattern-language.md)
-> - [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
-> - [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
-> - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
-> - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
-> - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
-
-retrieval-anchor-keywords: plugin registry boundary primer, plugin registry vs service locator, injected plugin registry, plugin registry beginner, plugin registry 큰 그림, plugin registry 언제 쓰는지, 처음 배우는데 plugin registry 뭐예요, service locator랑 뭐가 달라요, 처음 배우는데 service locator 차이, 왜 applicationcontext getbean이 문제예요, plugin manager가 왜 냄새예요, 플러그인 매니저가 왜 service locator 같아요, 플러그인 구조 큰 그림, dependency injection registry beginner, 주입받은 registry와 전역 locator 차이
+retrieval-anchor-keywords: plugin registry boundary primer, plugin registry vs service locator, injected plugin registry, plugin registry quick check, plugin registry example, plugin registry 언제 쓰는지, 처음 배우는데 plugin registry 뭐예요, service locator랑 뭐가 달라요, 왜 applicationcontext getbean이 문제예요, plugin manager가 왜 냄새예요, 주입받은 registry와 전역 locator 차이, plugin registry 예시로 설명, locator drift quick check, host plugin registry example, dependency injection registry beginner
 
 ---
+
+## 먼저 10초 판별표
+
+아래 네 줄로 먼저 자르면 초반 혼동을 많이 줄일 수 있다.
+
+- 생성자에 `ReportPluginRegistry`처럼 **좁은 registry 하나**가 보이면 일단 registry 쪽이다.
+- 본문에서 `ApplicationContext.getBean(...)`이나 `get(Class<T>)`가 나오면 locator drift를 의심한다.
+- key가 bean name보다 `PluginId`, `Capability` 같은 **domain key**에 가까우면 registry 쪽이다.
+- plugin 말고 repository, client까지 같은 통로에서 꺼내기 시작하면 locator 쪽으로 기운다.
+
+예시로 보고 싶을 때는 아래 `ReportEngine` 예시 두 개만 비교하면 된다.
 
 ## 먼저 머릿속 그림
 
@@ -59,7 +132,7 @@ plugin registry를 처음 보면 "어차피 뭔가를 찾아오는 거니까 ser
 
 ---
 
-## 좋은 예: host가 자기 plugin registry를 주입받는다
+## 1분 예시: host가 자기 plugin registry를 주입받는다
 
 ```java
 public enum PluginId {
@@ -118,7 +191,7 @@ public final class ReportPluginRegistry {
 - `AuditPort` 같은 다른 협력자는 registry에서 꺼내지 않고 별도로 주입받는다.
 - key는 Spring bean name이 아니라 host-plugin 계약인 `PluginId`다.
 
-## 좋은 예: host가 자기 plugin registry를 주입받는다 (계속 2)
+## 예시에서 바로 보는 핵심 anchor
 
 초보자 기준으로는 이것만 보면 된다.
 
@@ -126,7 +199,7 @@ public final class ReportPluginRegistry {
 
 ---
 
-## 나쁜 예: plugin registry라는 이름의 앱 전체 조회소
+## 반대 예시: plugin registry라는 이름의 앱 전체 조회소
 
 ```java
 public final class PluginLocator {

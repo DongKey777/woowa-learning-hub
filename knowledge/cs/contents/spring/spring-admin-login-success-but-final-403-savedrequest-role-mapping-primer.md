@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: 'Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer'
+concept_id: spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- savedrequest-vs-role-mapping
+- final-403-after-login
+aliases:
+- spring login success but final 403
+- savedrequest after login 403
+- 복귀는 됐는데 권한 없음
+- 원래 url 복귀 후 403
+- role_admin prefix mismatch
+symptoms:
+- 로그인 성공 후 원래 관리자 URL로 돌아왔는데 마지막에 403이 떠요
+- SavedRequest로 복귀는 됐는데 권한 없음이 나와서 세션 문제인지 역할 문제인지 헷갈려요
+- admin 페이지로 복귀한 뒤 막히는데 role prefix나 authority 매핑을 어디서 봐야 할지 모르겠어요
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/spring-admin-session-cookie-flow-primer
+next_docs:
+- spring/security-requestcache-savedrequest-boundaries
+- spring/spring-admin-session-cookie-flow-primer
+- spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge
+linked_paths:
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-admin-session-cookie-flow-primer.md
+- contents/spring/roomescape-admin-login-final-403-securitycontext-bridge.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-security-basics.md
+- contents/security/spring-authority-mapping-pitfalls.md
+confusable_with:
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/spring-admin-session-cookie-flow-primer
+- spring/roomescape-admin-login-final-403-securitycontext-bridge
+forbidden_neighbors:
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+expected_queries:
+- 로그인 성공 후 원래 admin URL로 돌아왔는데 왜 403이 나요?
+- SavedRequest는 성공했는데 마지막 권한 검사에서 막히는 이유가 뭐예요?
+- 복귀는 됐는데 권한 없음은 뭘 먼저 봐야 해요?
+- hasRole이랑 ROLE_ADMIN 매핑이 왜 final 403으로 보여요?
+contextual_chunk_prefix: |
+  이 문서는 로그인 성공 뒤 원래 관리자 URL로 복귀했지만 마지막에 403이 나는
+  장면을 SavedRequest 복귀와 역할 매핑 실패로 분리하는 beginner primer다.
+  복귀는 됐는데 권한 없음, savedrequest는 성공했는데 마지막 403, 원래 url
+  복귀 후 403 같은 검색 문장을 final authorization 단계로 연결한다.
+---
+
 # Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer
 
 > 한 줄 요약: 로그인 성공과 `SavedRequest`라는 `주소 메모` 복귀는 "원래 URL로 다시 보내기"까지의 이야기이고, 마지막 `403`은 별도로 남아 있는 역할 매핑 문제라서 `redirect 복귀`와 `ROLE_ADMIN` 검사 실패를 두 단계로 끊어 봐야 한다.

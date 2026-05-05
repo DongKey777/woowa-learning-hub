@@ -9,6 +9,8 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids: []
+review_feedback_tags: []
 aliases:
 - transaction
 - commit
@@ -17,13 +19,35 @@ aliases:
 - 트랜잭션
 - 커밋
 - 롤백
+symptoms: []
 intents:
 - definition
+prerequisites:
+- database/database-first-step-bridge
+next_docs:
+- database/transaction-isolation-basics
+- database/lock-basics
+- spring/transactional-basics
+linked_paths:
+- contents/database/database-first-step-bridge.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/lock-basics.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/mission-code-reading-db-checklist.md
+- contents/spring/spring-transactional-basics.md
+confusable_with: []
+forbidden_neighbors: []
 expected_queries:
 - transaction이 뭐야?
 - 트랜잭션이 뭐야?
 - commit이랑 rollback은 뭐야?
 - 주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?
+contextual_chunk_prefix: |
+  이 문서는 데이터베이스 입문자가 주문 저장과 재고 차감처럼 여러 변경을 왜
+  한 묶음으로 commit하거나 rollback해야 하는지 처음 잡는 primer다. 같이
+  성공하거나 같이 실패, transaction이 뭐야, commit rollback 차이,
+  @transactional 전에 트랜잭션 그림, 실패 범위 묶기 같은 자연어 질문이 이
+  문서의 기본 경계 감각에 매핑된다.
 ---
 
 # 트랜잭션 기초 (Transaction Basics)

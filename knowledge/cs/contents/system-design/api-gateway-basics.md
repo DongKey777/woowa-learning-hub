@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: API Gateway 기초 (API Gateway Basics)
+concept_id: system-design/api-gateway-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- gateway-vs-load-balancer
+- gateway-vs-reverse-proxy
+- gateway-domain-logic-boundary
+aliases:
+- api gateway basics
+- api gateway 뭐예요
+- api gateway 처음
+- api gateway 왜 써요
+- reverse proxy vs api gateway
+- load balancer vs api gateway
+- gateway routing basics
+- gateway auth basics
+- gateway rate limiting basics
+- gateway 공통 입구
+- api gateway 공통 정책
+- auth rate limit routing 한곳
+- 클라이언트 요청 어디로 가요
+- 인증을 어디서 하나요
+- 여러 서비스 앞단
+- what is api gateway
+- beginner gateway primer
+symptoms:
+- 여러 서비스 앞단에서 인증이랑 라우팅을 어디서 처리해야 할지 모르겠어
+- 로드 밸런서랑 API Gateway가 같은 역할처럼 보여서 구분이 안 돼
+- 게이트웨이에 비즈니스 로직을 넣어도 되는지 판단이 안 서
+intents:
+- definition
+prerequisites:
+- system-design/load-balancer-basics
+- network/proxy-reverse-proxy-basics
+next_docs:
+- system-design/rate-limiting-basics
+- system-design/token-propagation-through-bff-and-gateway
+- system-design/service-discovery-health-routing-design
+linked_paths:
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/rate-limiting-basics.md
+- contents/system-design/stateless-vs-stateful-basics.md
+- contents/system-design/token-propagation-through-bff-and-gateway.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/proxy-reverse-proxy-basics.md
+- contents/network/http-request-response-headers-basics.md
+confusable_with:
+- system-design/load-balancer-basics
+- network/proxy-reverse-proxy-basics
+- system-design/service-discovery-health-routing-design
+forbidden_neighbors:
+- contents/system-design/load-balancer-basics.md
+- contents/network/proxy-reverse-proxy-basics.md
+expected_queries:
+- API Gateway를 왜 여러 백엔드 서비스 앞에 두는지 초보자 기준으로 설명해줘
+- 공통 인증과 라우팅을 어느 계층에 모아야 하는지 감이 안 와
+- reverse proxy와 gateway를 같은 것으로 보면 어디서 틀리기 시작해?
+- 서비스가 여러 개인데 입구를 하나로 두는 설계 이유가 궁금해
+- 게이트웨이가 rate limit과 auth를 맡고 서비스는 무엇만 남겨야 해?
+- 로드 밸런서, 리버스 프록시, API Gateway를 각각 어느 질문에 답하는 장치로 구분해야 하는지 헷갈려
+- 게이트웨이에 인증과 속도 제한을 모으는 이유와 서비스에 남길 책임 경계를 초보자 눈높이로 설명해줘
+- 여러 서비스 앞단 공통 입구가 필요할 때 gateway가 reverse proxy보다 무엇을 더 담당하는지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 여러 백엔드 서비스 앞 공통 입구가 왜 필요한지, 인증 확인과 라우팅, 속도 제한을 어디에 모아야 하는지 처음 잡는 primer다.
+  서비스 입구 하나로 모으기, 공통 정책을 앞단에서 처리, 요청을 어느 서비스로 보낼지 정하기, 인증 검사를 앞에서 끝내기, 로드 밸런서와 역할 나누기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # API Gateway 기초 (API Gateway Basics)
 
 > 한 줄 요약: API Gateway는 여러 백엔드 서비스 앞에서 "공통 입구" 역할을 하며, 인증 확인, 라우팅, 속도 제한처럼 모든 요청에 반복되는 처리를 한곳에 모은다.

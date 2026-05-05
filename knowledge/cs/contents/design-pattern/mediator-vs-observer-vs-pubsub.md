@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Mediator vs Observer vs Pub/Sub
+concept_id: design-pattern/mediator-vs-observer-vs-pubsub
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+  - coordination-vs-notification
+  - event-bus-overuse
+  - workflow-coordinator-boundary
+aliases:
+  - mediator vs observer vs pubsub
+  - coordination vs notification
+  - same process event bus
+  - brokered messaging in process
+  - mediator workflow coordination
+  - observer state change notification
+  - in process pubsub
+  - application event vs mediator
+  - event bus topic subscriber
+  - checkout coordination pattern
+symptoms:
+  - 중앙 coordinator를 둘지 이벤트로 풀지 판단이 안 서
+  - 같은 프로세스 event bus를 쓰면 observer인지 pubsub인지 계속 헷갈려
+  - workflow 조정 로직과 상태 변화 알림을 한 구조로 묶어 버리고 있어
+intents:
+  - comparison
+  - design
+  - troubleshooting
+prerequisites:
+  - design-pattern/observer-pubsub-application-events
+  - design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide
+next_docs:
+  - design-pattern/saga-coordinator-pattern-language
+  - design-pattern/coordinator-vs-manager-object-smell
+  - design-pattern/orchestration-vs-choreography-pattern-language
+linked_paths:
+  - contents/design-pattern/observer-pubsub-application-events.md
+  - contents/design-pattern/observer.md
+  - contents/design-pattern/observer-lifecycle-hygiene.md
+  - contents/design-pattern/state-pattern-workflow-payment.md
+  - contents/design-pattern/saga-coordinator-pattern-language.md
+  - contents/design-pattern/coordinator-vs-manager-object-smell.md
+  - contents/design-pattern/orchestration-vs-choreography-pattern-language.md
+confusable_with:
+  - design-pattern/observer-pubsub-application-events
+  - design-pattern/observer-vs-pubsub-vs-domain-event-decision-guide
+  - design-pattern/saga-coordinator-pattern-language
+forbidden_neighbors: []
+expected_queries:
+  - 화면 단계 조정 로직은 mediator로 봐야 해 아니면 event listener로 풀어야 해?
+  - 같은 프로세스에서 topic bus를 쓰면 observer와 뭐가 달라?
+  - checkout coordinator, application event, pubsub를 한 번에 구분하는 기준이 뭐야?
+  - 상태 변경 통지와 다음 행동 결정이 왜 다른 패턴인지 예시로 설명해줘
+  - 리스너가 많아졌을 때 mediator로 올릴지 pubsub로 갈지 판단이 안 돼
+contextual_chunk_prefix: |
+  이 문서는 advanced 학습자가 workflow coordination, state-change
+  notification, same-process pubsub를 구분하도록 돕는 chooser다.
+  mediator가 다음 행동을 결정하는지, observer가 이미 일어난 변화를
+  전파하는지, bus/topic이 publisher와 subscriber 사이를 중개하는지
+  묻는 자연어 질문이 이 문서의 비교 기준에 매핑된다.
+---
 # Mediator vs Observer vs Pub/Sub
 
 > 한 줄 요약: Mediator는 **같은 유스케이스 안에서 다음 행동을 결정**하고, Observer는 **이미 일어난 상태 변화를 통지**하며, Pub/Sub는 **같은 프로세스 안에서도 bus/topic으로 발행자와 구독자를 brokered messaging으로 분리**한다.

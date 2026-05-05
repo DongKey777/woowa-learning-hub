@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 연결 리스트 기초 (Linked List Basics)
+concept_id: data-structure/linked-list-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- pointer-update-basics
+- null-tail-guard
+- linkedlist-vs-arraylist
+aliases:
+- linked list basics
+- 연결 리스트 입문
+- singly linked list
+- doubly linked list
+- 단방향 연결 리스트
+- 양방향 연결 리스트
+- node pointer
+- linked list structure
+- 연결 리스트 구조
+- 연결 리스트가 뭐예요
+- linked list insert delete
+- head tail pointer beginner
+- null pointer linked list
+- linked list basics basics
+- linked list basics beginner
+symptoms:
+- 연결 리스트가 노드랑 포인터라는 말까진 알겠는데 그림이 안 그려져
+- 삽입 삭제가 빠르다면서 왜 위치 찾기 비용까지 같이 보라고 하는지 헷갈려
+- 단방향이랑 양방향 연결 리스트를 언제 구분해서 써야 하는지 모르겠어
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/array-vs-linked-list
+- data-structure/lru-cache-basics
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/lru-cache-basics.md
+- contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md
+- contents/algorithm/two-pointer-intro.md
+confusable_with:
+- data-structure/array-vs-linked-list
+- data-structure/basic
+forbidden_neighbors:
+- contents/data-structure/array-vs-linked-list.md
+expected_queries:
+- 연결 리스트 동작 방식을 그림 없이도 이해하고 싶어
+- 노드와 포인터로 이어진 구조를 처음 배울 때 볼 설명
+- 단일 연결 리스트와 이중 연결 리스트 차이 입문
+- 연결 리스트가 임의 접근에 약한 이유를 쉽게 설명해줘
+- head tail null 처리를 왜 자꾸 강조하는지 알고 싶어
+- LRU 전에 연결 리스트 기본기를 먼저 정리하고 싶어
+- ArrayList 대신 LinkedList를 언제 떠올려야 하는지 입문 기준이 필요해
+- 연결 리스트 순회랑 삽입 비용을 같이 봐야 하는 이유가 궁금해
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 노드와 포인터로 이어진 연결 리스트가 왜
+  삽입과 삭제에는 강하고 임의 접근에는 약한지 기초를 잡는 primer다.
+  노드 체인 그림, head tail null 처리, 단방향과 양방향 차이, 위치를
+  알아야 O(1) 삽입, 배열과 반대 특성 같은 자연어 paraphrase가 본
+  문서의 핵심 개념에 매핑된다.
+---
 # 연결 리스트 기초 (Linked List Basics)
 
 > 한 줄 요약: 연결 리스트는 노드들이 포인터로 이어진 구조로, 삽입·삭제가 빠르지만 임의 접근이 느리다는 점에서 배열과 정반대 강점을 가진다.

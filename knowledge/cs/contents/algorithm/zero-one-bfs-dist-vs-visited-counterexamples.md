@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: 0-1 BFS dist vs visited 미니 반례 카드
+concept_id: algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- visited-vs-dist-choice
+- zero-cost-revisit
+aliases:
+- 0-1 bfs dist vs visited
+- zero one bfs dist visited
+- 0-1 bfs counterexample
+- 0-1 bfs beginner mistake
+- 0-1 bfs visited bug
+- 0-1 bfs relax first visit
+- 0-1 bfs parent update
+- deque shortest path visited
+- binary weight shortest path visited
+- 0-1 bfs first-visit trap
+- 0-1 bfs dist relax rule
+- 0-1 bfs appendleft rule
+- 0-1 bfs beginner primer
+- 0/1 cost shortest path relax
+- dist visited choice basics
+symptoms:
+- visited로 막았더니 더 짧은 경로를 놓쳐
+- 0-1 BFS인데 BFS처럼 처음 방문에서 끝내고 있어
+- 왜 dist를 보고 다시 넣는지 반례로 확인하고 싶어
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/dfs-bfs-intro
+- algorithm/zero-one-bfs-grid-conversion-primer
+next_docs:
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+- algorithm/zero-one-bfs-hand-calculation-worksheet
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/zero-one-bfs-state-visited-vs-dist-starter-card.md
+- contents/algorithm/zero-one-bfs-stale-entry-mini-card.md
+- contents/algorithm/zero-one-bfs-equal-distance-reinsert-mini-note.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/data-structure/deque-basics.md
+confusable_with:
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+- algorithm/dfs-bfs-intro
+- algorithm/zero-one-bfs-grid-conversion-primer
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+expected_queries:
+- 0-1 BFS에서 visited만 쓰면 왜 오답이 되는지 작은 반례로 보고 싶어
+- 처음 도착한 값보다 더 싼 경로가 나오는 0-1 BFS 예시를 설명해줘
+- 3차원 상태 문제에서도 첫 방문 고정이 왜 위험한지 반례 느낌으로 이해하고 싶어
+- appendleft와 dist 갱신을 같이 봐야 하는 이유를 beginner 관점에서 알고 싶어
+- BFS 습관대로 첫 방문 고정을 넣었더니 틀릴 때 어디를 의심해야 해
+- 0비용 간선 때문에 재방문이 필요한 상황을 한 번에 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS를 처음 배우는 학습자가 visited처럼 한 번 보고
+  끝낼지, dist를 계속 비교하며 갱신할지 판단 기준을 골라주는 chooser다.
+  처음 본 정점인데 왜 또 바뀌지, 방문 체크로 막으면 왜 틀리지, 비용
+  0은 왜 앞쪽 처리지, 더 싼 경로가 나오면 다시 바꾸기, deque 순서와
+  거리 갱신 관계 같은 자연어 paraphrase가 본 문서의 핵심 대비에
+  매핑된다.
+---
 # 0-1 BFS dist vs visited 미니 반례 카드
 
 > 한 줄 요약: `0-1 BFS`는 이름에 BFS가 들어가도 "처음 봤으니 visited로 고정"이 아니라 "`dist`가 더 줄어드나?"를 계속 보는 문제다.

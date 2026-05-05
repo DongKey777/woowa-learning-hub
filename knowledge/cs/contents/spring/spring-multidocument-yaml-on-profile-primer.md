@@ -9,17 +9,14 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
+- [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때](./spring-config-additional-location-primer.md)
+- [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md)
+- [spring 카테고리 인덱스](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
 
-> 관련 문서:
-> - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때](./spring-config-additional-location-primer.md)
-> - [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md)
-
-retrieval-anchor-keywords: spring multi document yaml primer, multi-document application.yml, spring.config.activate.on-profile beginner, yaml document separator spring boot, application yml three hyphens spring, on-profile does not activate profile, active profile matches document, document merge order top to bottom spring boot, later document overrides earlier document, inactive yaml document ignored, application.yml multi document vs application-prod.yml, spring activate on profile expression, spring config activate on-profile comma expression, spring profiles active invalid inside activated document, spring multi document yaml beginner
+retrieval-anchor-keywords: application.yml --- 뭐예요, spring multi document yaml primer, multi-document application.yml, spring.config.activate.on-profile beginner, 왜 prod 설정이 안 먹어요, on-profile does not activate profile, on-profile 왜 profile 안 켜져요, active profile matches document, document merge order top to bottom spring boot, later document overrides earlier document, inactive yaml document ignored, application.yml multi document vs application-prod.yml, spring activate on profile expression, spring config activate on-profile comma expression, spring multi document yaml beginner
 
 ## 핵심 개념
 
@@ -281,6 +278,14 @@ Spring Boot 공식 문서 기준으로 multi-document properties/YAML 파일은
 - "왜 prod 블록이 안 먹지?"
 - "왜 base 값이 남아 있지?"
 - "왜 아래쪽 문서가 무시된 것 같지?"
+
+## 질문 문장별로 어디서 멈출지
+
+| 학습자 질문 | 이 문서에서 먼저 답하는 포인트 | 다음 문서 |
+|---|---|---|
+| "`application.yml`의 `---`가 뭐예요?" | 한 파일 안 여러 문서라는 mental model | 이 문서에서 계속 |
+| "`on-profile`을 썼는데 `prod`가 안 켜져요" | `on-profile`은 활성화 스위치가 아니라 조건문 | [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md) |
+| "`prod` 문서를 썼는데 값이 안 바뀌어요" | active profile과 문서 순서를 먼저 재구성 | [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md) |
 
 ## 마무리
 

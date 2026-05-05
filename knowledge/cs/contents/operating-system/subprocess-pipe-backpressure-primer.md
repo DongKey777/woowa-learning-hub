@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Subprocess Pipe Backpressure Primer
+concept_id: operating-system/subprocess-pipe-backpressure-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- subprocess-wait-before-read
+- stdout-stderr-drain-order
+aliases:
+- subprocess pipe backpressure primer
+- subprocess pipe backpressure
+- pipe backpressure mental model
+- child blocks writing stdout pipe
+- parent wait before read deadlock
+- sequential stdout stderr read deadlock
+- stdout pipe full
+- stderr pipe full
+- child stuck in write syscall
+- write blocks when pipe full
+- pipe backpressure 처음 배우는데
+- stdout stderr 안 읽으면 멈춤
+- subprocess pipe hang basics
+- subprocess pipe backpressure primer basics
+- subprocess pipe backpressure primer beginner
+symptoms:
+- 출력이 많을 때만 subprocess가 안 끝나요
+- wait는 끝나지 않는데 child 로그도 안 늘어요
+- stdout stderr를 나중에 읽으면 왜 멈추죠
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/subprocess-fd-hygiene-basics
+next_docs:
+- operating-system/subprocess-bidirectional-pipe-deadlock-primer
+- operating-system/popen-runtime-wrapper-mapping
+linked_paths:
+- contents/operating-system/subprocess-symptom-first-branch-guide.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/broken-pipe-sigpipe-bridge.md
+- contents/operating-system/subprocess-bidirectional-pipe-deadlock-primer.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+confusable_with:
+- operating-system/subprocess-bidirectional-pipe-deadlock-primer
+- operating-system/subprocess-stdin-eof-primer
+forbidden_neighbors:
+- contents/operating-system/subprocess-bidirectional-pipe-deadlock-primer.md
+- contents/operating-system/subprocess-stdin-eof-primer.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+expected_queries:
+- subprocess 출력이 많을 때만 멈추는 이유가 뭐야?
+- wait만 했는데 child가 안 끝나요
+- stdout pipe가 차면 왜 write에서 막혀?
+- stderr를 따로 읽다가 hang 나는 구조를 처음 설명해줘
+- subprocess 로그가 안 늘고 종료도 안 되면 어디부터 봐?
+contextual_chunk_prefix: |
+  이 문서는 subprocess 출력을 pipe로 받는 순간 왜 작은 대기열이 생기고
+  parent가 제때 비우지 않으면 child가 write 안에서 멈추는지 처음 잡는
+  primer다. 출력이 많을 때만 멈춤, wait만 하고 read를 안 함, child 로그는
+  멈췄는데 프로세스가 안 끝남, stdout stderr를 순서대로 읽다가 hang, 출력
+  통로가 막혀 child가 더 못 내보냄 같은 자연어 표현이 본 문서의
+  backpressure 원인에 매핑된다.
+---
+
 # Subprocess Pipe Backpressure Primer
 
 > 한 줄 요약: child stdout/stderr를 pipe로 받으면 pipe는 작은 대기열이 되고, parent가 제때 읽지 않으면 대기열이 차서 child가 `write()` 안에서 멈출 수 있다.

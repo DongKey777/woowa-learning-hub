@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 'Command vs Strategy: `execute()`가 비슷해 보여도 먼저 자르는 짧은 다리'
+concept_id: design-pattern/command-vs-strategy-quick-bridge
+canonical: false
+category: design-pattern
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 85
+mission_ids:
+- missions/blackjack
+- missions/lotto
+review_feedback_tags:
+- command-vs-strategy
+- queue-retry-boundary
+- request-object-modeling
+aliases:
+- command vs strategy quick bridge
+- command vs strategy intermediate
+- execute method looks same command strategy
+- request object vs algorithm swap
+- queue command vs strategy
+- undo retry command strategy
+- command execute strategy execute difference
+- 커맨드 vs 전략 차이
+- execute 모양이 비슷한데 차이
+- 실행 요청 저장 vs 알고리즘 교체
+- command or strategy first choice
+- execute 같은데 command strategy
+- command query boundary pattern
+- 언제 command 언제 strategy
+- what is command vs strategy
+symptoms:
+- execute 메서드만 보고 command인지 strategy인지 구분이 안 돼요
+- 큐에 넣고 재시도할 작업인데 전략 패턴처럼 이름 붙였어요
+- 계산 방식만 바꾸면 되는데 command 클래스를 너무 많이 만들고 있어요
+intents:
+- comparison
+prerequisites:
+- design-pattern/command-pattern-basics
+- design-pattern/strategy-pattern-basics
+next_docs:
+- design-pattern/observer-vs-command-beginner-bridge
+- design-pattern/pattern-selection
+- design-pattern/command-bus-pattern
+linked_paths:
+- contents/design-pattern/command-pattern-basics.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/observer-vs-command-beginner-bridge.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/pattern-selection.md
+- contents/design-pattern/command-bus-pattern.md
+- contents/language/java/collection-update-strategy-primer.md
+confusable_with:
+- design-pattern/command-pattern-basics
+- design-pattern/strategy-pattern-basics
+forbidden_neighbors:
+- contents/design-pattern/command-pattern-basics.md
+- contents/design-pattern/strategy-pattern-basics.md
+expected_queries:
+- execute 모양이 비슷한데 command와 strategy를 어떻게 가르면 돼?
+- 큐에 넣어 재시도하는 작업은 전략 패턴이 아니라 왜 command에 가까워?
+- 알고리즘만 바꾸는 코드인데 command 클래스를 만들고 있는지 판단하고 싶어
+- 요청을 저장해 두었다가 나중에 실행하는 구조는 어떤 패턴으로 보는 게 맞아?
+- undo나 retry가 붙는 객체와 계산 방식 교체 객체를 리뷰에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 execute 같은 메서드 모양 때문에 커맨드와 전략을 같은 종류로
+  읽기 시작할 때, 실행 요청을 담는 객체와 계산 방식을 바꾸는 객체의 경계를
+  연결한다. 나중에 다시 실행할 일거리, 큐 적재, undo와 retry가 붙는 작업,
+  실행 이력 보관, 공식만 갈아끼우는 경우, 요청 저장과 알고리즘 선택을 구분하는
+  설명 같은 자연어 paraphrase가 본 문서의 비교 기준에 매핑된다.
+---
 # Command vs Strategy: `execute()`가 비슷해 보여도 먼저 자르는 짧은 다리
 
 > 한 줄 요약: 둘 다 `execute()` 같은 모양을 가질 수 있지만, **커맨드는 실행 요청을 담아 저장/전달하는 쪽**이고 **전략은 알고리즘을 바꿔 끼우는 쪽**이다.

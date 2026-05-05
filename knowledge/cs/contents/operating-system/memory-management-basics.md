@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 메모리 관리 기초
+concept_id: operating-system/memory-management-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- heap-vs-stack-boundary
+- rss-vsz-mental-model
+aliases:
+- 메모리 관리 기초
+- virtual memory beginner
+- page table basics
+- heap vs stack
+- page fault basics
+- address space basics
+- lazy allocation basics
+- first touch memory
+- stack overflow vs oom
+- rss vs vsz
+- heap vs rss
+- memory basics self-check
+- memory management basics basics
+- memory management basics beginner
+- memory management basics intro
+symptoms:
+- 힙, 스택, 페이지 테이블, RSS가 한꺼번에 나와서 메모리 설명이 자꾸 꼬여요
+- 가상 주소와 실제 RAM이 어떻게 연결되는지 말로 풀어 설명하기 어려워요
+- stack overflow, page fault, OOM이 서로 어떤 층의 문제인지 구분이 안 돼요
+intents:
+- definition
+prerequisites:
+- operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+- operating-system/cpu-scheduling-basics
+next_docs:
+- operating-system/virtual-memory-basics
+- operating-system/demand-paging-page-fault-primer
+- operating-system/page-table-overhead-memory-footprint
+linked_paths:
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/virtual-memory-basics.md
+- contents/operating-system/demand-paging-page-fault-primer.md
+- contents/operating-system/page-table-overhead-memory-footprint.md
+- contents/operating-system/swap-in-reclaim-fault-path-primer.md
+- contents/operating-system/memory-overcommit-semantics.md
+confusable_with:
+- operating-system/virtual-memory-basics
+- operating-system/demand-paging-page-fault-primer
+- operating-system/page-table-overhead-memory-footprint
+forbidden_neighbors: []
+expected_queries:
+- 프로세스 주소 공간, 페이지 테이블, RAM 연결을 입문자 눈높이로 한 번에 정리해줘
+- heap과 stack, RSS와 VSZ가 왜 다른 숫자인지 운영체제 기본 개념부터 알고 싶어
+- 메모리 관리를 처음 복습할 때 page fault와 OOM을 어떤 축으로 나눠 이해해야 해?
+- 가상 주소를 쓰는 프로그램이 실제 물리 메모리와 어떻게 이어지는지 큰 그림이 필요해
+- 메모리 지표를 설명할 때 주소 공간과 실제 사용량을 같이 보면 왜 헷갈리는지 풀어줘
+contextual_chunk_prefix: |
+  이 문서는 운영체제 입문자가 주소 공간, 페이지 테이블, RAM 연결과 힙, 스택, RSS, VSZ를 한 장의 메모리 그림으로 처음 잡는 primer다. 예약한 공간과 실제 상주분, 함수 호출 메모리, 동적 할당 영역, 처음 접근할 때 붙는 페이지, OOM과 다른 fault 축 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 메모리 관리 기초
 
 > 한 줄 요약: 운영체제는 각 프로세스에게 독립된 가상 주소 공간을 주고, 실제 물리 메모리와의 연결은 페이지 테이블로 관리해 격리와 효율을 동시에 달성한다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: '`List.copyOf(...)` vs `Collections.unmodifiableList(...)` vs `List.of(...)` beginner bridge'
+concept_id: language/list-copyof-listof-unmodifiablelist-beginner-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- readonly-list-view-vs-snapshot
+- defensive-copy-return-boundary
+- list-copyof-vs-unmodifiablelist
+aliases:
+- list.copyof vs list.of vs collections.unmodifiablelist
+- java readonly list beginner
+- java list snapshot vs view
+- java immutable list factory
+- java defensive copy list
+- java list.of list.copyof difference
+- java readonly list basics
+- 처음 배우는데 읽기 전용 리스트
+- 자바 읽기 전용 리스트 차이
+- 자바 unmodifiablelist 차이
+- 자바 리스트 뷰와 복사본
+- 자바 상수 리스트
+- list copyof listof unmodifiablelist beginner bridge basics
+- list copyof listof unmodifiablelist beginner bridge beginner
+- list copyof listof unmodifiablelist beginner bridge intro
+symptoms:
+- 읽기 전용 리스트인데 원본 바꾸니 같이 바뀌어요
+- copyOf랑 unmodifiableList를 같은 걸로 써도 되나요
+- 상수 리스트를 만들고 싶은데 뭘 써야 할지 모르겠어요
+intents:
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/java-immutable-object-basics
+next_docs:
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- language/mutable-element-pitfalls-list-set-primer
+- language/set-of-copyof-unmodifiableset-readonly-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/mutable-element-pitfalls-list-set-primer.md
+- contents/language/java/arrays-aslist-fixed-size-list-checklist.md
+- contents/language/java/set-of-copyof-unmodifiableset-readonly-primer.md
+- contents/language/java/map-of-copyof-unmodifiablemap-readonly-bridge.md
+- contents/language/java/list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- language/arrays-aslist-fixed-size-list-checklist
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+forbidden_neighbors: []
+expected_queries:
+- unmodifiableList는 복사본이 아니라 뷰라는 게 무슨 뜻이야
+- List.copyOf와 List.of는 언제 다르게 써야 해?
+- 읽기 전용 리스트를 반환하려면 copyOf가 맞아 unmodifiableList가 맞아
+- 원본 리스트가 바뀌어도 안 따라오게 하려면 뭐 써야 해
+- Java에서 상수 리스트와 snapshot 리스트를 구분하는 법
+- null 요소가 있으면 어떤 팩토리가 깨져?
+contextual_chunk_prefix: |
+  이 문서는 Java 초보 학습자가 읽기 전용 리스트를 만들 때 `Collections.unmodifiableList(...)`, `List.copyOf(...)`, `List.of(...)`를 같은 것으로 섞지 않도록, 원본을 비추는 뷰와 분리된 스냅샷과 처음부터 봉인된 상수 목록을 연결해 구분하는 bridge다. 원본 바뀌면 같이 보이나, 복사본인지 창문인지, 반환 전에 방어적으로 끊기, 수정 못 하는데 안쪽 객체는 왜 변해, 상수 목록은 무엇으로 만들지 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # `List.copyOf(...)` vs `Collections.unmodifiableList(...)` vs `List.of(...)` beginner bridge
 
 > 한 줄 요약: 초보자 기준으로는 `Collections.unmodifiableList(...)`를 "원본을 비추는 읽기 전용 창문", `List.copyOf(...)`를 "그 순간 따로 떠 놓은 읽기 전용 복사본", `List.of(...)`를 "처음부터 읽기 전용으로 만든 상수 목록"으로 기억하면 가장 덜 헷갈린다.

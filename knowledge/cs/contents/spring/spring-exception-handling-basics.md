@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: 'Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기'
+concept_id: spring/spring-exception-handling-basics
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- exception-translation-basics
+- local-vs-global-error-handling
+- status-code-semantics
+aliases:
+- spring exception handling basics
+- spring exceptionhandler vs restcontrolleradvice
+- exceptionhandler 입문
+- restcontrolleradvice 뭐예요
+- spring 400 404 409 응답
+- validation 400 vs conflict 409
+- bindingresult local vs global validation handling
+- global 400 translation spring
+- methodargumentnotvalidexception advice flow
+- responseentityexceptionhandler beginner
+- api 예외 전역 처리 spring
+- controller advice 처음
+symptoms:
+- 같은 실패처럼 보이는데 어떤 건 400이고 어떤 건 409인지 헷갈려
+- validation 에러를 컨트롤러에서 처리할지 전역에서 처리할지 감이 안 와
+- '@ExceptionHandler랑 @RestControllerAdvice를 언제 나눠 써야 하는지 모르겠어'
+intents:
+- definition
+- troubleshooting
+- design
+prerequisites:
+- spring/spring-mvc-request-lifecycle-basics
+- spring/valid-400-vs-message-conversion-400-primer
+next_docs:
+- spring/spring-custom-error-dto-to-problemdetail-handoff-primer
+- spring/spring-mvc-exception-resolver-chain-contract
+- spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-roomescape-validation-400-vs-business-conflict-409-primer.md
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-404-405-vs-bean-wiring-confusion-card.md
+- contents/software-engineering/api-design-error-handling.md
+confusable_with:
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/spring-custom-error-dto-to-problemdetail-handoff-primer
+- spring/requestbody-400-before-controller-primer
+forbidden_neighbors:
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+expected_queries:
+- Spring에서 @ExceptionHandler와 @RestControllerAdvice를 언제 나눠 써야 해?
+- validation 400과 business conflict 409를 같은 API에서 어떻게 번역해야 해?
+- BindingResult 없이 터진 validation 예외를 전역에서 어디서 처리하는지 설명해줘
+- Spring MVC에서 400 404 409 응답 정책을 초급 기준으로 어떻게 나눠 보면 돼?
+- ResponseEntityExceptionHandler를 언제 고려하면 좋은지 큰 그림으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC 초급 라우트에서 `400` `404` `409` 같은 실패를
+  어떤 HTTP 의미로 번역하고, 그 번역을 컨트롤러 로컬 `@ExceptionHandler`
+  와 전역 `@RestControllerAdvice` 중 어디에 둘지 처음 정리하는 primer다.
+---
 # Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기
 
 > 한 줄 요약: 처음에는 "`@ExceptionHandler`는 한 컨트롤러 안에서 급한 불을 끄는 도구, `@RestControllerAdvice`는 여러 API의 실패 응답을 한 정책으로 맞추는 도구"로 잡으면 `400`/`404`/`409`가 왜 갈리는지 훨씬 빨리 보인다.

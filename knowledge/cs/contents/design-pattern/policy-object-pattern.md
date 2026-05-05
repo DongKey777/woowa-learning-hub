@@ -1,3 +1,87 @@
+---
+schema_version: 3
+title: 'Policy Object Pattern: 도메인 결정을 객체로 만든다'
+concept_id: design-pattern/policy-object-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/shopping-cart
+review_feedback_tags:
+- policy-vs-strategy
+- rich-decision-result
+- validation-vs-policy
+aliases:
+- policy object pattern
+- 검증 규칙 교체
+- validation rule replacement
+- business rule object
+- decision object
+- refund policy
+- pricing policy
+- policy object vs strategy
+- policy object vs state
+- policy object vs specification
+- boolean specification
+- rich decision result
+- 처음 배우는데 policy object
+- policy object 뭐예요
+symptoms:
+- 허용 여부랑 이유를 같이 내려야 하는데 strategy와 뭐가 다른지 모르겠어요
+- boolean 검증 말고 결정 결과 객체를 왜 따로 만드는지 감이 안 와요
+- 환불이나 승인 규칙이 서비스 if 문으로 퍼져서 이름을 못 붙이겠어요
+intents:
+- definition
+- comparison
+- design
+- deep_dive
+prerequisites:
+- design-pattern/strategy-pattern
+- design-pattern/specification-pattern
+- design-pattern/layered-validation-pattern
+next_docs:
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/domain-service-vs-pattern-abuse
+linked_paths:
+- contents/design-pattern/layered-validation-pattern.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/domain-service-vs-pattern-abuse.md
+- contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md
+- contents/design-pattern/strategy-state-policy-object-decision-guide.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/specification-pattern
+- design-pattern/policy-object-vs-strategy-map-beginner-bridge
+forbidden_neighbors:
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+expected_queries:
+- policy object는 strategy랑 무엇이 다르고 언제 이름을 붙여?
+- 허용 여부와 사유를 같이 반환하는 규칙 객체가 왜 필요한가?
+- 환불 정책처럼 판단 결과가 풍부할 때 어떤 패턴으로 정리해?
+- boolean 검증을 넘어서 decision object를 만드는 기준이 뭐야?
+- 서비스 if 문에 흩어진 도메인 규칙을 policy object로 묶는 예를 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 환불 가능 여부나 취소 수수료처럼 도메인 규칙이
+  허용 여부와 근거, 금액, 등급 같은 판단 결과를 함께 낼 때 그 결정을
+  객체로 분리하는 이유를 처음 잡는 primer다. 서비스 조건문 흩어짐,
+  판단 규칙에 이름 붙이기, 승인 근거 같이 반환, 환불 기준 객체화,
+  비즈니스 결정 캡슐화 같은 자연어 paraphrase가 본 문서의 핵심 개념에
+  매핑된다.
+---
 # Policy Object Pattern: 도메인 결정을 객체로 만든다
 
 > 한 줄 요약: Policy Object 패턴은 "무엇을 할지"보다 "어떤 규칙으로 판단할지"를 객체로 분리해, 복잡한 비즈니스 결정을 명시적으로 만든다.

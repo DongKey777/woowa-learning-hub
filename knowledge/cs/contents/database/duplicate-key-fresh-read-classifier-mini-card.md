@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드
+concept_id: database/duplicate-key-fresh-read-classifier-mini-card
+canonical: false
+category: database
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- idempotency-replay-contract
+- duplicate-key-reclassification
+- primary-read-after-write
+aliases:
+- duplicatekeyexception fresh read classifier
+- duplicate key winner row recheck
+- primary read after duplicate key
+- same key same hash replay
+- same key different hash 409 conflict
+- duplicate key processing status
+- duplicate key blind retry
+- duplicate key why not retry insert
+- duplicate key means someone already wrote
+- duplicate then not found
+- stale snapshot duplicate key
+- replica read after duplicate
+- duplicate 뒤 어떻게 함
+- duplicate key fresh read classifier mini card basics
+- duplicate key fresh read classifier mini card beginner
+symptoms:
+- 중복키 예외가 나면 바로 409로 끝내야 하는지 헷갈려
+- duplicate 뒤에 다시 읽었는데 row가 안 보여서 막혔어
+- 같은 idempotency key 재요청을 성공으로 돌려줘야 하는지 모르겠어
+intents:
+- drill
+prerequisites:
+- database/idempotency-key-and-deduplication
+- database/unique-claim-existing-row-reuse-primer
+next_docs:
+- database/primary-read-after-duplicate-checklist
+- database/insert-if-absent-retry-outcome-guide
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+linked_paths:
+- contents/database/duplicate-key-vs-serialization-failure-mini-card.md
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/primary-read-after-duplicate-checklist.md
+- contents/database/mysql-1062-fresh-read-mini-sequence-diagram.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/database/idempotency-key-and-deduplication.md
+confusable_with:
+- database/duplicate-key-vs-serialization-failure-mini-card
+- database/duplicate-key-vs-busy-response-mapping
+forbidden_neighbors:
+- contents/database/postgresql-serializable-retry-playbook.md
+expected_queries:
+- DuplicateKeyException 났을 때 다음에 뭘 확인해야 해?
+- 중복키 예외 후 성공 재응답이랑 충돌 응답을 어떻게 나눠?
+- duplicate 뒤 조회 결과가 null이면 어디부터 의심해?
+- idem success랑 in-progress를 winner row로 구분하는 흐름 알려줘
+- primary에서 다시 읽어야 하는 이유를 초보자 관점으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 insert-if-absent나 멱등성 처리에서 DuplicateKeyException 뒤에
+  바로 실패하지 않고 primary/fresh read로 기존 winner row를 다시 확인해
+  성공 재생, 처리 중, 진짜 충돌을 가르는 흐름을 확인 질문으로 굳힌다.
+  중복키 다음 단계, 이미 누가 쓴 row 해석, 다시 읽어 결과 분류, 재시도
+  말고 상태 확인, 같은 요청 재응답, 다른 payload 충돌 판단 같은 자연어
+  paraphrase가 본 문서의 재분류 절차에 매핑된다.
+---
 # DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드
 
 > 한 줄 요약: `DuplicateKeyException`이 났다고 바로 `409 conflict`로 끝내지 말고, **primary/fresh read로 winner row를 다시 읽어 `idem success` / `in-progress` / `409 conflict`를 가르는 것**이 초보자용 기본 흐름이다.

@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: stdout/stderr Ordering After Redirect
+concept_id: operating-system/stdio-buffering-after-redirect
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- stdout-stderr-ordering-vs-buffering
+- redirect-merge-point-confusion
+aliases:
+- stdout stderr ordering after redirect
+- stdout delayed stderr immediate
+- stderr appears before stdout
+- redirect output delayed basics
+- fd wiring vs buffering mental model
+- stdout stderr merge order
+- 2>&1 buffering order
+- ci merged log order
+- python stdout stderr buffering tty pipe
+- node stdout stderr tty pipe behavior
+- redirect 후 순서가 바뀌어요
+- stdout stderr 순서 왜 바뀜
+- stdio buffering after redirect basics
+- stdio buffering after redirect beginner
+- stdio buffering after redirect intro
+symptoms:
+- 코드에서는 stdout을 먼저 찍었는데 화면에는 stderr가 먼저 보여요
+- 2>&1로 합쳤는데도 로그 순서가 뒤죽박죽처럼 보여요
+- redirect만 했는데 출력이 늦게 몰려 나와서 배선 문제인지 버퍼링 문제인지 모르겠어요
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- operating-system/subprocess-fd-hygiene-basics
+- operating-system/process-lifecycle-and-ipc-basics
+next_docs:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/shell-redirection-order-primer
+- operating-system/tty-aware-output-capture-patterns
+linked_paths:
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/shell-redirection-order-primer.md
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/ci-log-merge-behavior-primer.md
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/posix-spawn-file-actions-primer.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+confusable_with:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/shell-redirection-order-primer
+- operating-system/pseudo-tty-vs-pipe-behavior
+forbidden_neighbors:
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+expected_queries:
+- 왜 stdout을 먼저 출력했는데 redirect하면 stderr가 먼저 보일 수 있어?
+- 2>&1로 합쳤는데 로그 순서가 어긋나 보이는 이유를 초보자 기준으로 설명해줘
+- pipe나 파일로 보낼 때 stdout만 늦게 나오고 stderr는 바로 보이는 구조가 뭐야?
+- fd 배선 문제와 stdio 버퍼링 문제를 어떻게 구분해야 해?
+- Python, Java, Node에서 redirect 후 출력 순서가 헷갈릴 때 어디부터 의심해야 해?
+contextual_chunk_prefix: |
+  이 문서는 redirect 뒤에 stdout과 stderr가 왜 소스 코드 순서대로
+  보이지 않는지, fd 배선과 stdio 버퍼링과 merge 지점을 분리해 설명하는
+  beginner bridge다. stderr가 먼저 보임, stdout만 늦게 몰림, 2>&1을
+  했는데도 순서가 이상함, 배선은 맞는 것 같은데 flush 타이밍이 헷갈림 같은
+  자연어 질문이 본 문서의 ordering 설명에 매핑된다.
+---
 # stdout/stderr Ordering After Redirect
 
 > 한 줄 요약: redirect 뒤에 stdout과 stderr 순서가 바뀌어 보이는 가장 흔한 이유는 "코드 실행 순서"와 "각 stream이 실제로 flush되어 밖으로 나온 순서"가 다르기 때문이다.

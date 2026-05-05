@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: Reservation Reschedule and Cancellation Transition Patterns
+concept_id: database/reservation-reschedule-cancellation-transition-patterns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- reservation-transition
+- reschedule-union-lock
+- cancellation-drift
+aliases:
+- reservation reschedule cancellation transition
+- booking transition union lock
+- old scope new scope union
+- extend shorten move cancel expiry cleanup admin override
+- reservation mutation idempotency
+- booking scope delta
+- active predicate transition
+- reservation release acquire handoff
+- reschedule deadlock control
+- cancellation drift prevention
+- force cancel override booking
+- transition fence booking
+- mutation log reservation
+- old new scope union lock
+- booking move cancellation flow
+- slot delta apply
+- slot claim union lock
+- slot tombstone cleanup
+- roomescape 예약 변경 락 경계
+- roomescape 예약 취소 경쟁
+symptoms:
+- roomescape 예약 변경에서 기존 슬롯을 먼저 풀고 새 슬롯을 다시 잡아도 되나요
+- 예약 취소와 변경 요청이 동시에 오면 drift 없이 어떻게 직렬화하나요
+- 예약 reschedule에서 old scope와 new scope를 같이 잠가야 하는 이유가 궁금해요
+intents:
+- definition
+prerequisites:
+- database/phantom-safe-booking-patterns-primer
+- database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
+next_docs:
+- database/active-predicate-drift-reservation-arbitration
+- database/slot-delta-reschedule-semantics
+- database/hold-expiration-predicate-drift
+linked_paths:
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/active-predicate-alignment-capacity-guards.md
+- contents/database/active-predicate-drift-reservation-arbitration.md
+- contents/database/expiry-worker-race-patterns.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/slotization-migration-backfill-playbook.md
+- contents/database/slot-delta-reschedule-semantics.md
+- contents/database/idempotency-key-and-deduplication.md
+confusable_with:
+- database/roomescape-reservation-concurrency-bridge
+- database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
+forbidden_neighbors:
+- contents/database/roomescape-reservation-concurrency-bridge.md
+expected_queries:
+- roomescape 예약 변경에서 old scope와 new scope를 같이 잠가야 하나요?
+- 예약 reschedule을 release 후 acquire 두 단계로 처리하면 왜 위험해요?
+- 예약 취소와 연장 요청이 동시에 오면 어떤 transition contract로 묶어야 해요?
+contextual_chunk_prefix: |
+  이 문서는 roomescape 같은 예약 미션에서 예약 변경과 취소를 release 후
+  acquire 두 번의 write가 아니라 old/new scope handoff로 잡는 advanced
+  primer다. 예약 이동과 취소를 한 계약으로 봐야 해, old scope new
+  scope union lock, reschedule에서 drift가 왜 나, expiry cleanup도 같은
+  전이야, slot delta를 어떻게 넘겨 같은 자연어 paraphrase가 본 문서의
+  전이 패턴에 매핑된다.
+---
 # Reservation Reschedule and Cancellation Transition Patterns
 
 > 한 줄 요약: 예약 변경은 `old scope release -> new scope acquire` 두 번의 write가 아니라, 기존/목표 scope의 합집합을 잠근 뒤 active predicate, counter, ledger, history를 한 번에 넘기는 transition contract로 다뤄야 deadlock과 drift를 같이 줄일 수 있다.

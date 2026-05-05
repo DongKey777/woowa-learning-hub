@@ -1,9 +1,18 @@
 {
   "schema_version": 1,
   "computed_at": "2026-05-04T16:45:55Z",
-  "rationale": "Pilot 50 + Phase 4 wave docs locked at OVERALL 95.5% baseline (200q x 6 cohort). Touching these invalidates the eval contract. Migration workers must skip these paths.",
+  "rationale": "Historical Phase 4 selection notes live in docs/worklogs/rag-r3-pilot-50-docs-selection.md, but this manifest is the canonical Pilot lock source. These 69 paths are frozen against the 95.5% Pilot baseline and the post-9.3 honest 94.0% cohort-eval floor; touching them invalidates the eval contract, so migration workers must skip them.",
+  "authority": {
+    "canonical_manifest": "config/migration_v3/locked_pilot_paths.json",
+    "historical_reference": "docs/worklogs/rag-r3-pilot-50-docs-selection.md",
+    "historical_reference_scope": "selection memo only; not an exhaustive lock list",
+    "release_gate": "pilot_50_untouched"
+  },
   "baseline": {
     "overall_pass_rate": 0.955,
+    "cohort_eval_gate_min_pass_rate": 0.94,
+    "historical_source": "docs/worklogs/rag-r3-pilot-50-docs-selection.md",
+    "measurement_scope": "200q x 6 cohort eval, post-9.3 honest floor",
     "qrel_path": "tests/fixtures/r3_qrels_real_v1.json",
     "index_root": "state/cs_rag"
   },

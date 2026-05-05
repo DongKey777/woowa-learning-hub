@@ -1,8 +1,79 @@
+---
+schema_version: 3
+title: Queue vs Cache vs DB Decision Drill
+concept_id: system-design/queue-vs-cache-vs-db-decision-drill
+canonical: false
+category: system-design
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- sync-vs-async-boundary
+- cache-is-not-source-of-truth
+- queue-vs-persistence-role
+aliases:
+- queue vs cache vs db decision drill
+- cache vs queue vs database beginner
+- 언제 cache를 쓰고 언제 queue를 쓰나요
+- cache queue db 차이
+- db cache queue 뭐예요
+- db만 있으면 안 되나요
+- 처음 system design cache queue 헷갈려요
+- source of truth vs copy vs handoff
+- 왜 queue를 db 대신 쓰면 안 되나요
+- 왜 cache는 정답 저장소가 아니에요
+- what is cache vs queue vs db
+- backend basics cache queue database
+symptoms:
+- 응답이 느린데 cache를 붙여야 할지 queue로 빼야 할지 모르겠어
+- DB가 있는데 cache나 queue를 왜 더 두는지 감이 안 와
+- 후처리 작업도 그냥 DB에만 넣으면 되는지 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- database/transaction-basics
+- system-design/stateless-backend-cache-database-queue-starter-pack
+next_docs:
+- system-design/caching-basics
+- system-design/message-queue-basics
+- system-design/per-key-queue-vs-direct-api-primer
+linked_paths:
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/caching-basics.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/per-key-queue-vs-direct-api-primer.md
+- contents/database/transaction-basics.md
+confusable_with:
+- system-design/caching-basics
+- system-design/message-queue-basics
+- system-design/per-key-queue-vs-direct-api-primer
+forbidden_neighbors: []
+expected_queries:
+- 저장은 해야 하고 메일은 나중에 보내고 싶은데 DB랑 queue를 어떻게 나눠?
+- 조회 속도 문제인지 비동기 처리 문제인지 구분하는 가장 쉬운 기준이 뭐야?
+- 주문 시스템에서 cache, queue, database를 각각 어디에 써야 하는지 감이 안 와
+- cache가 정답 저장소가 아니라고 할 때 실제로 무슨 뜻이야?
+- 이미지 리사이즈나 알림 발송은 왜 DB 대신 queue로 보내는 거야?
+- 같은 데이터를 빨리 보여주고 싶은 상황과 나중 처리하고 싶은 상황을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 system design 입문자가 database, cache, queue를 대체재가
+  아니라 정답 저장, 빠른 재사용, 비동기 handoff로 나눠 고르게 돕는
+  intermediate chooser다. DB가 있는데 왜 cache나 queue가 더 필요한지,
+  응답 속도 문제와 후처리 분리 문제를 어떻게 가르는지, 주문 저장과
+  이메일 발송을 왜 다른 컴포넌트에 맡기는지, cache가 왜 source of
+  truth가 아닌지 같은 자연어 질문이 본 문서의 선택 기준에 매핑된다.
+---
 # Queue vs Cache vs DB Decision Drill
 
 > 한 줄 요약: `cache`는 "같은 답을 더 빨리 다시 꺼내기", `queue`는 "지금 안 끝내도 되는 일을 뒤로 넘기기", `database`는 "핵심 상태의 정답을 남기기"로 잡으면 beginner가 가장 자주 헷갈리는 선택이 빨리 정리된다.
 
-retrieval-anchor-keywords: queue vs cache vs db decision drill, cache vs queue vs database beginner, 언제 cache를 쓰고 언제 queue를 쓰나요, cache queue db 차이, 처음 system design cache queue 헷갈려요, source of truth vs copy vs handoff, 왜 queue를 db 대신 쓰면 안 되나요, 왜 cache는 정답 저장소가 아니에요, what is cache vs queue vs db, backend basics cache queue database
+retrieval-anchor-keywords: queue vs cache vs db decision drill, cache vs queue vs database beginner, 언제 cache를 쓰고 언제 queue를 쓰나요, cache queue db 차이, db cache queue 뭐예요, db만 있으면 안 되나요, 처음 system design cache queue 헷갈려요, source of truth vs copy vs handoff, 왜 queue를 db 대신 쓰면 안 되나요, 왜 cache는 정답 저장소가 아니에요, what is cache vs queue vs db, backend basics cache queue database
 
 **난이도: 🟡 Intermediate**
 
@@ -67,6 +138,20 @@ retrieval-anchor-keywords: queue vs cache vs db decision drill, cache vs queue v
 - `같은 답을 빨리 꺼낸다` -> `cache`
 - `지금 안 끝내도 되는 일을 넘긴다` -> `queue`
 
+## 셋은 경쟁 관계보다 역할 분담에 가깝다
+
+초심자가 가장 자주 막히는 질문은 "`셋 중 하나만 골라야 하나요?`"다.
+대부분의 실제 시스템은 하나만 고르지 않고, **정답 저장 / 빠른 재사용 / 느린 후처리**를 나눠 맡긴다.
+
+| 상황 | `database` 역할 | `cache` 역할 | `queue` 역할 |
+|---|---|---|---|
+| 주문 생성 + 주문 조회 많음 | 주문 상태 원본 저장 | 주문 상세/목록 조회 가속 | 메일, 적립금, 알림 후처리 전달 |
+| 상품 상세 조회 폭증 | 상품 원본과 재고 기준 저장 | 인기 조회 응답 가속 | 캐시 재계산이나 색인 갱신 작업 전달 |
+| 결제 완료 직후 영수증 화면 | 결제 결과와 영수증 기준 저장 | 최신성 허용 범위 안에서 반복 조회 가속 | 영수증 메일, 정산 이벤트 전달 |
+
+즉 `database`가 있더라도 읽기 비용이 크면 `cache`를 붙이고, 응답 뒤로 미뤄도 되는 일이 있으면 `queue`를 붙인다.
+반대로 `cache`나 `queue`를 붙였다고 해서 원본 저장소 역할이 자동으로 사라지지는 않는다.
+
 ---
 
 ## 미니 상황 4개로 바로 구분하기
@@ -115,6 +200,8 @@ retrieval-anchor-keywords: queue vs cache vs db decision drill, cache vs queue v
   - broker 보존 기간과 소비 실패 정책은 제품 설정에 따라 다르다. 보통 핵심 상태 원장과 같은 뜻으로 쓰면 안 된다.
 - `DB, cache, queue 중 하나만 고르면 된다`
   - 실제로는 함께 쓴다. 예를 들면 `DB에 주문 저장 -> queue로 메일 발송 -> 조회는 cache 가속` 조합이 흔하다.
+- `DB가 있으니 cache나 queue는 나중에 붙여도 된다`
+  - 늦게 붙여도 되지만, 조회 폭증이나 느린 후처리가 이미 보이면 처음부터 `원본 저장`, `읽기 가속`, `비동기 handoff`를 분리해서 보는 편이 설계 대화가 훨씬 빨라진다.
 
 ---
 

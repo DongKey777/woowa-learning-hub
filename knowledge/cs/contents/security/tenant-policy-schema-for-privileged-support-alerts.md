@@ -17,7 +17,7 @@
 > - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
 > - [AuthZ Kill Switch / Break-Glass Governance](./authz-kill-switch-break-glass-governance.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
-> - [Security README: Service / Delegation Boundaries](./README.md#service--delegation-boundaries-deep-dive-catalog)
+> - [Security README: Service / Delegation Boundaries](./README.md#service-delegation-boundaries-deep-dive-catalog)
 
 retrieval-anchor-keywords: tenant policy schema for privileged support alerts, privileged support alert policy, tenant support alert policy, support access tenant policy, support access routing config, privileged support change alert, security contact opt in, tenant admin opt in, admin notification policy, security contact notification policy, managed identity escalation, managed identity support alert, admin-managed identity escalation, compliance-sensitive support event, compliance-sensitive support access, support event retention export, support event policy snapshot, policy snapshot id, audience policy key, support access regulated alert, support access compliance routing, AOBO tenant alert policy, break glass tenant alert policy, tenant security contact verified channel, regulated support export alert
 

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Ordered Search Workload Matrix
+concept_id: data-structure/ordered-search-workload-matrix
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- search-layout-vs-scan-shape
+- lower-bound-after-scan
+- eytzinger-vs-veb-vs-blocked-array
+aliases:
+- ordered search workload matrix
+- point lookup layout choice
+- lower bound scan layout
+- eytzinger vs blocked array
+- plain veb vs sorted array
+- ordered index layout selection
+- range iterator locality choice
+- immutable search layout matrix
+symptoms:
+- 정적 ordered index를 고를 때 O(log n)만 보다가 scan 길이에 따른 차이를 놓친다
+- lower_bound 뒤에 몇 개를 더 읽는지가 중요한데 layout 선택 기준이 머리에 안 잡힌다
+- Eytzinger가 빠르다는 말만 듣고 iterator workload에도 그대로 들이밀게 된다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+next_docs:
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+linked_paths:
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+- contents/data-structure/cache-oblivious-b-tree-vs-plain-veb-layout.md
+- contents/data-structure/cache-oblivious-vs-cache-aware-layouts.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+confusable_with:
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+forbidden_neighbors:
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+expected_queries:
+- 정적 ordered search에서 point lookup 위주인지 range scan 위주인지에 따라 array layout을 어떻게 나눠야 해
+- lower_bound만 하고 끝나는 경우와 찾은 뒤 몇 개 더 읽는 경우를 구조 선택으로 비교해줘
+- Eytzinger가 빠를 때와 blocked array가 더 맞을 때를 workload 기준으로 설명해줘
+- immutable ordered index에서 plain sorted array와 plain vEB를 어떤 질문으로 갈라야 해
+- range iterator가 길게 붙는 경로에서 왜 search 벤치만 보면 안 되는지 알고 싶어
+- ordered map 비슷한 정적 검색 구조를 scan 길이 기준으로 고르는 표가 필요해
+contextual_chunk_prefix: |
+  이 문서는 정적 ordered search workload에서 point lookup, lower_bound only,
+  short scan, long scan을 먼저 구분해 plain sorted array, Eytzinger,
+  blocked array, plain vEB 중 무엇이 기본값인지 고르게 돕는 chooser다.
+  경계 뒤 몇 개를 더 읽는지, iterator locality, search는 빠른데 scan은
+  느린 layout, immutable ordered index 배치 선택 같은 자연어 paraphrase가
+  본 문서의 선택 기준에 매핑된다.
+---
 # Ordered Search Workload Matrix
 
 > 한 줄 요약: 정적 ordered search에서는 `O(log n)`보다 `찾고 끝나는지`, `lower_bound` 뒤에 몇 개를 더 읽는지가 plain sorted array, Eytzinger, blocked array, plain vEB의 우선순위를 더 크게 바꾼다.

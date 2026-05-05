@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: "Spring Bean 생명주기 기초: 생성부터 소멸까지"
+title: "Spring Bean 생명주기 기초: 스프링이 객체를 어떻게 만들어주는지 큰 그림"
 concept_id: "spring/bean-lifecycle-basics"
 canonical: true
 category: "spring"
@@ -61,7 +61,7 @@ contextual_chunk_prefix: |
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring bean lifecycle basics, spring bean 생명주기 입문, spring bean 생명주기 뭐예요, 스프링 빈 생명주기 큰 그림, bean lifecycle 처음 배우는데, @postconstruct @predestroy 기초, spring bean 초기화 콜백, spring bean 소멸 콜백, singleton prototype 차이 기초, request scope session scope 뭐예요, spring bean 언제 만들어지나, 왜 postconstruct 에서 transactional 안 먹어요, spring bean 생성 순서, 빈 생성 주입 초기화 차이, 스프링 빈 처음 배우는데 언제 쓰는지
+retrieval-anchor-keywords: spring bean lifecycle basics, spring bean 생명주기 입문, spring bean 생명주기 뭐예요, 스프링 빈 생명주기 큰 그림, bean lifecycle 처음 배우는데, @postconstruct @predestroy 기초, spring bean 초기화 콜백, spring bean 소멸 콜백, singleton prototype 차이 기초, request scope session scope 뭐예요, spring bean 언제 만들어지나, 왜 postconstruct 에서 transactional 안 먹어요, spring bean 생성 순서, 빈 생성 주입 초기화 차이, 스프링 빈 처음 배우는데 언제 쓰는지, 스프링이 객체를 어떻게 만들어주는지 큰 그림, 컨테이너가 객체를 언제 만들고 초기화하고 소멸시키는지
 
 ## 핵심 개념
 

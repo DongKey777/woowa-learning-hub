@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: '`firstEntry()`/`lastEntry()` vs `firstKey()`/`lastKey()` Beginner Bridge'
+concept_id: language/firstentry-lastentry-vs-firstkey-lastkey-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- navigablemap-empty-behavior
+- entry-vs-key-shape
+- null-vs-exception-contract
+aliases:
+- firstentry lastentry vs firstkey lastkey
+- treemap empty firstentry null
+- treemap empty firstkey exception
+- java treemap entry null vs key exception
+- firstentry null firstkey nosuchelementexception
+- firstkey lastkey firstentry lastentry difference
+- 자바 treemap firstentry firstkey 차이
+- 빈 treemap firstentry null
+- 빈 treemap firstkey 예외
+- firstentry vs pollfirstentry 차이
+- firstkey vs firstentry vs pollfirstentry
+- 왜 firstkey 는 예외고 firstentry 는 null
+- 언제 firstentry 쓰고 언제 firstkey 써요
+- firstentry firstkey 헷갈려요
+symptoms:
+- TreeMap 양 끝을 읽으려는데 firstKey와 firstEntry 중 무엇을 골라야 할지 모르겠어
+- 빈 TreeMap에서 어떤 메서드는 예외가 나고 어떤 메서드는 null이라서 규칙이 헷갈려
+- key만 필요할 때와 entry 전체가 필요할 때의 기준이 머리에 안 잡혀
+intents:
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/navigablemap-navigableset-mental-model
+- language/treeset-treemap-natural-ordering-compareto-bridge
+next_docs:
+- language/pollfirst-polllast-vs-first-last-beginner-bridge
+- language/ordered-map-null-safe-practice-drill
+- language/navigable-range-api-mini-drill
+linked_paths:
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/pollfirst-polllast-vs-first-last-beginner-bridge.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/language/java/navigable-range-api-mini-drill.md
+- contents/language/java/pollfirst-polllast-view-semantics-primer.md
+- contents/language/java/descendingkeyset-vs-descendingmap-bridge.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/data-structure/treemap-interval-entry-primer.md
+confusable_with:
+- language/pollfirst-polllast-vs-first-last-beginner-bridge
+- language/navigablemap-navigableset-mental-model
+forbidden_neighbors: []
+expected_queries:
+- TreeMap에서 firstKey와 firstEntry를 언제 나눠 써야 하는지 초보자 기준으로 설명해줘
+- 빈 TreeMap에서 왜 firstKey는 예외인데 firstEntry는 null인지 빠르게 이해하고 싶어
+- key만 필요할 때와 entry 전체가 필요할 때를 비교한 자바 문서를 찾고 있어
+- firstEntry, firstKey, pollFirstEntry가 한 번에 헷갈릴 때 먼저 볼 짧은 브리지가 필요해
+- TreeMap 양 끝 조회 API의 null 대 예외 규칙을 입문자 눈높이로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java 정렬 map을 처음 다루는 학습자가 TreeMap 양 끝 조회에서 key만 꺼낼지 entry 전체를 받을지, 빈 map에서 null과 예외가 왜 갈리는지 연결하는 bridge다. 맨 앞 값만 필요함, key와 value를 같이 봐야 함, 비어 있을 수도 있는 조회, 양 끝 조회 규칙, null-safe한 끝값 읽기 같은 자연어 표현이 본 문서의 선택 기준에 매핑된다.
+---
 # `firstEntry()`/`lastEntry()` vs `firstKey()`/`lastKey()` Beginner Bridge
 
 > 한 줄 요약: 빈 `TreeMap`에서 `firstEntry()`/`lastEntry()`는 `null`로 "entry가 없음"을 알려 주지만, `firstKey()`/`lastKey()`는 "반드시 key가 있어야 한다"는 전제로 `NoSuchElementException`을 던진다.

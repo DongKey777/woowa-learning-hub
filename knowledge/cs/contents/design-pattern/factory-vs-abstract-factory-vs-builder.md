@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Factory vs Abstract Factory vs Builder
+concept_id: design-pattern/factory-vs-abstract-factory-vs-builder
+canonical: false
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- factory-family-vs-builder
+- pattern-selection
+- object-creation-boundary
+aliases:
+- factory vs abstract factory vs builder basics
+- factory vs abstract factory vs builder beginner
+- factory vs abstract factory vs builder intro
+- design pattern basics
+- beginner design pattern
+- 처음 배우는데 factory vs abstract factory vs builder
+- factory vs abstract factory vs builder 입문
+- factory vs abstract factory vs builder 기초
+- what is factory vs abstract factory vs builder
+- how to factory vs abstract factory vs builder
+symptoms:
+- 팩토리랑 빌더 차이가 머리에 안 잡혀
+- 제품군 생성이 뭔지 모르겠어
+- factory라는 말이 다 같은 뜻처럼 보여
+intents:
+- comparison
+- design
+prerequisites:
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- design-pattern/builder-pattern-basics
+next_docs:
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+- design-pattern/factory-misnaming-checklist
+linked_paths:
+- contents/design-pattern/factory.md
+- contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+- design-pattern/record-vs-builder-request-model-chooser
+forbidden_neighbors: []
+expected_queries:
+- abstract factory는 언제 나오고 builder는 언제 써?
+- 관련 객체 묶음을 만드는 거랑 단계적 조립 차이를 설명해줘
+- factory 계열 패턴을 한 번에 비교해서 보고 싶어
+- 구현 선택이랑 객체 조립을 어떻게 구분하지
+- 팩토리 하나로 충분한데 abstract factory가 필요한 순간이 뭐야
+- builder와 factory를 같은 생성 패턴으로만 보면 왜 헷갈려?
+contextual_chunk_prefix: |
+  이 문서는 생성 패턴을 비교하는 학습자가 Factory, Abstract Factory, Builder 중 무엇을 골라야 하는지와 객체 하나의 생성, 서로 맞는 제품군 생성, 단계적 조립을 어떻게 구분하는지 결정한다. 관련 객체 묶음 만들기, 테마 계열 함께 생성, 생성 분기 숨기기, 옵션 많은 객체 조립, 구현 선택과 조립 구분 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Factory vs Abstract Factory vs Builder
 
 > 한 줄 요약: Factory는 "무엇을 만들지"를 숨기고, Abstract Factory는 "서로 관련된 제품군"을 만들고, Builder는 "어떻게 조립할지"를 단계적으로 분리한다.

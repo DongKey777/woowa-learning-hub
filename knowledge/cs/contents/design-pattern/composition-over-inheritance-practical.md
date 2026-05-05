@@ -10,14 +10,9 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
-
-> 관련 문서:
-> - [전략 (Strategy)](./strategy-pattern.md)
-> - [템플릿 메소드](./template-method.md)
-> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-> - [전략 폭발 냄새](./strategy-explosion-smell.md)
-> - [Template Hook Smells](./template-hook-smells.md)
-> - [안티 패턴](./anti-pattern.md)
+- [전략 (Strategy)](./strategy-pattern.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [전략 폭발 냄새](./strategy-explosion-smell.md)
 
 retrieval-anchor-keywords: composition over inheritance, favor composition over inheritance, 상속보다 조합, fragile base class, inheritance rigidity, lsp violation, behavior injection, strategy via composition, template method tradeoff, penguin bird inheritance smell, composition over inheritance practical basics, composition over inheritance practical beginner, composition over inheritance practical intro, design pattern basics, beginner design pattern
 

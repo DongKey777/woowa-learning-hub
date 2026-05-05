@@ -2,7 +2,7 @@
 
 > 한 줄 요약: migration success is not just moving code, but moving traffic, data, and contracts while keeping rollback open until parity is proven.
 
-**Difficulty: Advanced**
+**난이도: 🔴 Advanced**
 
 > retrieval-anchor-keywords: cutover, shadow traffic, dual write, feature flag, canary, blue-green, strangler fig, contract testing, rollback, archive, shadow read, parity, schema migration, CDC
 
@@ -39,6 +39,19 @@ The safest migrations separate the problem into four layers:
 - data migration
 - contract migration
 - operational migration
+
+## Which migration doc first?
+
+When "migration" questions start to blur together, split them by the first decision you need to make.
+
+| First question | Read first | Why |
+|---|---|---|
+| Who can advance or pause the next wave? | [Migration Wave Governance and Decision Rights](../contents/software-engineering/migration-wave-governance-decision-rights.md) | decision rights and pause authority |
+| Which numbers say the migration is healthy enough? | [Migration Scorecards](../contents/software-engineering/migration-scorecards.md) | readiness/risk metrics and exit criteria |
+| Which consumers move first and how do we dual-run them? | [Consumer Migration Playbook and Contract Adoption](../contents/software-engineering/consumer-migration-playbook-contract-adoption.md) | rollout order, registry, fallback |
+| Should we shrink scope or stop the migration? | [Migration Stop-Loss and Scope Reduction Governance](../contents/software-engineering/migration-stop-loss-scope-reduction-governance.md) | stop-loss and pivot criteria |
+
+This keeps "migration governance" from collapsing into one vague bucket during retrieval.
 
 ## 깊이 들어가기
 

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: HTTP/2 MAX_CONCURRENT_STREAMS, Pending Queue, Saturation
+concept_id: network/http2-max-concurrent-streams-pending-queue-saturation
+canonical: true
+category: network
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- stream-slot-vs-flow-control
+- grpc-channel-saturation
+- connection-sharding-threshold
+aliases:
+- settings_max_concurrent_streams
+- pending streams
+- http/2 stream queue
+- stream saturation
+- h2 concurrency
+- grpc channel saturation
+- queued stream
+- connection sharding
+- unary vs streaming
+- head of line in scheduler
+symptoms:
+- 연결은 살아 있는데 요청이 바로 안 나가요
+- gRPC 호출이 느린데 socket보다 stream slot이 부족한 것 같아요
+- HTTP/2에서 요청이 시작도 못 한 채 내부 대기열에 쌓여요
+intents:
+- definition
+prerequisites:
+- network/latency-bandwidth-throughput-basics
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/queue-saturation-attribution-metrics-runbook
+- network/http2-flow-control-window-update-stalls
+- network/http2-http3-connection-reuse-coalescing
+linked_paths:
+- contents/network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/grpc-keepalive-goaway-max-connection-age.md
+confusable_with:
+- network/queue-saturation-attribution-metrics-runbook
+- network/request-timing-decomposition
+forbidden_neighbors:
+- contents/network/http2-flow-control-window-update-stalls.md
+expected_queries:
+- H2는 연결이 살아 있는데 왜 요청이 시작도 못 하고 밀려?
+- SETTINGS_MAX_CONCURRENT_STREAMS에 걸리면 어디서 대기해?
+- gRPC 호출이 느린데 stream slot 부족부터 봐야 하나?
+- HTTP/2에서 pending stream queue가 생기는 상황을 설명해줘
+- connection sharding이 필요한 H2 포화 징후가 뭐야?
+- flow control stall 말고 stream 개수 한도 문제를 구분하고 싶어
+- unary 요청이 장수 stream 때문에 같이 밀릴 수 있어?
+- MAX_CONCURRENT_STREAMS 포화가 upstream 지연처럼 보일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2를 이미 다루는 학습자가 multiplexing이 무한 병렬이
+  아니라는 점과 SETTINGS_MAX_CONCURRENT_STREAMS 한도 때문에 요청이
+  stream 시작 전 내부 대기열에서 밀리는 상황을 처음 잡는 primer다. 연결은
+  살아 있는데 요청이 바로 안 나감, gRPC가 socket보다 stream slot이 먼저
+  부족함, unary 요청이 streaming 뒤에서 기다림, pending stream queue,
+  connection sharding 필요성 같은 자연어 paraphrase가 본 문서의 핵심
+  병목 개념에 매핑된다.
+---
 # HTTP/2 MAX_CONCURRENT_STREAMS, Pending Queue, Saturation
 
 > 한 줄 요약: HTTP/2 multiplexing은 무한 병렬이 아니다. `SETTINGS_MAX_CONCURRENT_STREAMS` 한계에 걸리면 새 stream은 보이지 않는 대기열에 서고, 운영자는 이를 upstream 지연이나 네트워크 문제로 오해하기 쉽다.

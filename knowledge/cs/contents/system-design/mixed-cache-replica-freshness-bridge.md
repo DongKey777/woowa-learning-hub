@@ -1,3 +1,90 @@
+---
+schema_version: 3
+title: Mixed Cache+Replica Freshness Bridge
+concept_id: system-design/mixed-cache-replica-freshness-bridge
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- cache-hit-acceptance-vs-fallback
+- stale-refill-no-fill-choice
+- freshness-context-propagation
+aliases:
+- mixed cache replica freshness bridge
+- cache hit miss refill consistency
+- cache hit reject reason
+- replica fallback reason
+- refill no-fill reason
+- recent-write min-version causal token
+- beginner mixed freshness
+- why stale after cache miss
+- why fallback reason is not enough
+- fallback headroom green red
+- recent-write recent_write mapping
+- min-version min_version mapping
+- mixed cache replica freshness bridge basics
+- mixed cache replica freshness bridge beginner
+- mixed cache replica freshness bridge intro
+symptoms:
+- 캐시 히트인데도 왜 오래된 값처럼 보여?
+- 캐시 미스 뒤 replica로 갔는데 방금 본 값보다 뒤로 가
+- refill까지 했는데 다음 요청에서도 stale이 반복돼
+intents:
+- comparison
+prerequisites:
+- system-design/read-after-write-routing-primer
+- system-design/projection-applied-watermark-basics
+- system-design/post-write-stale-dashboard-primer
+next_docs:
+- system-design/list-detail-monotonicity-bridge
+- system-design/session-guarantees-decision-matrix
+linked_paths:
+- contents/system-design/cache-hit-miss-session-policy-bridge.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/watermark-metadata-persistence-basics.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/pagination-monotonicity-primer.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/causal-consistency-intuition.md
+confusable_with:
+- system-design/read-after-write-routing-primer
+- system-design/list-detail-monotonicity-bridge
+- system-design/projection-applied-watermark-basics
+forbidden_neighbors:
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+expected_queries:
+- 캐시 히트 판정이 freshness 문맥이랑 어떻게 이어져야 해?
+- recent-write랑 min-version을 cache miss 뒤 replica 선택까지 같이 써야 하는 이유가 뭐야?
+- cache refill 단계에서 no-fill을 결정하는 기준을 한 번에 정리해줘
+- 왜 stale 캐시를 버렸는데도 fallback 결과가 다시 오래될 수 있어?
+- cache 앞단과 replica 뒤단을 같은 consistency 계약으로 묶는 방법이 궁금해
+- hit reject, source fallback, refill 허용을 한 그림으로 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 cache hit 판정, replica fallback, refill write-back을
+  따로 보지 않고 하나의 freshness context로 연결해 cache 앞단과 복제
+  읽기 뒤단을 잇는 beginner bridge다. 히트했는데도 왜 오래된 응답을
+  거절하는지, 미스 뒤 어느 읽기 원본으로 내려가는지, 다시 채우기 전에
+  왜 최신성 기준을 다시 확인하는지, 방금 본 값보다 뒤처진 결과를 왜
+  버리는지, fallback 이유와 no-fill 판단을 한 흐름으로 이해하고 싶다
+  같은 자연어 paraphrase가 본 문서의 recent-write, min-version,
+  causal token 연결에 매핑된다.
+---
 # Mixed Cache+Replica Freshness Bridge
 
 > 한 줄 요약: `recent-write`, `min-version`, `causal token`은 cache 앞에 왔다고 사라지면 안 되고, cache hit 판단, cache miss 뒤 source 선택, refill 허용 조건까지 같은 freshness context로 이어져야 한다.

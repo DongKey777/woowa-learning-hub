@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Spring Boot 자동 구성 기초
+concept_id: spring/boot-autoconfiguration-basics
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- starter-magic-mental-model
+- configuration-vs-autoconfiguration
+- conditional-backoff-first-check
+aliases:
+- spring boot autoconfiguration basics
+- spring boot auto-configuration primer
+- spring starter bean registration
+- starter bean auto registration
+- implicit bean registration
+- spring boot autoconfiguration
+- spring boot automatic configuration
+- spring boot starter default wiring
+symptoms:
+- starter만 추가했는데 bean이 왜 바로 생기는지 감이 안 와요
+- 내가 설정 클래스를 안 만들었는데 DataSource나 ObjectMapper가 보여서 누가 등록했는지 모르겠어요
+- auto-configuration과 내가 직접 쓰는 @Configuration을 같은 개념으로 이해하고 있어요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- spring/ioc-di-basics
+next_docs:
+- spring/boot-autoconfiguration-internals
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+confusable_with:
+- spring/boot-autoconfiguration-internals
+- spring/spring-configuration-vs-autoconfiguration-primer
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+forbidden_neighbors: []
+expected_queries:
+- spring boot 자동구성이 뭐예요?
+- starter 추가했는데 왜 bean이 바로 생겨요?
+- 설정 안 했는데 spring boot가 bean을 왜 만들어요?
+- auto-configuration이랑 configuration은 뭐가 달라요?
+- 처음 배우는데 spring boot starter가 왜 동작하는지 모르겠어요
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot starter를 추가했는데 왜 bean이 바로 생기는지,
+  auto-configuration이 뭐인지, configuration과는 뭐가 다른지 처음 묻는
+  학습자에게 큰 그림을 먼저 주는 canonical primer다. starter 추가했는데
+  바로 동작함, 설정 안 했는데 bean이 생김, spring boot 자동구성 뭐예요,
+  자동 설정은 누가 해줘요, 조건이 맞을 때만 bean 등록, classpath 보고
+  기본 설정 붙음 같은 자연어 paraphrase를 조건부 bean 등록이라는 mental
+  model로 연결한다.
+---
+
 # Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나
 
 > 한 줄 요약: Spring Boot 자동 구성(Auto-configuration)은 classpath에 라이브러리가 있을 때 미리 만들어둔 Bean 설정을 조건부로 자동 등록해, 개발자가 반복적인 설정을 직접 쓰지 않아도 되게 해준다.

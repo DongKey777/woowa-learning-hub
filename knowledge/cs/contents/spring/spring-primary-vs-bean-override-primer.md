@@ -1,3 +1,84 @@
+---
+schema_version: 3
+title: 'Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다'
+concept_id: spring/spring-primary-vs-bean-override-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- primary-vs-override
+- bean-candidate-vs-name-collision
+aliases:
+- '@primary vs bean override'
+- primary default candidate
+- bean override basics
+- bean override toggle
+- same type bean injection
+- same name bean collision
+- bean name collision vs bean candidate
+- nouniquebeandefinitionexception vs beandefinitionoverrideexception
+- 주입 단계 등록 단계 차이
+- primary not bean override
+- overriding disabled spring boot
+- spring bean candidate selection beginner
+- 빈 이름 충돌 구분
+- primary qualifier ordering
+symptoms:
+- 같은 타입 bean이 여러 개인 문제와 같은 이름 bean 충돌을 같은 문제로 보고 있어요
+- '@Primary를 붙이면 bean 이름 충돌도 같이 풀릴 거라고 생각해요'
+- NoUniqueBeanDefinitionException과 BeanDefinitionOverrideException을 같은 축으로 읽고 있어요
+intents:
+- definition
+prerequisites:
+- spring/bean-di-basics
+- spring/primary-qualifier-collection-injection
+next_docs:
+- spring/primary-qualifier-collection-injection
+- spring/spring-custom-qualifier-primer
+- spring/ioc-container-internals
+linked_paths:
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-beandefinitionoverrideexception-quick-triage.md
+- contents/spring/spring-allow-bean-definition-overriding-test-boundaries-primer.md
+- contents/spring/spring-bean-definition-overriding-semantics.md
+- contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-di-exception-quick-triage.md
+- contents/spring/spring-custom-qualifier-primer.md
+- contents/spring/ioc-di-container.md
+- contents/database/transaction-basics.md
+confusable_with:
+- spring/primary-conditionalonmissingbean-bean-override-decision-guide
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+- spring/conditionalonsinglecandidate-vs-primary-primer
+- spring/primary-qualifier-collection-injection
+- spring/same-type-bean-injection-failure-cause-router
+forbidden_neighbors:
+- contents/spring/spring-same-type-bean-injection-failure-cause-router.md
+- contents/spring/spring-same-name-bean-collision-cause-router.md
+expected_queries:
+- "'@Primary가 뭐예요?'"
+- bean override가 뭐예요?
+- "'@Primary는 언제 써요?'"
+- bean override는 언제 켜요?
+- 같은 타입 빈이 여러 개면 뭐가 주입돼요?
+- primary랑 qualifier 중 뭐부터 봐야 해?
+- 빈 이름 충돌이랑 같은 타입 후보 문제를 왜 따로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 초심자가 같은 타입 후보 여러 개 문제와 같은 bean
+  이름 충돌 문제를 시간축으로 분리해 `@Primary`와 bean override를 처음
+  잡는 primer다. 기본으로 꽂힐 대상을 정하기, 등록 단계에서 이름이
+  부딪힘, 왜 앱 시작 전에 깨지지, 주입 규칙과 등록 규칙 차이, found 2와
+  이름 충돌 메시지 구분 같은 자연어 paraphrase가 본 문서의 핵심 비교에
+  매핑된다.
+---
 # Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다
 
 > 한 줄 요약: `@Primary`는 이미 등록된 여러 후보 중 기본 주입 대상을 고르는 규칙이고, bean override는 같은 이름의 bean definition이 충돌할 때 등록 자체를 어떻게 처리할지의 문제다.
@@ -8,19 +89,15 @@
 
 
 관련 문서:
-
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
-> - [BeanDefinitionOverrideException Quick Triage: 같은 이름 충돌인지, back-off인지, 후보 선택 문제인지 먼저 가르기](./spring-beandefinitionoverrideexception-quick-triage.md)
-> - [Spring `spring.main.allow-bean-definition-overriding` Boundaries Primer: 테스트에서는 언제 괜찮고, 운영 기본값으로는 왜 위험한가](./spring-allow-bean-definition-overriding-test-boundaries-primer.md)
-> - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
-> - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
-> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
-> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+- [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+- [BeanDefinitionOverrideException Quick Triage: 같은 이름 충돌인지, back-off인지, 후보 선택 문제인지 먼저 가르기](./spring-beandefinitionoverrideexception-quick-triage.md)
+- [Spring `spring.main.allow-bean-definition-overriding` Boundaries Primer: 테스트에서는 언제 괜찮고, 운영 기본값으로는 왜 위험한가](./spring-allow-bean-definition-overriding-test-boundaries-primer.md)
+- [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
+- [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
+- [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+- [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+- [IoC 컨테이너와 DI](./ioc-di-container.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 
 retrieval-anchor-keywords: @primary 뭐예요, bean override 뭐예요, @primary vs bean override, @primary 언제 써요, bean override 언제 켜요, 같은 타입 빈 여러 개 뭐가 주입돼요, 같은 이름 bean 이 겹치면 어떻게 돼요, bean name collision vs bean candidate, nouniquebeandefinitionexception vs beandefinitionoverrideexception, 주입 단계 등록 단계 차이, primary not bean override, overriding disabled spring boot, spring bean candidate selection beginner, 빈 이름 충돌 헷갈려요, primary qualifier 전에 뭐부터 봐요
 

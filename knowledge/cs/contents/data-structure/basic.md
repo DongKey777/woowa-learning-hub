@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 기본 자료 구조
+concept_id: data-structure/basic
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- operation-pattern-first
+- structure-selection-basics
+aliases:
+- data structure basics
+- beginner data structure
+- what data structure to choose
+- 자료구조 처음 배우는데
+- array linked list stack queue basics
+- hash table heap tree graph basics
+- union find basics
+- map set beginner choice
+- beginner cs primer
+- 자료구조 기초
+- 어떤 자료구조 써야 하나
+- basics intro
+symptoms:
+- 자료구조가 너무 많아서 어디서부터 봐야 할지 모르겠어
+- 배열이랑 큐랑 트리가 한꺼번에 나와서 머릿속에 정리가 안 돼
+- 문제를 보면 어떤 자료구조를 먼저 떠올려야 할지 감이 안 와
+intents:
+- definition
+prerequisites: []
+next_docs:
+- data-structure/linked-list-basics
+- data-structure/array-vs-linked-list
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+linked_paths:
+- contents/data-structure/stack-basics.md
+- contents/data-structure/queue-basics.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/applied-data-structures-overview.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/array-vs-linked-list
+- data-structure/linked-list-basics
+forbidden_neighbors:
+- contents/data-structure/array-vs-linked-list.md
+expected_queries:
+- 자료구조 큰 그림을 먼저 잡고 싶어
+- 백엔드 준비할 때 기본 자료구조를 어떻게 나눠서 보면 돼
+- 연산 기준으로 자료구조 선택하는 입문 설명
+- 배열 스택 큐 트리 그래프를 한 번에 정리한 글
+- 처음 배우는 자료구조 로드맵
+- 어떤 질문이 나오면 어떤 자료구조를 떠올려야 해
+- ArrayList LinkedList HashMap Queue를 한 번에 구분해서 배우고 싶어
+- 백엔드 미션 전에 자료구조 전체 지도를 먼저 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 자료구조를 처음 배우는 학습자가 배열, 스택, 큐, 해시,
+  힙, 트리, 그래프를 이름이 아니라 연산 질문으로 묶어 기초를 잡는
+  primer다. 어떤 구조를 먼저 떠올릴지, 읽기와 삽입, key로 찾기,
+  최소값 반복 선택, 연결 관계 탐색, 같은 그룹 판별 같은 자연어
+  paraphrase가 본 문서의 큰 그림에 매핑된다.
+---
 # 기본 자료 구조
 
 > 한 줄 요약: 배열, 연결 리스트, 스택, 큐, 해시 테이블, 힙, 트리, 그래프, 유니온-파인드는 "무슨 연산을 자주 빠르게 하고 싶은가"를 기준으로 고르는 기본 도구다.

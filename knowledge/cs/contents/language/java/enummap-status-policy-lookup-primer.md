@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Enum 키라면 언제 `HashMap`에서 `EnumMap`으로 옮길까
+concept_id: language/enummap-status-policy-lookup-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- enum-key-map-choice
+- status-policy-table
+aliases:
+- enummap vs hashmap enum key
+- enum key map choice beginner
+- when to use enummap
+- enum map mental model
+- hashmap to enummap
+- enum status lookup table
+- enum key why not hashmap
+- 처음 배우는데 enummap
+- enum 키면 언제 enummap
+- 상태별 정책 테이블
+- what is enummap
+- java enum map basics
+symptoms:
+- enum 키만 쓰는데 왜 그냥 HashMap을 쓰는지 설명이 안 돼
+- 상태별 라벨이나 정책을 저장할 때 EnumMap을 언제 떠올려야 할지 모르겠어
+- switch가 반복되는데 map으로 옮길지 enum 메서드로 갈지 감이 안 와
+intents:
+- definition
+prerequisites:
+- language/java-enum-basics
+- language/java-collections-basics
+next_docs:
+- language/enum-to-state-transition-beginner-bridge
+- language/map-implementation-selection-mini-drill
+- software-engineering/oop-design-basics
+linked_paths:
+- contents/language/java/java-enum-basics.md
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/enum-to-state-transition-beginner-bridge.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- language/map-implementation-selection-mini-drill
+- language/enum-to-state-transition-beginner-bridge
+forbidden_neighbors:
+- contents/language/java/java-collections-basics.md
+expected_queries:
+- Enum 키만 쓰는 맵이면 HashMap 말고 EnumMap을 왜 고려해야 해?
+- 상태별 정책 테이블을 만들 때 EnumMap이 잘 맞는 경우를 초보자 기준으로 알려줘
+- 주문 상태 라벨 저장 예제로 EnumMap 입문 설명해줘
+- enum 전용 lookup 표와 일반 HashMap 차이를 처음 배우는 사람 관점에서 보고 싶어
+- key가 enum으로 닫혔다는 말이 map 선택에 왜 중요해?
+- switch가 늘어나기 시작할 때 EnumMap으로 옮기는 신호가 뭔지 궁금해
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 enum만 key로 쓰는 상태표에서 범용 map 대신 EnumMap을 언제 떠올려야 하는지, 작은 라벨표와 정책표 선택 기준을 처음 잡는 primer다. enum 전용 칸막이 표, 상태별 lookup 표, switch가 늘어날 때 map 선택, key 후보가 이미 닫힘, 주문 상태 라벨표, 범용 서랍보다 전용 표가 나은 순간 같은 자연어 paraphrase가 본 문서의 핵심 판단에 매핑된다.
+---
 # Enum 키라면 언제 `HashMap`에서 `EnumMap`으로 옮길까
 
 > 한 줄 요약: key 후보가 enum으로 이미 고정됐다면 `HashMap`은 범용 서랍이고 `EnumMap`은 enum 전용 칸막이 표라고 생각하면 된다. 상태별 작은 값을 붙일 때는 `EnumMap`이 의도를 더 또렷하게 드러낸다.

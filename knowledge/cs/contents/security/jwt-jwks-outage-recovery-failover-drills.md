@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: JWT / JWKS Outage Recovery / Failover Drills
+concept_id: security/jwt-jwks-outage-recovery-failover-drills
+canonical: false
+category: security
+difficulty: advanced
+doc_role: drill
+level: advanced
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- jwks-outage-bucketing
+- signer-freeze-before-refresh
+- stale-if-error-bounds
+aliases:
+- JWT outage recovery
+- JWKS outage
+- authentication outage
+- verification outage
+- stale JWKS cache
+- failover drill
+- stale-if-error
+- fail-open fail-closed
+- emergency key pinning
+- kid miss storm
+- unable to find jwk
+- unable to find JWK
+- auth recovery ladder
+- jwks cutover failure
+- signing key compromise
+symptoms:
+- JWKS가 죽었을 때 stale key를 어디까지 써도 되는지 모르겠어요
+- kid miss가 쏟아질 때 signer rollback과 verifier refresh 중 뭘 먼저 해야 할지 헷갈려요
+- JWT 검증 장애 drill을 어떤 시나리오로 연습해야 하는지 감이 안 와요
+intents:
+- drill
+prerequisites:
+- security/jwt-signature-verification-failure-playbook
+- security/jwks-rotation-cutover-failure-recovery
+- security/key-rotation-runbook
+next_docs:
+- security/signing-key-compromise-recovery-playbook
+- security/auth-incident-triage-blast-radius-recovery-matrix
+- security/token-introspection-vs-self-contained-jwt
+linked_paths:
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/jwk-rotation-cache-invalidation-kid-rollover.md
+- contents/security/jwks-rotation-cutover-failure-recovery.md
+- contents/security/key-rotation-runbook.md
+- contents/security/signing-key-compromise-recovery-playbook.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/network/proxy-retry-budget-discipline.md
+confusable_with:
+- security/jwt-signature-verification-failure-playbook
+- security/jwks-rotation-cutover-failure-recovery
+- security/signing-key-compromise-recovery-playbook
+forbidden_neighbors:
+- contents/security/signing-key-compromise-recovery-playbook.md
+expected_queries:
+- JWKS 장애 drill을 만들 때 어떤 순서로 복구 연습해야 해?
+- kid miss 폭증이면 signer rollback이 먼저야 verifier refresh가 먼저야?
+- stale-if-error를 JWT 검증 장애에서 어디까지 허용해야 하나요
+- JWT 검증 장애를 dependency outage와 bad publish로 나눠 훈련하는 법 알려줘
+- JWKS endpoint timeout 때 refresh storm을 어떻게 막는지 drill 관점으로 설명해줘
+- unknown kid는 왜 stale cache로 통과시키면 안 돼?
+contextual_chunk_prefix: |
+  이 문서는 JWT 검증 경로가 실제로 깨졌을 때 JWKS dependency outage,
+  stale cache, bad publish, old key removal failure를 어떻게 나눠 보고
+  어떤 순서로 signer freeze, verifier refresh collapse, bounded stale,
+  rollback, republish를 연습해야 하는지 확인하는 drill이다. kid miss
+  폭증, unable to find JWK, refresh storm, stale-if-error 한계, unknown
+  kid fail-closed, emergency key pinning 같은 자연어 paraphrase가 본
+  문서의 outage recovery ladder와 failover drill에 매핑된다.
+---
 # JWT / JWKS Outage Recovery / Failover Drills
 
 > 한 줄 요약: JWT 검증 장애는 key rotation 지식만으로 복구되지 않으며, JWKS dependency outage, 잘못된 key publish, refresh storm, stale cache 정책을 분리해서 준비한 recovery ladder와 drill이 있어야 대규모 인증 장애를 짧게 끝낼 수 있다.

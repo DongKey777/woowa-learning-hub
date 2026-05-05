@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: BigDecimal Key 정책 30초 체크리스트
+concept_id: language/bigdecimal-key-policy-30-second-checklist
+canonical: false
+category: language
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/lotto
+- missions/shopping-cart
+- missions/blackjack
+review_feedback_tags:
+- bigdecimal-key-policy
+- normalize-at-boundary
+- equals-vs-compareto
+aliases:
+- BigDecimal key policy
+- BigDecimal 1.0 vs 1 key
+- BigDecimal 정규화 정책
+- Map key BigDecimal 체크리스트
+- equals compareTo key 차이
+symptoms:
+- 리뷰에서 BigDecimal을 Map key로 쓸 거면 1.0과 1을 같은 값으로 볼지 먼저 적으라고 해요
+- shopping-cart나 lotto 금액 코드를 바꾸다가 HashMap 조회와 TreeMap 조회 결과가 달라져서 왜 그런지 모르겠어요
+- stripTrailingZeros를 여기저기 붙였더니 어느 경계가 진짜 정책인지 더 헷갈려졌어요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- language/bigdecimal-sorted-collection-bridge
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+- language/money-value-object-basics
+next_docs:
+- language/value-object-invariants-canonicalization-boundary-design
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- software-engineering/lotto-purchase-amount-value-object-bridge
+linked_paths:
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-striptrailingzeros-input-boundary-bridge.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/bigdecimal-hashset-treeset-contains-mini-drill.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/money-value-object-basics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/software-engineering/lotto-purchase-amount-value-object-bridge.md
+- contents/software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge.md
+confusable_with:
+- language/bigdecimal-sorted-collection-bridge
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+- language/money-value-object-basics
+- software-engineering/lotto-purchase-amount-value-object-bridge
+forbidden_neighbors: []
+expected_queries:
+- lotto나 shopping-cart 미션에서 BigDecimal을 Map key로 쓸 때 1.0과 1을 같은 key로 볼지 어떻게 정해야 해?
+- PR에서 BigDecimal key 정책과 정규화 위치를 같이 적으라는 리뷰를 받았는데 왜 중요한지 설명해줘
+- HashMap에서는 안 찾히는데 TreeMap에서는 찾히는 BigDecimal 조회 차이를 미션 금액 예제로 이해하고 싶어
+- stripTrailingZeros를 아무 데서나 부르지 말고 입력 경계 한 곳에서만 하라는 말이 무슨 뜻이야?
+- 결제 금액이나 구매 금액을 BigDecimal key로 다루는 체크리스트형 자바 미션 문서를 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 Woowa lotto, shopping-cart, blackjack 미션에서 금액이나
+  라운드별 누적값을 `BigDecimal` key로 다루며 학습자가 "왜 `1.0`과 `1`을
+  먼저 같은 key인지 적으라고 하지?"라고 묻는 장면을 mission_bridge로
+  연결한다. HashMap과 TreeMap 조회가 다름, `stripTrailingZeros()` 위치가
+  흔들림, 정규화 정책을 PR에서 문장으로 적어야 함, 금액 key 테스트를 어디에
+  둬야 할지 모르겠음 같은 자연어 표현이 이 문서의 검색 표면이다.
+---
+
 # BigDecimal Key 정책 30초 체크리스트
 
 > 한 줄 요약: `BigDecimal`을 key로 쓸 때는 "`1.0`과 `1`을 같은 key로 볼지"를 먼저 정하고, 정규화 위치와 테스트 케이스를 PR 전에 같이 점검해야 한다.

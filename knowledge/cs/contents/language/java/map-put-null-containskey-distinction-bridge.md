@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 'Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지'
+concept_id: language/map-put-null-containskey-distinction-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- put-return-vs-key-existence
+- null-value-vs-missing-key
+aliases:
+- java map put null containskey difference
+- hashmap put null previous value beginner
+- map put returns null but key exists
+- map put null distinguish containskey
+- map previous value null vs missing key
+- treemap put null containskey beginner
+- 자바 map put null 의미
+- 자바 hashmap put 반환값 null 구분
+- 자바 containskey put 패턴
+- 맵 put null 기존 null 값 새 key 차이
+- map put previous value null missing key bridge
+- map put null containskey distinction bridge basics
+- map put null containskey distinction bridge beginner
+- map put null containskey distinction bridge intro
+- java basics
+symptoms:
+- put 결과가 null이라 새 key인 줄 알았는데 기존 값이 null이었대
+- Map에 값이 들어갔는지 덮어쓴 건지 구분이 안 돼
+- containsKey를 언제 put 앞에 봐야 하는지 감이 안 와
+intents:
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/map-get-null-containskey-getordefault-primer
+next_docs:
+- language/map-put-get-remove-containskey-return-cheat-sheet
+- language/treemap-put-return-value-overwrite-bridge
+- language/collectors-tomap-duplicate-key-primer
+linked_paths:
+- contents/language/java/map-put-get-remove-containskey-return-cheat-sheet.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/treemap-put-return-value-overwrite-bridge.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collectors-tomap-duplicate-key-primer.md
+confusable_with:
+- language/map-get-null-containskey-getordefault-primer
+- language/treemap-put-return-value-overwrite-bridge
+forbidden_neighbors:
+- contents/language/java/map-put-get-remove-containskey-return-cheat-sheet.md
+expected_queries:
+- Map put 결과가 null이면 새 key인지 기존 null 값인지 어떻게 구분해?
+- containsKey를 put 전에 봐야 하는 이유를 예제로 설명해줘
+- HashMap put 반환값 null 해석이 자꾸 헷갈려
+- 기존 value가 null인 경우와 key가 없던 경우를 한 번에 비교하고 싶어
+- TreeMap put도 null을 돌려줄 때 같은 해석인지 알고 싶어
+- 맵 덮어쓰기 전에 존재 여부를 확인하는 초급 패턴을 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 Map put 결과가 null일 때 새 key 추가와 기존 null value 덮어쓰기를 어떻게 구분하는지, containsKey를 왜 저장 전에 함께 봐야 하는지 연결하는 bridge다. 맵에 넣었는데 null이 나와, 새로 추가된 건지 모르겠어, 저장 전 존재 여부 확인, null 값과 빈 자리 구분, 덮어쓰기 전에 체크, TreeMap도 같은 규칙인가 같은 자연어 paraphrase가 본 문서의 핵심 비교에 매핑된다.
+---
 # Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지
 
 > 한 줄 요약: `put(key, value)`가 `null`을 돌려줘도 "새 key였다"와 "기존 value가 null이었다"를 바로 구분할 수는 없다. 이때는 `containsKey(key)`를 덮어쓰기 전에 같이 봐야 뜻이 분명해진다.

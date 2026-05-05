@@ -1,3 +1,83 @@
+---
+schema_version: 3
+title: Monotonic Writes Ordering Primer
+concept_id: system-design/monotonic-writes-ordering-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- idempotency-vs-ordering
+- per-key-ordering-scope
+- sequence-gap-handling
+aliases:
+- monotonic writes ordering primer
+- monotonic writes beginner
+- monotonic writes 뭐예요
+- write ordering primer
+- gateway app database write sequence
+- per-session write ordering
+- per-session ordering primer
+- session write sequence
+- session_write_seq
+- sequence number ordering primer
+- idempotency key vs sequence number
+- duplicate retry out of order write
+- same user write ordering
+- cart checkout write order
+- per-aggregate queue ordering
+symptoms:
+- 같은 사용자가 눌렀는데 저장 결과가 뒤죽박죽으로 적용돼
+- 재시도는 막았는데 다른 write가 앞질러 가는 이유를 모르겠어
+- sequence를 어디 기준으로 끊어야 할지 감이 안 와
+intents:
+- definition
+prerequisites:
+- system-design/read-after-write-consistency-basics
+next_docs:
+- system-design/per-key-queue-vs-direct-api-primer
+- system-design/write-order-vs-precondition-primer
+- system-design/session-policy-implementation-sketches
+linked_paths:
+- contents/system-design/per-key-queue-vs-direct-api-primer.md
+- contents/system-design/write-order-vs-precondition-primer.md
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/writes-follow-reads-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/inventory-reservation-system-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/distributed-lock-design.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/compare-and-set-version-columns.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+confusable_with:
+- system-design/writes-follow-reads-primer
+- system-design/write-order-vs-precondition-primer
+- database/idempotency-key-and-deduplication
+forbidden_neighbors:
+- contents/database/idempotency-key-and-deduplication.md
+expected_queries:
+- 같은 사용자가 누른 저장 요청 순서가 서버에서 뒤집히지 않게 하려면 뭘 써야 해?
+- monotonic writes를 처음 배울 때 sequence number와 idempotency key를 어떻게 나눠 이해해?
+- retry가 섞여도 checkout보다 앞선 수정이 먼저 적용되게 만드는 기본 방법이 뭐야?
+- per-session write ordering이 필요할 때 queue, seq, fence 중 어디서 시작해야 해?
+- 같은 user flow write 순서를 보장하는 설계를 beginner 관점에서 설명해줘
+- cart 단위로 번호를 매기고 중복 재시도를 흡수하는 계약을 한 번에 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 같은 세션이나 같은 사용자 흐름에서 먼저 보낸 write가 나중
+  write보다 먼저 적용되게 만드는 기본 감각을 처음 잡는 primer다. 저장
+  요청 줄 세우기, 재시도 사이에 순서 안 뒤집히게 하기, checkout 전에
+  앞선 수정 먼저 반영, 사용자별 write 타임라인 지키기, 순번 표지와 중복
+  방지 역할 나누기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Monotonic Writes Ordering Primer
 
 > 한 줄 요약: monotonic writes는 "같은 세션이나 같은 사용자 흐름에서 먼저 보낸 write가 나중 write보다 먼저 적용되게 하자"는 약속이고, beginner 단계에서는 sequence number로 순서를 표시하고, idempotency key로 같은 write 재시도를 흡수하고, 필요하면 per-key queue나 fence로 적용 권한을 하나로 줄이는 식으로 시작하면 된다.

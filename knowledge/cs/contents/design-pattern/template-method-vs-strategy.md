@@ -32,6 +32,7 @@ forbidden_neighbors:
 confusable_with:
 - design-pattern/composition-over-inheritance-basics
 - design-pattern/abstract-class-vs-interface-injection-bridge
+- design-pattern/strategy-vs-function-chooser
 expected_queries:
 - 처음 배우는데 템플릿 메소드랑 전략 패턴이 뭐가 달라?
 - template method vs strategy 차이가 뭐야?

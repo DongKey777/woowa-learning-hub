@@ -1,3 +1,87 @@
+---
+schema_version: 3
+title: Ports and Adapters Beginner Primer
+concept_id: software-engineering/ports-and-adapters-beginner-primer
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+- missions/baseball
+review_feedback_tags:
+- ports-and-adapters-entrypoint
+- layered-to-hexagonal-handoff
+- inbound-outbound-boundary
+- queue-term-disambiguation
+aliases:
+- ports and adapters
+- ports and adapters beginner primer
+- hexagonal architecture basics
+- layered vs hexagonal
+- inbound port
+- outbound port
+- controller service repository next step
+- message-driven adapter
+- adapter boundary
+- hexagonal entrypoint
+symptoms:
+- controller service repository 다음 단계가 뭔지 모르겠어요
+- inbound port와 outbound port를 이름만 봐서는 구분하기 어려워요
+- queue가 보여서 운영 문서로 가야 하는지 자료구조 얘기인지 헷갈려요
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+next_docs:
+- software-engineering/message-driven-adapter-example
+- software-engineering/hexagonal-testing-seams-primer
+- design-pattern/ports-and-adapters-vs-classic-patterns
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/data-structure/queue-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/hexagonal-ports-pattern-language.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- software-engineering/message-driven-adapter-example
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- software-engineering/repository-interface-contract-primer
+forbidden_neighbors:
+- contents/data-structure/queue-basics.md
+- contents/algorithm/dfs-bfs-intro.md
+expected_queries:
+- adapter가 뭐예요?
+- controller service repository 다음 단계가 뭐예요?
+- hexagonal architecture를 처음 배우는데 어디부터 봐야 해?
+- controller service repository 다음 단계가 뭐예요
+- ports and adapters를 처음 배우는데 hexagonal architecture와 뭐가 달라요
+- inbound port랑 outbound port를 초심자 기준으로 설명해 줘
+- queue가 왜 ports and adapters 문서에 같이 나오나요
+- consumer도 controller처럼 같은 유스케이스 입구인가요
+contextual_chunk_prefix: |
+  이 문서는 controller-service-repository 다음 단계에서 ports and
+  adapters를 처음 접하며 유스케이스 중심 구조를 어떻게 읽어야 하는지 기초를
+  잡는 primer다. layered와 hexagonal은 어떻게 이어지나, inbound와
+  outbound는 무엇이 다른가, controller와 message consumer가 같은
+  입구인가, queue 얘기가 왜 같이 나오나, 외부 API와 DB를 왜 adapter로
+  부르나 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
+
 # Ports and Adapters Beginner Primer
 
 > 한 줄 요약: Ports and Adapters는 도메인과 유스케이스를 중심에 두고, 웹/DB/외부 API 같은 입출력 세부를 바깥 어댑터로 분리하는 초급용 구조 규칙이다.

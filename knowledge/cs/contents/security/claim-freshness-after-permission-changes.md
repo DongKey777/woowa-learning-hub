@@ -24,7 +24,7 @@
 > - [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
 > - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
-> - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
+> - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence-assurance-deep-dive-catalog)
 > - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
 retrieval-anchor-keywords: claim freshness after permission changes, permission change propagation, role change jwt session cache revocation, permission changed but jwt still old, role revoked but old authorities remain, old authorities remain stale, stale authorities after role change, stale authority propagation, permission revoke propagation, role grant propagation, authz freshness propagation, jwt session cache revoke timeline, stale allow after revoke, session tail beginner route, claim freshness after permission changes basics
@@ -32,7 +32,7 @@ retrieval-anchor-keywords: claim freshness after permission changes, permission 
 ## 빠른 복귀 링크
 
 - 증상 중심으로 다시 갈림길을 고르려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
-- revoke tail, session coherence, assurance 쪽 catalog로 돌아가려면 [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
+- revoke tail, session coherence, assurance 쪽 catalog로 돌아가려면 [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence-assurance-deep-dive-catalog)
 - cache, tenant, response contract 쪽 deeper branch를 다시 고르려면 [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 - 아직 mental model이 헷갈리면 한 단계 전 primer인 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)로 먼저 돌아간다
 

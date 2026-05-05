@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: 'Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다'
+concept_id: spring/conditionalonsinglecandidate-vs-primary-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- single-candidate-vs-primary
+- activation-gate-vs-injection-priority
+- datasource-default-candidate
+aliases:
+- '@conditionalonsinglecandidate 뭐예요'
+- conditionalonsinglecandidate activation gate
+- conditionalonsinglecandidate 헷갈려요
+- single candidate activation
+- bean two candidates one primary
+- autowire candidate resolvable
+- spring boot 조건부 bean 등록 기초
+- auto configuration activation vs injection
+- conditionalonsinglecandidate activation condition
+- conditionalonsinglecandidate is not injection priority
+- conditionalonsinglecandidate multiple beans primary bean
+- datasource conditionalonsinglecandidate primer
+- primary does not activate auto configuration
+- datasource auto configuration candidate
+- default candidate resolution
+symptoms:
+- bean이 두 개인데 왜 condition은 통과하고 주입은 또 헷갈리는지 모르겠어요
+- '@ConditionalOnSingleCandidate를 @Primary의 다른 이름처럼 이해하고 있어요'
+- DataSource가 여러 개인데 auto-configuration이 언제 켜지는지 감이 안 와요
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- spring/bean-di-basics
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+next_docs:
+- spring/primary-qualifier-collection-injection
+- spring/spring-boot-condition-evaluation-report-first-debug-checklist
+- spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
+linked_paths:
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+- spring/primary-qualifier-collection-injection
+- spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
+- spring/spring-primary-vs-bean-override-primer
+forbidden_neighbors: []
+expected_queries:
+- bean이 두 개인데 왜 ConditionalOnSingleCandidate는 매치돼?
+- '@ConditionalOnSingleCandidate는 정확히 하나일 때만 true야?'
+- primary가 있으면 auto-configuration activation도 같이 통과한다고 봐도 돼?
+- condition report는 positive인데 실제 주입 bean은 왜 다르지?
+- DataSource 두 개인 환경에서 SingleCandidate를 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 ConditionalOnSingleCandidate를 Primary의 다른
+  이름처럼 오해할 때, auto-configuration activation 조건과 실제 주입
+  우선순위를 시간축으로 나눠 처음 잡는 primer다. bean 두 개인데 condition은
+  통과, DataSource 여러 개인데 왜 자동 구성은 켜짐, 조건은 positive인데
+  주입은 왜 다름, 하나로 결정 가능하면 등록, 기본 후보 선택은 별개 같은
+  자연어 paraphrase가 본 문서의 핵심 구분에 매핑된다.
+---
 # Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다
 
 > 한 줄 요약: `@ConditionalOnSingleCandidate`는 "이 타입을 지금 주입하려 하면 하나로 결정되는가?"를 보고 자동 구성을 켤지 정하는 activation 조건이고, `@Primary`는 이미 등록된 후보들 사이에서 기본 주입 대상을 정하는 규칙이다.
@@ -9,8 +84,6 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 - [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
 - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
@@ -18,8 +91,9 @@
 - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 - [JDBC · JPA · MyBatis 기초: 접근 기술을 왜 나누는가](../database/jdbc-jpa-mybatis-basics.md)
+- [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: @conditionalonsinglecandidate 뭐예요, @conditionalonsinglecandidate vs @primary, conditionalonsinglecandidate 헷갈려요, primary 랑 conditionalonsinglecandidate 차이, @primary 랑 뭐가 달라요, 처음 배우는데 conditionalonsinglecandidate, spring boot 조건부 bean 등록 기초, auto configuration activation vs injection, conditionalonsinglecandidate activation condition, conditionalonsinglecandidate is not injection priority, conditionalonsinglecandidate multiple beans primary bean, datasource conditionalonsinglecandidate primer, primary does not activate auto configuration, boot bean 선택 헷갈려요, 조건은 통과했는데 왜 주입이 달라요
+retrieval-anchor-keywords: @conditionalonsinglecandidate 뭐예요, conditionalonsinglecandidate activation gate, conditionalonsinglecandidate 헷갈려요, single candidate activation, bean two candidates one primary, autowire candidate resolvable, spring boot 조건부 bean 등록 기초, auto configuration activation vs injection, conditionalonsinglecandidate activation condition, conditionalonsinglecandidate is not injection priority, conditionalonsinglecandidate multiple beans primary bean, datasource conditionalonsinglecandidate primer, primary does not activate auto configuration, datasource auto configuration candidate, default candidate resolution
 
 ## 이 문서가 먼저 잡는 질문
 

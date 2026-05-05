@@ -1,0 +1,120 @@
+---
+schema_version: 3
+title: 'shopping-cart 주문 생성 시점 cart 복사 ↔ Order Snapshot 브릿지'
+concept_id: software-engineering/shopping-cart-order-snapshot-from-cart-bridge
+canonical: false
+category: software-engineering
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: ko
+source_priority: 78
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- order-snapshot-copy
+- mutable-cart-reference
+- checkout-audit-history
+aliases:
+- shopping-cart 주문 시점 cart 복사
+- 장바구니를 주문으로 스냅샷 저장
+- shopping-cart order snapshot
+- 주문 생성할 때 상품명 가격 복사
+- cart 참조 그대로 주문 저장
+symptoms:
+- 주문 상세가 예전 결제 내용이 아니라 현재 장바구니 상태를 따라 바뀌어요
+- 상품 가격이 바뀐 뒤 예전 주문 금액까지 같이 달라져 보여요
+- 리뷰에서 주문은 cart를 참조하지 말고 snapshot을 남기라고 하는데 이유가 헷갈려요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge
+- software-engineering/shopping-cart-checkout-service-layer-bridge
+- design-pattern/shopping-cart-order-status-state-pattern-bridge
+next_docs:
+- software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge
+- database/shopping-cart-order-complete-read-your-writes-bridge
+- design-pattern/shopping-cart-order-status-state-pattern-bridge
+linked_paths:
+- contents/software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge.md
+- contents/software-engineering/shopping-cart-checkout-service-layer-bridge.md
+- contents/design-pattern/shopping-cart-order-status-state-pattern-bridge.md
+- contents/database/shopping-cart-order-complete-read-your-writes-bridge.md
+- contents/database/shopping-cart-payment-idempotency-stock-bridge.md
+confusable_with:
+- software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge
+- software-engineering/shopping-cart-checkout-service-layer-bridge
+- design-pattern/shopping-cart-order-status-state-pattern-bridge
+- database/shopping-cart-order-complete-read-your-writes-bridge
+forbidden_neighbors: []
+expected_queries:
+- shopping-cart에서 주문 만들 때 cart_item을 그대로 참조하면 왜 안 돼?
+- 장바구니 상품 가격이 바뀌면 예전 주문 상세까지 같이 바뀌지 않게 하려면 무엇을 저장해야 해?
+- reviewer가 주문 시점의 이름 가격 할인 정보를 snapshot으로 복사하라고 한 이유가 뭐야?
+- checkout에서 cart를 비우기 전에 주문 row에 어떤 정보를 굳혀 둬야 나중에 audit이 돼?
+- shopping-cart 미션에서 주문과 장바구니를 같은 엔티티 그래프로 계속 묶어 두면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Woowa shopping-cart 미션에서 checkout 순간의 장바구니를 주문으로
+  확정할 때, 가변 cart 상태를 그대로 참조하지 않고 주문 시점 snapshot으로
+  복사해야 하는 이유를 설명하는 mission_bridge다. 학습자가 "장바구니 상품명과
+  가격을 주문에서 다시 읽으면 안 되나", "예전 주문 금액이 왜 바뀌지",
+  "snapshot을 남기라는 리뷰가 정확히 무슨 뜻이지"라고 묻는 장면을
+  source of truth, immutable order record, audit/history 보존 경계와 연결한다.
+---
+
+# shopping-cart 주문 생성 시점 cart 복사 ↔ Order Snapshot 브릿지
+
+## 한 줄 요약
+
+> shopping-cart checkout은 "현재 cart를 계속 보여 주는 일"이 아니라 "그 순간의 구매 사실을 굳히는 일"이라서, 주문은 cart row를 계속 참조하기보다 주문 시점의 상품명, 가격, 수량, 할인 결과를 snapshot으로 복사해 두는 편이 안전하다.
+
+## 미션 시나리오
+
+shopping-cart 미션에서 주문 생성 로직을 처음 붙일 때는 `cart`와 `cart_item`을
+이미 잘 갖고 있으니, `order`가 그 데이터를 다시 복사하지 않고 참조만 해도
+충분해 보인다. 장바구니 화면과 주문 상세 화면이 비슷해 보여서 더 그렇다.
+그래서 `order.getItems()` 대신 "주문 조회할 때 현재 cart를 다시 읽어 조립하자"
+같은 구조로 가기 쉽다.
+
+하지만 checkout이 끝난 뒤 사용자는 장바구니를 비우거나 수량을 다시 바꾼다.
+상품명, 가격, 할인 규칙도 나중에 수정될 수 있다. 이때 주문이 cart나 현재 상품
+테이블 값을 계속 따라가면 "어제 결제한 주문의 금액이 오늘 가격표를 따라
+바뀐다", "주문 상세에 당시 선택한 옵션명이 안 남는다", "쿠폰 적용 근거를
+나중에 설명할 수 없다" 같은 문제가 생긴다. 리뷰에서 "주문은 구매 시점의
+사실을 남겨야 한다", "cart를 참조하지 말고 snapshot을 저장하라"는 말이
+붙는 이유가 여기다.
+
+## CS concept 매핑
+
+여기서 닿는 개념은 `mutable working set`과 `immutable record`의 분리다.
+cart는 아직 바뀔 수 있는 작업 공간이다. 상품 추가, 수량 변경, 쿠폰 재적용,
+품절 반영이 계속 일어난다. 반면 order는 checkout이 확정된 뒤 "그때 무엇을
+샀는가"를 설명하는 기록이라서, 이후의 cart 변화나 상품 마스터 변경과 분리돼야
+한다.
+
+그래서 checkout에서는 최신 가격과 할인 규칙을 다시 검증한 뒤, 그 결과를
+`order_item`이나 주문 스냅샷 필드에 복사해 굳히는 편이 맞다. 예를 들면
+상품명, 단가, 주문 수량, 적용 할인액, 옵션명 같은 값을 주문 쪽에 남긴다.
+핵심은 cart를 두 번 저장하자는 뜻이 아니라, "읽기/수정용 현재 상태"와
+"감사와 재현용 확정 기록"의 역할을 분리하자는 뜻이다.
+
+이 경계를 잡아 두면 후속 설계도 쉬워진다. 주문 완료 후 장바구니를 비워도
+주문 상세는 안정적으로 남고, 가격 정책이 바뀌어도 과거 주문의 의미가 흔들리지
+않는다. 또한 결제 분쟁이나 CS 응대에서 "당시 얼마에 어떤 조건으로 팔렸는가"를
+현재 상품 테이블이 아니라 주문 레코드 자체로 설명할 수 있다.
+
+## 미션 PR 코멘트 패턴
+
+- "주문은 cart의 현재 포인터가 아니라 checkout 시점의 확정 기록이어야 합니다. 상품명과 금액을 주문 쪽에 남겨 보세요."
+- "장바구니를 비운 뒤에도 주문 상세가 재현돼야 하므로, cart row를 직접 참조하는 구조는 오래 버티기 어렵습니다."
+- "현재 상품 가격을 주문 조회 시점마다 다시 읽으면 과거 주문의 의미가 바뀝니다. checkout 시점 snapshot을 고정해 주세요."
+- "source of truth 재계산은 checkout 직전에 하고, 확정 뒤에는 그 결과를 order snapshot으로 보존하는 두 단계를 분리해 보세요."
+
+## 다음 학습
+
+- checkout 직전에 무엇을 다시 계산해야 하는지 먼저 정리하려면 `software-engineering/shopping-cart-checkout-total-revalidation-source-of-truth-bridge`
+- checkout 흐름을 어느 계층이 조립해야 하는지 다시 보려면 `software-engineering/shopping-cart-checkout-service-layer-bridge`
+- 주문 확정 뒤 첫 조회에서 stale read가 왜 생기는지 이어 보려면 `database/shopping-cart-order-complete-read-your-writes-bridge`
+- 주문 상태 전이와 확정 기록의 책임을 aggregate 쪽으로 더 끌어올리려면 `design-pattern/shopping-cart-order-status-state-pattern-bridge`

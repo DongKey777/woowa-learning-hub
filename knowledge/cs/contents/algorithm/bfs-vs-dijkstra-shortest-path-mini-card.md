@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: BFS vs Dijkstra shortest path beginner split card
+concept_id: algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- shortest-path-first-cut
+- weighted-vs-unweighted-modeling
+aliases:
+- bfs vs 0-1 bfs vs dijkstra
+- unweighted vs binary weighted vs weighted shortest path
+- bfs shortest path
+- zero one bfs shortest path
+- dijkstra shortest path
+- edge count vs cost sum
+- deque shortest path beginner
+- beginner shortest path graph
+- 최단 경로 뭐예요
+- 무가중치 최단 경로
+- 0/1 가중치 최단 경로
+- 가중치 최단 경로
+- bfs 0-1 bfs 다익스트라 차이
+- 간선 수 최소
+- 비용 합 최소
+symptoms:
+- 최단 경로라는데 BFS인지 다익스트라인지 첫 분기부터 헷갈려
+- 이동 횟수 최소와 비용 합 최소를 같은 뜻으로 읽고 있어
+- 0-1 BFS까지 같이 나오면 어떤 기준으로 갈라야 할지 모르겠어
+intents:
+- drill
+prerequisites:
+- algorithm/dfs-bfs-intro
+next_docs:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/data-structure/graph-basics.md
+confusable_with:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+forbidden_neighbors:
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+expected_queries:
+- 무가중치 최단 경로면 BFS고 가중치면 다익스트라라고 보면 되는지 정리해줘
+- 이동 횟수 최소 문제와 비용 합 최소 문제를 shortest path에서 어떻게 구분해
+- 0 1 가중치가 나오면 BFS 대신 어떤 알고리즘으로 갈아타야 해
+- 최단 경로 문제를 처음 볼 때 BFS 다익스트라 0-1 BFS를 나누는 기준이 뭐야
+- 간선 수를 줄이는 문제와 총 비용을 줄이는 문제를 한 장으로 비교해서 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 shortest path를 처음 분기하는 학습자가 간선 수 최소와 비용 합 최소를 헷갈릴 때 BFS, 0-1 BFS, Dijkstra를 확인 질문으로 굳히는 drill이다. 이동 횟수 최소, 비용 shortest 구분, 공짜 이동과 유료 이동, 어떤 최단 문제부터 골라야 해, 무게가 같나 다르나 같은 자연어 paraphrase가 본 문서의 첫 선택 기준에 매핑된다.
+---
 # BFS vs Dijkstra shortest path beginner split card
 
 > 한 줄 요약: `간선 수 최소`를 묻는지 `비용 합 최소`를 묻는지 먼저 자르면, 초보자가 BFS와 Dijkstra를 헷갈리는 빈도가 크게 줄어든다.

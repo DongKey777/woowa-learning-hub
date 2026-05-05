@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Shell Built-ins vs External Commands Primer
+concept_id: operating-system/shell-builtins-vs-external-commands-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- shell-builtin-boundary
+- shell-syntax-vs-argv
+- subprocess-shell-needed
+aliases:
+- operating-system-00077
+- shell builtins vs external commands primer
+- shell builtin vs external command
+- shell syntax vs argv
+- direct argv launch basics
+- when shell is required
+- subprocess shell needed or not
+- shell built in command
+- cd export source alias builtin
+- pipe redirection needs shell
+- argv vs shell syntax
+- sh -c when needed
+- external executable direct spawn
+- subprocess list vs shell string
+symptoms:
+- subprocess.run에서 리스트 인자로 충분한지 shell이 필요한지 헷갈려요
+- cd나 export 같은 명령이 왜 child process에서는 기대대로 안 먹히는지 모르겠어요
+- 파이프나 리다이렉션 때문에 shell이 필요한 경우와 아닌 경우를 구분하고 싶어요
+intents:
+- definition
+- comparison
+prerequisites:
+- operating-system/shell-wrapper-boundary-primer
+- operating-system/process-lifecycle-and-ipc-basics
+next_docs:
+- operating-system/runtime-shell-option-matrix
+- operating-system/shell-job-control-command-bridge
+- operating-system/popen-runtime-wrapper-mapping
+linked_paths:
+- contents/operating-system/shell-wrapper-boundary-primer.md
+- contents/operating-system/runtime-shell-option-matrix.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/shell-job-control-command-bridge.md
+- contents/operating-system/process-spawn-api-comparison.md
+confusable_with:
+- operating-system/shell-wrapper-boundary-primer
+- operating-system/popen-runtime-wrapper-mapping
+forbidden_neighbors: []
+expected_queries:
+- subprocess에서 언제 리스트 argv로 충분하고 언제 shell을 꼭 써야 해?
+- cd, export, source 같은 명령이 왜 외부 실행 파일처럼 다뤄지지 않는지 설명해줘
+- 파이프와 리다이렉션이 들어간 명령을 shell 없이도 만들 수 있는지 입문자 기준으로 비교해줘
+- shell built-in과 external command 차이를 처음 배우는 백엔드 관점에서 정리해줘
+- sh -c가 진짜 필요한 순간과 그냥 command argv면 되는 순간을 구분해 줘
+contextual_chunk_prefix: |
+  이 문서는 백엔드 학습자가 subprocess에서 언제 argv 직접 실행으로 충분하고 언제 shell built-in이나 pipe, redirection 같은 shell 문법 때문에 shell이 필요한지 처음 잡는 primer다. 리스트 인자면 돼?, cd export는 왜 안 먹혀, 파이프 때문에 shell 필요, sh -c 언제 써, argv와 shell 경계 같은 자연어 paraphrase가 본 문서의 핵심 분기에 매핑된다.
+---
 # Shell Built-ins vs External Commands Primer
 
 > 한 줄 요약: command가 이미 실행 파일이면 `argv`로 직접 띄우면 되고, `cd`나 `export`처럼 shell 내부 상태를 바꾸는 built-in이거나 `|`, `>`, `&&` 같은 shell 문법을 쓰면 shell이 실제로 필요하다.

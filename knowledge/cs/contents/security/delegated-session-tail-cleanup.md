@@ -18,7 +18,7 @@
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 > - [Incident-Close Break-Glass Gate](./incident-close-break-glass-gate.md)
-> - [Security README: Service / Delegation Boundaries](./README.md#service--delegation-boundaries-deep-dive-catalog)
+> - [Security README: Service / Delegation Boundaries](./README.md#service-delegation-boundaries-deep-dive-catalog)
 
 retrieval-anchor-keywords: delegated session tail cleanup, session tail cleanup, session-tail cleanup, aobo cleanup tail, break glass cleanup tail, delegated access cleanup, false closure, false done revoke, cleanup confirmed criteria, downstream session invalidation, delegated refresh family cleanup, support access tail cleanup, operator session tail, downstream audience token cleanup, stale cache convergence, cache invalidation after revoke, break glass stale cache, aobo session family revoke, cleanup evidence matrix, revoke tail closure, cleanup without false closure
 

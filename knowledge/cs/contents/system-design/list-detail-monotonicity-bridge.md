@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: List-Detail Monotonicity Bridge
+concept_id: system-design/list-detail-monotonicity-bridge
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- list-detail-regression
+- min-version-floor-propagation
+- stale-hit-overlay-choice
+aliases:
+- list detail monotonicity bridge
+- list detail search min-version floor
+- list detail search min version
+- min-version floor
+- min_version floor
+- monotonic guard
+- monotonic guard alias
+- monotonic guard beginner
+- 역행 방지 하한선
+- 역행 방지 하한선 별칭
+- value regression across pages
+- list detail mismatch
+- search detail consistency
+- search result stale after detail
+- beginner monotonic screens
+symptoms:
+- 상세에서는 PAID였는데 목록에서 다시 PENDING으로 보여
+- 검색 결과가 방금 본 상세보다 더 오래돼 보여
+- 어떤 화면은 최신인데 다른 화면에서 값이 뒤로 가
+intents:
+- comparison
+prerequisites:
+- system-design/monotonic-reads-and-session-guarantees-primer
+- system-design/read-after-write-routing-primer
+next_docs:
+- system-design/search-hit-overlay-pattern
+- system-design/rejected-hit-observability-primer
+- system-design/mixed-cache-replica-freshness-bridge
+linked_paths:
+- contents/system-design/notification-read-to-min-version-bridge.md
+- contents/system-design/cross-primer-glossary-anchors.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/pagination-monotonicity-primer.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/search-hit-overlay-pattern.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/search-indexing-pipeline-design.md
+confusable_with:
+- system-design/read-after-write-routing-primer
+- system-design/session-guarantees-decision-matrix
+- system-design/mixed-cache-replica-freshness-bridge
+- system-design/notification-read-to-min-version-bridge
+forbidden_neighbors:
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/pagination-monotonicity-primer.md
+expected_queries:
+- 상세에서 본 주문 상태가 목록에서 예전 값으로 돌아가면 어떻게 막아?
+- 검색 결과가 상세보다 stale할 때 min version을 어떻게 들고 다녀?
+- list detail search 사이 value regression을 방지하는 패턴이 뭐야?
+- PAID를 봤는데 다음 화면에서 PENDING으로 내려가는 이유가 뭐야?
+- per-entity floor를 목록과 검색까지 전파하는 방법이 궁금해
+- row patch, last-seen overlay, suppress 중 언제 어떤 걸 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 상세에서 확인한 최신 상태가 목록이나 검색으로 넘어가는 순간 예전 값으로 되감기지 않게, 화면 사이에 min-version 기준선을 어떻게 함께 들고 다니는지 두 개념을 잇는 beginner bridge다.
+  상세는 PAID인데 목록은 PENDING으로 내려간다, 검색 결과가 방금 본 주문보다 늦다, 같은 엔티티의 시간선이 화면마다 갈라진다, per-entity 하한선을 함께 전달한다, 오래된 row를 reject한 뒤 overlay나 patch로 잇는다 같은 자연어 paraphrase가 본 문서의 역행 방지 패턴에 매핑된다.
+---
 # List-Detail Monotonicity Bridge
 
 > 한 줄 요약: 목록, 상세, 검색 화면이 서로 다른 cache/replica/search index를 읽더라도 세션이 본 `min-version` floor를 함께 들고 다니면 `PAID -> PENDING`처럼 값이 뒤로 가는 경험을 막을 수 있다.

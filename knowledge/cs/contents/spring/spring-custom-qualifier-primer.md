@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: 'Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기'
+concept_id: spring/spring-custom-qualifier-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- qualifier-string-contract
+- bean-rename-ripple
+- role-annotation
+aliases:
+- qualifier role annotation
+- semantic wiring annotation
+- role-based qualifier
+- bean-name qualifier
+- fixed wiring contract
+- qualifier string sprawl
+- bean rename ripple
+- same-type bean disambiguation
+- injection-time selection
+- duplicate-candidate injection failure
+- qualifier wiring failure
+- bean role annotation
+- injection disambiguation by role
+symptoms:
+- qualifier 문자열이 여기저기 반복돼요
+- bean 이름을 바꾸자마자 주입이 줄줄이 깨졌어요
+- 같은 역할 구현체를 여러 곳에 고정 주입해야 하는데 이름 문자열이 불안해요
+intents:
+- definition
+prerequisites:
+- spring/bean-di-basics
+- spring/primary-qualifier-collection-injection
+next_docs:
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+- spring/same-type-bean-injection-failure-cause-router
+linked_paths:
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+- contents/spring/spring-di-exception-quick-triage.md
+- contents/spring/ioc-di-container.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- spring/primary-qualifier-collection-injection
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+- spring/same-type-bean-injection-failure-cause-router
+forbidden_neighbors:
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+expected_queries:
+- 처음 배우는데 qualifier가 반복돼요. 이때 custom qualifier로 바꿔야 해?
+- qualifier 문자열이 계속 반복되면 역할 annotation으로 올려도 돼?
+- 왜 qualifier 문자열이 늘어나면 custom qualifier를 고려해?
+- 요청마다 구현체가 바뀌지 않는데도 router 대신 qualifier를 쓰는 이유가 뭐야?
+- bean 이름 바꾸면 qualifier가 같이 깨지는 이유가 뭐야?
+- 같은 역할 bean을 여러 군데 고정 주입할 때 annotation으로 묶는 방법이 있어?
+- "'@Qualifier(\"beanName\")' 말고 역할 annotation으로 선택하는 기준이 뭐야?"
+- NoUniqueBeanDefinitionException 대응에서 custom qualifier는 언제 써?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 같은 bean 이름 문자열 qualifier가 여러 주입
+  지점에 반복될 때 언제 역할 annotation으로 올려야 하는지 처음 잡는
+  primer다. 이름으로 콕 집기, 메인 결제 역할로 고정하기, 문자열 오타
+  줄이기, bean rename에 덜 흔들리기, 항상 같은 구현체 꽂기, 요청마다
+  바뀌는 선택은 아님, qualifier 문자열이 너무 많아요 같은 자연어
+  paraphrase가 본 문서의 선택 기준과 역할 계약 mental model에 매핑된다.
+---
 # Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기
 
 > 한 줄 요약: `@Qualifier("beanName")`는 "이 bean을 정확히 집어라"라는 문자열 계약이고, 커스텀 qualifier annotation은 "이 역할의 bean을 집어라"라는 의미 계약이다.

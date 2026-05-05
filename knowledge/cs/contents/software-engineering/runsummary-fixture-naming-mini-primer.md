@@ -4,55 +4,18 @@
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
+- [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
+- [Batch Result Fixture Design Primer](./batch-result-fixture-design-primer.md)
+- [Batch Result Testing Checklist](./batch-result-testing-checklist.md)
+- [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
+- [Spring MVC Controller Basics](../spring/spring-mvc-controller-basics.md)
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+retrieval-anchor-keywords: runsummary fixture naming, run summary fixture naming, runsummary status test, fixture 이름 처음 헷갈려요, green path fixture name, partial failure fixture name, duplicate start fixture name, already started fixture naming, status test readability, readable run summary fixture, beginner batch fixture naming, what is runsummary fixture
 
-
-retrieval-anchor-keywords: runsummary fixture naming mini primer basics, runsummary fixture naming mini primer beginner, runsummary fixture naming mini primer intro, software engineering basics, beginner software engineering, 처음 배우는데 runsummary fixture naming mini primer, runsummary fixture naming mini primer 입문, runsummary fixture naming mini primer 기초, what is runsummary fixture naming mini primer, how to runsummary fixture naming mini primer
 `RunSummary` status 테스트를 쓰기 시작하면 fixture 이름이 금방 흐려진다.
 `summary1()`, `failureCase()`, `duplicateCase()`처럼 짧게 만들면 테스트는 통과해도 "어떤 run 장면인지"를 다시 본문에서 해석해야 한다.
 이 문서는 초심자 기준으로 가장 자주 나오는 세 장면만 좁혀서, fixture 이름을 어떻게 붙이면 status 테스트가 읽기 쉬워지는지 설명한다.
-
-<details>
-<summary>Table of Contents</summary>
-
-- [먼저 잡을 그림](#먼저-잡을-그림)
-- [왜 이름부터 잠가 두는가](#왜-이름부터-잠가-두는가)
-- [세 장면만 먼저 고정하기](#세-장면만-먼저-고정하기)
-- [이름 비교표](#이름-비교표)
-- [짧은 예시](#짧은-예시)
-- [practice loop](#practice-loop)
-- [자주 하는 오해](#자주-하는-오해)
-- [한 줄 정리](#한-줄-정리)
-
-</details>
-
-> 관련 문서:
-> - [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
-> - [Batch Result Fixture Design Primer](./batch-result-fixture-design-primer.md)
-> - [Batch Result Testing Checklist](./batch-result-testing-checklist.md)
-> - [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
-> - [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)
->
-> retrieval-anchor-keywords:
-> - runsummary fixture naming mini primer
-> - run summary fixture naming
-> - batch status fixture naming beginner
-> - green path fixture name
-> - partial failure fixture name
-> - duplicate start fixture name
-> - already started fixture naming
-> - run summary status test readability
-> - readable run summary fixture
-> - batch fixture naming runsummary
-> - beginner status fixture primer
-> - completed partial failure duplicate start fixture
-> - status test fixture naming batch
-> - run summary green partial duplicate
 
 ## 먼저 잡을 그림
 
@@ -168,7 +131,7 @@ then status means existing run is reused
 
 테스트를 읽는 사람은 본문 내부 count를 세기 전에, fixture 이름만 보고도 장면을 먼저 잡을 수 있다.
 
-## practice loop
+## 연습 루프
 
 1. `completedProductSyncRunSummary()` 하나만 먼저 만든다.
 2. 실패 count를 억지로 수정하지 말고, 새 fixture `completedProductSyncRunSummaryWithRetryBacklog()`를 만든다.

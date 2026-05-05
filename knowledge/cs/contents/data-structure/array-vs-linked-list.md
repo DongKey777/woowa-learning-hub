@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 배열 vs 연결 리스트 (Array vs Linked List)
+concept_id: data-structure/array-vs-linked-list
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- arraylist-vs-linkedlist-default
+- cache-locality-tradeoff
+- index-vs-insert-cost
+aliases:
+- array vs linked list
+- array linked list tradeoff
+- arraylist linkedlist
+- dynamic array
+- linked list
+- random access
+- sequential access
+- insert delete tradeoff
+- cache locality
+- linear data structure
+- contiguous memory
+- pointer traversal
+symptoms:
+- 배열이랑 연결 리스트 중에 뭘 기본값으로 골라야 할지 모르겠어
+- 삽입 삭제가 빠르다는데 왜 실무에서는 배열 리스트를 더 많이 쓰는지 헷갈려
+- ArrayList랑 LinkedList 차이를 면접처럼 설명하려면 기준이 안 잡혀
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/basic
+- data-structure/linked-list-basics
+next_docs:
+- data-structure/lru-cache-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+linked_paths:
+- contents/data-structure/linked-list-basics.md
+- contents/data-structure/basic.md
+- contents/data-structure/lru-cache-basics.md
+- contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md
+confusable_with:
+- data-structure/linked-list-basics
+- data-structure/basic
+forbidden_neighbors:
+- contents/data-structure/basic.md
+- contents/data-structure/linked-list-basics.md
+expected_queries:
+- 배열과 연결 리스트 차이를 처음 배우는 관점에서 설명해줘
+- 인덱스 접근이 많을 때 왜 배열 계열을 먼저 보라고 해
+- 중간 삽입이 잦은데 연결 리스트를 바로 쓰면 되는지 궁금해
+- ArrayList 기본값이 되는 이유를 자료구조 관점에서 설명해줘
+- 캐시 지역성 때문에 배열이 유리하다는 말이 잘 이해 안 돼
+- 연결 리스트 O(1) 삽입이 실제로는 왜 체감이 안 되는지 알고 싶어
+- 순차 접근 많은 작업에서 배열과 연결 리스트를 어떻게 비교해
+- 백엔드에서 List 기본 구현체를 뭘로 시작해야 하는지 알고 싶어
+- 삽입 삭제가 많다는 말만으로 LinkedList를 고르면 안 되는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 읽기 많은 작업과 중간 변경이 많은 작업
+  사이에서 배열과 연결 리스트 중 무엇을 골라야 하는지 결정하게 돕는
+  chooser다. 인덱스로 바로 읽기, 중간 삽입이 잦음, ArrayList 기본값
+  이유, 캐시 친화성, 포인터 따라가기 비용, 순차 접근과 임의 접근 비교
+  같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # 배열 vs 연결 리스트 (Array vs Linked List)
 
 > 한 줄 요약: 배열은 인덱스 접근이 강하고, 연결 리스트는 삽입·삭제가 강하다. 어떤 연산이 더 자주 일어나느냐로 선택한다.

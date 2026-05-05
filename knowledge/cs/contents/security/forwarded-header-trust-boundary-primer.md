@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Forwarded Header Trust Boundary Primer
+concept_id: security/forwarded-header-trust-boundary-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- trusted-proxy-boundary
+- forwarded-header-spoofing
+- x-forwarded-for-misuse
+aliases:
+- forwarded header trust boundary
+- x-forwarded-proto spoofing
+- x-forwarded-for spoofing
+- trusted proxy only
+- proxy header basics
+- client ip wrong behind proxy
+- x-forwarded-host redirect
+- rate limit ip spoofing
+- internal ip allowlist bypass
+- trusted proxy safe next step
+symptoms:
+- X-Forwarded-Proto나 X-Forwarded-For를 언제 믿어야 하는지 모르겠어요
+- 프록시 헤더를 그대로 믿어도 되는지 불안해요
+- 클라이언트가 넣은 forwarded 헤더와 LB가 넣은 헤더를 구분 못 하겠어요
+intents:
+- definition
+- design
+prerequisites:
+- security/https-tls-beginner
+next_docs:
+- security/secure-cookie-behind-proxy-guide
+- security/absolute-redirect-url-behind-load-balancer-guide
+- security/gateway-auth-context-header-trust-boundary
+linked_paths:
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/password-reset-magic-link-public-origin-guide.md
+- contents/security/gateway-auth-context-header-trust-boundary.md
+- contents/security/trust-boundary-bypass-detection-signals.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/proxy-header-normalization-chain-trust-boundary.md
+confusable_with:
+- security/secure-cookie-behind-proxy-guide
+- security/absolute-redirect-url-behind-load-balancer-guide
+- security/gateway-auth-context-header-trust-boundary
+forbidden_neighbors: []
+expected_queries:
+- X-Forwarded-Proto와 X-Forwarded-For는 언제 믿어도 돼?
+- trusted proxy가 뭔지 초보자 기준으로 설명해줘
+- 클라이언트가 forwarded 헤더를 직접 보내면 왜 위험해?
+- 프록시 헤더를 신뢰할 경계를 어떻게 정해야 해?
+- redirect host나 client IP 판단이 공격자 입력이 되지 않게 하려면?
+- forwarded header trust boundary를 한 장으로 먼저 잡고 싶어
+contextual_chunk_prefix: |
+  이 문서는 프록시를 지난 요청에서 scheme과 client IP와 host를 어떤 값으로
+  판단해야 하는지, trusted proxy 밖에서 온 헤더를 왜 그대로 믿으면 안
+  되는지 처음 잡는 primer다. HTTPS였는지 누가 보증함, 원래 사용자 IP를
+  어디서 읽음, 호스트 판단이 왜 open redirect 입력이 됨, 헤더 위조를 어느
+  경계에서 끊어야 함 같은 자연어 paraphrase가 본 문서의 trust boundary
+  개념에 매핑된다.
+---
 # Forwarded Header Trust Boundary Primer
 
 > 한 줄 요약: `X-Forwarded-*` 헤더는 클라이언트가 아니라 신뢰한 proxy가 남긴 메모일 때만 의미가 있으며, 아무 요청에서나 믿으면 scheme 판단과 client identity 판단이 공격자 입력으로 바뀐다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 0-1 BFS grid-conversion primer
+concept_id: algorithm/zero-one-bfs-grid-conversion-primer
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- zero-one-bfs-modeling
+- cost-01-detection
+aliases:
+- 0-1 bfs grid primer
+- zero one bfs grid modeling
+- 0-1 bfs beginner modeling
+- 0-1 bfs maze teleport wall break
+- 0-1 bfs grid conversion
+- 0-1 bfs problem translation
+- grid shortest path 0 1 cost
+- grid shortest path deque
+- binary weight grid shortest path
+- teleport maze shortest path
+- wall break shortest path
+- free move paid move shortest path
+- maze modeling 0-1 bfs
+- teleport modeling deque shortest path
+- 0-1 bfs 입문 모델링
+symptoms:
+- 순간이동이 있는데 BFS로 푸는지 0-1 BFS로 푸는지 판단이 안 돼
+- 벽 한 번 부수기 같은 문제를 그래프로 어떻게 바꿔야 할지 막혀
+- 이동 비용이 0 아니면 1인지 문제에서 읽어내는 감각이 없어
+intents:
+- definition
+prerequisites:
+- algorithm/dfs-bfs-intro
+next_docs:
+- algorithm/zero-one-bfs-state-space-bridge
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/algorithm/zero-one-bfs-state-space-bridge.md
+- contents/algorithm/zero-one-bfs-state-visited-vs-dist-starter-card.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+confusable_with:
+- algorithm/zero-one-bfs-state-space-bridge
+- algorithm/dfs-bfs-intro
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- 순간이동이 공짜이고 걷기는 1초면 어떤 최단 경로 알고리즘부터 떠올려야 해
+- 벽 한 칸 부수기 문제를 0-1 BFS로 번역하는 기준을 알고 싶어
+- 미로를 읽을 때 비용이 둘뿐인지 먼저 어떻게 확인해
+- 포털 있는 격자 문제를 deque shortest path로 바꾸는 감각이 필요해
+- free move와 paid move가 섞인 grid 문제를 처음 보면 어디서 시작해야 해
+- 일반 BFS 대신 0-1 BFS를 써야 하는 문제 신호를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 미로나 포털, 벽 부수기 문제를 0 또는 1 비용 간선 그래프로 바꾸는 감각을 처음 잡는 primer다. 격자 규칙을 정점과 간선으로 번역하기, 공짜로 넘어가는 이동과 행동 한 번이 드는 이동 나누기, 일반 BFS 대신 deque 기반 최단 경로를 떠올리기, 순간이동이나 스위치 통과를 비용 둘로 읽기, 이 문제가 정말 binary weight인지 먼저 확인 같은 자연어 paraphrase가 본 문서의 기초 개념에 매핑된다.
+---
 # 0-1 BFS grid-conversion primer
 
 > 한 줄 요약: 미로, 순간이동, 벽 한 칸 부수기처럼 말이 달라도 "이동 하나마다 드는 비용이 0 또는 1인가?"로 바꾸면 `0-1 BFS` 문제인지 먼저 판별할 수 있다.

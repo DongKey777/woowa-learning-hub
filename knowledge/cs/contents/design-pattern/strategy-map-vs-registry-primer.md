@@ -26,6 +26,8 @@ linked_paths:
 confusable_with:
 - design-pattern/strategy-pattern-basics
 - design-pattern/factory-selector-resolver-beginner-entrypoint
+- design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+- design-pattern/policy-object-vs-strategy-map-beginner-bridge
 expected_queries:
 - Map<String, Strategy>는 registry야 strategy야?
 - 같은 Map 모양인데 행동 교체와 단순 lookup을 어떻게 구분해?

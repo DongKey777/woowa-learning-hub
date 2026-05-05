@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Map vs Set Requirement Bridge
+concept_id: data-structure/map-vs-set-requirement-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- map-vs-set-requirement-split
+- dedupe-vs-key-value-storage
+- premature-set-choice
+aliases:
+- map vs set beginner
+- map set primer
+- map set 큰 그림
+- map vs set 뭐예요
+- map이랑 set 차이 뭐예요
+- 처음 배우는데 map set 차이
+- 자료구조 map set 큰 그림
+- map or set choice
+- dedupe vs key value lookup
+- key value vs membership
+- set으로 충분한가
+- map이 필요한가
+- 값까지 저장해야 하나
+- 언제 map 쓰고 언제 set 써요
+- 왜 set 말고 map 써요
+symptoms:
+- 중복만 막으면 되는지 값까지 같이 저장해야 하는지 자꾸 헷갈려
+- Set으로 시작했다가 나중에 count나 상태를 붙여야 해서 구조 선택이 흔들려
+- Map이랑 Set 차이를 이름으로만 외워서 요구사항 문장으로 못 자르겠어
+intents:
+- comparison
+prerequisites:
+- data-structure/basic
+- data-structure/hash-table-basics
+next_docs:
+- data-structure/hashset-vs-treeset-beginner-bridge
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+linked_paths:
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/hash-table-basics.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/hashset-vs-treeset-beginner-bridge
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+forbidden_neighbors:
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+expected_queries:
+- Map이랑 Set을 요구사항 기준으로 어떻게 나눠 골라
+- 중복 제거만 필요할 때랑 값까지 저장해야 할 때 기준을 알려줘
+- requestId 존재 여부 체크와 상태 저장을 어떤 컬렉션으로 나눠 생각해
+- count를 세야 하는데 Set으로 풀면 왜 어색한지 설명해줘
+- key value 저장이 필요하면 언제부터 Map 문제라고 봐야 해
+- dedupe만 하는 문제와 lookup까지 하는 문제를 초보자 기준으로 구분해줘
+- 방문 여부 기록과 상태 테이블을 같은 구조로 보면 안 되는 이유가 궁금해
+- HashSet으로 충분한 문제와 HashMap이 필요한 문제를 문장으로 구분하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 Map과 Set 중 무엇을 먼저 써야 할지,
+  membership 확인 문제와 key-value lookup 문제를 요구사항 기준으로 가르게
+  돕는 bridge다. 중복만 막으면 되나, 값까지 붙여 저장해야 하나, count나
+  상태를 같이 보관하나, id로 객체를 다시 꺼내야 하나, set으로 충분한가
+  같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Map vs Set Requirement Bridge
 
 > 한 줄 요약: `Map`과 `Set`은 둘 다 해시 계열로 시작하는 경우가 많지만, 초보자에게 더 중요한 분기점은 "값까지 붙잡아야 하나"와 "있는지만 알면 되나"를 먼저 가르는 것이다.

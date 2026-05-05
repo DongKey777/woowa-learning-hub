@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: TTY-Aware Output Capture Patterns
+concept_id: operating-system/tty-aware-output-capture-patterns
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- stdout-stderr-capture-strategy
+- tty-replay-vs-machine-logs
+aliases:
+- tty aware output capture basics
+- subprocess capture beginner
+- separate pipes vs merge vs pty
+- stdout stderr capture what is
+- pty capture 뭐예요
+- capture pattern 처음 고를 때
+- 로그 수집 방식 헷갈려요
+- 언제 pty를 써요
+- json log capture basics
+- terminal replay basics
+- stdout stderr 같이 읽어야 하나요
+- pty가 뭐예요
+- pipe vs pty capture
+symptoms:
+- stdout과 stderr를 나눠 받아야 할지 합쳐야 할지 판단이 안 돼요
+- 터미널처럼 다시 보여 줘야 하는데 로그 수집까지 같이 하려다 설계가 꼬여요
+- JSON 로그 파싱과 색상 있는 CLI 재생을 한 통로로 처리하려니 계속 깨져요
+intents:
+- comparison
+- design
+prerequisites:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/pseudo-tty-vs-pipe-behavior
+next_docs:
+- operating-system/why-some-prompts-use-dev-tty
+- operating-system/pty-raw-mode-echo-basics
+- operating-system/stdio-buffering-after-redirect
+linked_paths:
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/ci-log-merge-behavior-primer.md
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+- contents/operating-system/pty-raw-mode-echo-basics.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/subprocess-symptom-first-branch-guide.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- operating-system/pseudo-tty-vs-pipe-behavior
+- operating-system/stdio-buffering-after-redirect
+- operating-system/subprocess-pipe-backpressure-primer
+forbidden_neighbors:
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+expected_queries:
+- subprocess 출력 캡처를 설계할 때 pipe 두 개, merge, PTY 중 뭐부터 골라야 해?
+- stdout stderr를 분리할지 합칠지 터미널 재생을 할지 초보자 기준으로 정리해줘
+- JSON 로그는 파싱해야 하고 사람 화면도 보여 줘야 할 때 capture 전략을 어떻게 나눠?
+- separate pipes와 PTY capture가 각각 언제 맞는지 감으로 설명해줘
+- 로그 수집용 배선과 interactive CLI 재생용 배선을 왜 같은 문제로 보면 안 돼?
+contextual_chunk_prefix: |
+  이 문서는 subprocess 출력을 받을 때 stdout/stderr 분리, merge,
+  PTY 재생 중 무엇을 선택할지 감을 잡게 하는 beginner bridge다.
+  로그 수집은 해야 하는데 터미널처럼도 보여 주고 싶음, JSON 파싱과
+  색상 있는 CLI 재생이 충돌함, separate pipes와 PTY 중 무엇을 먼저
+  고를지 모르겠다는 자연어 질문이 본 문서의 capture 패턴 비교에
+  매핑된다.
+---
 # TTY-Aware Output Capture Patterns
 
 > 한 줄 요약: subprocess 출력을 받을 때는 "결과를 기계가 읽어야 하는가, 사람이 터미널처럼 봐야 하는가"를 먼저 고른 뒤 `separate pipes`, `merge`, `pty` 중 하나를 고르면 된다.

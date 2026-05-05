@@ -1,24 +1,20 @@
-# Strategy vs State vs Policy Object
+# 실행 방법 선택, 상태 전이, 규칙 판정은 어떻게 다를까: Strategy vs State vs Policy Object
 
-> 한 줄 요약: 세 패턴 모두 객체로 분리해 보이지만, Strategy는 실행 방법을 고르고, State는 현재 단계에 따라 행동이 달라지며, Policy Object는 도메인 판정을 명시한다.
+> 한 줄 요약: 세 패턴 모두 객체로 분리해 보이지만, Strategy는 실행 방법을 고르고, State는 현재 단계에 따라 행동이 달라지며, Policy Object는 허용 여부 같은 도메인 판정을 맡는다.
 
 **난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법](./strategy-pattern.md)
+- [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
+- [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [실전 패턴 선택 가이드](./pattern-selection.md)
+- [객체지향 설계 기초: 합성, 책임, 협력](../software-engineering/oop-design-basics.md)
 
-> 관련 문서:
-> - [전략 패턴](./strategy-pattern.md)
-> - [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
-> - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
-> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-> - [실전 패턴 선택 가이드](./pattern-selection.md)
-
-retrieval-anchor-keywords: strategy vs state, strategy vs policy object, state vs policy object, strategy state policy comparison, payment method vs payment status, refund policy object, workflow state transition, beginner pattern distinction, policy decision object, runtime algorithm selection vs domain rule, strategy vs state vs policy object basics, strategy vs state vs policy object beginner, strategy vs state vs policy object intro, design pattern basics, beginner design pattern
+retrieval-anchor-keywords: strategy vs state, strategy vs policy object, state vs policy object, strategy state policy comparison, payment method vs payment status, refund policy object, workflow state transition, policy decision object, runtime algorithm selection vs domain rule, strategy vs state vs policy object basics, strategy vs state vs policy object beginner, 결제 수단 선택 vs 주문 상태, 상태 전이 뭐예요, policy object 뭐예요, pattern distinction 처음
 
 ---
 

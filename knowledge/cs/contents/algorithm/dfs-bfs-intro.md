@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: DFS와 BFS 입문 (DFS and BFS Basics)
+concept_id: algorithm/dfs-bfs-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- dfs-vs-bfs-question-shape
+- connectivity-vs-shortest-path
+- queue-vs-bfs-role-confusion
+aliases:
+- dfs bfs intro
+- dfs bfs basics
+- dfs bfs beginner
+- dfs bfs difference
+- bfs shortest path beginner
+- bfs level order
+- dfs one path deep
+- queue for bfs
+- tree dfs vs graph dfs
+- connected component beginner
+- yes no connectivity
+- 언제 bfs 써요
+symptoms:
+- DFS랑 BFS를 외웠는데 문제에서 언제 어느 쪽을 먼저 떠올려야 할지 모르겠어
+- 연결돼 있나와 최소 몇 번 만에 가나를 같은 탐색 질문으로 읽어서 헷갈려
+- BFS를 배울 때 queue가 왜 같이 나오고 visited가 어디 역할인지 분리해서 보고 싶어
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/graph-basics
+- data-structure/tree-basics
+next_docs:
+- data-structure/connectivity-question-router
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/shortest-path-reconstruction-bridge
+- algorithm/tree-dfs-template-cheat-sheet
+linked_paths:
+- contents/data-structure/graph-basics.md
+- contents/data-structure/tree-basics.md
+- contents/data-structure/connectivity-question-router.md
+- contents/data-structure/queue-basics.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/tree-dfs-template-cheat-sheet.md
+- contents/algorithm/graph.md
+confusable_with:
+- data-structure/connectivity-question-router
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+forbidden_neighbors:
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- 연결만 확인할 때와 최소 이동 횟수를 구할 때 DFS BFS를 어떻게 다르게 읽어야 해?
+- 처음 배우는 사람 기준으로 DFS는 언제 BFS는 언제 먼저 떠올리면 돼?
+- queue와 BFS와 visited가 각각 무슨 역할인지 탐색 입문 관점으로 정리해줘
+- 트리 DFS와 그래프 DFS를 같은 이름으로 부르지만 어디가 다른지 감각적으로 알고 싶어
+- 갈 수 있나, 아무 경로 하나, 최소 몇 번 만에 가나를 탐색 문제에서 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 그래프 탐색을 처음 배우는 학습자가 DFS와 BFS를 구현 기법이 아니라
+  질문 모양으로 구분하게 만드는 primer다. 연결돼 있나, 아무 경로 하나면 되나,
+  최소 몇 번 만에 가나, queue는 왜 같이 나오나, tree DFS와 graph DFS는 어떻게
+  다르나 같은 자연어 paraphrase가 이 문서의 핵심 분기 규칙으로 매핑된다.
+---
 # DFS와 BFS 입문 (DFS and BFS Basics)
 
 > 한 줄 요약: DFS는 한 갈래를 끝까지 파고드는 탐색이고, BFS는 레벨 순서로 가까운 노드부터 넓히는 탐색이며, beginner는 `yes/no 연결성`과 `최소 이동 횟수`를 먼저 구분해야 `연결돼 있나?` 문장에 BFS를 과하게 붙이지 않는다.

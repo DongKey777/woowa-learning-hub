@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Divide and Conquer DP Optimization
+concept_id: algorithm/divide-and-conquer-dp-optimization
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- partition-dp-monotonicity
+- opt-range-pruning
+aliases:
+- divide and conquer dp optimization
+- monotone opt
+- knuth-like partition
+- dp speedup
+- interval dp
+- opt monotonicity
+- partition point
+- dynamic programming optimization
+symptoms:
+- 분할 DP 식은 보이는데 왜 탐색 구간을 줄여도 되는지 근거가 안 보여
+- Knuth optimization이랑 divide and conquer DP를 같은 것으로 읽고 있어
+- 최적 분할점이 단조적이라는 말이 코드에서 어떤 의미인지 모르겠어
+intents:
+- deep_dive
+prerequisites:
+- algorithm/dp-intro
+- algorithm/knuth-optimization-intuition
+next_docs:
+- algorithm/convex-hull-trick-basics
+- algorithm/topological-dp
+- algorithm/monotone-queue-dp
+linked_paths:
+- contents/algorithm/knuth-optimization-intuition.md
+- contents/algorithm/convex-hull-trick-basics.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/topological-dp.md
+- contents/algorithm/monotone-queue-dp.md
+confusable_with:
+- algorithm/knuth-optimization-intuition
+- algorithm/convex-hull-trick-basics
+forbidden_neighbors: []
+expected_queries:
+- 분할 정복 DP 최적화는 어떤 단조성 조건이 있어야 적용할 수 있어?
+- opt 배열이 오른쪽으로만 움직인다는 말이 divide and conquer DP에서 왜 중요한지 설명해줘
+- 구간 분할 DP를 O(n^2)에서 줄일 때 Knuth 말고 다른 최적화로 보는 기준이 뭐야
+- partition DP에서 최적 k 탐색 범위를 재귀적으로 줄이는 아이디어를 알고 싶어
+- monotone opt가 성립할 때 divide and conquer DP 코드가 왜 mid 기준으로 퍼지는지 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 알고리즘 학습자가 분할 DP에서 최적 분할점이 오른쪽으로만 밀리는 조건이
+  왜 탐색 범위 축소 근거가 되는지, mid를 기준으로 후보 구간을 줄이는 흐름을 깊이
+  잡는 deep_dive다. 분할점 단조 이동, k 후보 범위 줄이기, 구간 분할 DP 가속,
+  모든 k 다 보지 않기, 재귀로 탐색 줄이기 같은 자연어 paraphrase가 본 문서의
+  divide and conquer DP 최적화에 매핑된다.
+---
 # Divide and Conquer DP Optimization
 
 > 한 줄 요약: Divide and Conquer DP Optimization은 DP의 최적 분할점이 단조적일 때 탐색 범위를 줄여 계산을 가속하는 기법이다.

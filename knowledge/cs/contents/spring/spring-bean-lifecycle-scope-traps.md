@@ -7,39 +7,16 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
-
-
-retrieval-anchor-keywords: spring bean lifecycle scope traps, singleton mutable state bug, prototype bean singleton injection trap, request scope async trap, scoped proxy objectprovider difference, @postconstruct transactional trap, bean scope deep dive, 스프링 빈 스코프 함정, request scope 비동기 문제, prototype singleton 주입 문제, scoped proxy objectprovider 차이, 왜 singleton 상태가 섞여요, request scope 왜 async 에서 깨져요, scoped proxy 왜 헷갈려요
-> 관련 문서:
-> - [Spring Bean 생명주기 기초: 생성부터 소멸까지](./spring-bean-lifecycle-basics.md)
-> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
-> - [IoC 컨테이너와 DI](./ioc-di-container.md)
-> - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
-> - [Spring Request Scope Proxy Pitfalls](./spring-request-scope-proxy-pitfalls.md)
-> - [@Transactional 깊이 파기](./transactional-deep-dive.md)
-> - [Spring Security 아키텍처](./spring-security-architecture.md)
+- [Spring Bean 생명주기 기초: 생성부터 소멸까지](./spring-bean-lifecycle-basics.md)
+- [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [Spring Request Scope Proxy Pitfalls](./spring-request-scope-proxy-pitfalls.md)
+- [@Transactional 깊이 파기](./transactional-deep-dive.md)
+- [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 
 ---
 
-> retrieval-anchor-keywords:
-> - Spring bean lifecycle
-> - bean scope traps
-> - singleton scope
-> - prototype scope
-> - request scope
-> - session scope
-> - scoped proxy
-> - ObjectProvider
-> - provider vs proxy
-> - prototype lookup timing
-> - request lookup timing
-> - @PostConstruct
-> - @PreDestroy
-> - bean 생명주기
-> - 스코프 함정
+retrieval-anchor-keywords: spring bean lifecycle scope traps, singleton mutable state bug, prototype singleton injection trap, request scope async trap, scoped proxy objectprovider difference, postconstruct transactional trap, bean scope deep dive, 스프링 빈 스코프 함정, 왜 singleton 상태가 섞여요, request scope 왜 async 에서 깨져요, scoped proxy 왜 헷갈려요
 
 ## 핵심 개념
 

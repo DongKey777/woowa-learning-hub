@@ -13,10 +13,22 @@
 - [Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md)
 - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
 - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: rollback-only vs checked exception, checked exception commit surprise, 예외 났는데 commit 됨, checked exception인데 왜 롤백 안 됨, unexpectedrollbackexception vs checked exception, rollback-only 마지막에 터짐, catch 했는데 commit 실패, checked exception commit beginner, rollbackfor beginner card, transaction marked rollback-only vs checked exception, transactional rollback default confusion, runtime exception rollback checked commit, beginner transaction surprise card, spring rollbackonly vs checked exception commit surprise card basics, spring rollbackonly vs checked exception commit surprise card beginner
+retrieval-anchor-keywords: rollback-only vs checked exception, checked exception commit surprise, 예외 났는데 commit 됨, checked exception인데 왜 롤백 안 됨, unexpectedrollbackexception vs checked exception, rollback-only 마지막에 터짐, catch 했는데 commit 실패, rollback 안 된 것 같아요, checked exception commit beginner, rollbackfor beginner card, transaction marked rollback-only vs checked exception, transactional rollback default confusion, runtime exception rollback checked commit, beginner transaction surprise card, spring rollbackonly checked exception basics
+
+## 이 문서가 먼저 잡는 질문
+
+이 문서는 아래처럼 **"예외가 났는데 왜 기대와 다르게 끝났지?"**라는 질문을 두 축으로 먼저 자르기 위해 만든 comparison card다.
+
+| 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
+|---|---|
+| "예외가 났는데 왜 마지막에만 터져요?" | rollback-only 지연 폭발인지 먼저 보라고 답한다 |
+| "checked exception인데 왜 commit돼요?" | 기본 rollback 규칙 밖의 예외인지 먼저 보라고 답한다 |
+| "rollback이 안 된 건지, commit surprise인지 헷갈려요" | 트랜잭션 상태 문제와 예외 타입 규칙 문제를 분리하라고 답한다 |
+| "`rollbackFor`를 볼 문제인가요, catch 코드를 볼 문제인가요?" | checked exception이면 규칙부터, 마지막 commit 폭발이면 rollback-only부터 보라고 안내한다 |
 
 ## 먼저 mental model 한 줄
 

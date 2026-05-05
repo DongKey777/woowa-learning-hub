@@ -7,17 +7,14 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
+- [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
+- [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+- [Spring Bean을 못 찾아요 원인 라우터](./spring-bean-not-found-cause-router.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
 
-> 관련 문서:
-> - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
-> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
-
-retrieval-anchor-keywords: kotlin configurationproperties detection primer, kotlin configurationproperties data class, kotlin constructor binding detection, configurationproperties registration point, configurationpropertiesscan enableconfigurationproperties kotlin, bean missing configurationproperties kotlin, grep configurationproperties kotlin, data class properties scan, constructor binding grep miss, beginner configurationproperties registration note, spring kotlin configurationproperties detection primer basics, spring kotlin configurationproperties detection primer beginner, spring kotlin configurationproperties detection primer intro, spring basics, beginner spring
+retrieval-anchor-keywords: kotlin configurationproperties bean 등록 어디서, kotlin configurationproperties data class, configurationproperties 등록 포인트, configurationpropertiesscan enableconfigurationproperties kotlin, 왜 configurationproperties 빈이 안 떠요, bean missing configurationproperties kotlin, grep configurationproperties kotlin, data class properties scan, constructor binding grep miss, kotlin 설정 바인딩 처음, configurationproperties 뭐예요 basics, why configurationproperties bean not found, spring kotlin configurationproperties beginner, spring kotlin configurationproperties intro, 설정 클래스는 있는데 주입이 안돼요
 
 ## 먼저 mental model 한 줄
 
@@ -186,6 +183,16 @@ class MailConfig {
 - `@ConstructorBinding` annotation이 없으면 constructor binding이 아니라고 생각한다.
 - Kotlin `data class`면 무조건 scan 없이도 등록된다고 생각한다.
 - `@Bean @ConfigurationProperties`와 data class constructor binding을 같은 방식으로 이해한다.
+
+## 다음 한 걸음
+
+지금 질문이 어디서 막혔는지에 따라 다음 문서를 고르면 덜 헤맨다.
+
+| 지금 막힌 지점 | 다음 문서 |
+|---|---|
+| prefix는 맞는 것 같은데 값이 안 들어간다 | [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md) |
+| env var나 `application.yml` 어느 쪽이 이기는지 헷갈린다 | [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md) |
+| starter를 넣었는데 기대한 bean 자체가 없다 | [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md) |
 
 ## 리뷰에서 바로 쓰는 짧은 순서
 

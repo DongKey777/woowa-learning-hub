@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Conditional Write Status Code Bridge
+concept_id: system-design/conditional-write-status-code-bridge
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/shopping-cart
+- missions/roomescape
+review_feedback_tags:
+- status-code-412-vs-409
+- missing-precondition-policy
+- etag-version-contract
+aliases:
+- conditional write status code bridge
+- 409 vs 412 vs 428
+- conditional write beginner
+- if-match status code
+- precondition required vs precondition failed
+- optimistic concurrency status code
+- stale save status code
+- etag mismatch 412
+- missing if-match 428
+- conflict after latest read 409
+- 처음 409 412 헷갈림
+- 왜 428 나와요
+- conditional patch api guide
+- write precondition response code
+- optimistic lock 409 412 428
+- if-match 없이 저장해서 428
+- 최신으로 다시 읽어도 409 conflict
+symptoms:
+- 조건부 저장에서 왜 어떤 때는 412고 어떤 때는 409인지 모르겠어
+- If-Match를 안 보냈는데 428을 써야 하는지 감이 안 와
+- stale 저장 실패와 도메인 충돌 실패를 같은 에러로 내려보내고 있어
+intents:
+- comparison
+prerequisites:
+- system-design/writes-follow-reads-primer
+next_docs:
+- system-design/write-order-vs-precondition-primer
+- system-design/writes-follow-reads-primer
+- software-engineering/http-409-vs-422-selection-guide
+linked_paths:
+- contents/system-design/writes-follow-reads-primer.md
+- contents/system-design/write-order-vs-precondition-primer.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/monotonic-writes-ordering-primer.md
+- contents/database/compare-and-set-version-columns.md
+- contents/network/strong-vs-weak-etag-validator-precision-cache-correctness.md
+- contents/software-engineering/http-409-vs-422-selection-guide.md
+confusable_with:
+- system-design/write-order-vs-precondition-primer
+- software-engineering/http-409-vs-422-selection-guide
+- database/compare-and-set-version-columns
+forbidden_neighbors: []
+expected_queries:
+- 수정 API에서 조건 헤더를 안 보내면 왜 428을 응답하나요?
+- 예전 ETag로 저장이 실패했을 때 412와 409를 어떻게 나눠요?
+- 최신 상태를 다시 읽어도 예약이 안 되면 왜 conflict라고 설명해요?
+- conditional update에서 precondition 누락과 stale version을 구분하는 기준이 뭐야?
+- 낙관적 락 실패를 412로 볼지 409로 볼지 판단 순서가 궁금해요
+- expected_version 기반 저장 API에서도 428, 412, 409를 같은 감각으로 써도 돼?
+contextual_chunk_prefix: |
+  이 문서는 conditional write에서 428, 412, 409를 조건 누락, 낡은 기준선,
+  최신 상태에서도 남는 도메인 충돌로 나눠 설명하는 bridge다. If-Match를 안
+  붙인 저장 요청, 예전 ETag로 다시 저장한 경우, 다시 읽어도 안 풀리는 예약
+  충돌처럼 상태 코드를 왜 다르게 주는지 묻는 학습자 질문을 이 구분으로 연결한다.
+---
 # Conditional Write Status Code Bridge
 
 > 한 줄 요약: conditional write에서 `428`은 "조건을 꼭 보내라", `412`는 "보낸 조건이 깨졌다", `409`는 "최신 상태로 다시 봐도 이 동작 자체가 충돌한다"로 나누면 초보자 혼동이 크게 줄어든다.

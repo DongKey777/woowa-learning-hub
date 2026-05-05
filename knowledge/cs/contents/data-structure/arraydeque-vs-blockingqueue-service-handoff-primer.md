@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: ArrayDeque vs BlockingQueue 서비스 handoff 프라이머
+concept_id: data-structure/arraydeque-vs-blockingqueue-service-handoff-primer
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- local-queue-vs-worker-handoff
+- blockingqueue-when-multithreaded
+- queue-handoff-contract
+aliases:
+- arraydeque vs blockingqueue
+- java fifo service handoff
+- arraydeque local queue
+- blockingqueue producer consumer
+- blockingqueue beginner
+- when to use blockingqueue
+- arraydeque service code beginner
+- queue handoff between threads
+- java worker queue basics
+- arraydeque vs blockingqueue primer
+- 멀티스레드 큐 뭐 써요
+- blockingqueue가 뭐예요
+- queue가 보이는데 운영 문서로 가야 하나요
+- worker queue 다음 단계
+- message consumer 전 safe route
+symptoms:
+- 같은 queue라도 로컬 FIFO와 worker handoff를 언제 갈라야 하는지 모르겠다
+- 여러 스레드가 작업을 주고받는데 ArrayDeque로도 되는지 헷갈린다
+- blocking이 정확히 무엇을 기다린다는 뜻인지 timer 개념과 자꾸 섞인다
+intents:
+- definition
+prerequisites:
+- data-structure/queue-basics
+- data-structure/arraydeque-vs-linkedlist-queue-choice-card
+next_docs:
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- language/blockingqueue-transferqueue-concurrentskiplistset-semantics
+- software-engineering/message-driven-adapter-example
+linked_paths:
+- contents/data-structure/queue-basics.md
+- contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/language/java/blockingqueue-transferqueue-concurrentskiplistset-semantics.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/message-driven-adapter-example.md
+confusable_with:
+- data-structure/arraydeque-vs-linkedlist-queue-choice-card
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+forbidden_neighbors:
+- contents/data-structure/queue-basics.md
+- contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md
+expected_queries:
+- 같은 요청 흐름 안에서만 쓰는 큐와 worker 스레드에 넘기는 큐를 어디서 분리해?
+- producer consumer 구조가 나오면 자료구조 기본값을 어떻게 바꿔야 하는지 궁금해
+- 비었을 때 기다리는 계약이 필요하면 왜 일반 deque 설명으로는 부족해?
+- 여러 스레드가 작업을 주고받는 서비스 큐를 생각할 때 먼저 체크할 질문이 뭐야?
+- 로컬 FIFO 버퍼와 작업 handoff 큐를 한 번에 비교해서 정리해줘
+- message consumer 앞단에서 queue 선택을 볼 때 초급자가 놓치기 쉬운 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 자료구조를 막 배우는 학습자가 같은 스레드 안에서 잠깐
+  쓰는 로컬 FIFO와 다른 스레드에 작업을 넘기는 handoff 큐를 왜
+  분리해서 봐야 하는지 처음 잡는 primer다. 내가 넣고 내가 빼는 큐,
+  worker에게 일 넘기기, 비면 기다리는 큐, 꽉 차면 속도 조절, 서비스
+  작업 전달 통로, producer consumer 기본값 같은 자연어 paraphrase가
+  본 문서의 핵심 구분에 매핑된다.
+---
 # ArrayDeque vs BlockingQueue 서비스 handoff 프라이머
 
 > 한 줄 요약: 한 스레드 안에서 잠깐 쓰는 FIFO면 `ArrayDeque`가 기본값이고, 여러 스레드가 작업을 넘기며 비었을 때 기다리거나 꽉 찼을 때 조절해야 하면 `BlockingQueue`로 질문을 바꿔야 한다.

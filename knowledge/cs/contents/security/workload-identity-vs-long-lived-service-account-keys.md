@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Workload Identity / Long-Lived Service Account Keys
+concept_id: security/workload-identity-vs-long-lived-service-account-keys
+canonical: false
+category: security
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- workload-identity-over-static-keys
+- service-account-key-rotation-risk
+- sts-vs-key-file
+aliases:
+- workload identity
+- service account key
+- long-lived key
+- identity federation
+- short-lived credential
+- token exchange
+- metadata service
+- cloud auth
+- pod identity
+- keyless auth
+- attestation
+symptoms:
+- 서비스 계정 키 파일을 배포에 넣어도 되는지 불안해요
+- CI나 쿠버네티스에서 long-lived key 대신 뭘 써야 할지 모르겠어요
+- key rotation이 자꾸 깨져서 정적 키를 계속 들고 가고 있어요
+intents:
+- comparison
+- design
+prerequisites:
+- security/service-to-service-auth-mtls-jwt-spiffe
+- security/secret-management-rotation-leak-patterns
+next_docs:
+- security/mtls-certificate-rotation-trust-bundle-rollout
+- security/workload-identity-user-context-propagation-boundaries
+- security/key-rotation-runbook
+linked_paths:
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/key-rotation-runbook.md
+- contents/security/envelope-encryption-kms-basics.md
+- contents/security/hardware-backed-keys-attestation.md
+confusable_with:
+- security/service-to-service-auth-mtls-jwt-spiffe
+- security/secret-management-rotation-leak-patterns
+- security/hardware-backed-keys-attestation
+forbidden_neighbors: []
+expected_queries:
+- 쿠버네티스에서 service account key 파일 없이 인증하는 방법이 뭐야?
+- workload identity가 static key보다 안전한 이유를 운영 관점에서 설명해줘
+- CI 로그에 클라우드 키가 노출됐을 때 다음 구조를 어떻게 바꿔야 해?
+- short-lived credential과 long-lived key를 언제 갈라서 봐야 하나요
+- STS나 federation으로 키 없는 서버 인증을 한다는 게 무슨 뜻이야
+- pod identity를 쓰면 key rotation 부담이 왜 줄어드는지 궁금해
+contextual_chunk_prefix: |
+  이 문서는 운영자가 쿠버네티스나 CI에서 정적 서비스 계정 키를 계속 둘지,
+  workload identity와 federation으로 짧은 credential로 바꿀지 안전성과
+  운영 부담 기준으로 결정하게 돕는 chooser다. 키 파일 유출 위험, pod가
+  클라우드 권한을 받는 방식, STS로 잠깐 쓰는 토큰, 회전이 자꾸 깨지는 배포,
+  keyless 인증 전환 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Workload Identity / Long-Lived Service Account Keys
 
 > 한 줄 요약: workload identity는 실행 환경 자체가 신원 증명이 되게 만들고, long-lived service account key는 파일 하나만 유출돼도 장기 침해로 이어질 수 있다.

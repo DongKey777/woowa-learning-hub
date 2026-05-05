@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Histogram Drift and Auto-Analyze Thresholds
+concept_id: database/histogram-drift-auto-analyze-thresholds
+canonical: false
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- rows-estimate-mismatch
+- analyze-after-distribution-shift
+- stats-drift-before-hints
+aliases:
+- histogram drift
+- auto analyze threshold
+- analyze table timing
+- cardinality drift
+- stale statistics
+- plan drift after deploy
+- distribution shift
+- rows estimate mismatch
+- 왜 배포 후 실행 계획이 바뀌어요
+symptoms:
+- 배포 후 같은 SQL인데 갑자기 실행 계획이 바뀌었어요
+- EXPLAIN rows 추정치가 실제 row 수와 너무 달라요
+- ANALYZE를 언제 다시 해야 하는지 감이 안 와요
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/statistics-histograms-cardinality-estimation
+next_docs:
+- database/secondary-index-maintenance-cost-analyze-skew
+- database/slow-query-analysis-playbook
+- database/mysql-optimizer-hints-index-merge
+linked_paths:
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/query-tuning-checklist.md
+confusable_with:
+- database/statistics-histograms-cardinality-estimation
+- database/query-tuning-checklist
+forbidden_neighbors:
+- contents/database/index-basics.md
+expected_queries:
+- histogram drift는 왜 생기고 언제 ANALYZE를 다시 해야 해?
+- 배포 후 같은 SQL인데 실행 계획이 바뀌면 통계부터 어떻게 의심해?
+- auto analyze threshold를 믿어도 되는지 알고 싶어
+- rows 추정치가 실제와 크게 다를 때 histogram을 먼저 봐야 하나?
+contextual_chunk_prefix: |
+  이 문서는 배포 후 같은 SQL인데 실행 계획이 바뀌거나 rows 추정치가 실제와
+  어긋날 때, histogram drift와 auto-analyze 지연이 왜 plan drift로 이어지는지
+  설명하는 deep_dive다. stale statistics, distribution shift, analyze table
+  timing, rows estimate mismatch, why plan changed after deploy 같은 학습자
+  질문을 통계 갱신 타이밍과 cardinality estimation 맥락으로 연결한다.
+---
+
 # Histogram Drift and Auto-Analyze Thresholds
 
 > 한 줄 요약: histogram은 한 번 만들고 끝나는 정보가 아니라, 데이터 분포가 바뀌면 흐려지고 다시 분석해야 하는 옵티마이저 자산이다.

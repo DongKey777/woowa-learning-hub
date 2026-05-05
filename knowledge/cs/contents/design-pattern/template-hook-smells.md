@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Template Hook Smells: 템플릿 메소드가 과해졌다는 신호
+concept_id: design-pattern/template-hook-smells
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+  - template-hook-overuse
+  - fragile-base-class
+  - template-vs-strategy
+aliases:
+  - template hook smell
+  - template method overuse
+  - hook method explosion
+  - too many hooks
+  - fragile base class
+  - unsafe extension point
+  - before after hook explosion
+  - shouldnotfilter smell
+  - setup teardown smell
+  - hook 추가 vs 전략 분리
+  - hook 늘어나면 언제 strategy로 분리
+  - beforex afterx 많아질 때
+  - template method vs strategy smell bridge
+  - hook 하나 더 추가할까 strategy로 뺄까
+  - 처음 배우는데 hook 많아질 때
+symptoms:
+  - before after hook가 계속 늘어나서 부모 클래스 순서를 외워야 해
+  - shouldNotFilter 같은 hook 하나가 요청 정책 엔진처럼 커지고 있어
+  - setUp tearDown에 준비 로직이 쌓여서 하위 테스트가 숨은 부작용에 묶여
+intents:
+  - symptom
+  - design
+  - troubleshooting
+prerequisites:
+  - design-pattern/template-method-basics
+  - design-pattern/template-method-vs-strategy
+next_docs:
+  - design-pattern/template-method-framework-lifecycle-examples
+  - design-pattern/junit5-callback-model-vs-classic-xunit-template-skeleton
+  - design-pattern/strategy-explosion-smell
+linked_paths:
+  - contents/design-pattern/template-method-query-router-beginner.md
+  - contents/design-pattern/template-method-basics.md
+  - contents/design-pattern/template-method-vs-strategy.md
+  - contents/design-pattern/template-method-framework-lifecycle-examples.md
+  - contents/design-pattern/junit5-callback-model-vs-classic-xunit-template-skeleton.md
+  - contents/design-pattern/strategy-explosion-smell.md
+  - contents/design-pattern/god-object-spaghetti-golden-hammer.md
+  - contents/spring/spring-security-filter-chain.md
+confusable_with:
+  - design-pattern/template-method-basics
+  - design-pattern/template-method-vs-strategy
+  - design-pattern/strategy-explosion-smell
+forbidden_neighbors:
+  - contents/design-pattern/template-method-basics.md
+  - contents/design-pattern/template-method-query-router-beginner.md
+expected_queries:
+  - template method에 hook를 계속 추가하고 있는데 이게 과한 설계인지 판단하고 싶어
+  - before after cleanup hook가 많아질 때 상속보다 전략이나 matcher로 빼야 하는 기준이 뭐야?
+  - OncePerRequestFilter shouldNotFilter가 너무 커졌을 때 어떤 냄새로 봐야 해?
+  - setUp tearDown에 인프라 준비가 몰려서 테스트가 불안정한데 template hook 문제로 봐도 돼?
+  - hook 하나 더 추가할지 아니면 정책 객체나 extension으로 분리할지 빠르게 결정하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 template method를 쓰다 before, after, cleanup, shouldNotFilter 같은
+  hook가 계속 늘어나고 서브클래스가 부모 내부 순서를 외워야 하는 상황을 다루는
+  symptom_router다. 프레임워크 hook 과다 사용, fragile base class,
+  테스트 setUp tearDown 오케스트레이션, hook 추가와 strategy 분리 사이에서
+  막히는 검색을 이 문서로 매핑한다.
+---
 # Template Hook Smells: 템플릿 메소드가 과해졌다는 신호
 
 > 한 줄 요약: Template Hook는 흐름 고정에 유용하지만, 훅이 많아지면 상속 구조보다 조건 분기와 전략 조합이 더 낫다는 신호일 수 있다.

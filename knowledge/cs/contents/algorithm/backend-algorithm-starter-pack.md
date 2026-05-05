@@ -1,3 +1,85 @@
+---
+schema_version: 3
+title: Backend Algorithm Starter Pack
+concept_id: algorithm/backend-algorithm-starter-pack
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- algorithm-triage-first-cut
+- queue-vs-bfs-vs-worker
+- complexity-before-pattern
+aliases:
+- backend algorithm starter pack
+- algorithm triage checklist
+- algorithm what to study first
+- sorting basics
+- binary search beginner
+- dfs bfs beginner
+- greedy beginner
+- dp beginner
+- shortest path basics
+- 알고리즘 뭐부터 공부
+- 백엔드 알고리즘 입문
+- 처음 알고리즘 공부
+- service 코드인데 queue가 보여요
+- queue가 bfs인지 worker handoff인지 헷갈려요
+- 계산 질문인지 책임 질문인지 헷갈려요
+symptoms:
+- 백엔드 미션 코드를 읽는데 queue가 보여서 알고리즘 문제인지 서비스 흐름인지부터 헷갈려
+- 어떤 알고리즘을 써야 하는지보다 문제를 어떻게 분류해야 할지 모르겠어
+- 정렬, 이분 탐색, BFS, DP 중 어디부터 의심해야 할지 첫 분기가 안 잡혀
+intents:
+- mission_bridge
+- design
+prerequisites:
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/binary-search-intro
+- algorithm/dfs-bfs-intro
+- algorithm/dp-intro
+linked_paths:
+- contents/algorithm/time-complexity-intro.md
+- contents/algorithm/sort-intro.md
+- contents/algorithm/binary-search-intro.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/greedy-intro.md
+- contents/algorithm/dp-intro.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/data-structure/queue-basics.md
+- contents/data-structure/graph-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+confusable_with:
+- data-structure/backend-data-structure-starter-pack
+- software-engineering/woowacourse-backend-mission-prerequisite-primer
+forbidden_neighbors:
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+expected_queries:
+- roomescape나 shopping-cart 같은 백엔드 미션을 읽을 때 알고리즘 문서를 어디서부터 잡아야 해?
+- queue가 보이는데 BFS를 의심해야 하는지 worker 큐를 의심해야 하는지 첫 판단 기준이 궁금해
+- 알고리즘 문제를 처음 읽을 때 입력 크기랑 답의 모양으로 어떻게 분류하는지 알려줘
+- 정렬, 이분 탐색, 탐색, 그리디, DP 중 어떤 패턴부터 떠올려야 하는지 입구 지도가 필요해
+- 백엔드 주니어가 코딩테스트 말고 미션 코드 문맥에서 알고리즘 감각을 어디까지 가져오면 되는지 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Woowacourse 백엔드 미션에서 queue, graph, sort 같은 단어를
+  봐도 바로 알고리즘 이름부터 고르지 않고 입력 크기, 답의 형태, 반복 질의
+  여부로 알고리즘 감각을 미션 맥락과 잇는 mission bridge다. roomescape
+  요구사항 읽기, 작업 큐인지 BFS인지 구분, 정렬 후 찾기인지 최소 이동인지
+  판단, 그리디로 끝낼지 상태 재사용을 볼지 같은 자연어 paraphrase가 본
+  문서의 첫 분기 판단에 매핑된다.
+---
 # Backend Algorithm Starter Pack
 
 > 한 줄 요약: 백엔드 주니어가 알고리즘 문제를 보면 먼저 입력 크기로 복잡도 상한을 자르고, 그다음 정렬, 이분 탐색, DFS/BFS, 그리디, DP, shortest path 중 무엇이 핵심인지 고르는 입구 문서다.

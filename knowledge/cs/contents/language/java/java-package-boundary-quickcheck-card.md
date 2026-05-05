@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Java 패키지 경계 퀵체크 카드
+concept_id: language/java-package-boundary-quickcheck-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- protected-boundary-check
+- package-private-boundary
+- subclass-vs-nonsubclass
+aliases:
+- java access boundary quick check
+- java package boundary beginner
+- protected package-private quick card
+- same package subclass non-subclass
+- protected 언제 돼요
+- package-private 언제 돼요
+- 같은 패키지면 어디까지 보이나요
+- 다른 패키지 subclass protected
+- 자바 접근 경계 빠른 판단
+- 자바 protected package-private 차이
+- 자바 same package subclass non-subclass
+- 처음 배우는데 protected 헷갈림
+- 처음 배우는데 package-private 헷갈림
+- access modifier quick check java
+- beginner access boundary card
+symptoms:
+- protected가 같은 패키지일 때랑 상속일 때 언제 되는지 자꾸 헷갈려
+- package-private이 상속하면 보일 거라고 착각해
+- same package인지 다른 package subclass인지 빠르게 못 가르겠어
+intents:
+- definition
+prerequisites:
+- language/java-package-import-boundary-basics
+- language/java-access-modifiers-member-model-basics
+next_docs:
+- language/java-access-modifier-boundary-lab
+- language/top-level-type-access-modifier-bridge
+- language/java-access-modifier-top-level-member-mini-quiz
+linked_paths:
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-access-modifier-boundary-lab.md
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-access-modifier-top-level-member-mini-quiz.md
+- contents/language/java/java-inheritance-overriding-basics.md
+confusable_with:
+- language/java-package-import-boundary-basics
+- language/java-access-modifier-boundary-lab
+forbidden_neighbors:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/java-access-modifier-boundary-lab.md
+expected_queries:
+- protected와 package-private을 10초 표로 다시 보고 싶어
+- 다른 패키지 subclass면 어디까지 접근되는지 바로 판단하는 카드가 필요해
+- same package non-subclass 기준으로 접근 제한자 표만 빠르게 확인하고 싶어
+- import는 그대로 두고 접근 가능 여부만 먼저 체크하는 문서를 찾고 있어
+- package-private이 상속으로 열리는지 아닌지 짧게 판별해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 same package, 다른 package의 하위 클래스,
+  상속 아닌 외부 코드를 10초 안에 갈라 보고 protected와
+  package-private 경계를 빠르게 판별하도록 처음 잡는 primer다. 같은
+  패키지면 어디까지 보이나, subclass 안쪽만 열리나, import와 접근은
+  별개인가, private 빼면 다 보이는 건가, protected가 왜 상황마다
+  다르게 느껴지나 같은 자연어 paraphrase가 본 문서의 판단표에
+  매핑된다.
+---
 # Java 패키지 경계 퀵체크 카드
 
 > 한 줄 요약: Java 입문자가 `same package / subclass / non-subclass`를 10초 안에 구분해서 `public`/`protected`/package-private 접근 가능 여부를 빠르게 판단하도록 돕는 beginner quick card다.

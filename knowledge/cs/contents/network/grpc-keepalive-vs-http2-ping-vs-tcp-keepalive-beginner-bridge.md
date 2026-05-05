@@ -1,8 +1,10 @@
-# gRPC keepalive vs HTTP/2 PING vs TCP keepalive
+# gRPC keepalive와 HTTP/2 PING, TCP keepalive 차이 입문
 
-> 한 줄 요약: gRPC keepalive는 "언제 PING을 보낼지 정한 정책"이고, HTTP/2 PING은 "실제로 오가는 프레임"이며, TCP keepalive는 "OS가 보는 소켓 생존 확인"이라서 같은 말로 묶으면 안 된다.
+> 한 줄 요약: "`gRPC keepalive`와 `PING`, `TCP keepalive`가 뭐가 다른가요?"라는 질문에는 층부터 나눠 답하면 된다. gRPC keepalive는 "언제 PING을 보낼지 정한 정책"이고, HTTP/2 PING은 "실제로 오가는 프레임"이며, TCP keepalive는 "OS가 보는 소켓 생존 확인"이다.
 
 **난이도: 🟢 Beginner**
+
+이 문서는 "gRPC keepalive가 PING이랑 같은 말인가요?", "TCP keepalive도 같이 켜야 하나요?", "처음 배우는데 셋이 왜 따로 나와요?"처럼 **비슷한 keepalive 용어를 한 덩어리로 외우다 헷갈리는 초급 질문**을 먼저 정리하려는 비교 브리지다.
 
 관련 문서:
 
@@ -12,7 +14,7 @@
 - [Spring WebClient Connection Pool / Timeout Tuning](../spring/spring-webclient-connection-pool-timeout-tuning.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: grpc keepalive vs http2 ping, http2 ping vs tcp keepalive, grpc keepalive 뭐예요, grpc ping basics, tcp keepalive basics, grpc keepalive beginner, http2 ping beginner, keepalive 차이, grpc long connection idle, too many pings beginner, transport liveness intro, grpc keepalive http2 ping difference
+retrieval-anchor-keywords: grpc keepalive vs http2 ping, http2 ping vs tcp keepalive, grpc keepalive 뭐예요, grpc ping 이랑 keepalive 차이, tcp keepalive 왜 따로, grpc keepalive beginner, http2 ping beginner, keepalive 차이, grpc long connection idle, too many pings beginner, transport liveness intro, 처음 배우는 grpc keepalive
 
 ## 핵심 개념
 

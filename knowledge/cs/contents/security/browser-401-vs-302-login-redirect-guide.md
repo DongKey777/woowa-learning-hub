@@ -9,6 +9,7 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+summary: 브라우저에서 보이는 302 로그인 이동이 raw 401, cookie 전송 문제, server-anonymous 복원 문제 중 무엇인지 처음 가르는 chooser다.
 aliases:
 - browser 401 vs 302
 - login redirect guide
@@ -24,6 +25,12 @@ linked_paths:
 - contents/security/fetch-credentials-vs-cookie-scope.md
 - contents/spring/spring-security-filter-chain.md
 - contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+related_docs:
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/cookie-failure-three-way-splitter.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
 forbidden_neighbors:
 - contents/database/read-your-writes-session-pinning.md
 confusable_with:
@@ -34,6 +41,13 @@ expected_queries:
 - fetch가 login HTML 200을 받았는데 API 성공이 아닌 이유가 뭐야?
 - 쿠키는 있는데 왜 다시 로그인되는지 3단계로 어떻게 나눠?
 - SavedRequest bounce랑 cookie missing을 어떻게 구분해?
+retrieval_anchors:
+- browser 401 vs 302
+- 쿠키는 있는데 왜 다시 로그인
+- final html 200 is not api success
+- saved request bounce
+- login redirect guide
+- request cookie header empty
 contextual_chunk_prefix: |
   이 문서는 학습자가 SavedRequest 흐름과 그냥 쿠키 누락을 어떻게 가리는지,
   브라우저 fetch가 login HTML 200을 받아도 왜 API 성공이 아닌지 처음

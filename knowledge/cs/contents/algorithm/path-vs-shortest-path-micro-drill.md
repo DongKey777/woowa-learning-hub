@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Path vs Shortest Path Micro Drill
+concept_id: algorithm/path-vs-shortest-path-micro-drill
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- path-vs-optimality-first-cut
+- dfs-shortest-path-misread
+aliases:
+- path vs shortest path
+- actual path vs minimum path
+- any path drill
+- bfs shortest path beginner
+- dfs path reconstruction
+- minimum move count
+- 처음 path shortest path 헷갈림
+- 왜 dfs shortest 아니지
+- 언제 bfs path
+- graph beginner drill
+symptoms:
+- 경로를 출력하라길래 DFS로 풀었는데 왜 최단 조건에서 틀리는지 모르겠어
+- 갈 수 있는지만 묻는 문제와 최소 이동을 묻는 문제를 같은 걸로 읽고 있어
+- path를 보여 달라는 문장이 나오면 shortest path까지 같이 구해야 하는지 헷갈려
+intents:
+- drill
+prerequisites:
+- algorithm/dfs-bfs-intro
+next_docs:
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/data-structure/connectivity-question-router.md
+- contents/data-structure/graph-basics.md
+- contents/data-structure/queue-basics.md
+confusable_with:
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- data-structure/connectivity-question-router
+forbidden_neighbors: []
+expected_queries:
+- 경로 하나만 찾는 문제와 최단 경로 문제를 처음 읽을 때 어떻게 구분해?
+- DFS로 아무 경로를 찾는 문제와 BFS로 최단 경로를 구하는 문제를 한 번에 정리해줘
+- 문제에 path라고 써 있어도 shortest path가 아닐 수 있다는 예시를 보고 싶어
+- 갈 수 있나, 경로 하나 보여줘, 최단 경로 구해라를 어떻게 빠르게 자르지?
+- 경로 출력 문제에서 최소 조건이 붙었는지 먼저 확인하는 체크 질문이 필요해
+contextual_chunk_prefix: |
+  이 문서는 graph 문제를 읽을 때 아무 경로 하나를 찾는 요청과 최단 경로를
+  최적화로 요구하는 요청을 먼저 분리하게 만드는 drill이다. 갈 수 있는지,
+  경로 예시 하나면 되는지, 최소 이동이나 최소 비용까지 요구하는지,
+  DFS/BFS와 shortest path 분기, path라는 단어에 속지 않는 읽기 순서 같은
+  자연어 paraphrase가 본 문서의 첫 판단 기준에 매핑된다.
+---
 # Path vs Shortest Path Micro Drill
 
 > 한 줄 요약: `경로 하나만 찾기`와 `최단 경로 구하기`는 답의 모양이 다르므로, 문제 문장에서 `아무 경로나`인지 `최소`인지 먼저 자르면 초급자 실수가 줄어든다.

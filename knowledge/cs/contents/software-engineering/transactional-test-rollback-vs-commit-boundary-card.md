@@ -1,3 +1,83 @@
+---
+schema_version: 3
+title: '`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드'
+concept_id: software-engineering/transactional-test-rollback-vs-commit-boundary-card
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- flush-vs-commit
+- after-commit-test-boundary
+- commit-visible-verification
+aliases:
+- flush vs commit beginner
+- flush is not commit
+- after_commit listener not called
+- outbox commit visible test
+- transactional test rollback vs commit
+- spring test rollback commit boundary
+- testtransaction.end 뭐예요
+- '@commit 테스트 언제 써요'
+- 처음 flush commit 헷갈려요
+- 왜 flush 했는데 after commit 안 돌아요
+- what is commit path test
+- outbox 왜 commit 뒤에 봐요
+- slice test vs app integration test transaction
+- rollback test app integration test
+- datajpatest commit visible
+symptoms:
+- flush까지 했는데 AFTER_COMMIT 리스너가 안 돌아서 왜 그런지 모르겠어요
+- rollback 테스트는 초록인데 커밋 뒤에 남아야 하는 데이터 검증이 불안해요
+- TestTransaction.end()와 @Commit 중 뭘 써야 할지 감이 안 와요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/datajpatest-flush-clear-batch-checklist
+next_docs:
+- software-engineering/after-commit-listener-rollback-test-beginner-bridge
+- software-engineering/testtransaction-vs-commit-choice-mini-card
+- software-engineering/outbox-message-adapter-test-matrix
+linked_paths:
+- contents/software-engineering/after-commit-listener-rollback-test-beginner-bridge.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/datajpatest-db-difference-checklist.md
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/software-engineering/testtransaction-vs-commit-choice-mini-card.md
+- contents/spring/spring-testing-basics.md
+- contents/spring/spring-after-commit-rollback-slice-test-mini-card.md
+- contents/spring/spring-transactional-test-rollback-misconceptions.md
+confusable_with:
+- software-engineering/after-commit-listener-rollback-test-beginner-bridge
+- software-engineering/testtransaction-vs-commit-choice-mini-card
+- software-engineering/datajpatest-flush-clear-batch-checklist
+forbidden_neighbors:
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+expected_queries:
+- flush를 했는데도 다른 트랜잭션에서 안 보이는 이유를 초심자 기준으로 설명해 줄래?
+- rollback 기반 테스트와 commit visible 테스트를 언제 분리해서 봐야 해?
+- AFTER_COMMIT 리스너 검증은 왜 DataJpaTest 하나로 끝내기 어려워?
+- TestTransaction.end()랑 @Commit은 어떤 질문일 때 각각 고르면 돼?
+- outbox row가 정말 커밋 뒤에도 남는지 보려면 어떤 테스트 경계가 필요해?
+contextual_chunk_prefix: |
+  이 문서는 트랜잭션 테스트를 처음 다루는 학습자가 flush 시점 검증과
+  commit 이후 검증을 나눠 보고, rollback 기반 테스트로 충분한지 아니면
+  commit path를 따로 열어야 하는지 골라주는 chooser다. SQL은 나갔는데
+  후속 동작이 왜 안 보이나, 커밋 뒤 리스너와 outbox는 언제 확인하나, 같은
+  트랜잭션 초록이면 끝난 건가, 실제 반영 여부를 어떤 경계에서 보나,
+  TestTransaction.end()와 @Commit을 어느 질문에 쓰나 같은 자연어
+  paraphrase가 본 문서의 테스트 선택 기준에 매핑된다.
+---
 # `flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드
 
 > 한 줄 요약: `flush()`는 SQL을 보내는 중간 동기화일 뿐 commit이 아니고, `@TransactionalEventListener(AFTER_COMMIT)`나 outbox 검증은 이름 그대로 commit 뒤 세계를 따로 열어 봐야 한다.

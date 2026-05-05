@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 컴포넌트 테스트 vs 브라우저 E2E 경계 카드
+concept_id: software-engineering/component-test-vs-browser-e2e-boundary-card
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- component-vs-e2e-boundary
+- ui-test-scope
+- msw-vs-browser
+aliases:
+- component test vs browser e2e
+- 컴포넌트 테스트 e2e 차이
+- ui behavior test boundary
+- button disabled test
+- redirect login browser e2e
+- 처음 프론트 테스트 뭐부터
+- when to use component test
+- what is browser e2e
+- 왜 e2e까지 안 가요
+- msw component test basics
+- playwright vs component test
+- 헷갈리는 ui test boundary
+symptoms:
+- 버튼 비활성화나 스피너 확인도 Playwright로 짜야 하나 고민돼요
+- 로그인 리다이렉트가 아닌데 E2E로 올리는 게 맞는지 헷갈려요
+- MSW로 막은 컴포넌트 테스트와 실제 브라우저 테스트 경계가 흐려요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/testing-strategy-and-test-doubles
+next_docs:
+- software-engineering/browser-e2e-cost-vs-signal-checklist
+- software-engineering/hexagonal-testing-seams-primer
+- software-engineering/inbound-adapter-testing-matrix
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/browser-e2e-cost-vs-signal-checklist.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+confusable_with:
+- software-engineering/browser-e2e-cost-vs-signal-checklist
+- software-engineering/testing-strategy-and-test-doubles
+forbidden_neighbors:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+expected_queries:
+- 버튼 disabled 상태 확인은 컴포넌트 테스트로 끝내도 돼?
+- 로그인 후 이동처럼 브라우저를 실제로 열어야 하는 테스트만 고르는 기준이 뭐야?
+- 한 화면 안에서 끝나는 UI 검증을 E2E로 안 올려도 되는 이유가 뭐야?
+- MSW로 응답을 막은 테스트와 브라우저 end-to-end를 어떻게 구분해?
+- 프런트 테스트를 처음 짤 때 component test와 browser test를 어디서 나눠?
+contextual_chunk_prefix: |
+  이 문서는 프런트엔드 학습자가 한 화면 안 상태 변화와 렌더링 확인을
+  component test에 두고, 브라우저 전환·세션·외부 연동처럼 실제 환경이
+  필요한 질문만 browser E2E로 올릴지 골라주는 chooser다. 스피너와
+  disabled 버튼은 어디서 보나, 로그인 후 이동과 쿠키 유지는 브라우저
+  문제인가, 파일 업로드나 리다이렉트는 실제 창을 열어야 하나, MSW로 막은
+  검증이면 충분한가, 여러 페이지를 지나야 답이 나오나 같은 자연어
+  paraphrase가 본 문서의 경계 판단에 매핑된다.
+---
 # 컴포넌트 테스트 vs 브라우저 E2E 경계 카드
 
 > 한 줄 요약: 화면 동작이 한 컴포넌트 안에서 끝나면 컴포넌트 테스트에 남기고, 실제 브라우저 전환·세션·멀티페이지 흐름이 핵심이면 브라우저 E2E로 올리면 초심자도 과한 E2E를 줄일 수 있다.

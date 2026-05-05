@@ -28,8 +28,9 @@ contextual_chunk_prefix: |
   이 문서는 학습자가 URL과 메서드를 묶어 요청을 받아 응답을 돌려주는
   Spring 클래스를 어떻게 만드는지, DispatcherServlet에서 컨트롤러까지의
   요청 흐름을 처음 잡는 primer다. URL과 메서드 묶기, 요청 받아 응답 돌려주기,
-  컨트롤러 만드는 법, RestController vs Controller, @RequestMapping 자연어
-  paraphrase가 본 문서의 큰 그림에 매핑된다.
+  컨트롤러 만드는 법, URL과 메서드를 묶어 요청을 받아서 응답을 돌려주는
+  클래스, RestController vs Controller, @RequestMapping 자연어 paraphrase가
+  본 문서의 큰 그림에 매핑된다.
 ---
 
 # Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름
@@ -50,7 +51,7 @@ contextual_chunk_prefix: |
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring mvc 처음 배우는데, spring mvc 큰 그림, spring mvc 기초, spring mvc는 언제 쓰는지, dispatcherservlet 뭐예요, handlermapping이 뭐예요, handleradapter가 뭐예요, 요청은 누가 찾고 누가 실행하나요, 컨트롤러는 요청을 어떻게 받나요, spring mvc가 controller 메서드를 어떻게 실행해요, spring mvc에서 값은 누가 넣어줘요, pathvariable requestparam은 누가 해석해요, @controller @restcontroller 차이, @requestmapping 기초, @pathvariable @requestparam 차이
+retrieval-anchor-keywords: spring mvc 처음 배우는데, spring mvc 큰 그림, spring mvc 기초, spring mvc는 언제 쓰는지, dispatcherservlet 뭐예요, handlermapping이 뭐예요, handleradapter가 뭐예요, 요청은 누가 찾고 누가 실행하나요, 컨트롤러는 요청을 어떻게 받나요, spring mvc가 controller 메서드를 어떻게 실행해요, spring mvc에서 값은 누가 넣어줘요, pathvariable requestparam은 누가 해석해요, @controller @restcontroller 차이, @requestmapping 기초, @pathvariable @requestparam 차이, URL과 메서드를 묶어 요청을 받아서 응답을 돌려주는 클래스, 요청 받아서 응답 돌려주는 클래스를 어떻게 만들어
 
 ## 핵심 개념
 

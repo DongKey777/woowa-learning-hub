@@ -9,6 +9,7 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+summary: 401, 403, 404를 인증 실패, 권한 부족, 존재 은닉으로 처음 구분하게 돕는 beginner chooser다.
 aliases:
 - 401 vs 403 vs 404
 - auth failure response
@@ -24,6 +25,12 @@ linked_paths:
 - contents/security/browser-401-vs-302-login-redirect-guide.md
 - contents/spring/spring-security-filter-chain.md
 - contents/security/concealment-404-entry-cues.md
+related_docs:
+- contents/security/authentication-vs-authorization.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/concealment-404-entry-cues.md
+- contents/spring/spring-security-filter-chain.md
 forbidden_neighbors:
 - contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
 confusable_with:
@@ -34,6 +41,13 @@ expected_queries:
 - 로그인 됐는데 왜 403이 나와?
 - token valid인데 왜 forbidden이야?
 - 남의 주문 조회를 404로 숨기는 건 언제 써?
+retrieval_anchors:
+- 401 vs 403 vs 404
+- 로그인 됐는데 왜 403
+- token valid but forbidden
+- 남의 주문인데 왜 404
+- auth failure response basics
+- what is 401 vs 403 vs 404
 contextual_chunk_prefix: |
   이 문서는 학습자가 로그인은 됐는데 어떤 작업이 막히면 그게 인증 실패인지
   권한 실패인지 처음 가르는 chooser다. 401(인증 실패) vs 403(권한 실패)

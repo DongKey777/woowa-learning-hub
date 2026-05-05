@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Java 메서드와 생성자 실전 입문
+concept_id: language/java-methods-constructors-practice-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- constructor-vs-method-role
+- object-state-tracking
+- overloading-vs-overriding-boundary
+aliases:
+- java method constructor basics
+- java method vs constructor
+- java object creation constructor method order
+- java new constructor instance method flow
+- java parameter return type basics
+- java overloading basics
+- java object state change
+- java field vs parameter beginner
+- 자바 메서드 생성자 차이
+- 처음 배우는데 메서드 생성자
+- 객체 만들고 생성자 메서드 순서
+- 메서드 언제 쓰나요
+- 생성자 언제 쓰나요
+- field가 뭐예요
+- 객체 상태가 뭐예요
+symptoms:
+- 메서드와 생성자를 따로 외웠는데 실제 클래스에서는 무엇을 먼저 봐야 할지 모르겠어
+- 객체를 만들고 상태를 바꾸는 흐름이 한 번에 안 잡혀
+- parameter, return type, overloading이 왜 생성자 이야기랑 같이 나오는지 헷갈려
+intents:
+- definition
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-execution-object-memory-mental-model-primer
+next_docs:
+- language/java-constructors-initialization-order-basics
+- language/java-instance-static-factory-methods-primer
+- language/java-overloading-vs-overriding-beginner-primer
+- language/java-parameter-passing-pass-by-value-side-effects-primer
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+- contents/language/java/java-constructors-initialization-order-basics.md
+- contents/language/java/java-instance-static-factory-methods-primer.md
+- contents/language/java/java-overloading-vs-overriding-beginner-primer.md
+- contents/language/java/java-parameter-passing-pass-by-value-side-effects-primer.md
+- contents/software-engineering/dependency-injection-basics.md
+confusable_with:
+- language/java-constructors-initialization-order-basics
+- language/java-instance-static-factory-methods-primer
+- language/java-overloading-vs-overriding-beginner-primer
+forbidden_neighbors: []
+expected_queries:
+- Java에서 생성자와 메서드를 처음 배울 때 한 클래스 흐름으로 설명한 입문 문서가 필요해
+- 객체를 만들고 메서드로 상태를 바꾸는 순서를 초보자 눈높이로 정리해줘
+- parameter랑 return type이 생성자랑 어떻게 연결되는지 같이 보고 싶어
+- 메서드 오버로딩까지 포함해서 생성자와 인스턴스 메서드를 한 번에 익히고 싶어
+- new 다음에 생성자가 실행되고 그 뒤 메서드가 상태를 바꾸는 흐름을 예제로 보고 싶어
+- 자바 클래스에서 field와 object state를 메서드/생성자와 같이 설명하는 글이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java 입문 학습자가 객체를 만들고 상태를 바꾸는 흐름 안에서
+  생성자와 메서드의 역할, parameter와 return type, overloading을 함께
+  처음 잡는 primer다. 객체 만들기 순서, new 다음 생성자, 상태 바꾸는
+  메서드, field와 parameter 차이, 메서드랑 생성자 연결해서 보기 같은
+  자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Java 메서드와 생성자 실전 입문
 
 > 한 줄 요약: 메서드는 이미 만든 객체를 움직이는 도구이고, 생성자는 객체가 어떤 상태로 시작할지 정하는 입구다. 초보자는 이 한 줄을 먼저 잡으면 `parameter`, `return type`, `overloading`, 상태 변경이 한 흐름으로 묶인다.

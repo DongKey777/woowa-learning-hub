@@ -1,3 +1,83 @@
+---
+schema_version: 3
+title: 0-1 BFS 구현 실수 체크 템플릿
+concept_id: algorithm/zero-one-bfs-implementation-mistake-check-template
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- zero-one-bfs-relax-order
+- deque-front-back-mixup
+- visited-instead-of-dist
+aliases:
+- 0-1 bfs implementation template
+- zero one bfs template
+- 0-1 bfs java template
+- 0-1 bfs python template
+- 0-1 bfs dist deque parent
+- 0-1 bfs beginner template
+- 0-1 bfs relax template
+- 0-1 bfs parent update template
+- 0-1 bfs deque push front back
+- 0-1 bfs code skeleton
+- 0-1 bfs starter template
+- 0-1 bfs push-front rule
+- 0-1 bfs equal-distance skip rule
+- 0-1 bfs checklist primer
+- zero one bfs implementation mistake check template
+symptoms:
+- 0-1 BFS 코드를 그대로 쳤는데 답이 한두 케이스에서 틀려
+- visited를 썼더니 더 짧은 경로를 놓치는 것 같아
+- 0 비용 간선을 앞에 넣어야 한다는 규칙이 코드에서 자꾸 섞여
+- parent를 어디서 갱신해야 경로 복원이 맞는지 모르겠어
+- deque에 같은 정점이 두 번 들어가면 버그인지 판단이 안 돼
+intents:
+- troubleshooting
+- design
+prerequisites:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+next_docs:
+- algorithm/zero-one-bfs-hand-calculation-worksheet
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/zero-one-bfs-stale-entry-mini-card.md
+- contents/algorithm/zero-one-bfs-equal-distance-reinsert-mini-note.md
+- contents/algorithm/zero-one-bfs-parent-tie-mini-note.md
+- contents/algorithm/zero-one-bfs-lexicographic-tie-mini-note.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/data-structure/deque-basics.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+confusable_with:
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+- algorithm/shortest-path-reconstruction-bridge
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- 0-1 BFS 구현에서 dist parent deque 갱신 순서를 한 번에 점검하고 싶어
+- visited로 막아서 오답 나는 0-1 BFS 패턴을 어떻게 찾지
+- cost가 0이면 앞 1이면 뒤라는 규칙이 왜 틀어지면 바로 오답이 되는지 설명해줘
+- 0-1 BFS 템플릿을 썼는데 경로 복원용 parent는 어디서 같이 바꿔야 해
+- deque에 같은 정점이 두 번 들어가는 장면이 정상인지 체크리스트가 필요해
+- newDist가 같은 경우를 무시해도 되는 기본형 기준을 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS를 처음 구현하는 학습자가 dist, parent, deque 갱신 순서를
+  어디서 자주 섞는지 빠르게 점검하고, 0 비용은 앞 1 비용은 뒤라는 규칙으로 오답을
+  전략으로 막는 playbook이다. 더 짧아질 때만 갱신, 방문 체크로 막으면 틀림,
+  경로 복원 부모 같이 바꾸기, 앞뒤 삽입 헷갈림, 같은 정점 재진입 판단 같은
+  자연어 paraphrase가 본 문서의 구현 체크포인트에 매핑된다.
+---
 # 0-1 BFS 구현 실수 체크 템플릿
 
 > 한 줄 요약: `0-1 BFS` 구현에서 초보자가 가장 많이 틀리는 위치는 `dist`, `deque`, `parent` 갱신 순서다.

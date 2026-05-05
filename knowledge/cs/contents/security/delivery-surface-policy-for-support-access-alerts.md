@@ -17,7 +17,7 @@
 > - [Session Inventory UX / Revocation Scope Design](./session-inventory-ux-revocation-scope-design.md)
 > - [Email Magic-Link Threat Model](./email-magic-link-threat-model.md)
 > - [Password Reset Threat Modeling](./password-reset-threat-modeling.md)
-> - [Security README: Service / Delegation Boundaries deep dive catalog](./README.md#service--delegation-boundaries-deep-dive-catalog)
+> - [Security README: Service / Delegation Boundaries deep dive catalog](./README.md#service-delegation-boundaries-deep-dive-catalog)
 
 retrieval-anchor-keywords: delivery surface policy for support access alerts, support access delivery surface, support access alert channel policy, support access email vs inbox vs timeline, support access alternate verified channel, compromised mailbox support access alert, mailbox compromise notification routing, primary email suppression policy, verified alternate channel, verified secondary email, tenant security contact fallback, recovery center inbox, next login blocking banner, support access timeline canonical surface, support access immediate plus timeline, aobo delivery policy, break glass delivery policy, support alert mailbox trust, support alert in app inbox, support alert security timeline, support alert verified phone fallback, customer traceability vs immediate notification, trusted degraded compromised mailbox table, mailbox trust quick start, mailbox trust beginner entry, support access fallback first read, primary email suppress quick cue
 
@@ -42,7 +42,7 @@ retrieval-anchor-keywords: delivery surface policy for support access alerts, su
 |---|---|---|---|
 | `trusted` | 메일함을 아직 즉시 알림 channel로 써도 된다 | `timeline + inbox/email` | wording이 필요하면 [Customer-Facing Support Access Notifications](./customer-facing-support-access-notifications.md), audience가 헷갈리면 [Audience Matrix for Support Access Events](./audience-matrix-for-support-access-events.md) |
 | `degraded` | 메일함이 틀렸을 수 있으니 email 단독은 내린다 | `timeline + inbox`, 필요 시 `alternate verified channel` | 누가 받는지부터 다시 자르려면 [Support Access Alert Router Primer](./support-access-alert-router-primer.md), alternate path 조건은 이 문서의 [6. alternate verified channel은 "편한 우회"가 아니라 미리 검증된 독립 channel이어야 한다](#6-alternate-verified-channel은-편한-우회가-아니라-미리-검증된-독립-channel이어야-한다) |
-| `compromised` | 공격자가 메일함을 볼 수 있다고 가정하고 primary email을 억제한다 | `timeline + alternate verified channel + next-login blocking banner` | 첫 fallback 순서를 바로 보려면 이 문서의 [7. compromised mailbox 케이스는 "primary email 억제"가 먼저다](#7-compromised-mailbox-케이스는-primary-email-억제가-먼저다), category에서 다시 고르려면 [Security README: Service / Delegation Boundaries deep dive catalog](./README.md#service--delegation-boundaries-deep-dive-catalog) |
+| `compromised` | 공격자가 메일함을 볼 수 있다고 가정하고 primary email을 억제한다 | `timeline + alternate verified channel + next-login blocking banner` | 첫 fallback 순서를 바로 보려면 이 문서의 [7. compromised mailbox 케이스는 "primary email 억제"가 먼저다](#7-compromised-mailbox-케이스는-primary-email-억제가-먼저다), category에서 다시 고르려면 [Security README: Service / Delegation Boundaries deep dive catalog](./README.md#service-delegation-boundaries-deep-dive-catalog) |
 
 자주 하는 실수:
 

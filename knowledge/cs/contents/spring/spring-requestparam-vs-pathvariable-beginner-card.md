@@ -14,7 +14,7 @@
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: requestparam vs pathvariable beginner, @requestparam 뭐예요, @pathvariable 뭐예요, query string path variable 차이, spring mvc url parameter basics, path value vs query value intro, get mapping id query beginner, requestparam pathvariable 헷갈려요, url path query 차이 처음 배우는데, path랑 query 뭐가 달라요, 컨트롤러 파라미터에서 path query 차이, roomescape path query primer, spring controller parameter difference, query parameter basics, path variable basics
+retrieval-anchor-keywords: requestparam vs pathvariable beginner, @requestparam 뭐예요, @pathvariable 뭐예요, query string path variable 차이, spring mvc url parameter basics, path value vs query value intro, get mapping id query beginner, requestparam pathvariable 헷갈려요, url path query 차이 처음 배우는데, path랑 query 뭐가 달라요, 컨트롤러 파라미터에서 path query 차이, spring-roomescape-admin pathvariable requestparam, roomescape reservation id vs date query, query parameter basics, path variable basics
 
 ## 핵심 개념
 
@@ -122,7 +122,7 @@ public List<ReservationResponse> find(
 
 ## 실무에서 쓰는 모습
 
-RoomEscape 스타일로 아주 단순화하면 두 장면을 나눠 보면 된다.
+`spring-roomescape-admin`처럼 관리자 예약 미션으로 떠올리면 두 장면이 더 잘 갈린다.
 
 1. 예약 상세 보기
    `GET /reservations/10`

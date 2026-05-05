@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Queue Saturation Attribution, Metrics, Runbook
+concept_id: network/queue-saturation-attribution-metrics-runbook
+canonical: true
+category: network
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- queue-before-upstream
+- timeout-before-dispatch
+- pool-wait-vs-service-time
+aliases:
+- queue saturation
+- queue wait attribution
+- pending acquire
+- worker queue
+- dispatch latency
+- backlog
+- queue depth
+- timeout before dispatch
+- connection pool wait
+- stream queue
+- local overload
+- inflight limit
+- overload runbook
+symptoms:
+- upstream이 느린 줄 알았는데 요청이 시작도 못 하고 대기해요
+- pending acquire나 worker queue 중 어디서 밀리는지 모르겠어요
+- timeout이 처리 전에 먼저 나가서 원인 위치를 못 잡겠어요
+intents:
+- definition
+prerequisites:
+- network/latency-bandwidth-throughput-basics
+- network/devtools-waterfall-primer
+- network/request-timing-decomposition
+next_docs:
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+linked_paths:
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/connection-pool-starvation-stale-idle-reuse-debugging.md
+- contents/network/http2-max-concurrent-streams-pending-queue-saturation.md
+- contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
+- contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md
+- contents/network/mesh-adaptive-concurrency-local-reply-metrics-tuning.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+confusable_with:
+- network/request-timing-decomposition
+- network/http2-max-concurrent-streams-pending-queue-saturation
+forbidden_neighbors:
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+expected_queries:
+- 응답이 느린데 upstream이 아니라 앞단 queue 대기인지 어떻게 구분해?
+- pending acquire랑 worker queue 중 어디가 병목인지 보는 순서를 알려줘
+- timeout이 dispatch 전에 타는지 확인하는 runbook이 필요해
+- queue wait attribution을 운영에서 어떻게 잡아?
+- connection pool wait와 stream queue를 한 번에 분리해서 보고 싶어
+- local overload 때문에 503이 나는지 upstream이 느린지 헷갈려
+- backlog depth보다 wait time을 먼저 봐야 하는 이유가 뭐야?
+- 요청이 아직 시작도 못 했는데 latency가 커질 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 운영자가 응답 지연을 upstream 처리 시간 증가와 처리 시작 전
+  queue 대기로 분리하고, worker queue·pending acquire·stream queue·local
+  reply를 어떤 순서로 확인할지 처음 잡는 primer다. 요청이 시작도 못 한 채
+  기다림, upstream이 느린 줄 알았는데 앞단에서 밀림, timeout before
+  dispatch, connection pool wait와 stream queue 구분, local overload
+  triage 순서 같은 자연어 paraphrase가 본 문서의 attribution runbook에
+  매핑된다.
+---
 # Queue Saturation Attribution, Metrics, Runbook
 
 > 한 줄 요약: queue saturation은 "upstream이 느리다"와 다른 문제다. 실제 네트워크 I/O 전에 worker queue, pending acquire, stream queue, sidecar dispatch 대기에서 timeout budget이 먼저 타는지를 분리해서 봐야 한다.

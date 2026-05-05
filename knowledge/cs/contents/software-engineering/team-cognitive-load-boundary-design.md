@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Team Cognitive Load and Boundary Design
+concept_id: software-engineering/team-cognitive-load-boundary-design
+canonical: false
+category: software-engineering
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- cognitive-load-boundary-fit
+- team-topology-boundary-review
+- service-sprawl-coordination-cost
+aliases:
+- team cognitive load
+- cognitive load boundary design
+- ownership load
+- service sprawl
+- collaboration load
+- boundary fitness
+- team topology boundary
+- 운영 부담 기준 경계
+- 팀 인지 부하
+- 서비스 경계가 무거워요
+- handoff 많은 구조
+symptoms:
+- 서비스를 나눴는데 오히려 팀이 알아야 할 것과 협업 상대가 너무 많아졌어요
+- 같은 변경마다 여러 팀 승인이 필요해서 경계가 맞는지 의심돼요
+- 플랫폼이 복잡도를 줄여 주는 건지 다른 방식으로 부담을 늘리는 건지 판단이 안 돼요
+intents:
+- deep_dive
+prerequisites:
+- software-engineering/organizational-coupling-conway-effects
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/domain-capability-heatmap
+next_docs:
+- software-engineering/service-split-merge-absorb-evolution-framework
+- software-engineering/brownfield-strangler-org-model
+- software-engineering/architectural-governance-operating-model
+linked_paths:
+- contents/software-engineering/organizational-coupling-conway-effects.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/domain-capability-heatmap.md
+- contents/software-engineering/brownfield-strangler-org-model.md
+- contents/software-engineering/architectural-governance-operating-model.md
+- contents/software-engineering/service-split-merge-absorb-evolution-framework.md
+confusable_with:
+- software-engineering/organizational-coupling-conway-effects
+- software-engineering/platform-team-product-team-capability-boundaries
+- software-engineering/service-split-merge-absorb-evolution-framework
+forbidden_neighbors: []
+expected_queries:
+- 팀 인지 부하 관점에서 서비스 경계를 다시 봐야 한다는 말은 정확히 뭘 측정하라는 거야?
+- 마이크로서비스를 늘렸는데 협업 비용만 커진 상황을 cognitive load로 어떻게 설명해?
+- 서비스 수보다 handoff와 승인 체인이 더 중요하다는 말을 사례로 이해하고 싶어
+- 플랫폼 팀이 복잡도를 줄여 주는지 오히려 경계를 더 무겁게 만드는지 어떻게 구분해?
+- 경계 재설계를 시작해야 하는 신호를 팀 운영 관점에서 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 서비스 경계나 팀 토폴로지를 논의할 때 기술 구조보다 팀의
+  cognitive load를 먼저 보자는 deep dive다. 서비스 수는 적은데 승인 체인과
+  handoff가 너무 많다, 팀이 알아야 할 API와 운영 범위가 계속 늘어난다,
+  플랫폼이 accidental complexity를 줄이는지 새 규칙만 더하는지 헷갈린다
+  같은 표현을 경계 품질, coordination cost, ownership load 기준으로
+  해석하도록 돕는다.
+---
 # Team Cognitive Load and Boundary Design
 
 > 한 줄 요약: 좋은 서비스 경계는 기술적으로만 예쁜 구조가 아니라, 해당 팀이 지속적으로 이해하고 운영할 수 있는 cognitive load 안에 들어오도록 설계된 구조다.

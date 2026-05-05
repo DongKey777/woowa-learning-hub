@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 리팩토링 피드백 문장 라우터
+concept_id: software-engineering/refactoring-feedback-phrase-router
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- abstraction-feedback
+- mixed-responsibility
+- test-scope-too-wide
+- beginner-refactoring-route
+aliases:
+- 리팩토링 피드백 문장 라우터
+- 리뷰 문장 라우터
+- 추상화가 어색해요
+- 책임이 섞였어요
+- 테스트가 너무 무거워요
+- code review phrase router
+- beginner refactoring primer
+symptoms:
+- 리뷰에서 추상화가 어색하다는 말을 들었는데 무엇부터 다시 읽어야 할지 모르겠어요
+- 책임이 섞였다는 코멘트를 받았는데 controller, service, repository 중 어디가 문제인지 못 잡겠어요
+- 테스트가 너무 무겁다는 피드백을 받았는데 어떤 테스트부터 가볍게 해야 할지 모르겠어요
+- 리팩토링이 무섭다는 상태에서 첫 움직임을 무엇으로 잡아야 할지 막혀 있어요
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- software-engineering/mission-review-vocabulary-primer
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/refactoring-first-failing-test-bridge
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+linked_paths:
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/mission-review-vocabulary-primer.md
+- contents/language/java/object-oriented-core-principles.md
+confusable_with:
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/mission-review-vocabulary-primer
+- software-engineering/test-strategy-basics
+forbidden_neighbors:
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/test-strategy-basics.md
+expected_queries:
+- 리뷰에서 이름이 역할을 설명하지 못한다는 말을 들었을 때 어디부터 읽어야 해?
+- controller가 너무 많은 일을 한다는 코멘트를 받으면 입력과 규칙과 저장 중 무엇부터 갈라야 해?
+- "@SpringBootTest가 무겁다는 리뷰를 받았을 때 가장 먼저 줄여 볼 범위가 뭐야?"
+- 리팩토링 피드백이 추상적으로 느껴질 때 첫 번째 안전한 액션은 뭐야?
+- PR 코멘트 여러 개를 primer 하나씩으로 연결해서 읽는 방법이 있어?
+contextual_chunk_prefix: |
+  이 문서는 PR 리뷰에서 추상화가 어색하다, 책임이 섞였다, 테스트가 너무
+  무겁다 같은 문장을 받았지만 어느 학습 경로로 들어가야 할지 막힌 초심자를
+  위한 symptom_router다. 리뷰 문장을 읽기 문제, 레이어 문제, 테스트 범위
+  문제로 먼저 분기하고, 각 갈래에서 가장 작은 첫 움직임과 연결 primer를
+  안내하는 문서라는 맥락을 모든 청크 앞에 붙인다.
+---
 # 리팩토링 피드백 문장 라우터
 
 > 한 줄 요약: `추상화가 어색해요`, `책임이 섞였어요`, `테스트가 너무 무거워요` 같은 리뷰 문장은 "어느 primer로 가야 하는지"와 "지금 가장 안전한 첫 움직임이 무엇인지"를 고르는 라우터로 읽으면 덜 막힌다.

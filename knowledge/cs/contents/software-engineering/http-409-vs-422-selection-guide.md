@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: 409 vs 422 선택 기준 짧은 가이드
+concept_id: software-engineering/http-409-vs-422-selection-guide
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- status-code-semantics
+- conflict-vs-validation
+- api-error-contract
+aliases:
+- 409 vs 422
+- http 409 conflict
+- http 422 unprocessable content
+- business rule violation status code
+- beginner status code guide
+- 업무 규칙 위반 상태 코드
+- 409 422 차이
+- conflict vs unprocessable content
+- duplicate reservation 409
+- invalid state transition 409
+- domain validation 422
+- semantic validation error
+- 상태 충돌 vs 의미 오류
+- 초심자 decision table
+- beginner error handling primer
+symptoms:
+- 중복 예약이 409인지 422인지 리뷰 때마다 헷갈려요
+- 형식은 맞는데 business rule에 걸리면 무슨 상태 코드를 줘야 할지 모르겠어요
+- 상태 코드보다 error code를 먼저 고정하라는 피드백이 왜 나오는지 이해가 안 돼요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/api-design-error-handling
+- software-engineering/exception-handling-basics
+- software-engineering/domain-invariants-as-contracts
+next_docs:
+- software-engineering/roomescape-validation-vs-domain-rule-bridge
+- spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
+- software-engineering/api-design-error-handling
+linked_paths:
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/exception-handling-basics.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+- contents/software-engineering/roomescape-validation-vs-domain-rule-bridge.md
+- contents/spring/spring-roomescape-validation-400-vs-business-conflict-409-primer.md
+confusable_with:
+- software-engineering/roomescape-validation-vs-domain-rule-bridge
+- software-engineering/api-design-error-handling
+- spring/valid-400-vs-message-conversion-400-primer
+forbidden_neighbors:
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/exception-handling-basics.md
+expected_queries:
+- 중복 리소스나 상태 충돌은 언제 409로 보는 게 자연스러워?
+- 요청 형식은 맞는데 값 의미가 틀리면 422를 써도 되는 거야?
+- 예약 API에서 슬롯 선점과 시간 범위 오류를 다른 상태 코드로 나누는 기준이 뭐야?
+- 업무 규칙 위반을 전부 Conflict로 보내지 말라는 말을 어떻게 이해해야 해?
+- 400이랑 409랑 422를 초심자 기준으로 빨리 구분하는 방법이 있어?
+contextual_chunk_prefix: |
+  이 문서는 API 실패 응답을 설계할 때 요청이 현재 상태와 충돌한 것인지,
+  요청 내용 자체를 고쳐야 하는 것인지 헷갈리는 학습자에게 409와 422를 가르는
+  기준을 결정하게 하는 chooser다. 이미 누가 선점한 건가, 값 형식은 맞는데
+  규칙이 깨졌나, 다시 보내면 성공할 수 있나, 400하고는 어디서 갈리나, 중복
+  예약은 왜 conflict로 보나 같은 자연어 paraphrase가 본 문서의 상태 코드
+  판단에 매핑된다.
+---
 # 409 vs 422 선택 기준 짧은 가이드
 
 > 한 줄 요약: **같은 요청을 "상태만 바꿔서" 다시 보내면 성공할 수 있으면 `409`, 요청 내용 자체를 고쳐야 하면 `422`**로 먼저 생각하면 초심자 혼동이 크게 줄어든다.

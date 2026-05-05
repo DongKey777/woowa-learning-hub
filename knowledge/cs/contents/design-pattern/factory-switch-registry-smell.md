@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Factory Switch Registry Smell
+concept_id: design-pattern/factory-switch-registry-smell
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+  - factory-vs-registry
+  - service-locator-drift
+  - switch-factory-smell
+aliases:
+  - factory switch smell
+  - registry refactor
+  - registry backed factory
+  - switch heavy factory refactor
+  - factory vs registry vs service locator
+  - strategy selection
+  - creation selection explosion
+  - factory branching
+  - hidden dependency registry
+symptoms:
+  - 팩토리 switch가 계속 길어지는데 어디까지가 팩토리고 어디서 구조를 갈라야 할지 모르겠어
+  - switch를 Map으로 바꿨더니 이번에는 전역 registry 조회가 퍼지고 있어
+  - 구현체 추가할 때마다 factory와 호출부 규칙이 같이 커져서 책임이 안 보여
+intents:
+  - symptom
+  - design
+  - troubleshooting
+prerequisites:
+  - design-pattern/factory
+  - design-pattern/registry-pattern
+next_docs:
+  - design-pattern/registry-vs-factory-injected-handler-maps
+  - design-pattern/injected-registry-vs-service-locator-checklist
+  - design-pattern/service-locator-antipattern
+linked_paths:
+  - contents/design-pattern/factory.md
+  - contents/design-pattern/registry-pattern.md
+  - contents/design-pattern/strategy-pattern.md
+  - contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+  - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+  - contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+  - contents/design-pattern/service-locator-antipattern.md
+  - contents/design-pattern/pattern-selection.md
+confusable_with:
+  - design-pattern/registry-pattern
+  - design-pattern/service-locator-antipattern
+  - design-pattern/strategy-pattern
+forbidden_neighbors:
+  - contents/design-pattern/factory-basics.md
+  - contents/design-pattern/service-locator-antipattern.md
+expected_queries:
+  - factory switch가 점점 커질 때 registry로 옮겨야 하는 기준을 알고 싶어
+  - 문자열 key로 구현체를 고르는 factory를 리팩터링하다가 service locator가 되는 걸 어떻게 피하지?
+  - 생성 로직과 구현 선택 로직이 한 클래스에 몰렸을 때 어떤 패턴으로 분리해야 해?
+  - switch factory를 Map으로 바꿨는데 의존성이 더 숨겨지는 구조인지 점검하고 싶어
+  - registry backed factory와 strategy selection을 언제 다르게 봐야 하는지 헷갈려
+contextual_chunk_prefix: |
+  이 문서는 구현체 선택용 switch가 계속 커지는 factory를 어떻게 줄여야 하는지,
+  registry backed factory로 옮기다가 service locator로 미끄러지는 상황을
+  겪는 학습자를 위한 symptom_router다. 문자열 key 분기, Map lookup,
+  생성 책임과 선택 책임 분리, 숨은 의존성, 전역 registry 조회 냄새를
+  어떻게 구분할지 묻는 검색을 이 문서로 보낸다.
+---
 # Factory Switch Registry Smell
 
 > 한 줄 요약: Factory의 switch가 계속 늘어나면 그건 더 이상 단순한 생성기가 아니라 Registry나 전략 선택기로 재설계해야 한다는 신호다.

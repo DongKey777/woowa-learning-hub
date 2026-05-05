@@ -4,23 +4,16 @@
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
+- [Handler Registry Test Shape: `supports()` 기반 registry를 Spring 없이 단위 테스트하기](./handler-registry-test-shape-supports-without-spring.md)
+- [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
+- [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
+- [OOP 설계 기초](../software-engineering/oop-design-basics.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
-> - [Handler Registry Test Shape: `supports()` 기반 registry를 Spring 없이 단위 테스트하기](./handler-registry-test-shape-supports-without-spring.md)
-> - [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
-> - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
-> - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
-> - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
-> - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
-
-retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, map<string handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name leak, container naming leak, @component name lookup smell, applicationcontext getbean handler smell, injected registry vs service locator checklist, qualifier vs domain key, beginner channel handler map, 처음 배우는데 채널 분기 큰 그림
+retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, map<string handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name leak, container naming leak, @component name lookup smell, applicationcontext getbean handler smell, qualifier vs domain key, why bean name lookup is wrong, handler map 뭐예요, 처음 배우는데 채널 분기 큰 그림
 
 ---
 
@@ -188,7 +181,7 @@ public class CheckoutService {
 
 이 구조에서 Spring bean 이름은 바깥으로 새지 않는다.
 
-## 좋은 예: handler가 자기 domain key를 말하게 한다 (계속 2)
+## 이 구조가 왜 덜 깨지나
 
 - `CardPaymentHandler` bean 이름은 바뀌어도 된다
 - 결제 분기 key는 `PaymentMethod.CARD`로 고정된다
@@ -242,7 +235,7 @@ registry를 만드는 bootstrap 입력으로만 쓴다.
 - **"`@Qualifier`도 문자열인데 이것도 전부 나쁜가요?"**
   아니다. wiring을 고정하려는 설정 코드에서는 자연스럽다. 문제는 요청마다 바뀌는 domain key를 `@Qualifier`나 bean name 문자열로 흉내 내는 것이다.
 - **"그럼 registry가 factory인가요?"**
-  아니다. 위 예시는 이미 만들어진 handler를 찾으므로 registry다. 새 객체를 만드는 책임이 붙으면 [Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)에서 이어서 구분하면 된다.
+  아니다. 위 예시는 이미 만들어진 handler를 찾으므로 registry다. 새 객체를 만드는 책임이 붙으면 [Factory Misnaming Checklist](./factory-misnaming-checklist.md)에서 이어서 구분하면 된다.
 
 ---
 
@@ -266,7 +259,7 @@ registry를 만드는 bootstrap 입력으로만 쓴다.
 
 ## 다음에 이어서 보면 좋은 문서
 
-- `Map<String, Handler>`가 factory인지 registry인지 헷갈리면 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)를 본다.
+- `Map<String, Handler>`가 factory인지 registry인지 헷갈리면 [Factory Misnaming Checklist](./factory-misnaming-checklist.md)를 본다.
 - 같은 `Map<Key, ...>`라도 strategy collection인지 plain registry인지 헷갈리면 [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)를 본다.
 - registry가 전역 조회소처럼 퍼지기 시작하면 [Service Locator Antipattern](./service-locator-antipattern.md)을 본다.
 

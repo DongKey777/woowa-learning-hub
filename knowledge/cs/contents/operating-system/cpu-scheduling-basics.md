@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: CPU 스케줄링 기초
+concept_id: operating-system/cpu-scheduling-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- ready-vs-running-state
+- latency-vs-throughput-tradeoff
+aliases:
+- cpu scheduling beginner
+- cpu 스케줄링 기초
+- process scheduling basics
+- round robin basics
+- time slice basics
+- ready queue basics
+- run queue basics
+- ready vs runnable difference
+- sleeping vs blocked difference
+- ready queue runnable queue same thing
+- ready state 뭐예요
+- runnable 뭐예요
+- 왜 느린데 cpu는 한가해요
+- ready queue what is
+- cpu scheduling self check
+symptoms:
+- ready queue와 runnable 상태가 같은 말인지부터 헷갈려요
+- CPU는 바쁘지 않아 보이는데 응답이 느릴 때 스케줄링 관점에서 어떻게 봐야 하는지 모르겠어요
+- round robin, time slice, fairness 얘기가 나오면 무엇을 비교하는 문서인지 감이 안 와요
+intents:
+- definition
+prerequisites:
+- operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+next_docs:
+- operating-system/scheduler-observation-starter-guide
+- operating-system/run-queue-load-average-cpu-saturation
+- operating-system/cfs-scheduler-nice-cpu-fairness
+linked_paths:
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+- contents/operating-system/scheduler-classes-nice-rt-tradeoffs.md
+confusable_with:
+- operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+- operating-system/run-queue-load-average-cpu-saturation
+- operating-system/scheduler-observation-starter-guide
+forbidden_neighbors: []
+expected_queries:
+- ready queue와 sleeping 상태를 CPU 관점에서 처음 배우는 사람 기준으로 설명해줘
+- 응답 시간, 처리량, 공정성을 왜 같이 보게 되는지 스케줄러 큰 그림이 필요해
+- CPU가 누구에게 언제 돌아가는지 이해하려면 어떤 운영체제 기초부터 봐야 해?
+- time slice와 round robin이 왜 자꾸 같이 나오는지 쉬운 예시로 정리해줘
+- runnable 태스크가 많은데 체감 성능이 나빠지는 이유를 스케줄링 관점으로 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 운영체제 학습자가 실행 가능한 작업들 사이에서 CPU 시간이 어떻게 배분되는지, 응답 시간과 공정성, 처리량을 왜 함께 보는지 처음 잡는 primer다. 실행 대기 줄, CPU 차례 정하기, 짧게 번갈아 돌리기, 먼저 반응하게 만들기, runnable이 많아 체감이 느려짐 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # CPU 스케줄링 기초
 
 > 한 줄 요약: CPU 스케줄러는 실행 가능한 여러 프로세스 중 다음에 CPU를 줄 프로세스를 선택하는 장치이고, 기준은 공정성·응답 시간·처리량의 균형이다.

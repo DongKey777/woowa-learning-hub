@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 'Spring CORS: Security vs MVC Ownership'
+concept_id: spring/cors-security-vs-mvc-ownership
+canonical: false
+category: spring
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- cors-ownership
+- preflight-before-auth
+- security-vs-mvc-boundary
+aliases:
+- cors
+- preflight
+- access-control-allow-origin
+- access-control-allow-credentials
+- security filter chain
+- mvc config
+- cross-origin request
+- preflight request
+symptoms:
+- 브라우저에서만 CORS 에러가 나는데 Security를 봐야 하는지 MVC를 봐야 하는지 모르겠어요
+- preflight OPTIONS가 막힐 때 인증 문제인지 CORS 설정 위치 문제인지 헷갈려요
+- CORS 설정을 두 군데에 넣었더니 누가 실제 주인인지 판단이 안 돼요
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- spring/spring-security-architecture
+- spring/mvc-controller-basics
+next_docs:
+- spring/spring-security-filter-chain-ordering
+- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/spring-content-negotiation-pitfalls
+linked_paths:
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+confusable_with:
+- spring/spring-security-filter-chain-ordering
+- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/spring-content-negotiation-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- Spring CORS 설정을 Security에 둬야 해 MVC에 둬야 해?
+- preflight OPTIONS가 인증 전에 막히면 어느 레이어 소유권부터 의심해야 해?
+- 브라우저만 cross-origin 에러가 날 때 filter chain 문제와 MVC CORS 문제를 어떻게 구분해?
+- Access-Control-Allow-Origin 헤더를 누가 만드는지 Security와 MVC 경계로 설명해줘
+- CORS 정책이 두 군데에 있을 때 무엇을 기준으로 주인을 정하면 돼?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 브라우저 교차 출처 실패를 볼 때 보안 계층과
+  핸들러 계층 중 어디서 정책 책임을 결정해야 하는지 골라주는 chooser다.
+  옵션 요청이 인증 전에 막힘, 응답 헤더를 누가 붙이는지, 설정이 두 군데서
+  충돌함, 브라우저만 막힘 같은 자연어 paraphrase가 본 문서의 판단 기준에
+  매핑된다.
+---
 # Spring CORS: Security vs MVC Ownership
 
 > 한 줄 요약: CORS는 Security와 MVC 어디서나 보일 수 있지만, 실제로는 필터 체인과 핸들러 레이어 중 어디가 정책의 주인이냐를 분리해야 한다.

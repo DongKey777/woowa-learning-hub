@@ -13,9 +13,10 @@
 - [메모리 관리 기초](./memory-management-basics.md)
 - [파일 디스크립터 기초](./file-descriptor-basics.md)
 - [인터럽트 기초](./interrupt-basics.md)
+- [Subprocess Symptom First-Branch Guide](./subprocess-symptom-first-branch-guide.md)
 - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 
-retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, 처음 운영체제 점검, 뭐부터 봐요, 왜 느려요, 왜 killed, too many open files first check, interrupt signal confusion, beginner self-check route, symptom first routing, quick observation mental model, what to check first, basics triage route, 헷갈릴 때 보는 문서, beginner primer route
+retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, 처음 운영체제 점검, 뭐부터 봐요, 왜 느려요, 왜 killed, too many open files first check, subprocess hang what to check first, stdout read hang first check, symptom first routing, quick observation mental model, what to check first, basics triage route, 헷갈릴 때 보는 문서, beginner primer route
 
 ## 먼저 잡는 멘탈 모델
 
@@ -62,6 +63,22 @@ fd와 interrupt는 "명령은 알겠는데 개념 축이 흔들리는" 경우가
 | 증상 | 최소 관찰 명령 (2~3개) | 지금 보는 포인트 | 다음 문서 | 개념이 흐리면 바로 돌아갈 곳 |
 |---|---|---|---|---|
 | `Too many open files` (`EMFILE`/`ENFILE`) | `ulimit -n`<br>`ls /proc/$PID/fd | wc -l`<br>`cat /proc/sys/fs/file-nr` | 프로세스 한도(`EMFILE`)인지 시스템 전체 한도(`ENFILE`)인지 먼저 가른다. | [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md) | fd 번호표 감각이 흐리면 바로 [파일 디스크립터 기초](./file-descriptor-basics.md)를 보고, 축 전체가 흐리면 [README self-check 빠른 점검 루트](./README.md#개념-점검용-추천-순서-self-check-빠른-점검-루트)로 돌아간다. |
+
+## subprocess hang command-first
+
+`Popen`/`ProcessBuilder`/`Runtime.exec()`가 "그냥 멈춘다"는 말은 너무 넓다. 초보자에게는 `wait()` 정지, `stdout.read()` 정지, `stdin close` 누락을 먼저 분리하는 편이 안전하다.
+
+| 증상 | 최소 관찰 명령 (2~3개) | 지금 보는 포인트 | 다음 문서 | 개념이 흐리면 바로 돌아갈 곳 |
+|---|---|---|---|---|
+| subprocess가 끝나지 않음 | `ps -o pid,ppid,stat,wchan:24,cmd -p $PID`<br>`ls -l /proc/$PID/fd`<br>`strace -p $PID -e read,write,wait4 -tt` | `wait4`에 오래 서 있으면 parent wait 축, pipe fd가 많이 열려 있거나 `read`/`write`에 멈추면 stdin/stdout ordering 축부터 본다. | [Subprocess Symptom First-Branch Guide](./subprocess-symptom-first-branch-guide.md) | `pipe`, `fork`, `waitpid()` 그림이 흐리면 [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)로 돌아가고, fd 감각이 약하면 [파일 디스크립터 기초](./file-descriptor-basics.md)를 먼저 본다. |
+
+여기서 중요한 것은 "명령 하나로 원인을 확정"하려는 태도를 버리는 것이다.
+
+- `wait4`에 멈추면 "자식 종료 대기" 축을 먼저 본다.
+- child 쪽 `stdout`/`stderr` pipe가 열려 있으면 "출력을 안 비워서 막힌 것 아닌가"를 먼저 의심한다.
+- `stdin` write end가 계속 열려 있으면 "EOF를 못 보내서 child가 기다리는 것 아닌가"를 바로 분리한다.
+
+즉 초급 triage에서는 "`왜 멈췄지?`"를 "`wait` 축인가, pipe 축인가, EOF 축인가?`"로 다시 번역하는 것이 먼저다.
 
 ## syscall vs context switch command-first
 

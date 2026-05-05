@@ -13,6 +13,7 @@
 - [Alt-Svc vs HTTPS RR Freshness Bridge](./alt-svc-vs-https-rr-freshness-bridge.md)
 - [Stale HTTPS RR H3 Fallback Primer](./stale-https-rr-h3-fallback-primer.md)
 - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+- [HTTPS와 TLS 기초](../security/https-tls-beginner.md)
 
 retrieval-anchor-keywords: alt-svc vs https rr, https rr, svcb, h3 discovery, first request h3, first request h2 next h3, first clean request h2 alt-svc next h3, next new connection h3, alt-svc timeline, https rr timeline, discovery before coalescing, dns h3 hint, beginner h3 primer, what is alt-svc, alt svc https rr h3 discovery bridge intro
 
@@ -408,6 +409,7 @@ coalescing에는 여전히 아래가 필요하다.
 - 여러 origin이 한 H2/H3 connection을 공유하는 조건까지 이어 보려면 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 - 잘못된 공유를 `421`과 `ORIGIN` frame으로 어떻게 제어하는지 보려면 [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 - H3가 실제 운영에서 왜 조용히 downgrade되는지 보려면 [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
+- `QUIC`, `TLS`, `ALPN`이 아직 한 덩어리로 보이면 [HTTPS와 TLS 기초](../security/https-tls-beginner.md)에서 handshake 역할부터 다시 잡는다.
 
 ## 한 줄 정리
 

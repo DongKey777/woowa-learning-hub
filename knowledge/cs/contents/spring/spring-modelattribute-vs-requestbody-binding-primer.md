@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Spring `@ModelAttribute` vs `@RequestBody` 바인딩 프라이머
+concept_id: spring/modelattribute-vs-requestbody-binding-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- modelattribute-vs-requestbody
+- request-binding-entrypoint
+- query-vs-json-body
+aliases:
+- spring modelattribute vs requestbody
+- modelattribute binding
+- requestbody binding
+- form binding vs json binding
+- get dto vs post dto spring
+- query string vs json body spring
+- request parameter binding
+- message converter requestbody
+- request binding entrypoint
+- roomescape admin binding primer
+symptoms:
+- 검색 요청은 되는데 JSON 생성 요청에서만 자꾸 400이나 415가 나요
+- '@ModelAttribute와 @RequestBody 중 무엇을 써야 할지 처음부터 헷갈려요'
+- GET 검색 DTO와 POST 생성 DTO가 같은 바인딩이라고 생각해서 디버깅 출발점을 못 잡겠어요
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- spring/spring-mvc-controller-basics
+- spring/spring-mvc-request-lifecycle-basics
+next_docs:
+- spring/requestbody-400-before-controller-primer
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/valid-400-vs-message-conversion-400-primer
+linked_paths:
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-methods-rest-idempotency-basics.md
+confusable_with:
+- spring/requestbody-400-before-controller-primer
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/valid-400-vs-message-conversion-400-primer
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 @ModelAttribute와 @RequestBody는 언제 나눠 써?
+- GET 검색 DTO와 POST JSON DTO가 왜 다른 바인딩으로 취급돼?
+- 검색 요청은 되는데 생성 요청만 400이면 무엇부터 봐야 해?
+- query string과 JSON body 차이를 Spring 컨트롤러 기준으로 설명해줘
+- roomescape나 baseball 미션에서 컨트롤러 파라미터 바인딩을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 입문자가 `@ModelAttribute`와 `@RequestBody`를 같은 DTO
+  바인딩으로 뭉뚱그려 보다가 GET 검색은 되는데 POST JSON 생성은 실패하는
+  장면을 빠르게 분리하게 만드는 primer다. query/form 바인딩과 JSON body
+  바인딩, `400`과 `415`의 첫 출발점, roomescape/baseball/blackjack 같은
+  Woowa 미션에서 반복되는 request ingress 혼동이 핵심 검색 표면이다.
+---
 # Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기
 
 > 한 줄 요약: `@ModelAttribute`는 query string이나 form 필드를 객체에 묶는 쪽이고, `@RequestBody`는 JSON body를 DTO로 바꾸는 쪽이라서 둘을 섞어 보면 `400` 원인도 같이 헷갈린다.

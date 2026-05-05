@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: '`Arrays.asList()` 고정 크기 리스트 함정 체크리스트'
+concept_id: language/arrays-aslist-fixed-size-list-checklist
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- arrays-aslist-fixed-size
+- array-backed-list-aliasing
+- primitive-array-aslist-trap
+aliases:
+- arrays aslist fixed size list
+- arrays aslist add remove unsupportedoperationexception
+- arrays aslist set works
+- arrays aslist alias array
+- arrays aslist array backed list
+- arrays aslist primitive array one element
+- arrays aslist int array list int array
+- arrays aslist varargs one argument
+- arrays aslist vs new arraylist
+- arrays aslist vs list of
+- arrays aslist boxed stream beginner
+- arrays aslist primitive array loop copy
+- 배열에서 리스트로 바꿨는데 같이 바뀜
+- 왜 arrays aslist add remove 안 되지
+- 자바 int 배열 aslist 하나만 들어감
+symptoms:
+- Arrays.asList 했는데 add에서 예외가 나요
+- 배열 값 바꿨더니 리스트도 같이 바뀌어요
+- int 배열을 asList 했더니 요소가 하나만 보여요
+intents:
+- definition
+prerequisites:
+- language/array-to-list-conversion-entrypoint-primer
+- language/java-array-copy-clone-basics
+next_docs:
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- language/primitive-descending-array-sort-bridge
+linked_paths:
+- contents/language/java/array-to-list-conversion-entrypoint-primer.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/collection-vs-collections-vs-arrays-utility-mini-bridge.md
+- contents/language/java/stream-tolist-vs-collectors-tolist-mutability-bridge.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/language/java/primitive-descending-array-sort-bridge.md
+confusable_with:
+- language/array-to-list-conversion-entrypoint-primer
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- Arrays.asList로 만든 리스트에 add 왜 안 돼?
+- asList는 고정 크기인데 set은 왜 돼?
+- int 배열을 Arrays.asList 했더니 한 칸만 나와요
+- 배열이랑 리스트가 서로 같이 바뀌는 이유가 뭐야
+- Arrays.asList 대신 수정 가능한 리스트를 만들려면?
+- primitive 배열을 리스트로 바꾸는 안전한 방법
+contextual_chunk_prefix: |
+  이 문서는 Java 컬렉션을 처음 배우는 학습자가 `Arrays.asList(...)`를 수정 가능한 새 리스트로 오해하지 않도록, 배열을 리스트처럼 감싼 고정 크기 뷰가 무엇이고 `add/remove` 실패와 배열-리스트 동시 변경이 왜 생기는지 기초를 잡는 primer다. 크기만 못 바뀌는 리스트, 배열이랑 같이 바뀜, 복사본 아닌 연결된 목록, `int[]` 넣었더니 원소 하나, 언제 `new ArrayList`로 감싸야 해 같은 자연어 paraphrase가 본 문서의 핵심 함정에 매핑된다.
+---
 # `Arrays.asList()` 고정 크기 리스트 함정 체크리스트
 
 > 한 줄 요약: `Arrays.asList(...)`는 "배열을 리스트처럼 보는 고정 크기 뷰"에 가깝다. 그래서 `add/remove`가 필요하면 `new ArrayList<>(...)`, 읽기 전용 상수 목록이면 `List.of(...)`로 바로 목적을 드러내는 편이 덜 헷갈린다.

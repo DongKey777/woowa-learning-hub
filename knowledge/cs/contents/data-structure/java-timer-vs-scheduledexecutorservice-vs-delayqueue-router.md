@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: Java Timer vs ScheduledExecutorService vs DelayQueue Router
+concept_id: data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- scheduler-default-vs-queue-material
+- timer-legacy-default-misread
+- delayqueue-direct-use-overreach
+aliases:
+- java timer vs scheduledexecutorservice vs delayqueue
+- 자바에서 몇 초 뒤 실행 뭐 써요
+- timer vs scheduledexecutorservice 차이
+- scheduledexecutorservice 기본값
+- delayqueue는 언제 직접 써요
+- java scheduler 큰 그림
+- delayed task beginner java
+- timertask 레거시 뭐예요
+- 직접 scheduler 구현 vs executor
+- why not timer for new code
+- 처음 배우는 자바 스케줄러 선택
+symptoms:
+- 몇 초 뒤 실행만 하면 되는데 DelayQueue까지 직접 구현해야 할 것 같아 헷갈린다
+- 새 코드 기본값을 골라야 하는데 Timer 예제가 먼저 보여서 선택이 흔들린다
+- scheduleAtFixedRate 같은 API를 봤는데 executor와 queue를 같은 층위로 이해하고 있다
+- 지연 실행 도구와 스케줄러 재료를 한 번에 배우려다 기준이 안 선다
+intents:
+- symptom
+- troubleshooting
+- comparison
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/delayqueue-delayed-contract-primer
+linked_paths:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/fixed-rate-vs-fixed-delay-overrun-primer.md
+- contents/data-structure/timer-priority-policy-split.md
+- contents/data-structure/java-timer-clock-choice-primer.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+confusable_with:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/delayqueue-delayed-contract-primer
+- data-structure/priorityblockingqueue-timer-misuse-primer
+forbidden_neighbors:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+expected_queries:
+- 자바에서 몇 초 뒤 작업 실행할 때 Timer, ScheduledExecutorService, DelayQueue를 어디서부터 갈라야 해?
+- 새 코드 기본값으로 ScheduledExecutorService를 먼저 보는 이유를 증상 기준으로 설명해줘
+- DelayQueue를 직접 써야 하는 문제와 그냥 scheduler API를 쓰면 되는 문제를 빠르게 분기하고 싶어
+- Timer 예제를 봤는데 레거시 읽기와 새 설계 기본값을 어떻게 분리해야 해?
+- scheduleAtFixedRate가 보일 때 executor 선택 문제인지 queue 구현 문제인지 먼저 잘라줘
+- 지연 실행, 주기 실행, 직접 scheduler 구현을 한 장에서 라우팅해줘
+- Java delayed task를 처음 배울 때 왜 Timer보다 ScheduledExecutorService가 기본인지 궁금해
+- DelayQueue를 쓰는 순간 애플리케이션 API가 아니라 구현 재료로 내려간다는 말을 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Java 지연 실행과 주기 실행을 처음 배우는 학습자가 Timer,
+  ScheduledExecutorService, DelayQueue를 증상에서 요구사항으로 먼저
+  라우팅하게 돕는 symptom_router다. 몇 초 뒤 실행, 주기 실행, 레거시
+  Timer, scheduler 기본값, DelayQueue 직접 구현, queue와 executor 층위
+  혼동 같은 자연어 paraphrase가 본 문서의 분기 기준에 매핑된다.
+---
 # Java Timer vs ScheduledExecutorService vs DelayQueue Router
 
 > 한 줄 요약: 초보자 기준 기본값은 거의 항상 `ScheduledExecutorService`이고, `Timer`는 레거시 호환 맥락에서만, `DelayQueue`는 직접 scheduler 규칙을 만들 때만 고른다.

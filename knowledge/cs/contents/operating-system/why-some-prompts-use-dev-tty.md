@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Why Some Prompts Use /dev/tty
+concept_id: operating-system/why-some-prompts-use-dev-tty
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- password-stdin-vs-dev-tty
+- confirmation-prompt-noninteractive
+aliases:
+- operating-system-00072
+- why some prompts use dev tty
+- dev tty prompt
+- prompt ignores piped stdin
+- password prompt ignores stdin
+- confirmation prompt ignores stdin
+- stdin vs /dev/tty
+- controlling terminal basics
+- terminal prompt bypass stdin
+- password stdin alternative
+- confirmation non interactive option
+- yes flag vs tty prompt
+- askpass basics
+symptoms:
+- echo로 값을 넘겼는데도 비밀번호나 확인 prompt가 계속 떠요
+- stdin으로 답을 보냈다고 생각했는데 CLI가 실제 터미널 입력만 기다려요
+- 배치 자동화를 만들었는데 어떤 질문은 pipe로 안 먹어서 막혀요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/pseudo-tty-vs-pipe-behavior
+- operating-system/subprocess-stdin-eof-primer
+next_docs:
+- operating-system/pty-raw-mode-echo-basics
+- operating-system/shell-wrapper-boundary-primer
+- operating-system/tty-aware-output-capture-patterns
+linked_paths:
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+- contents/operating-system/pty-raw-mode-echo-basics.md
+- contents/operating-system/subprocess-stdin-eof-primer.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/shell-wrapper-boundary-primer.md
+- contents/operating-system/tty-aware-output-capture-patterns.md
+- contents/operating-system/subprocess-symptom-first-branch-guide.md
+confusable_with:
+- operating-system/pseudo-tty-vs-pipe-behavior
+- operating-system/subprocess-stdin-eof-primer
+- operating-system/tty-aware-output-capture-patterns
+forbidden_neighbors:
+- contents/operating-system/subprocess-stdin-eof-primer.md
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+expected_queries:
+- echo로 비밀번호를 pipe 했는데 왜 CLI가 계속 직접 입력하라고 묻는 거야?
+- 어떤 프로그램은 stdin 말고 /dev/tty에서 질문을 받는 이유를 쉽게 설명해줘
+- confirmation prompt가 파이프 입력을 무시할 때 초보자가 먼저 이해해야 할 구조가 뭐야?
+- non-interactive 옵션 없이 y 값을 넘겼는데 먹히지 않는 상황을 어떻게 해석해야 해?
+- stdin과 실제 터미널 입력선을 분리해서 봐야 하는 이유를 사례로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 pipe로 값을 넘겼는데도 어떤 CLI가 비밀번호나 확인 질문을
+  계속 띄우는 이유를 /dev/tty 관점에서 풀어 주는 beginner bridge다.
+  echo로 넣었는데 prompt가 무시됨, stdin은 파이프인데 실제 터미널 입력을
+  기다림, 비대화형 자동화에서 질문 채널이 따로 있어 막힘 같은 자연어
+  표현이 본 문서의 stdin 대 /dev/tty 분리 설명에 매핑된다.
+---
 # Why Some Prompts Use `/dev/tty`
 
 > 한 줄 요약: 어떤 CLI는 비밀번호나 `y/n` 확인을 `stdin`이 아니라 `/dev/tty`에서 직접 읽는다. 그래서 pipe로 값을 넣어도 prompt가 그 값을 무시하고, "실제 터미널에서 사람이 직접 답하라"는 식으로 계속 기다릴 수 있다.

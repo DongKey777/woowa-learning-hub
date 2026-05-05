@@ -1,33 +1,46 @@
-# Scheduler Observation Starter Guide
+# Scheduler Observation Starter Guide: CPU 경보가 떴을 때 어디부터 볼까
 
-> 한 줄 요약: scheduler basics를 막 읽은 직후에는 `load average`와 `vmstat r`로 전체 압력을 보고, `/proc/<pid>/sched`로 누가 밀리는지 좁힌 뒤, 그 한 태스크 시야가 부족할 때만 `/proc/schedstat`로 CPU 쏠림을 확인하고, 마지막에 `runqlat`로 wakeup-to-run tail을 검증하는 순서가 가장 안전하다.
+> 한 줄 요약: scheduler basics를 막 읽은 직후에는 `load average`나 CPU 경보를 보더라도 먼저 `vmstat r`로 전체 압력을 확인하고, `/proc/<pid>/sched`로 누가 밀리는지 좁힌 뒤, 그 한 태스크 시야가 부족할 때만 `/proc/schedstat`로 CPU 쏠림을 확인하고, 마지막에 `runqlat`로 wakeup-to-run tail을 검증하는 순서가 가장 안전하다.
 
 **난이도: 🟢 Beginner**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+- [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)
+- [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+- [schedstat, /proc/<pid>/sched, Runtime Debugging](./schedstat-proc-sched-runtime-debugging.md)
+- [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
+- [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
+- [First 15-Minute Triage Flow Card](../system-design/first-15-minute-triage-flow-card.md)
+- [HTTP Request/Response Basics, URL, DNS, TCP, TLS, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
+retrieval-anchor-keywords: scheduler observation starter guide, scheduler observability beginner, load average reading, vmstat r meaning, proc pid sched reading, proc schedstat starter, runqlat starter, scheduler triage first five minutes, runnable backlog basics, cpu alarm triage, cpu는 낮은데 load average 높아요, vmstat r 뭐예요, 처음 scheduler를 볼 때, scheduler가 왜 느린지 헷갈려요, load average alert why
 
-retrieval-anchor-keywords: scheduler observation starter guide basics, scheduler observation starter guide beginner, scheduler observation starter guide intro, operating system basics, beginner operating system, 처음 배우는데 scheduler observation starter guide, scheduler observation starter guide 입문, scheduler observation starter guide 기초, what is scheduler observation starter guide, how to scheduler observation starter guide
-> 관련 문서:
-> - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
-> - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
-> - [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
-> - [schedstat, /proc/<pid>/sched, Runtime Debugging](./schedstat-proc-sched-runtime-debugging.md)
-> - [CPU Migration, Load Balancing, Locality Debugging](./cpu-migration-load-balancing-locality-debugging.md)
-> - [CFS Scheduler, nice, CPU Fairness](./cfs-scheduler-nice-cpu-fairness.md)
-> - [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
+## 질문 그대로 먼저 답하기
 
-> retrieval-anchor-keywords: scheduler observation starter guide, scheduler observability beginner, run queue reading, load average reading, vmstat r meaning, proc pid sched reading, /proc/PID/sched starter, /proc/schedstat starter, schedstat beginner, when to move to /proc/schedstat, per-CPU imbalance beginner, per-CPU imbalance safe reading, cpu hotspot safe reading, runqlat starter, wakeup to run latency, scheduler triage, runnable backlog, cpu saturation checklist, scheduler debugging first five minutes, beginner handoff box, primer handoff box, scheduler observation 다음 문서
+처음 막히는 질문은 보통 개념명이 아니라 증상 문장으로 들어온다. 이 문서는 아래 네 문장을 가장 먼저 잘라 주는 입구로 쓰면 된다.
+
+| 학습자가 보통 이렇게 묻는다 | 먼저 고정할 질문 | 이 문서에서 주는 첫 행동 |
+|---|---|---|
+| "CPU는 40%인데 왜 `load average`가 높아요?" | runnable 압력인가, I/O wait나 reclaim이 섞였나? | `uptime`와 `vmstat 1`을 같이 본다 |
+| "`vmstat r`이 높으면 무조건 scheduler 문제예요?" | 지금 backlog가 지속되는가, 순간 burst인가? | `r`을 몇 초 더 보고 `load average`와 묶는다 |
+| "어떤 스레드가 실제로 밀리는지 어디서 봐요?" | 전체 압력 다음에 suspect PID/TID가 보이는가? | `/proc/<pid>/sched` 또는 `/proc/<tid>/sched`로 좁힌다 |
+| "`runqlat`는 언제 켜야 해요?" | queueing tail을 마지막에 증명해야 하는가? | 넓은 관측 후 `runqlat`로 wakeup-to-run tail을 확인한다 |
 
 ## 먼저 잡는 멘탈 모델
 
 scheduler basics를 읽고 나면 가장 먼저 막히는 지점은 "그래서 운영에서는 뭘 보면 되나요?"다.
 이때 다섯 가지 관측창을 한 묶음으로 보면 된다.
+
+운영 알람에서 "`load average`가 높다", "CPU 경보가 떴다"처럼 들어와도 첫 30초 목표는 같다.
+
+- 경보 이름을 그대로 병목 이름으로 받아들이지 않는다
+- `load average`와 `vmstat r`로 "정말 runnable 압력인가"부터 본다
+- scheduler 축이 아니라면 [First 15-Minute Triage Flow Card](../system-design/first-15-minute-triage-flow-card.md)로 올라가 요청 경로 전체에서 다시 분기한다
+
+즉 "`CPU saturation` 경보다", "`load average` 알람이다" 같은 운영 문구는 출발점일 뿐이고, 초보자는 먼저 "`지금 runnable backlog가 실제로 있나?`"를 확인한 다음에만 scheduler 원인으로 좁히는 편이 안전하다.
 
 | 관측창 | 먼저 답하는 질문 | 초보자가 자주 헷갈리는 지점 |
 |---|---|---|
@@ -156,7 +169,7 @@ sudo runqlat-bpfcc -p <pid> 15
 
 짧은 의사결정표로 보면 이렇다.
 
-## 5. 이 다섯 관측창을 읽는 가장 단순한 순서 (계속 2)
+## 5-1. 관측 조합별 다음 문서
 
 | 관측 조합 | 더 그럴듯한 해석 | 다음 문서 |
 |---|---|---|

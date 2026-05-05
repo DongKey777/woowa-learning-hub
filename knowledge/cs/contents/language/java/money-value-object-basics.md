@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: Money Value Object Basics
+concept_id: language/money-value-object-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+- missions/blackjack
+- missions/shopping-cart
+review_feedback_tags:
+- money-value-object-boundary
+- currency-rounding-policy
+- bigdecimal-vs-money
+aliases:
+- money value object basics
+- java money type beginner
+- bigdecimal not enough money
+- currency plus amount value object
+- money scale policy beginner
+- java monetary amount primer
+- raw bigdecimal vs money
+- java value object money example
+- money currency rounding beginner
+- 자바 money value object
+- 자바 bigdecimal 돈 타입
+- 통화 금액 값 객체
+- 금액 스케일 정책 입문
+- money value object basics basics
+- money value object basics beginner
+symptoms:
+- BigDecimal만 쓰다 보니 이 숫자가 돈인지 할인율인지 코드만 보고 헷갈려
+- 통화와 소수 자릿수 규칙이 여기저기 흩어져서 어디서 맞춰야 하는지 모르겠어
+- 금액 비교나 직렬화 기준을 타입으로 묶어야 하는 순간이 언제인지 감이 안 와
+intents:
+- definition
+prerequisites:
+- language/bigdecimal-construction-policy-beginner-bridge
+- language/record-value-object-equality-basics
+- language/java-immutable-object-basics
+next_docs:
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/money-equality-policy-mini-drill
+- language/value-object-invariants-canonicalization-boundary-design
+linked_paths:
+- contents/language/java/bigdecimal-construction-policy-beginner-bridge.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/money-equality-policy-mini-drill.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/software-engineering/lotto-purchase-amount-value-object-bridge.md
+confusable_with:
+- language/bigdecimal-construction-policy-beginner-bridge
+- language/record-value-object-equality-basics
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- 돈 금액 타입을 BigDecimal 그대로 두지 말고 Money로 감싸는 기준이 뭐야
+- 통화와 반올림 정책을 값 객체 안에 넣어야 하는 이유를 초보자 기준으로 설명해줘
+- 금액 비교 기준이 흔들릴 때 money 타입을 도입하는 입문 문서를 찾고 있어
+- 장바구니나 로또 금액에서 BigDecimal만 쓰면 어떤 문제가 생기는지 알고 싶어
+- amount 파라미터가 돈인지 비율인지 헷갈릴 때 어떤 타입으로 올려야 해
+- 자바에서 금액 규칙을 한 타입에 모으는 첫 value object 예제가 필요해
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 정확한 숫자와 돈의 의미를 구분하고 언제
+  BigDecimal만 두지 말고 Money 같은 값 경계로 올려야 하는지 처음 잡는
+  primer다. 이 숫자가 돈인지 비율인지 헷갈림, 통화와 금액이 같이 움직임,
+  소수 자릿수와 반올림 기준이 메서드마다 흩어짐, 비교와 출력 규칙을 한
+  타입에 모으고 싶음 같은 자연어 paraphrase가 본 문서의 핵심 개념에
+  매핑된다.
+---
 # Money Value Object Basics
 
 > 한 줄 요약: `BigDecimal`은 "정확한 숫자"를 다루는 데는 좋지만, 돈의 의미까지 자동으로 담아 주지는 않는다. 금액이 통화, 허용 소수 자릿수, 반올림 규칙과 함께 움직이기 시작하면 `Money` 같은 전용 value object가 더 안전하다.

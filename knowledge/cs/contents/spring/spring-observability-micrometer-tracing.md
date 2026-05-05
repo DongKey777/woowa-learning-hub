@@ -4,25 +4,16 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring Security 아키텍처](./spring-security-architecture.md)
-> - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
-> - [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
-> - [캐시, 메시징, 관측성](../software-engineering/cache-message-observability.md)
-> - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
-> - [Load Balancer Healthcheck Failure Patterns](../network/load-balancer-healthcheck-failure-patterns.md)
+관련 문서:
 
-> retrieval-anchor-keywords:
-> - Spring observability
-> - Micrometer
-> - Micrometer Tracing
-> - distributed tracing
-> - metrics
-> - traces
-> - logs correlation
-> - OpenTelemetry
-> - trace context propagation
-> - 관측성
+- [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
+- [Spring Servlet Container Disconnect Exception Mapping](./spring-servlet-container-disconnect-exception-mapping.md)
+- [Spring Security 아키텍처](./spring-security-architecture.md)
+- [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+- [캐시, 메시징, 관측성](../software-engineering/cache-message-observability.md)
+- [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
+
+retrieval-anchor-keywords: spring observability, micrometer tracing, metrics traces logs correlation, trace context propagation, mdc vs trace context, high cardinality tag trap, p99 latency trace debugging, observability 뭐예요, tracing 처음, opentelemetry spring
 
 ## 핵심 개념
 

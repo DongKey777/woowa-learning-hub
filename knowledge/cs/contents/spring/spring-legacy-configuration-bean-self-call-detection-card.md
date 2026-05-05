@@ -7,17 +7,12 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
+- [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+- [Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기](./spring-self-call-verification-test-mini-guide.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 
-> 관련 문서:
-> - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
-> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
-> - [Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기](./spring-self-call-verification-test-mini-guide.md)
-> - [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
-
-retrieval-anchor-keywords: spring legacy self invocation detection card, spring legacy self-call detection card, configuration bean self invocation, configuration bean internal call, configuration bean self call, @configuration @bean self-invocation, @configuration @bean self-call, proxybeanmethods false self invocation, proxybeanmethods false internal call, proxybeanmethods false self call, rg bean self invocation pattern, spring review checklist self invocation, spring review checklist self call, spring beginner self-check quiz, spring legacy configuration bean self call detection card basics
+retrieval-anchor-keywords: spring self invocation detection, spring self call detection, configuration bean self invocation, proxybeanmethods false self call, spring bean direct call, bean self invocation review, spring bean self call checklist, spring self invocation basics, spring self invocation 처음, spring self invocation 왜 위험, spring self invocation 언제 찾나, what is spring self invocation
 
 ## 먼저 mental model 한 줄
 

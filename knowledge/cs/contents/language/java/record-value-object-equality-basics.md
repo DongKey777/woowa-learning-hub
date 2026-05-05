@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Record and Value Object Equality
+concept_id: language/record-value-object-equality-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- record-vs-entity-boundary
+- mutable-component-equality
+- set-map-key-stability
+aliases:
+- java record equality
+- java record equals hashcode
+- record value object basics
+- record vs entity beginner
+- record 언제 쓰나요
+- record 왜 equals 자동
+- record equality 헷갈
+- record mutable field bug
+- record array equality
+- record list copyof
+- java value object equality
+- 처음 배우는 record equality
+symptoms:
+- record를 써도 되는 값 객체인지 엔티티인지 경계가 잘 안 잡혀
+- record 안에 배열이나 List를 넣었더니 같은 값 판단이 기대와 달라
+- record를 Set 원소나 Map key로 써도 되는지 자신이 없어
+intents:
+- definition
+prerequisites:
+- language/java-equality-identity-basics
+- language/immutable-objects-and-defensive-copying
+next_docs:
+- language/collections-equality-mutable-state-foundations
+- language/java-array-equality-basics
+- language/comparator-consistency-with-equals-bridge
+- language/record-bigdecimal-component-faq
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/comparator-consistency-with-equals-bridge.md
+- contents/language/java/record-bigdecimal-component-faq.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/collections-equality-mutable-state-foundations
+forbidden_neighbors: []
+expected_queries:
+- Java record를 값 객체로 써도 되는 기준을 처음부터 알고 싶어
+- record가 entity보다 맞는 상황을 초보자 관점에서 비교해줘
+- record component에 배열이나 List가 있으면 왜 equality가 흔들리는지 궁금해
+- record를 HashSet key처럼 써도 안전한 조건이 뭐야
+- 값 객체를 class 대신 record로 시작해도 되는지 판단 기준이 필요해
+- record equals와 hashCode가 어떤 필드를 기준으로 만들어지는지 예제로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 record를 값 경계를 적는 타입으로 보고 언제 value
+  object에 맞고 언제 entity 추적과 어긋나는지, component의 불변성과 비교
+  안정성을 처음 잡는 primer다. 현재 필드 값이 곧 의미인지, 시간이 지나도
+  같은 대상을 따라가야 하는지, 배열이나 가변 List가 들어가면 왜 판단이
+  흔들리는지, Set 원소나 Map key로 써도 되는지 같은 자연어 paraphrase가
+  본 문서의 핵심 개념에 매핑된다.
+---
 # Record and Value Object Equality
 
 > 한 줄 요약: `record`는 "이 필드들이 곧 값이다"를 선언할 때 잘 맞고, 시간에 따라 상태가 바뀌는 entity에는 기본 선택이 아니다. sorted collection, comparator, `BigDecimal` 정책은 첫 읽기 뒤 follow-up으로 넘긴다.

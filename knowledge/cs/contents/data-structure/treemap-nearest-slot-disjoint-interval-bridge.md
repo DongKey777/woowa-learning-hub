@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: TreeMap Nearest-Slot Jump to Disjoint Interval Set Bridge
+concept_id: data-structure/treemap-nearest-slot-disjoint-interval-bridge
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- nearest-slot-jump-invariant
+- disjoint-interval-state-handoff
+- blocked-interval-skip-reasoning
+aliases:
+- treemap nearest slot jump bridge
+- disjoint interval set bridge
+- why jump to next end
+- nearest slot 왜 next end로 가요
+- gap jump invariant
+- ordered map interval state
+- non overlapping interval state
+- intermediate treemap interval bridge
+- disjoint interval state 처음 다음 단계
+- why disjoint intervals help
+- nearest available slot basics
+- treemap gap jump 헷갈
+- what is canonical interval state
+symptoms:
+- 가장 가까운 빈 슬롯을 찾을 때 왜 다음 시작이 아니라 다음 종료 시각으로 점프하는지 납득이 안 돼
+- gap search는 알겠는데 disjoint interval set으로 왜 이어지는지 연결이 안 돼
+- 막힌 예약 구간 안쪽 시각들을 다시 안 봐도 되는 이유를 자료구조 관점에서 설명하고 싶어
+intents:
+- comparison
+prerequisites:
+- data-structure/treemap-gap-detection-mini-drill
+- data-structure/treemap-interval-entry-primer
+- data-structure/reservation-interval-half-open-boundary-card
+next_docs:
+- data-structure/disjoint-interval-set
+- algorithm/interval-greedy-patterns
+linked_paths:
+- contents/data-structure/treemap-gap-detection-mini-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge.md
+- contents/algorithm/interval-greedy-patterns.md
+confusable_with:
+- data-structure/treemap-gap-detection-mini-drill
+- data-structure/disjoint-interval-set
+- data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge
+forbidden_neighbors:
+- contents/data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge.md
+- contents/algorithm/interval-greedy-patterns.md
+expected_queries:
+- nearest free slot을 찾을 때 막히면 왜 next end로 바로 넘어가도 되는지 설명해줘
+- 예약표가 안 겹친다는 전제가 gap 점프 규칙과 어떻게 연결돼?
+- disjoint interval set을 배우기 전에 TreeMap gap search와 무슨 공통 invariant가 있는지 알고 싶어
+- 12시 45분에서 1시간 슬롯을 찾을 때 13시 10분 같은 중간 시각을 왜 다시 안 봐?
+- blocked interval 전체를 건너뛰는 사고를 ordered map 예제로 이해하고 싶어
+- roomescape 예약 문제에서 nearest slot 탐색을 한 단계 더 일반화한 설명이 필요해
+contextual_chunk_prefix: |
+  이 문서는 가장 가까운 빈 슬롯 탐색을 배우던 학습자에게 왜 막히면 next.end로
+  점프해도 되는지와 그 규칙이 disjoint interval state로 어떻게 이어지는지
+  연결하는 bridge다. 다음 시작이 아니라 다음 종료로 건너뛰기, 막힌 예약 안쪽은
+  왜 다시 안 봐, 비겹침 구간 전제가 왜 중요해, gap jump와 interval state
+  연결, ordered map으로 free slot 찾기 같은 자연어 paraphrase가 본 문서의
+  jump invariant와 disjoint interval handoff에 매핑된다.
+---
 # TreeMap Nearest-Slot Jump to Disjoint Interval Set Bridge
 
 > 한 줄 요약: `가장 가까운 빈 슬롯`을 찾을 때 후보 시각을 `next.end`로 점프해도 되는 이유는 예약표가 이미 `서로 겹치지 않는 구간 상태`를 유지하고 있기 때문이고, 그 same invariant가 그대로 disjoint interval set의 핵심 유지 규칙으로 이어진다.

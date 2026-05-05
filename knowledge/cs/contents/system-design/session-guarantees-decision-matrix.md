@@ -1,3 +1,87 @@
+---
+schema_version: 3
+title: Session Guarantees Decision Matrix
+concept_id: system-design/session-guarantees-decision-matrix
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- session-guarantee-bundle-selection
+- write-precondition-vs-read-routing
+- session-sequence-ordering
+aliases:
+- session guarantees decision matrix
+- session guarantee policy bundle
+- session policy implementation sketches
+- gateway app db session hints
+- list-detail-search monotonicity
+- list detail monotonicity bridge
+- list detail search min-version floor
+- read-after-write monotonic reads writes-follow-reads monotonic writes
+- writes-follow-reads beginner
+- monotonic writes beginner
+- monotonic writes ordering primer
+- session write sequence primer
+- idempotency key vs sequence number
+- monotonic writes vs version check
+- product flow consistency matrix
+symptoms:
+- 저장 직후 조회부터 다음 write까지 어떤 보장을 묶어야 할지 모르겠어
+- 상세에서는 보였는데 목록이나 다음 행동에서 시간선이 꼬여
+- 버전 체크가 필요한 문제를 read 경로 문제로만 보고 있어
+intents:
+- comparison
+- design
+prerequisites:
+- system-design/read-after-write-consistency-basics
+- system-design/monotonic-reads-and-session-guarantees-primer
+next_docs:
+- system-design/session-policy-implementation-sketches
+- system-design/list-detail-monotonicity-bridge
+- system-design/mixed-cache-replica-freshness-bridge
+linked_paths:
+- contents/system-design/write-order-vs-precondition-primer.md
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/monotonic-writes-ordering-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/causal-consistency-intuition.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+confusable_with:
+- system-design/read-after-write-routing-primer
+- system-design/list-detail-monotonicity-bridge
+- database/read-your-writes-session-pinning
+forbidden_neighbors:
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/session-store-design-at-scale.md
+expected_queries:
+- 사용자 흐름별로 read-after-write, monotonic reads, writes-follow-reads를 어떻게 고르지?
+- 주문 생성 후 상세와 목록이 섞일 때 어떤 session guarantee 조합이 맞아?
+- 프로필 저장, 결제, 문서 수정마다 consistency 정책을 다르게 가져가야 해?
+- writes-follow-reads랑 monotonic writes를 언제 같이 써?
+- session guarantee를 제품 흐름 기준으로 정리한 표가 필요해
+- 권한 변경, 장바구니, 문서 편집처럼 흐름마다 어떤 보장을 묶어야 하는지 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 제품 흐름마다 session guarantee를 정의 암기 대신
+  사용자 행동과 시간선 기준으로 묶어 결정하게 돕는 beginner chooser다.
+  저장 직후 상세만 맞추면 되는지, 목록과 검색까지 같이 안 뒤로 가야
+  하는지, 방금 본 버전을 기준으로 다음 write를 보호해야 하는지,
+  장바구니와 문서 편집의 기준선이 왜 다른지, 흐름별 일관성 묶음을
+  어떻게 고를지 같은 자연어 paraphrase가 본 문서의 선택 기준에
+  매핑된다.
+---
 # Session Guarantees Decision Matrix
 
 > 한 줄 요약: session guarantee는 "이 사용자가 지금까지 한 일과 본 것"을 기준선으로 들고 다니며, 제품 흐름마다 read-after-write, monotonic reads, writes-follow-reads, monotonic writes를 필요한 만큼 묶어 쓰는 정책이다.

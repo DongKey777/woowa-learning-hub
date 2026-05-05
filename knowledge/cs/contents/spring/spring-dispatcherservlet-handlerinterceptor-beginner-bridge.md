@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 'Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기'
+concept_id: spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- mvc-request-lifecycle
+- filter-vs-interceptor
+- dispatcherservlet-role
+aliases:
+- dispatcherservlet beginner primer
+- handlerinterceptor beginner primer
+- spring mvc beginner primer
+- spring mvc 큰 그림
+- spring mvc 기초
+- spring mvc 생명주기 전에 볼 문서
+- handlermapping handleradapter 차이
+- mvc basics before lifecycle
+- spring interceptor basics
+- dispatcherservlet basics
+- mvc primer before deep dive
+- beginner first-hit mvc primer
+- dispatcherservlet request gateway
+- handlerinterceptor request hook
+- spring dispatcherservlet handlerinterceptor beginner bridge basics
+symptoms:
+- DispatcherServlet이랑 인터셉터 순서가 헷갈려
+- 요청이 어디서 컨트롤러로 가는지 모르겠어
+- 필터랑 인터셉터를 어디에 써야 할지 감이 안 와
+intents:
+- comparison
+prerequisites:
+- spring/spring-mvc-controller-basics
+next_docs:
+- spring/spring-mvc-request-lifecycle-basics
+- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/spring-request-pipeline-bean-container-foundations-primer
+linked_paths:
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/network/http-methods-rest-idempotency-basics.md
+confusable_with:
+- spring/spring-mvc-request-lifecycle-basics
+- spring/spring-mvc-controller-basics
+- spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- Spring MVC에서 DispatcherServlet이 하는 일을 큰 그림으로 설명해줘
+- HandlerInterceptor는 요청 흐름에서 어느 타이밍에 끼어들어?
+- 필터와 인터셉터를 입문자 기준으로 어떻게 구분하면 돼?
+- HandlerMapping이랑 HandlerAdapter를 배우기 전에 어떤 그림을 잡아야 해?
+- MVC 요청이 컨트롤러까지 가는 경로를 단계별로 보고 싶어
+- 인증 필터와 MVC 인터셉터가 서로 다른 이유를 한 번에 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC를 처음 배우는 학습자가 DispatcherServlet,
+  HandlerMapping, HandlerAdapter, HandlerInterceptor를 한 요청 흐름 안에서
+  어디에 두고 읽어야 하는지 먼저 잡게 하는 beginner bridge다.
+  `DispatcherServlet이 뭐예요`, `인터셉터는 언제 써요`, `필터랑 뭐가 달라요`,
+  `요청이 컨트롤러까지 어떻게 가요` 같은 입문 질문을 요청 관문,
+  핸들러 선택, 컨트롤러 전후 개입 지점이라는 큰 그림으로 연결한다.
+---
 # Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기
 
 > 한 줄 요약: 처음 배우는데 `DispatcherServlet`, `HandlerInterceptor`가 같이 나오면 "요청을 받는 관문"과 "컨트롤러 전후에 끼어드는 도우미"만 먼저 구분하고, MVC 생명주기 deep dive는 나중에 봐도 된다.

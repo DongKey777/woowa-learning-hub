@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Fenwick/Segment Tree 운영 집계 플레이북
+concept_id: data-structure/fenwick-segment-tree-operations-playbook
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- range-update-vs-prefix-sum
+- coordinate-compression-before-tree
+- quota-window-aggregation
+aliases:
+- fenwick segment tree operations
+- prefix aggregation playbook
+- range update backend counter
+- quota window aggregation tree
+- sparse timeline aggregation
+- coordinate compression before tree
+- rate limit bucket tree
+- 운영 집계 tree 구조 선택
+symptoms:
+- 구간 집계를 해야 하는데 Fenwick과 Segment Tree 중 어디서부터 나눠야 할지 모르겠다
+- quota window 보정이 들어가는데 prefix sum 구조로 버틸 수 있는지 헷갈린다
+- sparse한 시간축에 tree를 바로 얹다가 메모리와 구현 복잡도가 같이 커진다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/fenwick-tree
+- data-structure/fenwick-vs-segment-tree
+next_docs:
+- data-structure/segment-tree-lazy-propagation
+- data-structure/coordinate-compression-patterns
+- data-structure/segment-tree-not-bst-or-heap-bridge
+linked_paths:
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/fenwick-vs-segment-tree.md
+- contents/data-structure/coordinate-compression-patterns.md
+- contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
+confusable_with:
+- data-structure/fenwick-vs-segment-tree
+- data-structure/segment-tree-lazy-propagation
+- data-structure/coordinate-compression-patterns
+forbidden_neighbors:
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+expected_queries:
+- 운영 집계에서 Fenwick Tree와 Segment Tree를 어떤 질문으로 나눠 선택해야 해?
+- quota bucket에 구간 보정이 들어갈 때 prefix 누적 구조로 충분한지 판단하고 싶어
+- sparse한 timeline 집계를 만들 때 coordinate compression을 언제 먼저 붙여야 해?
+- rate limiter나 metrics 집계에서 Fenwick이 생각보다 잘 맞는 장면을 실무 관점으로 보고 싶어
+- range update가 많아질 때 Segment Tree로 넘어가는 신호를 예시와 함께 정리해줘
+- backend 집계 구조를 배열 prefix sum, Fenwick, Segment Tree로 단계적으로 고르는 기준이 궁금해
+contextual_chunk_prefix: |
+  이 문서는 운영 집계 구조를 고르는 학습자가 prefix 누적 중심인지,
+  기간 전체 보정이 필요한지, 희소한 시간축을 어떻게 다뤄야 하는지
+  전략으로 막는 playbook이다. 운영 지표 구조 선택, 기간 보정이 들어간
+  집계, 희소 시간대 집계, 좌표 압축 먼저 할지, 구간 정책 엔진이 필요한지
+  같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Fenwick and Segment Tree Operations Playbook
 
 > 한 줄 요약: Fenwick Tree와 Segment Tree는 알고리즘 문제용 구조가 아니라, prefix/range aggregation과 quota window 운영을 싸게 만들 수 있는 backend용 집계 구조다.

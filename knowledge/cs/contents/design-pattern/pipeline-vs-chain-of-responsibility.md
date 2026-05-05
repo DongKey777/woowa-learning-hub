@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Pipeline vs Chain of Responsibility
+concept_id: design-pattern/pipeline-vs-chain-of-responsibility
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+  - filter-chain-modeling
+  - transform-vs-short-circuit
+  - request-pipeline-boundary
+aliases:
+  - pipeline vs chain of responsibility
+  - pipeline and chain difference
+  - stage processing vs handler chain
+  - request short circuit chain
+  - transform stream vs responsibility chain
+  - 데이터 변환 vs 책임 위임
+  - 필터 체인 파이프라인 차이
+  - 단계별 처리 vs 책임 연쇄
+symptoms:
+  - 필터 체인 코드를 pipeline이라고 불러도 되는지 헷갈려
+  - 데이터를 흘려보내는 구조와 요청을 중간에 끊는 구조를 자꾸 같은 걸로 설명하게 돼
+  - validation 단계와 auth 차단 단계를 한 패턴으로 묶어도 되는지 모르겠어
+intents:
+  - comparison
+  - design
+  - troubleshooting
+prerequisites:
+  - design-pattern/chain-of-responsibility-filters-interceptors
+  - design-pattern/template-method-vs-filter-interceptor-chain
+next_docs:
+  - design-pattern/middleware-pattern-language
+  - design-pattern/router-dispatcher-handlermapping-vs-selector-factory
+  - design-pattern/template-method-vs-filter-interceptor-chain
+linked_paths:
+  - contents/design-pattern/chain-of-responsibility-filters-interceptors.md
+  - contents/design-pattern/template-method-vs-filter-interceptor-chain.md
+  - contents/design-pattern/middleware-pattern-language.md
+  - contents/design-pattern/template-method.md
+  - contents/design-pattern/strategy-pattern.md
+confusable_with:
+  - design-pattern/chain-of-responsibility-filters-interceptors
+  - design-pattern/template-method-vs-filter-interceptor-chain
+  - design-pattern/middleware-pattern-language
+forbidden_neighbors: []
+expected_queries:
+  - 인증 필터처럼 중간에 끊기는 흐름을 pipeline으로 봐도 돼?
+  - 데이터 정제 단계와 handler chain을 어떻게 구분해야 해?
+  - 단계별 변환 구조와 책임 연쇄 구조의 핵심 차이를 실전 예시로 설명해줘
+  - validation, normalization, auth를 한 줄로 세웠을 때 무엇이 pipeline이고 무엇이 chain이야?
+  - filter chain이랑 stage 기반 처리의 의도가 왜 다른지 감이 안 와
+contextual_chunk_prefix: |
+  이 문서는 advanced 학습자가 단계별 데이터 변환 구조와 책임 위임 및
+  short-circuit 구조를 구분하도록 돕는 chooser다. filter chain, auth
+  blocker, request short circuit, stage processing, normalize-validate-save
+  같은 혼합 질문이 pipeline과 chain of responsibility의 의도 차이로
+  매핑된다.
+---
 # Pipeline vs Chain of Responsibility
 
 > 한 줄 요약: Pipeline은 단계별로 결과를 흘려보내는 데이터 처리 구조이고, Chain of Responsibility는 요청을 처리할 책임자에게 넘기며 중단 가능성을 가진다.

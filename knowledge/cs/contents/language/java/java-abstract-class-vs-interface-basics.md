@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 추상 클래스 vs 인터페이스 입문
+concept_id: language/java-abstract-class-vs-interface-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- abstract-class-vs-interface-choice
+- default-method-overreach
+- composition-over-inheritance-default
+aliases:
+- abstract class vs interface beginner
+- 추상 클래스 인터페이스 차이 입문
+- 처음 배우는데 추상 클래스 인터페이스 언제 쓰는지
+- 공통 상태가 필요하면 추상 클래스
+- 기본 동작만 있으면 인터페이스
+- default method에 필드 못 넣나요
+- 인터페이스에 상태를 넣고 싶어요
+- extends vs implements beginner
+- 같은 default method 두 개 충돌
+- java abstract class vs interface basics
+- java interface abstract class first guide
+- 추상 클래스와 인터페이스 큰 그림
+symptoms:
+- 추상 클래스와 인터페이스를 언제 고르는지 큰 기준이 안 잡혀
+- default method가 생겼다는데 추상 클래스랑 뭐가 다른지 모르겠어
+- 상속으로 풀지 인터페이스 계약으로 열지 자꾸 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-inheritance-overriding-basics
+- language/object-oriented-core-principles
+next_docs:
+- language/abstract-class-vs-interface-follow-up-drill
+- language/marker-interface-vs-capability-method-bridge
+- design-pattern/composition-over-inheritance-basics
+- design-pattern/template-method-basics
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/abstract-class-vs-interface-follow-up-drill.md
+- contents/language/java/marker-interface-vs-capability-method-bridge.md
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-basics.md
+confusable_with:
+- language/abstract-class-vs-interface
+- language/interface-default-method-contract-evolution-primer
+- design-pattern/composition-over-inheritance-basics
+forbidden_neighbors: []
+expected_queries:
+- 추상 클래스와 인터페이스를 처음 배울 때 어떤 기준으로 나눠 이해하면 돼?
+- Java에서 공통 상태가 있으면 왜 인터페이스보다 추상 클래스를 먼저 보라고 해?
+- default method가 있어도 추상 클래스가 필요한 이유를 초보자 기준으로 설명해줘
+- extends와 implements를 어떤 상황에서 고르는지 큰 그림부터 알고 싶어
+- 상속이랑 계약 인터페이스를 섞어 생각하는데 먼저 읽을 입문 문서가 뭐야?
+- 추상 클래스 인터페이스 차이를 조합 이야기 전 단계에서 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 추상 클래스와 인터페이스를 처음 구분할 때
+  공통 상태와 부모 흐름은 추상 클래스, 능력 계약과 교체 가능성은
+  인터페이스라는 큰 그림을 잡는 primer다. default method가 생겼는데 왜
+  아직 추상 클래스가 필요한가, extends와 implements를 언제 고르나,
+  상속으로 갈지 계약으로 열지 감이 안 온다 같은 자연어 paraphrase가
+  본 문서의 첫 판단 기준에 매핑된다.
+---
 # 추상 클래스 vs 인터페이스 입문
 
 > 한 줄 요약: 처음 배우는 사람이 "추상 클래스와 인터페이스를 언제 쓰는지" 큰 그림부터 잡도록, 추상 클래스는 "같은 부모를 공유하는 is-a 관계"에서 구현을 물려줄 때 쓰고 인터페이스는 "능력/계약을 여러 타입에 붙일 때" 쓴다는 기준을 기초 질문형으로 정리한 primer다.

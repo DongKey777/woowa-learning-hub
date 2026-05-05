@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Spring RestClient vs WebClient Lifecycle Boundaries
+concept_id: spring/spring-restclient-vs-webclient-lifecycle-boundaries
+canonical: false
+category: spring
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- blocking-vs-reactive-client
+- webclient-block-trap
+- client-lifecycle-boundary
+aliases:
+- restclient vs webclient
+- resttemplate to restclient next step
+- restclient migration next doc
+- blocking vs reactive http client
+- restclient lifecycle
+- webclient lifecycle
+- blocking client lifecycle
+- reactive client lifecycle
+- sync vs reactive lifecycle
+- restclient builder path
+- webclient reactive pipeline
+- reactive client vs blocking client
+symptoms:
+- RestClient랑 WebClient를 같은 방식으로 timeout이나 로깅 설정해도 되는지 모르겠어요
+- WebClient를 쓰는데 결국 block()을 넣게 돼서 이게 왜 문제인지 감이 안 와요
+- 외부 API 호출에서 trace나 SecurityContext 전파가 두 클라이언트에서 왜 다르게 느껴지는지 헷갈려요
+intents:
+- comparison
+- design
+prerequisites:
+- spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
+- spring/spring-template-classes-beginner-primer
+- spring/spring-webclient-vs-resttemplate
+next_docs:
+- spring/spring-reactive-blocking-bridge-boundedelastic-block-traps
+- spring/spring-webclient-connection-pool-timeout-tuning
+- spring/spring-securitycontext-propagation-async-reactive-boundaries
+linked_paths:
+- contents/spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md
+- contents/spring/spring-template-classes-beginner-primer.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-jsontest-restclienttest-slice-boundaries.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+confusable_with:
+- spring/spring-webclient-vs-resttemplate
+- spring/spring-reactive-blocking-bridge-boundedelastic-block-traps
+- spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 외부 HTTP 호출할 때 RestClient와 WebClient를 생명주기 기준으로 어떻게 갈라서 선택해?
+- WebClient를 쓰면서도 block()을 넣게 될 때 왜 reactive 경계 문서로 봐야 하는지 설명해줘
+- RestClient는 단순한데 WebClient는 context 전파 이야기가 같이 나오는 이유가 뭐야?
+- blocking 클라이언트와 reactive 클라이언트의 timeout, retry, 관측 포인트 차이를 한 번에 정리해줘
+- RestTemplate에서 넘어온 사람이 RestClient와 WebClient를 같은 종류로 보면 어디서 오해가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 외부 API 호출 도구를 고를 때 응답을 기다리는
+  실행 흐름과 반응형 신호 체인 차이로 RestClient와 WebClient를 결정하는
+  chooser다. 호출 스레드 점유, 체인 중간에 기다림 넣기, timeout과 로깅
+  위치, trace나 인증 문맥 전달이 다름 같은 자연어 paraphrase가 본 문서의
+  경계 판단에 매핑된다.
+---
 # Spring RestClient vs WebClient Lifecycle Boundaries
 
 > 한 줄 요약: RestClient와 WebClient는 둘 다 HTTP 클라이언트지만, blocking lifecycle과 reactive lifecycle이 다르므로 같은 방식으로 설정하거나 관측하면 안 된다.

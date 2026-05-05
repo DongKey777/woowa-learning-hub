@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Causal Consistency Notification Primer
+concept_id: system-design/causal-consistency-notification-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- notification-effect-before-cause
+- causal-token-routing
+- source-read-gap
+aliases:
+- causal consistency notification primer
+- notification to source flow
+- effect before cause notification
+- cause before effect notification
+- causal token notification
+- required watermark notification
+- notification source read gap
+- 알림 원인 데이터 일관성
+symptoms:
+- 알림은 왔는데 눌러 보면 댓글이나 주문 원문이 안 보여
+- 결과는 먼저 봤는데 원인 데이터가 아직 안 따라와
+- stale read랑 causal consistency를 같은 문제로 보고 있어
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/read-after-write-consistency-basics
+- system-design/monotonic-reads-and-session-guarantees-primer
+next_docs:
+- system-design/notification-causal-token-walkthrough
+- system-design/notification-read-to-min-version-bridge
+- system-design/notification-badge-vs-source-freshness-primer
+linked_paths:
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/notification-system-design.md
+- contents/system-design/mobile-push-notification-pipeline-design.md
+- contents/database/causal-consistency-intuition.md
+confusable_with:
+- system-design/read-after-write-routing-primer
+- system-design/notification-badge-vs-source-freshness-primer
+- database/causal-consistency-intuition
+forbidden_neighbors:
+- contents/system-design/read-after-write-routing-primer.md
+expected_queries:
+- 알림을 먼저 봤는데 댓글 원문이 안 보이면 이게 stale read랑 뭐가 달라?
+- notification에서 effect before cause를 막으려면 어떤 보장을 써야 해?
+- 결제 완료 알림을 눌렀는데 주문 상세가 아직 예전 상태면 causal consistency로 봐야 해?
+- read-after-write랑 causal consistency를 알림 흐름에서 어떻게 구분해?
+- 알림 source missing 문제를 causal token 관점에서 처음 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 notification을 이미 본 뒤 source 데이터가 이어서
+  보여야 한다는 causal consistency를 stale read와 분리해서 이해하게 돕는
+  beginner primer다. 알림은 왔는데 원문이 없음, 결과를 먼저 봤는데 원인이
+  안 따라옴, read-after-write와 뭐가 다른지 헷갈림 같은 자연어 질문이 본
+  문서의 notification-to-source 기준선 설명으로 매핑된다.
+---
 # Causal Consistency Notification Primer
 
 > 한 줄 요약: 알림을 먼저 봤다면 그 알림이 가리키는 댓글, 주문, 승인 같은 source 데이터도 이어서 보여야 하고, 이 "결과를 봤으면 원인도 보여야 한다"는 문제가 causal consistency다.

@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Vacuum / Purge Debt Forensics and Symptom Map
+concept_id: database/vacuum-purge-debt-forensics-symptom-map
+canonical: true
+category: database
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- vacuum-vs-freeze-debt
+- purge-backlog-vs-bloat
+- cleanup-debt-signal-mapping
+aliases:
+- vacuum debt
+- purge debt
+- mvcc cleanup lag
+- bloat forensics
+- history list length
+- autovacuum lag
+- dead tuple growth
+- index only scan regression
+- backend db cleanup debt
+- freeze debt
+- xid age
+- cleanup debt triage
+- runbook routing
+symptoms:
+- autovacuum이 못 따라오고 dead tuple이 계속 늘어난다
+- history list length가 줄지 않고 undo tablespace가 계속 커진다
+- index only scan이 갑자기 약해지고 heap fetch가 늘어난다
+- purge backlog와 bloat가 같이 보여서 어디부터 봐야 할지 헷갈린다
+intents:
+- definition
+prerequisites:
+- database/transaction-isolation-locking
+- database/redo-log-undo-log-checkpoint-crash-recovery
+next_docs:
+- database/vacuum-purge-freeze-risk-runbook-routing
+- database/mvcc-history-list-snapshot-too-old
+- database/purge-backlog-remediation-throttle
+linked_paths:
+- contents/database/vacuum-purge-freeze-risk-runbook-routing.md
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/undo-tablespace-truncation-purge-debt.md
+- contents/database/change-buffer-purge-history-length.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/autovacuum-freeze-debt-wraparound-playbook.md
+- contents/database/purge-backlog-remediation-throttle-playbook.md
+confusable_with:
+- database/vacuum-purge-freeze-risk-runbook-routing
+- database/mvcc-history-list-snapshot-too-old
+- database/autovacuum-freeze-debt-wraparound-playbook
+forbidden_neighbors:
+- contents/database/autovacuum-freeze-debt-wraparound-playbook.md
+expected_queries:
+- vacuum debt가 뭐야
+- purge debt가 쌓이면 어디부터 봐야 해
+- dead tuple 늘고 autovacuum이 못 따라오면 무슨 문제야
+- history list length가 계속 커질 때 원인 후보가 뭐야
+- index only scan이 갑자기 느려졌는데 cleanup debt 때문일 수 있어
+- undo tablespace가 줄지 않을 때 purge backlog를 의심해야 하나
+contextual_chunk_prefix: |
+  이 문서는 운영 중인 데이터베이스에서 vacuum debt와 purge debt가 어떤 증상으로
+  드러나는지 처음 잡는 primer다. 청소가 밀린 것 같아, dead tuple이 늘어,
+  history list length가 커져, index only scan이 갑자기 약해져, autovacuum이
+  못 따라와, undo가 안 줄어, purge backlog가 쌓여, write amplification이 커져
+  같은 자연어 paraphrase가 본 문서의 forensic map에 매핑된다.
+---
 # Vacuum / Purge Debt Forensics and Symptom Map
 
 > 한 줄 요약: vacuum debt와 purge debt는 "청소가 밀렸다"는 같은 문제의 엔진별 표현이며, 증상은 디스크 증가보다 먼저 query plan 왜곡·bloat·history backlog·write amplification으로 드러난다.

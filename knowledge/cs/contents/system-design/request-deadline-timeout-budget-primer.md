@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Request Deadline and Timeout Budget Primer
+concept_id: system-design/request-deadline-timeout-budget-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timeout-budget-layering
+- blind-retry-before-budget
+- deadline-propagation-missing
+aliases:
+- request deadline primer
+- timeout budget primer
+- end-to-end deadline
+- client timeout budget
+- app timeout budget
+- cache timeout basics
+- db timeout basics
+- remaining budget
+- fail-fast ladder
+- 처음 timeout budget 뭐예요
+- 왜 timeout을 계단처럼
+- 다 1초로 맞추면 안 되나요
+- timeout budget basics
+- deadline propagation basics
+- request timeout beginner
+symptoms:
+- 타임아웃을 다 1초로 맞췄는데도 요청이 겹쳐
+- 캐시랑 DB가 둘 다 오래 기다리다가 전체 요청이 터져
+- 어디 timeout을 먼저 줄여야 할지 모르겠어
+intents:
+- definition
+prerequisites:
+- system-design/system-design-foundations
+- system-design/request-path-failure-modes-primer
+next_docs:
+- system-design/retry-amplification-and-backpressure-primer
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- system-design/read-only-and-graceful-degradation-patterns
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/system-design/database-scaling-primer.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+confusable_with:
+- system-design/request-path-failure-modes-primer
+- system-design/retry-amplification-and-backpressure-primer
+- network/timeout-retry-backoff-practical
+forbidden_neighbors:
+- contents/network/timeout-retry-backoff-practical.md
+expected_queries:
+- timeout budget을 왜 계단처럼 나누는지 한 번에 이해하고 싶어
+- client deadline이랑 DB timeout이 같은 값이면 왜 문제가 돼?
+- 남은 시간을 cache랑 DB에 어떻게 배분해야 하는지 입문용으로 설명해줘
+- fail-fast를 어디에서 걸어야 요청 겹침이 줄어들어?
+- retry랑 timeout budget 차이를 초보자 기준으로 정리해줘
+- 프록시를 지나갈 때 deadline이 줄어드는 감각을 먼저 잡고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 request deadline과 timeout budget을 각 계층의 독립 설정값이 아니라 한 요청의 남은 시간을 위에서 아래로 나눠 쓰는 약속으로 이해하도록 처음 잡는 primer다.
+  클라이언트 마감과 내부 호출 제한을 어떻게 이어야 하는지, 왜 cache와 DB를 둘 다 오래 기다리면 전체 요청이 겹치는지, 남은 시간 기준으로 어디서 포기선을 그어야 하는지, 프록시와 서비스 hop을 지날수록 시간이 왜 줄어야 하는지 같은 자연어 paraphrase가 본 문서의 deadline·budget 감각에 매핑된다.
+---
 # Request Deadline and Timeout Budget Primer
 
 > 한 줄 요약: timeout budget은 "각 레이어가 얼마나 오래 기다릴지"를 따로 늘리는 일이 아니라, 한 요청의 남은 시간을 위에서 아래로 나눠 쓰는 약속이다.

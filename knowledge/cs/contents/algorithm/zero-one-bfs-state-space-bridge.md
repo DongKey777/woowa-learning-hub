@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: 0-1 BFS State-Space Bridge
+concept_id: algorithm/zero-one-bfs-state-space-bridge
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- state-space-modeling
+- visited-dimension-miss
+aliases:
+- 0-1 bfs state space bridge
+- zero one bfs state modeling
+- grid state space bfs
+- r c state modeling
+- row col state shortest path
+- key door bfs state
+- wall break count bfs state
+- facing direction bfs state
+- stateful grid shortest path
+- 3d visited bfs
+- 3d dist bfs
+- 0-1 bfs beginner state
+- 격자 상태 공간
+- r c state 모델링
+- zero one bfs state space bridge basics
+symptoms:
+- 같은 칸인데 왜 다시 방문해야 하는지 직관이 안 잡혀
+- 열쇠나 방향을 배열 차원에 넣어야 하는지 헷갈려
+- visited를 2차원으로 두면 왜 틀리는지 설명이 필요해
+intents:
+- comparison
+prerequisites:
+- algorithm/dfs-bfs-intro
+- algorithm/zero-one-bfs-grid-conversion-primer
+next_docs:
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/zero-one-bfs-state-visited-vs-dist-starter-card.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+confusable_with:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/dfs-bfs-intro
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+expected_queries:
+- 열쇠를 먹었는지에 따라 같은 칸을 다르게 봐야 하는 이유가 뭐야
+- 벽 부순 횟수까지 포함해서 BFS 상태를 잡는 법을 알고 싶어
+- 방향이 다르면 같은 좌표도 다른 정점이라고 보는 기준이 궁금해
+- 3차원 visited 배열이 필요한 격자 최단 경로 문제를 설명해줘
+- key door 문제에서 r c 말고 어떤 상태를 더 저장해야 해
+- 상태 공간으로 번역해야 하는 shortest path 문제 신호를 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 같은 칸이라도 열쇠, 남은 기회, 방향에 따라 다른 정점이 되는 상태 공간 감각을 0-1 BFS와 연결하는 bridge다. 좌표만 보면 왜 틀리는지, 열쇠 들고 온 칸 구분, 벽 부순 횟수까지 함께 저장, 방향 따라 다음 비용 달라짐, 칸과 상태를 같이 묶기 같은 자연어 paraphrase가 본 문서의 핵심 연결에 매핑된다.
+---
 # 0-1 BFS State-Space Bridge
 
 > 한 줄 요약: 격자 최단 경로에서 같은 칸이라도 "열쇠 보유", "벽을 몇 번 부쉈는가", "현재 바라보는 방향"이 다르면 서로 다른 정점으로 봐야 한다.

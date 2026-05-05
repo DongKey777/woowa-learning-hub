@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Socket Accept Queue, Kernel Diagnostics
+concept_id: operating-system/socket-accept-queue-kernel-diagnostics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- accept-queue-vs-syn-backlog
+- listenoverflows-kernel-counters
+- kernel-queue-vs-cq-queue
+aliases:
+- socket accept queue kernel diagnostics
+- accept queue kernel diagnostics
+- sk_ack_backlog basics
+- sk_max_ack_backlog basics
+- ListenOverflows ListenDrops meaning
+- ss ltn backlog diagnosis
+- accept queue overflow diagnosis
+- kernel backlog diagnostics
+- accept queue vs cq queue
+- kernel accept queue counters
+symptoms:
+- listen queue가 찬 것 같은데 accept loop 문제인지 커널 backlog 문제인지 먼저 갈라야 해요
+- ListenOverflows와 ListenDrops가 늘 때 어디까지가 커널 queue 진단 문서인지 헷갈려요
+- ss -ltn 수치와 io_uring CQ 지표를 같은 문제로 읽어도 되는지 구분이 안 돼요
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- operating-system/tcp-backlog-somaxconn-listen-queue
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+next_docs:
+- operating-system/accept-overload-observability-playbook
+- operating-system/listener-overload-thresholds-accept-pause-policy
+linked_paths:
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/listener-overload-thresholds-accept-pause-policy.md
+- contents/operating-system/tcp-abort-on-overflow-fast-fail-policy.md
+- contents/operating-system/accept-overload-observability-playbook.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+confusable_with:
+- operating-system/accept-overload-observability-playbook
+- operating-system/listener-overload-thresholds-accept-pause-policy
+- operating-system/tcp-backlog-somaxconn-listen-queue
+forbidden_neighbors:
+- contents/operating-system/accept-overload-observability-playbook.md
+- contents/operating-system/listener-overload-thresholds-accept-pause-policy.md
+expected_queries:
+- accept queue가 찼는지 커널 지표로 먼저 확인하는 문서가 필요해
+- ListenOverflows ListenDrops와 ss -ltn을 같이 읽는 방법을 설명해줘
+- sk_ack_backlog와 effective backlog를 어디서 먼저 봐야 해?
+- accept overload인데 observability playbook 말고 커널 queue 자체를 먼저 이해하고 싶어
+- io_uring CQ backlog와 kernel accept queue를 혼동하지 않게 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 TCP listen socket 앞에서 연결이 어디까지 쌓였는지, 새 연결 지연이
+  커널 backlog 압박인지 앱 쪽 accept drain 지연인지 깊이 잡는 deep_dive다.
+  ss -ltn 숫자를 어떻게 읽지, ListenOverflows가 왜 늘지, handshake 뒤 대기열이
+  꽉 찼는지, CQ 적체와는 어디서 갈라지는지 같은 자연어 paraphrase가 본 문서의
+  커널 진단 축에 매핑된다.
+---
+
 # Socket Accept Queue, Kernel Diagnostics
 
 > 한 줄 요약: accept queue 문제는 애플리케이션의 `accept()` 속도만 볼 게 아니라, 커널이 백로그를 어떻게 쌓고 버리는지를 같이 봐야 정확히 진단된다.

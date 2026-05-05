@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Suffix Automaton
+concept_id: algorithm/suffix-automaton
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+  - substring-state-compression
+  - clone-state-confusion
+aliases:
+  - suffix automaton
+  - sam
+  - substring automaton
+  - endpos automaton
+  - suffix link automaton
+  - clone state automaton
+  - distinct substring automaton
+  - repeated substring automaton
+symptoms:
+  - suffix automaton이 substring 문제에 좋다는데 state가 무엇을 압축하는지 감이 안 와
+  - clone state가 왜 생기는지 모르겠어서 구현 설명을 읽어도 끊겨
+  - trie나 suffix array와 비교할 때 suffix automaton을 언제 떠올려야 하는지 헷갈려
+intents:
+  - definition
+  - deep_dive
+  - comparison
+prerequisites:
+  - algorithm/string
+next_docs:
+  - algorithm/suffix-array-lcp
+  - algorithm/suffix-tree-intuition
+  - algorithm/trie-vs-radix-vs-suffix-automaton-comparison
+linked_paths:
+  - contents/algorithm/string.md
+  - contents/algorithm/suffix-array-lcp.md
+  - contents/algorithm/suffix-tree-intuition.md
+  - contents/algorithm/trie-vs-radix-vs-suffix-automaton-comparison.md
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+  - contents/data-structure/radix-tree.md
+confusable_with:
+  - algorithm/suffix-tree-intuition
+  - algorithm/suffix-array-lcp
+forbidden_neighbors:
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+expected_queries:
+  - suffix automaton이 trie나 suffix array보다 substring 문제에 강하다는 말이 무슨 뜻이야
+  - clone state와 suffix link를 꼭 이해해야 하는 이유를 감각적으로 설명해줘
+  - distinct substring 개수나 longest repeated substring에서 sam이 왜 자주 나오는지 알고 싶어
+  - prefix 검색 구조와 substring 자동자를 어떻게 구분해야 하는지 비교해줘
+  - 문자열 상태를 압축해서 담는다는 표현이 suffix automaton에서 정확히 무엇을 뜻하는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 문자열 학습자가 모든 substring을 일일이 저장하지 않고도
+  반복 패턴과 포함 관계를 어떻게 상태 그래프로 압축하는지 깊이 잡는
+  deep_dive다. 부분 문자열 전부를 뭉쳐 다루기, 끝나는 위치가 같은 조각
+  묶기, clone이 왜 갑자기 끼는지, 반복 구간 계산, trie 말고 자동자 관점
+  같은 자연어 paraphrase가 본 문서의 suffix automaton 감각에
+  매핑된다.
+---
 # Suffix Automaton
 
 > 한 줄 요약: Suffix Automaton은 문자열의 모든 substring을 압축해 담는 자동자로, 반복 패턴과 substring 질의에 강하다.

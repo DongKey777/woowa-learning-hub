@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Support Access Alert Router Primer
+concept_id: security/support-access-alert-router-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- support-access-audience-routing
+- delivery-surface-vs-audience
+- break-glass-notification-separation
+aliases:
+- support access alert router primer
+- support access notification primer
+- support access audience primer
+- support access email vs timeline vs inbox
+- support access alert 큰 그림
+- support access alert 기초
+- support access 알림은 누가 받는지
+- 지원 접근 알림은 누가 받는지
+- support access 알림은 언제 즉시 보내는지
+- support access 알림은 언제 timeline 쓰는지
+- support access 알림은 무엇 기준으로 나누는지
+- break glass 알림 누가 언제 받는지
+- mailbox compromise면 무엇 기준으로 surface 고르는지
+- 누구에게 먼저 알려야 하나
+- support access alert router primer basics
+symptoms:
+- 지원 접근 알림을 누구에게 보내야 할지 헷갈려요
+- email이랑 timeline 중 어디에 먼저 보여야 하는지 모르겠어요
+- break-glass 알림을 일반 지원 조회 알림처럼 보내도 되는지 헷갈려요
+intents:
+- definition
+prerequisites:
+- security/security-basics-what-and-why
+next_docs:
+- security/audience-matrix-for-support-access-events
+- security/delivery-surface-policy-for-support-access-alerts
+- security/customer-facing-support-access-notifications
+linked_paths:
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/delivery-surface-policy-for-support-access-alerts.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/tenant-policy-schema-for-privileged-support-alerts.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/design-pattern/policy-object-naming-primer.md
+confusable_with:
+- security/audience-matrix-for-support-access-events
+- security/delivery-surface-policy-for-support-access-alerts
+- security/customer-facing-support-access-notifications
+forbidden_neighbors: []
+expected_queries:
+- support access 알림을 누구에게 먼저 보내야 해?
+- break-glass 시작과 종료를 어떤 채널에 알려야 하는지 한 번에 정리해줘
+- tenant admin이랑 security contact를 언제 분리해서 알려야 하나요
+- mailbox compromise가 의심될 때 support access 알림은 어디로 보내야 해?
+- read-only 조회와 write 지원 작업 알림을 같은 방식으로 보내도 되나요
+- support access email, inbox, timeline을 어떤 순서로 고르면 좋을까
+contextual_chunk_prefix: |
+  이 문서는 support AOBO와 break-glass 알림을 처음 접한 학습자가
+  audience 선택과 delivery surface 선택을 한 번에 섞지 않도록 돕는
+  security primer다. 누구에게 먼저 알려야 하나, read-only와 write를 같은
+  알림으로 보내도 되나, tenant admin과 security contact를 언제 갈라야
+  하나, mailbox compromise면 email 대신 무엇을 봐야 하나 같은 초보자
+  질문을 audience matrix와 delivery policy로 넘기기 전의 첫 분기점에
+  매핑한다.
+---
 # Support Access Alert Router Primer
 
 > 한 줄 요약: support access 알림은 "일단 모두에게 메일을 보낸다"가 아니라 `무슨 접근이었나`와 `누가 설명 책임을 지는가`를 먼저 고른 뒤, 그 결과를 timeline / inbox / email 같은 surface에 싣는 순서로 읽어야 덜 헷갈린다.

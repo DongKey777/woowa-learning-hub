@@ -1,3 +1,86 @@
+---
+schema_version: 3
+title: Service Discovery / Health Routing 설계
+concept_id: system-design/service-discovery-health-routing-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- dns-vs-discovery
+- readiness-vs-outlier-ejection
+- warmup-drain-routing-policy
+aliases:
+- service discovery
+- endpoint registry
+- health check
+- client side load balancing
+- dns discovery
+- xds
+- zone aware routing
+- outlier detection
+- connection draining
+- service mesh control plane
+- traffic shifting
+- endpoint warmup
+- failover routing
+- global traffic control
+- auth dependency failover
+symptoms:
+- 서비스 이름만 알면 호출되는 줄 알았는데 실제 endpoint 선택이 어떻게 되는지 모르겠어
+- readiness는 붙어 있는데 부분 장애 인스턴스를 왜 더 빨리 빼야 하는지 헷갈려
+- warm-up, drain, zone failover를 누가 한 정책으로 묶는지 감이 안 와
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- system-design/load-balancer-basics
+- system-design/load-balancer-drain-and-affinity-primer
+- system-design/control-plane-data-plane-separation-design
+next_docs:
+- system-design/global-traffic-failover-control-plane-design
+- system-design/service-mesh-control-plane-design
+- system-design/stateful-workload-placement-failover-control-plane-design
+linked_paths:
+- contents/system-design/load-balancer-drain-and-affinity-primer.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/edge-authorization-service-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/service-mesh-control-plane-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+confusable_with:
+- system-design/global-traffic-failover-control-plane-design
+- system-design/load-balancer-drain-and-affinity-primer
+- system-design/service-mesh-control-plane-design
+forbidden_neighbors: []
+expected_queries:
+- service discovery는 DNS랑 뭐가 다르고 health routing까지 왜 같이 봐야 해?
+- readiness 말고 outlier detection이나 passive health가 필요한 이유가 뭐야?
+- 새 인스턴스 warm-up과 drain 정책을 discovery 쪽에서 왜 같이 다뤄?
+- zone 장애가 나면 local 우선 라우팅을 언제 풀어야 해?
+- control plane이 죽어도 data plane이 계속 라우팅해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 service discovery를 주소록이 아니라 endpoint 상태와
+  routing policy를 결합한 제어 평면으로 이해하게 돕는 advanced deep dive다.
+  DNS만으로 충분한가, readiness 외에 passive health가 왜 필요한가, 새
+  인스턴스 warm-up과 draining을 누가 묶어 보나, zone 장애 때 local 우선
+  정책을 언제 푸나 같은 자연어 질문이 본 문서의 discovery/routing 모델에
+  매핑된다.
+---
 # Service Discovery / Health Routing 설계
 
 > 한 줄 요약: service discovery와 health routing은 서비스 이름을 실제 endpoint 집합으로 해석하고, 건강한 인스턴스로만 트래픽을 보내도록 제어하는 런타임 네트워크 제어 시스템이다.

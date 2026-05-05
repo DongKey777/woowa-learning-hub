@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "`Arrays.sort(...)` vs `List.sort(...)` 브리지"
+concept_id: language/arrays-sort-vs-list-sort-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+  - comparator-reuse-across-containers
+  - in-place-sort-vs-new-result
+  - array-list-sorting-entrypoint
+aliases:
+  - arrays sort vs list sort
+  - java array sort list sort
+  - java comparator reuse array list
+  - object array sorting beginner
+  - list sorting beginner
+  - 자바 arrays sort list sort 차이
+  - 자바 배열 정렬 리스트 정렬
+  - 자바 comparator 재사용 배열 리스트
+  - arrays sort list sort bridge basics
+symptoms:
+  - 배열 정렬 코드와 리스트 정렬 코드가 비슷해 보여서 어느 쪽 API를 써야 할지 헷갈려
+  - 같은 Comparator를 배열과 리스트에서 그대로 써도 되는지 자신이 없어
+  - stream.sorted랑도 섞여 보여서 제자리 정렬인지 새 결과인지 구분이 안 돼
+intents:
+  - comparison
+  - definition
+prerequisites:
+  - language/java-comparable-comparator-basics
+  - language/java-array-sorting-searching-basics
+  - language/java-collections-basics
+next_docs:
+  - language/arrays-sort-comparator-reuse-bridge
+  - language/list-sort-vs-stream-sorted-comparator-bridge
+  - language/primitive-descending-array-sort-bridge
+linked_paths:
+  - contents/language/java/java-comparable-comparator-basics.md
+  - contents/language/java/java-array-sorting-searching-basics.md
+  - contents/language/java/java-collections-basics.md
+  - contents/language/java/arrays-sort-comparator-reuse-bridge.md
+  - contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+  - contents/language/java/list-sort-vs-collections-sort-mini-bridge.md
+  - contents/language/java/primitive-descending-array-sort-bridge.md
+confusable_with:
+  - language/arrays-sort-comparator-reuse-bridge
+  - language/list-sort-vs-stream-sorted-comparator-bridge
+  - language/list-sort-vs-collections-sort-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+  - 배열을 정렬할 때와 리스트를 정렬할 때 자바에서 어떤 API를 먼저 떠올리면 되는지 알려줘
+  - 같은 Comparator를 Student[]와 List<Student> 양쪽에 적용하는 기준을 초보자 눈높이로 설명해줘
+  - Arrays.sort와 List.sort가 둘 다 제자리 정렬인지 비교해서 정리한 문서를 찾고 있어
+  - object 배열 정렬 코드와 리스트 정렬 코드가 왜 비슷한지 감각을 잡고 싶어
+  - stream.sorted 말고 배열과 리스트 자체를 바로 정렬하는 두 입구를 비교한 자바 글이 필요해
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 object 배열 정렬과 List 정렬을 서로 다른 개념으로 외우지 않도록, 같은 Comparator 규칙이 Arrays.sort(...)와 List.sort(...)라는 두 입구로 어떻게 이어지는지 연결하는 bridge다. 배열 바로 정렬, 리스트 자체 순서 바꾸기, 같은 비교 규칙 재사용, 정렬 API 입구 구분, stream 없이 제자리 정렬 같은 자연어 paraphrase가 본 문서의 핵심 비교에 매핑된다.
+---
 # `Arrays.sort(...)` vs `List.sort(...)` 브리지
 
 > 한 줄 요약: object 배열과 `List`는 모양만 다를 뿐, 같은 `Comparator` chain을 `Arrays.sort(array, comparator)`와 `list.sort(comparator)`에 그대로 옮겨 쓸 수 있다.

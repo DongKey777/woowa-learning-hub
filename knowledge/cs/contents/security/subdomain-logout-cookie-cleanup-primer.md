@@ -29,6 +29,20 @@
 retrieval-anchor-keywords: subdomain logout cookie cleanup primer, parent-domain cookie logout cleanup, shared cookie to app-local session logout, auth.example.com logout app.example.com still logged in, subdomain logout stale cookie, logout tombstone cleanup beginner, app-local session handoff logout, shared session retirement logout, logout old domain example.com cookie, host-only session plus shared cookie cleanup, logout after cookie scope migration, subdomain cookie tombstone primer, app local session logout old shared cookie survives, logout one-time handoff model, logout migration beginner
 retrieval-anchor-keywords: __Host-session logout old shared cookie, app_session logout shared session cleanup, sibling subdomain logout confusion, why logout from one subdomain does not log out another, logout browser cookie cleanup vs server session revoke
 
+## 먼저 이 문서가 맞는지 15초 분기
+
+| 지금 막힌 질문 | 이 문서가 맞는 경우 | 더 가까운 문서 |
+|---|---|---|
+| "`app.example.com`에서 logout했는데 다른 subdomain은 왜 계속 로그인 같지?" | 현재 host session 종료와 old shared cookie tail을 **같이** 정리해야 할 때 | 이 문서 계속 읽기 |
+| "`__Host-`로 옮길 구조 자체를 어떻게 설계하지?" | logout보다 **migration 방향**이 먼저 안 잡혔을 때는 아님 | [__Host- Cookie Migration Primer](./host-cookie-migration-primer.md) |
+| "old cookie를 어느 `Domain`/`Path` 조합으로 tombstone 해야 하지?" | logout 의미는 정해졌고 **exact scope cleanup**만 남았을 때는 아님 | [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md) |
+| "이건 제품군 전체 로그아웃 정책인가, OIDC back-channel까지 포함한 얘기인가?" | 브라우저 cookie tail보다 **전역 logout semantics**가 핵심이면 아님 | [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md) |
+
+짧은 규칙:
+
+- 이 문서는 "한 subdomain logout이 왜 다른 subdomain 상태를 자동으로 끊지 못하는가"를 설명하는 primer다.
+- tombstone header 한 줄의 문법보다 logout 범위와 tail 정리가 먼저 헷갈릴 때 여는 문서다.
+
 ## 먼저 잡는 mental model
 
 subdomain 구조 변경 뒤 logout은 보통 출입증이 두 종류라서 헷갈린다.

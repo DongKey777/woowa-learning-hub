@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Enum에서 상태 전이 모델로 넘어가는 첫 브리지
+concept_id: language/enum-to-state-transition-beginner-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/shopping-cart
+- missions/blackjack
+review_feedback_tags:
+- state-transition-encapsulation
+- setter-vs-domain-action
+- terminal-state-guard
+aliases:
+- enum 상태 전이
+- setStatus 대신 confirm cancel
+- 예약 상태 변경 도메인 메서드
+- 주문 상태 전이 enum
+- terminal 상태 규칙
+symptoms:
+- 리뷰에서 setStatus 열어 두지 말고 confirm 같은 행동 메서드로 바꾸라고 해요
+- 상태 enum은 만들었는데 전이 규칙이 service if문마다 흩어져 보여요
+- 취소나 완료 뒤에도 다시 진행 상태로 바뀌어서 어디서 막아야 할지 모르겠어요
+intents:
+- mission_bridge
+- design
+prerequisites:
+- language/java-enum-basics
+- language/object-oriented-core-principles
+- language/java-exception-handling-basics
+next_docs:
+- language/domain-state-type-primer-enum-record-value-object
+- design-pattern/roomescape-reservation-status-state-pattern-bridge
+- design-pattern/shopping-cart-order-status-state-pattern-bridge
+linked_paths:
+- contents/language/java/java-enum-basics.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/java-exception-handling-basics.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/domain-state-type-primer-enum-record-value-object.md
+- contents/software-engineering/oop-design-basics.md
+- contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md
+- contents/design-pattern/shopping-cart-order-status-state-pattern-bridge.md
+confusable_with:
+- language/java-enum-basics
+- language/domain-state-type-primer-enum-record-value-object
+- design-pattern/roomescape-reservation-status-state-pattern-bridge
+- design-pattern/shopping-cart-order-status-state-pattern-bridge
+forbidden_neighbors: []
+expected_queries:
+- roomescape나 shopping-cart 미션에서 상태 enum은 있는데 setStatus로 아무 데서나 바꾸지 말라는 리뷰가 무슨 뜻이야?
+- 예약 확정이나 주문 취소를 setter 대신 confirm cancel 메서드로 감싸라는 이유를 자바 미션 예제로 설명해줘
+- 상태값 enum 다음 단계로 전이 규칙을 어디에 모아야 하는지 beginner 관점에서 알고 싶어
+- terminal 상태가 된 뒤 다시 진행 상태로 못 가게 막는 규칙을 도메인 메서드에 두라는 말이 이해가 안 돼
+- baseball이나 blackjack 미션 코드에서 상태 변경 if문이 service마다 흩어질 때 어떤 타입 경계로 묶어야 해?
+contextual_chunk_prefix: |
+  이 문서는 Woowa roomescape, baseball, shopping-cart, blackjack 미션에서
+  상태 enum은 만들었지만 `setStatus(...)` 호출이 service와 테스트에 흩어져
+  학습자가 "왜 행동 메서드로 감싸라고 하지?"라고 묻는 장면을 mission_bridge로
+  연결한다. 예약 확정과 주문 취소를 setter 대신 `confirm()`/`cancel()`로
+  읽고 싶다, terminal 상태 뒤 재진입을 막고 싶다, 상태 전이 if문을 한곳에
+  모으고 싶다 같은 자연어 표현이 이 문서의 검색 표면이다.
+---
+
 # Enum에서 상태 전이 모델로 넘어가는 첫 브리지
 
 > 한 줄 요약: enum을 "상태 이름표"로만 두지 말고 `setStatus(...)` 대신 `confirm()`/`cancel()` 같은 도메인 행동 안에서 전이 규칙을 묶기 시작하면, 미션 코드에서 상태 변경 이유와 허용 범위를 훨씬 쉽게 추적할 수 있다.

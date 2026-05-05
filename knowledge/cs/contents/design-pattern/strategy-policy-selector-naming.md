@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: 'Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들'
+concept_id: design-pattern/strategy-policy-selector-naming
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- selector-naming
+- factory-misnaming
+aliases:
+- strategy policy selector naming
+- factory 보다 selector
+- selector naming beginner
+- resolver selector naming
+- policy selector naming
+- selector vs resolver naming
+- registry factory selector 차이
+- lookup naming bridge
+intents:
+- comparison
+- design
+symptoms:
+- selector resolver strategy 이름이 다 비슷해서 못 고르겠어요
+- 정책을 고르는 클래스인데 factory라고 불러도 되는지 헷갈려요
+prerequisites:
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+next_docs:
+- design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+linked_paths:
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+- contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+- contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/router-dispatcher-handlermapping-vs-selector-factory.md
+- contents/language/java/object-oriented-core-principles.md
+confusable_with:
+- design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist
+- design-pattern/registry-vs-factory-injected-handler-maps
+forbidden_neighbors: []
+expected_queries:
+- selector resolver registry strategy factory 이름을 언제 각각 써?
+- policy selector라고 불러도 되나 strategy랑 뭐가 달라?
+- 생성이 아닌데 factory라고 부르는 이름이 왜 어색해?
+- selector naming follow up으로 볼 비교 문서가 필요해
+- resolver랑 selector를 코드 책임 기준으로 어떻게 나눠?
+- handler map 이름을 registry로 둘지 selector로 둘지 헷갈려
+contextual_chunk_prefix: |
+  이 문서는 학습자가 factory, selector, resolver, registry, strategy 사이의
+  네이밍 경계를 beginner 관점에서 비교하도록 돕는 bridge다. factory 보다
+  selector, resolver selector 차이, policy selector naming, 생성이 아닌데
+  factory라고 부르는 이름이 어색한 이유 같은 자연어 질문이 본 문서의
+  책임 구분과 예시에 매핑된다.
+---
 # Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들
 
 > 한 줄 요약: `Factory`는 "새로 만든다"가 중심일 때 쓰고, 이미 있는 후보를 고르거나 해석하거나 찾아 실행하는 일은 `Selector`, `Resolver`, `Registry`, `Strategy` 같은 이름이 더 정확하다.

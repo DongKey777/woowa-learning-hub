@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: 'Spring DI 예외 빠른 판별: bean을 못 찾음 vs 여러 개라 못 고름'
+concept_id: spring/di-exception-quick-triage
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids:
+- missions/lotto
+- missions/shopping-cart
+- missions/roomescape
+review_feedback_tags:
+- missing-bean-vs-multi-bean
+- test-slice-bean-gap
+- qualifier-mismatch
+aliases:
+- spring di exception quick triage
+- spring di exception 뭐예요
+- bean을 못 찾음 vs 여러 개라 못 고름
+- nosuchbeandefinitionexception vs nouniquebeandefinitionexception
+- expected single matching bean but found 2
+- expected at least 1 bean which qualifies as autowire candidate
+- no qualifying bean of type available
+- rename qualifier string problem
+- 처음 배우는데 spring di 예외
+- bean not found vs bean duplication
+- scan miss vs profile mismatch
+- webmvctest service bean not found
+- datajpatest service bean not found
+- 왜 webmvctest 에서 service 가 없어요
+- 헷갈리는 test slice di 예외
+symptoms:
+- `NoSuchBeanDefinitionException`이 떠서 bean이 없는 건지 이름이 안 맞는 건지 모르겠어요
+- `found 2`가 보이는데 `@Primary`, `@Qualifier` 중 뭘 먼저 봐야 할지 헷갈려요
+- `@WebMvcTest`나 `@DataJpaTest`에서만 서비스 bean이 없다고 떠요
+- 방금 구현체를 하나 더 추가했더니 startup DI 예외가 갑자기 생겼어요
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- spring/bean-di-basics
+next_docs:
+- spring/primary-qualifier-collection-injection
+- spring/bean-naming-qualifier-rename-pitfalls-primer
+- spring/same-type-bean-injection-failure-cause-router
+linked_paths:
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+- contents/spring/spring-component-scan-failure-patterns.md
+- contents/design-pattern/abstract-class-vs-interface-injection-bridge.md
+confusable_with:
+- spring/primary-qualifier-collection-injection
+- spring/same-type-bean-injection-failure-cause-router
+- spring/bean-naming-qualifier-rename-pitfalls-primer
+- spring/component-scan-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- 스프링 DI 에러를 봤을 때 먼저 bean이 없는 문제인지 여러 개인 문제인지 어떻게 갈라?
+- `NoSuchBeanDefinitionException`이 나오면 scan 누락하고 qualifier mismatch 중 어디부터 확인해?
+- `found 2 beans` startup 오류가 떴을 때 첫 판단 기준을 빠르게 알고 싶어
+- `@WebMvcTest`에서만 서비스 주입이 깨질 때 이걸 일반 런타임 DI 오류처럼 봐도 돼?
+- 구현체 하나 더 추가한 뒤 autowire가 깨졌는데 어떤 분기표로 보면 빨라?
+- `NoUniqueBeanDefinitionException`하고 이름 바꿔서 생긴 주입 실패를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 스프링 학습자가 DI 시작 단계에서 실패했을 때 후보가 아예
+  없는지, 여러 개라 하나를 못 고르는지부터 먼저 나누는 symptom_router다.
+  빈이 등록되지 않은 것 같다, 주입 대상이 둘이라 선택을 못 한다, scan
+  누락인지 profile 조건 탈락인지 헷갈린다, slice 테스트에서만 깨진다,
+  rename 뒤 연결이 끊긴 것 같다 같은 자연어 증상을 첫 분기표에 매핑한다.
+---
 # Spring DI 예외 빠른 판별: bean을 못 찾음 vs 여러 개라 못 고름
 
 > 한 줄 요약: bean을 못 찾는 경우는 `NoSuchBeanDefinitionException`, bean 후보가 여러 개라 하나를 못 고르는 경우는 `NoUniqueBeanDefinitionException`로 보면 된다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: 그리디 vs DP 결정 카드 (Greedy vs DP Decision Card)
+concept_id: algorithm/greedy-vs-dp-decision-card
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- greedy-counterexample-check
+- dp-state-definition
+aliases:
+- greedy vs dp
+- greedy dp decision table
+- 그리디 dp 차이
+- 그리디 dp 헷갈려요
+- greedy when to use
+- dp when to use
+- counterexample signal
+- state definition signal
+- decision table beginner
+- coin change counterexample
+- 처음 그리디 dp
+- what is greedy vs dp
+- dp state basics
+symptoms:
+- 최적화 문제만 보면 그리디와 DP 중 뭘 먼저 의심해야 할지 모르겠어
+- 반례를 먼저 찾아야 하는지 상태를 먼저 잡아야 하는지 판단이 안 서
+- 동전 문제처럼 greedy가 깨지는 상황을 보고도 언제 DP로 넘어갈지 막혀
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/greedy-intro
+- algorithm/dp-intro
+next_docs:
+- algorithm/backend-algorithm-starter-pack
+linked_paths:
+- contents/algorithm/greedy-intro.md
+- contents/algorithm/dp-intro.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/data-structure/array-vs-linked-list.md
+confusable_with:
+- algorithm/greedy-intro
+- algorithm/dp-intro
+forbidden_neighbors:
+- contents/algorithm/greedy-intro.md
+- contents/algorithm/dp-intro.md
+expected_queries:
+- 그리디와 DP가 둘 다 떠오를 때 처음 30초 안에 무엇을 확인해야 해
+- 반례가 나오면 그리디를 버리고 DP로 가야 하는 기준을 알고 싶어
+- 상태 정의가 보이면 DP라고 판단해도 되는지 beginner 기준으로 설명해줘
+- 동전 문제처럼 greedy와 dp 경계가 헷갈리는 문제를 어떻게 분류해
+- 최적화 문제를 읽을 때 탐욕 선택과 상태 재사용 중 어디부터 봐야 해
+contextual_chunk_prefix: |
+  이 문서는 최적화 문제 앞에서 그리디로 밀어도 되는지, 아니면 상태를 저장하는 DP로 넘어가야 하는지 처음 분기해야 하는 학습자에게 A vs B를 결정하는 chooser다. 지금 고른 선택이 뒤에서 깨지지 않나, 손으로 반례를 빨리 만들 수 있나, 같은 계산이 반복되나, 남은 금액이나 위치로 다시 적을 수 있나, 점화식이 먼저 떠오르나 같은 자연어 paraphrase가 본 문서의 판독 기준에 매핑된다.
+---
 # 그리디 vs DP 결정 카드 (Greedy vs DP Decision Card)
 
 > 한 줄 요약: 그리디와 DP가 헷갈릴 때는 "지금 선택을 고정해도 안전한가"라는 반례 신호와 "상태를 표로 다시 쓸 수 있는가"라는 상태 정의 신호를 한 표에서 같이 보면 첫 분기가 빨라진다.

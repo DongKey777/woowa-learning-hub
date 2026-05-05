@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Stub vs Spy 첫 테스트 프라이머
+concept_id: software-engineering/stub-vs-spy-first-test-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- fixed-return-vs-call-recording
+- stub-vs-spy-boundary
+- first-test-double-choice
+aliases:
+- stub vs spy first test
+- stub spy beginner
+- stub return value basics
+- spy call recording basics
+- 처음 stub spy 헷갈려
+- 왜 stub 말고 spy
+- when to use stub
+- when to use spy
+- first test double choice
+- interaction recording double
+- fixed return double
+- what is stub vs spy
+symptoms:
+- 테스트 더블을 고를 때 값만 고정하면 되는지 호출 기록까지 봐야 하는지 헷갈려요
+- stub과 spy가 둘 다 가짜 객체처럼 보여서 언제 어느 쪽이 맞는지 모르겠어요
+- 알림 전송처럼 호출 흔적이 중요한데도 stub만 두거나 반대로 spy를 과하게 붙이게 돼요
+intents:
+- definition
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/dummy-vs-stub-beginner-mini-card
+- software-engineering/fake-vs-mock-first-test-primer
+next_docs:
+- software-engineering/outbound-notifier-mock-boundary-primer
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/test-strategy-basics
+linked_paths:
+- contents/software-engineering/dummy-vs-stub-beginner-mini-card.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/outbound-notifier-mock-boundary-primer.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/outbound-notifier-mock-boundary-primer
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/dummy-vs-stub-beginner-mini-card
+forbidden_neighbors:
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/dummy-vs-stub-beginner-mini-card.md
+expected_queries:
+- stub은 값만 돌려주는 더블이고 spy는 호출 기록을 보는 더블이라는 기준을 예시로 설명해줘
+- 첫 테스트에서 고정된 반환값만 있으면 되는지 호출 횟수까지 봐야 하는지 어떻게 판단해?
+- 알림 전송이나 이벤트 발행 테스트에서 stub 대신 spy를 써야 하는 순간이 언제야?
+- beginner 기준으로 stub과 spy를 가장 빨리 가르는 질문표가 필요해
+- membership 조회 같은 입력값 고정 테스트와 notifier 호출 기록 테스트를 어떻게 다르게 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 첫 테스트에서 stub과 spy를 어떻게 가르는지 설명하는 beginner
+  primer다. 고정된 반환값만 필요할 때와 호출 흔적을 남겨야 할 때를 나누고,
+  값 중심 질문과 상호작용 중심 질문을 섞지 않게 어떤 test double을 고르면
+  되는지, notifier나 client 경계에서 spy가 왜 등장하는지 같은 학습자
+  표현을 입문용 판단 기준으로 연결한다.
+---
+
 # Stub vs Spy 첫 테스트 프라이머
 
 > 한 줄 요약: 첫 테스트에서 `고정된 반환값만 필요하면 stub`, `정말 호출됐는지 기록이 필요하면 spy`로 나누면 초심자도 `결과를 만드는 더블`과 `상호작용을 기록하는 더블`을 덜 헷갈린다.

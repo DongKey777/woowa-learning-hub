@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 브라우저 직접 호출 vs 서버 프록시 결정 트리
+concept_id: security/browser-direct-call-vs-server-proxy-decision-tree
+canonical: false
+category: security
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- secret-boundary-before-cors
+- browser-vs-server-credential-placement
+- bff-over-direct-api-call
+aliases:
+- 브라우저 직접 호출 vs 서버 프록시
+- 브라우저 직접 호출 vs 서버 대리 호출
+- cors 때문에 프론트에서 직접 호출
+- cors 때문에 bff
+- cors 때문에 proxy
+- api key browser or server
+- api key 프론트에 넣어도 되나
+- secret key 브라우저 금지
+- public key browser allowed
+- publishable key browser allowed
+- 서버 프록시 decision tree
+- bff decision tree
+- beginner api key cors
+- beginner browser proxy branch
+- 외부 api 직접 호출 여부
+symptoms:
+- CORS 에러 때문에 프론트에서 secret key로 직접 붙여야 할지 헷갈려요
+- 외부 API를 브라우저에서 바로 호출해도 되는지 판단이 안 서요
+- publishable key와 server secret을 같은 것으로 보고 있어요
+intents:
+- comparison
+- design
+prerequisites:
+- security/cors-basics
+- security/api-key-basics
+next_docs:
+- security/api-key-basics
+- security/api-key-vs-oauth-vs-client-credentials-primer
+- security/browser-bff-token-boundary-session-translation
+linked_paths:
+- contents/security/api-key-basics.md
+- contents/security/cors-basics.md
+- contents/security/oauth2-basics.md
+- contents/security/api-key-vs-oauth-vs-client-credentials-primer.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+confusable_with:
+- security/api-key-vs-oauth-vs-client-credentials-primer
+- security/browser-bff-token-boundary-session-translation
+- security/cors-basics
+forbidden_neighbors:
+- contents/security/cors-basics.md
+expected_queries:
+- OpenAI나 결제 API를 프론트에서 직접 부르면 왜 위험해?
+- CORS가 막혀도 서버 프록시로 가야 하는 기준을 알려줘
+- publishable key만 브라우저에 둬도 되는 이유를 초보자 기준으로 설명해줘
+- 사용자 데이터 읽는 외부 API는 API 키보다 OAuth를 먼저 봐야 하나요
+- BFF를 두는 이유가 CORS 때문인지 시크릿 경계 때문인지 헷갈려
+- 브라우저 직접 호출 가능 여부를 네 단계로 판단하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 브라우저가 외부 API를 바로 호출해도 되는지, CORS 문제와
+  secret 보관 경계를 분리해서 서버 프록시와 BFF와 publishable key 중
+  어디로 가야 하는지 결정하게 돕는 chooser다. 프론트에서 바로 붙여도
+  되나, 시크릿 키를 누가 들고 호출하나, 사용자 대신 읽는 API면 OAuth를
+  먼저 봐야 하나, CORS가 막혀도 서버로 보내야 하나 같은 자연어
+  paraphrase가 본 문서의 분기 기준에 매핑된다.
+---
 # 브라우저 직접 호출 vs 서버 프록시 결정 트리
 
 > 한 줄 요약: `CORS 때문에 프론트에서 직접 붙일까?`라는 질문은 보통 CORS 질문이 아니라 `누가 시크릿을 들고 외부 API를 호출해야 하나`라는 경계 질문이다.

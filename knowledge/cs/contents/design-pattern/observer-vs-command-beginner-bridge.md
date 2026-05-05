@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: '옵저버 vs 커맨드: 알림과 실행 요청을 가르는 비교 브리지'
+concept_id: design-pattern/observer-vs-command-beginner-bridge
+canonical: false
+category: design-pattern
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 85
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- event-vs-command-boundary
+- listener-vs-queue
+- async-means-event-misread
+aliases:
+- observer vs command
+- 옵저버 vs 커맨드
+- observer command difference
+- command vs observer intermediate
+- event notification vs command request
+- 무엇이 일어났는지 vs 무엇을 실행할지
+- observer or command first choice
+- listener vs command object
+- notify vs execute
+- fan-out notification vs queued request
+- event vs command naming
+- 언제 observer 언제 command
+- why observer not command
+- what is observer vs command
+- observer command review checklist
+symptoms:
+- 주문 완료 알림이랑 주문 취소 요청을 같은 메시지로 다뤄도 되는지 모르겠어요
+- 리스너로 퍼뜨리는 구조와 큐에 넣는 작업 요청이 자꾸 같은 걸로 보여요
+- 이벤트 이름을 붙였는데 사실 실행 명령처럼 읽혀서 리뷰에서 자주 걸려요
+intents:
+- comparison
+prerequisites:
+- design-pattern/observer-basics
+- design-pattern/command-pattern-basics
+next_docs:
+- design-pattern/event-vs-command-naming-primer
+- design-pattern/observer-pubsub-application-events
+- design-pattern/command-pattern-undo-queue
+linked_paths:
+- contents/design-pattern/observer-basics.md
+- contents/design-pattern/command-pattern-basics.md
+- contents/design-pattern/event-vs-command-naming-primer.md
+- contents/design-pattern/observer.md
+- contents/design-pattern/command-pattern-undo-queue.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing.md
+- contents/design-pattern/pattern-selection.md
+confusable_with:
+- design-pattern/event-vs-command-naming-primer
+- design-pattern/observer-pubsub-application-events
+forbidden_neighbors:
+- contents/design-pattern/observer-basics.md
+- contents/design-pattern/command-pattern-basics.md
+expected_queries:
+- 주문 완료 사실 알림이랑 주문 취소 실행 요청은 어떤 기준으로 나눠?
+- 리스너 fan-out 구조와 작업 큐 명령 객체를 리뷰에서 어떻게 구분해?
+- application event와 command message가 왜 같은 걸로 보면 안 돼?
+- 비동기라고 다 observer로 보면 안 되는 이유를 예시로 설명해줘
+- 포인트 적립 후속 작업은 알림 반응인지 실행 요청인지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 상태 변화에 반응자를 붙이는 구조와 작업 자체를 들고 다니는 요청 구조를 헷갈릴 때, 알림 중심과 실행 중심의 차이를 연결하는 bridge다. 여러 곳에 반응 알려주기, 나중에 처리할 작업 보내기, 리스너로 퍼뜨릴지 실행 객체로 둘지, 사실 전파와 작업 지시 구분, 반응 흐름과 요청 흐름 비교 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # 옵저버 vs 커맨드: 알림과 실행 요청을 가르는 비교 브리지
 
 > 한 줄 요약: 옵저버는 "무슨 일이 일어났는지 여러 반응자에게 알리는 구조"이고, 커맨드는 "무엇을 실행하라고 요청 자체를 들고 다니는 구조"다.

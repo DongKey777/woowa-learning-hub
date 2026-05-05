@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: 빌더 패턴 기초 (Builder Pattern Basics)
+concept_id: design-pattern/builder-pattern-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- builder-overuse
+- telescoping-constructor
+- request-dto-construction
+aliases:
+- builder pattern basics
+- 빌더 패턴 기초
+- 빌더 패턴이 뭔가요
+- builder pattern beginner
+- 생성자 인자 많을 때
+- 생성자 대신 빌더
+- lombok builder
+- 빌더 패턴 언제 쓰나
+- 객체 생성 빌더
+- telescoping constructor 문제
+- beginner builder
+- 빌더 패턴 예시
+- request dto builder
+- command builder
+- builder quick check
+symptoms:
+- 생성자 인자 순서를 자꾸 헷갈려
+- 선택 필드가 많아서 생성자가 너무 길어
+- 체이닝이면 다 builder인지 헷갈려
+intents:
+- definition
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+next_docs:
+- design-pattern/record-vs-builder-request-model-chooser
+- design-pattern/factory-vs-abstract-factory-vs-builder
+linked_paths:
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/factory-vs-abstract-factory-vs-builder.md
+- contents/design-pattern/record-vs-builder-request-model-chooser.md
+- contents/design-pattern/request-object-creation-vs-di-container.md
+- contents/language/java/java-generics-basics.md
+confusable_with:
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- design-pattern/record-vs-builder-request-model-chooser
+forbidden_neighbors: []
+expected_queries:
+- 필드 많은 객체는 언제 builder로 만들면 돼?
+- 선택값 많은 DTO를 만들 때 builder가 왜 편해?
+- 생성자 인자가 많을 때 읽기 쉬운 생성 방식 뭐야
+- build() 검증은 왜 builder에서 많이 해?
+- lombok 없이 builder를 이해하려면 어디부터 봐야 해?
+- 정적 팩토리 말고 builder를 써야 하는 기준이 뭐야
+contextual_chunk_prefix: |
+  이 문서는 객체 생성이 길어지고 선택 필드가 섞여서 생성자 인자 위치를 자꾸 헷갈리는 학습자가, 빌더 패턴이 언제 필요한지와 build 시점 검증으로 읽기 쉬운 생성 흐름을 어떻게 처음 잡는지 기초를 잡는다. 인자 자리 헷갈림, 긴 생성자 줄이기, 선택값 많은 DTO 조립, 메서드 체이닝이 다 빌더인가, 완성 전에 검증 모으기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 빌더 패턴 기초 (Builder Pattern Basics)
 
 > 한 줄 요약: 빌더 패턴은 생성자 인자가 많거나 선택적 필드가 섞일 때, 메서드 체이닝으로 읽기 쉽고 실수 없는 객체 생성 흐름을 만들어준다.

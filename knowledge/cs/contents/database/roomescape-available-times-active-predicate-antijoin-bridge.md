@@ -1,0 +1,108 @@
+---
+schema_version: 3
+title: roomescape 예약 가능 시간 조회 ↔ anti-join과 active predicate 브릿지
+concept_id: database/roomescape-available-times-active-predicate-antijoin-bridge
+canonical: false
+category: database
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: ko
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- available-times-query
+- left-join-filter
+- active-predicate
+aliases:
+- roomescape 예약 가능 시간 조회
+- roomescape available times query
+- 룸이스케이프 가능한 시간 조회 쿼리
+- 예약 가능 시간 left join
+- 예약된 시간 제외 조회
+symptoms:
+- roomescape에서 예약된 시간만 빼고 조회했는데 가능한 시간이 너무 적게 나와요
+- 취소된 예약은 무시하고 싶은데 LEFT JOIN 쿼리가 자꾸 INNER JOIN처럼 동작해요
+- 예약 가능 시간 조회는 됐는데 실제 예약 생성과 기준이 달라 보여요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- database/constraint-first-booking-primer
+- database/phantom-safe-booking-patterns-primer
+next_docs:
+- database/roomescape-reservation-concurrency-bridge
+- database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
+- database/phantom-safe-booking-patterns-primer
+linked_paths:
+- contents/database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide.md
+- contents/database/left-join-filter-placement-primer.md
+- contents/database/active-predicate-drift-reservation-arbitration.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/roomescape-reservation-concurrency-bridge.md
+- contents/database/roomescape-reservation-cancel-reschedule-active-predicate-bridge.md
+confusable_with:
+- database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide
+- database/roomescape-available-times-empty-cause-router
+- database/roomescape-reservation-create-read-after-write-bridge
+- database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
+forbidden_neighbors:
+- contents/database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide.md
+expected_queries:
+- roomescape 예약 가능 시간 조회에서 취소된 예약은 빼고 모든 시간은 남기려면 왜 조인 조건 위치가 중요해?
+- 가능한 시간 조회 쿼리에서 LEFT JOIN이 INNER JOIN처럼 줄어드는 이유가 뭐야?
+- 예약 가능 시간 API와 실제 중복 예약 방지 로직을 같은 걸로 보면 왜 위험해?
+- reviewer가 예약 상태 조건을 WHERE 말고 ON에 두라고 한 뜻이 뭐야?
+- roomescape available times query에서 active predicate를 어디에 맞춰야 해?
+- roomescape에서 방금 예약한 슬롯이 첫 재조회에만 계속 열려 보일 때 anti-join 버그인지 stale read인지 어떻게 갈라?
+contextual_chunk_prefix: |
+  이 문서는 Woowa roomescape 미션에서 예약 가능 시간 목록 API를 만들 때 learner가
+  예약된 시간을 제외하려고 LEFT JOIN, NOT EXISTS, status 조건을 섞다가 가능한
+  시간 자체가 사라지거나 취소된 예약이 계속 blocker로 남는 장면을 database 관점에서
+  설명하는 mission_bridge다. 가능한 시간 조회, canceled 예약 무시, left join이
+  inner join처럼 줄어듦, active predicate가 조회와 생성에서 다름, availability와
+  admission rule을 같은 것으로 보면 안 된다는 자연어 표현이 이 문서의 검색 표면이다.
+---
+
+# roomescape 예약 가능 시간 조회 ↔ anti-join과 active predicate 브릿지
+
+## 한 줄 요약
+
+roomescape 예약 가능 시간 조회는 "예약 row를 어떻게 저장하나"보다 "모든 시간 슬롯 중 blocker가 있는 것만 어떻게 제외하나"를 읽는 문제에 가깝다. 그래서 리뷰에서 `LEFT JOIN` 필터 위치, `NOT EXISTS`, 취소된 예약의 active predicate를 지적하는 말은 모두 availability query의 기준을 먼저 고정하라는 뜻이다.
+
+반대로 저장 직후 한 번만 이전 상태가 보이고 새로고침 뒤에는 맞아진다면, anti-join 의미보다 [roomescape 예약 생성 직후 재조회 ↔ Read-After-Write 브릿지](./roomescape-reservation-create-read-after-write-bridge.md) 쪽이 더 직접적일 수 있다. 이 문서는 blocker 정의가 틀렸을 때 어떤 오판이 생기는지에 초점을 둔다.
+
+## 미션 시나리오
+
+roomescape 미션에서 예약 생성 API를 만든 뒤에는 보통 "이 날짜에 예약 가능한 시간 목록"도 같이 보여 주고 싶어진다. 처음 구현할 때는 `reservation_time`을 기준으로 `reservation`을 `LEFT JOIN`하고, 예약이 없는 시간만 남기면 될 것처럼 보인다.
+
+그런데 여기서 초급자가 자주 막힌다. 취소된 예약은 가능 시간에서 빼면 안 되는데 `WHERE reservation.status <> 'CANCELED'`를 붙였다가 시간 슬롯 자체가 사라지고, 어떤 날짜는 가능한 시간이 하나도 안 나오기도 한다. 반대로 가능 시간 조회에서 보이던 슬롯이 실제 생성 시점에는 중복 예약으로 막혀 "조회와 저장 기준이 왜 다르냐"는 혼란도 생긴다.
+
+## CS concept 매핑
+
+roomescape의 가능 시간 조회는 CS 관점에서 `availability anti-join` 문제다. 핵심은 "왼쪽의 모든 후보 시간을 유지하면서", 그중 active blocker가 붙은 시간만 제외하는 것이다.
+
+| roomescape 장면 | 더 가까운 DB 개념 | 왜 그 개념으로 읽나 |
+| --- | --- | --- |
+| 모든 예약 시간을 먼저 펼쳐 놓고 예약된 것만 빼고 싶음 | anti-join, `NOT EXISTS` | 후보 집합을 유지한 채 blocker 존재 여부만 묻는 조회다 |
+| `LEFT JOIN reservation ... WHERE reservation.status <> 'CANCELED'`를 씀 | outer join filter placement | 오른쪽 조건을 `WHERE`에 두면 `NULL` 행까지 탈락해 결과가 줄어든다 |
+| 취소/만료 예약을 blocker에서 빼야 함 | active predicate | "어떤 status가 지금 시간을 막는가"를 조회와 저장이 같이 써야 한다 |
+| 가능 시간 조회는 통과했는데 생성은 중복 예약으로 실패함 | availability vs admission rule | 읽기 쿼리는 힌트일 뿐이고 최종 승자는 write-time arbitration이 정한다 |
+
+짧게 말하면, 가능 시간 조회는 "비어 있는 row를 찾는 쿼리"가 아니라 "모든 시간 슬롯 중 active blocker가 없는 슬롯을 남기는 쿼리"다. 그래서 `LEFT JOIN`의 오른쪽 필터 위치와 active predicate가 흐트러지면, learner는 시간 계산이 틀렸다고 느끼지만 실제 원인은 anti-join 의미가 무너진 경우가 많다.
+
+## 미션 PR 코멘트 패턴
+
+- "`LEFT JOIN`을 썼다면 오른쪽 예약 상태 조건을 `WHERE`가 아니라 `ON`부터 의심해 보세요."라는 코멘트는 가능한 시간 슬롯 자체를 지우지 말라는 뜻이다.
+- "취소된 예약을 제외하는 기준과 실제 중복 예약 검사 기준을 맞추세요."라는 코멘트는 조회용 active predicate와 저장용 blocker 정의가 같아야 한다는 뜻이다.
+- "가능 시간 조회는 UX용 힌트이고, 최종 중복 방지는 생성 쿼리/제약이 책임집니다."라는 코멘트는 availability query를 동시성 보호 장치로 오해하지 말라는 뜻이다.
+- "`NOT EXISTS`든 `LEFT JOIN ... IS NULL`이든 blocker를 어떻게 정의했는지가 더 중요합니다."라는 코멘트는 문법보다 active set 설계가 먼저라는 뜻이다.
+
+## 다음 학습
+
+- 예약 생성 시점 winner를 실제로 어떻게 가르는지 보려면 `같은 시간대 예약 동시 요청 — 락 vs 유니크 제약 vs 낙관적 락 결정`을 본다.
+- 취소, 만료, 변경 때문에 blocker 기준이 왜 흔들리는지 보려면 `roomescape 예약 변경/취소 ↔ active predicate와 상태 전이 브릿지`로 이어간다.
+- 가능 시간 조회와 저장 시점 중재를 왜 같은 것으로 보면 안 되는지 더 넓게 보려면 `Phantom-Safe Booking Patterns Primer`를 읽는다.
+- `LEFT JOIN`과 `NOT EXISTS` 중 어떤 문장이 왜 결과를 바꾸는지 SQL 감각부터 다지려면 `LEFT JOIN 필터 위치 입문서`를 먼저 훑는다.

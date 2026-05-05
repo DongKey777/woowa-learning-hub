@@ -12,18 +12,16 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-> - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
-> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
-> - [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
-> - [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
-> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
-> - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
-> - [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
-> - [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
+- [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+- [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
+- [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+- [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
+- [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
+- [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+- [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
+- [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
+- [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
 
 retrieval-anchor-keywords: conditionevaluationreport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, actuator conditions when to use, debug vs actuator conditions, when to use debug first, when to use actuator conditions first, @conditionalonmissingbean miss, existing bean found, user bean wins, boot default bean skipped
 

@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Java package와 import 경계 입문
+concept_id: language/java-package-import-boundary-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- import-does-not-change-access
+- top-level-file-name-rule
+- package-private-boundary
+aliases:
+- java package import basics
+- java package import beginner
+- package랑 import 차이
+- 자바 package 왜 쓰는지
+- 자바 import 왜 쓰는지
+- 자바 파일 두 개로 나눌 때
+- 처음 배우는데 package import
+- 처음 자바 package 헷갈림
+- 자바 package 큰 그림
+- package 선언 꼭 써야 하나요
+- public class 파일명 왜 같아야 해
+- 같은 패키지 import 안 해도 되나요
+- default package 왜 피하나요
+- beginner java package structure
+- what is java package import
+symptoms:
+- package랑 import가 각각 뭘 담당하는지 섞여
+- 같은 패키지인데 왜 import를 안 써도 되는지 모르겠어
+- public class 파일명 규칙이 package 개념이랑 따로 노는 것 같아
+intents:
+- definition
+prerequisites:
+- language/java-language-basics
+- language/java-types-class-object-oop-basics
+next_docs:
+- language/java-package-boundary-quickcheck-card
+- language/java-default-package-avoid-bridge
+- language/top-level-type-access-modifier-bridge
+- language/java-access-modifiers-member-model-basics
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-package-boundary-quickcheck-card.md
+- contents/language/java/java-default-package-avoid-bridge.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-module-system-runtime-boundaries.md
+confusable_with:
+- language/top-level-type-access-modifier-bridge
+- language/java-package-boundary-quickcheck-card
+forbidden_neighbors:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-package-boundary-quickcheck-card.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+expected_queries:
+- Java에서 package와 import를 처음 배울 때 큰 그림부터 설명해줘
+- 같은 패키지 클래스는 왜 import 없이도 참조되는지 예제로 보고 싶어
+- public top-level 타입 파일 이름 규칙이 package 구조와 어떻게 연결되는지 궁금해
+- default package를 피하라는 얘기 전에 package 경계 개념부터 잡고 싶어
+- import가 접근 권한까지 바꾸는 건지 초보자 기준으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 package를 단순 폴더 이름이 아니라
+  이름공간과 공개 경계로 보고, import는 이름을 줄여도 접근 권한은
+  바꾸지 않는다는 흐름을 처음 잡는 primer다. 파일을 둘로 나누는
+  순간부터, 같은 패키지는 왜 바로 보이나, import가 문을 열어 주는
+  건 아닌가, public 타입과 파일명은 왜 묶이나, helper를 어디에 둘까
+  같은 자연어 paraphrase가 본 문서의 큰 그림에 매핑된다.
+---
 # Java package와 import 경계 입문
 
 > 한 줄 요약: Java 입문자가 package를 단순 폴더 이름이 아니라 클래스 공개 범위를 나누는 경계로 이해하고, import와 top-level class/file 규칙까지 한 흐름으로 잡도록 돕는 primer다.

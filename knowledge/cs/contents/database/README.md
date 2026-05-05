@@ -15,7 +15,7 @@
 - [Language README의 beginner 복귀 사다리](../language/README.md#language-java-return-ladder)
 - [루트 README](../../README.md)
 
-retrieval-anchor-keywords: database readme, database navigator, database beginner route, database basics, database 처음 뭐부터, db 처음 어디부터, transactional save entity 헷갈려요, save 보이는데 sql 안 보여요, explain 처음인데 뭐부터 봐요, where 조건 하나인데 왜 느리죠, key = null 이 보여요, rows가 너무 커 보여요, using temporary 왜 보여요, group by 처음 헷갈려요, distinct 처음 헷갈려요, deadlock 은 나중에, what is database basics
+retrieval-anchor-keywords: database readme, database navigator, database beginner route, database basics, database 처음 뭐부터, db 처음 어디부터, transactional save entity 헷갈려요, save 보이는데 sql 안 보여요, explain 처음인데 뭐부터 봐요, where 조건 하나인데 왜 느리죠, key = null 이 보여요, rows가 너무 커 보여요, using temporary 왜 보여요, group by 처음 헷갈려요, distinct 처음 헷갈려요
 
 <a id="database-entry-handoff"></a>
 ## Spring -> Database handoff

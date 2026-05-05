@@ -14,11 +14,11 @@
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
+- [Subprocess Management in Spring Batch and Schedulers](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 - [operating-system 카테고리 인덱스](./README.md)
-
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: operating-system-00078, runtime shell option matrix, python shell true java processbuilder node child_process, shell option matrix, subprocess shell option comparison, python shell=true java processbuilder node exec spawn, language shell wrapper comparison, direct spawn vs shell wrapper matrix, runtime subprocess shell primer, child_process shell true mental model, node exec vs execfile vs spawn, processbuilder sh -c mental model, processbuilder no shell option, beginner handoff box, runtime shell option matrix basics
+retrieval-anchor-keywords: operating-system-00078, runtime shell option matrix, python shell true java processbuilder node child_process, shell option matrix, subprocess shell option comparison, python shell=true java processbuilder node exec spawn, language shell wrapper comparison, direct spawn vs shell wrapper matrix, runtime subprocess shell primer, child_process shell true mental model, node exec vs execfile vs spawn, processbuilder sh -c mental model, processbuilder no shell option, shell=true 뭐예요, 언제 shell wrapper를 써요
 
 ## 먼저 잡는 멘탈 모델
 

@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: 요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까
+concept_id: design-pattern/record-vs-builder-request-model-chooser
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- builder-overuse
+- request-model-construction
+- record-vs-builder-boundary
+aliases:
+- record vs builder request model
+- request dto record or builder
+- query object record or builder
+- request object static factory chooser
+- request dto constructor or builder
+- small dto stay record
+- when to use builder for request dto
+- when to use static factory for query object
+- beginner request model chooser
+- beginner dto creation guide
+- record vs builder beginner
+- request record builder static factory
+- query criteria builder or record
+- 요청 모델 record builder 선택
+- 요청 dto builder 언제 쓰나
+symptoms:
+- 요청 DTO마다 builder를 붙여야 하는지 모르겠어
+- record로 충분해 보이는데 정적 팩토리나 builder로 올리라는 리뷰를 받았어
+- 검색 조건 객체가 커질 때 생성자에서 builder로 넘어가는 기준이 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- design-pattern/builder-pattern-basics
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+next_docs:
+- design-pattern/query-object-search-criteria-pattern
+- design-pattern/builder-vs-fluent-mutation-smell
+- design-pattern/request-object-creation-vs-di-container
+linked_paths:
+- contents/design-pattern/request-object-creation-vs-di-container.md
+- contents/design-pattern/builder-pattern-basics.md
+- contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
+- contents/design-pattern/query-object-search-criteria-pattern.md
+- contents/design-pattern/builder-vs-fluent-mutation-smell.md
+confusable_with:
+- design-pattern/request-object-creation-vs-di-container
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- design-pattern/builder-pattern-basics
+forbidden_neighbors:
+- contents/design-pattern/request-object-creation-vs-di-container.md
+- contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
+expected_queries:
+- 요청 모델이 작은데 builder까지 붙여야 하는지 판단 기준이 뭐야?
+- record로 끝낼 DTO와 정적 팩토리로 올릴 DTO를 어떻게 나눠?
+- 검색 조건 객체가 커질 때 생성자 대신 builder를 쓰는 시점이 언제야?
+- request DTO에서 기본값 정규화가 생기면 builder 말고 어떤 선택지가 있어?
+- record, 정적 팩토리, builder를 요청 모델 기준으로 한 번에 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 요청 모델을 만들 때 작은 DTO는 record로 둘지, 이름 있는
+  정규화는 정적 팩토리로 올릴지, 선택 조합이 많을 때 builder를 쓸지
+  결정하게 돕는 chooser다. 작은 입력 묶음, 기본값 정리, 검색 조건 객체
+  커짐, null과 flag 증가, 호출부가 흐림, request와 query 모델 생성 기준
+  같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # 요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까
 
 > 한 줄 요약: 요청/조회 모델이 작고 뜻이 바로 보이면 `record`나 생성자로 두고, 이름 있는 정규화가 필요하면 정적 팩토리로 올리고, 선택 조합이 많아 호출부가 흐려지면 builder를 쓴다.

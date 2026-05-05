@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: Spring Security Filter Chain
+title: "Spring Security Filter Chain: 보안 검사를 어떤 순서로 줄세워 요청마다 통과시키나"
 concept_id: spring/spring-security-filter-chain
 canonical: false
 category: spring
@@ -34,8 +34,9 @@ contextual_chunk_prefix: |
   이 문서는 보안 검사를 어떤 순서로 줄세워서 요청마다 통과시키는지, Spring
   Security filter chain의 인증 → 인가 → 예외 변환 흐름을 학습자가 깊이
   이해하는 deep_dive다. 보안 검사 순서, 어떤 검사 먼저, 요청마다 통과
-  시키는 흐름, filter chain order, ExceptionTranslationFilter 같은 자연어
-  paraphrase가 본 문서의 핵심 메커니즘에 매핑된다.
+  시키는 흐름, 보안 검사를 어떤 순서로 줄세워서 요청마다 통과시키는지,
+  filter chain order, ExceptionTranslationFilter 같은 자연어 paraphrase가
+  본 문서의 핵심 메커니즘에 매핑된다.
 ---
 
 # Spring Security Filter Chain

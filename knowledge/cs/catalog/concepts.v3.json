@@ -38607,26 +38607,48 @@
       "symptoms": []
     },
     "software-engineering/data-migration-rehearsal-reconciliation-cutover": {
-      "aliases": [],
-      "canonical": false,
-      "category": null,
+      "aliases": [
+        "data migration rehearsal",
+        "migration reconciliation",
+        "migration cutover",
+        "backfill validation",
+        "rollback window for migration"
+      ],
+      "canonical": true,
+      "category": "software-engineering",
       "concept_id": "software-engineering/data-migration-rehearsal-reconciliation-cutover",
       "confusable_with": [],
       "doc_path": "software-engineering/data-migration-rehearsal-reconciliation-cutover.md",
-      "doc_role": null,
-      "expected_queries": [],
+      "doc_role": "playbook",
+      "expected_queries": [
+        "데이터 마이그레이션 cutover 전에 뭘 검증해야 해?",
+        "reconciliation은 정확히 뭘 맞추는 거야?",
+        "backfill 끝나면 바로 cutover해도 돼?",
+        "데이터 전환에서 rollback이 왜 어려워?"
+      ],
       "forbidden_neighbors": [],
       "has_frontmatter": false,
-      "intents": [],
-      "language": null,
-      "level": null,
-      "linked_paths": [],
+      "intents": [
+        "troubleshooting",
+        "design"
+      ],
+      "language": "mixed",
+      "level": "advanced",
+      "linked_paths": [
+        "contents/software-engineering/strangler-fig-migration-contract-cutover.md",
+        "contents/software-engineering/migration-scorecards.md",
+        "contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md",
+        "contents/database/cdc-debezium-outbox-binlog.md"
+      ],
       "mission_ids": [],
       "next_docs": [],
       "prerequisites": [],
       "review_feedback_tags": [],
-      "source_priority": null,
-      "symptoms": []
+      "source_priority": 85,
+      "symptoms": [
+        "backfill은 끝났는데 바로 전환해도 되는지 모르겠다",
+        "rollback이 된다고 하는데 데이터가 이미 바뀌어서 불안하다"
+      ]
     },
     "software-engineering/datajpatest-db-difference-checklist": {
       "aliases": [],
@@ -38842,26 +38864,48 @@
       "symptoms": []
     },
     "software-engineering/deployment-rollout-rollback-canary-blue-green": {
-      "aliases": [],
-      "canonical": false,
-      "category": null,
+      "aliases": [
+        "deployment rollout strategy",
+        "canary deployment",
+        "blue green deployment",
+        "rolling deployment",
+        "rollback strategy"
+      ],
+      "canonical": true,
+      "category": "software-engineering",
       "concept_id": "software-engineering/deployment-rollout-rollback-canary-blue-green",
       "confusable_with": [],
       "doc_path": "software-engineering/deployment-rollout-rollback-canary-blue-green.md",
-      "doc_role": null,
-      "expected_queries": [],
+      "doc_role": "bridge",
+      "expected_queries": [
+        "canary랑 blue-green은 뭐가 달라?",
+        "rolling 배포와 canary는 언제 다르게 써?",
+        "롤백이 쉬운 배포 전략은 뭐야?",
+        "deploy와 release를 왜 나눠서 말해?"
+      ],
       "forbidden_neighbors": [],
       "has_frontmatter": false,
-      "intents": [],
-      "language": null,
-      "level": null,
-      "linked_paths": [],
+      "intents": [
+        "definition",
+        "comparison"
+      ],
+      "language": "mixed",
+      "level": "intermediate",
+      "linked_paths": [
+        "contents/software-engineering/backend-delivery-observability-foundations-primer.md",
+        "contents/software-engineering/rollout-approval-workflow.md",
+        "contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md",
+        "contents/system-design/traffic-shadowing-progressive-cutover-design.md"
+      ],
       "mission_ids": [],
       "next_docs": [],
       "prerequisites": [],
       "review_feedback_tags": [],
-      "source_priority": null,
-      "symptoms": []
+      "source_priority": 90,
+      "symptoms": [
+        "canary와 blue-green 차이가 헷갈린다",
+        "배포는 했는데 release를 왜 따로 말하는지 모르겠다"
+      ]
     },
     "software-engineering/deprecation-communication-playbook": {
       "aliases": [],
@@ -41984,26 +42028,48 @@
       "symptoms": []
     },
     "software-engineering/strangler-fig-migration-contract-cutover": {
-      "aliases": [],
-      "canonical": false,
-      "category": null,
+      "aliases": [
+        "strangler fig migration",
+        "strangler cutover",
+        "legacy strangler pattern",
+        "migration shadow traffic",
+        "dual write cutover"
+      ],
+      "canonical": true,
+      "category": "software-engineering",
       "concept_id": "software-engineering/strangler-fig-migration-contract-cutover",
       "confusable_with": [],
       "doc_path": "software-engineering/strangler-fig-migration-contract-cutover.md",
-      "doc_role": null,
-      "expected_queries": [],
+      "doc_role": "deep-dive",
+      "expected_queries": [
+        "strangler fig 패턴으로 레거시를 어떻게 점진 전환해?",
+        "shadow traffic은 cutover 전에 왜 써?",
+        "dual write 없이 마이그레이션하려면 뭘 봐야 해?",
+        "레거시 전환에서 rollback 경로는 어떻게 설계해?"
+      ],
       "forbidden_neighbors": [],
       "has_frontmatter": false,
-      "intents": [],
-      "language": null,
-      "level": null,
-      "linked_paths": [],
+      "intents": [
+        "design",
+        "comparison"
+      ],
+      "language": "mixed",
+      "level": "advanced",
+      "linked_paths": [
+        "contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md",
+        "contents/software-engineering/migration-wave-governance-decision-rights.md",
+        "contents/database/cdc-debezium-outbox-binlog.md",
+        "contents/system-design/workflow-orchestration-saga-design.md"
+      ],
       "mission_ids": [],
       "next_docs": [],
       "prerequisites": [],
       "review_feedback_tags": [],
-      "source_priority": null,
-      "symptoms": []
+      "source_priority": 85,
+      "symptoms": [
+        "레거시를 한 번에 못 바꾸는데 어디서부터 잘라야 할지 모르겠다",
+        "shadow traffic과 dual write 중 뭘 먼저 검토해야 할지 헷갈린다"
+      ]
     },
     "software-engineering/strangler-verification-shadow-traffic-metrics": {
       "aliases": [],

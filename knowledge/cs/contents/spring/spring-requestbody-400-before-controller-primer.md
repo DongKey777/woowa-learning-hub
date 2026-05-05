@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유 프라이머
+concept_id: spring/requestbody-400-before-controller-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- requestbody-pre-controller-400
+- message-conversion-first-split
+- bindingresult-boundary
+aliases:
+- spring requestbody pre-controller 400
+- requestbody 400 before controller
+- controller log missing requestbody 400
+- json parse error spring
+- requestbody empty body 400 spring
+- dto conversion failure 400 spring
+- requestbody 400 vs 415 first split
+- message conversion failure spring
+- httpmessagenotreadableexception requestbody
+- pre-validation 400 requestbody
+symptoms:
+- 컨트롤러 첫 줄 로그가 안 찍히는데 POST 요청이 바로 400으로 끝나요
+- '@Valid를 붙였는데도 validation 메시지 대신 JSON parse error만 보여요'
+- BindingResult를 붙여도 body 파싱 실패는 왜 못 잡는지 헷갈려요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- spring/modelattribute-vs-requestbody-binding-primer
+- spring/spring-mvc-request-lifecycle-basics
+next_docs:
+- spring/valid-400-vs-message-conversion-400-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/requestbody-415-unsupported-media-type-primer
+linked_paths:
+- contents/spring/spring-valid-400-vs-message-conversion-400-primer.md
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/spring-localdate-localtime-json-400-cheatsheet.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/network/http-request-response-headers-basics.md
+confusable_with:
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/valid-400-vs-message-conversion-400-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/controller-not-hit-cause-router
+- spring/json-request-400-cause-router
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 @RequestBody 요청이 컨트롤러 전에 400이면 어디부터 봐야 해?
+- JSON parse error가 보일 때 @Valid가 왜 안 타는지 설명해줘
+- BindingResult가 있는데도 body 파싱 실패를 못 잡는 이유가 뭐야?
+- requestbody 400과 415를 처음 어떻게 나눠 봐야 해?
+- roomescape나 blackjack 미션에서 컨트롤러 로그가 안 찍히는 POST 400은 무슨 단계 문제야?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 `@RequestBody` 요청에서 컨트롤러 로그가 안
+  찍히고 `400`이 먼저 나갈 때, 문제를 service나 validation으로 바로
+  오인하지 않도록 message conversion 단계부터 보게 만드는 primer다.
+  `JSON parse error`, `@Valid 전에 400`, `BindingResult가 못 잡는다`,
+  roomescape/baseball/blackjack 미션의 POST 요청 디버깅 같은 자연어 질문이
+  이 문서의 핵심 검색 표면이다.
+---
 # Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리
 
 > 한 줄 요약: README 첫 증상표의 `컨트롤러 로그 안 찍힘`, `@RequestBody인데 컨트롤러 전에 400이 나요`, `JSON parse error가 보여요`, `body를 안 보냈는데 왜 BindingResult도 못 타요?`는 `Content-Type`보다 먼저 Spring의 body 값 해석 / DTO 변환 단계에서 **DTO 변환 실패**가 났는지부터 보게 하는 entrypoint다.

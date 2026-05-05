@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Process, Thread, Virtual Memory, Context Switch, Scheduler Basics
+concept_id: operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- process-vs-thread-boundary
+- runnable-vs-blocked-state
+aliases:
+- process vs thread
+- stack vs heap
+- virtual memory basics
+- context switch basics
+- scheduler basics
+- what is process thread memory
+- address space basics
+- rss vs vsz
+- running ready blocked example
+- ready vs runnable difference
+- sleeping vs blocked difference
+- ready runnable sleeping 헷갈려요
+- 운영체제 처음
+- 왜 context switch 느려요
+- when scheduler runs
+symptoms:
+- 프로세스, 스레드, 가상 메모리, 스케줄러가 한꺼번에 섞여서 어디서부터 정리해야 할지 모르겠어요
+- stack, heap, RSS, VSZ를 같이 보는데 각각이 무슨 층의 개념인지 헷갈려요
+- context switch가 느리다는 말이 나오면 스케줄링 문제인지 메모리 문제인지 감이 안 와요
+intents:
+- definition
+prerequisites:
+- operating-system/process-thread-basics
+- operating-system/syscall-basics
+next_docs:
+- operating-system/cpu-scheduling-basics
+- operating-system/memory-management-basics
+- operating-system/process-thread-memory-state-classification-practice-drill
+linked_paths:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/syscall-basics.md
+- contents/operating-system/memory-management-basics.md
+- contents/operating-system/demand-paging-page-fault-primer.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/process-thread-memory-state-classification-practice-drill.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+- contents/operating-system/page-table-overhead-memory-footprint.md
+confusable_with:
+- operating-system/process-thread-basics
+- operating-system/cpu-scheduling-basics
+- operating-system/memory-management-basics
+forbidden_neighbors: []
+expected_queries:
+- 운영체제 입문에서 프로세스와 스레드, 가상 메모리, 스케줄러를 한 장으로 다시 묶어 설명해줘
+- stack/heap, runnable/blocked, 주소 공간 개념이 같이 헷갈릴 때 먼저 읽을 문서가 필요해
+- context switch가 무슨 전환인지 큰 그림부터 잡고 싶은데 어디서 시작하면 돼?
+- RSS와 VSZ가 왜 나오고 프로세스 자원 경계가 무엇인지 초보자 기준으로 정리해줘
+- 운영체제 기본 용어를 CPU, 메모리, 실행 단위 관점으로 한 번에 연결해주는 입문 글이 필요해
+contextual_chunk_prefix: |
+  이 문서는 운영체제 입문자가 프로세스와 스레드의 경계, 가상 메모리, context switch, scheduler를 한 흐름으로 다시 연결해 큰 그림을 처음 잡는 primer다. 실행 단위와 보호 경계, stack과 heap의 자리, runnable과 blocked 구분, CPU 넘겨주기 비용, 메모리와 스케줄링이 어디서 갈라지는지 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Process, Thread, Virtual Memory, Context Switch, Scheduler Basics
 
 > 한 줄 요약: 프로세스는 자원과 보호 경계이고, 스레드는 그 안에서 CPU에 스케줄되는 실행 흐름이며, 가상 메모리와 스케줄러가 둘을 실제로 움직이게 만든다.

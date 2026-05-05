@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Phantom-Safe Booking Patterns Primer
+concept_id: database/phantom-safe-booking-patterns-primer
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- phantom-safe-booking-choice
+- overlap-write-time-arbitration
+- booking-read-then-insert-risk
+aliases:
+- phantom safe booking patterns
+- phantom-safe booking primer
+- booking overlap primer
+- unique slot exclusion guard row
+- booking overlap write time arbitration
+- read then insert booking race
+- 예약 phantom safe 뭐로 시작해
+- booking overlap pattern chooser
+intents:
+- definition
+- comparison
+- design
+symptoms:
+- 겹침 조회 후 insert 하는 예약 코드가 왜 샐 수 있는지 감이 안 온다
+- unique slot, exclusion constraint, guard row 중 무엇이 phantom-safe한지 한 번에 비교하고 싶다
+- booking overlap 설계를 할 때 read-then-insert 대신 write-time arbitration으로 바꾸는 기준이 필요하다
+prerequisites:
+- database/constraint-first-booking-primer
+- database/transaction-basics
+next_docs:
+- database/exclusion-constraint-overlap-case-studies
+- database/guard-row-scope-design-multi-day-bookings
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+linked_paths:
+- contents/database/constraint-first-booking-primer.md
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/hot-path-slot-arbitration-choices.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/slotization-precheck-overlap-rounding-dst.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+confusable_with:
+- database/constraint-first-booking-primer
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/overlapping-bookings-both-succeed-symptom-router
+forbidden_neighbors:
+- contents/database/roomescape-reservation-concurrency-bridge.md
+expected_queries:
+- booking overlap check를 phantom-safe하게 만들려면 뭐부터 골라?
+- 예약 겹침에서 read then insert가 왜 위험하고 unique slot, exclusion, guard row는 어떻게 갈라져?
+- unique slot, exclusion constraint, guard row를 write-time arbitration 기준으로 비교해줘
+- double booking 방지를 phantom-safe하게 만들 때 어떤 패턴이 후보야?
+- 예약 overlap에서 조회 결과를 믿지 말라는 게 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 booking overlap check를 phantom-safe하게 만들기 위해 read-then-insert
+  흐름을 버리고 unique-slot, exclusion constraint, guard row 중 어떤 write-time
+  arbitration surface를 골라야 하는지 설명하는 intermediate primer다. booking
+  overlap primer, phantom-safe booking, read then insert 위험, unique slot vs
+  exclusion vs guard row, double booking prevention pattern 같은 자연어 질의가
+  본 문서의 비교 구조로 바로 매핑되도록 설계됐다.
+---
+
 # Phantom-Safe Booking Patterns Primer
 
 > 한 줄 요약: booking overlap check를 phantom-safe하게 만들려면 "빈 시간대인지 조회"를 버리고, `unique-slot`, exclusion constraint, guard row 중 하나를 write-time arbitration surface로 선택해야 한다.

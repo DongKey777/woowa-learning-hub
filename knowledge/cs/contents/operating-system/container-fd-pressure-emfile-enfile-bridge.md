@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: 'Container FD Pressure Bridge: `EMFILE`, `ENFILE`, Host vs Container'
+concept_id: operating-system/container-fd-pressure-emfile-enfile-bridge
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- emfile-vs-enfile
+- host-vs-container-resource-scope
+aliases:
+- qa-content-operating-system-00039
+- container fd pressure bridge
+- container fd limit confusion
+- emfile vs enfile container
+- host vs container fd pressure
+- container too many open files host looks fine
+- host file-nr container fd
+- file-max in container setup
+- rlimit_nofile container beginner
+- file-nr beginner bridge
+- pod fd looks normal but host file table full
+- per-process fd limit vs host file table
+- 처음 fd 에러 뭐부터 봐요
+- 왜 컨테이너만 멀쩡해 보여요
+- container fd visibility confusion
+symptoms:
+- 컨테이너 안 fd 수는 낮은데 too many open files가 나요
+- pod에서는 멀쩡해 보이는데 노드 전체 fd가 찼다는 말이 헷갈려요
+- EMFILE랑 ENFILE을 언제 다르게 의심해야 하나요
+intents:
+- comparison
+prerequisites:
+- operating-system/file-descriptor-basics
+next_docs:
+- operating-system/fd-exhaustion-ulimit-diagnostics
+- operating-system/rlimit-nofile-nproc-governance
+linked_paths:
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/beginner-triage-quick-check-snippet-pack.md
+- contents/operating-system/fd-exhaustion-ulimit-diagnostics.md
+- contents/operating-system/rlimit-nofile-nproc-governance.md
+- contents/operating-system/container-cgroup-namespace.md
+confusable_with:
+- operating-system/fd-exhaustion-ulimit-diagnostics
+- operating-system/container-cgroup-namespace
+forbidden_neighbors:
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/file-descriptor-basics.md
+expected_queries:
+- 컨테이너에서 too many open files가 뜨는데 호스트 fd랑 같이 봐야 해?
+- 내 프로세스 fd는 적은데 ENFILE이 나는 상황을 처음 설명해줘
+- pod 안에서는 괜찮아 보이는데 node file-nr이 높으면 무슨 뜻이야?
+- EMFILE과 ENFILE을 컨테이너 환경에서 어떻게 구분해?
+- 컨테이너 fd 문제를 볼 때 ulimit이랑 file-max 중 뭐부터 봐?
+contextual_chunk_prefix: |
+  이 문서는 운영체제 입문자가 컨테이너 안 숫자는 괜찮아 보이는데 왜 too many open files가 나는지, 프로세스 로컬 한도와 호스트 전역 fd pressure를 연결해 처음 혼동을 줄이는 bridge다. pod 안 fd는 적은데 실패, 노드 전체 file-nr 압박, 내 ulimit은 남았는데 에러, EMFILE과 ENFILE 구분, 컨테이너만 보면 안 보이는 전역 한도 같은 자연어 paraphrase가 본 문서의 판단 축에 매핑된다.
+---
 # Container FD Pressure Bridge: `EMFILE`, `ENFILE`, Host vs Container
 
 > 한 줄 요약: 컨테이너 안 숫자가 멀쩡해 보여도, fd는 일부가 프로세스 로컬 한도이고 일부는 호스트 공유 풀이어서 `EMFILE`과 `ENFILE`를 다른 층으로 봐야 덜 헷갈린다.

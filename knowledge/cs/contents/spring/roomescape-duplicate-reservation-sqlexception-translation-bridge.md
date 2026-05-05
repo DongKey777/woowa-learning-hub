@@ -1,0 +1,102 @@
+---
+schema_version: 3
+title: roomescape 중복 예약 충돌 ↔ Spring SQLException 번역 브릿지
+concept_id: spring/roomescape-duplicate-reservation-sqlexception-translation-bridge
+canonical: false
+category: spring
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: ko
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- duplicate-key-to-conflict
+- sqlexception-translation
+- jdbc-conflict-mapping
+aliases:
+- roomescape 중복 예약 예외 번역
+- roomescape DuplicateKeyException
+- roomescape DataIntegrityViolationException
+- 룸이스케이프 예약 충돌 409 매핑
+- roomescape JdbcTemplate 예외 처리
+symptoms:
+- roomescape에서 같은 시간 예약이 겹치면 SQLException을 그대로 던져도 되는지 모르겠어요
+- DuplicateKeyException이 났는데 이걸 409로 바꿔야 하는지 service에서 잡아야 하는지 헷갈려요
+- reviewer가 에러 문자열 비교 말고 Spring 예외 번역 계층을 쓰라고 했어요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- database/roomescape-reservation-concurrency-bridge
+- spring/spring-jdbctemplate-sqlexception-translation
+- spring/roomescape-reservation-request-validation-binding-bridge
+next_docs:
+- database/roomescape-reservation-concurrency-bridge
+- spring/spring-jdbctemplate-sqlexception-translation
+- spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
+- software-engineering/http-409-vs-422-selection-guide
+linked_paths:
+- contents/database/roomescape-reservation-concurrency-bridge.md
+- contents/spring/spring-jdbctemplate-sqlexception-translation.md
+- contents/spring/spring-roomescape-validation-400-vs-business-conflict-409-primer.md
+- contents/software-engineering/http-409-vs-422-selection-guide.md
+confusable_with:
+- database/roomescape-reservation-concurrency-bridge
+- spring/spring-jdbctemplate-sqlexception-translation
+- spring/roomescape-transactional-boundary-bridge
+- spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
+forbidden_neighbors: []
+expected_queries:
+- roomescape에서 같은 시간 예약이 유니크 제약에 걸리면 왜 SQLException 문자열보다 Spring 예외 타입으로 처리하라는 거야?
+- 예약 중복이 났을 때 DuplicateKeyException을 바로 controller까지 올리고 409로 바꾸는 흐름을 roomescape 예시로 설명해줘
+- reviewer가 DataIntegrityViolationException을 도메인 충돌로 번역하라고 한 뜻이 뭐야?
+- roomescape 예약 API가 중복 슬롯에서 500이 아니라 409가 되게 하려면 어느 계층에서 예외를 바꿔야 해?
+- JdbcTemplate로 roomescape 예약 저장할 때 duplicate entry 메시지 비교를 피해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa roomescape 미션에서 같은 날짜와 시간 슬롯 예약이 동시에 들어와
+  유니크 제약에 걸렸을 때 learner가 SQLException 문자열 비교, 500 응답, 예외 삼키기
+  사이에서 흔들리는 장면을 Spring 예외 번역 관점으로 연결하는 mission_bridge다.
+  DuplicateKeyException, DataIntegrityViolationException, roomescape 예약 충돌 409,
+  JdbcTemplate 저장 실패를 도메인 conflict로 번역하는 계층 경계가 이 문서의 핵심
+  검색 표면이다.
+---
+
+# roomescape 중복 예약 충돌 ↔ Spring SQLException 번역 브릿지
+
+## 한 줄 요약
+
+> roomescape에서 같은 시간 예약이 유니크 제약에 걸릴 때 핵심은 DB 메시지 문구를 읽는 것이 아니라, Spring이 그 실패를 `DuplicateKeyException`이나 `DataIntegrityViolationException`으로 번역한 뒤 "이미 선점된 슬롯"이라는 도메인 충돌과 HTTP `409`로 이어 주는 것이다.
+
+## 미션 시나리오
+
+roomescape 관리자 예약 생성 단계에서 학습자는 보통 `(date, time_id)` 유니크 제약을 먼저 추가한다. 그다음 같은 슬롯에 두 요청이 겹치면 저장은 하나만 성공하고 다른 하나는 DB 예외로 끝난다. 여기서 흔한 첫 구현은 repository에서 `SQLException` 문자열에 `Duplicate entry`가 들어 있는지 비교하거나, 아예 `catch (Exception)`으로 삼켜 `false`를 반환하는 방식이다.
+
+리뷰에서 "문자열 비교 대신 Spring 예외 번역 계층을 타라"는 말이 나오는 이유는 roomescape의 핵심 질문이 "MySQL 문구가 무엇이냐"가 아니라 "이 실패가 입력 형식 오류인가, 현재 슬롯 충돌인가"이기 때문이다. 중복 예약은 `400` 성격이 아니라 현재 상태 충돌이므로, 저장 계층의 raw 실패를 도메인 충돌로 번역해 두어야 controller와 advice가 `409` 의미를 안정적으로 유지할 수 있다.
+
+## CS concept 매핑
+
+| roomescape 장면 | 더 가까운 Spring/DB 개념 | 왜 그 개념으로 읽나 |
+| --- | --- | --- |
+| 같은 날짜와 시간으로 두 번째 `INSERT`가 실패함 | unique constraint + exception translation | DB가 중복을 막고, Spring이 벤더 예외를 의미 있는 타입으로 올린다 |
+| `"Duplicate entry"` 문자열로 분기함 | vendor leak | MySQL 문구에 묶이면 JDBC 드라이버나 DB가 바뀔 때 규칙도 같이 흔들린다 |
+| controller가 그대로 `500`을 응답함 | conflict mapping gap | 저장 실패는 일어났지만 API가 그것을 "이미 예약됨"으로 번역하지 못한 상태다 |
+| repository가 `false`만 반환함 | signal loss | 상위 계층이 `409`, 재시도, 로깅 정책을 붙일 단서를 잃는다 |
+
+짧게 말하면 roomescape에서 중복 예약은 동시성 제어 자체와, 그 제어 실패를 어떤 언어로 바깥 계층에 전달할지를 함께 봐야 한다. 유니크 제약이 DB 쪽의 진실이라면, Spring 예외 번역은 그 진실을 애플리케이션이 이해할 수 있는 신호로 바꾸는 경계다.
+
+## 미션 PR 코멘트 패턴
+
+- "`SQLException` 메시지 문자열로 분기하지 말고 `DataAccessException` 계층을 타세요."라는 코멘트는 벤더 문구가 아니라 의미 기반 예외로 읽으라는 뜻이다.
+- "중복 슬롯은 validation 실패가 아니라 conflict입니다."라는 코멘트는 `400` 입력 오류와 `409` 현재 상태 충돌을 나누라는 뜻이다.
+- "repository가 `false`를 반환하면 왜 실패했는지 사라집니다."라는 코멘트는 예외 신호를 너무 일찍 지우지 말라는 뜻이다.
+- "`DuplicateKeyException`을 도메인 예외로 감싸 두면 controller가 비즈니스 문장으로 응답하기 쉬워집니다."라는 코멘트는 저장 계층과 API 계약 사이에 번역 단계를 두라는 의미다.
+
+## 다음 학습
+
+- roomescape에서 왜 유니크 제약이 먼저 답이 되는지 다시 보려면 `같은 시간대 예약 동시 요청 — 락 vs 유니크 제약 vs 낙관적 락 결정`을 본다.
+- Spring이 `SQLException`을 어떤 타입으로 번역하는지 일반 개념을 보려면 `Spring JdbcTemplate and SQLException Translation`으로 이어간다.
+- 이 충돌을 `400`이 아니라 `409`로 읽는 감각을 더 또렷하게 잡으려면 `Spring RoomEscape validation 400 vs business conflict 409 분리 primer`를 본다.
+- `409`와 `422`를 더 넓은 HTTP 계약 관점에서 비교하려면 `409 vs 422 선택 기준 짧은 가이드`를 읽는다.

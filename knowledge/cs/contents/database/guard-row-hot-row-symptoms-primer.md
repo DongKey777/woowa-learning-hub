@@ -19,7 +19,7 @@
 - [Database + System Design 브리지 맵](../../rag/cross-domain-bridge-map.md#database--system-design)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: guard row hotspot, guard row hot row, hot row symptoms primer, guard row contention beginner, hot key guard row, guard row lock wait, sku_id contention log, coupon_id contention log, same key wait metrics, same key repeated query, guard row 처음 배우는데, hot row 뭐예요, guard row vs slot row, when to stripe guard row, when to shard counter
+retrieval-anchor-keywords: guard row hotspot, guard row hot row, hot row symptoms primer, guard row contention beginner, hot key guard row, guard row lock wait, sku_id contention log, coupon_id contention log, same key wait metrics, 재고는 있는데 timeout이 나요, 같은 날짜 예약만 느려요, 서버를 늘려도 처리량이 안 올라요, guard row 처음 배우는데, hot row 뭐예요, guard row vs slot row
 
 ## 핵심 개념
 
@@ -55,6 +55,8 @@ retrieval-anchor-keywords: guard row hotspot, guard row hot row, hot row symptom
 | 앱 인스턴스를 늘려도 처리량이 거의 안 오른다 | DB 한 row가 직렬화 상한이 되고 있다 | single guard row가 throughput ceiling을 만들고 있지 않나 |
 | create뿐 아니라 cancel, expire, admin fix도 같은 row를 두드린다 | lifecycle 전부가 하나의 gate를 공유한다 | guard scope가 너무 넓은가, ledger/fence 분리가 필요한가 |
 | write는 매우 뜨거운데 total read는 상대적으로 덜 뜨겁다 | write fan-in이 문제고 read fan-in은 감당 가능할 수 있다 | counter sharding이나 ledger projection으로 옮길 여지가 있나 |
+| `재고는 있는데 timeout이 나요`처럼 sold-out보다 wait 에러가 먼저 기억난다 | business reject보다 same-key 대기열 비용이 더 앞에 드러난다 | 정말 같은 `sku_id`/`room_type_id + stay_day`가 반복되는지부터 묶어 볼 수 있나 |
+| `같은 날짜 예약만 느려요`, `같은 상품만 유독 막혀요`처럼 특정 key 증상이 선명하다 | DB 전체 슬로우보다 hot key contention일 가능성이 높다 | 문제 key를 더 작은 exact key로 내리거나 stripe 후보로 볼 수 있나 |
 
 ## guard row가 hot row가 될 때 자주 보이는 장면
 

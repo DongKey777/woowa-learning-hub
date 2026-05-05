@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Java Array Equality Basics
+concept_id: language/java-array-equality-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- array-equals-vs-arrays-equals
+- nested-array-deep-equals
+- array-alias-vs-value-comparison
+aliases:
+- java array equality basics
+- java array == vs arrays.equals
+- java array equals false why
+- java array same value but false
+- java array identity vs equality
+- java arrays.equals when to use
+- java arrays.deepequals when to use
+- java 2d array comparison basics
+- 자바 배열 비교 기초
+- 배열 == 값 비교 차이
+- 배열 equals 왜 false
+- 배열 비교 처음 배우는데
+- arrays.equals 뭐예요
+- arrays.deepequals 언제 써요
+- 배열 같이 바뀌면 equals 문제인가요
+symptoms:
+- 값은 같은데 배열 비교 결과가 false라서 어디서 잘못 본 건지 모르겠어
+- 2차원 배열을 비교했는데 Arrays.equals를 써도 기대한 값 비교가 안 돼
+- ==, array.equals, Arrays.equals 중 무엇이 같은 배열이고 무엇이 같은 값인지 자꾸 섞여
+intents:
+- definition
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-array-common-confusion-checklist
+next_docs:
+- language/java-array-copy-clone-basics
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+- language/java-arrays-method-choice-30-second-card
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/java-arrays-method-choice-30-second-card.md
+- contents/language/java/java-2d-array-deeptostring-deepequals-shallow-copy-bridge.md
+confusable_with:
+- language/java-array-copy-clone-basics
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java 배열에서 == 와 Arrays.equals 차이를 처음부터 설명해줘
+- 값이 같은 배열인데 equals가 false로 나오는 이유를 알고 싶어
+- 2차원 배열 비교할 때 Arrays.equals 말고 무엇을 써야 하는지 헷갈려
+- array.equals와 Arrays.equals가 왜 다르게 동작하는지 초보자 예제로 보고 싶어
+- 배열 비교가 identity 질문인지 value 질문인지 구분하는 기준이 필요해
+- 중첩 배열 값 비교에서 Arrays.deepEquals를 언제 쓰는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 배열 비교에서 같은 객체를 묻는지 같은 값을
+  묻는지 먼저 나누고, 1차원과 중첩 배열에 따라 `==`,
+  `Arrays.equals(...)`, `Arrays.deepEquals(...)`를 어떻게 고를지
+  기초를 잡는 primer다. 값은 같은데 false, 배열 equals가 왜 값 비교가
+  아니지, 2차원 배열 비교, 한쪽을 바꾸면 같이 변함, identity와 value
+  구분 같은 자연어 paraphrase가 본 문서의 핵심 판단에 매핑된다.
+---
 # Java Array Equality Basics
 
 > 한 줄 요약: 배열에서 "값은 같은데 `==`나 `array.equals(...)`가 `false`다"가 보이면 비교 축으로 가고, "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"가 보이면 alias 축으로 가야 한다. 값 비교 자체는 1차원이면 `Arrays.equals()`, 중첩 배열이면 `Arrays.deepEquals()`로 나눈다.

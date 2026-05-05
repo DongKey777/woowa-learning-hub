@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Badge Freshness Observability Primer
+concept_id: system-design/badge-freshness-observability-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- badge-metric-split
+- projection-lag-vs-cache-age
+- correction-delta-tracking
+aliases:
+- unread badge observability
+- badge freshness metrics
+- count read model observability
+- badge projection lag
+- badge cache age
+- correction delta metric
+- badge freshness observability primer basics
+symptoms:
+- unread badge가 늦게 따라와
+- badge 숫자가 한참 뒤에 크게 보정돼
+- cache 값이 오래됐는지 이벤트 유실인지 헷갈려
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- system-design/notification-badge-vs-source-freshness-primer
+- system-design/post-write-stale-dashboard-primer
+next_docs:
+- system-design/rejected-hit-observability-primer
+- system-design/trace-attribute-freshness-read-source-bridge
+- system-design/watermark-metadata-persistence-basics
+linked_paths:
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+- contents/system-design/notification-inbox-row-monotonicity-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
+- contents/system-design/watermark-metadata-persistence-basics.md
+- contents/design-pattern/projection-replay-observability-alerting-pattern.md
+- contents/database/replica-lag-observability-routing-slo.md
+confusable_with:
+- system-design/notification-badge-vs-source-freshness-primer
+- system-design/rejected-hit-observability-primer
+- system-design/trace-attribute-freshness-read-source-bridge
+forbidden_neighbors:
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+expected_queries:
+- unread badge freshness는 어떤 메트릭부터 봐야 해?
+- badge stale이 이벤트 유실인지 cache age인지 어떻게 나눠 봐?
+- correction delta와 projection lag를 같이 보는 이유가 뭐야?
+- projection lag랑 cache age는 뭐가 달라?
+- badge 숫자가 한참 뒤에 점프하면 어떤 메트릭부터 확인해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 unread badge나 count read model이 늦게 따라올 때
+  projection lag, cache age, correction delta를 각각 어떤 질문에 쓰는지
+  beginner 관점에서 바로 분리하게 돕는 observability primer다. badge가 왜
+  늦지, 이벤트 유실인지 cache age인지 헷갈림, correction delta가 왜 필요한지
+  같은 자연어 질문이 본 문서의 세 시계 mental model로 매핑된다.
+---
+
 # Badge Freshness Observability Primer
 
 > 한 줄 요약: unread badge 같은 count read model은 "얼마나 늦게 따라오나", "지금 cache 값이 얼마나 오래됐나", "나중에 얼마나 크게 보정되나"를 같이 봐야 초보자도 stale badge를 이벤트 유실과 구분할 수 있다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Java parameter 전달, pass-by-value, side effect 입문
+concept_id: language/java-parameter-passing-pass-by-value-side-effects-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- pass-by-value-aliasing
+- mutation-vs-reassignment
+- defensive-copy-side-effects
+aliases:
+- java pass by value
+- java parameter passing basics
+- java reference copy
+- java mutation vs reassignment
+- java side effect basics
+- java aliasing basics
+- java same object vs same value
+- java aliasing equals identity
+- 자바 값 전달
+- 자바는 항상 pass by value
+- 기본형은 안 바뀌는데 객체는 왜 바뀌나요
+- 메서드에서 객체 바꾸면 원본도 바뀌는지
+- 같은 객체와 같은 값 차이
+- == equals 왜 헷갈려요
+- mutation reassignment 차이
+symptoms:
+- 메서드에 객체를 넘겼는데 호출자 쪽 상태도 같이 바뀌어서 당황했어
+- 새 객체를 대입했는데 바깥 변수는 왜 그대로인지 설명이 안 돼
+- pass-by-reference처럼 보이는데 왜 Java는 값 전달이라고 하는지 헷갈려
+intents:
+- definition
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-methods-constructors-practice-primer
+next_docs:
+- language/java-equality-identity-basics
+- language/java-array-copy-clone-basics
+- language/immutable-objects-and-defensive-copying
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/java-array-copy-clone-basics
+forbidden_neighbors: []
+expected_queries:
+- Java 메서드 호출에서 값이 복사된다는 말을 그림처럼 설명해줘
+- 참조형 인자를 넘겼는데 바깥 객체가 왜 바뀐 것처럼 보이는지 알고 싶어
+- 메서드 안에서 새 객체를 대입해도 호출자 변수는 왜 그대로인지 헷갈려
+- 원시 타입 인자와 객체 인자에서 바뀌는 범위를 비교해서 설명해줘
+- aliasing이 side effect로 이어지는 순간을 초보자 예제로 보고 싶어
+- Java 인자 전달을 pass-by-reference처럼 착각하지 않으려면 뭐부터 봐야 해
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 메서드 호출 때 무엇이 복사되고 왜 객체를
+  넘기면 바깥 상태까지 변한 것처럼 보이는지, parameter 재할당과 객체
+  변경을 구분하는 감각을 처음 잡는 primer다. 메모 한 장 복사, 객체를
+  넘겼더니 원본 상태 변화, 새 객체로 바꿔도 호출자 변수 그대로, 기본형과
+  참조형 변화 범위, 같은 대상을 함께 보는 착시 같은 자연어 paraphrase가
+  본 문서의 핵심 개념에 매핑된다.
+---
 # Java parameter 전달, pass-by-value, side effect 입문
 
 > 한 줄 요약: Java 입문자가 "기본형은 안 바뀌는데 참조형은 왜 바뀌는 것처럼 보이지?"를 pass-by-value, 객체 mutation, parameter 재할당을 한 흐름으로 이해하도록 돕는 primer다.

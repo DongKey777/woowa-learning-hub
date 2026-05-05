@@ -13,9 +13,20 @@
 - [`cross-category bridge`] [Cross-Domain Bridge Map](./cross-domain-bridge-map.md)
 - [`category navigator`] [Security README](../contents/security/README.md)
 
-retrieval-anchor-keywords: rag design readme, routing helper, navigation taxonomy, primer, primer bridge, deep dive, playbook, recovery, readme labeling, first click, basics, what is, 처음, 헷갈려요
+retrieval-anchor-keywords: rag design readme, routing helper, navigation taxonomy, primer, primer bridge, deep dive, playbook, recovery, basics, what is, 처음, 헷갈려요, cs-index-build, stale index, readiness smoke, duplicate enqueue, runaway candidate, queue wave triage, canonical bucket, path-normalization, missing-qrel-seed
 
-> retrieval-anchor-keywords: rag design readme, role routing, routing helper, meta navigator, category navigator, survey, study order, big picture, primer, primer bridge, first-step primer, handoff primer, basics, intro, catalog, navigator, index guide, what to read next, deep dive, playbook, runbook, drill, incident matrix, incident badge vocabulary, troubleshooting, response ladder, game day guide, master note, question bank, readme labeling, role audit, taxonomy checklist, authority transfer route, scim deprovision route, decision parity route, access tail remains route, auth shadow divergence route, revoke lag route, stale authz cache route, 403 after revoke route, auth outage route, auth-outage route, login loop route, login-loop canonical beginner entry route, canonical beginner entry route login-loop, canonical beginner entry route: login-loop, hidden session mismatch route, savedrequest route, sid mapping route, spring security symptom route, cookie 있는데 다시 로그인 route, cookie exists but session missing route, 401 302 bounce route, api login html route, fetch gets login page instead of 401 route, auth ladder alias drift lint, login loop alias lint, hidden session alias lint, primer follow-up alias parity, transaction isolation route, transaction-isolation route, @Transactional route, transactional not applied route, rollback-only route, self invocation route, UnexpectedRollbackException route, database spring transaction bridge, database + spring route, authz-focused synthesis route, database security system design bridge, database + system design route, database + security + system design route, spring + network route, spring + security route, security + system design route, database routing summary, network routing summary, cross-category bridge, bridge entrypoint, authority route parity, identity authority transfer route, database security authority bridge route, verification shadowing authority bridge route, timeout disconnect bridge, spring network bridge, http stateless route, cookie session spring security route, cookie scope vs session persistence route, cookie scope route, session persistence route, beginner auth bridge, hidden jsessionid route, incident recovery trust route, browser session troubleshooting path route, session boundary replay route, identity delegation lifecycle route, authz tenant response contracts route, system design handoff cue, control plane handoff cue, cutover handoff cue
+이 `README`는 broad helper query를 받는 navigator지만, index-smoke나 migration release 질문은 여기서 오래 머물지 않고
+[Query Playbook](./query-playbook.md)과 [Retrieval Failure Modes](./retrieval-failure-modes.md)로 바로 handoff하는 편이 안전하다.
+
+| index-smoke query shape | 여기서 붙일 handoff label | 바로 넘길 문서 |
+|---|---|---|
+| `helper 문서만 나와요`, `README만 잡혀요`, `readiness smoke` | `retrieval ops handoff` | [RAG Ready Checklist](../RAG-READY.md), [Query Playbook](./query-playbook.md) |
+| `frontmatter는 붙였는데 gate에서 막혀요`, `path-normalization`, `missing-qrel-seed` | `migration release handoff` | [Retrieval Failure Modes](./retrieval-failure-modes.md) |
+| `문서는 바꿨는데 cs-index-build는 already_current예요`, `release-stop` | `publish-state handoff` | [Retrieval Failure Modes](./retrieval-failure-modes.md) |
+| `같은 candidate가 계속 생겨요`, `queue wave triage`, `duplicate enqueue` | `queue-governor handoff` | [Query Playbook](./query-playbook.md), [Retrieval Failure Modes](./retrieval-failure-modes.md) |
+
+queue-governor 질문은 여기서 파일명을 다시 읽기보다 learner-facing failure를 먼저 bucket으로 묶는 편이 안전하다.
+즉 `duplicate enqueue`처럼 broad한 질문은 "`어느 파일이 문제지`"보다 "`같은 bucket인데 category 검증 축이 다른가`"로 handoff한다.
 
 ## 이 폴더의 역할
 
@@ -36,6 +47,9 @@ RAG에서는 이 선반을 같은 무게로 보지 않고, beginner 질문이면
 | `README 차이`, `primer vs deep dive`, `문서 역할이 헷갈려요` | `routing helper` | [Navigation Taxonomy](./navigation-taxonomy.md) | helper 문서는 role decoder이지 primer 본문이 아니다 |
 | `처음`, `뭐예요`, `what is`, `basics` | `entry shelf handoff` | category `README`나 linked `primer` | broad 입문 질문은 helper보다 primer가 먼저다 |
 | `incident`, `recovery`, `runbook`, `cutover` | follow-up shelf handoff | incident-heavy category `README` | 운영/장애 문서를 beginner entrypoint처럼 읽지 않기 위해서다 |
+| `cs-index-build`, `stale index`, `readiness smoke`, `helper 문서만 잡혀요` | `retrieval ops handoff` | [RAG Ready Checklist](../RAG-READY.md), [Retrieval Failure Modes](./retrieval-failure-modes.md) | 이 README는 증상 복구 절차를 다 들고 있지 않고 역할만 분류한다 |
+| `migration v3`, `frontmatter release`, `pilot lock`, `alias query overlap`, `locked_pilot_paths mismatch` | `migration release handoff` | [Retrieval Failure Modes](./retrieval-failure-modes.md) | batch release blocker는 helper README보다 failure-mode checklist에서 한 번에 묶는 편이 안전하다 |
+| `duplicate enqueue`, `runaway candidate`, `same bucket different category` | `queue-governor handoff` | [Query Playbook](./query-playbook.md), [Retrieval Failure Modes](./retrieval-failure-modes.md) | queue wave는 파일별 backlog보다 `bucket + category + differentiator`를 먼저 고정해야 runaway candidate를 줄인다 |
 
 짧게 외우면 이렇다.
 
@@ -181,7 +195,7 @@ beginner-safe 해석은 단순하다.
 - [Auth Ladder Alias Drift Lint](./auth-ladder-alias-drift-lint.md) - auth beginner ladder(`Login Redirect` primer -> `Browser 401 vs 302` follow-up -> spring deep dive)에서 `login loop`/`hidden session` core alias parity와 safe next-step 순서를 빠르게 검증하는 repo-local QA check
 - [Cross-Domain Bridge Map](./cross-domain-bridge-map.md) - cross-category reading order와 freshness / client-disconnect / spring-security / auth-incident / revoke-lag / stale-authz-cache / authority-transfer section label을 topic map alias cluster와 같은 이름으로 맞춘 symptom-first bridge shortcut이며, security README의 handoff cue parity와 `System Design:` transition label, authority route를 `Database/Security bridge`에서 시작해 `system design -> deep dive`로 넘기고 `master note`를 승격 시점에만 붙이는 beginner-safe handoff, 그리고 HTTP/session/security cluster는 `Login Redirect` `[primer]` -> `Browser 401 vs 302` `[primer bridge]` -> Spring persistence/translation `[deep dive]` 라벨을 root README와 같은 순서로 드러내 `SavedRequest`/login-loop와 browser-facing `auth outage`를 같은 beginner ladder에서 갈라 보게 맞춘다
 - [Question Decomposition Examples](./question-decomposition-examples.md)
-- [Retrieval Failure Modes](./retrieval-failure-modes.md)
+- [Retrieval Failure Modes](./retrieval-failure-modes.md) - retrieval이 helper 문서에 고정되거나 migration-v3 release wave에서 `pilot 50 untouched`, `aliases ⊥ expected_queries`, `linked_paths=contents/...`, `contextual_chunk_prefix` override 품질을 한 묶음으로 점검해야 할 때 같이 본다
 - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md) - README 라벨, 링크 문구, scanner-safe `materials/`·`img/`·`code/` filename, repo-local PDF/image short rule, lowercase image/PDF extension, mixed-case extension scanner pitfall, local HTML `src` / `href` / `poster` / media `src` / `srcset` co-update rule, fenced literal markdown spacing guard, metadata snippet fence 선택을 같이 정리할 때
 - [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md) - asset/fence/README QA script가 shared parser로 어떤 markdown target을 읽는지, nested parentheses·angle-bracket target·reference-style target·code-span masking을 어디까지 맞추는지 먼저 확인할 때
 - [Beginner Ladder Link Smoke Test](./beginner-ladder-link-smoke-test.md) - 루트 `README` / `JUNIOR-BACKEND-ROADMAP` / 우테코 primer의 beginner-safe next-step 링크가 같은 사다리를 유지하는지 빠르게 확인할 때

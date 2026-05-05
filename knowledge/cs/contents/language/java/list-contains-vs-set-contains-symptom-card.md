@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: '`List.contains()` vs `Set.contains()` 증상 카드'
+concept_id: language/list-contains-vs-set-contains-symptom-card
+canonical: false
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- equals-hashcode-lookup
+- collection-mental-model
+- mutable-element-set-lookup
+aliases:
+- list contains vs set contains
+- java contains difference beginner
+- list contains equals only
+- set contains mental model
+- hashset contains hashcode equals
+- contains looks same but acts different
+- why set contains false java
+- why list contains true but set contains false
+- contains 헷갈려요 list set
+- 자바 contains 왜 다르게 느껴지지
+- 처음 배우는데 list set contains 차이
+- contains 같은 메서드인데 왜 결과가 달라요
+- equals만 바꿨는데 왜 set contains false
+- what is list contains vs set contains
+- set contains equality rule basics
+symptoms:
+- List.contains는 되는데 HashSet.contains는 기대와 다르게 나와서 어디부터 봐야 할지 모르겠어
+- 같은 contains인데 List와 Set이 왜 다르게 느껴지는지 설명이 필요해
+- equals를 손봤는데도 Set.contains 결과가 이상해서 hashCode까지 봐야 하는지 헷갈려
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/java-equality-identity-basics
+- language/collections-equality-mutable-state-foundations
+next_docs:
+- language/list-indexof-remove-vs-set-remove-symptom-bridge
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/mutable-element-pitfalls-list-set-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/list-indexof-remove-vs-set-remove-symptom-bridge.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+- contents/language/java/mutable-element-pitfalls-list-set-primer.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+confusable_with:
+- language/list-indexof-remove-vs-set-remove-symptom-bridge
+- language/collections-equality-mutable-state-foundations
+- data-structure/map-vs-set-requirement-bridge
+forbidden_neighbors: []
+expected_queries:
+- List.contains는 되는데 HashSet.contains는 왜 다르게 실패하는지 먼저 분기해줘
+- 같은 contains 메서드인데 List와 Set이 왜 다른 질문을 하는지 증상 기준으로 알고 싶어
+- equals만 보면 되는지 hashCode까지 같이 봐야 하는지 컬렉션별로 갈라 설명해줘
+- Set.contains가 이상할 때 List 문제인지 집합 규칙 문제인지 빠르게 판단하고 싶어
+- TreeSet.contains까지 섞여 헷갈릴 때 어떤 기준으로 다음 문서를 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 contains가 같은 이름인데도 List에서는 맞고
+  Set에서는 어긋나는 상황을 증상에서 원인으로 잇는 symptom_router다.
+  목록 검색은 되는데 집합 조회가 빗나감, 눈에 보이는 원소를 못 찾음, 값
+  비교만 손봤는데 여전히 실패함, 해시 규칙과 정렬 규칙 중 무엇을 봐야 할지
+  막힘 같은 자연어 표현이 본 문서의 첫 분기 판단에 매핑된다.
+---
 # `List.contains()` vs `Set.contains()` 증상 카드
 
 > 한 줄 요약: `contains()`라는 메서드 이름은 같아 보여도 `List`는 "목록 안에 같은 값이 있나"를, `Set`은 "이 집합 규칙으로 같은 원소가 있나"를 묻기 때문에 초보자는 코드 모양보다 컬렉션의 질문부터 분리해서 봐야 한다.

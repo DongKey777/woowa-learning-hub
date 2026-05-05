@@ -15,6 +15,8 @@ aliases:
 - dependency injection
 - 의존성 주입
 - 제어 역전
+- 객체 생성 통제권
+- new 대신 주입
 intents:
 - definition
 linked_paths:
@@ -27,6 +29,13 @@ expected_queries:
 - 의존성 주입이 뭐야?
 - 왜 new 대신 DI를 써?
 - IoC랑 DI 차이가 뭐야?
+- 객체를 누가 만드는지 통제권을 코드 밖에서 잡는다는 게 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Spring을 처음 배우는 학습자가 객체를 누가 만들고 연결할지의
+  통제권이 왜 코드 밖으로 넘어가는지, 직접 new 하지 않고 외부에서 받아쓰면
+  왜 테스트와 교체가 쉬워지는지 잡는 primer다. 객체 생성 통제권을 코드 밖으로
+  넘김, new 대신 주입, 필요한 도구를 직접 만들지 않고 받아씀, 코드가 더 시험
+  쉬워짐 같은 자연어 paraphrase가 IoC와 DI의 입문 설명에 매핑된다.
 ---
 
 # IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가
@@ -46,7 +55,7 @@ expected_queries:
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, 의존성 주입이 뭐예요, 왜 new 대신 di 를 써요, 결합도 낮추기 di, 테스트하기 좋은 코드 di, 구현체 교체 why di, spring 객체 조립 원리, ioc di what is, beginner spring di why
+retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, 의존성 주입이 뭐예요, 왜 new 대신 di 를 써요, 객체 생성 통제권 코드 밖, 필요한 도구 직접 만들지 않고 받아쓰기, 테스트하기 좋은 코드 di, 구현체 교체 why di, spring 객체 조립 원리, beginner spring di why
 
 ## 핵심 개념
 

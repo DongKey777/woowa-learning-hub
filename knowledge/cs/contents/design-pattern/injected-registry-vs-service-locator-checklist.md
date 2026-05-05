@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: 'Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기'
+concept_id: design-pattern/injected-registry-vs-service-locator-checklist
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- hidden-dependency
+- getbean-runtime-lookup
+aliases:
+- injected registry vs service locator
+- registry vs service locator checklist
+- getbean smell checklist
+- hidden dependency checklist
+- 명시적 registry 주입 vs service locator
+- applicationcontext lookup smell
+intents:
+- comparison
+- troubleshooting
+symptoms:
+- 생성자에는 안 보이는데 메서드 안에서 구현체를 찾아 써요
+- getBean을 써도 괜찮은지 코드 리뷰에서 막혀요
+prerequisites:
+- software-engineering/dependency-injection-basics
+next_docs:
+- design-pattern/strategy-registry-vs-service-locator-drift
+linked_paths:
+  - contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+  - contents/design-pattern/strategy-registry-vs-service-locator-drift.md
+  - contents/design-pattern/service-locator-antipattern.md
+  - contents/design-pattern/bean-name-vs-domain-key-lookup.md
+  - contents/design-pattern/handler-registry-test-shape-supports-without-spring.md
+  - contents/spring/spring-bean-di-basics.md
+confusable_with:
+  - design-pattern/service-locator-antipattern
+  - design-pattern/registry-vs-factory-injected-handler-maps
+  - design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+forbidden_neighbors: []
+expected_queries:
+- injected registry랑 service locator는 어떻게 구분해?
+- getBean 쓰면 무조건 service locator야?
+- 생성자 주입처럼 보이는데 숨은 의존성인지 어떻게 확인해?
+- registry lookup이랑 service locator drift 차이를 체크리스트로 보고 싶어
+- ApplicationContext에서 꺼내 쓰는 코드와 injected registry는 뭐가 달라?
+- ObjectProvider로 런타임 조회하면 registry가 아니라 locator로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 생성자에 좁은 조회 도구가 드러난 설계와 메서드 안에서
+  컨테이너를 뒤지며 숨은 의존성이 생기는 설계를 코드 리뷰 관점으로 연결한다.
+  생성자에는 보이는데 내부에서 getBean 호출함, 숨은 의존성 냄새, 주입된 registry는
+  어디까지 괜찮은가, lookup helper와 locator drift 구분, 리뷰에서 왜 위험하다고
+  말하는지 같은 자연어 paraphrase가 본 문서의 체크리스트와 판정 규칙에
+  매핑된다.
+---
+
 # Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기
 
 > 한 줄 요약: 생성자에 좁은 registry가 보이면 의존성이 드러난 설계이고, 메서드 안에서 컨테이너나 전역 조회소를 직접 뒤지면 service locator로 미끄러진 설계다.

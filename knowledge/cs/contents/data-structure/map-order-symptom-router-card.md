@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Map 순서 이상 증상 라우터 카드
+concept_id: data-structure/map-order-symptom-router-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- map-iteration-order-contract
+- linkedhashmap-access-order
+- treemap-sorted-order-assumption
+aliases:
+- map order changed unexpectedly
+- hashmap order not guaranteed
+- linkedhashmap access order changed
+- treemap sorted iteration order
+- map 출력 순서가 바뀜
+- 해시맵 순서가 이상함
+- 조회만 했는데 뒤로 감
+- linkedhashmap accessOrder
+symptoms:
+- 실행할 때마다 Map 출력 순서가 기대와 다르게 나온다
+- 조회만 했는데 LinkedHashMap 항목이 뒤로 밀린다
+- 넣은 순서로 보여야 하는데 key 정렬처럼 보인다
+- HashMap이 우연히 일정해 보여서 순서 보장으로 착각한다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+next_docs:
+- data-structure/linkedhashmap-access-order-mini-primer
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+linked_paths:
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/linkedhashmap-access-order-mini-primer
+forbidden_neighbors:
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+expected_queries:
+- HashMap인데 왜 실행할 때마다 출력 순서가 달라지는지 먼저 진단하고 싶어
+- 조회만 했는데 LinkedHashMap 마지막으로 밀리는 현상을 어디서부터 봐야 해?
+- 넣은 순서로 보여야 하는데 abc 순으로 나오는 Map 문제를 빠르게 분기해줘
+- 순서 계약이 없는 Map과 access-order Map을 증상 기준으로 구분하고 싶어
+- 해시맵이 가끔은 순서가 맞아 보여서 더 헷갈릴 때 어떤 문서를 먼저 봐야 해?
+- TreeMap 정렬 순서와 LinkedHashMap 삽입 순서를 증상 관점에서 나눠 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Map 출력 순서가 기대와 어긋나 당황한 학습자가
+  HashMap, LinkedHashMap, TreeMap 중 어떤 순서 계약을 잘못
+  가정했는지 증상에서 원인으로 이어지는 symptom_router다. 실행할
+  때마다 결과 줄이 흔들림, 조회만 했는데 맨 뒤로 이동, 넣은 순서가
+  유지돼야 함, 사전순처럼 읽힘, 최근 접근 기준이 섞임, 순회 규칙을
+  먼저 확인하고 싶다 같은 자연어 paraphrase가 본 문서의 분기
+  기준에 매핑된다.
+---
 # Map order symptom router card
 
 > 한 줄 요약: `왜 출력 순서가 바뀌지?`라는 증상은 먼저 `순서를 아예 보장하지 않는 HashMap`, `삽입 순서를 기억하는 LinkedHashMap`, `key 정렬 순서로 읽는 TreeMap` 셋 중 무엇을 쓰는지부터 자르면 대부분 빨리 풀린다.
@@ -13,7 +81,7 @@
 - [Map 구현체별 반복 순서 치트시트](../language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: map order symptom router, why did map order change, why output order changed hashmap, hashmap order not guaranteed beginner, linkedhashmap insertion order beginner, linkedhashmap access order symptom, treemap sorted key order beginner, map 출력 순서 왜 바뀌지, 해시맵 순서 이상함, 링크드해시맵 조회만 했는데 순서 변경, 트리맵 정렬 순서, map order beginner card
+retrieval-anchor-keywords: map order symptom router, why did map order change, why output order changed hashmap, hashmap order not guaranteed beginner, linkedhashmap insertion order beginner, linkedhashmap access order symptom, treemap sorted key order beginner, map 출력 순서 왜 바뀌지, 해시맵 순서 이상함, 링크드해시맵 조회만 했는데 순서 변경, 트리맵 정렬 순서, put 했는데 왜 뒤로 가요
 
 ## 먼저 잡는 한 문장
 
@@ -73,6 +141,27 @@ retrieval-anchor-keywords: map order symptom router, why did map order change, w
 
 그래서 "화면은 등록 순서 그대로여야 하는데 최근에 본 항목이 자꾸 뒤로 간다"면 기능 요구와 구현체 모드가 어긋난 경우가 많다.
 
+## `get()`만 했는데 왜 순서가 바뀌나
+
+이 증상은 말로만 보면 잘 안 잡힌다. 아래처럼 `accessOrder=true`를 켠 `LinkedHashMap`이면 조회만으로도 최근 접근 항목이 뒤로 이동한다.
+
+```java
+Map<String, Integer> recentOrder = new LinkedHashMap<>(16, 0.75f, true);
+recentOrder.put("apple", 1);
+recentOrder.put("banana", 2);
+recentOrder.put("carrot", 3);
+
+recentOrder.get("apple");
+System.out.println(recentOrder.keySet()); // [banana, carrot, apple]
+```
+
+이 장면에서 중요한 해석은 둘뿐이다.
+
+- 등록 순서를 기대했다면 `accessOrder=true`가 요구와 어긋난다.
+- 최근 조회 항목이 뒤로 가야 하는 LRU류 요구라면 오히려 의도대로 동작한 것이다.
+
+그래서 "`조회만 했는데 순서가 섞여요`"라는 질문은 버그처럼 보이더라도, 먼저 `LinkedHashMap` 생성자 세 번째 인자가 `true`인지부터 확인하는 편이 가장 빠르다.
+
 ## 빠른 선택 규칙
 
 | 내가 진짜 원하는 것 | 첫 선택 |
@@ -84,6 +173,19 @@ retrieval-anchor-keywords: map order symptom router, why did map order change, w
 
 한 번만 정렬해서 출력하면 되는 경우는 `HashMap`에 담고 마지막에 따로 정렬해도 된다.
 반대로 조회 중간중간 계속 순서 규칙을 써야 하면 구현체가 그 규칙을 직접 표현하는 편이 안전하다.
+
+## 증상에서 요구로 다시 번역하기
+
+증상 문장을 요구사항으로 바꾸면 구현체 선택이 훨씬 쉬워진다.
+
+| 학습자 질문 | 실제 요구 | 먼저 확인할 것 |
+|---|---|---|
+| `왜 실행할 때마다 순서가 달라요?` | 안정된 순서 출력 | `HashMap`을 순서 있는 컬렉션처럼 쓰고 있지 않은지 |
+| `조회만 했는데 마지막으로 밀려요` | 최근 접근 순서 | `LinkedHashMap(accessOrder=true)`인지 |
+| `넣은 순서가 아니라 abc 순으로 나와요` | key 정렬 순회 | `TreeMap` 또는 정렬된 view를 기대한 것인지 |
+| `한 번만 정렬해서 보여주면 되는데 뭘 써야 해요?` | 저장과 출력 요구 분리 | 보관은 `HashMap`, 출력 직전에만 정렬해도 되는지 |
+
+핵심은 "현재 보이는 순서"를 그대로 믿지 말고, "내가 진짜 필요한 순서 계약이 무엇인가"를 먼저 말로 고정하는 것이다.
 
 ## 다음으로 어디를 읽을까
 

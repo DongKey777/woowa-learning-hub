@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Trust-Bundle Rollback During Cell Cutover 설계
+concept_id: system-design/trust-bundle-rollback-during-cell-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 79
+mission_ids: []
+review_feedback_tags:
+- verifier-overlap-before-route-flip
+- trust-domain-binding-risk
+- delayed-root-retirement
+aliases:
+- trust bundle rollback during cell cutover
+- SPIFFE trust bundle overlap
+- SPIRE trust bundle propagation
+- dedicated cell trust root migration
+- issuer rollover during cell cutover
+- mesh trust root rotation rollback
+- verifier overlap window
+- bundle propagation lag
+- spiffe sequence skew
+- old root last seen
+- dual root verifier
+- workload identity rollback window
+- trust domain bundle binding
+- source target cell mutual trust
+- bundle endpoint refresh hint
+- cell cutover unknown ca
+- trust bundle drain window
+symptoms:
+- route flip 뒤에 일부 cell만 unknown_ca가 나서 trust bundle 전파 순서를 의심하고 있다
+- rollback하려는데 old root가 너무 빨리 빠져 donor path를 다시 열 수 없다
+- dedicated cell cutover와 trust domain 변경이 겹쳐 verifier overlap을 어디까지 유지해야 할지 모르겠다
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- system-design/traffic-shadowing-progressive-cutover-design
+- security/service-to-service-auth-mtls-jwt-spiffe
+next_docs:
+- system-design/write-freeze-rollback-window-design
+- security/hardware-attestation-policy-failure-recovery
+linked_paths:
+- contents/system-design/tenant-split-out-service-identity-rollout-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/service-mesh-control-plane-design.md
+- contents/system-design/write-freeze-rollback-window-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+confusable_with:
+- system-design/database-security-identity-bridge-cutover-design
+- security/service-to-service-auth-mtls-jwt-spiffe
+forbidden_neighbors: []
+expected_queries:
+- cell cutover 중 trust bundle rollback window를 어떻게 설계해야 해?
+- route flip보다 verifier overlap을 먼저 만들라는 말이 왜 중요한 거야?
+- trust root rotation과 dedicated cell migration이 같이 갈 때 unknown_ca를 어떻게 피하지?
+- old root를 언제 retire해야 rollback 불능을 막을 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 dedicated cell cutover와 trust root 또는 issuer 변경이 겹칠 때
+  trust bundle preload, verifier dual-accept, rollback window, delayed
+  retirement를 어떻게 설계해야 하는지 설명하는 deep_dive다. route flip 뒤
+  unknown_ca가 나, old root를 언제 빼야 해, verifier overlap을 얼마나
+  길게 두지 같은 질문이 이 문서의 전파 순서와 cleanup gate로 매핑된다.
+---
 # Trust-Bundle Rollback During Cell Cutover 설계
 
 > 한 줄 요약: trust-bundle rollback during cell cutover 설계는 dedicated-cell migration과 SPIFFE/SPIRE issuer 또는 mesh trust root 변경이 겹칠 때 old/new trust bundle을 verifier에 먼저 중첩 배포하고, route/issuer cutover 뒤에도 rollback window가 끝날 때까지 old root를 남겨 mTLS/auth 실패와 되돌림 불능을 막는 운영 설계다.

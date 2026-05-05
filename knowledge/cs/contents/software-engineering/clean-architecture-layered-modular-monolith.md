@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Clean Architecture vs Layered Architecture, Modular Monolith
+concept_id: software-engineering/clean-architecture-layered-modular-monolith
+canonical: false
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- architecture-choice
+- dependency-direction
+- module-boundary
+aliases:
+- clean architecture vs layered architecture
+- modular monolith
+- clean vs layered
+- hexagonal vs clean architecture
+- dependency rule
+- inward dependency
+- module boundary
+- distributed monolith
+- 아키텍처 선택 기준
+- 레이어드 vs 클린 아키텍처
+- 모듈러 모놀리스 뭐예요
+- 패키지 분리만 하면 모듈인가요
+symptoms:
+- layered랑 clean이 대체 관계인지 같이 써도 되는지 헷갈려요
+- 패키지는 나눴는데 왜 modular monolith 같지 않다는 피드백을 받는지 모르겠어요
+- 도메인 규칙을 안쪽에 둬야 한다는 말이 실무 구조 선택과 어떻게 연결되는지 감이 안 와요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/architecture-layering-fundamentals
+- software-engineering/ports-and-adapters-beginner-primer
+next_docs:
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/ddd-bounded-context-failure-patterns
+- software-engineering/anti-corruption-layer-integration-patterns
+linked_paths:
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+confusable_with:
+- software-engineering/architecture-layering-fundamentals
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/ddd-hexagonal-consistency
+forbidden_neighbors:
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+expected_queries:
+- 서비스 하나로 시작할 때 layered와 clean 중 어디까지 가져가야 하는지 판단 기준이 뭐야?
+- domain이 JPA나 framework annotation을 직접 알면 왜 clean하지 않다고 말하는 거야?
+- order와 payment를 같은 배포 안에 두면서도 modular monolith처럼 경계를 지키려면 뭘 봐야 해?
+- hexagonal, clean, layered가 각각 어떤 질문에 답하는지 한 번에 비교해줘
+- distributed monolith가 되지 않으려면 모듈 경계를 코드에서 어떻게 강제해야 해?
+contextual_chunk_prefix: |
+  이 문서는 layered architecture, clean architecture, modular monolith를
+  서로 다른 설계 질문으로 구분해 비교하려는 학습자를 위한 chooser다. 계층을
+  나누는 문제인지, 의존성 방향을 안쪽으로 고정하는 문제인지, 같은 배포 안에서
+  모듈 경계를 어떻게 강제할지 판단하는 문제인지 헷갈릴 때 읽는다. 패키지만
+  나눈 구조가 왜 modular monolith가 아닌지, domain이 framework에 묶이면 왜
+  clean하지 않다고 말하는지, hexagonal과 clean이 어떤 관계인지 같은 질문을
+  구조 선택 기준으로 연결한다.
+---
 # Clean Architecture vs Layered Architecture, Modular Monolith
 
 **난이도: 🔴 Advanced**

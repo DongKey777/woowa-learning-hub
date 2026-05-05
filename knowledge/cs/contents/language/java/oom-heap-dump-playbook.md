@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: OOM Heap Dump Playbook
+concept_id: language/oom-heap-dump-playbook
+canonical: false
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- heap-vs-native-oom-split
+- dump-before-restart
+- unbounded-cache-leak-triage
+aliases:
+- oom heap dump playbook
+- java heap dump analysis
+- outofmemoryerror triage
+- gc class histogram
+- jcmd gc heap_dump
+- direct buffer memory vs heap
+- native thread exhaustion triage
+- 자바 oom 대응
+- 힙덤프 분석 플레이북
+symptoms:
+- OutOfMemoryError가 났는데 heap 문제인지 native 문제인지부터 어떻게 갈라야 할지 모르겠어
+- 프로세스를 재시작하기 전에 어떤 증거를 먼저 남겨야 하는지 헷갈려
+- heap dump를 떴는데 dominator tree와 histogram을 어떤 순서로 읽어야 할지 감이 안 와
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/jvm-gc-jmm-overview
+- language/gc-root-retention-analysis
+- language/direct-buffer-offheap-memory-troubleshooting
+next_docs:
+- language/jfr-jmc-performance-playbook
+- language/classloader-memory-leak-playbook
+- language/g1-vs-zgc
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/gc-root-retention-analysis.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/g1-vs-zgc.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/virtual-threads-project-loom.md
+confusable_with:
+- language/gc-root-retention-analysis
+- language/classloader-memory-leak-playbook
+- language/jfr-jmc-performance-playbook
+forbidden_neighbors:
+- contents/language/java/jfr-jmc-performance-playbook.md
+expected_queries:
+- Java에서 OutOfMemoryError가 터졌을 때 재시작 전에 무엇을 수집해야 하는지 순서대로 알고 싶어
+- heap dump와 class histogram을 어떻게 조합해서 누수 원인을 좁히는지 설명해줘
+- Java heap space, direct buffer memory, native thread 고갈을 초동 대응 관점에서 구분한 문서를 찾고 있어
+- OOM이 났을 때 jcmd로 어떤 증거를 남기고 어떤 분석 순서로 가야 하는지 플레이북이 필요해
+- 힙덤프로 해결되는 OOM과 힙덤프로 부족한 OOM을 같이 정리한 자바 글이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java 서비스에서 OutOfMemoryError가 났을 때 heap 고갈과
+  native 메모리 고갈을 먼저 가르고, histogram, heap dump, thread dump,
+  JFR을 어떤 순서로 모아 대응할지 전략으로 막는 playbook이다. 프로세스
+  죽기 전에 증거를 확보하고 싶음, heap dump부터 볼지 망설임, direct
+  buffer와 스레드 폭증 중 무엇이 원인인지 헷갈림, 재현 전까지 초동 순서를
+  고정하고 싶음 같은 자연어 표현이 본 문서의 대응 흐름에 매핑된다.
+---
 # OOM Heap Dump Playbook
 
 > 한 줄 요약: OutOfMemoryError는 일단 덤프를 남기고, heap인지 native인지부터 구분한 뒤, 재현 가능한 증거를 모아야 한다.

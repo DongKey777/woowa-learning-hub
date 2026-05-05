@@ -12,16 +12,14 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring Docker Compose and Kubernetes Env Injection Basics: property 이름과 플랫폼 주입 실수 분리하기](./spring-docker-compose-k8s-env-injection-basics-primer.md)
-> - [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
-> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
-> - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
-> - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
-> - 공식 기준: [Spring Boot Externalized Configuration - Binding From Environment Variables](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables)
+- [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring Docker Compose and Kubernetes Env Injection Basics: property 이름과 플랫폼 주입 실수 분리하기](./spring-docker-compose-k8s-env-injection-basics-primer.md)
+- [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
+- [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+- [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
+- [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
+- 공식 기준: [Spring Boot Externalized Configuration - Binding From Environment Variables](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables)
 
 retrieval-anchor-keywords: spring relaxed binding env var cheatsheet, relaxed binding environment variables, spring boot env var mapping, property key to environment variable, dotted property env var, dashed property env var, list property env var, map property env var, dotted dashed list map beginner, kebab case env var spring boot, property path segment env var, environment variable key mismatch, env var mismatch bean missing, app push notification env var, beginner property configuration primer
 

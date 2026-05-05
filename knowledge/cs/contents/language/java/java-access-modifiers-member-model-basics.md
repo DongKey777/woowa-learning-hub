@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Java 접근 제한자와 멤버 모델 입문
+concept_id: language/java-access-modifiers-member-model-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- encapsulation-private-first
+- instance-vs-static-state
+- final-scope-confusion
+aliases:
+- java access modifier member model basics
+- java class member basics
+- java public private protected package-private
+- java field method member basics
+- java instance field object state basics
+- java static field class shared state
+- java final field method class basics
+- field가 인스턴스 멤버인가요
+- 객체 상태는 뭐예요
+- 처음 접근제한자 헷갈려요
+- 처음 static 필드 헷갈려요
+- java member basics what is
+- java access modifier basics
+- java beginner member model
+- why private first java
+symptoms:
+- private랑 protected를 언제 나눠 써야 하는지 감이 안 와
+- 객체 상태랑 static 공유 상태를 한 장으로 정리하고 싶어
+- final이 값 고정인지 상속 금지인지 섞여서 헷갈려
+intents:
+- definition
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-package-import-boundary-basics
+next_docs:
+- language/top-level-type-access-modifier-bridge
+- language/java-instance-static-factory-methods-primer
+- language/java-access-modifier-boundary-lab
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/java-access-modifier-top-level-member-mini-quiz.md
+- contents/language/java/java-access-modifier-boundary-lab.md
+- contents/language/java/java-instance-static-factory-methods-primer.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- language/java-package-import-boundary-basics
+- language/java-instance-static-factory-methods-primer
+forbidden_neighbors:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-package-import-boundary-basics.md
+expected_queries:
+- Java 접근 제한자 처음 정리할 때 시작 문서 뭐가 좋아?
+- 멤버 변수와 클래스 변수를 같이 이해하고 싶어
+- private부터 설계하라는 이유를 초보자 기준으로 설명해줘
+- 객체 상태와 static 상태 차이를 예제로 보고 싶어
+- final 필드와 final 클래스 차이를 한 번에 정리해줘
+- 필드 메서드 modifier를 어떤 순서로 결정하는지 감이 안 와
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 클래스 멤버를 설계할 때 누가 볼 수 있는지,
+  값이 객체마다 다른지 클래스가 함께 쓰는지, 생성 뒤 바뀌는지를 한
+  번에 처음 잡는 primer다. 캡슐화부터 시작, 객체별 값 vs 공용 값,
+  공개 범위 결정, 왜 보통 private로 시작해, 값 고정 규칙 같은 자연어
+  paraphrase가 본 문서의 멤버 설계 기초에 매핑된다.
+---
 # Java 접근 제한자와 멤버 모델 입문
 
 > 한 줄 요약: Java 입문자가 `private`/`protected` 같은 접근 제한자, 인스턴스 vs `static` 멤버, `final`을 "클래스 멤버를 어떻게 설계할지"라는 한 장의 그림으로 먼저 잡도록 돕는 entrypoint primer다. "`field`가 뭐예요", "객체 상태는 왜 인스턴스 필드라고 해요" 같은 첫 질문을 정리하고, 인스턴스/`static`/factory 선택 자체는 다음 primer로 넘긴다.

@@ -12,18 +12,12 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
-
-> 관련 문서:
-> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
-> - [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)
-> - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
-> - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
-> - [Factory Switch Registry Smell](./factory-switch-registry-smell.md)
-> - [Registry Pattern](./registry-pattern.md)
-> - [빌더 패턴](./builder-pattern.md)
-> - [전략 패턴](./strategy-pattern.md)
-> - [실전 패턴 선택 가이드](./pattern-selection.md)
-> - [Service Locator Antipattern](./service-locator-antipattern.md)
+- [전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법](./strategy-pattern.md)
+- [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)
+- [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
+- [런타임 선택에서 Bridge vs Strategy vs Factory: 행동 축과 생성 축을 헷갈리지 않기](./bridge-strategy-vs-factory-runtime-selection.md)
+- [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
+- [빌더 패턴](./builder-pattern.md)
 
 retrieval-anchor-keywords: factory pattern, object creation boundary, runtime implementation selection, factory overuse, when not to use factory, factory vs constructor, factory vs static factory method, factory vs builder, factory vs registry, switch factory smell, beginner factory pattern, constructor vs static factory vs factory pattern, java static factory naming, of from valueof parse getinstance newinstance, factory basics
 
@@ -63,6 +57,8 @@ retrieval-anchor-keywords: factory pattern, object creation boundary, runtime im
 - 정적 팩토리 메서드와 패턴으로서의 Factory를 같은 것으로 느낄 때
 - switch 기반 생성기가 계속 커져서 Registry나 Strategy로 갈라야 하는지 고민될 때
 - Builder, DI 컨테이너, Factory 중 어디에 생성 책임을 둬야 할지 애매할 때
+
+반대로 질문이 "런타임에 고른다고 다 factory인가?" 쪽이면 [Bridge vs Strategy vs Factory](./bridge-strategy-vs-factory-runtime-selection.md)로 먼저 가는 편이 빠르고, "`PaymentPolicyFactory`처럼 이름이 과한가?"가 핵심이면 [Factory Misnaming Checklist](./factory-misnaming-checklist.md)에서 바로 자르는 편이 낫다.
 
 ---
 

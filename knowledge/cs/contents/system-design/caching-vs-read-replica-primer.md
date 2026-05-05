@@ -1,3 +1,88 @@
+---
+schema_version: 3
+title: Caching vs Read Replica Primer
+concept_id: system-design/caching-vs-read-replica-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- cache-vs-replica-choice
+- stale-read-root-cause
+- read-routing-after-write
+aliases:
+- caching vs read replica
+- cache vs replica
+- cache replica primer
+- 캐시와 레플리카 차이
+- cache replica 큰 그림
+- cache invalidation vs replica lag
+- cache stale vs replica stale
+- hot read cache
+- read scaling replica
+- cache-first read path
+- replica fallback path
+- cache invalidation basics
+- read replica basics
+- read-after-write basics
+- replica lag basics
+- primary fallback
+- cache replica decision
+symptoms:
+- 캐시를 붙였는데도 방금 저장한 값이 안 보여
+- DB가 느릴 때 캐시를 볼지 replica를 볼지 헷갈려
+- 둘 다 stale하다는데 원인 구분이 안 돼
+intents:
+- definition
+prerequisites:
+- system-design/caching-basics
+- system-design/database-scaling-primer
+next_docs:
+- system-design/mixed-cache-replica-freshness-bridge
+- system-design/read-after-write-routing-primer
+- database/replica-lag-read-after-write-strategies
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/queue-vs-cache-vs-db-decision-drill.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
+- contents/system-design/read-only-and-graceful-degradation-patterns.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/cache-replica-split-read-inconsistency.md
+- contents/database/read-your-writes-session-pinning.md
+confusable_with:
+- system-design/read-after-write-routing-primer
+- system-design/mixed-cache-replica-freshness-bridge
+- database/read-your-writes-session-pinning
+forbidden_neighbors:
+- contents/system-design/distributed-cache-design.md
+expected_queries:
+- cache랑 replica 차이가 뭐예요?
+- 처음 cache와 replica를 배우는데 큰 그림부터 설명해 줘
+- 왜 cache와 replica가 둘 다 stale할 수 있어?
+- 언제 cache를 쓰고 언제 replica를 쓰나요?
+- DB가 느릴 때 cache를 먼저 봐야 해, replica를 먼저 봐야 해?
+- 캐시랑 read replica가 해결하는 문제가 어떻게 다른지 처음부터 알고 싶어
+- DB 읽기 부하가 클 때 캐시를 먼저 붙여야 할지 replica를 늘려야 할지 판단 기준이 뭐야
+- 둘 다 stale가 난다는데 invalidation이랑 replica lag를 어떻게 구분해?
+- 상품 상세 조회 같은 hot read에서는 왜 cache가 더 잘 맞아?
+- 방금 저장한 값이 안 보일 때 cache 문제인지 replica 문제인지 큰 그림이 필요해
+- 같은 읽기 확장인데 cache와 replica를 따로 배우는 이유가 궁금해
+contextual_chunk_prefix: |
+  이 문서는 시스템 설계 입문 학습자가 cache와 read replica를 둘 다 읽기 확장으로만 묶지 않고, 반복 조회를 줄이는 선택과 DB 읽기 처리량을 나누는 선택을 왜 따로 봐야 하는지 처음 잡는 primer다.
+  같은 값을 다시 주는 장치인지 조회 노드를 늘리는 방식인지, 저장 직후 예전 값이 보이면 캐시 만료 문제인지 복제 지연인지, 상품 상세와 관리자 리포트의 읽기 성격이 왜 다른지, invalidation 질문과 read routing 질문을 어떻게 갈라야 하는지 같은 자연어 paraphrase가 본 문서의 cache·replica 구분에 매핑된다.
+---
 # Caching vs Read Replica Primer
 
 > 한 줄 요약: cache는 같은 읽기를 아예 줄이는 전략이고 read replica는 DB 읽기 처리량을 늘리는 전략이며, 둘 다 stale 문제가 있지만 원인과 대응이 다르다는 점을 설명하는 입문 문서다.

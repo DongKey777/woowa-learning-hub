@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Union-Find Standalone Beginner Primer
+concept_id: data-structure/union-find-standalone-beginner-primer
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- union-find-vs-bfs-routing
+- same-component-question
+- parent-array-misread
+aliases:
+- union find beginner
+- union find primer
+- dsu intro
+- disjoint set intro
+- what is union find
+- union find 뭐예요
+- 같은 그룹인가 자료구조
+- connected yes no basics
+- union find vs bfs intro
+- union find 처음 배우기
+- group merge basics
+- kruskal union find beginner
+- 연결돼 있나 union find
+- 갈 수 있나 bfs 차이
+- why not bfs
+symptoms:
+- 같은 그룹인지 확인하면 된다는데 왜 BFS랑 자꾸 헷갈리는지 모르겠어
+- union-find의 parent 배열이 실제 이동 경로처럼 보여서 감이 안 와
+- 연결 여부만 묻는 문제를 그래프 탐색으로 풀어야 할지 대표 비교로 풀어야 할지 헷갈려
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+- data-structure/graph-basics
+next_docs:
+- data-structure/connectivity-question-router
+- data-structure/union-find-component-metadata-walkthrough
+- data-structure/union-find-deep-dive
+- algorithm/kruskal-union-find-beginner-bridge
+linked_paths:
+- contents/data-structure/connectivity-question-router.md
+- contents/data-structure/union-find-component-metadata-walkthrough.md
+- contents/data-structure/union-find-deep-dive.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/kruskal-union-find-beginner-bridge.md
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+confusable_with:
+- data-structure/connectivity-question-router
+- algorithm/dfs-bfs-intro
+- algorithm/kruskal-union-find-beginner-bridge
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+expected_queries:
+- union find가 뭐예요? 처음 배우는 사람 기준으로 설명해줘
+- 같은 그룹인지 빠르게 확인하는 자료구조가 왜 bfs랑 다른가요?
+- 연결 여부만 여러 번 물을 때 union find를 왜 쓰는지 알고 싶어
+- union find는 경로를 찾는 게 아니라 대표만 비교한다는 말이 무슨 뜻이야?
+- kruskal 전에 union find 큰 그림을 먼저 잡고 싶어
+contextual_chunk_prefix: |
+  이 문서는 연결 질문을 처음 만난 학습자가 union-find를 그래프 전체 탐색이
+  아니라 같은 그룹인지 빠르게 확인하는 도구로 기초를 잡는 primer다. 같은
+  편인지 반복 확인, 대표만 비교해 답하기, 경로 말고 묶음 판별, 그룹 합치기,
+  BFS보다 뭐가 다른지 같은 자연어 paraphrase가 본 문서의 핵심 개념에
+  매핑된다.
+---
 # Union-Find Standalone Beginner Primer
 
 > 한 줄 요약: union-find는 `둘이 같은 그룹인가?`를 반복해서 물을 때, 매번 그래프 전체를 다시 훑지 않고 대표만 비교해서 빠르게 답하는 자료구조다.

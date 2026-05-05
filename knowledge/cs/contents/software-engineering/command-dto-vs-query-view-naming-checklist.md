@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Command DTO Vs Query View Naming Checklist
+concept_id: software-engineering/command-dto-vs-query-view-naming-checklist
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- dto-role-naming
+- query-view-vs-response
+- package-boundary-language
+aliases:
+- command dto naming
+- query view naming
+- support snapshot naming
+- response dto naming
+- dto package placement
+- command dto vs response dto
+- query view vs response
+- snapshot vs response dto
+- dto 이름이 헷갈려요
+- command package 어디에 두나요
+- view suffix 언제 써요
+- roomescape command dto naming
+- roomescape admin row view
+- beginner dto naming checklist
+symptoms:
+- Command랑 Response가 다 DTO라서 이름을 어떻게 나눌지 모르겠어요
+- 조회용 View를 그대로 API 응답으로 내보내도 되는지 헷갈려요
+- SupportSnapshot 같은 이름이 왜 필요한지 감이 안 와요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/dto-vo-entity-basics
+- software-engineering/service-contract-smell-cards
+next_docs:
+- software-engineering/module-api-dto-patterns
+- software-engineering/helper-snapshot-bloat-vs-response-dto-separation
+- software-engineering/query-model-separation-read-heavy-apis
+linked_paths:
+- contents/software-engineering/module-api-dto-patterns.md
+- contents/software-engineering/helper-snapshot-bloat-vs-response-dto-separation.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
+confusable_with:
+- software-engineering/module-api-dto-patterns
+- software-engineering/helper-snapshot-bloat-vs-response-dto-separation
+- spring/spring-controller-entity-return-vs-dto-return-primer
+forbidden_neighbors:
+- contents/software-engineering/dto-vo-entity-basics.md
+expected_queries:
+- 요청 DTO랑 Command를 같은 클래스로 두면 언제부터 헷갈리기 시작해?
+- 조회 화면용 View와 최종 API Response를 이름으로 어떻게 구분해야 해?
+- SupportSnapshot은 Response DTO랑 뭐가 달라서 따로 이름을 붙여?
+- dto 패키지가 하나로 뭉쳐 있을 때 Command Query Response를 어떻게 나눠?
+- admin 목록 row 모델이랑 외부 응답 계약을 같은 타입으로 써도 괜찮아?
+- roomescape admin 예약 목록 row 타입과 API Response를 같은 클래스로 써도 돼?
+contextual_chunk_prefix: |
+  이 문서는 초심자가 Command, SupportSnapshot, QueryView, Response가 모두
+  DTO처럼 보여 이름과 패키지 경계를 헷갈릴 때 읽는 chooser다. 요청 입력,
+  내부 판단 재료, 조회 전용 읽기 모델, 외부 응답 계약을 왜 다른 이름으로
+  부르는지, View를 Response로 바로 내보내도 되는지, DTO 패키지를 어떻게
+  나누는지 같은 자연어 질문을 역할 중심 naming 기준으로 연결한다.
+---
 # Command DTO Vs Query View Naming Checklist
 
 > 한 줄 요약: `Command`, `SupportSnapshot`, `QueryView`, `Response`는 모두 DTO처럼 보여도 바뀌는 이유와 두는 패키지가 다르므로, 이름에 역할을 붙여 두면 초심자가 레이어 경계를 훨씬 덜 헷갈린다.

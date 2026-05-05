@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Timeout 에러코드 매핑 미니카드
+concept_id: database/timeout-errorcode-mapping-mini-card
+canonical: false
+category: database
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- exception-root-cause-mapping
+- timeout-bucket-split
+- retry-policy-classification
+aliases:
+- timeout error code mapping mini card
+- timeout bucket card
+- mysql 1205 1213 postgres 55p03 40p01 40001 57014
+- jdbc sqltimeoutexception spring querytimeoutexception cannotacquirelockexception
+- busy retryable query-too-slow
+- timeout 예외명 매핑
+- 타임아웃 에러코드 버킷
+- 초급자 timeout 분류표
+- lock wait timeout exceeded try restarting transaction
+- deadlock found when trying to get lock try restarting transaction
+- connection is not available request timed out after
+- pool borrow timeout log example
+- query too slow bucket
+- 처음 배우는데 timeout 뭐예요
+- cannotacquirelockexception basics
+symptoms:
+- CannotAcquireLockException이 떴는데 재시도해야 할지 모르겠어
+- timeout인데 락 대기인지 느린 쿼리인지 구분이 안 돼
+- Hikari request timed out after 로그가 데드락이랑 같은 건지 헷갈려
+intents:
+- drill
+prerequisites:
+- database/transaction-timeout-vs-lock-timeout
+- database/connection-pool-basics
+next_docs:
+- database/timeout-log-timeline-first-failure-checklist-card
+- database/slow-query-analysis-playbook
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+linked_paths:
+- contents/database/mysql-sqltimeoutexception-driver-3024-mini-card.md
+- contents/database/pool-timeout-term-matching-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/timeout-log-timeline-first-failure-checklist-card.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with:
+- database/connection-timeout-vs-lock-timeout-card
+- database/statement-timeout-vs-lock-timeout-card
+- database/duplicate-key-vs-serialization-failure-mini-card
+forbidden_neighbors: []
+expected_queries:
+- CannotAcquireLockException이면 바로 retry해야 해?
+- timeout 로그가 pool 문제인지 lock timeout인지 빨리 구분하는 법 알려줘
+- 1205 1213 55P03 40P01 40001 57014를 초보자용으로 묶어 설명해줘
+- QueryTimeoutException이랑 deadlock을 같은 timeout으로 봐도 돼?
+- busy retryable query-too-slow 세 버킷을 예외 이름 기준으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 초급 학습자가 timeout 예외를 하나로 뭉뚱그리지 않고 busy,
+  retryable, query-too-slow 세 버킷으로 나눠 첫 대응을 정리하도록
+  확인 질문으로 굳힌다. 락 줄 막힘인지, 이번 시도만 다시 하면 되는지,
+  SQL 자체가 느린지, pool 대기와 deadlock 구분, 예외 이름보다 대응
+  분류 먼저 보기 같은 자연어 paraphrase가 본 문서의 매핑 기준에
+  연결된다.
+---
 # Timeout 에러코드 매핑 미니카드
 
 > 한 줄 요약: timeout처럼 보여도 먼저 `busy` / `retryable` / `query-too-slow` 3버킷으로 번역하면, MySQL/PostgreSQL 코드와 JDBC/Spring 예외 이름을 초보자도 덜 헷갈린다.

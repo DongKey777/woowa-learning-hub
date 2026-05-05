@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 0-1 BFS lexicographic tie mini note
+concept_id: algorithm/zero-one-bfs-lexicographic-tie-mini-note
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- lexicographic-tie-break
+- shortest-path-order-requirement
+aliases:
+- 0-1 bfs lexicographic tie
+- zero one bfs lexicographic path
+- 0-1 bfs 사전순 경로
+- 0-1 bfs equal distance lexicographic
+- 0-1 bfs same distance lexicographic parent
+- 0-1 bfs parent tie break lexicographic
+- lexicographically smallest shortest path 0-1 bfs
+- shortest path lexicographic tie break
+- 0-1 bfs newdist == dist lexicographic
+- 0-1 bfs 동점 사전순
+- 0-1 bfs parent 비교
+- 0-1 bfs 작은 경로 선택
+- 0-1 bfs equal cost path order
+- 0-1 bfs tie break beginner
+- zero one bfs lexicographic tie mini note basics
+symptoms:
+- 최단 거리는 같은데 사전순으로 더 작은 경로를 어떻게 고르는지 모르겠어
+- newDist == dist[next]일 때만 왜 추가 비교가 붙는지 감을 잡고 싶어
+- 부모 번호 비교와 전체 경로 사전순 비교가 어떻게 다른지 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/zero-one-bfs-parent-tie-mini-note
+- algorithm/zero-one-bfs-equal-distance-reinsert-mini-note
+next_docs:
+- algorithm/zero-one-bfs-full-path-lexicographic-bridge
+- algorithm/shortest-path-reconstruction-bridge
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+linked_paths:
+- contents/algorithm/zero-one-bfs-parent-tie-mini-note.md
+- contents/algorithm/zero-one-bfs-equal-distance-reinsert-mini-note.md
+- contents/algorithm/zero-one-bfs-full-path-lexicographic-bridge.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+confusable_with:
+- algorithm/zero-one-bfs-parent-tie-mini-note
+- algorithm/zero-one-bfs-full-path-lexicographic-bridge
+- algorithm/shortest-path-reconstruction-bridge
+forbidden_neighbors:
+- contents/algorithm/zero-one-bfs-equal-distance-reinsert-mini-note.md
+expected_queries:
+- 최단 거리 경로가 여러 개면 사전순으로 가장 작은 경로를 어떻게 정해야 하는지 알려줘
+- 0-1 BFS에서 동점일 때 parent만 다시 비교하는 분기가 왜 필요한지 예시로 보고 싶어
+- 같은 거리 후보에서는 그대로 두던 기본형이 사전순 요구를 만나면 어디서 달라지는지 궁금해
+- 부모 번호가 더 작은 경우와 전체 경로가 더 앞서는 경우가 왜 다를 수 있는지 설명해줘
+- lexicographically smallest shortest path를 0-1 BFS에 붙일 때 어느 분기에서 규칙이 추가되는지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS 기본형에서 같은 최단 거리 후보를 그냥 넘기던 흐름이,
+  사전순으로 가장 작은 경로를 요구하는 문제로 바뀔 때 어떤 추가 비교를
+  붙여야 하는지 연결하는 bridge다. 동점 경로의 parent 비교, 전체 경로
+  사전순, newDist == dist[next] 분기에서만 규칙이 달라지는 이유 같은
+  자연어 질문이 이 문서의 핵심 연결점으로 매핑된다.
+---
 # 0-1 BFS lexicographic tie mini note
 
 > 한 줄 요약: 최단 거리만 맞으면 되는 기본형과 달리, "사전순으로 더 작은 경로"까지 요구되면 `newDist == dist[next]`일 때도 어떤 부모가 더 앞서는지 비교하는 추가 규칙이 필요하다.

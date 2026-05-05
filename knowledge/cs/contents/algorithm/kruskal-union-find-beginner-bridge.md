@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Kruskal에서 Union-Find가 끼는 순간
+concept_id: algorithm/kruskal-union-find-beginner-bridge
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- mst-cycle-check
+- union-find-role-separation
+aliases:
+- kruskal union find beginner
+- kruskal dsu intro
+- mst cycle check basics
+- why union find in kruskal
+- kruskal 처음 배우기
+- union find가 왜 필요한가
+- mst 뭐예요 kruskal
+- edge list mst intro
+- same group cycle check
+- beginner graph mst
+symptoms:
+- 크루스칼에서 왜 union-find가 필요한지 역할이 분리돼서 안 보여
+- MST 문제인데 탐색 말고 분리 집합이 왜 나오는지 감이 안 와
+- 간선 정렬과 사이클 판별 중 무엇이 크루스칼이고 무엇이 union-find인지 헷갈려
+intents:
+- comparison
+prerequisites:
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+- data-structure/union-find-standalone-beginner-primer
+next_docs:
+- data-structure/union-find-deep-dive
+- algorithm/graph
+linked_paths:
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+- contents/algorithm/graph.md
+- contents/data-structure/union-find-standalone-beginner-primer.md
+- contents/data-structure/union-find-deep-dive.md
+confusable_with:
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+- data-structure/union-find-standalone-beginner-primer
+forbidden_neighbors:
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+- contents/data-structure/union-find-standalone-beginner-primer.md
+expected_queries:
+- 크루스칼에서 union find가 정확히 어느 순간에 쓰이는지 연결해서 설명해줘
+- MST에서 사이클 검사를 왜 union-find로 하는지 초보자 기준으로 알고 싶어
+- 크루스칼 알고리즘과 union-find 역할 차이를 한 번에 이해하고 싶어
+- 간선을 비용순으로 보면서 같은 그룹인지 확인하는 흐름이 왜 필요한 거야
+- 최소 스패닝 트리 문제에서 union find가 끼는 이유를 예시로 설명해줘
+- Prim이 아니라 Kruskal을 볼 때 union-find가 왜 함께 따라오는지 첫 연결이 필요해
+- MST 문제 풀이에서 간선 정렬 단계와 서로소 집합 단계가 어떻게 이어지는지 헷갈려
+contextual_chunk_prefix: |
+  이 문서는 알고리즘 초급자가 Kruskal과 Union-Find의 역할을 함께 처음 엮어 보는 bridge다. 가장 싼 간선을 순서대로 볼 때 정확히 어느 순간 묶음 검사가 끼는지, 트리를 늘리는 주체와 사이클 여부만 빠르게 확인하는 보조 도구를 어떻게 분리해 읽는지, 간선 고르기와 그룹 합치기 흐름 연결 같은 자연어 paraphrase가 본 문서의 핵심 연결에 매핑된다.
+---
 # Kruskal에서 Union-Find가 끼는 순간
 
 > 한 줄 요약: Kruskal은 `가장 싼 간선을 하나씩 넣어도 되나?`를 반복해서 묻는 MST 알고리즘이고, union-find는 그때 `지금 넣으면 사이클이 생기나?`를 빠르게 판별하는 보조 도구다.

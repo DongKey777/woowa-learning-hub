@@ -10,13 +10,11 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
+- [Spring `@DataJpaTest` Mental-Model Bridge: 런타임 트랜잭션 감각을 테스트에 그대로 옮기기](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
+- [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+- [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md)
 
-> 관련 문서:
-> - [Spring `@DataJpaTest` Mental-Model Bridge: 런타임 트랜잭션 감각을 테스트에 그대로 옮기기](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
-> - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
-> - [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md)
-
-retrieval-anchor-keywords: datajpatest bulk update stale state, jpql bulk update clear, persistence context stale entity test, datajpatest clear reload beginner, testentitymanager clear bulk update, @modifying clearautomatically beginner, bulk update old value after findbyid, jpa bulk update persistence context bypass, junior jpa stale state primer, spring datajpatest bulk update stale state mini guide basics, spring datajpatest bulk update stale state mini guide beginner, spring datajpatest bulk update stale state mini guide intro, spring basics, beginner spring, 처음 배우는데 spring datajpatest bulk update stale state mini guide
+retrieval-anchor-keywords: datajpatest bulk update stale state, jpql bulk update clear, persistence context stale entity test, datajpatest clear reload beginner, testentitymanager clear bulk update, @modifying clearautomatically beginner, bulk update old value after findbyid, jpa bulk update persistence context bypass, bulk update 했는데 값이 안 바뀌어요, 왜 다시 조회해도 옛값이에요, datajpatest bulk update 처음, datajpatest bulk update 헷갈려요, spring basics, beginner spring, 처음 배우는데 bulk update stale state
 
 ## 먼저 mental model 한 줄
 

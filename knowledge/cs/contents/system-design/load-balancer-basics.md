@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 로드 밸런서 기초 (Load Balancer Basics)
+concept_id: system-design/load-balancer-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- l4-vs-l7-boundary
+- sticky-session-vs-stateless
+- health-check-readiness-basics
+aliases:
+- load balancer basics
+- 로드 밸런서 입문
+- load balancer 뭐예요
+- l4 l7 로드밸런서
+- health check 기초
+- 서버 부하 분산
+- 트래픽 분산
+- sticky session 기초
+- horizontal scaling with load balancer
+symptoms:
+- 서버를 여러 대 띄웠는데 요청을 어디로 나눠 보내야 하는지 모르겠어
+- sticky session이 왜 필요하고 왜 위험한지 한 번에 정리가 안 돼
+- L4랑 L7을 어디 기준으로 나누는지 헷갈려
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/system-design-foundations
+- system-design/stateless-vs-stateful-basics
+next_docs:
+- system-design/load-balancer-drain-and-affinity-primer
+- system-design/service-discovery-health-routing-design
+- system-design/global-traffic-failover-control-plane-design
+linked_paths:
+- contents/system-design/load-balancer-drain-and-affinity-primer.md
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/stateless-vs-stateful-basics.md
+- contents/system-design/system-design-foundations.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/api-gateway-basics.md
+- contents/network/http-https-basics.md
+confusable_with:
+- system-design/service-discovery-health-routing-design
+- system-design/api-gateway-basics
+- system-design/stateless-vs-stateful-basics
+forbidden_neighbors: []
+expected_queries:
+- 로드 밸런서는 왜 서버 여러 대 앞에 두는 거야?
+- 처음 배우는 입장에서 L4 로드 밸런서와 L7 로드 밸런서를 어떻게 구분해?
+- sticky session을 쓰면 수평 확장이 왜 불편해져?
+- health check가 왜 없으면 장애 서버로 계속 요청이 가?
+- 로드 밸런서와 stateless 앱 설계를 왜 같이 설명해?
+contextual_chunk_prefix: |
+  이 문서는 로드 밸런서를 처음 배우는 학습자가 요청 분산, health check,
+  L4/L7 차이, sticky session과 stateless 확장 관계를 한 번에 잡게 돕는
+  beginner primer다. 서버를 여러 대 두면 누가 나눠 보내나, 왜 health
+  check가 필요하나, sticky session이 왜 scale-out을 꼬이게 하나 같은
+  자연어 질문이 본 문서의 기본 mental model로 매핑된다.
+---
 # 로드 밸런서 기초 (Load Balancer Basics)
 
 > 한 줄 요약: 로드 밸런서는 들어오는 요청을 여러 서버 인스턴스에 나눠 보내서 한 서버가 과부하되지 않도록 막는 중간 컴포넌트다.

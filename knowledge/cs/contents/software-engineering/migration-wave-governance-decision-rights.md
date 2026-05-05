@@ -1,6 +1,6 @@
 # Migration Wave Governance and Decision Rights
 
-> 한 줄 요약: migration은 기술 작업의 묶음이 아니라, wave별 목표와 중단 기준과 decision right를 분명히 둬야 하는 프로그램이며, 누가 다음 wave로 넘어가고 누가 멈출 수 있는지 명확해야 오래 가도 무너지지 않는다.
+> 한 줄 요약: `누가 다음 wave로 넘어가고, 누가 rollout을 멈출 수 있나요?`처럼 승인 권한과 pause 권한이 섞여 헷갈릴 때 먼저 보는 governance 문서로, migration을 기술 작업 묶음이 아니라 wave별 목표·중단 기준·decision right가 있는 프로그램으로 정리한다.
 
 **난이도: 🔴 Advanced**
 
@@ -24,6 +24,19 @@
 > - adoption wave
 > - migration steering
 > - carrying cost
+
+## 먼저 이 문서가 맞는 질문인지
+
+아래처럼 `권한`, `승인`, `pause`, `다음 wave`가 섞여 있으면 이 문서가 맞다.
+
+| 지금 묻는 질문 | 먼저 볼 문서 | 아직 과한 문서 |
+|---|---|---|
+| `누가 다음 wave로 올려요?`, `누가 멈출 수 있어요?` | 이 문서 | stop-loss, funding deep dive |
+| `전환 상태를 어떤 숫자로 보죠?` | [Migration Scorecards](./migration-scorecards.md) | 이 문서를 scorecard 대용으로 읽기 |
+| `consumer를 어떤 순서로 옮기죠?` | [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md) | decision-right 문서만 읽고 실행 계획 만들기 |
+| `이 migration을 계속할지 줄일지 접을지` | [Migration Stop-Loss and Scope Reduction Governance](./migration-stop-loss-scope-reduction-governance.md) | wave 승인 문서만으로 stop 판단하기 |
+
+- 짧게 자르면 `누가 결정하나`는 이 문서, `무슨 숫자를 보나`는 scorecard, `누굴 먼저 옮기나`는 consumer playbook, `계속할 가치가 있나`는 stop-loss다.
 
 ## 핵심 개념
 
@@ -180,6 +193,12 @@ migration wave governance의 핵심은 더 많은 회의가 아니라, **누가 
 - lagging consumer 예외는 누가 승인하고 언제 닫는가?
 - pause 권한은 실제 운영 리스크를 보는 사람에게도 있는가?
 - migration governance가 funding과 deprecation 일정과 연결되어 있는가?
+
+## 다음 읽기
+
+- [Migration Scorecards](./migration-scorecards.md): wave exit를 느낌이 아니라 어떤 수치로 닫을지 바로 이어서 본다.
+- [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md): governance table을 실제 consumer rollout 순서로 옮기는 방법을 본다.
+- [Migration Stop-Loss and Scope Reduction Governance](./migration-stop-loss-scope-reduction-governance.md): `다음 wave로 갈지`가 아니라 `계속할지 줄일지`를 묻는 순간 넘어간다.
 
 ## 한 줄 정리
 

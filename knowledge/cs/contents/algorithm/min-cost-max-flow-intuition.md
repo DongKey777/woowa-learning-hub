@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Min-Cost Max-Flow Intuition
+concept_id: algorithm/min-cost-max-flow-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- assignment-to-flow-modeling
+- costed-matching-boundary
+aliases:
+- min-cost max-flow
+- mcmf
+- minimum cost flow
+- minimum cost maximum flow
+- weighted bipartite matching
+- minimum cost assignment
+- transportation problem
+- 비용 있는 매칭
+- 최소 비용 할당
+- 운송 문제
+- 수요 공급 배분
+symptoms:
+- 최대 유량은 알겠는데 비용까지 최소화하려면 무엇이 추가되는지 모르겠어
+- 배정 문제를 헝가리안으로 볼지 min-cost max-flow로 볼지 경계가 헷갈려
+- 공급지와 수요지가 여러 개일 때 왜 shortest path가 아니라 flow로 모델링하는지 감이 안 와
+intents:
+- definition
+prerequisites:
+- algorithm/network-flow-intuition
+next_docs:
+- algorithm/hungarian-algorithm-intuition
+- algorithm/bitmask-dp
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+linked_paths:
+- contents/algorithm/hungarian-algorithm-intuition.md
+- contents/algorithm/network-flow-intuition.md
+- contents/algorithm/bitmask-dp.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+confusable_with:
+- algorithm/hungarian-algorithm-intuition
+- algorithm/network-flow-intuition
+- algorithm/bitmask-dp
+forbidden_neighbors:
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+expected_queries:
+- 최대 유량에 비용까지 붙으면 어떤 알고리즘 관점으로 읽어야 하는지 알려줘
+- 최소 비용 할당 문제를 min-cost max-flow로 바꾸는 기본 모델이 궁금해
+- weighted matching과 transportation problem을 같은 흐름 최적화로 보는 이유가 뭐야
+- 헝가리안 알고리즘 대신 min-cost flow를 떠올려야 하는 상황을 비교해줘
+- 공급 수요 배분에서 총 운송비를 최소화하는 모델을 알고리즘 관점으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 비용이 붙은 배정과 운송 문제를 보는 학습자가 최대 유량에 비용 최소화가 왜 함께 필요한지, weighted matching과 assignment를 flow 관점으로 처음 잡는 primer다. 배정 비용까지 같이 최적화, 공급과 수요를 가장 싸게 연결, 운송비가 있는 분배, 헝가리안 대신 flow를 떠올릴 때, residual graph로 선택을 되돌리는 감각 같은 자연어 paraphrase가 본 문서의 핵심 모델에 매핑된다.
+---
 # Min-Cost Max-Flow Intuition
 
 > 한 줄 요약: Min-Cost Max-Flow는 "얼마나 많이 보낼 수 있는가"와 "그중 가장 싸게 보내는 조합은 무엇인가"를 함께 푸는 흐름 최적화다.

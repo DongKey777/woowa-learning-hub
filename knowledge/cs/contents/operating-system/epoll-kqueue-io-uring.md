@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: epoll, kqueue, io_uring
+concept_id: operating-system/epoll-kqueue-io-uring
+canonical: false
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- readiness-vs-completion
+- event-api-selection
+- epoll-edge-trigger-drain
+aliases:
+- epoll kqueue io_uring comparison
+- readiness vs completion io
+- event notification api chooser
+- epoll vs io_uring
+- kqueue vs epoll
+- io_uring adoption tradeoff
+- linux event loop kernel api
+- 많은 연결 io api 선택
+- 이벤트 루프 커널 인터페이스 비교
+- readiness model completion model 차이
+symptoms:
+- 연결 수가 많아질 때 epoll, kqueue, io_uring 중 무엇을 먼저 떠올려야 할지 모르겠어요
+- event loop 이야기를 들으면 readiness 모델과 completion 모델이 한꺼번에 섞여요
+- io_uring이 무조건 최신 정답처럼 보이는데 언제 과한 선택인지 판단이 안 돼요
+intents:
+- comparison
+- design
+prerequisites:
+- operating-system/io-models-and-event-loop
+- operating-system/syscall-user-kernel-boundary
+next_docs:
+- operating-system/epoll-level-edge-oneshot-wakeup-semantics
+- operating-system/io-uring-operational-hazards-registered-resources-sqpoll
+- operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement
+linked_paths:
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/timerfd-epoll-timer-integration.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+confusable_with:
+- operating-system/io-models-and-event-loop
+- operating-system/epoll-level-edge-oneshot-wakeup-semantics
+- operating-system/io-uring-operational-hazards-registered-resources-sqpoll
+forbidden_neighbors:
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+expected_queries:
+- 대량 연결 서버에서 epoll이랑 io_uring을 어떤 기준으로 비교해야 해?
+- kqueue까지 포함해서 이벤트 통지 API 선택 기준을 한 번에 정리해줘
+- readiness 기반 event loop와 completion 기반 io_uring 차이를 운영 관점에서 설명해줘
+- 커넥션 수가 많을 때 최신 API를 바로 고르기 전에 무엇부터 봐야 해?
+- epoll, kqueue, io_uring을 입문자가 혼동하지 않게 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 운영체제 학습자가 대량 연결 서버에서 epoll, kqueue,
+  io_uring 중 어느 커널 이벤트 경로가 맞는지 결정하게 돕는 chooser다.
+  준비 신호만 모으는 방식, 완료 통지를 나중에 수거하는 방식, BSD 계열
+  이벤트 묶음, syscall 왕복 줄이기, wakeup 비용과 배치 제출, 최신
+  인터페이스가 항상 이득은 아님 같은 자연어 paraphrase가 본 문서의
+  선택 기준에 매핑된다.
+---
 # epoll, kqueue, io_uring
 
 > 한 줄 요약: 많은 연결을 다룰 때는 `blocking`을 줄이는 것보다, 커널이 I/O 준비 완료를 더 싸게 알려주도록 구조를 바꾸는 게 핵심이다.

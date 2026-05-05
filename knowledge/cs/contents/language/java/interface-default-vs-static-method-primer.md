@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 인터페이스 `default method` vs `static` method 프라이머
+concept_id: language/interface-default-vs-static-method-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- default-method-overreach
+- interface-static-utility-placement
+- contract-vs-helper-boundary
+aliases:
+- interface default vs static method
+- default method vs static method beginner
+- default method 언제 쓰는지
+- interface static method 언제 쓰는지
+- interface static method vs utility class
+- interface static method utility class 차이
+- 인터페이스 static 메서드 vs 유틸리티 클래스
+- 인터페이스 static 메서드 언제 쓰는지
+- utility class 언제 쓰는지
+- 정적 메서드 어디에 두나
+- interface 안에 둘지 utility class로 뺄지
+- interface private helper method
+- interface private method 언제 쓰는지
+- 처음 배우는데 default method와 static method 차이
+- interface default vs static method primer basics
+symptoms:
+- 인터페이스 안에 몸체가 있는 메서드가 둘 다 보여서 default와 static 역할이 한꺼번에 섞여 보여
+- 구현체가 상속받는 동작과 인터페이스 옆 헬퍼를 어디서 갈라야 하는지 모르겠어
+- interface private helper까지 나오면 밖에서 부르는 메서드와 안에서만 쓰는 메서드가 더 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/interface-default-method-contract-evolution-primer
+- language/java-abstract-class-vs-interface-basics
+next_docs:
+- language/default-method-contract-evolution-vs-conflict-mini-drill
+- language/interface-default-method-diamond-conflict-basics
+- software-engineering/repository-interface-contract
+linked_paths:
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/default-method-contract-evolution-vs-conflict-mini-drill.md
+- contents/language/java/interface-default-method-diamond-conflict-basics.md
+- contents/language/java/java-instance-static-factory-methods-primer.md
+- contents/language/java/collection-vs-collections-vs-arrays-utility-mini-bridge.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/software-engineering/repository-interface-contract-primer.md
+confusable_with:
+- language/interface-default-method-contract-evolution-primer
+- language/java-instance-static-factory-methods-primer
+- language/collection-vs-collections-vs-arrays-utility-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- 인터페이스의 default method와 static method를 처음 배울 때 어떤 기준으로 나누면 돼?
+- 구현체가 물려받는 기본 동작과 인터페이스 이름으로만 부르는 헬퍼를 구분해 설명해줘
+- interface private method까지 포함해서 default, static, private 역할 차이를 정리한 입문 문서가 필요해
+- utility class로 뺄지 interface static method로 둘지 감이 안 올 때 먼저 읽을 자바 문서가 뭐야?
+- Java 인터페이스 안의 메서드 몸체들을 beginner 기준으로 비교한 프라이머를 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 처음 배우는 Java 학습자가 인터페이스 안의 default method,
+  static method, private helper를 역할별로 나눠 기초를 잡는 primer다.
+  구현체가 물려받는 기본 동작, 인터페이스 이름으로만 부르는 도우미,
+  utility class로 빼야 하나, 밖에서 호출되는가 안에서만 쓰는가 같은
+  자연어 paraphrase와 계약 옆에 두는 편의 기능을 어디까지 허용할지 같은
+  질문이 본 문서의 핵심 구분에 매핑된다.
+---
 # 인터페이스 `default method` vs `static` method 프라이머
 
 > 한 줄 요약: 처음 배우는데 인터페이스 메서드 몸체가 둘 다 보여 헷갈린다면, `default method`는 "구현체에게도 보이는 기본 동작", interface `static` method는 "인터페이스 이름으로만 부르는 도우미"라고 먼저 나누면 된다.

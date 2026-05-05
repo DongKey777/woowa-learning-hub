@@ -1,0 +1,106 @@
+---
+schema_version: 3
+title: 'baseball 재시작 입력/게임 종료 흐름 ↔ 상태 패턴 브릿지'
+concept_id: design-pattern/baseball-restart-flow-state-pattern-bridge
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/baseball
+review_feedback_tags:
+- restart-flow-state-modeling
+- boolean-flag-smell
+- ui-domain-phase-boundary
+aliases:
+- baseball 재시작 상태 패턴
+- 야구 미션 게임 종료 분기
+- baseball 1이면 재시작 2면 종료
+- 야구 미션 isFinished boolean
+- baseball while loop 상태 전이
+symptoms:
+- 3스트라이크 뒤 재시작 여부를 묻는 분기가 controller while문에 계속 붙어요
+- isFinished, shouldRestart 같은 boolean이 같이 늘어나요
+- 입력 단계와 게임 종료 단계가 한 메서드에 섞여서 읽기 어려워요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/state-pattern-workflow-payment
+- software-engineering/baseball-guess-value-object-boundary-bridge
+next_docs:
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/baseball-random-number-generator-strategy-bridge
+linked_paths:
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+- contents/design-pattern/baseball-random-number-generator-strategy-bridge.md
+- contents/software-engineering/baseball-guess-value-object-boundary-bridge.md
+confusable_with:
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/state-machine-library-vs-state-pattern
+- design-pattern/baseball-random-number-generator-strategy-bridge
+forbidden_neighbors:
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+expected_queries:
+- 야구 미션에서 3스트라이크 뒤 재시작 분기를 계속 if 문으로 두면 왜 읽기 어려워?
+- baseball에서 1 입력이면 재시작 2 입력이면 종료를 상태로 보라는 말이 무슨 뜻이야?
+- GameFinished, RestartRequested 같은 boolean 여러 개가 생기는데 상태 패턴으로 풀 수 있어?
+- 야구 미션 리뷰에서 입력 단계와 재시작 단계를 분리하라는데 어떻게 이해해?
+- baseball 게임 루프를 controller while문 하나로 몰아두지 말라는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa baseball 미션에서 추측 입력 단계와 3스트라이크 후 재시작/종료
+  단계를 같은 while문과 boolean flag로 뭉개지지 않고 상태 전이로 읽게 돕는
+  mission_bridge다. 1이면 재시작, 2면 종료, isFinished, shouldRestart,
+  게임 루프 분기, 입력 단계와 종료 단계 분리, 상태 패턴 입문 같은 학습자 표현을
+  baseball 흐름과 상태 객체 경계 설명으로 연결한다.
+---
+
+# baseball 재시작 입력/게임 종료 흐름 ↔ 상태 패턴 브릿지
+
+## 한 줄 요약
+
+> baseball 미션에서 어려운 지점은 숫자 판정 자체보다 "지금 추측을 받아야 하는가, 이미 승리해서 재시작 여부를 물어야 하는가, 게임이 끝났는가"가 단계마다 달라진다는 점이다. 이 분기가 커질수록 `while`문과 boolean 묶음보다 상태 전이로 읽는 편이 낫다.
+
+## 미션 시나리오
+
+baseball 미션은 처음엔 단순해 보인다. 숫자를 입력받아 strike/ball을 계산하고, `3스트라이크`면 끝내면 된다. 그런데 곧 "`1`이면 재시작, `2`면 종료" 규칙이 붙으면서 게임 루프가 두 단계로 갈라진다. 아직 추측을 받아야 하는 단계와, 이미 승리해서 다음 명령만 받아야 하는 단계가 다르기 때문이다.
+
+학습자가 자주 만드는 구조는 이런 모양이다.
+
+```java
+while (!isFinished) {
+    if (isThreeStrike) {
+        askRestart();
+    } else {
+        readGuess();
+    }
+}
+```
+
+처음에는 돌아가지만, `isFinished`, `shouldRestart`, `wonCurrentRound`가 같이 생기면 "지금 가능한 입력이 뭔가"를 변수 조합으로 해석해야 한다. PR에서 "`게임 단계가 값 조합에 숨어 있어요`", "`controller가 재시작 규칙까지 다 알고 있네요`"라는 코멘트가 붙는 지점이 여기다.
+
+## CS concept 매핑
+
+이 흐름은 상태 패턴의 아주 작은 입구로 볼 수 있다. 핵심은 객체가 단순히 점수만 들고 있는 게 아니라 "현재 어떤 단계인가"를 함께 표현한다는 점이다. `AwaitingGuess`, `AwaitingRestartCommand`, `GameClosed`처럼 단계가 나뉘면, 각 상태가 허용 입력을 스스로 설명할 수 있다.
+
+baseball에서 중요한 건 거대한 프레임워크식 상태 머신이 아니다. "`3스트라이크 이후에는 숫자 추측이 아니라 재시작 명령만 받아야 한다`"처럼 허용 행동이 단계에 따라 바뀌는 부분을 서비스의 `if` 문이 아니라 상태 전이로 올리는 것이다. 반대로 strike/ball 계산 자체는 상태 패턴보다 도메인 판정 규칙에 가깝다. 리뷰에서 "`boolean을 줄여라`"는 말의 요지는 변수 개수보다, 단계 전이 책임을 한 곳에 모으라는 뜻이다.
+
+## 미션 PR 코멘트 패턴
+
+- "`isFinished`, `shouldRestart`, `won` 세 값이 어떤 조합에서 유효한지 외워야 해요`"라는 피드백은 상태가 boolean 조합에 숨어 있다는 신호다.
+- "`3스트라이크 후에도 같은 입력 메서드를 타네요`"라는 코멘트는 추측 단계와 재시작 단계가 분리되지 않았다는 뜻이다.
+- "`controller가 게임 라운드 생명주기를 모두 들고 있네요`"라는 리뷰는 UI가 아니라 도메인 단계 전이가 커졌다는 의미다.
+- "`enum만 만들고 switch가 더 길어졌다`"면 상태 이름만 생겼고, 허용 동작과 전이 책임은 아직 메서드 바깥에 남아 있다.
+
+## 다음 학습
+
+- 상태와 전략을 어디서 가를지 더 또렷하게 보려면 [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)를 이어서 읽는다.
+- 상태 전이를 일반화한 설명은 [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)에서 확인한다.
+- baseball에서 랜덤 생성 책임까지 함께 정리하려면 [baseball 컴퓨터 숫자 생성 ↔ 전략 객체와 Random 경계 브릿지](./baseball-random-number-generator-strategy-bridge.md)를 같이 본다.

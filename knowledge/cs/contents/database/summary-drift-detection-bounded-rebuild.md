@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Summary Drift Detection, Invalidation, and Bounded Rebuild
+concept_id: database/summary-drift-detection-bounded-rebuild
+canonical: false
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-drift-repair-scope
+- bounded-rebuild-over-full-rebuild
+- freshness-contract-missing
+aliases:
+- summary drift detection
+- bounded rebuild
+- summary invalidation
+- stale aggregate repair
+- projection drift
+- freshness contract
+- summary table drift
+- partial rebuild scope
+- 왜 요약 테이블 값이 원본과 달라요
+symptoms:
+- 요약 테이블 값이 원본 테이블과 안 맞아요
+- 전체 rebuild 말고 일부 bucket만 다시 계산하고 싶어요
+- late event나 누락 이벤트 때문에 어디까지 다시 돌려야 할지 모르겠어요
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/incremental-summary-table-refresh-watermark
+- database/cdc-gap-repair-reconciliation-playbook
+- database/normalization-denormalization-tradeoffs
+next_docs:
+- database/cdc-replay-verification-idempotency-runbook
+- database/online-backfill-consistency
+- database/replica-lag-observability-routing-slo
+linked_paths:
+- contents/database/incremental-summary-table-refresh-watermark.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/online-backfill-consistency.md
+- contents/database/normalization-denormalization-tradeoffs.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/system-design/projection-applied-watermark-basics.md
+confusable_with:
+- database/incremental-summary-table-refresh-watermark
+- database/cdc-gap-repair-reconciliation-playbook
+forbidden_neighbors:
+- contents/database/normalization-denormalization-tradeoffs.md
+expected_queries:
+- summary table 값이 원본과 달라질 때 drift를 어떻게 탐지해?
+- full rebuild 말고 일부 bucket만 다시 계산하는 기준이 뭐야?
+- summary invalidation과 bounded rebuild를 같이 설계하는 이유가 궁금해
+- stale aggregate를 운영 중에 안전하게 복구하는 흐름을 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 summary table이 refresh는 돌지만 값이 원본과 어긋나는 상황에서,
+  drift detection과 invalidation 그리고 bounded rebuild 범위를 어떻게 설계해야
+  하는지 설명하는 deep_dive다. summary drift, stale aggregate, bounded
+  rebuild, bucket invalidation, projection drift, why summary value differs
+  from source 같은 운영 질문을 부분 재계산과 freshness contract 관점으로 묶는다.
+---
+
 # Summary Drift Detection, Invalidation, and Bounded Rebuild
 
 > 한 줄 요약: summary table은 refresh만 잘 돌린다고 안전하지 않고, 원본과 어긋난 drift를 어떻게 탐지하고 어느 범위만 다시 계산할지 준비돼 있어야 운영이 가능하다.
@@ -11,8 +78,10 @@
 - [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md)
 - [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md)
 - [Online Backfill Consistency와 워터마크 전략](./online-backfill-consistency.md)
+- [Projection Freshness SLO Pattern](../design-pattern/projection-freshness-slo-pattern.md)
+- [Projection Applied Watermark Basics](../system-design/projection-applied-watermark-basics.md)
 
-retrieval-anchor-keywords: summary drift detection, bounded rebuild, bucket invalidation, summary reconciliation, stale aggregate repair, projection drift, freshness contract, rebuild scope
+retrieval-anchor-keywords: summary drift detection, bounded rebuild, bucket invalidation, summary reconciliation, stale aggregate repair, projection drift, freshness contract, rebuild scope, summary drift monitor, summary drift alarm, 요약 테이블 값이 원본과 달라요, 왜 summary 값이 계속 어긋나요, 일부 bucket만 다시 계산, rebuild 범위 어디까지
 
 ## 핵심 개념
 

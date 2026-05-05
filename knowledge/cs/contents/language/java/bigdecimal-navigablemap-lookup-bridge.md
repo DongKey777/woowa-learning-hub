@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: 'BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups'
+concept_id: language/bigdecimal-navigablemap-lookup-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- treemap-bigdecimal-key-semantics
+- compareto-vs-equals
+aliases:
+- bigdecimal navigablemap lookup bridge
+- bigdecimal floorkey ceilingkey treemap
+- bigdecimal range lookup scale difference
+- bigdecimal 1.0 1 treemap floor ceiling
+- bigdecimal submap headmap tailmap compareto equals
+- bigdecimal numerically equal different scale treemap
+- bigdecimal tree map same slot range query
+- 자바 bigdecimal floorkey ceilingkey
+- 자바 bigdecimal submap 범위 조회
+- 자바 bigdecimal scale 다른데 treemap 조회됨
+- 자바 bigdecimal navigablemap beginner
+- bigdecimal navigablemap lookup bridge basics
+- bigdecimal navigablemap lookup bridge beginner
+- bigdecimal navigablemap lookup bridge intro
+- java basics
+symptoms:
+- TreeMap에 1.0을 넣었는데 1이나 1.00으로도 조회돼서 이상해
+- floorKey와 ceilingKey가 scale이 다른 값에도 같은 자리처럼 동작해
+- headMap 경계에서 exact match를 빼야 하는지 포함해야 하는지 헷갈려
+intents:
+- comparison
+prerequisites:
+- language/navigablemap-navigableset-mental-model
+- language/bigdecimal-sorted-collection-bridge
+next_docs:
+- language/bigdecimal-lowerkey-vs-floorkey-mini-drill
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+linked_paths:
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/lower-vs-floor-exact-match-mini-drill.md
+- contents/language/java/bigdecimal-lowerkey-vs-floorkey-mini-drill.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+confusable_with:
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- language/lower-vs-floor-exact-match-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- TreeMap<BigDecimal>에서 1과 1.0이 왜 같은 자리로 조회돼?
+- floorKey와 ceilingKey가 scale 다른 숫자에도 붙는 이유가 뭐야?
+- BigDecimal key로 headMap 경계를 읽는 법을 초보자 기준으로 설명해줘
+- 1.00으로 찾았는데 1.0 key가 돌아오는 이유를 알고 싶어
+- subMap inclusive false가 exact match에서 어떻게 동작하는지 예제로 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 BigDecimal key를 TreeMap에서 조회할 때 숫자
+  비교와 표현 비교가 어떻게 이어지는지 연결하는 bridge다. 1과 1.0이
+  같은 자리로 잡힘, floorKey가 어디에 멈추는지, scale 다른 값으로 범위
+  조회, exact match 제외 headMap, 저장된 대표 key가 반환됨 같은 자연어
+  paraphrase가 본 문서의 조회 규칙에 매핑된다.
+---
 # BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups
 
 > 한 줄 요약: `TreeMap<BigDecimal, V>`에서 `1.0`과 `1`은 `equals()`로는 다르지만 `compareTo() == 0`이면 같은 key 자리로 취급되므로, `floorKey`/`ceilingKey`/`subMap` 같은 조회도 숫자 기준으로 붙어서 동작한다.

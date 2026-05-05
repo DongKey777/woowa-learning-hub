@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 'Blocking I/O, 스레드 풀, 백프레셔 입문'
+concept_id: operating-system/blocking-io-thread-pool-backpressure-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- blocking-io-vs-cpu-bound
+- queue-saturation-mental-model
+aliases:
+- blocking i/o primer
+- non-blocking i/o primer
+- request per thread
+- thread-per-request beginner
+- thread pool basics
+- executor queue saturation
+- queue saturation basics
+- backpressure primer
+- java http thread pool
+- java server thread pool
+- tomcat thread pool basics
+- 왜 cpu는 낮은데 느려요
+- worker thread blocking
+- queue grows timeout why
+- blocking io backpressure basics
+symptoms:
+- CPU는 낮은데 active thread와 queue만 같이 늘어나서 왜 느린지 헷갈려요
+- 외부 I/O가 느려질 때 thread pool이 왜 먼저 꽉 차는지 감이 안 와요
+- queue가 길어질 때 튜닝 문제인지 backpressure 문제인지 구분이 안 돼요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/sync-async-blocking-nonblocking-basics
+- operating-system/process-thread-basics
+next_docs:
+- operating-system/io-models-and-event-loop
+- operating-system/run-queue-load-average-cpu-saturation
+- spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics
+linked_paths:
+- contents/operating-system/sync-async-blocking-nonblocking-basics.md
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- operating-system/sync-async-blocking-nonblocking-basics
+- operating-system/io-models-and-event-loop
+forbidden_neighbors:
+- contents/operating-system/sync-async-blocking-nonblocking-basics.md
+- contents/operating-system/io-models-and-event-loop.md
+expected_queries:
+- CPU는 낮은데 서버 응답이 느리고 thread pool queue만 쌓일 때 어떻게 이해해야 해?
+- blocking I/O가 worker thread를 어떻게 묶고 backpressure 문제로 번지는지 처음부터 설명해줘
+- request-per-thread 서버에서 thread pool이 정확히 무슨 역할을 하는지 알고 싶어
+- queue saturation이 왜 timeout보다 먼저 latency를 망가뜨리는지 예시로 보여줘
+- non-blocking I/O와 blocking I/O를 요청 스레드 기준으로 비교해서 알려줘
+contextual_chunk_prefix: |
+  이 문서는 백엔드 입문자가 CPU 사용률은 낮은데 응답이 느리고 worker
+  thread와 queue만 늘어날 때, blocking I/O와 request-per-thread 모델을
+  backpressure 관점으로 처음 묶어 보는 primer다. 외부 I/O 대기로 스레드가
+  묶임, thread pool이 왜 동시 대기량 상한이 되는지, queue saturation과
+  timeout 관계, reject와 fail-fast를 언제 건강한 신호로 읽는지 같은 자연어
+  질문이 본 문서의 관찰 축에 매핑된다.
+---
+
 # Blocking I/O, 스레드 풀, 백프레셔 입문
 
 > 한 줄 요약: 요청 처리 스레드가 blocking I/O에 묶이면 thread pool은 일을 "빨리" 하는 도구가 아니라 동시에 기다릴 수 있는 수를 제한하는 문이 되고, queue가 차기 시작하면 그때부터는 성능 문제가 아니라 backpressure 설계 문제로 읽어야 한다.

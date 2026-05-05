@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Watermark Metadata Persistence Basics
+concept_id: system-design/watermark-metadata-persistence-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- payload-only-refill
+- watermark-metadata-missing
+- cache-hit-proof-gap
+aliases:
+- cache watermark metadata
+- applied watermark cache entry
+- required watermark cache hit check
+- cache metadata persistence primer
+- watermark metadata persistence basics
+symptoms:
+- cache hit인데 왜 stale인지 증명할 수 없어
+- cache refill에 payload만 넣으면 안 되는지 헷갈려
+- applied watermark와 required watermark를 어디에 저장할지 모르겠어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- system-design/projection-applied-watermark-basics
+- system-design/mixed-cache-replica-freshness-bridge
+next_docs:
+- system-design/rejected-hit-observability-primer
+- system-design/shard-aware-watermark-scope-primer
+linked_paths:
+- contents/system-design/outbox-watermark-token-primer.md
+- contents/system-design/projection-applied-watermark-basics.md
+- contents/system-design/cache-acceptance-rules-for-causal-reads.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/shard-aware-watermark-scope-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+confusable_with:
+- system-design/projection-applied-watermark-basics
+- system-design/outbox-watermark-token-primer
+- system-design/cache-acceptance-rules-for-causal-reads
+forbidden_neighbors:
+- contents/system-design/projection-applied-watermark-basics.md
+expected_queries:
+- cache refill에 watermark metadata를 왜 같이 저장해?
+- applied watermark와 required watermark는 cache hit에서 어떻게 비교해?
+- cache entry가 stale인지 숫자 비교 한 번으로 판정하려면 뭐가 필요해?
+- payload만 cache에 저장하면 다음 요청에서 freshness를 왜 다시 증명 못 해?
+- cache hit acceptance check에 watermark metadata가 없으면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 cache refill 때 payload만 저장하면 다음 cache hit에서
+  freshness를 다시 증명할 수 없다는 사실을 beginner 수준에서 이해하게 돕는
+  primer다. cache hit인데 왜 stale인지 증명 못 함, applied watermark를 왜
+  cache metadata로 남기나, required watermark 비교를 어디서 하나 같은 자연어
+  질문이 본 문서의 metadata persistence 흐름으로 매핑된다.
+---
+
 # Watermark Metadata Persistence Basics
 
 > 한 줄 요약: outbox가 만든 `required_watermark`와 projection이 만든 `applied_watermark`는 cache refill 때 entry metadata로 같이 저장해야 하고, 그래야 다음 cache hit에서 "이 값을 지금 바로 써도 되나?"를 숫자 비교 한 번으로 판단할 수 있다.

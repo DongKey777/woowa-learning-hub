@@ -9,15 +9,17 @@
 - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
 - [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
 - [Service 계층 기초](./service-layer-basics.md)
+- [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
 - [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 - [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)
 - [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+- [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - [Module API DTO Patterns](./module-api-dto-patterns.md)
 - [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
-retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity는 뭐예요, repository dao entity 뭐가 달라요, service가 dao를 바로 알아도 되나요, entity 저장 모양, entity를 dto로 써도 되나요, repository와 query model 차이, dao와 query model 차이, persistence mental model, 처음 영속성 큰 그림, what is repository entity
+retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity는 뭐예요, repository dao entity 뭐가 달라요, service가 dao를 바로 알아도 되나요, entity 저장 모양, entity를 dto로 써도 되나요, repository와 query model 차이, dao와 query model 차이, persistence mental model, 왜 repository가 dao 위에 있어요, what is repository entity
 
 처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결하고, 더 큰 설계 그림이 필요하면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 다시 올라가면 된다.
 
@@ -27,8 +29,8 @@ retrieval-anchor-keywords: repository dao entity beginner, repository dao entity
 
 | 지금 머리에 떠오르는 말 | 먼저 붙일 이름 | 이 문서에서 바로 볼 자리 | 다음 한 걸음 |
 |---|---|---|---|
-| "`service`가 `dao`를 바로 알아도 되나요?" | 저장 책임 경계 문제 | [같은 주문 생성 시나리오로 이어 보기](#같은-주문-생성-시나리오로-이어-보기) | [Service 계층 기초](./service-layer-basics.md) |
-| "`entity`를 DTO처럼 그냥 넘기면 안 돼요?" | 타입 섞임 문제 | [레이어 계약까지 같이 보면](#레이어-계약까지-같이-보면) | [DTO, VO, Entity 기초](./dto-vo-entity-basics.md) |
+| "`service`가 `dao`를 바로 알아도 되나요?" | 저장 책임 경계 문제 | [같은 주문 생성 시나리오로 이어 보기](#같은-주문-생성-시나리오로-이어-보기) | [Repository Interface Contract Primer](./repository-interface-contract-primer.md) |
+| "`entity`를 DTO처럼 그냥 넘기면 안 돼요?" | 타입 섞임 문제 | [레이어 계약까지 같이 보면](#레이어-계약까지-같이-보면) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
 | "`dao`가 너무 많아졌는데 이게 맞나요?" | 읽기/쓰기 모델 분리 문제 | [언제 어디까지 나누면 되나](#언제-어디까지-나누면-되나) | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) |
 | "`repository`, `dao`, `entity`가 다 저장 아니에요?" | 용어 층위 구분 문제 | [한 표로 먼저 보기](#한-표로-먼저-보기) | 이 문서 끝까지 |
 

@@ -20,6 +20,7 @@
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
+- [Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기](../spring/spring-persistence-transaction-web-service-repository-primer.md)
 - [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) - 4레인 뒤 선택 확장
@@ -79,7 +80,7 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | 1. Java 객체 레인 | [자바 언어의 구조와 기본 문법](../language/java/java-language-basics.md) | [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md) | [Language README](../language/README.md) |
 | 2. HTTP 요청 레인 | [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) | [Network README](../network/README.md) |
 | 3. MVC 흐름 레인 | [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초](../spring/spring-mvc-controller-basics.md) | [Spring README](../spring/README.md) |
-| 4. 저장 경계 레인 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | [Database README](../database/README.md) |
+| 4. 저장 경계 레인 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [Spring Persistence / Transaction Mental Model Primer](../spring/spring-persistence-transaction-web-service-repository-primer.md) -> [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | [Database README](../database/README.md) |
 
 ## 컬렉션/queue가 먼저 막힐 때 우회 사다리
 
@@ -182,7 +183,7 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | 1. Java basics | "객체는 상태와 행동을 가진다"는 감각 | [자바 언어의 구조와 기본 문법](../language/java/java-language-basics.md) | [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md) | Spring annotation 이름 암기 |
 | 2. HTTP / web basics | 웹 요청은 메서드, 상태 코드, 헤더를 가진 메시지 흐름이다 | [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) | `SavedRequest`, filter chain, proxy timeout deep dive |
 | 3. MVC | 요청은 `DispatcherServlet`을 지나 controller -> service -> repository로 흐른다 | [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md) | `HandlerMethodArgumentResolver`, MVC lifecycle deep dive |
-| 4. JDBC / transactions | 저장 기술은 도메인 바깥 도구이고, 트랜잭션은 DB 변경을 한 덩어리로 묶는 경계다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | `MVCC`/lock anomaly 고급 비교, `@Transactional` 심화 |
+| 4. JDBC / transactions | 저장 기술은 도메인 바깥 도구이고, service 메서드 전체가 작업 단위가 된 뒤에야 `조건 확인용 조회`와 `마지막 상태 변경`을 나눠 읽을 수 있다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [Spring Persistence / Transaction Mental Model Primer](../spring/spring-persistence-transaction-web-service-repository-primer.md) -> [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | `MVCC`/lock anomaly 고급 비교, `@Transactional` 심화 |
 
 ## 우테코 백엔드 안전 사다리 (계속 2)
 
@@ -270,7 +271,10 @@ return new PointResponse(member.id(), member.balance());
 - `Controller -> Service -> Repository` 흐름이 막히면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 큰 그림을 잡고, 바로 [Service 계층 기초](./service-layer-basics.md)에서 유스케이스 조립 역할을 본다.
 - `DTO`, `VO`, `Entity`가 뒤섞이면 [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)를 먼저 보고, 저장 계층까지 이어서 보려면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)를 붙인다.
 - HTTP 요청과 Spring 연결이 막히면 [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)로 웹 요청의 큰 그림을 먼저 잡고, [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) 다음에 [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)로 넘어간다.
-- MVC까지는 읽었는데 "저장은 어디서 하고 트랜잭션은 왜 필요하지?"가 막히면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) -> [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) 순으로 먼저 본다.
+- MVC까지는 읽었는데 "저장은 어디서 하고 트랜잭션은 왜 필요하지?"가 막히면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)로 저장 도구 차이를 먼저 보고, 다음에는 [Spring Persistence / Transaction Mental Model Primer](../spring/spring-persistence-transaction-web-service-repository-primer.md)에서 `service 메서드 전체가 작업 단위`라는 큰 그림과 `조건 확인용 조회`/`마지막 상태 변경` 구분을 붙인 뒤 [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)로 내려간다.
+
+## 4레인 뒤 확장
+
 - 4레인을 한 바퀴 돈 뒤에야 "Spring이 객체를 어떻게 조립하고 부가 기능을 붙이지?"를 확장 질문으로 올려 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) -> [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) 순으로 올라간다.
 
 ## 안전한 다음 단계 (계속 2)

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: State-space visited vs dist starter card
+concept_id: algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- visited-vs-dist-choice
+- zero-cost-revisit
+aliases:
+- state space visited vs dist
+- visited r c state vs dist r c state
+- 3d visited vs 3d dist
+- zero one bfs state dist
+- stateful shortest path visited dist
+- 0-1 bfs visited dist state card
+- 0-1 bfs beginner visited or dist
+- grid state visited enough
+- grid state dist safer
+- visited r c state enough
+- dist r c state safer
+- key door bfs visited
+- wall break bfs dist
+- direction state 0-1 bfs dist
+- zero one bfs state visited vs dist starter card basics
+symptoms:
+- visited만 썼는데 반례가 나와서 왜 틀렸는지 모르겠어
+- 같은 상태에 더 싼 비용으로 다시 와도 되는지 감이 안 와
+- 0 비용 이동이 섞이면 dist 배열로 바꿔야 하는지 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/zero-one-bfs-state-space-bridge
+next_docs:
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/zero-one-bfs-state-space-bridge.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+- algorithm/zero-one-bfs-state-space-bridge
+- algorithm/zero-one-bfs-grid-conversion-primer
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+expected_queries:
+- 0 1 가중치가 섞인 상태 공간에서 visited로 막아도 되는지 궁금해
+- 같은 상태를 더 싸게 다시 방문할 수 있으면 배열을 어떻게 둬야 해
+- 3차원 상태 배열을 만들었는데 visited로 끝낼지 dist까지 둬야 할지 판단이 안 서
+- key door 문제는 visited면 되고 teleport 문제는 dist가 필요한 이유를 설명해줘
+- 0-1 BFS에서 처음 방문했다고 끝내면 안 되는 경우를 알고 싶어
+- state shortest path에서 비용 비교 배열을 언제 도입해야 해
+- visited와 dist 중 무엇을 고를지 빠르게 판단하는 체크포인트가 필요해
+contextual_chunk_prefix: |
+  이 문서는 상태 공간 최단 경로에서 visited로 막아도 되는 경우와 dist로 더 싼 재도착을 열어야 하는 경우를 골라주는 chooser다. 처음 방문이면 끝인지 판단, 같은 상태 재도착 허용, 비용 비교 배열이 왜 필요한지, 0 비용 이동 섞일 때 처리, 방문 체크와 거리표 선택 같은 자연어 paraphrase가 본 문서의 결정 기준에 매핑된다.
+---
 # State-space visited vs dist starter card
 
 > 한 줄 요약: 상태 공간이 보여도 간선 비용이 모두 같으면 `visited[r][c][state]`로 충분한 경우가 많고, `0/1` 비용이 섞이면 "처음 방문"보다 "더 싼 재도착"을 허용하는 `dist[r][c][state]`가 더 안전하다.

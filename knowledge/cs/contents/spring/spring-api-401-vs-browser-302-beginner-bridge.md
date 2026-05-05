@@ -1,6 +1,8 @@
 # Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지
 
 > 한 줄 요약: 같은 Spring MVC 앱 안에서도 브라우저 페이지 요청은 로그인 화면으로 보내는 `302 /login` 흐름이 자연스럽고, JSON API 요청은 인증 실패를 `401`로 직접 말하는 흐름이 자연스러워서 둘을 같은 실패로 읽으면 금방 헷갈린다.
+>
+> 문서 역할: 이 문서는 spring/security 입구에서 "`왜 브라우저는 redirect인데 API는 JSON이지?`"를 먼저 분리하는 beginner bridge다. 쿠키/세션 복원이나 final `403`보다 `응답 계약 분리`가 먼저 의심될 때 이 문서가 맞다.
 
 **난이도: 🟢 Beginner**
 
@@ -30,6 +32,19 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 - JSON API: `401 Unauthorized`
 
 입문자가 자주 헷갈리는 이유는 둘 다 결국 "인증 실패"인데, 하나는 이동이고 하나는 데이터 응답이라 모양이 완전히 다르게 보이기 때문이다.
+
+## 이 문서가 바로 맞는 질문
+
+아래처럼 질문이 "`왜 응답 모양이 둘로 갈리지?`"에 있으면 이 문서가 먼저다.
+
+| 지금 입에서 나온 문장 | 먼저 붙일 라벨 | 여기서 먼저 답하는 것 |
+|---|---|---|
+| "`브라우저는 302인데 API는 401이에요`" | `response-contract-split` | 같은 인증 실패가 왜 서로 다른 응답 계약으로 보이는가 |
+| "`api인데 login html 와요`" | `response-contract-split` | API가 브라우저용 entry point를 잘못 탔는가 |
+| "`cookie 있는데 다시 로그인`" | `server persistence / session mapping` | 아니다. 이 문서보다 세션 복원 primer가 먼저다 |
+| "`로그인 성공 후 원래 URL 복귀 403`" | `login-success-final-403` | 아니다. 이 문서보다 final `403` primer가 먼저다 |
+
+짧게 말하면 이 문서는 `브라우저 vs API 응답 계약`을 자르는 입구고, 로그인 유지 실패나 마지막 권한 실패를 끝까지 파는 문서는 아니다.
 
 ## 첫 분기 고정 라벨
 

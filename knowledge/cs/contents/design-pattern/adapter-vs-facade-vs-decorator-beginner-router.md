@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 'Adapter vs Facade vs Decorator: 처음 배우는 래퍼 패턴 큰 그림'
+concept_id: design-pattern/adapter-vs-facade-vs-decorator-beginner-router
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- wrapper-intent-separation
+- proxy-vs-decorator
+aliases:
+- adapter facade decorator beginner
+- wrapper pattern confusion
+- adapter vs facade vs decorator
+- 처음 배우는데 wrapper
+- 큰 그림 wrapper pattern
+- adapter facade decorator 차이
+- 언제 쓰는지 adapter facade decorator
+- 번역 vs 단순화 vs 기능추가
+- adapter냐 facade냐 decorator냐
+- facade adapter decorator quick check
+- wrapper 패턴 헷갈림
+- beginner wrapper router
+- adapter vs facade vs decorator beginner router basics
+- adapter vs facade vs decorator beginner router beginner
+- adapter vs facade vs decorator beginner router intro
+symptoms:
+- 감싸긴 했는데 Adapter인지 Facade인지 Decorator인지 모르겠어
+- 외부 API 번역이랑 기능 추가를 자꾸 같은 패턴으로 부르게 돼
+- wrapper 패턴이 전부 비슷해 보여서 첫 분기 기준이 필요해
+intents:
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/composition-over-inheritance-basics
+next_docs:
+- design-pattern/adapter-basics
+- design-pattern/decorator-proxy-basics
+- design-pattern/facade-vs-adapter-vs-proxy
+linked_paths:
+- contents/design-pattern/adapter-basics.md
+- contents/design-pattern/decorator-proxy-basics.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/spring/aop-proxy-mechanism.md
+confusable_with:
+- design-pattern/adapter-basics
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/decorator-proxy-basics
+forbidden_neighbors:
+- contents/design-pattern/adapter-basics.md
+- contents/design-pattern/decorator-proxy-basics.md
+expected_queries:
+- 어댑터랑 퍼사드랑 데코레이터를 처음 배울 때 어떻게 빨리 구분해?
+- 외부 SDK 번역이랑 복잡한 입구 단순화는 어떤 패턴 차이야?
+- 같은 인터페이스에 기능만 덧붙이는 래퍼는 뭐로 봐야 해?
+- wrapper 패턴 셋이 다 비슷한데 목적별로 나누는 기준이 뭐야?
+- API 모양 맞추기, 절차 감추기, 기능 추가를 한 번에 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 wrapper처럼 비슷해 보이는 패턴을 처음 배우는 학습자에게
+  Adapter, Facade, Decorator를 목적 기준으로 고르게 돕는 chooser다.
+  외부 API 번역, 복잡한 사용 절차 감추기, 같은 인터페이스에 기능 얹기,
+  메서드 모양 맞추기, 래퍼 패턴 첫 분기, 감싸긴 했는데 뭐로 봐야 해 같은
+  자연어 paraphrase가 본 문서의 비교 기준에 매핑된다.
+---
 # Adapter vs Facade vs Decorator: 처음 배우는 래퍼 패턴 큰 그림
 
 > 한 줄 요약: 처음 배우는데 wrapper처럼 다 비슷해 보이면, Adapter는 "형태를 맞추는 번역", Facade는 "복잡한 사용법을 줄이는 창구", Decorator는 "같은 인터페이스에 기능을 덧붙이는 래퍼"로 먼저 나누면 된다.

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 문자열 검색인데 Trie 써야 하나요? exact lookup이면 HashMap, prefix search면 Trie
+concept_id: data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- trie-overuse-for-exact-lookup
+- exact-vs-prefix-question-split
+- string-key-structure-selection
+aliases:
+- trie vs hashmap beginner
+- exact lookup vs prefix search
+- hashmap or trie choice
+- 문자열 key 조회 자료구조
+- 문자열 검색인데 trie 써야 하나요
+- 자동완성 아니면 trie 필요 없나요
+- trie는 언제 쓰고 hashmap은 언제 써요
+- 접두사 검색 말고 정확한 키 조회
+- 정확히 같은 문자열 찾기 trie hashmap
+- string key exact lookup basics
+- startswith 아니고 key 하나 찾기
+symptoms:
+- 문자열 key를 다룬다고 바로 Trie를 떠올려서 구조를 과하게 잡는다
+- exact lookup 질문인데 자동완성 구조를 먼저 가져와서 설명이 꼬인다
+- HashMap으로 충분한 장면과 Trie가 필요한 장면을 한 문장으로 못 가른다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/hash-table-basics
+next_docs:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+- data-structure/trie-prefix-search-autocomplete
+linked_paths:
+- contents/data-structure/hash-table-basics.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+- contents/system-design/search-system-design.md
+confusable_with:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+- data-structure/trie-prefix-search-autocomplete
+forbidden_neighbors:
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
+expected_queries:
+- 문자열 key 조회인데 exact match랑 prefix search를 먼저 어떻게 갈라야 해?
+- 자동완성도 아닌데 Trie를 쓰는 게 과한지 초급 기준으로 판단하고 싶어
+- key 하나 값 찾는 문제와 startsWith 후보 찾는 문제를 구조 선택으로 나눠 설명해줘
+- HashMap으로 충분한 문자열 조회와 Trie가 필요한 검색을 한 번에 비교해줘
+- exact lookup이면 왜 Trie보다 HashMap이 기본값이 되는지 알고 싶어
+- 문자열 검색 문제를 읽을 때 prefix 질문인지 exact key 질문인지 먼저 판별하는 법이 궁금해
+- 사전형 문자열 조회에서 자동완성과 단건 조회를 어떤 자료구조로 나눠야 해?
+- Trie를 배웠는데 모든 문자열 문제에 쓰면 안 되는 이유를 예시로 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 문자열 key 문제를 만났을 때 exact lookup과 prefix search를
+  먼저 갈라 HashMap과 Trie 중 기본 선택을 정하게 돕는 chooser다.
+  key 하나 값 찾기, startsWith 후보 모으기, 자동완성 여부, 문자열 조회
+  기본값, Trie를 과하게 쓰는 실수 같은 자연어 paraphrase가 본 문서의
+  선택 기준에 매핑된다.
+---
 # 문자열 검색인데 Trie 써야 하나요? exact lookup이면 HashMap, prefix search면 Trie
 
 > 한 줄 요약: 문자열 key 조회라고 해서 항상 `Trie`가 필요한 것은 아니다. `"이 key 하나의 값"`을 찾으면 `HashMap`, `"이 prefix로 시작하는 후보들"`을 찾으면 `Trie`로 먼저 자르면 된다.

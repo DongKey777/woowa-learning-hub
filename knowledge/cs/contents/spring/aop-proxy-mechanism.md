@@ -14,6 +14,8 @@ aliases:
 - Spring proxy
 - JDK dynamic proxy
 - CGLIB
+- interception
+- self invocation
 intents:
 - deep_dive
 linked_paths:
@@ -25,6 +27,13 @@ expected_queries:
 - AOP랑 프록시는 무슨 관계야?
 - JDK proxy랑 CGLIB 차이가 뭐야?
 - Transactional은 왜 프록시가 필요해?
+- 어노테이션 붙였는데 중간에서 가로채는 구조가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 스프링이 메서드 호출 앞뒤에 중간 레이어를 끼워 넣어
+  공통 처리를 가로채는 구조를 이해하려 할 때 읽는 deep_dive다. 어노테이션이
+  왜 그냥 메서드 안에서 바로 먹는 게 아닌지, 호출이 프록시를 지나야 하는지,
+  중간에서 가로채기, self invocation, JDK proxy, CGLIB 같은 자연어
+  paraphrase가 프록시 기반 interception 설명에 매핑된다.
 ---
 
 # AOP와 프록시 메커니즘
@@ -53,7 +62,7 @@ expected_queries:
 > - [Spring Method Validation Proxy Pitfalls](./spring-method-validation-proxy-pitfalls.md)
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)
 
-retrieval-anchor-keywords: proxy, advisor, pointcut, advice, target source, jdk dynamic proxy, jdk proxy, dynamic proxy, interface based proxy, proxy interface only, cglib, class based proxy, proxytargetclass, 왜 transactional 안 먹지 프록시, aop proxy mechanism basics
+retrieval-anchor-keywords: proxy, advisor, pointcut, advice, target source, jdk dynamic proxy, jdk proxy, dynamic proxy, interface based proxy, cglib, self invocation proxy bypass, 메서드 호출 중간 가로채기, 어노테이션 왜 안 먹지 프록시, 왜 transactional 안 먹지 프록시, aop proxy mechanism basics
 
 ---
 

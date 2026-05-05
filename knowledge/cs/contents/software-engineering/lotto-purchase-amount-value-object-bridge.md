@@ -1,0 +1,102 @@
+---
+schema_version: 3
+title: 'lotto 구매 금액/장수 계산을 PurchaseAmount 값 객체로 묶는 이유'
+concept_id: software-engineering/lotto-purchase-amount-value-object-bridge
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- purchase-amount-value-object
+- primitive-obsession
+- ticket-count-derivation
+aliases:
+- lotto 구매 금액 값 객체
+- 로또 PurchaseAmount
+- lotto 장수 계산 타입
+- 로또 금액 검증 객체
+- lotto money primitive obsession
+symptoms:
+- money / 1000 계산이 controller와 service에 같이 있어요
+- 구매 금액이 1000원 단위인지 검사하는 코드가 여기저기 흩어져 있어요
+- int money로 넘기니 0원이나 999원 같은 예외 기준이 자꾸 흔들려요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/dto-vo-entity-basics
+- software-engineering/domain-invariants-as-contracts
+next_docs:
+- software-engineering/lotto-purchase-flow-service-layer-bridge
+- software-engineering/dto-vo-entity-basics
+- software-engineering/domain-invariants-as-contracts
+linked_paths:
+- contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+- contents/software-engineering/lotto-domain-invariant-bridge.md
+confusable_with:
+- software-engineering/lotto-purchase-flow-service-layer-bridge
+- software-engineering/dto-vo-entity-basics
+- software-engineering/lotto-domain-invariant-bridge
+forbidden_neighbors:
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md
+expected_queries:
+- 로또 미션에서 구매 금액을 그냥 int로 넘기지 말고 타입으로 감싸라는 리뷰는 무슨 뜻이야?
+- 1000원 단위인지 확인하는 규칙은 controller에서 검사하면 끝나는 것 아닌가?
+- 로또 장수 계산을 service에서 바로 money / 1000 하면 왜 primitive obsession이라고 해?
+- PurchaseAmount 같은 클래스를 두면 구매 장수 계산 책임이 어디까지 정리돼?
+- 0원이나 999원 입력 예외를 여기저기서 막지 말고 한곳에 모으려면 어떻게 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 Woowa lotto 미션에서 구매 금액을 int로 흘리며 1000원 단위 검증과
+  장수 계산이 여기저기 퍼지는 상황을 PurchaseAmount 같은 값 객체 경계로
+  연결하는 mission_bridge다. money / 1000 반복, 구매 금액 예외 기준 흔들림,
+  primitive obsession, 장수 계산 규칙을 타입에 묶기, controller와 service에
+  같은 검증이 중복됨 같은 학습자 표현을 값 객체와 도메인 계약 관점으로
+  매핑한다.
+---
+
+# lotto 구매 금액/장수 계산을 PurchaseAmount 값 객체로 묶는 이유
+
+## 한 줄 요약
+
+> lotto에서 구매 금액은 단순 `int`가 아니라 "1000원 단위여야 하고 몇 장을 살 수 있는지 계산할 수 있는 값"이다. 그래서 `money / 1000`을 여기저기 쓰기보다 `PurchaseAmount` 같은 값 객체로 규칙과 계산을 같이 잠그는 편이 덜 흔들린다.
+
+## 미션 시나리오
+
+lotto 미션 초반에는 입력받은 금액을 `int money`로 들고 다니며 `money / 1000`으로 장수를 계산해도 큰 문제가 없어 보인다. 그래서 Controller에서 한 번 나누고, Service에서 다시 나누고, 예외 메시지도 `money < 1000`, `money % 1000 != 0` 같은 조건으로 흩어지기 쉽다.
+
+이 상태가 길어지면 리뷰 포인트가 생긴다. 구매 금액이 "양수인가", "1000원 단위인가", "몇 장을 살 수 있는가"가 모두 같은 값의 성질인데 호출자마다 제각각 해석하기 때문이다. 학습자 입장에서는 "장수 계산은 서비스 흐름 아닌가?"가 자연스러운 질문인데, 실제로는 흐름 조립과 값 자체의 규칙이 한 줄의 산술식 안에서 섞여 있는 경우가 많다.
+
+## CS concept 매핑
+
+여기서 닿는 개념은 값 객체와 primitive obsession 방지다. `PurchaseAmount`는 단순히 `int`를 감싸는 포장지가 아니라, "이 금액은 lotto 구매에 유효하다"는 계약을 생성 시점에 잠그는 타입이다.
+
+```java
+PurchaseAmount amount = PurchaseAmount.from(input);
+int ticketCount = amount.ticketCount();
+```
+
+이렇게 두면 Service는 "`몇 장을 생성할지`를 amount에게 묻고 생성 흐름을 조립"하는 역할에 집중한다. 반면 `PurchaseAmount`는 `0원 불가`, `1000원 단위`, `장수 계산`처럼 금액 자체에서 절대 변하지 않는 규칙을 가진다. 즉 Service가 유스케이스 순서를 맡는다면, 값 객체는 그 순서 안에서 쓰이는 숫자의 의미를 지키는 셈이다.
+
+중요한 점은 `PurchaseAmount`가 `Lotto`의 번호 불변식을 대신하지 않는다는 것이다. `Lotto`는 한 장의 번호 규칙을 지키고, `PurchaseAmount`는 몇 장을 살 수 있는지의 규칙을 지킨다. 둘 다 도메인 계약이지만 책임 축이 다르다.
+
+## 미션 PR 코멘트 패턴
+
+- "`money / 1000`이 controller, service, 테스트에 반복되면 규칙이 숫자 연산으로 흩어진 상태입니다. 금액 의미를 타입으로 올려 보세요."
+- "구매 금액 예외가 호출자마다 다르면 유효한 돈의 정의가 흔들립니다. 생성 시점에 닫히는 값 객체가 더 읽기 쉽습니다."
+- "Service가 장수 계산을 호출하는 것은 맞지만, 계산 공식을 직접 들고 있는 것과 값 객체에게 묻는 것은 다릅니다."
+- "`int money`는 전달은 쉽지만 의미가 약합니다. lotto 문맥에서는 `PurchaseAmount`가 더 많은 의도를 드러냅니다."
+
+## 다음 학습
+
+- 여러 장 구매 흐름 전체를 Service가 어떻게 조립하는지 이어 보려면 `software-engineering/lotto-purchase-flow-service-layer-bridge`
+- 값 객체와 DTO, Entity 차이를 다시 잡으려면 `software-engineering/dto-vo-entity-basics`
+- 도메인 불변식을 타입 계약으로 잠그는 감각을 넓히려면 `software-engineering/domain-invariants-as-contracts`

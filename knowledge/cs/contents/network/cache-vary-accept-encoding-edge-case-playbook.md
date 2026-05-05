@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Cache, Vary, Accept-Encoding Edge Case Playbook
+concept_id: network/cache-vary-accept-encoding-edge-case
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- vary-header-missing
+- etag-variant-mismatch
+- personalized-cache-leak
+- unkeyed-cache-poisoning
+aliases:
+- vary edge cases
+- content negotiation cache bug
+- language variant mix
+- accept-encoding bug
+- cache poisoning
+- unkeyed input cache poisoning
+- double compression
+- cache variant mix
+- etag compression mismatch
+- personalized cache leak
+- weak cache key
+- cdn variant bug
+symptoms:
+- 어떤 브라우저에서만 응답 body가 깨지거나 압축이 풀리지 않는다
+- 304 이후에만 파일 길이나 내용이 이상하게 보인다
+- 로그인 직후 다른 사용자 데이터가 섞여 보이거나 locale 응답이 뒤바뀐다
+- 특정 query나 header를 한번 보낸 뒤 같은 URL 응답이 계속 오염된 것 같다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- network/vary-content-negotiation-basics-language-compression
+- network/http-caching-conditional-request-basics
+- network/compression-cache-vary-accept-encoding-personalization
+next_docs:
+- network/strong-vs-weak-etag-validator-precision-cache-correctness
+- network/cdn-cache-key-invalidation
+- network/http-response-compression-buffering-streaming-tradeoffs
+linked_paths:
+- contents/network/vary-content-negotiation-basics-language-compression.md
+- contents/network/compression-cache-vary-accept-encoding-personalization.md
+- contents/network/strong-vs-weak-etag-validator-precision-cache-correctness.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/cache-control-practical.md
+- contents/network/cdn-cache-key-invalidation.md
+- contents/network/http-state-session-cache.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/browser-devtools-cache-trace-primer.md
+confusable_with:
+- network/compression-cache-vary-accept-encoding-personalization
+- network/strong-vs-weak-etag-validator-precision-cache-correctness
+- network/cache-control-practical
+forbidden_neighbors: []
+expected_queries:
+- CDN 뒤에서만 압축 응답이 깨질 때 어디부터 확인해야 해?
+- 304 이후에만 body가 이상하면 validator와 representation을 어떻게 점검해?
+- 로그인 응답이 shared cache에 섞인 것 같을 때 키 분리를 어떻게 봐?
+- 특정 헤더나 query 한 번 보낸 뒤 캐시가 오염된 것 같으면 무엇을 의심해?
+- gzip, br, identity 응답이 뒤섞이는 장애를 어떤 순서로 추적해?
+- 캐시 hit은 높은데 고객마다 다른 내용을 보는 문제를 어떻게 파악해?
+contextual_chunk_prefix: |
+  이 문서는 운영 학습자가 cache, Vary, Accept-Encoding, validator,
+  personalization 경계가 무너졌을 때 representation correctness를 먼저
+  확인하도록 돕는 network playbook이다. 어떤 브라우저에서만 body가 깨짐,
+  304 이후만 이상함, 로그인 응답이 shared cache에 섞임, 특정 query나
+  header 뒤 캐시가 오염됨, gzip/br/identity variant가 뒤엉킴 같은 자연어
+  표현이 본 문서의 triage 순서와 원인 후보로 매핑된다.
+---
 # Cache, Vary, Accept-Encoding Edge Case Playbook
 
 > 한 줄 요약: 캐시와 압축은 대부분 "잘 되면 조용하고, 틀리면 아주 이상하게" 망가진다. `Vary` 누락, cache poisoning, personalized variant mix, compression mismatch는 hit ratio보다 representation correctness를 먼저 깨뜨린다.

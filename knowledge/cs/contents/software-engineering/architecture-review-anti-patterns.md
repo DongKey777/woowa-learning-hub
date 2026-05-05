@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Architecture Review Anti-Patterns
+concept_id: software-engineering/architecture-review-anti-patterns
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- architecture-review-bottleneck
+- approval-theater
+- cargo-cult-architecture
+- governance-fatigue
+aliases:
+- architecture review
+- review anti-pattern
+- decision bottleneck
+- cargo cult architecture
+- approval theater
+- design review
+- governance fatigue
+- review checklist
+- architecture governance failure
+symptoms:
+- architecture review가 결정만 늦추고 실제 설계 개선은 못 하는 것 같아요
+- 리뷰를 통과해도 장애가 나는 이유가 기준 부재인지 운영 맥락 누락인지 헷갈려요
+- 소수 승인자에게 모든 결정이 몰려 팀 속도가 너무 느려졌어요
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/rfc-vs-adr-decision-flow
+- software-engineering/architectural-governance-operating-model
+- software-engineering/architectural-fitness-functions
+next_docs:
+- software-engineering/policy-as-code-architecture-linting
+- software-engineering/architecture-council-domain-stewardship-cadence
+- software-engineering/architecture-exception-process
+linked_paths:
+- contents/software-engineering/rfc-vs-adr-decision-flow.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/non-functional-requirements-budgeting.md
+- contents/software-engineering/prototype-spike-productionization-boundaries.md
+- contents/software-engineering/architectural-governance-operating-model.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/architecture-exception-process.md
+confusable_with:
+- software-engineering/architectural-governance-operating-model
+- software-engineering/rfc-vs-adr-decision-flow
+- software-engineering/architectural-fitness-functions
+forbidden_neighbors: []
+expected_queries:
+- architecture review가 approval theater가 되지 않게 하려면 어떤 기준으로 운영해야 해?
+- 설계 리뷰가 병목이 될 때 ADR, fitness function, council 역할을 어떻게 나눠?
+- cargo cult architecture를 리뷰에서 걸러내는 질문은 뭐가 있어?
+- 리뷰는 통과했는데 운영 장애가 난 경우 아키텍처 리뷰가 놓친 신호를 어떻게 찾지?
+- 소규모 변경까지 모두 architecture review를 태우면 왜 governance fatigue가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 architecture review를 운영할 때 approval theater, cargo
+  cult architecture, decision bottleneck, governance fatigue 같은 실패
+  패턴을 구분해 읽는 deep_dive다. 리뷰가 구조를 개선하는 장치인지, 결정을
+  지연시키는 의식인지 판단하려는 학습자에게 기준, 자동화, 운영 맥락 연결의
+  중요성을 설명하는 문서라는 맥락을 각 청크 앞에 붙인다.
+---
 # Architecture Review Anti-Patterns
 
 > 한 줄 요약: architecture review는 감으로 막는 회의가 아니라, 반복되는 설계 실패를 드러내는 검사 과정인데, 반대로 운영되면 결정 지연과 형식주의만 남는다.

@@ -241,6 +241,7 @@ redirect-follow login HTML을 더 빨리 분리하고 싶다면 [Fetch Auth Fail
 
 - `200`이면 무조건 app 성공이라고 생각한다. login HTML `200`은 hidden redirect 결과일 수 있다.
 - `application/json`이면 무조건 app이라고 생각한다. `502`/`503`/`504`에서는 gateway JSON local reply도 충분히 있을 수 있다.
+- `application/problem+json`이면 무조건 Spring `ProblemDetail`이라고 생각한다. gateway나 edge도 같은 media type으로 자기 에러를 말할 수 있다.
 - `text/html`이면 전부 같은 HTML이라고 생각한다. login page, CDN error page, gateway 기본 페이지는 owner가 다르다.
 - JSON이면 무조건 정상이라고 생각한다. app JSON 에러 payload도 충분히 있을 수 있다.
 - preview를 길게 읽느라 시간을 쓴다. 초급자 첫 pass에서는 첫 1~2줄과 핵심 단어만 보면 된다.

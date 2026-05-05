@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Dijkstra, Bellman-Ford, Floyd-Warshall
+concept_id: algorithm/dijkstra-bellman-ford-floyd-warshall
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shortest-path-router
+- negative-edge-vs-positive-weight
+- all-pairs-vs-single-source
+aliases:
+- shortest path algorithms comparison
+- shortest path decision tree
+- which shortest path algorithm
+- bfs shortest path
+- dag shortest path
+- positive weighted shortest path
+- single-source shortest path
+- all-pairs shortest path
+- negative-edge shortest path
+- 음수 간선 최단 경로
+- 다익스트라 언제 써야 하나
+- 벨만포드 언제 써야 하나
+- 플로이드 워셜 언제 써야 하나
+symptoms:
+- 최단 경로 문제를 봤는데 BFS, Dijkstra, Bellman-Ford, Floyd-Warshall 중 어디서 잘라야 할지 모르겠어
+- 음수 간선이 있다는 말만 보고도 DAG 여부나 all-pairs 여부를 같이 봐야 하는지 헷갈려
+- 한 시작점 전체 거리표와 모든 정점 쌍 거리표를 같은 shortest path 문제로 뭉뚱그려 읽고 있어
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/graph-basics
+- algorithm/dfs-bfs-intro
+- algorithm/graph
+next_docs:
+- algorithm/sparse-graph-shortest-paths
+- algorithm/a-star-vs-dijkstra
+- algorithm/shortest-path-reconstruction-bridge
+- algorithm/network-flow-intuition
+linked_paths:
+- contents/data-structure/graph-basics.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/graph.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/a-star-vs-dijkstra.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/topological-dp.md
+- contents/algorithm/topological-sort-patterns.md
+- contents/algorithm/network-flow-intuition.md
+- contents/algorithm/basic.md
+confusable_with:
+- algorithm/sparse-graph-shortest-paths
+- algorithm/a-star-vs-dijkstra
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+forbidden_neighbors:
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+expected_queries:
+- 가중치 없을 때, 음수 간선 있을 때, 모든 쌍 거리일 때 최단 경로 알고리즘을 어떻게 갈라야 해?
+- 최단 경로 문제에서 Dijkstra와 Bellman-Ford와 Floyd-Warshall 선택 기준을 한 장으로 정리해줘
+- DAG shortest path는 일반 weighted shortest path 선택표에서 어디에 끼워 넣어야 해?
+- single-source shortest path와 all-pairs shortest path를 문제 문장에서 어떻게 구분하지?
+- 음수 간선이 보일 때 다익스트라를 버리고 무엇을 더 확인해야 하는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 최단 경로 문제를 읽는 학습자가 무가중치, 음수 간선, 모든 정점 쌍 거리처럼 조건을 먼저 잘라 BFS, Dijkstra, Bellman-Ford, Floyd-Warshall 중 무엇을 쓸지 결정하는 chooser다. 간선 비용 부호를 먼저 봐야 하나, 시작점 하나만 계산하면 되나, 거리 행렬이 필요한가, 위상 순서로 풀 수 있는 그래프인가, 음수 사이클 검사까지 필요한가 같은 자연어 paraphrase가 본 문서의 라우팅 기준에 매핑된다.
+---
 # Dijkstra, Bellman-Ford, Floyd-Warshall
 
 > 한 줄 요약: 최단 경로 문제는 먼저 **unweighted shortest path vs DAG shortest path vs weighted shortest path**로 갈라야 선택이 빨라진다.

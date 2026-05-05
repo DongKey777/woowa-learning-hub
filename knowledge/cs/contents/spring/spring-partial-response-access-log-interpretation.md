@@ -1,18 +1,88 @@
+---
+schema_version: 3
+title: Spring Partial-Response Access Log Interpretation
+concept_id: spring/partial-response-access-log-interpretation
+canonical: false
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 73
+mission_ids: []
+review_feedback_tags:
+  - access-log-interpretation
+  - partial-response
+  - disconnect-observability
+aliases:
+  - partial response access log
+  - truncated download access log
+  - bytes sent vs status
+  - 200 with clientabortexception
+  - partial response observability
+  - access log truncated body
+  - download disconnect access log
+  - streaming disconnect log interpretation
+symptoms:
+  - access log는 200인데 body가 중간에 끊긴 것 같아 status와 bytes sent를 함께 읽는 법이 필요하다
+  - truncated download에서 app log 예외와 access log bytes가 서로 모순처럼 보여 해석이 막힌다
+  - streaming disconnect incident에서 status, bytes, duration, disconnect exception을 같은 timeline으로 묶고 싶다
+intents:
+  - troubleshooting
+  - deep_dive
+prerequisites:
+  - spring/servlet-container-disconnect-exception-mapping
+  - spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+  - network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb
+next_docs:
+  - spring/spring-async-mvc-streaming-observability-playbook
+  - spring/spring-http2-reset-attribution-spring-mvc
+  - network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+linked_paths:
+  - contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+  - contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+  - contents/spring/spring-async-mvc-streaming-observability-playbook.md
+  - contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+  - contents/spring/spring-problemdetail-before-after-commit-matrix.md
+  - contents/spring/spring-http2-reset-attribution-spring-mvc.md
+  - contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+  - contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+confusable_with:
+  - spring/servlet-container-disconnect-exception-mapping
+  - network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb
+forbidden_neighbors: []
+expected_queries:
+  - access log가 200인데 download가 중간에 끊긴 건 어떻게 읽어?
+  - bytes sent랑 ClientAbortException을 같은 timeline으로 해석하는 법이 뭐야?
+  - partial response incident에서 status, bytes, duration을 어떻게 같이 봐야 해?
+  - 응답 코드는 200인데 bytes sent가 작으면 body 중간 끊김으로 봐야 해?
+  - 스트리밍 다운로드에서 access log status와 bytes sent가 안 맞아 보일 때 어디부터 해석해?
+  - ClientAbortException이 났는데 access log는 200이면 어느 시점에 응답이 끊긴 거야?
+contextual_chunk_prefix: |
+  이 문서는 Spring 다운로드나 스트리밍 응답이 중간에 끊긴 incident에서 access
+  log의 status, bytes sent, duration, 그리고 app log의 disconnect 예외를 한
+  timeline으로 겹쳐 읽는 deep dive다. 200이 이미 commit된 뒤 body가 잘릴 수
+  있다는 점, partial response와 truncated download를 어떻게 관측치 조합으로
+  해석하는지, ClientAbortException과 bytes sent를 어떤 순서로 읽는지에 초점을
+  둔다.
+---
+
 # Spring Partial-Response Access Log Interpretation
 
 > 한 줄 요약: truncated download나 streaming disconnect를 볼 때 access log의 status는 "무슨 응답 코드가 commit됐는가", bytes sent는 "실제로 어디까지 body가 나갔는가", app log의 disconnect 예외는 "서버가 언제 더 못 쓴다는 사실을 알았는가"를 각각 답하므로, 세 신호를 한 타임라인으로 겹쳐 읽어야 오판이 줄어든다.
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring Servlet Container Disconnect Exception Mapping](./spring-servlet-container-disconnect-exception-mapping.md)
-> - [Spring `StreamingResponseBody` / `ResponseBodyEmitter` / `SseEmitter` Commit Lifecycle](./spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md)
-> - [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
-> - [Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges](./spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md)
-> - [Spring `ProblemDetail` Before-After Commit Matrix](./spring-problemdetail-before-after-commit-matrix.md)
-> - [Spring HTTP/2 Reset Attribution in Spring MVC](./spring-http2-reset-attribution-spring-mvc.md)
-> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
-> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](../network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+관련 문서:
+
+- [Spring Servlet Container Disconnect Exception Mapping](./spring-servlet-container-disconnect-exception-mapping.md)
+- [Spring `StreamingResponseBody` / `ResponseBodyEmitter` / `SseEmitter` Commit Lifecycle](./spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md)
+- [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
+- [Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges](./spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md)
+- [Spring `ProblemDetail` Before-After Commit Matrix](./spring-problemdetail-before-after-commit-matrix.md)
+- [Spring HTTP/2 Reset Attribution in Spring MVC](./spring-http2-reset-attribution-spring-mvc.md)
+- [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
+- [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](../network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 
 retrieval-anchor-keywords: partial response access log, truncated download access log, spring access log interpretation, status bytes sent correlation, bytes sent vs status, response commit timing, commit after first byte, download truncation, partial download, partial-content truncation, 200 with ClientAbortException, 206 partial content truncated, Content-Length mismatch, Content-Range length, access log bytes, access log duration, client abort, broken pipe, connection reset by peer, ClientAbortException, EofException, ClosedChannelException, AsyncRequestNotUsableException, StreamingResponseBody download cancel, ResponseBodyEmitter disconnect, SseEmitter disconnect, first successful flush, last successful flush, stream completion cause, truncated response observability
 

@@ -30,6 +30,8 @@ expected_queries:
 - Domain Path SameSite가 안 맞아서 cookie가 request에 안 붙는 경우를 어디서 봐?
 - host-only cookie와 subdomain cookie 차이가 login loop에 왜 중요해?
 - Application에 cookie가 저장됐는데 요청에 안 실리면 어떤 범위를 봐?
+contextual_chunk_prefix: |
+  이 문서는 Application에는 cookie가 보이는데 request에는 안 실리는 상황에서 Domain, Path, SameSite, host-only 범위가 어떻게 전송 판정을 바꾸는지 깊이 잡는 deep_dive다. 저장은 됐는데 다음 요청이 anonymous로 보임, 서브도메인만 바뀌어도 왜 안 가나, callback 뒤 다시 로그인 화면으로 튐, scope 문제와 wrong-scheme 갈래를 어디서 자르나 같은 자연어 paraphrase가 본 문서의 핵심 원인 분기에 매핑된다.
 ---
 
 # Cookie Scope Mismatch Guide

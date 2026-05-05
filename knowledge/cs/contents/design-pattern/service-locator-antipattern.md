@@ -4,11 +4,15 @@ title: Service Locator Antipattern
 concept_id: design-pattern/service-locator-antipattern
 canonical: false
 category: design-pattern
-difficulty: intermediate
+difficulty: beginner
 doc_role: bridge
-level: intermediate
+level: beginner
 language: mixed
 source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- hidden-dependency
+- service-locator-antipattern
 aliases:
 - Service Locator
 - service locator antipattern
@@ -16,9 +20,21 @@ aliases:
 - 숨은 의존성
 intents:
 - comparison
+symptoms:
+- 생성자에는 없는데 컨테이너에서 직접 꺼내 써서 의존성이 숨어 보여요
+- 테스트하려면 전역 컨텍스트부터 띄워야 해서 너무 무거워요
+prerequisites:
+- software-engineering/dependency-injection-basics
+next_docs:
+- design-pattern/injected-registry-vs-service-locator-checklist
 linked_paths:
 - contents/spring/spring-ioc-di-basics.md
 - contents/software-engineering/dependency-injection-basics.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+confusable_with:
+- design-pattern/injected-registry-vs-service-locator-checklist
+forbidden_neighbors: []
 expected_queries:
 - Service Locator가 왜 안 좋아?
 - Service Locator랑 DI는 뭐가 달라?

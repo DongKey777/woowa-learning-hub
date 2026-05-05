@@ -589,10 +589,11 @@ follow-up을 붙일 때도 아래처럼 한 장씩만 고르면 된다.
   - [Network: Request Lifecycle Upload Disconnect](../network/README.md#network-bridge-request-lifecycle-upload-disconnect)
   - [Network: Edge Status Timeout Control Plane](../network/README.md#network-bridge-edge-status-timeout-control-plane)
 
+<a id="spring--security"></a>
 ## Cross-domain Security 라우트
 
 <a id="spring-security-ladder"></a>
-- [Spring + Security](../../rag/cross-domain-bridge-map.md#spring--security) route로 바로 들어가려면:
+- [Spring + Security](../../rag/cross-domain-bridge-map.md#spring-security) route로 바로 들어가려면:
   - `cookie`, `session`, `JWT`는 아는데 `SecurityContextRepository`, `SavedRequest`, `hidden JSESSIONID`가 갑자기 등장하면 [Cross-Domain Bridge Map: HTTP Stateless / Cookie / Session / Spring Security](../../rag/cross-domain-bridge-map.md#bridge-http-session-security-cluster) route를 먼저 탄다.
   - 먼저 아래 2문답 카드로 `redirect / navigation memory`와 `server persistence / session mapping`을 갈라 놓고 시작하면 beginner가 Spring deep dive 입구를 더 빨리 고른다.
 
@@ -1082,6 +1083,7 @@ ConditionEvaluationReport를 읽다가 `existing bean found`를 보면 `@Primary
 - [2단계 `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)
 
 ## Spring MVC 바인딩/400 follow-up 지도
+<a id="spring-mvc-바인딩400-follow-up-지도"></a>
 
 - [2.5단계 형식 오류 follow-up `LocalDate`/`LocalTime` JSON 파싱 `400` 자주 나는 형식 모음](./spring-localdate-localtime-json-400-cheatsheet.md)
 - [3단계 `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)
@@ -1516,7 +1518,7 @@ ConditionEvaluationReport를 읽다가 `existing bean found`를 보면 `@Primary
 
 - 이 anchor의 고정 역할은 `redirect / navigation memory` deep dive다.
 - `cookie 있는데 다시 로그인`, `next request anonymous after login`처럼 다음 요청 복원이 먼저 문제면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 바로 갈아탄다.
-- route가 흐려지면 [Security: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)나 [Spring + Security](../../rag/cross-domain-bridge-map.md#spring--security)로 돌아가 다시 분기한다.
+- route가 흐려지면 [Security: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)나 [Spring + Security](../../rag/cross-domain-bridge-map.md#spring-security)로 돌아가 다시 분기한다.
 
 ## Spring RequestCache / SavedRequest 관련 문서
 

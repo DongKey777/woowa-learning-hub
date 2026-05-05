@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Subdomain Callback Handoff Chooser
+concept_id: security/subdomain-callback-handoff-chooser
+canonical: true
+category: security
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- shared-cookie-vs-handoff-branch
+- callback-trace-order
+- first-app-request-anonymous
+aliases:
+- subdomain callback handoff chooser
+- callback capture three traces
+- set-cookie location first app request
+- shared cookie vs handoff chooser
+- callback success but app first request anonymous
+- auth app subdomain chooser
+- callback trace capture bridge
+- one-time handoff branch
+- shared-domain cookie branch
+- social login callback anonymous chooser
+- app session handoff return path
+- oauth callback capture beginner
+- 처음 배우는 callback trace
+- 이거 뭐예요 callback handoff
+- subdomain callback handoff chooser basics
+symptoms:
+- auth.example.com callback은 성공했는데 app.example.com 첫 요청이 비로그인이에요
+- shared cookie 문제인지 handoff 누락인지 감이 안 와요
+- callback 응답에서 Set-Cookie와 Location 중 무엇을 먼저 봐야 하는지 모르겠어요
+intents:
+- comparison
+prerequisites:
+- security/oauth2-oidc-social-login-primer
+- security/login-callback-artifact-cheat-sheet
+next_docs:
+- security/cookie-scope-mismatch-guide
+- security/subdomain-login-callback-boundaries
+- security/samesite-login-callback-primer
+linked_paths:
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/login-callback-artifact-cheat-sheet.md
+- contents/security/subdomain-login-callback-boundaries.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/samesite-login-callback-primer.md
+- contents/network/http-https-basics.md
+confusable_with:
+- security/subdomain-login-callback-boundaries
+- security/samesite-login-callback-primer
+- security/social-login-to-local-session-bridge
+forbidden_neighbors:
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/social-login-to-local-session-bridge.md
+expected_queries:
+- auth.example.com callback은 성공했는데 app.example.com 첫 요청이 익명이야
+- shared-domain cookie 구조랑 handoff 구조를 어떻게 구분해?
+- callback response에서 set-cookie랑 location 중 뭐부터 봐야 해?
+- subdomain social login 뒤 app_session이 안 생기면 어디서 갈라 봐야 해
+- 처음 배우는데 callback handoff trace를 세 줄로 읽는 법을 알려줘
+- auth 서브도메인 로그인 후 app 첫 요청 anonymous 원인 분기
+contextual_chunk_prefix: |
+  이 문서는 auth 서브도메인 callback은 성공했지만 app 첫 요청이 익명으로 보일 때, shared-domain cookie 구조인지 one-time handoff 뒤 app_session을 만드는 구조인지 골라 주는 chooser다. callback 응답에서 무엇을 심었나, 어디로 넘겼나, redirect 뒤 첫 app 요청이 무엇을 들고 갔나, shared cookie 기대 경로, handoff 교환 route, app-local session 생성 지점 같은 자연어 paraphrase가 본 문서의 분기 기준에 매핑된다.
+---
 # Subdomain Callback Handoff Chooser
 
 > 한 줄 요약: `auth.example.com/callback`은 성공했는데 `app.example.com` 첫 요청이 anonymous라면, 먼저 "shared-domain cookie를 기대한 구조인지"와 "one-time handoff 뒤 app-local session을 만드는 구조인지"를 갈라 본다.

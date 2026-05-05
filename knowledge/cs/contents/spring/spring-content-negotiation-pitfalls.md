@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: Spring Content Negotiation Pitfalls
+concept_id: spring/spring-content-negotiation-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- accept-vs-content-type
+- produces-consumes-mismatch
+- converter-selection-debugging
+aliases:
+- spring content negotiation pitfalls
+- spring 415 unsupported media type
+- accept vs content-type difference
+- httpmessageconverter media type
+- produces consumes mismatch
+- requestbody media type mismatch
+- controller-before-415 unsupported media type
+- spring negotiation deep dive
+- 406 not acceptable spring
+- html response instead of json api
+- json html response mismatch
+- content negotiation advanced
+symptoms:
+- JSON 요청인데 415나 406이 번갈아 보여서 어디부터 봐야 할지 모르겠어
+- Accept와 Content-Type을 헷갈려서 왜 HTML이 왔는지 설명이 안 돼
+- API인 줄 알았는데 login HTML이나 text/html 응답이 와서 negotiation 문제인지 헷갈려
+intents:
+- definition
+- troubleshooting
+- deep_dive
+prerequisites:
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/requestbody-400-before-controller-primer
+- network/browser-devtools-accept-vs-content-type-mini-card
+next_docs:
+- spring/spring-handlermethodreturnvaluehandler-chain
+- spring/spring-mvc-exception-resolver-chain-contract
+- spring/spring-api-401-vs-browser-302-beginner-bridge
+linked_paths:
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-conversion-service-formatter-binder-pipeline.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-api-401-vs-browser-302-beginner-bridge.md
+- contents/network/http-request-response-headers-basics.md
+- contents/network/browser-devtools-accept-vs-content-type-mini-card.md
+confusable_with:
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/requestbody-400-before-controller-primer
+- spring/spring-api-401-vs-browser-302-beginner-bridge
+- spring/spring-handlermethodreturnvaluehandler-chain
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 415 Unsupported Media Type과 406 Not Acceptable을 어떤 기준으로 나눠 봐야 해?
+- Accept와 Content-Type이 헷갈릴 때 Spring MVC에서 어떤 순서로 디버깅하면 돼?
+- JSON API인데 HTML 응답이 올 때 content negotiation 문제와 login redirect 문제를 어떻게 구분해?
+- produces consumes 설정과 HttpMessageConverter 선택이 응답 형식에 어떻게 영향을 주는지 설명해줘
+- Spring content negotiation이 request body 파싱 실패와 response format 협상에 어떻게 연결되는지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC에서 `Accept`, request `Content-Type`, response
+  `Content-Type`, `produces`, `consumes`, `HttpMessageConverter` 선택이
+  400/406/415와 HTML vs JSON 응답 차이로 어떻게 이어지는지 설명하는
+  advanced deep dive다. 초급 415 primer와 API redirect 브리지를 더 깊은
+  negotiation 관점으로 이어 준다.
+---
+
 # Spring Content Negotiation Pitfalls
 
 > 한 줄 요약: Content negotiation은 같은 엔드포인트라도 `Accept`, `Content-Type`, converter 조합에 따라 전혀 다른 응답이 나오게 하므로, API 계약과 렌더링 계약을 같이 봐야 한다.

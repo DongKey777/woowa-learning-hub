@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 이분 탐색 입문 (Binary Search Basics)
+concept_id: algorithm/binary-search-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- lower-bound-vs-exact-match
+- binary-search-loop-invariant
+aliases:
+- binary search intro
+- 이분 탐색 입문
+- 이진 탐색 기초
+- binary search beginner
+- 이분 탐색이 뭐예요
+- 정렬된 배열 탐색
+- log n 탐색
+- lo hi mid
+- lower bound beginner
+- upper bound beginner
+- 경계 이분 탐색
+- off by one binary search
+- arrays.binarysearch 뭐예요
+- 정렬은 했는데 왜 검색 결과가 이상해요
+- binarysearch 처음 배우는데
+symptoms:
+- 이분 탐색인데 exact match와 lower bound를 같은 코드로 처리하다가 자꾸 틀려
+- lo hi mid는 외웠는데 종료 조건을 어디에 둬야 하는지 감이 안 와
+- 정렬은 했는데 어느 절반을 버릴 수 있는지 판단이 매번 흔들려
+intents:
+- definition
+prerequisites:
+- algorithm/sort-to-binary-search-bridge
+next_docs:
+- algorithm/binary-search-patterns
+- algorithm/two-pointer-intro
+linked_paths:
+- contents/algorithm/sort-intro.md
+- contents/algorithm/sort-to-binary-search-bridge.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/two-pointer-intro.md
+- contents/algorithm/sort.md
+- contents/data-structure/tree-basics.md
+confusable_with:
+- algorithm/sort-to-binary-search-bridge
+- algorithm/two-pointer-intro
+forbidden_neighbors:
+- contents/algorithm/sort-intro.md
+expected_queries:
+- 정렬된 배열에서 왜 절반씩 버려도 되는지 이분 탐색 관점으로 설명해줘
+- binary search에서 lo hi mid가 각각 무슨 역할인지 처음 배우는 사람 기준으로 알려줘
+- exact match 찾기와 lower bound 찾기를 왜 다른 패턴으로 다루는지 감이 안 와
+- 이분 탐색이 값 하나 찾기 말고 경계 찾기에도 쓰인다는 뜻을 예시로 보고 싶어
+- off by one 때문에 이분 탐색이 자꾸 틀리는데 종료 조건을 어디부터 점검해야 해
+- Java에서 Arrays.binarySearch를 쓰기 전에 어떤 전제를 먼저 확인해야 해
+contextual_chunk_prefix: |
+  이 문서는 알고리즘 입문 학습자가 정렬된 구조에서 답을 어떻게
+  빠르게 좁혀 가는지, 정확한 값 찾기와 경계 찾기를 왜 구분하는지
+  처음 잡는 primer다. 절반씩 범위 줄이기, 중간값 비교로 방향 정하기,
+  값 찾기와 첫 위치 찾기, 종료 조건과 off-by-one 점검, Java
+  Arrays.binarySearch 전제 확인 같은 자연어 paraphrase가 본 문서의
+  핵심 개념에 매핑된다.
+---
 # 이분 탐색 입문 (Binary Search Basics)
 
 > 한 줄 요약: 이분 탐색은 정렬된 배열에서 탐색 범위를 매 단계 절반으로 줄여 O(log n)에 답을 찾는 기법이며, "정확한 값 찾기"와 "조건을 만족하는 경계 찾기" 두 가지 패턴을 구분해서 쓴다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Default Method 계약 진화 vs 충돌 해결 미니 드릴
+concept_id: language/default-method-contract-evolution-vs-conflict-mini-drill
+canonical: false
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- default-method-evolution
+- diamond-conflict-resolution
+- interface-contract-evolution
+aliases:
+- default method contract evolution vs conflict
+- interface default method mini drill
+- default method 언제 추가하고 언제 override
+- default method conflict resolution beginner
+- default method diamond conflict quick check
+- contract evolution vs conflict resolution java
+- 같은 default method 두 개 언제 충돌
+- 처음 배우는데 default method drill
+- default method 왜 false 기본값
+- interface default method evolution basics
+- what is default method conflict drill
+- default method override rule practice
+symptoms:
+- default method를 볼 때 계약 진화용 기본값인지 충돌 해결 문제인지 바로 구분이 안 돼
+- 같은 이름의 메서드가 둘이면 무조건 충돌이라고 착각해
+- 글로는 이해했는데 짧은 코드 예제로 보면 evolution과 conflict가 다시 섞여 보여
+intents:
+- drill
+- comparison
+prerequisites:
+- language/interface-default-method-contract-evolution-primer
+- language/interface-default-method-diamond-conflict-basics
+- language/interface-default-vs-static-method-primer
+next_docs:
+- language/abstract-class-vs-interface
+- software-engineering/repository-interface-contract
+- language/java-abstract-class-vs-interface-basics
+linked_paths:
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/interface-default-method-diamond-conflict-basics.md
+- contents/language/java/interface-default-vs-static-method-primer.md
+- contents/language/java/abstract-class-vs-interface.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/software-engineering/repository-interface-contract-primer.md
+confusable_with:
+- language/interface-default-method-contract-evolution-primer
+- language/interface-default-method-diamond-conflict-basics
+- language/interface-default-vs-static-method-primer
+forbidden_neighbors: []
+expected_queries:
+- default method 문제를 볼 때 계약 진화와 diamond conflict를 빠르게 판별하는 연습 문제가 필요해
+- 같은 시그니처 두 개가 만나는 경우와 그냥 기본값 추가인 경우를 짧게 구분해 보고 싶어
+- interface default method에서 evolution인지 conflict resolution인지 손으로 확인하는 미니 드릴이 있어?
+- 이름은 같은데 파라미터가 다를 때 충돌이 아닌 이유를 예제로 연습하고 싶어
+- default method override 규칙을 초보자용 quick check 형태로 정리한 문서를 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 default method를 볼 때 계약을 넓히는 기본값과
+  같은 시그니처 충돌 해결을 확인 질문으로 굳히는 drill이다. 예전 구현체를
+  덜 깨뜨리며 메서드를 늘리는 경우, 인터페이스 둘이 만났을 때 직접
+  선택해야 하는 경우, 이름은 같아도 overload라서 공존하는 경우, override가
+  왜 마지막 결정인지 같은 자연어 표현이 본 문서의 quick check 판단에
+  매핑된다.
+---
 # Default Method 계약 진화 vs 충돌 해결 미니 드릴
 
 > 한 줄 요약: `default method`를 볼 때 먼저 "기존 구현체를 덜 깨뜨리며 계약을 넓히는가"와 "같은 시그니처 두 개가 만나서 누구 걸 쓸지 정해야 하는가"를 나누면 beginner 혼란이 크게 줄어든다.

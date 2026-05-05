@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Write Order vs Precondition Primer
+concept_id: system-design/write-order-vs-precondition-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- ordering-vs-precondition
+- stale-read-vs-out-of-order-write
+- if-match-vs-sequence
+aliases:
+- write order vs precondition primer
+- monotonic writes vs version check
+- monotonic writes vs if-match
+- session write ordering vs expected version
+- checkout ordering vs cart version
+- sequence number vs version column
+- idempotency key vs expected version
+- write sequence vs etag
+- monotonic writes beginner confusion
+- writes-follow-reads beginner confusion
+- 처음 시스템 설계 배우는데 write order precondition 차이
+- if-match가 순서 보장을 해주나요
+- version check만 있으면 순서도 안전한가요
+- stale save 막기와 write ordering 차이
+- 언제 sequence를 쓰고 언제 if-match를 쓰나요
+symptoms:
+- If-Match를 붙였는데도 저장 순서가 꼬일 수 있는지 모르겠어
+- version 체크만 하면 checkout 순서도 안전한 줄 알았어
+- stale save 막기랑 write ordering 보장을 자꾸 같은 문제로 봐
+intents:
+- definition
+prerequisites:
+- system-design/writes-follow-reads-primer
+- system-design/monotonic-writes-ordering-primer
+next_docs:
+- system-design/conditional-write-status-code-bridge
+- system-design/session-guarantees-decision-matrix
+- system-design/session-policy-implementation-sketches
+linked_paths:
+- contents/system-design/conditional-write-status-code-bridge.md
+- contents/system-design/monotonic-writes-ordering-primer.md
+- contents/system-design/writes-follow-reads-primer.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/database/compare-and-set-version-columns.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+confusable_with:
+- system-design/writes-follow-reads-primer
+- system-design/monotonic-writes-ordering-primer
+- system-design/conditional-write-status-code-bridge
+forbidden_neighbors:
+- contents/system-design/monotonic-writes-ordering-primer.md
+expected_queries:
+- write 순서 보장과 version check는 무엇이 다르고 왜 둘 다 필요할 수 있어?
+- If-Match가 있으면 같은 흐름의 요청 순서까지 안전하다고 봐도 돼?
+- checkout 요청 순서 문제와 stale 화면 저장 문제를 어떻게 구분해 설명하지?
+- sequence number를 붙여야 할 상황과 expected_version을 붙여야 할 상황을 비교해줘
+- monotonic writes와 optimistic lock을 beginner 관점에서 나란히 설명해줘
+- 같은 write 흐름에서 precondition check와 ordering guard를 함께 두는 이유가 궁금해
+contextual_chunk_prefix: |
+  이 문서는 같은 흐름의 write 순서 보장과 예전 상태 기준 저장 차단을
+  어떻게 구분해야 하는지 처음 잡는 primer다. 줄 서는 순서 보호, 오래된
+  화면 기준 저장 막기, checkout 순서 뒤집힘과 stale save 나눠 보기,
+  sequence와 If-Match의 질문 차이, 순서 보장과 입장 자격 검사를 함께
+  이해하기 같은 자연어 paraphrase가 본 문서의 비교 축에 매핑된다.
+---
 # Write Order vs Precondition Primer
 
 > 한 줄 요약: monotonic writes는 "같은 흐름의 write 두 개가 서버에서 순서대로 적용되나?"를 묻고, version/precondition check는 "내가 보고 판단한 상태가 아직 유효할 때만 이 write를 받나?"를 묻는다.

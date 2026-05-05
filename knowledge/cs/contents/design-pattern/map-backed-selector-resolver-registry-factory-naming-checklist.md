@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: 'Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`'
+concept_id: design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- naming-responsibility-drift
+- factory-overuse
+aliases:
+- map backed naming checklist
+- selector resolver registry factory naming
+- map class naming checklist
+- factory or registry naming checklist
+- 맵 기반 클래스 이름
+- handler map 이름 짓기
+- selector resolver registry factory 차이
+intents:
+- comparison
+- design
+symptoms:
+- map으로 구현했는데 클래스 이름을 뭘로 지어야 할지 모르겠어요
+- 새로 안 만드는데 factory라고 불러도 되는지 헷갈려요
+prerequisites:
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+next_docs:
+- design-pattern/strategy-policy-selector-naming
+linked_paths:
+  - contents/design-pattern/strategy-policy-selector-naming.md
+  - contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+  - contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+  - contents/design-pattern/factory-vs-di-container-wiring.md
+  - contents/design-pattern/bean-name-vs-domain-key-lookup.md
+  - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+  - contents/software-engineering/dependency-injection-basics.md
+confusable_with:
+  - design-pattern/strategy-policy-selector-naming
+  - design-pattern/registry-vs-factory-injected-handler-maps
+forbidden_neighbors: []
+expected_queries:
+- map 기반 클래스 이름을 selector resolver registry factory 중 뭐로 지어야 해?
+- 새로 안 만드는데 factory라고 불러도 돼?
+- handler map 이름 짓기 기준을 체크리스트로 보고 싶어
+- selector와 registry가 둘 다 map lookup처럼 보일 때 어떻게 구분해?
+- Map<String, Handler> 같은 클래스 이름을 Registry로 볼지 Selector로 볼지 판단 기준이 궁금해
+- create 없이 주입된 객체만 고르는 클래스에 Factory 이름을 쓰면 왜 어색한지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 Map<Key, ...> 형태의 클래스를 만났을 때 공개 책임을
+  기준으로 selector, resolver, registry, factory 이름을 고르게 돕는 beginner
+  bridge다. map naming checklist, 새로 안 만드는데 factory, lookup만 하는데
+  registry인가, 문자열 해석이면 resolver인가 같은 자연어 질문이 본 문서의
+  비교표와 체크리스트에 매핑된다.
+---
+
 # Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`
 
 > 한 줄 요약: 같은 `Map<Key, ...>`를 써도 이름은 자료구조가 아니라 **공개 책임**으로 붙인다. 입력을 풀면 `Resolver`, 후보를 고르면 `Selector`, 이미 있는 것을 찾으면 `Registry`, 새로 만들면 `Factory`다.

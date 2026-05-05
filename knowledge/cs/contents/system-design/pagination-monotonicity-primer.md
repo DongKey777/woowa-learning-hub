@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Pagination Monotonicity Primer
+concept_id: system-design/pagination-monotonicity-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- floor-is-accept-rule-not-filter
+- page-shrink-hidden-row-bug
+- stable-sort-before-freshness-guard
+aliases:
+- pagination monotonicity primer
+- pagination min-version floor
+- pagination min version floor
+- cursor pagination monotonic reads
+- page to page monotonicity
+- list pagination stale row reject
+- pagination hidden rows bug
+- pagination ordering with min-version
+- seek pagination min-version
+- page boundary monotonic guard
+- stable cursor with freshness floor
+- stale row suppress pagination
+- pagination floor candidate reject
+- beginner pagination consistency
+- pagination monotonicity primer basics
+symptoms:
+- 페이지를 넘길수록 본 row가 다시 뒤로 가거나 사라져 보여
+- min-version floor를 걸었더니 page size가 줄어드는 이유를 모르겠어
+- stale row를 버리면 cursor를 어디까지 전진시켜야 하는지 헷갈려
+intents:
+- definition
+prerequisites:
+- system-design/monotonic-reads-and-session-guarantees-primer
+- system-design/read-after-write-consistency-basics
+next_docs:
+- system-design/list-detail-monotonicity-bridge
+- system-design/search-hit-overlay-pattern
+- system-design/session-guarantees-decision-matrix
+linked_paths:
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/search-hit-overlay-pattern.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/rejected-hit-observability-primer.md
+confusable_with:
+- system-design/list-detail-monotonicity-bridge
+- system-design/monotonic-reads-and-session-guarantees-primer
+- system-design/search-hit-overlay-pattern
+forbidden_neighbors:
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+expected_queries:
+- cursor pagination에서 monotonicity를 지키려면 min-version floor를 어떻게 써야 해?
+- stale 후보를 그냥 필터링하면 hidden row가 생긴다는 게 무슨 뜻이야?
+- 페이지네이션에서 floor와 cursor 역할을 초보자 기준으로 나눠 설명해줘
+- page size가 줄지 않게 stale row를 건너뛰는 안전한 흐름이 궁금해
+- 목록 1페이지에서 본 항목이 2페이지에서 더 예전 상태로 보이지 않게 하려면 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 시스템 설계 학습자가 페이지네이션에서 min-version floor를 정렬 규칙이 아니라 이미 본 row를 보호하는 accept rule로 이해하도록, hidden row와 page shrink를 왜 막아야 하는지 처음 잡는 primer다. 페이지 넘기면 항목이 사라짐, 다음 페이지 경계가 깨짐, 오래된 후보를 그냥 버리면 안 됨, cursor는 책갈피 역할, replacement를 더 읽어 채우기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Pagination Monotonicity Primer
 
 > 한 줄 요약: 페이지네이션에서 `min-version` floor는 "이미 본 row가 뒤로 가지 않게" 쓰는 장치이지, 현재 페이지 후보를 무작정 필터링해 page boundary를 깨뜨리는 장치가 아니다.

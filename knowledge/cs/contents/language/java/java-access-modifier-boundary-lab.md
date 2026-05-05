@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Access Modifier Boundary Lab
+concept_id: language/java-access-modifier-boundary-lab
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- protected-reference-qualifier
+- same-package-vs-cross-package
+- access-modifier-prediction
+aliases:
+- java access modifier boundary lab basics
+- java access modifier boundary lab beginner
+- java access modifier boundary lab intro
+- java basics
+- beginner java
+- 처음 배우는데 java access modifier boundary lab
+- java access modifier boundary lab 입문
+- java access modifier boundary lab 기초
+- what is java access modifier boundary lab
+- how to java access modifier boundary lab
+symptoms:
+- protected가 하위 클래스 안이면 무조건 되는 줄 알았는데 참조에 따라 달라져
+- 같은 패키지와 다른 패키지 접근 결과를 손으로 확인하고 싶어
+- 컴파일 성공 실패를 직접 예측해 보면서 접근 제한자를 익히고 싶어
+intents:
+- definition
+prerequisites:
+- language/java-access-modifiers-member-model-basics
+- language/java-package-import-boundary-basics
+- language/java-package-boundary-quickcheck-card
+- language/java-access-modifier-top-level-member-mini-quiz
+next_docs:
+- language/java-inheritance-overriding-basics
+linked_paths:
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/java-package-boundary-quickcheck-card.md
+- contents/language/java/java-access-modifier-top-level-member-mini-quiz.md
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-inheritance-overriding-basics.md
+confusable_with:
+- language/java-access-modifier-top-level-member-mini-quiz
+- language/java-package-boundary-quickcheck-card
+forbidden_neighbors:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-access-modifier-top-level-member-mini-quiz.md
+- contents/language/java/java-package-boundary-quickcheck-card.md
+expected_queries:
+- protected this childRef parentRef 차이를 손으로 확인하는 실습이 필요해
+- 같은 패키지와 다른 패키지에서 private package-private protected 결과를 직접 보고 싶어
+- 접근 제한자 컴파일 성공 실패를 예제로 연습할 문서를 찾고 있어
+- Java protected가 부모 타입 참조에서는 왜 막히는지 워크시트로 보고 싶어
+- subclass 내부 접근과 외부 접근을 같이 비교하는 lab이 필요해
+contextual_chunk_prefix: |
+  이 문서는 학습자가 private, package-private, protected가 같은
+  패키지와 다른 패키지 하위 클래스에서 어떻게 갈리는지 손으로
+  확인하며 처음 잡는 primer다. 컴파일 성공 실패 예측, this와 부모
+  참조 차이, 다른 패키지 subclass 내부 접근, 표로 확인하는 접근
+  경계, 직접 돌려 보는 작은 실습, protected가 왜 참조 타입에 따라
+  막히는지 같은 자연어 paraphrase가 본 문서의 실습 흐름에
+  매핑된다.
+---
 # Access Modifier Boundary Lab
 
 > 한 줄 요약: `private`/package-private/`protected`를 "같은 클래스, 같은 패키지, 다른 패키지" 3개 경계에서 직접 확인하는 초소형 실행 실습이다.

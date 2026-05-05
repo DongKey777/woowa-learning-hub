@@ -13,11 +13,14 @@ aliases:
   - connection pool
   - 커넥션 풀
   - 커넥션 풀이란
+  - connection pool basics
+  - hikari connection pool basics
+  - Hikari connection pool
   - DB 커넥션 재사용
   - hikari cp
   - hikaricp
   - HikariCP
-  - hikaricp가 뭐야
+  - spring boot default pool
   - jdbc connection pool
   - 스프링 커넥션 풀
   - pool size
@@ -29,9 +32,11 @@ intents:
   - design
 prerequisites: []
 next_docs:
+  - database/connection-pool-starvation-symptom-router
   - database/connection-pool-transaction-propagation
   - database/connection-timeout-vs-lock-timeout
 linked_paths:
+  - contents/database/connection-pool-starvation-symptom-router.md
   - contents/database/connection-pool-transaction-propagation-bulk-write.md
   - contents/database/connection-timeout-vs-lock-timeout-card.md
   - contents/database/transaction-locking-connection-pool-primer.md
@@ -46,13 +51,17 @@ expected_queries:
   - Connection pool이 뭐야?
   - DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야?
   - HikariCP가 뭐야?
+  - Hikari connection pool 처음 배우는데 어디부터 봐?
+  - Connection is not available가 풀 기초 문제인지부터 알고 싶어
   - 커넥션 풀이 너무 작으면 어떻게 돼?
   - 처음 배우는데 커넥션 풀
 contextual_chunk_prefix: |
   이 문서는 Spring 또는 JDBC를 처음 배우는 학습자가 "DB 연결을 매 요청마다 새로
   만드는 게 왜 비효율인가"라는 감각을 잡을 때 참고하는 primer다. 본 문서의 chunk는
   연결 비용 / 풀 크기 결정 / 풀 고갈 / 반환 흐름 중 일부를 설명한다. tuning 심화는
-  hikari-connection-pool-tuning에서 다룬다 (본 primer는 큰 그림만).
+  hikari-connection-pool-tuning에서 다루고, "Connection is not available",
+  Hikari connection pool 처음, pool exhausted 같은 증상 원인 분기는
+  connection-pool-starvation-symptom-router에서 다룬다 (본 primer는 큰 그림만).
 ---
 
 # 커넥션 풀 기초 (Connection Pool Basics)
@@ -65,6 +74,7 @@ contextual_chunk_prefix: |
 
 - [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
 - [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
+- [Connection pool 고갈 증상 라우터](./connection-pool-starvation-symptom-router.md)
 - [트랜잭션·락·커넥션 풀 첫 그림](./transaction-locking-connection-pool-primer.md)
 - [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)
 - [database 카테고리 인덱스](./README.md)
@@ -173,6 +183,7 @@ Thread C -> wait (if pool exhausted)
 ## 더 깊이 가려면
 
 - 커넥션 풀과 트랜잭션 전파, 벌크 쓰기 패턴 -> [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
+- `Connection is not available`가 왜 뜨는지 원인 분기부터 보려면 -> [Connection pool 고갈 증상 라우터](./connection-pool-starvation-symptom-router.md)
 - `connection timeout`과 `lock timeout`을 한 표로 다시 분리하기 -> [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
 - 트랜잭션 길이 증가가 왜 pool exhaustion으로 번지는지 보기 -> [트랜잭션·락·커넥션 풀 첫 그림](./transaction-locking-connection-pool-primer.md)
 - JDBC·JPA·MyBatis에서 커넥션 풀이 어떻게 사용되는지 -> [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)

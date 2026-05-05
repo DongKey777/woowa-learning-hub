@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Absolute Redirect URL Behind Load Balancer Guide
+concept_id: security/absolute-redirect-url-behind-load-balancer-guide
+canonical: false
+category: security
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- x-forwarded-host-misread
+- public-origin-vs-internal-host
+- redirect-uri-mismatch
+aliases:
+- absolute redirect behind proxy
+- x-forwarded-host redirect
+- host preservation load balancer
+- wrong origin callback
+- post-login redirect wrong host
+- oauth callback wrong origin
+- redirect_uri built from internal host
+- 로그인 후 내부 host로 이동
+- wrong host after login
+- load balancer redirect wrong origin
+symptoms:
+- 로그인 성공 뒤 app-internal이나 staging host로 리다이렉트돼요
+- OAuth callback URL이 외부 도메인이 아니라 내부 주소로 만들어져요
+- redirect_uri mismatch가 운영에서만 나고 로컬에서는 안 나요
+intents:
+- troubleshooting
+prerequisites:
+- security/browser-401-vs-302-login-redirect-guide
+- security/wrong-scheme-vs-wrong-origin-redirect-shortcut
+next_docs:
+- security/forwarded-header-trust-boundary-primer
+- security/secure-cookie-behind-proxy-guide
+- security/password-reset-magic-link-public-origin-guide
+linked_paths:
+- contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md
+- contents/security/forwarded-header-trust-boundary-primer.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/password-reset-magic-link-public-origin-guide.md
+- contents/security/open-redirect-hardening.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with:
+- security/secure-cookie-behind-proxy-guide
+- security/forwarded-header-trust-boundary-primer
+- security/open-redirect-hardening
+forbidden_neighbors:
+- contents/security/open-redirect-hardening.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+expected_queries:
+- 로그인 후 왜 app-internal 같은 내부 host로 리다이렉트돼?
+- load balancer 뒤에서 redirect_uri mismatch가 나는 원인을 어디서 봐?
+- x-forwarded-host가 잘못돼서 wrong origin redirect가 생기는지 확인하는 법
+- 운영에서만 callback URL host가 틀릴 때 절대 URL 생성 기준을 어떻게 잡아?
+- https는 맞는데 host만 staging으로 바뀌는 redirect는 무엇부터 봐야 해?
+- absolute redirect URL behind proxy 문제를 단계별로 진단하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 load balancer 뒤 로그인과 OAuth callback 흐름에서 앱이 바깥 public origin 대신 내부 주소로 absolute URL을 만드는 원인을 단계적으로 가르는 playbook이다. 로그인 후 내부 주소로 튐, 운영에서만 callback host가 틀림, 외부 도메인 대신 staging으로 감, https는 맞는데 host만 바뀜, redirect_uri mismatch가 운영에서만 남 같은 자연어 paraphrase가 본 문서의 wrong-origin redirect 점검 순서에 매핑된다.
+---
 # Absolute Redirect URL Behind Load Balancer Guide
 
 > 한 줄 요약: load balancer 뒤의 앱이 바깥 주소가 아니라 내부 주소로 absolute URL을 만들면, 로그인 후 redirect나 OAuth callback URL이 `app.example.com`에서 `app-internal:8080` 같은 wrong origin으로 바뀐다.

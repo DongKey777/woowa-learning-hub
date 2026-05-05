@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Browser E2E cost-vs-signal checklist
+concept_id: software-engineering/browser-e2e-cost-vs-signal-checklist
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- e2e-overuse
+- flaky-cost-triage
+- user-journey-scope
+aliases:
+- browser e2e checklist
+- 브라우저 e2e 몇 개
+- e2e flaky cost
+- flaky test 줄이기
+- 핵심 사용자 흐름 선정
+- playwright e2e basics
+- cypress e2e beginner
+- 처음 e2e 몇 개 남겨요
+- 왜 e2e 적게 두나요
+- end-to-end test signal
+- what is browser e2e signal
+- ui flow smoke test
+symptoms:
+- Playwright 테스트가 자꾸 flaky해서 PR 피드백이 느려져요
+- 버튼 비활성화 같은 것도 전부 브라우저 E2E로 올려야 하나 헷갈려요
+- 핵심 사용자 흐름만 남기라는데 어떤 시나리오를 골라야 할지 모르겠어요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/testing-strategy-and-test-doubles
+next_docs:
+- software-engineering/component-test-vs-browser-e2e-boundary-card
+- software-engineering/hexagonal-testing-seams-primer
+- software-engineering/inbound-adapter-testing-matrix
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/component-test-vs-browser-e2e-boundary-card.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/spring/spring-testing-basics.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+confusable_with:
+- software-engineering/component-test-vs-browser-e2e-boundary-card
+- software-engineering/testing-strategy-and-test-doubles
+forbidden_neighbors:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+expected_queries:
+- 브라우저 E2E를 너무 많이 두는 것 같을 때 어디서 줄여야 해?
+- 로그인이나 결제처럼 정말 남겨야 할 E2E만 고르는 기준이 뭐야?
+- flaky한 UI 테스트가 많으면 어떤 테스트를 아래 계층으로 내려야 해?
+- Playwright 시나리오를 smoke 몇 개만 남기라는 말이 무슨 뜻이야?
+- 화면 테스트를 전부 end-to-end로 만들지 말라는 리뷰를 어떻게 이해해?
+contextual_chunk_prefix: |
+  이 문서는 테스트 피드백 비용이 커질 때 학습자가 어떤 사용자 여정을
+  browser E2E 최종 안전망으로 남기고, 어떤 확인을 component test나
+  API/슬라이스 테스트로 내려야 하는지 골라주는 chooser다. 로그인 끝까지
+  눌러 봐야 하나, 결제처럼 끊기면 큰 흐름만 남기나, 로딩 표시와 버튼 상태는
+  더 싼 검증으로 옮기나, flaky가 많은 화면은 어디서 자르나, smoke 소수만
+  유지하라는 말이 무슨 뜻인가 같은 자연어 paraphrase가 본 문서의 선택
+  기준에 매핑된다.
+---
 # Browser E2E cost-vs-signal checklist
 
 > 한 줄 요약: 브라우저 E2E는 "많을수록 좋은 테스트"가 아니라, flaky cost를 감수할 만큼 사용자 위험이 큰 흐름만 남기는 마지막 안전망이다.

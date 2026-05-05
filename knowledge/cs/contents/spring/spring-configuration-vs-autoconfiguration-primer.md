@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 'Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`'
+concept_id: spring/spring-configuration-vs-autoconfiguration-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+  - configuration-vs-autoconfiguration
+  - bean-registration-path-choice
+  - proxybeanmethods-mental-model
+aliases:
+  - configuration vs autoconfiguration
+  - spring configuration vs auto-configuration primer
+  - '@Configuration @Bean difference'
+  - component scan vs @Bean vs auto-configuration
+  - spring configuration beginner
+  - '@Bean 사용 시점'
+  - configuration 기본 개념
+  - auto-configuration 기본 개념
+  - boot 기본 bean 등록 이유
+  - proxyBeanMethods beginner
+symptoms:
+  - '@Configuration, @Bean, auto-configuration이 한꺼번에 나와서 누가 bean을 만드는지 헷갈려요'
+  - service는 scan이라는데 ObjectMapper는 왜 @Bean으로 등록하는지 감이 안 와요
+  - starter가 만든 기본 bean과 내가 만든 설정 bean의 경계가 안 잡혀요
+intents:
+  - definition
+  - comparison
+prerequisites:
+  - spring/ioc-di-basics
+  - spring/bean-registration-path-decision-guide
+next_docs:
+  - spring/boot-autoconfiguration-basics
+  - spring/spring-boot-autoconfiguration
+  - spring/spring-full-vs-lite-configuration-examples
+  - spring/spring-boot-condition-evaluation-report-first-debug-checklist
+linked_paths:
+  - contents/spring/spring-bean-di-basics.md
+  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+  - contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+  - contents/spring/spring-boot-autoconfiguration-basics.md
+  - contents/spring/spring-boot-autoconfiguration.md
+  - contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+  - contents/spring/spring-full-vs-lite-configuration-examples.md
+  - contents/spring/spring-legacy-configuration-bean-self-call-detection-card.md
+  - contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+confusable_with:
+  - spring/boot-autoconfiguration-basics
+  - spring/bean-registration-path-decision-guide
+  - spring/spring-full-vs-lite-configuration-examples
+forbidden_neighbors: []
+expected_queries:
+  - 'Spring에서 @Configuration이랑 @Bean 차이를 처음엔 어떻게 이해해야 해?'
+  - component scan, @Bean, auto-configuration을 어떤 순서로 구분하면 돼?
+  - starter가 기본 bean을 채우는 거랑 내가 만든 설정 클래스는 뭐가 달라?
+  - Boot 자동 구성과 내가 쓰는 설정 클래스를 같은 메커니즘으로 봐도 돼?
+  - proxyBeanMethods는 언제 신경 쓰고 언제 무시해도 돼?
+contextual_chunk_prefix: |
+  이 문서는 Spring 초급 학습자가 `@Configuration`, `@Bean`,
+  auto-configuration, `proxyBeanMethods`를 한 번에 만나 헷갈릴 때
+  "우리 코드 설정", "Boot 기본 설정", "설정 클래스 안의 bean 조립 규칙"
+  으로 나눠 큰 그림을 먼저 잡게 하는 primer다. service는 scan인데
+  ObjectMapper는 왜 `@Bean`인지, starter가 bean을 왜 대신 만드는지,
+  configuration과 auto-configuration이 같은 메커니즘인지,
+  `proxyBeanMethods`를 언제 신경 써야 하는지 같은 자연어 질문을
+  bean 등록 경로와 조건부 기본값 mental model로 연결한다.
+---
 # Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`
 
 > 한 줄 요약: 초급자 기준으로는 "`service`/`repository` 같은 우리 코드면 component scan, 외부 객체 조립이면 `@Bean`, Boot가 대신 채우는 기본값이면 auto-configuration"으로 먼저 자르면 된다. `@Configuration`은 그 `@Bean` 규칙을 담는 설명서이고, `proxyBeanMethods`는 이 설명서 안에서 `@Bean` 메서드를 직접 부를 때만 신경 쓰면 되는 안전 스위치다.

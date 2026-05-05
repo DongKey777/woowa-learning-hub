@@ -29,7 +29,8 @@ contextual_chunk_prefix: |
   코드가 어떻게 더 시험하기 쉬워지는지, 객체가 자기 의존성을 외부에서
   받는 설계 원리를 처음 잡는 primer다. 필요한 도구 받아쓰기, 코드 시험
   쉬워지는 이유, new 대신 주입, 객체 조립을 외부에서 하기, 테스트 더블
-  교체 같은 자연어 paraphrase가 본 문서의 큰 그림에 매핑된다.
+  교체, 객체를 직접 만들지 않고 외부에서 받기 같은 자연어 paraphrase가 본
+  문서의 큰 그림에 매핑된다.
 ---
 
 # 의존성 주입(DI) 기초 (Dependency Injection Basics)
@@ -47,7 +48,7 @@ contextual_chunk_prefix: |
 - [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dependency injection basics, dependency injection what is, di 기초, di 처음, 의존성 주입 뭐예요, ioc랑 di 차이 헷갈림, di랑 bean 차이, spring 없이 di 가능한가, 왜 new 하면 안 돼요, 객체 외부 주입, 생성자 주입 기초, 생성자 주입 언제 쓰나요, 필드 주입 vs 생성자 주입, 테스트 의존성 교체, service repository 연결 누가 해요
+retrieval-anchor-keywords: dependency injection basics, dependency injection what is, di 기초, di 처음, 의존성 주입 뭐예요, ioc랑 di 차이 헷갈림, di랑 bean 차이, spring 없이 di 가능한가, 왜 new 하면 안 돼요, 객체 외부 주입, 생성자 주입 기초, 생성자 주입 언제 쓰나요, 필드 주입 vs 생성자 주입, 테스트 의존성 교체, service repository 연결 누가 해요, 객체를 직접 만들지 않고 외부에서 받는 설계, 객체를 직접 만들지 않고 외부에서 받는 게 뭐야, wiring without new
 
 ## 먼저 잡는 멘탈 모델
 

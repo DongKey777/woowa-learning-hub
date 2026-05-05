@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Request Path Failure Modes Primer
+concept_id: system-design/request-path-failure-modes-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timeout-budget-first
+- degrade-vs-fail-fast
+- cache-miss-storm
+aliases:
+- request path failure modes
+- cache outage primer
+- queue outage primer
+- app instance failure primer
+- database outage primer
+- failure absorption order
+- graceful degradation basics
+- read-only mode basics
+- stale-if-error basics
+- partial feature disablement
+- cache miss storm
+- queue backlog basics
+- app failover basics
+- database failover basics
+- timeout budget basics
+symptoms:
+- cache나 queue가 죽었을 때 어느 레이어가 먼저 흔들리는지 모르겠어
+- 장애가 나면 바로 fail해야 하는지 기능을 줄여 버텨야 하는지 판단이 안 돼
+- cache 장애가 왜 결국 DB 부하로 번지는지 한 번에 정리가 안 돼
+intents:
+- definition
+prerequisites:
+- system-design/system-design-foundations
+- system-design/database-scaling-primer
+next_docs:
+- system-design/request-deadline-timeout-budget-primer
+- system-design/read-only-and-graceful-degradation-patterns
+- system-design/backpressure-and-load-shedding-design
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/read-only-and-graceful-degradation-patterns.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- system-design/read-only-and-graceful-degradation-patterns
+- system-design/request-deadline-timeout-budget-primer
+- system-design/backpressure-and-load-shedding-design
+forbidden_neighbors: []
+expected_queries:
+- 캐시가 죽으면 요청 경로에서 누가 먼저 버티고 결국 어디가 가장 힘들어져?
+- queue 장애와 DB 장애를 같은 식으로 보면 안 되는 이유를 입문자 관점에서 설명해줘
+- 장애가 났을 때 reroute, buffer, degrade를 어떻게 구분해서 생각해야 해?
+- 서비스 인스턴스 장애와 데이터베이스 장애가 사용자에게 다르게 보이는 이유가 궁금해
+- 기능을 줄여 버티는 전략이 request path에서 어디쯤 작동하는지 큰 그림이 필요해
+contextual_chunk_prefix: |
+  이 문서는 cache, queue, app instance, database 장애가 났을 때 요청 경로에서 어느 레이어가 먼저 흔들리고 어디가 충격을 흡수하는지 처음 잡는 primer다.
+  캐시 문제 뒤에 왜 DB까지 힘들어지는지, 큐가 막히면 어디서 지연이 쌓이는지, 장애 때 바로 실패할지 버틸지 구분하기, 기능을 줄여 핵심 요청 살리기, 사용자 오류가 언제 바로 드러나는지 같은 자연어 paraphrase가 본 문서의 핵심 흐름에 매핑된다.
+---
 # Request Path Failure Modes Primer
 
 > 한 줄 요약: cache, queue, app instance, database가 고장 났을 때 요청 경로가 어디서 먼저 흔들리고 어느 레이어가 충격을 먼저 흡수하는지 설명하는 입문 문서다.

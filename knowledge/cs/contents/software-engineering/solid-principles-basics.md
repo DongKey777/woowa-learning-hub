@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: SOLID 원칙 기초 (SOLID Principles Basics)
+concept_id: software-engineering/solid-principles-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- mixed-responsibility
+- open-closed-branch-growth
+- dependency-inversion-basics
+- interface-segregation
+aliases:
+- solid principles basics
+- solid 원칙 입문
+- single responsibility
+- open closed
+- liskov substitution
+- interface segregation
+- dependency inversion
+- srp 뭐예요
+- 의존 역전 원칙
+- 인터페이스 분리 원칙
+symptoms:
+- SOLID 다섯 원칙이 각각 어떤 문제를 막는지 연결이 안 돼요
+- DIP와 DI를 같은 말로 이해하고 있었어요
+- 클래스가 많아지면 무조건 SOLID를 잘 지킨 건지 헷갈려요
+intents:
+- definition
+- comparison
+- design
+prerequisites: []
+next_docs:
+- software-engineering/solid-failure-patterns
+- software-engineering/architecture-layering-fundamentals
+- design-pattern/strategy-pattern
+linked_paths:
+- contents/software-engineering/solid-failure-patterns.md
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/dependency-injection-basics.md
+- contents/design-pattern/strategy-pattern.md
+confusable_with:
+- software-engineering/dependency-injection-basics
+- software-engineering/architecture-layering-fundamentals
+- design-pattern/strategy-pattern
+forbidden_neighbors: []
+expected_queries:
+- SOLID를 처음 배울 때 다섯 원칙을 각각 어떤 질문으로 이해하면 돼?
+- DIP와 DI 차이를 초심자 기준으로 설명해 줘
+- SRP를 메서드 하나짜리 클래스로 오해하지 않으려면 무엇을 봐야 해?
+- 요구사항이 늘 때 if 분기가 계속 커지는 코드가 OCP 위반인지 어떻게 판단해?
+- SOLID가 왜 변경 비용을 줄이는 이야기인지 예시로 연결해 줘
+contextual_chunk_prefix: |
+  이 문서는 SOLID를 암기표가 아니라 변경 이유를 분리하는 다섯 가지 진단
+  질문으로 이해하려는 초심자를 위한 primer다. SRP, OCP, LSP, ISP, DIP가
+  각각 어떤 코드 냄새와 연결되는지, DIP와 DI를 어떻게 구분하는지, 원칙을
+  과하게 적용하면 왜 오히려 복잡해지는지 설명하는 문서라는 맥락을 각 청크
+  앞에 붙인다.
+---
 # SOLID 원칙 기초 (SOLID Principles Basics)
 
 > 한 줄 요약: SOLID는 코드가 커져도 바꾸기 쉽게 만들기 위한 다섯 가지 설계 지침이고, 각 글자가 "왜 이 구조가 필요한가"에 대한 독립적 답을 준다.

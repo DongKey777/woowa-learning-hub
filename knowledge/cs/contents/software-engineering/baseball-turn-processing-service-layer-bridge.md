@@ -1,0 +1,102 @@
+---
+schema_version: 3
+title: 'baseball 한 턴 처리 흐름 ↔ Service 계층 브릿지'
+concept_id: software-engineering/baseball-turn-processing-service-layer-bridge
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/baseball
+review_feedback_tags:
+- controller-logic-leak
+- service-orchestration
+- game-round-flow-boundary
+aliases:
+- baseball service layer
+- 야구 미션 한 턴 처리 service
+- baseball controller 판정 로직
+- 야구 미션 service 책임
+- baseball guess 처리 흐름
+symptoms:
+- controller가 Guess 생성부터 strike ball 계산까지 다 하고 있어요
+- service가 너무 얇아 보여서 판정 로직도 controller에 두고 싶어요
+- 한 번의 추측 처리 순서를 어디까지 service가 가져가야 할지 헷갈려요
+intents:
+- mission_bridge
+- design
+prerequisites:
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+- software-engineering/baseball-guess-value-object-boundary-bridge
+next_docs:
+- software-engineering/baseball-guess-value-object-boundary-bridge
+- spring/baseball-mvc-controller-binding-bridge
+- design-pattern/baseball-restart-flow-state-pattern-bridge
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/baseball-guess-value-object-boundary-bridge.md
+- contents/spring/baseball-mvc-controller-binding-bridge.md
+- contents/design-pattern/baseball-restart-flow-state-pattern-bridge.md
+confusable_with:
+- software-engineering/service-layer-basics
+- software-engineering/baseball-guess-value-object-boundary-bridge
+- spring/baseball-mvc-controller-binding-bridge
+forbidden_neighbors:
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+expected_queries:
+- 야구 미션에서 한 번의 추측 처리 흐름은 service가 어디까지 맡아야 해?
+- controller에서 strike ball 판정까지 하면 왜 리뷰에서 걸려?
+- baseball 미션에서 service가 얇아 보여도 괜찮다는 말은 무슨 뜻이야?
+- Guess 만들기, 게임 진행, 결과 응답 조립을 어디서 끊어야 해?
+- 야구 미션 한 턴 로직을 controller에 두지 말라는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa baseball 미션에서 한 번의 추측 요청을 처리할 때
+  controller가 입력 해석과 판정 흐름을 모두 쥐지 않고 service가 유스케이스
+  순서를 조립해야 하는 이유를 설명하는 mission_bridge다. Guess 생성,
+  strike ball 판정 호출, 결과 응답 조립, service가 얇아 보임, controller
+  logic leak 같은 학습자 표현을 service layer orchestration 관점으로
+  baseball 미션과 연결한다.
+---
+
+# baseball 한 턴 처리 흐름 ↔ Service 계층 브릿지
+
+## 한 줄 요약
+
+> baseball에서 한 번의 추측 처리는 `입력 해석 -> Guess 생성 -> 게임 판정 -> 결과 반환`이라는 유스케이스 흐름이다. Controller는 HTTP나 콘솔 입구를 맡고, 그 사이 순서를 조립하는 자리는 Service에 더 가깝다.
+
+## 미션 시나리오
+
+학습자가 baseball 미션을 진행하다 보면 `controller`나 `InputView` 바로 아래에서 문자열을 나누고, `Guess`를 만들고, `Game`에 전달해 strike/ball 결과를 받고, 종료 여부까지 한 메서드에 적기 쉽다. 처음에는 파일 수가 적어서 단순해 보이지만, 재시작 분기나 기록 저장이 붙기 시작하면 "`지금 이 코드는 입력 처리인가, 게임 한 턴 실행인가`"가 흐려진다.
+
+리뷰에서 "`controller가 도메인 판정 순서까지 다 알고 있네요`", "`service가 얇아 보여도 유스케이스 조립은 거기에 두는 편이 낫습니다`"라는 코멘트가 나오는 장면이 여기다. 이 말은 Service에 거대한 규칙을 넣으라는 뜻보다, 한 턴을 끝내는 흐름을 화면 입구와 분리하라는 뜻에 가깝다.
+
+## CS concept 매핑
+
+Service 계층은 복잡한 계산을 꼭 직접 해야 해서 필요한 게 아니다. baseball에선 "`이번 추측 한 번을 어떻게 끝낼까`"라는 순서를 한곳에 모으기 위해 필요하다.
+
+```java
+Guess guess = Guess.from(rawInput);
+RoundResult result = game.play(guess);
+return BaseballTurnResponse.from(result);
+```
+
+여기서 `Guess.from(...)`은 입력을 의미 있는 값으로 바꾸고, `game.play(...)`는 strike/ball 판정 같은 도메인 규칙을 수행한다. Service는 그 둘을 어떤 순서로 묶어 한 턴을 완성할지만 책임진다. 반대로 Controller가 이 순서를 소유하면 입구가 바뀔 때마다 같은 흐름이 흩어지고, Domain이 응답 조립까지 떠안으면 규칙 객체가 애플리케이션 흐름까지 품게 된다.
+
+## 미션 PR 코멘트 패턴
+
+- "`Controller`가 `Guess` 생성과 판정 호출을 같이 들고 있으면 계층 경계가 흐립니다."라는 코멘트는 HTTP 입구가 유스케이스 순서를 소유하지 말라는 뜻이다.
+- "`Service`가 얇아 보여도 괜찮습니다. 한 턴 실행 순서가 한곳에 모여 있는지가 더 중요합니다."라는 리뷰는 코드 줄 수보다 orchestration 책임을 보라는 뜻이다.
+- "`Game`은 규칙을 수행하고, Service는 그 규칙 호출을 조립해 주세요."라는 코멘트는 도메인 계산과 애플리케이션 흐름을 분리하라는 뜻이다.
+- "`재시작 분기까지 붙으면 controller 메서드가 빠르게 비대해집니다.`"라는 피드백은 턴 처리 흐름과 상태 전이를 다른 층위로 읽으라는 신호다.
+
+## 다음 학습
+
+- 입력 문자열을 왜 `Guess` 값 객체로 빨리 가둬야 하는지 이어서 보려면 `software-engineering/baseball-guess-value-object-boundary-bridge`
+- Spring MVC로 옮길 때 Controller 바인딩과 검증 경계를 더 구체적으로 보려면 `spring/baseball-mvc-controller-binding-bridge`
+- 턴이 끝난 뒤 재시작/종료 단계가 왜 별도 상태 전이 문제가 되는지 보려면 `design-pattern/baseball-restart-flow-state-pattern-bridge`

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Request DTO에서 raw string을 값 객체로 올리는 경계 입문
+concept_id: language/request-dto-to-value-object-boundary-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- boundary-raw-string-to-value-object
+- validation-normalization-boundary
+aliases:
+- request dto value object boundary
+- dto raw string vs value object
+- request dto to value object primer
+- dto에서 값객체 언제
+- service 전에 값객체로 바꾸기
+- raw string domain beginner
+- email value object boundary
+- validated input before service logic
+- dto string 그대로 넘겨도 되나요
+- 처음 dto 값객체 헷갈려
+- what is request dto boundary
+- value object basics
+- equals hashcode set key beginner
+symptoms:
+- DTO 문자열을 서비스 끝까지 들고 가도 되는지 모르겠어
+- 이메일이나 닉네임을 언제 값 객체로 올려야 하는지 감이 안 와
+- trim이나 소문자화 규칙을 어디서 묶어야 하는지 헷갈려
+intents:
+- definition
+prerequisites:
+- language/record-value-object-equality-basics
+- software-engineering/dto-vo-entity-basics
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+next_docs:
+- language/constructor-to-value-object-factory-bridge
+- language/domain-state-type-primer-enum-record-value-object
+- language/money-value-object-basics
+- language/patch-tri-state-field-primer
+linked_paths:
+- contents/language/java/patch-tri-state-field-primer.md
+- contents/language/java/constructor-to-value-object-factory-bridge.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/domain-state-type-primer-enum-record-value-object.md
+- contents/language/java/money-value-object-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- software-engineering/dto-vo-entity-basics
+- language/constructor-to-value-object-factory-bridge
+forbidden_neighbors:
+- contents/language/java/record-value-object-equality-basics.md
+expected_queries:
+- Request DTO 문자열을 언제 값 객체로 바꿔야 해?
+- DTO에서 받은 email을 service 전에 검증 타입으로 올리는 이유가 뭐야
+- raw String을 도메인까지 그대로 넘기면 왜 헷갈려져?
+- 값 객체로 trim 소문자화 규칙을 묶는 초보자 입문 문서가 필요해
+- DTO와 value object 경계를 회원가입 예제로 설명해줘
+- 입력 검증을 controller DTO에서 끝내지 않고 값 객체로 한 번 더 감싸는 이유가 궁금해
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 request DTO의 raw string을 service 앞 경계에서 value object로 올려야 하는 이유와 기준을 처음 잡는 primer다. 웹 입력 문자열을 언제 타입으로 감싸, trim 규칙을 어디서 묶어, 이메일을 믿을 수 있는 값으로 바꾸기, 도메인에 문자열 그대로 넘기지 않기, 검증된 입력 경계 만들기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Request DTO에서 raw string을 값 객체로 올리는 경계 입문
 
 > 한 줄 요약: request DTO는 바깥에서 들어온 문자열 상자이고, 값 객체는 안쪽에서 믿고 쓰는 타입이므로, `trim`/정규화/불변식이 중요한 입력은 service 로직 전에 작은 value object로 올려 두는 편이 초보자에게 더 덜 헷갈린다.

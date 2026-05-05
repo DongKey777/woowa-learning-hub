@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Constraint-First Booking Primer
+concept_id: database/constraint-first-booking-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- constraint-before-locking
+- read-then-insert-booking-race
+- empty-row-for-update-misconception
+aliases:
+- constraint first booking
+- unique before for update
+- booking constraint primer
+- reservation duplicate beginner
+- for update empty row booking
+symptoms:
+- 예약 중복 방지를 처음 잡는데 unique와 for update 중 어디서 시작할지 헷갈려
+- 빈 시간대를 먼저 조회하고 insert하는 코드가 왜 위험한지 감이 안 와
+- exclusion constraint, slot row, guard row 중 어느 갈래로 이어질지 먼저 정하고 싶어
+intents:
+- definition
+- design
+prerequisites:
+- database/transaction-basics
+linked_paths:
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+- contents/system-design/inventory-reservation-system-design.md
+next_docs:
+- database/phantom-safe-booking-patterns-primer
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+confusable_with:
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+- database/phantom-safe-booking-patterns-primer
+forbidden_neighbors:
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+expected_queries:
+- 예약 중복 방지는 왜 for update보다 constraint를 먼저 봐?
+- booking에서 unique 먼저 보라는 말이 무슨 뜻이야?
+- 빈 row 조회 뒤 insert가 왜 위험해?
+- 예약 문제를 처음 보면 unique, slot, exclusion 중 뭐부터 골라?
+contextual_chunk_prefix: |
+  이 문서는 예약 중복 방지를 처음 잡는 학습자에게 빈 시간대를 먼저 읽고 잠그는
+  흐름보다 저장 시점 규칙으로 한 명만 통과시키는 방법을 먼저 잡아 주는 primer다.
+  예약이 왜 동시에 둘 다 들어가, 빈 자리 조회를 믿어도 되나, 잠금보다 제약이
+  먼저야, 겹침 방지를 어디서 막아야 해 같은 자연어 표현이 이 문서의 기초 개념에
+  매핑된다.
+---
+
 # Constraint-First Booking Primer
 
 > 한 줄 요약: 예약 중복 방지를 처음 설계할 때는 `FOR UPDATE`로 빈 자리를 잠그려 하기보다, 먼저 `UNIQUE`나 exclusion constraint처럼 "DB가 저장 시점에 거부할 수 있는 규칙"으로 바꿀 수 있는지 보는 편이 더 안전하다.

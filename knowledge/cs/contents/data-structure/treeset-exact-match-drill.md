@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: TreeSet exact-match 이웃 조회 드릴
+concept_id: data-structure/treeset-exact-match-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- strict-vs-inclusive-boundary
+- treeset-neighbor-query
+- treeset-to-treemap-transfer
+aliases:
+- treeset exact match drill
+- treeset lower floor ceiling higher
+- navigableset neighbor practice
+- sorted set exact neighbor
+- treeset 바로 이전 같거나 이전
+- treeset 같거나 다음 바로 다음
+- treeset lower higher 헷갈림
+symptoms:
+- lower floor ceiling higher가 exact match에서 자꾸 섞인다
+- TreeSet에서 익힌 감각을 TreeMap으로 옮길 때 이름만 바뀌어도 흔들린다
+intents:
+- drill
+prerequisites:
+- data-structure/hashset-vs-treeset-beginner-bridge
+- data-structure/treeset-treemap-null-boundary-quick-reference
+next_docs:
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/data-structure/treeset-treemap-null-boundary-quick-reference.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/treeset-range-view-mini-drill.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/treeset-range-view-mini-drill
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treeset-treemap-null-boundary-quick-reference
+forbidden_neighbors:
+- contents/data-structure/treeset-range-view-mini-drill.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+expected_queries:
+- TreeSet에서 lower floor ceiling higher를 손으로 바로 맞히는 연습 문제를 풀고 싶어
+- exact match가 있을 때 strict와 inclusive 이웃 조회를 어떻게 구분하는지 드릴로 확인하고 싶어
+- 30이 있을 때 lower와 floor가 왜 달라지는지 숫자 줄 예제로 연습하고 싶어
+- TreeSet 감각을 TreeMap lowerKey floorKey로 옮기기 전에 짧게 손추적하고 싶어
+- null boundary까지 포함해서 TreeSet 이웃 메서드를 초급 드릴로 복습하고 싶어
+- 정렬된 set에서 바로 이전 값과 같거나 이전 값을 헷갈리지 않게 훈련하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 TreeSet 이웃 조회에서 exact match 포함과 제외를 자꾸
+  섞는 학습자가 숫자 줄 기준으로 이전 칸, 그 자리에 머무르기, 다음 칸을
+  확인 질문으로 굳히는 drill이다. strict vs inclusive 경계, 값이 있으면
+  어디서 멈추는지, 정렬된 값 줄 손추적, null 경계, TreeMap 이름으로
+  바꿔도 같은 규칙인지 같은 자연어 paraphrase가 본 문서의 핵심 감각에
+  매핑된다.
+---
 # TreeSet Exact-Match Drill
 
 > 한 줄 요약: `TreeSet`의 `lower/floor/ceiling/higher`는 beginner 기준으로 `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음` 네 칸으로 읽으면 손으로 바로 맞힐 수 있고, 그 감각은 `TreeMap`의 `lowerKey/floorKey/ceilingKey/higherKey`로 거의 그대로 넘어간다.

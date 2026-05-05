@@ -1,0 +1,95 @@
+---
+schema_version: 3
+title: 'lotto 수동/자동 생성기 선택 ↔ Spring `@Qualifier` 브릿지'
+concept_id: spring/lotto-manual-auto-generator-qualifier-bridge
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: mixed
+source_priority: 78
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- same-type-bean-collision
+- qualifier-selection
+- generator-policy-separation
+aliases:
+- lotto 수동 자동 생성기 qualifier
+- 로또 NumberGenerator 빈 두 개 주입
+- lotto 생성기 구현체 선택
+- 로또 자동 수동 bean 충돌
+- lotto fixed generator bean wiring
+symptoms:
+- 자동 생성기와 수동 입력용 생성기를 둘 다 Bean으로 올렸더니 Spring이 무엇을 넣을지 모르겠다고 해요
+- 테스트용 고정 생성기까지 추가하니 NumberGenerator 주입이 갑자기 깨졌어요
+- lotto 서비스는 하나인데 생성기 구현체가 여러 개라 @Primary를 붙일지 @Qualifier를 붙일지 헷갈려요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- spring/lotto-number-generator-bean-injection-bridge
+- spring/primary-qualifier-collection-injection
+next_docs:
+- spring/primary-qualifier-collection-injection
+- spring/spring-custom-qualifier-primer
+- spring/same-type-bean-injection-failure-cause-router
+linked_paths:
+- contents/spring/lotto-number-generator-bean-injection-bridge.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-custom-qualifier-primer.md
+- contents/spring/spring-same-type-bean-injection-failure-cause-router.md
+- contents/design-pattern/lotto-manual-auto-number-generator-strategy-bridge.md
+confusable_with:
+- spring/primary-qualifier-collection-injection
+- spring/same-type-bean-injection-failure-cause-router
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+forbidden_neighbors: []
+expected_queries:
+- 로또 미션에서 NumberGenerator 구현체가 둘 이상이면 서비스 생성자에 무엇을 명시해야 해?
+- 자동 생성과 테스트용 고정 생성기를 같이 등록했더니 found 2 beans가 나와. 이걸 미션 구조에서 어떻게 읽어야 해?
+- 로또 구매 서비스는 랜덤 생성기를 기본으로 쓰고 테스트만 다른 생성기를 쓰고 싶은데 Spring wiring을 어디서 갈라?
+- 수동 입력 경로와 자동 생성 경로를 둘 다 스프링 빈으로 만들면 @Primary와 @Qualifier 중 무엇이 더 자연스러워?
+- 멘토가 생성기 선택을 서비스 if문이 아니라 주입 지점에서 풀라고 한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa lotto 미션을 Spring으로 옮길 때 수동 입력용 생성기,
+  자동 번호 생성기, 테스트용 고정 생성기를 함께 두면서 같은 타입 Bean 후보가
+  여러 개 생기는 상황을 설명하는 mission_bridge다. NumberGenerator 구현체가
+  둘 이상이라 found 2 beans가 남, @Primary와 @Qualifier 중 무엇을 써야 할지
+  헷갈림, 서비스 내부 if로 생성기 선택을 풀지 말라는 리뷰, 테스트 더블과 운영
+  구현을 분리하고 싶다는 학습자 표현을 Spring wiring 관점으로 매핑한다.
+---
+
+# lotto 수동/자동 생성기 선택 ↔ Spring `@Qualifier` 브릿지
+
+## 한 줄 요약
+
+> lotto에서 `NumberGenerator` 구현체가 여러 개라면, "기본으로 꽂을 하나"와 "특정 자리에서만 다른 구현을 쓸 하나"를 Bean wiring에서 먼저 정하고 서비스 내부 분기로 미루지 않는 편이 낫다.
+
+## 미션 시나리오
+
+lotto를 Spring으로 옮기면 처음엔 `RandomNumberGenerator` 하나만 있어서 생성자 주입이 자연스럽다. 그런데 수동 입력을 별도 생성 경로로 다루거나, 테스트에서 `FixedNumberGenerator`를 추가하면 `NumberGenerator` 타입 후보가 둘 이상이 된다. 이때 학습자는 보통 "서비스 안에서 `if (manual)`로 고르면 되지 않나?" 혹은 "`@Primary` 하나 붙이면 다 끝나나?"에서 막힌다.
+
+멘토 코멘트가 자주 붙는 지점은 생성기 선택 규칙과 구매 흐름이 한 클래스에 같이 들어갈 때다. `LottoService`가 구매 장수 계산도 하고, 생성기 구현체를 조건문으로도 고르면 "유스케이스 조립"과 "구현 선택"이 함께 흔들린다. Spring 문맥에서는 이 선택을 서비스 메서드보다 Bean 주입 지점에서 먼저 잘라 두는 편이 구조를 읽기 쉽다.
+
+## CS concept 매핑
+
+여기서 핵심은 같은 타입 Bean이 여러 개일 때 선택 책임을 어디에 두느냐다. 대부분의 lotto 흐름이 항상 랜덤 생성기를 쓴다면 그 구현을 기본 후보로 두고, 특정 테스트나 특별한 조립 지점만 `@Qualifier`로 좁히는 쪽이 자연스럽다. 반대로 요청마다 수동/자동이 바뀌는 문제라면 `@Qualifier`가 아니라 별도 router나 애플리케이션 분기 설계 문제다.
+
+즉 `@Primary`는 "대부분은 이것"을 선언하는 규칙이고, `@Qualifier`는 "이 자리만 저것"을 말한다. lotto 미션에서는 보통 구매 서비스 전체가 매 호출마다 생성기를 바꾸는 것이 아니라, 자동 구매 경로는 랜덤 생성기를 고정하고 테스트나 별도 조립 코드만 다른 구현을 꽂는다. 그래서 이 문서는 전략 패턴 자체보다 "전략 후보를 Spring이 어떻게 고르는가"에 초점을 맞춘다.
+
+## 미션 PR 코멘트 패턴
+
+- "`NumberGenerator` 구현체가 둘인데 서비스 내부 `if`로 선택하면 DI로 분리한 이점이 줄어듭니다. 기본 Bean과 예외 Bean을 주입 규칙으로 표현해 보세요."
+- "`@Primary`는 대부분의 기본값이고, 테스트 더블이나 특정 조립 지점 선택은 `@Qualifier`가 더 명확합니다."
+- "수동 입력 여부가 요청마다 달라지는지, 아니면 애플리케이션 wiring에서 이미 고정되는지 먼저 구분해야 합니다."
+- "같은 타입 후보가 늘었다는 건 도메인 규칙 변화보다 Bean 후보 선택 문제가 생겼다는 신호입니다."
+
+## 다음 학습
+
+- 기본 후보, 명시 선택, 컬렉션 주입을 한 번에 비교하려면 `spring/primary-qualifier-collection-injection`
+- bean 이름 문자열 대신 역할 annotation으로 가야 하는지 보려면 `spring/spring-custom-qualifier-primer`
+- `found 2 beans`를 증상 기준으로 다시 나누려면 `spring/same-type-bean-injection-failure-cause-router`
+- lotto에서 생성기 전략 자체를 왜 분리했는지 복습하려면 `design-pattern/lotto-manual-auto-number-generator-strategy-bridge`

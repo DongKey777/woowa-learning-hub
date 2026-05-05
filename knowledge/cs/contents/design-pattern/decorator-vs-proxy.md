@@ -10,14 +10,11 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
-
+- [전략 (Strategy)](./strategy-pattern.md)
+- [팩토리 (Factory)](./factory.md)
+- [템플릿 메소드 (Template Method)](./template-method.md)
 
 retrieval-anchor-keywords: decorator vs proxy basics, decorator vs proxy beginner, decorator vs proxy intro, design pattern basics, beginner design pattern, 처음 배우는데 decorator vs proxy, decorator vs proxy 입문, decorator vs proxy 기초, what is decorator vs proxy, how to decorator vs proxy
-> 관련 문서:
-> - [전략 (Strategy)](./strategy-pattern.md)
-> - [팩토리 (Factory)](./factory.md)
-> - [템플릿 메소드 (Template Method)](./template-method.md)
-> - [안티 패턴](./anti-pattern.md)
 
 ---
 

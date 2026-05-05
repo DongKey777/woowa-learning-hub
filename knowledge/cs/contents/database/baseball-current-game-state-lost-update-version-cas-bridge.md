@@ -1,0 +1,96 @@
+---
+schema_version: 3
+title: 'baseball 현재 게임 상태 동시 갱신 ↔ Lost Update와 Version CAS 브릿지'
+concept_id: database/baseball-current-game-state-lost-update-version-cas-bridge
+canonical: false
+category: database
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: ko
+source_priority: 78
+mission_ids:
+- missions/baseball
+review_feedback_tags:
+- concurrent-guess-lost-update
+- version-cas-game-state
+- stale-screen-retry
+aliases:
+- baseball 현재 게임 상태 동시 수정
+- 야구 미션 두 탭 동시 추측
+- baseball lost update game state
+- 야구 미션 version cas
+- baseball 게임 상태 덮어쓰기
+symptoms:
+- 같은 게임을 두 탭에서 추측했더니 마지막 저장만 남아요
+- 추측 이력은 두 줄인데 games 현재 상태가 한쪽 결과로 덮여요
+- 이미 끝난 게임에 다른 요청이 들어와 finished 상태가 다시 꼬여요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- database/baseball-guess-history-current-state-transaction-bridge
+- database/compare-and-set-version-columns
+- software-engineering/baseball-turn-processing-service-layer-bridge
+next_docs:
+- database/unique-vs-version-cas-vs-for-update-chooser
+- database/compare-and-set-version-columns
+- database/baseball-guess-attempt-unique-constraint-bridge
+linked_paths:
+- contents/database/baseball-guess-history-current-state-transaction-bridge.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/unique-vs-version-cas-vs-for-update-decision-guide.md
+- contents/database/baseball-guess-attempt-unique-constraint-bridge.md
+- contents/software-engineering/baseball-turn-processing-service-layer-bridge.md
+confusable_with:
+- database/baseball-guess-attempt-unique-constraint-bridge
+- database/baseball-guess-history-current-state-transaction-bridge
+- database/unique-vs-version-cas-vs-for-update-chooser
+forbidden_neighbors: []
+expected_queries:
+- 야구 미션을 웹으로 바꿨더니 같은 게임을 두 탭에서 추측하면 왜 마지막 결과로 덮여?
+- baseball에서 현재 게임 row를 읽고 strike count를 바꾼 뒤 저장하면 어떤 race가 남아?
+- 이미 끝난 게임에 늦게 도착한 요청이 finished 상태를 다시 바꾸지 못하게 하려면 DB에서 뭘 써야 해?
+- 추측 이력 중복과는 별개로 games 현재 상태 충돌을 version column으로 막으라는 리뷰는 무슨 뜻이야?
+- 야구 미션에서 duplicate insert가 아니라 stale update 문제라고 구분하는 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa baseball 미션을 웹과 DB로 확장할 때 같은 게임에 대한
+  두 추측 요청이 비슷한 시점에 들어와 games 현재 상태 row를 서로 덮어쓰는
+  문제를 lost update와 version CAS로 설명하는 mission_bridge다. 두 탭 동시
+  추측, finished 상태가 다시 열림, 추측 이력은 맞는데 현재 상태가 꼬임,
+  duplicate insert와 stale update를 구분해야 함, version column으로
+  게임 상태 충돌을 감지하라는 리뷰를 baseball current state 저장과 연결한다.
+---
+
+# baseball 현재 게임 상태 동시 갱신 ↔ Lost Update와 Version CAS 브릿지
+
+## 한 줄 요약
+
+> baseball 웹 버전에서 같은 `game_id`에 대한 두 추측 요청이 겹치면, 문제는 "같은 row를 누가 최신 상태로 확정하나"에 가깝다. 이 장면은 `UNIQUE`보다 `version` column 기반 CAS나 상태 전이 precondition으로 읽는 편이 맞다.
+
+## 미션 시나리오
+
+콘솔 baseball는 한 번에 한 입력만 처리하니 현재 게임 상태가 겹쳐서 저장될 일이 거의 없다. 하지만 웹으로 옮기면 같은 사용자가 두 탭을 열어 두거나, 느린 네트워크에서 연속 제출한 요청이 거의 동시에 `POST /games/{id}/guesses`에 도착할 수 있다. 두 요청이 모두 "`아직 7회차이고 finished=false`"를 본 뒤 각자 판정 결과를 계산하면, 추측 이력은 두 줄 다 남더라도 `games` 현재 상태 row는 마지막 저장이 우연히 덮어쓰게 된다.
+
+리뷰에서 "`중복 insert만 막아도 끝난 게 아닙니다. 현재 상태 stale write를 감지해야 해요`", "`이미 끝난 게임이면 다음 추측은 실패해야 합니다`"라는 코멘트가 붙는 장면이 여기다. 질문의 핵심은 이력 append보다 현재 상태 row의 동시 갱신 충돌을 어떻게 드러내느냐다.
+
+## CS concept 매핑
+
+이 장면은 duplicate insert보다 lost update에 가깝다. `guess_history`는 `UNIQUE`나 idempotency key로 한 번만 인정할 수 있어도, `games` row를 `attempt_count = 8`, `last_result = 1볼 2스트라이크`, `finished = false`처럼 저장하는 순간에는 "내가 읽은 현재 상태가 아직 최신인가"를 다시 확인해야 한다.
+
+그래서 `UPDATE games SET ..., version = version + 1 WHERE id = ? AND version = ?` 같은 version CAS가 잘 맞는다. update count가 `0`이면 다른 요청이 먼저 게임 상태를 바꿨다는 뜻이므로, 서버는 최신 상태를 다시 읽고 "이미 다음 턴이 진행됐습니다" 또는 "이미 종료된 게임입니다"처럼 충돌을 번역할 수 있다. baseball에서는 "`같은 턴을 두 번 저장하지 않기`"와 "`같은 current state를 stale하게 덮어쓰지 않기`"를 따로 보는 감각이 중요하다.
+
+## 미션 PR 코멘트 패턴
+
+- "`guess_history` 중복 방지는 했지만 `games` 현재 상태 update는 마지막 요청이 우연히 이깁니다.`"
+- "`finished=false`를 읽고 시작한 요청이 늦게 도착하면 종료된 게임을 다시 진행 중처럼 덮어쓸 수 있습니다.`"
+- "`@Transactional`만으로는 stale screen에서 온 저장 충돌을 판정하지 못합니다. version이나 상태 precondition이 필요합니다.`"
+- "`duplicate key` 문제와 current state lost update 문제를 같은 말로 섞지 말고, 각각 어떤 row에서 승자를 정하는지 나눠 보세요.`"
+
+## 다음 학습
+
+- duplicate insert와 stale update를 언제 갈라야 하는지 먼저 비교하려면 `unique-vs-version-cas-vs-for-update-chooser`
+- version column이 왜 "내가 읽은 상태가 아직 최신인가"를 판정하는지 보려면 `compare-and-set-version-columns`
+- baseball에서 추측 이력 append와 현재 상태 snapshot을 함께 commit하는 기본 구조는 `baseball-guess-history-current-state-transaction-bridge`
+- 같은 턴을 두 번 인정하지 않는 축까지 이어서 보려면 `baseball-guess-attempt-unique-constraint-bridge`

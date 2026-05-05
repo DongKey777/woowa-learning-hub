@@ -37,13 +37,20 @@ retrieval-anchor-keywords: observer pattern basics, 옵저버 패턴 기초, 옵
 
 ### 30초 비교표
 
-Observer / Direct Call / Pub-Sub
+Observer / Direct Call / Command / Pub-Sub
 
 | 방식 | 결합도 | 언제 먼저 고르나 |
 |---|---|---|
 | Observer | 같은 프로세스에서 인터페이스로 느슨하게 연결 | "이벤트는 같고 반응자가 늘어날 수 있다" |
 | Direct Call | 호출자가 대상을 정확히 안다 | "항상 1:1 동기 호출이면 충분하다" |
+| Command | 실행 요청을 객체로 감싸 전달한다 | "무엇을 알릴지"보다 "무엇을 실행시킬지"가 핵심일 때 |
 | Pub-Sub | 브로커를 통한 비동기 분리 | "프로세스/서비스 경계를 넘고 재시도/적재가 필요하다" |
+
+짧게 자르면 이렇다.
+
+- 같은 사실을 여러 반응자에게 알리면 `Observer`
+- 나중에 실행할 작업을 담아 넘기면 `Command`
+- 브로커를 끼워 프로세스 경계를 넘기면 `Pub-Sub`
 
 ### 1분 예시
 
@@ -56,6 +63,7 @@ Observer / Direct Call / Pub-Sub
 
 - 옵저버의 핵심은 "자동 알림"이지 "무조건 비동기"가 아니다. 기본 구조는 같은 프로세스 안의 동기 호출이다.
 - Subject가 Observer를 호출해도 direct call과 같지는 않다. Subject는 구체 구현이 아니라 Observer 목록 인터페이스만 안다.
+- `Observer`와 `Command`는 둘 다 객체를 주고받는 것처럼 보여도, `Observer`는 "무슨 일이 일어났다"를 알리고 `Command`는 "이 일을 실행해라"를 담아 보낸다.
 - Pub-Sub와 이름이 비슷해도 경계가 다르다. 브로커를 넘어 재시도/적재까지 필요하면 옵저버보다 Pub-Sub 문제에 가깝다.
 
 처음 읽을 때 `옵저버인가, 커맨드인가`가 같이 헷갈리면 [옵저버 vs 커맨드 브리지](./observer-vs-command-beginner-bridge.md)를 먼저 보고 돌아오면 분기가 더 빨라진다.

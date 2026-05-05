@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: 'Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`'
+concept_id: network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+canonical: false
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- auth-contract-vs-login-redirect
+- final-url-vs-original-url
+- cookie-vs-bearer-lane
+aliases:
+- fetch auth failure chooser
+- 401 json vs 302 login
+- login html 200 after fetch
+- hidden login html 200
+- fetch login redirect
+- api login html fallback
+- auth redirect surface
+- fetch redirect trace
+- original final url mismatch
+- html instead of json
+- cookie bearer auth split
+- login redirect after fetch
+- final html auth failure
+- gateway html vs login html
+- app html vs login html
+symptoms:
+- API 호출인데 로그인 HTML이 와요
+- 200인데 JSON 대신 login 페이지가 보여요
+- fetch 실패가 401인지 302인지 헷갈려요
+- final URL이 /login으로 바뀌었는데 어디부터 봐야 할지 모르겠어요
+intents:
+- comparison
+- design
+prerequisites:
+- network/http-status-codes-basics
+- network/http-state-session-cache
+next_docs:
+- security/browser-401-vs-302-login-redirect-guide
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- network/fetch-redirected-response-url-opaqueredirect-mini-card
+linked_paths:
+- contents/network/fetch-redirected-response-url-opaqueredirect-mini-card.md
+- contents/network/browser-fetch-vs-page-navigation-redirect-trace-card.md
+- contents/network/cookie-vs-localstorage-token-storage-choice-card.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/api-gateway-auth-failure-surface-map.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/spring/spring-api-401-vs-browser-302-beginner-bridge.md
+confusable_with:
+- security/browser-401-vs-302-login-redirect-guide
+- network/api-gateway-auth-failure-surface-map
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+forbidden_neighbors:
+- contents/network/json-expected-but-html-response-symptom-router.md
+expected_queries:
+- fetch에서 200 html이 왔는데 로그인 페이지예요
+- API 호출이 성공 200인데 body가 login html인 이유
+- /api 요청이 왜 /login으로 리다이렉트돼요
+- 401이 아니라 302 뒤에 login page 200이 보여요
+- original url은 api인데 final url이 login이면 뭘 의심해?
+- fetch가 json 대신 html을 받는 이유를 처음부터 설명해줘
+- fetch 인증 실패에서 cookie 문제와 bearer 문제를 어떻게 구분해?
+- devtools에서 401 json, 302 login, html 200을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 fetch 인증 실패를 볼 때 원래 API 실패 계약, 브라우저의 login
+  redirect, 마지막에 남은 HTML 표면을 구분해 고르게 하는 chooser다. api
+  호출이 페이지로 끝남, final URL이 로그인으로 바뀜, 200인데 body는 login
+  form, redirect 체인과 cookie 전송 확인, bearer 헤더 누락과 세션 경로 구분
+  같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`
 
 > 한 줄 요약: `fetch`에서 인증이 깨졌을 때는 raw `401 JSON`, 첫 응답 `302 /login`, redirect를 따라간 뒤 보이는 login HTML `200`이 같은 층이 아니므로, "원래 계약"과 "브라우저가 최종으로 보여 준 표면"을 분리해서 읽어야 한다.

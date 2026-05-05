@@ -1,8 +1,81 @@
+---
+schema_version: 3
+title: Load Balancer Drain and Affinity Primer
+concept_id: system-design/load-balancer-drain-and-affinity-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- drain-vs-readiness
+- sticky-session-rollout-tail
+- deregistration-delay-tuning
+aliases:
+- load balancer drain and affinity primer
+- load balancer health check
+- readiness vs liveness
+- active health check
+- passive health check
+- connection draining
+- deregistration delay
+- sticky session
+- session affinity
+- cookie affinity
+- ip hash routing
+- keepalive drain
+- http2 goaway
+- affinity rebalance basics
+symptoms:
+- 배포할 때 인스턴스를 내렸는데 왜 기존 요청이 중간에 끊기는지 모르겠어
+- sticky session 때문에 새 인스턴스를 올려도 트래픽이 안 옮겨와
+- readiness는 내렸는데도 old version tail이 길게 남아
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- system-design/load-balancer-basics
+- system-design/stateless-sessions-primer
+next_docs:
+- system-design/service-discovery-health-routing-design
+- system-design/global-traffic-failover-control-plane-design
+- system-design/session-store-design-at-scale
+linked_paths:
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+confusable_with:
+- system-design/service-discovery-health-routing-design
+- system-design/stateless-sessions-primer
+- network/connection-keepalive-loadbalancing-circuit-breaker
+forbidden_neighbors: []
+expected_queries:
+- connection draining을 왜 안 하면 배포 중 502가 나?
+- readiness를 내렸는데도 old version 요청이 남는 이유를 설명해줘
+- sticky session이 rolling deploy를 느리게 만드는 이유가 뭐야?
+- deregistration delay를 너무 짧게 잡으면 어떤 문제가 생겨?
+- health check, drain, affinity를 한 그림으로 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 load balancer를 단순 분산기가 아니라 health check,
+  draining, affinity를 동시에 다루는 운영 장치로 이해하게 돕는 beginner
+  primer다. 배포 중 연결이 왜 끊기나, readiness를 내렸는데 old version
+  tail이 왜 남나, sticky session이 왜 교체를 늦추나 같은 자연어 질문이
+  본 문서의 drain/affinity 설명으로 매핑된다.
+---
 # Load Balancer Drain and Affinity Primer
 
-> 한 줄 요약: health check, connection draining, sticky affinity를 함께 봐야 load balancer가 왜 배포와 failover의 안정성을 좌우하는지 이해할 수 있다.
+> 한 줄 요약: health check, connection draining, sticky affinity를 함께 봐야 load balancer가 왜 배포와 failover의 안정성을 좌우하는지 이해할 수 있고, "배포할 때 왜 옛 서버 트래픽이 안 빠지지?" 같은 질문도 설명된다.
 
-retrieval-anchor-keywords: load balancer drain and affinity primer, load balancer health check, readiness vs liveness, active health check, passive health check, connection draining, deregistration delay, sticky session, session affinity, cookie affinity, ip hash routing, keepalive drain, http2 goaway, load balancer failover basics, affinity rebalance basics
+retrieval-anchor-keywords: load balancer drain and affinity primer, load balancer health check, readiness vs liveness, active health check, passive health check, connection draining, deregistration delay, sticky session, session affinity, cookie affinity, keepalive drain, 배포할 때 왜 옛 서버 트래픽이 안 빠져요, drain이 뭐예요, sticky session 때문에 왜 failover가 느려요, load balancer failover basics
 
 **난이도: 🟢 Beginner**
 
@@ -22,6 +95,7 @@ retrieval-anchor-keywords: load balancer drain and affinity primer, load balance
 ## 핵심 개념
 
 초보자가 load balancer를 "여러 서버에 요청을 나눠 주는 박스" 정도로만 이해하면 deploy와 failover 설명이 자꾸 얕아진다.
+특히 `배포할 때 왜 old version 연결이 안 빠지죠?`, `health check는 통과했는데 왜 502가 나죠?` 같은 질문은 drain과 affinity를 같이 보지 않으면 풀리지 않는다.
 실전에서 load balancer는 계속 세 가지를 결정한다.
 
 - 어떤 backend가 **새 요청을 받을 자격이 있는가**

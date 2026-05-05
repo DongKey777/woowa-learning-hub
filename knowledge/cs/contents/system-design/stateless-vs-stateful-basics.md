@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Stateless vs Stateful 서비스 기초
+concept_id: system-design/stateless-vs-stateful-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- sticky-session-vs-stateless
+- token-vs-session-tradeoff
+- external-session-store-choice
+aliases:
+- stateless stateful basics
+- stateless 서비스 입문
+- stateful 뭐예요
+- 세션 서버 상태
+- jwt stateless
+- 서버 상태 저장
+- stateless api 기초
+- 서버 확장 상태 관리
+- beginner stateless
+- 외부 세션 저장
+- 무상태 서비스
+- stateless rest api
+- sticky session 언제
+- external session store 언제
+- token 기반 인증 비교
+symptoms:
+- 서버를 여러 대로 늘리면 세션이 왜 꼬이는지 잘 모르겠어
+- JWT를 쓰면 정말 완전히 stateless한 건지 헷갈려
+- sticky session 말고 외부 세션 저장소를 언제 써야 할지 감이 안 와
+intents:
+- definition
+prerequisites:
+- system-design/system-design-foundations
+- network/http-https-basics
+next_docs:
+- system-design/stateless-sessions-primer
+- security/signed-cookies-server-sessions-jwt-tradeoffs
+- system-design/horizontal-vs-vertical-scaling-basics
+linked_paths:
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/horizontal-vs-vertical-scaling-basics.md
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/session-revocation-basics.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/network/http-https-basics.md
+confusable_with:
+- system-design/stateless-sessions-primer
+- security/signed-cookies-server-sessions-jwt-tradeoffs
+- system-design/load-balancer-basics
+forbidden_neighbors: []
+expected_queries:
+- stateless 서버와 stateful 서버를 처음 배우는 사람 기준으로 차이를 설명해줘
+- 서버 메모리에 세션을 두면 scale-out이 왜 불편해지는 거야?
+- JWT 인증과 세션 인증을 큰 그림에서 어떻게 나눠 이해하면 돼?
+- 외부 세션 저장소를 쓰면 왜 서버를 더 stateless하게 운영할 수 있어?
+- sticky session이 쉬워 보여도 오래 끌면 왜 문제가 되는지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 서버가 요청 사이 상태를 직접 들고 있을 때와 외부에 둔 채 처리할 때 확장성과 운영이 어떻게 달라지는지 처음 잡는 primer다.
+  로그인 정보가 서버 메모리에 남으면 왜 같은 서버로 가야 하는지, 서버를 늘릴 때 상태가 왜 걸림돌이 되는지, 토큰 기반 처리와 세션 기반 처리를 큰 그림으로 보기, 외부 저장소로 상태를 빼는 이유, 재시작해도 요청 처리가 이어지는 구조 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Stateless vs Stateful 서비스 기초
 
 > 한 줄 요약: Stateless 서비스는 요청마다 상태를 외부에서 받아 처리하고, Stateful 서비스는 서버 내부에 상태를 저장하며 수평 확장이 어렵다.

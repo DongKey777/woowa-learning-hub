@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 'Spring 관리자 인증에서 쿠키와 세션이 어떻게 이어지는가: 초급 primer'
+concept_id: spring/spring-admin-session-cookie-flow-primer
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- session-persistence
+- securitycontext-restoration
+- savedrequest-vs-session-context
+aliases:
+- spring admin session cookie flow
+- admin login session primer
+- cookie present relogin loop
+- next request anonymous after login
+- session cookie securitycontext restore
+- browser cookie to server session mapping
+- hidden jsessionid beginner
+- securitycontext session restoration
+- login session persistence primer
+- admin session persistence flow
+symptoms:
+- 로그인은 성공했는데 다음 요청에서 다시 anonymous로 보여요
+- 브라우저에 쿠키가 있는데도 관리자 페이지를 누르면 다시 로그인하래요
+- SecurityContext가 언제 세션에서 살아나는지 몰라서 세션 저장 위치가 헷갈려요
+intents:
+- troubleshooting
+- definition
+prerequisites: []
+next_docs:
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+- spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge
+linked_paths:
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md
+- contents/spring/roomescape-admin-login-final-403-securitycontext-bridge.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/spring/spring-security-basics.md
+- contents/network/http-state-session-cache.md
+confusable_with:
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+- spring/roomescape-admin-login-final-403-securitycontext-bridge
+forbidden_neighbors:
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+expected_queries:
+- 로그인했는데 다음 요청에서 anonymous가 되는 이유가 뭐예요?
+- cookie 있는데 왜 다시 로그인돼요?
+- Spring Security에서 세션과 SecurityContext가 어떻게 이어져요?
+- 관리자 로그인 뒤 쿠키와 세션이 어떻게 동작해요?
+contextual_chunk_prefix: |
+  이 문서는 브라우저 쿠키, 서버 세션, SecurityContext 복원이 어떻게 이어지는지
+  처음 잡는 beginner primer다. cookie 있는데 왜 다시 로그인, next request
+  anonymous after login, securitycontext 뭐예요, 관리자 로그인 뒤 세션이 어떻게
+  이어지나 같은 학습자 증상을 session mapping 관점으로 정리한다.
+---
+
 # Spring 관리자 인증에서 쿠키와 세션이 어떻게 이어지는가: 초급 primer
 
 > 한 줄 요약: RoomEscape 스타일 관리자 페이지에서는 브라우저가 쿠키를 보내고, 서버가 세션에서 로그인 사용자를 찾고, Spring Security가 그 사용자의 관리자 권한을 확인하는 순서로 `/admin/**` 접근이 결정된다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: TreeMap key에서 entry로 strict handoff 카드
+concept_id: data-structure/treemap-key-entry-strictness-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 76
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- treemap-key-vs-entry
+- strict-vs-inclusive-boundary
+- value-read-handoff
+aliases:
+- treemap key entry strictness bridge
+- lowerkey lowerentry beginner
+- higherkey higherentry beginner
+- entry로 바꾸면 포함 여부 바뀌나요
+- floorkey floorentry strict inclusive
+- treemap key to entry handoff
+symptoms:
+- floorEntry를 본 뒤 lowerEntry도 exact match를 포함한다고 착각한다
+- key와 entry 차이보다 strict와 inclusive 차이를 놓쳐서 API를 섞는다
+- 예약표에서 시작 시각만 읽을지 종료 시각까지 읽을지 기준이 흐려진다
+intents:
+- comparison
+- drill
+prerequisites:
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treeset-exact-match-drill
+next_docs:
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+confusable_with:
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treemap-interval-entry-primer
+forbidden_neighbors:
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+expected_queries:
+- TreeMap에서 lowerKey와 lowerEntry가 어떻게 이어지는지 strict 기준으로 보고 싶어
+- entry로 바꾸면 exact match 포함 여부도 바뀌는지 헷갈려
+- floorEntry 예시는 알겠는데 higherEntry는 왜 같은 key를 안 잡는지 알고 싶어
+- ordered map에서 key만 받을 때와 entry를 받을 때 차이를 예약표로 이해하고 싶어
+- TreeMap에서 value까지 읽으려면 어느 API로 넘어가야 하는지 짧게 정리해줘
+- lower floor ceiling higher 규칙이 entry 단계에서도 그대로인지 확인하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 TreeMap에서 key만 돌려주는 이웃 조회를 익힌 뒤 value까지
+  읽으려고 entry 계열로 넘어가는 학습자에게 strict와 inclusive
+  규칙이 그대로 이어진다는 점을 연결하는 bridge다. 값도 같이 받고
+  싶다, 같은 시각이면 건너뛰나 포함하나, lower에서 entry로 바꾸면
+  뭐가 달라지나, 예약표에서 종료 시각까지 꺼내고 싶다, 메서드 이름이
+  경계 규칙을 정하나 같은 자연어 paraphrase가 본 문서의 handoff
+  감각에 매핑된다.
+---
 # TreeMap lowerKey-to-lowerEntry Strict Handoff Card
 
 > 한 줄 요약: `floorKey -> floorEntry` 예시를 막 익혔더라도 strict 쪽 규칙은 그대로 따로 잡아야 하며, `lowerKey -> lowerEntry`와 `higherKey -> higherEntry`는 exact match를 여전히 건너뛴 채 value만 덧붙여 읽는 handoff다.

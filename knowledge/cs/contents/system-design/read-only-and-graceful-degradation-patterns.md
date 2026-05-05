@@ -1,8 +1,8 @@
 # Read-Only and Graceful Degradation Patterns
 
-> 한 줄 요약: cache 또는 database incident 때 stale read, read-only mode, partial feature disablement 중 어디까지 내려갈지 freshness budget, write safety, dependency headroom으로 판단하는 운영 패턴 문서다.
+> 한 줄 요약: cache 또는 database incident 때 stale read, read-only mode, partial feature disablement 중 어디까지 내려갈지 freshness budget, write safety, dependency headroom으로 가르는 문서이며, "읽기는 살리고 쓰기만 잠글 수 있나?"라는 질문의 첫 판단표를 준다.
 
-retrieval-anchor-keywords: read-only mode, graceful degradation patterns, stale read fallback, stale-if-error, cache outage degradation, database incident read-only, partial feature disablement, brownout pattern, degraded mode matrix, bounded stale fallback, write freeze during incident, replica lag downgrade, maintenance mode ladder, read only and graceful degradation patterns basics, read only and graceful degradation patterns beginner
+retrieval-anchor-keywords: read-only mode, graceful degradation patterns, stale read fallback, stale-if-error, cache outage degradation, database incident read-only, partial feature disablement, brownout pattern, degraded mode matrix, bounded stale fallback, write freeze during incident, replica lag downgrade, 읽기는 살리고 쓰기만 막아도 되나요, 왜 바로 maintenance mode로 안 가요, stale read랑 read-only 차이 뭐예요
 
 **난이도: 🟡 Intermediate**
 
@@ -24,6 +24,7 @@ retrieval-anchor-keywords: read-only mode, graceful degradation patterns, stale 
 ## 핵심 개념
 
 장애가 났다고 해서 바로 maintenance mode로 내리는 것은 보통 과하다.
+처음 읽을 때는 `지금은 읽기만 살릴까, 아예 일부 기능을 꺼야 할까`를 먼저 물으면 된다.
 실전에서는 먼저 아래 세 가지를 분리해서 본다.
 
 1. **지금 읽는 데이터가 조금 오래돼도 되는가**

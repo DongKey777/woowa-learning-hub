@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: RFC vs ADR Decision Flow
+concept_id: software-engineering/rfc-vs-adr-decision-flow
+canonical: false
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- rfc-vs-adr
+- decision-record-scope
+- architecture-governance
+aliases:
+- RFC vs ADR
+- decision flow
+- proposal process
+- design record
+- governance flow
+- decision revalidation
+- superseded ADR
+symptoms:
+- 제안 문서와 결정 문서를 따로 써야 한다는 말이 왜 필요한지 모르겠어요
+- RFC를 쓰다가 그대로 ADR처럼 굳혀 버려서 토론과 기록이 섞여 버려요
+- 큰 아키텍처 변경에서 언제 RFC로 열고 언제 ADR로 닫아야 하는지 헷갈려요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/adr-decision-records-at-scale
+- software-engineering/architectural-governance-operating-model
+- software-engineering/decision-revalidation-supersession-lifecycle
+next_docs:
+- software-engineering/policy-as-code-architecture-linting
+- software-engineering/change-ownership-handoff-boundaries
+- software-engineering/incident-review-learning-loop-architecture
+linked_paths:
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/architectural-governance-operating-model.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+confusable_with:
+- software-engineering/adr-decision-records-at-scale
+- software-engineering/decision-revalidation-supersession-lifecycle
+- software-engineering/architectural-governance-operating-model
+forbidden_neighbors:
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+expected_queries:
+- 팀 설계 변경안을 먼저 토론할지 바로 결정 기록으로 남길지 고르는 기준이 뭐야?
+- RFC 문서와 ADR 문서를 둘 다 쓰는 흐름을 한 번에 이해하고 싶어
+- 아키텍처 변경이 여러 팀에 걸칠 때 언제 proposal 단계가 필요해?
+- 이미 채택한 결정이 바뀌었을 때 기존 ADR을 어떻게 이어서 관리해야 해?
+- 합의 과정과 최종 결정을 같은 문서에 섞지 말라는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 RFC와 ADR을 같은 종류의 설계 문서로 오해하는 학습자를 위한
+  chooser다. 아직 대안을 열어 두고 토론해야 하는지, 이미 결정된 내용을 짧게
+  고정하고 추적해야 하는지, 재검토와 supersede 흐름까지 포함해 어떤 문서
+  단계가 맞는지 판단하게 해 주는 비교 문서라는 맥락을 모든 청크 앞에 붙인다.
+---
 # RFC vs ADR Decision Flow
 
 > 한 줄 요약: RFC는 선택지를 넓게 열어 토론과 합의를 만들고, ADR은 그 결과를 짧게 고정해 실행과 추적을 가능하게 한다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: '`BigDecimal` Money Equality, Rounding, and Serialization Pitfalls'
+concept_id: language/bigdecimal-money-equality-rounding-serialization-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- bigdecimal-equals-vs-compareto
+- money-value-object-boundary
+- rounding-boundary-policy
+- serialization-canonicalization
+aliases:
+- bigdecimal money
+- monetary amount policy
+- 금액 scale 정책
+- money rounding contract
+- bigdecimal serialization money
+- compareto equals money amount
+symptoms:
+- 결제 금액은 같은데 Set이나 캐시 키 결과가 다르게 나와
+- 1.0과 1.00 때문에 중복 결제 방지 키가 자꾸 어긋나
+- JSON이나 DB를 한번 거치면 금액 비교가 이상해져
+intents:
+- definition
+prerequisites:
+- language/bigdecimal-construction-policy-beginner-bridge
+- language/money-value-object-basics
+next_docs:
+- language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps
+- language/serialization-compatibility-serial-version-uid
+linked_paths:
+- contents/language/java/bigdecimal-construction-policy-beginner-bridge.md
+- contents/language/java/money-value-object-basics.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/bigdecimal-sorted-collection-bridge
+- language/money-value-object-basics
+forbidden_neighbors: []
+expected_queries:
+- 결제 금액을 BigDecimal로 다룰 때 equals와 compareTo를 어떻게 나눠 써야 해?
+- 금액 반올림은 계산 중간에 해야 해 마지막에 해야 해?
+- 1.0과 1.00 때문에 idempotency key가 달라지는 문제를 정리해줘
+- BigDecimal 금액을 JSON 문자열로 보내는 게 왜 더 안전할 수 있어?
+- DB 저장 후 scale이 바뀌면 어떤 버그가 생기는지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 금액 값을 BigDecimal로 다룰 때 숫자
+  동일성과 표현 동일성, 반올림 경계, 직렬화 계약을 함께 처음부터
+  정확히 잡는 primer다. 결제 금액은 같은데 캐시 키가 달라짐, 1.0과
+  1.00 중복 방지 키 어긋남, 계산 중간 반올림 시점, JSON이나 DB를 거친
+  뒤 값 표기가 달라짐 같은 자연어 paraphrase가 본 문서의 money 계약
+  함정에 매핑된다.
+---
 # `BigDecimal` Money Equality, Rounding, and Serialization Pitfalls
 
 > 한 줄 요약: 금액은 숫자 하나가 아니라 통화, scale, 반올림 규칙, 직렬화 계약까지 포함한 도메인 값이다. `BigDecimal`의 `equals()`/`compareTo()` 차이와 경계별 반올림 정책을 분리하지 않으면 결제, 정산, 캐시, 메시징에서 조용히 불일치가 쌓인다.

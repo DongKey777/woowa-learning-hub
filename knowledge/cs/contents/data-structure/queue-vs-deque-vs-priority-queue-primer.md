@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Queue vs Deque vs Priority Queue Primer
+concept_id: data-structure/queue-vs-deque-vs-priority-queue-primer
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- next-item-selection-rule
+- bfs-vs-work-queue-split
+- deque-vs-priority-queue-first-branch
+aliases:
+- queue vs deque vs priority queue
+- queue deque priority queue primer
+- 큐 덱 우선순위큐 차이
+- 언제 queue 말고 deque 써요
+- priority queue는 언제 써요
+- 다음 원소를 누가 고르나
+- fifo vs 양끝 vs 우선순위
+- beginner queue structure split
+symptoms:
+- queue deque priority queue를 다 queue 비슷한 걸로만 외워서 처음 분기가 안 된다
+- BFS에서 쓰는 queue와 서비스 작업 큐를 같은 개념으로 섞어 설명하게 된다
+- 먼저 들어온 순서와 가장 급한 순서를 같은 규칙으로 착각한다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/queue-basics
+- data-structure/deque-router-example-pack
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/queue-basics.md
+- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
+- contents/data-structure/deque-router-example-pack.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/queue-basics
+- data-structure/deque-router-example-pack
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+forbidden_neighbors:
+- contents/data-structure/queue-basics.md
+- contents/data-structure/deque-router-example-pack.md
+expected_queries:
+- 자료구조 입문에서 세 구조를 무엇이 다음 원소를 정하느냐 기준으로 한 번에 설명해줘
+- FIFO와 양쪽 끝 제어와 우선순위 처리를 문제 문장으로 먼저 구분하는 법이 궁금해
+- BFS에서 쓰는 큐와 일반 작업 대기열을 왜 같은 층위로 보면 안 되는지 알고 싶어
+- 먼저 온 순서와 더 급한 순서를 자료구조 선택으로 비교해줘
+- deque가 필요한 순간과 priority queue가 필요한 순간을 초급 예시로 나눠줘
+- queue deque priority queue를 처음 배울 때 제일 먼저 붙잡아야 하는 질문이 뭐야
+contextual_chunk_prefix: |
+  이 문서는 queue, deque, priority queue를 처음 배우는 학습자가 다음으로
+  꺼낼 원소를 무엇이 결정하는지만 먼저 봐서 FIFO, 양쪽 끝 제어, 우선순위
+  기반 선택을 갈라내게 돕는 primer다. BFS queue와 작업 queue 차이,
+  front/back에서 꺼내기, 가장 급한 작업 먼저, 먼저 온 순서와 priority
+  구분 같은 자연어 paraphrase가 본 문서의 첫 분기에 매핑된다.
+---
 # Queue vs Deque vs Priority Queue Primer
 
 > 한 줄 요약: 세 구조를 고르는 가장 빠른 기준은 "다음으로 꺼낼 원소를 무엇이 결정하는가"다. 도착 순서면 `queue`, 양쪽 끝 제어면 `deque`, 값/우선순위면 `priority queue`다.

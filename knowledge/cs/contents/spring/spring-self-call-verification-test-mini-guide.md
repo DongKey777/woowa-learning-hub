@@ -7,17 +7,12 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검](./spring-legacy-configuration-bean-self-call-detection-card.md)
+- [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
+- [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 
-> 관련 문서:
-> - [Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검](./spring-legacy-configuration-bean-self-call-detection-card.md)
-> - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
-> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
-> - [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
-
-retrieval-anchor-keywords: spring self invocation verification test, spring self call verification test, assertsame assertnotsame self invocation, configuration bean self invocation test, proxybeanmethods false identity test, beginner self invocation junit template, bean self invocation quick verification, unmanaged object identity check, parameter injection same instance, spring lite configuration test template, kotlin self invocation test, kotlin bean parameter injection, spring self call verification test mini guide basics, spring self call verification test mini guide beginner, spring self call verification test mini guide intro
+retrieval-anchor-keywords: spring self invocation verification, spring self call verification, assertsame assertnotsame spring bean, configuration bean identity test, proxybeanmethods false test, bean self invocation junit, spring bean identity check, kotlin self invocation test, spring self invocation basics, spring self invocation 처음, spring self invocation 왜 다르지, spring self invocation what is
 
 ## 먼저 mental model 한 줄
 

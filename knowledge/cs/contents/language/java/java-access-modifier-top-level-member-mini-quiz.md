@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: '접근 제한자 오해 미니 퀴즈: top-level vs member'
+concept_id: language/java-access-modifier-top-level-member-mini-quiz
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- top-level-vs-member-scope
+- nested-type-visibility
+aliases:
+- java access modifier top level member mini quiz basics
+- java access modifier top level member mini quiz beginner
+- java access modifier top level member mini quiz intro
+- java basics
+- beginner java
+- 처음 배우는데 java access modifier top level member mini quiz
+- java access modifier top level member mini quiz 입문
+- java access modifier top level member mini quiz 기초
+- what is java access modifier top level member mini quiz
+- how to java access modifier top level member mini quiz
+symptoms:
+- top-level에서는 안 되는데 멤버에서는 되는 modifier가 자꾸 헷갈려
+- private class를 본 기억이 있는데 왜 어떤 코드는 컴파일이 안 되는지 모르겠어
+- 문제로 바로 확인하면서 접근 제한자 경계를 점검하고 싶어
+intents:
+- definition
+prerequisites:
+- language/java-access-modifiers-member-model-basics
+- language/top-level-type-access-modifier-bridge
+next_docs:
+- language/java-access-modifier-boundary-lab
+- language/java-package-import-boundary-basics
+linked_paths:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-access-modifier-boundary-lab.md
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- language/top-level-type-access-modifier-bridge
+- language/java-access-modifier-boundary-lab
+forbidden_neighbors:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-package-boundary-quickcheck-card.md
+- contents/language/java/java-access-modifier-boundary-lab.md
+expected_queries:
+- 접근 제한자 top-level이랑 member 구분 문제로 바로 확인하고 싶어
+- private class가 되는 경우와 안 되는 경우를 퀴즈처럼 풀어보고 싶어
+- protected interface가 왜 실패하는지 짧은 문제로 점검할 수 있을까
+- nested record는 protected가 되는데 top-level record는 왜 안 되는지 연습하고 싶어
+- 컴파일 성공 실패를 예측하는 접근 제한자 입문 문제를 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 top-level에서는 안 되지만 멤버에서는 되는
+  modifier 경계를 5문항 예측형으로 처음 잡는 primer다. 컴파일 성공
+  실패 먼저 맞혀 보기, 파일 최상단 선언 vs 클래스 안 선언, private
+  class 기억이 왜 섞이는지, nested record는 왜 되지 같은 자연어
+  paraphrase가 본 문서의 위치별 접근 제한자 판단에 매핑된다.
+---
 # 접근 제한자 오해 미니 퀴즈: top-level vs member
 
 > 한 줄 요약: `private`/`protected`가 "항상 안 된다"가 아니라, **파일 최상단(top-level)에서는 안 되고 클래스 멤버에서는 될 수 있다**는 경계를 5문항 예측형으로 짧게 점검하는 beginner drill이다.

@@ -12,16 +12,14 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
-> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
-> - 공식 기준: [Spring Boot Externalized Configuration - Binding From Environment Variables](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables)
-> - 공식 기준: [Docker Compose - Set environment variables within your container's environment](https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/)
-> - 공식 기준: [Docker Compose - Variable interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/)
-> - 공식 기준: [Kubernetes - Configure a Pod to Use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+- [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
+- [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+- 공식 기준: [Spring Boot Externalized Configuration - Binding From Environment Variables](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables)
+- 공식 기준: [Docker Compose - Set environment variables within your container's environment](https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/)
+- 공식 기준: [Docker Compose - Variable interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/)
+- 공식 기준: [Kubernetes - Configure a Pod to Use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
 
 retrieval-anchor-keywords: spring docker compose kubernetes env injection basics, spring property key compose kubernetes bridge, spring env var naming vs platform injection, docker compose spring environment variables, kubernetes spring configmap env basics, app_payment_baseurl, app.payment.base-url, compose .env interpolation vs container environment, kubernetes env valuefrom configmapkeyref, kubernetes envfrom configmap spring boot, spring beginner configuration primer, docker compose env_file spring boot, configmap key vs env var name, container process environment spring boot, spring docker compose k8s env injection basics primer basics
 

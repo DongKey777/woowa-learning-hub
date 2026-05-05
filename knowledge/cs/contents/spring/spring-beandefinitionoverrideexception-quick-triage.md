@@ -12,10 +12,10 @@
 - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 - [Spring DI 예외 빠른 판별: bean을 못 찾음 vs 여러 개라 못 고름](./spring-di-exception-quick-triage.md)
 - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
-- [트랜잭션 기초](../database/transaction-basics.md)
+- [Dependency Injection Basics](../software-engineering/dependency-injection-basics.md)
 - [카테고리 README](./README.md)
 
-retrieval-anchor-keywords: beandefinitionoverrideexception quick triage, bean override startup error, the bean could not be registered, bean name collision beginner, overriding is disabled spring boot, conditionalonmissingbean did not match, existing bean found startup, expected single matching bean but found 2, bean override vs primary, bean override vs back off, duplicate bean name fix, spring startup bean conflict, 처음 배우는데 bean override 에러, bean 이름 충돌 뭐예요, startup bean error primer
+retrieval-anchor-keywords: beandefinitionoverrideexception quick triage, bean override startup error, the bean could not be registered, same bean name collision, duplicate bean name startup, overriding is disabled spring boot, conditionalonmissingbean did not match, existing bean found startup, expected single matching bean but found 2, same type bean found 2, duplicate bean name fix, spring startup bean conflict, 처음 배우는데 bean override 에러, 같은 이름 bean 충돌, bean 이름 충돌 뭐예요
 
 ## 핵심 개념
 
@@ -24,6 +24,8 @@ retrieval-anchor-keywords: beandefinitionoverrideexception quick triage, bean ov
 - `BeanDefinitionOverrideException`은 보통 **같은 이름으로 bean을 두 번 등록하려고 했다**는 신호다
 - 하지만 startup 로그에 `override`, `existing bean`, `found 2`가 같이 보인다고 해서 전부 같은 문제는 아니다
 - 초반 분기는 "등록 충돌", "등록 back-off", "주입 후보 선택" 세 갈래면 충분하다
+
+검색어가 `같은 이름 bean 충돌`, `duplicate bean name startup`, `found 2 beans`처럼 들어와도 이 문서에서 첫 분기를 잡으면 된다.
 
 짧게 번역하면 이렇다.
 

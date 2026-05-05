@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Spring Boot 자동 구성
+concept_id: spring/boot-autoconfiguration-internals
+canonical: false
+category: spring
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- autoconfiguration-import-chain
+- condition-report-evidence-reading
+- backoff-vs-candidate-selection
+aliases:
+- spring boot autoconfiguration
+- enable autoconfiguration
+- autoconfiguration imports
+- auto configuration import selector
+- condition evaluation report
+- starter import chain
+- conditional configuration pipeline
+- auto configuration candidate loading
+- condition match report
+- backoff condition
+- starter bean backoff
+- auto configuration internals
+symptoms:
+- starter는 넣었는데 어떤 auto-configuration이 실제로 켜졌는지 추적이 안 돼요
+- ConditionEvaluationReport를 열어도 positive match와 negative match를 어디부터 읽어야 할지 모르겠어요
+- autoconfiguration.imports와 AutoConfigurationImportSelector가 bean 등록 흐름에서 어떻게 이어지는지 감이 없어요
+intents:
+- definition
+- deep_dive
+- troubleshooting
+prerequisites:
+- spring/boot-autoconfiguration-basics
+- spring/ioc-di-basics
+next_docs:
+- spring/spring-boot-condition-evaluation-report-debugging
+- spring/spring-startup-bean-graph-debugging-playbook
+- spring/spring-conditional-activation-annotation-decision-guide
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
+- contents/spring/spring-application-context-refresh-phases.md
+confusable_with:
+- spring/boot-autoconfiguration-basics
+- spring/spring-boot-condition-evaluation-report-debugging
+- spring/spring-configuration-vs-autoconfiguration-primer
+forbidden_neighbors: []
+expected_queries:
+- spring boot auto-configuration 내부는 어떻게 동작해요?
+- autoconfiguration.imports랑 AutoConfigurationImportSelector가 뭐예요?
+- condition evaluation report를 봐야 하는 이유가 뭐예요?
+- starter를 넣었는데 어떤 auto-configuration이 로드되는지 알고 싶어요
+- boot auto configuration deep dive 설명해 주세요
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot auto-configuration의 내부 동작과 조건 평가 흐름을
+  더 깊게 설명하는 deep-dive reference다. autoconfiguration.imports가
+  뭐예요, AutoConfigurationImportSelector가 어디서 후보를 모으나요,
+  starter 뒤에서 어떤 설정 클래스가 로드되나요, condition evaluation
+  report는 왜 봐요, 왜 어떤 bean은 등록되고 어떤 bean은 back off 되나요
+  같은 자연어 paraphrase를 후보 수집, 조건 평가, 최종 등록 순서라는
+  구조적 mental model에 매핑한다.
+---
+
 # Spring Boot 자동 구성 (Auto-configuration)
 
 > 한 줄 요약: Spring Boot 자동 구성은 애플리케이션 컨텍스트에 필요한 기본 빈을 조건부로 채워 넣어, 개발자가 반복 설정 대신 도메인 코드에 집중하게 만드는 장치다.

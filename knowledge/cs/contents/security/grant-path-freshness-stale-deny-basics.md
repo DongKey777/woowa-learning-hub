@@ -24,7 +24,7 @@
 > - `[deep dive]` [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
 > - `[catalog]` [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 > - `[catalog]` [Security README: 기본 primer](./README.md#기본-primer)
-> - `[catalog]` [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
+> - `[catalog]` [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence-assurance-deep-dive-catalog)
 > - `[catalog]` [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
 retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, cached 404 after grant, cached concealment 404 after grant, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, beginner grant freshness route

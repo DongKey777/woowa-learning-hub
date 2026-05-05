@@ -13,13 +13,11 @@
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
-
-> 관련 문서:
-> - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
-> - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-> - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
-> - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
+- [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
+- [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
+- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+- [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+- [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 
 retrieval-anchor-keywords: jpa scan boundary, entityscan, enablejparepositories, @entityscan 뭐예요, @enablejparepositories 뭐예요, entityscan enablejparepositories 차이, component scan vs entity scan, component scan이랑 entity scan 차이 헷갈려요, repository scan이 뭐예요, spring jpa scan 큰 그림, jpa scan 처음 배우는데, scanbasepackages no effect entity scan, not a managed type, repository bean not found, 처음 jpa scan 설정할 때 뭐부터 봐요
 

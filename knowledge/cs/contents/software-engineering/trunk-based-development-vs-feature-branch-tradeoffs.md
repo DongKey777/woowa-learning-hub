@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Trunk-Based Development vs Feature Branch Trade-offs
+concept_id: software-engineering/trunk-based-development-vs-feature-branch-tradeoffs
+canonical: false
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- branch-strategy-selection
+- merge-debt-vs-feedback-loop
+- feature-flag-readiness
+aliases:
+- trunk-based development
+- feature branch strategy
+- trunk vs feature branch
+- merge debt
+- integration latency
+- release branch tradeoff
+- branch strategy
+- continuous integration cadence
+- 브랜치 전략 비교
+- trunk based 뭐가 달라
+- feature branch 오래 가져가도 되나
+symptoms:
+- 브랜치를 짧게 가져가라는 말은 듣는데 왜 자주 머지해야 하는지 설득이 안 돼요
+- feature branch가 안전해 보이는데 왜 통합 부채라고 부르는지 감이 안 와요
+- trunk-based를 하려면 feature flag와 CI가 왜 같이 필요하다는지 모르겠어요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/git-workflow-basics
+- software-engineering/feature-flags-rollout-dependency-management
+next_docs:
+- software-engineering/lead-time-change-failure-recovery-loop
+- software-engineering/deployment-rollout-rollback-canary-blue-green
+- software-engineering/technical-debt-refactoring-timing
+linked_paths:
+- contents/software-engineering/git-workflow-basics.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/feature-flag-cleanup-expiration.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/lead-time-change-failure-recovery-loop.md
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+confusable_with:
+- software-engineering/git-workflow-basics
+- software-engineering/lead-time-change-failure-recovery-loop
+- software-engineering/feature-flags-rollout-dependency-management
+forbidden_neighbors:
+- contents/software-engineering/git-workflow-basics.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+expected_queries:
+- 우리 팀이 trunk-based로 갈지 feature branch를 유지할지 판단할 때 제일 먼저 볼 기준이 뭐야?
+- 브랜치를 오래 들고 가면 merge conflict 말고 어떤 비용이 더 커져?
+- trunk-based를 하려면 feature flag와 빠른 CI가 왜 같이 언급돼?
+- release branch까지 있는 팀에서 trunk-based와 feature branch를 어떻게 구분해 이해하면 돼?
+- 기능을 오래 숨겨야 하는 팀이면 feature branch가 아직 더 나은 경우가 있어?
+contextual_chunk_prefix: |
+  이 문서는 trunk-based development와 feature branch를 둘 다 써 본 적 없거나
+  둘 중 무엇이 현재 팀에 맞는지 고르려는 학습자를 위한 chooser다. 브랜치를
+  짧게 가져가라는 말이 왜 merge conflict보다 피드백 지연과 통합 부채 문제로
+  이어지는지, feature flag와 빠른 CI가 왜 trunk-based의 전제인지, 큰
+  마이그레이션이나 승인 절차가 강한 조직에서는 왜 feature branch가 아직
+  현실적인지 같은 질문을 비교 기준으로 연결한다.
+---
 # Trunk-Based Development vs Feature Branch Trade-offs
 
 > 한 줄 요약: 브랜치 전략은 Git 사용 습관이 아니라, 통합 지연과 배포 리스크를 어디에 쌓을지 정하는 팀 운영 설계다.

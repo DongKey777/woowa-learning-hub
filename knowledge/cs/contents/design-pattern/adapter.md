@@ -10,22 +10,11 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+- [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
+- [Composition over Inheritance](./composition-over-inheritance-practical.md)
 
-
-retrieval-anchor-keywords: adapter basics, adapter beginner, adapter intro, design pattern basics, beginner design pattern, 처음 배우는데 adapter, adapter 입문, adapter 기초, what is adapter, how to adapter
-> 호환되지 않는 인터페이스를 가진 객체들이 함께 동작할 수 있게 중간 번역기를 끼워 넣는 패턴
-
-> 관련 문서:
-> - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
-> - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
-> - [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md)
-> - [Adapter Chaining Smells](./adapter-chaining-smells.md)
-> - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
-> - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
-> - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
-> - [Composition over Inheritance](./composition-over-inheritance-practical.md)
-
-> retrieval-anchor-keywords: adapter pattern, classic adapter, gof adapter, 어댑터 패턴, classic gof wrapper, incompatible interface wrapper, interface translation layer, signature mismatch wrapper, method name translation, wire format translation, request response format conversion, legacy sdk integration, third party client wrapper, xml to json wrapper, target adaptee translation, method signature mismatch, object adapter vs class adapter, spring handleradapter, adapter vs facade vs proxy, adapter vs bridge, interface translation vs provider abstraction, classic adapter vs ports and adapters
+retrieval-anchor-keywords: adapter pattern, classic adapter, gof adapter, 어댑터 패턴, interface translation layer, signature mismatch wrapper, method name translation, legacy sdk integration, xml to json wrapper, object adapter vs class adapter, adapter vs facade vs proxy, adapter vs bridge, adapter 뭐예요, adapter 처음, incompatible interface wrapper
 
 ## 핵심 개념
 

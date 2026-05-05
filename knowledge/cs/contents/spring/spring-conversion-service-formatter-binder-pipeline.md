@@ -1,5 +1,7 @@
 # Spring ConversionService, Formatter, and Binder Pipeline
 
+## 한 줄 요약
+
 > 한 줄 요약: Spring의 타입 변환은 `ConversionService`, `Formatter`, `WebDataBinder`가 이어지는 파이프라인이며, 바인딩 오류의 원인을 정확히 나누려면 이 세 층을 구분해야 한다.
 
 **난이도: 🔴 Advanced**
@@ -14,8 +16,7 @@
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 
-retrieval-anchor-keywords: ConversionService, Formatter, WebDataBinder, type conversion, binding pipeline, PropertyEditor, data binding, format annotation, conversion error
-retrieval-anchor-keywords: conversionservice deep dive, formatter deep dive, webdatabinder deep dive, spring binding internals advanced, spring type conversion pipeline advanced, conversionservice formatter webdatabinder 차이 심화, 바인딩 내부 동작 심화, beginner는 requestbody modelattribute primer 먼저, conversionservice next step after primer
+retrieval-anchor-keywords: conversionservice, formatter, webdatabinder, spring type conversion pipeline advanced, conversionservice formatter webdatabinder 차이 심화, spring binding internals advanced, conversion error, data binding, format annotation, propertyeditor, 바인딩 내부 동작 심화, webdatabinder 뭐예요, conversionservice next step after primer, beginner는 requestbody modelattribute primer 먼저
 
 ## 먼저 분기
 

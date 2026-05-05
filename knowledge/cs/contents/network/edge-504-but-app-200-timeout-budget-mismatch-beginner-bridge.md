@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Edge는 `504`인데 App은 `200`? Timeout Budget Mismatch Beginner Bridge
+concept_id: network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- gateway-vs-app-owner
+- late-success-after-timeout
+- timeout-budget-mismatch
+aliases:
+- edge 504 app 200
+- gateway timeout app 200
+- timeout budget mismatch
+- 브라우저 504인데 서버 로그 200
+- edge는 504인데 왜 서버는 200
+- app은 성공했는데 왜 504
+- why edge 504 app 200
+- what is gateway timeout
+- 처음 보는 504
+- hop by hop timeout basics
+- devtools waterfall 504 200
+- gateway timeout 언제 생겨요
+- timeout mismatch 왜 생겨요
+- 504 app log 200 헷갈려요
+symptoms:
+- 브라우저는 504인데 서버 로그는 200이야
+- 게이트웨이는 실패인데 애플리케이션은 성공으로 찍혀
+- 사용자는 실패했는데 서버는 처리된 것 같아
+intents:
+- comparison
+prerequisites:
+- network/http-status-codes-basics
+- network/browser-devtools-502-504-app-500-decision-card
+next_docs:
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- network/browser-devtools-502-504-app-500-decision-card
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors:
+- contents/network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge.md
+expected_queries:
+- 브라우저는 504인데 서버 로그에는 200이 남는 이유가 뭔가요?
+- edge timeout과 app 완료 시점이 다를 때 어떤 순서로 확인해야 하나요?
+- gateway timeout인데 백엔드는 성공한 것처럼 보이면 처음에 무엇을 봐야 하나요?
+- 사용자 화면은 실패인데 백엔드는 처리 완료된 상황을 어떻게 이해해야 하나요?
+- waterfall에서는 실패인데 서버는 정상 응답한 것처럼 보일 때 원인이 뭐예요?
+contextual_chunk_prefix: |
+  이 문서는 초급 학습자가 앞단 timeout과 뒤쪽 완료 로그를 같은 요청의 다른
+  종료 시점으로 연결해 이해하도록 돕는 bridge다. 사용자는 실패를 봤는데
+  서버 작업은 뒤늦게 끝남, gateway 시계와 app 시계가 다름, 어느 홉이 먼저
+  응답을 닫았는지 보기, waiting 끝과 처리 완료 시각 비교 같은 자연어
+  paraphrase가 본 문서의 timeout budget mismatch 개념에 매핑된다.
+---
 # Edge는 `504`인데 App은 `200`? Timeout Budget Mismatch Beginner Bridge
 
 > 한 줄 요약: 브라우저는 edge gateway의 `504`를 봤는데 app 로그에는 `200`이 남는 장면은, 서로 다른 홉이 서로 다른 timeout 시계로 요청을 끝냈을 때 가장 흔하게 생긴다.

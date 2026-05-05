@@ -12,10 +12,14 @@
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
 
 > 관련 문서:
-> - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
+> - [팩토리 (Factory) 디자인 패턴](./factory.md)
+> - [전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법](./strategy-pattern.md)
+> - [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
 > - [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
 > - [팩토리 패턴 기초](./factory-basics.md)
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
+> - [런타임 선택에서 Bridge vs Strategy vs Factory: 행동 축과 생성 축을 헷갈리지 않기](./bridge-strategy-vs-factory-runtime-selection.md)
+> - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
+> - [Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때](./router-dispatcher-handlermapping-vs-selector-factory.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: factory misnaming checklist, create free factory, factory without create, factory naming smell checklist, code review factory name, refactoring discussion factory rename, selector vs factory review checklist, registry vs factory review checklist, resolver vs factory review checklist, create 없는 factory, factory 이름 오해 체크리스트, factory 이름 잘못 붙였는지, 생성 없는 factory, beginner factory naming checklist, factory misnaming checklist basics
@@ -52,6 +56,12 @@ retrieval-anchor-keywords: factory misnaming checklist, create free factory, fac
 
 핵심은 내부 구현이 아니라 **public 책임**이다.
 안에서 `Map`을 쓰든 `switch`를 쓰든, 바깥에서 보이는 일이 생성이 아니면 `Factory`는 과한 이름일 수 있다.
+
+여기서 한 번 더 자르면 정리가 빨라진다.
+
+- 선택된 정책을 실행하는 쪽이 중심이면 [전략 패턴](./strategy-pattern.md)
+- 런타임 선택, 생성, 두 변화 축이 한꺼번에 섞이면 [Bridge vs Strategy vs Factory](./bridge-strategy-vs-factory-runtime-selection.md)
+- request를 어느 handler로 넘길지 묻는 문제면 [Request Dispatch Naming](./router-dispatcher-handlermapping-vs-selector-factory.md)
 
 ---
 

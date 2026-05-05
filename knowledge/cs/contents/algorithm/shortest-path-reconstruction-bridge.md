@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Shortest Path Reconstruction Bridge
+concept_id: algorithm/shortest-path-reconstruction-bridge
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- parent-array-update
+- shortest-path-reconstruction
+aliases:
+- shortest path reconstruction
+- path reconstruction beginner
+- bfs path reconstruction
+- dijkstra path reconstruction
+- 0-1 bfs path reconstruction
+- zero one bfs reconstruction
+- predecessor array
+- parent array shortest path
+- prev array
+- restore shortest path
+- reconstruct route after shortest path
+- bfs vs 0-1 bfs parent update
+- bfs first visit vs relax
+- 0-1 bfs relax update
+- bfs 처음 방문 고정
+symptoms:
+- 최단 거리는 구했는데 실제 경로를 어떻게 복원하는지 모르겠어
+- parent를 언제 갱신해야 하는지 BFS랑 다익스트라에서 헷갈려
+- 거리표와 경로표를 같이 관리하는 그림이 안 잡혀
+intents:
+- comparison
+prerequisites:
+- algorithm/dfs-bfs-intro
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+next_docs:
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+- algorithm/sparse-graph-shortest-paths
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/graph.md
+confusable_with:
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
+forbidden_neighbors:
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- BFS로 최단 거리만 구한 뒤 실제 경로를 출력하려면 무엇을 저장해야 해
+- 다익스트라에서 predecessor 배열은 언제 바꾸는지 예시로 보고 싶어
+- 0-1 BFS에서 parent 갱신 규칙이 BFS와 어떻게 다른지 설명해줘
+- 최단 경로 복원할 때 target에서 start로 거꾸로 따라가는 흐름을 알고 싶어
+- 거리 배열과 parent 배열을 같이 쓰는 shortest path 기본 패턴을 정리해줘
+- 경로 출력 문제에서 first visit과 relax 성공을 어떻게 구분해야 해
+contextual_chunk_prefix: |
+  이 문서는 BFS, 0-1 BFS, Dijkstra에서 거리 계산과 실제 경로 복원을 어떻게 이어서 읽어야 하는지 연결하는 bridge다. 최단 거리만 구하고 끝내지 않고 어디서 왔는지 함께 적기, parent 배열을 거꾸로 따라 출발점까지 되짚기, 처음 방문 고정과 relax 갱신 차이, 거리표와 경로표를 한 장면으로 묶어 보기 같은 자연어 paraphrase가 본 문서의 핵심 연결에 매핑된다.
+---
 # Shortest Path Reconstruction Bridge
 
 > 한 줄 요약: BFS, 0-1 BFS, Dijkstra는 "거리를 구하는 방법"은 다르지만, 실제 경로를 복원할 때는 결국 `parent` 또는 `predecessor` 배열을 거꾸로 따라가면 된다.

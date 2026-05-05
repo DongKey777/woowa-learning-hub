@@ -1,6 +1,8 @@
 # Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer
 
 > 한 줄 요약: 브라우저 화면과 JSON API가 같은 인증 실패를 읽는 방식이 다르면, `SecurityFilterChain`도 경로별로 나눠 각 요청이 자기 계약에 맞는 `AuthenticationEntryPoint`를 타게 하는 편이 안전하다.
+>
+> 문서 역할: 이 문서는 beginner primer로서 "`응답 계약 분리`를 실제 체인 분리 설정으로 옮기는 첫 구현 문서"를 맡는다. `SavedRequest`나 쿠키 복원보다 `경로별 entry point 분리`가 핵심일 때 읽는다.
 
 **난이도: 🟢 Beginner**
 
@@ -22,6 +24,19 @@ retrieval-anchor-keywords: multiple securityfilterchain primer, spring api 401 a
 - `/api/**` JSON API는 상태 코드와 JSON body를 직접 돌려주는 흐름이 자연스럽다.
 
 그래서 같은 "아직 로그인 안 됨"이라도 한 체인에서 억지로 하나로 맞추기보다, **경로별 `SecurityFilterChain`이 각자의 entry point를 갖게 분리**하는 편이 초급자 기준 더 안전하다.
+
+## 이 문서가 바로 맞는 질문
+
+이 문서는 "`왜 302와 401이 다른가`"를 넘어서 "`그 차이를 Spring 설정에서 어떻게 분리하지?`"가 남았을 때 읽는다.
+
+| 지금 막힌 질문 | 이 문서가 맞는가 | 이유 |
+|---|---|---|
+| "`/admin/**`은 login redirect, `/api/**`는 401 JSON으로 실제로 어떻게 나눠요?`" | 예 | `SecurityFilterChain`, `securityMatcher`, entry point 분리를 바로 다룬다 |
+| "`api인데 login html 와요`" | 예 | API 요청이 웹 체인을 잘못 타는지 먼저 볼 수 있다 |
+| "`cookie 있는데 다시 로그인`" | 아니오 | 체인 분리보다 세션 복원이 먼저 문제일 수 있다 |
+| "`로그인 성공 후 원래 URL 복귀 403`" | 아니오 | 체인 선택보다 final `403` 권한 분기가 먼저다 |
+
+즉 이 문서는 `entry point 분리 구현` 문서이고, 세션 persistence primer나 final `403` primer를 대체하지 않는다.
 
 ## 한눈에 보기
 

@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Validation Boundary Mini Bridge
+concept_id: software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- input-vs-domain-validation
+- invariant-boundary
+- validation-layering
+aliases:
+- validation boundary mini bridge
+- input validation vs domain invariant beginner
+- 형식 검증 vs 도메인 불변식
+- 요청 검증 도메인 규칙 차이
+- validation boundary card
+- dto validation vs invariant
+- '@valid vs domain invariant'
+- beginner validation invariant bridge
+- 입력 검증 경계 입문
+- 도메인 불변식 입문 브리지
+- roomescape validation domain rule
+- validation boundary input vs domain invariant mini bridge basics
+- validation boundary input vs domain invariant mini bridge beginner
+- validation boundary input vs domain invariant mini bridge intro
+- software engineering basics
+- beginner software engineering
+symptoms:
+- '@Valid만 붙이면 도메인 규칙도 다 지켜진다고 느껴져요'
+- 컨트롤러에서 막을 값과 도메인 안에서 끝까지 지킬 규칙이 섞여 보여요
+- 형식 오류와 상태 전이 오류를 같은 검증으로 처리해도 되는지 모르겠어요
+intents:
+- comparison
+prerequisites:
+- security/input-validation-basics
+- software-engineering/dto-vo-entity-basics
+next_docs:
+- software-engineering/domain-invariants-as-contracts
+- design-pattern/layered-validation-pattern
+- software-engineering/roomescape-validation-vs-domain-rule-bridge
+linked_paths:
+- contents/security/input-validation-basics.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/design-pattern/layered-validation-pattern.md
+- contents/software-engineering/order-validation-annotation-vs-domain-rule-card.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+confusable_with:
+- security/input-validation-basics
+- software-engineering/domain-invariants-as-contracts
+forbidden_neighbors:
+- contents/security/input-validation-basics.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+expected_queries:
+- 요청 DTO 검증이랑 도메인 상태 규칙은 어디서 끊어 생각해야 해?
+- 빈 문자열 체크와 취소된 주문 결제 금지 규칙을 왜 같은 층에서 다루면 안 돼?
+- controller에서 한번 막았는데 domain에서도 또 검사해야 하는 이유가 뭐야?
+- 형식은 맞지만 현재 상태가 금지된 요청은 어떤 계층이 책임져?
+- '@Valid로 잡는 문제와 엔티티가 끝까지 지켜야 할 규칙을 빠르게 구분하는 법이 있어?'
+- roomescape에서 요청 검증과 예약 가능 규칙은 어디서 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 입력 형식 검증과 도메인 상태 규칙을 처음 분리해 보는 학습자를
+  위한 bridge다. @Valid, 바인딩 오류, 필수값 누락 같은 문 앞 검증과 취소된
+  주문 결제 금지, 상태 전이 규칙, 저장 상태를 봐야 하는 검증, 어디서 다시
+  확인해야 하는지, 같은 값을 두 번 막는 책임이 어디인지 같은 질문을
+  controller 입구와 domain 불변식 경계로 이어 준다.
+---
 # Validation Boundary Mini Bridge
 
 > 한 줄 요약: 입력 검증은 "문 앞에서 형식을 확인하는 일"이고, 도메인 불변식은 "안으로 들어온 뒤에도 절대 깨지면 안 되는 규칙"이다.

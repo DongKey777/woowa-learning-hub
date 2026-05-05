@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Bidirectional Pipe Deadlock Primer
+concept_id: operating-system/subprocess-bidirectional-pipe-deadlock-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- subprocess-bidirectional-ordering
+- stdin-stdout-close-order
+aliases:
+- operating-system-00060
+- subprocess symptom first branch guide
+- subprocess comparison table
+- bidirectional pipe deadlock primer
+- subprocess bidirectional pipe deadlock
+- bidirectional pipe mental model
+- two-queue eof mental model
+- stdin=pipe stdout=pipe deadlock
+- subprocess stdin stdout deadlock
+- two way pipe deadlock
+- parent write then read deadlock
+- parent read before close stdin deadlock
+- child blocked writing stdout stops reading stdin
+- beginner handoff box
+- subprocess bidirectional pipe deadlock primer basics
+symptoms:
+- stdin이랑 stdout을 둘 다 pipe로 잡으면 왜 더 잘 멈추죠
+- write하고 read하는 순서가 왜 서로를 기다리나요
+- sort나 cat 같은 명령에서 parent child가 같이 멈춰요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/subprocess-fd-hygiene-basics
+next_docs:
+- operating-system/subprocess-stdin-eof-primer
+- operating-system/popen-runtime-wrapper-mapping
+linked_paths:
+- contents/operating-system/subprocess-symptom-first-branch-guide.md
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/subprocess-stdin-eof-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+confusable_with:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/subprocess-stdin-eof-primer
+forbidden_neighbors:
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/subprocess-stdin-eof-primer.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+expected_queries:
+- stdin pipe랑 stdout pipe를 같이 쓰면 왜 deadlock이 나?
+- parent가 write 후 read하면 subprocess가 멈추는 이유를 알려줘
+- sort에 입력 보내고 결과 읽을 때 close 순서가 왜 중요해?
+- 양방향 pipe에서 communicate가 대신해 주는 게 뭐야?
+- stdin=pipe stdout=pipe hang를 backpressure랑 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 stdin과 stdout을 둘 다 pipe로 잡은 subprocess에서 왜 두 개의
+  작은 queue와 EOF 순서가 서로를 기다리게 만드는지 처음 잡는 primer다.
+  입력 다 쓰고 나중에 읽기, 출력 먼저 기다리다 stdin close를 놓침, cat이나
+  sort에서 양쪽이 같이 멈춤, communicate가 왜 안전한가 같은 자연어 표현이
+  본 문서의 bidirectional deadlock 상황에 매핑된다.
+---
+
 # Bidirectional Pipe Deadlock Primer
 
 > 한 줄 요약: `stdin=PIPE`와 `stdout=PIPE`를 함께 쓰면 parent와 child 사이에 작은 대기열이 두 개 생기고, parent의 read/write 순서가 어긋나면 서로 상대방을 기다리며 멈출 수 있다.

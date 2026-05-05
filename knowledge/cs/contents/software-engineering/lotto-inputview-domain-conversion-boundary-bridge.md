@@ -1,0 +1,98 @@
+---
+schema_version: 3
+title: 'lotto InputView 문자열 파싱 ↔ DTO/도메인 변환 경계 브릿지'
+concept_id: software-engineering/lotto-inputview-domain-conversion-boundary-bridge
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: mixed
+source_priority: 78
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- inputview-domain-conversion
+- parsing-leak
+- dto-boundary
+aliases:
+- lotto InputView 도메인 변환
+- 로또 문자열 파싱 경계
+- lotto controller에서 Lotto 만들기
+- 로또 dto 도메인 변환 위치
+- lotto 입력뷰 파싱 책임
+symptoms:
+- InputView가 쉼표로 나눈 뒤 바로 Lotto를 만들어도 되나 헷갈려요
+- controller에서 문자열을 파싱하다 보니 숫자 검증과 도메인 생성이 같이 섞여요
+- 입력 계층이 Lotto나 WinningNumbers를 직접 만들지 말라는 리뷰가 무슨 뜻인지 모르겠어요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/dto-vo-entity-basics
+- software-engineering/layered-architecture-basics
+next_docs:
+- software-engineering/lotto-domain-invariant-bridge
+- software-engineering/lotto-purchase-amount-value-object-bridge
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+linked_paths:
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/lotto-domain-invariant-bridge.md
+- contents/software-engineering/lotto-purchase-amount-value-object-bridge.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- software-engineering/lotto-domain-invariant-bridge
+- software-engineering/dto-vo-entity-basics
+- software-engineering/lotto-purchase-flow-service-layer-bridge
+forbidden_neighbors:
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/lotto-domain-invariant-bridge.md
+expected_queries:
+- 로또 미션에서 InputView가 문자열을 받아 바로 Lotto를 만들어도 괜찮아?
+- controller에서 split 한 숫자 리스트를 곧바로 도메인 객체로 바꾸면 왜 리뷰가 붙어?
+- 입력 파싱 검증이랑 Lotto 생성 책임을 어디서 나눠야 해?
+- WinningNumbers 같은 도메인 객체는 view나 controller에서 만들어도 되나?
+- 로또 입력 문자열을 DTO처럼 한 번 받고 service에서 도메인으로 바꾸라는 말은 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa lotto 미션에서 InputView나 controller가 문자열을 잘라 숫자로
+  바꾸는 일과 Lotto, WinningNumbers 같은 도메인 객체를 생성하는 일을 어디서
+  나눌지 설명하는 mission_bridge다. 쉼표 split 직후 도메인 생성, 입력 파싱과
+  도메인 불변식 혼합, view가 도메인을 안다는 리뷰, DTO처럼 한 번 받고 service나
+  assembler에서 변환하라는 조언 같은 학습자 표현을 계층 경계와 변환 책임
+  관점으로 매핑한다.
+---
+
+# lotto InputView 문자열 파싱 ↔ DTO/도메인 변환 경계 브릿지
+
+## 한 줄 요약
+
+> lotto에서 `InputView`나 controller는 "문자열을 읽어 형식을 맞추는 일"까지 맡고, `Lotto`나 `WinningNumbers` 생성은 도메인 규칙을 아는 쪽으로 넘기는 편이 경계가 덜 섞인다.
+
+## 미션 시나리오
+
+lotto 미션에서는 보통 `"1,2,3,4,5,6"` 같은 입력을 받아 쉼표로 나누고 숫자로 바꾼다. 처음 구현에서는 `InputView`가 `List<Integer>`를 만들고 바로 `Lotto.from(numbers)`까지 호출하기 쉽다. 콘솔 과제라 클래스 수를 줄이고 싶을 때 특히 그렇게 간다.
+
+그런데 이 구조는 입력 형식과 도메인 규칙을 같은 자리에 묶는다. `InputView`가 비어 있는 문자열, 숫자 변환 실패, 쉼표 개수 같은 형식을 다루는 건 자연스럽지만, "6개여야 한다", "중복되면 안 된다", "보너스 번호가 당첨 번호와 겹치면 안 된다"까지 같이 알기 시작하면 도메인 규칙의 주인이 흐려진다. 리뷰에서 "view가 도메인을 안다"는 말이 나오는 자리가 여기다.
+
+## CS concept 매핑
+
+계층 관점에서 보면 입력 계층은 바깥 표현을 안쪽에서 쓸 값으로 번역하는 자리다. 그래서 `InputView`나 controller는 문자열을 받아 숫자 목록이나 request DTO 비슷한 중간 표현으로 바꾸고, 도메인 객체 생성은 그 다음 단계에서 맡기는 편이 읽기 쉽다.
+
+짧게 쓰면 흐름은 이렇다. `InputView`가 `"1,2,3,4,5,6"`을 읽고 `List<Integer>`를 만든다. 그다음 service나 assembler 성격의 코드가 `Lotto.from(numbers)` 또는 `WinningNumbers.from(numbers, bonus)`를 호출한다. 이렇게 나누면 형식 오류와 도메인 불변식을 다른 층에서 설명할 수 있고, 같은 도메인 생성 규칙을 자동 생성기나 테스트 코드도 재사용한다.
+
+핵심은 "controller가 절대 도메인을 만들면 안 된다"가 아니다. 핵심은 도메인 생성 규칙이 입력 클래스 안에 묻히지 않게 하는 것이다. 입력 계층이 직접 만들어도 결국 호출 지점은 도메인 팩토리 하나로 모여야 하고, 파싱 로직과 불변식 검증이 서로의 예외 책임을 침범하지 않아야 한다.
+
+## 미션 PR 코멘트 패턴
+
+- "`InputView`가 문자열 파싱을 넘어서 `Lotto`까지 만들면 입력 형식과 도메인 규칙이 한 클래스에 묶입니다."
+- "쉼표 split 결과를 바로 검증하지 말라는 뜻이 아니라, 형식 검증과 도메인 불변식 검증의 주인을 나누라는 뜻입니다."
+- "`WinningNumbers` 생성 규칙이 view에 있으면 다른 진입점이 생길 때 같은 검증을 다시 써야 합니다."
+- "중간 DTO나 raw values를 거쳐 도메인 팩토리로 모으면 입력 형식 변경과 도메인 정책 변경이 덜 같이 흔들립니다."
+
+## 다음 학습
+
+- 번호 6개, 중복 없음, 범위 보장을 도메인이 왜 직접 쥐어야 하는지 보려면 `software-engineering/lotto-domain-invariant-bridge`
+- 구매 금액처럼 원시값을 타입으로 올려 경계를 또렷하게 만드는 예를 보려면 `software-engineering/lotto-purchase-amount-value-object-bridge`
+- 입력 형식 검증과 도메인 불변식 검증을 더 직접 비교하려면 `software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge`

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Reservation Interval Half-Open Boundary Card
+concept_id: data-structure/reservation-interval-half-open-boundary-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- reservation-half-open-boundary
+- overlap-boundary-off-by-one
+- exact-touch-non-overlap
+aliases:
+- reservation half open interval
+- start end boundary card
+- reservation touching boundary rule
+- start end inclusive confusion
+- start end half open basics
+- half open reservation adjacency
+- end equals next start rule
+- 예약 구간 처음
+- start end 왜 헷갈려요
+- interval endpoint boundary basics
+- "[start end) reservation meaning"
+symptoms:
+- 예약 끝 시각과 다음 시작 시각이 같을 때 겹친다고 처리해서 테스트가 자꾸 틀린다
+- "roomescape 예약 충돌 조건에서 `<`와 `<=` 중 무엇이 맞는지 헷갈린다"
+- "`[start, end)`를 본 적은 있는데 실제 예약 로직에 어떻게 읽는지 감이 안 온다"
+intents:
+- mission_bridge
+- troubleshooting
+prerequisites:
+- data-structure/treemap-neighbor-query-micro-drill
+next_docs:
+- data-structure/treemap-interval-entry-primer
+- database/mysql-overlap-fallback-beginner-bridge
+linked_paths:
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+confusable_with:
+- data-structure/treemap-interval-entry-primer
+- database/mysql-overlap-fallback-beginner-bridge
+forbidden_neighbors:
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/interval-greedy-patterns.md
+expected_queries:
+- roomescape 예약 겹침 검사에서 끝 시간이 다음 시작과 같으면 허용해야 하나?
+- "예약 충돌 조건을 짤 때 `prev.end <= start`가 왜 맞는지 미션 문맥으로 설명해줘"
+- "`[start, end)` 규칙을 roomescape 예약 로직에 바로 연결해서 이해하고 싶어"
+- "시작과 끝 경계를 inclusive로 봐서 테스트가 깨질 때 먼저 뭘 고정해야 해?"
+- "예약 시간 `10:00~10:30` 뒤에 `10:30~11:00`을 넣을 수 있는지 기준을 알고 싶어"
+- "double booking 검사에서 `<` 대신 `<=`를 쓰는 이유를 예약 예제로 보고 싶어"
+contextual_chunk_prefix: |
+  이 문서는 roomescape 예약 충돌을 처음 연결하는 학습자가 [start, end)
+  경계를 왜 쓰는지, 끝 시각과 다음 시작 시각이 같을 때 왜 안 겹친다고
+  읽는지 Woowa 미션과 연결해 잇는 mission_bridge다. 예약 끝과 다음
+  시작이 같은데 왜 허용돼, 반열린 구간을 예약표에 어떻게 읽어,
+  맞닿음과 겹침 구분, prev.end <= start 뜻, 경계 off-by-one 같은
+  자연어 paraphrase가 본 문서의 경계 규칙에 매핑된다.
+---
 # Reservation Interval Half-Open Boundary Card
 
 > 한 줄 요약: 예약 충돌 검사에서 `[start, end)`를 쓰면 "`끝 시각과 다음 시작 시각이 같을 때는 안 겹친다`"를 한 줄로 고정할 수 있어 `TreeMap` 이웃 검사 조건을 덜 헷갈린다.
@@ -113,6 +181,7 @@ boolean noRightOverlap = next == null || !end.isAfter(next.getKey());
 
 - `TreeMap` 양옆 예약 자체를 찾는 단계가 먼저 헷갈리면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - 실제 `floorEntry(start)` / `ceilingEntry(start)`로 충돌 검사하는 흐름은 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- 질문이 "`<=`가 왜 맞는가?"보다 "`양옆 이웃을 왜 두 개만 보면 되는가?`"로 바뀌었다면 바로 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)로 넘어가면 된다.
 - interval insert와 merge를 더 일반화한 구조는 [Disjoint Interval Set](./disjoint-interval-set.md)
 - 메모리 안 충돌 검사와 DB 저장 시점 보장을 구분하려면 [MySQL Overlap Fallback Beginner Bridge](../database/mysql-overlap-fallback-beginner-bridge.md)
 

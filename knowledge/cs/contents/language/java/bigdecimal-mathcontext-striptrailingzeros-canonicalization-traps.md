@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: '`BigDecimal` `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps'
+concept_id: language/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps
+canonical: true
+category: language
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- bigdecimal-canonicalization
+- string-output-policy
+- rounding-contract
+aliases:
+- bigdecimal canonicalization
+- mathcontext precision policy
+- striptrailingzeros 함정
+- scientific notation 출력 정책
+- toplainstring 직렬화
+- unnecessary scale validation
+symptoms:
+- stripTrailingZeros를 썼더니 로그나 JSON 표기가 갑자기 바뀌어 보여
+- precision이랑 scale을 같은 규칙으로 다뤄도 되는지 헷갈려
+- 같은 수치인데 캐시 키나 문자열 비교 결과가 자꾸 달라져
+intents:
+- definition
+prerequisites:
+- language/bigdecimal-construction-policy-beginner-bridge
+- language/bigdecimal-setscale-unnecessary-validation-primer
+next_docs:
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/bigdecimal-sorted-collection-bridge
+linked_paths:
+- contents/language/java/bigdecimal-setscale-unnecessary-validation-primer.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/bigdecimal-setscale-unnecessary-validation-primer
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal에서 MathContext와 setScale을 어떤 기준으로 나눠 써야 해?
+- stripTrailingZeros 뒤에 표현이 이상해지는 이유를 설명해줘
+- toString 말고 toPlainString을 언제 고정해야 해?
+- 반올림 없이 실패시키는 scale 검증 패턴이 왜 필요한지 알고 싶어
+- divide 결과 정책과 문자열 canonicalization을 같이 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 BigDecimal에서 계산 자릿수와 표시 자릿수,
+  trailing zero 제거, 문자열 표준형 계약을 한 번에 구분하며 기초를
+  다시 정확히 잡는 primer다. precision과 scale 차이, 1E 표기처럼
+  보이는 출력 변화, JSON과 로그 문자열 흔들림, 반올림 없이 입력 거부,
+  divide 결과 정책 같은 자연어 paraphrase가 본 문서의
+  canonicalization 함정에 매핑된다.
+---
 # `BigDecimal` `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps
 
 > 한 줄 요약: `BigDecimal`의 함정은 돈 계산만이 아니다. `MathContext` precision, `stripTrailingZeros()`, scientific notation, `setScale(..., UNNECESSARY)`, division exactness를 혼동하면 수치 계약과 직렬화 표현이 조용히 흔들린다.

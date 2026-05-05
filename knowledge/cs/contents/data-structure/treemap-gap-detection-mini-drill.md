@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: TreeMap Gap Detection Mini Drill
+concept_id: data-structure/treemap-gap-detection-mini-drill
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- reservation-gap-length-check
+- nearest-slot-first-gap
+- floorentry-ceilingentry-gap-translation
+aliases:
+- treemap gap detection mini drill
+- 30분 빈 시간 있나
+- nearest 1 hour slot treemap
+- free slot length check
+- floorentry ceilingentry gap check
+- reservation gap beginner
+- room reservation empty slot
+- treemap 빈 시간 계산
+- reservation gap 뭐예요
+- gap length 처음 배우기
+- booking free slot basics
+- ordered map gap check
+- closest available slot
+- 가장 가까운 1시간 슬롯
+- floorentry ceilingentry 언제 써요
+symptoms:
+- 지금 시각부터 30분 빈 시간이 있는지 예약표에서 어떻게 계산하는지 모르겠어
+- floorEntry와 ceilingEntry를 찾고도 빈 구간 길이를 어디서 재야 하는지 막혀
+- 가장 가까운 1시간 슬롯을 찾으라는데 전체 순회를 해야 하는지 양옆만 보면 되는지 헷갈려
+intents:
+- definition
+prerequisites:
+- data-structure/reservation-interval-half-open-boundary-card
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treemap-interval-entry-primer
+next_docs:
+- data-structure/treemap-nearest-slot-disjoint-interval-bridge
+- data-structure/disjoint-interval-set
+- database/mysql-overlap-fallback-beginner-bridge
+linked_paths:
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/treemap-nearest-slot-disjoint-interval-bridge.md
+- contents/data-structure/reservation-interval-half-open-boundary-card.md
+- contents/data-structure/treemap-submap-schedule-window-mini-drill.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+confusable_with:
+- data-structure/treemap-interval-entry-primer
+- data-structure/treemap-nearest-slot-disjoint-interval-bridge
+- database/mysql-overlap-fallback-beginner-bridge
+forbidden_neighbors:
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/interval-greedy-patterns.md
+expected_queries:
+- roomescape 예약표에서 지금부터 30분 비는지 TreeMap으로 판단하는 흐름을 보고 싶어
+- floorEntry와 ceilingEntry를 찾은 뒤 free slot 길이를 어떻게 계산해?
+- 예약 충돌 검사는 알겠는데 빈 시간 찾기로 넘어가면 무엇을 더 읽어야 해?
+- 가장 가까운 한 시간 슬롯을 찾을 때 왜 양옆 예약만 먼저 보면 되는지 설명해줘
+- 12시 45분부터 30분 가능한지 같은 질문을 ordered map으로 어떻게 풀어?
+- booking schedule에서 prev end와 next start를 붙여서 gap을 재는 연습이 필요해
+contextual_chunk_prefix: |
+  이 문서는 예약표를 TreeMap<start, end>로 읽는 학습자가 floorEntry(start)와
+  ceilingEntry(start)로 양옆 예약을 잡은 뒤 prev.end와 next.start 사이 길이로
+  30분·1시간 빈 시간을 판단하는 흐름을 처음 잡는 primer다. 지금부터 빈 시간
+  있나, 가장 가까운 한 시간 슬롯, 양옆 예약만 보고 gap 계산, free slot 길이
+  재기, 전체 순회 없이 예약표 읽기 같은 자연어 paraphrase가 본 문서의 gap
+  check와 nearest-slot 시작 감각에 매핑된다.
+---
 # TreeMap Gap Detection Mini Drill
 
 > 한 줄 요약: `floorEntry(start)`의 종료 시각과 `ceilingEntry(start)`의 시작 시각을 붙여 읽으면 "`30분 빈 시간 있나?`"를 넘어 "`지금 이후 가장 가까운 1시간 슬롯은 어디지?`"까지 예약표 전체 순회 없이 단계적으로 찾을 수 있다.

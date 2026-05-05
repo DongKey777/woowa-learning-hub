@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Normalization Version Rollout Playbook
+concept_id: design-pattern/normalization-version-rollout-playbook
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- normalization-versioning
+- cache-namespace-cutover
+- cursor-compatibility
+- reason-code-compatibility
+aliases:
+- normalization version rollout
+- normalization cutover
+- search normalization migration
+- cache namespace bump
+- normalized query fingerprint version
+- cursor invalidation playbook
+- cursor reissue reject
+- legacy cursor cutoff
+- reason code compatibility
+- api reason code parity
+- normalization rollback plan
+- cutover packet
+- normalization canary parity
+- pagination parity packet schema
+- fingerprint bucket
+- continuity outcome
+symptoms:
+- 검색 정규화 규칙을 바꿨더니 예전 커서가 갑자기 이상하게 동작해요
+- 캐시 키만 바꿨는데 응답 의미가 섞인 것 같아 원인을 모르겠어요
+- reason code는 유지해야 하는데 내부 판정은 늘어나서 롤아웃 기준이 흔들려요
+intents:
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/search-normalization-query-pattern
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/read-model-cutover-guardrails
+next_docs:
+- design-pattern/cursor-pagination-parity-read-model-migration
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+linked_paths:
+- contents/design-pattern/search-normalization-query-pattern.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/strict-pagination-fallback-contracts
+forbidden_neighbors: []
+expected_queries:
+- 검색 정규화 규칙 버전을 올릴 때 캐시와 커서를 왜 같이 자르는 거야?
+- normalization 변경 롤아웃에서 legacy cursor를 reissue나 reject로 나누는 기준이 뭐야?
+- query fingerprint가 바뀌면 cache namespace를 꼭 분리해야 하는 이유를 설명해줘
+- reason code 호환성을 유지하면서 정규화 규칙을 바꾸는 운영 절차가 궁금해
+- dual-read canary에서 normalization drift를 어떤 packet으로 기록해야 해?
+contextual_chunk_prefix: |
+  이 문서는 검색 정규화 규칙을 바꿀 때 단순 유틸 수정이 아니라 read contract cutover로 보고, cache namespace 분리, 기존 cursor 처리, reason code 호환, canary와 rollback packet을 함께 묶어 복구 순서를 잡는 playbook이다. 공백 처리 규칙 변경, 기본 정렬 추가, 예전 커서 재발급 여부, 응답 사유 코드 유지, 검색 해석 기준 버전 올리기 같은 자연어 paraphrase가 본 문서의 롤아웃 판단 기준과 대응 순서에 매핑된다.
+---
 # Normalization Version Rollout Playbook
 
 > 한 줄 요약: normalization version 변경은 검색 유틸 수정이 아니라 read contract cutover이므로, cache namespace bump, cursor invalidation verdict, API reason-code compatibility를 하나의 rollout packet으로 같이 움직여야 안전하다.
@@ -38,6 +110,21 @@ Normalization Version Rollout Playbook은 그 전환을 다음 네 축으로 동
 2. legacy cursor를 `ACCEPT` / `REISSUE` / `REJECT` 중 무엇으로 처리할지
 3. API reason code를 외부 계약상 어떻게 유지하거나 매핑할지
 4. canary와 rollback에서 무엇을 parity packet으로 기록할지
+
+## 먼저 확인할 것
+
+롤아웃 중 이상 징후가 보이면 순서를 섞지 않는 편이 안전하다.
+
+1. **semantic drift가 실제로 생겼는지 먼저 확인한다.**
+   `old_fingerprint`와 `new_fingerprint`, reject/reason code 변화가 있는지 본다.
+2. **cache namespace가 섞였는지 확인한다.**
+   old/new 결과가 같은 캐시 라인을 공유하면 비교 결과 자체가 오염될 수 있다.
+3. **legacy cursor verdict를 고정한다.**
+   `ACCEPT`, `REISSUE`, `REJECT`를 endpoint별로 다르게 두면 학습자와 운영자가 모두 원인을 추적하기 어려워진다.
+4. **public reason code와 internal reason을 분리해 기록한다.**
+   클라이언트 계약은 안정적으로 유지하되, 내부에서는 drift 원인을 더 세밀하게 남긴다.
+
+이 순서를 먼저 잡아 두면 "캐시 문제인지, cursor 계약 문제인지, reason code 호환 문제인지"를 한 번에 섞어 오판하는 일을 줄일 수 있다.
 
 ### Retrieval Anchors
 

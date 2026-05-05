@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: Spring ApplicationContext Refresh Phases
+title: "Spring ApplicationContext Refresh Phases: 환경설정 읽기, 객체 등록, 후처리 순서"
 concept_id: spring/application-context-refresh-phases
 canonical: false
 category: spring
@@ -14,6 +14,8 @@ aliases:
 - refresh phases
 - BeanFactoryPostProcessor
 - BeanPostProcessor
+- 스프링 시작 순서
+- 환경설정 읽고 객체 등록
 intents:
 - deep_dive
 linked_paths:
@@ -25,11 +27,13 @@ expected_queries:
 - BeanFactoryPostProcessor는 언제 실행돼?
 - BeanPostProcessor는 언제 적용돼?
 - ApplicationContext 시작 과정을 단계별로 설명해줘
+- 스프링이 시작할 때 환경설정 읽고 객체 등록하고 후처리까지 끝내는 순서가 어떻게 돼?
 contextual_chunk_prefix: |
   이 문서는 학습자가 스프링이 시작할 때 환경설정 읽고, 객체 등록하고,
   후처리까지 끝내는 부팅 순서를 단계별로 깊이 잡는 deep_dive다. 스프링이
   시작할 때 어떤 순서, 환경설정 읽고 객체 등록 후처리, ApplicationContext
-  부팅 흐름, refresh phases 같은 자연어 paraphrase가 본 문서의 단계별
+  부팅 흐름, refresh phases, 시작할 때 환경설정 읽고 객체 등록하고
+  후처리까지 끝내는 순서 같은 자연어 paraphrase가 본 문서의 단계별
   설명에 매핑된다.
 ---
 
@@ -49,7 +53,7 @@ contextual_chunk_prefix: |
 > - [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 
-retrieval-anchor-keywords: ApplicationContext refresh, refreshBeanFactory, invokeBeanFactoryPostProcessors, registerBeanPostProcessors, finishBeanFactoryInitialization, refresh lifecycle, context startup
+retrieval-anchor-keywords: applicationcontext refresh, spring startup phases, 스프링 시작 순서, 환경설정 읽고 객체 등록, refreshbeanfactory, invokebeanfactorypostprocessors, registerbeanpostprocessors, finishbeanfactoryinitialization, bean boot order, context startup, applicationcontext boot flow, 스프링이 시작할 때 환경설정 읽고 객체 등록하고 후처리까지 끝내는 순서, boot sequence after config load
 
 ## 핵심 개념
 

@@ -1,20 +1,85 @@
+---
+schema_version: 3
+title: Spring Servlet Container Disconnect Exception Mapping
+concept_id: spring/servlet-container-disconnect-exception-mapping
+canonical: false
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 72
+mission_ids: []
+review_feedback_tags:
+  - disconnect-attribution
+  - servlet-container
+  - observability-normalization
+aliases:
+  - servlet container disconnect
+  - tomcat clientabortexception
+  - jetty eofexception
+  - undertow closedchannelexception
+  - spring broken pipe container mapping
+symptoms:
+  - broken pipe가 Tomcat과 Jetty, Undertow에서 다른 예외 이름으로 보여서 같은 incident인지 헷갈린다
+  - AsyncRequestNotUsableException만 보여서 Spring 버그인지 클라이언트 disconnect인지 분류가 어렵다
+  - Undertow에서 ClosedChannelException만 남아 response write 실패와 request read 종료를 섞어 읽는다
+intents:
+  - troubleshooting
+  - deep_dive
+prerequisites:
+  - spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+  - spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+next_docs:
+  - spring/partial-response-access-log-interpretation
+  - spring/spring-http2-reset-attribution-spring-mvc
+  - spring/spring-async-mvc-streaming-observability-playbook
+linked_paths:
+  - contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+  - contents/spring/spring-http2-reset-attribution-spring-mvc.md
+  - contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+  - contents/spring/spring-partial-response-access-log-interpretation.md
+  - contents/spring/spring-async-mvc-streaming-observability-playbook.md
+  - contents/spring/spring-sse-disconnect-observability-patterns.md
+  - contents/spring/spring-problemdetail-before-after-commit-matrix.md
+  - contents/spring/spring-mvc-exception-resolver-chain-contract.md
+  - contents/spring/spring-observability-micrometer-tracing.md
+  - contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+  - spring/partial-response-access-log-interpretation
+  - network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+  - Tomcat ClientAbortException이 Jetty EofException이랑 같은 종류의 disconnect야?
+  - Undertow ClosedChannelException을 broken pipe랑 어떻게 분리해서 봐야 해?
+  - AsyncRequestNotUsableException이 뜨면 Spring 버그인지 client disconnect인지 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 Spring 서블릿 기반 스트리밍이나 다운로드에서 client disconnect가
+  컨테이너별로 다른 예외 이름으로 보일 때 이를 같은 관측 축으로 정규화하려는
+  deep dive다. Tomcat의 ClientAbortException, Jetty의 EofException,
+  Undertow의 ClosedChannelException, 그리고 Spring의 AsyncRequestNotUsableException을
+  같은 broken-pipe 계열 incident 안에서 container, phase, commit state 기준으로
+  해석하게 돕는다.
+---
+
 # Spring Servlet Container Disconnect Exception Mapping
 
 > 한 줄 요약: broken pipe 계열 실패는 모두 같아 보이지만 Tomcat은 `ClientAbortException`, Jetty는 `EofException`, Undertow는 대개 `ClosedChannelException` 또는 일반 `IOException`으로 드러나므로, 로그/알림은 예외 이름 자체보다 "어느 컨테이너에서 어느 전송 단계가 끊겼는가"로 정규화해야 한다.
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges](./spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md)
-> - [Spring HTTP/2 Reset Attribution in Spring MVC](./spring-http2-reset-attribution-spring-mvc.md)
-> - [Spring `StreamingResponseBody` / `ResponseBodyEmitter` / `SseEmitter` Commit Lifecycle](./spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md)
-> - [Spring Partial-Response Access Log Interpretation](./spring-partial-response-access-log-interpretation.md)
-> - [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
-> - [Spring SSE Disconnect Observability Patterns](./spring-sse-disconnect-observability-patterns.md)
-> - [Spring `ProblemDetail` Before-After Commit Matrix](./spring-problemdetail-before-after-commit-matrix.md)
-> - [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
-> - [Spring Observability, Micrometer, Tracing](./spring-observability-micrometer-tracing.md)
-> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
+관련 문서:
+
+- [Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges](./spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md)
+- [Spring HTTP/2 Reset Attribution in Spring MVC](./spring-http2-reset-attribution-spring-mvc.md)
+- [Spring `StreamingResponseBody` / `ResponseBodyEmitter` / `SseEmitter` Commit Lifecycle](./spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md)
+- [Spring Partial-Response Access Log Interpretation](./spring-partial-response-access-log-interpretation.md)
+- [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
+- [Spring SSE Disconnect Observability Patterns](./spring-sse-disconnect-observability-patterns.md)
+- [Spring `ProblemDetail` Before-After Commit Matrix](./spring-problemdetail-before-after-commit-matrix.md)
+- [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
+- [Spring Observability, Micrometer, Tracing](./spring-observability-micrometer-tracing.md)
+- [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
 
 retrieval-anchor-keywords: servlet container disconnect, Tomcat ClientAbortException, Jetty EofException, Undertow ClosedChannelException, AsyncRequestNotUsableException, DisconnectedClientHelper, broken pipe, connection reset by peer, client abort, disconnected client, response write failure, response flush failure, access log truncation, partial response access log, bytes sent interpretation, 200 with client abort, 206 truncated range, alert fatigue, observability, logging guidance, HTTP/2 reset attribution, RST_STREAM, GOAWAY, Tomcat CloseNowException, Jetty EofException reset, Undertow http2 closed channel, SSE disconnect observability, reconnect noise, proxy idle suspected, SSE alerting
 

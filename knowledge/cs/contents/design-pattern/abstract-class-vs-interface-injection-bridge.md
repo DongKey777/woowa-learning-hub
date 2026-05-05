@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: '추상 클래스냐 인터페이스+주입이냐: 템플릿 메소드·전략·조합 브리지'
+concept_id: design-pattern/abstract-class-vs-interface-injection-bridge
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- template-method-vs-strategy
+- abstract-class-overuse
+- constructor-injection-boundary
+aliases:
+- abstract class vs interface injection beginner
+- abstract class or interface with di
+- abstract class vs injected strategy
+- template method vs strategy beginner
+- dependency injection easy to test
+- dependency injection runtime swap example
+- strategy test double injection
+- runtime replacement by injection
+- 추상 클래스냐 인터페이스+주입이냐
+- 추상 클래스면 다 템플릿 메소드인가
+- 비 템플릿 추상 클래스 예시
+- 부모가 흐름을 쥔다 호출자가 전략을 고른다
+- abstract class vs interface injection bridge basics
+- abstract class vs interface injection bridge beginner
+- abstract class vs interface injection bridge intro
+symptoms:
+- 추상 클래스만 보이면 템플릿 메소드로 봐야 하는지 헷갈려요
+- 구현을 갈아끼우고 싶은데 상속부터 떠올라요
+- 테스트 더블을 넣고 싶은데 부모 클래스가 흐름까지 쥐고 있어요
+intents:
+- comparison
+prerequisites:
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/composition-over-inheritance-basics
+next_docs:
+- design-pattern/template-method-vs-strategy
+- design-pattern/request-object-creation-vs-di-container
+- design-pattern/template-hook-smells
+linked_paths:
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/request-object-creation-vs-di-container.md
+confusable_with:
+- design-pattern/template-method-vs-strategy
+- design-pattern/composition-over-inheritance-basics
+forbidden_neighbors:
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/strategy-pattern-basics.md
+expected_queries:
+- 추상 클래스와 인터페이스 주입 중 언제 어느 쪽으로 시작해야 해?
+- 부모가 순서를 잡는 구조랑 구현체를 주입하는 구조를 어떻게 구분해?
+- 템플릿 메소드로 풀 문제인지 전략으로 빼야 할 문제인지 감이 안 와
+- 테스트 더블을 넣기 어렵다면 상속보다 조합을 먼저 봐야 해?
+- 추상 클래스가 있다고 해서 다 템플릿 메소드라고 보면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 부모 클래스가 실행 순서를 붙드는 설계와 구현체를 바꿔 꽂는
+  설계를 어디서 갈라야 하는지, 템플릿 메소드와 전략·조합의 경계를 연결한다.
+  상속으로 흐름 고정, 단계 구현만 바꾸기, 런타임에 구현 교체, 테스트 대역
+  끼우기, 공통 뼈대 재사용, 인터페이스 주입이 더 맞는 경우, 추상 클래스가
+  항상 템플릿 패턴은 아닌 상황 같은 자연어 paraphrase가 본 문서의 선택 기준에
+  매핑된다.
+---
 # 추상 클래스냐 인터페이스+주입이냐: 템플릿 메소드·전략·조합 브리지
 
 > 한 줄 요약: **흐름을 부모가 고정해야 하면 추상 클래스(템플릿 메소드)**, **규칙을 바꿔 끼워야 하면 인터페이스+주입(전략/조합)** 이다.

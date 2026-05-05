@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Browser `504` 뒤 재시도 vs 새로고침 vs 중복 제출 Beginner Bridge
+concept_id: network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- duplicate-submit-guard
+- idempotency-boundary
+- prg-vs-retry
+aliases:
+- browser retry after 504
+- 504 duplicate submit
+- gateway timeout refresh duplicate post
+- safe automatic retry basics
+- browser refresh after 504
+- duplicate form submit after timeout
+- post retry confusion
+- idempotent vs duplicate submit
+- why same order created twice
+- 새로고침하면 중복 제출
+- 504 뒤 다시 눌러도 되나요
+- 처음 보는 gateway timeout
+- 504 retry basics
+- what is duplicate submit
+- browser auto retry vs user refresh
+symptoms:
+- 504 보고 다시 눌러도 되는지 모르겠어
+- 주문이 두 번 생성됐는지 헷갈려
+- 새로고침했더니 같은 요청이 또 간 것 같아
+intents:
+- comparison
+prerequisites:
+- network/http-methods-rest-idempotency-basics
+- network/http-status-codes-basics
+next_docs:
+- network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge
+- network/post-redirect-get-prg-beginner-primer
+forbidden_neighbors:
+- contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md
+expected_queries:
+- 504를 본 뒤 다시 보내도 안전한지 어떻게 구분하나요?
+- 새로고침과 자동 재시도, 중복 제출 위험은 무엇이 다른가요?
+- gateway timeout 뒤 주문 요청을 다시 눌러도 되는지 처음 판단하는 법이 궁금해요
+- POST timeout 뒤 재클릭하면 중복 요청이 생기나요?
+- PRG가 없으면 504 뒤 재전송 위험이 커지나요?
+contextual_chunk_prefix: |
+  이 문서는 초급 학습자가 504 뒤에 다시 보인 요청을 자동 복구, 사용자
+  새로고침, 비멱등 POST 중복 처리 위험으로 나눠 이해하도록 연결하는
+  bridge다. 실패 뒤 다시 눌러도 되는지 판단, 같은 URL이 연달아 찍힘,
+  조회 재호출과 주문 두 번 생성 구분, 첫 시도가 이미 끝났는지 확인하기
+  같은 자연어 paraphrase가 본 문서의 분기 기준에 매핑된다.
+---
 # Browser `504` 뒤 재시도 vs 새로고침 vs 중복 제출 Beginner Bridge
 
 > 한 줄 요약: 브라우저에서 `504 Gateway Timeout`을 본 뒤 같은 URL이 다시 보일 때는 transport 복구, 사용자의 새로고침, 비멱등 `POST` 중복 제출을 서로 다른 질문으로 나눠야 덜 헷갈린다.

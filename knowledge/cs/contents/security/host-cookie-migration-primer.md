@@ -30,6 +30,20 @@
 retrieval-anchor-keywords: __host- cookie migration primer, __host cookie migration, host-only cookie migration primer, shared-domain session to __host cookie, domain example.com to __host, parent-domain cookie to host-only cookie, host-prefixed session migration, __host session stale auth state, __host cookie logout cleanup, __host cookie cutover, __host cookie duplicate shadowing, shared cookie to app-local session, host-only session migration beginner, cookie migration without stale auth, __host prefix beginner
 retrieval-anchor-keywords: __Host- cookie no Domain Path=/ Secure, __Host cookie cannot be shared across subdomains, __Host cookie handoff pattern, shared-domain cookie retirement, parent-domain cookie tombstone, stale shared session after host-only migration, logout old shared cookie survives, __Host migration safe rollout, __Host cookie devtools checklist
 
+## 먼저 이 문서가 맞는지 15초 분기
+
+| 지금 막힌 질문 | 이 문서가 맞는 경우 | 더 가까운 문서 |
+|---|---|---|
+| "`__Host-session`으로 바꾸면 subdomain 공유는 어떻게 끊지?" | shared-domain session을 host-local 구조로 **어떻게 옮길지**가 핵심일 때 | 이 문서 계속 읽기 |
+| "logout 했는데 다른 subdomain은 왜 아직 로그인 같지?" | migration 자체보다 **logout tail 정리**가 먼저일 때는 아님 | [Subdomain Logout Cookie Cleanup Primer](./subdomain-logout-cookie-cleanup-primer.md) |
+| "old cookie를 exact `Domain`/`Path`로 어떻게 지우지?" | 설계보다 **tombstone matrix**가 남았을 때는 아님 | [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md) |
+| "raw `Cookie` header에 같은 이름이 두 번 보여" | 구조 전환보다 **중복 전송 원인**을 먼저 좁혀야 할 때는 아님 | [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md) |
+
+짧은 규칙:
+
+- 이 문서는 `__Host-` prefix 규칙 그 자체보다 **shared cookie 모델을 host-only 모델로 바꾸는 큰 그림**을 잡는 entrypoint다.
+- cleanup 설계나 logout semantics가 이미 더 구체적으로 보이면 위 follow-up 문서로 바로 내려가는 편이 빠르다.
+
 ## 먼저 잡을 mental model
 
 `__Host-`는 이름 decoration이 아니라 **scope contract**다.

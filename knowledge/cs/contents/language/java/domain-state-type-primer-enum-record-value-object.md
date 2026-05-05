@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 'Domain-State Type Primer: `boolean`/`null` 대신 `enum`, `record`, 값 객체를 언제 쓸까'
+concept_id: language/domain-state-type-primer-enum-record-value-object
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- boolean-flag-smell
+- null-state-semantics
+- enum-record-value-object-choice
+aliases:
+- domain state type primer
+- boolean null signaling java
+- enum vs record vs value object
+- domain modeling beginner java
+- boolean flag smell beginner
+- null state modeling intro
+- 상태를 boolean으로 두면 왜 헷갈려
+- null 대신 enum record 값객체
+- domain state type basics
+- 자바 도메인 상태 타입 입문
+- enum record value object 언제 쓰나
+- beginner domain model state
+symptoms:
+- boolean 하나로 상태를 표현했는데 true가 정확히 무엇인지 점점 설명이 길어져
+- null이 미입력인지 정책상 없음인지 구분이 안 돼서 분기가 계속 늘어나
+- enum, record, 값 객체 중 어디까지 타입을 올려야 하는지 기준이 안 잡혀
+intents:
+- definition
+prerequisites:
+- language/java-enum-basics
+- language/record-value-object-equality-basics
+- language/optional-collections-domain-null-handling-bridge
+next_docs:
+- language/enum-to-state-transition-beginner-bridge
+- language/request-dto-to-value-object-boundary-primer
+- language/constructor-to-value-object-factory-bridge
+linked_paths:
+- contents/language/java/java-enum-basics.md
+- contents/language/java/enum-to-state-transition-beginner-bridge.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/request-dto-to-value-object-boundary-primer.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/money-value-object-basics.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- language/java-enum-basics
+- language/record-value-object-equality-basics
+- language/request-dto-to-value-object-boundary-primer
+forbidden_neighbors: []
+expected_queries:
+- 도메인 상태를 boolean으로만 두면 왜 금방 헷갈려지는지 자바 예제로 설명해줘
+- null 대신 enum이나 record로 올려야 하는 순간을 처음 배우는 관점에서 알고 싶어
+- enum record 값 객체를 어떤 질문으로 구분해서 선택해야 해
+- 상태 이름표와 값 묶음과 규칙 있는 타입의 차이를 한 문서로 보고 싶어
+- baseball 같은 미션에서 flag가 늘어날 때 어떤 타입으로 정리해야 하는지 감이 안 와
+- boolean null 냄새를 도메인 타입으로 바꾸는 입문 글이 필요해
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 boolean이나 null로 얼버무린 도메인 상태를 언제
+  enum, record, 값 객체로 올려야 하는지 처음 잡는 primer다. true 뜻이
+  자꾸 길어짐, 비어 있음 이유가 여러 개임, 상태 이름표가 필요함, 값 여러
+  개가 함께 움직임, 생성 시점 규칙을 타입에 넣고 싶음 같은 자연어
+  paraphrase가 본 문서의 핵심 선택 기준에 매핑된다.
+---
 # Domain-State Type Primer: `boolean`/`null` 대신 `enum`, `record`, 값 객체를 언제 쓸까
 
 > 한 줄 요약: 도메인에서 `true/false`나 `null`로 상태를 얼버무리기 시작하면 의미가 금방 흐려지므로, "상태 후보가 정해졌는가", "값 묶음 자체가 하나의 의미인가", "생성 시점부터 규칙을 지켜야 하는가"를 기준으로 `enum`, `record`, 값 객체로 올려 주는 편이 초보자도 훨씬 덜 헷갈린다.

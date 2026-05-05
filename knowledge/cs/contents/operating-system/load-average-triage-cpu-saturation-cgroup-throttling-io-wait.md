@@ -1,6 +1,6 @@
 # Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait
 
-> 한 줄 요약: `load average`가 높다는 사실만으로 scheduler contention으로 결론내리면 자주 틀리고, 먼저 CPU saturation, cgroup throttling, I/O wait를 갈라야 한다.
+> 한 줄 요약: `load average`나 CPU 경보가 울렸다는 사실만으로 scheduler contention으로 결론내리면 자주 틀리고, 먼저 CPU saturation, cgroup throttling, I/O wait를 갈라야 한다.
 >
 > 문서 역할: 이 문서는 `load average`를 처음 운영 신호로 읽을 때 세 갈래 원인을 1분 안에 분리하는 beginner bridge다.
 
@@ -9,23 +9,16 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)
+- [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md)
+- [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+- [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
+- [vmstat Counters, Runtime Pressure](./vmstat-counters-runtime-pressure.md)
+- [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
+- [First 15-Minute Triage Flow Card](../system-design/first-15-minute-triage-flow-card.md)
+- [HTTP Request/Response Basics, URL, DNS, TCP, TLS, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
-
-retrieval-anchor-keywords: load average triage cpu saturation cgroup throttling io wait basics, load average triage cpu saturation cgroup throttling io wait beginner, load average triage cpu saturation cgroup throttling io wait intro, operating system basics, beginner operating system, 처음 배우는데 load average triage cpu saturation cgroup throttling io wait, load average triage cpu saturation cgroup throttling io wait 입문, load average triage cpu saturation cgroup throttling io wait 기초, what is load average triage cpu saturation cgroup throttling io wait, how to load average triage cpu saturation cgroup throttling io wait
-> 관련 문서:
-> - [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)
-> - [operating-system 카테고리 인덱스](./README.md)
-> - [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md)
-> - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
-> - [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
-> - [vmstat Counters, Runtime Pressure](./vmstat-counters-runtime-pressure.md)
-> - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
-> - [Scheduler Signals Example Walkthrough: `vmstat`, load average, `/proc/<pid>/sched`, `runqlat`](./scheduler-signals-example-walkthrough.md)
-
-> retrieval-anchor-keywords: load average triage, high load average triage, load average false positive, cpu saturation vs throttling, cgroup throttling vs cpu saturation, io wait vs cpu saturation, vmstat r b wa triage, cpu.stat nr_throttled, throttled_usec, cpu.pressure, io.pressure, scheduler contention false positive, high load average but low cpu, cpu quota example, cgroup quota example, cpu saturation example, quota throttling example, cpu.max example, beginner handoff box, primer handoff box, load average 다음 문서, beginner symptom map return, symptom map bridge, load average triage entrypoint, 느림 증상 triage deep dive, load average에서 symptom map으로 돌아가기, triage deep dive에서 beginner map 복귀
+retrieval-anchor-keywords: load average triage, high load average triage, cpu saturation vs throttling, cgroup throttling vs cpu saturation, io wait vs cpu saturation, vmstat r b wa triage, cpu.stat nr_throttled, cpu pressure io pressure, load average alert, cpu alert but low cpu, 처음 load average를 볼 때, 서버가 느린데 cpu가 안 높아요, cpu 경보가 떴는데 왜 cpu가 낮아요, what is load average, why load average is high
 
 ## 먼저 잡는 멘탈 모델
 
@@ -53,6 +46,7 @@ retrieval-anchor-keywords: load average triage cpu saturation cgroup throttling 
 
 | 지금 상태 | 이 문서를 읽는 이유 | 다시 올라갈 시점 |
 |---|---|---|
+| "CPU 알람이 떴다", "`load average` 경보가 계속 울린다"처럼 관제 신호부터 본다 | 경보를 바로 CPU 증설 이슈로 단정하지 않고 saturation/throttling/I/O wait로 1차 분기하려고 | 경보보다 timeout, queue 적체, downstream 실패가 더 먼저 보이면 [First 15-Minute Triage Flow Card](../system-design/first-15-minute-triage-flow-card.md)로 올라가 요청 경로 증상부터 다시 본다 |
 | [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)에서 "요청이 전반적으로 느리다" 줄을 탔다 | 느림 원인을 CPU 포화/쿼터 쓰로틀링/I/O 대기로 1차 분리하려고 | 읽다가 `Killed`, `EMFILE`, 인터럽트 혼동이 더 가까운 증상처럼 보이면 symptom map으로 복귀 |
 | [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md)까지 읽고도 `load average` 해석이 막힌다 | `load average`를 판정문이 아니라 경보음으로 다시 잡기 위해 | `load average`, `vmstat`, PSI 기본 의미가 다시 섞이면 starter guide나 symptom map으로 복귀 |
 | triage 결과가 CPU 포화가 아니라 다른 축처럼 보인다 | 다음 deep dive를 잘못 고르지 않기 위해 | 분기 자체가 불확실하면 [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)에서 증상 기준으로 다시 출발 |

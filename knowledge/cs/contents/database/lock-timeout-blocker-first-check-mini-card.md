@@ -25,17 +25,23 @@ intents:
 - symptom
 - troubleshooting
 linked_paths:
+- contents/database/db-timeout-first-splitter.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
 - contents/database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card.md
 - contents/database/connection-timeout-vs-lock-timeout-card.md
 - contents/database/statement-timeout-vs-lock-timeout-card.md
 - contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
 - contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
 - contents/database/lock-wait-deadlock-latch-triage-playbook.md
+confusable_with:
+- database/db-timeout-first-splitter
+- database/deadlock-vs-lock-wait-timeout-primer
 expected_queries:
 - lock timeout이 났을 때 뭐부터 봐야 해?
 - blocker가 누군지 어떻게 찾아?
 - pg_blocking_pids로 lock timeout 원인을 어떻게 추적해?
 - waiter와 blocker는 어떻게 구분해?
+- connection timeout이나 statement timeout이 아니라 진짜 lock timeout인지 어떻게 먼저 가려?
 contextual_chunk_prefix: |
   이 문서는 학습자가 lock timeout 또는 'Lock wait timeout exceeded' 에러를
   처음 만났을 때 SQL 자체보다 누가 막고 있었는지(blocker)를 먼저 찾는

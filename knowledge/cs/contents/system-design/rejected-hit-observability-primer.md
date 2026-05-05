@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Rejected-Hit Observability Primer
+concept_id: system-design/rejected-hit-observability-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- rejected-hit-reason-missing
+- fallback-reason-cardinality
+- no-fill-reason-unknown
+aliases:
+- rejected cache hit logging
+- cache hit reject reason
+- primary fallback reason
+- no fill reason checklist
+- rejected hit observability primer basics
+symptoms:
+- cache hit이 났는데 왜 버렸는지 로그에 안 남아
+- replica 대신 primary로 간 이유가 추적되지 않아
+- refill을 안 한 이유가 unknown으로만 보여
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- system-design/mixed-cache-replica-freshness-bridge
+- system-design/post-write-stale-dashboard-primer
+next_docs:
+- system-design/trace-attribute-freshness-read-source-bridge
+- system-design/first-15-minute-triage-flow-card
+linked_paths:
+- contents/system-design/first-15-minute-triage-flow-card.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/watermark-mismatch-fallback-ux-primer.md
+- contents/system-design/cache-acceptance-rules-for-causal-reads.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/notification-read-to-min-version-bridge.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/database/replica-lag-observability-routing-slo.md
+confusable_with:
+- system-design/trace-attribute-freshness-read-source-bridge
+- system-design/mixed-cache-replica-freshness-bridge
+- system-design/watermark-metadata-persistence-basics
+forbidden_neighbors:
+- contents/system-design/badge-freshness-observability-primer.md
+expected_queries:
+- cache hit을 버린 이유를 어떤 로그와 메트릭으로 남겨야 해?
+- fallback_reason과 rejected_hit_reason은 어떻게 나눠?
+- no_fill_reason이 unknown으로만 남을 때 어디부터 고쳐?
+- replica 대신 primary로 갔는데 결정 근거가 안 남을 때 어떤 필드를 봐야 해?
+- cache miss보다 rejected hit이 더 헷갈리는데 관측 포인트를 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 cache hit reject, primary fallback, cache refill no-fill을
+  한데 묶지 않고 각 decision 단계의 observability를 분리해서 이해하게 돕는
+  beginner primer다. 왜 cache hit을 버렸는지 안 보임, fallback 이유가 안 남음,
+  no_fill_reason이 unknown뿐임 같은 자연어 질문이 본 문서의 로그/메트릭/trace
+  분담 구조로 매핑된다.
+---
+
 # Rejected-Hit Observability Primer
 
 > 한 줄 요약: cache hit을 버린 이유, replica watermark miss 때문에 primary로 fallback한 이유, 읽은 값을 cache에 다시 채우지 않은 이유를 로그와 메트릭으로 설명할 수 있게 만드는 입문 문서다.

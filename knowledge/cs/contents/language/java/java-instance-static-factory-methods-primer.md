@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문
+concept_id: language/java-instance-static-factory-methods-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- static-overuse
+- instance-vs-utility-boundary
+- named-factory-entrypoint
+aliases:
+- java static vs instance methods
+- java instance method basics
+- java static utility method basics
+- java static factory method basics
+- java constructor vs static factory beginner
+- java constructor after instance method
+- java of from valueof basics
+- java named constructor basics
+- when to use instance method java
+- when to use static method java
+- when to use static factory java
+- java this dependent behavior
+- static method 뭐예요
+- 생성자 다음 뭐 배워요
+- 처음 factory method 헷갈려요
+symptoms:
+- 다 static으로 만들면 더 쉬워 보이는데 왜 인스턴스 메서드가 필요한지 감이 안 와
+- this가 필요한 로직과 입력만 받는 유틸리티를 구분하기 어렵다
+- of나 from 같은 팩터리 메서드가 생성자랑 무엇이 다른지 처음 배울 때 자꾸 섞여
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-methods-constructors-practice-primer
+- language/java-access-modifiers-member-model-basics
+- language/object-oriented-core-principles
+next_docs:
+- language/constructor-to-value-object-factory-bridge
+- language/request-dto-to-value-object-boundary-primer
+- design-pattern/factory-basics
+linked_paths:
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/constructor-to-value-object-factory-bridge.md
+- contents/language/java/request-dto-to-value-object-boundary-primer.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/factory-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- language/constructor-to-value-object-factory-bridge
+- language/java-access-modifiers-member-model-basics
+- language/request-dto-to-value-object-boundary-primer
+forbidden_neighbors: []
+expected_queries:
+- Java에서 인스턴스 메서드와 static 메서드를 어떤 기준으로 나눠야 하는지 입문 설명이 필요해
+- this가 필요한 동작과 객체 밖 유틸리티 계산을 처음부터 비교해줘
+- 생성자 다음에 static factory를 언제 꺼내는지 초보자 관점에서 알고 싶어
+- of나 from 메서드가 단순 static helper와 어떻게 다른지 한 문서로 보고 싶어
+- 이미 만든 객체 책임과 새 객체 생성 책임을 메서드 종류별로 구분하는 자바 글이 있어?
+- static 남용을 피하려면 어떤 질문으로 인스턴스 메서드 여부를 판단해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java 입문 학습자가 이미 만든 객체 책임, 입력만 받는 보조
+  계산, 이름 붙인 생성 입구를 어떻게 나눌지 instance 메서드, static
+  utility, static factory 관점에서 기초를 잡는 primer다. this가 필요한
+  동작, 객체 밖 계산, of나 from을 언제 쓰나, static 남용 피하기, 생성자
+  다음 무엇을 붙이나 같은 자연어 paraphrase가 본 문서의 선택 기준에
+  매핑된다.
+---
 # Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문
 
 > 한 줄 요약: Java 입문자가 생성자를 막 배운 직후 "`instance` 메서드부터 붙여야 하나, `static` helper로 빼야 하나, `of()` 같은 factory로 열어야 하나"를 `this` 의존성, 생성 책임, 호출 문장 모양으로 차분히 구분하도록 돕는 practice primer다.

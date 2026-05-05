@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Embedded Login CSRF Bridge
+concept_id: security/embedded-login-csrf-bridge
+canonical: false
+category: security
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- samesite-none-vs-csrf-boundary
+- state-vs-csrf-token
+- first-post-403-after-login
+aliases:
+- embedded login csrf bridge
+- iframe login csrf beginner
+- cross-site cookie csrf minimum expectation
+- samesite none csrf bridge
+- embedded login first post 403
+- iframe cookie csrf token
+- social login callback success first post 403 beginner
+- cross-site session cookie state changing request
+- embedded auth csrf minimum checklist
+- cookie auto sent csrf beginner
+- partner portal iframe csrf primer
+- browser auto credential csrf bridge
+- cross-site cookie opened now what csrf
+- embedded login csrf mental model
+- embedded login csrf bridge basics
+symptoms:
+- iframe 로그인은 되는데 첫 POST 요청이 403이에요
+- SameSite=None까지 맞췄는데 상태 변경 요청을 왜 또 막아야 하는지 모르겠어요
+- state 검증이 끝났는데 CSRF token을 왜 따로 보라는지 헷갈려요
+intents:
+- comparison
+prerequisites:
+- security/samesite-none-cross-site-login-primer
+- security/iframe-login-privacy-controls-primer
+- security/xss-csrf-basics
+next_docs:
+- security/csrf-in-spa-bff-architecture
+- security/xss-csrf-spring-security
+- security/samesite-login-callback-primer
+linked_paths:
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/iframe-login-privacy-controls-primer.md
+- contents/security/xss-csrf-basics.md
+- contents/security/samesite-login-callback-primer.md
+- contents/security/csrf-in-spa-bff-architecture.md
+confusable_with:
+- security/samesite-none-cross-site-login-primer
+- security/iframe-login-privacy-controls-primer
+- security/xss-csrf-basics
+forbidden_neighbors:
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/iframe-login-privacy-controls-primer.md
+expected_queries:
+- iframe 로그인은 되는데 첫 POST만 403이면 어디부터 봐야 해?
+- SameSite=None으로 쿠키는 붙는데 상태 변경 요청은 왜 또 막아야 해?
+- embedded login 뒤에 CSRF token을 따로 봐야 하는 이유가 뭐야?
+- OAuth state가 맞아도 프로필 수정 요청에 CSRF 검증이 필요한가요?
+- 파트너 포털 iframe 로그인 후 쿠키 자동 전송 요청을 어디까지 믿어야 해?
+- cross-site session cookie를 열었을 때 최소 보안 체크리스트가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 embedded login 때문에 cross-site cookie 전송을 열어 둔 학습자에게, 브라우저가 자동으로 붙인 cookie를 상태 변경 요청까지 그대로 믿어도 되는지 SameSite와 CSRF의 경계를 연결해 주는 bridge다. 로그인은 되는데 첫 POST만 막힘, cookie를 열었는데 왜 한 번 더 검증하나, state를 봤는데 CSRF도 봐야 하나, 자동 전송 credential을 어디까지 믿나, iframe 뒤 최소 안전장치가 뭐냐 같은 자연어 paraphrase가 본 문서의 최소 규칙에 매핑된다.
+---
 # Embedded Login CSRF Bridge
 
 > 한 줄 요약: iframe/embedded login 때문에 `SameSite=None; Secure`로 cross-site cookie 전송을 열었다면, 다음 질문은 "이제 브라우저가 자동으로 보내는 이 cookie를 어떤 요청까지 믿을 것인가?"다. beginner 기준 최소 답은 `상태 변경 요청에는 CSRF gate를 둔다`이다.

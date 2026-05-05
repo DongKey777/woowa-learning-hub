@@ -23,6 +23,7 @@ linked_paths:
 - contents/system-design/projection-applied-watermark-basics.md
 - contents/design-pattern/strict-read-fallback-contracts.md
 - contents/system-design/post-write-stale-dashboard-primer.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
 forbidden_neighbors:
 - contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
 expected_queries:
@@ -53,9 +54,10 @@ contextual_chunk_prefix: |
 > - [Projection Rebuild, Backfill, and Cutover Pattern](./projection-rebuild-backfill-cutover-pattern.md)
 > - [Outbox Relay and Idempotent Publisher](./outbox-relay-idempotent-publisher.md)
 > - [Replica Lag Observability와 Routing SLO](../database/replica-lag-observability-routing-slo.md)
+> - [Summary Drift Detection, Invalidation, and Bounded Rebuild](../database/summary-drift-detection-bounded-rebuild.md)
 > - [Dual-Read Comparison / Verification Platform 설계](../system-design/dual-read-comparison-verification-platform-design.md)
 
-retrieval-anchor-keywords: projection freshness slo, read model freshness objective, freshness sli bundle, projection error budget, freshness budget burn, strict screen fallback rate, fallback saturation budget, strict read fallback contract, fallback headroom contract, cutover admission gate, projection incident policy
+retrieval-anchor-keywords: projection freshness slo, read model freshness objective, freshness sli bundle, projection error budget, freshness budget burn, strict screen fallback rate, fallback saturation budget, strict read fallback contract, fallback headroom contract, cutover admission gate, projection incident policy, freshness monitor alarm, lag budget burn alarm, fallback saturation alarm, stale screen alert threshold
 
 ---
 

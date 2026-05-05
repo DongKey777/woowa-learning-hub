@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Writes-Follow-Reads Primer
+concept_id: system-design/writes-follow-reads-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- expected-version-missing
+- stale-save-protection
+- etag-precondition-contract
+aliases:
+- writes-follow-reads primer
+- writes-follow-reads beginner
+- what is writes-follow-reads
+- stale write after read
+- version check after read
+- precondition check after read
+- write precondition primer
+- expected version write
+- if-match beginner
+- etag precondition basics
+- optimistic precondition write
+- optimistic concurrency beginner
+- lost update beginner
+- edit form stale save
+- cart version mismatch
+symptoms:
+- 내가 방금 본 화면 기준으로 저장해도 되는지 확신이 안 서
+- 다른 사람이 먼저 바꾼 뒤에도 예전 값으로 저장될까 봐 걱정돼
+- version check와 If-Match가 왜 필요한지 감이 안 와
+intents:
+- definition
+prerequisites:
+- system-design/read-after-write-consistency-basics
+- system-design/monotonic-reads-and-session-guarantees-primer
+next_docs:
+- system-design/conditional-write-status-code-bridge
+- system-design/write-order-vs-precondition-primer
+- system-design/session-guarantees-decision-matrix
+linked_paths:
+- contents/system-design/conditional-write-status-code-bridge.md
+- contents/system-design/write-order-vs-precondition-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/inventory-reservation-system-design.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/network/strong-vs-weak-etag-validator-precision-cache-correctness.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+confusable_with:
+- system-design/read-after-write-consistency-basics
+- system-design/write-order-vs-precondition-primer
+- system-design/monotonic-writes-ordering-primer
+forbidden_neighbors:
+- contents/system-design/read-after-write-consistency-basics.md
+expected_queries:
+- 내가 읽은 뒤 다른 사람이 바꿨으면 저장을 어떻게 막아야 해?
+- writes-follow-reads를 장바구니나 수정 폼 예시로 쉽게 설명해줘
+- version이나 ETag를 같이 보내는 이유가 stale save 방지라는 게 무슨 뜻이야?
+- optimistic concurrency와 writes-follow-reads를 초보자 눈높이에서 연결해줘
+- read-after-write와는 다르게 어떤 문제를 막는지 비교해서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 시스템 설계 입문자가 내가 보고 판단한 상태가 아직 유효할 때만 write를 받는 규칙을 이해하도록, version이나 ETag를 precondition으로 보내 stale save를 어떻게 막는지 처음 잡는 primer다. 수정 폼 오래 열어둔 뒤 저장, 장바구니 계산 근거 확인, 다른 사람이 먼저 바꾼 상태 감지, 덮어쓰기 방지용 상태 토큰, 읽은 기준으로만 저장 허용 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Writes-Follow-Reads Primer
 
 > 한 줄 요약: writes-follow-reads는 "내가 보고 판단한 상태가 아직 유효할 때만 write를 받는다"는 규칙이고, version/etag/precondition check로 stale save를 막는 입문용 설계다.

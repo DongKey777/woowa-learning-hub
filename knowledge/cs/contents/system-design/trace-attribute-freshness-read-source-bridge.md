@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Trace Attribute Freshness Read-Source Bridge
+concept_id: system-design/trace-attribute-freshness-read-source-bridge
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- freshness-trace-attribute
+- low-cardinality-decision-tags
+aliases:
+- freshness trace attributes
+- read source trace tag
+- stale read tracing
+- baggage vs span attribute freshness
+- trace attribute freshness read source bridge basics
+- read.source trace 설계
+- freshness context vs trace attribute
+- low cardinality stale read tags
+symptoms:
+- stale read trace에서 어떤 source를 읽었는지 안 보여
+- raw version을 trace에 넣어도 되는지 헷갈려
+- baggage랑 trace attribute를 어떻게 나누는지 모르겠어
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/mixed-cache-replica-freshness-bridge
+- system-design/rejected-hit-observability-primer
+next_docs:
+- system-design/distributed-tracing-pipeline-design
+- system-design/post-write-stale-dashboard-primer
+linked_paths:
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/badge-freshness-observability-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/database/replica-lag-observability-routing-slo.md
+confusable_with:
+- system-design/rejected-hit-observability-primer
+- system-design/badge-freshness-observability-primer
+forbidden_neighbors: []
+expected_queries:
+- freshness context는 trace에 어떻게 남겨야 해?
+- read.source와 read.reason은 왜 enum으로 고정해?
+- baggage와 trace attribute를 stale read 추적에서 어떻게 나눠?
+- stale read를 추적할 때 request context와 span attribute를 어디서 나눠야 해?
+- read.source, read.decision, read.reason 같은 태그를 어느 수준까지 남겨야 cardinality가 안 터져?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 freshness context 자체와 trace에 남길 decision summary를
+  섞지 않도록, request context는 전달용이고 trace attribute는 판정용이라는
+  beginner bridge를 제공한다. stale read trace, read.source trace tag,
+  baggage와 span attribute 차이 같은 자연어 질문이 본 문서의 low-cardinality
+  decision attribute 설계로 매핑된다.
+---
+
 # Trace Attribute Freshness / Read-Source Bridge
 
 > 한 줄 요약: freshness context 자체는 요청 문맥으로 들고 가되, trace에는 `무엇을 읽었는지`와 `왜 그렇게 읽었는지`를 저카디널리티 decision attribute로 남겨야 초보자도 stale read를 추적할 수 있다.

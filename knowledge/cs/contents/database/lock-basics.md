@@ -9,6 +9,8 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids: []
+review_feedback_tags: []
 aliases:
 - database lock
 - row lock
@@ -18,13 +20,39 @@ aliases:
 - pessimistic lock
 - 락
 - 잠금
+symptoms: []
 intents:
 - definition
+- comparison
+- troubleshooting
+prerequisites:
+- database/transaction-basics
+- database/transaction-isolation-basics
+next_docs:
+- database/lock-wait-deadlock-latch-triage-playbook
+- spring/transactional-basics
+linked_paths:
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/lock-timeout-blocker-first-check-mini-card.md
+- contents/database/unique-vs-version-cas-vs-for-update-decision-guide.md
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/deadlock-case-study.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/deadlock-vs-lock-wait-timeout-primer
+- database/unique-vs-version-cas-vs-for-update-chooser
+forbidden_neighbors: []
 expected_queries:
 - DB lock이 뭐야?
 - 공유 락과 배타 락은 뭐가 달라?
 - 낙관적 락과 비관적 락은 뭐가 달라?
 - lock wait은 왜 생겨?
+- FOR UPDATE랑 UNIQUE랑 같은 락 종류로 보면 왜 틀려?
+- deadlock, lock timeout, lock 자체를 처음 볼 때 뭐부터 구분해?
 contextual_chunk_prefix: |
   이 문서는 데이터베이스 학습자가 여러 사용자가 같은 데이터를 동시에 바꾸려
   할 때 충돌을 어떻게 막는지, 동시성 제어 메커니즘으로서 lock이 무엇이고

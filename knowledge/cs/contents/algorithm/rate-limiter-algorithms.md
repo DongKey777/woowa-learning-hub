@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Rate Limiter Algorithms
+concept_id: algorithm/rate-limiter-algorithms
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- fixed-window-boundary-burst
+- token-bucket-vs-leaky-bucket
+- sliding-window-accuracy-vs-cost
+aliases:
+- token bucket throttling
+- leaky bucket shaping
+- sliding window counter limiter
+- sliding window log limiter
+- fixed window quota limiter
+- burst control algorithm
+- api throttling limiter choice
+- request rate shaping
+- 요청 폭주 제어 알고리즘
+- 버스트 허용 rate limit
+symptoms:
+- rate limit은 걸어야 하는데 burst를 너무 딱딱하게 막는 것 같아
+- fixed window를 썼더니 창 경계에서 요청이 몰려도 통과돼
+- sliding log가 정확하긴 한데 메모리가 너무 많이 드는 이유가 궁금해
+- token bucket이랑 leaky bucket이 둘 다 비슷해 보여서 어떤 상황에 써야 할지 모르겠어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- algorithm/amortized-analysis-pitfalls
+next_docs:
+- algorithm/top-k-streaming-heavy-hitters
+- algorithm/monotone-deque-proof-intuition
+linked_paths:
+- contents/algorithm/amortized-analysis-pitfalls.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+confusable_with:
+- algorithm/top-k-streaming-heavy-hitters
+- algorithm/monotone-deque-proof-intuition
+forbidden_neighbors:
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+expected_queries:
+- burst는 조금 허용하면서 평균 요청 수만 제한하고 싶을 때 어떤 rate limit 방식이 맞아?
+- 고정 윈도우로 막았더니 경계 시점에 요청이 두 배처럼 몰리는 이유를 설명해줘
+- sliding window log랑 counter 중에 정확도와 메모리 비용을 어떻게 비교해야 해?
+- 로그인 시도 제한처럼 짧은 시간 반복 요청을 막을 때 어떤 limiter가 자연스러워?
+- token bucket과 leaky bucket을 실무에서 어떤 기준으로 골라야 하는지 감이 안 와
+- API throttling에서 순간 버스트 허용이 필요하면 어떤 시간 모델로 생각해야 해?
+contextual_chunk_prefix: |
+  이 문서는 요청 제한을 붙였는데 순간 몰림을 어디까지 허용할지, 창 경계에서
+  quota가 새는 이유가 뭔지 같은 증상에서 출발해 시간 모델별 원인으로 이어지는
+  symptom router다. 평균만 제한하고 싶다, 두 구간 끝에서 한꺼번에 통과한다,
+  최근 기록을 많이 들고 있는 게 부담된다, 일정한 배출 속도로 평탄화하고
+  싶다 같은 자연어 paraphrase가 본 문서의 limiter 선택 기준에 매핑된다.
+---
 # Rate Limiter Algorithms
 
 > 한 줄 요약: Rate limiter는 고정 창, 슬라이딩 창, 토큰 버킷, 리키 버킷처럼 서로 다른 시간 모델로 요청 폭주를 제어한다.

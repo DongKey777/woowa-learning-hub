@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Notification Source Missing Decision Table
+concept_id: system-design/notification-source-missing-decision-table
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- notification-source-missing-triage
+- stale-vs-authz-vs-delete
+- projection-lag-root-cause
+aliases:
+- notification source missing decision table
+- notification click source missing
+- notification troubleshooting matrix
+- stale read vs deleted source vs authorization filtering
+- async projection lag after click
+- notification click 404 403
+- notification source gone
+- notification source hidden by authz
+- notification projection lag matrix
+- 알림 눌렀는데 원문 없음
+- 알림 클릭 후 404
+- 알림 클릭 후 권한 필터링
+- 알림 클릭 후 projection lag
+- beginner notification troubleshooting
+- notification source missing decision table basics
+symptoms:
+- 알림을 눌렀는데 원문이 안 보여
+- 알림은 왔는데 댓글이나 주문 상세가 404로 떠
+- 새로고침하면 보일 때도 있고 계속 안 보일 때도 있어
+- 내 계정에서만 알림 source가 안 보여
+intents:
+- symptom
+prerequisites:
+- system-design/causal-consistency-notification-primer
+- system-design/notification-badge-vs-source-freshness-primer
+next_docs:
+- system-design/notification-causal-token-walkthrough
+- system-design/trace-attribute-freshness-read-source-bridge
+- software-engineering/tombstone-response-template-and-consumer-guidance
+linked_paths:
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
+- contents/software-engineering/tombstone-response-template-and-consumer-guidance.md
+confusable_with:
+- system-design/notification-badge-vs-source-freshness-primer
+- system-design/causal-consistency-notification-primer
+- software-engineering/tombstone-response-template-and-consumer-guidance
+forbidden_neighbors:
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+expected_queries:
+- 알림 클릭했더니 상세 화면이 비어 있는데 어디부터 봐야 해?
+- notification click 후 404가 stale인지 권한 문제인지 구분하는 법
+- 알림은 도착했는데 주문 상세가 안 열릴 때 원인 분류표가 필요해
+- 댓글 알림을 눌렀는데 새로고침하면 보이는 상황을 어떻게 진단해?
+- 알림 source가 삭제된 건지 projection lag인지 빠르게 나누고 싶어
+- viewer마다 알림 원문 노출이 다른데 authz 문제인지 확인하는 순서 알려줘
+contextual_chunk_prefix: |
+  이 문서는 알림을 눌렀는데 댓글, 주문, 원문 같은 source가 열리지
+  않을 때 학습자가 stale read로 단정하지 않고 deleted source,
+  authorization filtering, async projection lag까지 증상에서 원인으로
+  이어 가는 beginner symptom_router다. 알림 눌렀더니 빈 화면, 클릭
+  후 404, 새로고침하면 다시 보임, 어떤 계정에서는 보이고 내 계정만
+  안 보임, 배지는 왔는데 상세만 늦음 같은 자연어 paraphrase가 본
+  문서의 진단 분기와 첫 확인 순서에 매핑된다.
+---
 # Notification Source Missing Decision Table
 
 > 한 줄 요약: 알림을 눌렀는데 원문, 주문, 댓글 같은 source가 안 보일 때는 모두 "stale"로 뭉개지 말고, stale read, deleted source, authorization filtering, async projection lag를 먼저 갈라야 대응이 빨라진다.

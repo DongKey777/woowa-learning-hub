@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 'Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가'
+concept_id: spring/bean-naming-qualifier-rename-pitfalls-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- qualifier-string-contract
+- bean-rename-ripple
+- bean-name-vs-qualifier
+aliases:
+- spring bean naming
+- bean rename pitfall
+- default bean name
+- bean alias
+- qualifier string rename
+- router vs qualifier confusion
+- resource vs qualifier
+- name driven injection
+- type driven injection
+- kotlin bean rename
+- nosuchbeandefinitionexception
+- 처음 배우는데 bean 이름이 왜 바뀌어요
+- qualifier 문자열이 왜 깨져요
+- spring bean naming qualifier rename pitfalls primer basics
+- spring bean naming qualifier rename pitfalls primer beginner
+symptoms:
+- 클래스 이름이나 `@Bean` 메서드 이름을 바꿨더니 주입이 갑자기 깨졌어요
+- `@Qualifier` 문자열이 어디서 온 이름인지 몰라서 rename이 무서워요
+- bean 이름, alias, qualifier 값이 같은 건지 다른 건지 헷갈려요
+intents:
+- definition
+prerequisites:
+- spring/bean-di-basics
+next_docs:
+- spring/primary-qualifier-collection-injection
+- spring/spring-custom-qualifier-primer
+- spring/di-exception-quick-triage
+linked_paths:
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+- contents/spring/spring-custom-qualifier-primer.md
+- contents/spring/spring-di-exception-quick-triage.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+confusable_with:
+- spring/primary-qualifier-collection-injection
+- spring/spring-custom-qualifier-primer
+- spring/di-exception-quick-triage
+forbidden_neighbors:
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+expected_queries:
+- 클래스 이름 바꿨더니 왜 예전 qualifier 문자열이 계속 문제를 일으켜?
+- `@Component` 기본 bean 이름이 실제로 어떻게 정해지는지 처음부터 알고 싶어
+- `@Bean` 메서드명을 바꾸면 주입 지점까지 왜 같이 깨질 수 있어?
+- bean 이름이랑 qualifier 값이 같은 규칙으로 이어지는지 헷갈릴 때 어디서 정리해?
+- 문자열 기반 주입이 rename에 약한 이유를 스프링 기준으로 설명해줘
+- alias를 붙이면 rename 충격을 줄일 수 있는지 감이 안 와
+contextual_chunk_prefix: |
+  이 문서는 스프링 학습자가 component bean 기본 이름, `@Bean` 메서드 이름,
+  alias, `@Qualifier` 문자열이 어떤 계약으로 이어지는지 처음 정리하는
+  primer다. 클래스 이름을 바꿨더니 qualifier가 깨진다, bean 이름과 qualifier
+  값이 같은 건지 헷갈린다, alias를 붙이면 rename 충격을 줄일 수 있는지
+  모르겠다 같은 자연어 질문을 이름 계약과 주입 계약 분리로 연결한다.
+---
 # Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가
 
 > 한 줄 요약: `@Qualifier("name")`가 안전한지 보려면 먼저 그 문자열이 bean 이름인지, alias인지, 별도 qualifier 값인지부터 구분해야 한다.

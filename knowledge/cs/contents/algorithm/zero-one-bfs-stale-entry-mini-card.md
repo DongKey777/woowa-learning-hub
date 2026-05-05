@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 0-1 BFS stale-entry mini card
+concept_id: algorithm/zero-one-bfs-stale-entry-mini-card
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- stale-entry-skip
+- dist-source-of-truth
+aliases:
+- 0-1 bfs stale entry
+- zero one bfs stale entry
+- stale deque entry
+- outdated deque item
+- old deque entry harmless
+- a@1 a@0 zero one bfs
+- deque duplicate vertex 0-1 bfs
+- stale pop skip 0-1 bfs
+- stale distance entry
+- old reservation ticket analogy
+- 0-1 bfs duplicate deque safe
+- 0-1 bfs outdated node card
+- 0-1 bfs beginner stale entry
+- 0-1 bfs deque old entry
+- a@1 a@0 stale example
+symptoms:
+- deque에 같은 정점이 두 번 들어가서 버그처럼 보여
+- A@1이 남아 있는데 A@0으로 갱신돼도 괜찮은지 모르겠어
+- pop한 값이 예전 후보일 때 무엇을 기준으로 봐야 하는지 헷갈려
+intents:
+- drill
+prerequisites:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/zero-one-bfs-hand-calculation-worksheet
+next_docs:
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+- algorithm/zero-one-bfs-equal-distance-reinsert-mini-note
+linked_paths:
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/zero-one-bfs-equal-distance-reinsert-mini-note.md
+- contents/algorithm/zero-one-bfs-state-visited-vs-dist-starter-card.md
+confusable_with:
+- algorithm/zero-one-bfs-equal-distance-reinsert-mini-note
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+expected_queries:
+- 0-1 BFS에서 deque에 예전 값이 남아 있어도 왜 안전한지 이해하고 싶어
+- stale entry를 pop했을 때 현재 dist를 믿는다는 말이 무슨 뜻이야
+- 같은 정점이 두 번 들어간 deque 예시를 가장 짧게 보고 싶어
+- A@1과 A@0이 같이 남는 상황을 beginner용 비유로 설명해줘
+- outdated deque item이 오답이 아니라는 근거를 빠르게 확인하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS를 공부하다 deque 안의 예전 후보가 왜 남아 있어도
+  답이 깨지지 않는지, stale entry를 어떤 질문으로 점검해야 하는지 확인
+  질문으로 굳히는 drill이다. 오래된 예약표가 왜 harmless한지, 같은 정점
+  후보가 두 번 보일 때, 최신 거리값이 진짜 기준, 예전 항목 건너뛰기,
+  중복 pop이 왜 정답을 망치지 않는지 같은 자연어 paraphrase가 본
+  문서의 체크 포인트에 매핑된다.
+---
 # 0-1 BFS stale-entry mini card
 
 > 한 줄 요약: deque 안에 `A@1`이 남아 있어도 이미 `A@0`으로 `dist[A]`가 줄었다면, 오래된 항목은 "틀린 답"이 아니라 그냥 건너뛰면 되는 옛 예약표다.

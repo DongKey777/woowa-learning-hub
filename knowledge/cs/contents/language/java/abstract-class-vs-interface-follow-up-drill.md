@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 추상 클래스 vs 인터페이스 Follow-up Quick Check
+concept_id: language/abstract-class-vs-interface-follow-up-drill
+canonical: false
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- abstract-class-vs-interface-choice
+- default-method-overreach
+- composition-pivot-missed
+aliases:
+- abstract class interface quick check
+- abstract class interface drill
+- 추상 클래스 인터페이스 예제 문제
+- 처음 배우는데 추상 클래스 인터페이스 연습
+- 공통 상태가 필요하면 추상 클래스
+- 계약만 필요하면 인터페이스
+- default method vs abstract class quick check
+- contract vs shared state java
+- 추상 클래스 인터페이스 follow up
+- java abstract class interface drill
+symptoms:
+- 글로는 알겠는데 짧은 예제를 보면 아직도 추상 클래스와 인터페이스가 섞여 보여
+- 공통 상태와 계약만 필요한 경우를 손으로 빠르게 구분하는 연습이 필요해
+- 둘 다 아닌 조합 사례를 문제에서 만나면 바로 못 자르겠어
+intents:
+- drill
+- comparison
+prerequisites:
+- language/java-abstract-class-vs-interface-basics
+- language/java-inheritance-overriding-basics
+next_docs:
+- design-pattern/composition-over-inheritance-basics
+- design-pattern/template-method-basics
+- language/interface-default-method-contract-evolution-primer
+linked_paths:
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-basics.md
+confusable_with:
+- language/java-abstract-class-vs-interface-basics
+- language/abstract-class-vs-interface
+- language/interface-default-method-contract-evolution-primer
+forbidden_neighbors: []
+expected_queries:
+- 추상 클래스와 인터페이스를 예제로 바로 구분해 보는 짧은 연습 문제가 필요해
+- 공통 상태냐 계약이냐를 5문제 정도로 빠르게 점검하고 싶어
+- default method가 나오는 예제에서 추상 클래스와 인터페이스를 어떻게 고르는지 퀴즈로 보고 싶어
+- 조합까지 같이 섞인 사례를 짧게 판별하는 follow-up 문서가 있어?
+- 추상 클래스 인터페이스 입문 다음에 바로 손으로 확인할 드릴을 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 추상 클래스와 인터페이스 입문 뒤에 짧은 예제로 공통 상태,
+  부모가 고정한 흐름, 역할 계약, 조합 피벗을 확인 질문으로 굳히는 drill이다.
+  글로는 알겠는데 코드 앞에서 다시 섞임, default method가 나오면 판단이
+  흐림, 상속보다 조합으로 꺾어야 하는 예제를 손으로 가르고 싶음 같은
+  자연어 표현이 본 문서의 quick check 연습에 매핑된다.
+---
 # 추상 클래스 vs 인터페이스 Follow-up Quick Check
 
 > 한 줄 요약: `계약만 필요한가`, `공통 상태와 부모 흐름이 필요한가`를 5개의 아주 짧은 Java 예제로 다시 판별하는 beginner quick-check 카드다.

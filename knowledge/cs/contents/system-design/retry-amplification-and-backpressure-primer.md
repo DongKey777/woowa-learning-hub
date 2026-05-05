@@ -1,8 +1,8 @@
 # Retry Amplification and Backpressure Primer
 
-> 한 줄 요약: client, app, worker가 각자 재시도를 시작하면 하나의 느린 장애가 여러 겹의 동시 시도로 증폭되고, bounded queue와 load shedding은 그 증폭을 잘라 blast radius를 제한한다.
+> 한 줄 요약: client, app, worker가 각자 재시도를 시작하면 하나의 느린 장애가 여러 겹의 동시 시도로 증폭되고, bounded queue와 load shedding은 "왜 재시도가 장애를 더 키우지?"라는 질문에 대한 첫 containment 답이 된다.
 
-retrieval-anchor-keywords: retry amplification primer, retry storm containment, client retry, app retry, worker retry, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, 처음 retry storm 뭐예요, 왜 재시도가 장애를 키워요
+retrieval-anchor-keywords: retry amplification primer, retry storm basics, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, 재시도 폭증 뭐예요, 왜 재시도가 장애를 키워요, queue가 쌓이는데 왜 더 retry해요, 처음 retry storm 뭐예요, bounded queue 왜 필요해요
 
 **난이도: 🟢 Beginner**
 
@@ -39,6 +39,7 @@ retry 문서를 읽다가 바로 queue 설계나 outage playbook으로 내려가
 
 retry 자체는 나쁜 것이 아니다.
 문제는 **각 레이어가 서로를 모른 채 동시에 retry**할 때다.
+처음 읽는 학습자가 자주 하는 질문은 `왜 실패했는데 다시 보내는 게 더 위험해져요?`인데, 답은 "첫 시도가 아직 살아 있는 동안 새 시도가 겹치기 때문"이다.
 
 - client는 timeout이 나서 다시 보낸다
 - gateway나 proxy는 upstream error를 보고 다시 보낸다

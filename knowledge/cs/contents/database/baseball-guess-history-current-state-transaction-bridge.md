@@ -1,0 +1,97 @@
+---
+schema_version: 3
+title: 'baseball 추측 기록/현재 게임 상태 ↔ DB 트랜잭션 브릿지'
+concept_id: database/baseball-guess-history-current-state-transaction-bridge
+canonical: false
+category: database
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/baseball
+review_feedback_tags:
+- guess-history-current-state
+- append-and-snapshot
+- transactional-round-update
+aliases:
+- baseball 게임 상태 저장
+- 야구 미션 추측 이력 테이블
+- baseball guess history transaction
+- 야구 미션 현재 라운드 row
+- baseball 턴 결과 DB 반영
+symptoms:
+- 추측 결과를 저장하고 게임 종료 여부를 바꾸는 코드가 따로 놀아요
+- guess_history만 쌓고 현재 게임 상태는 어디서 믿어야 할지 모르겠어요
+- 한 번의 추측 요청인데 insert 여러 개와 update가 흩어져 있어요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- database/transaction-basics
+- database/sql-reading-relational-modeling-primer
+- spring/baseball-mvc-controller-binding-bridge
+next_docs:
+- database/transaction-basics
+- database/transaction-isolation-basics
+- database/db-signal-service-result-http-bridge
+linked_paths:
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/db-signal-service-result-http-bridge.md
+- contents/spring/baseball-mvc-controller-binding-bridge.md
+- contents/software-engineering/baseball-guess-value-object-boundary-bridge.md
+confusable_with:
+- spring/baseball-mvc-controller-binding-bridge
+- software-engineering/baseball-guess-value-object-boundary-bridge
+- database/transaction-basics
+forbidden_neighbors: []
+expected_queries:
+- 야구 미션을 웹으로 바꿀 때 추측 한 번을 DB에 어떤 단위로 저장해야 해?
+- baseball에서 guess 기록과 게임 종료 처리를 같은 트랜잭션으로 묶으라는 말은 무슨 뜻이야?
+- guess_history insert만 하고 games 상태 update는 나중에 해도 되는지 궁금해
+- 야구 게임 현재 상태와 시도 이력을 테이블로 나누면 어디를 진실 원천으로 봐야 해?
+- 한 요청에서 strike 판정 저장과 game finished 변경이 같이 실패해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Woowa baseball 미션을 웹과 DB로 확장할 때 추측 이력 append와
+  현재 게임 상태 snapshot을 같은 write 단위로 읽게 돕는 mission_bridge다.
+  guess_history만 쌓음, games row finished 플래그 갱신, 한 번의 추측 요청에서
+  insert와 update가 함께 움직여야 함, 현재 상태를 어디서 믿나, 트랜잭션으로
+  묶으라는 리뷰가 무슨 뜻인가 같은 학습자 표현을 baseball 저장 모델과
+  현재 상태 truth 설명으로 연결한다.
+---
+
+# baseball 추측 기록/현재 게임 상태 ↔ DB 트랜잭션 브릿지
+
+## 한 줄 요약
+
+> baseball 추측 한 번은 "guess_history 한 줄 추가"만이 아니라 "현재 게임 상태가 어떻게 바뀌었는가"까지 함께 확정되는 write다. 그래서 이력 append와 `games` 현재 상태 update를 같은 트랜잭션으로 읽는 편이 리뷰와 운영 둘 다 덜 흔들린다.
+
+## 미션 시나리오
+
+콘솔 baseball는 메모리 안 `Game` 객체 하나로 끝난다. 하지만 웹으로 옮기면 `POST /games/{id}/guesses` 한 번마다 최소 두 가지를 남기고 싶어진다. "이번 추측이 몇 strike였는가" 같은 이력과, "게임이 아직 진행 중인가 끝났는가" 같은 현재 상태다.
+
+이때 학습자가 자주 만드는 구조는 `guess_history`에 먼저 insert하고, 서비스 마지막에서 `games.finished = true`를 따로 update하는 방식이다. 처음엔 동작해 보여도 한쪽만 반영되면 "`마지막 시도는 3 strike로 저장됐는데 게임은 아직 진행 중`" 같은 어색한 상태가 생긴다. PR에서 "`한 번의 추측 요청이 남기는 truth를 한 write 단위로 묶어 보세요`"라는 코멘트가 붙는 장면이 여기다.
+
+## CS concept 매핑
+
+여기서 닿는 개념은 `append-only history`와 `current snapshot`을 같은 트랜잭션으로 맞추는 감각이다. `guess_history`는 지나간 시도들을 설명하고, `games` row는 지금 API가 바로 참조할 현재 truth를 가진다. 둘의 역할은 다르지만, 같은 추측 요청에서 함께 움직여야 일관된 읽기가 된다.
+
+예를 들면 `INSERT INTO guess_history (...) VALUES (...)` 뒤에 `UPDATE games SET last_result = ?, finished = ? WHERE id = ?`가 같은 commit 안에 있어야 한다. 핵심은 테이블 수가 아니라 "현재 상태를 어디서 믿을지"를 고정하는 것이다. history만 보고 매번 재계산할 수도 있지만, beginner 단계에서는 현재 상태 row를 명시적으로 두고 한 요청의 판정 결과를 원자적으로 반영하는 편이 더 읽기 쉽다.
+
+## 미션 PR 코멘트 패턴
+
+- "`guess_history`는 쌓이는데 `games`의 현재 상태 갱신이 분리돼 있어 중간 실패 시 설명이 어렵습니다."
+- "현재 게임이 끝났는지 매번 history 전체를 다시 읽어 계산하지 말고, 지금 시스템이 믿는 state를 한 row로 보여 주세요."
+- "insert 후 update가 각각 성공할 수도 있는 구조라면 한 번의 추측 요청이 남기는 truth가 찢어집니다."
+- "도메인 판정은 객체가 하고, DB는 그 판정 결과를 이력과 현재 상태로 함께 commit하는 역할을 가져가게 나눠 보세요."
+
+## 다음 학습
+
+- 트랜잭션이 왜 "같이 성공/같이 실패"의 기본 단위인지 다시 잡으려면 `transaction-basics`
+- 현재 상태 row와 이력 테이블을 SQL 관점으로 더 읽어 보려면 `sql-reading-relational-modeling-primer`
+- DB 실패를 서비스 결과와 HTTP 응답으로 번역하는 흐름까지 보려면 `db-signal-service-result-http-bridge`
+- 입력 DTO와 도메인 `Guess` 경계를 먼저 정리하려면 `baseball-mvc-controller-binding-bridge`와 `baseball-guess-value-object-boundary-bridge`를 같이 본다.

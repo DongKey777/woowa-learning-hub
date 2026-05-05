@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: "Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기"
+title: "Spring Bean과 DI 기초: 객체를 직접 만들지 않고 외부에서 받는 wiring 감각 잡기"
 concept_id: "spring/bean-di-basics"
 canonical: true
 category: "spring"
@@ -51,8 +51,9 @@ contextual_chunk_prefix: |
   채워주는 컨테이너 동작이 무엇인지, new 대신 주입받는 이유는 무엇인지
   처음 잡는 primer다. 객체를 직접 만들지 않고 외부에서 받음, 필요해라고만
   적으면 알아서 채워줌, new 대신 주입, Spring이 객체끼리 연결, Bean 등록과
-  component scan, controller와 service를 누가 연결하나 같은 자연어
-  paraphrase가 본 문서의 핵심 wiring 동작에 매핑된다.
+  component scan, controller와 service를 누가 연결하나, wiring, 객체를 직접
+  만들지 않고 외부에서 받는 방식 같은 자연어 paraphrase가 본 문서의 핵심
+  wiring 동작에 매핑된다.
 ---
 
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기
@@ -74,7 +75,7 @@ contextual_chunk_prefix: |
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 
-retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, 처음 배우는데 bean 이 뭐예요, spring bean 큰 그림, component scan 뭐예요, component scan 처음, bean 이랑 di 차이 헷갈려요, bean registration vs dependency injection, controller service repository 누가 연결해요, controller service repository 뭐예요, 왜 new 대신 주입받아요, spring bean 언제 만들어져요, configuration vs bean registration, beginner spring bean, spring 객체를 누가 연결해요
+retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, 처음 배우는데 bean 이 뭐예요, spring bean 큰 그림, component scan 뭐예요, component scan 처음, bean 이랑 di 차이 헷갈려요, bean registration vs dependency injection, controller service repository 누가 연결해요, controller service repository 뭐예요, 왜 new 대신 주입받아요, spring bean 언제 만들어져요, configuration vs bean registration, beginner spring bean, spring 객체를 누가 연결해요, 객체를 직접 만들지 않고 외부에서 받는 방식, 객체를 직접 만들지 않고 외부에서 받는 게 뭐야, spring wiring basics
 
 ## 먼저 여기까지만 잡는다
 

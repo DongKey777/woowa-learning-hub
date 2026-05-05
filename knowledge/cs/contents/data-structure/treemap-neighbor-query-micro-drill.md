@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: TreeMap 이웃 조회 마이크로 드릴
+concept_id: data-structure/treemap-neighbor-query-micro-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- treemap-neighbor-query
+- strict-vs-inclusive-boundary
+- treeset-to-treemap-transfer
+aliases:
+- treemap neighbor query drill
+- treemap lowerkey floorkey ceilingkey higherkey
+- ordered map exact match beginner
+- treemap lower floor ceiling higher
+- treemap 바로 이전 같거나 이전
+- treemap 같거나 다음 바로 다음
+- ordered map neighbor micro drill
+symptoms:
+- lowerKey와 floorKey가 exact match에서 왜 달라지는지 자꾸 헷갈린다
+- TreeSet에서는 알겠는데 TreeMap으로 오면 같은 이름 규칙이 흔들린다
+- 예약표에서 바로 이전 시작 시각과 같거나 이전 시작 시각을 구분하지 못한다
+intents:
+- drill
+- comparison
+prerequisites:
+- data-structure/treeset-exact-match-drill
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+next_docs:
+- data-structure/treemap-key-entry-strictness-bridge
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/treemap-string-prefix-range-mini-drill.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/treeset-exact-match-drill
+- data-structure/treemap-key-entry-strictness-bridge
+- data-structure/treemap-string-prefix-range-mini-drill
+forbidden_neighbors:
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+expected_queries:
+- TreeMap에서 lowerKey floorKey ceilingKey higherKey를 손으로 구분하는 짧은 드릴이 필요해
+- 왜 lowerKey랑 floorKey가 exact match에서 달라지는지 예약표 예제로 보고 싶어
+- TreeSet 감각을 TreeMap ordered map query로 옮기는 초급 연습이 필요해
+- ordered map에서 strict와 inclusive 이웃 조회를 처음 배울 때 뭐부터 봐야 해
+- 같은 key가 있을 때 higherKey와 ceilingKey가 왜 달라지는지 빠르게 확인하고 싶어
+- reservation schedule에서 바로 이전 시작 시각과 같거나 이전 시작 시각을 구분하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 TreeSet 감각을 TreeMap으로 옮기는 입문자가 lowerKey,
+  floorKey, ceilingKey, higherKey의 exact match 차이를 확인
+  질문으로 굳히는 drill이다. 바로 앞 시각 찾기, 같은 값도 허용한
+  왼쪽 찾기, 같은 key가 있을 때 오른쪽 첫 값, ordered map 경계
+  포함 여부, 예약표에서 이전 슬롯 잡기, strict와 inclusive를
+  손으로 구분하기 같은 자연어 paraphrase가 본 문서의 이웃 조회
+  규칙에 매핑된다.
+---
 # TreeMap Neighbor-Query Micro Drill
 
 > 한 줄 요약: `TreeSet`에서 `lower/floor/ceiling/higher`를 먼저 익힌 초보자라면, `TreeMap`의 `lowerKey/floorKey/ceilingKey/higherKey`도 exact-match 규칙은 그대로고 `key -> value` 문맥만 추가된 버전이라고 보면 된다.
@@ -12,6 +81,7 @@
 - [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)
 - [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- [TreeMap 문자열 Prefix vs 사전순 Range Mini Drill](./treemap-string-prefix-range-mini-drill.md)
 - [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md)
 - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
@@ -33,6 +103,8 @@ retrieval-anchor-keywords: treemap neighbor query drill, treemap floorkey ceilin
 - `floorKey(t)`: `t`와 같거나 그보다 왼쪽에 있는 가장 가까운 시작 시각
 - `ceilingKey(t)`: `t`와 같거나 그보다 오른쪽에 있는 가장 가까운 시작 시각
 - `higherKey(t)`: `t`보다 strict하게 오른쪽에 있는 가장 가까운 시작 시각
+
+문자열 key를 다루더라도 질문이 "`app`으로 시작하나?"처럼 prefix/range 구분이라면 이 문서보다 [TreeMap 문자열 Prefix vs 사전순 Range Mini Drill](./treemap-string-prefix-range-mini-drill.md)로 가는 편이 맞다. 여기서는 prefix가 아니라 ordered neighbor 질문만 다룬다.
 
 한 줄로 줄이면 이렇다.
 

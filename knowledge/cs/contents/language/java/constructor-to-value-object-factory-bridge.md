@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 생성자에서 값 객체 팩터리로 넘어가는 첫 브리지
+concept_id: language/constructor-to-value-object-factory-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids:
+- missions/lotto
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- value-object-entrypoint
+- validation-normalization-boundary
+- constructor-vs-factory-naming
+aliases:
+- constructor to value object bridge
+- constructor vs factory value object
+- java value object constructor beginner
+- java of from when to use
+- 값객체 생성자 팩터리 차이
+- 생성자 다음 값객체 언제
+- 정규화 validation 생성자 어디
+- raw string value object bridge
+- 처음 factory 헷갈려요
+- 왜 of를 쓰나요
+- canonicalization basics
+- beginner value object primer
+symptoms:
+- 값 객체를 만들 때 생성자로 충분한지 아니면 of 같은 팩터리가 필요한지 모르겠어
+- trim이나 소문자화 같은 정규화를 생성자 안에 둘지 별도 팩터리로 뺄지 헷갈려
+- raw input을 도메인 값으로 올리는 입구에 이름을 붙여야 하는 순간이 언제인지 감이 안 와
+intents:
+- comparison
+- design
+prerequisites:
+- language/java-methods-constructors-practice-primer
+- language/java-instance-static-factory-methods-primer
+- language/record-value-object-equality-basics
+next_docs:
+- language/request-dto-to-value-object-boundary-primer
+- language/domain-state-type-primer-enum-record-value-object
+- language/money-value-object-basics
+linked_paths:
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-instance-static-factory-methods-primer.md
+- contents/language/java/request-dto-to-value-object-boundary-primer.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/domain-state-type-primer-enum-record-value-object.md
+- contents/language/java/money-value-object-basics.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- language/request-dto-to-value-object-boundary-primer
+- language/java-instance-static-factory-methods-primer
+- language/record-value-object-equality-basics
+forbidden_neighbors: []
+expected_queries:
+- 값 객체를 만들 때 생성자와 static factory를 언제 나눠 쓰는지 처음 기준을 알고 싶어
+- raw string을 정규화해서 도메인 타입으로 올릴 때 생성자만으로도 충분한지 설명해줘
+- fromInput이나 of 같은 이름이 왜 필요한지 value object 예제로 보고 싶어
+- 검증과 정규화를 어디에 모아야 하는지 constructor와 factory 관점에서 비교한 자바 문서가 필요해
+- 새 객체 생성 경로에 이름을 붙여야 하는 순간을 초보자 눈높이로 정리해줘
+- 값 객체 입구가 하나일 때 public constructor로 시작해도 되는지 판단 기준을 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 값 객체 입구에서 생성자만으로 충분한 순간과
+  factory로 이름을 붙여야 하는 순간을 비교하며 두 개념을 잇는 bridge다.
+  raw string 올리기, 정규화 어디에 두나, of나 from이 왜 필요해, 생성자와
+  팩터리 경계, 검증 입구 한곳에 모으기 같은 자연어 paraphrase가 본
+  문서의 판단 기준에 매핑된다.
+---
 # 생성자에서 값 객체 팩터리로 넘어가는 첫 브리지
 
 > 한 줄 요약: 처음에는 생성자로도 충분하지만, raw input 검증, 정규화, "같은 값" 기준이 붙기 시작하면 value object 생성 입구에 이름을 붙인 factory가 더 읽기 쉬워질 수 있다. 다만 모든 생성자를 `of()`로 숨기는 것이 목표는 아니다.

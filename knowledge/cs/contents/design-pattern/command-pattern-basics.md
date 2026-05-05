@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 커맨드 패턴 기초 (Command Pattern Basics)
+concept_id: design-pattern/command-pattern-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/blackjack
+- missions/shopping-cart
+review_feedback_tags:
+- command-vs-strategy
+- queue-vs-broker
+- request-object-modeling
+aliases:
+- command pattern basics
+- 커맨드 패턴 기초
+- 커맨드 패턴이 뭔가요
+- command pattern beginner
+- 요청을 객체로
+- undo redo pattern
+- 실행 취소 패턴
+- 작업 큐 패턴
+- invoker receiver command
+- 커맨드 패턴 예시
+- beginner command pattern
+- 요청 캡슐화
+- command queue vs message queue
+- command queue 다음 뭐 봐요
+- 왜 command 다음에 message queue가 나와요
+symptoms:
+- 메서드를 바로 호출하던 코드를 왜 굳이 객체로 감싸는지 모르겠어요
+- undo나 retry 얘기가 나오면 command 패턴이 갑자기 너무 커 보여요
+- 큐에 넣는 작업이 단순 요청 DTO인지 command인지 구분이 안 돼요
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/composition-over-inheritance-basics
+next_docs:
+- design-pattern/command-vs-strategy-quick-bridge
+- design-pattern/command-pattern-undo-queue
+- design-pattern/observer-vs-command-beginner-bridge
+linked_paths:
+- contents/design-pattern/command-vs-strategy-quick-bridge.md
+- contents/design-pattern/observer-vs-command-beginner-bridge.md
+- contents/design-pattern/command-pattern-undo-queue.md
+- contents/system-design/per-key-queue-vs-direct-api-primer.md
+- contents/system-design/message-queue-basics.md
+- contents/design-pattern/pattern-selection.md
+- contents/spring/spring-aop-basics.md
+confusable_with:
+- design-pattern/command-vs-strategy-quick-bridge
+- design-pattern/observer-vs-command-beginner-bridge
+- design-pattern/command-pattern-undo-queue
+forbidden_neighbors:
+- contents/system-design/per-key-queue-vs-direct-api-primer.md
+- contents/system-design/message-queue-basics.md
+expected_queries:
+- 커맨드 패턴은 메서드 직접 호출이랑 뭐가 다른 거야?
+- 실행 요청을 객체로 만든다는 말을 초보자 기준으로 설명해줘
+- undo나 재시도가 필요할 때 왜 command 패턴을 떠올려야 해?
+- 나중에 실행할 작업을 클래스로 감싸는 이유가 뭐야?
+- invoker와 receiver를 같이 봐야 command 구조가 이해되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 디자인 패턴 입문자가 메서드 직접 호출 대신 실행 요청 자체를 객체로 감싸는 이유와, 실행 시점·실행 주체를 분리하는 커맨드 패턴의 기초를 처음 잡는 primer다. 바로 부르지 않고 작업을 쌓아 두기, 나중에 실행 예약, 되돌리기 가능한 요청 모델, invoker와 receiver 역할 분리, 큐에 담는 실행 단위와 단순 데이터 전달 구분 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 커맨드 패턴 기초 (Command Pattern Basics)
 
 > 한 줄 요약: 커맨드 패턴은 요청을 객체로 만들어 실행을 나중으로 미루거나, 큐에 쌓거나, 실행 취소(undo)할 수 있게 해주는 패턴이다.

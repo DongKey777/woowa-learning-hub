@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: '`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모'
+concept_id: operating-system/killed-oomkilled-memory-events-beginner-bridge
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- exit-137-vs-oomkill
+- oomkilled-vs-jvm-oom
+- memory-events-interpretation
+aliases:
+- killed oomkilled memory.events beginner
+- killed vs oomkilled
+- app log killed meaning
+- kubernetes oomkilled meaning
+- memory.events oom_kill beginner
+- cgroup memory events primer
+- oom beginner mental model
+- oom 표기 해석
+- killed 로그 의미
+- oomkilled 뜻
+- memory.events 읽는 법 입문
+- 메모리 한도 초과 멘탈 모델
+- cgroup oom beginner bridge
+- 왜 outofmemoryerror 없는데 oomkilled
+- signal stop vs oom kill
+symptoms:
+- 앱 로그에는 Killed만 보이는데 진짜 OOM인지 감이 안 와요
+- Kubernetes에서 OOMKilled라고 뜨는데 memory.events랑 어떻게 연결해 읽어야 할지 모르겠어요
+- 종료 코드 137과 Java OutOfMemoryError를 같은 뜻으로 봐도 되는지 헷갈려요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/memory-management-basics
+next_docs:
+- operating-system/oom-killer-cgroup-memory-pressure
+- operating-system/memory-high-vs-memory-max-cgroup-behavior
+linked_paths:
+- contents/operating-system/memory-management-basics.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+- contents/operating-system/signals-process-supervision.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+confusable_with:
+- operating-system/oom-killer-cgroup-memory-pressure
+- operating-system/signals-process-supervision
+forbidden_neighbors:
+- contents/operating-system/signals-process-supervision.md
+expected_queries:
+- 로그에 Killed만 남았을 때 OOMKilled와 같은 사건인지 어떻게 확인해?
+- memory.events의 oom_kill 증가를 초보자도 이해할 수 있게 설명해줘
+- 종료 코드 137이 보이면 바로 메모리 문제라고 봐도 돼?
+- Kubernetes OOMKilled와 Java OutOfMemoryError는 어떻게 다르게 읽어야 해?
+- 메모리 한도 초과 사건을 app 로그, pod 상태, cgroup 파일로 함께 보는 입문 문서가 필요해
+contextual_chunk_prefix: |
+  이 문서는 메모리 문제를 처음 보는 학습자가 앱 로그의 Killed, Kubernetes의 OOMKilled, cgroup memory.events를 같은 사건의 다른 표지로 묶어 이해하도록 연결하는 bridge다. 종료 코드 137이 왜 보여, OOMKilled랑 Killed가 같은 일이야, memory.events에서 뭘 봐, Java 예외 없이도 메모리 킬이 나와, cgroup 카운터는 어떻게 읽어 같은 자연어 paraphrase가 본 문서의 핵심 장면에 매핑된다.
+---
 # `Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모
 
 > 한 줄 요약: 앱 로그의 `Killed`, Kubernetes의 `OOMKilled`, cgroup의 `memory.events`는 "메모리 한도에 부딪혀 커널이 프로세스를 정리했다"는 같은 사건을 서로 다른 높이에서 보여 주는 표지판이다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: '주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기'
+concept_id: design-pattern/registry-vs-factory-injected-handler-maps
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- handler-map-naming
+- registry-vs-factory
+aliases:
+- registry vs factory handler map
+- injected handler map registry
+- handler map factory confusion
+- lookup vs create handler map
+- map of handlers naming
+- prewired bean lookup registry
+- selector not factory injected map
+intents:
+- comparison
+- design
+symptoms:
+- spring이 주입한 handler map을 factory라고 불러도 되는지 모르겠어요
+- lookup과 create가 한 클래스에 섞여 있어서 리뷰 포인트가 흐려져요
+prerequisites:
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+- software-engineering/dependency-injection-basics
+next_docs:
+- design-pattern/bean-name-vs-domain-key-lookup
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide
+- design-pattern/factory-misnaming-checklist
+linked_paths:
+- contents/design-pattern/strategy-policy-selector-naming.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+confusable_with:
+- design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/registry-vs-strategy-map-vs-policy-object-decision-guide
+- design-pattern/strategy-policy-selector-naming
+forbidden_neighbors: []
+expected_queries:
+- 주입된 handler map은 registry야 factory야?
+- list handler를 모아두면 factory 패턴이라고 불러도 돼?
+- lookup과 create가 섞인 handler map 구조를 어떻게 나눠야 해?
+- spring이 주입한 map에서 service locator 냄새를 어떻게 구분해?
+- 스프링이 모아준 `Map<String, Handler>` 클래스 이름을 `Factory`로 두면 왜 어색해?
+- create 없이 handler를 찾아만 주는 클래스는 registry로 봐야 해 selector로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 Spring이나 DI 컨테이너가 모아 준 handler 목록을 볼 때
+  이미 있는 대상을 고르는 책임과 새 객체를 만드는 책임을 어디서 나눠야 하는지
+  연결한다. 주입된 handler map 이름이 왜 factory는 아닌지, lookup으로 끝나는
+  구조, creator를 찾은 뒤 create가 붙는 경우, duplicate key 검증, missing key
+  체크, injected map이 바로 locator는 아닌 상황 같은 자연어 paraphrase가 본
+  문서의 단계 분리와 예시에 매핑된다.
+---
 # 주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기
 
 > 한 줄 요약: 프레임워크가 `List<Handler>`나 `Map<Key, Handler>`를 주입해 줬다면 대개 네 손에 들어온 것은 factory가 아니라 registry다. factory는 그 lookup 뒤에 "새로 만든다"가 붙을 때 등장한다.

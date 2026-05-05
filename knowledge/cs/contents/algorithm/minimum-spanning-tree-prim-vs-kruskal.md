@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "Minimum Spanning Tree: Prim vs Kruskal"
+concept_id: algorithm/minimum-spanning-tree-prim-vs-kruskal
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- mst-vs-shortest-path
+- prim-vs-kruskal-choice
+- union-find-overuse
+aliases:
+- minimum spanning tree chooser
+- prim kruskal comparison
+- mst algorithm choice
+- dense graph prim
+- sparse graph kruskal
+- cycle free minimum cost connection
+- minimum spanning forest
+- 프림 크루스칼 비교
+- 최소 신장 트리 선택
+- 모든 정점 최소 비용 연결
+symptoms:
+- 모든 정점을 잇는 문제인데 자꾸 최단 경로 알고리즘을 떠올리게 돼
+- Prim이랑 Kruskal 중 무엇을 먼저 고를지 기준이 안 잡혀
+- 간선 리스트가 있을 때와 인접 행렬이 있을 때 MST 접근이 왜 달라지는지 모르겠어
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/graph
+next_docs:
+- algorithm/kruskal-union-find-beginner-bridge
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/sparse-graph-shortest-paths
+linked_paths:
+- contents/algorithm/graph.md
+- contents/algorithm/kruskal-union-find-beginner-bridge.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+confusable_with:
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/kruskal-union-find-beginner-bridge
+- algorithm/sparse-graph-shortest-paths
+forbidden_neighbors:
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+expected_queries:
+- 모든 도시를 최소 비용으로 한 번에 연결하는 문제면 최단 경로가 아니라 무엇을 봐야 해?
+- Prim과 Kruskal을 입력 형태 기준으로 어떻게 나누면 덜 헷갈릴까?
+- 인접 행렬이 있는 밀집 그래프에서 MST를 구할 때 왜 Prim이 먼저 떠오르는지 설명해줘
+- 간선 리스트가 주어진 희소 그래프라면 MST 알고리즘을 어떤 기준으로 고르면 돼?
+- shortest path tree와 minimum spanning tree를 한 번에 구분하는 기준이 필요해
+- 그래프가 끊겨 있을 때 MST 대신 minimum spanning forest로 읽어야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 그래프 학습자가 모든 정점을 최소 비용으로 잇는 문제가 최단 경로 문제와 어떻게 다른지 구분하고, 입력 표현과 그래프 밀도에 따라 Prim과 Kruskal 중 무엇을 고를지 결정한다. 도시 전부 싸게 연결, 간선 묶음으로 볼지 경계 확장으로 볼지, 행렬 그래프, 끊어진 그래프 forest 해석 같은 자연어 paraphrase가 본 문서의 알고리즘 선택 기준에 매핑된다.
+---
 # Minimum Spanning Tree: Prim vs Kruskal
 
 > 한 줄 요약: MST 문제는 먼저 "모든 정점을 사이클 없이 최소 비용으로 연결하는가"를 확인하고, 간선 정렬 중심이면 Kruskal, 현재 트리의 경계를 확장하는 모델이면 Prim으로 고르면 된다.

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Listener Overload Thresholds and Accept Pause Policy
+concept_id: operating-system/listener-overload-thresholds-accept-pause-policy
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- effective-backlog-watermark
+- multishot-accept-hysteresis
+- cq-drain-reserve
+aliases:
+- listener overload thresholds accept pause policy
+- accept pause policy
+- multishot accept pause resume
+- effective backlog watermark
+- accept queue watermark
+- session init queue watermark
+- listener hysteresis
+- reuseport pause watermark
+- accept admission control
+- accept overload thresholds
+symptoms:
+- pause와 resume threshold를 backlog 요청값 기준으로 잡아도 되는지 헷갈려요
+- multishot accept를 멈출 때 CQ reserve를 왜 남겨야 하는지 감이 안 와요
+- accept queue, CQ backlog, session-init queue를 어느 순서로 admission control에 묶어야 할지 모르겠어요
+intents:
+- design
+- troubleshooting
+prerequisites:
+- operating-system/socket-accept-queue-kernel-diagnostics
+- operating-system/io-uring-multishot-cancel-rearm-drain-shutdown
+next_docs:
+- operating-system/accept-overload-observability-playbook
+- operating-system/reuseport-shard-watermark-tuning
+linked_paths:
+- contents/operating-system/accept-overload-observability-playbook.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/reuseport-shard-watermark-tuning.md
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/socket-accept-queue-kernel-diagnostics.md
+- contents/operating-system/tcp-abort-on-overflow-fast-fail-policy.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+confusable_with:
+- operating-system/accept-overload-observability-playbook
+- operating-system/socket-accept-queue-kernel-diagnostics
+- operating-system/reuseport-shard-watermark-tuning
+forbidden_neighbors:
+- contents/operating-system/accept-overload-observability-playbook.md
+- contents/operating-system/socket-accept-queue-kernel-diagnostics.md
+expected_queries:
+- accept pause resume threshold를 effective backlog 기준으로 잡는 방법을 정리해줘
+- multishot accept pause policy에서 CQ reserve가 왜 필요한지 설명해줘
+- session-init queue와 accept queue watermark를 같이 보는 playbook이 필요해
+- reuseport hot shard에서 listener별 pause watermark를 어떻게 잡아야 해?
+- accept overload 대응에서 backlog buffering과 user-space fast fail 사이 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 과부하가 걸린 listener에서 연결 받기를 언제 늦추고 언제 다시 열지,
+  커널 backlog와 CQ drain 여유, session-init 대기열을 한 기준으로 묶어 전략으로
+  막는 playbook이다. 새 연결은 계속 오는데 어디서 완충할지, pause가 너무 늦은지,
+  hot shard만 먼저 막아야 하는지, downstream이 회복됐는지 같은 자연어
+  paraphrase가 본 문서의 watermark 설계에 매핑된다.
+---
+
 # Listener Overload Thresholds and Accept Pause Policy
 
 > 한 줄 요약: `io_uring` multishot accept의 pause/resume은 cancel 타이밍만의 문제가 아니라, `listen(backlog)`와 `net.core.somaxconn`이 만든 실제 accept queue headroom, CQ drain budget, 세션 초기화 queue watermarks를 하나의 admission-control 규칙으로 묶는 문제다.

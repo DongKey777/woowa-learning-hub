@@ -9,29 +9,13 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
+- [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
+- [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+- [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
+- [Shared Module Guardrails](../software-engineering/shared-module-guardrails.md)
 
-> 관련 문서:
-> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-> - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
-> - [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md)
-> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
-> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
-> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
-> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
-> - [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
-> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
-> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
-> - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
-> - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
-> - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
-> - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
-> - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
-
-retrieval-anchor-keywords: starter added but bean missing, starter bean not created, spring starter bean missing, starter added no bean, why starter bean not created, spring boot starter bean missing, classpath condition fail, conditionalonclass miss, conditionalonclass classpath trap, dependency scope bean missing, compileonly bean missing, provided dependency bean missing, optional dependency bean missing, test slice auto-configuration missing, spring starter added but bean missing faq basics
+retrieval-anchor-keywords: starter bean missing, starter 넣었는데 bean이 없어요, bean이 왜 안 떠요, spring starter bean missing, starter added but bean missing, why starter bean not created, conditionalonclass classpath trap, conditionalonproperty property missing, existing bean back off, scan boundary bean missing, test slice auto-configuration missing, starter bean troubleshooting basics
 
 ## 이 문서 다음에 보면 좋은 문서
 

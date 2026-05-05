@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill
+concept_id: data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- treemap-key-to-entry-handoff
+- floorentry-ceilingentry-value-read
+- reservation-end-time-lookup
+aliases:
+- treemap floorentry ceilingentry value read drill
+- treemap exact match floorentry ceilingentry
+- floorentry exact match getvalue
+- ceilingentry exact match getvalue
+- entry로 바꾸면 종료 시각 읽기
+- treemap key to entry beginner
+- floorentry value reservation lookup
+- ceilingentry value next reservation end
+- floorentry getvalue null check
+- ceilingentry getvalue null check
+- floor key 찾았는데 종료 시각
+- exact match 포함 value read
+- treemap 종료 시각 읽기
+- ordered map reservation value read
+- floorentry vs floorkey beginner
+symptoms:
+- floorKey나 ceilingKey로 시작 시각은 찾았는데 종료 시각을 어디서 읽는지 모르겠어
+- floorEntry가 exact match를 포함하는지 확신이 안 서서 value를 읽는 코드로 못 옮기겠어
+- 예약표에서 양옆 이웃의 끝 시각까지 바로 꺼내고 싶은데 key와 entry 차이가 헷갈려
+intents:
+- definition
+prerequisites:
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treemap-key-entry-strictness-bridge
+next_docs:
+- data-structure/treemap-gap-detection-mini-drill
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-gap-detection-mini-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/algorithm/interval-greedy-patterns.md
+confusable_with:
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treemap-key-entry-strictness-bridge
+- data-structure/treemap-interval-entry-primer
+forbidden_neighbors:
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+expected_queries:
+- TreeMap에서 floorEntry를 쓰면 종료 시각까지 어떻게 바로 읽는지 예약표 예제로 보고 싶어
+- exact match가 있을 때 floorEntry와 ceilingEntry가 어느 예약을 잡는지 다시 확인하고 싶어
+- key만 보던 코드에서 entry로 바꾸는 이유를 예약 겹침 판단 문맥으로 설명해줘
+- roomescape 예약 로직에서 왼쪽 예약 끝 시간을 읽으려면 어느 API로 넘어가야 해?
+- ordered map에서 시작 시각만 찾는 단계와 start end를 같이 읽는 단계를 구분하고 싶어
+- value까지 읽어야 gap 계산으로 넘어갈 수 있다는데 TreeMap 예제로 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap에서 floorKey와 ceilingKey로 시작 시각만 찾던 학습자가
+  floorEntry와 ceilingEntry로 value까지 읽어 예약 종료 시각을 붙이는 감각을
+  처음 잡는 primer다. exact match 포함되나, key 말고 entry를 왜 써, 왼쪽 예약
+  끝 시간 읽기, 종료 시각 어디서 꺼내, value까지 붙여 gap 계산 준비 같은
+  자연어 paraphrase가 본 문서의 key에서 entry로 넘어가는 handoff에 매핑된다.
+---
 # TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill
 
 > 한 줄 요약: `floorKey()`/`ceilingKey()`로 양옆 시작 시각을 찾을 수 있다면, 다음 단계는 `floorEntry()`/`ceilingEntry()`에서 `value`를 꺼내 예약 종료 시각까지 바로 읽는 연습이다.

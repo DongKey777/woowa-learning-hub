@@ -17,7 +17,7 @@
 > - [Emergency Grant Cleanup Metrics](./emergency-grant-cleanup-metrics.md)
 > - [Delegated Session Tail Cleanup](./delegated-session-tail-cleanup.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
-> - [Security README: Service / Delegation Boundaries](./README.md#service--delegation-boundaries-deep-dive-catalog)
+> - [Security README: Service / Delegation Boundaries](./README.md#service-delegation-boundaries-deep-dive-catalog)
 
 retrieval-anchor-keywords: aobo revocation audit event schema, break glass revocation audit schema, delegated access revoke audit, support access revoke event schema, acting on behalf revoke trace, preview confirm timeline join key, preview id graph snapshot id revocation request id, access group id grant id correlation, break glass revoke correlation id, delegated access revocation timeline, support access revoke evidence ref, operator revoke audit lineage, stale preview replacement preview lineage, fully blocked confirmed timeline join, cleanup confirmed revoke trace, case ref access group id preview id join, delegated session tail cleanup, false closure
 

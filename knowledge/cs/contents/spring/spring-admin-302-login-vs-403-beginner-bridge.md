@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: 'Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지'
+concept_id: spring/admin-302-login-vs-403-beginner-bridge
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- admin-auth-entrypoint-vs-access-denied
+- savedrequest-final-403-split
+aliases:
+- spring admin 302 vs 403
+- /admin 302 login
+- plain 403
+- 로그인 성공했는데 접근 거부
+- savedrequest 주소 메모
+symptoms:
+- /admin 요청이 로그인 페이지로 튕기는데 권한 문제인지 인증 문제인지 모르겠어요
+- 어떤 계정은 바로 403이고 어떤 경우는 먼저 /login으로 가서 분기가 헷갈려요
+- 로그인 성공 후 원래 관리자 URL로 돌아왔는데 마지막에 403이 떠서 어디 단계가 실패했는지 모르겠어요
+intents:
+- troubleshooting
+- comparison
+prerequisites: []
+next_docs:
+- spring/spring-admin-session-cookie-flow-primer
+- spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+- spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge
+linked_paths:
+- contents/spring/spring-admin-session-cookie-flow-primer.md
+- contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- spring/spring-admin-session-cookie-flow-primer
+- spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+- spring/roomescape-admin-login-final-403-securitycontext-bridge
+forbidden_neighbors:
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+expected_queries:
+- /admin이 302 /login으로 가는데 왜 그런가요?
+- 왜 어떤 때는 403이고 어떤 때는 로그인 페이지로 가요?
+- 로그인 성공 후 원래 URL로 복귀했는데 마지막에 403이 나는 이유가 뭐예요?
+- 관리자 인증에서 302와 403을 어떻게 먼저 구분해요?
+contextual_chunk_prefix: |
+  이 문서는 관리자 URL 접근 실패를 pre-login 302, plain 403,
+  login-success-final-403으로 빠르게 가르는 chooser다. /admin이 302 /login으로
+  가요, 왜 403 떠요, 로그인 성공 후 원래 URL 복귀 403 같은 초급자 증상을
+  첫 분기표로 연결해 다음 primer를 고르게 돕는다.
+---
+
 # Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지
 
 > 한 줄 요약: 관리자 URL에서 `302 /login`은 대개 "아직 인증이 안 됐으니 로그인부터" 흐름이고, `403`은 "누군지는 확인됐지만 관리자 권한이 없음" 흐름이라서 redirect 기억과 권한 실패를 분리해서 봐야 한다.

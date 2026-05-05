@@ -12,10 +12,13 @@
 - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 - [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
 - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+- [Backend Delivery and Observability Foundations Primer](../software-engineering/backend-delivery-observability-foundations-primer.md)
 
-retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, https rr 없음, https rr 있음, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, browser netlog h3 appendix, curl http3 unsupported build
+retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, https rr 없음, https rr 있음, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, 왜 첫 요청은 h2인데 다음은 h3예요, https rr 없는데 왜 h3
 
 ## Discovery vs Permission 용어 고정 박스
+
+이 문서는 "`왜 첫 요청은 h2인데 다음 새 연결은 h3예요?`", "`HTTPS RR이 안 보여도 왜 h3가 붙어요?`" 같은 symptom-first 질문을 먼저 자르는 primer다.
 
 ### 3줄 정의
 
@@ -635,6 +638,7 @@ H3 discovery를 엄밀히 보려면 새 profile, cache clearing, browser NetLog 
 - H3 connection을 다른 origin과 공유해도 되는지는 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 - 같은 row에서 `Protocol`과 `memory cache`/`304`를 섞어 읽고 있다면 [Browser DevTools Cache Trace Primer](./browser-devtools-cache-trace-primer.md)
 - DevTools만으로 `Alt-Svc` cache와 HTTPS RR 흔적을 가르기 어려우면 [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
+- `TLS`, `ALPN`, 인증서 같은 선행 용어가 아직 흐리면 [HTTPS와 TLS 기초](../security/https-tls-beginner.md)로 한 단계 내려가서 다시 올라오면 된다.
 
 ## 한 줄 정리
 

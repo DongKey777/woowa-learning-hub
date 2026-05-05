@@ -29,7 +29,8 @@ contextual_chunk_prefix: |
   이 문서는 학습자가 HTTP 요청이 컨트롤러까지 도착하기 전에 어떤 단계들을
   거치는지, DispatcherServlet과 Bean Container가 controller-service-
   repository 레이어를 어떻게 연결하는지 처음 잡는 primer다. 요청이 도착하기
-  전 흐름, 컨트롤러까지 어떤 단계, request pipeline, 레이어 흐름 같은
+  전 흐름, 컨트롤러까지 어떤 단계, request pipeline, filter와
+  HandlerInterceptor를 거쳐 controller에 도달하는 단계, 레이어 흐름 같은
   자연어 paraphrase가 본 문서의 큰 그림에 매핑된다.
 ---
 
@@ -51,8 +52,7 @@ contextual_chunk_prefix: |
 - [Database First-Step Bridge](../database/database-first-step-bridge.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet basics, bean container basics, spring di basics, controller service repository basics, spring 요청 흐름 뭐예요, bean di 뭐예요, 처음 spring 구조 헷갈려요, 왜 404 bean missing 같이 보여요, controller 다음 save 어디서 봐요, 요청마다 bean 만들어요, dispatcherservlet이 service 넣어줘요, mvc di transaction 차이, spring basics what is, request pipeline what is
-retrieval-anchor-keywords: applicationcontext role beginner, what does applicationcontext do, applicationcontext do in spring, spring applicationcontext 역할, applicationcontext가 뭐예요, bean factory applicationcontext beginner, spring container role, applicationcontext request pipeline, applicationcontext bean container
+retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet basics, bean container basics, spring di basics, controller service repository basics, spring 요청 흐름 뭐예요, http 요청이 컨트롤러까지 오기 전 단계, 처음 spring 구조 헷갈려요, 왜 404 bean missing 같이 보여요, controller 다음 save 어디서 봐요, 요청마다 bean 만들어요, dispatcherservlet이 service 넣어줘요, applicationcontext가 뭐예요, spring container role, request pipeline what is, HTTP 요청이 컨트롤러까지 도착하기 전에 어떤 단계들을 거쳐, filter handlerinterceptor controller 순서
 
 ## 핵심 개념
 

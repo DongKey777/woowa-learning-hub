@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Collection Update Strategy Primer
+concept_id: language/collection-update-strategy-primer
+canonical: false
+category: language
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/shopping-cart
+- missions/blackjack
+- missions/baseball
+review_feedback_tags:
+- collection-update-strategy
+- removeif-vs-copy-replace
+- stream-mutation-confusion
+aliases:
+- collection update strategy
+- removeIf vs copy and replace
+- stream to new collection
+- 컬렉션 수정 전략
+- in place mutation 기준
+symptoms:
+- 리뷰에서 removeIf를 쓸지 복사본을 만들어 교체할지 기준이 없어서 코드 의도가 흐린다고 해요
+- shopping-cart 같은 미션 리팩터링에서 stream으로 새 목록을 만들지 원본을 바로 고칠지 자꾸 헷갈려요
+- for-each 안에서 remove 하다가 예외가 나거나 side effect 범위가 커져서 어떤 전략을 먼저 떠올려야 할지 모르겠어요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/collections-equality-mutable-state-foundations
+- language/java-stream-lambda-basics
+next_docs:
+- language/map-remove-during-iteration-safety-primer
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- software-engineering/shopping-cart-order-snapshot-from-cart-bridge
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/stream-filter-vs-map-decision-mini-card.md
+- contents/language/java/stream-tolist-vs-collectors-tolist-mutability-bridge.md
+- contents/language/java/list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md
+- contents/software-engineering/shopping-cart-order-snapshot-from-cart-bridge.md
+- contents/software-engineering/shopping-cart-checkout-service-layer-bridge.md
+- contents/software-engineering/baseball-turn-result-response-boundary-bridge.md
+confusable_with:
+- language/map-remove-during-iteration-safety-primer
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- software-engineering/shopping-cart-order-snapshot-from-cart-bridge
+forbidden_neighbors: []
+expected_queries:
+- shopping-cart 미션에서 컬렉션을 고칠 때 removeIf, 복사 후 교체, stream 새 결과 중 무엇을 먼저 골라야 해?
+- 주문 라인 목록 리팩터링에서 원본을 바로 수정할지 새 리스트를 만들어 끼울지 판단 기준을 알고 싶어
+- for-each 안에서 remove 하다 꼬였는데 Java 미션 코드에서 컬렉션 수정 전략을 어떻게 나눠 생각하면 돼?
+- stream으로 필터링한 새 리스트를 반환할지 in-place mutation으로 끝낼지 PR 리뷰 기준으로 설명해줘
+- 작은 백엔드 미션에서 collection update strategy를 beginner 관점으로 정리한 문서가 필요해
+contextual_chunk_prefix: |
+  이 문서는 Woowa shopping-cart, blackjack, baseball 같은 Java 미션
+  리팩터링에서 컬렉션을 수정할 때 원본을 바로 고칠지, `removeIf(...)`로
+  삭제만 할지, 복사본을 만든 뒤 교체할지, stream으로 새 결과를 만들지를
+  나누는 mission_bridge다. 장바구니 라인 목록을 정리해야 함, for-each 안에서
+  remove 하다 꼬임, side effect 범위를 줄이고 싶음, PR에서 전략 선택 이유를
+  설명해야 함 같은 자연어 표현이 이 문서의 선택 기준에 매핑된다.
+---
+
 # Collection Update Strategy Primer
 
 > 한 줄 요약: 작은 Java 미션 리팩터링에서 컬렉션을 바꿀 때는 "원본을 바로 고칠지", "조건 삭제만 할지", "복사본을 만든 뒤 교체할지", "stream으로 새 결과를 만들지"를 먼저 나누면 코드 의도가 훨씬 빨리 읽힌다.

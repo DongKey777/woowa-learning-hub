@@ -7,6 +7,7 @@
 관련 문서:
 
 - primer route: [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) -> [Spring 요청 파이프라인과 Bean Container 기초](./spring-request-pipeline-bean-container-foundations-primer.md) -> [Database First-Step Bridge](../database/database-first-step-bridge.md) -> [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
+- follow-up route: [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md) -> [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)
 - [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [Lazy Loading to DTO Mapping Checklist](./spring-lazy-loading-dto-mapping-checklist.md)
@@ -18,7 +19,7 @@
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring persistence context beginner, transaction mental model, flush commit difference beginner, lazy loading beginner, lazy initialization exception beginner, controller service repository transactional 어디, service layer transaction boundary beginner, jpa persistence context 큰 그림, 영속성 컨텍스트 큰 그림, 지연 로딩 입문, osiv beginner, service에서 조회했는데 controller에서 sql 또 나가요, lazy loading n+1 헷갈려요, 처음 jpa transaction persistence context 뭐예요, what is persistence context basics
+retrieval-anchor-keywords: spring persistence context beginner, transaction mental model, service 메서드 전체가 작업 단위, transaction boundary example first, 가장 흔한 흐름 예시, 조건 확인용 조회, 마지막 상태 변경, 격리수준 전에 볼 문서, controller service repository transaction example, service commit unit beginner, flush commit difference beginner, lazy loading beginner, service에서 조회했는데 controller에서 sql 또 나가요, 처음 jpa transaction persistence context 뭐예요, what is persistence context basics
 
 ## 이 문서를 펼치는 가장 안전한 순서
 
@@ -35,6 +36,8 @@ retrieval-anchor-keywords: spring persistence context beginner, transaction ment
 - request/spring 입구가 헷갈리면 `Spring 요청 파이프라인과 Bean Container 기초`로 돌아간다.
 - SQL 위치가 헷갈리면 `JDBC · JPA · MyBatis 기초`로 돌아간다.
 - 둘은 알겠는데 "`언제 SQL이 나가고 왜 controller에서 또 찍히는가`"가 남으면 이 문서를 펼친다.
+
+저장 레인만 다시 한 줄로 고르면 `JDBC · JPA · MyBatis 기초 -> 이 문서의 가장 흔한 흐름 예시 -> 트랜잭션 격리 수준 기초` 순서가 beginner-safe 기본 경로다.
 
 ## 먼저 mental model 한 줄
 

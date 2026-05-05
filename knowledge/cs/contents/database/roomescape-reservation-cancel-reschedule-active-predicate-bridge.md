@@ -1,0 +1,103 @@
+---
+schema_version: 3
+title: roomescape 예약 변경/취소 ↔ active predicate와 상태 전이 브릿지
+concept_id: database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
+canonical: false
+category: database
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: ko
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- reservation-transition
+- active-predicate
+- cancel-reschedule-race
+aliases:
+- roomescape 예약 변경 취소 동시성
+- roomescape 예약 상태 전이
+- roomescape cancel reschedule race
+- 룸이스케이프 예약 변경 취소 경합
+- 예약 변경에서 기존 슬롯 먼저 풀어도 되나요
+symptoms:
+- roomescape에서 예약 변경할 때 기존 슬롯을 먼저 지워도 되는지 모르겠어요
+- 예약 취소와 변경 요청이 같이 오면 어떤 게 먼저 반영돼야 하나요
+- 예약 상태만 CANCELED로 바꿨는데 슬롯이 계속 막혀 있는 것 같아요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- database/transaction-basics
+- database/roomescape-reservation-concurrency-bridge
+next_docs:
+- database/reservation-reschedule-cancellation-transition-patterns
+- database/active-predicate-drift-reservation-arbitration
+- database/hold-expiration-predicate-drift
+linked_paths:
+- contents/database/roomescape-reservation-concurrency-bridge.md
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/active-predicate-drift-reservation-arbitration.md
+- contents/database/hold-expiration-predicate-drift.md
+- contents/software-engineering/roomescape-reservation-flow-service-layer-bridge.md
+confusable_with:
+- database/roomescape-available-times-empty-cause-router
+- database/reservation-reschedule-cancellation-transition-patterns
+- software-engineering/roomescape-reservation-flow-service-layer-bridge
+forbidden_neighbors:
+- contents/database/roomescape-reservation-concurrency-bridge.md
+expected_queries:
+- roomescape 예약 변경은 기존 슬롯을 해제하고 새 슬롯을 다시 잡으면 왜 위험해?
+- 예약 취소와 변경이 동시에 오면 DB에서는 어떤 상태 전이로 봐야 해?
+- cancel 처리했는데도 예약 가능 시간이 바로 안 풀리는 이유가 뭐야?
+- roomescape reschedule에서 old slot과 new slot을 같이 다뤄야 하는 이유를 설명해줘
+- 예약 row status만 바꾸면 충분한가 아니면 blocker 기준이 따로 있어?
+contextual_chunk_prefix: |
+  이 문서는 Woowa roomescape 미션에서 예약 변경과 취소를 구현하거나 리뷰받을 때
+  learner가 기존 슬롯을 먼저 풀고 새 슬롯을 다시 잡는 순서, cancel과 reschedule의
+  동시 요청, status 컬럼만 바꿨는데도 예약 가능 여부가 어긋나는 현상을 하나의
+  상태 전이 문제로 묶어 이해하도록 돕는 mission_bridge다. 예약 변경 race,
+  old slot/new slot handoff, active predicate, expired나 canceled인데 아직
+  막고 있는 것 같다는 자연어 표현이 이 문서의 검색 표면이다.
+---
+
+# roomescape 예약 변경/취소 ↔ active predicate와 상태 전이 브릿지
+
+## 한 줄 요약
+
+roomescape에서 예약 변경과 취소는 "row 상태만 바꾸는 작업"이 아니라 기존에 막고 있던 슬롯을 어떤 기준으로 해제하고 새 슬롯을 어떤 기준으로 점유하는지에 대한 상태 전이다. 그래서 `CANCELED` 라벨, 실제 blocker 해제 시점, 새 슬롯 선점 순서를 따로 보면 drift가 난다.
+
+## 미션 시나리오
+
+roomescape 미션이 예약 생성에서 끝나지 않고 변경이나 취소까지 붙기 시작하면, 학습자는 가장 먼저 "기존 예약을 지우고 새 예약을 만들면 되지 않나?"라는 생각을 하게 된다. 구현도 보통 `delete -> insert` 또는 `update status='CANCELED'` 뒤 새 시간으로 저장하는 식으로 흘러간다.
+
+문제는 이 흐름이 동시 요청 앞에서 쉽게 흔들린다는 점이다. 사용자가 예약 시간을 바꾸는 순간 다른 사용자가 같은 슬롯을 잡을 수 있고, 취소 요청과 변경 요청이 거의 동시에 들어오면 어느 요청이 마지막 진실인지 모호해진다. 리뷰에서 "기존 슬롯을 먼저 풀면 중간 상태가 보인다", "cancel은 label 변경이 아니라 blocker 해제까지 같이 봐야 한다"는 코멘트가 붙는 이유가 여기 있다.
+
+## CS concept 매핑
+
+roomescape 예약 변경을 CS 관점으로 번역하면 `old slot -> new slot` handoff다. 핵심은 기존 점유 범위와 목표 점유 범위를 한 전이로 다루는 것이지, release와 acquire를 서로 독립된 두 작업으로 보는 것이 아니다.
+
+| roomescape 장면 | CS 개념 | 왜 같이 봐야 하나 |
+| --- | --- | --- |
+| 기존 시간 18:00 예약을 19:00으로 변경 | state transition, union lock | old slot을 먼저 풀면 다른 요청이 끼어들 수 있다 |
+| 취소 요청이 들어와 `status='CANCELED'`로만 바꿈 | active predicate | 라벨이 끝났어도 blocker truth가 남아 있으면 슬롯은 계속 막힌다 |
+| 취소와 변경 요청이 동시에 도착 | mutation fence, serialization | 같은 reservation에 대해 마지막 반영 경로를 하나로 고정해야 한다 |
+| 만료/정리 worker가 뒤늦게 슬롯을 해제 | materialized release | `expires_at` 같은 후보 시각과 실제 해제 완료 시각을 구분해야 한다 |
+
+짧게 말하면, roomescape에서 "예약이 존재한다"는 사실과 "지금 이 슬롯을 막고 있다"는 사실은 같은 듯 보이지만 저장소에서는 다른 축일 수 있다. 그래서 상태 컬럼만 바꾸는 코드는 쉬워 보여도, 실제 예약 가능 여부를 결정하는 active predicate와 어긋나기 쉽다.
+
+## 미션 PR 코멘트 패턴
+
+- "`delete 후 insert`로 변경을 처리하면 중간에 빈 슬롯이 노출됩니다."라는 코멘트는 예약 변경을 두 작업이 아니라 한 전이로 보라는 뜻이다.
+- "`status`만 `CANCELED`로 바꾸고 overlap 기준은 그대로면 blocker drift가 납니다."라는 코멘트는 라벨과 실제 점유 해제 조건을 분리해서 보라는 뜻이다.
+- "취소와 변경이 동시에 오면 같은 reservation에 대한 직렬화 기준이 필요합니다."라는 코멘트는 reservation-local fence 없이 마지막 write winner에 맡기지 말라는 뜻이다.
+- "기존 슬롯과 새 슬롯을 같이 잠그거나 같은 arbitration surface에서 다시 확인해 보세요."라는 코멘트는 old/new scope를 같은 트랜잭션에서 다루라는 뜻이다.
+
+## 다음 학습
+
+- 예약 변경과 취소를 더 일반화한 전이 계약으로 보려면 `Reservation Reschedule and Cancellation Transition Patterns`를 이어서 읽는다.
+- 상태 라벨과 실제 blocker 기준이 왜 어긋나는지 더 깊게 보려면 `Active Predicate Drift in Reservation Arbitration`으로 간다.
+- hold 만료와 cleanup 지연 때문에 취소된 것처럼 보여도 슬롯이 안 풀리는 경우를 보려면 `Hold Expiration Predicate Drift`를 본다.
+- roomescape의 첫 동시성 선택지 자체를 다시 정리하려면 `같은 시간대 예약 동시 요청 — 락 vs 유니크 제약 vs 낙관적 락 결정`을 함께 읽는다.

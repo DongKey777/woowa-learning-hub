@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: Spring Validation and Binding Error Pipeline
+concept_id: spring/spring-validation-binding-error-pipeline
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- binding-vs-validation-sequence
+- bindingresult-vs-exception-flow
+- message-conversion-error-pipeline
+aliases:
+- spring validation binding pipeline
+- binding failure vs validation failure
+- bindingresult pipeline deep dive
+- methodargumentnotvalidexception pipeline
+- conversionservice validation order
+- httpmessageconverter validation order
+- dto 변환 실패 vs validation 실패
+- binding error pipeline spring
+- field error object error pipeline
+- requestbody validation internals spring
+- bindingresult local vs exception flow
+- validation pipeline advanced
+symptoms:
+- DTO를 못 만든 경우와 @Valid 실패를 같은 400으로 읽어서 계속 헷갈려
+- BindingResult가 붙으면 왜 메서드 안으로 들어오고 어떤 경우는 예외로 번지는지 모르겠어
+- Spring validation이 정확히 어느 순서로 동작하는지 내부 흐름을 보고 싶어
+intents:
+- definition
+- deep_dive
+- troubleshooting
+prerequisites:
+- spring/valid-400-vs-message-conversion-400-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/spring-exception-handling-basics
+next_docs:
+- spring/spring-mvc-exception-resolver-chain-contract
+- spring/spring-conversion-service-formatter-binder-pipeline
+- spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+linked_paths:
+- contents/spring/spring-valid-400-vs-message-conversion-400-primer.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-conversion-service-formatter-binder-pipeline.md
+- contents/spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- spring/valid-400-vs-message-conversion-400-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/spring-conversion-service-formatter-binder-pipeline
+- spring/spring-mvc-exception-resolver-chain-contract
+forbidden_neighbors: []
+expected_queries:
+- Spring MVC에서 바인딩 실패와 validation 실패가 정확히 어떤 순서로 일어나는지 설명해줘
+- DTO 변환 실패와 @Valid 실패가 둘 다 400일 때 내부 파이프라인을 어떻게 구분해?
+- BindingResult가 있는 경우와 없는 경우에 validation 에러가 어디로 흐르는지 깊게 알고 싶어
+- HttpMessageConverter, WebDataBinder, Bean Validation이 요청 처리에서 어떻게 이어지는지 보여줘
+- MethodArgumentNotValidException이 만들어지기 전까지 어떤 단계가 지나가는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC에서 request binding, message conversion, Bean
+  Validation, `BindingResult`, 예외 번역이 어떤 순서로 이어지는지
+  내부 흐름까지 설명하는 advanced deep dive다. 초급 primer에서 본
+  `DTO를 못 만들었나, 만든 뒤 규칙을 어겼나`를 더 세밀한 파이프라인
+  단계로 분해해 주는 역할을 맡는다.
+---
+
 # Spring Validation and Binding Error Pipeline
 
 > 한 줄 요약: Spring validation은 단순히 `@Valid`를 붙이는 일이 아니라, 바인딩 실패와 검증 실패가 어떤 순서로 발생하고 어떤 응답으로 번역되는지 이해하는 문제다.

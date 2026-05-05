@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: 'Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`'
+concept_id: spring/requestbody-415-unsupported-media-type-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/blackjack
+review_feedback_tags:
+- content-type-contract
+- consumes-mismatch
+- accept-vs-content-type
+aliases:
+- json인데 415 unsupported media type가 떠요
+- 'content-type: application/json 안 붙였는데 415예요'
+- content-type 때문에 막힌 것 같아요
+- json인데 415 unsupported media type
+- content-type application/json 안 붙였는데 415
+- '@requestbody 415 unsupported media type'
+- 컨트롤러 전에 415 spring
+- requestbody 400 vs 415 first split
+- json parse error가 보여요
+- consumes application/json mismatch
+- content-type application/json 왜
+- accept vs content-type spring
+- requestbody media type 처음
+- postman 415 spring beginner
+- 왜 415가 나와요
+symptoms:
+- JSON인데 415가 떠
+- Content-Type 헤더를 뭘 줘야 할지 모르겠어
+- Postman에서는 되는데 브라우저 요청은 media type에서 막혀
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- spring/modelattribute-vs-requestbody-binding-primer
+- spring/spring-mvc-request-lifecycle-basics
+next_docs:
+- spring/requestbody-400-before-controller-primer
+- spring/spring-content-negotiation-pitfalls
+- network/browser-devtools-accept-vs-content-type-mini-card
+linked_paths:
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/network/browser-devtools-accept-vs-content-type-mini-card.md
+- contents/network/http-request-response-headers-basics.md
+- contents/database/database-first-step-bridge.md
+confusable_with:
+- spring/requestbody-400-before-controller-primer
+- spring/modelattribute-vs-requestbody-binding-primer
+- spring/spring-content-negotiation-pitfalls
+- spring/controller-not-hit-cause-router
+- spring/json-request-400-cause-router
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 415 Unsupported Media Type은 왜 바로 나와?
+- consumes가 application/json인데 요청 헤더가 다르면 어떻게 돼?
+- JSON body를 보냈는데 media type 계약 실패로 막히는 흐름을 알고 싶어
+- Accept랑 Content-Type을 헷갈릴 때 먼저 무엇을 확인해야 해?
+- '@RequestBody 요청에서 400이 아니라 415가 되는 기준이 뭐야?'
+- 브라우저 fetch 요청이 JSON인데도 415가 뜨는 대표 원인이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring `@RequestBody` 초급 라우트에서 `415 Unsupported Media
+  Type`이 보일 때 body 값보다 `Content-Type` 계약과 `consumes` 조건을 먼저
+  확인하게 만드는 primer다. `json인데 415가 떠요`, `content-type:
+  application/json 안 붙였는데 왜 막혀요`, `postman은 되는데 브라우저만
+  415예요` 같은 한국어 검색형 질문을 body 파싱 이전의 media type 계약
+  실패로 이어 준다.
+---
 # Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`
 
 > 한 줄 요약: README Spring MVC 바인딩/400 라우트에서 `1.5단계 보조 분기`로 쓰는 `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`, `Content-Type 때문에 막힌 것 같아요` 검색어는 body 값보다 먼저 `이 요청 body가 JSON이라고 선언됐나?`라는 `Content-Type` 헤더/계약 질문으로 자르게 하는 entrypoint다.

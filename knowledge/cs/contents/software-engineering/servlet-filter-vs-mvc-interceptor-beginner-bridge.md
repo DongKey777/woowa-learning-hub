@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Servlet Filter vs MVC Interceptor Beginner Bridge
+concept_id: software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- filter-vs-interceptor-boundary
+- mvc-request-lifecycle
+- auth-hook-placement
+aliases:
+- filter vs interceptor beginner
+- servlet filter vs mvc interceptor
+- spring filter interceptor 차이
+- 필터 인터셉터 차이 기초
+- request 입구 vs controller 앞
+- jwt 전에 filter
+- interceptor 언제 써요
+symptoms:
+- filter와 interceptor가 둘 다 중간에서 끼어드는 코드처럼 보여 어디에 둘지 모르겠어요
+- 로그인 체크나 공통 로깅을 filter에 둘지 interceptor에 둘지 헷갈려요
+- controller 테스트를 짜려는데 security filter와 interceptor 경계가 흐려요
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/inbound-adapter-test-slices-primer
+next_docs:
+- spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/spring-security-filter-chain
+linked_paths:
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-security-filter-chain.md
+confusable_with:
+- spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/spring-security-filter-chain
+forbidden_neighbors: []
+expected_queries:
+- filter와 interceptor를 처음 배울 때 어떤 기준으로 먼저 나눠 생각하면 돼?
+- 로그인 체크는 언제 filter가 더 맞고 언제 interceptor가 더 맞아?
+- request body나 공통 헤더 처리는 왜 interceptor보다 filter에 가깝다고 해?
+- controller 앞뒤 공통 로직과 서블릿 입구 처리를 어떻게 구분해?
+- Spring MVC에서 filter, interceptor, security filter chain의 큰 그림을 빨리 잡는 방법이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring 웹 요청 흐름을 처음 배우며 filter와 interceptor를 같은
+  종류의 훅처럼 느끼는 학습자를 위한 bridge다. 요청 입구에서 막을 일인지,
+  어느 controller를 탈지 안 뒤 공통 처리를 붙일 일인지, JWT나 CORS처럼
+  앞단 concern인지, handler 정보가 필요한 concern인지 같은 질문을 servlet
+  경계와 MVC 경계의 차이로 연결한다.
+---
+
 # Servlet Filter vs MVC Interceptor Beginner Bridge
 
 > 한 줄 요약: 처음 배우는데 `filter`와 `interceptor`가 비슷해 보이면, `filter`는 서블릿 입구에서 요청 자체를 다루고 `interceptor`는 컨트롤러 앞뒤에서 MVC 공통 처리를 다룬다고 먼저 나누면 된다.

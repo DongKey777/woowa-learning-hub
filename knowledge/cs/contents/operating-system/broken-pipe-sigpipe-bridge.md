@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Broken Pipe and `SIGPIPE` Bridge
+concept_id: operating-system/broken-pipe-sigpipe-bridge
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- broken-pipe-vs-backpressure
+- sigpipe-vs-epipe
+- reader-close-vs-pipe-full
+aliases:
+- operating-system-00069
+- broken pipe 뭐예요
+- sigpipe 뭐예요
+- epipe 뭐예요
+- broken pipe 처음 배우는데
+- broken pipe 헷갈려요
+- subprocess broken pipe 뭐예요
+- child writes to closed pipe
+- no readers on pipe write
+- broken pipe vs backpressure
+- sigpipe vs epipe
+- brokenpipeerror subprocess
+- yes head sigpipe
+- reader가 먼저 닫히면 뭐가 와요
+- 왜 갑자기 broken pipe 가 나요
+symptoms:
+- child가 쓰는 중인데 갑자기 BrokenPipeError나 EPIPE가 떠요
+- 파이프가 꽉 찬 건지 reader가 먼저 닫힌 건지 구분이 안 돼요
+- yes | head 같은 파이프라인에서 왜 SIGPIPE가 나는지 처음 설명이 필요해요
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/signals-process-supervision
+next_docs:
+- operating-system/proc-pid-status-signal-fields-debugging-primer
+- operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn
+linked_paths:
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/subprocess-stdin-eof-primer.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn.md
+- contents/operating-system/proc-pid-status-signal-fields-debugging-primer.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- operating-system/subprocess-pipe-backpressure-primer
+- operating-system/subprocess-stdin-eof-primer
+forbidden_neighbors:
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+expected_queries:
+- reader가 먼저 닫힌 pipe에 write하면 운영체제는 무엇을 보내?
+- BrokenPipeError가 pipe full이랑 어떻게 다른지 입문자 기준으로 설명해줘
+- subprocess에서 SIGPIPE와 EPIPE가 어떤 순서로 드러나는지 알고 싶어
+- yes | head 같은 예시에서 왜 writer 쪽이 갑자기 종료돼?
+- child가 계속 쓰는데 받을 쪽이 없어졌을 때 어디서부터 이해하면 돼?
+contextual_chunk_prefix: |
+  이 문서는 subprocess와 pipe를 배우는 학습자가 reader가 먼저 닫힌 뒤 writer가 계속 쓸 때 왜 SIGPIPE와 EPIPE가 함께 보이는지, backpressure나 stdin EOF와 어떻게 다른지 연결하는 bridge다. 받는 쪽이 없는데 계속 쓰면, yes | head가 왜 깨져, broken pipe가 왜 나와, EPIPE와 SIGPIPE 차이, 읽는 쪽 먼저 종료 같은 자연어 paraphrase가 본 문서의 장면 연결에 매핑된다.
+---
 # Broken Pipe and `SIGPIPE` Bridge
 
 > 한 줄 요약: reader가 먼저 사라진 pipe에 writer가 다시 쓰면, "조금 기다렸다가 다시 써 보라"가 아니라 "이제 받을 쪽이 없다"가 되어 기본적으로 `SIGPIPE`가 오고, 그 signal을 무시하거나 처리하면 `write()`는 `EPIPE`로 실패한다.

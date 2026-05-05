@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Suffix Array vs Suffix Tree
+concept_id: algorithm/suffix-array-vs-suffix-tree-comparison
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+  - substring-index-choice
+  - static-vs-structural-index
+aliases:
+  - suffix array vs suffix tree
+  - suffix index comparison
+  - static vs tree substring index
+  - suffix array tree chooser
+  - substring index tradeoff
+  - suffix structure comparison
+symptoms:
+  - substring 인덱스를 고르려는데 suffix array와 suffix tree 중 어디서 갈라야 할지 모르겠어
+  - 정적 인덱스와 구조적 검색 트리의 차이를 한 번에 설명하고 싶어
+  - 구현 난이도와 메모리 차이 때문에 둘을 어떻게 비교해야 할지 막혀
+intents:
+  - comparison
+  - design
+  - deep_dive
+prerequisites:
+  - algorithm/suffix-array-lcp
+  - algorithm/suffix-tree-intuition
+next_docs:
+  - algorithm/suffix-automaton
+linked_paths:
+  - contents/algorithm/suffix-array-lcp.md
+  - contents/algorithm/suffix-tree-intuition.md
+  - contents/algorithm/suffix-automaton.md
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+confusable_with:
+  - algorithm/suffix-array-lcp
+  - algorithm/suffix-tree-intuition
+  - algorithm/suffix-automaton
+forbidden_neighbors:
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+expected_queries:
+  - substring 인덱스를 고를 때 suffix array와 suffix tree를 어떤 기준으로 비교해야 해
+  - 정적 텍스트 검색에는 왜 suffix array가 더 실용적이라고 말하는지 설명해줘
+  - compressed trie 기반 구조와 정렬 기반 구조를 한 표로 구분하고 싶어
+  - 구현 복잡도와 메모리 관점에서 suffix tree와 suffix array를 어떻게 갈라야 해
+  - suffix automaton까지 포함하면 세 구조의 선택 기준이 어떻게 달라지는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 substring 인덱스를 고를 때 suffix array와 suffix tree를
+  빠르게 갈라주는 algorithm chooser다. 정렬 기반 정적 인덱스인지,
+  compressed trie 기반 구조인지, 구현 난도와 메모리와 업데이트성에서
+  어떤 trade-off가 있는지, suffix automaton은 어디에 끼는지 같은
+  자연어 paraphrase가 본 문서의 비교 표와 선택 기준에 매핑된다.
+---
 # Suffix Array vs Suffix Tree
 
 > 한 줄 요약: Suffix Array는 정렬 기반 정적 인덱스이고, Suffix Tree는 압축 트리 기반의 더 직접적인 substring 구조다.

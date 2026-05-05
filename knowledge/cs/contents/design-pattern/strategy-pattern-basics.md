@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: 전략 패턴 기초 (Strategy Pattern Basics)
+concept_id: design-pattern/strategy-pattern-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- if-else-to-strategy
+- caller-selects-strategy
+- strategy-vs-registry
+aliases:
+- strategy pattern basics
+- strategy pattern beginner
+- 전략 패턴 기초
+- 결제 전략
+- 할인 전략
+- if-else 대신 전략
+- caller chooses strategy
+- 호출자가 전략 선택
+- 처음 배우는데 전략 패턴
+- 전략 패턴 큰 그림
+- 전략 패턴 언제 쓰는지
+- 주입으로 구현 고르기
+- strategy vs factory vs registry
+- 전략 팩토리 레지스트리 차이
+- map strategy registry confusion
+symptoms:
+- 할인이나 결제 규칙이 늘어나는데 언제 if 문을 전략으로 빼야 할지 모르겠어요
+- 누가 전략을 고르는지와 context 책임이 자꾸 섞여 보여요
+- Map으로 구현을 찾는 코드가 strategy인지 registry인지 헷갈려요
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/composition-over-inheritance-basics
+next_docs:
+- design-pattern/template-method-vs-strategy
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/strategy-explosion-smell
+linked_paths:
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/command-vs-strategy-quick-bridge.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/strategy-policy-selector-naming.md
+- contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/strategy-explosion-smell.md
+- contents/spring/ioc-di-container.md
+confusable_with:
+- design-pattern/template-method-vs-strategy
+- design-pattern/strategy-map-vs-registry-primer
+- design-pattern/strategy-vs-state-vs-policy-object
+forbidden_neighbors:
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+expected_queries:
+- 전략 패턴은 언제 if-else보다 이득이 커져?
+- 호출자가 전략을 고른다는 말을 코드 흐름으로 설명해줘
+- 구현 교체와 생성 책임이 섞이면 전략이랑 팩토리를 어떻게 나눠?
+- Map으로 규칙을 고르는 코드는 전략 패턴으로 봐도 돼?
+- 처음 배우는 사람이 템플릿 메소드 말고 전략부터 봐야 하는 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 디자인 패턴 입문자가 규칙이 늘어나는 분기 코드를 어떤 기준으로 분리하고, 누가 구현 객체를 골라 넣는지부터 전략 패턴의 기초를 처음 잡는 primer다. 조건문이 커질 때 규칙 객체로 나누기, 실행 흐름은 두고 계산 방식만 바꾸기, 주입된 구현 교체, 선택 책임과 실행 책임 분리, Map lookup처럼 보여도 핵심은 행동 위임인 경우 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 전략 패턴 기초 (Strategy Pattern Basics)
 
 > 한 줄 요약: 전략 패턴은 알고리즘(행동)을 별도 객체로 분리해 런타임에 교체할 수 있게 만드는 패턴으로, if-else 분기보다 변경 축을 명확하게 나누고 싶을 때 쓴다.

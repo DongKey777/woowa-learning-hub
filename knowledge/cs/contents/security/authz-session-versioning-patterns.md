@@ -20,7 +20,7 @@
 > - [Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 > - [분산 캐시 설계](../system-design/distributed-cache-design.md)
-> - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
+> - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence-assurance-deep-dive-catalog)
 > - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
 retrieval-anchor-keywords: authz session versioning, session version pattern, authz version pattern, claim version, claim epoch, permission version, token version, token epoch, jwt version claim, stale claim revoke, stale authority revoke, role revoked but jwt still works, granted role but still 403, permission change active session, authz freshness version, session freshness version, policy version, tenant version, tenant membership version, graph snapshot version, version bump revocation, revocation without blacklist, server session versioning, authz cache version key, authz version mismatch, logout all devices version, forced refresh after role change, stale authorities fix

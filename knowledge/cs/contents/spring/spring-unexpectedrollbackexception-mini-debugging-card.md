@@ -14,10 +14,22 @@
 - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: unexpectedrollbackexception mini debugging card, rollback-only checklist, transaction marked rollback-only checklist, catch 했는데 마지막에 터짐, swallow exception transaction, catch and continue transactional, rollback only detection beginner, unexpectedrollbackexception beginner, rollback-only signal card, commit 시점에 터짐 why, audit save then unexpectedrollbackexception, same transaction continue after failure, rollback-only vs checked exception, checked exception commit surprise 비교, spring unexpectedrollbackexception mini debugging card basics
+retrieval-anchor-keywords: unexpectedrollbackexception mini debugging card, rollback-only checklist, transaction marked rollback-only checklist, catch 했는데 마지막에 터짐, rollback 안 되는 것 같아요, swallow exception transaction, catch and continue transactional, unexpectedrollbackexception beginner, commit 시점에 터짐 why, 왜 마지막 커밋에서 터져요, audit save then unexpectedrollbackexception, same transaction continue after failure, rollback-only vs checked exception, checked exception commit surprise 비교, spring unexpectedrollbackexception basics
+
+## 이 문서가 먼저 잡는 질문
+
+이 문서는 아래처럼 **예외가 이미 한 번 지나갔는데 마지막에 다시 터진다**는 질문에서 먼저 잡히도록 조정했다.
+
+| 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
+|---|---|
+| "`UnexpectedRollbackException`이 왜 마지막에 나와요?" | 마지막 줄보다 앞에서 같은 트랜잭션이 이미 rollback-only가 됐는지 먼저 보라고 답한다 |
+| "예외를 catch 했는데 왜 결국 실패해요?" | catch는 예외 전달을 숨길 뿐 트랜잭션 상태를 복구하지 못한다고 먼저 자른다 |
+| "audit save는 남길 줄 알았는데 왜 같이 롤백돼요?" | audit도 같은 트랜잭션이면 함께 rollback된다고 먼저 설명한다 |
+| "rollback 안 된 게 아니라 마지막에 늦게 드러난 건가요?" | 맞다. 표면화 지점과 최초 실패 지점을 분리해서 보라고 안내한다 |
 
 ## 먼저 mental model 한 줄
 
@@ -134,4 +146,4 @@ public void placeOrder() {
 
 ## 한 줄 정리
 
-`UnexpectedRollbackException`은 보통 "마지막 commit이 문제"가 아니라, **앞에서 이미 rollback-only가 된 트랜잭션을 catch-and-continue가 끝까지 끌고 왔다**는 신호다.
+`UnexpectedRollbackException`은 "rollback이 안 됐다"가 아니라, **앞에서 이미 rollback-only가 된 트랜잭션을 catch-and-continue가 끝까지 끌고 와 commit 시점에 드러난 신호**다.

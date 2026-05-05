@@ -27,6 +27,20 @@
 
 retrieval-anchor-keywords: cookie scope migration cleanup, session cookie migration cleanup, expire old cookies exact domain path, delete cookie exact path domain, cookie tombstone exact domain path, cookie cleanup matrix, cookie path migration cleanup, cookie domain migration cleanup, move session cookie from /app to /, move session cookie from auth.example.com to example.com, stale cookie after scope migration, old cookie shadows new cookie, delete host-only cookie omit domain, cookie scope migration cleanup basics, cookie scope migration cleanup beginner
 
+## 먼저 이 문서가 맞는지 15초 분기
+
+| 지금 막힌 질문 | 이 문서가 맞는 경우 | 더 가까운 문서 |
+|---|---|---|
+| "old cookie를 exact `Domain`/`Path`로 어떻게 지워?" | 구조보다 **cleanup matrix**가 핵심일 때 | 이 문서 계속 읽기 |
+| "`__Host-`로 왜 옮기는지부터 아직 헷갈려" | cleanup보다 **migration 큰 그림**이 먼저일 때는 아님 | [__Host- Cookie Migration Primer](./host-cookie-migration-primer.md) |
+| "logout 뒤 다른 subdomain이 왜 다시 로그인 같지?" | tombstone 문법보다 **logout 범위와 old shared tail**이 먼저일 때는 아님 | [Subdomain Logout Cookie Cleanup Primer](./subdomain-logout-cookie-cleanup-primer.md) |
+| "같은 이름 cookie가 둘 다 전송되는 원인을 먼저 좁혀야 해" | cleanup header 설계 전 **중복 shadowing 판별**이 먼저일 때는 아님 | [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md) |
+
+짧은 규칙:
+
+- 이 문서는 "어떤 구조가 맞나"보다 **old scope 하나당 tombstone 하나**라는 실행 규칙을 정리하는 follow-up 문서다.
+- scope inventory가 아직 안 됐거나 logout 의미가 먼저 흔들리면 위 primer로 올라가는 편이 빠르다.
+
 ## 왜 이 문서를 지금 여나
 
 이 문서는 broad한 login-loop entrypoint가 아니다.

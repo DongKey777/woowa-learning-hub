@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: A* vs Dijkstra
+concept_id: algorithm/a-star-vs-dijkstra
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- heuristic-vs-distance-table
+- admissible-heuristic-choice
+aliases:
+- a star heuristic pathfinding
+- a star vs dijkstra
+- goal-directed shortest path choice
+- heuristic shortest path chooser
+- 목적지 고정 최단 경로 선택
+- 휴리스틱 있는 최단 경로 탐색
+- 목표 정점 있는 최단 경로 비교
+- 도착지 고정 경로 탐색 선택
+symptoms:
+- 목표 정점이 하나일 때 다익스트라 대신 A*를 써도 되는 기준이 헷갈려
+- 휴리스틱이 있으면 왜 탐색이 줄어드는지 감이 안 와
+- 전체 거리표가 필요한 문제와 목적지 하나만 찾는 문제를 어떻게 나눠야 할지 모르겠어
+intents:
+- comparison
+- design
+prerequisites:
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+next_docs:
+- algorithm/shortest-path-reconstruction-bridge
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/zero-one-bfs-state-space-bridge
+linked_paths:
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+confusable_with:
+- algorithm/shortest-path-reconstruction-bridge
+- algorithm/zero-one-bfs-grid-conversion-primer
+forbidden_neighbors:
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- 목적지가 하나로 정해져 있을 때 다익스트라 대신 A*를 써도 되는 기준이 뭐야?
+- A* 휴리스틱이 부정확하면 그냥 다익스트라처럼 생각해도 되는지 궁금해
+- 출발점 하나에서 전체 거리표가 필요할 때와 도착점 하나만 찾을 때 알고리즘을 어떻게 갈라?
+- 길찾기에서 A*랑 다익스트라를 어떤 기준으로 고르면 돼?
+- 게임 맵처럼 도착지가 정해진 경로 탐색이면 다익스트라보다 A*가 왜 유리해?
+- 최단 거리표는 필요 없고 한 목적지만 찾으면 어떤 알고리즘을 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 길찾기 문제에서 목표 하나만 빨리 찾을지, 출발점 기준으로 전체 거리 정보를 구할지를 두고 A*와 Dijkstra 중 무엇을 쓸지 결정하는 chooser다. 한 목적지만 빨리 찾고 싶다, 지도 탐색 범위를 덜 보고 싶다, 휴리스틱이 빗나가면 어떻게 되나, 전체 최단 거리표까지 필요하진 않다, 목적지 쪽으로 탐색을 몰아도 되나 같은 자연어 paraphrase가 본 문서의 선택 경계에 매핑된다.
+---
 # A* vs Dijkstra
 
 > 한 줄 요약: Dijkstra는 시작점 기준의 최단 경로를 보장하고, A*는 목표점까지의 추정 비용을 더해 더 똑똑하게 탐색을 줄인다.

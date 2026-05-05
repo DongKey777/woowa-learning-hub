@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Exclusion Constraint vs Slot Row 빠른 선택 가이드
+concept_id: database/exclusion-constraint-vs-slot-row-quick-chooser
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+  - missions/roomescape
+review_feedback_tags:
+- overlap-model-choice
+- exclusion-vs-slot-row
+- time-truth-modeling
+aliases:
+- exclusion constraint vs slot row
+- exact key vs interval overlap
+- booking overlap beginner
+- postgresql overlap chooser
+- slot row chooser
+- continuous interval vs discrete slot
+- overlap not duplicate key
+- booking overlap exact key 아님
+- continuous time truth
+- discrete time truth
+- exclusion constraint intro
+- slotization basics
+- reservation overlap what to use
+- double booking prevention beginner
+- stay day slot row
+symptoms:
+- 예약 겹침을 막아야 하는데 unique 로 충분한지 헷갈린다
+- 시간이 칸처럼 잘려 있지 않은데 slot row 로 가도 되는지 모르겠다
+- PostgreSQL exclusion constraint 와 slot row 중 뭐가 더 자연스러운지 빨리 고르고 싶다
+intents:
+- comparison
+- design
+prerequisites:
+- database/constraint-first-booking-primer
+- database/transaction-basics
+next_docs:
+- database/phantom-safe-booking-patterns-primer
+- database/exclusion-constraint-overlap-case-studies
+- database/mysql-overlap-fallback-beginner-bridge
+linked_paths:
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/slot-row-rounding-half-open-dst-junior-checklist.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/slot-delta-reschedule-semantics.md
+- contents/system-design/inventory-reservation-system-design.md
+confusable_with:
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/phantom-safe-booking-patterns-primer
+- database/constraint-first-booking-primer
+forbidden_neighbors:
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+expected_queries:
+- 예약 시간이 겹치면 PostgreSQL 에서는 exclusion constraint 랑 slot row 중 뭘 먼저 봐?
+- 숙박처럼 연속 구간 예약이면 slot row 보다 다른 방법이 더 맞아?
+- exact key 중복이 아니라 시간 overlap 인데 어떤 패턴으로 시작해야 해?
+- 예약 겹침 방지에서 continuous interval 과 discrete slot 을 어떻게 나눠 생각해?
+- roomescape 같은 예약 문제를 볼 때 exclusion constraint 와 slot row 차이를 빨리 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 예약 겹침 방지에서 학습자가 continuous interval truth와
+  discrete slot truth를 구분해 exclusion constraint와 slot row 중 무엇을
+  먼저 볼지 결정하게 돕는 beginner chooser다. 정확히 같은 키 문제는 아님,
+  시간대가 조금만 겹쳐도 막아야 함, 숙박 일수 칸으로 잘라야 하나,
+  PostgreSQL 구간 제약을 써야 하나, roomescape 예약 모델을 어떤
+  진실원천으로 둘까 같은 자연어 표현이 이 문서의 선택 기준에 매핑된다.
+---
 # Exclusion Constraint vs Slot Row 빠른 선택 가이드
 
 > 한 줄 요약: interval overlap 문제는 exact-key 중복 방지와 다르고, PostgreSQL exclusion constraint는 "겹치는 구간 자체"를 막고 slot row는 "겹침을 여러 exact slot 충돌"로 바꿔 막는다.

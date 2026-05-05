@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: JFR and JMC Performance Playbook
+concept_id: language/jfr-jmc-performance-playbook
+canonical: false
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- jfr-first-observation-order
+- latency-spike-timeline-correlation
+- hotspot-vs-event-timeline
+aliases:
+- jfr jmc playbook
+- java flight recorder mission control
+- jfr latency investigation
+- jmc 병목 분석
+- jfr 운영 프로파일링
+- jfr gc lock allocation timeline
+- jfr thread parking analysis
+- 자바 jfr jmc 정리
+- 자바 성능 분석 jfr
+symptoms:
+- p99가 튀는데 CPU만 봐서는 원인이 안 보여서 어떤 관측부터 해야 할지 모르겠어
+- JFR 파일은 뽑았는데 JMC에서 무엇부터 읽어야 병목을 좁힐 수 있는지 막막해
+- GC, lock, allocation, thread state가 한꺼번에 얽혀 보여서 초동 분석 순서를 잡고 싶어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- language/jvm-gc-jmm-overview
+- language/jfr-event-interpretation
+- language/safepoint-stop-the-world-diagnostics
+next_docs:
+- language/async-profiler-vs-jfr-comparison
+- language/oom-heap-dump-playbook
+- language/jfr-loom-incident-signal-map
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/async-profiler-vs-jfr-comparison.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+- contents/language/java/g1-vs-zgc.md
+- contents/language/java/locksupport-park-unpark-permit-semantics.md
+confusable_with:
+- language/async-profiler-vs-jfr-comparison
+- language/jfr-event-interpretation
+- language/oom-heap-dump-playbook
+forbidden_neighbors:
+- contents/language/java/async-profiler-vs-jfr-comparison.md
+expected_queries:
+- Java 서비스에서 느려질 때 JFR과 JMC로 초동 분석을 어떤 순서로 시작해야 하는지 알려줘
+- p99 지연이 튈 때 GC인지 lock인지 allocation인지 JFR로 먼저 가르는 실전 절차가 필요해
+- JMC를 열었는데 latency spike 구간에서 무엇부터 확인해야 하는지 정리한 자바 문서를 찾고 있어
+- CPU profiler만 보지 말고 JVM 이벤트 타임라인까지 같이 보는 운영용 플레이북이 필요해
+- Java Flight Recorder와 Mission Control을 현업 장애 대응 관점에서 묶어 설명한 글이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java 운영 환경에서 지연 급등이나 병목 조짐이 보일 때 JFR로
+  증거를 남기고 JMC에서 GC, lock, allocation, thread state를 어떤 순서로
+  좁혀 갈지 전략으로 막는 playbook이다. p99만 튀는데 CPU는 잠잠함, JFR
+  파일은 있는데 첫 화면에서 막힘, 멈춘 순간의 JVM 이벤트 흐름을 따라가고
+  싶음, 초동 진단 순서를 놓치고 싶지 않음 같은 자연어 표현이 본 문서의
+  분석 절차에 매핑된다.
+---
 # JFR and JMC Performance Playbook
 
 > 한 줄 요약: JFR은 JVM 내부에서 무슨 일이 일어나는지 기록하는 장치이고, JMC는 그 기록을 읽어 병목을 찾는 도구다.

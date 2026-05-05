@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: H3 Stale Alt-Svc 421 Recovery Primer
+concept_id: network/h3-stale-alt-svc-421-recovery-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- stale-alt-svc-first-fail
+- h3-endpoint-authority-drift
+- fresh-path-recovery
+aliases:
+- h3 stale alt-svc 421 recovery
+- stale alt-svc 421
+- stale alt-svc fresh path
+- stale h3 endpoint authority
+- same url 421 then 200 h3
+- old alt-svc wrong endpoint
+- fresh path retry after 421
+symptoms:
+- 어제까지 되던 H3 경로가 오늘 첫 요청에서만 `421`을 주고 다시 보내면 성공해서 캐시인지 라우팅인지 헷갈린다
+- 같은 URL이 `421 -> 200`으로 보이는데 브라우저가 예전 `Alt-Svc`를 아직 믿는 상황인지 모르겠다
+- 회사망에서 집망으로 바꾼 뒤 H3 첫 시도만 꼬이는 현상을 stale hint로 봐야 하는지 감이 안 잡힌다
+- 브라우저는 `421`인데 `curl`은 바로 성공해서 오래된 H3 endpoint 메모를 의심해야 하는지 알고 싶다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/alt-svc-cache-lifecycle-basics
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http3-cross-origin-reuse-guardrails-primer
+next_docs:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http3-421-observability-primer
+- network/alt-svc-endpoint-migration-rollout-symptom-bridge
+linked_paths:
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/alt-svc-endpoint-migration-rollout-symptom-bridge.md
+- contents/network/alt-svc-cache-vs-per-origin-421-recovery.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/421-retry-path-mini-guide-fresh-h3-vs-h2-fallback.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+confusable_with:
+- network/browser-421-but-curl-200-symptom-router
+- network/first-request-h2-next-request-h3-symptom-router
+- network/http2-http3-421-retry-after-wrong-coalescing
+forbidden_neighbors:
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+expected_queries:
+- stale Alt-Svc 때문에 H3 첫 요청만 421이 뜨는 흐름을 설명해줘
+- 같은 URL이 421 뒤 200으로 바뀌면 오래된 H3 힌트를 의심해야 해?
+- 브라우저가 예전 Alt-Svc를 믿고 잘못된 endpoint로 가는 상황은 어떻게 보이나?
+- 회사망 바꾼 뒤 H3만 첫 시도에서 실패하고 다시 성공하면 어디부터 확인해?
+- curl은 괜찮은데 브라우저 H3만 421이면 stale hint recovery일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 예전에 배운 `Alt-Svc`나 H3 endpoint authority를
+  브라우저가 아직 믿고 첫 시도에서만 `421`을 받은 뒤 fresh path에서
+  성공하는 장면을 이해하도록 돕는 network primer다. stale Alt-Svc,
+  same URL `421 -> 200`, old H3 endpoint, fresh path retry, 회사망/집망
+  전환 뒤 첫 요청만 실패 같은 자연어 표현이 stale hint와 recovery
+  trace 분기에 직접 연결되도록 설계했다.
+---
 # H3 Stale Alt-Svc 421 Recovery Primer
 
 > 한 줄 요약: 예전에 배운 `Alt-Svc`나 예전 endpoint authority를 브라우저가 아직 믿고 H3로 먼저 갔다가 `421`을 받고, 새 connection 또는 기본 경로의 fresh path에서 바로 성공하는 패턴을 초급자 눈높이로 설명하는 primer

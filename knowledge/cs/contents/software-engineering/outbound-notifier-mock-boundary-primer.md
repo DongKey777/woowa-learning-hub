@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: Outbound Notifier Mock Boundary Primer
+concept_id: software-engineering/outbound-notifier-mock-boundary-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- notifier-mock-boundary
+- event-publisher-test-choice
+- side-effect-vs-state-verification
+aliases:
+- outbound notifier mock boundary
+- notifier mock first
+- event publisher mock first
+- 알림 mock 왜 먼저
+- 이벤트 발행 mock 먼저
+- notifier fake vs mock
+- 처음 notifier 테스트
+- interaction verification beginner
+- outbound port side effect basics
+- notification boundary test
+- what is notifier mock
+- mock spy notifier basics
+- notifier mock vs spy
+- mock spy payload capture
+- one call payload capture beginner
+symptoms:
+- repository는 fake를 쓰는데 알림 발송이나 이벤트 발행은 왜 mock이나 spy를 쓰는지 헷갈려요
+- 주문 성공 시 알림을 보냈는지 확인할 때 상태 검증과 호출 검증을 자꾸 섞어요
+- notifier 테스트를 unit에서 어디까지 보고 outbox나 통합 테스트로 언제 올려야 할지 모르겠어요
+intents:
+- definition
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/stub-vs-spy-first-test-primer
+next_docs:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/repository-fake-design-guide
+- spring/spring-service-layer-external-io-after-commit-outbox-primer
+linked_paths:
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/stub-vs-spy-first-test-primer.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+confusable_with:
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/stub-vs-spy-first-test-primer
+- software-engineering/outbox-inbox-domain-events
+- design-pattern/observer-pubsub-application-events
+forbidden_neighbors:
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+expected_queries:
+- 주문 성공 시 알림을 보냈는지 확인하는 테스트는 왜 fake보다 mock이나 spy가 더 잘 맞아?
+- event publisher 경계에서 호출 자체가 답이라는 말이 무슨 뜻인지 beginner 예시로 설명해줘
+- notifier 테스트는 unit에서 호출 여부만 보고 언제 outbox나 통합 테스트로 올려야 해?
+- repository 검증과 notifier 검증을 같은 방식으로 하면 왜 테스트가 흐려져?
+- payload 캡처가 필요할 때 mock captor와 spy 중 무엇을 먼저 떠올리면 좋을지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 outbound notifier와 event publisher 경계에서 mock이나 spy가 왜
+  먼저 등장하는지 설명하는 beginner primer다. 저장 결과를 읽는 repository
+  fake와 달리 부작용 요청 자체를 확인해야 하는 notifier 테스트를 어떻게
+  읽어야 하는지, 호출 여부 검증과 전달 보장 검증을 어디서 나누는지, unit
+  test와 outbox 기반 후속 검증 사이 경계를 어떻게 잡는지 같은 질문을
+  입문용 테스트 경계 기준으로 정리한다.
+---
+
 # Outbound Notifier Mock Boundary Primer
 
 > 한 줄 요약: `알림을 보냈다`, `이벤트를 발행했다`처럼 outbound notifier의 핵심 질문이 호출 자체일 때는, repository fake처럼 상태를 재현하기보다 mock/spy로 상호작용 경계를 먼저 잠그는 편이 초심자에게 더 안전하다.

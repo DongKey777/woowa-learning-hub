@@ -4,31 +4,18 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md)
-> - [Domain Events, Outbox, Inbox](../software-engineering/outbox-inbox-domain-events.md)
-> - [Outbox, Saga, Eventual Consistency](../database/outbox-saga-eventual-consistency.md)
-> - [@Transactional 깊이 파기](./transactional-deep-dive.md)
-> - [Spring `@TransactionalEventListener` Outside Transactions and `fallbackExecution`](./spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md)
-> - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
-> - [Spring ApplicationEventMulticaster Internals](./spring-applicationeventmulticaster-internals.md)
-> - [Spring `@EventListener` Ordering and Async Traps](./spring-eventlistener-ordering-async-traps.md)
-> - [Outbox Relay and Idempotent Publisher](../design-pattern/outbox-relay-idempotent-publisher.md)
-> - [Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md)
-> - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
+관련 문서:
+
+- [Spring `@TransactionalEventListener` Outside Transactions and `fallbackExecution`](./spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md)
+- [Spring `@EventListener` Ordering and Async Traps](./spring-eventlistener-ordering-async-traps.md)
+- [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+- [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md)
+- [Domain Events, Outbox, Inbox](../software-engineering/outbox-inbox-domain-events.md)
+- [Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md)
 
 ---
 
-> retrieval-anchor-keywords:
-> - Spring EventListener
-> - TransactionalEventListener
-> - transaction phase
-> - AFTER_COMMIT
-> - BEFORE_COMMIT
-> - outbox pattern
-> - domain event dispatch
-> - event listener transaction boundary
-> - 이벤트 트랜잭션 경계
+retrieval-anchor-keywords: spring eventlistener, transactionaleventlistener, after_commit before_commit, outbox pattern spring, event listener transaction boundary, fallbackexecution, no transaction event listener, 이벤트 트랜잭션 경계, outbox 언제 써요, after commit 왜 써요
 
 ## 핵심 개념
 
@@ -43,18 +30,6 @@ Spring에서 이벤트를 다루는 방식은 크게 두 갈래다.
 - `@TransactionalEventListener`는 `BEFORE_COMMIT`, `AFTER_COMMIT`, `AFTER_ROLLBACK`, `AFTER_COMPLETION` 같은 phase를 기준으로 실행된다.
 
 즉, 이벤트 리스너는 "도메인 사실에 반응하는 코드"처럼 보이지만 실제로는 **정합성을 어디까지 같은 트랜잭션 안에서 보장할지**를 정하는 장치다.
-
-retrieval-anchor-keywords: - @EventListener
-- `@TransactionalEventListener`
-- `BEFORE_COMMIT`
-- `AFTER_COMMIT`
-- `AFTER_ROLLBACK`
-- `outbox`
-- `domain event`
-- `transaction synchronization`
-- `idempotency`
-- `fallbackExecution`
-- `no transaction event`
 
 이 주제를 이해할 때 가장 중요한 질문은 이거다.
 

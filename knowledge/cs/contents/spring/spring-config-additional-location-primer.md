@@ -12,12 +12,10 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring Docker Compose and Kubernetes Env Injection Basics: property 이름과 플랫폼 주입 실수 분리하기](./spring-docker-compose-k8s-env-injection-basics-primer.md)
-> - [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
+- [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring Docker Compose and Kubernetes Env Injection Basics: property 이름과 플랫폼 주입 실수 분리하기](./spring-docker-compose-k8s-env-injection-basics-primer.md)
+- [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
 
 retrieval-anchor-keywords: spring.config.additional-location primer, spring.config.additional-location vs spring.config.location, spring config default plus override, spring config location replaces defaults, spring external config beginner, packaged application yml plus external override, optional file config additional-location, spring config location beginner trap, spring.config.additional-location 뭐예요, spring.config.location 이랑 뭐가 달라요, 처음 배우는데 spring 설정 파일 어디 둬요, 기본값은 두고 운영 설정만 덮고 싶어요, spring config location 헷갈려요, spring external config 큰 그림, additional-location 언제 써요
 

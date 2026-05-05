@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: 'Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다'
+concept_id: spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- activation-vs-injection
+- conditionalonbean-name-vs-qualifier
+- positive-condition-ambiguous-autowire
+aliases:
+- '@conditionalonbean activation vs di candidate selection'
+- conditionalonbean does not choose bean
+- conditionalonbean activation gate
+- conditional bean registration gate
+- conditionalonbean name type annotation match
+- condition passes but autowire ambiguous
+- conditionalonbean name does not inject named bean
+- conditional bean activation vs dependency injection
+- spring condition positive but nouniquebeandefinitionexception
+- existing prerequisite bean required not bean choice
+- auto-configuration activation vs bean injection
+- conditionalonbean positive match ambiguous dependency
+- prerequisite bean exists activation
+- autowire candidate selection separate
+- conditionalonbean debug output
+symptoms:
+- condition은 맞는다는데 주입은 found 2로 터져서 왜 둘이 따로 노는지 모르겠어요
+- '@ConditionalOnBean(name=...)을 쓰면 그 이름 bean이 바로 주입된다고 생각해요'
+- 조건 통과와 실제 주입 대상을 같은 문제로 보고 있어요
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- spring/bean-di-basics
+- spring/spring-configuration-vs-autoconfiguration-primer
+next_docs:
+- spring/conditionalonsinglecandidate-vs-primary-primer
+- spring/primary-qualifier-collection-injection
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+linked_paths:
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-conditionalonsinglecandidate-vs-primary-primer.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-di-exception-quick-triage.md
+confusable_with:
+- spring/conditionalonsinglecandidate-vs-primary-primer
+- spring/primary-qualifier-collection-injection
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+forbidden_neighbors:
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+expected_queries:
+- '@ConditionalOnBean이 통과했는데 왜 NoUniqueBeanDefinitionException이 나?'
+- name 조건 걸면 그 bean이 바로 주입되는 거 아니야?
+- activation 조건이랑 DI 후보 선택을 어떻게 분리해서 봐?
+- condition report positive match인데 autowire ambiguous인 이유가 뭐야?
+- ConditionalOnBean vs Primary를 처음엔 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 자동 구성이 켜지는 조건과 실제 주입 대상을
+  고르는 규칙을 섞지 않도록, @ConditionalOnBean이 선행 bean 존재 여부를
+  보고 등록 경로를 여는 개념을 처음 잡는 primer다. 조건은 맞았는데 후보가
+  왜 안 정해지나, 이름 조건이 선택까지 해주나, auto-configuration이 왜
+  켜졌나 같은 자연어 paraphrase가 본 문서의 activation 경계에 매핑된다.
+---
 # Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다
 
 > 한 줄 요약: `@ConditionalOnBean`은 "이 자동 구성/bean을 켤까?"를 묻고, DI candidate selection은 "이미 켜진 뒤 어떤 bean을 주입할까?"를 묻는다.
@@ -9,19 +84,16 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+- [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
+- [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+- [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+- [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
+- [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+- [JDBC · JPA · MyBatis 기초: 접근 기술을 왜 나누는가](../database/jdbc-jpa-mybatis-basics.md)
+- [spring 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
-> - [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
-> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
-> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
-> - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
-> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
-
-retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selection, conditionalonbean does not choose bean, conditionalonbean vs @primary, conditionalonbean vs @qualifier, conditionalonbean name type annotation match, condition passes but autowire ambiguous, conditionalonbean name does not inject named bean, conditional bean activation vs dependency injection, spring condition positive but nouniquebeandefinitionexception, existing prerequisite bean required not bean choice, auto-configuration activation vs bean injection, conditionalonbean positive match ambiguous dependency, conditionalonbean basics, conditionalonbean what is, conditionalonbean debug output
+retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selection, conditionalonbean does not choose bean, conditionalonbean activation gate, conditional bean registration gate, conditionalonbean name type annotation match, condition passes but autowire ambiguous, conditionalonbean name does not inject named bean, conditional bean activation vs dependency injection, spring condition positive but nouniquebeandefinitionexception, existing prerequisite bean required not bean choice, auto-configuration activation vs bean injection, conditionalonbean positive match ambiguous dependency, prerequisite bean exists activation, conditionalonbean 뭐예요, conditionalonbean basics
 
 ## 먼저 mental model
 

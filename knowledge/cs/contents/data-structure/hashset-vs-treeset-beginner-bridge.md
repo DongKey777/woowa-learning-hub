@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: HashSet vs TreeSet Beginner Bridge
+concept_id: data-structure/hashset-vs-treeset-beginner-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- set-membership-vs-order
+- treeset-neighbor-query
+- lower-floor-boundary
+aliases:
+- hashset vs treeset beginner
+- hashset treeset 차이
+- set 처음 배우는데 뭐 써요
+- hashset 언제 쓰는지
+- treeset 언제 쓰는지
+- 왜 treeset 써요
+- sorted set 뭐예요
+- 중복 제거만 필요할 때
+- 정렬된 set 필요할 때
+- floor ceiling set 뭐예요
+- set range query beginner
+- dedupe only vs sorted set
+- 처음 배우는데 hashset treeset 큰 그림
+- 해시셋 트리셋 차이
+- 왜 lower랑 floor가 달라요 set
+symptoms:
+- Set을 써야 하는 건 알겠는데 중복 체크만 하면 되는지 정렬까지 필요한지 판단이 안 돼
+- HashSet으로 충분한지 TreeSet으로 넘어가야 하는지 기준이 모호해
+- lower floor ceiling 같은 이웃 값 API가 왜 Set 선택 문제로 이어지는지 헷갈려
+intents:
+- comparison
+prerequisites:
+- data-structure/basic
+- data-structure/map-vs-set-requirement-bridge
+next_docs:
+- data-structure/treeset-exact-match-drill
+- data-structure/treemap-interval-entry-primer
+- language/hashset-vs-treeset-duplicate-semantics
+linked_paths:
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/treemap-interval-entry-primer
+- language/hashset-vs-treeset-duplicate-semantics
+forbidden_neighbors: []
+expected_queries:
+- set을 처음 배우는데 hashset이랑 treeset 중 뭐부터 골라야 해?
+- 중복 제거만 하면 되는데 treeset까지 써야 하나요?
+- treeset은 언제 쓰고 hashset은 언제 쓰는지 beginner 기준으로 설명해줘
+- floor, ceiling 같은 이웃 값 조회가 필요하면 왜 treeset이 맞아요?
+- 정렬된 set이 필요한지 그냥 membership만 필요한지 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Set을 처음 고르는 학습자가 중복 제거만 필요한지, 정렬된 순서와
+  가장 가까운 값·범위 조회까지 필요한지 기준으로 HashSet과 TreeSet을 연결해
+  선택하게 돕는 bridge다. 값 존재 확인, 정렬된 집합 필요, 바로 앞뒤 값 찾기,
+  범위 안 값 보기, lower floor 차이 같은 자연어 paraphrase가 본 문서의 선택
+  기준에 매핑된다.
+---
 # HashSet vs TreeSet Beginner Bridge
 
 > 한 줄 요약: `Set`을 고를 때는 "중복만 막으면 되나"와 "정렬된 순서, 이웃 값, 범위까지 필요하나"를 먼저 나누면 `HashSet`과 `TreeSet` 선택이 훨씬 쉬워진다.

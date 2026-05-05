@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 파일 디스크립터 기초
+concept_id: operating-system/file-descriptor-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- fd-vs-open-file-description
+- cloexec-and-redirection-basics
+aliases:
+- 파일 디스크립터란
+- file descriptor basics
+- fd 뭐예요
+- 파일 디스크립터 기초
+- fd 번호
+- stdin stdout stderr 번호
+- open file table beginner
+- fd leak 기초
+- file descriptor intro
+- fd table vs open file description
+- close-on-exec 기초
+- dup2 리다이렉션 기초
+- too many open files beginner
+- fd 재사용
+- file descriptor self check
+symptoms:
+- fd가 파일 자체인지 번호표인지부터 자꾸 헷갈려요
+- stdin, stdout, stderr 번호와 리다이렉션이 어떻게 이어지는지 감이 안 와요
+- dup, close-on-exec, fd leak 같은 말이 나오면 같은 층의 개념인지 모르겠어요
+intents:
+- definition
+prerequisites:
+- operating-system/syscall-basics
+next_docs:
+- operating-system/open-file-description-dup-fork-shared-offsets
+- operating-system/subprocess-fd-hygiene-basics
+- operating-system/fd-exhaustion-ulimit-diagnostics
+linked_paths:
+- contents/operating-system/fd-socket-pipe-open-file-description-classification-practice-drill.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/fd-exhaustion-ulimit-diagnostics.md
+- contents/operating-system/shell-redirection-order-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/network/tcp-udp-basics.md
+confusable_with:
+- operating-system/open-file-description-dup-fork-shared-offsets
+- operating-system/subprocess-fd-hygiene-basics
+- operating-system/fd-exhaustion-ulimit-diagnostics
+forbidden_neighbors: []
+expected_queries:
+- 운영체제에서 열린 파일과 소켓을 왜 숫자로 다루는지 처음부터 설명해줘
+- 표준 입력 0번, 표준 출력 1번 같은 번호가 실제로 무슨 의미인지 알고 싶어
+- 리다이렉션할 때 dup와 fd 테이블이 어떻게 바뀌는지 입문자 기준으로 정리해줘
+- open file description과 파일 디스크립터를 왜 다른 개념으로 봐야 하는지 큰 그림이 필요해
+- too many open files를 이해하려면 먼저 어떤 기본 개념을 알아야 해?
+contextual_chunk_prefix: |
+  이 문서는 운영체제 입문자가 열린 파일, 소켓, 파이프를 왜 숫자 핸들로 다루는지와 표준 입출력, 리다이렉션, fd leak의 큰 그림을 처음 잡는 primer다. 번호표처럼 가리키는 자원, 0 1 2 표준 스트림, 출력 방향 바꾸기, 열린 대상 추적, 닫지 않으면 누수 같은 자연어 표현이 본 문서의 핵심 개념에 매핑된다.
+---
 # 파일 디스크립터 기초
 
 > 한 줄 요약: 파일 디스크립터는 OS가 열린 파일·소켓·파이프에 붙여주는 정수 번호이며, 유닉스 계열에서는 거의 모든 I/O 자원이 이 번호 하나로 다뤄진다.

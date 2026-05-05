@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: 그래프 관련 알고리즘
+concept_id: algorithm/graph
+canonical: false
+category: algorithm
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- graph-follow-up-routing
+- shortest-path-vs-mst-vs-flow
+- weighted-vs-unweighted-split
+aliases:
+- graph algorithm router
+- graph follow-up router
+- shortest path router
+- weighted shortest path
+- unweighted shortest path
+- mst router
+- topological sort router
+- dsu vs bfs
+- same group vs actual path
+- graph basics next step
+symptoms:
+- 그래프 기초는 알겠는데 다음에 shortest path, mst, flow 중 어디로 가야 할지 분기가 안 돼
+- 최소라는 말만 보면 BFS부터 떠올라서 weighted shortest path와 섞어 버린다
+- 같은 장면에서 연결성, 경로 복원, 전체 연결 비용 질문을 서로 다른 알고리즘으로 나눠 읽고 싶다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/graph-basics
+- algorithm/dfs-bfs-intro
+next_docs:
+- data-structure/connectivity-question-router
+- algorithm/shortest-path-reconstruction-bridge
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+- algorithm/network-flow-intuition
+- algorithm/topological-sort-patterns
+linked_paths:
+- contents/data-structure/graph-basics.md
+- contents/data-structure/connectivity-question-router.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+- contents/algorithm/network-flow-intuition.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/topological-sort-patterns.md
+- contents/algorithm/a-star-vs-dijkstra.md
+- contents/algorithm/hungarian-algorithm-intuition.md
+confusable_with:
+- data-structure/connectivity-question-router
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+forbidden_neighbors: []
+expected_queries:
+- 그래프 문제를 보면 shortest path, mst, flow를 어떤 기준으로 먼저 나눠야 해?
+- 최소 몇 번과 최소 비용을 그래프 문제에서 어떻게 구분해?
+- 연결 여부, 경로 하나 출력, 최단 거리 문제를 한 번에 라우팅해줘
+- weighted shortest path와 unweighted shortest path를 초급 다음 단계 기준으로 정리해줘
+- 그래프 문제 다음 한 장만 읽으려면 어떤 질문 신호를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 graph basics와 DFS/BFS primer 다음 단계에서 그래프 문제를
+  shortest path, MST, connectivity, flow, DAG ordering으로 라우팅하는
+  chooser다. 갈 수 있나, 경로 하나만 보여줘, 최소 몇 번, 최소 비용,
+  모든 정점을 싸게 연결, 한 번에 얼마나 많이 보내나 같은 자연어 질문을
+  답의 모양별 follow-up 알고리즘 버킷으로 분기한다.
+---
 # 그래프 관련 알고리즘
 
 > 한 줄 요약: 그래프 문제를 보면 먼저 `연결`, `경로`, `최소 이동 횟수`, `최소 비용`, `전체 연결`, `흐름` 중 무엇을 묻는지부터 자르는 follow-up 라우터 문서다.
@@ -15,6 +91,7 @@ retrieval-anchor-keywords: graph router, graph follow-up router, shortest path r
 - [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
 - [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md)
 - [Network Flow Intuition](./network-flow-intuition.md)
+- [위상 정렬 패턴](./topological-sort-patterns.md)
 
 > 작성자 : [서그림](https://github.com/Seogeurim), [정희재](https://github.com/Hee-Jae)
 
@@ -55,6 +132,7 @@ retrieval-anchor-keywords: graph router, graph follow-up router, shortest path r
 | `아무 경로 하나만 보여줘` | shortest path가 아니라 path reconstruction | [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md) |
 | `최소 몇 번 만에 가나?` | unweighted shortest path | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
 | `비용 합이 최소인가?` | weighted shortest path | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) |
+| `순서만 맞추면 되나?`, `선후 관계만 지키면 되나?` | DAG ordering | [위상 정렬 패턴](./topological-sort-patterns.md) |
 
 ## beginner stop line
 

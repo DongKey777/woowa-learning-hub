@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: "Policy, Strategy, Specification, Factory 이름은 언제 붙일까"
+concept_id: design-pattern/policy-object-naming-primer
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- policy-naming
+- strategy-vs-policy
+- specification-boundary
+- factory-misnaming
+aliases:
+- policy object naming primer
+- policy vs strategy vs specification
+- when to name policy
+- when to name strategy
+- when to name specification
+- factory vs policy strategy specification
+- rule object naming beginner
+- decision object naming
+- boolean rule naming
+- policy strategy specification beginner
+- policy naming guide
+- policy strategy factory 차이
+- policy object 이름 언제
+symptoms:
+- policy와 strategy 이름을 언제 갈라야 하는지 모르겠어
+- boolean만 반환하는 규칙도 policy라고 불러야 하는지 헷갈려
+- 생성도 안 하는데 factory라고 이름 붙여도 되는지 감이 안 와
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/factory-basics
+- design-pattern/strategy-pattern-basics
+next_docs:
+- design-pattern/strategy-policy-selector-naming
+- design-pattern/policy-object-vs-strategy-map-beginner-bridge
+- design-pattern/specification-pattern
+linked_paths:
+- contents/design-pattern/factory-basics.md
+- contents/design-pattern/strategy-policy-selector-naming.md
+- contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+confusable_with:
+- design-pattern/strategy-policy-selector-naming
+- design-pattern/policy-object-pattern
+- design-pattern/specification-pattern
+forbidden_neighbors:
+- contents/design-pattern/factory-basics.md
+expected_queries:
+- policy랑 strategy랑 specification 이름을 언제 각각 써?
+- boolean만 반환하면 specification인가 policy인가?
+- 생성도 안 하는데 factory라고 부르면 왜 어색해?
+- rule object 이름을 policy로 붙여야 할지 strategy로 붙여야 할지 모르겠어
+contextual_chunk_prefix: |
+  이 문서는 beginner가 policy, strategy, specification, factory 네 이름의
+  경계를 처음 구분하도록 돕는 primer다. policy vs strategy naming,
+  boolean rule naming, 생성도 안 하는데 factory라고 부르는 상황, rule
+  object naming confusion 같은 자연어 질문이 이 문서의 질문 축과 예시에
+  매핑된다.
+---
 # Policy Object Naming Primer: `Policy`, `Strategy`, `Specification`을 언제 붙일까
 
 > 한 줄 요약: rule object가 실행 방식을 바꾸면 `Strategy`, 판정 결과를 내리면 `Policy`, 조건 통과 여부만 답하면 `Specification`이고, 아무것도 만들지 않으면 `Factory`가 아니다.
@@ -12,9 +86,8 @@
 - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
 - [Specification Pattern: 조건식을 조합 가능한 도메인 규칙으로 만들기](./specification-pattern.md)
 - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
-- [디자인 패턴 카테고리 인덱스](./README.md)
-
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: policy object naming primer, policy vs strategy vs specification, rule object naming beginner, when to name policy, when to name strategy, when to name specification, factory vs policy strategy specification, rule object not factory, decision object naming, boolean rule naming, algorithm object naming, policy object beginner naming, specification beginner naming, strategy beginner naming, beginner naming guide policy strategy specification
 

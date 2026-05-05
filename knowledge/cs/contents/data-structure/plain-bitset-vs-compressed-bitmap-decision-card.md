@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Plain BitSet vs Compressed Bitmap Decision Card
+concept_id: data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- dense-vs-sparse-bitmap-selection
+- set-algebra-vs-membership
+- bitset-vs-roaring-scope
+aliases:
+- plain bitset vs compressed bitmap
+- dense sparse bitmap decision
+- roaring bitmap or bitset
+- bitmap 압축이 꼭 필요한가
+- bitset 언제 충분한가
+- sparse id bitmap choice
+- compressed bitmap 언제 쓰나
+- dense integer id bitmap
+symptoms:
+- BitSet까지는 알겠는데 왜 갑자기 compressed bitmap이 필요한지 감이 안 온다
+- sparse 정수 id 집합이면 무조건 Set으로 가야 하는지 bitmap으로 더 가야 하는지 헷갈린다
+- dense냐 sparse냐만 보고 구조를 고르다가 exact 집합 연산 요구를 놓친다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+- data-structure/bitset-vs-roaring-bitmap-beginner-handoff
+next_docs:
+- data-structure/roaring-bitmap
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/roaring-bitmap-selection-playbook
+linked_paths:
+- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
+- contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+- data-structure/bitset-vs-roaring-bitmap-beginner-handoff
+- data-structure/roaring-bitmap
+forbidden_neighbors:
+- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
+- contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md
+expected_queries:
+- max id는 큰데 실제 값은 듬성듬성한 집합에서 plain bitmap이 왜 비효율적인지 설명해줘
+- 정수 id 집합을 exact AND OR로 계속 합칠 때 Set 대신 압축 bitmap을 보는 기준이 궁금해
+- dense 범위에서는 비압축 비트셋이 더 나은 이유를 sparse 예시와 같이 알고 싶어
+- sparse 데이터인데 membership만 보면 되는 경우와 bitmap 연산을 유지해야 하는 경우를 나눠줘
+- Roaring 같은 압축 bitmap이 필요한 첫 신호를 주니어 기준으로 정리해줘
+- 비트셋을 이미 쓰고 있는데 메모리 낭비가 커질 때 다음 선택지가 뭔지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 dense 정수 id 집합에는 plain BitSet이, maxId는 크고 실제 값은
+  sparse하지만 exact set algebra를 반복해야 할 때는 compressed bitmap이
+  더 자연스러워지는 분기점을 설명하는 chooser다. 비트셋 메모리 낭비,
+  sparse id 세그먼트, AND OR ANDNOT 반복, Set으로 끝낼지 bitmap 연산을
+  유지할지 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Plain BitSet vs Compressed Bitmap Decision Card
 
 > 한 줄 요약: `plain BitSet`은 `0..maxId`를 그대로 펼쳐 두는 쪽이 자연스러운 dense 정수 id 집합에 잘 맞고, compressed bitmap은 `maxId`는 큰데 실제 값이 듬성듬성하거나 구간별 밀도가 섞인 집합을 exact set algebra로 계속 다뤄야 할 때 보는 intermediate 다음 카드다.

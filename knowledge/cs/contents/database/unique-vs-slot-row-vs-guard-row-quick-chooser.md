@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드
+concept_id: database/unique-vs-slot-row-vs-guard-row-quick-chooser
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- insert-if-absent-choice
+- unique-constraint-vs-lock
+- guard-row-scope
+aliases:
+- unique vs slot row vs guard row
+- insert if absent chooser
+- duplicate insert race chooser
+- slot row chooser
+- guard row chooser
+intents:
+- comparison
+- design
+symptoms:
+- 없으면 insert 하는데 unique 만으로 끝나는지 guard row 까지 필요한지 모르겠다
+- duplicate key 로 끝낼지 잠깐 줄 세워 재검사할지 선택 기준이 헷갈린다
+- booking 설계에서 slot row 와 guard row 중 어느 쪽이 더 단순한지 빨리 고르고 싶다
+prerequisites:
+- database/constraint-first-booking-primer
+- database/transaction-basics
+next_docs:
+- database/guard-row-scope-quick-examples
+- database/phantom-safe-booking-patterns-primer
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+linked_paths:
+- contents/database/constraint-first-booking-primer.md
+- contents/database/guard-row-scope-quick-examples.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- database/constraint-first-booking-primer
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+- database/phantom-safe-booking-patterns-primer
+- database/overlapping-bookings-both-succeed-symptom-router
+- database/unique-vs-version-cas-vs-for-update-chooser
+forbidden_neighbors:
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+expected_queries:
+- unique, slot row, guard row는 언제 골라?
+- insert if absent 문제에서 guard row가 필요한 경우가 뭐야?
+- 중복 insert 막을 때 unique만으로 안 되는 경우는 언제야?
+- booking 설계에서 exact key, slot, guard row 차이를 빨리 보고 싶어
+- duplicate key 로 빨리 실패시키는 쪽과 lock queue 로 줄 세우는 쪽을 어떻게 나눠?
+- idempotency key 같은 exact key 문제와 예약 overlap 문제를 같은 방식으로 보면 안 되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 없으면 insert 경쟁에서 exact key dedup, 시간 칸으로 쪼개는 방식,
+  대표 행으로 줄 세우는 방식 중 무엇을 골라야 하는지 빠르게 결정하게 돕는
+  beginner chooser다. 쿠폰 한 번만 만들기, 재시도 키 중복 막기, 시간대별 선점,
+  범위 예약 직렬화, 바로 중복 오류로 끝낼지 잠깐 기다렸다 재확인할지, 겹침 검사를
+  어떤 도구로 막을지 같은 자연어 paraphrase가 UNIQUE·slot row·guard row 선택
+  기준에 매핑된다.
+---
+
 # UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드
 
 > 한 줄 요약: `없으면 insert` 문제는 "어디에서 한 명만 이기게 만들 것인가"를 고르는 일이고, exact key면 `UNIQUE`, 작은 bucket 집합이면 slot row, overlap·capacity·전이 경로까지 함께 다뤄야 하면 guard row가 기본 후보가 된다.

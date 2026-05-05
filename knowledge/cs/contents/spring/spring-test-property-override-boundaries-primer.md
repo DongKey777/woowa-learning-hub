@@ -12,15 +12,13 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](./spring-testing-basics.md)
-> - [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
-> - [Spring Testcontainers Boundary Strategy](./spring-testcontainers-boundary-strategy.md)
-> - [Spring `@DynamicPropertySource` vs `@ServiceConnection`: Testcontainers에서 언제 수동 property wiring이 아직 필요한가](./spring-dynamicpropertysource-vs-serviceconnection-primer.md)
-> - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
+- [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](./spring-testing-basics.md)
+- [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
+- [Spring Testcontainers Boundary Strategy](./spring-testcontainers-boundary-strategy.md)
+- [Spring `@DynamicPropertySource` vs `@ServiceConnection`: Testcontainers에서 언제 수동 property wiring이 아직 필요한가](./spring-dynamicpropertysource-vs-serviceconnection-primer.md)
+- [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
 
 retrieval-anchor-keywords: spring test property override, springboottest properties precedence, @springboottest(properties), properties attribute on your tests, testpropertysource precedence, testpropertysource file vs inline, dynamicpropertysource precedence, dynamicpropertysource testcontainers, dynamicpropertysource dirtiescontext, spring test property source cache, spring context cache property override, test property cache split, test property source exact strings cache key, test property override beginner, spring test configuration beginner
 

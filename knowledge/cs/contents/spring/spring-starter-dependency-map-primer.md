@@ -10,17 +10,14 @@
 관련 문서:
 
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
+- [Spring Boot 조건 평가 리포트 디버깅: `ConditionEvaluationReport`를 어디서 읽어야 하나](./spring-boot-condition-evaluation-report-debugging.md)
+- [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
+- [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
+- [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+- [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
-
-> 관련 문서:
-> - [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
-> - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
-> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
-> - [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
-> - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 
 retrieval-anchor-keywords: spring starter 뭐예요, spring boot starter 뭐예요, starter 처음 배우는데, starter 큰 그림, what is spring starter, starter vs autoconfiguration module, starter vs sdk driver, spring boot starter vs autoconfigure, starter 넣으면 뭐가 따라와요, starter랑 driver 차이, starter랑 autoconfiguration 차이, 언제 starter 추가해요, starter jar no classes beginner, gradle runtimeonly mysql connector, starter dependency map primer
 

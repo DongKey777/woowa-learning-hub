@@ -1,25 +1,23 @@
-# 전략 패턴
+# 전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법
 
-> 한 줄 요약: 같은 일을 하는 여러 구현 중 무엇을 쓸지 **호출자/설정이 런타임에 고르고**, `Context`는 그 구현을 전략 객체로 위임하는 패턴이다.
+> 한 줄 요약: 전략 패턴은 같은 역할의 여러 구현 중 무엇을 쓸지 **호출자나 설정이 런타임에 고르고**, `Context`는 고른 구현에 실행을 위임하는 패턴이다.
 
 **난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [객체지향 설계 기초: 합성, 책임, 협력](../software-engineering/oop-design-basics.md)
+- [팩토리 (Factory) 디자인 패턴](./factory.md)
+- [전략 패턴을 꼭 클래스로 만들어야 할까: `lambda` vs Strategy chooser](./strategy-vs-function-chooser.md)
+- [런타임 선택에서 Bridge vs Strategy vs Factory: 행동 축과 생성 축을 헷갈리지 않기](./bridge-strategy-vs-factory-runtime-selection.md)
+- [실행 방법 선택, 상태 전이, 규칙 판정은 어떻게 다를까: Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
+- [전략 폭발 냄새](./strategy-explosion-smell.md)
+- [design-pattern 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
-> - [Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가](./strategy-vs-function-chooser.md)
-> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
-> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-> - [전략 폭발 냄새](./strategy-explosion-smell.md)
-> - [팩토리 (Factory)](./factory.md)
-
-retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtime implementation selection, caller chooses strategy, caller owned strategy selection, context delegates to strategy, replace if else with strategy, when to use strategy, when not to use strategy, strategy overuse, strategy explosion smell, strategy vs template method, beginner strategy pattern, strategy vs state, 처음 배우는데 전략 패턴
+retrieval-anchor-keywords: strategy pattern, strategy pattern what is, runtime algorithm selection, caller chooses strategy, replace if else with strategy, strategy vs template method, strategy vs state, when to use strategy, when not to use strategy, strategy overuse, 전략 패턴 뭐예요, 전략 패턴 언제 써요, 처음 배우는 전략 패턴, if else 줄일 때 전략 패턴, 무조건 strategy 써야 하나
 
 ---
 
@@ -44,6 +42,8 @@ retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtim
 - 상속/템플릿 메소드: 부모가 흐름을 쥔다
 - 전략/조합: 호출자가 규칙 객체를 고른다
 
+## 언제 전략 패턴이 잘 맞는가
+
 ### 전략 패턴이 잘 맞는 경우
 
 - 할인 정책, 결제 수단, 정렬 기준처럼 **같은 역할을 하는 선택지**가 여러 개일 때
@@ -57,9 +57,21 @@ retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtim
 - `VipWeekendMobileStrategy`처럼 조건 조합마다 전략 클래스가 늘어나는 과사용 신호가 보일 때
 - 알고리즘 자체가 거의 고정되어 있고, 상속으로 공통 골격을 잡는 편이 더 자연스러울 때
 
+## 먼저 다른 비교 문서로 갈 때
+
+처음 질문이 아래 모양이면 이 문서 하나로 밀어붙이기보다 먼저 분기하는 편이 빠르다.
+
+| 지금 헷갈리는 질문 | 먼저 볼 문서 | 왜 그 문서가 더 빠른가 |
+|---|---|---|
+| "`if-else` 줄이려는데 클래스를 꼭 만들어야 하나?" | [전략 패턴을 꼭 클래스로 만들어야 할까: `lambda` vs Strategy chooser](./strategy-vs-function-chooser.md) | 구현 비용이 큰지 작은지부터 나누는 질문이라 "전략 패턴 정의"보다 승격 기준이 먼저다 |
+| "런타임에 고른다고 다 factory인가?" | [런타임 선택에서 Bridge vs Strategy vs Factory: 행동 축과 생성 축을 헷갈리지 않기](./bridge-strategy-vs-factory-runtime-selection.md) | 행동 선택, 객체 생성, 두 축 분리를 한 번에 잘라야 하는 질문이라 strategy 정의만으로는 부족하다 |
+| "실행 방법 선택이랑 상태 전이가 왜 다른가?" | [실행 방법 선택, 상태 전이, 규칙 판정은 어떻게 다를까: Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md) | strategy/state/policy 경계를 먼저 자르면 잘못된 패턴 이름 붙이기를 줄일 수 있다 |
+| "고정 흐름 위에 일부 단계만 바꾸고 싶은데 이것도 전략인가?" | [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) | 선택 책임 분리 문제인지, 상속으로 뼈대를 고정할 문제인지가 다르다 |
+
 관련 경계를 같이 보면 더 빨리 정리된다.
 
 - 짧은 함수와의 경계는 [Strategy vs Function](./strategy-vs-function-chooser.md)
+- "정책을 고르는데 이름을 `*Factory`로 붙여도 되나?" 같은 리뷰 질문은 [Factory Misnaming Checklist](./factory-misnaming-checklist.md)
 - 고정 흐름과의 경계는 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 - 전략 이름이 경우의 수를 설명하기 시작하면 [전략 폭발 냄새](./strategy-explosion-smell.md)
 

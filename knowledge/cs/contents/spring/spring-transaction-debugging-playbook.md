@@ -77,6 +77,21 @@ retrieval-anchor-keywords: transaction debugging, transactional not applied, pro
 
 ---
 
+## 증상별 첫 분기
+
+이 playbook이 직접 받는 질문은 보통 아래 네 묶음이다.
+
+| 보이는 질문/증상 | 첫 분기 | 먼저 볼 문서 또는 섹션 |
+|---|---|---|
+| "`@Transactional`이 안 먹어요", "왜 같은 클래스에서는 안 돼요?" | 프록시를 탔는지부터 확인 | 위 `30초 먼저 확인`, [30초 진단 카드](./spring-self-invocation-transactional-only-misconception-primer.md) |
+| "예외가 났는데 왜 커밋됐어요?" | rollback 규칙과 예외 전파를 분리 | 아래 `실전 시나리오 1`, [Mini Debugging Card for `UnexpectedRollbackException`](./spring-unexpectedrollbackexception-mini-debugging-card.md) |
+| "`REQUIRES_NEW` 때문에 일부만 남아요" | 분리 커밋이 의도인지 사고인지 판단 | 아래 `실전 시나리오 3` |
+| "트랜잭션이 길어지고 락 대기가 보여요" | propagation보다 외부 호출/쿼리/락을 먼저 본다 | 아래 `깊이 들어가기 4`, [Slow Query Analysis Playbook](../database/slow-query-analysis-playbook.md) |
+
+즉 "트랜잭션이 이상하다"를 그대로 붙잡지 말고, **안 걸림 / 커밋됨 / 부분 커밋 / 장기화** 중 어느 증상인지 먼저 이름 붙이는 게 이 문서의 입구다.
+
+---
+
 ## 깊이 들어가기
 
 ### 1. 먼저 프록시부터 의심한다

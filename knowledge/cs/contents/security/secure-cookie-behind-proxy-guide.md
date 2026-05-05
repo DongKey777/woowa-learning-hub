@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Secure Cookie Behind Proxy Guide
+concept_id: security/secure-cookie-behind-proxy-guide
+canonical: false
+category: security
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- forwarded-proto-misread
+- secure-cookie-vs-proxy
+- wrong-scheme-login-loop
+aliases:
+- secure cookie behind proxy
+- secure cookie login loop
+- x-forwarded-proto mismatch
+- login redirect becomes http
+- secure cookie not sent after redirect
+- proxy scheme drift
+- browser sees https app sees http
+- load balancer https http mismatch
+- 프록시 뒤에서만 로그인 반복
+- redirect chain http proof
+symptoms:
+- 브라우저는 HTTPS인데 로그인 뒤 요청이 http로 꺾이면서 쿠키가 안 붙어요
+- 로컬은 되는데 ALB나 Nginx 뒤에 올리면 로그인 루프가 나요
+- Secure 쿠키가 분명 발급됐는데 다음 요청에서 사라진 것처럼 보여요
+intents:
+- troubleshooting
+prerequisites:
+- security/session-cookie-jwt-basics
+- security/browser-401-vs-302-login-redirect-guide
+next_docs:
+- security/forwarded-header-trust-boundary-primer
+- security/absolute-redirect-url-behind-load-balancer-guide
+- security/cookie-scope-mismatch-guide
+linked_paths:
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/forwarded-header-trust-boundary-primer.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/secure-cookie-cleanup-behind-proxy.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+confusable_with:
+- security/secure-cookie-cleanup-behind-proxy
+- security/cookie-scope-mismatch-guide
+- security/absolute-redirect-url-behind-load-balancer-guide
+- security/wrong-scheme-vs-wrong-origin-redirect-shortcut
+forbidden_neighbors:
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/samesite-none-cross-site-login-primer.md
+expected_queries:
+- 프록시 뒤에서만 로그인 루프가 날 때 Secure 쿠키부터 어디를 봐야 해?
+- 브라우저는 https인데 서버가 http로 착각하는지 확인하는 법
+- 로그인 뒤 Location이 http로 내려오면 어떤 프록시 설정을 의심해야 해?
+- x-forwarded-proto가 틀리면 왜 secure cookie가 다음 요청에 안 붙어?
+- ALB 뒤에서만 세션이 끊길 때 cookie scope보다 먼저 볼 단서는 뭐야?
+- secure cookie behind proxy 문제를 초보자 순서대로 디버깅하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 프록시 뒤 HTTPS 배포에서 앱이 요청 scheme을 잘못 해석해
+  Secure cookie와 redirect가 어긋날 때, wrong-scheme 단서를 먼저 가르는
+  점검 순서를 전략으로 안내하는 playbook이다. 브라우저는 https인데 앱은
+  http로 봄, 로그인 직후 Location이 http로 내려옴, 쿠키는 저장됐는데 다음
+  요청에 안 붙음, 로컬은 되는데 ALB 뒤에서만 반복됨, forwarded proto를
+  어디서 확인하나 같은 자연어 paraphrase가 본 문서의 진단 흐름에
+  매핑된다.
+---
 # Secure Cookie Behind Proxy Guide
 
 > 한 줄 요약: 브라우저는 HTTPS로 접속했는데 앱은 proxy 뒤 HTTP 요청으로 착각하면 `Secure` cookie, login redirect, session 복원이 서로 어긋나서 login cookie가 "안 남는 것처럼" 보일 수 있다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Async-profiler vs JFR
+concept_id: language/async-profiler-vs-jfr-comparison
+canonical: false
+category: language
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- profiler-selection-by-question
+- hotspot-vs-timeline-split
+- native-frame-vs-jvm-event-triage
+aliases:
+- async profiler vs jfr
+- java profiler choice
+- cpu hotspot vs jfr
+- flamegraph vs jfr
+- native frames profiler
+- jfr event timeline
+- async-profiler comparison
+- 자바 프로파일러 선택
+- jfr async profiler 차이
+symptoms:
+- CPU가 높은데 flame graph를 봐야 하는지 JFR을 먼저 켜야 하는지 판단이 안 서
+- 지연 스파이크 원인을 찾고 싶은데 async-profiler와 JFR 중 어떤 질문에 더 맞는지 헷갈려
+- native frame, safepoint, lock contention이 섞여 보여서 어떤 도구를 먼저 써야 할지 모르겠어
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- language/jfr-event-interpretation
+- language/jfr-jmc-performance-playbook
+- language/jni-native-call-overhead
+next_docs:
+- language/oom-heap-dump-playbook
+- language/safepoint-stop-the-world-diagnostics
+- language/jfr-loom-incident-signal-map
+linked_paths:
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/jni-native-call-overhead.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+confusable_with:
+- language/jfr-jmc-performance-playbook
+- language/jfr-event-interpretation
+- language/safepoint-stop-the-world-diagnostics
+forbidden_neighbors:
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+expected_queries:
+- Java 성능 문제에서 async-profiler와 JFR을 어떤 질문 기준으로 골라야 하는지 비교해줘
+- CPU hotspot을 보고 싶을 때와 JVM 이벤트 타임라인을 보고 싶을 때 도구 선택 기준이 필요해
+- flame graph가 필요한 상황과 JFR이 더 맞는 상황을 한 문서에서 정리한 자바 자료를 찾고 있어
+- native frame 분석, safepoint, lock contention처럼 신호가 다를 때 async-profiler와 JFR을 어떻게 나눠 쓰는지 알고 싶어
+- JFR만으로 충분한 경우와 async-profiler를 같이 써야 하는 경우를 운영 관점에서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java 성능 이슈를 볼 때 async-profiler와 JFR 중 무엇을 먼저
+  켜야 하는지 질문 기준으로 골라주는 chooser다. CPU를 태우는 코드 경로를
+  찾고 싶음, 지연 급등 순간의 GC·lock·safepoint 흐름을 보고 싶음, native
+  stack이 의심됨, 샘플링 그림보다 시간축 사건 기록이 필요함 같은 자연어
+  표현이 본 문서의 도구 선택 분기점에 매핑된다.
+---
 # Async-profiler vs JFR
 
 > 한 줄 요약: async-profiler는 CPU/alloc/native stack에 강하고, JFR은 JVM 이벤트와 시간축 관측에 강해서 둘은 경쟁 도구라기보다 병행해서 쓰는 도구에 가깝다.

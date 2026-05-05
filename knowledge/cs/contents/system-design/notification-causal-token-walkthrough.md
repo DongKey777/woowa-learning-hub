@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Notification Causal Token Walkthrough
+concept_id: system-design/notification-causal-token-walkthrough
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- causal-token-propagation
+- watermark-aware-routing
+- source-read-fallback-order
+aliases:
+- notification causal token walkthrough
+- notification click watermark check
+- causal token example
+- required watermark basics
+- notification deep link causal token
+- replica visible watermark check
+- cache reject on watermark
+- notification refill watermark metadata
+symptoms:
+- 알림을 눌렀는데 어떤 요청에 어떤 기준선을 실어야 하는지 모르겠어
+- cache hit을 왜 버리고 primary로 가는지 causal token 흐름으로 보고 싶어
+- required watermark가 실제 read path에서 어디에 쓰이는지 감이 안 와
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- system-design/causal-consistency-notification-primer
+- system-design/outbox-watermark-token-primer
+next_docs:
+- system-design/notification-read-to-min-version-bridge
+- system-design/watermark-metadata-persistence-basics
+- system-design/trace-attribute-freshness-read-source-bridge
+linked_paths:
+- contents/system-design/causal-watermark-propagation-sketches.md
+- contents/system-design/token-propagation-through-bff-and-gateway.md
+- contents/system-design/notification-read-to-min-version-bridge.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/watermark-metadata-persistence-basics.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/notification-system-design.md
+- contents/system-design/mobile-push-notification-pipeline-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/database/causal-consistency-intuition.md
+confusable_with:
+- system-design/notification-read-to-min-version-bridge
+- system-design/outbox-watermark-token-primer
+- system-design/causal-watermark-propagation-sketches
+forbidden_neighbors: []
+expected_queries:
+- 알림 click 요청에 causal token은 정확히 어떻게 붙어서 전달돼?
+- required watermark를 cache hit, replica, primary fallback 순서로 설명해줘
+- notification causal token이 read path에서 어떤 판단을 만들지 예시로 보고 싶어
+- 알림을 눌렀는데 stale source를 막으려면 watermark 확인을 어디서 해?
+- causal token walkthrough를 주문 알림 흐름으로 단계별로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 notification causal token을 정의로만 외우지 않고 click
+  요청, cache reject, replica watermark 검사, primary fallback까지 한 경로로
+  따라가게 돕는 beginner bridge다. 알림 클릭에 어떤 값을 실어 보내나,
+  required watermark를 어디서 비교하나, 왜 cache hit을 버리고 fallback하나
+  같은 자연어 질문이 본 문서의 단계별 walkthrough에 매핑된다.
+---
 # Notification Causal Token Walkthrough
 
 > 한 줄 요약: causal token은 "이 알림을 눌렀다면 최소 여기까지 따라온 데이터만 보여 달라"는 기준선이고, notification click부터 cache hit 거절, replica watermark 확인, primary fallback까지 한 흐름으로 보면 훨씬 덜 추상적이다.

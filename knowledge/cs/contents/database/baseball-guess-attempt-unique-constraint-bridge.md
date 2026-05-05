@@ -1,0 +1,98 @@
+---
+schema_version: 3
+title: 'baseball 추측 순번 중복 저장 ↔ UNIQUE 제약과 insert-first 브릿지'
+concept_id: database/baseball-guess-attempt-unique-constraint-bridge
+canonical: false
+category: database
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/baseball
+review_feedback_tags:
+- attempt-no-unique
+- double-submit-dedup
+- insert-first-arbitration
+aliases:
+- baseball 추측 순번 중복 저장
+- 야구 미션 attempt 번호 unique
+- baseball double submit guess
+- 야구 미션 중복 추측 방지
+- baseball guess duplicate key
+symptoms:
+- 같은 추측 요청이 두 번 들어오면 시도 횟수가 꼬여요
+- attempt_no를 max + 1로 만들었더니 중복 저장이 나요
+- 새로고침이나 재전송 뒤 같은 턴이 두 번 기록돼요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- database/baseball-guess-history-current-state-transaction-bridge
+- database/transaction-basics
+- software-engineering/baseball-turn-processing-service-layer-bridge
+next_docs:
+- database/unique-vs-locking-read-duplicate-primer
+- database/idempotency-key-and-deduplication
+- database/duplicate-key-vs-busy-response-mapping
+linked_paths:
+- contents/database/baseball-guess-history-current-state-transaction-bridge.md
+- contents/database/transaction-basics.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+- contents/software-engineering/baseball-turn-processing-service-layer-bridge.md
+- contents/spring/baseball-game-state-singleton-bean-scope-bridge.md
+confusable_with:
+- database/baseball-guess-history-current-state-transaction-bridge
+- database/unique-vs-locking-read-duplicate-primer
+- database/idempotency-key-and-deduplication
+forbidden_neighbors: []
+expected_queries:
+- 야구 미션을 웹으로 바꿨더니 같은 추측이 두 번 저장되는데 DB에서 뭐로 막아야 해?
+- baseball에서 attempt 번호를 max + 1로 만들지 말라는 이유가 뭐야?
+- 새로고침이나 재전송 뒤 같은 턴 기록이 두 줄 생기면 unique 제약으로 풀 수 있어?
+- 야구 미션 guess_history에 같은 시도 번호가 들어가지 않게 하려면 어떻게 설계해?
+- double submit이 들어와도 한 턴만 인정하라는 리뷰를 DB 관점에서 어떻게 이해해?
+contextual_chunk_prefix: |
+  이 문서는 Woowa baseball 미션을 웹과 DB로 확장할 때 같은 추측 요청이
+  두 번 들어오거나 attempt_no를 max+1로 계산해 중복 턴 기록이 생기는 문제를
+  UNIQUE 제약과 insert-first arbitration으로 설명하는 mission_bridge다.
+  double submit, 새로고침 재전송, 같은 턴 두 줄 저장, 시도 횟수 꼬임,
+  duplicate key를 성공 재생 또는 충돌로 해석하는 질문을 baseball guess
+  history 설계와 연결한다.
+---
+
+# baseball 추측 순번 중복 저장 ↔ UNIQUE 제약과 insert-first 브릿지
+
+## 한 줄 요약
+
+> baseball 추측 한 번은 "이번 게임의 몇 번째 시도인가"까지 포함한 사건이다. 그래서 `guess_history`를 쌓을 때는 `SELECT max(attempt_no) + 1` 같은 읽기 기반 계산보다 `(game_id, attempt_no)` 또는 요청 키를 DB가 직접 한 번만 인정하게 만드는 편이 덜 흔들린다.
+
+## 미션 시나리오
+
+콘솔 baseball에서는 한 사람 입력만 순서대로 들어오니 같은 턴이 두 번 기록될 일이 거의 없다. 하지만 웹으로 옮기면 `POST /games/{id}/guesses`가 새로고침, 더블 클릭, timeout 뒤 재전송으로 두 번 들어올 수 있다. 이때 서비스가 "`현재 최대 시도 횟수`를 읽고 `+1`"로 새 row를 만들면, 두 요청이 같은 `attempt_no = 4`를 잡거나 반대로 같은 의미의 추측이 4번과 5번으로 연달아 저장될 수 있다.
+
+리뷰에서 "`시도 번호를 조회 결과에만 기대지 말고 DB가 승자를 정하게 하세요`", "`같은 추측 요청을 두 번 받아도 한 턴만 인정되는 구조가 필요합니다`"라는 코멘트가 붙는 장면이 여기다. 이 질문은 트랜잭션 자체보다 "한 턴의 정체성을 어디서 닫나"에 더 가깝다.
+
+## CS concept 매핑
+
+여기서 닿는 개념은 `insert-first arbitration`과 `UNIQUE` 제약이다. 예를 들어 `guess_history(game_id, attempt_no)`에 `UNIQUE`를 두면, 같은 게임의 같은 시도 번호를 두 번 넣으려는 경쟁에서 DB가 한 명만 통과시킨다. 애플리케이션은 "`이미 같은 턴이 저장됐나?`"를 먼저 장황하게 확인하기보다, 먼저 쓰고 실패 신호를 해석하는 쪽으로 단순해진다.
+
+같은 HTTP 요청 재전송까지 구분해야 한다면 `attempt_no`만으로는 부족할 수 있다. 그럴 때는 `request_id`나 `idempotency_key`를 함께 저장해 "같은 business attempt의 재전송"인지, "정말 다음 턴"인지를 나눈다. baseball에서는 모든 중복을 락으로 막는 것보다, `UNIQUE`가 턴 identity를 닫고 duplicate key 뒤의 fresh read가 그 row를 다시 설명하게 만드는 편이 입문 단계에서 더 읽기 쉽다.
+
+## 미션 PR 코멘트 패턴
+
+- "`max(attempt_no) + 1`은 동시 요청이 오면 같은 번호를 고를 수 있습니다."
+- "`중복 제출을 service if문으로만 막지 말고, DB가 같은 턴을 한 번만 인정하게 만들어 보세요.`"
+- "`같은 요청 재전송`과 `정말 다음 추측`을 구분할 식별자가 필요합니다."
+- "`duplicate key`는 항상 에러 응답이 아니라, 이미 저장된 winner를 다시 읽어 설명할 기회일 수 있습니다."
+
+## 다음 학습
+
+- duplicate check를 읽기 기반으로 할지 DB 제약으로 닫을지 더 직접 비교하려면 `unique-vs-locking-read-duplicate-primer`
+- 재전송된 같은 요청을 응답 replay까지 포함해 다루려면 `idempotency-key-and-deduplication`
+- duplicate key를 서비스 결과와 HTTP 응답으로 어떻게 번역할지 보려면 `duplicate-key-vs-busy-response-mapping`
+- 한 턴 저장에서 이력 append와 현재 게임 상태 update를 같이 commit하는 문제는 `baseball-guess-history-current-state-transaction-bridge`로 이어진다.

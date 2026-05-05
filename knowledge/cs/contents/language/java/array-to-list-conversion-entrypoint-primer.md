@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: 배열 vs `List` 변환 엔트리 프라이머
+concept_id: language/array-to-list-conversion-entrypoint-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- array-list-conversion-choice
+- array-backed-list-aliasing
+- mutable-vs-readonly-list-selection
+aliases:
+- java array to list conversion primer
+- java array list conversion entrypoint
+- arrays aslist vs list of vs arraylist
+- array alias copy list conversion
+- java array to mutable list
+- java array to readonly list
+- arrays aslist alias beginner
+- new arraylist arrays aslist copy beginner
+- list of vs arrays aslist beginner
+- 배열 리스트 변환 입문
+- 배열을 리스트로 바꿀 때 뭐 쓰지
+- arrays aslist list of 차이
+- 배열 alias copy list 변환
+- 자바 배열 리스트 변환 큰 그림
+- 배열과 리스트 같이 바뀜
+symptoms:
+- 배열을 리스트로 바꿨는데 같이 바뀌어요
+- add가 안 돼요
+- 읽기 전용인지 수정 가능한지 헷갈려요
+intents:
+- definition
+prerequisites:
+- language/java-array-copy-clone-basics
+- language/java-collections-basics
+next_docs:
+- language/arrays-aslist-fixed-size-list-checklist
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+linked_paths:
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/arrays-aslist-fixed-size-list-checklist.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md
+confusable_with:
+- language/arrays-aslist-fixed-size-list-checklist
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- 배열을 List로 만들 때 asList랑 ArrayList 중 뭐가 맞아?
+- array를 list로 바꿀 때 복사본이 필요하면 어떻게 해?
+- Arrays.asList 쓰면 원본 배열이 같이 바뀌나요
+- Java 배열을 수정 가능한 List로 넘기려면?
+- List.of로 바꾸는 거랑 new ArrayList 차이를 모르겠어
+contextual_chunk_prefix: |
+  이 문서는 배열을 List로 바꾸려는 Java 입문자가 공유 뷰와 독립 복사, 수정
+  가능 리스트와 읽기 전용 목록을 먼저 나눠 보는 primer다. Arrays.asList로
+  충분한가, 원본 배열과 같이 바뀌면 안 되나, add/remove가 필요한가, new
+  ArrayList로 끊어야 하나, List.of처럼 읽기 전용이면 되나 같은 자연어
+  paraphrase가 본 문서의 첫 선택 기준에 매핑된다.
+---
 # 배열 vs `List` 변환 엔트리 프라이머
 
 > 한 줄 요약: 배열을 리스트로 바꿀 때는 먼저 "원본 배열과 저장소를 공유해도 되는가?"를 따지고, 그다음에 `Arrays.asList(...)`, `new ArrayList<>(...)`, `List.of(...)` 중 무엇이 맞는지 고르면 덜 헷갈린다.

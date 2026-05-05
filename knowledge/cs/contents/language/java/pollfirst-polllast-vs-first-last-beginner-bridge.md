@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: '`pollFirst`/`pollLast` vs `first`/`last` Beginner Bridge'
+concept_id: language/pollfirst-polllast-vs-first-last-beginner-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- poll-vs-peek-semantics
+- navigable-collection-removal-semantics
+- empty-collection-null-vs-exception
+aliases:
+- pollfirst polllast first last beginner
+- java pollfirst vs first
+- java polllast vs last
+- treeset pollfirst first difference
+- empty treeset first exception
+- empty treeset pollfirst null
+- first last vs pollfirst polllast
+- treemap pollfirstentry firstentry difference
+- firstkey vs firstentry vs pollfirstentry
+- 자바 pollfirst first 차이
+- 자바 polllast last 차이
+- treemap pollfirstentry firstentry 차이
+- 언제 firstentry 말고 pollfirstentry
+- firstentry pollfirstentry 헷갈려요
+- remove 여부로 고르기
+symptoms:
+- first와 pollFirst가 둘 다 맨 앞을 보는 것처럼 보여서 제거 여부를 자꾸 놓쳐
+- 빈 TreeSet에서 어떤 메서드는 null이고 어떤 메서드는 예외라서 외우기가 안 돼
+- TreeMap에서 firstEntry와 pollFirstEntry 차이까지 한 번에 섞여서 헷갈려
+intents:
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/navigablemap-navigableset-mental-model
+- language/firstentry-lastentry-vs-firstkey-lastkey-bridge
+next_docs:
+- language/pollfirst-polllast-view-semantics-primer
+- language/ordered-map-null-safe-practice-drill
+- language/descendingkeyset-vs-descendingmap-bridge
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/firstentry-lastentry-vs-firstkey-lastkey-bridge.md
+- contents/language/java/pollfirst-polllast-view-semantics-primer.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/language/java/descendingkeyset-vs-descendingmap-bridge.md
+confusable_with:
+- language/firstentry-lastentry-vs-firstkey-lastkey-bridge
+- language/pollfirst-polllast-view-semantics-primer
+- language/navigablemap-navigableset-mental-model
+forbidden_neighbors: []
+expected_queries:
+- TreeSet에서 first와 pollFirst를 어떤 기준으로 고르는지 입문자용으로 알려줘
+- pollLast가 last와 달리 컬렉션을 바꾼다는 점을 한 번에 이해하고 싶어
+- 빈 정렬 컬렉션에서 null과 예외가 갈리는 이유를 pollFirst 기준으로 설명해줘
+- firstEntry와 pollFirstEntry를 remove 여부 중심으로 비교한 자바 브리지가 필요해
+- 양 끝을 보기만 할지 꺼내면서 제거할지 고르는 기준을 짧게 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java 정렬 컬렉션을 처음 배우는 학습자가 양 끝 값을 보기만 할지 꺼내면서 없앨지, 빈 컬렉션에서 null과 예외가 왜 달라지는지 연결하는 bridge다. 맨 앞만 확인하고 싶음, 꺼낸 뒤 컬렉션에서도 사라져야 함, 끝값 소비와 단순 조회 구분, 빈 상태 안전 처리, remove 여부로 API 고르기 같은 자연어 표현이 본 문서의 판단 기준에 매핑된다.
+---
 # `pollFirst`/`pollLast` vs `first`/`last` Beginner Bridge
 
 > 한 줄 요약: `first`/`last`는 양 끝값을 "보기만" 하는 조회이고, `pollFirst`/`pollLast`는 양 끝값을 "꺼내면서 제거"하는 소비다. 초보자는 먼저 **remove 여부**와 **빈 컬렉션일 때의 반응**을 같이 붙여 기억하면 된다.

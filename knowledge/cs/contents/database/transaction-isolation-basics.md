@@ -9,6 +9,8 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids: []
+review_feedback_tags: []
 aliases:
 - isolation level
 - Read Committed
@@ -16,8 +18,24 @@ aliases:
 - MVCC
 - 격리 수준
 - 팬텀 리드
+symptoms: []
 intents:
 - definition
+prerequisites:
+- database/transaction-basics
+next_docs:
+- database/lock-basics
+- spring/transactional-basics
+linked_paths:
+- contents/database/transaction-basics.md
+- contents/database/lock-basics.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/isolation-anomaly-cheat-sheet.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/spring/spring-transactional-basics.md
+confusable_with: []
+forbidden_neighbors: []
 expected_queries:
 - 격리 수준이 뭐야?
 - Read Committed랑 Repeatable Read는 뭐가 달라?

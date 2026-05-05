@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 생성자 vs 정적 팩토리 메서드 vs Factory 패턴
+concept_id: design-pattern/constructor-vs-static-factory-vs-factory-pattern
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- static-factory-naming
+- factory-vs-static-factory
+- object-creation-api-choice
+aliases:
+- constructor vs static factory vs factory pattern
+- 생성자 vs 정적 팩토리 메서드
+- java static factory naming
+- static factory method naming
+- of from valueof parse getinstance newinstance
+- constructor or static factory
+- static factory vs factory pattern
+- factory pattern vs constructor
+- when to use constructor
+- when to use static factory method
+- java object creation chooser
+- effective java static factory
+- beginner creation pattern
+- constructor vs static factory vs factory pattern basics
+- constructor vs static factory vs factory pattern beginner
+symptoms:
+- of/from이 왜 생성자보다 낫다는지 모르겠어
+- 정적 팩토리랑 Factory 패턴이 같은 말처럼 보여
+- new 대신 create를 쓰라는 리뷰 이유가 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+next_docs:
+- design-pattern/factory-vs-abstract-factory-vs-builder
+- design-pattern/builder-pattern-basics
+linked_paths:
+- contents/design-pattern/factory.md
+- contents/design-pattern/factory-vs-abstract-factory-vs-builder.md
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/request-object-creation-vs-di-container.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/factory-vs-abstract-factory-vs-builder
+- design-pattern/builder-pattern-basics
+- design-pattern/request-object-creation-vs-di-container
+forbidden_neighbors: []
+expected_queries:
+- 생성자와 정적 팩토리는 어떤 기준으로 나눠 써?
+- new 말고 of나 from을 쓰는 이유를 알고 싶어
+- static factory method와 factory pattern 차이를 쉽게 설명해줘
+- 구현 선택이 필요한 생성과 이름만 있는 생성은 어떻게 달라?
+- 값 객체 만들 때 생성자 대신 정적 팩토리를 쓰는 이유가 뭐야
+- create 메서드가 많아질 때 언제 별도 factory로 빼야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java 객체 생성에서 new로 바로 만들지, 이름 붙은 생성 메서드로
+  감쌀지, 구현 선택과 생성 책임을 별도 객체로 뗄지를 결정하는 학습자를 위한
+  chooser다. 값 객체 바로 만들기, of/from을 왜 쓰는지, create만 두면 되는지,
+  어떤 구현을 만들지 숨기고 싶은지, 생성보다 조립 책임이 복잡한지 같은 자연어
+  paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # 생성자 vs 정적 팩토리 메서드 vs Factory 패턴
 
 > 한 줄 요약: Java에서 생성자는 가장 직접적인 생성 방식이고, 정적 팩토리 메서드는 이름 있는 같은 타입 생성을, Factory 패턴은 구현 선택과 생성 책임 분리를 다룬다.

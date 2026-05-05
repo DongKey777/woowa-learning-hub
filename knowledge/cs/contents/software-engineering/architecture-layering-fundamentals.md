@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Architecture and Layering Fundamentals
+concept_id: software-engineering/architecture-layering-fundamentals
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/lotto
+- missions/baseball
+- missions/shopping-cart
+review_feedback_tags:
+- architecture-choice
+- service-bloat-root-cause
+- dto-boundary-confusion
+aliases:
+- architecture layering fundamentals
+- layered architecture map
+- beginner architecture map
+- modular monolith beginner
+- bounded context 처음
+- repository entity separation
+- dto contract 어디까지
+- service가 너무 비대해요
+- clean architecture beginner
+- 계층 설계 전체 그림
+symptoms:
+- layered, clean, modular monolith가 서로 대체 관계인지 헷갈려요
+- controller service repository는 있는데 왜 계속 복잡한지 모르겠어요
+- entity, dto, repository 경계를 어디서 끊어야 하는지 감이 안 와요
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/woowacourse-backend-mission-prerequisite-primer
+- software-engineering/oop-design-basics
+next_docs:
+- software-engineering/layered-architecture-basics
+- software-engineering/clean-architecture-layered-modular-monolith
+- software-engineering/repository-dao-entity
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/module-api-dto-patterns.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+confusable_with:
+- software-engineering/layered-architecture-basics
+- software-engineering/clean-architecture-layered-modular-monolith
+- software-engineering/ddd-hexagonal-consistency
+forbidden_neighbors: []
+expected_queries:
+- layered architecture, clean architecture, modular monolith 차이를 한 번에 잡고 싶어
+- controller service repository 다음에 어떤 설계 질문을 붙여서 공부해야 해?
+- 패키지는 나눴는데 왜 여전히 구조가 복잡하다는 피드백을 받는 거야?
+- entity, dto, repository를 같은 모델로 쓰면 왜 경계가 흐려진다고 해?
+- 아키텍처 입문에서 layered랑 bounded context를 어떤 순서로 이해하면 돼?
+contextual_chunk_prefix: |
+  이 문서는 layered architecture, clean architecture, modular monolith,
+  DDD boundary, repository/entity separation, DTO contract를 하나의
+  초심자 지도에서 연결해 주는 primer다. 구조 이름을 외우기보다 지금 어떤
+  설계 질문을 하고 있는지 구분하려는 학습자에게 맞춰, 역할 분리 문제인지,
+  의존 방향 문제인지, 모듈 공개 범위 문제인지, 경계 번역 문제인지를
+  가려 읽게 돕는 문서라는 맥락을 각 청크 앞에 붙인다.
+---
 # Architecture and Layering Fundamentals
 
 > 한 줄 요약: Layered Architecture, Clean Architecture, Modular Monolith, DDD boundary, Repository/Entity separation, DTO contract는 서로 경쟁하는 선택지가 아니라 서로 다른 설계 질문에 답하는 도구다.

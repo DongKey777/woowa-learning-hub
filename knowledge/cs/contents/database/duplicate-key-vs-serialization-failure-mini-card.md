@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Duplicate Key vs Serialization Failure 미니 카드
+concept_id: database/duplicate-key-vs-serialization-failure-mini-card
+canonical: false
+category: database
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- sqlstate-retry-policy
+- duplicate-vs-serialization-split
+- transactional-retry-boundary
+aliases:
+- duplicate key vs serialization failure mini card
+- duplicate key already exists vs serialization failure retry
+- mysql 1062 vs postgres 40001 beginner
+- duplicate loser means winner exists
+- serialization loser means retry whole transaction
+- duplicate key fresh read vs serializable retry
+- postgresql serializable whole transaction retry
+- exact key duplicate not blind retry
+- duplicate key conflict replay processing
+- sqlstate 23505 vs 40001 beginner
+- insert if absent duplicate vs serialization failure
+- 중복키 직렬화 실패 차이
+- duplicate key 재조회 serialization failure 전체 재시도
+- 1062 40001 비교 카드
+- loser signal already exists vs retry
+symptoms:
+- 23505랑 40001을 같은 재시도로 처리해도 되는지 모르겠어
+- 중복키면 재조회해야 하는지 전체 재시도해야 하는지 헷갈려
+- 직렬화 실패를 409처럼 내려도 되는지 판단이 안 서
+intents:
+- drill
+prerequisites:
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/transaction-isolation-basics
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/insert-if-absent-retry-outcome-guide
+- database/spring-insert-if-absent-sqlstate-cheat-sheet
+linked_paths:
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/spring-insert-if-absent-sqlstate-cheat-sheet.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+confusable_with:
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/timeout-errorcode-mapping-mini-card
+- database/duplicate-key-vs-busy-response-mapping
+forbidden_neighbors:
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/postgresql-serializable-retry-playbook.md
+expected_queries:
+- duplicate key랑 serialization failure를 왜 다르게 처리해야 해?
+- 23505 나오면 fresh read고 40001이면 전체 재시도라는 말이 맞아?
+- 중복키와 직렬화 실패를 한 장으로 비교해서 설명해줘
+- insert-if-absent에서 duplicate와 serializable retry를 어떻게 구분해?
+- PostgreSQL 40001을 기존 row 조회로 끝내면 왜 안 돼?
+contextual_chunk_prefix: |
+  이 문서는 초급 학습자가 duplicate key loser와 serialization failure
+  loser를 같은 retry로 다루지 않도록, winner row 재조회와 트랜잭션 전체
+  재시도를 어떻게 갈라야 하는지 확인 질문으로 굳힌다. 중복키는 기존
+  결과 확인, 직렬화 실패는 처음부터 다시, 23505와 40001 차이, 이미
+  자리 찬 경우와 판 다시 시작, row 조회와 whole transaction retry
+  비교 같은 자연어 paraphrase가 본 문서의 판단 축에 매핑된다.
+---
 # Duplicate Key vs Serialization Failure 미니 카드
 
 > 한 줄 요약: `duplicate key` loser는 보통 "이미 winner가 있다" 쪽이고, `serialization failure` loser는 "이번 시도 전체를 버리고 처음부터 다시 하라" 쪽이다.

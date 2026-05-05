@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Logout Scope Primer](../security/logout-scope-primer.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
 > - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
@@ -14,10 +15,20 @@
 > - [Session Revocation at Scale](../security/session-revocation-at-scale.md)
 > - [OIDC Back-Channel Logout / Session Coherence](../security/oidc-backchannel-logout-session-coherence.md)
 > - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
-> - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
+> - [Session Inventory UX / Revocation Scope Design](../security/session-inventory-ux-revocation-scope-design.md)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
 retrieval-anchor-keywords: LogoutFilter, LogoutHandler, LogoutSuccessHandler, SecurityContextLogoutHandler, CookieClearingLogoutHandler, logout success redirect, logoutSuccessUrl, local logout, cookie deletion, session invalidation, BFF token cache cleanup, provider refresh token revoke, downstream audience token cache, RP-initiated logout, OIDC logout success handler, back-channel logout, federated logout, sid mapping, logout propagation, security readme session bridge, security session boundary bridge, session boundary replay bundle
+
+## 먼저 자를 질문
+
+logout 문서는 "`지금 브라우저 한 탭을 정리하는 문제인가`", "`이 기기 전체나 모든 기기를 끊는 문제인가`", "`IdP까지 같이 끊는 문제인가`"를 먼저 가르는 것이 핵심이다.
+
+| 지금 먼저 묻는 질문 | 먼저 갈 문서 | 이 문서를 여는 시점 |
+|---|---|---|
+| "`현재 세션`과 `모든 기기 로그아웃`이 같은 말인가요?" | [Logout Scope Primer](../security/logout-scope-primer.md) | revoke scope 용어를 이미 고정했고, 이제 Spring logout 체인의 local 경계를 보고 싶을 때 |
+| "cookie는 지웠는데 BFF나 서버 세션이 왜 남죠?" | [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md) | browser pointer와 server credential을 분리한 뒤 local cleanup 누락을 보고 싶을 때 |
+| "IdP logout redirect도 했는데 다른 기기 세션은 왜 남죠?" | [OIDC Back-Channel Logout / Session Coherence](../security/oidc-backchannel-logout-session-coherence.md) | federated logout과 local revoke가 별개라는 전제를 잡은 뒤 |
 
 ## 핵심 개념
 

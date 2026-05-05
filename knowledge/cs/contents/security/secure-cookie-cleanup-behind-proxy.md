@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Secure Cookie Cleanup Behind Proxy
+concept_id: security/secure-cookie-cleanup-behind-proxy
+canonical: false
+category: security
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 79
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- secure-cookie-cleanup-vs-proxy
+- bad-tombstone-vs-wrong-scheme
+- logout-cookie-cleanup-prod-only
+aliases:
+- secure cookie cleanup behind proxy
+- cookie cleanup behind proxy
+- secure tombstone behind proxy
+- cookie tombstone secure delivery
+- bad tombstone vs secure delivery
+- logout cookie cleanup behind proxy
+- secure cookie delete not working proxy
+- stale secure cookie after logout proxy
+- logout clears cookie locally not in prod
+- tombstone exact domain path vs secure delivery issue
+symptoms:
+- logout이나 migration cleanup 뒤 old cookie가 prod에서만 남아 보여요
+- delete cookie 헤더는 보냈는데 proxy 뒤에서만 cleanup이 안 먹는 것처럼 보여요
+- tombstone scope 문제인지 redirect가 http로 꺾인 문제인지 한 번에 헷갈려요
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- security/cookie-failure-three-way-splitter
+- security/browser-401-vs-302-login-redirect-guide
+next_docs:
+- security/cookie-scope-migration-cleanup
+- security/secure-cookie-behind-proxy-guide
+- security/duplicate-cookie-vs-proxy-login-loop-bridge
+linked_paths:
+- contents/security/cookie-scope-migration-cleanup.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md
+- contents/security/cookie-devtools-field-checklist-primer.md
+- contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md
+- contents/security/forwarded-header-trust-boundary-primer.md
+- contents/security/cookie-failure-three-way-splitter.md
+confusable_with:
+- security/cookie-scope-migration-cleanup
+- security/secure-cookie-behind-proxy-guide
+- security/duplicate-cookie-vs-proxy-login-loop-bridge
+forbidden_neighbors:
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/open-redirect-hardening.md
+expected_queries:
+- logout 뒤 old cookie가 prod에서만 남아 보일 때 tombstone 문제와 proxy 문제를 어떻게 가르지?
+- delete cookie 헤더는 맞아 보이는데 secure cleanup이 왜 운영에서만 안 먹어?
+- cookie cleanup behind proxy 문제를 초보자 순서대로 디버깅하고 싶어
+- bad tombstone인지 wrong scheme redirect인지 먼저 뭘 확인해야 해?
+- secure cookie logout works local fails prod 같은 증상은 어디서 시작해?
+- tombstone exact domain path와 https redirect 문제를 같이 분리하는 문서가 필요해
+contextual_chunk_prefix: |
+  이 문서는 logout이나 cookie migration cleanup 뒤 old cookie가 계속 남아 보일 때, tombstone scope가 틀린 경우와 proxy 뒤 HTTPS 문맥이 깨져 Secure cleanup 전달이 어긋난 경우를 먼저 가르는 bridge다. 삭제 지시는 맞는데 왜 prod에서만 남나, Domain과 Path를 어디까지 맞춰야 하나, redirect가 한번이라도 http로 꺾였나, cleanup 응답이 브라우저에 어떤 문맥으로 도착했나 같은 자연어 paraphrase가 본 문서의 원인 분기에 매핑된다.
+---
 # Secure Cookie Cleanup Behind Proxy
 
 > 한 줄 요약: logout이나 cookie migration cleanup이 안 먹는다고 해서 곧바로 `bad tombstone`으로 단정하면 안 된다. proxy 뒤에서 다음 요청이 `http://...`로 꺾이면 `Secure` tombstone 자체가 전달되지 않거나, old cookie가 안 지워진 것처럼 보일 수 있다.
@@ -24,8 +93,7 @@
 > - `[primer]` [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: secure cookie cleanup behind proxy, cookie cleanup behind proxy, secure tombstone behind proxy, cookie tombstone secure delivery, bad tombstone vs secure delivery, logout cookie cleanup behind proxy, secure cookie delete not working proxy, max-age 0 secure cookie proxy, expires delete cookie https proxy, cookie cleanup seems ignored behind alb, cookie tombstone not applied behind nginx, stale secure cookie after logout proxy, secure logout cookie remains proxy, beginner cookie cleanup proxy guide, secure cookie cleanup behind proxy basics
-retrieval-anchor-keywords: cookie deleted locally but still visible, logout clears cookie locally not in prod, secure cookie logout works local fails prod, bad tombstone vs wrong scheme redirect, host-only cookie tombstone vs secure redirect mismatch, tombstone exact domain path vs secure delivery issue
+retrieval-anchor-keywords: secure cookie cleanup behind proxy, cookie cleanup behind proxy, secure tombstone behind proxy, bad tombstone vs secure delivery, logout cookie cleanup behind proxy, secure cookie delete not working proxy, stale secure cookie after logout proxy, cookie deleted locally but still visible, logout clears cookie locally not in prod, secure cookie logout works local fails prod, bad tombstone vs wrong scheme redirect, tombstone exact domain path vs secure delivery issue
 
 ## 왜 이 문서를 먼저 읽나
 

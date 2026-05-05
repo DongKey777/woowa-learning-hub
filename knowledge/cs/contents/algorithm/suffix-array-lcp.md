@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Suffix Array and LCP
+concept_id: algorithm/suffix-array-lcp
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+  - substring-index-choice
+  - repeated-substring-analysis
+aliases:
+  - suffix array
+  - lcp array
+  - suffix array lcp
+  - longest common prefix array
+  - substring index
+  - suffix sorting
+  - repeated substring index
+  - lexicographic suffix ordering
+symptoms:
+  - 반복 substring 문제라는데 suffix array와 LCP를 왜 같이 봐야 하는지 연결이 안 돼
+  - suffix를 정렬하면 뭐가 쉬워지는지 모르겠고 LCP 배열은 더 낯설어
+  - trie 말고 suffix array를 써야 하는 정적 문자열 검색 상황이 감이 안 와
+intents:
+  - definition
+  - deep_dive
+  - comparison
+prerequisites:
+  - algorithm/string
+next_docs:
+  - algorithm/suffix-tree-intuition
+  - algorithm/suffix-automaton
+  - algorithm/suffix-array-vs-suffix-tree-comparison
+linked_paths:
+  - contents/algorithm/string.md
+  - contents/algorithm/suffix-tree-intuition.md
+  - contents/algorithm/suffix-automaton.md
+  - contents/algorithm/suffix-array-vs-suffix-tree-comparison.md
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+  - contents/data-structure/radix-tree.md
+confusable_with:
+  - algorithm/suffix-tree-intuition
+  - algorithm/suffix-automaton
+forbidden_neighbors:
+  - contents/data-structure/trie-prefix-search-autocomplete.md
+expected_queries:
+  - suffix array와 lcp를 같이 배우는 이유를 문자열 검색 관점에서 설명해줘
+  - 반복 substring을 찾을 때 suffix array가 어떤 식으로 후보를 줄이는지 알고 싶어
+  - suffix 정렬과 인접 공통 prefix 배열이 왜 같이 등장하는지 감이 안 와
+  - trie 대신 suffix array를 떠올려야 하는 문자열 인덱스 상황을 비교해줘
+  - 정적 텍스트 인덱싱에서 suffix array와 lcp가 어떤 역할을 나눠 가지는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 문자열 학습자가 suffix를 사전순으로 세워 두면 왜 부분 문자열
+  검색 후보가 줄고, 이웃한 suffix의 겹치는 길이를 함께 봐야 반복 패턴이
+  보이는지 깊이 잡는 deep_dive다. 접미사 정렬로 찾기 범위 좁히기, 비슷한
+  꼬리끼리 붙여 보기, 반복되는 조각 길이 재기, 인접 비교를 덜 하기, 정적
+  텍스트 인덱스 감각 같은 자연어 paraphrase가 본 문서의 suffix array와
+  LCP 연결에 매핑된다.
+---
 # Suffix Array and LCP
 
 > 한 줄 요약: Suffix Array는 문자열의 모든 suffix를 정렬해 검색 기반을 만들고, LCP는 인접 suffix의 공통 접두사를 이용해 반복 비교를 줄인다.

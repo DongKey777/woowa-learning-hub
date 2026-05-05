@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Binary Tree vs BST vs Heap Bridge
+concept_id: data-structure/binary-tree-vs-bst-vs-heap-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- tree-invariant-confusion
+- heap-vs-bst-purpose
+- segment-tree-misclassification
+aliases:
+- binary tree vs bst vs heap bridge basics
+- binary tree vs bst vs heap bridge beginner
+- binary tree vs bst vs heap bridge intro
+- data structure basics
+- beginner data structure
+- 처음 배우는데 binary tree vs bst vs heap bridge
+- binary tree vs bst vs heap bridge 입문
+- binary tree vs bst vs heap bridge 기초
+- what is binary tree vs bst vs heap bridge
+- how to binary tree vs bst vs heap bridge
+symptoms:
+- 이진 트리랑 BST랑 힙이 다 트리처럼 보여서 뭐가 다른지 자꾸 섞여
+- 정렬 탐색용인지 최소값 꺼내기용인지 문제를 읽어도 구분이 안 돼
+- 세그먼트 트리도 BST나 힙처럼 생각해 버려서 선택이 꼬여
+intents:
+- comparison
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/balanced-bst-vs-unbalanced-bst-primer
+- data-structure/heap-variants
+- data-structure/segment-tree-not-bst-or-heap-bridge
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/binary-tree-traversal-routing-guide.md
+- contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/order-statistic-tree.md
+- contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+confusable_with:
+- data-structure/balanced-bst-vs-unbalanced-bst-primer
+- data-structure/segment-tree-not-bst-or-heap-bridge
+- data-structure/heap-variants
+forbidden_neighbors:
+- contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
+- contents/data-structure/heap-variants.md
+expected_queries:
+- 이진 트리 BST 힙 차이를 한 번에 정리해줘
+- 탐색 트리와 우선순위 큐용 트리를 어떻게 구분해
+- BST는 정렬용이고 힙은 최소값용이라는 말이 왜 중요한지 설명해줘
+- binary tree가 곧 BST는 아니라는 걸 초보자 관점에서 설명해줘
+- 힙은 트리인데 왜 검색용 트리가 아니야
+- 세그먼트 트리도 BST나 힙처럼 보면 안 되는 이유가 궁금해
+- inorder가 정렬되는 건 언제고 루트가 최소인 건 언제야
+- 값 찾기용 트리와 top k용 트리를 어떻게 나눠 생각해
+contextual_chunk_prefix: |
+  이 문서는 트리 입문자가 binary tree의 모양 제약과 BST의 정렬 탐색
+  규칙, heap의 우선순위 규칙을 서로 연결하는 bridge다. 자식이 둘까지인
+  구조, inorder가 정렬되는 트리, 최소값이나 최대값을 먼저 꺼내기,
+  shape와 order invariant 차이, 탐색용 트리와 우선순위 큐 구분 같은
+  자연어 paraphrase가 본 문서의 핵심 비교에 매핑된다.
+---
 # Binary Tree vs BST vs Heap Bridge
 
 > 한 줄 요약: `binary tree`는 모양 제약이고, `BST`는 정렬 탐색 규칙이고, `heap`은 우선순위 규칙이다.

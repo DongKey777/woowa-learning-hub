@@ -1,18 +1,39 @@
 # Notification Preferences Graph 설계
 
-> 한 줄 요약: notification preferences graph는 사용자, 채널, 이벤트 타입, 우선순위, quiet hours를 관계형 정책 그래프로 모델링하는 설계다.
+> 한 줄 요약: notification preferences graph는 사용자 설정, tenant 정책, quiet hours, 필수 알림 예외를 "어느 규칙이 최종 승리하는가"라는 precedence graph로 모델링하는 설계다.
 
-retrieval-anchor-keywords: notification preferences graph, quiet hours, channel preferences, policy graph, subscription, suppression, delivery preference, opt-in opt-out, urgency, precedence
+retrieval-anchor-keywords: notification preferences graph, notification preference precedence, quiet hours precedence, mandatory notification override, channel preference graph, tenant policy user override, notification opt in opt out, notification suppression graph, 알림 설정 그래프 뭐예요, quiet hours 왜 무시돼요, 왜 결제 알림은 밤에도 와요, channel override 언제 이기나요, preference policy graph design, notification policy explanation
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Notification 시스템 설계](./notification-system-design.md)
-> - [Email Delivery Platform 설계](./email-delivery-platform-design.md)
-> - [Feature Flag Control Plane 설계](./feature-flag-control-plane-design.md)
-> - [Entitlement / Quota 설계](./entitlement-quota-design.md)
-> - [Multi-tenant SaaS 격리 설계](./multi-tenant-saas-isolation-design.md)
-> - [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
+관련 문서:
+
+- [Notification 시스템 설계](./notification-system-design.md)
+- [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)
+- [Config Distribution System 설계](./config-distribution-system-design.md)
+- [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
+- [Permission Model Drift / AuthZ Graph 설계](../security/permission-model-drift-authz-graph-design.md)
+- [Feature Flags Rollout / Dependency Management](../software-engineering/feature-flags-rollout-dependency-management.md)
+
+## 이 문서가 먼저 풀어주는 질문
+
+이 문서는 "알림 설정 테이블을 넘어서 어떤 정책 충돌을 설명해야 하는가"가 막힐 때 읽는 graph 설계 문서다.
+
+| learner query shape | 이 문서에서 먼저 고정하는 것 | 다음 문서 |
+|---|---|---|
+| `알림 설정 그래프가 뭐예요?` | preference를 key-value가 아니라 precedence graph로 본다 | [Notification 시스템 설계](./notification-system-design.md) |
+| `왜 결제 알림은 quiet hours인데도 와요?` | mandatory override와 quiet hours의 우선순위를 분리한다 | [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md) |
+| `tenant 기본 정책과 사용자 설정이 충돌하면 누가 이겨요?` | policy layer 순서를 먼저 고정한다 | [Config Distribution System 설계](./config-distribution-system-design.md) |
+| `사용자에게 왜 이 알림이 갔는지 설명해야 해요` | explainability와 audit trail을 같이 설계해야 함을 묶어 준다 | [Audit Log Pipeline 설계](./audit-log-pipeline-design.md) |
+
+## 추천 학습 경로
+
+처음부터 모든 edge type을 늘리기보다, 먼저 "누가 승리하는가"와 "변경이 얼마나 빨리 반영되는가"를 나눠 보면 덜 헤맨다.
+
+1. precedence 순서가 아직 모호하다면 이 문서에서 `mandatory > tenant > user > channel > quiet hours` 같은 골격을 먼저 잡는다.
+2. 전달 지연이나 stale decision이 문제라면 [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)로 내려가 반영 지연을 본다.
+3. 정책 배포/버전 관리가 핵심이면 [Config Distribution System 설계](./config-distribution-system-design.md)로 이동한다.
+4. 권한 그래프와 비슷한 문제인지 비교하고 싶다면 [Permission Model Drift / AuthZ Graph 설계](../security/permission-model-drift-authz-graph-design.md)로 cross-category 비교를 한다.
 
 ## 핵심 개념
 
@@ -197,4 +218,3 @@ public boolean canSend(NotificationContext ctx) {
 ## 한 줄 정리
 
 Notification preferences graph는 채널, 이벤트, 시간대, tenant 정책을 우선순위 그래프로 합성해 알림 전달 여부를 결정하는 시스템이다.
-

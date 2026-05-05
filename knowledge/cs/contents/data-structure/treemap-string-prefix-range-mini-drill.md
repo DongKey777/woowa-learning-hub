@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: TreeMap 문자열 prefix와 사전순 range 미니 드릴
+concept_id: data-structure/treemap-string-prefix-range-mini-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 74
+mission_ids: []
+review_feedback_tags:
+- prefix-vs-range-intent
+- string-key-ordered-map
+- neighbor-vs-prefix-confusion
+aliases:
+- treemap string prefix range mini drill
+- startswith vs submap beginner
+- treemap 문자열 prefix range
+- 사전순 range와 prefix 차이
+- string key ordered map beginner
+- prefix query vs neighbor query
+symptoms:
+- startsWith와 subMap이 비슷해 보여서 TreeMap이 prefix 검색 구조라고 착각한다
+- 문자열 key에서 prefix 질문인지 ordered neighbor/range 질문인지 분기가 안 된다
+- subMap 결과가 우연히 같아서 의도를 잘못 읽는다
+intents:
+- comparison
+- drill
+prerequisites:
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+- data-structure/treemap-neighbor-query-micro-drill
+next_docs:
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/treemap-submap-schedule-window-mini-drill
+linked_paths:
+- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-submap-schedule-window-mini-drill.md
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/system-design/search-system-design.md
+confusable_with:
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treemap-submap-schedule-window-mini-drill
+forbidden_neighbors:
+- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+expected_queries:
+- startsWith와 TreeMap subMap이 왜 같은 질문이 아닌지 문자열 예제로 보고 싶어
+- TreeMap이 prefix 검색 구조인지 ordered map 구조인지 처음부터 구분하고 싶어
+- app prefix 후보 찾기와 app 다음 문자열 찾기를 서로 다른 의도로 분리해줘
+- 문자열 key에서 neighbor query와 range query가 어떻게 다른지 초급 드릴로 확인하고 싶어
+- subMap 결과가 prefix 검색처럼 보여서 헷갈릴 때 볼 문서가 필요해
+- ordered map string range basics를 한국어 예제로 다시 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 문자열 key를 다루는 입문자가 startsWith 같은 접두사
+  질문과 TreeMap subMap, higherKey 같은 사전순 범위 질문을 확인
+  질문으로 굳히는 drill이다. app으로 시작하는 후보 모으기, app 다음
+  문자열 하나 찾기, 문자열 구간을 창처럼 자르기, prefix 자동완성과
+  ordered map 범위 조회 구분, 결과가 비슷해도 의도가 다른 이유,
+  사전순 경계를 먼저 세우기 같은 자연어 paraphrase가 본 문서의 분기
+  감각에 매핑된다.
+---
 # TreeMap 문자열 Prefix vs 사전순 Range Mini Drill
 
 > 한 줄 요약: 문자열 key에서 `startsWith` 질문과 `TreeMap.subMap(...)` 질문은 비슷해 보여도, 전자는 "접두사 일치"를 묻고 후자는 "사전순 경계 사이"를 묻는다는 점을 concrete key로 먼저 분리해 두면 덜 헷갈린다.
@@ -8,6 +74,7 @@
 
 - [자료구조 카테고리 인덱스](./README.md)
 - [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md)
+- [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - [TreeMap `subMap` Schedule-Window Mini Drill](./treemap-submap-schedule-window-mini-drill.md)
 - [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](../language/java/submap-boundaries-primer.md)
@@ -28,6 +95,8 @@ retrieval-anchor-keywords: treemap string prefix range, startswith vs submap, le
 - `subMap("app", true, "apq", false)`: 정렬된 key가 `[app, apq)` 범위 안에 드는지 묻는다
 
 즉 결과가 우연히 비슷할 수는 있어도, `TreeMap`이 prefix 의미를 아는 것은 아니다.
+
+질문이 `"app" 다음 key 하나가 뭐예요?`처럼 이웃 조회라면 이 문서보다 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)로 바로 가는 편이 정확하다. 여기서는 prefix와 range가 헷갈리는 장면만 푼다.
 
 > `startsWith`는 문자열 규칙이고, `subMap`은 사전순 경계 규칙이다.
 

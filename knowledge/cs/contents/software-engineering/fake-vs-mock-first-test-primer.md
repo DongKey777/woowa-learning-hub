@@ -1,3 +1,85 @@
+---
+schema_version: 3
+title: Fake vs Mock 첫 테스트 프라이머
+concept_id: software-engineering/fake-vs-mock-first-test-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/roomescape
+- missions/baseball
+- missions/shopping-cart
+review_feedback_tags:
+- first-failing-test-choice
+- fake-vs-mock-boundary
+- repository-vs-notifier-test-double
+aliases:
+- fake vs mock first test
+- first failing test fake mock
+- 처음 mock fake 뭐부터
+- service refactor first test
+- mock vs fake beginner
+- fake repository first refactor
+- 왜 fake 먼저
+- when to use mock
+- 처음 테스트 더블 헷갈려
+- what is fake vs mock
+- small service refactor test
+- test double basics
+symptoms:
+- 첫 failing test를 짜려는데 fake로 시작할지 mock으로 시작할지 기준이 없어요
+- repository는 fake를 쓰라는데 notifier는 mock을 쓰라 해서 왜 다른지 헷갈려요
+- 결과를 검증하는 테스트와 호출을 검증하는 테스트를 자꾸 섞어서 읽게 돼요
+intents:
+- definition
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/dummy-vs-stub-beginner-mini-card
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/stub-vs-spy-first-test-primer
+- software-engineering/repository-fake-design-guide
+- software-engineering/outbound-notifier-mock-boundary-primer
+- software-engineering/refactoring-first-failing-test-bridge
+linked_paths:
+- contents/software-engineering/dummy-vs-stub-beginner-mini-card.md
+- contents/software-engineering/service-refactor-first-test-examples-pack.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/stub-vs-spy-first-test-primer.md
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+- contents/software-engineering/outbound-notifier-mock-boundary-primer.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/stub-vs-spy-first-test-primer
+- software-engineering/outbound-notifier-mock-boundary-primer
+- software-engineering/repository-fake-design-guide
+- software-engineering/testing-strategy-and-test-doubles
+forbidden_neighbors:
+- contents/software-engineering/stub-vs-spy-first-test-primer.md
+- contents/software-engineering/outbound-notifier-mock-boundary-primer.md
+expected_queries:
+- 첫 failing test에서 fake를 먼저 잡아도 되는지 mock부터 검증해야 하는지 기준을 알려줘
+- service 리팩토링 시작할 때 결과 중심 테스트와 호출 중심 테스트를 어떻게 구분해?
+- repository는 fake가 자연스럽고 notifier는 mock이 자연스럽다는 말을 한 번에 이해하고 싶어
+- 중복 저장 실패 같은 규칙은 fake로 보고 알림 전송은 mock으로 보는 이유가 뭐야?
+- 테스트 더블을 처음 고를 때 fake와 mock을 선택하는 빠른 질문표가 필요해
+contextual_chunk_prefix: |
+  이 문서는 작은 service 리팩토링의 첫 failing test에서 fake와 mock 중
+  무엇으로 시작할지 감을 잡는 beginner primer다. repository는 왜 fake가
+  읽히고 notifier는 왜 mock이 읽히는지, 결과를 검증하는 질문과 호출을
+  검증하는 질문을 어떻게 나누는지, 첫 테스트가 구현 순서 검증으로 새지
+  않게 어떤 test double을 골라야 하는지 같은 학습자 질문을 입문 기준으로
+  정리한다.
+---
+
 # Fake vs Mock 첫 테스트 프라이머
 
 > 한 줄 요약: 작은 service 리팩토링에서 첫 failing test를 고를 때는 보통 `결과를 읽는 fake`로 시작하고, `호출 자체가 답`일 때만 mock으로 좁히면 초심자도 구현 순서에 덜 묶인다.

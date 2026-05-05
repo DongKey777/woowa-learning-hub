@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Global Traffic Failover Control Plane 설계
+concept_id: system-design/global-traffic-failover-control-plane-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- dns-failover-vs-global-control-plane
+- regional-headroom-verification
+- failback-cooldown-planning
+aliases:
+- global traffic failover
+- gslb
+- dns failover
+- geo routing
+- regional evacuation
+- failover policy
+- weighted region routing
+- health signal aggregation
+- edge steering
+- traffic control plane
+symptoms:
+- 리전 장애면 DNS만 바꾸면 끝나는 거 아닌지 헷갈려
+- partial outage일 때 어느 리전으로 얼마나 옮겨야 할지 감이 안 와
+- 복구된 리전을 언제 다시 트래픽에 넣어야 안전한지 모르겠어
+intents:
+- definition
+prerequisites:
+- system-design/availability-and-sla-basics
+- system-design/load-balancer-basics
+- system-design/multi-region-active-active-design
+next_docs:
+- system-design/service-discovery-health-routing-design
+- system-design/stateful-workload-placement-failover-control-plane-design
+- system-design/traffic-shadowing-progressive-cutover-design
+linked_paths:
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+confusable_with:
+- system-design/service-discovery-health-routing-design
+- system-design/stateful-workload-placement-failover-control-plane-design
+- system-design/multi-region-active-active-design
+forbidden_neighbors:
+- contents/system-design/service-discovery-health-routing-design.md
+expected_queries:
+- 멀티리전에서 한 리전 장애가 나면 트래픽을 어떤 기준으로 다른 리전에 넘겨?
+- DNS failover 말고 global traffic control plane이 따로 필요한 이유가 뭐야?
+- regional evacuation할 때 headroom과 warm-up을 왜 같이 봐야 해?
+- partial outage면 전체 failover 대신 weighted shift를 어떻게 결정해?
+- 복구된 리전을 다시 받게 할 때 failback을 천천히 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 멀티리전 서비스를 운영하는 학습자가 한 리전 장애나 부분 장애 때
+  인터넷 진입 트래픽을 어디로 얼마나 옮길지, 복구된 리전을 언제 다시 넣을지
+  기초를 잡는 primer다. 리전 장애 우회, 남은 리전 수용 여력, 조금씩 트래픽
+  이동, health 신호를 모아 중앙 판단, 복구 리전 천천히 재투입 같은 자연어
+  paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Global Traffic Failover Control Plane 설계
 
 > 한 줄 요약: global traffic failover control plane은 리전 간 트래픽 분산, 우선순위, failover, evacuation을 중앙에서 결정해 인터넷 진입 트래픽이 장애와 유지보수 중에도 안전한 경로로 흐르도록 만드는 제어 시스템이다.

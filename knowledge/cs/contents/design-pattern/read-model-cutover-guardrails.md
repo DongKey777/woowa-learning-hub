@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: Read Model Cutover Guardrails
+concept_id: design-pattern/read-model-cutover-guardrails
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- rollback-window-before-cleanup
+- parity-before-cutover
+- freshness-guardrail-design
+aliases:
+- read model cutover guardrails
+- dual read parity
+- cutover assumption checklist
+- normalized query parity
+- pagination cutover
+- cursor invalidation
+- next-page parity
+- stable sort parity
+- rollback window
+- rollback window exit criteria
+- old projection decommission
+- rollback command verification
+- freshness guardrail
+- strict read fallback contract
+- error budget admission gate
+- cutover budget burn
+- canary promotion threshold
+- canary dwell time
+- projection rebuild evidence packet
+- cutover approval packet
+- rollback proof packet
+symptoms:
+- read model cutover를 했는데 일부 화면만 stale해서 어디를 gate로 봐야 할지 모르겠다
+- parity가 대충 맞아 보여도 rollback window를 언제 닫아야 할지 불안하다
+- canary를 열었는데 freshness와 error budget을 같이 어떻게 묶어야 할지 애매하다
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- design-pattern/projection-freshness-slo-pattern
+- design-pattern/read-model-staleness-read-your-writes
+next_docs:
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/strict-list-canary-metrics-rollback-triggers
+linked_paths:
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/database/replica-lag-observability-routing-slo.md
+confusable_with:
+- system-design/traffic-shadowing-progressive-cutover-design
+- system-design/dual-read-comparison-verification-platform-design
+forbidden_neighbors: []
+expected_queries:
+- read model cutover에서 guardrail을 어떤 순서로 세워야 해?
+- dual read parity가 맞아도 rollback window를 바로 닫으면 왜 위험해?
+- cutover에서 freshness guardrail, fallback, canary를 한 번에 어떻게 묶어 설명해?
+- projection cutover approval packet에는 어떤 증거가 들어가야 해?
+- partial rollout 중 stale read 회귀를 막는 cutover 체크리스트를 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 학습자가 read model cutover를 단순 스위치 전환이 아니라 parity,
+  fallback, canary, rollback window, freshness budget으로 운영해야 하는 이유와
+  순서를 깊이 잡는 deep_dive다. dual read 검증 뒤 언제 넘길지, stale 응답 회귀를
+  어떻게 막을지, rollback 창을 언제 닫을지, error budget을 admission gate에
+  어떻게 넣을지, 새 projection 전환 증거를 무엇으로 볼지 같은 자연어
+  paraphrase가 본 문서의 운영 guardrail에 매핑된다.
+---
 # Read Model Cutover Guardrails
 
 > 한 줄 요약: read-model cutover는 단순 스위치 전환이 아니라 parity check, fallback, canary, rollback window, freshness/error-budget guardrail을 갖춘 운영 절차여야 안전하다.

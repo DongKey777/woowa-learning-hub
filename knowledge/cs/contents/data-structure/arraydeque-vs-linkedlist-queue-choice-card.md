@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: ArrayDeque vs LinkedList 큐 선택 카드
+concept_id: data-structure/arraydeque-vs-linkedlist-queue-choice-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- queue-implementation-default
+- bfs-queue-concrete-type
+- arraydeque-over-linkedlist
+aliases:
+- arraydeque vs linkedlist queue
+- java queue implementation default
+- java bfs queue default
+- arraydeque linkedlist 차이
+- linkedlist 대신 arraydeque
+- java queue 뭐 써요
+- bfs queue java beginner
+- service code fifo queue java
+- queue implementation intro
+- arraydeque for beginners
+- linkedlist queue beginner
+- java queue basics
+- arraydeque queue interface
+- deque in name queue in use
+- bfs arraydeque queue
+symptoms:
+- Java 큐 구현체를 고를 때 LinkedList를 습관처럼 붙여도 되는지 헷갈린다
+- BFS 큐 예제마다 ArrayDeque와 LinkedList가 섞여 보여서 기본값을 못 정하겠다
+- 덱이라는 이름 때문에 ArrayDeque를 FIFO 큐로 써도 되는지 확신이 안 선다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/queue-basics
+- data-structure/array-vs-linked-list
+next_docs:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/arraydeque-vs-blockingqueue-service-handoff-primer
+- algorithm/dfs-bfs-intro
+linked_paths:
+- contents/data-structure/queue-basics.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
+- contents/data-structure/array-vs-linked-list.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/array-vs-linked-list
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/arraydeque-vs-blockingqueue-service-handoff-primer
+forbidden_neighbors:
+- contents/data-structure/array-vs-linked-list.md
+- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
+expected_queries:
+- Java에서 FIFO 큐 구현체를 하나만 고르라면 왜 보통 ArrayDeque부터 시작해?
+- BFS 코드에서 LinkedList 대신 다른 기본값을 쓰라는 이유를 초급 기준으로 설명해줘
+- 덱 이름을 가진 구현체를 일반 큐 변수에 넣어도 되는지 감각을 잡고 싶어
+- 큐 연산만 쓸 건데 연결 리스트를 일부러 택해야 하는 장면이 언제야?
+- offer poll peek만 쓰는 로컬 큐라면 어떤 구현체가 읽기 쉬운지 알고 싶어
+- Java queue 예제에서 구현 클래스가 섞여 보일 때 무엇을 기준으로 정리하면 돼?
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 FIFO 큐 구현체를 고를 때 ArrayDeque와
+  LinkedList 중 무엇을 기본값으로 둘지 결정하는 chooser다. BFS 기본
+  큐 선택, 덱 이름인데 FIFO로 써도 되는지, offer poll peek만 쓰는
+  로컬 큐, 연결 리스트를 굳이 택해야 하는지, Queue 변수에 어떤 구현을
+  붙일지 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # ArrayDeque vs LinkedList 큐 선택 카드
 
 > 한 줄 요약: Java에서 FIFO 큐를 하나 고르라면 BFS와 일반 서비스 코드 모두 `Queue` 인터페이스에 `ArrayDeque`를 붙이는 쪽이 기본값이고, `LinkedList`는 "연결 리스트 자체가 필요한가?"를 먼저 확인한 뒤에 고르는 편이 안전하다.

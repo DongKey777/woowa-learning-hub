@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 0-1 BFS 손계산 워크시트
+concept_id: algorithm/zero-one-bfs-hand-calculation-worksheet
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- zero-one-bfs-hand-trace
+- deque-front-back-trace
+aliases:
+- 0-1 bfs worksheet
+- zero one bfs worksheet
+- 0-1 bfs hand calculation
+- zero one bfs hand trace
+- 0-1 bfs deque trace
+- 0-1 bfs dist trace
+- 0-1 bfs beginner walkthrough
+- 0-1 bfs worked example
+- 0-1 bfs step by step
+- 0-1 bfs manual simulation
+- 0-1 bfs deque state
+- 0-1 bfs dist update
+- 0-1 bfs stale entry
+- deque shortest path worksheet
+- 0-1 bfs 입문 예제
+symptoms:
+- deque가 앞뒤로 어떻게 바뀌는지 손으로 못 따라가겠어
+- dist 표가 언제 갱신되는지 줄 단위로 보고 싶어
+- 0-1 BFS를 코드 전에 예제로 먼저 익히고 싶어
+intents:
+- definition
+prerequisites:
+- algorithm/dfs-bfs-intro
+- algorithm/zero-one-bfs-grid-conversion-primer
+next_docs:
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+- algorithm/zero-one-bfs-stale-entry-mini-card
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/zero-one-bfs-stale-entry-mini-card.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+confusable_with:
+- algorithm/zero-one-bfs-stale-entry-mini-card
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+forbidden_neighbors:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- 0-1 BFS를 손으로 한 줄씩 따라가는 가장 작은 예제가 필요해
+- deque front back이 바뀌는 장면을 표로 보면서 연습하고 싶어
+- 0-1 BFS에서 dist 배열이 어떻게 줄어드는지 워크시트 형태로 보고 싶어
+- 코드 보기 전에 수동 시뮬레이션으로 0-1 BFS 감각을 잡고 싶어
+- stale entry가 남는 장면까지 포함한 beginner용 추적 예시를 찾고 있어
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS를 처음 잡는 학습자가 deque 앞뒤 배치와 dist 갱신을
+  손으로 따라가며, 비용 0과 1일 때 처리 순서 차이를 감각으로 익히는
+  primer다. 종이에 한 칸씩 추적하기, 앞에 넣을지 뒤에 넣을지, 거리표와
+  대기열 같이 보기, 오래된 후보 구분하기, 단계별로 최단거리 흐름 보기
+  같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 0-1 BFS 손계산 워크시트
 
 > 한 줄 요약: `0-1 BFS`는 "비용이 그대로면 앞, 비용이 1 늘면 뒤"만 지키면서 `dist`와 deque를 같이 추적하면 손으로도 충분히 따라갈 수 있다.

@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Pseudo-TTY vs Pipe Behavior
+concept_id: operating-system/pseudo-tty-vs-pipe-behavior
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- tty-detection-vs-buffering
+- output-capture-mode-selection
+- prompt-vs-log-stream-separation
+aliases:
+- pseudo tty vs pipe behavior
+- pseudo-tty vs pipe
+- pty vs pipe
+- isatty basics
+- pipe에서는 왜 색이 사라져요
+- pty 붙이면 왜 실시간 출력
+- prompt ignores pipe
+- tty detection buffering
+- terminal detection colors prompts progress bar
+- pipe disables color
+- pty enables color
+- line buffering tty
+- full buffering pipe
+- pseudo terminal prompt behavior
+- master slave pty basics
+symptoms:
+- pipe로 받으면 색상이나 progress bar가 사라져서 출력이 깨진 것처럼 보여요
+- PTY를 붙였더니 prompt는 살아났는데 로그 파싱이 어려워졌어요
+- stdout 지연 문제와 interactive terminal 모드 차이를 어떻게 갈라야 할지 모르겠어요
+intents:
+- comparison
+- design
+prerequisites:
+- operating-system/stdio-buffering-after-redirect
+- operating-system/process-lifecycle-and-ipc-basics
+next_docs:
+- operating-system/why-some-prompts-use-dev-tty
+- operating-system/pty-raw-mode-echo-basics
+- operating-system/tty-aware-output-capture-patterns
+linked_paths:
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/why-some-prompts-use-dev-tty.md
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/session-vs-process-group-primer.md
+- contents/operating-system/signals-process-supervision.md
+confusable_with:
+- operating-system/stdio-buffering-after-redirect
+- operating-system/tty-aware-output-capture-patterns
+- operating-system/why-some-prompts-use-dev-tty
+forbidden_neighbors:
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/why-some-prompts-use-dev-tty.md
+expected_queries:
+- 왜 같은 명령인데 pipe로 받으면 색이 사라지고 PTY를 붙이면 다시 살아나?
+- progress bar나 prompt가 pipe에서는 안 보이는데 pseudo-TTY에서는 보이는 이유가 뭐야?
+- stdout이 늦게 나오는 문제와 TTY detection 문제를 입문자 기준으로 어떻게 구분해?
+- 로그 수집은 pipe로 하고 interactive CLI 재생은 PTY로 하라는 말을 쉽게 설명해줘
+- stdin, stdout, stderr의 isatty 결과가 다를 때 프로그램 동작이 어떻게 달라져?
+contextual_chunk_prefix: |
+  이 문서는 같은 명령이 pipe에서는 밋밋하고 PTY에서는 대화형처럼 보일 때
+  어느 연결 방식을 골라야 하는지 결정하게 돕는 chooser다. 색상 출력이
+  갑자기 사라짐, 진행률 표시가 멈춘 듯 보임, 터미널에서는 묻는데 로그
+  수집에서는 조용함, 줄마다 바로 안 보임, 사람용 화면과 기계용 스트림을
+  나눠야 함 같은 자연어 paraphrase가 본 문서의 핵심 비교에 매핑된다.
+---
 # Pseudo-TTY vs Pipe Behavior
 
 > 한 줄 요약: pipe는 byte를 운반하는 통로이고, pseudo-TTY(PTY)는 child 프로그램이 "지금 터미널과 대화 중인가?"를 `yes`로 느끼게 만드는 terminal-like 장치다. 그래서 같은 명령도 PTY에서는 줄 단위 flush, 색상, prompt, progress bar를 켜고, plain pipe에서는 로그/머신 친화 모드로 바뀌는 경우가 많다.

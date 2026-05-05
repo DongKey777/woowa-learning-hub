@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Offline Query Ordering Patterns
+concept_id: algorithm/offline-query-ordering-patterns
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- offline-query-reordering
+- state-movement-cost
+aliases:
+- offline query ordering
+- query reordering
+- batch queries
+- state movement cost
+- mo ordering
+- sqrt decomposition
+- answer preprocessing
+- range queries
+symptoms:
+- 질의 순서를 바꿔도 되는 문제인지부터 판단이 안 서
+- Mo's algorithm은 외웠는데 왜 오프라인 재정렬이 본질인지 감이 안 와
+- add remove 비용을 줄이려면 질의를 어떻게 묶어야 하는지 모르겠어
+intents:
+- deep_dive
+prerequisites:
+- algorithm/mo-algorithm-basics
+- algorithm/sliding-window-patterns
+next_docs:
+- algorithm/sweep-line-overlap-counting
+- algorithm/top-k-streaming-heavy-hitters
+- algorithm/binary-search-patterns
+linked_paths:
+- contents/algorithm/mo-algorithm-basics.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+confusable_with:
+- algorithm/mo-algorithm-basics
+- algorithm/sweep-line-overlap-counting
+forbidden_neighbors: []
+expected_queries:
+- offline query를 재정렬해서 푼다는 발상이 Mo 알고리즘과 어떻게 연결되는지 설명해줘
+- 구간 질의에서 상태 이동 비용을 줄이려고 질의 순서를 바꾸는 기준이 뭐야
+- online으로는 안 되고 offline batch여야 하는 문제 신호를 알고 싶어
+- add remove 유지 비용이 큰 문제에서 query ordering이 왜 중요해지는지 궁금해
+- sqrt decomposition을 외웠는데 왜 결국 포인터 이동 총량 최적화로 이해해야 하는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 알고리즘 학습자가 질의를 받은 순서대로 처리하지 않아도 될 때
+  무엇을 기준으로 재배열하고, 이전 답 상태를 재사용해 이동 비용을 왜 줄일
+  수 있는지 깊이 잡는 deep_dive다. 질문 묶음 순서 다시 짜기, 가까운
+  구간끼리 붙여 처리, 포인터 왕복 줄이기, add remove 부담 낮추기, 실시간
+  대신 한꺼번에 계산하기 같은 자연어 paraphrase가 본 문서의 offline
+  ordering 전략에 매핑된다.
+---
 # Offline Query Ordering Patterns
 
 > 한 줄 요약: Offline query ordering은 질문 순서를 바꿔 상태 이동 비용을 줄이는 방식으로, Mo's algorithm 같은 기법의 공통 감각이다.

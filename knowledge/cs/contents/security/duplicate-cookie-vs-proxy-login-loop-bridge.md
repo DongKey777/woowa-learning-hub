@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Duplicate Cookie vs Proxy Login Loop Bridge
+concept_id: security/duplicate-cookie-vs-proxy-login-loop-bridge
+canonical: false
+category: security
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- raw-cookie-header-first
+- duplicate-cookie-vs-proxy
+- secure-cookie-behind-proxy
+aliases:
+- duplicate cookie vs proxy login loop
+- same name cookie twice in request
+- request cookie duplicate name
+- location becomes http after login
+- secure cookie dropped after redirect
+- raw cookie header vs location chain
+- application cookies not enough duplicate proxy
+- 로그인 반복인데 쿠키가 두 개인지 모르겠다
+- 처음 배우는데 cookie header는 어디서 보나
+- 프록시 뒤에서만 로그인 반복
+- devtools duplicate cookie vs redirect chain
+- redirect chain http proof
+- duplicate cookie vs proxy login loop bridge basics
+- duplicate cookie vs proxy login loop bridge beginner
+- duplicate cookie vs proxy login loop bridge intro
+symptoms:
+- 로그인은 됐는데 다시 /login으로 튀어서 쿠키 중복인지 프록시 문제인지 모르겠어
+- Application 탭에는 세션 쿠키가 보이는데 왜 요청에서는 이상하게 실패하는지 헷갈려
+- 프록시 뒤에서만 로그인 루프가 나서 duplicate cookie와 scheme 문제를 어떻게 갈라야 할지 모르겠어
+intents:
+- comparison
+prerequisites:
+- security/cookie-failure-three-way-splitter
+- security/browser-401-vs-302-login-redirect-guide
+next_docs:
+- security/duplicate-cookie-name-shadowing
+- security/secure-cookie-behind-proxy-guide
+- security/cookie-scope-mismatch-guide
+linked_paths:
+- contents/security/cookie-failure-three-way-splitter.md
+- contents/security/duplicate-cookie-name-shadowing.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+confusable_with:
+- security/duplicate-cookie-name-shadowing
+- security/secure-cookie-behind-proxy-guide
+- security/cookie-scope-mismatch-guide
+forbidden_neighbors:
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+expected_queries:
+- 로그인 성공 직후 다시 로그인 페이지로 가는데 쿠키 중복인지 프록시 설정 문제인지 어떻게 구분해?
+- 실패한 요청에 세션 쿠키가 두 번 실렸는지 어디서 확인해야 해?
+- redirect가 http로 바뀌면서 secure cookie가 빠지는지 보는 순서를 알려줘
+- Application 탭에는 쿠키가 있는데 왜 duplicate 문제인지 proxy 문제인지 아직 못 가르겠어
+- login loop에서 raw Cookie header와 Location 체인 중 무엇부터 비교해야 해?
+- 프록시 뒤에서만 익명으로 풀릴 때 duplicate cookie detour로 가야 하는지 판단 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 로그인 직후 다시 /login으로 튈 때 실패한 요청에 같은 이름
+  세션이 겹쳐 실린 상황과 redirect URL이 http로 꺾여 Secure cookie가
+  빠지는 상황을 어떻게 갈라 읽는지 연결하는 bridge다. 쿠키 저장 화면만
+  믿지 말고 실제 전송 헤더를 먼저 보기, old/new 세션이 함께 감, 프록시
+  뒤에서만 익명으로 풀림, 리다이렉트 한 번 틀어지면 다시 로그인 같은
+  자연어 paraphrase가 본 문서의 분기 판단에 매핑된다.
+---
 # Duplicate Cookie vs Proxy Login Loop Bridge
 
 > 한 줄 요약: login 뒤 다시 튄다고 해서 전부 같은 cookie 문제는 아니다. 실패한 요청에 같은 이름 cookie가 두 개 실린 건지, 아니면 redirect가 `http://...`로 꺾여 `Secure` cookie가 빠진 건지 먼저 갈라야 한다.

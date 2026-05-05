@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: '`List.indexOf()` / `List.remove()` vs `Set.remove()` 증상 브리지'
+concept_id: language/list-indexof-remove-vs-set-remove-symptom-bridge
+canonical: false
+category: language
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- list-remove-overload
+- set-lookup-mutation
+- equals-hashcode-lookup
+aliases:
+- list indexof remove vs set remove
+- java list remove overload set remove difference
+- list remove int vs object beginner
+- list integer remove(1) why
+- list indexof remove equals
+- set remove false why java
+- hashset remove false after mutation
+- list remove wrong element by index
+- why list remove and set remove feel same
+- remove 헷갈려요 list set
+- 자바 list set remove 왜 다르게 실패해요
+- indexof remove symptom bridge
+- what is list remove vs set remove
+- list indexof returns -1 why
+- set remove false 이유
+symptoms:
+- List에서는 remove가 엉뚱한 원소를 지우는데 Set에서는 그냥 false만 나와
+- indexOf가 -1인 문제와 Set 삭제 실패가 같은 축인지 구분이 안 돼
+- 출력에는 원소가 보이는데 HashSet remove가 실패해서 어디부터 봐야 할지 모르겠어
+intents:
+- comparison
+prerequisites:
+- language/collections-equality-mutable-state-foundations
+- language/java-equality-identity-basics
+next_docs:
+- language/list-integer-remove-overload-practice-drill
+- language/list-contains-vs-set-contains-symptom-card
+- language/mutable-element-pitfalls-list-set-primer
+- language/stable-id-map-key-primer
+linked_paths:
+- contents/language/java/list-integer-remove-overload-practice-drill.md
+- contents/language/java/list-contains-vs-set-contains-symptom-card.md
+- contents/language/java/mutable-element-pitfalls-list-set-primer.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/stable-id-map-key-primer.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+confusable_with:
+- language/list-contains-vs-set-contains-symptom-card
+- language/collections-equality-mutable-state-foundations
+forbidden_neighbors: []
+expected_queries:
+- List에서 remove 했더니 값이 아니라 위치가 지워진 이유를 빨리 알고 싶어
+- indexOf가 -1인데 Set.remove false랑 같은 문제인지 비교해줘
+- HashSet 원소가 출력에는 보이는데 remove가 실패하는 원인을 분리해서 설명해줘
+- List.remove(Object)와 Set.remove(Object)를 같은 감각으로 보면 왜 헷갈리는지 알고 싶어
+- Integer 리스트에서 remove(1) 버그를 Set 삭제 문제와 같이 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 같은 remove 이름인데도 List와 Set에서 실패 원인이
+  왜 갈라지는지, 값 삭제인지 위치 삭제인지와 집합의 다시 찾기 규칙을
+  연결해 주는 bridge다. 엉뚱한 원소가 지워짐, 찾기 결과는 없는데 삭제도
+  안 됨, 화면에는 보이는데 지워지지 않음, 비교 기준과 탐색 기준을 따로
+  봐야 함 같은 자연어 paraphrase가 본 문서의 핵심 구분에 매핑된다.
+---
 # `List.indexOf()` / `List.remove()` vs `Set.remove()` 증상 브리지
 
 > 한 줄 요약: `List`와 `Set`의 `remove()`는 이름이 비슷해 보여도, `List`는 `remove(int)` 오버로드와 `equals()` 비교 때문에, `Set`은 집합 lookup 규칙 때문에 실패 원인이 갈린다.

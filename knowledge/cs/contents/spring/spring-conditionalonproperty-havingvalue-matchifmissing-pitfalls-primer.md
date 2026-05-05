@@ -9,19 +9,13 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+- [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
+- [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+- [Configuration Governance, Runtime Safety](../software-engineering/configuration-governance-runtime-safety.md)
 
-> 관련 문서:
-> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
-> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
-> - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-
-retrieval-anchor-keywords: conditionalonproperty pitfalls, @conditionalonproperty havingvalue, @conditionalonproperty matchifmissing, property missing bean, feature flag bean missing, conditional bean missing because property absent, property missing vs false, property source precedence, application yml override order, profile file override, env var key mismatch, application yml vs environment variable property, command-line property override, spring conditional bean beginner, spring conditionalonproperty havingvalue matchifmissing pitfalls primer basics
+retrieval-anchor-keywords: conditionalonproperty bean missing, @conditionalonproperty havingvalue, @conditionalonproperty matchifmissing, property missing vs false, bean이 왜 안 떠요 property, 왜 local만 되고 prod는 안 돼요 property, env var key mismatch spring, profile override bean missing, application yml override order, spring property source precedence, feature flag bean missing, conditional bean missing because property absent, matchifmissing true false difference, spring conditional property basics
 
 ## 핵심 개념
 

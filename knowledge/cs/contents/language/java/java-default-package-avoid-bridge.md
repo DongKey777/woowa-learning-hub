@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Java default package 회피 브리지
+concept_id: language/java-default-package-avoid-bridge
+canonical: false
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- default-package-avoid
+- package-declaration-habit
+aliases:
+- java default package beginner
+- java unnamed package beginner
+- default package 왜 안돼요
+- package 선언 안 하면 안 되나요
+- java package 꼭 써야 하나요
+- 자바 package 선언 왜 붙이나
+- 자바 package 선언 생략 문제
+- 처음 배우는데 default package
+- hello java package 없이 시작
+- 두 파일부터 package 필요
+- beginner java package declaration
+- why avoid default package java
+- what is unnamed package java
+symptoms:
+- Hello World는 되는데 파일 두 개부터 왜 연결이 꼬이는지 모르겠어
+- package 선언을 생략하면 뭐가 불편한지 감이 안 와
+- default package 코드가 import 안 되는 이유를 짧게 알고 싶어
+intents:
+- comparison
+prerequisites:
+- language/java-package-import-boundary-basics
+- language/top-level-type-access-modifier-bridge
+next_docs:
+- language/java-package-boundary-quickcheck-card
+- language/java-access-modifiers-member-model-basics
+linked_paths:
+- contents/language/java/java-package-import-boundary-basics.md
+- contents/language/java/top-level-type-access-modifier-bridge.md
+- contents/language/java/java-package-boundary-quickcheck-card.md
+- contents/language/java/java-module-system-runtime-boundaries.md
+confusable_with:
+- language/java-package-import-boundary-basics
+- language/top-level-type-access-modifier-bridge
+forbidden_neighbors:
+- contents/language/java/top-level-type-access-modifier-bridge.md
+expected_queries:
+- Java default package를 실전에서 왜 피하는지 짧게 설명해줘
+- package 선언 없는 파일이 두 개 이상 되면 뭐가 가장 먼저 문제인지 알고 싶어
+- named package 코드에서 package 없는 클래스를 연결할 때 왜 막히는지 궁금해
+- Hello.java 하나는 되는데 다음 파일부터 package를 붙이라는 이유가 뭐야
+- unnamed package와 named package 차이를 초보자 관점에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Java 입문자가 package 선언 없이 시작한 파일이 왜 두세 개로
+  늘자마자 연결이 막히는지, default package와 named package의 실제
+  차이를 실전 감각으로 잇는 bridge다. 파일 소속이 흐림, package 없는
+  클래스 재사용 막힘, 처음엔 편한데 구조가 커질수록 꼬임, import로
+  해결될 줄 알았는데 안 됨, helper를 어디 두고 어떻게 나눌지 막막함
+  같은 자연어 paraphrase가 본 문서의 회피 이유에 매핑된다.
+---
 # Java default package 회피 브리지
 
 > 한 줄 요약: 파일명 규칙까지 익혔다면 다음으로는 `package` 선언을 생략한 default package를 왜 실제 Java 코드에서 피하는지, "처음엔 편하지만 곧 연결이 막힌다"는 관점으로 짧게 이어서 보면 된다.

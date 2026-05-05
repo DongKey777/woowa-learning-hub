@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Wrong-Scheme vs Wrong-Origin Redirect Shortcut
+concept_id: security/wrong-scheme-vs-wrong-origin-redirect-shortcut
+canonical: false
+category: security
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- secure-cookie-vs-redirect-host
+- forwarded-header-trust-boundary
+- location-header-first-check
+aliases:
+- wrong scheme vs wrong origin redirect
+- login redirect becomes http
+- redirect location http instead of https
+- redirect location internal hostname
+- app-internal redirect after login
+- secure cookie not sent after redirect http
+- redirect chain http proof
+- location header first check
+- raw cookie duplicate not redirect mismatch
+- 로그인 뒤 왜 http로 가나
+- 처음 배우는데 location 헤더를 어디서 보나
+- wrong host after login
+- security readme return path
+- browser session troubleshooting return
+- return to browser session troubleshooting path
+symptoms:
+- 로그인 성공 뒤 리다이렉트 주소가 갑자기 http로 내려가요
+- 로그인 후 app-internal이나 staging host로 이동해요
+- redirect가 꼬였는데 secure cookie 문제인지 origin 문제인지 모르겠어요
+intents:
+- comparison
+- design
+prerequisites:
+- security/browser-401-vs-302-login-redirect-guide
+- security/session-cookie-jwt-basics
+next_docs:
+- security/secure-cookie-behind-proxy-guide
+- security/absolute-redirect-url-behind-load-balancer-guide
+- security/forwarded-header-trust-boundary-primer
+linked_paths:
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md
+- contents/security/forwarded-header-trust-boundary-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+confusable_with:
+- security/secure-cookie-behind-proxy-guide
+- security/absolute-redirect-url-behind-load-balancer-guide
+- security/cookie-scope-mismatch-guide
+forbidden_neighbors:
+- contents/security/cookie-scope-mismatch-guide.md
+expected_queries:
+- 로그인 뒤 Location 헤더가 http로 내려오면 먼저 뭘 의심해야 해?
+- https인데 host가 app-internal로 바뀌는 redirect는 뭐가 다른가요
+- redirect 문제에서 wrong scheme과 wrong origin을 빨리 구분하는 법
+- secure cookie 문제인지 absolute redirect host 문제인지 헷갈려
+- 로그인 후 잘못된 host로 이동할 때 체크 순서를 알려줘
+- 프록시 뒤에서 redirect URL이 이상할 때 location 헤더를 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 로그인 뒤 redirect URL이 이상할 때 scheme 문제와 host 또는
+  origin 문제 중 어느 갈래를 먼저 의심해야 하는지 골라 주는 chooser다.
+  Location이 왜 http로 꺾임, 내부 호스트로 튀는 이동, Secure cookie가 안
+  따라붙는 경로, public host 복원이 어디서 어긋남, redirect URL을 어느
+  기준으로 잘라 보나 같은 자연어 paraphrase가 본 문서의 분기 기준에
+  매핑된다.
+---
 # Wrong-Scheme vs Wrong-Origin Redirect Shortcut
 
 > 한 줄 요약: 로그인 뒤 redirect가 이상할 때는 먼저 `scheme이 틀린가`와 `host/origin이 틀린가`를 분리한다. `http://...`로 꺾이면 `Secure` cookie / proxy 경로를 먼저 보고, host가 `app-internal`/staging으로 바뀌면 absolute redirect host 복원 경로를 먼저 본다.

@@ -26,6 +26,7 @@ linked_paths:
 confusable_with:
 - design-pattern/strategy-pattern-basics
 - design-pattern/registry-pattern
+- design-pattern/strategy-map-vs-registry-primer
 expected_queries:
 - Factory랑 Selector, Resolver 이름은 어떻게 구분해?
 - 새 객체를 만들지 않는데 Factory라고 불러도 돼?

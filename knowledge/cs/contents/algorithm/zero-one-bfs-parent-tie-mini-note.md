@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 0-1 BFS parent tie mini note
+concept_id: algorithm/zero-one-bfs-parent-tie-mini-note
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- parent-tie-overwrite
+- shortest-path-parent-choice
+aliases:
+- 0-1 bfs parent tie
+- zero one bfs parent tie
+- 0-1 bfs equal distance parent
+- zero one bfs same distance parent update
+- 0-1 bfs parent[next] tie
+- 0-1 bfs equal cost parent update
+- 0-1 bfs predecessor tie
+- 0-1 bfs same shortest path parent
+- 0-1 bfs parent overwrite equal distance
+- 0-1 bfs parent do not update tie
+- 0-1 bfs parent update only on relax
+- 0-1 bfs beginner parent tie
+- 0-1 bfs 동점 부모 갱신
+- 0-1 bfs 같은 거리 parent
+- 0-1 bfs parent[next] 언제 바꾸나
+symptoms:
+- 같은 최단 거리 후보가 나오면 parent[next]를 덮어써야 하는지 모르겠어
+- 거리는 그대로인데 부모만 바뀌어야 하는 상황이 기본형에도 있는지 헷갈려
+- 경로 복원용 parent를 dist 갱신과 언제 같이 움직여야 하는지 정리하고 싶어
+intents:
+- troubleshooting
+- drill
+prerequisites:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/zero-one-bfs-dist-vs-visited-counterexamples
+next_docs:
+- algorithm/zero-one-bfs-lexicographic-tie-mini-note
+- algorithm/zero-one-bfs-full-path-lexicographic-bridge
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/algorithm/zero-one-bfs-equal-distance-reinsert-mini-note.md
+- contents/algorithm/zero-one-bfs-lexicographic-tie-mini-note.md
+- contents/algorithm/zero-one-bfs-full-path-lexicographic-bridge.md
+- contents/algorithm/zero-one-bfs-implementation-mistake-check-template.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+confusable_with:
+- algorithm/zero-one-bfs-equal-distance-reinsert-mini-note
+- algorithm/zero-one-bfs-lexicographic-tie-mini-note
+forbidden_neighbors:
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/zero-one-bfs-full-path-lexicographic-bridge.md
+expected_queries:
+- 0-1 BFS에서 같은 최단 거리 후보가 또 나오면 parent는 그대로 둬도 되는지 알려줘
+- 거리값이 안 줄었는데 부모 정점을 바꾸면 안 되는 이유를 beginner 기준으로 설명해줘
+- 경로 복원용 parent를 언제 dist와 같이 갱신하는지 한 번에 정리하고 싶어
+- 동점 후보가 들어왔을 때 아무 최단 경로 하나만 남기면 되는 상황을 예시로 보고 싶어
+- 사전순 요구가 없으면 parent overwrite를 왜 보통 하지 않는지 확인하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS에서 최단 거리 동점 후보가 생겼을 때 parent[next]를
+  기본형에서 다시 바꿔야 하는지 판단하는 drill이다. 같은 거리 부모
+  덮어쓰기, 경로 복원용 parent와 dist의 동기화 시점, 아무 최단 경로
+  하나만 남기면 되는 상황 같은 자연어 질문이 이 문서의 기본 규칙으로
+  매핑된다.
+---
 # 0-1 BFS parent tie mini note
 
 > 한 줄 요약: beginner 기본형 `0-1 BFS`에서는 `newDist == dist[next]`인 동점 후보가 나와도 보통 `parent[next]`를 다시 바꾸지 않고, `newDist < dist[next]`일 때만 `parent[next]`를 함께 갱신하면 충분하다.

@@ -1,27 +1,21 @@
 # Control Plane / Data Plane Separation 설계
 
-> 한 줄 요약: control plane과 data plane 분리는 정책 결정과 요청 처리 경로를 분리해, 운영 변경의 안전성과 런타임 처리 성능을 동시에 확보하는 시스템 설계 기본 원칙이다.
+> 한 줄 요약: `control plane이 뭐고 data plane이 뭐예요?`, `왜 둘을 나눠요?`라는 질문에는 "정책 변경 경로와 요청 처리 경로를 분리해 운영 변경의 안전성과 런타임 성능을 동시에 지킨다"라고 잡으면 된다.
 
-retrieval-anchor-keywords: control plane, data plane, separation of concerns, policy distribution, last known good, control loop, runtime path, safety isolation, config propagation, failure domain separation, control plane fundamentals, control plane data plane separation design basics, control plane data plane separation design beginner, control plane data plane separation design intro, system design basics
+retrieval-anchor-keywords: control plane vs data plane, control plane data plane separation, control plane이 뭐예요, data plane이 뭐예요, 왜 control plane data plane 나눠요, 처음 control plane 헷갈려요, policy distribution basics, last known good snapshot, config propagation delay, runtime path isolation, failure domain separation, control plane beginner bridge
 
 **난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [시스템 설계 면접 프레임워크](./system-design-framework.md)
-> - [Config Distribution System 설계](./config-distribution-system-design.md)
-> - [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
-> - [Feature Flag Control Plane 설계](./feature-flag-control-plane-design.md)
-> - [Event Bus Control Plane 설계](./event-bus-control-plane-design.md)
-> - [Stateful Workload Placement / Failover Control Plane 설계](./stateful-workload-placement-failover-control-plane-design.md)
-> - [Service Mesh Control Plane 설계](./service-mesh-control-plane-design.md)
-> - [Global Traffic Failover Control Plane 설계](./global-traffic-failover-control-plane-design.md)
+- [시스템 설계 면접 프레임워크](./system-design-framework.md)
+- [Config Distribution System 설계](./config-distribution-system-design.md)
+- [Feature Flag Control Plane 설계](./feature-flag-control-plane-design.md)
+- [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
+- [Service Discovery, Health Check, Routing 설계](./service-discovery-health-routing-design.md)
+- [Layered Architecture 기초](../software-engineering/layered-architecture-basics.md)
+- [system-design 카테고리 인덱스](./README.md)
 
 ## 핵심 개념
 
@@ -38,6 +32,12 @@ retrieval-anchor-keywords: control plane, data plane, separation of concerns, po
 - 장애가 한 번 나면 제어와 처리 둘 다 망가진다
 
 즉, 분리의 목적은 추상적 미학이 아니라 **안전한 변경과 빠른 처리의 충돌을 줄이는 것**이다.
+
+처음 보는 learner라면 이렇게 시작하면 덜 헷갈린다.
+
+- `control plane`: 정책을 만들고 검증하고 배포하는 쪽
+- `data plane`: 이미 배포된 정책으로 실제 요청을 처리하는 쪽
+- safe next step: 이 감각이 잡히면 아래 [Feature Flag Control Plane 설계](./feature-flag-control-plane-design.md)나 [Config Distribution System 설계](./config-distribution-system-design.md)로 내려가면 된다
 
 ## 깊이 들어가기
 
@@ -142,6 +142,15 @@ data plane은 사용자 요청과 자동 평가를 다룬다.
 - stateful placement: control plane은 desired placement와 failover policy, data plane은 실제 ownership 수행
 
 즉, control/data plane 분리는 개별 제품 기술이 아니라 분산 인프라 전반의 공통 설계 언어다.
+
+### 8. 자주 하는 오해
+
+- `둘은 반드시 서로 다른 서비스여야 한다`
+  - 아니다. 물리적 배포가 같아도 책임, 캐시, 실패 경계가 분리되면 첫 단계로는 의미가 있다.
+- `data plane은 절대 stale하면 안 된다`
+  - 아니다. 많은 시스템은 `bounded staleness`를 허용하고 `last-known-good`로 런타임 안정성을 산다.
+- `control plane은 low QPS니까 매 요청마다 직접 불러도 된다`
+  - 위험하다. 관리 경로 장애가 전체 request path 장애로 번질 수 있다.
 
 ## 실전 시나리오
 

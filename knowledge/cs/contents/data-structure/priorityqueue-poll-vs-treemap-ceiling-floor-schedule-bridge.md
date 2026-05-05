@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: PriorityQueue.poll() vs TreeMap ceiling/floor Schedule Bridge
+concept_id: data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: mixed
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- priorityqueue-vs-ordered-map-schedule-query
+- poll-vs-ceiling-floor-boundary
+- reservation-neighbor-query-value-read
+aliases:
+- priorityqueue poll vs treemap ceiling floor
+- schedule neighbor query bridge
+- treemap ceilingkey floorkey reservation
+- priorityqueue poll schedule 왜 틀려요
+- ceiling floor 있는데 poll을 왜 쓰죠
+- ordered map vs priority queue schedule
+- key value schedule nearest neighbor
+- exact neighbor query treemap
+- reservation next previous lookup
+- poll removes global min
+- what is ceiling floor schedule
+- 처음 schedule neighbor query
+- floorentry ceilingentry value read
+symptoms:
+- "roomescape 예약표에서 다음 예약을 찾는데 `poll()`이 먼저 떠올라 조회 로직이 꼬인다"
+- 기준 시각 주변 이웃 조회와 전체 최소값 꺼내기를 같은 질문처럼 읽는다
+- "`TreeMap<start, reservation>`에서 value까지 읽어야 하는데 PriorityQueue로 풀려다 막힌다"
+intents:
+- mission_bridge
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/treemap-neighbor-query-micro-drill
+next_docs:
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treemap-interval-entry-primer
+- language/navigablemap-navigableset-mental-model
+linked_paths:
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/java-collections-basics.md
+confusable_with:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/treemap-interval-entry-primer
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+forbidden_neighbors:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/queue-basics.md
+expected_queries:
+- "roomescape 예약표에서 `다음 예약`을 찾을 때 왜 PriorityQueue가 아니라 TreeMap을 먼저 봐야 해?"
+- "기준 시각 `10:15` 이후 첫 예약을 찾는 질문과 `poll()`이 다른 이유를 미션 예제로 설명해줘"
+- "예약 schedule 조회인데 `ceilingKey` 대신 `poll()`을 쓰면 왜 어색한지 알고 싶어"
+- "`TreeMap<start, reservation>`에서 다음 예약 정보까지 읽으려면 어떤 API 조합이 맞아?"
+- 전체에서 가장 이른 예약 처리와 특정 시각 이후 첫 예약 조회를 자료구조로 구분해줘
+- roomescape에서 예약 조회 로직과 처리 순서 로직을 같은 구조로 보면 안 되는 이유가 궁금해
+contextual_chunk_prefix: |
+  이 문서는 예약표 조회 질문에서 PriorityQueue.poll과 TreeMap
+  ceiling/floor를 어떻게 갈라 읽는지 헷갈리는 학습자에게 전체 최소값
+  꺼내기와 기준 시각 주변 이웃 찾기를 Woowa 미션과 연결해 잇는
+  mission_bridge다. 가장 이른 예약 처리, 10시 15분 이후 첫 예약, poll이
+  왜 조회가 아냐, 기준 시각 주변 찾기, key와 value 같이 읽기 같은
+  자연어 paraphrase가 본 문서의 스케줄 조회 선택에 매핑된다.
+---
 # PriorityQueue.poll() vs TreeMap `ceiling`/`floor` Schedule Bridge
 
 > 한 줄 요약: 예약표처럼 `key -> value`로 저장된 스케줄에서 `10:15` 주변 이웃을 찾는 질문은 `PriorityQueue.poll()`이 아니라 `TreeMap`의 `floor/ceiling` 계열이 먼저이고, `poll()`은 "현재 전체 최솟값 하나를 꺼내기"라는 다른 질문에 답한다.

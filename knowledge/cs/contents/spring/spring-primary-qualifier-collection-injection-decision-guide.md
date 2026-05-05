@@ -1,33 +1,80 @@
 ---
-schema_version: 2
+schema_version: 3
 title: "Spring @Primary vs @Qualifier vs 컬렉션 주입 결정 가이드"
 concept_id: "spring/primary-qualifier-collection-injection"
+canonical: false
+category: "spring"
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+  - missions/lotto
+  - missions/shopping-cart
+review_feedback_tags:
+  - primary-vs-qualifier-choice
+  - single-default-vs-local-selection
+  - collection-injection-boundary
 aliases:
-  - "@Primary"
-  - "@Qualifier"
-  - collection injection
+  - primary qualifier collection injection
+  - primary default bean
+  - qualifier injection point override
+  - collection bean injection
   - NoUniqueBeanDefinitionException
-  - 같은 타입 bean 후보
-  - 주입 시점 선택
-  - runtime router
+  - same type bean candidate choice
+  - 같은 타입 bean 후보 선택
+  - 주입 지점 bean 선택
+  - found 2 bean candidates
+  - expected single matching bean
+  - single default candidate
+  - list map bean collection
+symptoms:
+  - expected single matching bean but found 2가 떠서 @Primary를 붙여야 할지 @Qualifier를 써야 할지 모르겠어요
+  - 같은 타입 bean이 여러 개인데 이번 주입만 특정 구현체를 고르고 싶어요
+  - 요청마다 구현체가 바뀌는데 qualifier로 풀어야 하는지 router로 가야 하는지 헷갈려요
+intents:
+  - comparison
+  - troubleshooting
+  - design
+prerequisites:
+  - spring/bean-di-basics
+next_docs:
+  - spring/spring-custom-qualifier-primer
+  - spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+  - spring/spring-primary-vs-bean-override-primer
+linked_paths:
+  - contents/spring/spring-bean-di-basics.md
+  - contents/spring/spring-primary-vs-bean-override-primer.md
+  - contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+  - contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+  - contents/spring/spring-custom-qualifier-primer.md
+  - contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+  - contents/spring/spring-di-exception-quick-triage.md
+  - contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- spring/primary-conditionalonmissingbean-bean-override-decision-guide
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+- spring/conditionalonsinglecandidate-vs-primary-primer
+- spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+- spring/same-type-bean-injection-failure-cause-router
+- spring/spring-primary-vs-bean-override-primer
 expected_queries:
   - Spring에서 같은 타입 bean이 두 개면 @Primary랑 @Qualifier 중 뭘 써?
   - NoUniqueBeanDefinitionException found 2가 나오면 어떻게 판단해?
-  - @Qualifier랑 Map으로 구현체 고르는 router는 뭐가 달라?
-  - 요청마다 구현체가 바뀌면 qualifier로 풀어도 돼?
-acceptable_neighbors:
-  - contents/spring/spring-bean-di-basics.md
-  - contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
-  - contents/spring/spring-custom-qualifier-primer.md
-  - contents/spring/spring-di-exception-quick-triage.md
-companion_neighbors:
-  - contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
-  - contents/design-pattern/bean-name-vs-domain-key-lookup.md
+  - 같은 타입 후보를 한 주입 지점에서만 다르게 꽂고 싶으면 어떻게 해?
+  - 후보 bean 둘 다 필요하면 @Primary 말고 List나 Map으로 받아야 해?
+  - List나 Map으로 bean 후보를 다 받는 건 언제 써?
+  - 기본값 하나면 @Primary고 이번 주입만 고르면 @Qualifier라고 봐도 돼?
 forbidden_neighbors:
   - contents/spring/spring-allow-bean-definition-overriding-test-boundaries-primer.md
+contextual_chunk_prefix: |
+  이 문서는 같은 타입 Bean 후보가 여러 개일 때 기본값 하나를 둘지, 이번
+  주입만 집어줄지, 후보를 전부 받아 runtime에 고를지 빠르게 결정하게 돕는
+  chooser다. 한 군데만 다른 구현체가 필요함, 대부분은 A지만 특정 곳만 B,
+  후보를 다 모아 요청값으로 고르고 싶음, found 2 뒤에 무엇을 선택해야 할지
+  모르겠음 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
 ---
 
 # Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Beginner Symptom-to-Doc Map
+concept_id: operating-system/beginner-symptom-to-doc-map
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- symptom-first-triage
+- primer-routing-order
+- slow-vs-oom-vs-fd
+aliases:
+- beginner symptom map
+- os symptom triage
+- beginner symptom routing mental model
+- beginner triage quick check
+- slow response first triage
+- oom first triage
+- too many open files first triage
+- syscall vs context switch confusion
+- process vs thread confusion
+- 왜 context switch 느려요
+- heap vs stack 언제 달라요
+- 왜 느려요 운영체제
+- 처음 뭐부터 봐요
+- 운영체제 빠른 점검 루트 점프
+symptoms:
+- 운영체제에서 막혔는데 어느 문서부터 읽어야 할지 모르겠어요
+- 느림, OOM, fd 에러가 다 비슷하게 보여서 첫 분기가 안 돼요
+- 용어가 섞여서 primer로 돌아가야 할지 deep dive로 가야 할지 헷갈려요
+intents:
+- troubleshooting
+- symptom
+prerequisites:
+- operating-system/process-thread-basics
+- operating-system/syscall-basics
+next_docs:
+- operating-system/beginner-triage-quick-check-snippet-pack
+- operating-system/scheduler-observation-starter-guide
+- operating-system/process-thread-stack-heap-fd-socket-backend-primer
+linked_paths:
+- contents/operating-system/beginner-triage-quick-check-snippet-pack.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+- contents/operating-system/memory-management-basics.md
+- contents/operating-system/killed-oomkilled-memory-events-beginner-bridge.md
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/interrupt-basics.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/process-thread-stack-heap-fd-socket-backend-primer.md
+confusable_with:
+- operating-system/beginner-triage-quick-check-snippet-pack
+- operating-system/scheduler-observation-starter-guide
+forbidden_neighbors:
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+expected_queries:
+- 운영체제에서 처음 막혔을 때 어떤 증상 기준으로 문서를 고르면 돼?
+- 서버가 느린데 CPU, 메모리, fd 중 어디부터 봐야 하는지 입문용으로 정리해줘
+- OOMKilled, Too many open files, context switch 혼동을 먼저 분기해 주는 운영체제 문서가 필요해
+- primer로 돌아가야 할지 deep dive로 내려가야 할지 판단하는 symptom map이 있어?
+- 운영체제 개념이 섞일 때 첫 라우팅 표처럼 볼 수 있는 문서를 추천해줘
+contextual_chunk_prefix: |
+  이 문서는 운영체제 입문 학습자가 느림, OOM, fd 에러, 개념 혼동처럼 처음 보이는 증상으로 어떤 primer와 deep dive를 먼저 읽어야 하는지 증상에서 원인 후보로 이어 주는 symptom router다. 서버가 느린데 어디부터 봐, Killed면 메모리야, Too many open files 먼저 뭐 봐, 프로세스와 스레드가 섞여, primer로 돌아갈까 같은 자연어 paraphrase가 본 문서의 첫 라우팅에 매핑된다.
+---
 # Beginner Symptom-to-Doc Map
 
 > 한 줄 요약: 운영체제에서 처음 막힐 때는 "원인 확정"보다 "증상을 맞는 문서로 라우팅"이 먼저다.

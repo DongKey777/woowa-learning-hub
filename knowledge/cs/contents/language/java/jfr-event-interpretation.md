@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: JFR Event Interpretation
+concept_id: language/jfr-event-interpretation
+canonical: false
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- duration-alone-misread
+- thread-state-before-code-fix
+- event-category-stack-trace-correlation
+aliases:
+- jfr event interpretation
+- java flight recorder event reading
+- jfr event category stack trace
+- jfr thread state analysis
+- jfr allocation context
+- jmc event interpretation
+- jfr gc pause interpretation
+- 자바 jfr 이벤트 해석
+- jfr 이벤트 읽는 법
+symptoms:
+- JFR 파일은 있는데 duration 숫자만 보고 원인을 단정해도 되는지 불안해
+- thread state, stack trace, allocation context를 같이 읽어야 한다는데 어디를 묶어 봐야 할지 모르겠어
+- GC, lock, socket, safepoint 이벤트가 각각 무엇을 뜻하는지 해석 기준이 필요해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- language/jfr-jmc-performance-playbook
+- language/jvm-gc-jmm-overview
+- language/safepoint-stop-the-world-diagnostics
+next_docs:
+- language/async-profiler-vs-jfr-comparison
+- language/jfr-loom-incident-signal-map
+- language/oom-heap-dump-playbook
+linked_paths:
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/jni-native-call-overhead.md
+- contents/language/java/async-profiler-vs-jfr-comparison.md
+confusable_with:
+- language/jfr-jmc-performance-playbook
+- language/async-profiler-vs-jfr-comparison
+- language/jfr-loom-incident-signal-map
+forbidden_neighbors:
+- contents/language/java/async-profiler-vs-jfr-comparison.md
+expected_queries:
+- JFR event를 읽을 때 duration만 보지 말고 무엇을 같이 봐야 하는지 깊게 설명해줘
+- Java Flight Recorder에서 thread state와 stack trace를 어떻게 묶어 해석하는지 알고 싶어
+- GC pause, lock contention, socket I/O, safepoint 이벤트를 JFR에서 읽는 기준을 정리한 문서를 찾고 있어
+- JMC 없이도 JFR raw event를 해석하는 순서를 설명해 주는 자바 자료가 필요해
+- allocation burst가 보일 때 event category와 context를 함께 읽는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java Flight Recorder 결과를 숫자 몇 개로 보지 않고 event
+  category, duration, thread state, stack trace, allocation context를
+  엮어 원인을 읽는 deep_dive다. JFR 파일은 뽑았는데 어디부터 봐야 함, 긴
+  이벤트가 진짜 병목인지 헷갈림, GC pause와 lock contention을 어떻게 갈라
+  읽나, 스택과 스레드 상태를 함께 봐야 하나 같은 자연어 표현이 본 문서의
+  해석 기준에 매핑된다.
+---
 # JFR Event Interpretation
 
 > 한 줄 요약: JFR은 단순히 켜는 도구가 아니라 event category, stack trace, duration, thread state, allocation context를 함께 읽어야 진짜 병목을 좁힐 수 있는 관측 시스템이다.

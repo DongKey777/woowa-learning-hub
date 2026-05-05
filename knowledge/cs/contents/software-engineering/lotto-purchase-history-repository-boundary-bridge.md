@@ -1,0 +1,101 @@
+---
+schema_version: 3
+title: 'lotto 구매 1회 재조회 ↔ PurchaseRepository 경계 브릿지'
+concept_id: software-engineering/lotto-purchase-history-repository-boundary-bridge
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 78
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- repository-return-shape
+- purchase-aggregate-boundary
+- service-reassembly-smell
+aliases:
+- lotto 구매내역 repository 경계
+- 로또 PurchaseRepository 반환 타입
+- lotto 여러 티켓 재조회 묶음
+- 로또 저장소가 List<Lotto>만 반환
+- lotto 구매 1회 aggregate 경계
+symptoms:
+- repository가 Lotto 한 장이나 List만 돌려줘서 service가 구매 1회를 다시 조립하고 있어요
+- 구매내역 조회인데 금액과 티켓 목록이 따로 놀아서 어떤 객체를 반환해야 할지 모르겠어요
+- DB row는 purchase와 ticket으로 나뉘는데 도메인에서는 어디까지 하나로 묶어 읽어야 하는지 헷갈려요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/repository-interface-contract
+- software-engineering/lotto-purchase-flow-service-layer-bridge
+- database/lotto-purchase-ticket-parent-child-modeling-bridge
+next_docs:
+- software-engineering/repository-interface-contract
+- database/lotto-purchase-ticket-parent-child-modeling-bridge
+- software-engineering/lotto-winning-statistics-result-object-bridge
+linked_paths:
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md
+- contents/database/lotto-purchase-ticket-parent-child-modeling-bridge.md
+- contents/software-engineering/lotto-winning-statistics-result-object-bridge.md
+confusable_with:
+- software-engineering/repository-interface-contract
+- software-engineering/lotto-purchase-flow-service-layer-bridge
+- database/lotto-purchase-ticket-parent-child-modeling-bridge
+forbidden_neighbors:
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md
+expected_queries:
+- 로또 구매내역을 다시 읽을 때 repository가 한 장씩 주지 말고 구매 단위로 묶으라는 말은 무슨 뜻이야?
+- purchase 테이블과 ticket 테이블은 나뉘는데 도메인 저장소는 어떤 객체를 반환해야 해?
+- 로또 조회 service가 row를 모아 Purchase를 다시 만드는 구조가 왜 어색해?
+- PurchaseRepository 같은 이름을 두라는 리뷰가 단순 CRUD 분리 말고 뭘 뜻해?
+- 여러 Lotto를 산 한 번의 구매를 저장소 계약에서 어떻게 읽어야 자연스러워?
+contextual_chunk_prefix: |
+  이 문서는 Woowa lotto 미션을 저장/재조회 가능한 구조로 확장할 때 purchase와
+  ticket row를 그대로 흘리지 않고, 한 번의 구매를 도메인 저장소 계약에서 어떤
+  단위로 다뤄야 하는지 설명하는 mission_bridge다. PurchaseRepository 반환 타입,
+  여러 티켓을 service가 다시 묶음, 구매 1회 aggregate 경계, row 모델과 도메인
+  모델이 어긋나 보임, 저장소가 List<Lotto>만 돌려줌 같은 학습자 표현을
+  repository contract와 반환 shape 관점으로 연결한다.
+---
+
+# lotto 구매 1회 재조회 ↔ PurchaseRepository 경계 브릿지
+
+## 한 줄 요약
+
+> lotto에서 저장소가 다뤄야 하는 기본 단위는 종종 `Lotto` 한 장이 아니라 "한 번의 구매"다. DB에서는 `purchase`와 `ticket`이 나뉘어도, repository 계약은 금액과 티켓 묶음이 함께 움직이는 구매 단위를 돌려주는 편이 service 책임이 덜 새어난다.
+
+## 미션 시나리오
+
+lotto를 콘솔 과제에서 조금만 확장하면 "구매 내역 저장"과 "지난 구매 다시 보기" 요구가 붙는다. 이때 학습자는 보통 `purchase` row와 `ticket` row를 저장한 뒤, 조회에서는 `List<Lotto>`만 받아 오거나 `purchase`와 `ticket`을 따로 읽어 service에서 다시 합친다.
+
+처음에는 자연스러워 보이지만 곧 경계가 흐려진다. service가 "`이 티켓들이 어느 구매에 속하는지`", "`구매 금액은 얼마였는지`", "`몇 장을 샀는지`"를 매번 다시 조립하기 시작하기 때문이다. 리뷰에서 "`저장소가 도메인 단위를 돌려주지 못하고 서비스가 row를 재조립하고 있네요`"라는 말이 붙는 자리가 여기다.
+
+## CS concept 매핑
+
+여기서 닿는 개념은 repository contract의 반환 단위다. DB 모델은 정규화를 위해 `purchase 1 : N ticket`으로 나뉘지만, 도메인 쪽 계약은 꼭 같은 모양일 필요가 없다. 한 번의 구매가 유스케이스의 핵심 단위라면 repository는 그 의미를 담은 `Purchase`나 `LottoPurchase` 같은 객체를 반환하는 편이 더 자연스럽다.
+
+```java
+Optional<LottoPurchase> purchase = purchaseRepository.findById(purchaseId);
+```
+
+이 시그니처는 service가 row를 묶는 대신 "이미 구매 단위로 복원된 결과"를 받는다는 뜻이다. 반대로 `List<Lotto>`와 `int amount`를 따로 읽어 합치게 만들면, service가 영속성 조립 세부를 알아버린다. 정리하면 DB의 부모-자식 분리는 저장 구조 문제이고, repository의 반환 shape은 유스케이스가 어떤 단위를 신뢰할지에 대한 계약 문제다.
+
+## 미션 PR 코멘트 패턴
+
+- "`purchase`와 `ticket`을 나눠 저장하는 것`과 `repository가 무엇을 돌려줘야 하는가`는 다른 질문입니다. service가 row를 다시 묶고 있다면 저장소 계약을 먼저 보세요."
+- "`List<Lotto>`만 반환하면 구매 금액, 시각, 장수 같은 구매 의미가 타입에서 사라집니다."
+- "`Repository`는 DB row 컬렉션을 그대로 내보내는 창구가 아니라, 유스케이스가 기대하는 저장 단위를 돌려주는 계약이어야 합니다."
+- "조회마다 service가 `purchase`와 `ticket`을 join 결과에서 다시 조립한다면 mapper 복잡도보다 contract shape가 먼저 어긋난 신호일 수 있습니다."
+
+## 다음 학습
+
+- repository가 왜 구현 기술보다 계약 단위가 먼저인지 다시 잡으려면 `software-engineering/repository-interface-contract`
+- purchase와 ticket이 DB에서 왜 1:N으로 나뉘는지 보려면 `database/lotto-purchase-ticket-parent-child-modeling-bridge`
+- 구매 흐름 자체를 service가 어디까지 조립하는지 이어 보려면 `software-engineering/lotto-purchase-flow-service-layer-bridge`
+- 결과 조회 계약을 별도 객체로 닫는 감각을 보려면 `software-engineering/lotto-winning-statistics-result-object-bridge`

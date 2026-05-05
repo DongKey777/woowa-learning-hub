@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Notification Inbox Row Monotonicity Primer
+concept_id: system-design/notification-inbox-row-monotonicity-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- inbox-row-version-floor
+- badge-row-detail-split
+- row-regression-after-refresh
+aliases:
+- notification inbox row monotonicity primer
+- notification inbox row monotonicity
+- inbox row version floor
+- notification row version floor
+- notification row min-version floor
+- badge summary row detail bridge
+- notification unread count row regression
+- clicked notification source detail monotonicity
+symptoms:
+- 알림 inbox에서 방금 본 row가 새로고침 후 더 예전 상태로 내려가
+- badge 숫자는 맞는데 row 내용이 뒤로 가서 더 헷갈려
+- row freshness와 source detail causal read를 같은 규칙으로 보고 있어
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/notification-badge-vs-source-freshness-primer
+- system-design/monotonic-reads-and-session-guarantees-primer
+next_docs:
+- system-design/notification-read-to-min-version-bridge
+- system-design/list-detail-monotonicity-bridge
+- system-design/notification-causal-token-walkthrough
+linked_paths:
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+- contents/system-design/notification-read-to-min-version-bridge.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+confusable_with:
+- system-design/notification-badge-vs-source-freshness-primer
+- system-design/list-detail-monotonicity-bridge
+- system-design/notification-read-to-min-version-bridge
+forbidden_neighbors:
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+expected_queries:
+- 알림 inbox row가 새로고침 후 예전 상태로 내려가면 어떤 보장을 봐야 해?
+- badge freshness랑 inbox row monotonicity는 어떻게 달라?
+- notification row version floor를 초보자 기준으로 설명해줘
+- 클릭 전 inbox row가 뒤로 가는 문제를 min version으로 어떻게 막아?
+- badge는 맞는데 row 내용만 stale할 때 어떤 층이 깨진 거야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 notification 경험을 badge summary, inbox row, clicked
+  source detail 세 층으로 나누고 그중 inbox row가 뒤로 가지 않게 하는
+  monotonicity를 이해하게 돕는 beginner primer다. badge는 맞는데 row가
+  내려감, 새로고침하니 방금 본 상태가 뒤집힘, row와 source detail 규칙을
+  같은 것으로 봐서 헷갈림 같은 자연어 질문이 본 문서의 row version floor
+  설명으로 매핑된다.
+---
 # Notification Inbox Row Monotonicity Primer
 
 > 한 줄 요약: notification badge는 요약 숫자라 조금 stale할 수 있어도, inbox row는 사용자가 이미 본 row version 아래로 내려가면 안 되고, 그 row를 눌러 들어간 source 상세는 row가 전제로 한 원인을 이어서 보여 줘야 한다.

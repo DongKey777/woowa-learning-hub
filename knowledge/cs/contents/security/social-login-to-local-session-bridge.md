@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Social Login To Local Session Bridge
+concept_id: security/social-login-to-local-session-bridge
+canonical: false
+category: security
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- idp-vs-local-session-boundary
+- callback-to-session-translation
+- first-request-anonymous-trace
+aliases:
+- social login local session bridge
+- social login local session basics
+- external idp to local session
+- oauth callback to app session
+- oidc callback local cookie issuance
+- callback success but app anonymous
+- callback local session 뭐예요
+- callback 성공인데 app anonymous 왜
+- social login callback cookie issuance
+- bff login handoff boundary
+- auth callback app local session
+- idp login to session cookie
+- backend for frontend auth bridge
+- social login first request anonymous
+- app session creation after callback
+symptoms:
+- 소셜 로그인은 성공했는데 우리 서비스에서는 아직 비로그인처럼 보여요
+- callback이 끝났는데 첫 화면 요청이 anonymous로 잡혀요
+- id token은 받았는데 local session이 어디서 생기는지 모르겠어요
+intents:
+- comparison
+prerequisites:
+- security/oauth2-oidc-social-login-primer
+- security/session-cookie-jwt-basics
+next_docs:
+- security/subdomain-callback-handoff-chooser
+- security/browser-bff-token-boundary-session-translation
+- security/subdomain-login-callback-boundaries
+linked_paths:
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/login-callback-artifact-cheat-sheet.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+confusable_with:
+- security/oauth2-authorization-code-grant
+- security/subdomain-callback-handoff-chooser
+- security/subdomain-login-callback-boundaries
+- security/browser-bff-token-boundary-session-translation
+forbidden_neighbors:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/session-cookie-jwt-basics.md
+expected_queries:
+- 소셜 로그인 callback까지 성공했는데 서비스에서는 왜 익명 사용자야?
+- 구글 로그인 성공 후 우리 앱 세션은 어디서 만들어져?
+- oauth 로그인 뒤 첫 요청이 anonymous로 보이는 이유가 뭐야
+- idp 인증과 로컬 세션 생성 차이를 처음부터 설명해줘
+- bff가 social login 결과를 app session으로 바꾸는 흐름이 궁금해
+- callback 다음에 local user lookup이 왜 필요한가요
+- 외부 로그인은 됐는데 app cookie가 안 생길 때 어디를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 external IdP 로그인 성공과 우리 서비스 로그인 완료를 같은 일로 느끼는 학습자에게, callback 이후 local user lookup과 app-local session 발급 사이 경계를 연결해 주는 bridge다. 구글 로그인은 됐는데 왜 첫 화면이 익명인가, callback 다음에 어느 단계에서 내부 계정을 찾나, handoff 뒤 누가 session cookie를 만들나, principal 복원 실패를 어디서 끊어 보나 같은 자연어 paraphrase가 본 문서의 흐름 연결에 매핑된다.
+---
 # Social Login To Local Session Bridge
 
 > 한 줄 요약: external IdP 로그인 성공은 끝이 아니라 시작이다. callback에서 외부 신원을 확인한 뒤, 우리 앱이 local user를 찾고 session cookie를 발급하거나 BFF가 app-local session으로 한 번 더 번역해야 브라우저의 "로그인됨" 상태가 완성된다.

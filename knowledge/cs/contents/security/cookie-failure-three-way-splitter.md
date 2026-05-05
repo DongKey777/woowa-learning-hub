@@ -9,6 +9,7 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+summary: 쿠키 문제가 저장 차단, 저장 후 미전송, 전송 후 서버 익명 처리 중 어디에서 끊기는지 처음 나누는 beginner chooser다.
 aliases:
 - cookie failure splitter
 - blocked Set-Cookie vs stored not sent vs sent but anonymous
@@ -24,6 +25,13 @@ linked_paths:
 - contents/security/fetch-credentials-vs-cookie-scope.md
 - contents/security/cookie-devtools-field-checklist-primer.md
 - contents/security/cookie-rejection-reason-primer.md
+related_docs:
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cookie-devtools-field-checklist-primer.md
+- contents/security/cookie-rejection-reason-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
 forbidden_neighbors:
 - contents/security/jwt-deep-dive.md
 confusable_with:
@@ -34,6 +42,13 @@ expected_queries:
 - Application에는 cookie가 있는데 request Cookie header가 비어 있으면 어디서 봐?
 - request Cookie는 있는데 서버가 anonymous면 어떤 문서를 봐?
 - login loop cookie splitter가 뭐야?
+retrieval_anchors:
+- cookie failure splitter
+- blocked Set-Cookie vs stored not sent vs sent but anonymous
+- cookie sent but server anonymous
+- login loop cookie splitter
+- Application에는 cookie가 있는데 request Cookie header가 비어 있음
+- request Cookie는 있는데 서버가 anonymous
 contextual_chunk_prefix: |
   이 문서는 로그인 후에도 쿠키가 있는데 계속 로그인 페이지로 튀거나, 쿠키가
   분명히 찍혔는데 다음 요청에 안 붙거나, 요청에는 실렸는데 서버가 익명으로

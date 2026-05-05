@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Sparse Graph Shortest Paths
+concept_id: algorithm/sparse-graph-shortest-paths
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- sparse-graph-weighted-routing
+- zero-one-bfs-vs-dijkstra
+- dial-bucket-choice
+aliases:
+- sparse graph shortest paths
+- sparse shortest path
+- sparse graph dijkstra
+- graph density shortest path
+- adjacency list shortest path
+- priority queue dijkstra
+- weighted route planning
+- point-to-point shortest path
+- 0-1 shortest path
+- binary weighted graph shortest path
+- bucket shortest path
+- 순간이동 최단 경로
+- 희소 그래프 최단 경로
+symptoms:
+- 희소 그래프라는 말을 들었는데 왜 adjacency list와 priority queue 조합이 먼저 나오는지 감이 안 와
+- 0-1 BFS와 일반 Dijkstra를 가중치 분포 기준으로 언제 나눠야 하는지 헷갈려
+- teleport나 route planning 같은 표현이 나오면 sparse shortest path 문맥으로 읽어야 하는지 모르겠어
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/graph-basics
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+next_docs:
+- algorithm/a-star-vs-dijkstra
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/shortest-path-reconstruction-bridge
+linked_paths:
+- contents/data-structure/graph-basics.md
+- contents/data-structure/deque-basics.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/a-star-vs-dijkstra.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md
+- contents/algorithm/graph.md
+confusable_with:
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/a-star-vs-dijkstra
+forbidden_neighbors:
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+expected_queries:
+- 희소 그래프에서 weighted shortest path를 풀 때 왜 보통 priority queue Dijkstra부터 떠올려?
+- 0/1 가중치 그래프면 일반 다익스트라 대신 0-1 BFS로 보는 이유를 가중치 분포 기준으로 설명해줘
+- teleport가 0비용이고 이동이 1비용인 그래프를 shortest path 관점에서 어떻게 읽어야 해?
+- sparse graph와 dense graph에서 shortest path 선택 기준이 어디서 갈리는지 알고 싶어
+- Dial algorithm이 필요한 상황을 0-1 BFS와 PQ Dijkstra 사이에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 희소 그래프의 weighted shortest path를 더 깊게 보는 학습자를 위한
+  deep_dive다. adjacency list와 priority queue Dijkstra가 왜 기본인지,
+  0-1 BFS와 Dial이 어떤 가중치 분포에서 갈라지는지, teleport나 route planning
+  표현을 shortest path 비용 모델로 어떻게 해석하는지 같은 자연어 질문이
+  이 문서의 선택 기준과 연결된다.
+---
 # Sparse Graph Shortest Paths
 
 > 한 줄 요약: Sparse Graph에서는 adjacency list와 우선순위 큐를 쓰는 Dijkstra 계열이 가장 자연스럽고, 가중치 분포에 따라 0-1 BFS나 Dial도 검토할 수 있다.

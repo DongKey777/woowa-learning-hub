@@ -16,8 +16,7 @@
 > - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: authorization graph cache, authorization graph caching, graph cache, relationship-based access control, relationship cache, relationship edge cache, path cache, edge cache, authz graph, invalidation, policy version, graph snapshot, graph snapshot cache, graph snapshot drift, graph snapshot version mismatch, authz runtime debug, auth shadow divergence, tenant graph, shortest path authz, tenant-scoped graph invalidation, delegated admin invalidation
-retrieval-anchor-keywords: authorization graph cache deep dive entry cue, graph cache beginner handoff, stale deny primer bridge to graph cache deep dive, graph cache next step, graph cache return path, authz tenant catalog return, grant path first graph cache later, runtime debugging before graph internals, graph cache escalation gate, graph snapshot evidence gate, relationship cache beginner safe route
+retrieval-anchor-keywords: authorization graph cache, authorization graph caching, graph cache, relationship-based access control, relationship cache, relationship edge cache, path cache, edge cache, authz graph, invalidation, policy version, graph snapshot, graph snapshot cache, graph snapshot drift, graph snapshot version mismatch, authz runtime debug, auth shadow divergence, tenant graph, shortest path authz, tenant-scoped graph invalidation, delegated admin invalidation, authorization graph cache deep dive, graph cache beginner handoff, stale deny primer bridge, graph cache next step, graph cache return path, authz tenant catalog return, grant path first graph cache later, runtime debugging before graph internals, graph snapshot evidence gate, relationship cache 다음 문서, tenant별 403 왜 다르죠, cache key version mismatch why
 
 ---
 
@@ -54,6 +53,16 @@ retrieval-anchor-keywords: authorization graph cache deep dive entry cue, graph 
 | delegated revoke/tenant ownership move 뒤 graph invalidation이 의심됨 | `4. invalidation fan-out` + `실전 시나리오 2, 3` | `[deep dive]` [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md), `[deep dive]` [Authorization Runtime Signals / Shadow Evaluation](./authorization-runtime-signals-shadow-evaluation.md) |
 
 - graph cache 문서를 읽은 뒤에는 `[survey]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)로 돌아가 다음 갈래를 고른다.
+
+## 어떤 질문일 때 이 문서를 열까
+
+이 문서는 `graph cache 내부 설계와 invalidation trade-off`를 묻는 질문에 맞는다.
+
+| query shape | 이 문서가 바로 답하는 것 | 먼저 다른 문서가 더 좋은 경우 |
+|---|---|---|
+| `graph snapshot version을 왜 로그에 남겨요?` | snapshot/version이 stale incident를 좁히는 이유 | 증상만 있고 version 증거가 없으면 [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) |
+| `tenant별로 403이 다르면 cache key를 어떻게 봐요?` | tenant-scoped invalidation, key design, fan-out | `403`과 concealment `404`부터 헷갈리면 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) |
+| `relationship cache랑 path cache 차이가 뭐죠?` | cache granularity와 stale risk 차이 | 용어 입문이 먼저면 [Authorization Graph Cache / Relationship Cache Primer](./authorization-graph-cache-relationship-cache-primer.md) |
 
 ## 핵심 개념
 

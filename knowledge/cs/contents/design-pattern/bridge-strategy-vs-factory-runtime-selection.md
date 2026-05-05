@@ -7,7 +7,10 @@
 
 관련 문서:
 
-- [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
+- [팩토리 (Factory) 디자인 패턴](./factory.md)
+- [전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법](./strategy-pattern.md)
+- [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
+- [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
 - [전략 패턴 기초](./strategy-pattern-basics.md)
 - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
 - [전략 vs 상태 vs Policy Object](./strategy-vs-state-vs-policy-object.md)
@@ -28,6 +31,8 @@ retrieval-anchor-keywords: bridge vs strategy vs factory, runtime selection stra
 - "결제 방식과 PG provider가 둘 다 늘어나는데 클래스가 폭발합니다"
 
 핵심은 패턴 이름보다 **무엇이 바뀌는가**다.
+
+질문이 단순히 "`*Factory`라는 이름이 과한가?"에서 끝난다면 [Factory Misnaming Checklist](./factory-misnaming-checklist.md)가 더 빠르다. 이 문서는 이름 리뷰보다 한 단계 더 나가서, 선택 축과 생성 축과 bridge 축이 동시에 보일 때 오판을 줄이는 데 초점을 둔다.
 
 ---
 
@@ -296,7 +301,7 @@ public final class CardPaymentStrategy implements PaymentStrategy {
 
 - Strategy 감각을 먼저 굳히려면 [전략 패턴 기초](./strategy-pattern-basics.md)
 - 생성 책임과 이름 붙이기를 더 분명히 하려면 [팩토리 패턴 기초](./factory-basics.md)
-- 주입된 `Map<..., Handler>`가 왜 factory보다 registry에 가까운지 보려면 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)
+- 주입된 `Map<..., Handler>`가 왜 factory보다 registry에 가까운지 보려면 [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
 - provider 축 분리가 더 궁금하면 [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
 
 ## 한 줄 정리

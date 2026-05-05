@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: 가용성과 SLA/SLO/SLI 기초 (Availability and SLA Basics)
+concept_id: system-design/availability-and-sla-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- sli-slo-sla-boundary
+- availability-vs-latency
+- error-budget-policy-threshold
+aliases:
+- availability basics
+- sla 뭐예요
+- slo 입문
+- sli 기초
+- 가용성 계산
+- nines availability
+- 99.9 percent uptime
+- 장애 허용 시간
+- 서비스 수준 목표
+- sla slo sli 차이
+- 고가용성 입문
+- downtime 계산
+- beginner availability
+- error budget 기초
+- 처음 availability 뭐예요
+symptoms:
+- 99.9% 가용성이 실제로 얼마나 자주 깨지는지 감이 안 와
+- SLI, SLO, SLA가 맨날 섞여서 뭐가 목표고 뭐가 계약인지 헷갈려
+- 에러 버짓을 왜 배포 중단 기준으로 쓰는지 모르겠어
+intents:
+- definition
+prerequisites:
+- system-design/system-design-foundations
+next_docs:
+- system-design/load-balancer-basics
+- system-design/request-deadline-timeout-budget-primer
+- system-design/backpressure-and-load-shedding-design
+linked_paths:
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/rate-limiting-basics.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+- contents/network/http-methods-rest-idempotency.md
+confusable_with:
+- system-design/load-balancer-basics
+- system-design/backpressure-and-load-shedding-design
+forbidden_neighbors: []
+expected_queries:
+- 가용성 99.9랑 99.99 차이가 실제 다운타임으로 얼마야?
+- SLI SLO SLA를 한 번에 구분해서 설명해줘
+- 에러 버짓이 왜 배포 중단 기준이 되는지 감이 안 와
+- 직렬로 연결된 두 서비스 가용성은 왜 곱해서 계산해?
+- 서비스 수준 목표를 잡을 때 nines를 어떻게 해석해야 해?
+contextual_chunk_prefix: |
+  이 문서는 시스템 설계를 처음 배우는 학습자가 가용성 숫자를 어떻게 읽고,
+  SLI, SLO, SLA를 왜 구분하는지, 에러 버짓이 운영 판단과 어떻게 이어지는지
+  기초를 잡는 primer다. 업타임 퍼센트 감각, 목표 수치와 계약 차이, 허용 장애
+  시간 계산, 직렬 의존성 때문에 전체 신뢰도가 낮아짐, 배포 멈춤 기준 같은
+  자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 가용성과 SLA/SLO/SLI 기초 (Availability and SLA Basics)
 
 > 한 줄 요약: SLI는 측정 지표, SLO는 목표 수치, SLA는 계약 조건이며, 가용성은 "시스템이 요청을 정상 처리할 수 있는 시간 비율"이다.

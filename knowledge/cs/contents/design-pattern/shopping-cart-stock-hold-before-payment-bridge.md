@@ -1,0 +1,119 @@
+---
+schema_version: 3
+title: 'shopping-cart 결제 전 재고 확보 ↔ Reservation/Hold/Expiry 브릿지'
+concept_id: design-pattern/shopping-cart-stock-hold-before-payment-bridge
+canonical: false
+category: design-pattern
+difficulty: intermediate
+doc_role: mission_bridge
+level: intermediate
+language: ko
+source_priority: 78
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- stock-hold-seam
+- confirm-or-release-boundary
+- pending-payment-expiry
+aliases:
+- shopping-cart 결제 전 재고 확보
+- 장바구니 재고 hold 설계
+- shopping-cart stock reservation
+- 결제 전에 재고를 잡아 둬야 하나
+- inventory hold expiry shopping-cart
+symptoms:
+- 결제 전에 재고를 바로 차감하면 취소나 실패 때 복구가 복잡해 보여요
+- 마지막 재고를 주문 단계에서 잡아 두고 결제 성공 때만 확정해야 하는지 모르겠어요
+- pending 주문과 재고 timeout이 따로 놀아서 언제 release해야 할지 헷갈려요
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/reservation-hold-expiry-consistency-seam
+- design-pattern/process-manager-deadlines-timeouts
+- database/shopping-cart-payment-idempotency-stock-bridge
+next_docs:
+- design-pattern/reservation-hold-expiry-consistency-seam
+- design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge
+- database/shopping-cart-payment-idempotency-stock-bridge
+linked_paths:
+- contents/design-pattern/reservation-hold-expiry-consistency-seam.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge.md
+- contents/database/shopping-cart-payment-idempotency-stock-bridge.md
+- contents/database/last-stock-sold-twice-symptom-router.md
+confusable_with:
+- database/shopping-cart-payment-idempotency-stock-bridge
+- design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge
+- design-pattern/reservation-hold-expiry-consistency-seam
+forbidden_neighbors:
+- contents/database/last-stock-sold-twice-symptom-router.md
+- contents/database/shopping-cart-payment-idempotency-stock-bridge.md
+expected_queries:
+- shopping-cart 미션에서 결제 전에 재고를 바로 깎지 말고 hold하라는 말은 무슨 뜻이야?
+- 장바구니 checkout에서 마지막 재고를 주문 시점에 임시 확보했다가 결제 성공 때 확정하는 패턴이 왜 필요해?
+- pending 주문이 만료되면 재고를 누가 언제 돌려줘야 하는지 shopping-cart 흐름으로 설명해 줘
+- 재고 1개 상품을 두 사람이 동시에 결제할 때 stock 감소만으로 부족하고 reservation이 필요하다는 리뷰를 받았어
+- shopping-cart에서 confirm or release 경계를 재고와 주문 사이에 두라는 말이 잘 안 잡혀
+contextual_chunk_prefix: |
+  이 문서는 Woowa shopping-cart 미션에서 결제 전 마지막 재고를 어떻게 확보할지
+  reservation hold expiry 관점으로 연결하는 mission_bridge다. "주문 시점에 재고를
+  바로 깎아야 하나", "pending 주문이 timeout되면 재고를 누가 돌려주나",
+  "결제 성공 전에 임시 점유하고 confirm or release 하라는 리뷰가 무슨 뜻이냐"
+  같은 학습자 표현을 inventory hold, expiry, workflow owner, stale confirm 방지
+  seam으로 매핑한다.
+---
+
+# shopping-cart 결제 전 재고 확보 ↔ Reservation/Hold/Expiry 브릿지
+
+## 한 줄 요약
+
+shopping-cart에서 결제 전 마지막 재고를 다룰 때 핵심은 "지금 즉시 판매 확정인가"보다 "잠깐 점유해 두고 결제 성공이면 확정, 실패나 timeout이면 반환"이다. 이 장면은 단순 재고 차감보다 `reservation / hold / expiry` seam으로 읽는 편이 안전하다.
+
+## 미션 시나리오
+
+shopping-cart 미션에서 주문을 먼저 만들고 결제를 나중에 붙이면 곧 재고 질문이
+생긴다. 마지막 재고가 1개 남았을 때 주문 생성 순간 바로 `stock - 1`을 해야
+하는지, 결제 승인까지 기다렸다가 그때 차감해야 하는지 헷갈리기 쉽다.
+
+초기 구현은 보통 둘 중 하나로 흔들린다. 하나는 주문 생성과 동시에 재고를 바로
+깎아 버려서 결제 실패나 사용자의 이탈 뒤에 재고 복구 경로가 지저분해지는 경우다.
+다른 하나는 결제 성공 뒤에만 재고를 줄이려다가, 그 사이 여러 사용자가 같은
+마지막 재고를 동시에 잡아 oversell이 나는 경우다.
+
+리뷰에서 "결제 전에는 재고를 hold하고, 성공하면 confirm, 실패하면 release로
+닫아 보라"는 말이 나오는 이유가 여기 있다. shopping-cart에서 이 피드백은 단순
+scheduler 추가가 아니라 주문과 재고 사이에 시간 포함 seam을 두라는 뜻에 가깝다.
+
+## CS concept 매핑
+
+이 장면은 `stock > 0` 조건부 update만으로 끝나는 문제보다 한 단계 위의 질문이다.
+조건부 update는 "동시에 두 명이 마지막 재고를 확정 구매하지 않게" 막는 기본
+도구다. 그런데 shopping-cart에서 주문 생성과 결제 승인이 시간차를 가지면,
+"확정 구매 전의 임시 권리"를 어디에 둘지까지 설명해야 한다.
+
+그래서 reservation/hold/expiry 패턴에서는 재고를 바로 판매 완료로 만들지 않고
+`PENDING` 성격의 hold를 만든다. 결제 성공이 오면 hold를 confirm해서 최종 차감으로
+바꾸고, 결제 실패나 만료가 오면 release해서 재고를 되돌린다. 핵심은 hold에
+expiry와 owner를 함께 두는 것이다. 그래야 shopping-cart의 pending 주문 timeout과
+재고 반환이 서로 다른 곳에서 제멋대로 결정되지 않는다.
+
+이때 재고 hold는 멱등성의 대체물이 아니다. 같은 결제 시도를 한 번만 인정하는 것은
+여전히 `idempotency_key` 같은 계약이 맡고, reservation seam은 "그 한 번의 시도에
+대해 재고 권리를 잠깐 어떻게 보관할까"를 맡는다. 늦게 도착한 결제 성공 신호가 이미
+만료된 hold를 confirm하지 못하게 막는 것도 이 seam의 책임이다.
+
+## 미션 PR 코멘트 패턴
+
+- "주문 생성 시 재고를 영구 차감해 버리면 결제 실패 복구가 어려워집니다. 임시 hold와 확정 단계를 분리해 보세요."
+- "pending 주문 만료와 재고 반환 책임이 따로 놀고 있습니다. timeout owner를 하나로 모아야 stale release가 줄어듭니다."
+- "조건부 UPDATE는 oversell 방지의 기본값이지만, 결제 전 시간차까지 설명하려면 confirm or release 경계가 더 필요합니다."
+- "결제 성공이 늦게 와도 이미 만료된 hold면 확정되면 안 됩니다. hold 상태와 expiry를 명시적으로 모델링해 보세요."
+
+## 다음 학습
+
+- reservation 패턴 자체를 일반화해서 잡으려면 `design-pattern/reservation-hold-expiry-consistency-seam`
+- pending 주문 만료 owner를 shopping-cart 흐름으로 더 좁혀 보려면 `design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge`
+- 멱등성 키와 조건부 update가 어디까지 기본 방어선인지 비교하려면 `database/shopping-cart-payment-idempotency-stock-bridge`
+- 이미 "마지막 재고가 둘 다 팔렸다"는 증상부터 보인다면 `database/last-stock-sold-twice-symptom-router`

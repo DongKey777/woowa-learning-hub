@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Lock Wait, Deadlock, and Latch Contention Triage Playbook
+concept_id: database/lock-wait-deadlock-latch-triage-playbook
+canonical: false
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- lock-wait-vs-deadlock
+- metadata-lock-misdiagnosis
+- latch-vs-lock
+aliases:
+- lock wait triage
+- deadlock debugging
+- metadata lock
+- latch contention
+- hot page contention
+symptoms:
+- DB가 잠겨서 요청이 계속 멈추는데 row lock인지 deadlock인지 구분이 안 된다
+- deadlock error와 lock timeout이 섞여 보여서 retry 정책을 못 정하겠다
+- DDL 배포 중 suddenly 멈췄는데 metadata lock인지 모르겠다
+- TPS가 plateau인데 blocker SQL은 안 보여서 latch contention이 의심된다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/transaction-timeout-vs-lock-timeout
+- database/deadlock-case-study
+next_docs:
+- database/metadata-lock-ddl-blocking
+- database/btree-latch-contention-hot-pages
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md
+- contents/database/deadlock-case-study.md
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md
+confusable_with:
+- database/deadlock-vs-lock-wait-timeout-primer
+- spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix
+forbidden_neighbors:
+- contents/database/connection-pool-basics.md
+expected_queries:
+- lock wait, deadlock, latch contention은 어떻게 구분해?
+- metadata lock이랑 row lock은 뭐가 달라?
+- deadlock error가 날 때 먼저 어떤 질문으로 분기해?
+- DB가 잠겨 보일 때 triage 순서를 한 번에 보고 싶어
+- blocker SQL 이 안 보여도 DB 내부 경합을 의심해야 하는 경우가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 운영에서 "DB가 잠겼다"는 한 문장 안에 row lock wait, deadlock,
+  metadata lock, page latch contention이 섞여 있을 때 어떤 질문으로 분기하고
+  어떤 완화책을 먼저 쓰는지 정리한 playbook이다. deadlock debugging,
+  metadata lock vs row lock, hot page contention, db lock triage 같은 incident
+  phrasing이 본 문서의 분류표와 대응된다.
+---
+
 # Lock Wait, Deadlock, and Latch Contention Triage Playbook
 
 > 한 줄 요약: DB가 "잠겨서 느리다"는 증상은 row lock wait, deadlock, metadata lock, page latch contention이 섞여 보이는 경우가 많고, 해결책은 각기 다르다.

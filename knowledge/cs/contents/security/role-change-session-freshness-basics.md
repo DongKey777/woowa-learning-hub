@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: Role Change and Session Freshness Basics
+concept_id: security/role-change-session-freshness-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- stale-authority-after-role-change
+- permission-change-session-refresh
+- role-revoked-still-works
+aliases:
+- role change session freshness
+- session freshness basics
+- role revoked but session still works
+- admin removed but still access
+- permission granted but still 403
+- stale claims
+- authz freshness basics
+- re-login after role change
+- authz version
+- session version
+- version bump pattern
+- role downgrade active session
+- 세션 권한 변경 뭐예요
+- beginner session freshness
+- 처음 배우는 세션 갱신
+symptoms:
+- role을 뺐는데도 아직 admin API가 돼요
+- 권한을 줬는데도 계속 403이 나와요
+- 세션은 살아 있는데 permission 변경이 반영되지 않아요
+intents:
+- definition
+- design
+prerequisites:
+- security/authentication-vs-authorization
+- security/session-cookie-jwt-basics
+next_docs:
+- security/claim-freshness-after-permission-changes
+- security/grant-path-freshness-stale-deny-basics
+- security/authz-session-versioning-patterns
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/claim-freshness-after-permission-changes.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/authz-session-versioning-patterns.md
+confusable_with:
+- security/grant-path-freshness-stale-deny-basics
+- security/claim-freshness-after-permission-changes
+- security/session-revocation-at-scale
+forbidden_neighbors:
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/session-revocation-at-scale.md
+expected_queries:
+- role을 뺐는데 세션이 살아 있으면 왜 아직 admin 권한이 남아 있어?
+- 권한 변경 뒤에 세션을 refresh하거나 revoke해야 하는 이유를 처음부터 설명해줘
+- permission이 바뀌었는데 기존 로그인 상태가 그대로면 뭐가 stale한 거야?
+- 세션 만료랑 권한 freshness는 뭐가 달라?
+- tenant membership이 바뀌면 왜 다음 요청에서 다시 인가를 봐야 해?
+- role change 후 재로그인 말고 권한 반영 방법이 뭐가 있어?
+contextual_chunk_prefix: |
+  이 문서는 권한 변경 뒤에도 로그인 상태가 그대로 남을 때 왜 기존
+  session을 다시 믿으면 안 되는지, role과 permission과 tenant
+  membership 변화의 기초를 처음 잡는 primer다. 관리자 권한을 뺐는데
+  요청이 통과함, 권한을 줬는데도 다음 호출이 막힘, 세션 만료와 권한 반영
+  시점이 헷갈림, 재로그인 없이 무엇을 다시 평가해야 하냐 같은 자연어
+  paraphrase가 본 문서의 session freshness 개념에 매핑된다.
+---
 # Role Change and Session Freshness Basics
 
 > 한 줄 요약: 로그인 세션이 아직 살아 있어도 role, permission, tenant membership이 바뀌면 그 세션이 들고 있던 권한 정보는 낡을 수 있으므로, 시스템은 권한 변경을 session refresh, revoke, 재평가 중 하나로 바로 연결해야 한다.

@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 'Process, Thread, Stack, Heap, File Descriptor, Socket: Backend Boundary Primer'
+concept_id: operating-system/process-thread-stack-heap-fd-socket-backend-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- stack-vs-heap-boundary
+- fd-vs-socket-boundary
+- thread-shared-state
+aliases:
+- process thread stack heap fd socket primer
+- backend request mental model
+- server request runtime model
+- process thread memory model
+- process thread boundary
+- stack heap boundary
+- file descriptor socket boundary
+- thread local stack
+- shared heap
+- socket fd mapping
+- backend runtime primer
+- server resource mental model
+- 프로세스 스레드 스택 힙 파일 디스크립터 소켓
+- spring boot process thread heap socket
+- operating system basics
+symptoms:
+- 요청 하나가 서버 안에서 어디를 지나가는지 그림이 안 그려져요
+- stack heap fd socket을 따로는 아는데 한 장면으로 연결이 안 돼요
+- thread가 heap을 공유한다는 말이 왜 중요한지 모르겠어요
+intents:
+- definition
+prerequisites:
+- operating-system/process-thread-basics
+next_docs:
+- operating-system/sync-async-blocking-nonblocking-basics
+- operating-system/file-descriptor-basics
+- operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+linked_paths:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/sync-async-blocking-nonblocking-basics.md
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/spring/spring-webflux-vs-mvc.md
+confusable_with:
+- operating-system/process-thread-basics
+- operating-system/file-descriptor-basics
+forbidden_neighbors:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/file-descriptor-basics.md
+expected_queries:
+- 서버 요청 하나가 process thread stack heap socket을 어떻게 거치는지 설명해줘
+- stack이랑 heap이 요청 처리에서 어디에 붙는지 처음부터 묶어서 보고 싶어
+- thread가 heap을 공유하고 stack은 따로 가진다는 말을 백엔드 요청 기준으로 알려줘
+- heap이랑 stack이 서버 요청 기준으로 언제 달라지는지 설명해줘
+- 지역 변수와 객체가 요청 처리에서 어디에 놓이는지 알고 싶어
+- fd 번호랑 socket 자원을 같은 그림에서 이해하려면 어떻게 봐야 해?
+- fd가 뭐예요, socket이 뭐예요를 한 장면으로 묶어 설명해줘
+- spring boot 요청이 프로세스 스레드 메모리 자원하고 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 백엔드 학습자가 요청 하나가 서버 안을 지나갈 때 누가 실행하고 어디에 상태가 쌓이며 어떤 커널 자원을 붙잡는지 처음 잡는 primer다. 요청 하나 흐름으로 묶기, 실행 주체와 메모리 자리 구분, 지역 상태와 공유 객체 구분, 열린 연결이 어디에 걸리나, 네트워크 연결 자원 이해, 서버 안에서 socket과 번호가 어떻게 이어지나 같은 자연어 paraphrase가 본 문서의 핵심 경계에 매핑된다.
+---
 # Process, Thread, Stack, Heap, File Descriptor, Socket: Backend Boundary Primer
 
 > 한 줄 요약: backend 요청 하나는 "프로세스 경계 안에서 스레드가 실행되고, 스택/힙을 쓰며, 커널 자원은 file descriptor와 socket으로 잡는다"라는 한 장면으로 이해하면 덜 헷갈린다.

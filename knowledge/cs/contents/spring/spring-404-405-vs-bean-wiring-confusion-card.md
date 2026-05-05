@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 'Spring `404`/`405` vs Bean Wiring Error Confusion Card: 요청 매핑 실패와 DI 예외를 먼저 분리하기'
+concept_id: spring/http-404-405-vs-bean-wiring-confusion-card
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- request-mapping-vs-di-error
+- no-handler-vs-no-qualifying-bean
+- first-failure-layer
+aliases:
+- spring 404 vs bean error
+- spring 405 vs bean wiring
+- 404 405 vs nosuchbeandefinitionexception
+- 404 405 vs nouniquebeandefinitionexception
+- mapping error vs di error
+- request mapping vs bean wiring
+- 404 bean 헷갈려요
+- 왜 404인데 bean 문제 아니에요
+- spring 405 뭐예요
+- beginner spring troubleshooting order
+- spring first check order 404 bean
+- spring mvc mapping error before di
+- dispatcher servlet vs bean container confusion
+- no handler found vs no qualifying bean
+- 404 not found spring controller mapping
+symptoms:
+- 404가 떴는데 멘토가 bean 문제는 아니라고 해서 어디부터 봐야 할지 모르겠어요
+- 405랑 NoSuchBeanDefinitionException을 같은 종류 에러로 보고 있었어요
+- 앱은 떴는데 요청만 실패할 때 매핑 문제인지 주입 문제인지 헷갈려요
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- spring/request-pipeline-bean-container
+- spring/mvc-controller-basics
+next_docs:
+- spring/spring-mvc-request-lifecycle
+- spring/spring-di-exception-quick-triage
+- spring/component-scan-failure-patterns
+linked_paths:
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-di-exception-quick-triage.md
+- contents/spring/spring-component-scan-failure-patterns.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/network/http-status-codes-basics.md
+confusable_with:
+- spring/spring-mvc-request-lifecycle
+- spring/spring-di-exception-quick-triage
+- spring/component-scan-failure-patterns
+forbidden_neighbors:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-di-exception-quick-triage.md
+expected_queries:
+- Spring에서 404나 405가 났을 때 왜 DI 예외랑 먼저 분리해서 봐야 해?
+- 서버는 켜졌는데 특정 요청만 실패하면 매핑 문제와 bean 주입 문제를 어떻게 가르지?
+- No handler found랑 No qualifying bean of type은 어디서 갈리는 에러야?
+- 요청 경로 문제인지 Bean 등록 문제인지 초급자가 처음 보는 순서를 알려줘
+- 405 Method Not Allowed가 떴는데 @Qualifier 같은 주입 설정을 볼 상황인지 판단하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Spring 초급자가 요청 실패와 객체 조립 실패를 한 덩어리로 보지
+  않도록 404·405와 bean 주입 예외를 먼저 갈라 주는 chooser다. 앱은 떴는데
+  특정 요청만 안 됨, URL은 맞는 듯한데 메서드가 다름, 부팅 중 의존성 연결이
+  깨짐, 어느 층부터 확인할지 모르겠음 같은 자연어 paraphrase가 본 문서의
+  첫 분기 기준에 매핑된다.
+---
 # Spring `404`/`405` vs Bean Wiring Error Confusion Card: 요청 매핑 실패와 DI 예외를 먼저 분리하기
 
 > 한 줄 요약: `404`/`405`는 먼저 "요청이 어느 controller 매핑으로 가야 하는가"를 보는 문제이고, `NoSuchBeanDefinitionException`/`NoUniqueBeanDefinitionException`는 "Spring이 객체를 어떻게 등록하고 주입했는가"를 보는 문제다.

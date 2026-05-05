@@ -1,3 +1,84 @@
+---
+schema_version: 3
+title: 전략 폭발 냄새: 전략 패턴이 많아질수록 의심해야 하는 것
+concept_id: design-pattern/strategy-explosion-smell
+canonical: false
+category: design-pattern
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+  - strategy-overuse
+  - policy-object-vs-strategy
+  - template-vs-strategy
+aliases:
+  - strategy explosion
+  - strategy explosion smell
+  - 전략 폭발
+  - 전략 클래스 폭발
+  - strategy overuse
+  - too many strategy classes
+  - one class per case smell
+  - combinatorial class explosion
+  - enum to class smell
+  - if else moved into classes
+  - policy matrix
+  - golden hammer strategy
+  - strategy collapse checklist
+  - when not to use strategy
+  - config table vs strategy
+  - lambda vs strategy
+  - simple branching vs strategy
+  - decision table refactoring
+  - rule table
+  - strategy to policy object
+symptoms:
+  - 전략 클래스를 계속 추가하는데 코드가 더 단순해지지 않아
+  - if 문을 없앴는데 클래스만 늘고 분기 기준은 그대로 남아 있어
+  - 할인이나 결제 규칙마다 구현체를 만들다 보니 이름이 조합 설명서가 됐어
+intents:
+  - symptom
+  - design
+  - troubleshooting
+prerequisites:
+  - design-pattern/strategy-pattern-basics
+  - design-pattern/composition-over-inheritance-basics
+next_docs:
+  - design-pattern/policy-object-pattern
+  - design-pattern/strategy-vs-state-vs-policy-object
+  - design-pattern/template-hook-smells
+linked_paths:
+  - contents/design-pattern/strategy-pattern-basics.md
+  - contents/design-pattern/strategy-vs-function-chooser.md
+  - contents/design-pattern/strategy-vs-state-vs-policy-object.md
+  - contents/design-pattern/policy-object-pattern.md
+  - contents/design-pattern/specification-pattern.md
+  - contents/design-pattern/template-hook-smells.md
+  - contents/design-pattern/composition-over-inheritance-practical.md
+  - contents/design-pattern/god-object-spaghetti-golden-hammer.md
+confusable_with:
+  - design-pattern/strategy-pattern-basics
+  - design-pattern/strategy-vs-function-chooser
+  - design-pattern/strategy-vs-state-vs-policy-object
+forbidden_neighbors:
+  - contents/design-pattern/strategy-pattern-basics.md
+  - contents/design-pattern/strategy-pattern.md
+expected_queries:
+  - 전략 패턴을 적용할수록 클래스만 늘어나는데 이게 정상인지 판단하고 싶어
+  - 구현체마다 경우의 수 이름이 붙기 시작했을 때 전략 대신 뭘 봐야 해?
+  - if-else를 전략으로 옮겼는데 조합 수가 폭발하는 구조를 어떻게 줄여?
+  - 결제 정책마다 전략 클래스를 만들고 있는데 policy object나 specification으로 바꿔야 할 신호가 뭐야?
+  - lambda나 설정 테이블로 내려야 하는데 계속 전략으로 풀고 있는지 점검하는 기준이 필요해
+contextual_chunk_prefix: |
+  이 문서는 전략 패턴을 도입했는데 구현체 수만 늘고 분기 기준은 그대로 남아
+  있어서 설계가 더 어려워졌다고 느끼는 학습자를 위한 symptom_router다. 할인,
+  결제, 알림 규칙처럼 경우의 수마다 전략 클래스를 만들다가 이름이 조합 설명이
+  되고, if else가 클래스 파일로 흩어졌을 뿐이라는 느낌, policy object나
+  specification, config table로 다시 축을 나눠야 하는지 묻는 검색에 매핑된다.
+---
 # 전략 폭발 냄새: 전략 패턴이 많아질수록 의심해야 하는 것
 
 > 한 줄 요약: 전략 패턴이 너무 많이 늘어날 때는 "유연해졌다"가 아니라 "변화 축을 잘못 쪼갰다"는 신호일 수 있다.

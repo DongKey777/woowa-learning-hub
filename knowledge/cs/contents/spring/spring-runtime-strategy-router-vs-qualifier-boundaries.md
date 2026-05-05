@@ -1,3 +1,83 @@
+---
+schema_version: 3
+title: 'Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택'
+concept_id: spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+canonical: false
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+  - missions/lotto
+  - missions/shopping-cart
+review_feedback_tags:
+- qualifier-vs-router
+- bean-name-domain-key
+- strategy-selection-boundary
+aliases:
+- spring router vs qualifier
+- router qualifier boundary
+- runtime strategy router
+- request time implementation selection
+- enum key strategy selection
+- map string bean router
+- fixed wiring vs runtime routing
+- strategy lookup by key
+- domain key strategy map
+- external input bean name warning
+- router key bean name mapping
+- bean name vs domain key
+- 외부 입력 bean 이름 매핑 주의
+- 요청별 전략 선택
+- 실행 시점 구현체 선택
+symptoms:
+- qualifier가 서비스마다 계속 반복되는데 이게 맞는지 모르겠어요
+- 요청 값마다 구현체를 바꿔야 하는데 생성자 주입에서 해결하려고 해요
+- Map<String, Bean>으로 받았는데 key를 bean 이름으로 써도 되는지 헷갈려요
+- enum 값마다 전략을 골라야 하는데 @Qualifier로 버티고 있어요
+intents:
+- comparison
+- design
+prerequisites:
+- spring/bean-di-basics
+- spring/primary-qualifier-collection-injection
+next_docs:
+- spring/spring-custom-qualifier-primer
+- spring/same-type-bean-injection-failure-cause-router
+linked_paths:
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/spring/spring-custom-qualifier-primer.md
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-primary-vs-bean-override-primer.md
+- contents/spring/lotto-manual-auto-generator-qualifier-bridge.md
+- contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+- contents/spring/ioc-di-container.md
+confusable_with:
+- spring/spring-custom-qualifier-primer
+- spring/primary-qualifier-collection-injection
+- spring/lotto-manual-auto-generator-qualifier-bridge
+- spring/shopping-cart-payment-method-router-qualifier-bridge
+forbidden_neighbors:
+- contents/spring/spring-custom-qualifier-primer.md
+expected_queries:
+- router는 언제 쓰고 qualifier는 언제 써?
+- 처음 배우는데 router랑 qualifier 차이가 뭐야?
+- 같은 qualifier 문자열이 반복되면 router가 아니라 custom qualifier로 봐야 해?
+- 요청마다 구현체가 바뀌면 qualifier 말고 router를 써야 해?
+- enum 분기로 구현체를 고를 때 Map<String, Bean> router가 맞아?
+- Map<String, Bean> 주입은 언제 쓰고 qualifier는 언제 써?
+- 외부 입력값을 bean 이름에 바로 매핑해도 돼?
+contextual_chunk_prefix: |
+  이 문서는 Spring 학습자가 항상 같은 구현체를 미리 연결하는 경우와
+  요청마다 전략을 갈아타는 경우를 구분해 `@Qualifier`와 router 중 무엇을
+  쓸지 결정하는 chooser다. 앱 시작 때 하나 고르기, 주문마다 다른 전략
+  태우기, enum 값으로 실행 경로 바꾸기, 문자열 qualifier가 계속 늘어남,
+  요청 흐름에서 구현체 바꾸기 같은 자연어 paraphrase가 본 문서의 경계
+  판단에 매핑된다.
+---
 # Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택
 
 > 한 줄 요약: `@Qualifier`는 "컨테이너가 이 주입 지점에 어떤 bean을 꽂을지"를 정하는 장치이고, `Map<String, Bean>`/router 패턴은 "애플리케이션 코드가 요청마다 어떤 전략을 실행할지"를 정하는 장치다.

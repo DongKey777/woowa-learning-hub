@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: OAuth Scope vs API Audience vs Application Permission
+concept_id: security/oauth-scope-vs-api-audience-vs-application-permission
+canonical: false
+category: security
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- aud-vs-scope-mixup
+- scope-vs-app-permission
+- valid-token-still-403
+aliases:
+- oauth scope vs audience vs permission
+- api audience vs scope vs permission
+- audience is not scope
+- scope is not permission
+- aud claim vs scope claim
+- resource indicator
+- api audience boundary
+- resource server boundary
+- gateway audience vs service audience
+- delegated api scope
+- application permission source of truth
+- business permission boundary
+- multi-service oauth vocabulary
+- scope는 있는데 왜 이 api가 token을 안 받지
+- aud mismatch beginner
+symptoms:
+- scope는 있는데 왜 API가 토큰을 안 받는지 모르겠어요
+- aud도 맞는 것 같은데 계속 403이 나와요
+- role, scope, permission을 같은 뜻으로 읽고 있어요
+intents:
+- comparison
+- design
+prerequisites:
+- security/oauth2-basics
+- security/authentication-vs-authorization
+next_docs:
+- security/jwt-claims-roles-authorities-permissions-mapping
+- security/token-exchange-impersonation-risks
+- security/permission-model-drift-authz-graph-design
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/jwt-claims-roles-authorities-permissions-mapping.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/token-exchange-impersonation-risks.md
+- contents/security/workload-identity-user-context-propagation-boundaries.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+confusable_with:
+- security/role-vs-scope-vs-ownership-primer
+- security/jwt-claims-roles-authorities-permissions-mapping
+- security/permission-model-bridge-authn-to-role-scope-ownership
+forbidden_neighbors:
+- contents/security/role-vs-scope-vs-ownership-primer.md
+expected_queries:
+- access token에 orders.read가 있어도 orders API가 거부하면 무엇부터 봐야 해?
+- audience와 scope와 비즈니스 권한을 어떤 순서로 확인해야 하나요
+- aud mismatch와 permission deny를 한 장으로 구분하고 싶어
+- role은 맞는데 scope나 audience 때문에 403이 나는 예시를 보여줘
+- gateway용 토큰을 내부 서비스가 바로 받으면 왜 안 되지?
+- application permission이 OAuth scope와 왜 따로 움직이는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 access token 검증에서 audience, scope, application
+  permission을 같은 뜻으로 섞지 않도록 어느 층위에서 막히는지 결정하게
+  돕는 chooser다. 토큰은 유효한데 API가 왜 거부하나, gateway용 토큰을
+  서비스가 받아도 되나, 위임 범위와 비즈니스 권한 차이, aud는 맞는데 403
+  나는 이유, 어떤 순서로 확인하나 같은 자연어 paraphrase가 본 문서의 구분
+  기준에 매핑된다.
+---
 # OAuth Scope vs API Audience vs Application Permission
 
 > 한 줄 요약: API `audience`는 "어느 resource server용 token인가", OAuth `scope`는 "어떤 API 범위를 위임했나", application permission은 "우리 서비스가 지금 이 비즈니스 action을 허용하나"를 뜻한다. multi-service에서는 셋의 소유자, 갱신 시점, granularity가 달라 의도적으로 diverge한다.

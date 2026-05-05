@@ -14,7 +14,7 @@
 - [Ready Queue Starvation Primer](./ready-queue-starvation-primer.md)
 - [Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 
-retrieval-anchor-keywords: periodic scheduling drift vs backlog, scheduleatfixedrate vs schedulewithfixeddelay, fixed rate vs fixed delay beginner, periodic task overrun primer, scheduledexecutorservice overrun, fixed rate backlog mental model, fixed delay drift mental model, periodic rescheduling queue, overdue deadline debt, periodic catch up execution, what is scheduler drift, why fixed rate runs immediately, why fixed delay drifts, periodic task queue beginner, fixed rate vs fixed delay overrun primer
+retrieval-anchor-keywords: periodic scheduling drift vs backlog, scheduleatfixedrate vs schedulewithfixeddelay, fixed rate vs fixed delay beginner, periodic task overrun primer, scheduledexecutorservice overrun, fixed rate backlog mental model, fixed delay drift mental model, periodic rescheduling queue, overdue deadline debt, periodic catch up execution, scheduler drift alarm, 알람이 밀려 울려요, why fixed rate runs immediately, why fixed delay drifts, fixed rate vs fixed delay overrun primer
 
 ## 먼저 감각부터
 
@@ -160,6 +160,11 @@ fixed-delay actual: 0 ------- 8 ----- 13 ------- 21 ----- 26
 
 - 원래 박자 유지가 더 중요한가?
 - 아니면 실행 사이 숨 고르기가 더 중요한가?
+
+관측 신호를 한 줄로 구분하면 더 빠르다.
+
+- drift 쪽이면 "다음 실행 시각이 계속 뒤로 밀리지만 종료 후 쉬는 간격은 남아 있다"가 보인다.
+- backlog 쪽이면 "끝나자마자 다시 실행돼 알람이나 poll이 몰아서 울린다"가 더 잘 보인다.
 
 ## 더 깊이 가려면
 

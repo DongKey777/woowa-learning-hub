@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Timeout Budget Propagation Across Proxy, Gateway, Service Hops
+concept_id: network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+canonical: true
+category: network
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- caller-budget-violation
+- deadline-propagation
+- hop-timeout-reset
+aliases:
+- timeout budget propagation
+- deadline propagation
+- proxy chain
+- gateway timeout
+- remaining budget
+- end-to-end latency budget
+- per-hop timeout
+- queueing delay
+- grpc-timeout
+- fail-fast
+symptoms:
+- 홉이 늘수록 504가 자꾸 앞단에서 나
+- 게이트웨이는 timeout인데 뒤 서비스는 아직 일하고 있어
+- 남은 시간을 안 넘겨서 요청이 낭비되는 것 같아
+intents:
+- definition
+prerequisites:
+- network/timeout-types-connect-read-write
+- network/timeout-retry-backoff-practical
+next_docs:
+- network/proxy-retry-budget-discipline
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/proxy-retry-budget-discipline.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+confusable_with:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors:
+- contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md
+expected_queries:
+- timeout budget을 proxy와 gateway를 거쳐 어떻게 남은 시간 기준으로 전달하나요?
+- 홉마다 타임아웃을 새로 주면 왜 504와 낭비가 커지나요?
+- deadline propagation과 per-hop timeout 차이를 실무 관점에서 설명해 주세요
+- gateway가 남은 timeout을 downstream에 안 넘기면 무슨 일이 생기나요?
+- 앞단은 timeout인데 뒤 서비스는 계속 일하는 패턴 원인이 뭐예요?
+contextual_chunk_prefix: |
+  이 문서는 network 운영 학습자가 프록시와 게이트웨이, 서비스 여러 홉을 지나는 요청에서 전체 시간 예산이 어떻게 줄어들며 전달돼야 하는지 기초를 잡는 primer다. 앞단은 504가 먼저 나는데 뒤 서비스는 아직 일함, 홉마다 타임아웃을 새로 잡으면 왜 낭비가 커짐, 남은 시간만 내려보내기, 호출 시작 전에 끝날지 먼저 판단하기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # Timeout Budget Propagation Across Proxy, Gateway, Service Hops
 
 > 한 줄 요약: 요청 timeout은 홉마다 새로 시작하는 독립 타이머가 아니라 end-to-end 예산이므로, proxy와 gateway가 남은 시간을 깎아 전달하지 않으면 hop이 늘수록 504와 낭비가 함께 커진다.

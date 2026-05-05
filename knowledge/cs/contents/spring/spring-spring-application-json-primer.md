@@ -12,13 +12,11 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
-> - 공식 기준: [Spring Boot Externalized Configuration - JSON Application Properties](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.json)
-> - 공식 기준: [Spring Boot Externalized Configuration - Binding Maps](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.maps)
+- [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
+- 공식 기준: [Spring Boot Externalized Configuration - JSON Application Properties](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.json)
+- 공식 기준: [Spring Boot Externalized Configuration - Binding Maps](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.maps)
 
 retrieval-anchor-keywords: spring application json primer, spring_application_json, spring application json 뭐예요, spring application json 처음 배우는데, spring application json 언제 써요, spring application json 큰 그림, spring application json vs env var, plain env var vs spring application json, nested configuration env var spring boot, complex map key spring boot, map key slash dot env var, properties 많은데 env var 너무 길어요, 리스트 설정 env var 헷갈려요, beginner property configuration primer, what is spring application json
 

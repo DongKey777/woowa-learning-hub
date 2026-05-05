@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 'Policy Object vs Strategy Map: 커지는 전략 맵을 규칙 객체로 올릴 때'
+concept_id: design-pattern/policy-object-vs-strategy-map-beginner-bridge
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/blackjack
+- missions/shopping-cart
+review_feedback_tags:
+- strategy-map-smell
+- policy-object-naming
+- rich-decision-result
+aliases:
+- policy object vs strategy map
+- strategy map to policy object
+- growing strategy map smell
+- map key strategy policy object
+- strategy collection vs policy object
+- behavior selector vs rule object
+- policy selector beginner
+- refund policy decision object
+- discount strategy map smell
+- strategy map rule explosion
+- strategy map beginner bridge
+- policy object beginner bridge
+- rule deserves policy object
+- rich decision result vs strategy result
+- strategy selector with policy object
+symptoms:
+- Map에서 전략을 고르는 코드가 커지는데 어디서부터 policy로 봐야 할지 모르겠어요
+- 금액 말고 거절 이유까지 내려야 하는데 strategy만 늘고 있어요
+- selector인지 rule object인지 이름이 안 잡혀요
+intents:
+- comparison
+prerequisites:
+- design-pattern/strategy-pattern-basics
+- design-pattern/strategy-map-vs-registry-primer
+next_docs:
+- design-pattern/policy-object-pattern
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/policy-registry-pattern
+linked_paths:
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/strategy-policy-selector-naming.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/policy-registry-pattern.md
+- contents/design-pattern/strategy-registry-vs-service-locator-drift.md
+confusable_with:
+- design-pattern/strategy-map-vs-registry-primer
+- design-pattern/policy-object-pattern
+forbidden_neighbors:
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/policy-object-pattern.md
+expected_queries:
+- 전략 맵이 커질 때 언제 policy object로 올려야 해?
+- Map으로 구현 선택하는 코드가 규칙 객체로 바뀌어야 하는 신호가 뭐야?
+- 허용 여부와 이유를 같이 내려야 하면 strategy보다 어떤 구조가 맞아?
+- selector 클래스가 점점 판정 로직까지 먹고 있는데 어떻게 정리해?
+- discount나 refund 규칙이 strategy map을 넘어서기 시작했다는 건 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 Map으로 구현 선택을 모으던 코드가 언제 규칙 객체로
+  올라가야 하는지, 키 선택과 도메인 판정을 어떻게 잇는지 연결한다. 메뉴판처럼
+  하나 고르기, 판정 이유까지 함께 내려주기, 허용 여부와 사유 반환, selector가
+  규칙을 먹기 시작함, 전략 맵 비대화 같은 자연어 paraphrase가 본 문서의 경계에
+  매핑된다.
+---
 # Policy Object vs Strategy Map: 커지는 전략 맵을 규칙 객체로 올릴 때
 
 > 한 줄 요약: `Map<Key, Strategy>`가 "키로 행동을 고르는 메뉴"라면 그대로 strategy map이고, 키보다 규칙 판정과 이유가 중요해지면 policy object로 올리는 편이 읽기 쉽다.

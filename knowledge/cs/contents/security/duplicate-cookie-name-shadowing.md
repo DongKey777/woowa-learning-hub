@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Duplicate Cookie Name Shadowing
+concept_id: security/duplicate-cookie-name-shadowing
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- duplicate-cookie-shadowing
+- stale-session-cookie
+- cookie-path-domain-collision
+aliases:
+- duplicate cookie name shadowing
+- duplicate session cookie
+- cookie name collision
+- same cookie name different path
+- same cookie name different domain
+- duplicate jsessionid
+- cookie header duplicate name
+- stale cookie shadows new cookie
+- cookie path shadowing
+- cookie domain shadowing
+- wrong session cookie selected
+- callback cookie same name as session
+symptoms:
+- 같은 이름 세션 쿠키가 두 개 남아서 어떤 요청만 다시 로그인돼요
+- Application 탭에는 쿠키가 둘 다 보이는데 어느 값이 실제로 쓰이는지 모르겠어요
+- logout이나 마이그레이션 후에도 오래된 세션 쿠키가 계속 따라와요
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- security/cookie-failure-three-way-splitter
+- security/cookie-scope-mismatch-guide
+next_docs:
+- security/cookie-scope-migration-cleanup
+- security/callback-cookie-name-splitter
+- security/duplicate-cookie-vs-proxy-login-loop-bridge
+linked_paths:
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/cookie-scope-migration-cleanup.md
+- contents/security/callback-cookie-name-splitter.md
+- contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- security/cookie-scope-mismatch-guide
+- security/duplicate-cookie-vs-proxy-login-loop-bridge
+- security/callback-cookie-name-splitter
+forbidden_neighbors:
+- contents/security/secure-cookie-behind-proxy-guide.md
+expected_queries:
+- 같은 이름의 세션 쿠키가 두 개 있으면 왜 로그인 루프가 생겨?
+- request Cookie 헤더에 session이 두 번 보일 때 어떤 순서로 봐야 해?
+- path나 domain이 다른 stale cookie가 새 세션을 가리는 경우를 설명해줘
+- logout 했는데 old session cookie가 계속 남는 이유가 뭐야?
+- duplicate JSESSIONID가 특정 route에서만 문제를 만드는 이유가 궁금해
+- callback용 쿠키와 메인 session 쿠키를 같은 문제로 보면 왜 헷갈려?
+contextual_chunk_prefix: |
+  이 문서는 같은 이름 쿠키가 path나 domain 차이로 함께 남을 때 어떤 요청에서 오래된 세션이 앞서 읽히는지, route별로 왜 다른 세션이 복원되는지 내부 메커니즘을 깊이 잡는 deep_dive다. 특정 화면만 다시 로그인, 쿠키가 두 줄로 보임, 로그아웃 뒤 옛 값이 살아있음, 요청마다 세션 값이 달라짐, callback 뒤에만 다른 세션이 선택됨 같은 자연어 paraphrase가 본 문서의 duplicate cookie shadowing 원인에 매핑된다.
+---
 # Duplicate Cookie Name Shadowing
 
 > 한 줄 요약: cookie 이름이 같아도 `Domain`이나 `Path`가 다르면 브라우저는 둘 다 저장할 수 있다. 그러면 어떤 요청에는 stale session cookie가 앞에 오거나 둘 다 실려서, 서버가 엉뚱한 session을 복원하고 login loop가 생길 수 있다.

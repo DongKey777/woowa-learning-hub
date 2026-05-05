@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Page Replacement, Clock vs LRU
+concept_id: operating-system/page-replacement-clock-vs-lru
+canonical: false
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- clock-vs-lru-tradeoff
+- working-set-vs-policy
+aliases:
+- page replacement basics
+- clock vs lru
+- lru replacement algorithm
+- clock page replacement algorithm
+- page eviction basics
+- page cache eviction
+- working set memory basics
+- thrashing page replacement
+- 왜 lru 대신 clock 써요
+- 메모리 꽉 차면 무엇을 버리나요
+- os cache eviction beginner
+- 언제 clock 알고리즘 쓰나요
+symptoms:
+- Clock이랑 LRU를 왜 따로 배우는지 감이 안 와요
+- page cache eviction이 LRU cache 구현이랑 같은 말인가요
+- page replacement를 볼 때 working set이 더 중요하다는 말이 헷갈려요
+intents:
+- comparison
+- design
+prerequisites:
+- operating-system/demand-paging-page-fault-primer
+- operating-system/memory-management-basics
+next_docs:
+- operating-system/workingset-refault-page-cache-reclaim-debugging
+- operating-system/page-cache-thrash-vs-direct-io
+linked_paths:
+- contents/operating-system/memory-management-numa-page-replacement-thrashing.md
+- contents/operating-system/workingset-refault-page-cache-reclaim-debugging.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/data-structure/lru-cache-basics.md
+confusable_with:
+- operating-system/memory-management-numa-page-replacement-thrashing
+- data-structure/lru-cache-basics
+forbidden_neighbors:
+- contents/data-structure/lru-cache-basics.md
+expected_queries:
+- OS에서 Clock이 LRU를 어떻게 근사하는지 비교해줘
+- page replacement에서 Clock과 LRU를 언제 다르게 이해해야 해?
+- 캐시 교체 정책 LRU랑 운영체제 페이지 교체 LRU는 뭐가 달라?
+- page cache eviction 설명할 때 working set이 왜 더 중요하다고 해?
+- page replacement 알고리즘을 처음 비교할 때 Clock vs LRU부터 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 운영체제 학습자가 메모리가 모자랄 때 어떤 페이지를 밀어낼지
+  볼 때 Clock과 LRU를 어떻게 가를지 결정하게 돕는 chooser다. 최근 사용
+  이력 추적 비용, 참조 비트로 대충 근사하기, page fault 급증, 운영체제
+  교체 정책과 cache 구현의 차이, working set을 먼저 봐야 하는 이유 같은
+  자연어 paraphrase가 본 문서의 비교 기준에 매핑된다.
+---
 # Page Replacement, Clock vs LRU
 
 > 한 줄 요약: 메모리가 부족할 때 무엇을 내보내는지가 page fault, page cache hit ratio, tail latency를 좌우한다.

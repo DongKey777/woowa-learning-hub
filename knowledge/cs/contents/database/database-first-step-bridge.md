@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: Database First-Step Bridge
+concept_id: database/database-first-step-bridge
+canonical: false
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- where-is-sql
+- transaction-boundary-first
+- index-before-tuning
+aliases:
+- database first step bridge
+- database beginner bridge
+- transaction jdbc jpa mybatis index order
+- backend mission database first read
+- db 입문 순서
+- 백엔드 미션 데이터베이스 첫걸음
+- network spring database route
+- http 다음 spring 다음 database
+- controller 다음 save sql
+- save 만 보이는데 sql 안 보여요
+- save 다음 sql 어디서 봐요
+- 처음 database 뭐부터
+- entity table column 처음
+- controller 전에 415면 db 아님
+- save 전에 415
+symptoms:
+- save 는 보이는데 실제 SQL 이 어디서 만들어지는지 모르겠다
+- '@Transactional 이 보이는데 이게 DB 에서 정확히 무슨 경계를 잡는지 감이 안 온다'
+- entity 와 table, repository 와 mapper 가 한꺼번에 나와서 무엇부터 읽어야 할지 모르겠다
+intents:
+- comparison
+prerequisites:
+- spring/request-pipeline-bean-container
+next_docs:
+- database/transaction-basics
+- database/jdbc-jpa-mybatis-basics
+- database/index-basics
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/database/transaction-basics.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/index-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/index-and-explain.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-mvc-jdbc-transaction-di-aop-transition-checklist.md
+- contents/database/mission-code-reading-db-checklist.md
+confusable_with:
+- spring/request-pipeline-bean-container
+- database/mission-code-reading-db-checklist
+forbidden_neighbors:
+- contents/database/deadlock-case-study.md
+- contents/database/cdc-debezium-outbox-binlog.md
+expected_queries:
+- 백엔드 미션에서 database 는 무엇부터 읽어야 해?
+- save() 만 보이는 코드에서 SQL 과 트랜잭션을 어떤 순서로 따라가면 돼?
+- JPA, JDBC, 인덱스 중에 초반에 뭐부터 이해해야 미션 코드가 읽혀?
+- controller 다음에 DB 학습으로 내려갈 때 첫 질문을 어떻게 나눠야 해?
+- database 입문에서 deadlock 같은 심화 말고 지금 바로 볼 축을 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 백엔드 미션 초반 학습자가 network와 spring 다음에 database를 어떤
+  순서로 읽어야 덜 헷갈리는지 연결하는 bridge다. save는 보이는데 SQL이 안 보여,
+  db 처음 뭐부터, controller 다음에 뭘 봐, Entity와 table이 같이 헷갈려,
+  트랜잭션이 먼저야 ORM이 먼저야, 요청 흐름에서 DB는 어디서 시작해 같은 자연어
+  paraphrase가 본 문서의 입구 경로에 매핑된다.
+---
 # Database First-Step Bridge
 
 > 한 줄 요약: 백엔드 미션 초반 DB 학습은 `트랜잭션 기본 감각 -> JDBC/JPA/MyBatis 역할 구분 -> 인덱스 기본 감각` 순서로 잡아야, 코드와 SQL을 같이 볼 때 덜 헷갈린다. `deadlock`/`failover`/`cdc`는 이 입구를 지난 뒤에만 연다.

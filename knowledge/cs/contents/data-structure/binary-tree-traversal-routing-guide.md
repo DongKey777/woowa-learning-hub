@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Binary Tree Traversal Routing Guide
+concept_id: data-structure/binary-tree-traversal-routing-guide
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- traversal-signal-routing
+- inorder-bst-only
+- level-order-uses-queue
+aliases:
+- binary tree traversal routing guide basics
+- binary tree traversal routing guide beginner
+- binary tree traversal routing guide intro
+- data structure basics
+- beginner data structure
+- 처음 배우는데 binary tree traversal routing guide
+- binary tree traversal routing guide 입문
+- binary tree traversal routing guide 기초
+- what is binary tree traversal routing guide
+- how to binary tree traversal routing guide
+symptoms:
+- preorder inorder postorder level-order가 이름만 비슷하게 보여서 문제를 읽을 때 바로 안 갈라진다
+- BST 문제에서만 inorder가 정렬 느낌을 준다는 점을 자꾸 놓친다
+- 레벨 단위 문제인데도 재귀 DFS부터 떠올라 queue 신호를 놓친다
+intents:
+- definition
+prerequisites:
+- data-structure/tree-basics
+- data-structure/basic
+next_docs:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- algorithm/dfs-bfs-intro
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/tree-basics.md
+- contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/basic.md
+confusable_with:
+- data-structure/tree-basics
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- algorithm/dfs-bfs-intro
+forbidden_neighbors:
+- contents/data-structure/tree-basics.md
+- contents/algorithm/dfs-bfs-intro.md
+expected_queries:
+- 전위 중위 후위 레벨 순회를 문제 신호로 어떻게 빠르게 고르면 돼?
+- 트리 순회 문제가 나오면 현재 노드를 언제 처리해야 하는지부터 어떻게 판단해?
+- BST라서 중위 순회를 떠올려야 하는 장면을 초급자 기준으로 정리해줘
+- 높이 균형 subtree 계산 문제를 보면 어떤 순회가 자연스러운지 감을 잡고 싶어
+- 같은 깊이끼리 보라는 문장이 나오면 왜 queue 기반 순회로 넘어가는지 설명해줘
+- preorder와 postorder를 둘 다 DFS라고만 외우지 않으려면 어떤 질문으로 갈라야 해?
+contextual_chunk_prefix: |
+  이 문서는 트리 순회를 처음 배우는 학습자가 preorder, inorder,
+  postorder, level-order를 문제 신호에 맞춰 어떻게 고르는지 기초를
+  잡는 primer다. 현재 노드를 언제 처리해, BST라서 정렬 순서가 보여,
+  자식 계산 후 부모를 닫아, 같은 깊이끼리 보고 싶어, queue로 레벨을
+  나눠 같은 자연어 paraphrase가 본 문서의 순회 라우팅 기준에
+  매핑된다.
+---
 # Binary Tree Traversal Routing Guide
 
 > 한 줄 요약: `preorder`, `inorder`, `postorder`, `level-order`는 "현재 노드를 언제 처리하느냐"만 다르고, 그 타이밍이 면접 문제의 signal이 된다.

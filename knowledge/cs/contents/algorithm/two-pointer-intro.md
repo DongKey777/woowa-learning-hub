@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: 두 포인터 입문 (Two Pointer Basics)
+concept_id: algorithm/two-pointer-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- sliding-window-vs-two-pointer
+- sorted-input-precondition
+aliases:
+- 두 포인터 입문
+- two pointer beginner
+- 투 포인터 기초
+- 배열 두 인덱스
+- 합이 k인 두 수
+- 정렬된 배열 탐색 입문
+- left right pointer
+- 포인터 좁히기
+- sliding window vs two pointer 차이
+- 연속 구간 아닌 두 원소
+- 투포인터 언제 써요
+- beginner two pointer algorithm
+- 중복 없는 쌍 찾기
+- two pointer intro basics
+- two pointer intro beginner
+symptoms:
+- 정렬된 배열 문제라는데 왜 양끝에서 줄여도 되는지 감이 안 와
+- sliding window랑 two pointer를 같은 말로 외워서 문제를 자꾸 잘못 고른다
+- 합이 target보다 크면 어느 포인터를 움직여야 하는지 매번 헷갈린다
+intents:
+- definition
+prerequisites:
+- algorithm/time-complexity-intro
+- algorithm/sort-intro
+next_docs:
+- algorithm/two-pointer
+- algorithm/sliding-window-patterns
+- algorithm/binary-search-intro
+linked_paths:
+- contents/algorithm/two-pointer.md
+- contents/algorithm/binary-search-intro.md
+- contents/data-structure/linked-list-basics.md
+confusable_with:
+- algorithm/sliding-window-patterns
+- algorithm/binary-search-intro
+forbidden_neighbors: []
+expected_queries:
+- 두 포인터를 처음 배울 때 어떤 문제에서 이분 탐색보다 먼저 떠올려야 하는지 알고 싶어
+- 정렬된 배열에서 합이 k인 두 수를 왜 양끝 포인터로 푸는지 단계별로 설명해줘
+- sliding window와 two pointer를 같은 걸로 외우면 왜 틀리는지 입문자 기준으로 정리해줘
+- 연속 구간을 보는 문제와 두 원소를 고르는 문제를 어떻게 구분해야 하는지 궁금해
+- 투 포인터가 성립하려면 배열이나 조건이 어떤 성질을 가져야 하는지 처음부터 알려줘
+contextual_chunk_prefix: |
+  이 문서는 배열에서 두 인덱스를 움직이며 조건을 좁히는 two pointer를 처음 붙이는 learner용 primer다. 양끝 포인터와 같은 방향 포인터 차이, 정렬된 배열 합 문제에서 왜 O(n)으로 줄어드는지, sliding window와 어디서 갈리는지, 연속 구간과 두 원소 관계를 어떻게 구분하는지, 언제 이분 탐색보다 two pointer가 직접적인지 같은 자연어 질문을 이 입문 설명에 연결한다.
+---
 # 두 포인터 입문 (Two Pointer Basics)
 
 > 한 줄 요약: 두 포인터는 배열에서 두 인덱스를 같은 방향이나 양 끝에서 좁혀가며 O(n) 안에 조건을 만족하는 쌍이나 구간을 찾는 기법이다.

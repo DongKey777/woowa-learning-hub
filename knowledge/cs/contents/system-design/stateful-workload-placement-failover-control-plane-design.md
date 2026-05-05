@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Stateful Workload Placement / Failover Control Plane 설계
+concept_id: system-design/stateful-workload-placement-failover-control-plane-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- leader-placement-vs-autoscaling
+- promotion-eligibility-policy
+- quorum-safe-maintenance-drain
+aliases:
+- stateful workload placement
+- failover control plane
+- leader placement
+- replica promotion
+- maintenance drain
+- quorum-aware scheduling
+- standby assignment
+- evacuation plan
+- failover policy
+- placement decision
+- membership reconfiguration
+symptoms:
+- 상태 있는 서비스도 그냥 오토스케일링하면 되는 거 아닌지 모르겠어
+- 장애 났을 때 어떤 replica를 leader로 올려야 하는지 기준이 헷갈려
+- maintenance drain 중에 노드를 어떤 순서로 비워야 안전한지 감이 안 와
+intents:
+- definition
+prerequisites:
+- system-design/availability-and-sla-basics
+- system-design/multi-region-active-active-design
+- system-design/service-discovery-health-routing-design
+next_docs:
+- system-design/shard-rebalancing-partition-relocation-design
+- system-design/consensus-membership-reconfiguration-design
+- system-design/session-store-design-at-scale
+linked_paths:
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/distributed-lock-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/consensus-membership-reconfiguration-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/cell-based-architecture-blast-radius-isolation-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+confusable_with:
+- system-design/global-traffic-failover-control-plane-design
+- system-design/shard-rebalancing-partition-relocation-design
+- system-design/service-discovery-health-routing-design
+forbidden_neighbors:
+- contents/system-design/service-discovery-health-routing-design.md
+expected_queries:
+- 상태 있는 서비스는 장애 때 어느 replica를 leader로 올릴지 누가 정해?
+- stateful workload를 배치할 때 quorum-safe capacity를 왜 따로 계산해?
+- maintenance drain 중에 leader를 한 번에 빼면 왜 위험해?
+- stateless 스케줄러와 stateful placement control plane은 뭐가 달라?
+- replica promotion에서 lag, fencing, locality를 같이 보는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 상태를 가진 서비스를 운영하는 학습자가 leader와 replica를 어떤
+  실패 도메인에 배치하고, 장애 시 어느 복제본을 올리며, maintenance 때
+  quorum을 깨지 않고 비우는지 기초를 잡는 primer다. 상태 있는 서비스 배치
+  규칙, 어떤 복제본을 승격할지, 한 번에 비우면 왜 위험한지, 지역성과 lag를
+  함께 보는 기준, planned maintenance 순서 같은 자연어 paraphrase가 본
+  문서의 핵심 개념에 매핑된다.
+---
 # Stateful Workload Placement / Failover Control Plane 설계
 
 > 한 줄 요약: stateful workload placement와 failover control plane은 leader, shard owner, replica, standby의 배치와 승격 규칙을 관리해 장애와 유지보수 중에도 상태를 가진 서비스를 예측 가능하게 운영하는 제어 시스템이다.

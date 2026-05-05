@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: TreeMap Interval Entry Primer
+concept_id: data-structure/treemap-interval-entry-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: mixed
+source_priority: 78
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- reservation-overlap-neighbor-check
+- floorentry-ceilingentry-exact-match
+- booking-boundary-translation
+aliases:
+- treemap interval primer
+- treemap neighbor overlap check
+- calendar booking treemap
+- floorentry ceilingentry booking
+- floorentry ceilingentry exact match
+- left right neighbor overlap rule
+- online interval insert beginner
+- booking neighbor decision rule
+- treemap room reservation neighbors
+- treemap booking 뭐예요
+- interval insert 처음 배우기
+- my calendar beginner
+- exact match reservation map
+symptoms:
+- roomescape 예약 추가 로직에서 양옆 예약만 보면 된다는 말을 코드로 못 옮기겠다
+- "`floorEntry(start)`와 `ceilingEntry(start)`가 exact match에서 어디를 가리키는지 헷갈린다"
+- 예약표는 TreeMap으로 들고 있는데 overlap 판단식을 어떻게 세우는지 막힌다
+intents:
+- mission_bridge
+- design
+- troubleshooting
+prerequisites:
+- data-structure/reservation-interval-half-open-boundary-card
+- data-structure/treemap-neighbor-query-micro-drill
+next_docs:
+- data-structure/treemap-gap-detection-mini-drill
+- data-structure/disjoint-interval-set
+- database/mysql-overlap-fallback-beginner-bridge
+linked_paths:
+- contents/data-structure/reservation-interval-half-open-boundary-card.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/data-structure/treemap-gap-detection-mini-drill.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+confusable_with:
+- data-structure/treemap-gap-detection-mini-drill
+- data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge
+- database/mysql-overlap-fallback-beginner-bridge
+forbidden_neighbors:
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/interval-greedy-patterns.md
+expected_queries:
+- roomescape 예약 충돌 검사를 TreeMap 양옆 이웃만 보고 푸는 흐름을 알고 싶어
+- "`floorEntry(start)`와 `ceilingEntry(start)`로 새 예약 overlap을 어떻게 판단해?"
+- "exact match인 시작 시각이 있을 때 TreeMap 이웃 조회가 어디서 멈추는지 예약표로 설명해줘"
+- "예약표가 `TreeMap<start, end>`일 때 새 슬롯을 넣어도 되는지 바로 판단하는 방법이 궁금해"
+- "roomescape 예약 추가 미션에서 `prev`와 `next` 두 개만 보는 이유를 이해하고 싶어"
+- booking map에서 `floorEntry`와 `ceilingEntry`를 어떤 순서로 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 roomescape 예약 추가 로직에서 TreeMap 양옆 이웃만으로
+  overlap을 판단하는 흐름을 처음 연결하는 학습자에게 floorEntry와
+  ceilingEntry가 exact match에서 어디를 가리키는지 Woowa 미션과 연결해
+  잇는 mission_bridge다. 왼쪽 예약 끝 확인, 오른쪽 예약 시작 비교,
+  양옆 예약만 보면 되는 이유, booking map 이웃 조회, exact match 예약
+  판단 같은 자연어 paraphrase가 본 문서의 예약 이웃 검사에 매핑된다.
+---
 # TreeMap Interval Entry Primer
 
 > 한 줄 요약: 예약표가 이미 겹치지 않게 정리돼 있다면, `floorEntry(start)`와 `ceilingEntry(start)`로 찾은 왼쪽/오른쪽 이웃만 확인해서 새 예약의 overlap 여부를 한 번에 판단할 수 있다.

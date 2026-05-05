@@ -1,25 +1,83 @@
-# Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가
+---
+schema_version: 3
+title: "전략 패턴을 꼭 클래스로 만들어야 할까: lambda vs Strategy chooser"
+concept_id: design-pattern/strategy-vs-function-chooser
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- strategy-overuse
+- lambda-vs-strategy
+- strategy-escalation-boundary
+aliases:
+- strategy vs function chooser
+- lambda vs strategy
+- java lambda or strategy pattern
+- function object vs strategy
+- strategy class or lambda
+- 작은 함수 vs 전략
+- 전략 패턴 꼭 클래스
+- strategy 처음 배우는데 lambda
+symptoms:
+- if-else를 줄이고 싶은데 클래스까지 만드는 건 과한지 모르겠어
+- lambda로 끝낼 수 있는지 strategy 타입까지 올려야 하는지 헷갈려
+- 작은 계산식도 전부 전략 패턴으로 만들어야 하는지 감이 안 와
+intents:
+- comparison
+- design
+prerequisites:
+- design-pattern/strategy-pattern-basics
+- software-engineering/oop-design-basics
+next_docs:
+  - design-pattern/registry-vs-factory-injected-handler-maps
+  - design-pattern/strategy-explosion-smell
+  - design-pattern/template-method-vs-strategy
+linked_paths:
+  - contents/design-pattern/strategy-pattern.md
+  - contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+  - contents/design-pattern/strategy-explosion-smell.md
+  - contents/design-pattern/template-method-vs-strategy.md
+  - contents/design-pattern/composition-over-inheritance-practical.md
+  - contents/software-engineering/oop-design-basics.md
+confusable_with:
+  - design-pattern/strategy-pattern
+  - design-pattern/template-method-vs-strategy
+  - design-pattern/registry-vs-factory-injected-handler-maps
+forbidden_neighbors: []
+expected_queries:
+- lambda로 충분한지 strategy 클래스를 만들어야 하는지 어떻게 판단해?
+- 작은 함수와 전략 패턴의 경계가 뭐야?
+- if-else 대신 무조건 strategy로 가야 해?
+- stateless 계산식도 strategy로 올려야 하나?
+contextual_chunk_prefix: |
+  이 문서는 beginner가 lambda나 작은 함수로 끝낼지, 이름 있는 strategy
+  타입으로 승격할지를 빠르게 고르도록 돕는 chooser다. lambda vs strategy,
+  작은 함수 vs 전략, strategy class or lambda, if-else 줄이려는데 클래스가
+  과한지 같은 자연어 질문이 이 문서의 변화 크기와 협력 무게 기준으로
+  매핑된다.
+---
+# 전략 패턴을 꼭 클래스로 만들어야 할까: `lambda` vs Strategy chooser
 
-> 한 줄 요약: 구현 차이가 짧고 stateless면 작은 함수나 `lambda`가 더 낫고, 이름 있는 규칙·협력 객체·테스트 경계가 커지면 Strategy 타입이 필요하다.
+> 한 줄 요약: 구현 차이가 짧고 stateless면 작은 함수나 `lambda`가 더 낫고, 이름 있는 규칙과 협력 객체, 테스트 경계가 커지면 Strategy 타입으로 올리는 편이 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법](./strategy-pattern.md)
+- [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
+- [전략 폭발 냄새](./strategy-explosion-smell.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [Composition over Inheritance](./composition-over-inheritance-practical.md)
+- [객체지향 설계 기초: 합성, 책임, 협력](../software-engineering/oop-design-basics.md)
 
-> 관련 문서:
-> - [전략 패턴](./strategy-pattern.md)
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
-> - [전략 폭발 냄새](./strategy-explosion-smell.md)
-> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-> - [Composition over Inheritance](./composition-over-inheritance-practical.md)
-> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
-
-retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function object vs strategy, strategy vs small function, when lambda is enough, when to use strategy type, beginner strategy chooser, java lambda or strategy pattern, stateless function vs strategy class, function map vs strategy object, lambda로 충분한가, 람다 vs 전략, 전략 vs 함수, 작은 함수 vs 전략, strategy 처음 배우는데 lambda
+retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function object vs strategy, strategy vs small function, when lambda is enough, when to use strategy type, beginner strategy chooser, java lambda or strategy pattern, stateless function vs strategy class, function map vs strategy object, lambda로 충분한가, 람다 vs 전략, 전략 패턴 꼭 클래스, 작은 함수 vs 전략, strategy 처음 배우는데 lambda
 
 ---
 

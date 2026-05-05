@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: AOBO Start / End Event Contract
+concept_id: security/aobo-start-end-event-contract
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- access-group-id-vs-event-id
+- start-end-pair-closure
+- cleanup-confirmed-vs-ended
+aliases:
+- aobo start end event contract
+- delegated support access start event schema
+- delegated support access end event schema
+- support access started ended contract
+- support access lifecycle close contract
+- support access timeline close semantics
+- access_group_id started_event_id contract
+- support_access_started support_access_ended
+- break glass start end event
+- support access correlation contract
+symptoms:
+- support access 시작 알림은 있는데 종료 상태가 어떻게 닫히는지 모르겠어요
+- access_group_id와 event_id와 started_event_id를 무엇에 써야 하는지 헷갈려요
+- cleanup_confirmed가 end event를 대체하는지 구분이 안 서요
+intents:
+- design
+- troubleshooting
+prerequisites:
+- security/support-access-alert-router-primer
+- security/canonical-security-timeline-event-schema
+- security/customer-facing-support-access-notifications
+next_docs:
+- security/audience-matrix-for-support-access-events
+- security/delivery-surface-policy-for-support-access-alerts
+- security/emergency-grant-cleanup-metrics
+linked_paths:
+- contents/security/support-access-alert-router-primer.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/delivery-surface-policy-for-support-access-alerts.md
+- contents/security/aobo-revocation-audit-event-schema.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+confusable_with:
+- security/canonical-security-timeline-event-schema
+- security/aobo-revocation-audit-event-schema
+- security/delegated-session-tail-cleanup
+forbidden_neighbors:
+- contents/security/delegated-session-tail-cleanup.md
+expected_queries:
+- support access 시작 이벤트와 종료 이벤트를 어떤 키로 연결해야 해?
+- access_group_id랑 event_id랑 started_event_id를 어떻게 나눠 써야 하나요
+- support_access_ended에서 ended expired revoked를 왜 구분해야 해?
+- cleanup_confirmed가 와도 종료 이벤트를 따로 남겨야 하는 이유가 뭐야?
+- customer timeline에서 지원 접근 진행 중 row를 어떤 규칙으로 닫아야 해?
+- support access inbox thread를 start와 end로 같은 lifecycle에 묶는 법을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 delegated support access와 break-glass 흐름에서
+  support_access_started와 support_access_ended를 어떤 키로 이어야
+  timeline과 inbox를 안전하게 닫는지 깊이 잡는 deep_dive다. 시작
+  알림은 있는데 종료가 안 닫힘, access_group_id와 event_id를 어디에
+  쓰나, started_event_id가 왜 필요한가, cleanup_confirmed가 end를
+  대신하나, ended expired revoked를 왜 갈라 보나 같은 자연어
+  paraphrase가 본 문서의 start end contract에 매핑된다.
+---
 # AOBO Start / End Event Contract
 
 > 한 줄 요약: delegated support access의 customer timeline과 inbox는 `support_access_started`와 `support_access_ended`를 같은 `case_ref`/`access_group_id` spine으로 묶고, end event에서 `ended`/`expired`/`revoked`를 분리해야 "지금도 열려 있는가"를 안전하게 설명할 수 있다.

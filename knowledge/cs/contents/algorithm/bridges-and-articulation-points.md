@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Bridges and Articulation Points
+concept_id: algorithm/bridges-and-articulation-points
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- low-link-modeling
+- cut-edge-vs-cut-vertex
+- undirected-graph-assumption
+aliases:
+- bridge
+- articulation point
+- cut edge
+- cut vertex
+- low-link
+- dfs tree critical node
+- graph connectivity cut
+- network reliability critical edge
+- critical node graph
+- 단절선
+- 단절점
+symptoms:
+- DFS low-link 값이 왜 끊기는 간선과 정점을 찾아 주는지 직관이 잘 안 와
+- bridge와 articulation point를 SCC나 단순 연결 여부와 자꾸 섞어 생각해
+- 무향 그래프 기준인지 방향 그래프에서도 바로 쓸 수 있는지 헷갈려
+intents:
+- deep_dive
+- comparison
+prerequisites:
+- algorithm/dfs-bfs-intro
+- algorithm/graph
+next_docs:
+- algorithm/scc-tarjan-kosaraju
+- algorithm/union-find-amortized-proof-intuition
+linked_paths:
+- contents/algorithm/graph.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/scc-tarjan-kosaraju.md
+- contents/algorithm/union-find-amortized-proof-intuition.md
+- contents/data-structure/graph-basics.md
+confusable_with:
+- algorithm/scc-tarjan-kosaraju
+- algorithm/union-find-amortized-proof-intuition
+forbidden_neighbors: []
+expected_queries:
+- 그래프에서 간선 하나 끊으면 연결이 깨지는지 찾는 알고리즘을 low-link 관점으로 설명해줘
+- articulation point와 bridge를 DFS 트리에서 어떻게 판정하는지 정리해줘
+- cut edge와 cut vertex를 SCC랑 헷갈리지 않게 비교해서 알려줘
+- 무향 그래프 단절점 문제에서 disc와 low가 각각 무슨 뜻인지 이해하고 싶어
+- 네트워크 취약 링크를 찾는 문제를 알고리즘으로 번역하면 왜 bridge 탐색이 되는지 궁금해
+contextual_chunk_prefix: |
+  이 문서는 무향 그래프에서 간선 하나나 정점 하나가 빠졌을 때 연결성이 왜 깨지는지 DFS low-link로 깊이 잡는 deep_dive다. 끊으면 그래프가 갈라지는 링크 찾기, 특정 정점 하나가 빠지면 왜 분리되는지 보기, disc와 low를 우회 경로 신호로 읽기, DFS 트리에서 부모 쪽으로 돌아갈 길이 남는지 판단, SCC와 다른 기준 정리 같은 자연어 paraphrase가 본 문서의 핵심 판정에 매핑된다.
+---
 # Bridges and Articulation Points
 
 > 한 줄 요약: Bridges와 articulation points는 그래프에서 하나 끊기면 연결성이 깨지는 간선과 정점을 찾는 DFS 기반 구조 분석이다.

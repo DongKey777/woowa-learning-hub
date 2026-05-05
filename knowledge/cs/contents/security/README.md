@@ -22,7 +22,7 @@
 - [Network README: redirect/cookie/session에서 다시 자르기](../network/README.md#network-primer-되돌아가기)
 - [CS 루트 README: 카테고리 전체 Quick Routes](../../README.md#quick-routes)
 
-retrieval-anchor-keywords: security readme, security category navigator, auth troubleshooting, browser session troubleshooting path, login loop primer, cross-origin fetch cookie confusion, subdomain cookie scope confusion, why 403 basics, 처음 배우는데 auth basics, security 뭐부터 읽지, security 처음 헷갈려요, what is security basics, auth session cookie jwt 뭐부터, jwt 쿠키 세션 헷갈려요, 웹 보안 뭐부터, 로그인 됐는데 왜 403 보안
+retrieval-anchor-keywords: security readme, security category navigator, auth troubleshooting, browser session troubleshooting path, login loop primer, cross-origin fetch cookie confusion, subdomain cookie scope confusion, why 403 basics, 처음 배우는데 auth basics, security 뭐부터 읽지, security 처음 헷갈려요, what is security basics, auth session cookie jwt 뭐부터, jwt 쿠키 세션 헷갈려요, 로그인 됐는데 왜 403 보안
 
 > 처음 읽는다면 `인증·인가·세션 기초 흐름` / `세션·쿠키·JWT 기초` / `백엔드 주니어를 위한 웹 보안 스타터 팩` 셋 중 하나만 먼저 고르면 충분하다. `JWKS outage`, `runbook`, `incident`, `recovery`, `observability`가 제목에 보이면 beginner 첫 클릭이 아니라 follow-up shelf다.
 
@@ -51,6 +51,8 @@ retrieval-anchor-keywords: security readme, security category navigator, auth tr
 | `로그인됐는데 왜 403이지?` | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) | [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md) | [Spring README: `401`/`403` 이후 filter chain과 MVC 경계로 넘기기](../spring/README.md#spring-security-ladder) |
 | `쿠키는 있는데 왜 다시 로그인하지?`, `API가 login HTML을 받아요` | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) | [Browser / Session Beginner Ladder](#browser--session-beginner-ladder) | [System Design README](../system-design/README.md) |
 
+## beginner scope guard
+
 `runbook`, `playbook`, `recovery`, `outage`, `observability`가 먼저 보이면 beginner primer가 아니라 운영 follow-up shelf일 가능성이 높다. 그 경우에는 아래 [운영 / Incident catalog](#운영--incident-catalog)로 바로 내려가고, 아니라면 이 README에서는 `기본 primer`, `증상별 바로 가기`, `Browser / Session Beginner Ladder`까지만 먼저 쓰는 편이 안전하다.
 
 ## Beginner first split: 이 README에서 어디로 첫 클릭할까
@@ -66,50 +68,14 @@ security 카테고리에서 처음 막히는 질문은 보통 아래 네 갈래 
 
 한 줄 기준: `왜 403`이면 auth failure guide, `왜 로그인 유지`면 session/cookie primer, `무슨 순서인지 모르겠다`면 auth/session foundations, `웹 보안 큰 그림`이면 starter pack으로 간다.
 
-> retrieval-anchor-keywords: security readme, security navigator, security category navigator, security primer entrypoint, security beginner route, security basics route, security 뭐부터 읽지, security 처음 헷갈려요, 웹 보안 뭐부터, auth session cookie jwt 뭐부터, 로그인 됐는데 왜 403 보안, 쿠키는 있는데 왜 다시 로그인, what is security basics, beginner security category route
-> retrieval-anchor-keywords: auth basics route, auth beginner route, auth primer route, authentication authorization session primer, session cookie jwt basics, oauth basics route, oauth2 vs oidc beginner route, social login primer route, browser session beginner ladder, browser session troubleshooting path, login loop primer, 401 403 404 beginner guide, cross-origin fetch cookie confusion
-> retrieval-anchor-keywords: primer handoff, security primer next step, return to security README, category navigator, first-step security primer, safe troubleshooting ladder, cookie-missing beginner route, server-anonymous beginner route, preflight first question, actual request first branch, beginner security route table, primer before deep dive
-> retrieval-anchor-keywords: forwarded header trust boundary primer, x-forwarded-proto spoofing, x-forwarded-for spoofing, trusted proxy only, known proxy trust, client ip wrong behind proxy, redirect becomes http, internal ip allowlist bypass, rate limit ip spoofing, proxy header beginner route, forwarded header beginner
-> retrieval-anchor-keywords: absolute redirect URL behind load balancer, X-Forwarded-Host redirect, host preservation load balancer, wrong origin callback, post-login redirect wrong origin, oauth redirect_uri mismatch behind proxy, callback URL flips to internal host, Location header wrong host, public origin behind proxy, proxy host mismatch beginner
-> retrieval-anchor-keywords: beginner role confusion faq, primer vs primer bridge, primer vs deep dive, primer bridge vs deep dive, deep dive vs recovery, playbook vs recovery, survey vs bridge vs deep dive, when to stop at primer, when to escalate to deep dive, when to escalate to recovery, beginner role badge confusion, role label confusion security
+security category-local 목차는 이렇게만 잡으면 된다.
 
-> retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session cookie, cookie name collision, same cookie name different path, same cookie name different domain, duplicate JSESSIONID, cookie header duplicate name, stale cookie shadows new cookie, path shadowing login loop, domain shadowing login loop, delete cookie exact path domain, duplicate cookie triage bridge, duplicate cookie next step, duplicate cookie return path, deduped cookie still login loop, duplicate cookie fixed but still anonymous, duplicate cookie fixed but cookie header missing
-> retrieval-anchor-keywords: cookie scope migration cleanup, session cookie migration cleanup, expire old cookies exact domain path, delete host-only cookie omit domain, stale cookie after scope migration, shared domain cookie cleanup, host-only cookie cleanup, cookie cleanup matrix
+- beginner 입구: [`beginner entrypoints`](#security-beginner-entrypoints), [`기본 primer`](#기본-primer), [`browser / session beginner ladder`](#browser--session-beginner-ladder)
+- 증상 라우팅: [`증상별 바로 가기`](#증상별-바로-가기), [`browser / session troubleshooting path`](#browser--session-troubleshooting-path)
+- 운영 심화: `incident`, `recovery`, `trust`, `hardware`, `tenant`, `response contract` catalog
+- cross-category handoff: [`network README`](../network/README.md#network-primer-되돌아가기), [`spring README`](../spring/README.md#spring-security-ladder), [`cs 루트 quick routes`](../../README.md#quick-routes)
 
-> retrieval-anchor-keywords: fetch credentials include cookie scope, credentials include cookie not sent, fetch include cookie missing, fetch credentials vs cors, credentials include vs Access-Control-Allow-Credentials, CORS credential policy cookie scope, Access-Control-Allow-Credentials not sending cookie, cookie stored but fetch request missing Cookie, same-origin vs same-site fetch credentials, app.example.com api.example.com credentials include, cross-origin cookie request beginner, cross-origin fetch cookie confusion, subdomain cookie scope confusion, auth app api subdomain cookie missing, fetch actual 요청 유무, fetch first question actual request, actual request first branch fetch, cors mini router, cors troubleshooting router, preflight vs cookie scope vs auth failure, options only cookie empty auth failure, cors security readme shortcut
-> retrieval-anchor-keywords: preflight debug checklist, options preflight checklist, options 401 not auth, options 403 not auth, preflight failure vs auth failure, preflight first question, options-only인가 actual request가 있는가, options only vs actual request first branch, preflight failed actual request not sent, POST never sent due to preflight, request never sent due to preflight, preflight passed then 401, preflight passed then 403, browser preflight route, browser only cors failure, postman works browser fails cors, error response missing access-control-allow-origin, security readme preflight route, devtools network options only example, devtools network actual request example, options만 실패 actual 요청 없음 예시, actual request가 보이는 cors auth 예시
-> retrieval-anchor-keywords: auth observability primer bridge, missing-audit-trail primer, missing audit trail primer, auth-signal-gap primer, auth telemetry gap beginner route, decision log missing beginner route, observability blind spot beginner route, auth evidence basics route
-> retrieval-anchor-keywords: security keyword normalization guide, security alias rule, primer alias rule, 한국어 alias 규칙, 보안 키워드 정규화, retrieval keyword quality guide, symptom action object alias, 증상형 행동형 객체형, 증상형 alias, 행동형 alias, 객체형 alias, beginner retrieval writing guide, primer keyword checklist, 검색어 품질 가이드
-
-<details>
-<summary>Table of Contents</summary>
-
-- [Beginner Entrypoints (`primer` / `survey` / incident split)](#security-beginner-entrypoints)
-- [키워드 정규화 가이드 (primer 공통)](#키워드-정규화-가이드-primer-공통)
-- [역할별 라우팅 요약](#역할별-라우팅-요약)
-- [증상별 바로 가기](#증상별-바로-가기)
-- [기본 primer](#기본-primer)
-- [운영 / Incident catalog](#운영--incident-catalog)
-- [Hardware Trust / Recovery deep dive catalog](#hardware-trust--recovery-deep-dive-catalog)
-- [Session Coherence / Assurance deep dive catalog](#session-coherence--assurance-deep-dive-catalog)
-- [Browser / Session Coherence](#browser--session-coherence)
-- [Browser / Session Beginner Ladder](#browser--session-beginner-ladder)
-- [Browser / Session Troubleshooting Path](#browser--session-troubleshooting-path)
-- [Boundary Ladder Summary](#boundary-ladder-summary)
-- [Browser / Server Boundary deep dive catalog](#browser--server-boundary-deep-dive-catalog)
-- [Replay / Token Misuse / Session Defense deep dive catalog](#replay--token-misuse--session-defense-deep-dive-catalog)
-- [Identity Lifecycle / Provisioning Primer](#identity-lifecycle--provisioning-primer)
-- [Identity Lifecycle / Provisioning deep dive catalog](#identity-lifecycle--provisioning-deep-dive-catalog)
-- [Service / Delegation Boundaries deep dive catalog](#service--delegation-boundaries-deep-dive-catalog)
-- [AuthZ / Tenant / Response Contracts deep dive catalog](#authz--tenant--response-contracts-deep-dive-catalog)
-- [추천 학습 흐름 (category-local survey)](#추천-학습-흐름-category-local-survey)
-- [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
-- [Beginner Role-Confusion Micro-FAQ](#beginner-role-confusion-micro-faq)
-- [Incident / Recovery / Trust](#security-bridge-incident-recovery-trust)
-- [Session / Boundary / Replay](#security-bridge-session-boundary-replay)
-- [Identity / Delegation / Lifecycle](#security-bridge-identity-delegation-lifecycle)
-
-</details>
+## related-doc handoff
 
 관련 문서:
 - [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
@@ -136,12 +102,16 @@ heading에 `deep dive catalog`, `Incident / Recovery`, `Trust`, `Cutover`가 보
 | `웹 보안` 큰 그림이 먼저 필요하다 | [백엔드 주니어를 위한 웹 보안 스타터 팩](./web-security-starter-pack-backend-juniors.md) | [XSS와 CSRF 기초](./xss-csrf-basics.md) |
 | 이미 증상이 `왜 403`, `왜 다시 로그인`처럼 보인다 | [증상별 바로 가기](#증상별-바로-가기) | [Browser / Session Beginner Ladder](#browser--session-beginner-ladder) 또는 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
 
+## beginner question map
+
 | 내가 지금 묻는 말 | 먼저 열 문서 | 여기서 다음에 이어 볼 문서 |
 |---|---|---|
 | `인증, 인가, 세션이 한 번에 헷갈려요`, `로그인은 됐는데 왜 403이에요` | [인증·인가·세션 기초 흐름](./authentication-authorization-session-foundations.md) | [인증과 인가의 차이](./authentication-vs-authorization.md), [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
 | `쿠키, 세션, JWT가 뭐가 달라요`, `왜 로그인이 유지돼요` | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) | [Signed Cookies / Server Sessions / JWT Trade-offs](./signed-cookies-server-sessions-jwt-tradeoffs.md), [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
 | `웹 보안을 뭘 먼저 공부해야 해요`, `Spring Security 전에 큰 그림이 필요해요` | [백엔드 주니어를 위한 웹 보안 스타터 팩](./web-security-starter-pack-backend-juniors.md) | [XSS와 CSRF 기초](./xss-csrf-basics.md), [CORS 기초](./cors-basics.md) |
 | `JWT 필터를 보는데 claim, audience, revocation이 낯설어요` | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) | [JWT 깊이 파기](./jwt-deep-dive.md)는 primer를 끝낸 뒤 follow-up으로 내려간다 |
+
+## beginner role routing
 
 초보자 first-click safety rail은 아래처럼 고정하면 된다.
 
@@ -266,19 +236,6 @@ cross-origin browser 증상을 먼저 자르고 싶으면 아래 3칸만 보면 
   - `[cross-category bridge]` [Session / Boundary / Replay](#session--boundary--replay)
   - `JWKS outage`, `kid miss`, `unable to find JWK`, `auth verification outage`, `stale JWKS cache`가 먼저 보이면 위 incident bridge에서 시작한다.
 - 이 구간은 beginner entry shelf가 아니다. `처음`, `로그인 됐는데 왜 403`, `cookie 있는데 왜 다시 로그인`이면 먼저 [기본 primer](#기본-primer)나 [증상별 바로 가기](#증상별-바로-가기)로 돌아간다.
-- outage/debugging symptom 문장으로 바로 routing하려면:
-  - [증상별 바로 가기](#증상별-바로-가기)
-- [Spring + Security](../../rag/cross-domain-bridge-map.md#spring--security) route로 바로 들어가려면:
-  - `[catalog]` [Browser / Session Troubleshooting Path](#browser--session-troubleshooting-path)
-  - `[cross-category bridge]` [Session / Boundary / Replay](#session--boundary--replay)
-- [Security + System Design](../../rag/cross-domain-bridge-map.md#security--system-design) / [Database + Security + System Design](../../rag/cross-domain-bridge-map.md#database--security--system-design) route로 바로 들어가려면:
-  - `[cross-category bridge]` [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
-  - `[cross-category bridge]` [Incident / Recovery / Trust](#incident--recovery--trust)
-  - `[cross-category bridge]` [Identity / Delegation / Lifecycle](#identity--delegation--lifecycle)
-  - `[system design]` [System Design: Control Plane / Data Plane Separation](../system-design/control-plane-data-plane-separation-design.md)
-- 문서 역할이 헷갈리면:
-  - [역할별 라우팅 요약](#역할별-라우팅-요약)
-  - [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
 
 ## 키워드 정규화 가이드 (primer 공통)
 

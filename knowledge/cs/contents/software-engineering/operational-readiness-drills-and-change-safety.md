@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Operational Readiness Drills and Change Safety
+concept_id: software-engineering/operational-readiness-drills-and-change-safety
+canonical: false
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+  - rollback-readiness
+  - kill-switch-rehearsal
+  - change-safety-evidence
+aliases:
+  - operational readiness drill
+  - change safety
+  - rollback drill
+  - game day
+  - kill switch drill
+symptoms:
+  - 체크리스트는 있는데 rollback과 kill switch를 실제로 연습한 적이 없다
+  - rehearsal evidence가 없어 rollout speed와 승인 깊이를 정하지 못한다
+intents:
+  - troubleshooting
+  - design
+prerequisites:
+  - software-engineering/production-readiness-review
+  - software-engineering/runbook-playbook-automation-boundaries
+next_docs:
+  - software-engineering/rollout-approval-workflow
+  - software-engineering/kill-switch-fast-fail-ops
+  - software-engineering/release-policy-change-freeze-error-budget-coupling
+linked_paths:
+  - contents/software-engineering/production-readiness-review.md
+  - contents/software-engineering/rollout-approval-workflow.md
+  - contents/software-engineering/runbook-playbook-automation-boundaries.md
+confusable_with:
+  - software-engineering/production-readiness-review
+  - software-engineering/runbook-playbook-automation-boundaries
+forbidden_neighbors:
+  - contents/software-engineering/production-readiness-review.md
+  - contents/software-engineering/rollout-approval-workflow.md
+expected_queries:
+  - operational readiness는 체크리스트만 있으면 충분해?
+  - rollback drill을 왜 game day처럼 실제로 연습해야 해?
+  - kill switch rehearsal이 change safety에 어떤 영향을 줘?
+  - readiness evidence가 rollout speed를 바꾼다는 말은 뭐야?
+  - launch 전에 어떤 drill evidence가 있어야 승인 강도를 낮출 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 운영 준비도를 체크리스트 존재가 아니라 rollback, kill switch,
+  degraded mode, comms flow를 실제로 연습한 evidence로 보고 변경 안전
+  전략을 세우는 playbook이다. 배포 전에 무엇을 리허설해야 하나, game day를
+  왜 하냐, 승인 강도를 어떤 연습 기록으로 낮추나, launch 전 drill evidence가
+  rollout 속도를 어떻게 바꾸나 같은 자연어 paraphrase가 본 문서의 실행
+  기준에 매핑된다.
+---
+
 # Operational Readiness Drills and Change Safety
 
 > 한 줄 요약: operational readiness는 체크리스트를 채웠다고 증명되지 않고, rollback, kill switch, degraded mode, restore, comms flow를 실제로 연습해 본 evidence가 있어야 하며, 그 evidence가 change safety의 risk tier와 rollout speed를 결정해야 한다.

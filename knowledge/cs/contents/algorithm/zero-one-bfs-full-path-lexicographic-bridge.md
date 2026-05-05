@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 0-1 BFS 전체 경로 사전순 비교 브리지
+concept_id: algorithm/zero-one-bfs-full-path-lexicographic-bridge
+canonical: false
+category: algorithm
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- lexicographic-tie-break
+- parent-vs-full-path
+aliases:
+- 0-1 bfs full path lexicographic
+- zero one bfs full path compare
+- 0-1 bfs parent number vs full path
+- 0-1 bfs lexicographic bridge
+- 0-1 bfs parent compare wrong
+- shortest path lexicographic full path
+- parent only tie break wrong
+- lexicographically smallest shortest path full path
+- beginner lexicographic path compare
+- lexicographic shortest path beginner
+- parent tie break limitation
+- shortest path tie break rule
+- lexicographic path basics
+- 0-1 bfs 전체 경로 비교 반례
+- 0-1 bfs tie break primer
+symptoms:
+- parent 번호만 비교했는데 사전순 최단 경로가 틀려
+- tie-break가 전체 경로 비교인지 마지막 한 칸 비교인지 헷갈려
+- 왜 앞에서 처음 갈라지는 칸을 봐야 하는지 감이 안 와
+intents:
+- comparison
+prerequisites:
+- algorithm/zero-one-bfs-grid-conversion-primer
+- algorithm/shortest-path-reconstruction-bridge
+next_docs:
+- algorithm/zero-one-bfs-lexicographic-tie-mini-note
+- algorithm/zero-one-bfs-parent-tie-mini-note
+- algorithm/zero-one-bfs-implementation-mistake-check-template
+linked_paths:
+- contents/algorithm/zero-one-bfs-lexicographic-tie-mini-note.md
+- contents/algorithm/zero-one-bfs-parent-tie-mini-note.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/zero-one-bfs-hand-calculation-worksheet.md
+- contents/data-structure/graph-basics.md
+confusable_with:
+- algorithm/zero-one-bfs-parent-tie-mini-note
+- algorithm/zero-one-bfs-lexicographic-tie-mini-note
+- algorithm/shortest-path-reconstruction-bridge
+forbidden_neighbors:
+- contents/algorithm/zero-one-bfs-parent-tie-mini-note.md
+expected_queries:
+- 사전순 최단 경로 문제에서 부모 번호만 비교하면 왜 반례가 생기는지 알고 싶어
+- 전체 경로 lexicographic 비교와 parent tie-break를 구분하는 기준을 설명해줘
+- 0-1 BFS에서 거리 동점일 때 어느 순간 전체 경로 비교가 필요한지 궁금해
+- 시작점부터 처음 다른 칸을 본다는 말이 코드 분기에서 어떻게 연결되는지 알려줘
+- lexicographically smallest shortest path를 구현하기 전에 어떤 오해를 막아야 해
+contextual_chunk_prefix: |
+  이 문서는 0-1 BFS 학습자가 부모 번호 한 칸 비교와 경로 전체
+  사전순 비교를 같은 규칙으로 읽지 않도록, 거리 동점 처리와 경로
+  복원 기준을 잇는 bridge다. 마지막 직전 정점만 보면 왜 어긋나는지,
+  앞에서 처음 갈라지는 칸 비교, 최단 경로 동점 정리, 전체 나열 기준과
+  지역 규칙 차이 같은 자연어 paraphrase가 본 문서의 연결 포인트에
+  매핑된다.
+---
 # 0-1 BFS 전체 경로 사전순 비교 브리지
 
 > 한 줄 요약: `parent` 번호 비교는 마지막 한 칸만 보지만, 전체 경로 사전순 비교는 시작점부터 처음 갈라지는 칸을 보므로 두 기준은 쉽게 갈릴 수 있다.
