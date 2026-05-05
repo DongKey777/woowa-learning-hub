@@ -59,7 +59,13 @@ DEFAULT_GPU_PER_PHASE = {
     "r0": ("RTX A5000", "community"),
     "r1": ("RTX A5000", "community"),
     "r2": ("RTX A5000", "community"),
-    "r3": ("RTX A6000", "community"),
+    # r3 Pilot baseline: H100 SXM 80GB on secure cloud. Measured 2026-05-06
+    # against RTX A6000 default — H100 dropped step 7 cli_cs_index_build
+    # from 1-2h to 7m19s (~10x), step 6 BGE-M3 warmup from 5-15min to 14s.
+    # cost: $2.99/hr × ~20min total ≈ $1.0 vs A6000 $0.49/hr × 2h ≈ $1.0,
+    # i.e. same cost for 6x faster wallclock. Falls through to user override
+    # via --gpu-type / --gpu-cloud when needed.
+    "r3": ("H100 SXM", "secure"),
     "r4": ("RTX A5000", "community"),
 }
 
@@ -102,6 +108,12 @@ class PodSpec:
     # memory rather than rolling the dice.
     min_memory_in_gb: int = 1
     min_vcpu_count: int = 1
+    # Datacenter pin. Default `AP-JP-1` (Tokyo) for Korean operator
+    # proximity — measured 9 Mbps over US datacenter (KR↔US ~200ms RTT)
+    # vs 100Mbps+ over Japan (KR↔JP ~50ms RTT), per commit b79f30f.
+    # `None` lets RunPod auto-pick (legacy behavior). Forwarded to
+    # ``runpod.create_pod(data_center_id=...)``.
+    data_center_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -579,7 +591,7 @@ class RealRunPodClient:
         """
         cloud_map = {"community": "COMMUNITY", "secure": "SECURE"}
         gpu_type_id = self._resolve_gpu_type_id(spec.gpu_type, spec.gpu_cloud)
-        result = self._sdk.create_pod(
+        create_kwargs = dict(
             name=spec.name,
             image_name=spec.image,
             gpu_type_id=gpu_type_id,
@@ -592,6 +604,9 @@ class RealRunPodClient:
             start_ssh=True,
             support_public_ip=True,
         )
+        if spec.data_center_id:
+            create_kwargs["data_center_id"] = spec.data_center_id
+        result = self._sdk.create_pod(**create_kwargs)
         pod_id = result.get("id")
         if not pod_id:
             raise RuntimeError(f"create_pod returned no id: {result}")
@@ -844,6 +859,10 @@ class BuildConfig:
     # spikes; lower phases get smaller floors.
     min_memory_gb: int = 1
     min_vcpu_count: int = 1
+    # Datacenter pin (None = RunPod auto-pick). Default `AP-JP-1` (Tokyo)
+    # for Korean operator proximity — measured 9 Mbps over US datacenter
+    # vs 100Mbps+ over Japan, per commit b79f30f.
+    data_center_id: str | None = None
     repo_root: Path = field(default_factory=lambda: Path.cwd())
     ledger_path: Path = field(default_factory=lambda: Path("state/cs_rag_remote/cost_ledger.json"))
     # bge-m3 build params — passed to cs-index-build on Pod (R1 needs
@@ -1565,6 +1584,7 @@ class RunPodHarness:
                 min_memory_in_gb=config.min_memory_gb,
                 min_vcpu_count=config.min_vcpu_count,
                 ports="22/tcp",
+                data_center_id=config.data_center_id,
             )
             ssh_label = f"rag-build-{run_id}"
 
@@ -1676,7 +1696,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--min-vcpu-count",
         type=int,
         default=None,
-        help="Minimum vCPU count (default: 8).",
+        help="Minimum vCPU count (default: r3=16, others=8).",
+    )
+    parser.add_argument(
+        "--data-center-id",
+        default="AP-JP-1",
+        help=(
+            "Pin pod to a specific RunPod datacenter (default: AP-JP-1 — "
+            "Tokyo, ~50ms RTT from Korea vs ~200ms from US). Pass empty "
+            "string '' to disable the pin and let RunPod auto-pick. "
+            "Measured 9 Mbps scp over US datacenter vs 100Mbps+ over Japan."
+        ),
     )
     parser.add_argument(
         "--skip-eval",
@@ -1759,9 +1789,20 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
     # Per-R-phase RAM floor. Streaming build_lance_index_streaming peaks
     # at ~3-5 GB, but IVF_PQ index creation across 27K+ ColBERT vectors
     # can spike another 5-10 GB depending on LanceDB's sample_rate
-    # behaviour. 64 GB on r3 / r4 leaves a comfortable margin without
-    # paying for over-provisioned hosts. Smaller phases keep the default.
-    default_min_memory = {"r3": 64, "r4": 64, "r2": 32, "r1": 32}.get(args.r_phase, 16)
+    # behaviour. r3 default bumped to 128 GB on 2026-05-06 — H100 SXM
+    # hosts have 128+ GB RAM standard, the floor just enforces that the
+    # scheduler doesn't pick a smaller host that would OOM under spike.
+    default_min_memory = {"r3": 128, "r4": 64, "r2": 32, "r1": 32}.get(args.r_phase, 16)
+    # vCPU floor — r3 bumped to 16 to parallelize tar.zst compression
+    # (zstd -T<n>) and IVF k-means clustering. H100 SXM hosts have 24+
+    # vCPUs; 16 is comfortable. Smaller phases stay at 8.
+    default_min_vcpu = {"r3": 16}.get(args.r_phase, 8)
+
+    # Datacenter — empty string disables pin, None or omitted uses default.
+    # ``getattr`` keeps existing tests that build a minimal argparse.Namespace
+    # without this newer attribute working without a forced update.
+    raw_dc = getattr(args, "data_center_id", "AP-JP-1")
+    data_center_id = raw_dc if raw_dc else None
 
     return BuildConfig(
         r_phase=args.r_phase,
@@ -1771,8 +1812,9 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         max_cost_usd=args.max_cost,
         max_duration_min=args.max_duration,
         min_memory_gb=getattr(args, "min_memory_gb", None) or default_min_memory,
-        min_vcpu_count=getattr(args, "min_vcpu_count", None) or 8,
+        min_vcpu_count=getattr(args, "min_vcpu_count", None) or default_min_vcpu,
         container_disk_gb=getattr(args, "container_disk_gb", None) or 80,
+        data_center_id=data_center_id,
         repo_root=args.repo_root,
         ledger_path=args.ledger_path,
         lance_max_length=args.max_length if args.max_length is not None else default_max_length,

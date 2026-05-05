@@ -706,9 +706,14 @@ def _build_args(**overrides):
 
 def test_resolve_defaults_picks_r_phase_appropriate_gpu():
     config = H.resolve_defaults(_build_args(r_phase="r3", max_duration=180))
-    assert config.gpu_type == "RTX A6000"     # R3 default
-    assert config.gpu_cloud == "community"
+    # 2026-05-06: r3 default bumped from RTX A6000 community to H100 SXM
+    # secure — measured 6x faster wallclock at same total cost.
+    assert config.gpu_type == "H100 SXM"
+    assert config.gpu_cloud == "secure"
     assert "colbert" in config.modalities
+    # And the larger spec floor that travels with the H100 default
+    assert config.min_memory_gb == 128
+    assert config.min_vcpu_count == 16
 
 
 def test_resolve_defaults_explicit_modalities_override():
@@ -1310,3 +1315,100 @@ def test_step_5_to_11_raises_on_command_failure(tmp_path):
             repo_root=tmp_path,
             ssh_executor=fake_ssh,
         )
+
+
+# ---------------------------------------------------------------------------
+# Datacenter pin (2026-05-06) — PodSpec → SDK kwargs forwarding
+# ---------------------------------------------------------------------------
+
+
+def test_resolve_defaults_pins_japan_datacenter_by_default():
+    """r3 default datacenter is AP-JP-1 (Tokyo) — measured 100Mbps+ scp
+    from Korean home network vs 9 Mbps over US datacenter.
+    """
+    config = H.resolve_defaults(_build_args(r_phase="r3", max_duration=180))
+    assert config.data_center_id == "AP-JP-1"
+
+
+def test_resolve_defaults_explicit_empty_string_disables_datacenter_pin():
+    """Operator can pass ``--data-center-id ''`` to let RunPod auto-pick
+    again — useful when AP-JP-1 has no H100 capacity at the moment.
+    """
+    config = H.resolve_defaults(_build_args(r_phase="r3", data_center_id=""))
+    assert config.data_center_id is None
+
+
+def test_resolve_defaults_explicit_datacenter_overrides_default():
+    config = H.resolve_defaults(
+        _build_args(r_phase="r3", data_center_id="EU-RO-1")
+    )
+    assert config.data_center_id == "EU-RO-1"
+
+
+def test_create_pod_forwards_data_center_id_to_sdk():
+    """RunPod SDK accepts ``data_center_id`` as a kwarg on
+    ``create_pod``. The harness must forward it whenever PodSpec carries
+    a non-None value.
+    """
+    captured = {}
+
+    class _FakeSdk:
+        def create_pod(self, **kwargs):
+            captured.update(kwargs)
+            return {"id": "pod-x", "runtime": {"ports": [
+                {"privatePort": 22, "ip": "1.2.3.4", "publicPort": 12345,
+                 "isIpPublic": True}
+            ]}}
+
+        def get_pod(self, pod_id):
+            return {"id": pod_id, "runtime": {"ports": [
+                {"privatePort": 22, "ip": "1.2.3.4", "publicPort": 12345,
+                 "isIpPublic": True}
+            ]}}
+
+        def get_gpus(self):
+            return [{"id": "NVIDIA H100 80GB HBM3", "displayName": "H100 SXM"}]
+
+    spec = H.PodSpec(
+        name="t", gpu_type="H100 SXM", gpu_cloud="secure",
+        image="img", container_disk_gb=80, ports="22/tcp",
+        min_memory_in_gb=128, min_vcpu_count=16,
+        data_center_id="AP-JP-1",
+    )
+    client = H.RealRunPodClient(api_key="dummy", runpod_module=_FakeSdk())
+    client.create_pod(spec, ssh_public_key="ssh-ed25519 AAAA")
+    assert captured.get("data_center_id") == "AP-JP-1"
+
+
+def test_create_pod_omits_data_center_id_when_unset():
+    """When PodSpec.data_center_id is None, do NOT pass the kwarg —
+    keep legacy behaviour (RunPod auto-pick) for callers that haven't
+    opted into the pin.
+    """
+    captured = {}
+
+    class _FakeSdk:
+        def create_pod(self, **kwargs):
+            captured.update(kwargs)
+            return {"id": "pod-x", "runtime": {"ports": [
+                {"privatePort": 22, "ip": "1.2.3.4", "publicPort": 12345,
+                 "isIpPublic": True}
+            ]}}
+
+        def get_pod(self, pod_id):
+            return {"id": pod_id, "runtime": {"ports": [
+                {"privatePort": 22, "ip": "1.2.3.4", "publicPort": 12345,
+                 "isIpPublic": True}
+            ]}}
+
+        def get_gpus(self):
+            return [{"id": "NVIDIA RTX A5000", "displayName": "RTX A5000"}]
+
+    spec = H.PodSpec(
+        name="t", gpu_type="RTX A5000", gpu_cloud="community",
+        image="img", container_disk_gb=80, ports="22/tcp",
+        # data_center_id default = None
+    )
+    client = H.RealRunPodClient(api_key="dummy", runpod_module=_FakeSdk())
+    client.create_pod(spec, ssh_public_key="ssh-ed25519 AAAA")
+    assert "data_center_id" not in captured
