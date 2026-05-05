@@ -1627,6 +1627,97 @@ def cmd_orchestrator_queue(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_orchestrator_queue_unblock(args: argparse.Namespace) -> int:
+    """Move BLOCKED items back to PENDING so a worker can re-claim them.
+
+    At least one matcher (--item-id, --reason-contains) is required.
+    --confirm is mandatory to actually mutate the queue; without it
+    the command is a dry-run that prints what *would* be unblocked.
+    """
+    orchestrator = _orchestrator()
+    if not (args.item_id or args.reason_contains):
+        print(json.dumps(
+            {"error": "at least one matcher required: --item-id or --reason-contains"},
+            ensure_ascii=False, indent=2,
+        ))
+        return 2
+    if not args.confirm:
+        # Dry run — simulate match without mutating.
+        all_items = orchestrator.list_queue(
+            status_filter="blocked",
+            fleet_profile=args.profile,
+        )
+        matched = []
+        for it in all_items.get("items", []):
+            if args.item_id and it["item_id"] not in args.item_id:
+                continue
+            if args.reason_contains and args.reason_contains not in (
+                it.get("completion_summary") or ""
+            ):
+                continue
+            matched.append({
+                "item_id": it["item_id"],
+                "lane": it["lane"],
+                "completion_summary": it.get("completion_summary"),
+            })
+        print(json.dumps(
+            {"dry_run": True, "would_unblock": len(matched), "items": matched},
+            ensure_ascii=False, indent=2,
+        ))
+        return 0
+    payload = orchestrator.unblock_items(
+        item_ids=args.item_id or None,
+        reason_contains=args.reason_contains,
+        fleet_profile=args.profile,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_queue_drop_blocked(args: argparse.Namespace) -> int:
+    """Delete BLOCKED items that cannot usefully be retried (e.g.
+    Pilot lock violations). Same matcher / dry-run semantics as
+    queue-unblock; --confirm is mandatory to actually mutate.
+    """
+    orchestrator = _orchestrator()
+    if not (args.item_id or args.reason_contains):
+        print(json.dumps(
+            {"error": "at least one matcher required: --item-id or --reason-contains"},
+            ensure_ascii=False, indent=2,
+        ))
+        return 2
+    if not args.confirm:
+        all_items = orchestrator.list_queue(
+            status_filter="blocked",
+            fleet_profile=args.profile,
+        )
+        matched = []
+        for it in all_items.get("items", []):
+            if args.item_id and it["item_id"] not in args.item_id:
+                continue
+            if args.reason_contains and args.reason_contains not in (
+                it.get("completion_summary") or ""
+            ):
+                continue
+            matched.append({
+                "item_id": it["item_id"],
+                "lane": it["lane"],
+                "completion_summary": it.get("completion_summary"),
+            })
+        print(json.dumps(
+            {"dry_run": True, "would_drop": len(matched), "items": matched},
+            ensure_ascii=False, indent=2,
+        ))
+        return 0
+    payload = orchestrator.drop_blocked_items(
+        item_ids=args.item_id or None,
+        reason_contains=args.reason_contains,
+        fleet_profile=args.profile,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
 def cmd_orchestrator_claim(args: argparse.Namespace) -> int:
     orchestrator = _orchestrator()
     payload = orchestrator.claim(
@@ -1694,7 +1785,13 @@ def cmd_orchestrator_fleet_stop(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="woowa-learning-hub")
-    orchestrator_profile_choices = ["quality", "expansion", "expansion60"]
+    orchestrator_profile_choices = [
+        "quality",
+        "expansion",
+        "expansion60",
+        "migration_v3",
+        "migration_v3_60",
+    ]
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     bootstrap_parser = subparsers.add_parser("bootstrap")
@@ -2029,6 +2126,52 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrator_queue_parser.add_argument("--profile", choices=orchestrator_profile_choices)
     orchestrator_queue_parser.add_argument("--limit", type=int)
     orchestrator_queue_parser.set_defaults(func=cmd_orchestrator_queue)
+
+    orchestrator_unblock_parser = orchestrator_subparsers.add_parser(
+        "queue-unblock",
+        help="Move BLOCKED queue items back to PENDING so a worker can re-claim them.",
+    )
+    orchestrator_unblock_parser.add_argument(
+        "--item-id", action="append", default=[],
+        help="Specific blocked item id to unblock; repeat for multiple.",
+    )
+    orchestrator_unblock_parser.add_argument(
+        "--reason-contains",
+        help="Substring match on completion_summary (e.g. 'strict-v3', 'pilot lock'). "
+             "Case-sensitive. Combine with --item-id for AND filtering.",
+    )
+    orchestrator_unblock_parser.add_argument(
+        "--profile", choices=orchestrator_profile_choices,
+        help="Restrict to one fleet profile (default: all).",
+    )
+    orchestrator_unblock_parser.add_argument(
+        "--confirm", action="store_true",
+        help="Required to actually mutate the queue. Without it, runs as dry-run.",
+    )
+    orchestrator_unblock_parser.set_defaults(func=cmd_orchestrator_queue_unblock)
+
+    orchestrator_drop_blocked_parser = orchestrator_subparsers.add_parser(
+        "queue-drop-blocked",
+        help="Delete BLOCKED items that cannot be retried (Pilot lock, etc.).",
+    )
+    orchestrator_drop_blocked_parser.add_argument(
+        "--item-id", action="append", default=[],
+        help="Specific blocked item id to drop; repeat for multiple.",
+    )
+    orchestrator_drop_blocked_parser.add_argument(
+        "--reason-contains",
+        help="Substring match on completion_summary (e.g. 'pilot lock'). "
+             "Case-sensitive. Combine with --item-id for AND filtering.",
+    )
+    orchestrator_drop_blocked_parser.add_argument(
+        "--profile", choices=orchestrator_profile_choices,
+        help="Restrict to one fleet profile (default: all).",
+    )
+    orchestrator_drop_blocked_parser.add_argument(
+        "--confirm", action="store_true",
+        help="Required to actually mutate the queue. Without it, runs as dry-run.",
+    )
+    orchestrator_drop_blocked_parser.set_defaults(func=cmd_orchestrator_queue_drop_blocked)
 
     orchestrator_claim_parser = orchestrator_subparsers.add_parser("claim")
     orchestrator_claim_parser.add_argument("--worker", required=True)

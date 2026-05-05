@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from .file_lock import lock_exclusive, unlock
+from .orchestrator_migration_workers import MIGRATION_V3_FLEET, MIGRATION_V3_60_FLEET
 from .paths import ROOT, ensure_global_layout, ensure_orchestrator_layout
 
 DEFAULT_LOOP_INTERVAL_SECONDS = 45
@@ -21,6 +22,10 @@ DEFAULT_LOW_WATER_MARK = 2
 DEFAULT_WAVE_SIZE = 6
 RECENT_COMPLETION_WINDOW = 8
 DEFAULT_QUEUE_PROFILE = "quality"
+MIGRATION_QUEUE_FLEETS = {
+    "migration_v3": MIGRATION_V3_FLEET,
+    "migration_v3_60": MIGRATION_V3_60_FLEET,
+}
 QUEUE_PENDING = "pending"
 QUEUE_LEASED = "leased"
 QUEUE_COMPLETED = "completed"
@@ -237,6 +242,11 @@ def _matches_claim_tags(item: dict[str, Any], claim_tags: list[str] | None) -> b
         ]
     ).lower()
     return any(str(tag).strip().lower() in haystack for tag in claim_tags if str(tag).strip())
+
+
+def _matches_assigned_worker(item: dict[str, Any], worker: str) -> bool:
+    assigned = str(item.get("assigned_worker") or "").strip()
+    return not assigned or assigned == worker
 
 
 def _lease_write_scopes(item: dict[str, Any]) -> set[str]:
@@ -1274,6 +1284,120 @@ class Orchestrator:
             "fleet_profile": profile,
         }
 
+    def _make_migration_item(
+        self,
+        worker_profile: dict[str, Any],
+        planner: dict[str, Any],
+        now: datetime,
+        *,
+        fleet_profile: str,
+    ) -> dict[str, Any]:
+        worker_name = str(worker_profile["name"])
+        lane = str(worker_profile["lane"])
+        mode = str(worker_profile["mode"])
+        role = str(worker_profile["role"])
+        cursor_key = f"{fleet_profile}:{worker_name}"
+        cursor = int(planner["lane_cursors"].get(cursor_key, 0))
+        planner["lane_cursors"][cursor_key] = cursor + 1
+        target_paths = [str(path) for path in worker_profile.get("target_paths", [])]
+        claim_tags = [str(tag).strip().lower() for tag in worker_profile.get("claim_tags", []) if str(tag).strip()]
+        tags = []
+        seen: set[str] = set()
+        for tag in [fleet_profile, role, mode, *claim_tags]:
+            if tag not in seen:
+                tags.append(tag)
+                seen.add(tag)
+        title = f"{worker_name} {mode} wave {cursor + 1}"
+        goal = (
+            f"Run one {fleet_profile} {mode} wave for {', '.join(target_paths) or lane}. "
+            "Respect the Pilot lock, v3 frontmatter contract, and the worker's write scope."
+        )
+        priority_by_role = {
+            "curriculum": 110,
+            "migration": 100,
+            "qa": 90,
+            "rag": 85,
+            "ops": 80,
+        }
+        return {
+            "item_id": f"{worker_name}-{cursor + 1:05d}",
+            "lane": lane,
+            "kind": role,
+            "title": title,
+            "base_title": title,
+            "goal": goal,
+            "priority": priority_by_role.get(role, 75),
+            "tags": tags,
+            "status": QUEUE_PENDING,
+            "attempts": 0,
+            "wave_count": 0,
+            "created_at": _isoformat(now),
+            "updated_at": _isoformat(now),
+            "lease_owner": None,
+            "lease_expires_at": None,
+            "completed_at": None,
+            "completion_summary": None,
+            "source": "migration-template",
+            "fleet_profile": fleet_profile,
+            "assigned_worker": worker_name,
+            "write_scopes": list(worker_profile.get("write_scopes", [])),
+        }
+
+    def _refresh_migration_backlog(
+        self,
+        items: list[dict[str, Any]],
+        planner: dict[str, Any],
+        *,
+        now: datetime,
+        fleet_profile: str,
+    ) -> list[dict[str, Any]]:
+        fleet = MIGRATION_QUEUE_FLEETS[fleet_profile]
+        migration_lanes = {str(worker["lane"]) for worker in fleet}
+        cleaned: list[dict[str, Any]] = []
+        for item in items:
+            if (
+                _matches_fleet_profile(item, fleet_profile)
+                and item.get("status") in {QUEUE_PENDING, QUEUE_LEASED}
+                and item.get("lane") not in migration_lanes
+            ):
+                self._append_history(
+                    "queue.drop_stale_profile_item",
+                    {
+                        "item_id": item.get("item_id"),
+                        "lane": item.get("lane"),
+                        "fleet_profile": fleet_profile,
+                        "reason": "non_migration_lane_for_migration_profile",
+                    },
+                    now=now,
+                )
+                continue
+            cleaned.append(item)
+
+        for worker_profile in fleet:
+            worker_name = str(worker_profile["name"])
+            has_live_item = any(
+                item.get("assigned_worker") == worker_name
+                and item.get("status") in {QUEUE_PENDING, QUEUE_LEASED}
+                and _matches_fleet_profile(item, fleet_profile)
+                for item in cleaned
+            )
+            if has_live_item:
+                continue
+            item = self._make_migration_item(worker_profile, planner, now, fleet_profile=fleet_profile)
+            cleaned.append(item)
+            self._append_history(
+                "queue.seed",
+                {
+                    "item_id": item["item_id"],
+                    "lane": item["lane"],
+                    "title": item["title"],
+                    "fleet_profile": fleet_profile,
+                    "assigned_worker": worker_name,
+                },
+                now=now,
+            )
+        return cleaned
+
     def _candidate_exists(
         self,
         items: list[dict[str, Any]],
@@ -1529,6 +1653,8 @@ class Orchestrator:
         fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
     ) -> list[dict[str, Any]]:
         profile = _normalize_queue_profile(fleet_profile)
+        if profile in MIGRATION_QUEUE_FLEETS:
+            return self._refresh_migration_backlog(items, planner, now=now, fleet_profile=profile)
         for lane in LANE_CATALOG:
             lane_config = LANE_CATALOG[lane]
             live_count = len(_live_lane_items(items, lane, fleet_profile=profile))
@@ -1651,7 +1777,7 @@ class Orchestrator:
         return wave
 
     def _wave_view(self, item: dict[str, Any]) -> dict[str, Any]:
-        return {
+        view = {
             "item_id": item["item_id"],
             "lane": item["lane"],
             "kind": item["kind"],
@@ -1662,6 +1788,9 @@ class Orchestrator:
             "tags": item.get("tags", []),
             "worker_prompt": self.build_worker_prompt(item),
         }
+        if item.get("assigned_worker"):
+            view["assigned_worker"] = item["assigned_worker"]
+        return view
 
     def build_worker_prompt(self, item: dict[str, Any]) -> str:
         tags = ", ".join(item.get("tags", []))
@@ -1778,6 +1907,7 @@ class Orchestrator:
                 if item.get("status") == QUEUE_PENDING and (not lane_filter or item["lane"] in lane_filter)
                 and _matches_fleet_profile(item, profile)
                 and _matches_claim_tags(item, claim_tags)
+                and _matches_assigned_worker(item, worker)
             ]
             candidates.sort(
                 key=lambda entry: (
@@ -2007,6 +2137,148 @@ class Orchestrator:
             ),
             "queue": self.list_queue(limit=20),
         }
+
+    def unblock_items(
+        self,
+        *,
+        item_ids: list[str] | None = None,
+        reason_contains: str | None = None,
+        fleet_profile: str | None = None,
+        now: datetime | None = None,
+    ) -> dict[str, Any]:
+        """Move BLOCKED queue items back to PENDING so a worker can
+        re-claim them.
+
+        Match is by ``item_ids`` (exact list) and/or ``reason_contains``
+        (substring of ``completion_summary``). At least one matcher
+        must be supplied — calling with neither returns an empty
+        result so an accidental ``unblock_items()`` call cannot mass-
+        unblock the queue.
+
+        ``fleet_profile`` further narrows by profile when set.
+
+        Returns ``{"matched", "unblocked", "items": [...]}``. Also
+        appends a ``queue.unblocked`` event per item to history for
+        audit trail.
+        """
+        if not item_ids and not reason_contains:
+            return {"matched": 0, "unblocked": 0, "items": []}
+        target_ids = set(item_ids or [])
+        with self._locked():
+            current = now or _utc_now()
+            items = self.load_queue()
+            unblocked: list[dict[str, Any]] = []
+            for item in items:
+                if item.get("status") != QUEUE_BLOCKED:
+                    continue
+                if fleet_profile and _item_fleet_profile(item) != _normalize_queue_profile(fleet_profile):
+                    continue
+                if target_ids and item["item_id"] not in target_ids:
+                    continue
+                summary = item.get("completion_summary") or ""
+                if reason_contains and reason_contains not in summary:
+                    continue
+                previous_summary = summary
+                item["status"] = QUEUE_PENDING
+                item["lease_owner"] = None
+                item["lease_expires_at"] = None
+                item["lease_write_scopes"] = []
+                item["updated_at"] = _isoformat(current)
+                item["completion_summary"] = (
+                    f"unblocked: {previous_summary[:160]}"
+                    if previous_summary else "unblocked"
+                )
+                unblocked.append({
+                    "item_id": item["item_id"],
+                    "lane": item["lane"],
+                    "previous_summary": previous_summary[:200],
+                    "fleet_profile": _item_fleet_profile(item),
+                })
+                self._append_history(
+                    "queue.unblocked",
+                    {
+                        "item_id": item["item_id"],
+                        "lane": item["lane"],
+                        "fleet_profile": _item_fleet_profile(item),
+                        "previous_summary": previous_summary[:200],
+                    },
+                    now=current,
+                )
+            if unblocked:
+                self.save_queue(items)
+            return {
+                "matched": len(unblocked),
+                "unblocked": len(unblocked),
+                "items": unblocked,
+            }
+
+    def drop_blocked_items(
+        self,
+        *,
+        item_ids: list[str] | None = None,
+        reason_contains: str | None = None,
+        fleet_profile: str | None = None,
+        now: datetime | None = None,
+    ) -> dict[str, Any]:
+        """Delete BLOCKED queue items that cannot usefully be retried.
+
+        Mirrors :meth:`unblock_items` matching semantics but removes
+        the matched rows from the queue entirely. Use this for Pilot
+        lock violations and other blocks where the underlying task
+        target is invalid (re-running the same item would just hit
+        the same fail-fast gate again).
+
+        At least one matcher (``item_ids`` or ``reason_contains``) is
+        required — calling with neither returns an empty result so an
+        accidental call cannot mass-delete the queue. Each deleted
+        item is recorded as a ``queue.dropped`` history event so the
+        audit trail survives the row removal.
+        """
+        if not item_ids and not reason_contains:
+            return {"matched": 0, "dropped": 0, "items": []}
+        target_ids = set(item_ids or [])
+        with self._locked():
+            current = now or _utc_now()
+            items = self.load_queue()
+            dropped: list[dict[str, Any]] = []
+            kept: list[dict[str, Any]] = []
+            for item in items:
+                if item.get("status") != QUEUE_BLOCKED:
+                    kept.append(item)
+                    continue
+                if fleet_profile and _item_fleet_profile(item) != _normalize_queue_profile(fleet_profile):
+                    kept.append(item)
+                    continue
+                if target_ids and item["item_id"] not in target_ids:
+                    kept.append(item)
+                    continue
+                summary = item.get("completion_summary") or ""
+                if reason_contains and reason_contains not in summary:
+                    kept.append(item)
+                    continue
+                dropped.append({
+                    "item_id": item["item_id"],
+                    "lane": item["lane"],
+                    "fleet_profile": _item_fleet_profile(item),
+                    "completion_summary": summary[:200],
+                })
+                self._append_history(
+                    "queue.dropped",
+                    {
+                        "item_id": item["item_id"],
+                        "lane": item["lane"],
+                        "fleet_profile": _item_fleet_profile(item),
+                        "completion_summary": summary[:200],
+                    },
+                    now=current,
+                )
+            if dropped:
+                self.save_queue(kept)
+            return {
+                "matched": len(dropped),
+                "dropped": len(dropped),
+                "items": dropped,
+            }
 
     def request_stop(self, *, force: bool = False, now: datetime | None = None) -> dict[str, Any]:
         current = now or _utc_now()
