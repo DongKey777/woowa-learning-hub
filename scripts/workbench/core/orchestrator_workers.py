@@ -2106,12 +2106,34 @@ Authorial fields to write (preserve everything else exactly):
     **Same `contents/<category>/<slug>.md` format as linked_paths
     above — corpus_lint --strict-v3 enforces both with one rule.**
   expected_queries — list[string] of 5-10 raw Korean/English learner
-    query strings. THESE ARE QREL SEEDS FOR EVAL ONLY — do NOT
-    duplicate alias terms here (the v3 contract enforces aliases ⊥
-    expected_queries). Use phrasing the learner would actually type:
-    `Spring DI가 뭐야?`, `처음 배우는 트랜잭션 정리`,
-    `MVCC와 락 비교 좀`, etc. Frame the query so this doc would be
-    the TOP-1 expected hit.
+    query strings. **MANDATORY non-empty list. corpus_lint
+    --strict-v3 fails with `expected_queries must be a non-empty
+    list[str]` if you leave this empty or omit the key.** Most
+    common Wave A failure mode: filling 17 of 18 fields and
+    forgetting this one. THESE ARE QREL SEEDS FOR EVAL ONLY — do
+    NOT duplicate alias terms here (the v3 contract enforces
+    aliases ⊥ expected_queries). Use phrasing the learner would
+    actually type: `Spring DI가 뭐야?`, `처음 배우는 트랜잭션
+    정리`, `MVCC와 락 비교 좀`, etc. Frame the query so this doc
+    would be the TOP-1 expected hit.
+
+Frontmatter completeness self-check (run BEFORE you return JSON):
+  All 18 fields below MUST appear in the frontmatter you write.
+  Missing fields auto-fail the strict-v3 lint and the worker
+  output will be requeued:
+
+    schema_version, title, concept_id, canonical, category,
+    difficulty, doc_role, level, language, source_priority,
+    mission_ids, review_feedback_tags, aliases, symptoms,
+    intents, prerequisites, next_docs, linked_paths,
+    confusable_with, forbidden_neighbors, expected_queries,
+    contextual_chunk_prefix.
+
+  If a field has no content (e.g. `forbidden_neighbors` for an
+  isolated primer), use `[]` for lists and `''` for strings —
+  the lint accepts empty containers for OPTIONAL fields but
+  REJECTS empty lists for `expected_queries` and `aliases`
+  (those are required-non-empty).
 
 Role-conditional minimums (Wave 2 lint warnings):
   - doc_role=symptom_router → symptoms ≥ 3
