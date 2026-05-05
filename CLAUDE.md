@@ -53,6 +53,8 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 회귀 테스트: `tests/unit/test_r3_anaphora.py`.
 
+**Phase 8 v3 migration fleet** (60-worker, ChatGPT Pro): 학습자/사용자가 *"migration_v3_60 시작해"* / *"v3 마이그레이션 시작"* 같은 의도를 표하면 `bin/migration-v3-60-start` 자동 호출. wrapper가 branch 격리(main 보전, 학습자 production 무중단) + preflight 회귀 + baseline cohort_eval + fleet-start 처리. 상세: `docs/migration-v3-runbook.md`.
+
 **Phase 9.2 personalization-aware ranking** (default off): `WOOWA_RAG_PERSONALIZATION_ENABLED=1`로 켜면 R3가 fusion 후 rerank 전에 candidate score를 조정.
 - `mastered_concepts`의 concept_id 매칭 → -0.15 (이미 mastered된 개념 demote).
 - `uncertain_concepts` / `underexplored_in_current_stage` 매칭 → +0.10 (약한 영역 boost).

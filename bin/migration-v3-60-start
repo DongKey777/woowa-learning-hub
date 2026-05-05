@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Usage: bin/migration-v3-60-start [--branch NAME] [--skip-baseline]
+#
+# Start the Phase 8 v3 migration fleet (60-worker, ChatGPT Pro tier).
+#
+# This wrapper handles four things so the AI session running it
+# (Codex / Claude Code) doesn't have to remember each step:
+#
+#   1. Branch isolation — checks out a fresh branch off main so
+#      learner production (main) keeps the existing corpus + index.
+#      The release tag in config/rag_models.json is NOT updated, so
+#      bin/cs-index-build on production stays at the current
+#      already_current state until a separate release publish step.
+#   2. Preflight — runs the topology + prompt rendering regression
+#      tests so a typo or broken prompt fails fast before codex
+#      workers are spawned.
+#   3. Baseline cohort_eval — records the OVERALL pass rate of the
+#      branch's *starting* state so post-wave comparisons can show
+#      delta. Skip with --skip-baseline if cohort_eval is already
+#      cached for the same corpus_hash.
+#   4. fleet-start — hands off to bin/orchestrator with the
+#      migration_v3_60 profile.
+#
+# After this wrapper returns, monitor with:
+#   bin/orchestrator fleet-status --profile migration_v3_60
+#   bin/orchestrator fleet-stop  --profile migration_v3_60   # graceful
+#
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+# Production env defaults (R3 enabled, refusal threshold, etc.)
+# shellcheck disable=SC1091
+source "$ROOT/bin/_rag_env.sh"
+
+BRANCH=""
+SKIP_BASELINE=0
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --branch)
+            BRANCH="$2"; shift 2 ;;
+        --skip-baseline)
+            SKIP_BASELINE=1; shift ;;
+        -h|--help)
+            sed -n '2,30p' "$0"
+            exit 0 ;;
+        *)
+            echo "[migration_v3_60] unknown arg: $1" >&2; exit 2 ;;
+    esac
+done
+
+if [ -z "$BRANCH" ]; then
+    BRANCH="migration_v3_60-cycle-$(date -u +%Y%m%dT%H%M%SZ)"
+fi
+
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+
+echo "[migration_v3_60] === Phase 8 v3 60-worker fleet bootstrap ==="
+echo "[migration_v3_60] branch: $BRANCH"
+
+# 1. Branch isolation
+git fetch origin main 2>/dev/null || true
+if git rev-parse --verify "$BRANCH" >/dev/null 2>&1; then
+    echo "[migration_v3_60] branch already exists — checking out"
+    git checkout "$BRANCH"
+else
+    echo "[migration_v3_60] branching off origin/main"
+    git checkout -b "$BRANCH" origin/main
+fi
+
+# 2. Preflight
+echo "[migration_v3_60] preflight: topology + prompt regression"
+"$PY" -m pytest \
+    tests/unit/test_migration_v3_60_topology.py \
+    tests/unit/test_migration_v3_prompt_rendering.py \
+    tests/unit/test_migration_v3_workers_topology.py \
+    tests/unit/test_migration_v3_pilot_lock.py \
+    -q
+
+# 3. Baseline cohort_eval (optional)
+if [ "$SKIP_BASELINE" -eq 0 ]; then
+    BASELINE_OUT="reports/rag_eval/migration_v3_60_baseline_${BRANCH}.json"
+    mkdir -p "$(dirname "$BASELINE_OUT")"
+    echo "[migration_v3_60] baseline cohort_eval → $BASELINE_OUT"
+    "$PY" -m scripts.learning.rag.r3.eval.cohort_eval \
+        --qrels tests/fixtures/r3_qrels_real_v1.json \
+        --out "$BASELINE_OUT" \
+        --index-root state/cs_rag \
+        --catalog-root knowledge/cs/catalog \
+        --top-k 5 --mode full --use-reformulated-query
+    echo "[migration_v3_60] baseline OVERALL: $(jq -r '.overall_pass_rate' "$BASELINE_OUT")"
+else
+    echo "[migration_v3_60] baseline cohort_eval skipped (--skip-baseline)"
+fi
+
+# 4. fleet-start
+echo "[migration_v3_60] handing off to bin/orchestrator fleet-start"
+"$ROOT/bin/orchestrator" fleet-start --profile migration_v3_60
+
+cat <<EOF
+
+[migration_v3_60] ============================================================
+fleet started on branch: $BRANCH
+
+다음에 할 일 (AI 세션이 알아서 호출):
+  bin/orchestrator fleet-status --profile migration_v3_60
+  bin/orchestrator fleet-stop   --profile migration_v3_60   # graceful 중단
+
+학습자 production은 main branch 그대로. release tag(config/rag_models.json)
+가 안 바뀌면 학습자의 bin/cs-index-build는 already_current 판정 → 영향 0.
+
+wave 끝나면 (cohort_eval gate 통과 후):
+  git checkout main && git merge --no-ff $BRANCH
+  bin/orchestrator fleet-stop --profile migration_v3_60
+  # release publish는 docs/migration-v3-runbook.md §6 참조
+============================================================
+EOF

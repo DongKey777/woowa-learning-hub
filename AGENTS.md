@@ -85,6 +85,8 @@ Role:
 
 학습자 입장: 짧은 follow-up 질문에서도 dense retrieval 정확. AI 세션이 reformulation을 잘 emit하는 한 fallback regex는 거의 발화 안 함. 회귀 테스트: `tests/unit/test_r3_anaphora.py`.
 
+**Phase 8 v3 migration fleet** (60-worker, ChatGPT Pro 전용): 사용자가 *"migration_v3_60 시작해"* / *"v3 마이그레이션 시작"* 같은 의도를 표하면 `bin/migration-v3-60-start`를 호출한다. wrapper가 branch 격리(main 그대로, 학습자 production 무중단) + preflight 회귀 + baseline cohort_eval 측정 + fleet-start까지 한 번에 처리. ChatGPT Plus면 quota 한계로 30-worker `migration_v3` profile 권장. 상세 흐름은 `docs/migration-v3-runbook.md`.
+
 **Personalization-aware ranking** (Phase 9.2, default off): `WOOWA_RAG_PERSONALIZATION_ENABLED=1`로 켜면 R3가 fusion 단계 후 rerank 전에 score 조정을 적용한다.
 - learner_context.mastered_concepts에 있는 concept_id를 가진 candidate → score -0.15 (학습자가 이미 알고 있으니 demote).
 - learner_context.uncertain_concepts / underexplored_in_current_stage에 있으면 → score +0.10 (약한 영역 boost).
