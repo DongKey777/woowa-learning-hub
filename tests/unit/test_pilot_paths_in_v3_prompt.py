@@ -171,6 +171,102 @@ class V3PromptPilotInjectionTest(unittest.TestCase):
         self.assertIn("knowledge/cs/contents/spring/spring-transaction-basics.md", prompt)
 
 
+class LegacyPromptPilotInjectionTest(unittest.TestCase):
+    """qa/rag/ops workers in a migration fleet skip the v3 prompt
+    builder (their mode is 'fix' / 'script' / 'report' — none of the
+    four migrate_* modes), but they still write into the same corpus
+    and so still need the Pilot AVOID list. The legacy prompt path
+    must inject the same block whenever the fleet_profile is a
+    migration fleet, regardless of mode.
+    """
+
+    def _render(
+        self, worker: str, lane: str, fleet_profile: str | None,
+    ) -> str:
+        return OW._worker_prompt(
+            worker, lane,
+            {"item_id": "t", "title": "t", "goal": "g", "tags": []},
+            fleet_profile=fleet_profile,
+        )
+
+    def test_qa_worker_in_migration_fleet_gets_avoid(self) -> None:
+        with mock.patch.object(
+            OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
+        ):
+            prompt = self._render(
+                "migration-v3-60-qa-concept-id-uniqueness",
+                "migration-qa",
+                fleet_profile="migration_v3_60",
+            )
+        # qa worker's mode is 'fix', not migrate_*, so it stays on the
+        # legacy prompt body — but the AVOID block must still be there.
+        self.assertNotIn("PHASE 8 V3 MIGRATION CONTRACT", prompt)
+        self.assertIn("PILOT LOCK PATHS IN YOUR LANE — NEVER MODIFY", prompt)
+        self.assertIn(
+            "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            prompt,
+        )
+
+    def test_migration_v3_fleet_also_covered(self) -> None:
+        # Both migration_v3 and migration_v3_60 are migration fleets
+        # and must get the AVOID block on legacy prompt.
+        with mock.patch.object(
+            OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
+        ):
+            prompt = self._render(
+                "migration-v3-qa-concept-id-uniqueness",
+                "migration-qa",
+                fleet_profile="migration_v3",
+            )
+        self.assertIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+
+    def test_legacy_fleet_does_not_get_avoid(self) -> None:
+        # expansion60 fleet workers write to the same corpus but are
+        # not under the Pilot lock contract — the legacy expansion
+        # prompt must NOT carry the AVOID block, otherwise legacy
+        # behavior changes silently.
+        with mock.patch.object(
+            OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
+        ):
+            prompt = self._render(
+                "expansion60-spring-di-bean",
+                "spring",
+                fleet_profile="expansion60",
+            )
+        self.assertNotIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+        self.assertNotIn("PHASE 8 V3 MIGRATION CONTRACT", prompt)
+
+    def test_quality_fleet_does_not_get_avoid(self) -> None:
+        with mock.patch.object(
+            OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
+        ):
+            prompt = self._render(
+                "runtime-java-basics",
+                "language-java",
+                fleet_profile="quality",
+            )
+        self.assertNotIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+
+    def test_migration_fleet_workers_with_no_corpus_overlap_skip_avoid(self) -> None:
+        # rag-paraphrase worker has target_paths=['tests/fixtures/...',
+        # 'reports/rag_eval/**'] — no overlap with knowledge/cs/contents.
+        # The AVOID block should be empty (no Pilot paths to list)
+        # rather than spurious, so the prompt stays compact.
+        with mock.patch.object(
+            OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
+        ):
+            prompt = self._render(
+                "migration-v3-60-rag-paraphrase-robustness",
+                "migration-rag",
+                fleet_profile="migration_v3_60",
+            )
+        # No Pilot paths overlap → no AVOID block. (Handling RAG/ops
+        # workers that drift outside their write_scope is a separate
+        # concern — the completion gate's write-scope check, not this
+        # prompt-side AVOID list.)
+        self.assertNotIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+
+
 class V3PromptPilotInjectionWithRealLockTest(unittest.TestCase):
     """Sanity check against the real lock file shipped in the repo —
     confirms that as of the test author's knowledge there are

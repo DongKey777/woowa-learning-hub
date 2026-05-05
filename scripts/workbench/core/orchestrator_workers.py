@@ -1349,6 +1349,41 @@ def _pilot_lock_violations(changed_files: list[str]) -> list[str]:
     return sorted(p for p in changed_files if p in locked)
 
 
+MIGRATION_FLEET_PROFILES = {"migration_v3", "migration_v3_60"}
+
+
+def _pilot_avoid_block(target_paths: list[str]) -> str:
+    """Render the AVOID block listing Pilot paths inside the worker's
+    lane glob — empty string when no Pilot paths overlap.
+
+    Pre-fix the AVOID block lived inline inside ``_build_migration_v3_prompt``,
+    which only fires for the four ``migrate_*`` modes. qa/rag/ops
+    workers in the same migration fleet (mode='report'/'fix'/'script'
+    etc.) skipped the v3 builder and got no AVOID list, so the LLM
+    freely modified Pilot 69 docs and the completion gate caught
+    repeated violations. This helper is now called from both the
+    v3 prompt builder AND the legacy ``_worker_prompt`` path so
+    every migration_v3 / migration_v3_60 worker, regardless of
+    mode, sees the same explicit AVOID list.
+    """
+    pilot_paths = _pilot_paths_for_lane(target_paths)
+    if not pilot_paths:
+        return ""
+    avoid_lines = "\n".join(f"  - {p}" for p in pilot_paths)
+    return (
+        "\n==== PILOT LOCK PATHS IN YOUR LANE — NEVER MODIFY ====\n"
+        f"The following {len(pilot_paths)} doc(s) are inside your\n"
+        "lane's target_paths but are part of the Pilot 50 + Phase 4\n"
+        "wave 69 baseline. Modifying them invalidates the OVERALL\n"
+        "95.5%/94.0% eval contract. The completion gate fails fast\n"
+        "on any change to these — but you should not even propose a\n"
+        "next_candidate that targets one. If a queue item appears\n"
+        "to ask for a change to one of these, return changed_files=[]\n"
+        "and a summary explaining the conflict.\n\n"
+        f"{avoid_lines}\n"
+    )
+
+
 def _pilot_paths_for_lane(target_paths: list[str]) -> list[str]:
     """Return Pilot-locked paths whose globs the lane is allowed to write.
 
@@ -2023,24 +2058,7 @@ def _build_migration_v3_prompt(
         tags=tags or "none",
     )
 
-    pilot_paths = _pilot_paths_for_lane(target_paths)
-    if pilot_paths:
-        avoid_lines = "\n".join(f"  - {p}" for p in pilot_paths)
-        pilot_block = (
-            "\n==== PILOT LOCK PATHS IN YOUR LANE — NEVER MODIFY ====\n"
-            f"The following {len(pilot_paths)} doc(s) are inside your\n"
-            "lane's target_paths but are part of the Pilot 50 + Phase 4\n"
-            "wave 69 baseline. Modifying them invalidates the OVERALL\n"
-            "95.5%/94.0% eval contract. The completion gate fails fast\n"
-            "on any change to these — but you should not even propose a\n"
-            "next_candidate that targets one. If a queue item appears\n"
-            "to ask for a change to one of these, return changed_files=[]\n"
-            "and a summary explaining the conflict.\n\n"
-            f"{avoid_lines}\n"
-        )
-    else:
-        pilot_block = ""
-    header = header + pilot_block
+    header = header + _pilot_avoid_block(target_paths)
 
     if mode == "migrate_v0_to_v3":
         body = _MIGRATION_V0_TO_V3_BODY
@@ -2588,7 +2606,7 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
             f"- Quality gates: {', '.join(quality_gates) if quality_gates else 'none'}",
         ]
     )
-    return f"""You are {worker}, the persistent lane worker for {lane}.
+    legacy_prompt = f"""You are {worker}, the persistent lane worker for {lane}.
 
 {profile_block}
 
@@ -2622,6 +2640,15 @@ Execution rules:
 - next_candidates: array with 1 to 3 concise follow-up gaps worth queueing next for the same lane
 Always include next_candidates. Prefer concrete next gaps that avoid repeating the exact same work you just finished.
 """
+
+    # qa/rag/ops workers inside a migration fleet share the same Pilot
+    # lock contract as content workers. The v3 builder above already
+    # injects the AVOID list for migrate_* modes; for non-migrate modes
+    # in the same fleet, append the same block here so every migration
+    # worker sees the explicit "do not touch these paths" list.
+    if fleet_profile in MIGRATION_FLEET_PROFILES:
+        legacy_prompt = legacy_prompt + _pilot_avoid_block(target_paths)
+    return legacy_prompt
 
 
 def _run_codex_task(
