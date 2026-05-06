@@ -147,9 +147,9 @@ def _coerce_citation_score(value: Any) -> float:
 
 
 def _normalize_citation_path(value: Any) -> str | None:
-    """Accept only repo-relative CS content doc paths for learner citations."""
+    """Accept only CS content doc paths for learner citations."""
     path = str(value or "").strip()
-    if not path or not path.startswith("knowledge/cs/contents/"):
+    if not path:
         return None
     if any(char.isspace() for char in path):
         return None
@@ -164,7 +164,9 @@ def _normalize_citation_path(value: Any) -> str | None:
     if normalized.suffix != ".md":
         return None
     parts = normalized.parts
-    if len(parts) < 5 or parts[:3] != ("knowledge", "cs", "contents"):
+    is_repo_relative = len(parts) >= 5 and parts[:3] == ("knowledge", "cs", "contents")
+    is_corpus_relative = len(parts) >= 3 and parts[0] == "contents"
+    if not (is_repo_relative or is_corpus_relative):
         return None
     if any(part in {"", ".", ".."} for part in parts):
         return None
@@ -257,11 +259,37 @@ def _derive_citation_category(path: str, raw_category: Any) -> str:
     category = _normalize_citation_field(raw_category)
     if category in _KNOWN_CITATION_CATEGORIES:
         return category
-    parts = Path(path).parts
-    try:
+    parts = PurePosixPath(path).parts
+    if len(parts) >= 5 and parts[:3] == ("knowledge", "cs", "contents"):
         return parts[3]
-    except IndexError:
-        return ""
+    if len(parts) >= 3 and parts[0] == "contents":
+        return parts[1]
+    return ""
+
+
+def _normalize_compact_hit(hit: dict[str, Any]) -> dict[str, Any] | None:
+    """Keep augment payload rows structurally safe before sidecar/meta assembly."""
+    path = _normalize_citation_path(hit.get("path"))
+    if not path:
+        return None
+    title = _normalize_citation_field(hit.get("title"))
+    section_title = _normalize_citation_field(hit.get("section_title"))
+    snippet_preview = hit.get("snippet_preview")
+    if not isinstance(snippet_preview, str):
+        snippet_preview = ""
+    section_path = hit.get("section_path")
+    if not isinstance(section_path, list):
+        section_path = []
+    return {
+        **hit,
+        "path": path,
+        "title": title or Path(path).stem,
+        "category": _derive_citation_category(path, hit.get("category")),
+        "section_title": section_title or "",
+        "section_path": [str(part) for part in section_path if str(part).strip()],
+        "score": hit.get("score"),
+        "snippet_preview": snippet_preview,
+    }
 
 
 def _citation_trace_completeness(hit: dict[str, Any]) -> tuple[int, int]:
@@ -498,6 +526,17 @@ def augment(
         for hit in _iter_hit_dicts(hits):
             citation_hits.append({**hit, "_citation_bucket": bucket})
 
+    def extend_payload_hits(hits: list[dict[str, Any]]) -> None:
+        for hit in _iter_hit_dicts(hits):
+            normalized = _normalize_compact_hit(hit)
+            if not normalized:
+                continue
+            path = normalized["path"]
+            if path in seen_paths:
+                continue
+            seen_paths.add(path)
+            all_hits.append(normalized)
+
     try:
         if learning_points:
             # Peer-derived path: search once per learning point so each
@@ -532,10 +571,7 @@ def augment(
                 if hits:
                     by_lp[lp] = hits
                     extend_citation_hits(_format_citation_bucket("learning_point", lp), hits)
-                    for h in _iter_hit_dicts(hits):
-                        if h["path"] not in seen_paths:
-                            seen_paths.add(h["path"])
-                            all_hits.append(h)
+                    extend_payload_hits(hits)
 
         # If no peer learning point matched (cs_only turn) or all buckets
         # came back empty, fall back to signal-tag bucketing.
@@ -581,10 +617,7 @@ def augment(
                             ),
                             hits,
                         )
-                        for h in _iter_hit_dicts(hits):
-                            if h["path"] not in seen_paths:
-                                seen_paths.add(h["path"])
-                                all_hits.append(h)
+                        extend_payload_hits(hits)
                         # One search is enough — signal tags share the
                         # same query, only the bucket key differs. Keep
                         # the rest of the signals as bucket aliases.
@@ -617,10 +650,7 @@ def augment(
                         _format_citation_bucket("fallback", "general", _top_token(prompt)),
                         hits,
                     )
-                    for h in _iter_hit_dicts(hits):
-                        if h["path"] not in seen_paths:
-                            seen_paths.add(h["path"])
-                            all_hits.append(h)
+                    extend_payload_hits(hits)
     except Exception:
         return _empty_result("search_error", cs_search_mode)
 
@@ -637,7 +667,9 @@ def augment(
         all_hits = []
         citation_hits = []
 
-    categories_hit = sorted({h["category"] for h in all_hits})
+    categories_hit = sorted(
+        {category for h in all_hits if (category := h.get("category"))}
+    )
 
     # Compact body fields are kept inside by_learning_point / by_fallback_key
     # directly (snippet_preview is already 250-char capped by searcher).

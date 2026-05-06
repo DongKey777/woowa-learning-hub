@@ -288,6 +288,55 @@ def test_augment_ignores_malformed_non_dict_hits_in_citation_trace(
     ]
 
 
+def test_augment_ignores_malformed_dict_hits_in_payload_assembly(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            {"title": "missing-path"},
+            {
+                **_hit("knowledge/cs/contents/spring/../escape.md", 0.99),
+                "snippet_preview": None,
+            },
+            {
+                **_hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.81),
+                "title": "  ",
+                "category": " spring basics ",
+                "section_title": None,
+                "section_path": "not-a-list",
+                "snippet_preview": None,
+            },
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["meta"]["reason"] == "ready"
+    assert result["cs_categories_hit"] == ["spring"]
+    assert result["response_hints"]["citation_paths"] == [
+        "knowledge/cs/contents/spring/ioc-di-container.md"
+    ]
+    assert result["sidecar"]["hits"] == [
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "title": "ioc-di-container",
+            "category": "spring",
+            "section_title": "",
+            "section_path": [],
+            "score": 0.81,
+            "snippet_preview": "",
+        }
+    ]
+
+
 def test_select_citation_hits_ignores_malformed_non_dict_rows():
     assert integration._select_citation_hits(
         [
