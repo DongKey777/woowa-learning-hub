@@ -305,9 +305,17 @@ def build_remote_commands(
 ) -> list[tuple[str, str]]:
     """Return list of (label, command) tuples for the pod-side steps."""
     modalities_arg = ",".join(modalities)
+    # `--no-release-fetch` is mandatory on RunPod direct_build for the
+    # same reason as runpod_rag_full_build (see commit f082ace): without
+    # it cli_cs_index_build short-circuits into downloading the *previously
+    # published* GitHub release tar.zst, skipping the actual fresh build
+    # that this RunPod cycle was paying for. Real silent failure observed
+    # 2026-05-06 r3-direct-9a7c218 build — manifest came back with
+    # corpus_hash=34b9577 (the OLD release) instead of the new commit's
+    # corpus, making cohort_eval against it identical to baseline.
     build_command = (
         f"python -m scripts.learning.cli_cs_index_build "
-        f"--backend lance --modalities {modalities_arg} "
+        f"--backend lance --no-release-fetch --modalities {modalities_arg} "
         f"--out /workspace/cs_rag/ "
         f"--lance-max-length {lance_max_length} "
         f"--lance-batch-size {lance_batch_size} "
