@@ -1,0 +1,49 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00014",
+  "generated_at": "2026-05-05T14:42:00Z",
+  "scope": "timeout-budget/backpressure ladder frontmatter and eval-visibility audit",
+  "learner_facing_quality_improvement": "This wave narrows beginner timeout-budget confusion by isolating the exact ladder docs where v3 metadata and the current H1-first lint contract disagree, while also showing that the missing backpressure bridge has not yet surfaced in current eval artifacts.",
+  "cohort_snapshot": {
+    "total_docs": 5,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 5,
+    "frontmatter_present": 3,
+    "frontmatter_missing": 2,
+    "missing_by_category": {
+      "system-design": 2
+    },
+    "difficulty_mix": {
+      "beginner": 3,
+      "advanced": 2
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... explicit timeout-budget/backpressure ladder doc list ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md knowledge/cs/contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md knowledge/cs/contents/system-design/request-deadline-timeout-budget-primer.md knowledge/cs/contents/system-design/retry-amplification-and-backpressure-primer.md knowledge/cs/contents/system-design/backpressure-and-load-shedding-design.md",
+    "retrieval_probe_command": "rg -n \"timeout-budget-propagation-proxy-gateway-service-hop-chain|request-deadline-timeout-budget-primer|edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge|backpressure-and-load-shedding-design|retry-amplification-and-backpressure-primer\" reports/rag_eval",
+    "lint_probe_result": "the three frontmatter-present docs all fail with `first non-empty line must be an H1 (`# ...`)`, while the two H1-first system-design docs still pass the current authoring lint because they have not been migrated yet",
+    "retrieval_probe_result": "no current rag_eval artifact references this ladder by path, so the timeout-budget/backpressure teaching sequence is still under-measured as well as under-migrated"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/system-design/retry-amplification-and-backpressure-primer.md",
+      "target_query_shape": "왜 재시도가 장애를 더 키워요, retry storm 뭐예요, bounded queue는 왜 필요해요",
+      "why_now": "It is the cleanest lint-safe beginner bridge from timeout budgeting into overload containment in an underweighted system-design path."
+    },
+    {
+      "path": "knowledge/cs/contents/system-design/request-deadline-timeout-budget-primer.md",
+      "target_query_shape": "timeout budget 뭐예요, 왜 timeout을 계단처럼 나눠요, 어디 timeout을 먼저 줄여야 해요",
+      "why_now": "It is the canonical beginner entrypoint for deadline budgeting, so resolving its admission blocker would improve first-hit routing immediately."
+    },
+    {
+      "path": "knowledge/cs/contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md",
+      "target_query_shape": "브라우저는 504인데 서버 로그는 200인 이유, gateway timeout인데 backend는 성공한 것 같아요",
+      "why_now": "It turns a common learner symptom into a timeout-budget explanation without touching Pilot-locked content."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No corpus doc was edited because this QA wave only recorded the timeout-budget ladder blocker and readiness state.",
+    "No out-of-scope script or test change was attempted in this lane."
+  ]
+}

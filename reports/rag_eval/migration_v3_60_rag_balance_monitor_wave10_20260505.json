@@ -1,0 +1,44 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00010",
+  "generated_at": "2026-05-05",
+  "scope": "balance/rebalance/monitor cohort frontmatter and lint-readiness audit",
+  "learner_facing_quality_improvement": "This wave narrows learner-facing load-balancer and monitor retrieval debt by identifying the exact non-Pilot beginner-path docs still outside v3 metadata, while confirming that the only already-migrated candidate is blocked by the current H1-first authoring gate.",
+  "cohort_snapshot": {
+    "total_docs": 8,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 8,
+    "frontmatter_present": 1,
+    "frontmatter_missing": 7,
+    "missing_by_category": {
+      "data-structure": 1,
+      "database": 1,
+      "network": 1,
+      "operating-system": 2,
+      "system-design": 2
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains balance|rebalance|monitor ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/security/absolute-redirect-url-behind-load-balancer-guide.md",
+    "lint_probe_result": "the only frontmatter-present cohort doc still fails with `first non-empty line must be an H1 (`# ...`)`"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/system-design/load-balancer-basics.md",
+      "why_now": "system-design is still underrepresented for beginner and intermediate learning paths, and this is the first landing page for 'load balancer 뭐예요' style queries"
+    },
+    {
+      "path": "knowledge/cs/contents/system-design/load-balancer-drain-and-affinity-primer.md",
+      "why_now": "it is the immediate next-step bridge from load balancer basics into deploy, failover, and sticky-session questions without any Pilot conflict"
+    },
+    {
+      "path": "knowledge/cs/contents/operating-system/semaphore-monitor-basics.md",
+      "why_now": "operating-system remains a beginner-gap category and the filename directly matches learner monitor-basics phrasing"
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No out-of-scope script change was attempted in this lane.",
+    "No corpus doc was edited because the current authoring gate still rejects top-of-file v3 frontmatter."
+  ]
+}

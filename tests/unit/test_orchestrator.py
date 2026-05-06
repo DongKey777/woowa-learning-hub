@@ -430,6 +430,29 @@ class FleetSpecTest(unittest.TestCase):
         self.assertTrue(all(entry.get("fleet_profile") == "expansion60" for entry in queue))
         self.assertTrue(all(entry.get("fleet_profile") == "expansion60" for entry in payload["current_wave"]["items"]))
 
+    def test_migration_v3_60_run_once_seeds_assigned_migration_items(self) -> None:
+        orchestrator = Orchestrator(Path(tempfile.mkdtemp()) / "state" / "orchestrator")
+        payload = orchestrator.run_once(low_water_mark=1, wave_size=6, fleet_profile="migration_v3_60")
+        queue = orchestrator.load_queue()
+        self.assertEqual(len(queue), len(FLEET_PROFILES["migration_v3_60"]))
+        self.assertTrue(all(entry.get("fleet_profile") == "migration_v3_60" for entry in queue))
+        self.assertTrue(all(str(entry["lane"]).startswith("migration-") for entry in queue))
+        self.assertTrue(all(entry.get("assigned_worker") for entry in queue))
+        self.assertTrue(all(entry.get("assigned_worker") for entry in payload["current_wave"]["items"]))
+
+    def test_migration_v3_60_claim_only_takes_assigned_worker_item(self) -> None:
+        orchestrator = Orchestrator(Path(tempfile.mkdtemp()) / "state" / "orchestrator")
+        worker = "migration-v3-60-frontmatter-spring"
+        claimed = orchestrator.claim(
+            worker,
+            lanes=["migration-content-spring"],
+            claim_tags=["spring", "frontmatter", "v3", "schema"],
+            refresh_backlog=True,
+            fleet_profile="migration_v3_60",
+        )
+        self.assertEqual(len(claimed["claimed"]), 1)
+        self.assertEqual(claimed["claimed"][0]["assigned_worker"], worker)
+
     def test_fleet_start_parser_accepts_profile(self) -> None:
         args = build_parser().parse_args(["orchestrator", "fleet-start", "--profile", "expansion60"])
         self.assertEqual(args.profile, "expansion60")

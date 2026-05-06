@@ -1,0 +1,24 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00024",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "cohort refusal metric parity for tier_downgraded corpus-gap passes",
+  "learner_facing_quality_improvement": "The 94.0 cohort gate now counts explicit tier-downgraded refusals as clean corpus-gap passes, so learner-facing regression reports no longer understate healthy refusal behavior.",
+  "verification": {
+    "pytest_command": "python -m pytest tests/unit/test_cohort_eval.py tests/unit/test_verify_real_qrels.py -q",
+    "verify_real_qrels_baseline_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94 --manifest state/cs_rag/manifest.json",
+    "unit_test_status": "pass",
+    "baseline_verify_status": "pass"
+  },
+  "changes": {
+    "refusal_metric_helper_added": 1,
+    "baseline_report_refusal_clean_fixed": 1,
+    "unit_tests_added": 2,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "This wave stayed inside lane-local eval code, tests, and report artifacts.",
+    "The baseline cohort report now shows corpus_gap_probe.refusal_clean=19, matching the 19 tier_downgraded rows already present in per_query."
+  ]
+}

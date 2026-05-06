@@ -1,0 +1,24 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00021",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "manifest hash repair for the 94.0 cohort-eval gate after qrel fixture edits",
+  "learner_facing_quality_improvement": "The real-qrel gate now resolves against the current fixture bytes instead of stale manifest metadata, so learner-facing cohort regressions read the same 200-query suite that the 94.0 baseline report was graded on.",
+  "verification": {
+    "pytest_command": "python -m pytest -q tests/unit/test_cohort_qrels.py tests/unit/test_verify_real_qrels.py tests/unit/test_calibrate_refusal_threshold.py",
+    "verify_real_qrels_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "unit_test_status": "pass",
+    "full_verify_status": "pass"
+  },
+  "changes": {
+    "manifest_hash_repairs": 1,
+    "baseline_reports_rewritten": 0,
+    "fixture_queries_changed_in_wave": 0,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "The verify gate previously failed only on manifest.r3.qrels.sha256 drift; query_count, schema_version, and baseline report alignment already matched.",
+    "This wave stayed inside lane-local state and reporting artifacts and did not touch any Pilot-locked corpus docs."
+  ]
+}

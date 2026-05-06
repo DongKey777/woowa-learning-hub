@@ -1,0 +1,20 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00013",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human acceptable-path grading repair for non-transaction query drift",
+  "learner_facing_quality_improvement": "Paraphrase eval no longer gives unrelated transactional-credit to lock and SQL basics prompts, so robustness scores better reflect whether learners reach the right concept family from natural-language paraphrases.",
+  "changes": {
+    "paraphrase_queries_repaired": 2,
+    "restored_family_acceptable_path": 1,
+    "removed_unrelated_acceptable_path": 1
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:database_lock:001",
+    "paraphrase_human:sql_basics:001"
+  ],
+  "notes": [
+    "The Spring propagation primer remains accepted only for the transactional-basics paraphrase where it is part of the same learner path.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

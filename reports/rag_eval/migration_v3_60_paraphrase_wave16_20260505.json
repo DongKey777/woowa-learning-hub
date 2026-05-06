@@ -1,0 +1,33 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00016",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human forbidden-neighbor tightening for cookie three-way diagnosis",
+  "learner_facing_quality_improvement": "The cookie three-way paraphrase now explicitly rejects broad cookie primers and session-flow docs that explain only one branch, so robustness eval surfaces the real diagnostic miss instead of letting near-miss neighbors blur the learner-facing gap.",
+  "changes": {
+    "paraphrase_queries_repaired": 1,
+    "forbidden_paths_added": 5,
+    "acceptable_paths_added": 0,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:cookie_failure_three_way:001"
+  ],
+  "forbidden_neighbor_paths": [
+    "contents/security/cors-samesite-preflight.md",
+    "contents/security/cookie-scope-mismatch-guide.md",
+    "contents/security/session-cookie-jwt-basics.md",
+    "contents/spring/spring-admin-session-cookie-flow-primer.md",
+    "contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md"
+  ],
+  "verification": {
+    "schema_test": "python -m pytest -q tests/unit/test_qrels_schema.py",
+    "forbidden_neighbor_audit": "python - <<'PY'\nimport json\nfrom pathlib import Path\nfixture=json.loads(Path('tests/fixtures/r3_qrels_real_v1.json').read_text())\nquery=next(q for q in fixture['queries'] if q['query_id']=='paraphrase_human:cookie_failure_three_way:001')\nprint(len(query['forbidden_paths']))\nprint(query['forbidden_paths'])\nPY",
+    "baseline_v22_top5_all_marked_forbidden": true
+  },
+  "notes": [
+    "This wave keeps grading strict: the cookie three-way diagnostic still requires the splitter doc, not single-branch primers.",
+    "The v22 cohort report's current top-5 miss set is now codified as forbidden neighbors to sharpen future failure taxonomy.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

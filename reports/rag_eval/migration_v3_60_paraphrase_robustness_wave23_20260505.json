@@ -1,0 +1,47 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00023",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase and corpus-gap reformulated_query contextual-prefix normalization",
+  "learner_facing_quality_improvement": "Paraphrase and out-of-corpus eval rows now use one consistent contextual-prefix shape, so reformulated queries are easier to parse and compare when a learner asks without canonical jargon.",
+  "changes": {
+    "fixture_rows_changed": 23,
+    "reports_added": 1,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "confusable_pairs:security_chain_vs_filter:001",
+    "confusable_pairs:self_invocation_vs_proxy:001",
+    "confusable_pairs:bean_lifecycle_vs_container_internals:001",
+    "corpus_gap_probe:obscure_topic:001",
+    "corpus_gap_probe:lattice_attack_crypto:001",
+    "corpus_gap_probe:react_concurrent_mode:001",
+    "corpus_gap_probe:wasm_simd:001",
+    "corpus_gap_probe:gpu_kernel_fusion:001",
+    "corpus_gap_probe:transformer_attention:001",
+    "corpus_gap_probe:rlhf_ppo:001",
+    "corpus_gap_probe:react_use_effect_internals:001",
+    "corpus_gap_probe:k8s_helm_chart_template:001",
+    "corpus_gap_probe:terraform_state_lock:001",
+    "corpus_gap_probe:ios_view_lifecycle:001",
+    "corpus_gap_probe:android_compose_recomposition:001",
+    "corpus_gap_probe:llvm_ir_optimization:001",
+    "corpus_gap_probe:aws_lambda_cold_start:001",
+    "corpus_gap_probe:gcp_iam_workload_identity:001",
+    "corpus_gap_probe:vector_db_hnsw_internals:001",
+    "corpus_gap_probe:rust_borrow_checker:001",
+    "corpus_gap_probe:graphql_n_plus_one_dataloader:001",
+    "corpus_gap_probe:webrtc_ice_negotiation:001",
+    "corpus_gap_probe:kafka_consumer_rebalance:001"
+  ],
+  "verification": {
+    "schema_test": "python -m pytest -q tests/unit/test_qrels_schema.py tests/unit/test_verify_real_qrels.py",
+    "schema_test_status": "pass",
+    "contextual_prefix_audit": "python ad-hoc audit: every reformulated_query now contains the contextual separator ' — '",
+    "contextual_prefix_audit_status": "pass"
+  },
+  "notes": [
+    "This wave stayed inside the fixture/report lane and did not touch Pilot-locked corpus docs.",
+    "The patch preserves the existing corpus-gap intent while making comparison and refusal probes use the same prefix style as learner-facing paraphrase rows."
+  ]
+}

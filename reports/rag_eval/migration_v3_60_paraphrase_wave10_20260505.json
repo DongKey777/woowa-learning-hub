@@ -1,0 +1,26 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00010",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human metadata normalization",
+  "learner_facing_quality_improvement": "Paraphrase robustness queries now carry explicit forbidden-path arrays and complete review rationale text, which makes false-positive regressions easier to audit before they leak into learner-facing RAG routing.",
+  "changes": {
+    "paraphrase_queries_total": 50,
+    "forbidden_paths_backfilled_to_empty_array": 50,
+    "missing_rationales_filled": 7,
+    "acceptable_paths_left_implicit_when_no_secondary_answer": 44
+  },
+  "rationale_filled_query_ids": [
+    "paraphrase_human:spring_bean:001",
+    "paraphrase_human:database_connection_pool:001",
+    "paraphrase_human:database_lock:001",
+    "paraphrase_human:database_isolation:001",
+    "paraphrase_human:design_pattern_factory:001",
+    "paraphrase_human:repository_pattern:001",
+    "paraphrase_human:network_latency:001"
+  ],
+  "notes": [
+    "This wave intentionally did not synthesize new acceptable_paths entries where the fixture only had one intended primary answer.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

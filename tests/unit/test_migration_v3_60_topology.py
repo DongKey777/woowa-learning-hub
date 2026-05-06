@@ -13,6 +13,7 @@ from __future__ import annotations
 import unittest
 from collections import Counter
 
+from scripts.workbench import cli
 from scripts.workbench.core import orchestrator_workers as OW
 from scripts.workbench.core import orchestrator_migration_workers as MW
 
@@ -132,6 +133,11 @@ class FleetProfilesRegistrationTest(unittest.TestCase):
             OW._normalize_fleet_profile("migration_v3_60"),
             "migration_v3_60",
         )
+
+    def test_cli_accepts_migration_v3_60_profile(self):
+        parser = cli.build_parser()
+        args = parser.parse_args(["orchestrator", "fleet-start", "--profile", "migration_v3_60"])
+        self.assertEqual(args.profile, "migration_v3_60")
 
     def test_v3_30_and_v3_60_coexist(self):
         """Both profiles are independent — switching one doesn't affect

@@ -1,0 +1,43 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00022",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "wave22 report-sync repair for the renamed deadlock mixed-language qrel and active refusal metrics",
+  "learner_facing_quality_improvement": "Learner-facing RAG evaluation artifacts now point at the current deadlock symptom query id and keep the active refusal metrics consistent, so paraphrase/cohort dashboards stop mixing stale query keys with current qrels.",
+  "verification": {
+    "pytest_command": "python -m pytest -q tests/unit/test_verify_real_qrels.py",
+    "baseline_verify_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "pytest_status": "pass",
+    "baseline_verify_status": "pass",
+    "patched_reports": {
+      "reports/rag_eval/post_phase_9_3_active.json": {
+        "alignment_status": "pass",
+        "metric_consistency_status": "pass",
+        "pass_rate_floor_status": "pass"
+      },
+      "reports/rag_eval/r3_v21_reformulated_full_cohort_eval.json": {
+        "alignment_status": "pass",
+        "metric_consistency_status": "pass",
+        "pass_rate_floor_status": "pass"
+      },
+      "reports/rag_eval/r3_v22_cohort_eval_full.json": {
+        "alignment_status": "pass",
+        "metric_consistency_status": "pass",
+        "pass_rate_floor_status": "fail",
+        "overall_pass_rate": 0.88,
+        "required_minimum_pass_rate": 0.94
+      }
+    }
+  },
+  "changes": {
+    "fixture_rows_changed": 0,
+    "reports_repaired": 3,
+    "active_reports_repaired": 2,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "This wave only repaired report-side drift; the qrel fixture was already updated in the worktree and was not modified further.",
+    "r3_v22_cohort_eval_full.json remains intentionally below the 94.0 floor, but it no longer fails alignment or metric-consistency checks.",
+    "Historical pre-v22 cohort reports still contain the pre-rename deadlock query id and should be queued separately if they remain user-visible."
+  ]
+}

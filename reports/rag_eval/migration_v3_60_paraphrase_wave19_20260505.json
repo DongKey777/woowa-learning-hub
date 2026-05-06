@@ -1,0 +1,34 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00019",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human forbidden-neighbor tightening for transaction basics all-or-nothing phrasing",
+  "learner_facing_quality_improvement": "The beginner transaction paraphrase now rejects isolation-level deep dives and unrelated NoSQL primers, so robustness eval keeps rewarding the all-or-nothing mental model the learner actually asked for.",
+  "changes": {
+    "paraphrase_queries_repaired": 1,
+    "forbidden_paths_added": 2,
+    "acceptable_paths_added": 0,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:transaction_basics:001"
+  ],
+  "forbidden_neighbor_paths": [
+    "contents/database/transaction-isolation-locking.md",
+    "contents/database/nosql-basics.md"
+  ],
+  "verification": {
+    "schema_test": "python -m pytest -q tests/unit/test_qrels_schema.py tests/unit/test_verify_real_qrels.py",
+    "full_verify_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "schema_test_status": "pass",
+    "full_verify_status": "blocked_by_manifest_qrels_alignment_sha256",
+    "baseline_v22_top2_marked_forbidden": true,
+    "query_shape": "여러 SQL 작업을 하나로 묶어서 다 되거나 다 취소되게 하는 게 뭐야?"
+  },
+  "notes": [
+    "This wave keeps the learner prompt beginner-level while preserving the canonical transaction vocabulary only in reformulated_query.",
+    "The forbidden set is intentionally narrow: it blocks an advanced isolation detour and an unrelated storage-model primer that currently outrank the target doc.",
+    "The current full verifier run is blocked by an existing manifest.r3.qrels.sha256 mismatch and not by this query-level change.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

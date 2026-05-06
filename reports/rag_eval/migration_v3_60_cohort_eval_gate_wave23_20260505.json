@@ -1,0 +1,26 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00023",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "cohort-eval report shape guard plus manifest qrel checksum refresh",
+  "learner_facing_quality_improvement": "The 94.0 cohort gate now tells us immediately when a lane summary JSON is passed instead of a real cohort-eval baseline, and the manifest once again tracks the live 200-query fixture so learner-facing regression checks run against the current suite.",
+  "verification": {
+    "pytest_command": "python -m pytest tests/unit/test_verify_real_qrels.py -q",
+    "verify_real_qrels_baseline_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94 --manifest state/cs_rag/manifest.json",
+    "verify_real_qrels_wrong_artifact_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_cohort_eval_gate_wave22_20260505.json --min-report-pass-rate 0.94 --manifest state/cs_rag/manifest.json",
+    "unit_test_status": "pass",
+    "baseline_verify_status": "pass",
+    "wrong_artifact_status": "fail with explicit report_contract_shape"
+  },
+  "changes": {
+    "new_report_shape_guard": 1,
+    "new_unit_tests": 1,
+    "manifest_qrels_sha_refreshed": 1,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "This wave stayed inside lane-local verifier, tests, manifest metadata, and a report artifact.",
+    "The report guard prevents low-signal query_count/metadata errors when the supplied JSON is a migration wave note rather than a cohort-eval baseline."
+  ]
+}

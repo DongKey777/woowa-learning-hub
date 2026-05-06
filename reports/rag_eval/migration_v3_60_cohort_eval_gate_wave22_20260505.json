@@ -1,0 +1,23 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00022",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "manifest qrel checksum repair for the 94.0 cohort gate",
+  "learner_facing_quality_improvement": "The manifest now points at the current 200-query real-qrel fixture, so learner-facing cohort-eval checks no longer fail on stale fixture metadata before the actual 94.0 regression gate runs.",
+  "verification": {
+    "pytest_command": "python -m pytest -q tests/unit/test_verify_real_qrels.py tests/unit/test_r3_refusal_threshold.py tests/unit/test_integration_tier_downgrade.py tests/unit/test_rag_ask_forces_tier_0_on_downgrade.py tests/unit/test_cohort_eval_silent_failure.py",
+    "verify_real_qrels_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94 --manifest state/cs_rag/manifest.json",
+    "pre_fix_manifest_alignment": "fail: sha256 mismatch",
+    "post_fix_manifest_alignment": "pass"
+  },
+  "changes": {
+    "manifest_qrels_sha_refreshed": 1,
+    "fixture_rows_changed": 0,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "The fixture already matched the baseline report contract; only the manifest checksum lagged behind the current qrel file.",
+    "This wave stayed inside lane-local state plus a gate report artifact."
+  ]
+}

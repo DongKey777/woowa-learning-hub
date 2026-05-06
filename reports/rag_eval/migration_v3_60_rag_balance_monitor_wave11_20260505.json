@@ -1,0 +1,45 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00011",
+  "generated_at": "2026-05-05",
+  "scope": "load-balancer/drain/affinity/monitor cohort frontmatter and lint-readiness audit",
+  "learner_facing_quality_improvement": "This wave isolates the learner-facing load-balancer path that is still missing v3 metadata, while proving the current churn comes from the H1-first authoring gate rather than from bad document choices inside the non-Pilot cohort.",
+  "cohort_snapshot": {
+    "total_docs": 12,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 12,
+    "frontmatter_present": 1,
+    "frontmatter_missing": 11,
+    "missing_by_category": {
+      "network": 4,
+      "operating-system": 4,
+      "system-design": 3
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains load-balancer|healthcheck|drain|affinity|monitor ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/security/absolute-redirect-url-behind-load-balancer-guide.md knowledge/cs/contents/system-design/load-balancer-basics.md knowledge/cs/contents/system-design/load-balancer-drain-and-affinity-primer.md knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md",
+    "lint_probe_result": "the only frontmatter-present cohort doc fails with `first non-empty line must be an H1 (`# ...`)`, while the three frontmatter-missing load-balancer targets currently pass the H1 gate"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/system-design/load-balancer-basics.md",
+      "target_query_shape": "load balancer 뭐예요, why use load balancer, basics",
+      "why_now": "It is the first learner entrypoint in an underrepresented system-design path and should win direct beginner queries once frontmatter can be added safely."
+    },
+    {
+      "path": "knowledge/cs/contents/system-design/load-balancer-drain-and-affinity-primer.md",
+      "target_query_shape": "배포 중 drain, sticky session, affinity 언제 쓰나요",
+      "why_now": "It is the bridge from basics into rollout and failover behavior, which prevents the learner path from stalling at the primer."
+    },
+    {
+      "path": "knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md",
+      "target_query_shape": "healthcheck fail, backend healthy but traffic 안 감, monitor alarm",
+      "why_now": "It matches concrete symptom phrasing and is already lint-clean without Pilot conflict, so it is the safest next migration target after the linter fix."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No out-of-scope script change was attempted in this lane.",
+    "No corpus doc was edited because the current authoring gate still rejects top-of-file v3 frontmatter."
+  ]
+}

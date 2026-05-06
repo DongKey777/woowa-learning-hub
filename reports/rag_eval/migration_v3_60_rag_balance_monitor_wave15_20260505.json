@@ -1,0 +1,50 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00015",
+  "generated_at": "2026-05-05T13:58:21Z",
+  "scope": "security/system-design revocation-lag and authz-drift cohort frontmatter and retrieval-readiness audit",
+  "learner_facing_quality_improvement": "This wave isolates the non-Pilot security freshness path behind queries like '권한 회수했는데 왜 아직 접근돼요' and 'SCIM disable 뒤 access tail이 남아요', so the next v3 metadata migration can improve first-hit routing in an underweight security/system-design cluster without touching the Pilot baseline.",
+  "cohort_snapshot": {
+    "total_docs": 6,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 6,
+    "frontmatter_present": 0,
+    "frontmatter_missing": 6,
+    "missing_by_category": {
+      "security": 5,
+      "system-design": 1
+    },
+    "difficulty_mix_from_body_markers": {
+      "beginner": 1,
+      "advanced": 5
+    }
+  },
+  "verification": {
+    "cohort_selection_rule": "curated non-Pilot revocation-lag/authz-drift cohort: authority-transfer-vs-revoke-lag, revocation-propagation-lag, revocation-preview-drift, scim-drift, permission-model-drift, revocation-bus-regional-lag",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/security/authority-transfer-vs-revoke-lag-primer-bridge.md knowledge/cs/contents/security/revocation-propagation-lag-debugging.md knowledge/cs/contents/security/revocation-preview-drift-response-contract.md knowledge/cs/contents/security/scim-drift-reconciliation.md knowledge/cs/contents/security/permission-model-drift-authz-graph-design.md knowledge/cs/contents/system-design/revocation-bus-regional-lag-recovery-design.md",
+    "retrieval_probe_command": "rg -n \"authority-transfer-vs-revoke-lag-primer-bridge|revocation-propagation-lag-debugging|revocation-preview-drift-response-contract|scim-drift-reconciliation|permission-model-drift-authz-graph-design|revocation-bus-regional-lag-recovery-design\" reports/rag_eval/r3_v20_cohort_eval_full.json reports/rag_eval/r3_v22_cohort_eval_full.json reports/rag_eval/archive/2026-05-02-circular-leak-baseline/sparse_effect_analysis_20260501T1455Z.json",
+    "lint_probe_result": "all six sampled docs pass the current authoring lint because they still start with an H1; there is no Pilot conflict and no frontmatter/H1 collision yet in this cohort",
+    "retrieval_probe_result": "permission-model-drift-authz-graph-design already appears in r3_v20 cohort eval and revocation-bus-regional-lag-recovery-design already appears in the sparse-effect archive, which means this security freshness route is retrieval-active even before v3 metadata is attached"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/security/authority-transfer-vs-revoke-lag-primer-bridge.md",
+      "target_query_shape": "권한 이전이랑 revoke lag 뭐가 달라요, disable했는데 still access, authority transfer vs revoke lag basics",
+      "why_now": "It is the only beginner entrypoint in the cohort, so migrating it first would give repeated learner symptom phrasing a canonical front door in a security category that is still below the intermediate floor."
+    },
+    {
+      "path": "knowledge/cs/contents/security/revocation-propagation-lag-debugging.md",
+      "target_query_shape": "logout still works, revoke propagation lag debugging, last accepted after revoke 왜 봐요",
+      "why_now": "It is the direct incident deep dive for session-tail questions and already sits on a clean H1-only file, making it a safe second-step migration target once frontmatter admission is reopened."
+    },
+    {
+      "path": "knowledge/cs/contents/system-design/revocation-bus-regional-lag-recovery-design.md",
+      "target_query_shape": "multi-region revoke lag recovery, stale allow regional tail, revocation bus backlog recovery",
+      "why_now": "It is the only system-design bridge in the cohort and already shows retrieval activity, so migrating it would connect security incident questions to the underrepresented system-design follow-up path."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No out-of-scope script change was attempted in this lane.",
+    "No corpus doc was edited because this QA wave only recorded a lint-clean non-Pilot migration cohort."
+  ]
+}

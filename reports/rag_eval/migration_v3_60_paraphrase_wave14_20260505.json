@@ -1,0 +1,23 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00014",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human acceptable-path widening for read-after-write and browser redirect symptom queries",
+  "learner_facing_quality_improvement": "Natural-language paraphrases around stale reads and login redirects now recognize closely aligned bridge docs as valid outcomes, so robustness scoring penalizes true concept misses instead of equivalent learner-safe explanations.",
+  "changes": {
+    "paraphrase_queries_repaired": 3,
+    "acceptable_paths_added": 4,
+    "new_primary_paths": 0,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:read_your_writes:001",
+    "paraphrase_human:read_after_write_routing:001",
+    "paraphrase_human:browser_401_vs_302:001"
+  ],
+  "notes": [
+    "Added only semantically adjacent primers/bridges already appearing in the v22 cohort report top ranks for these learner-shaped prompts.",
+    "The unresolved cookie three-way splitter miss was intentionally left strict because the current top-ranked alternatives each cover only one branch of the intended diagnostic split.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00015",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human expected_concepts catalog alignment for repository-pattern paraphrase",
+  "learner_facing_quality_improvement": "The repository-pattern paraphrase now points at the corpus's real concept_id, so paraphrase eval and learner-profile concept tracking measure the same repository abstraction concept instead of splitting evidence across a stale label.",
+  "changes": {
+    "paraphrase_queries_repaired": 1,
+    "expected_concept_ids_aligned": 1,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:repository_pattern:001"
+  ],
+  "verification": {
+    "schema_test": "python -m pytest -q tests/unit/test_qrels_schema.py",
+    "paraphrase_alignment_check": "python - <<'PY'\nimport json,re,sys\nfrom pathlib import Path\nfixture=json.loads(Path('tests/fixtures/r3_qrels_real_v1.json').read_text())\nerrs=[]\nfor q in fixture['queries']:\n    if q.get('cohort_tag')!='paraphrase_human':\n        continue\n    prim=(q.get('primary_paths') or [None])[0]\n    exp=(q.get('expected_concepts') or [None])[0]\n    if not prim or not exp:\n        continue\n    text=(Path('knowledge/cs')/prim).read_text(encoding='utf-8')\n    m=re.search(r'^concept_id:\\s*[\"\\']?([^\"\\'\\n]+)', text, re.M)\n    cid=m.group(1).strip() if m else None\n    if cid != exp:\n        errs.append(q['query_id'])\nprint(errs)\nsys.exit(0 if not errs else 1)\nPY",
+    "remaining_paraphrase_concept_id_mismatches": 0
+  },
+  "notes": [
+    "The primary path already ranked first in the baseline report; this wave repairs concept bookkeeping rather than retrieval grading.",
+    "Cross-cohort concept-id drift on the same repository primer still exists elsewhere in the fixture and should be queued separately.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

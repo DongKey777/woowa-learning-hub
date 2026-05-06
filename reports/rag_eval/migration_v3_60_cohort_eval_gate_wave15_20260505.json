@@ -1,0 +1,24 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00015",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "per-query query_id alignment verification for the 94.0 cohort gate",
+  "learner_facing_quality_improvement": "The qrel verifier now rejects baseline cohort reports whose per-query records silently drift from the 200-query fixture, so learner-facing RAG regressions cannot hide behind matching totals while one query result is duplicated and another is dropped.",
+  "verification": {
+    "verify_real_qrels_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "pytest_command": "python -m pytest -q tests/unit/test_verify_real_qrels.py",
+    "baseline_overall_pass_rate": 0.94,
+    "baseline_report_alignment": "pass",
+    "baseline_per_query_query_ids": "pass"
+  },
+  "changes": {
+    "new_report_query_id_checks": 3,
+    "baseline_report_records_repaired": 1,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "This wave stayed inside the qrel verifier, its narrow unit test, and the lane-local baseline report artifact.",
+    "The repaired baseline report had one duplicated query_id and was missing symptom_to_cause:deadlock_after_index_change_mixed:001 before this wave."
+  ]
+}

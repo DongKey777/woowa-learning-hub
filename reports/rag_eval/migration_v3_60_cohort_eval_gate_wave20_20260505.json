@@ -1,0 +1,24 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00020",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "manifest-backed qrel metadata verification for the 94.0 cohort gate",
+  "learner_facing_quality_improvement": "The real-qrel gate now verifies that the live CS RAG manifest points at the exact fixture, count, schema, and hash being evaluated, so learner-facing regression checks fail fast when the index metadata drifts from the 94.0 baseline suite.",
+  "verification": {
+    "pytest_command": "python -m pytest -q tests/unit/test_verify_real_qrels.py",
+    "verify_real_qrels_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "unit_test_status": "pass",
+    "full_verify_status": "pass"
+  },
+  "changes": {
+    "manifest_alignment_checks": 4,
+    "manifest_hash_repairs": 1,
+    "new_unit_tests": 2,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "This wave stayed inside the qrel verifier, its narrow unit test surface, the lane-local manifest artifact, and a lane-local report artifact.",
+    "Repaired state/cs_rag/manifest.json so the indexed qrel hash now matches the current tests/fixtures/r3_qrels_real_v1.json payload."
+  ]
+}

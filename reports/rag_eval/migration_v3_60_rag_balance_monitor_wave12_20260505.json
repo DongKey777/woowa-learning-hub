@@ -1,0 +1,50 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00012",
+  "generated_at": "2026-05-05T13:45:24Z",
+  "scope": "drift/saturation/alarm cohort frontmatter and lint-readiness audit",
+  "learner_facing_quality_improvement": "This wave isolates the learner-facing drift and saturation path that is still missing v3 metadata, while proving the current migration stall comes from the H1-first authoring gate rather than from bad non-Pilot document selection.",
+  "cohort_snapshot": {
+    "total_docs": 20,
+    "pilot_locked_docs": 1,
+    "non_pilot_docs": 19,
+    "frontmatter_present": 4,
+    "frontmatter_missing": 15,
+    "missing_by_category": {
+      "data-structure": 1,
+      "database": 3,
+      "design-pattern": 1,
+      "network": 1,
+      "operating-system": 3,
+      "security": 3,
+      "software-engineering": 2,
+      "spring": 1
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains drift|saturation|alarm ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/database/histogram-drift-auto-analyze-thresholds.md knowledge/cs/contents/database/summary-drift-detection-bounded-rebuild.md knowledge/cs/contents/network/http2-max-concurrent-streams-pending-queue-saturation.md knowledge/cs/contents/network/queue-saturation-attribution-metrics-runbook.md knowledge/cs/contents/software-engineering/anti-corruption-mapping-drift.md knowledge/cs/contents/operating-system/run-queue-load-average-cpu-saturation.md knowledge/cs/contents/spring/spring-distributed-scheduling-cron-drift-leader-election-patterns.md",
+    "lint_probe_result": "all four frontmatter-present non-Pilot cohort docs fail with `first non-empty line must be an H1 (`# ...`)`, while the three frontmatter-missing priority targets currently pass the H1 gate"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/operating-system/run-queue-load-average-cpu-saturation.md",
+      "target_query_shape": "load average 높다, cpu saturation 뭐가 달라요, runnable queue 왜 쌓여요",
+      "why_now": "It matches direct learner symptom phrasing in an underrepresented operating-system path, so adding v3 metadata would improve first-hit routing once the lint gate is fixed."
+    },
+    {
+      "path": "knowledge/cs/contents/software-engineering/anti-corruption-mapping-drift.md",
+      "target_query_shape": "anti corruption mapping drift 뭐예요, external contract drift 왜 생겨요",
+      "why_now": "It already contains strong retrieval anchors and cross-links, making it the lowest-risk software-engineering drift target after the authoring gate is repaired."
+    },
+    {
+      "path": "knowledge/cs/contents/spring/spring-distributed-scheduling-cron-drift-leader-election-patterns.md",
+      "target_query_shape": "spring scheduled cron drift, 멀티 인스턴스 스케줄러 중복 실행, leader election 언제 써요",
+      "why_now": "It is the clearest spring bridge from scheduler symptoms into distributed coordination, which helps a spring intermediate-gap category without touching Pilot-locked content."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No out-of-scope script change was attempted in this lane.",
+    "No corpus doc was edited because the current authoring gate still rejects top-of-file v3 frontmatter."
+  ]
+}

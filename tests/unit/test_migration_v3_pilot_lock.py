@@ -124,6 +124,7 @@ class CompletionGateBehaviorTest(unittest.TestCase):
                 task,
             )
         self.assertFalse(result["ok"])
+        self.assertTrue(result["blocked"])
         self.assertIn("pilot lock violation", result["summary"])
         self.assertEqual(result["commands"], [])
         gate_cmd.assert_not_called()

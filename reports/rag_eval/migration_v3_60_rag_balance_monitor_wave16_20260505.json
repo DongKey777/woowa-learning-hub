@@ -1,0 +1,52 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00016",
+  "generated_at": "2026-05-05T15:22:00Z",
+  "scope": "balance/rebalance/monitor cohort frontmatter and eval-visibility audit",
+  "learner_facing_quality_improvement": "This wave narrows learner-facing monitor and rebalance blind spots by separating docs that are already retrieval-visible from docs that still lack v3 graph admission, so the next queue can fix the right bottleneck instead of re-editing safe content.",
+  "cohort_snapshot": {
+    "total_docs": 8,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 8,
+    "frontmatter_present": 3,
+    "frontmatter_missing": 5,
+    "missing_by_category": {
+      "data-structure": 1,
+      "database": 1,
+      "network": 1,
+      "operating-system": 2
+    },
+    "difficulty_mix": {
+      "beginner": 5,
+      "advanced": 3
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains balance|rebalance|monitor, excluding Pilot lock ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md knowledge/cs/contents/database/striped-guard-row-rebalance-basics.md knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md knowledge/cs/contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md knowledge/cs/contents/operating-system/semaphore-monitor-basics.md knowledge/cs/contents/security/absolute-redirect-url-behind-load-balancer-guide.md knowledge/cs/contents/system-design/load-balancer-basics.md knowledge/cs/contents/system-design/load-balancer-drain-and-affinity-primer.md",
+    "retrieval_probe_command": "rg -n \"balanced-bst-vs-unbalanced-bst-primer|striped-guard-row-rebalance-basics|load-balancer-healthcheck-failure-patterns|dirty-throttling-balance-dirty-pages-writeback-stalls|semaphore-monitor-basics|absolute-redirect-url-behind-load-balancer-guide|load-balancer-basics|load-balancer-drain-and-affinity-primer\" reports/rag_eval state/orchestrator/migration_v3",
+    "lint_probe_result": "all five frontmatter-missing docs currently pass the H1-first authoring lint, while all three frontmatter-present docs fail with `first non-empty line must be an H1 (`# ...`)`",
+    "retrieval_probe_result": "path-level eval visibility is concentrated in `semaphore-monitor-basics` and `load-balancer-drain-and-affinity-primer`; the remaining six docs have little or no direct eval-path presence, so observability coverage is more uneven than raw content count suggests"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/operating-system/semaphore-monitor-basics.md",
+      "target_query_shape": "세마포어랑 모니터 차이 뭐예요, monitor 뭐예요, synchronized랑 semaphore 언제 달라요",
+      "why_now": "It is a beginner operating-system gap doc with confirmed retrieval visibility, so attaching v3 metadata should improve first-hit routing with low conceptual risk."
+    },
+    {
+      "path": "knowledge/cs/contents/database/striped-guard-row-rebalance-basics.md",
+      "target_query_shape": "rebalance는 왜 hot path가 아니에요, striped guard row refill 뭐예요, bucket budget을 언제 옮겨요",
+      "why_now": "It fills a beginner database balance gap and already has concrete symptom phrasing plus safe related-doc links."
+    },
+    {
+      "path": "knowledge/cs/contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md",
+      "target_query_shape": "balanced bst 뭐예요, 왜 bst가 한쪽으로 기울어요, treemap이 왜 log n이에요",
+      "why_now": "It is lint-clean, beginner-oriented, and can turn common ordered-map questions into a stronger data-structure entrypoint without any Pilot overlap."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No corpus doc was edited because this QA wave only recorded balance-monitor readiness and the current frontmatter/H1 conflict.",
+    "No out-of-scope script or test change was attempted in this lane."
+  ]
+}

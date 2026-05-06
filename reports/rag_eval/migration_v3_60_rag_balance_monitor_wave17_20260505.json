@@ -1,0 +1,54 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00017",
+  "generated_at": "2026-05-05T14:08:10Z",
+  "scope": "drift/saturation/alarm cohort reprioritization and global-gate regression audit",
+  "learner_facing_quality_improvement": "This wave makes learner-facing RAG maintenance more precise by separating a real drift/saturation coverage gap from a new global strict-v3 regression outside the cohort, so the next queue can remove the true blocker before reattempting safe metadata migration.",
+  "cohort_snapshot": {
+    "total_docs": 19,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 19,
+    "frontmatter_present": 4,
+    "frontmatter_missing": 15,
+    "missing_by_category": {
+      "data-structure": 1,
+      "database": 3,
+      "design-pattern": 1,
+      "network": 1,
+      "operating-system": 3,
+      "security": 3,
+      "software-engineering": 2,
+      "spring": 1
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains drift|saturation|alarm, excluding Pilot lock ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/database/histogram-drift-auto-analyze-thresholds.md knowledge/cs/contents/database/summary-drift-detection-bounded-rebuild.md knowledge/cs/contents/network/http2-max-concurrent-streams-pending-queue-saturation.md knowledge/cs/contents/network/queue-saturation-attribution-metrics-runbook.md knowledge/cs/contents/security/absolute-redirect-url-behind-load-balancer-guide.md knowledge/cs/contents/system-design/load-balancer-basics.md knowledge/cs/contents/system-design/load-balancer-drain-and-affinity-primer.md",
+    "global_gate_command": "python -m scripts.learning.rag.corpus_lint --strict --strict-v3 --corpus knowledge/cs/contents",
+    "retrieval_probe_command": "rg -n \"anti-corruption-mapping-drift|http2-max-concurrent-streams-pending-queue-saturation|permission-model-drift-authz-graph-design\" reports/rag_eval state/orchestrator/migration_v3",
+    "lint_probe_result": "all seven sampled frontmatter-present docs still fail the current H1-first authoring lint, so top-of-file v3 metadata remains locally inadmissible in the migrated subset",
+    "global_gate_result": "the live corpus now fails strict-v3 with 21 violations across three non-Pilot data-structure docs (`arraydeque-vs-blockingqueue-service-handoff-primer.md`, `arraydeque-vs-linkedlist-queue-choice-card.md`, `binary-tree-traversal-routing-guide.md`), which means this lane's drift/saturation cohort is no longer the immediate global blocker",
+    "retrieval_probe_result": "eval artifacts already reference `anti-corruption-mapping-drift`, `http2-max-concurrent-streams-pending-queue-saturation`, and `permission-model-drift-authz-graph-design`, confirming that learner-facing retrieval demand exists before full v3 admission is restored"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/software-engineering/anti-corruption-mapping-drift.md",
+      "target_query_shape": "anti corruption mapping drift 뭐예요, external contract drift 왜 생겨요, translation layer drift",
+      "why_now": "It already shows retrieval visibility and covers a software-engineering category that is still below the beginner/intermediate balance target, so it should be first in line once the shared blocker clears."
+    },
+    {
+      "path": "knowledge/cs/contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md",
+      "target_query_shape": "load average 높다, cpu saturation이랑 io wait 어떻게 구분해요, cgroup throttling 먼저 봐야 해요",
+      "why_now": "It is a learner-symptom bridge in an underrepresented operating-system path and remains cleanly outside the Pilot lock."
+    },
+    {
+      "path": "knowledge/cs/contents/security/permission-model-drift-authz-graph-design.md",
+      "target_query_shape": "permission drift 뭐예요, authz graph design 언제 필요해요, role model drift debugging",
+      "why_now": "It already appears in cohort eval output, so attaching v3 metadata after the shared gate fix would strengthen a security category that still lacks intermediate coverage."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No corpus doc was edited because this QA wave only refreshed gate state and restart priority.",
+    "No out-of-scope script or test change was attempted in this lane."
+  ]
+}

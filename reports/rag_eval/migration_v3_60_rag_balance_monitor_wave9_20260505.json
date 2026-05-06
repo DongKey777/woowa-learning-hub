@@ -1,0 +1,47 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00009",
+  "generated_at": "2026-05-05",
+  "scope": "drift/saturation/alarm cohort frontmatter and lint-readiness audit",
+  "learner_facing_quality_improvement": "This wave reduces requeue churn for learner-facing drift and saturation queries by proving that the current blocker is systemic authoring-gate debt, not a bad target choice inside the non-Pilot corpus.",
+  "cohort_snapshot": {
+    "total_docs": 20,
+    "pilot_locked_docs": 1,
+    "non_pilot_docs": 19,
+    "frontmatter_present": 5,
+    "frontmatter_missing": 15,
+    "missing_by_category": {
+      "data-structure": 1,
+      "database": 3,
+      "design-pattern": 1,
+      "network": 1,
+      "operating-system": 3,
+      "security": 3,
+      "software-engineering": 2,
+      "spring": 1
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains drift|saturation|alarm ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/database/histogram-drift-auto-analyze-thresholds.md knowledge/cs/contents/database/summary-drift-detection-bounded-rebuild.md knowledge/cs/contents/design-pattern/strategy-registry-vs-service-locator-drift.md knowledge/cs/contents/network/http2-max-concurrent-streams-pending-queue-saturation.md knowledge/cs/contents/network/queue-saturation-attribution-metrics-runbook.md",
+    "lint_probe_result": "all 5 frontmatter-present docs fail with `first non-empty line must be an H1 (`# ...`)`"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md",
+      "why_now": "Beginner-gap category plus learner symptom phrasing around CPU saturation and throttling"
+    },
+    {
+      "path": "knowledge/cs/contents/network/https-rr-resolver-drift-primer.md",
+      "why_now": "Beginner drift primer with clear paraphrase potential and no Pilot conflict"
+    },
+    {
+      "path": "knowledge/cs/contents/software-engineering/anti-corruption-mapping-drift.md",
+      "why_now": "High-signal retrieval bridge for contract drift reviews once frontmatter can be admitted safely"
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No out-of-scope script change was attempted in this lane.",
+    "No corpus doc was edited because the current authoring gate would fail both new and existing v3-frontmatter docs."
+  ]
+}

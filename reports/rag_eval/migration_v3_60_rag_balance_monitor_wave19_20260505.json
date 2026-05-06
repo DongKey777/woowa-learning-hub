@@ -1,0 +1,54 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00019",
+  "generated_at": "2026-05-05T14:18:52Z",
+  "scope": "balance/monitor/drift/saturation/alarm cohort restart audit after shared strict-v3 recovery",
+  "learner_facing_quality_improvement": "This wave removes stale blocker guidance: learner-facing balance-monitor migration is no longer stalled by unrelated corpus-wide strict-v3 errors, so the next queue can restart on clean non-Pilot docs that already match real retrieval demand instead of wasting cycles on the wrong gate.",
+  "cohort_snapshot": {
+    "total_docs": 27,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 27,
+    "frontmatter_present": 7,
+    "frontmatter_missing": 20,
+    "missing_by_category": {
+      "data-structure": 2,
+      "database": 4,
+      "design-pattern": 1,
+      "network": 2,
+      "operating-system": 5,
+      "security": 3,
+      "software-engineering": 2,
+      "spring": 1
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains balance|rebalance|monitor|drift|saturation|alarm, excluding Pilot lock ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md knowledge/cs/contents/database/striped-guard-row-rebalance-basics.md knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md knowledge/cs/contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md knowledge/cs/contents/operating-system/semaphore-monitor-basics.md knowledge/cs/contents/database/histogram-drift-auto-analyze-thresholds.md knowledge/cs/contents/database/summary-drift-detection-bounded-rebuild.md knowledge/cs/contents/network/http2-max-concurrent-streams-pending-queue-saturation.md knowledge/cs/contents/network/queue-saturation-attribution-metrics-runbook.md knowledge/cs/contents/software-engineering/anti-corruption-mapping-drift.md knowledge/cs/contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md knowledge/cs/contents/security/permission-model-drift-authz-graph-design.md",
+    "global_gate_command": "python -m scripts.learning.rag.corpus_lint --strict --strict-v3 --corpus knowledge/cs/contents",
+    "retrieval_probe_command": "rg -n \"anti-corruption-mapping-drift|semaphore-monitor-basics|permission-model-drift-authz-graph-design|striped-guard-row-rebalance-basics|load-average-triage-cpu-saturation-cgroup-throttling-io-wait|authority-transfer-vs-revoke-lag-primer-bridge|revocation-bus-regional-lag-recovery-design\" reports/rag_eval state/orchestrator/migration_v3",
+    "lint_probe_result": "all eight sampled frontmatter-missing docs still pass the current H1-first authoring lint, while all four sampled frontmatter-present docs still fail with `first non-empty line must be an H1 (`# ...`)`",
+    "global_gate_result": "the live corpus now passes strict-v3 (`[corpus-lint] scanned 2464 files` and `OK — no violations`), so the shared blocker reported in waves 17 and 18 is stale",
+    "retrieval_probe_result": "current eval, archive, and planner artifacts still mention `anti-corruption-mapping-drift`, `semaphore-monitor-basics`, `permission-model-drift-authz-graph-design`, and the revocation-lag cohort, confirming that restart priority should follow learner-demanded non-Pilot docs rather than re-audit shared schema debt"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/operating-system/semaphore-monitor-basics.md",
+      "target_query_shape": "세마포어랑 모니터 차이 뭐예요, monitor 뭐예요, synchronized랑 semaphore 언제 달라요",
+      "why_now": "It is a beginner operating-system bridge with known retrieval visibility and sits in an underrepresented category that can restart immediately without hitting the H1-first frontmatter mismatch."
+    },
+    {
+      "path": "knowledge/cs/contents/software-engineering/anti-corruption-mapping-drift.md",
+      "target_query_shape": "anti corruption mapping drift 뭐예요, external contract drift 왜 생겨요, translation layer drift",
+      "why_now": "It already appears in eval and planner artifacts, so attaching v3 metadata next would improve a software-engineering path with real learner demand instead of adding another saturated beginner primer."
+    },
+    {
+      "path": "knowledge/cs/contents/security/authority-transfer-vs-revoke-lag-primer-bridge.md",
+      "target_query_shape": "권한 회수했는데 왜 아직 접근돼요, authority transfer vs revoke lag basics, disable했는데 still access",
+      "why_now": "It is the clearest beginner security entrypoint in the non-Pilot freshness cohort and creates a cross-category bridge into the already referenced system-design revocation recovery follow-up."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No corpus doc was edited because this QA wave only refreshed restart sequencing after the shared strict-v3 gate recovered.",
+    "No out-of-scope script or test change was attempted in this lane."
+  ]
+}

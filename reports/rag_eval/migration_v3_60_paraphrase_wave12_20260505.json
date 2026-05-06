@@ -1,0 +1,22 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00012",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "corpus_gap_probe refusal-metadata normalization for paraphrase-vs-gap calibration",
+  "learner_facing_quality_improvement": "Refusal calibration now audits the positive paraphrase cohort against a uniformly annotated negative corpus-gap cohort, reducing noisy false-positive analysis before learner-facing RAG fallback decisions.",
+  "changes": {
+    "corpus_gap_queries_total": 20,
+    "forbidden_paths_backfilled_to_empty_array": 19,
+    "missing_rationales_filled": 3,
+    "reformulated_queries_preserved": 20
+  },
+  "rationale_filled_query_ids": [
+    "corpus_gap_probe:lattice_attack_crypto:001",
+    "corpus_gap_probe:wasm_simd:001",
+    "corpus_gap_probe:gpu_kernel_fusion:001"
+  ],
+  "notes": [
+    "This wave did not alter any paraphrase_human prompts or primary-path grading.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

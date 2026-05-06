@@ -1,0 +1,33 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00020",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "paraphrase_human no-alias tightening and acceptable-neighbor normalization for Spring bean DI auto-wiring phrasing",
+  "learner_facing_quality_improvement": "The second Spring bean-DI paraphrase now reads like a real beginner question without leaking the platform name, while eval still treats adjacent DI primers as acceptable answers instead of over-penalizing semantically correct retrieval.",
+  "changes": {
+    "paraphrase_queries_repaired": 1,
+    "prompt_alias_leaks_removed": 1,
+    "acceptable_paths_added": 2,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:bean_di_basics:002"
+  ],
+  "acceptable_neighbor_paths": [
+    "contents/software-engineering/dependency-injection-basics.md",
+    "contents/spring/ioc-di-container.md"
+  ],
+  "verification": {
+    "schema_test": "python -m pytest -q tests/unit/test_qrels_schema.py tests/unit/test_verify_real_qrels.py",
+    "full_verify_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "schema_test_status": "pass",
+    "full_verify_status": "blocked_by_manifest_qrels_alignment_sha256",
+    "query_shape": "객체끼리 연결할 때 그냥 '필요해'라고만 적으면 알아서 채워주는 그게 뭐야?"
+  },
+  "notes": [
+    "The learner-facing prompt no longer says `Spring`; corpus-facing vocabulary remains only in reformulated_query.",
+    "Acceptable neighbors were limited to DI primers that explain the same mental model without changing the target concept family.",
+    "The current full verifier run is blocked by an existing manifest.r3.qrels.sha256 mismatch outside this lane's write scope.",
+    "Pilot-locked corpus docs were not modified."
+  ]
+}

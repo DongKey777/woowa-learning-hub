@@ -1,0 +1,51 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00013",
+  "generated_at": "2026-05-05T14:05:00Z",
+  "scope": "healthcheck/heartbeat/watchdog/alarm cohort frontmatter and retrieval-readiness audit",
+  "learner_facing_quality_improvement": "This wave narrows learner confusion around keepalive, heartbeat, and healthcheck questions by isolating a non-Pilot cohort that is already lint-clean and retrieval-active, so the next metadata migration can improve first-hit routing without touching the Pilot baseline.",
+  "cohort_snapshot": {
+    "total_docs": 5,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 5,
+    "frontmatter_present": 0,
+    "frontmatter_missing": 5,
+    "missing_by_category": {
+      "database": 1,
+      "network": 4
+    },
+    "difficulty_mix": {
+      "beginner": 1,
+      "intermediate": 0,
+      "advanced": 4
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains healthcheck|heartbeat|watchdog|alarm ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/database/transaction-heartbeat-long-running-job-locking.md knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md knowledge/cs/contents/network/tcp-keepalive-vs-app-heartbeat.md",
+    "retrieval_probe_command": "rg -n \"transaction-heartbeat-long-running-job-locking|http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer|websocket-heartbeat-backpressure-reconnect\" reports/rag_eval/r3_v22_cohort_eval_full.json reports/rag_eval/r2_no_rerank_same_queries_20260501T0540Z.json",
+    "lint_probe_result": "all three sampled non-Pilot docs pass the current authoring lint because they still start with an H1; there is no Pilot conflict and no frontmatter/H1 collision yet in this cohort",
+    "retrieval_probe_result": "the keepalive primer already appears in no-rerank drift analysis and the transaction-heartbeat/websocket-heartbeat docs already appear in v22 cohort-eval artifacts, confirming that metadata coverage is the current bottleneck"
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md",
+      "target_query_shape": "keepalive랑 heartbeat 차이 뭐예요, 왜 keepalive인데 끊겨요, idle timeout이랑 heartbeat 헷갈려요",
+      "why_now": "It is the only beginner entrypoint in this cohort and therefore the best first-hit fix for learner confusion."
+    },
+    {
+      "path": "knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md",
+      "target_query_shape": "load balancer healthcheck 왜 실패해요, readiness/liveness 차이, 서버는 살았는데 트래픽이 안 가요",
+      "why_now": "It is the cleanest bridge from load-balancer basics into concrete ops symptoms without any Pilot overlap."
+    },
+    {
+      "path": "knowledge/cs/contents/database/transaction-heartbeat-long-running-job-locking.md",
+      "target_query_shape": "long running job heartbeat lock, transaction heartbeat 뭐예요, 배치 살아있음 신호랑 락은 왜 달라요",
+      "why_now": "It already shows up in evaluation artifacts, so migrating it would turn an existing retrieval signal into a canonical v3 node."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No out-of-scope script change was attempted in this lane.",
+    "No corpus doc was edited because this QA wave only recorded retrieval-readiness for a safe non-Pilot cohort."
+  ]
+}

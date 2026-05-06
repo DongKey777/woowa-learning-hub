@@ -1,0 +1,23 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00018",
+  "generated_at": "2026-05-05",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "sidecar-backed concept-stub verification for the 94.0 cohort gate",
+  "learner_facing_quality_improvement": "The real-qrel gate now accepts concept IDs that already exist in the current lexical sidecar, so learner-facing cohort regressions are verified against the live corpus snapshot instead of failing on catalog promotion lag alone.",
+  "verification": {
+    "pytest_command": "python -m pytest -q tests/unit/test_verify_real_qrels.py",
+    "verify_real_qrels_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94",
+    "unit_test_status": "pass",
+    "full_verify_status": "pass"
+  },
+  "changes": {
+    "new_sidecar_stub_checks": 2,
+    "new_unit_tests": 2,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "This wave stayed inside the qrel verifier, its narrow unit test, and a lane-local report artifact.",
+    "The verifier now uses state/cs_rag/r3_lexical_sidecar.json as the allowed stub source for expected_concepts that are present in the live corpus but not yet promoted into concepts.v3.json."
+  ]
+}

@@ -13,9 +13,9 @@ These tests pin:
   * the helper filters Pilot paths down to lane-relevant ones
   * the v3 prompt header surfaces the AVOID block whenever the lane
     overlaps Pilot territory
-  * lanes outside Pilot territory (qa-only, rag-only) get no block —
-    so the prompt size doesn't bloat for workers that can never hit
-    the issue
+  * qa/rag/ops workers whose target paths do not overlap Pilot
+    territory still get a repository-wide fallback AVOID block,
+    because observed workers can otherwise drift into content docs
 """
 
 from __future__ import annotations
@@ -136,8 +136,10 @@ class V3PromptPilotInjectionTest(unittest.TestCase):
             prompt,
         )
 
-    def test_no_avoid_block_when_no_pilot_in_lane(self) -> None:
-        # rag-only lane has no overlap with knowledge/cs/contents.
+    def test_rag_worker_with_no_pilot_overlap_gets_fallback_avoid(self) -> None:
+        # rag-only profile target_paths have no overlap with
+        # knowledge/cs/contents, but the worker still needs the
+        # repository-wide Pilot lock list to prevent corpus drift.
         with mock.patch.object(
             OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
         ):
@@ -145,9 +147,12 @@ class V3PromptPilotInjectionTest(unittest.TestCase):
                 "migration-v3-60-rag-cohort-eval-gate",
                 "migration-rag",
             )
-        # Header still cites the file for transparency, but the
-        # explicit AVOID list is omitted (lane has no overlap).
-        self.assertNotIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+        self.assertIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+        self.assertIn("Pilot-locked in this repository", prompt)
+        self.assertIn(
+            "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            prompt,
+        )
 
     def test_no_avoid_block_when_lock_file_missing(self) -> None:
         with mock.patch.object(OW, "_load_pilot_lock_paths", return_value=set()):
@@ -206,6 +211,11 @@ class LegacyPromptPilotInjectionTest(unittest.TestCase):
             "knowledge/cs/contents/spring/spring-bean-di-basics.md",
             prompt,
         )
+        self.assertLess(
+            prompt.index("PILOT LOCK PATHS IN YOUR LANE"),
+            prompt.index("Task:"),
+        )
+        self.assertIn("Pilot lock override", prompt)
 
     def test_migration_v3_fleet_also_covered(self) -> None:
         # Both migration_v3 and migration_v3_60 are migration fleets
@@ -247,11 +257,13 @@ class LegacyPromptPilotInjectionTest(unittest.TestCase):
             )
         self.assertNotIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
 
-    def test_migration_fleet_workers_with_no_corpus_overlap_skip_avoid(self) -> None:
+    def test_migration_fleet_workers_with_no_corpus_overlap_get_fallback_avoid(
+        self,
+    ) -> None:
         # rag-paraphrase worker has target_paths=['tests/fixtures/...',
         # 'reports/rag_eval/**'] — no overlap with knowledge/cs/contents.
-        # The AVOID block should be empty (no Pilot paths to list)
-        # rather than spurious, so the prompt stays compact.
+        # It still gets a repository-wide AVOID block because this
+        # worker repeatedly drifted into Pilot-locked corpus docs.
         with mock.patch.object(
             OW, "_load_pilot_lock_paths", return_value=set(_FAKE_PILOT_PATHS)
         ):
@@ -260,11 +272,29 @@ class LegacyPromptPilotInjectionTest(unittest.TestCase):
                 "migration-rag",
                 fleet_profile="migration_v3_60",
             )
-        # No Pilot paths overlap → no AVOID block. (Handling RAG/ops
-        # workers that drift outside their write_scope is a separate
-        # concern — the completion gate's write-scope check, not this
-        # prompt-side AVOID list.)
-        self.assertNotIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+        self.assertIn("PILOT LOCK PATHS IN YOUR LANE", prompt)
+        self.assertIn("Pilot-locked in this repository", prompt)
+        self.assertIn(
+            "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            prompt,
+        )
+
+    def test_rag_paraphrase_work_scope_uses_profile_target_paths(self) -> None:
+        with mock.patch.object(OW, "_load_pilot_lock_paths", return_value=set()):
+            prompt = self._render(
+                "migration-v3-60-rag-paraphrase-robustness",
+                "migration-rag",
+                fleet_profile="migration_v3_60",
+            )
+        self.assertIn(
+            "Work only inside:\n"
+            "- tests/fixtures/r3_qrels_real_v1.json\n"
+            "- reports/rag_eval/**",
+            prompt,
+        )
+        self.assertIn("Migration fleet scope rule", prompt)
+        self.assertIn("Do not edit `knowledge/cs/contents/**` unless", prompt)
+        self.assertNotIn("Work only inside:\n- knowledge/cs/**", prompt)
 
 
 class V3PromptPilotInjectionWithRealLockTest(unittest.TestCase):
