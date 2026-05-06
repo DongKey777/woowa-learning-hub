@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "purpose": "Production R3 CS RAG lock. Runtime auto-selects the R3 retrieval fabric when the remote-built LanceDB v3 BGE-M3 fts+dense+sparse index has a matching R3 lexical sidecar.",
-  "produced_from": "r3-61216f2-2026-05-02T0937",
-  "produced_at": "2026-05-02T09:52:27.813398+00:00",
-  "selected_at": "2026-05-02T20:05:00+09:00",
-  "artifact_sha256": "5eab5b0fb9def8c0c58370eb64abbbbf6fb195c95bc6d4376832c654c3a78e0d",
+  "produced_from": "r3-direct-029ec00-2026-05-04T0611Z",
+  "produced_at": "2026-05-04T06:18:35Z",
+  "selected_at": "2026-05-05T22:34:48+09:00",
+  "artifact_sha256": "fce0d36685fd0d1b08d1bc991aaca29a4a41a3f21b6478cd3a812927e5256c51",
   "artifact": {
-    "path": "artifacts/rag-full-build/r3-61216f2-2026-05-02T0937/cs_rag_index_root.tar.zst",
-    "sha256": "5eab5b0fb9def8c0c58370eb64abbbbf6fb195c95bc6d4376832c654c3a78e0d",
-    "compressed_size_mb": 132.2,
-    "extracted_size_mb": 440.0,
-    "strict_contract": "artifacts/rag-full-build/r3-61216f2-2026-05-02T0937/artifact_contract.json",
-    "artifact_manifest": "artifacts/rag-full-build/r3-61216f2-2026-05-02T0937/manifest.json",
-    "strict_verify_command": ".venv/bin/python -m scripts.remote.artifact_contract artifacts/rag-full-build/r3-61216f2-2026-05-02T0937 --strict-r3 --verify-import"
+    "path": "https://github.com/DongKey777/woowa-learning-hub/releases/download/index-v1.0.0-corpus@029ec00/cs_rag_index_root.tar.zst",
+    "sha256": "fce0d36685fd0d1b08d1bc991aaca29a4a41a3f21b6478cd3a812927e5256c51",
+    "compressed_size_mb": 128.8,
+    "extracted_size_mb": null,
+    "strict_contract": null,
+    "artifact_manifest": "state/cs_rag/manifest.json",
+    "strict_verify_command": null
   },
   "runtime_overlay": {
     "runtime_commit": "788ee99e67b7131e647684592d53bd268eef93f0",
@@ -31,8 +31,8 @@
     "backend": "r3",
     "storage_backend": "lance",
     "index_version": 3,
-    "row_count": 27158,
-    "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+    "row_count": 27238,
+    "corpus_hash": "34b9577555c1024c3a4fe92ddb218398e74367e1749979f2d2d7107bf26a9656",
     "modalities": [
       "fts",
       "dense",
@@ -133,9 +133,9 @@
         "path": "r3_lexical_sidecar.json",
         "schema_version": 1,
         "artifact_kind": "r3_lexical_sidecar",
-        "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
-        "row_count": 27158,
-        "document_count": 27158,
+        "corpus_hash": "34b9577555c1024c3a4fe92ddb218398e74367e1749979f2d2d7107bf26a9656",
+        "row_count": 27238,
+        "document_count": 27238,
         "body_terms_included": false,
         "fields": [
           "title",
