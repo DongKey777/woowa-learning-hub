@@ -45,7 +45,6 @@ confusable_with:
 - network/browser-devtools-blocked-canceled-failed-symptom-router
 - network/browser-504-app-200-symptom-router
 forbidden_neighbors:
-- contents/network/browser-504-app-200-symptom-router.md
 expected_queries:
 - 왜 한참 쉬었다가 보낸 요청은 처음만 실패하고 바로 다시 보내면 성공해?
 - idle 뒤 첫 호출이 failed인데 새로고침 직후에는 200인 이유가 뭐야?

@@ -52,8 +52,6 @@ confusable_with:
 - database/overlapping-bookings-both-succeed-symptom-router
 - database/unique-vs-locking-read-duplicate-primer
 forbidden_neighbors:
-- contents/database/duplicate-key-then-not-found-symptom-router.md
-- contents/database/overlapping-bookings-both-succeed-symptom-router.md
 expected_queries:
 - SELECT FOR UPDATE 결과가 0건인데 왜 같은 key insert 가 둘 다 성공해?
 - 없으면 insert 패턴에서 pre-check 를 했는데도 duplicate 가 나는 원인을 어떻게 나눠?

@@ -49,7 +49,6 @@ confusable_with:
 - database/cache-replica-split-read-inconsistency
 - database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide
 forbidden_neighbors:
-- contents/database/for-update-zero-row-duplicate-insert-symptom-router.md
 - contents/database/lock-timeout-not-already-exists-common-confusion-card.md
 expected_queries:
 - duplicate key 뒤에 왜 select 하면 null 이 나와?

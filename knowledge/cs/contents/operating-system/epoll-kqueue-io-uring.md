@@ -52,8 +52,6 @@ confusable_with:
 - operating-system/epoll-level-edge-oneshot-wakeup-semantics
 - operating-system/io-uring-operational-hazards-registered-resources-sqpoll
 forbidden_neighbors:
-- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
-- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
 expected_queries:
 - 대량 연결 서버에서 epoll이랑 io_uring을 어떤 기준으로 비교해야 해?
 - kqueue까지 포함해서 이벤트 통지 API 선택 기준을 한 번에 정리해줘

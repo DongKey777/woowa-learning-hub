@@ -49,8 +49,6 @@ confusable_with:
 - data-structure/linked-list-basics
 - data-structure/basic
 forbidden_neighbors:
-- contents/data-structure/basic.md
-- contents/data-structure/linked-list-basics.md
 expected_queries:
 - 배열과 연결 리스트 차이를 처음 배우는 관점에서 설명해줘
 - 인덱스 접근이 많을 때 왜 배열 계열을 먼저 보라고 해

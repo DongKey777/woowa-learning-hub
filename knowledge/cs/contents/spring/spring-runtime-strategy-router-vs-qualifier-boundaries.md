@@ -61,7 +61,6 @@ confusable_with:
 - spring/lotto-manual-auto-generator-qualifier-bridge
 - spring/shopping-cart-payment-method-router-qualifier-bridge
 forbidden_neighbors:
-- contents/spring/spring-custom-qualifier-primer.md
 expected_queries:
 - router는 언제 쓰고 qualifier는 언제 써?
 - 처음 배우는데 router랑 qualifier 차이가 뭐야?

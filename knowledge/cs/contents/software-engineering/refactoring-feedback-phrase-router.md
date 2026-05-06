@@ -52,8 +52,6 @@ confusable_with:
 - software-engineering/mission-review-vocabulary-primer
 - software-engineering/test-strategy-basics
 forbidden_neighbors:
-- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
-- contents/software-engineering/test-strategy-basics.md
 expected_queries:
 - 리뷰에서 이름이 역할을 설명하지 못한다는 말을 들었을 때 어디부터 읽어야 해?
 - controller가 너무 많은 일을 한다는 코멘트를 받으면 입력과 규칙과 저장 중 무엇부터 갈라야 해?

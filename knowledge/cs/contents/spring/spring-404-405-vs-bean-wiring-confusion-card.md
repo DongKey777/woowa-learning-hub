@@ -56,7 +56,6 @@ confusable_with:
 - spring/spring-di-exception-quick-triage
 - spring/component-scan-failure-patterns
 forbidden_neighbors:
-- contents/spring/spring-mvc-request-lifecycle.md
 - contents/spring/spring-di-exception-quick-triage.md
 expected_queries:
 - Spring에서 404나 405가 났을 때 왜 DI 예외랑 먼저 분리해서 봐야 해?

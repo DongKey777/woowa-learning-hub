@@ -50,7 +50,6 @@ confusable_with:
 - software-engineering/release-policy-change-freeze-error-budget-coupling
 - software-engineering/feature-flags-rollout-dependency-management
 forbidden_neighbors:
-- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
 expected_queries:
 - 우리 조직이 release train을 유지할지 continuous delivery로 갈지 판단할 때 먼저 볼 기준이 뭐야?
 - 승인 절차가 많은 팀에서도 준비된 변경을 바로 내보낼 수 있는 조건이 있어?

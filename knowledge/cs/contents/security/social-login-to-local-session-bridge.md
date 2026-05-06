@@ -60,7 +60,6 @@ confusable_with:
 - security/subdomain-login-callback-boundaries
 - security/browser-bff-token-boundary-session-translation
 forbidden_neighbors:
-- contents/security/oauth2-authorization-code-grant.md
 - contents/security/session-cookie-jwt-basics.md
 expected_queries:
 - 소셜 로그인 callback까지 성공했는데 서비스에서는 왜 익명 사용자야?

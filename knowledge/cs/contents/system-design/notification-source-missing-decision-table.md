@@ -55,7 +55,6 @@ confusable_with:
 - system-design/causal-consistency-notification-primer
 - software-engineering/tombstone-response-template-and-consumer-guidance
 forbidden_neighbors:
-- contents/system-design/notification-badge-vs-source-freshness-primer.md
 expected_queries:
 - 알림 클릭했더니 상세 화면이 비어 있는데 어디부터 봐야 해?
 - notification click 후 404가 stale인지 권한 문제인지 구분하는 법

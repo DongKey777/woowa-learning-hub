@@ -53,7 +53,6 @@ confusable_with:
 - data-structure/priorityblockingqueue-timer-misuse-primer
 - data-structure/timer-priority-policy-split
 forbidden_neighbors:
-- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
 expected_queries:
 - scheduledexecutorservice랑 delayqueue를 같이 이해하면 뭐가 쉬워져?
 - 자바에서 나중에 실행할 작업을 예약할 때 scheduledexecutorservice 아래 자료구조 감각이 궁금해

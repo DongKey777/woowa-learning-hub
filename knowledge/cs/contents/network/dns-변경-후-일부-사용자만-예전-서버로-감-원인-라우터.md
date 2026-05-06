@@ -50,8 +50,6 @@ confusable_with:
 - network/postman-works-browser-fails-symptom-router
 - network/browser-421-but-curl-200-symptom-router
 forbidden_neighbors:
-- contents/network/first-request-h2-next-request-h3-symptom-router.md
-- contents/network/browser-421-but-curl-200-symptom-router.md
 expected_queries:
 - DNS를 바꿨는데 왜 일부 사용자만 계속 예전 서버로 가요?
 - 배포 후 몇 명만 이전 IP를 보는 상황이면 어디부터 의심해야 해?

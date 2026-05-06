@@ -51,7 +51,6 @@ confusable_with:
   - design-pattern/request-scope-vs-plain-request-objects
   - spring/spring-bean-di-basics
 forbidden_neighbors:
-  - contents/design-pattern/singleton-java.md
 expected_queries:
   - 스프링 singleton bean이랑 고전 singleton 패턴을 같은 걸로 이해하면 왜 위험해?
   - 객체를 하나만 쓰고 싶은데 직접 싱글톤으로 만들지 컨테이너에 맡길지 어떻게 판단해?

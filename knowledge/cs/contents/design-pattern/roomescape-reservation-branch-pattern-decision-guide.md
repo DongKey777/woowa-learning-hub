@@ -52,7 +52,6 @@ forbidden_neighbors:
 - contents/design-pattern/roomescape-strategy-vs-factory-bridge.md
 - contents/design-pattern/roomescape-reservation-booking-policy-object-bridge.md
 - contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md
-- contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md
 expected_queries:
 - roomescape에서 예약 검증기를 나누는 일과 시간 슬롯 객체를 만드는 일을 왜 같은 패턴으로 보면 안 돼?
 - 예약 가능 여부 판정, 구현 선택, 상태 전이를 한 표에서 빠르게 구분하는 기준이 필요해

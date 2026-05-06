@@ -62,7 +62,6 @@ confusable_with:
 - system-design/mixed-cache-replica-freshness-bridge
 - system-design/notification-read-to-min-version-bridge
 forbidden_neighbors:
-- contents/system-design/read-after-write-routing-primer.md
 - contents/system-design/pagination-monotonicity-primer.md
 expected_queries:
 - 상세에서 본 주문 상태가 목록에서 예전 값으로 돌아가면 어떻게 막아?

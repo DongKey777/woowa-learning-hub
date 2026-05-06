@@ -51,7 +51,6 @@ confusable_with:
 - database/distinct-vs-group-by-beginner-card
 - database/result-row-explosion-debugging-checklist
 forbidden_neighbors:
-- contents/database/distinct-vs-group-by-beginner-card.md
 expected_queries:
 - JOIN 뒤에 결과가 갑자기 많아졌을 때 어디부터 의심해야 해?
 - 같은 회원이 여러 줄로 보일 때 진짜 중복인지 조인 구조 때문인지 어떻게 나눠?

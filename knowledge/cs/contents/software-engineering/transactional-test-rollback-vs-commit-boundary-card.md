@@ -62,7 +62,6 @@ confusable_with:
 - software-engineering/testtransaction-vs-commit-choice-mini-card
 - software-engineering/datajpatest-flush-clear-batch-checklist
 forbidden_neighbors:
-- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
 expected_queries:
 - flush를 했는데도 다른 트랜잭션에서 안 보이는 이유를 초심자 기준으로 설명해 줄래?
 - rollback 기반 테스트와 commit visible 테스트를 언제 분리해서 봐야 해?

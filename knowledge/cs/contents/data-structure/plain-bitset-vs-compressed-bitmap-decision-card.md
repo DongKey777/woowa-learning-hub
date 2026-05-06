@@ -49,8 +49,6 @@ confusable_with:
 - data-structure/bitset-vs-roaring-bitmap-beginner-handoff
 - data-structure/roaring-bitmap
 forbidden_neighbors:
-- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
-- contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md
 expected_queries:
 - max id는 큰데 실제 값은 듬성듬성한 집합에서 plain bitmap이 왜 비효율적인지 설명해줘
 - 정수 id 집합을 exact AND OR로 계속 합칠 때 Set 대신 압축 bitmap을 보는 기준이 궁금해

@@ -49,7 +49,6 @@ confusable_with:
 - database/overlapping-bookings-both-succeed-symptom-router
 - database/unique-vs-version-cas-vs-for-update-chooser
 forbidden_neighbors:
-- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
 expected_queries:
 - unique, slot row, guard row는 언제 골라?
 - insert if absent 문제에서 guard row가 필요한 경우가 뭐야?

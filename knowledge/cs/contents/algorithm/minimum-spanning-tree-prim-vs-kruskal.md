@@ -48,7 +48,6 @@ confusable_with:
 - algorithm/kruskal-union-find-beginner-bridge
 - algorithm/sparse-graph-shortest-paths
 forbidden_neighbors:
-- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
 expected_queries:
 - 모든 도시를 최소 비용으로 한 번에 연결하는 문제면 최단 경로가 아니라 무엇을 봐야 해?
 - Prim과 Kruskal을 입력 형태 기준으로 어떻게 나누면 덜 헷갈릴까?

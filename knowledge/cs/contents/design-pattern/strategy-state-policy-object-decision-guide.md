@@ -46,8 +46,6 @@ confusable_with:
   - design-pattern/state-pattern-workflow-payment
   - design-pattern/policy-object-pattern
 forbidden_neighbors:
-  - contents/design-pattern/strategy-pattern-basics.md
-  - contents/design-pattern/state-pattern-workflow-payment.md
 expected_queries:
   - 결제 수단을 고르는 로직이랑 주문 상태 전이는 어떻게 다르게 봐야 해?
   - 환불 가능 여부를 판단하는 객체는 strategy보다 policy object가 더 맞아?

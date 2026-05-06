@@ -55,8 +55,6 @@ confusable_with:
 - security/iframe-login-privacy-controls-primer
 - security/xss-csrf-basics
 forbidden_neighbors:
-- contents/security/samesite-none-cross-site-login-primer.md
-- contents/security/iframe-login-privacy-controls-primer.md
 expected_queries:
 - iframe 로그인은 되는데 첫 POST만 403이면 어디부터 봐야 해?
 - SameSite=None으로 쿠키는 붙는데 상태 변경 요청은 왜 또 막아야 해?

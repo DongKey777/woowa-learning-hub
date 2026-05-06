@@ -58,7 +58,6 @@ confusable_with:
 - software-engineering/api-design-error-handling
 - spring/valid-400-vs-message-conversion-400-primer
 forbidden_neighbors:
-- contents/software-engineering/api-design-error-handling.md
 - contents/software-engineering/exception-handling-basics.md
 expected_queries:
 - 중복 리소스나 상태 충돌은 언제 409로 보는 게 자연스러워?

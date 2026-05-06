@@ -48,8 +48,6 @@ confusable_with:
 - database/transaction-timeout-vs-lock-timeout
 - database/online-schema-change-strategies
 forbidden_neighbors:
-- contents/database/transaction-timeout-vs-lock-timeout.md
-- contents/database/online-schema-change-strategies.md
 expected_queries:
 - ALTER TABLE 이 계속 안 끝날 때 row lock 말고 무엇부터 의심해야 해?
 - Waiting for table metadata lock 이 보이면 원인을 어떤 갈래로 나눠 봐야 해?

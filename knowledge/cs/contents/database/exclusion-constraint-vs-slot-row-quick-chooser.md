@@ -59,7 +59,6 @@ confusable_with:
 - database/phantom-safe-booking-patterns-primer
 - database/constraint-first-booking-primer
 forbidden_neighbors:
-- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
 expected_queries:
 - 예약 시간이 겹치면 PostgreSQL 에서는 exclusion constraint 랑 slot row 중 뭘 먼저 봐?
 - 숙박처럼 연속 구간 예약이면 slot row 보다 다른 방법이 더 맞아?

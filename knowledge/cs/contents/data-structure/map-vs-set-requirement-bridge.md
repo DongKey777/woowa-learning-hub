@@ -53,8 +53,6 @@ confusable_with:
 - data-structure/hashset-vs-treeset-beginner-bridge
 - data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
 forbidden_neighbors:
-- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
-- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
 expected_queries:
 - Map이랑 Set을 요구사항 기준으로 어떻게 나눠 골라
 - 중복 제거만 필요할 때랑 값까지 저장해야 할 때 기준을 알려줘

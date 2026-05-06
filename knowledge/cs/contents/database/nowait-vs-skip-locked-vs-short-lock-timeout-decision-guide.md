@@ -50,7 +50,6 @@ confusable_with:
   - database/queue-claim-skip-locked-fairness
 forbidden_neighbors:
   - contents/database/nowait-vs-short-lock-timeout-busy-guide.md
-  - contents/database/queue-claim-skip-locked-fairness.md
 expected_queries:
   - 잠겨 있으면 바로 실패해야 하는지 다른 row를 집어야 하는지 조금 기다렸다 포기해야 하는지 어떻게 고르지?
   - DB queue에서 SKIP LOCKED를 쓰는 상황과 NOWAIT를 쓰는 상황을 한 표로 비교해줘

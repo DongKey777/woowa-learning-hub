@@ -48,7 +48,6 @@ confusable_with:
   - design-pattern/facade-vs-adapter-vs-proxy
   - spring/aop-proxy-mechanism
 forbidden_neighbors:
-  - contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md
   - contents/spring/aop-proxy-mechanism.md
 expected_queries:
   - 외부 API를 감싼 클래스가 facade인지 adapter인지 proxy인지 어떻게 구분해?

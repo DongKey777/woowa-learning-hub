@@ -52,7 +52,6 @@ confusable_with:
 - database/range-invariant-enforcement-write-skew-phantom
 - database/read-committed-vs-repeatable-read-vs-serializable-decision-guide
 forbidden_neighbors:
-- contents/database/read-committed-vs-repeatable-read-vs-serializable-decision-guide.md
 expected_queries:
 - 재고가 꼬였는데 이게 같은 row 덮어쓰기인지 범위 문제인지 어떻게 나눠 봐?
 - 두 요청이 각자 다른 row를 바꿨는데 전체 규칙이 깨졌다면 어떤 anomaly로 보는 게 맞아?

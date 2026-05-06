@@ -52,8 +52,6 @@ confusable_with:
 - operating-system/eventfd-signalfd-epoll-control-plane-integration
 - operating-system/unix-domain-socket-fd-passing-credentials
 forbidden_neighbors:
-- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
-- contents/operating-system/unix-domain-socket-fd-passing-credentials.md
 expected_queries:
 - 부모 자식 프로세스 통신에서 pipe, socketpair, eventfd, memfd를 어떤 질문으로 골라야 해?
 - stdout 캡처, 제어 메시지, wakeup 신호, 큰 payload 전달을 IPC primitive 기준으로 나눠서 설명해줘

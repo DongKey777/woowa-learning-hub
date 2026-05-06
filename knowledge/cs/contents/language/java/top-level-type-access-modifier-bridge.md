@@ -54,8 +54,6 @@ confusable_with:
 - language/java-access-modifiers-member-model-basics
 forbidden_neighbors:
 - contents/language/java/java-package-boundary-quickcheck-card.md
-- contents/language/java/java-package-import-boundary-basics.md
-- contents/language/java/java-access-modifiers-member-model-basics.md
 expected_queries:
 - Java top-level 타입에 붙일 수 있는 접근 제한자만 빠르게 정리해줘
 - record랑 enum도 파일 최상단이면 public 아니면 package-private만 되나?

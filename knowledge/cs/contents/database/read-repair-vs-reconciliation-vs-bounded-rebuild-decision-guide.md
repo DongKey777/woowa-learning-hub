@@ -49,7 +49,6 @@ confusable_with:
 - database/cdc-gap-repair-reconciliation-playbook
 - database/summary-drift-detection-bounded-rebuild
 forbidden_neighbors:
-- contents/database/read-repair-reconciliation-after-failover.md
 - contents/database/summary-drift-detection-bounded-rebuild.md
 expected_queries:
 - failover 뒤 stale read가 보일 때 read repair랑 reconciliation job 중 어디서 시작해?

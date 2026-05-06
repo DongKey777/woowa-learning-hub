@@ -48,7 +48,6 @@ confusable_with:
 - security/fetch-credentials-vs-cookie-scope
 - security/auth-failure-response-401-403-404
 forbidden_neighbors:
-- contents/security/auth-failure-response-401-403-404.md
 expected_queries:
 - 네트워크 탭에 OPTIONS만 뜨고 실제 POST가 안 보이면 어디부터 봐야 해?
 - CORS 에러가 뜨는데 서버 로그에 본 요청이 없을 때 무엇을 의심해야 해?

@@ -48,9 +48,6 @@ confusable_with:
 - software-engineering/testtransaction-vs-commit-choice-mini-card
 - spring/spring-after-commit-rollback-slice-test-mini-card
 forbidden_neighbors:
-- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
-- contents/software-engineering/testtransaction-vs-commit-choice-mini-card.md
-- contents/spring/spring-after-commit-rollback-slice-test-mini-card.md
 expected_queries:
 - rollback 기반 테스트에서 AFTER_COMMIT 리스너가 안 도는 이유를 초심자 기준으로 설명해 줘
 - 이벤트는 발행됐는데 commit 뒤 listener는 왜 안 보일 수 있어?

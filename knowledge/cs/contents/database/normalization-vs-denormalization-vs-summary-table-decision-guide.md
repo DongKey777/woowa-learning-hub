@@ -50,7 +50,6 @@ confusable_with:
 - database/incremental-summary-table-refresh-watermark
 - database/summary-drift-detection-bounded-rebuild
 forbidden_neighbors:
-- contents/database/incremental-summary-table-refresh-watermark.md
 expected_queries:
 - 조회가 느릴 때 정규화를 풀어야 하는지 summary table을 만들어야 하는지 어떻게 고르지?
 - admin 목록 때문에 JOIN이 많은데 반정규화와 읽기 전용 집계 테이블 중 어디서 시작해야 해?

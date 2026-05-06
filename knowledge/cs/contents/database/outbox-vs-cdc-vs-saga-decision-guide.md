@@ -49,8 +49,6 @@ confusable_with:
 - database/outbox-saga-eventual-consistency
 - database/saga-pivot-transaction-design
 forbidden_neighbors:
-- contents/database/cdc-debezium-outbox-binlog.md
-- contents/database/outbox-saga-eventual-consistency.md
 - contents/software-engineering/outbox-vs-inbox-order-example-primer.md
 expected_queries:
 - 주문 저장 후 이벤트도 같이 내보내야 할 때 outbox, CDC, saga 중 무엇부터 골라야 해?

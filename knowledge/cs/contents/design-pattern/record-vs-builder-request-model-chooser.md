@@ -55,8 +55,6 @@ confusable_with:
 - design-pattern/constructor-vs-static-factory-vs-factory-pattern
 - design-pattern/builder-pattern-basics
 forbidden_neighbors:
-- contents/design-pattern/request-object-creation-vs-di-container.md
-- contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
 expected_queries:
 - 요청 모델이 작은데 builder까지 붙여야 하는지 판단 기준이 뭐야?
 - record로 끝낼 DTO와 정적 팩토리로 올릴 DTO를 어떻게 나눠?

@@ -55,8 +55,6 @@ confusable_with:
 - security/input-validation-basics
 - software-engineering/domain-invariants-as-contracts
 forbidden_neighbors:
-- contents/security/input-validation-basics.md
-- contents/software-engineering/domain-invariants-as-contracts.md
 expected_queries:
 - 요청 DTO 검증이랑 도메인 상태 규칙은 어디서 끊어 생각해야 해?
 - 빈 문자열 체크와 취소된 주문 결제 금지 규칙을 왜 같은 층에서 다루면 안 돼?

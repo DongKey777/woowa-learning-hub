@@ -60,8 +60,6 @@ confusable_with:
 - algorithm/dfs-bfs-intro
 - algorithm/zero-one-bfs-grid-conversion-primer
 forbidden_neighbors:
-- contents/algorithm/dfs-bfs-intro.md
-- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
 expected_queries:
 - 0-1 BFS에서 visited만 쓰면 왜 오답이 되는지 작은 반례로 보고 싶어
 - 처음 도착한 값보다 더 싼 경로가 나오는 0-1 BFS 예시를 설명해줘

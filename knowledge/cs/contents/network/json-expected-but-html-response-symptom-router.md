@@ -55,7 +55,6 @@ confusable_with:
 - network/browser-devtools-blocked-canceled-failed-symptom-router
 - network/ssr-view-render-vs-json-api-response-basics
 forbidden_neighbors:
-- contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md
 expected_queries:
 - API 응답이 JSON이 아니라 HTML로 오면 어디부터 봐야 해?
 - fetch가 성공처럼 보이는데 login 페이지 HTML이 내려오는 이유가 뭐야?

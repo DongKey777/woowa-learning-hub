@@ -59,7 +59,6 @@ confusable_with:
   - design-pattern/template-method-vs-strategy
   - design-pattern/strategy-explosion-smell
 forbidden_neighbors:
-  - contents/design-pattern/template-method-basics.md
   - contents/design-pattern/template-method-query-router-beginner.md
 expected_queries:
   - template method에 hook를 계속 추가하고 있는데 이게 과한 설계인지 판단하고 싶어

@@ -1,0 +1,1440 @@
+{
+  "total_collisions": 205,
+  "safe_count": 78,
+  "ambiguous_count": 63,
+  "unknown_target_count": 64,
+  "pair_distribution": {
+    "chooser->bridge": 4,
+    "chooser->?": 39,
+    "bridge->chooser": 6,
+    "bridge->primer": 14,
+    "chooser->chooser": 12,
+    "symptom_router->?": 12,
+    "chooser->primer": 11,
+    "bridge->drill": 2,
+    "bridge->?": 13,
+    "symptom_router->bridge": 3,
+    "bridge->bridge": 6,
+    "bridge->mission_bridge": 1,
+    "symptom_router->symptom_router": 21,
+    "symptom_router->deep_dive": 1,
+    "chooser->mission_bridge": 18,
+    "chooser->deep_dive": 8,
+    "symptom_router->mission_bridge": 27,
+    "symptom_router->primer": 2,
+    "chooser->playbook": 1,
+    "symptom_router->chooser": 2,
+    "chooser->symptom_router": 1,
+    "symptom_router->playbook": 1
+  },
+  "safe_cases": [
+    {
+      "src_path": "knowledge/cs/contents/algorithm/bfs-visited-array-vs-set-java-beginner-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/map-vs-set-requirement-bridge.md",
+      "matching_slug": "map-vs-set-requirement-bridge",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/kruskal-union-find-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md",
+      "matching_slug": "minimum-spanning-tree-prim-vs-kruskal",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/kruskal-union-find-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/union-find-standalone-beginner-primer.md",
+      "matching_slug": "union-find-standalone-beginner-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md",
+      "matching_slug": "dijkstra-bellman-ford-floyd-warshall",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/sort-to-binary-search-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/algorithm/binary-search-intro.md",
+      "matching_slug": "binary-search-intro",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/algorithm/dfs-bfs-intro.md",
+      "matching_slug": "dfs-bfs-intro",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/zero-one-bfs-dist-vs-visited-counterexamples.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/algorithm/zero-one-bfs-grid-conversion-primer.md",
+      "matching_slug": "zero-one-bfs-grid-conversion-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/zero-one-bfs-state-space-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/algorithm/dfs-bfs-intro.md",
+      "matching_slug": "dfs-bfs-intro",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/zero-one-bfs-state-visited-vs-dist-starter-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/algorithm/zero-one-bfs-grid-conversion-primer.md",
+      "matching_slug": "zero-one-bfs-grid-conversion-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/array-vs-linked-list.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/basic.md",
+      "matching_slug": "basic",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/array-vs-linked-list.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/linked-list-basics.md",
+      "matching_slug": "basic",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/array-vs-linked-list.md",
+      "matching_slug": "array-vs-linked-list",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md",
+      "matching_slug": "arraydeque-vs-blockingqueue-service-handoff-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/map-vs-set-requirement-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/hashset-vs-treeset-beginner-bridge.md",
+      "matching_slug": "hashset-vs-treeset-beginner-bridge",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/treemap-key-entry-strictness-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md",
+      "matching_slug": "treemap-floorentry-ceilingentry-value-read-micro-drill",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/already-exists-vs-busy-vs-retryable-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/db-timeout-first-splitter.md",
+      "matching_slug": "db-timeout-first-splitter",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/db-timeout-first-splitter.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/connection-pool-basics.md",
+      "matching_slug": "connection-pool",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/duplicate-key-then-not-found-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/for-update-zero-row-duplicate-insert-symptom-router.md",
+      "matching_slug": "for-update-zero-row-duplicate-insert-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md",
+      "matching_slug": "unique-vs-slot-row-vs-guard-row-quick-chooser",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/for-update-zero-row-duplicate-insert-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/duplicate-key-then-not-found-symptom-router.md",
+      "matching_slug": "duplicate-key-then-not-found-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/for-update-zero-row-duplicate-insert-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/overlapping-bookings-both-succeed-symptom-router.md",
+      "matching_slug": "overlapping-bookings-both-succeed-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/lost-update-vs-write-skew-vs-phantom-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/read-committed-vs-repeatable-read-vs-serializable-decision-guide.md",
+      "matching_slug": "read-committed-vs-repeatable-read-vs-serializable-decision-guide",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/offset-vs-seek-pagination-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/read-after-write-routing-decision-guide.md",
+      "matching_slug": "read-after-write-routing-decision-guide",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/overlapping-bookings-both-succeed-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/for-update-zero-row-duplicate-insert-symptom-router.md",
+      "matching_slug": "for-update-zero-row-duplicate-insert-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/payment-succeeded-but-order-not-visible-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/pagination-duplicates-missing-symptom-router.md",
+      "matching_slug": "pagination-duplicates-missing-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/payment-succeeded-but-order-not-visible-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/duplicate-key-then-not-found-symptom-router.md",
+      "matching_slug": "duplicate-key-then-not-found-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/roomescape-reschedule-old-slot-still-blocked-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/roomescape-available-times-empty-cause-router.md",
+      "matching_slug": "roomescape-available-times-empty-cause-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md",
+      "matching_slug": "exclusion-constraint-vs-slot-row-quick-chooser",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/pipeline-vs-chain-of-responsibility.md",
+      "matching_slug": "pipeline-vs-chain-of-responsibility",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/command-vs-strategy-quick-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/design-pattern/command-pattern-basics.md",
+      "matching_slug": "command-pattern-basics",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/command-vs-strategy-quick-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/design-pattern/strategy-pattern-basics.md",
+      "matching_slug": "strategy-pattern-basics",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/factory-vs-abstract-factory-vs-builder.md",
+      "matching_slug": "factory",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/facade-vs-adapter-vs-proxy-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md",
+      "matching_slug": "adapter-vs-facade-vs-decorator-beginner-router",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/design-pattern/strategy-map-vs-registry-primer.md",
+      "matching_slug": "strategy-map-vs-registry-primer",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/design-pattern/policy-object-pattern.md",
+      "matching_slug": "policy-object-pattern",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/record-vs-builder-request-model-chooser.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md",
+      "matching_slug": "constructor-vs-static-factory-vs-factory-pattern",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branch-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md",
+      "matching_slug": "roomescape-reservation-responsibility-placement-decision-guide",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/strategy-explosion-smell.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/strategy-pattern-basics.md",
+      "matching_slug": "strategy-pattern-basics",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/strategy-state-policy-object-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/strategy-pattern-basics.md",
+      "matching_slug": "strategy-pattern-basics",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/language/java/java-default-package-avoid-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/language/java/top-level-type-access-modifier-bridge.md",
+      "matching_slug": "top-level-type-access-modifier-bridge",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/language/java/top-level-type-access-modifier-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/language/java/java-package-import-boundary-basics.md",
+      "matching_slug": "java-package-import-boundary-basics",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/language/java/top-level-type-access-modifier-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/language/java/java-access-modifiers-member-model-basics.md",
+      "matching_slug": "java-access-modifiers-member-model-basics",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md",
+      "matching_slug": "edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/idle-first-fail-second-success-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-504-app-200-symptom-router.md",
+      "matching_slug": "browser-504-app-200-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/json-expected-but-html-response-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md",
+      "matching_slug": "fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/options만-보이고-실제-요청은-안-감-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/security/auth-failure-response-401-403-404.md",
+      "matching_slug": "auth-failure-response-401-403-404",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/postman은-되는데-브라우저만-안-됨-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/json-expected-but-html-response-symptom-router.md",
+      "matching_slug": "json-expected-but-html-response-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/다운로드는-시작됐는데-중간에-끊김-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/request-pending-forever-symptom-router.md",
+      "matching_slug": "request-pending-forever-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/다운로드는-시작됐는데-중간에-끊김-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-devtools-blocked-canceled-failed-symptom-router.md",
+      "matching_slug": "browser-devtools-blocked-canceled-failed-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/브라우저는-502인데-앱-로그는-없음-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-devtools-blocked-canceled-failed-symptom-router.md",
+      "matching_slug": "browser-devtools-blocked-canceled-failed-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/브라우저는-502인데-앱-로그는-없음-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-504-app-200-symptom-router.md",
+      "matching_slug": "browser-504-app-200-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/브라우저는-503인데-앱-로그는-없음-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/http-429-no-app-log-symptom-router.md",
+      "matching_slug": "http-429-no-app-log-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/브라우저는-503인데-앱-로그는-없음-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-504-app-200-symptom-router.md",
+      "matching_slug": "browser-504-app-200-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/웹소켓은-연결됐는데-메시지가-늦음-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/request-pending-forever-symptom-router.md",
+      "matching_slug": "request-pending-forever-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/웹소켓은-연결됐는데-메시지가-늦음-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-devtools-blocked-canceled-failed-symptom-router.md",
+      "matching_slug": "browser-devtools-blocked-canceled-failed-symptom-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/broken-pipe-sigpipe-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/subprocess-pipe-backpressure-primer.md",
+      "matching_slug": "subprocess-pipe-backpressure-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/pseudo-tty-vs-pipe-behavior.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/operating-system/stdio-buffering-after-redirect.md",
+      "matching_slug": "stdio-buffering-after-redirect",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/pseudo-tty-vs-pipe-behavior.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/operating-system/why-some-prompts-use-dev-tty.md",
+      "matching_slug": "why-some-prompts-use-dev-tty",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/stdio-buffering-after-redirect.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/subprocess-pipe-backpressure-primer.md",
+      "matching_slug": "subprocess-pipe-backpressure-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/stdio-buffering-after-redirect.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/pseudo-tty-vs-pipe-behavior.md",
+      "matching_slug": "pseudo-tty-vs-pipe-behavior",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/tty-aware-output-capture-patterns.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/pseudo-tty-vs-pipe-behavior.md",
+      "matching_slug": "pseudo-tty-vs-pipe-behavior",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/tty-aware-output-capture-patterns.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/stdio-buffering-after-redirect.md",
+      "matching_slug": "stdio-buffering-after-redirect",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/why-some-prompts-use-dev-tty.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/subprocess-stdin-eof-primer.md",
+      "matching_slug": "subprocess-stdin-eof-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/why-some-prompts-use-dev-tty.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/pseudo-tty-vs-pipe-behavior.md",
+      "matching_slug": "pseudo-tty-vs-pipe-behavior",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/subdomain-callback-handoff-chooser.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/security/social-login-to-local-session-bridge.md",
+      "matching_slug": "social-login-to-local-session-bridge",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/after-commit-listener-rollback-test-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md",
+      "matching_slug": "transactional-test-rollback-vs-commit-boundary-card",
+      "target_role": "chooser"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/clean-architecture-layered-modular-monolith.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/architecture-layering-fundamentals.md",
+      "matching_slug": "architecture-layering-fundamentals",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/clean-architecture-layered-modular-monolith.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/ports-and-adapters-beginner-primer.md",
+      "matching_slug": "ports-and-adapters-beginner-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-bean-not-found-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/spring/spring-same-type-bean-injection-failure-cause-router.md",
+      "matching_slug": "same-type-bean-injection-failure-cause-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/spring-custom-qualifier-primer.md",
+      "matching_slug": "spring-custom-qualifier-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-same-name-bean-collision-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/spring/spring-same-type-bean-injection-failure-cause-router.md",
+      "matching_slug": "same-type-bean-injection-failure-cause-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-same-name-bean-collision-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/spring/spring-bean-not-found-cause-router.md",
+      "matching_slug": "bean-not-found-cause-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-starter-bean-missing-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/spring/spring-bean-not-found-cause-router.md",
+      "matching_slug": "bean-not-found-cause-router",
+      "target_role": "symptom_router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/system-design/cache-hit-miss-session-policy-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/system-design/read-after-write-routing-primer.md",
+      "matching_slug": "read-after-write-routing-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/system-design/list-detail-monotonicity-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/system-design/read-after-write-routing-primer.md",
+      "matching_slug": "read-after-write-routing-primer",
+      "target_role": "primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/system-design/notification-read-to-min-version-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/system-design/list-detail-monotonicity-bridge.md",
+      "matching_slug": "list-detail-monotonicity-bridge",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/system-design/notification-read-to-min-version-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/system-design/notification-causal-token-walkthrough.md",
+      "matching_slug": "notification-causal-token-walkthrough",
+      "target_role": "bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/system-design/notification-source-missing-decision-table.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/system-design/notification-badge-vs-source-freshness-primer.md",
+      "matching_slug": "notification-badge-vs-source-freshness-primer",
+      "target_role": "primer"
+    }
+  ],
+  "ambiguous_cases": [
+    {
+      "src_path": "knowledge/cs/contents/algorithm/zero-one-bfs-full-path-lexicographic-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/algorithm/zero-one-bfs-parent-tie-mini-note.md",
+      "matching_slug": "zero-one-bfs-parent-tie-mini-note",
+      "target_role": "drill",
+      "note": "pair ('bridge', 'drill') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md",
+      "matching_slug": "scheduledexecutorservice-vs-delayqueue-bridge",
+      "target_role": "bridge",
+      "note": "pair ('symptom_router', 'bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/treemap-key-entry-strictness-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/treemap-neighbor-query-micro-drill.md",
+      "matching_slug": "treemap-neighbor-query-micro-drill",
+      "target_role": "drill",
+      "note": "pair ('bridge', 'drill') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/treemap-nearest-slot-disjoint-interval-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge.md",
+      "matching_slug": "priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/failover-after-old-new-flip-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/replica-lag-read-after-write-strategies.md",
+      "matching_slug": "replica-lag-read-after-write-strategies",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/offset-vs-seek-pagination-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/roomescape-admin-reservation-list-pagination-stability-bridge.md",
+      "matching_slug": "roomescape-admin-reservation-list-pagination-stability-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/read-after-write-routing-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/read-your-writes-session-pinning.md",
+      "matching_slug": "read-your-writes-session-pinning",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/read-after-write-routing-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/replica-lag-read-after-write-strategies.md",
+      "matching_slug": "replica-lag-read-after-write-strategies",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/summary-drift-detection-bounded-rebuild.md",
+      "matching_slug": "summary-drift-detection-bounded-rebuild",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/read-your-writes-session-pinning.md",
+      "matching_slug": "read-your-writes-session-pinning",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/roomescape-reservation-create-read-after-write-bridge.md",
+      "matching_slug": "roomescape-reservation-create-read-after-write-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/roomescape-availability-vs-stale-read-vs-concurrency-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/roomescape-available-times-active-predicate-antijoin-bridge.md",
+      "matching_slug": "roomescape-available-times-active-predicate-antijoin-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/roomescape-available-times-empty-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/roomescape-reservation-concurrency-bridge.md",
+      "matching_slug": "roomescape-reservation-concurrency-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/shopping-cart-reclick-concurrent-write-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/shopping-cart-cart-item-merge-unique-upsert-bridge.md",
+      "matching_slug": "shopping-cart-cart-item-merge-unique-upsert-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/shopping-cart-reclick-concurrent-write-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge.md",
+      "matching_slug": "shopping-cart-cart-item-quantity-lost-update-version-cas-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/baseball-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/baseball-turn-processing-service-layer-bridge.md",
+      "matching_slug": "baseball-turn-processing-service-layer-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/baseball-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/baseball-restart-flow-state-pattern-bridge.md",
+      "matching_slug": "baseball-restart-flow-state-pattern-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/baseball-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/baseball-strike-ball-judging-policy-object-bridge.md",
+      "matching_slug": "baseball-strike-ball-judging-policy-object-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/decorator-vs-proxy-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/aop-proxy-mechanism.md",
+      "matching_slug": "aop-proxy-mechanism",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/facade-vs-adapter-vs-proxy-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/aop-proxy-mechanism.md",
+      "matching_slug": "aop-proxy-mechanism",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/factory-switch-registry-smell.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/service-locator-antipattern.md",
+      "matching_slug": "service-locator-antipattern",
+      "target_role": "bridge",
+      "note": "pair ('symptom_router', 'bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/lotto-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/lotto-static-factory-bridge.md",
+      "matching_slug": "lotto-static-factory-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/lotto-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/lotto-manual-auto-number-generator-strategy-bridge.md",
+      "matching_slug": "lotto-manual-auto-number-generator-strategy-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/lotto-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/lotto-strategy-rank-decision-bridge.md",
+      "matching_slug": "lotto-strategy-rank-decision-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/lotto-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/lotto-winning-statistics-result-object-bridge.md",
+      "matching_slug": "lotto-winning-statistics-result-object-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branch-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/roomescape-strategy-vs-factory-bridge.md",
+      "matching_slug": "roomescape-strategy-vs-factory-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branch-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/roomescape-reservation-booking-policy-object-bridge.md",
+      "matching_slug": "roomescape-reservation-booking-policy-object-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branch-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md",
+      "matching_slug": "roomescape-reservation-status-state-pattern-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branching-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md",
+      "matching_slug": "roomescape-reservation-status-state-pattern-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branching-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/roomescape-strategy-vs-factory-bridge.md",
+      "matching_slug": "roomescape-strategy-vs-factory-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/roomescape-reservation-branching-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/service-locator-antipattern.md",
+      "matching_slug": "service-locator-antipattern",
+      "target_role": "bridge",
+      "note": "pair ('symptom_router', 'bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md",
+      "matching_slug": "shopping-cart-payment-method-router-qualifier-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/shopping-cart-coupon-promotion-policy-object-bridge.md",
+      "matching_slug": "shopping-cart-coupon-promotion-policy-object-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/shopping-cart-order-status-state-pattern-bridge.md",
+      "matching_slug": "shopping-cart-order-status-state-pattern-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-if-else-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge.md",
+      "matching_slug": "shopping-cart-pending-order-expiry-process-manager-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md",
+      "matching_slug": "shopping-cart-payment-method-router-qualifier-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/shopping-cart-coupon-promotion-policy-object-bridge.md",
+      "matching_slug": "shopping-cart-coupon-promotion-policy-object-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/shopping-cart-order-status-state-pattern-bridge.md",
+      "matching_slug": "shopping-cart-order-status-state-pattern-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/shopping-cart-checkout-pattern-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge.md",
+      "matching_slug": "shopping-cart-pending-order-expiry-process-manager-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/language/java/async-profiler-vs-jfr-comparison.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/language/java/jfr-event-interpretation.md",
+      "matching_slug": "jfr-event-interpretation",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/language/java/async-profiler-vs-jfr-comparison.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/language/java/jfr-jmc-performance-playbook.md",
+      "matching_slug": "jfr-jmc-performance-playbook",
+      "target_role": "playbook"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/security/cookie-scope-mismatch-guide.md",
+      "matching_slug": "cookie-scope-mismatch-guide",
+      "target_role": "deep_dive"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/blackjack-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/blackjack-turn-flow-state-pattern-bridge.md",
+      "matching_slug": "blackjack-turn-flow-state-pattern-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/blackjack-big-if-responsibility-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/blackjack-winner-decision-policy-object-bridge.md",
+      "matching_slug": "blackjack-winner-decision-policy-object-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/blackjack-testability-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/blackjack-ace-scoring-domain-invariant-bridge.md",
+      "matching_slug": "blackjack-ace-scoring-domain-invariant-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/blackjack-testability-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/blackjack-turn-flow-state-pattern-bridge.md",
+      "matching_slug": "blackjack-turn-flow-state-pattern-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-boundary-mixing-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/lotto-inputview-domain-conversion-boundary-bridge.md",
+      "matching_slug": "lotto-inputview-domain-conversion-boundary-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-boundary-mixing-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md",
+      "matching_slug": "lotto-purchase-flow-service-layer-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-boundary-mixing-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/lotto-manual-auto-number-generator-strategy-bridge.md",
+      "matching_slug": "lotto-manual-auto-number-generator-strategy-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-boundary-mixing-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/lotto-winning-statistics-result-object-bridge.md",
+      "matching_slug": "lotto-winning-statistics-result-object-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/lotto-inputview-domain-conversion-boundary-bridge.md",
+      "matching_slug": "lotto-inputview-domain-conversion-boundary-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/lotto-domain-invariant-bridge.md",
+      "matching_slug": "lotto-domain-invariant-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/lotto-input-parsing-vs-domain-invariant-vs-purchase-flow-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md",
+      "matching_slug": "lotto-purchase-flow-service-layer-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/roomescape-admin-reservation-list-fetch-plan-bridge.md",
+      "matching_slug": "roomescape-admin-reservation-list-fetch-plan-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/roomescape-reservation-flow-service-layer-bridge.md",
+      "matching_slug": "roomescape-reservation-flow-service-layer-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/roomescape-validation-vs-domain-rule-bridge.md",
+      "matching_slug": "roomescape-validation-vs-domain-rule-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/roomescape-dao-vs-repository-bridge.md",
+      "matching_slug": "roomescape-dao-vs-repository-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/roomescape-transactional-boundary-bridge.md",
+      "matching_slug": "roomescape-transactional-boundary-bridge",
+      "target_role": "mission_bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-service-bloat-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/roomescape-reservation-flow-service-layer-bridge.md",
+      "matching_slug": "roomescape-reservation-flow-service-layer-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-service-bloat-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/roomescape-validation-vs-domain-rule-bridge.md",
+      "matching_slug": "roomescape-validation-vs-domain-rule-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-reservation-service-bloat-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/roomescape-dao-vs-repository-bridge.md",
+      "matching_slug": "roomescape-dao-vs-repository-bridge",
+      "target_role": "mission_bridge",
+      "note": "pair ('symptom_router', 'mission_bridge') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-404-405-vs-bean-wiring-confusion-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/spring-di-exception-quick-triage.md",
+      "matching_slug": "spring-di-exception-quick-triage",
+      "target_role": "symptom_router",
+      "note": "pair ('chooser', 'symptom_router') not classified"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-same-type-bean-injection-failure-cause-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/spring/spring-component-scan-failure-patterns.md",
+      "matching_slug": "component-scan-failure-patterns",
+      "target_role": "playbook"
+    }
+  ],
+  "unknown_target_cases": [
+    {
+      "src_path": "knowledge/cs/contents/algorithm/bfs-visited-array-vs-set-java-beginner-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
+      "matching_slug": "hashmap-treemap-linkedhashmap-beginner-selection-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/greedy-vs-dp-decision-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/algorithm/greedy-intro.md",
+      "matching_slug": "greedy-intro"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/greedy-vs-dp-decision-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/algorithm/dp-intro.md",
+      "matching_slug": "dp-intro"
+    },
+    {
+      "src_path": "knowledge/cs/contents/algorithm/rate-limiter-algorithms.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/algorithm/top-k-streaming-heavy-hitters.md",
+      "matching_slug": "top-k-streaming-heavy-hitters"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/segment-tree-not-bst-or-heap-bridge.md",
+      "matching_slug": "segment-tree-not-bst-or-heap-bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/heap-variants.md",
+      "matching_slug": "heap-variants"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/data-structure/delayqueue-delayed-contract-primer.md",
+      "matching_slug": "delayqueue-delayed-contract-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/map-order-symptom-router-card.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
+      "matching_slug": "hashmap-treemap-linkedhashmap-beginner-selection-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/map-order-symptom-router-card.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md",
+      "matching_slug": "treemap-vs-hashmap-vs-linkedhashmap"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/map-vs-set-requirement-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
+      "matching_slug": "hashmap-treemap-linkedhashmap-beginner-selection-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/ordered-search-workload-matrix.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md",
+      "matching_slug": "van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/plain-bitset-vs-compressed-bitmap-decision-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md",
+      "matching_slug": "bitmap-vs-set-dense-integer-id-beginner-bridge"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/plain-bitset-vs-compressed-bitmap-decision-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md",
+      "matching_slug": "roaring-bitmap"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/data-structure/priorityblockingqueue-timer-misuse-primer.md",
+      "matching_slug": "priorityblockingqueue-timer-misuse-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
+      "matching_slug": "hashmap-treemap-linkedhashmap-beginner-selection-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md",
+      "matching_slug": "trie-prefix-search-vs-treemap-ordered-map-beginner-card"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/alter-table-not-finishing-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/transaction-timeout-vs-lock-timeout.md",
+      "matching_slug": "transaction-timeout-vs-lock-timeout"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/alter-table-not-finishing-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/online-schema-change-strategies.md",
+      "matching_slug": "online-schema-change-strategies"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/join-row-explosion-symptom-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/database/distinct-vs-group-by-beginner-card.md",
+      "matching_slug": "distinct-vs-group-by-beginner-card"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/normalization-vs-denormalization-vs-summary-table-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/incremental-summary-table-refresh-watermark.md",
+      "matching_slug": "incremental-summary-table-refresh-watermark"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/nowait-vs-skip-locked-vs-short-lock-timeout-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/queue-claim-skip-locked-fairness.md",
+      "matching_slug": "queue-claim-skip-locked-fairness"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/outbox-vs-cdc-vs-saga-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/cdc-debezium-outbox-binlog.md",
+      "matching_slug": "cdc-debezium-outbox-binlog"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/outbox-vs-cdc-vs-saga-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/outbox-saga-eventual-consistency.md",
+      "matching_slug": "outbox-saga-eventual-consistency"
+    },
+    {
+      "src_path": "knowledge/cs/contents/database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/database/read-repair-reconciliation-after-failover.md",
+      "matching_slug": "read-repair-reconciliation-after-failover"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/adapter-basics.md",
+      "matching_slug": "adapter-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/decorator-proxy-basics.md",
+      "matching_slug": "decorator-proxy-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/chain-of-responsibility-filters-interceptors.md",
+      "matching_slug": "chain-of-responsibility-filters-interceptors"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/record-vs-builder-request-model-chooser.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/request-object-creation-vs-di-container.md",
+      "matching_slug": "request-object-creation-vs-di-container"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/singleton-vs-di-container-scope.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/singleton-java.md",
+      "matching_slug": "singleton-java"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/strategy-state-policy-object-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/design-pattern/state-pattern-workflow-payment.md",
+      "matching_slug": "state-pattern-workflow-payment"
+    },
+    {
+      "src_path": "knowledge/cs/contents/design-pattern/template-hook-smells.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/design-pattern/template-method-basics.md",
+      "matching_slug": "template-method-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/dns-변경-후-일부-사용자만-예전-서버로-감-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/first-request-h2-next-request-h3-symptom-router.md",
+      "matching_slug": "first-request-h2-next-request-h3-symptom-router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/network/dns-변경-후-일부-사용자만-예전-서버로-감-원인-라우터.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/network/browser-421-but-curl-200-symptom-router.md",
+      "matching_slug": "browser-421-but-curl-200-symptom-router"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/container-fd-pressure-emfile-enfile-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/container-cgroup-namespace.md",
+      "matching_slug": "container-cgroup-namespace"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/epoll-kqueue-io-uring.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md",
+      "matching_slug": "epoll-level-edge-oneshot-wakeup-semantics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/epoll-kqueue-io-uring.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md",
+      "matching_slug": "io-uring-operational-hazards-registered-resources-sqpoll"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/killed-oomkilled-memory-events-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/operating-system/signals-process-supervision.md",
+      "matching_slug": "signals-process-supervision"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/page-replacement-clock-vs-lru.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/data-structure/lru-cache-basics.md",
+      "matching_slug": "lru-cache-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md",
+      "matching_slug": "eventfd-signalfd-epoll-control-plane-integration"
+    },
+    {
+      "src_path": "knowledge/cs/contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/operating-system/unix-domain-socket-fd-passing-credentials.md",
+      "matching_slug": "unix-domain-socket-fd-passing-credentials"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/browser-direct-call-vs-server-proxy-decision-tree.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/security/cors-basics.md",
+      "matching_slug": "cors-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/embedded-login-csrf-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/security/samesite-none-cross-site-login-primer.md",
+      "matching_slug": "samesite-none-cross-site-login-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/embedded-login-csrf-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/security/iframe-login-privacy-controls-primer.md",
+      "matching_slug": "iframe-login-privacy-controls-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/oauth-scope-vs-api-audience-vs-application-permission.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/security/role-vs-scope-vs-ownership-primer.md",
+      "matching_slug": "role-vs-scope-vs-ownership-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/security/social-login-to-local-session-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/security/oauth2-authorization-code-grant.md",
+      "matching_slug": "oauth2-authorization-code-grant"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/after-commit-listener-rollback-test-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/software-engineering/testtransaction-vs-commit-choice-mini-card.md",
+      "matching_slug": "testtransaction-vs-commit-choice-mini-card"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/after-commit-listener-rollback-test-beginner-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/spring/spring-after-commit-rollback-slice-test-mini-card.md",
+      "matching_slug": "spring-after-commit-rollback-slice-test-mini-card"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/browser-e2e-cost-vs-signal-checklist.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/testing-strategy-and-test-doubles.md",
+      "matching_slug": "testing-strategy-and-test-doubles"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/component-test-vs-browser-e2e-boundary-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/testing-strategy-and-test-doubles.md",
+      "matching_slug": "testing-strategy-and-test-doubles"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/http-409-vs-422-selection-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/api-design-error-handling.md",
+      "matching_slug": "api-design-error-handling"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/pair-programming-code-review-tradeoffs.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/code-review-basics.md",
+      "matching_slug": "code-review-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/refactoring-feedback-phrase-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md",
+      "matching_slug": "readable-code-layering-test-feedback-loop-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/refactoring-feedback-phrase-router.md",
+      "src_role": "symptom_router",
+      "forbidden_target_path": "contents/software-engineering/test-strategy-basics.md",
+      "matching_slug": "test-strategy-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/release-trains-vs-continuous-delivery.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md",
+      "matching_slug": "deployment-rollout-rollback-canary-blue-green"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/rfc-vs-adr-decision-flow.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/adr-decision-records-at-scale.md",
+      "matching_slug": "adr-decision-records-at-scale"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/rfc-vs-adr-decision-flow.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/decision-revalidation-supersession-lifecycle.md",
+      "matching_slug": "decision-revalidation-supersession-lifecycle"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+      "matching_slug": "query-model-separation-read-heavy-apis"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/roomescape-admin-list-entity-vs-query-model-vs-response-dto-decision-guide.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/spring-controller-entity-return-vs-dto-return-primer.md",
+      "matching_slug": "spring-controller-entity-return-vs-dto-return-primer"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/datajpatest-flush-clear-batch-checklist.md",
+      "matching_slug": "datajpatest-flush-clear-batch-checklist"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/trunk-based-development-vs-feature-branch-tradeoffs.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/git-workflow-basics.md",
+      "matching_slug": "git-workflow-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/trunk-based-development-vs-feature-branch-tradeoffs.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/software-engineering/feature-flags-rollout-dependency-management.md",
+      "matching_slug": "feature-flags-rollout-dependency-management"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/security/input-validation-basics.md",
+      "matching_slug": "input-validation-basics"
+    },
+    {
+      "src_path": "knowledge/cs/contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md",
+      "src_role": "bridge",
+      "forbidden_target_path": "contents/software-engineering/domain-invariants-as-contracts.md",
+      "matching_slug": "domain-invariants-as-contracts"
+    },
+    {
+      "src_path": "knowledge/cs/contents/spring/spring-404-405-vs-bean-wiring-confusion-card.md",
+      "src_role": "chooser",
+      "forbidden_target_path": "contents/spring/spring-mvc-request-lifecycle.md",
+      "matching_slug": "spring-mvc-request-lifecycle"
+    }
+  ]
+}

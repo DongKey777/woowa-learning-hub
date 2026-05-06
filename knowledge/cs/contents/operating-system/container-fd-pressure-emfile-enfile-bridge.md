@@ -50,7 +50,6 @@ confusable_with:
 - operating-system/fd-exhaustion-ulimit-diagnostics
 - operating-system/container-cgroup-namespace
 forbidden_neighbors:
-- contents/operating-system/container-cgroup-namespace.md
 - contents/operating-system/file-descriptor-basics.md
 expected_queries:
 - 컨테이너에서 too many open files가 뜨는데 호스트 fd랑 같이 봐야 해?

@@ -50,8 +50,6 @@ confusable_with:
 - data-structure/segment-tree-not-bst-or-heap-bridge
 - data-structure/heap-variants
 forbidden_neighbors:
-- contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
-- contents/data-structure/heap-variants.md
 expected_queries:
 - 이진 트리 BST 힙 차이를 한 번에 정리해줘
 - 탐색 트리와 우선순위 큐용 트리를 어떻게 구분해

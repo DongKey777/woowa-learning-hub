@@ -56,7 +56,6 @@ confusable_with:
 - security/browser-bff-token-boundary-session-translation
 - security/cors-basics
 forbidden_neighbors:
-- contents/security/cors-basics.md
 expected_queries:
 - OpenAI나 결제 API를 프론트에서 직접 부르면 왜 위험해?
 - CORS가 막혀도 서버 프록시로 가야 하는 기준을 알려줘

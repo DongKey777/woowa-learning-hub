@@ -48,7 +48,6 @@ confusable_with:
 - operating-system/memory-management-numa-page-replacement-thrashing
 - data-structure/lru-cache-basics
 forbidden_neighbors:
-- contents/data-structure/lru-cache-basics.md
 expected_queries:
 - OS에서 Clock이 LRU를 어떻게 근사하는지 비교해줘
 - page replacement에서 Clock과 LRU를 언제 다르게 이해해야 해?

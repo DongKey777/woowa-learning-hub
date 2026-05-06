@@ -48,7 +48,6 @@ confusable_with:
 - language/java-package-import-boundary-basics
 - language/top-level-type-access-modifier-bridge
 forbidden_neighbors:
-- contents/language/java/top-level-type-access-modifier-bridge.md
 expected_queries:
 - Java default package를 실전에서 왜 피하는지 짧게 설명해줘
 - package 선언 없는 파일이 두 개 이상 되면 뭐가 가장 먼저 문제인지 알고 싶어

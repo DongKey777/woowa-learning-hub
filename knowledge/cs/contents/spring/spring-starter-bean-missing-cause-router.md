@@ -50,7 +50,6 @@ confusable_with:
   - spring/bean-registration-path-decision-guide
   - spring/conditionalonmissingbean-vs-primary-primer
 forbidden_neighbors:
-  - contents/spring/spring-bean-not-found-cause-router.md
 expected_queries:
   - Spring Boot에서 starter를 넣었는데 왜 기본 Bean이 안 만들어져?
   - starter dependency는 추가했는데 특정 환경에서만 auto-configuration이 빠질 때 어디부터 봐야 해?

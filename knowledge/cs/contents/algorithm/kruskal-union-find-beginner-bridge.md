@@ -45,8 +45,6 @@ confusable_with:
 - algorithm/minimum-spanning-tree-prim-vs-kruskal
 - data-structure/union-find-standalone-beginner-primer
 forbidden_neighbors:
-- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
-- contents/data-structure/union-find-standalone-beginner-primer.md
 expected_queries:
 - 크루스칼에서 union find가 정확히 어느 순간에 쓰이는지 연결해서 설명해줘
 - MST에서 사이클 검사를 왜 union-find로 하는지 초보자 기준으로 알고 싶어

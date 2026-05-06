@@ -64,7 +64,6 @@ confusable_with:
   - design-pattern/strategy-vs-function-chooser
   - design-pattern/strategy-vs-state-vs-policy-object
 forbidden_neighbors:
-  - contents/design-pattern/strategy-pattern-basics.md
   - contents/design-pattern/strategy-pattern.md
 expected_queries:
   - 전략 패턴을 적용할수록 클래스만 늘어나는데 이게 정상인지 판단하고 싶어

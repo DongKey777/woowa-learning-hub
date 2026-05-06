@@ -50,8 +50,6 @@ confusable_with:
 - spring/bean-not-found-cause-router
 - spring/spring-primary-vs-bean-override-primer
 forbidden_neighbors:
-- contents/spring/spring-same-type-bean-injection-failure-cause-router.md
-- contents/spring/spring-bean-not-found-cause-router.md
 expected_queries:
 - Spring에서 같은 이름 bean 충돌이 나면 어디부터 봐야 해?
 - BeanDefinitionOverrideException이 뜰 때 등록 충돌인지 back-off인지 어떻게 가르지?

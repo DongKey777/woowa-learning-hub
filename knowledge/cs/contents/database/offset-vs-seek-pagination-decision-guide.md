@@ -52,7 +52,6 @@ confusable_with:
 - database/read-after-write-routing-decision-guide
 forbidden_neighbors:
 - contents/database/roomescape-admin-reservation-list-pagination-stability-bridge.md
-- contents/database/read-after-write-routing-decision-guide.md
 expected_queries:
 - 관리자 목록처럼 몇 페이지로 바로 점프해야 하면 offset과 seek 중 무엇이 더 자연스러워?
 - 무한 스크롤에서 새 글이 끼어들어도 덜 흔들리게 하려면 offset보다 다른 방식을 먼저 봐야 해?

@@ -52,7 +52,6 @@ confusable_with:
   - design-pattern/record-vs-builder-request-model-chooser
 forbidden_neighbors:
   - contents/design-pattern/request-object-creation-vs-di-container.md
-  - contents/design-pattern/factory-vs-abstract-factory-vs-builder.md
 expected_queries:
   - 필드가 몇 개 안 되는 값 객체는 생성자로 두고 언제 정적 팩토리로 올려야 해?
   - of나 from 같은 이름만 붙이면 정적 팩토리고 별도 Factory 클래스를 두면 뭐가 달라져?

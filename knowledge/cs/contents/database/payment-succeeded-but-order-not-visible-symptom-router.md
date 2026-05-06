@@ -50,8 +50,6 @@ confusable_with:
 - database/pagination-duplicates-missing-symptom-router
 - database/duplicate-key-then-not-found-symptom-router
 forbidden_neighbors:
-- contents/database/pagination-duplicates-missing-symptom-router.md
-- contents/database/duplicate-key-then-not-found-symptom-router.md
 expected_queries:
 - 결제 성공했는데 주문 완료 페이지가 비어 보이면 어디부터 확인해야 해?
 - 주문 생성은 됐는데 바로 목록 조회에 안 보일 때 원인을 어떻게 나눠?

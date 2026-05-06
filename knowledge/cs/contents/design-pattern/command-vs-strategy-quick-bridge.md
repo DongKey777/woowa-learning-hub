@@ -57,8 +57,6 @@ confusable_with:
 - design-pattern/command-pattern-basics
 - design-pattern/strategy-pattern-basics
 forbidden_neighbors:
-- contents/design-pattern/command-pattern-basics.md
-- contents/design-pattern/strategy-pattern-basics.md
 expected_queries:
 - execute 모양이 비슷한데 command와 strategy를 어떻게 가르면 돼?
 - 큐에 넣어 재시도하는 작업은 전략 패턴이 아니라 왜 command에 가까워?

@@ -55,8 +55,6 @@ confusable_with:
 - data-structure/queue-vs-deque-vs-priority-queue-primer
 - data-structure/arraydeque-vs-blockingqueue-service-handoff-primer
 forbidden_neighbors:
-- contents/data-structure/array-vs-linked-list.md
-- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
 expected_queries:
 - Java에서 FIFO 큐 구현체를 하나만 고르라면 왜 보통 ArrayDeque부터 시작해?
 - BFS 코드에서 LinkedList 대신 다른 기본값을 쓰라는 이유를 초급 기준으로 설명해줘

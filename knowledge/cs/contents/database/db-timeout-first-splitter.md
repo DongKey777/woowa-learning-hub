@@ -51,7 +51,6 @@ confusable_with:
 - database/lock-timeout-blocker-first-check
 - database/deadlock-vs-lock-wait-timeout-primer
 forbidden_neighbors:
-- contents/database/connection-pool-basics.md
 - contents/database/slow-query-analysis-playbook.md
 expected_queries:
 - 커넥션 풀 timeout이랑 lock timeout이랑 statement timeout 중에 어디부터 분류해?

@@ -46,7 +46,6 @@ confusable_with:
 - algorithm/top-k-streaming-heavy-hitters
 - algorithm/monotone-deque-proof-intuition
 forbidden_neighbors:
-- contents/algorithm/top-k-streaming-heavy-hitters.md
 expected_queries:
 - burst는 조금 허용하면서 평균 요청 수만 제한하고 싶을 때 어떤 rate limit 방식이 맞아?
 - 고정 윈도우로 막았더니 경계 시점에 요청이 두 배처럼 몰리는 이유를 설명해줘

@@ -53,8 +53,6 @@ confusable_with:
 - software-engineering/lead-time-change-failure-recovery-loop
 - software-engineering/feature-flags-rollout-dependency-management
 forbidden_neighbors:
-- contents/software-engineering/git-workflow-basics.md
-- contents/software-engineering/feature-flags-rollout-dependency-management.md
 expected_queries:
 - 우리 팀이 trunk-based로 갈지 feature branch를 유지할지 판단할 때 제일 먼저 볼 기준이 뭐야?
 - 브랜치를 오래 들고 가면 merge conflict 말고 어떤 비용이 더 커져?

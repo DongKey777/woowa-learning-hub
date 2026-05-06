@@ -53,8 +53,6 @@ confusable_with:
 - software-engineering/ports-and-adapters-beginner-primer
 - software-engineering/ddd-hexagonal-consistency
 forbidden_neighbors:
-- contents/software-engineering/architecture-layering-fundamentals.md
-- contents/software-engineering/ports-and-adapters-beginner-primer.md
 expected_queries:
 - 서비스 하나로 시작할 때 layered와 clean 중 어디까지 가져가야 하는지 판단 기준이 뭐야?
 - domain이 JPA나 framework annotation을 직접 알면 왜 clean하지 않다고 말하는 거야?

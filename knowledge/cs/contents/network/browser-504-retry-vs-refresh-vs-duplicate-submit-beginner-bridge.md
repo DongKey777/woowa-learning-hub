@@ -54,7 +54,6 @@ confusable_with:
 - network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge
 - network/post-redirect-get-prg-beginner-primer
 forbidden_neighbors:
-- contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md
 expected_queries:
 - 504를 본 뒤 다시 보내도 안전한지 어떻게 구분하나요?
 - 새로고침과 자동 재시도, 중복 제출 위험은 무엇이 다른가요?

@@ -51,7 +51,6 @@ confusable_with:
 - data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
 forbidden_neighbors:
 - contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
-- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
 expected_queries:
 - 정적 ordered search에서 point lookup 위주인지 range scan 위주인지에 따라 array layout을 어떻게 나눠야 해
 - lower_bound만 하고 끝나는 경우와 찾은 뒤 몇 개 더 읽는 경우를 구조 선택으로 비교해줘

@@ -50,7 +50,6 @@ confusable_with:
 - database/overlapping-bookings-both-succeed-symptom-router
 - database/reservation-reschedule-cancellation-transition-patterns
 forbidden_neighbors:
-- contents/database/roomescape-available-times-empty-cause-router.md
 - contents/database/roomescape-reservation-concurrency-bridge.md
 expected_queries:
 - roomescape에서 예약 시간을 옮긴 뒤 예전 슬롯이 안 풀리면 어디부터 확인해야 해?

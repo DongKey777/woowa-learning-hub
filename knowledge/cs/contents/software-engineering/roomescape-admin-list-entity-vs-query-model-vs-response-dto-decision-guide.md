@@ -49,8 +49,6 @@ confusable_with:
 - spring/spring-controller-entity-return-vs-dto-return-primer
 forbidden_neighbors:
 - contents/spring/roomescape-admin-reservation-list-fetch-plan-bridge.md
-- contents/software-engineering/query-model-separation-read-heavy-apis.md
-- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
 expected_queries:
 - roomescape 관리자 예약 목록에서 Reservation 엔티티를 그대로 반환하지 말라는 리뷰는 어떤 선택을 하라는 뜻이야?
 - roomescape 목록 조회는 response dto만 분리하면 충분한지 query model까지 가야 하는지 한 표로 보고 싶어

@@ -292,10 +292,7 @@
         "boolean[] visited와 HashSet visited를 고르는 기준을 BFS 초보자 관점으로 비교해줘",
         "방문 여부 말고 거리나 parent도 같이 저장해야 할 때는 언제 Map 쪽으로 넘어가야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/map-vs-set-requirement-bridge.md",
-        "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -1193,10 +1190,7 @@
         "동전 문제처럼 greedy와 dp 경계가 헷갈리는 문제를 어떻게 분류해",
         "최적화 문제를 읽을 때 탐욕 선택과 상태 재사용 중 어디부터 봐야 해"
       ],
-      "forbidden_neighbors": [
-        "contents/algorithm/greedy-intro.md",
-        "contents/algorithm/dp-intro.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -1348,10 +1342,7 @@
         "Prim이 아니라 Kruskal을 볼 때 union-find가 왜 함께 따라오는지 첫 연결이 필요해",
         "MST 문제 풀이에서 간선 정렬 단계와 서로소 집합 단계가 어떻게 이어지는지 헷갈려"
       ],
-      "forbidden_neighbors": [
-        "contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md",
-        "contents/data-structure/union-find-standalone-beginner-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -1569,9 +1560,7 @@
         "shortest path tree와 minimum spanning tree를 한 번에 구분하는 기준이 필요해",
         "그래프가 끊겨 있을 때 MST 대신 minimum spanning forest로 읽어야 하는 이유가 뭐야?"
       ],
-      "forbidden_neighbors": [
-        "contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -1871,9 +1860,7 @@
         "token bucket과 leaky bucket을 실무에서 어떤 기준으로 골라야 하는지 감이 안 와",
         "API throttling에서 순간 버스트 허용이 필요하면 어떤 시간 모델로 생각해야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/algorithm/top-k-streaming-heavy-hitters.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "troubleshooting",
@@ -2187,8 +2174,7 @@
         "beginner가 정렬 다음에 binary search를 붙일 때 어떤 사고 흐름으로 이어가면 되는지 궁금해"
       ],
       "forbidden_neighbors": [
-        "contents/algorithm/sort-intro.md",
-        "contents/algorithm/binary-search-intro.md"
+        "contents/algorithm/sort-intro.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -2881,10 +2867,7 @@
         "BFS 습관대로 첫 방문 고정을 넣었더니 틀릴 때 어디를 의심해야 해",
         "0비용 간선 때문에 재방문이 필요한 상황을 한 번에 이해하고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/algorithm/dfs-bfs-intro.md",
-        "contents/algorithm/zero-one-bfs-grid-conversion-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -3559,9 +3542,7 @@
         "key door 문제에서 r c 말고 어떤 상태를 더 저장해야 해",
         "상태 공간으로 번역해야 하는 shortest path 문제 신호를 정리해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/algorithm/dfs-bfs-intro.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -3636,8 +3617,7 @@
         "visited와 dist 중 무엇을 고를지 빠르게 판단하는 체크포인트가 필요해"
       ],
       "forbidden_neighbors": [
-        "contents/algorithm/dfs-bfs-intro.md",
-        "contents/algorithm/zero-one-bfs-grid-conversion-primer.md"
+        "contents/algorithm/dfs-bfs-intro.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -3821,10 +3801,7 @@
         "백엔드에서 List 기본 구현체를 뭘로 시작해야 하는지 알고 싶어",
         "삽입 삭제가 많다는 말만으로 LinkedList를 고르면 안 되는 이유를 설명해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/basic.md",
-        "contents/data-structure/linked-list-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -3972,10 +3949,7 @@
         "offer poll peek만 쓰는 로컬 큐라면 어떤 구현체가 읽기 쉬운지 알고 싶어",
         "Java queue 예제에서 구현 클래스가 섞여 보일 때 무엇을 기준으로 정리하면 돼?"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/array-vs-linked-list.md",
-        "contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -4250,10 +4224,7 @@
         "inorder가 정렬되는 건 언제고 루트가 최소인 건 언제야",
         "값 찾기용 트리와 top k용 트리를 어떻게 나눠 생각해"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/segment-tree-not-bst-or-heap-bridge.md",
-        "contents/data-structure/heap-variants.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -5976,8 +5947,7 @@
         "DelayQueue를 쓰는 순간 애플리케이션 API가 아니라 구현 재료로 내려간다는 말을 이해하고 싶어"
       ],
       "forbidden_neighbors": [
-        "contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md",
-        "contents/data-structure/delayqueue-delayed-contract-primer.md"
+        "contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -6298,10 +6268,7 @@
         "해시맵이 가끔은 순서가 맞아 보여서 더 헷갈릴 때 어떤 문서를 먼저 봐야 해?",
         "TreeMap 정렬 순서와 LinkedHashMap 삽입 순서를 증상 관점에서 나눠 설명해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
-        "contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -6397,10 +6364,7 @@
         "방문 여부 기록과 상태 테이블을 같은 구조로 보면 안 되는 이유가 궁금해",
         "HashSet으로 충분한 문제와 HashMap이 필요한 문제를 문장으로 구분하고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/hashset-vs-treeset-beginner-bridge.md",
-        "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -6783,8 +6747,7 @@
         "ordered map 비슷한 정적 검색 구조를 scan 길이 기준으로 고르는 표가 필요해"
       ],
       "forbidden_neighbors": [
-        "contents/data-structure/eytzinger-layout-and-cache-friendly-search.md",
-        "contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md"
+        "contents/data-structure/eytzinger-layout-and-cache-friendly-search.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -6941,10 +6904,7 @@
         "Roaring 같은 압축 bitmap이 필요한 첫 신호를 주니어 기준으로 정리해줘",
         "비트셋을 이미 쓰고 있는데 메모리 낭비가 커질 때 다음 선택지가 뭔지 알고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md",
-        "contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -7785,9 +7745,7 @@
         "스케줄러가 작업마다 스레드 하나씩 자게 만드는 건 아닌가요?",
         "due 시간이 된 작업이 어떤 순서로 실행되는지 queue 관점에서 알고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/priorityblockingqueue-timer-misuse-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -8706,8 +8664,7 @@
         "lower floor ceiling higher 규칙이 entry 단계에서도 그대로인지 확인하고 싶어"
       ],
       "forbidden_neighbors": [
-        "contents/data-structure/treemap-neighbor-query-micro-drill.md",
-        "contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md"
+        "contents/data-structure/treemap-neighbor-query-micro-drill.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -9237,10 +9194,7 @@
         "사전형 문자열 조회에서 자동완성과 단건 조회를 어떤 자료구조로 나눠야 해?",
         "Trie를 배웠는데 모든 문자열 문제에 쓰면 안 되는 이유를 예시로 보고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
-        "contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -9748,8 +9702,7 @@
         "같은 DB 예외처럼 보여도 winner 확인이 필요한 경우와 새 트랜잭션 재시도가 필요한 경우를 빨리 가르는 법이 필요해"
       ],
       "forbidden_neighbors": [
-        "contents/database/duplicate-key-fresh-read-classifier-mini-card.md",
-        "contents/database/db-timeout-first-splitter.md"
+        "contents/database/duplicate-key-fresh-read-classifier-mini-card.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -9819,10 +9772,7 @@
         "DDL 배포를 걸자마자 서비스 요청까지 같이 느려질 때 어디부터 확인해야 해?",
         "metadata lock 장애인지 단순 lock timeout 인지 초반에 어떻게 구분해?"
       ],
-      "forbidden_neighbors": [
-        "contents/database/transaction-timeout-vs-lock-timeout.md",
-        "contents/database/online-schema-change-strategies.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -11460,7 +11410,6 @@
         "pool 대기와 DB 락 대기를 한 장으로 구분한 문서 있어?"
       ],
       "forbidden_neighbors": [
-        "contents/database/connection-pool-basics.md",
         "contents/database/slow-query-analysis-playbook.md"
       ],
       "has_frontmatter": true,
@@ -11841,7 +11790,6 @@
         "duplicate 뒤 winner row 가 안 보이는 경우를 어떻게 분기해?"
       ],
       "forbidden_neighbors": [
-        "contents/database/for-update-zero-row-duplicate-insert-symptom-router.md",
         "contents/database/lock-timeout-not-already-exists-common-confusion-card.md"
       ],
       "has_frontmatter": true,
@@ -12148,9 +12096,7 @@
         "예약 겹침 방지에서 continuous interval 과 discrete slot 을 어떻게 나눠 생각해?",
         "roomescape 같은 예약 문제를 볼 때 exclusion constraint 와 slot row 차이를 빨리 보고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -12535,10 +12481,7 @@
         "exact key 조회 후 insert 했는데 0건이 잠금을 보장하지 않는 이유가 뭐야?",
         "FOR UPDATE 넣었는데 중복 저장이 생기면 unique 문제인지 격리수준 문제인지 어떻게 분기해?"
       ],
-      "forbidden_neighbors": [
-        "contents/database/duplicate-key-then-not-found-symptom-router.md",
-        "contents/database/overlapping-bookings-both-succeed-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -13808,9 +13751,7 @@
         "DISTINCT를 붙이기 전에 조인 결과 폭증 원인을 어떻게 진단해?",
         "GROUP BY id로 줄어들긴 하는데 왜 row가 늘었는지 먼저 알고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/database/distinct-vs-group-by-beginner-card.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -14428,9 +14369,7 @@
         "version check로 끝낼 문제와 guard row나 serializable까지 봐야 할 문제를 무엇으로 구분해?",
         "same row overwrite, different row invariant break, new row insert race를 한 번에 정리한 설명이 필요해"
       ],
-      "forbidden_neighbors": [
-        "contents/database/read-committed-vs-repeatable-read-vs-serializable-decision-guide.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -15523,9 +15462,7 @@
         "정규화, 반정규화, summary table을 읽기/쓰기 기준으로 빠르게 비교하고 싶어",
         "중복 컬럼 추가와 별도 projection 테이블을 같은 선택으로 보면 왜 위험해?"
       ],
-      "forbidden_neighbors": [
-        "contents/database/incremental-summary-table-refresh-watermark.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -15639,8 +15576,7 @@
         "짧은 lock timeout을 SKIP LOCKED 대체재처럼 보면 어디서 틀어져?"
       ],
       "forbidden_neighbors": [
-        "contents/database/nowait-vs-short-lock-timeout-busy-guide.md",
-        "contents/database/queue-claim-skip-locked-fairness.md"
+        "contents/database/nowait-vs-short-lock-timeout-busy-guide.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -15709,8 +15645,7 @@
         "roomescape 관리자 목록과 피드형 목록이 왜 pagination 선택이 다른지 한 번에 보고 싶어"
       ],
       "forbidden_neighbors": [
-        "contents/database/roomescape-admin-reservation-list-pagination-stability-bridge.md",
-        "contents/database/read-after-write-routing-decision-guide.md"
+        "contents/database/roomescape-admin-reservation-list-pagination-stability-bridge.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -15935,8 +15870,6 @@
         "outbox랑 inbox를 같은 비교축으로 보고 있었는데 CDC, saga랑은 어디서 분리해서 이해해야 해?"
       ],
       "forbidden_neighbors": [
-        "contents/database/cdc-debezium-outbox-binlog.md",
-        "contents/database/outbox-saga-eventual-consistency.md",
         "contents/software-engineering/outbox-vs-inbox-order-example-primer.md"
       ],
       "has_frontmatter": true,
@@ -16027,7 +15960,6 @@
         "중복 예약이 났는데 unique 문제인지 overlap 모델 문제인지 빠르게 분기하고 싶어"
       ],
       "forbidden_neighbors": [
-        "contents/database/for-update-zero-row-duplicate-insert-symptom-router.md",
         "contents/database/roomescape-reservation-concurrency-bridge.md"
       ],
       "has_frontmatter": true,
@@ -16254,10 +16186,7 @@
         "shopping-cart에서 방금 주문한 내역이 첫 조회에만 빠질 때 무슨 문서로 가야 해?",
         "사용자 화면과 관리자 화면의 주문 조회가 잠깐 다를 때 read-after-write를 먼저 의심해야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/database/pagination-duplicates-missing-symptom-router.md",
-        "contents/database/duplicate-key-then-not-found-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -17353,7 +17282,6 @@
         "failover 후 일부 화면만 옛값이면 전체 rebuild보다 먼저 확인할 복구 단계가 있어?"
       ],
       "forbidden_neighbors": [
-        "contents/database/read-repair-reconciliation-after-failover.md",
         "contents/database/summary-drift-detection-bounded-rebuild.md"
       ],
       "has_frontmatter": true,
@@ -18201,7 +18129,6 @@
         "roomescape reschedule 이후 available times가 이상할 때 active predicate랑 slot 계산 중 뭐가 더 먼저야?"
       ],
       "forbidden_neighbors": [
-        "contents/database/roomescape-available-times-empty-cause-router.md",
         "contents/database/roomescape-reservation-concurrency-bridge.md"
       ],
       "has_frontmatter": true,
@@ -20533,9 +20460,7 @@
         "duplicate key 로 빨리 실패시키는 쪽과 lock queue 로 줄 세우는 쪽을 어떻게 나눠?",
         "idempotency key 같은 exact key 문제와 예약 overlap 문제를 같은 방식으로 보면 안 되는 이유가 뭐야?"
       ],
-      "forbidden_neighbors": [
-        "contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -21073,10 +20998,7 @@
         "wrapper 패턴 셋이 다 비슷한데 목적별로 나누는 기준이 뭐야?",
         "API 모양 맞추기, 절차 감추기, 기능 추가를 한 번에 비교해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/adapter-basics.md",
-        "contents/design-pattern/decorator-proxy-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -22381,10 +22303,7 @@
         "배치 정제 단계와 HTTP 공통 처리 스택은 왜 같은 구조처럼 보여도 다르게 불러?",
         "다음 단계로 넘길지 중단할지가 중요한데 이건 middleware보다 chain 쪽이 맞아?"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/chain-of-responsibility-filters-interceptors.md",
-        "contents/design-pattern/pipeline-vs-chain-of-responsibility.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -22624,10 +22543,7 @@
         "요청을 저장해 두었다가 나중에 실행하는 구조는 어떤 패턴으로 보는 게 맞아?",
         "undo나 retry가 붙는 객체와 계산 방식 교체 객체를 리뷰에서 어떻게 구분해?"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/command-pattern-basics.md",
-        "contents/design-pattern/strategy-pattern-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -22858,8 +22774,7 @@
         "new, 정적 팩토리 메서드, Factory 패턴을 무엇을 숨기느냐 기준으로 설명해줘"
       ],
       "forbidden_neighbors": [
-        "contents/design-pattern/request-object-creation-vs-di-container.md",
-        "contents/design-pattern/factory-vs-abstract-factory-vs-builder.md"
+        "contents/design-pattern/request-object-creation-vs-di-container.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -23508,7 +23423,6 @@
         "facade, adapter, proxy를 래퍼 목적 기준으로 빨리 가르는 표가 필요해"
       ],
       "forbidden_neighbors": [
-        "contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md",
         "contents/spring/aop-proxy-mechanism.md"
       ],
       "has_frontmatter": true,
@@ -25541,10 +25455,7 @@
         "selector 클래스가 점점 판정 로직까지 먹고 있는데 어떻게 정리해?",
         "discount나 refund 규칙이 strategy map을 넘어서기 시작했다는 건 무슨 뜻이야?"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/strategy-map-vs-registry-primer.md",
-        "contents/design-pattern/policy-object-pattern.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -26120,10 +26031,7 @@
         "request DTO에서 기본값 정규화가 생기면 builder 말고 어떤 선택지가 있어?",
         "record, 정적 팩토리, builder를 요청 모델 기준으로 한 번에 비교해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/request-object-creation-vs-di-container.md",
-        "contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -26595,8 +26503,7 @@
       "forbidden_neighbors": [
         "contents/design-pattern/roomescape-strategy-vs-factory-bridge.md",
         "contents/design-pattern/roomescape-reservation-booking-policy-object-bridge.md",
-        "contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md",
-        "contents/software-engineering/roomescape-reservation-responsibility-placement-decision-guide.md"
+        "contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -27581,9 +27488,7 @@
         "bean scope 이야기와 singleton 패턴 설명이 자꾸 섞이는데 경계를 잡아줘",
         "테스트 대역 교체 관점에서 hand-rolled singleton과 DI bean이 어떻게 다른지 알고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/singleton-java.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -27818,7 +27723,6 @@
         "lambda나 설정 테이블로 내려야 하는데 계속 전략으로 풀고 있는지 점검하는 기준이 필요해"
       ],
       "forbidden_neighbors": [
-        "contents/design-pattern/strategy-pattern-basics.md",
         "contents/design-pattern/strategy-pattern.md"
       ],
       "has_frontmatter": true,
@@ -28145,10 +28049,7 @@
         "알고리즘 선택, 상태 변화, 규칙 판정을 한 번에 구분하는 기준이 뭐야?",
         "if else를 객체로 쪼갰는데 strategy인지 state인지 이름을 못 정하겠어"
       ],
-      "forbidden_neighbors": [
-        "contents/design-pattern/strategy-pattern-basics.md",
-        "contents/design-pattern/state-pattern-workflow-payment.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -28454,7 +28355,6 @@
         "hook 하나 더 추가할지 아니면 정책 객체나 extension으로 분리할지 빠르게 결정하고 싶어"
       ],
       "forbidden_neighbors": [
-        "contents/design-pattern/template-method-basics.md",
         "contents/design-pattern/template-method-query-router-beginner.md"
       ],
       "has_frontmatter": true,
@@ -32663,9 +32563,7 @@
         "Hello.java 하나는 되는데 다음 파일부터 package를 붙이라는 이유가 뭐야",
         "unnamed package와 named package 차이를 초보자 관점에서 비교해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/language/java/top-level-type-access-modifier-bridge.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -37117,9 +37015,7 @@
         "인터페이스도 최상단이면 같은 visibility 규칙을 따르는지 궁금해"
       ],
       "forbidden_neighbors": [
-        "contents/language/java/java-package-boundary-quickcheck-card.md",
-        "contents/language/java/java-package-import-boundary-basics.md",
-        "contents/language/java/java-access-modifiers-member-model-basics.md"
+        "contents/language/java/java-package-boundary-quickcheck-card.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -38342,10 +38238,7 @@
         "bad gateway 응답인데 app 공통 에러 JSON이 없으면 proxy가 만든 응답으로 봐도 돼?",
         "gateway 502인데 origin trace가 없을 때 빠르게 분기하는 방법이 뭐야?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/browser-devtools-blocked-canceled-failed-symptom-router.md",
-        "contents/network/browser-504-app-200-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -38412,10 +38305,7 @@
         "mesh 붙인 뒤 일부 route만 503이 늘고 앱 trace가 없으면 무엇부터 확인해?",
         "service unavailable 응답인데 app 공통 에러 JSON이 없으면 proxy가 만든 응답으로 봐도 돼?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/http-429-no-app-log-symptom-router.md",
-        "contents/network/browser-504-app-200-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -38565,9 +38455,7 @@
         "POST timeout 뒤 재클릭하면 중복 요청이 생기나요?",
         "PRG가 없으면 504 뒤 재전송 위험이 커지나요?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/edge-504-but-app-200-timeout-budget-mismatch-beginner-bridge.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -39939,10 +39827,7 @@
         "회사 와이파이에서만 이전 경로로 가고 집에서는 정상일 때 무슨 차이를 봐야 해?",
         "dig 결과와 실제 브라우저 접속 서버가 다를 때 DNS 전파 문제인지 어떻게 판단해?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/first-request-h2-next-request-h3-symptom-router.md",
-        "contents/network/browser-421-but-curl-200-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -40097,10 +39982,7 @@
         "broken pipe나 ClientAbortException이 보일 때 서버 버그와 응답 중간 종료를 어떻게 나눠 읽어?",
         "큰 응답 body가 시작된 뒤 멈출 때 timeout, truncation, client disconnect 중 무엇부터 확인해야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/request-pending-forever-symptom-router.md",
-        "contents/network/browser-devtools-blocked-canceled-failed-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -41978,9 +41860,7 @@
         "브라우저에서 실패 row 다음에 성공 row가 붙으면 어떤 원인부터 의심해야 해?",
         "keep-alive를 쓰는데 간헐적으로 첫 요청만 터지는 패턴은 어떻게 읽어?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/browser-504-app-200-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -42111,9 +41991,7 @@
         "Bad Gateway HTML이 오는데 앱 에러인지 프록시 에러인지 어떻게 구분해?",
         "브라우저에서 200 응답인데 body가 로그인 페이지면 무슨 문제야?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -42573,9 +42451,7 @@
         "브라우저에서 preflight만 실패하고 API 본 호출이 안 갈 때 어떻게 분기해?",
         "같은 path에 OPTIONS만 있고 GET이나 POST가 없을 때 원인을 어떻게 좁혀?"
       ],
-      "forbidden_neighbors": [
-        "contents/security/auth-failure-response-401-403-404.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -42709,9 +42585,7 @@
         "axios 호출만 실패하고 Postman은 정상일 때 preflight 문제인지 어떻게 알아?",
         "브라우저에서는 login HTML이나 blocked가 뜨는데 API 클라이언트는 성공하면 원인을 어떻게 좁혀?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/json-expected-but-html-response-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -44419,10 +44293,7 @@
         "웹소켓 open 상태인데 payload만 몇 초씩 늦으면 buffering이야 backpressure야?",
         "heartbeat는 사는데 메시지만 늦을 때 proxy와 수신 측 중 무엇을 먼저 의심해?"
       ],
-      "forbidden_neighbors": [
-        "contents/network/request-pending-forever-symptom-router.md",
-        "contents/network/browser-devtools-blocked-canceled-failed-symptom-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -44921,9 +44792,7 @@
         "yes | head 같은 예시에서 왜 writer 쪽이 갑자기 종료돼?",
         "child가 계속 쓰는데 받을 쪽이 없어졌을 때 어디서부터 이해하면 돼?"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/subprocess-pipe-backpressure-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "definition",
@@ -45238,7 +45107,6 @@
         "컨테이너 fd 문제를 볼 때 ulimit이랑 file-max 중 뭐부터 봐?"
       ],
       "forbidden_neighbors": [
-        "contents/operating-system/container-cgroup-namespace.md",
         "contents/operating-system/file-descriptor-basics.md"
       ],
       "has_frontmatter": true,
@@ -45681,10 +45549,7 @@
         "커넥션 수가 많을 때 최신 API를 바로 고르기 전에 무엇부터 봐야 해?",
         "epoll, kqueue, io_uring을 입문자가 혼동하지 않게 구분해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md",
-        "contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -46599,9 +46464,7 @@
         "Kubernetes OOMKilled와 Java OutOfMemoryError는 어떻게 다르게 읽어야 해?",
         "메모리 한도 초과 사건을 app 로그, pod 상태, cgroup 파일로 함께 보는 입문 문서가 필요해"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/signals-process-supervision.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "definition",
@@ -47471,9 +47334,7 @@
         "page cache eviction 설명할 때 working set이 왜 더 중요하다고 해?",
         "page replacement 알고리즘을 처음 비교할 때 Clock vs LRU부터 보고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/data-structure/lru-cache-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -47625,10 +47486,7 @@
         "로컬 IPC 설계에서 socketpair와 pipe를 헷갈리지 않게 선택 기준을 알려줘",
         "fd처럼 보이는 IPC 도구들을 control plane과 data plane 관점으로 비교해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md",
-        "contents/operating-system/unix-domain-socket-fd-passing-credentials.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -48080,10 +47938,7 @@
         "로그 수집은 pipe로 하고 interactive CLI 재생은 PTY로 하라는 말을 쉽게 설명해줘",
         "stdin, stdout, stderr의 isatty 결과가 다를 때 프로그램 동작이 어떻게 달라져?"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/stdio-buffering-after-redirect.md",
-        "contents/operating-system/why-some-prompts-use-dev-tty.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -48941,10 +48796,7 @@
         "fd 배선 문제와 stdio 버퍼링 문제를 어떻게 구분해야 해?",
         "Python, Java, Node에서 redirect 후 출력 순서가 헷갈릴 때 어디부터 의심해야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/subprocess-pipe-backpressure-primer.md",
-        "contents/operating-system/pseudo-tty-vs-pipe-behavior.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "definition",
@@ -49669,10 +49521,7 @@
         "separate pipes와 PTY capture가 각각 언제 맞는지 감으로 설명해줘",
         "로그 수집용 배선과 interactive CLI 재생용 배선을 왜 같은 문제로 보면 안 돼?"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/pseudo-tty-vs-pipe-behavior.md",
-        "contents/operating-system/stdio-buffering-after-redirect.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -49925,10 +49774,7 @@
         "non-interactive 옵션 없이 y 값을 넘겼는데 먹히지 않는 상황을 어떻게 해석해야 해?",
         "stdin과 실제 터미널 입력선을 분리해서 봐야 하는 이유를 사례로 알려줘"
       ],
-      "forbidden_neighbors": [
-        "contents/operating-system/subprocess-stdin-eof-primer.md",
-        "contents/operating-system/pseudo-tty-vs-pipe-behavior.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "definition",
@@ -50927,9 +50773,7 @@
         "BFF를 두는 이유가 CORS 때문인지 시크릿 경계 때문인지 헷갈려",
         "브라우저 직접 호출 가능 여부를 네 단계로 판단하고 싶어"
       ],
-      "forbidden_neighbors": [
-        "contents/security/cors-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -51773,10 +51617,7 @@
         "파트너 포털 iframe 로그인 후 쿠키 자동 전송 요청을 어디까지 믿어야 해?",
         "cross-site session cookie를 열었을 때 최소 보안 체크리스트가 뭐야?"
       ],
-      "forbidden_neighbors": [
-        "contents/security/samesite-none-cross-site-login-primer.md",
-        "contents/security/iframe-login-privacy-controls-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -52859,9 +52700,7 @@
         "gateway용 토큰을 내부 서비스가 바로 받으면 왜 안 되지?",
         "application permission이 OAuth scope와 왜 따로 움직이는지 설명해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/security/role-vs-scope-vs-ownership-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -54299,7 +54138,6 @@
         "외부 로그인은 됐는데 app cookie가 안 생길 때 어디를 봐야 해?"
       ],
       "forbidden_neighbors": [
-        "contents/security/oauth2-authorization-code-grant.md",
         "contents/security/session-cookie-jwt-basics.md"
       ],
       "has_frontmatter": true,
@@ -54512,8 +54350,7 @@
         "auth 서브도메인 로그인 후 app 첫 요청 anonymous 원인 분기"
       ],
       "forbidden_neighbors": [
-        "contents/security/cookie-scope-mismatch-guide.md",
-        "contents/security/social-login-to-local-session-bridge.md"
+        "contents/security/cookie-scope-mismatch-guide.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -55308,11 +55145,7 @@
         "rollback 테스트가 통과해도 commit 뒤 후속 처리는 왜 따로 확인해야 해?",
         "AFTER_COMMIT이 진짜 버그인지 테스트 경계 문제인지 어떻게 먼저 가려?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md",
-        "contents/software-engineering/testtransaction-vs-commit-choice-mini-card.md",
-        "contents/spring/spring-after-commit-rollback-slice-test-mini-card.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "troubleshooting",
@@ -57097,8 +56930,7 @@
         "화면 테스트를 전부 end-to-end로 만들지 말라는 리뷰를 어떻게 이해해?"
       ],
       "forbidden_neighbors": [
-        "contents/software-engineering/test-strategy-basics.md",
-        "contents/software-engineering/testing-strategy-and-test-doubles.md"
+        "contents/software-engineering/test-strategy-basics.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -57325,10 +57157,7 @@
         "hexagonal, clean, layered가 각각 어떤 질문에 답하는지 한 번에 비교해줘",
         "distributed monolith가 되지 않으려면 모듈 경계를 코드에서 어떻게 강제해야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/architecture-layering-fundamentals.md",
-        "contents/software-engineering/ports-and-adapters-beginner-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -57561,8 +57390,7 @@
         "프런트 테스트를 처음 짤 때 component test와 browser test를 어디서 나눠?"
       ],
       "forbidden_neighbors": [
-        "contents/software-engineering/test-strategy-basics.md",
-        "contents/software-engineering/testing-strategy-and-test-doubles.md"
+        "contents/software-engineering/test-strategy-basics.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -58660,7 +58488,6 @@
         "400이랑 409랑 422를 초심자 기준으로 빨리 구분하는 방법이 있어?"
       ],
       "forbidden_neighbors": [
-        "contents/software-engineering/api-design-error-handling.md",
         "contents/software-engineering/exception-handling-basics.md"
       ],
       "has_frontmatter": true,
@@ -60468,9 +60295,7 @@
         "mob programming까지 가야 하는 상황과 그냥 pair면 충분한 상황을 어떻게 나눠?",
         "code review가 있는데도 구현 단계에서 같이 코딩해야 한다는 말은 어떤 비용을 줄이려는 거야?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/code-review-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -61017,10 +60842,7 @@
         "리팩토링 피드백이 추상적으로 느껴질 때 첫 번째 안전한 액션은 뭐야?",
         "PR 코멘트 여러 개를 primer 하나씩으로 연결해서 읽는 방법이 있어?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md",
-        "contents/software-engineering/test-strategy-basics.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -61134,9 +60956,7 @@
         "release window가 있는 조직에서 hybrid 전략을 설계하려면 무엇을 같이 봐야 해?",
         "feature flag와 자동 검증이 release cadence 선택에 왜 같이 묶여서 나오지?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -61378,10 +61198,7 @@
         "이미 채택한 결정이 바뀌었을 때 기존 ADR을 어떻게 이어서 관리해야 해?",
         "합의 과정과 최종 결정을 같은 문서에 섞지 말라는 이유를 설명해줘"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/adr-decision-records-at-scale.md",
-        "contents/software-engineering/decision-revalidation-supersession-lifecycle.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -61491,9 +61308,7 @@
         "예약 목록 조회 코드에서 projection으로 바로 읽을지 엔티티를 읽고 응답으로 바꿀지 어떻게 판단해?"
       ],
       "forbidden_neighbors": [
-        "contents/spring/roomescape-admin-reservation-list-fetch-plan-bridge.md",
-        "contents/software-engineering/query-model-separation-read-heavy-apis.md",
-        "contents/spring/spring-controller-entity-return-vs-dto-return-primer.md"
+        "contents/spring/roomescape-admin-reservation-list-fetch-plan-bridge.md"
       ],
       "has_frontmatter": true,
       "intents": [
@@ -63735,9 +63550,7 @@
         "TestTransaction.end()랑 @Commit은 어떤 질문일 때 각각 고르면 돼?",
         "outbox row가 정말 커밋 뒤에도 남는지 보려면 어떤 테스트 경계가 필요해?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/datajpatest-flush-clear-batch-checklist.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -63835,10 +63648,7 @@
         "release branch까지 있는 팀에서 trunk-based와 feature branch를 어떻게 구분해 이해하면 돼?",
         "기능을 오래 숨겨야 하는 팀이면 feature branch가 아직 더 나은 경우가 있어?"
       ],
-      "forbidden_neighbors": [
-        "contents/software-engineering/git-workflow-basics.md",
-        "contents/software-engineering/feature-flags-rollout-dependency-management.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -63913,10 +63723,7 @@
         "'@Valid로 잡는 문제와 엔티티가 끝까지 지켜야 할 규칙을 빠르게 구분하는 법이 있어?'",
         "roomescape에서 요청 검증과 예약 가능 규칙은 어디서 나눠야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/security/input-validation-basics.md",
-        "contents/software-engineering/domain-invariants-as-contracts.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -64933,9 +64740,7 @@
         "로컬은 되는데 prod나 test profile에서만 bean이 사라질 때 무엇을 먼저 의심해?",
         "qualifier 이름을 바꾼 뒤 no qualifying bean이 뜨면 scan 말고 무엇을 봐야 해?"
       ],
-      "forbidden_neighbors": [
-        "contents/spring/spring-same-type-bean-injection-failure-cause-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -66271,7 +66076,6 @@
         "405 Method Not Allowed가 떴는데 @Qualifier 같은 주입 설정을 볼 상황인지 판단하고 싶어"
       ],
       "forbidden_neighbors": [
-        "contents/spring/spring-mvc-request-lifecycle.md",
         "contents/spring/spring-di-exception-quick-triage.md"
       ],
       "has_frontmatter": true,
@@ -68280,10 +68084,7 @@
         "테스트 설정을 붙였더니 duplicate bean name이 날 때 어떤 축으로 나눠 봐야 해?",
         "@Primary ë¬¸ì ë bean ì´ë¦ ì¶©ë ë¬¸ì ë¥¼ ì´ë»ê² ë¹ ë¥´ê² êµ¬ë¶í´?"
       ],
-      "forbidden_neighbors": [
-        "contents/spring/spring-same-type-bean-injection-failure-cause-router.md",
-        "contents/spring/spring-bean-not-found-cause-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -72309,9 +72110,7 @@
         "Map<String, Bean> 주입은 언제 쓰고 qualifier는 언제 써?",
         "외부 입력값을 bean 이름에 바로 매핑해도 돼?"
       ],
-      "forbidden_neighbors": [
-        "contents/spring/spring-custom-qualifier-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -73735,9 +73534,7 @@
         "ObjectMapper를 조금 건드린 뒤 starter 기본 Bean이 사라진 것처럼 보일 때 먼저 무엇을 의심해?",
         "@WebMvcTest나 CI에서만 starter Bean이 없으면 scan 문제랑 자동 구성 조건을 어떻게 구분해?"
       ],
-      "forbidden_neighbors": [
-        "contents/spring/spring-bean-not-found-cause-router.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom",
@@ -74984,9 +74781,7 @@
         "저장 직후 상세 조회에서 hit reject, primary fallback, no-fill이 왜 한 세트야?",
         "cache freshness 정책과 read routing 정책을 하나로 봐야 하는 이유가 뭐야?"
       ],
-      "forbidden_neighbors": [
-        "contents/system-design/read-after-write-routing-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison"
@@ -76692,7 +76487,6 @@
         "row patch, last-seen overlay, suppress 중 언제 어떤 걸 골라야 해?"
       ],
       "forbidden_neighbors": [
-        "contents/system-design/read-after-write-routing-primer.md",
         "contents/system-design/pagination-monotonicity-primer.md"
       ],
       "has_frontmatter": true,
@@ -77535,10 +77329,7 @@
         "notification read success 후 response metadata로 무엇을 남겨야 해?",
         "알림 클릭 후 상세는 맞는데 다음 검색 결과가 stale할 때 이 bridge를 어떻게 적용해?"
       ],
-      "forbidden_neighbors": [
-        "contents/system-design/list-detail-monotonicity-bridge.md",
-        "contents/system-design/notification-causal-token-walkthrough.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "comparison",
@@ -77614,9 +77405,7 @@
         "알림 source가 삭제된 건지 projection lag인지 빠르게 나누고 싶어",
         "viewer마다 알림 원문 노출이 다른데 authz 문제인지 확인하는 순서 알려줘"
       ],
-      "forbidden_neighbors": [
-        "contents/system-design/notification-badge-vs-source-freshness-primer.md"
-      ],
+      "forbidden_neighbors": [],
       "has_frontmatter": true,
       "intents": [
         "symptom"

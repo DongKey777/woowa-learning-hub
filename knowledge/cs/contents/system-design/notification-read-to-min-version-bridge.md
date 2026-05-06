@@ -51,8 +51,6 @@ confusable_with:
 - system-design/notification-causal-token-walkthrough
 - system-design/monotonic-reads-and-session-guarantees-primer
 forbidden_neighbors:
-- contents/system-design/list-detail-monotonicity-bridge.md
-- contents/system-design/notification-causal-token-walkthrough.md
 expected_queries:
 - 알림 상세를 성공적으로 본 뒤 다음 목록도 안 뒤로 가게 하려면 뭘 올려야 해?
 - causal token을 min-version floor로 바꾸는 시점을 notification 흐름으로 설명해줘

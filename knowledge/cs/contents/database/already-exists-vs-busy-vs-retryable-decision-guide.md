@@ -54,7 +54,6 @@ confusable_with:
 - database/db-timeout-first-splitter
 forbidden_neighbors:
 - contents/database/duplicate-key-fresh-read-classifier-mini-card.md
-- contents/database/db-timeout-first-splitter.md
 expected_queries:
 - 중복키가 나왔을 때와 락 대기 실패가 났을 때를 같은 retry 정책으로 보면 어디서 틀어져?
 - 23505, 1205, 40001을 이미 있음, 혼잡, 다시 시도 중 어디에 먼저 놓아야 해?

@@ -52,7 +52,6 @@ confusable_with:
 - software-engineering/change-ownership-handoff-boundaries
 - software-engineering/testing-strategy-and-test-doubles
 forbidden_neighbors:
-- contents/software-engineering/code-review-basics.md
 expected_queries:
 - 위험한 변경을 할 때 pair programming이 code review보다 먼저 필요한 순간은 언제야?
 - 리뷰가 자꾸 밀리는 팀이면 pair와 review 비율을 어떻게 조정해야 해?

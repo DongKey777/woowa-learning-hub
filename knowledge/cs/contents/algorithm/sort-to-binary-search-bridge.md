@@ -49,7 +49,6 @@ confusable_with:
 - algorithm/two-pointer-intro
 forbidden_neighbors:
 - contents/algorithm/sort-intro.md
-- contents/algorithm/binary-search-intro.md
 expected_queries:
 - 정렬이 끝이 아니라 이분 탐색 전처리라는 말이 왜 맞는지 처음부터 연결해줘
 - 절반을 버릴 수 있다는 말이 정렬과 어떤 관계인지 예시로 이해하고 싶어

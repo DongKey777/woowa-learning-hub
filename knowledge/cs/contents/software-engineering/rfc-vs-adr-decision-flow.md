@@ -49,8 +49,6 @@ confusable_with:
 - software-engineering/decision-revalidation-supersession-lifecycle
 - software-engineering/architectural-governance-operating-model
 forbidden_neighbors:
-- contents/software-engineering/adr-decision-records-at-scale.md
-- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
 expected_queries:
 - 팀 설계 변경안을 먼저 토론할지 바로 결정 기록으로 남길지 고르는 기준이 뭐야?
 - RFC 문서와 ADR 문서를 둘 다 쓰는 흐름을 한 번에 이해하고 싶어

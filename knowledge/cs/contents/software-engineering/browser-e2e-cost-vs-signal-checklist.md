@@ -54,7 +54,6 @@ confusable_with:
 - software-engineering/testing-strategy-and-test-doubles
 forbidden_neighbors:
 - contents/software-engineering/test-strategy-basics.md
-- contents/software-engineering/testing-strategy-and-test-doubles.md
 expected_queries:
 - 브라우저 E2E를 너무 많이 두는 것 같을 때 어디서 줄여야 해?
 - 로그인이나 결제처럼 정말 남겨야 할 E2E만 고르는 기준이 뭐야?

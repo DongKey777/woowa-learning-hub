@@ -51,8 +51,6 @@ confusable_with:
 - data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
 - data-structure/trie-prefix-search-autocomplete
 forbidden_neighbors:
-- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
-- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
 expected_queries:
 - 문자열 key 조회인데 exact match랑 prefix search를 먼저 어떻게 갈라야 해?
 - 자동완성도 아닌데 Trie를 쓰는 게 과한지 초급 기준으로 판단하고 싶어

@@ -59,7 +59,6 @@ confusable_with:
 - system-design/mixed-cache-replica-freshness-bridge
 - system-design/cache-acceptance-rules-for-causal-reads
 forbidden_neighbors:
-- contents/system-design/read-after-write-routing-primer.md
 expected_queries:
 - recent-write 힌트를 cache hit, miss, refill 전부에 어떻게 이어 붙여?
 - min-version이 있으면 cache entry를 버리는 기준을 어디에 둬야 해?

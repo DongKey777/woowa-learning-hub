@@ -54,7 +54,6 @@ confusable_with:
 - network/browser-421-but-curl-200-symptom-router
 - network/json-expected-but-html-response-symptom-router
 forbidden_neighbors:
-- contents/network/json-expected-but-html-response-symptom-router.md
 expected_queries:
 - Postman에서는 되는데 브라우저 fetch만 실패하면 어디부터 확인해야 해?
 - curl은 200인데 프론트 호출은 막힐 때 브라우저 쪽에서 먼저 볼 증거가 뭐야?

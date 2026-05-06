@@ -52,7 +52,6 @@ confusable_with:
 - operating-system/oom-killer-cgroup-memory-pressure
 - operating-system/signals-process-supervision
 forbidden_neighbors:
-- contents/operating-system/signals-process-supervision.md
 expected_queries:
 - 로그에 Killed만 남았을 때 OOMKilled와 같은 사건인지 어떻게 확인해?
 - memory.events의 oom_kill 증가를 초보자도 이해할 수 있게 설명해줘

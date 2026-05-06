@@ -55,7 +55,6 @@ confusable_with:
 - operating-system/subprocess-pipe-backpressure-primer
 - operating-system/subprocess-stdin-eof-primer
 forbidden_neighbors:
-- contents/operating-system/subprocess-pipe-backpressure-primer.md
 expected_queries:
 - reader가 먼저 닫힌 pipe에 write하면 운영체제는 무엇을 보내?
 - BrokenPipeError가 pipe full이랑 어떻게 다른지 입문자 기준으로 설명해줘

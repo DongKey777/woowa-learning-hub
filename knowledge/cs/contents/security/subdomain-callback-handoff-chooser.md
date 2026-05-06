@@ -57,7 +57,6 @@ confusable_with:
 - security/social-login-to-local-session-bridge
 forbidden_neighbors:
 - contents/security/cookie-scope-mismatch-guide.md
-- contents/security/social-login-to-local-session-bridge.md
 expected_queries:
 - auth.example.com callback은 성공했는데 app.example.com 첫 요청이 익명이야
 - shared-domain cookie 구조랑 handoff 구조를 어떻게 구분해?

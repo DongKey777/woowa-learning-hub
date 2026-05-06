@@ -57,7 +57,6 @@ confusable_with:
 - algorithm/zero-one-bfs-grid-conversion-primer
 forbidden_neighbors:
 - contents/algorithm/dfs-bfs-intro.md
-- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
 expected_queries:
 - 0 1 가중치가 섞인 상태 공간에서 visited로 막아도 되는지 궁금해
 - 같은 상태를 더 싸게 다시 방문할 수 있으면 배열을 어떻게 둬야 해

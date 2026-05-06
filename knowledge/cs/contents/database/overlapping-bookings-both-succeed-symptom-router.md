@@ -49,7 +49,6 @@ confusable_with:
 - database/for-update-zero-row-duplicate-insert-symptom-router
 - database/unique-vs-slot-row-vs-guard-row-quick-chooser
 forbidden_neighbors:
-- contents/database/for-update-zero-row-duplicate-insert-symptom-router.md
 - contents/database/roomescape-reservation-concurrency-bridge.md
 expected_queries:
 - 겹치는 예약이 둘 다 저장될 때 어디부터 의심해야 해?

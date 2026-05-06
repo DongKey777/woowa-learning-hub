@@ -50,7 +50,6 @@ confusable_with:
 - spring/same-type-bean-injection-failure-cause-router
 - spring/bean-di-basics
 forbidden_neighbors:
-- contents/spring/spring-same-type-bean-injection-failure-cause-router.md
 expected_queries:
 - Spring에서 Parameter 0 of constructor required a bean of type이 뜨면 어디부터 봐야 해?
 - '@Service 붙였는데도 bean could not be found가 나오면 원인을 어떻게 나눠?'

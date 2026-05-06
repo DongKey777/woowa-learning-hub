@@ -48,8 +48,6 @@ confusable_with:
 - data-structure/treemap-vs-hashmap-vs-linkedhashmap
 - data-structure/linkedhashmap-access-order-mini-primer
 forbidden_neighbors:
-- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
-- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
 expected_queries:
 - HashMap인데 왜 실행할 때마다 출력 순서가 달라지는지 먼저 진단하고 싶어
 - 조회만 했는데 LinkedHashMap 마지막으로 밀리는 현상을 어디서부터 봐야 해?

@@ -60,8 +60,6 @@ confusable_with:
 - operating-system/shell-redirection-order-primer
 - operating-system/pseudo-tty-vs-pipe-behavior
 forbidden_neighbors:
-- contents/operating-system/subprocess-pipe-backpressure-primer.md
-- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
 expected_queries:
 - 왜 stdout을 먼저 출력했는데 redirect하면 stderr가 먼저 보일 수 있어?
 - 2>&1로 합쳤는데 로그 순서가 어긋나 보이는 이유를 초보자 기준으로 설명해줘

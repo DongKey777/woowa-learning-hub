@@ -57,8 +57,6 @@ confusable_with:
 - design-pattern/strategy-map-vs-registry-primer
 - design-pattern/policy-object-pattern
 forbidden_neighbors:
-- contents/design-pattern/strategy-map-vs-registry-primer.md
-- contents/design-pattern/policy-object-pattern.md
 expected_queries:
 - 전략 맵이 커질 때 언제 policy object로 올려야 해?
 - Map으로 구현 선택하는 코드가 규칙 객체로 바뀌어야 하는 신호가 뭐야?

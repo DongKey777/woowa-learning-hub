@@ -52,7 +52,6 @@ confusable_with:
 - software-engineering/testing-strategy-and-test-doubles
 forbidden_neighbors:
 - contents/software-engineering/test-strategy-basics.md
-- contents/software-engineering/testing-strategy-and-test-doubles.md
 expected_queries:
 - 버튼 disabled 상태 확인은 컴포넌트 테스트로 끝내도 돼?
 - 로그인 후 이동처럼 브라우저를 실제로 열어야 하는 테스트만 고르는 기준이 뭐야?
