@@ -35,6 +35,8 @@ Behaviour summary:
 
 - No release URL in config → fetch returns ``"no_release_configured"``
 - Local index already matches release sha256 → ``"already_current"``
+- Local index matches the release sha256 but the live corpus changed →
+  ``"stale_against_corpus"`` so the caller can rebuild locally
 - Download succeeds, sha256 verifies, extract succeeds → ``"fetched"``
 - Any step fails → exception propagates, caller decides whether to
   fall back to local build
@@ -87,6 +89,7 @@ class ReleaseLock:
 FetchOutcome = Literal[
     "no_release_configured",
     "already_current",
+    "stale_against_corpus",
     "fetched",
 ]
 
@@ -123,6 +126,39 @@ def _local_archive_sha256(out_dir: Path) -> str | None:
     return None
 
 
+def _local_index_matches_live_corpus(out_dir: Path, repo_root: Path) -> bool:
+    """Return True when the local manifest still matches the current corpus.
+
+    Release archives are tied to a specific corpus snapshot. If the local
+    checkout has newer corpus files, re-fetching the same archive would keep
+    the index stale. In that case the caller must fall back to a local build.
+
+    Missing corpus roots preserve the historical short-circuit behaviour so
+    repo-light tests and external consumers do not regress.
+    """
+    manifest_path = out_dir / "manifest.json"
+    corpus_root = repo_root / "knowledge" / "cs"
+    if not manifest_path.exists() or not corpus_root.exists():
+        return True
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+
+    from . import corpus_loader
+
+    stored_indexed_hash = manifest.get("indexed_corpus_hash")
+    if isinstance(stored_indexed_hash, str) and stored_indexed_hash:
+        return stored_indexed_hash == corpus_loader.indexed_corpus_hash(corpus_root)
+
+    stored_full_hash = manifest.get("corpus_hash")
+    if not isinstance(stored_full_hash, str) or not stored_full_hash:
+        return False
+    current_full_hash = corpus_loader.corpus_hash(corpus_root)
+    current_indexed_hash = corpus_loader.indexed_corpus_hash(corpus_root)
+    return stored_full_hash in {current_full_hash, current_indexed_hash}
+
+
 def _stream_download(url: str, dest: Path, *, log) -> None:
     """Download ``url`` to ``dest`` with no third-party deps.
 
@@ -152,6 +188,22 @@ def _sha256_of(path: Path) -> str:
     return h.hexdigest()
 
 
+def _extract_checked_tar(tar: tarfile.TarFile, target: Path) -> None:
+    """Extract only regular files/directories that stay under ``target``."""
+    target_root = target.resolve()
+    for member in tar:
+        if member is None:
+            continue
+        destination = (target_root / member.name).resolve()
+        if os.path.commonpath([str(target_root), str(destination)]) != str(target_root):
+            raise RuntimeError(f"unsafe tar member path: {member.name}")
+        if member.issym() or member.islnk():
+            raise RuntimeError(f"unsafe tar member link: {member.name}")
+        if member.isdev():
+            raise RuntimeError(f"unsafe tar member device: {member.name}")
+        tar.extract(member, path=target_root)
+
+
 def _extract_zstd_tar(archive: Path, target: Path, *, log) -> None:
     """Extract a tar.zst archive into target.
 
@@ -168,7 +220,7 @@ def _extract_zstd_tar(archive: Path, target: Path, *, log) -> None:
         ) as proc:
             assert proc.stdout is not None
             with tarfile.open(fileobj=proc.stdout, mode="r|") as tar:
-                tar.extractall(path=target)
+                _extract_checked_tar(tar, target)
             proc.wait()
             if proc.returncode != 0:
                 raise RuntimeError(f"zstd exited with {proc.returncode}")
@@ -185,7 +237,7 @@ def _extract_zstd_tar(archive: Path, target: Path, *, log) -> None:
         dctx = zstandard.ZstdDecompressor()
         with dctx.stream_reader(compressed) as reader:
             with tarfile.open(fileobj=reader, mode="r|") as tar:
-                tar.extractall(path=target)
+                _extract_checked_tar(tar, target)
 
 
 def fetch_index_release(
@@ -217,6 +269,10 @@ def fetch_index_release(
         ``"already_current"`` when ``out_dir/manifest.json`` already
         records the release's archive_sha256.
 
+        ``"stale_against_corpus"`` when the local manifest still points at
+        the locked archive but the current checkout's corpus hash changed.
+        The caller should skip the fetch and rebuild locally.
+
         ``"fetched"`` when the archive was downloaded, sha256-verified,
         and extracted into ``out_dir``.
 
@@ -239,6 +295,16 @@ def fetch_index_release(
     if not force:
         local_sha = _local_archive_sha256(out_dir)
         if local_sha == lock.archive_sha256:
+            if not _local_index_matches_live_corpus(out_dir, repo_root):
+                log(
+                    "release_fetch",
+                    {
+                        "outcome": "stale_against_corpus",
+                        "tag": lock.tag,
+                        "sha256": lock.archive_sha256,
+                    },
+                )
+                return "stale_against_corpus"
             log(
                 "release_fetch",
                 {

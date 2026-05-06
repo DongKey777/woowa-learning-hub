@@ -745,7 +745,13 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
         # integration.augment() when tier ∈ {1,2}; stays as a
         # null-stub for tier 0 / blocked / tier 3 turns so the AI
         # session can read the same key shape regardless of path.
-        "response_hints": {"citation_markdown": None, "citation_paths": []},
+        "response_hints": {
+            "citation_markdown": None,
+            "citation_paths": [],
+            "citation_trace": [],
+            "tier_downgrade": None,
+            "fallback_disclaimer": None,
+        },
     }
     if build_learner_context is not None and learner_profile is not None:
         try:
@@ -787,7 +793,8 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
         else:
             out["hits"] = result
-            # Surface response_hints (citation_markdown, citation_paths)
+            # Surface response_hints so tier 0/1/2 callers all read the
+            # same citation + downgrade shape.
             # from augment to the top-level rag-ask payload so the AI
             # session can paste the `참고:` block verbatim per
             # AGENTS.md / CLAUDE.md regulation. Phase 9.4 contract.

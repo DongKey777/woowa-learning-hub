@@ -17,6 +17,7 @@ from scripts.learning.rag.r3.eval.cohort_qrels import (
     CohortQuery,
 )
 from scripts.learning.rag.r3.eval.cohort_eval import (
+    _is_refusal_clean_outcome,
     _classify_failure,
     _classify_outcome,
     evaluate_cohort_query,
@@ -141,6 +142,11 @@ class RefusalCohortClassifierTest(unittest.TestCase):
         _, actual, pass_status, *_ = out
         self.assertEqual(actual, "forbidden_hit")
         self.assertFalse(pass_status)
+
+    def test_tier_downgraded_counts_as_refusal_clean_metric(self):
+        self.assertTrue(_is_refusal_clean_outcome("tier_downgraded"))
+        self.assertTrue(_is_refusal_clean_outcome("refusal_clean"))
+        self.assertFalse(_is_refusal_clean_outcome("silent_failure"))
 
     def test_forbidden_neighbor_no_forbidden_passes(self):
         out = _classify_outcome(

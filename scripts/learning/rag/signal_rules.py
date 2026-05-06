@@ -119,6 +119,8 @@ _RULES: list[Rule] = [
             "deadlock",
             "데드락",
             "lock wait timeout",
+            "락 timeout",
+            "락 대기 timeout",
             "mysql deadlock",
         },
         "expand": [
@@ -157,6 +159,68 @@ _RULES: list[Rule] = [
             "transaction deadlock",
             "circular wait",
             "innodb deadlock log",
+        ],
+        "category": "database",
+    },
+    {
+        "tag": "db_timeout_splitter",
+        "triggers": {
+            "db timeout first split",
+            "connection timeout vs lock timeout vs statement timeout",
+            "pool timeout vs lock timeout vs statement timeout",
+            "timeout first failure chooser",
+            "borrow timeout lock wait statement timeout",
+            "connection is not available",
+            "borrow timeout",
+            "statement timeout",
+            "query canceled due to statement timeout",
+            "lock wait timeout exceeded",
+            "55p03",
+            "57014",
+            "pool 대기와 db 락 대기",
+            "어떤 timeout을 먼저 봐야 하나",
+            "같은 요청에 57014랑 55p03",
+        },
+        "expand": [
+            "db timeout first split",
+            "connection timeout vs lock timeout",
+            "statement timeout vs lock timeout",
+            "timeout first failure",
+            "connection is not available",
+            "lock wait timeout exceeded",
+            "query canceled due to statement timeout",
+            "55p03",
+            "57014",
+        ],
+        "category": "database",
+    },
+    {
+        "tag": "duplicate_key_followup_read",
+        "triggers": {
+            "duplicate key after null read",
+            "winner row 안 보임",
+            "중복키 났는데 조회하면 없음",
+            "duplicate 후 row가 안 보여요",
+            "1062 뒤 select null",
+            "duplicatekeyexception",
+            "duplicate key",
+            "1062",
+            "23505",
+            "winner row",
+            "not found",
+            "row가 안 보임",
+            "조회하면 없음",
+        },
+        "expand": [
+            "duplicate key after null read",
+            "duplicatekeyexception",
+            "winner row not visible",
+            "1062",
+            "23505",
+            "read your writes",
+            "session pinning",
+            "replica lag",
+            "follow-up read after duplicate",
         ],
         "category": "database",
     },
@@ -1388,18 +1452,79 @@ _RULES: list[Rule] = [
     },
 ]
 
+_RULES_BY_TAG: dict[str, Rule] = {rule["tag"]: rule for rule in _RULES}
+
 _TOKEN_RE = re.compile(r"[0-9a-zA-Z가-힣]+")
 # Strip a trailing Korean-particle run from ASCII-prefixed tokens like
 # "boundary와" / "repository가" so the FTS side queries the bare stem the
 # index actually stores. Pure-Hangul tokens are left untouched (stripping
 # particles from them risks mangling legitimate stems).
 _MIXED_TAIL_RE = re.compile(r"^([0-9A-Za-z]+)[가-힣]+$")
+_TOPIC_HINT_LABEL_RE = (
+    r"(?:"
+    r"contextual(?:[_\-\s]+chunk)?[_\-\s]+prefix"
+    r"|contextual(?:chunk)?prefix"
+    r"|chunk[_\-\s]+context"
+    r"|chunkcontext"
+    r"|context"
+    r")"
+)
+_TOPIC_HINT_WRAPPED_LABEL_RE = rf"(?:\[\s*{_TOPIC_HINT_LABEL_RE}\s*\]|{_TOPIC_HINT_LABEL_RE})"
+_TOPIC_HINT_QUOTED_LABEL_RE = rf"(?:['\"]\s*)?{_TOPIC_HINT_WRAPPED_LABEL_RE}(?:\s*['\"])?"
+_TOPIC_HINT_MARKDOWN_LABEL_WITH_INNER_SEPARATOR_RE = re.compile(
+    rf"^(?P<prefix>\s*)(?P<wrapper>[*_`]+)\s*(?P<label>{_TOPIC_HINT_WRAPPED_LABEL_RE})\s*"
+    rf"(?P<separator>[:=])\s*(?P=wrapper)(?P<suffix>\s*(?:[|>][+-]?)?\s*)(?P<rest>.*)$",
+    re.IGNORECASE,
+)
+_TOPIC_HINT_MARKDOWN_LABEL_WITH_OUTER_SEPARATOR_RE = re.compile(
+    rf"^(?P<prefix>\s*)(?P<wrapper>[*_`]+)\s*(?P<label>{_TOPIC_HINT_WRAPPED_LABEL_RE})\s*"
+    rf"(?P=wrapper)\s*(?P<separator>[:=])(?P<suffix>\s*(?:[|>][+-]?)?\s*)(?P<rest>.*)$",
+    re.IGNORECASE,
+)
+_TOPIC_HINT_METADATA_LINE_RE = re.compile(
+    rf"^\s*(?:[\{{(]\s*)?{_TOPIC_HINT_QUOTED_LABEL_RE}\s*[:=]\s*(?:[|>][+-]?)?\s*$",
+    re.IGNORECASE,
+)
+_TOPIC_HINT_LABEL_PREFIX_RE = re.compile(
+    rf"^\s*(?:[\{{(]\s*)?{_TOPIC_HINT_QUOTED_LABEL_RE}\s*[:=]?\s*",
+    re.IGNORECASE,
+)
+_TOPIC_HINT_WRAPPER_PREFIX_RE = re.compile(
+    r"^\s*(?:(?:[-*+]\s+)|(?:>\s*)|(?:\d+[.)]\s+)|(?:\[[ xX]\]\s+))+"
+)
+_TOPIC_HINT_FRONTMATTER_METADATA_KEY_RE = re.compile(
+    r"^(?:"
+    r"aliases|category|concept_id|difficulty|doc_id|expected_queries|"
+    r"related_docs|retrieval_anchor_keywords|source_path|tags|title"
+    r")\s*[:=]",
+    re.IGNORECASE,
+)
+_TOPIC_HINT_FRONTMATTER_INLINE_METADATA_SUFFIX_RE = re.compile(
+    r'(?P<prefix>.*?)(?:\s*[,\]}]\s*)?(?:"?(?:aliases|category|concept_id|difficulty|doc_id|'
+    r'expected_queries|related_docs|retrieval_anchor_keywords|source_path|tags|title)"?\s*[:=].*)$',
+    re.IGNORECASE,
+)
 
 # When a specific signal family matches, drop broader generic buckets that
 # would otherwise add noisy fallback vocabulary to the expanded query.
 _SUPPRESSED_WHEN_PRESENT: dict[str, set[str]] = {
     "connection_pool_basics": {
         "resource_lifecycle",
+    },
+    "db_timeout_splitter": {
+        "api_boundary",
+        "connection_pool_basics",
+        "concurrency",
+        "mysql_gap_locking",
+        "network_and_reliability",
+        "resource_lifecycle",
+        "transaction_anomaly_patterns",
+        "transaction_deadlock_case_study",
+    },
+    "duplicate_key_followup_read": {
+        "api_boundary",
+        "idempotency_dedup_family",
+        "projection_freshness",
     },
     "event_upcaster_compatibility": {
         "db_modeling",
@@ -1448,6 +1573,12 @@ _LOCK_WAIT_TIMEOUT_DATABASE_TAGS = {
     "transaction_anomaly_patterns",
     "transaction_deadlock_case_study",
     "transaction_isolation",
+}
+
+_LOCK_WAIT_TIMEOUT_VARIANTS = {
+    "lock wait timeout",
+    "락 timeout",
+    "락 대기 timeout",
 }
 
 _STORAGE_CONTRACT_CDC_TRIGGERS = {
@@ -2590,6 +2721,16 @@ _QUERY_MODEL_BEGINNER_MEANING_RE = re.compile(
     r"\bwhat\s+does\s+(?:a\s+)?query\s+model\s+mean\b"
 )
 
+_QUERY_SERVICE_BEGINNER_ROLE_KOREAN_RE = re.compile(
+    r"(?:query\s+service|쿼리\s*서비스)(?:는|가)?\s*"
+    r"(?:"
+    r"무슨\s+역할(?:을\s+해)?"
+    r"|뭐\s*하는\s*거(?:야|예요)"
+    r"|뭘\s*하는\s*거(?:야|예요)"
+    r"|뭘\s*해"
+    r")"
+)
+
 _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "query service 무슨 역할",
     "query service는 무슨 역할",
@@ -2599,9 +2740,13 @@ _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "query service 역할이야",
     "query service 역할이에요",
     "query service 뭐 하는 거야",
+    "query service 뭐하는거야",
     "query service가 뭐 하는 거야",
+    "query service가 뭐하는거야",
     "query service 는 뭐 하는 거야",
+    "query service는 뭐하는거야",
     "query service가 뭘 해",
+    "query service가 뭘하는거야",
     "query service 는 뭘 해",
     "query service 무슨 역할을 해",
     "쿼리 서비스 무슨 역할",
@@ -2612,9 +2757,13 @@ _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "쿼리 서비스 역할이야",
     "쿼리 서비스 역할이에요",
     "쿼리 서비스 뭐 하는 거야",
+    "쿼리 서비스 뭐하는거야",
     "쿼리 서비스가 뭐 하는 거야",
+    "쿼리 서비스가 뭐하는거야",
     "쿼리 서비스 는 뭐 하는 거야",
+    "쿼리 서비스는 뭐하는거야",
     "쿼리 서비스가 뭘 해",
+    "쿼리 서비스가 뭘하는거야",
     "쿼리 서비스 는 뭘 해",
     "쿼리 서비스 무슨 역할을 해",
 }
@@ -2623,6 +2772,20 @@ _QUERY_SERVICE_TOPIC_CUES = {
     "query service",
     "쿼리 서비스",
 }
+
+
+def _is_query_service_beginner_role_prompt(haystack: str) -> bool:
+    return bool(
+        any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES)
+        and (
+            _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
+            or _QUERY_SERVICE_BEGINNER_MEANING_RE.search(haystack)
+            or "query service role" in haystack
+            or "query service responsibility" in haystack
+            or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
+            or _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_RE.search(haystack)
+        )
+    )
 
 _PROJECTION_BACKEND_FRESHNESS_ANCHOR_CUES = {
     "cqrs",
@@ -2931,8 +3094,70 @@ def _tokenize(text: str) -> list[str]:
 
 def _haystack(prompt: str, topic_hints: list[str] | None) -> str:
     parts = [prompt or ""]
-    parts.extend(topic_hints or [])
+    parts.extend(_normalized_topic_hints(topic_hints))
     return " ".join(parts).lower()
+
+
+def _normalize_topic_hint(hint: str) -> str:
+    if not hint:
+        return ""
+
+    cleaned_lines: list[str] = []
+    skip_metadata_block_indent: int | None = None
+    for raw_line in hint.splitlines():
+        indent = len(raw_line) - len(raw_line.lstrip())
+        if skip_metadata_block_indent is not None:
+            if indent > skip_metadata_block_indent:
+                continue
+            skip_metadata_block_indent = None
+        line = raw_line.strip()
+        if not line or line == "---" or line.startswith("```"):
+            continue
+        line = _TOPIC_HINT_WRAPPER_PREFIX_RE.sub("", line).strip()
+        line = _strip_topic_hint_markdown_label(line).strip()
+        if not line:
+            continue
+        if _TOPIC_HINT_METADATA_LINE_RE.match(line):
+            continue
+        if _TOPIC_HINT_FRONTMATTER_METADATA_KEY_RE.match(line):
+            skip_metadata_block_indent = indent
+            continue
+        line = _TOPIC_HINT_LABEL_PREFIX_RE.sub("", line).strip()
+        line = _trim_topic_hint_inline_metadata_suffix(line).strip()
+        line = _strip_topic_hint_value_wrappers(line).strip()
+        if line:
+            cleaned_lines.append(line)
+    return " ".join(cleaned_lines)
+
+
+def _strip_topic_hint_markdown_label(line: str) -> str:
+    for pattern in (
+        _TOPIC_HINT_MARKDOWN_LABEL_WITH_INNER_SEPARATOR_RE,
+        _TOPIC_HINT_MARKDOWN_LABEL_WITH_OUTER_SEPARATOR_RE,
+    ):
+        if match := pattern.match(line):
+            return (
+                f"{match.group('prefix')}{match.group('label')}{match.group('separator')}"
+                f"{match.group('suffix')}{match.group('rest')}"
+            )
+    return line
+
+
+def _trim_topic_hint_inline_metadata_suffix(line: str) -> str:
+    if match := _TOPIC_HINT_FRONTMATTER_INLINE_METADATA_SUFFIX_RE.match(line):
+        return match.group("prefix")
+    return line
+
+
+def _strip_topic_hint_value_wrappers(line: str) -> str:
+    stripped = line.strip().rstrip(",}]")
+    while len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {'"', "'"}:
+        stripped = stripped[1:-1].strip().rstrip(",}]")
+    return stripped
+
+
+def _normalized_topic_hints(topic_hints: list[str] | None) -> list[str]:
+    return [normalized for hint in (topic_hints or []) if (normalized := _normalize_topic_hint(hint))]
 
 
 def _is_short_ascii_trigger(trigger: str) -> bool:
@@ -4198,6 +4423,131 @@ def _gap_lock_compound_matches(haystack: str) -> set[str]:
     return matched
 
 
+_DUPLICATE_KEY_FOLLOWUP_BASE_CUES = {
+    "duplicate key",
+    "duplicatekeyexception",
+    "1062",
+    "23505",
+}
+
+_DUPLICATE_KEY_FOLLOWUP_BASE_RE = re.compile(
+    r"(?:duplicate\s+key|duplicatekeyexception|중복키|\b1062\b|\b23505\b)"
+)
+
+_DUPLICATE_KEY_FOLLOWUP_VISIBILITY_CUES = {
+    "null",
+    "not found",
+    "select",
+    "winner row",
+    "follow-up read",
+    "follow up read",
+    "row가 안 보임",
+    "조회하면 없음",
+    "조회해도 안 나와요",
+    "조회했더니 안 나옴",
+    "조회해보면 없음",
+    "조회해봤더니 없음",
+    "조회하면 null",
+    "조회해도 안 보여요",
+    "안 보임",
+    "안 나와요",
+    "안 보여요",
+}
+
+_DUPLICATE_KEY_FOLLOWUP_VISIBILITY_RE = re.compile(
+    r"(?:"
+    r"조회(?:하면|했더니|해보니|해도|해보면|해봤더니)?\s*"
+    r"(?:없(?:어|어요|어서|음)|null|not\s+found|안\s*나오(?:요|네|ㅁ)|안\s*나와(?:요)?|안\s*보여(?:요)?)"
+    r"|row\s*가?\s*안\s*보(?:여|여요|임|일)"
+    r"|select(?:\s+\w+){0,4}\s+null"
+    r"|winner\s+row"
+    r")"
+)
+
+
+def _duplicate_key_followup_read_matches(haystack: str, tokens: set[str]) -> set[str]:
+    matched = _matched_triggers(haystack, tokens, {
+        "duplicate key after null read",
+        "winner row 안 보임",
+        "중복키 났는데 조회하면 없음",
+        "duplicate 후 row가 안 보여요",
+        "1062 뒤 select null",
+        "duplicatekeyexception",
+        "duplicate key",
+        "1062",
+        "23505",
+        "winner row",
+        "not found",
+        "row가 안 보임",
+        "조회하면 없음",
+    })
+    if _DUPLICATE_KEY_FOLLOWUP_BASE_RE.search(haystack):
+        matched.add("__duplicate_key_base__")
+    if _DUPLICATE_KEY_FOLLOWUP_VISIBILITY_RE.search(haystack):
+        matched.add("__followup_visibility__")
+    has_base_cue = bool(matched & _DUPLICATE_KEY_FOLLOWUP_BASE_CUES)
+    has_visibility_cue = bool(matched & _DUPLICATE_KEY_FOLLOWUP_VISIBILITY_CUES)
+    if "__duplicate_key_base__" in matched:
+        has_base_cue = True
+    if "__followup_visibility__" in matched:
+        has_visibility_cue = True
+    if "duplicate" in tokens and "key" in tokens:
+        has_base_cue = True
+    if "duplicate" in tokens and "winner" in tokens and "row" in tokens:
+        has_base_cue = True
+    if "중복키" in haystack:
+        has_base_cue = True
+    if "조회" in haystack and "없음" in haystack:
+        has_visibility_cue = True
+    if "조회하면" in haystack and (
+        "없어" in haystack or "없어요" in haystack or "없어서" in haystack
+    ):
+        has_visibility_cue = True
+    if ("조회해보면" in haystack or "조회해봤더니" in haystack) and (
+        "없어" in haystack or "없어요" in haystack or "없음" in haystack
+    ):
+        has_visibility_cue = True
+    if "조회" in haystack and (
+        "안 나와" in haystack
+        or "안 나와요" in haystack
+        or "안 나옴" in haystack
+        or "안 보여" in haystack
+        or "안 보여요" in haystack
+    ):
+        has_visibility_cue = True
+    if "조회" in haystack and ("null" in haystack or "not found" in haystack):
+        has_visibility_cue = True
+    if "select" in tokens and "null" in tokens:
+        has_visibility_cue = True
+    if "row" in tokens and "안" in tokens and "보임" in tokens:
+        has_visibility_cue = True
+    if "row" in tokens and "안" in tokens and "보일" in tokens:
+        has_visibility_cue = True
+    if not (has_base_cue and has_visibility_cue):
+        return set()
+    return matched
+
+
+def _rule_matched_triggers(tag: str, haystack: str, tokens: set[str]) -> set[str]:
+    rule = _RULES_BY_TAG[tag]
+    matched_triggers = _matched_triggers(haystack, tokens, rule["triggers"])
+    if tag == "transaction_isolation" and not matched_triggers:
+        matched_triggers.update(_mvcc_beginner_primer_matches(haystack, tokens))
+    if tag == "duplicate_key_followup_read":
+        matched_triggers = _duplicate_key_followup_read_matches(haystack, tokens)
+    if tag == "security_authentication":
+        matched_triggers.update(_security_authentication_compound_matches(haystack, tokens))
+    if tag == "spring_framework":
+        matched_triggers.update(_spring_framework_compound_matches(haystack, tokens))
+    if tag == "os_sync_async_blocking_basics":
+        matched_triggers.update(_os_sync_async_blocking_compound_matches(haystack, tokens))
+    if tag == "mysql_gap_locking":
+        matched_triggers.update(_gap_lock_compound_matches(haystack))
+    if tag == "projection_freshness":
+        matched_triggers.update(_projection_freshness_compound_matches(haystack, tokens))
+    return matched_triggers
+
+
 def _security_authentication_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
     matched: set[str] = set()
     has_http_stateless_cue = "http" in tokens or any(
@@ -4362,8 +4712,12 @@ def _is_spring_transaction_propagation_prompt(haystack: str, tokens: set[str]) -
     return "propagation" in haystack and has_spring_transactional_context and has_transaction_family_cue
 
 
+def _has_lock_wait_timeout_cue(haystack: str) -> bool:
+    return any(variant in haystack for variant in _LOCK_WAIT_TIMEOUT_VARIANTS)
+
+
 def _should_suppress_network_timeout_noise(haystack: str, hits: list[dict]) -> bool:
-    if "lock wait timeout" not in haystack:
+    if not _has_lock_wait_timeout_cue(haystack):
         return False
 
     present_tags = {hit["tag"] for hit in hits}
@@ -4376,6 +4730,19 @@ def _should_suppress_network_timeout_noise(haystack: str, hits: list[dict]) -> b
 
     matched_triggers = network_hit.get("_matched_triggers", set())
     return bool(matched_triggers) and matched_triggers <= {"timeout"}
+
+
+def _should_suppress_duplicate_key_retry_noise(hits: list[dict]) -> bool:
+    present_tags = {hit["tag"] for hit in hits}
+    if "duplicate_key_followup_read" not in present_tags:
+        return False
+
+    network_hit = next((hit for hit in hits if hit["tag"] == "network_and_reliability"), None)
+    if not network_hit:
+        return False
+
+    matched_triggers = network_hit.get("_matched_triggers", set())
+    return bool(matched_triggers) and matched_triggers <= {"retry"}
 
 
 def _should_suppress_network_http_login_state_noise(haystack: str, hits: list[dict]) -> bool:
@@ -4496,7 +4863,7 @@ def _should_suppress_transaction_isolation_for_spring_propagation(
 
 
 def _should_suppress_gap_lock_deadlock_noise(haystack: str, hits: list[dict]) -> bool:
-    if "lock wait timeout" not in haystack:
+    if not _has_lock_wait_timeout_cue(haystack):
         return False
 
     present_tags = {hit["tag"] for hit in hits}
@@ -4517,9 +4884,13 @@ def _is_deadlock_timeout_beginner_primer_prompt(
     *,
     beginner_intent: bool,
 ) -> bool:
-    if not beginner_intent:
+    has_shortform_compare = any(cue in haystack for cue in _PROJECTION_OPERATIONAL_COMPARISON_CUES) and (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+    )
+    if not (beginner_intent or has_shortform_compare):
         return False
-    if "lock wait timeout" not in haystack:
+    if not _has_lock_wait_timeout_cue(haystack):
         return False
     if not ({"deadlock", "데드락"} & tokens or "mysql deadlock" in haystack or "mysql 데드락" in haystack):
         return False
@@ -4552,6 +4923,8 @@ def _should_suppress_deadlock_timeout_primer_anomaly_overlap(
         "데드락",
         "mysql deadlock",
         "lock wait timeout",
+        "락 timeout",
+        "락 대기 timeout",
     }
 
 
@@ -4576,7 +4949,7 @@ def _should_suppress_deadlock_timeout_primer_gap_lock_noise(
         return False
 
     matched_triggers = gap_lock_hit.get("_matched_triggers", set())
-    return bool(matched_triggers) and matched_triggers <= {"lock wait timeout"}
+    return bool(matched_triggers) and matched_triggers <= _LOCK_WAIT_TIMEOUT_VARIANTS
 
 
 def _should_suppress_jwks_fail_closed_resource_noise(hits: list[dict]) -> bool:
@@ -4702,16 +5075,7 @@ def _is_beginner_query_model_meaning_prompt(haystack: str, tokens: set[str]) -> 
             or "query model responsibility" in haystack
         )
     )
-    query_service_beginner_role_prompt = bool(
-        any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES)
-        and (
-            _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
-            or _QUERY_SERVICE_BEGINNER_MEANING_RE.search(haystack)
-            or "query service role" in haystack
-            or "query service responsibility" in haystack
-            or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
-        )
-    )
+    query_service_beginner_role_prompt = _is_query_service_beginner_role_prompt(haystack)
     has_beginner_cue = (
         _has_beginner_intent(haystack, tokens)
         or _has_beginner_confusion_intent(haystack)
@@ -5149,6 +5513,129 @@ def _projection_beginner_slo_lag_compare_noise_tokens(
         if cue in haystack:
             stripped_tokens.update(_tokenize(cue))
     return stripped_tokens
+
+
+def _projection_contextual_prefix_noise_tags(
+    prompt: str,
+    topic_hints: list[str] | None,
+    hits: list[dict],
+) -> set[str]:
+    if not topic_hints:
+        return set()
+
+    prompt_haystack = (prompt or "").lower()
+    prompt_tokens = set(_tokenize(prompt_haystack))
+    if not _rule_matched_triggers("projection_freshness", prompt_haystack, prompt_tokens):
+        return set()
+    if any(cue in prompt_haystack for cue in _PROJECTION_CUTOVER_SAFETY_WINDOW_CUES):
+        return set()
+    if "rollback" in prompt_tokens or "window" in prompt_tokens:
+        return set()
+
+    present_tags = {hit["tag"] for hit in hits}
+    suppressed: set[str] = set()
+    for noisy_tag in ("migration_repair_cutover", "transaction_isolation"):
+        if noisy_tag not in present_tags:
+            continue
+        if _rule_matched_triggers(noisy_tag, prompt_haystack, prompt_tokens):
+            continue
+        suppressed.add(noisy_tag)
+    return suppressed
+
+
+def _projection_contextual_prefix_noise_tokens(
+    prompt: str,
+    topic_hints: list[str] | None,
+) -> set[str]:
+    normalized_hints = _normalized_topic_hints(topic_hints)
+    if not normalized_hints:
+        return set()
+
+    prompt_haystack = (prompt or "").lower()
+    prompt_tokens = set(_tokenize(prompt_haystack))
+    if not _rule_matched_triggers("projection_freshness", prompt_haystack, prompt_tokens):
+        return set()
+    if any(cue in prompt_haystack for cue in _PROJECTION_CUTOVER_SAFETY_WINDOW_CUES):
+        return set()
+    if "rollback" in prompt_tokens or "window" in prompt_tokens:
+        return set()
+
+    hint_haystack = " ".join(normalized_hints).lower()
+    hint_tokens = set(_tokenize(hint_haystack))
+    stripped_tokens = hint_tokens & {
+        "backfill",
+        "cutover",
+        "dual",
+        "guardrail",
+        "guardrails",
+        "migration",
+        "parity",
+        "rebuild",
+        "reconciliation",
+        "repair",
+        "rollback",
+        "safety",
+        "window",
+    }
+    hint_only_projection_operational_phrases = (
+        _PROJECTION_CUTOVER_SAFETY_WINDOW_CUES
+        | _PROJECTION_SLO_CUES
+        | _PROJECTION_LAG_BUDGET_CUES
+        | {
+            "read model cutover guardrails",
+            "cutover guardrails",
+            "freshness guardrail",
+            "dual read parity",
+            "cutover assumption checklist",
+            "pagination cutover",
+            "canary promotion threshold",
+            "freshness budget",
+        }
+    )
+    for phrase in hint_only_projection_operational_phrases:
+        if phrase in prompt_haystack or phrase not in hint_haystack:
+            continue
+        stripped_tokens.update(_tokenize(phrase))
+    for noisy_tag in ("migration_repair_cutover", "transaction_isolation"):
+        if _rule_matched_triggers(noisy_tag, prompt_haystack, prompt_tokens):
+            continue
+        if not _rule_matched_triggers(noisy_tag, hint_haystack, hint_tokens):
+            continue
+        for phrase in _RULES_BY_TAG[noisy_tag]["triggers"] | set(_RULES_BY_TAG[noisy_tag]["expand"]):
+            if phrase in hint_haystack:
+                stripped_tokens.update(_tokenize(phrase))
+    return stripped_tokens
+
+
+def _projection_contextual_prefix_noise_expand_terms(
+    prompt: str,
+    topic_hints: list[str] | None,
+) -> set[str]:
+    if not _projection_contextual_prefix_noise_tokens(prompt, topic_hints):
+        return set()
+    return {
+        "canary promotion threshold",
+        "cutover assumption checklist",
+        "cutover safety window",
+        "dual read parity",
+        "freshness budget",
+        "freshness budget burn",
+        "freshness guardrail",
+        "freshness slo",
+        "lag budget",
+        "lag budget이 설계 trade-off",
+        "pagination cutover",
+        "projection freshness slo",
+        "projection freshness slo pattern",
+        "projection lag budget",
+        "projection lag budgeting pattern",
+        "반영 지연 허용 범위",
+        "지연 예산",
+        "최신성 slo",
+        "최신성 서비스 수준 목표",
+        "freshness slo는 운영 계약",
+        "read model cutover guardrails",
+    }
 
 
 def _java_concurrency_false_positive_suppressions(hits: list[dict]) -> set[str]:
@@ -5946,13 +6433,7 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
                     "query model responsibility",
                 ]
             )
-        if any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES) and (
-            _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
-            or _QUERY_SERVICE_BEGINNER_MEANING_RE.search(haystack)
-            or "query service role" in haystack
-            or "query service responsibility" in haystack
-            or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
-        ):
+        if _is_query_service_beginner_role_prompt(haystack):
             primer_hit["expand"].extend(
                 [
                     "what does query service do",
@@ -6051,19 +6532,7 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
     tokens = set(_tokenize(haystack))
     hits: list[dict] = []
     for rule in _RULES:
-        matched_triggers = _matched_triggers(haystack, tokens, rule["triggers"])
-        if rule["tag"] == "transaction_isolation" and not matched_triggers:
-            matched_triggers.update(_mvcc_beginner_primer_matches(haystack, tokens))
-        if rule["tag"] == "security_authentication":
-            matched_triggers.update(_security_authentication_compound_matches(haystack, tokens))
-        if rule["tag"] == "spring_framework":
-            matched_triggers.update(_spring_framework_compound_matches(haystack, tokens))
-        if rule["tag"] == "os_sync_async_blocking_basics":
-            matched_triggers.update(_os_sync_async_blocking_compound_matches(haystack, tokens))
-        if rule["tag"] == "mysql_gap_locking":
-            matched_triggers.update(_gap_lock_compound_matches(haystack))
-        if rule["tag"] == "projection_freshness":
-            matched_triggers.update(_projection_freshness_compound_matches(haystack, tokens))
+        matched_triggers = _rule_matched_triggers(rule["tag"], haystack, tokens)
         score = len(matched_triggers)
         if score == 0:
             continue
@@ -6157,6 +6626,8 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
         suppressed_tags.update(_apply_beginner_primer_bias(haystack, tokens, hits))
         if _should_suppress_network_timeout_noise(haystack, hits):
             suppressed_tags.add("network_and_reliability")
+        if _should_suppress_duplicate_key_retry_noise(hits):
+            suppressed_tags.add("network_and_reliability")
         if _should_suppress_deadlock_anomaly_overlap(hits):
             suppressed_tags.add("transaction_anomaly_patterns")
         if _should_suppress_deadlock_concurrency_noise(hits):
@@ -6209,6 +6680,7 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
         suppressed_tags.update(_java_runtime_false_positive_suppressions(hits))
         suppressed_tags.update(_java_virtual_threads_false_positive_suppressions(hits))
         suppressed_tags.update(_java_family_generic_noise_suppressions(haystack, tokens, hits))
+        suppressed_tags.update(_projection_contextual_prefix_noise_tags(prompt, topic_hints, hits))
         if _should_suppress_network_http_login_state_noise(haystack, hits):
             suppressed_tags.add("network_and_reliability")
         if suppressed_tags:
@@ -6226,7 +6698,7 @@ def expand_query(prompt: str, topic_hints: list[str] | None = None) -> list[str]
     base = _tokenize(prompt)
     if _is_generic_crud_korean_prompt(haystack):
         base.extend(_generic_crud_korean_expand(haystack))
-    for hint in topic_hints or []:
+    for hint in _normalized_topic_hints(topic_hints):
         base.extend(_tokenize(hint))
     stripped_tokens = _projection_beginner_operational_noise_tokens(haystack, tokens)
     stripped_tokens.update(
@@ -6236,6 +6708,8 @@ def expand_query(prompt: str, topic_hints: list[str] | None = None) -> list[str]
     stripped_tokens.update(_projection_beginner_cache_confusion_noise_tokens(haystack, tokens))
     stripped_tokens.update(_projection_strict_read_intro_noise_tokens(haystack, tokens))
     stripped_tokens.update(_projection_beginner_slo_lag_compare_noise_tokens(haystack, tokens))
+    stripped_tokens.update(_projection_contextual_prefix_noise_tokens(prompt, topic_hints))
+    stripped_expand_terms = _projection_contextual_prefix_noise_expand_terms(prompt, topic_hints)
     if stripped_tokens:
         base = [tok for tok in base if tok.lower() not in stripped_tokens]
     signals = detect_signals(prompt, topic_hints)
@@ -6268,6 +6742,9 @@ def expand_query(prompt: str, topic_hints: list[str] | None = None) -> list[str]
             base.extend(contrast_expand_overrides[signal["tag"]])
             continue
         if signal["tag"] in suppressed_expand_tags:
+            continue
+        if stripped_expand_terms:
+            base.extend(tok for tok in signal["expand"] if tok.lower() not in stripped_expand_terms)
             continue
         base.extend(signal["expand"])
     if _is_beginner_query_model_filter_sort_prompt(haystack, tokens):

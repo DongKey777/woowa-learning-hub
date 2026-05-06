@@ -175,6 +175,95 @@ class IsReadyTest(unittest.TestCase):
             self.assertEqual(flipped_report.index_manifest_hash, rebuild_hash)
             self.assertNotEqual(flipped_report.corpus_hash, rebuild_hash)
 
+    def test_legacy_manifest_matching_indexed_hash_stays_ready_despite_non_indexed_churn(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "knowledge" / "cs"
+            index_root = root / "state" / "cs_rag"
+            contents_root = corpus_root / "contents" / "spring"
+            contents_root.mkdir(parents=True)
+            index_root.mkdir(parents=True)
+
+            (contents_root / "bean.md").write_text(
+                "# Bean\n\nindexed content that survives chunking.",
+                encoding="utf-8",
+            )
+            meta_path = corpus_root / "README.md"
+            meta_path.write_text("# Meta\n\nbefore churn", encoding="utf-8")
+
+            sqlite_path, dense_path, manifest_path = indexer._paths(index_root)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, corpus_loader.load_corpus(corpus_root))
+            finally:
+                conn.close()
+            dense_path.touch()
+
+            indexed_hash = corpus_loader.indexed_corpus_hash(corpus_root)
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": 1,
+                        "corpus_hash": indexed_hash,
+                        "corpus_root": str(corpus_root),
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            meta_path.write_text("# Meta\n\nafter churn", encoding="utf-8")
+
+            report = indexer.is_ready(index_root, corpus_root)
+
+            self.assertEqual(report.state, "ready")
+            self.assertEqual(report.reason, "ready")
+            self.assertEqual(report.corpus_hash, corpus_loader.indexed_corpus_hash(corpus_root))
+            self.assertEqual(report.index_manifest_hash, indexed_hash)
+
+    def test_archive_snapshot_hash_drift_is_treated_as_missing_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "knowledge" / "cs"
+            index_root = root / "state" / "cs_rag_archive" / "v2_snapshot"
+            contents_root = corpus_root / "contents" / "spring"
+            contents_root.mkdir(parents=True)
+            index_root.mkdir(parents=True)
+
+            (contents_root / "bean.md").write_text(
+                "# Bean\n\nindexed content that survives chunking.",
+                encoding="utf-8",
+            )
+
+            sqlite_path, dense_path, manifest_path = indexer._paths(index_root)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, corpus_loader.load_corpus(corpus_root))
+            finally:
+                conn.close()
+            dense_path.touch()
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": 1,
+                        "corpus_hash": "outdated",
+                        "corpus_root": str(corpus_root),
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            report = indexer.is_ready(index_root, corpus_root)
+
+            self.assertEqual(report.state, "missing")
+            self.assertEqual(report.reason, "first_run")
+            self.assertEqual(report.next_command, "bin/cs-index-build")
+
 
 class IntegrationAugmentDegradeTest(unittest.TestCase):
     def test_skip_mode_returns_empty(self) -> None:

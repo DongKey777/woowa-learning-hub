@@ -99,6 +99,32 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         ),
     ),
     _chunk(
+        "db-timeout-splitter",
+        "contents/database/db-timeout-first-splitter.md",
+        "DB Timeout 첫 분류 결정 가이드",
+        "database",
+        "Timeout chooser",
+        (
+            "db timeout first split chooser explains connection is not available, "
+            "borrow timeout, lock wait timeout exceeded, query canceled due to "
+            "statement timeout, 55p03, 57014, and timeout first failure routing "
+            "for beginner timeout triage."
+        ),
+    ),
+    _chunk(
+        "duplicate-key-followup-read",
+        "contents/database/duplicate-key-then-not-found-symptom-router.md",
+        "Duplicate Key 뒤 row가 안 보임 원인 라우터",
+        "database",
+        "Duplicate follow-up read router",
+        (
+            "duplicate key after null read symptom router explains duplicatekeyexception, "
+            "1062, 23505, winner row not visible, follow-up read after duplicate, "
+            "session pinning, replica lag, and why duplicate key can be followed by "
+            "not found style reads."
+        ),
+    ),
+    _chunk(
         "spring-primer",
         "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
         "Spring Request Pipeline and Bean Container Foundations Primer",
@@ -1712,6 +1738,218 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("circular wait vs long wait", expanded)
         self.assertNotIn("gap lock", expanded)
         self.assertNotIn("range lock", expanded)
+
+    def test_korean_lock_timeout_vs_deadlock_shortforms_stay_on_beginner_primer(self) -> None:
+        prompts = (
+            "락 timeout이랑 데드락 차이 뭐야?",
+            "락 대기 timeout이랑 데드락 차이 뭐야?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "transaction_deadlock_case_study",
+                )
+                tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+                self.assertIn("transaction_deadlock_case_study", tags)
+                self.assertNotIn("network_and_reliability", tags)
+                self.assertNotIn("transaction_anomaly_patterns", tags)
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("deadlock vs lock wait timeout", expanded)
+                self.assertIn("circular wait vs long wait", expanded)
+                self.assertNotIn("retry budget", expanded)
+
+    def test_db_timeout_splitter_terms_map_to_timeout_chooser_signal(self) -> None:
+        prompt = "Connection is not available와 Lock wait timeout exceeded 차이가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "db_timeout_splitter",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("db_timeout_splitter", tags)
+        self.assertNotIn("mysql_gap_locking", tags)
+        self.assertNotIn("connection_pool_basics", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("connection is not available", expanded)
+        self.assertIn("lock wait timeout exceeded", expanded)
+        self.assertIn("statement timeout vs lock timeout", expanded)
+        self.assertNotIn("gap lock", expanded)
+
+    def test_statement_timeout_vs_lock_timeout_prompt_prefers_timeout_splitter(self) -> None:
+        prompt = "query canceled due to statement timeout이면 lock 문제는 아닌 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "db_timeout_splitter",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("db_timeout_splitter", tags)
+        self.assertNotIn("concurrency", tags)
+        self.assertNotIn("network_and_reliability", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("query canceled due to statement timeout", expanded)
+        self.assertIn("57014", expanded)
+        self.assertNotIn("race condition", expanded)
+        self.assertNotIn("retry budget", expanded)
+
+    def test_duplicate_key_followup_read_terms_map_to_symptom_router_signal(self) -> None:
+        prompt = "duplicate key 뒤에 왜 select 하면 null 이 나와?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("duplicate key after null read", expanded)
+        self.assertIn("winner row not visible", expanded)
+        self.assertIn("follow-up read after duplicate", expanded)
+
+    def test_duplicate_key_exception_visibility_prompt_suppresses_generic_neighbors(self) -> None:
+        prompt = "DuplicateKeyException 이후 row 가 안 보일 때 어디부터 의심해?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("duplicate_key_followup_read", tags)
+        self.assertNotIn("projection_freshness", tags)
+        self.assertNotIn("api_boundary", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("duplicatekeyexception", expanded)
+        self.assertIn("session pinning", expanded)
+        self.assertIn("replica lag", expanded)
+
+    def test_duplicate_key_followup_read_matches_korean_not_showing_variants(self) -> None:
+        for prompt in (
+            "DuplicateKeyException 이후 조회해도 안 나와요",
+            "DuplicateKeyException 이후 조회했더니 안 나옴",
+            "DuplicateKeyException 이후 조회해도 안 보여요",
+        ):
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "duplicate_key_followup_read",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("winner row not visible", expanded)
+                self.assertIn("follow-up read after duplicate", expanded)
+
+    def test_duplicate_key_followup_read_matches_korean_null_and_recheck_variants(self) -> None:
+        for prompt in (
+            "DuplicateKeyException 이후 조회해보면 없어요",
+            "DuplicateKeyException 이후 조회해봤더니 없음",
+            "DuplicateKeyException 이후 조회하면 null 이야",
+        ):
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "duplicate_key_followup_read",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("winner row not visible", expanded)
+                self.assertIn("follow-up read after duplicate", expanded)
+
+    def test_duplicate_winner_row_visibility_prompt_maps_to_followup_read_router(self) -> None:
+        prompt = "duplicate 뒤 winner row 가 안 보이는 경우를 어떻게 분기해?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("duplicate_key_followup_read", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("winner row not visible", expanded)
+        self.assertIn("follow-up read after duplicate", expanded)
+
+    def test_duplicate_key_korean_shortform_visibility_prompt_maps_to_symptom_router(self) -> None:
+        prompt = "중복키 났는데 조회하면 없어요"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("duplicate_key_followup_read", tags)
+        self.assertNotIn("projection_freshness", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("winner row not visible", expanded)
+        self.assertIn("follow-up read after duplicate", expanded)
+
+    def test_duplicate_key_retry_colloquial_prompt_boosts_followup_read_vocabulary(self) -> None:
+        prompt = "1062 났는데 바로 조회하면 없어서 다시 insert 해도 돼?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("duplicate key after null read", expanded)
+        self.assertIn("session pinning", expanded)
+        self.assertIn("replica lag", expanded)
+
+    def test_duplicate_key_visibility_prompt_suppresses_generic_retry_noise(self) -> None:
+        prompt = "DuplicateKeyException retry 했는데 조회하면 없음"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("duplicate_key_followup_read", tags)
+        self.assertNotIn("network_and_reliability", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("follow-up read after duplicate", expanded)
+        self.assertNotIn("retry budget", expanded)
+        self.assertNotIn("circuit breaker", expanded)
+
+    def test_generic_duplicate_key_prompt_does_not_overroute_to_followup_read_router(self) -> None:
+        prompt = "DuplicateKeyException 뭐야?"
+
+        self.assertNotEqual(
+            signal_rules.top_signal_tag(prompt),
+            "duplicate_key_followup_read",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertNotIn("duplicate_key_followup_read", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertNotIn("winner row not visible", expanded)
+        self.assertNotIn("follow-up read after duplicate", expanded)
+
+    def test_timeout_splitter_query_ranks_timeout_router_doc_first_in_cheap_mode(self) -> None:
+        hits = self._search("pool 대기와 DB 락 대기를 한 장으로 구분한 문서 있어?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/db-timeout-first-splitter.md",
+            1,
+        )
+
+    def test_duplicate_key_followup_query_ranks_symptom_router_doc_first_in_cheap_mode(self) -> None:
+        hits = self._search("1062 났는데 바로 조회하면 없어서 다시 insert 해도 돼?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/duplicate-key-then-not-found-symptom-router.md",
+            1,
+        )
+
+    def test_timeout_status_code_pair_prompt_suppresses_api_boundary_noise(self) -> None:
+        prompt = "같은 요청에 57014랑 55p03 같이 뜨면 뭐부터 봐?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "db_timeout_splitter",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("db_timeout_splitter", tags)
+        self.assertNotIn("api_boundary", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("55p03", expanded)
+        self.assertIn("57014", expanded)
 
     def test_os_async_io_overview_terms_map_to_overview_signal(self) -> None:
         prompt = "epoll kqueue io_uring 차이와 readiness model 을 개념적으로 보고 싶어"
@@ -4239,6 +4477,76 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "contents/software-engineering/query-model-separation-read-heavy-apis.md",
         )
 
+    def test_korean_query_service_particle_attached_role_prompt_boosts_primer_vocabulary(
+        self,
+    ) -> None:
+        prompt = "query service는 뭐 하는 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("what does query service do", expanded)
+        self.assertIn("query service 뭐 하는 거야", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
+    def test_korean_query_service_no_space_after_particle_prompt_keeps_primer_bias(self) -> None:
+        prompt = "query service가뭘 해?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("what does query service do", expanded)
+        self.assertIn("query service 뭘 해", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
+    def test_korean_query_service_compact_role_phrase_keeps_primer_bias(self) -> None:
+        prompt = "query service는 뭐하는거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("what does query service do", expanded)
+        self.assertIn("query service 뭐 하는 거야", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
+    def test_korean_query_service_compact_verb_phrase_keeps_primer_bias(self) -> None:
+        prompt = "쿼리 서비스가뭘하는거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("what does query service do", expanded)
+        self.assertIn("query service 뭘 해", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
     def test_korean_query_service_why_use_prompt_boosts_query_model_primer_vocabulary(self) -> None:
         prompt = "query service 는 왜 써?"
 
@@ -4318,6 +4626,495 @@ class CsRagSignalRulesTest(unittest.TestCase):
         expanded = signal_rules.expand_query(prompt)
         self.assertIn("read model staleness", expanded)
         self.assertIn("read your writes", expanded)
+
+    def test_projection_contextual_prefix_hint_does_not_inject_cutover_or_rollback_noise(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "이 문서는 read model cutover guardrails, dual read parity, "
+                "rollback window, projection freshness 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("saved but still old data", expanded)
+        self.assertNotIn("read model cutover guardrails", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+        self.assertNotIn("migration", expanded)
+        self.assertNotIn("isolation level", expanded)
+
+    def test_projection_contextual_prefix_hint_does_not_upgrade_generic_projection_primer_to_operational_terms(
+        self,
+    ) -> None:
+        prompt = "projection freshness basics"
+        topic_hints = [
+            (
+                "contextual_prefix: projection freshness, read your writes, "
+                "read model cutover guardrails, dual read parity, cutover safety window, "
+                "projection freshness slo, projection lag budget"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("read your writes", expanded)
+        self.assertNotIn("read model cutover guardrails", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("safety", expanded)
+        self.assertNotIn("dual", expanded)
+        self.assertNotIn("guardrails", expanded)
+        self.assertNotIn("projection freshness slo", expanded)
+        self.assertNotIn("projection lag budget", expanded)
+
+    def test_projection_contextual_prefix_hint_does_not_leak_transaction_isolation_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "이 문서는 projection freshness, read your writes, transaction isolation, "
+                "rollback window, read model cutover guardrails 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("saved but still old data", expanded)
+        self.assertNotIn("transaction", expanded)
+        self.assertNotIn("isolation", expanded)
+        self.assertNotIn("rollback", expanded)
+        self.assertNotIn("window", expanded)
+
+    def test_projection_contextual_prefix_wrapper_lines_do_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "```yaml\n"
+                "contextual_chunk_prefix: |\n"
+                "  이 문서는 projection freshness, read your writes, read model cutover "
+                "guardrails, rollback window 를 설명한다.\n"
+                "```"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("yaml", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_contextual_hyphenated_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "contextual-chunk-prefix: 이 문서는 projection freshness, "
+                "read your writes, read model cutover guardrails, rollback window "
+                "를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_equals_style_contextual_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "contextual_prefix = projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_camelcase_contextual_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "contextualChunkPrefix: projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextualchunkprefix", expanded)
+        self.assertNotIn("ualchunkprefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_quoted_contextual_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                '"contextual_chunk_prefix": "projection freshness, read your writes, '
+                'read model cutover guardrails, rollback window"'
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+        self.assertNotIn("concept", expanded)
+        self.assertNotIn("id", expanded)
+
+    def test_projection_bold_contextual_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "**contextual_chunk_prefix:** projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_json_contextual_prefix_ignores_inline_frontmatter_metadata(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                '{"contextual_chunk_prefix": "projection freshness, read your writes, '
+                'read model cutover guardrails, rollback window", '
+                '"concept_id": "system-design/projection-freshness", '
+                '"aliases": ["saved but still old data"]}'
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("concept", expanded)
+        self.assertNotIn("id", expanded)
+        self.assertNotIn("aliases", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_backticked_contextual_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "`contextual_chunk_prefix`: projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_camelcase_chunk_context_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "chunkContext: projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("chunkcontext", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_bracketed_contextual_prefix_label_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "[contextual_chunk_prefix] projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_chunk_context_label_with_space_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "chunk context: 이 문서는 projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("context", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_bulleted_contextual_prefix_wrapper_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "- contextual_chunk_prefix: |\n"
+                "  이 문서는 projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_blockquoted_contextual_prefix_wrapper_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "> contextual-chunk-prefix: |\n"
+                "> 이 문서는 projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_contextual_prefix_multiline_frontmatter_skips_alias_and_concept_blocks(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "concept_id: system-design/projection-freshness\n"
+                "aliases:\n"
+                "  - saved but still old data\n"
+                "retrieval_anchor_keywords:\n"
+                "  - projection freshness\n"
+                "contextual_chunk_prefix: |\n"
+                "  projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("concept", expanded)
+        self.assertNotIn("id", expanded)
+        self.assertNotIn("aliases", expanded)
+        self.assertNotIn("retrieval", expanded)
+        self.assertNotIn("anchor", expanded)
+        self.assertNotIn("keywords", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_numbered_contextual_prefix_wrapper_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "1) contextual_chunk_prefix: >-\n"
+                "   이 문서는 projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("1", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_tasklist_contextual_prefix_wrapper_does_not_leak_scaffolding_tokens(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "- [ ] contextual_chunk_prefix: |\n"
+                "    이 문서는 projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window 를 설명한다."
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("contextual", expanded)
+        self.assertNotIn("chunk", expanded)
+        self.assertNotIn("prefix", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
 
     def test_generic_crud_questions_do_not_overmatch_projection_freshness(self) -> None:
         prompts = {
@@ -5647,7 +6444,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
     def test_spring_mvc_vs_dispatcherservlet_difference_query_ranks_primer_ahead_of_deep_dive(
         self,
     ) -> None:
-        hits = self._search("Spring MVC 랑 DispatcherServlet 차이가 뭐야?", top_k=4)
+        hits = self._search("Spring MVC 랑 DispatcherServlet 차이가 뭐야?", top_k=6)
 
         self.assert_path_rank_at_most(
             hits,

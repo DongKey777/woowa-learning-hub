@@ -8,7 +8,9 @@ failure would surface immediately.
 
 from __future__ import annotations
 
+import io
 import json
+import tarfile
 from pathlib import Path
 from typing import Any
 
@@ -146,3 +148,31 @@ def test_local_archive_sha256_handles_manifest_without_release_block(tmp_path: P
     out_dir = tmp_path / "state" / "cs_rag"
     _write_local_manifest(out_dir, archive_sha256=None)
     assert release_fetch._local_archive_sha256(out_dir) is None
+
+
+def test_extract_checked_tar_rejects_parent_traversal(tmp_path: Path):
+    tar_bytes = io.BytesIO()
+    with tarfile.open(fileobj=tar_bytes, mode="w") as tar:
+        info = tarfile.TarInfo("../escape.txt")
+        payload = b"blocked"
+        info.size = len(payload)
+        tar.addfile(info, io.BytesIO(payload))
+    tar_bytes.seek(0)
+
+    with tarfile.open(fileobj=tar_bytes, mode="r:") as tar:
+        with pytest.raises(RuntimeError, match="unsafe tar member path"):
+            release_fetch._extract_checked_tar(tar, tmp_path / "extract")
+
+
+def test_extract_checked_tar_rejects_symlink(tmp_path: Path):
+    tar_bytes = io.BytesIO()
+    with tarfile.open(fileobj=tar_bytes, mode="w") as tar:
+        info = tarfile.TarInfo("cs_rag/manifest.json")
+        info.type = tarfile.SYMTYPE
+        info.linkname = "../../manifest.json"
+        tar.addfile(info)
+    tar_bytes.seek(0)
+
+    with tarfile.open(fileobj=tar_bytes, mode="r:") as tar:
+        with pytest.raises(RuntimeError, match="unsafe tar member link"):
+            release_fetch._extract_checked_tar(tar, tmp_path / "extract")

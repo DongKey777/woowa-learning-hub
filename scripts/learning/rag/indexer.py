@@ -102,6 +102,10 @@ def _paths(index_root: Path) -> tuple[Path, Path, Path]:
     )
 
 
+def _is_archive_snapshot_root(index_root: Path) -> bool:
+    return "cs_rag_archive" in index_root.parts
+
+
 def is_ready(
     index_root: Path | str = DEFAULT_INDEX_ROOT,
     corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
@@ -110,6 +114,22 @@ def is_ready(
 
     Pure stdlib — does not load sentence-transformers.
     """
+    current_indexed_hash = corpus_loader.indexed_corpus_hash(corpus_root)
+    current_full_hash = corpus_loader.corpus_hash(corpus_root)
+    return assess_readiness(
+        index_root,
+        current_indexed_hash=current_indexed_hash,
+        current_full_hash=current_full_hash,
+    )
+
+
+def assess_readiness(
+    index_root: Path | str,
+    *,
+    current_indexed_hash: str,
+    current_full_hash: str,
+) -> ReadinessReport:
+    """Like ``is_ready()``, but consumes a precomputed corpus hash snapshot."""
     root = Path(index_root)
     sqlite_path, dense_path, manifest_path = _paths(root)
     if not manifest_path.exists():
@@ -130,15 +150,33 @@ def is_ready(
             index_manifest_hash=None,
             next_command="bin/cs-index-build",
         )
-    current_indexed_hash = corpus_loader.indexed_corpus_hash(corpus_root)
-    current_full_hash = corpus_loader.corpus_hash(corpus_root)
     if manifest.get("indexed_corpus_hash"):
         current_hash = current_indexed_hash
         stored_hash = manifest.get("indexed_corpus_hash")
+        hash_matches = stored_hash == current_hash
     else:
-        current_hash = current_full_hash
         stored_hash = manifest.get("corpus_hash")
-    if stored_hash != current_hash:
+        # Legacy manifests predate ``indexed_corpus_hash``. Some historical
+        # archives still stored the hash for the actual indexed ``contents/``
+        # subtree in ``corpus_hash``, while older local builds hashed every
+        # markdown file under ``knowledge/cs``. Accept either live shape so
+        # archived golden indexes do not go stale solely because non-indexed
+        # notes churned outside the retrieval corpus.
+        hash_matches = stored_hash in {current_full_hash, current_indexed_hash}
+        current_hash = (
+            current_indexed_hash
+            if stored_hash == current_indexed_hash and stored_hash != current_full_hash
+            else current_full_hash
+        )
+    if not hash_matches:
+        if _is_archive_snapshot_root(root):
+            return ReadinessReport(
+                state="missing",
+                reason="first_run",
+                corpus_hash=current_hash,
+                index_manifest_hash=stored_hash,
+                next_command="bin/cs-index-build",
+            )
         return ReadinessReport(
             state="stale",
             reason="corpus_changed",

@@ -181,6 +181,56 @@ class IORoundtripTest(unittest.TestCase):
             loaded = load_cohort_qrels(path)
             self.assertEqual(len(loaded.queries), 1)
 
+    def test_duplicate_query_ids_rejected(self):
+        with TemporaryDirectory() as td:
+            path = Path(td) / "qrels.json"
+            path.write_text(json.dumps({
+                "schema_version": 1,
+                "queries": [
+                    {
+                        "query_id": "q1",
+                        "prompt": "DI?",
+                        "language": "ko",
+                        "intent": "definition",
+                        "level": "beginner",
+                        "cohort_tag": "paraphrase_human",
+                        "primary_paths": ["contents/spring/di.md"],
+                    },
+                    {
+                        "query_id": "q1",
+                        "prompt": "Factory?",
+                        "language": "ko",
+                        "intent": "definition",
+                        "level": "beginner",
+                        "cohort_tag": "paraphrase_human",
+                        "primary_paths": ["contents/design-pattern/factory.md"],
+                    },
+                ],
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "duplicate query_ids"):
+                load_cohort_qrels(path)
+
+    def test_declared_query_count_mismatch_rejected(self):
+        with TemporaryDirectory() as td:
+            path = Path(td) / "qrels.json"
+            path.write_text(json.dumps({
+                "schema_version": 1,
+                "query_count": 2,
+                "queries": [
+                    {
+                        "query_id": "q1",
+                        "prompt": "DI?",
+                        "language": "ko",
+                        "intent": "definition",
+                        "level": "beginner",
+                        "cohort_tag": "paraphrase_human",
+                        "primary_paths": ["contents/spring/di.md"],
+                    },
+                ],
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "query_count mismatch"):
+                load_cohort_qrels(path)
+
 
 class RealSeedLoadTest(unittest.TestCase):
     """The Phase 3 Real qrel seed at tests/fixtures/r3_qrels_real_v0_seed.json

@@ -11,12 +11,15 @@ committed to the suite:
    ``contents/`` prefix consistent with v3 frontmatter linked_paths)
 4. Every ``expected_concepts`` entry exists as a v3 concept (or stub)
    in ``concepts.v3.json``
-5. ``cohort_eval`` smoke run with a no-op search → confirms the harness
-   accepts every record (refusal cohorts pass at 100%, others fail
-   cleanly with a classified failure_class)
+5. ``cohort_eval`` smoke run with a deterministic stub search →
+   confirms the harness accepts every record under the current
+   Phase 9.3 refusal contract (corpus_gap_probe receives the
+   no_confident_match sentinel, forbidden_neighbor sees an empty hit
+   list, standard cohorts fail cleanly with a classified failure_class)
 
 Used as: ``python -m scripts.learning.rag.r3.eval.verify_real_qrels
---qrels tests/fixtures/r3_qrels_real_v1.json``
+--qrels tests/fixtures/r3_qrels_real_v1.json --report <baseline>.json
+--min-report-pass-rate 0.94``
 
 Returns 0 only when every gate is clean.
 """
@@ -24,13 +27,40 @@ Returns 0 only when every gate is clean.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from collections import Counter
 from pathlib import Path
 
-from .cohort_eval import evaluate_suite
+from .cohort_eval import _is_refusal_clean_outcome, evaluate_suite
 from .cohort_qrels import VALID_COHORTS, load_cohort_qrels
+
+
+def _load_stub_concepts(sidecar_path: Path) -> set[str]:
+    """Load concept IDs already materialized in the lexical sidecar.
+
+    The sidecar is a lane-local artifact generated from the current v3
+    corpus. When a concept ID is present there but not yet promoted into
+    ``concepts.v3.json``, treat it as a valid stub rather than failing the
+    real-qrel gate on catalog lag alone.
+    """
+    blob = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    documents = blob.get("documents") if isinstance(blob, dict) else None
+    if not isinstance(documents, list):
+        return set()
+
+    concept_ids: set[str] = set()
+    for row in documents:
+        if not isinstance(row, dict):
+            continue
+        metadata = row.get("metadata")
+        if not isinstance(metadata, dict):
+            continue
+        concept_id = metadata.get("concept_id")
+        if isinstance(concept_id, str) and concept_id:
+            concept_ids.add(concept_id)
+    return concept_ids
 
 
 def _check_schema(qrel_path: Path, schema_path: Path) -> list[str]:
@@ -67,7 +97,9 @@ def _check_paths_exist(qrel_path: Path, corpus_root: Path) -> list[str]:
 
 
 def _check_concepts_in_catalog(
-    qrel_path: Path, catalog_path: Path,
+    qrel_path: Path,
+    catalog_path: Path,
+    sidecar_path: Path | None = None,
 ) -> list[str]:
     """Validate every expected_concept resolves to a catalog entry.
 
@@ -79,6 +111,8 @@ def _check_concepts_in_catalog(
     queries = blob.get("queries") if isinstance(blob, dict) else blob
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     known = set(catalog.get("concepts", {}).keys())
+    if sidecar_path is not None and sidecar_path.exists():
+        known.update(_load_stub_concepts(sidecar_path))
     errors: list[str] = []
     for q in queries or []:
         qid = q.get("query_id", "<unknown>")
@@ -92,14 +126,393 @@ def _check_concepts_in_catalog(
     return errors
 
 
+def _check_cohort_distribution_target(qrel_path: Path) -> list[str]:
+    """Validate the declared cohort distribution matches the actual suite.
+
+    The real qrel fixture uses ``cohort_distribution_target`` as the
+    baseline contract for cohort-aware regressions. When the declared
+    counts drift from the actual query list, the cohort pass rates in
+    reports look stable while the measured population has silently
+    changed.
+    """
+    blob = json.loads(qrel_path.read_text(encoding="utf-8"))
+    if not isinstance(blob, dict):
+        return []
+    target = blob.get("cohort_distribution_target")
+    queries = blob.get("queries") or []
+    if target is None:
+        return []
+    if not isinstance(target, dict):
+        return ["cohort_distribution_target must be an object"]
+
+    actual = Counter((q or {}).get("cohort_tag") for q in queries)
+    errors: list[str] = []
+    for tag in sorted(VALID_COHORTS):
+        declared_raw = target.get(tag, 0)
+        try:
+            declared = int(declared_raw)
+        except (TypeError, ValueError):
+            errors.append(
+                f"cohort_distribution_target.{tag} is not an integer: "
+                f"{declared_raw!r}"
+            )
+            continue
+        observed = actual.get(tag, 0)
+        if declared != observed:
+            errors.append(
+                f"cohort_distribution_target.{tag} mismatch: "
+                f"declared {declared}, actual {observed}"
+            )
+    extra_tags = sorted(set(target) - set(VALID_COHORTS))
+    for tag in extra_tags:
+        errors.append(f"cohort_distribution_target has unknown cohort key: {tag}")
+    return errors
+
+
+def _check_query_count_metadata(qrel_path: Path) -> list[str]:
+    """Validate optional top-level query_count matches the real suite size.
+
+    ``load_cohort_qrels`` already rejects mismatches, but surfacing this as
+    a dedicated verification stage makes metadata drift obvious in gate logs
+    instead of burying it in a generic loader failure.
+    """
+    blob = json.loads(qrel_path.read_text(encoding="utf-8"))
+    if not isinstance(blob, dict) or "query_count" not in blob:
+        return []
+    declared_raw = blob.get("query_count")
+    queries = blob.get("queries") or []
+    try:
+        declared = int(declared_raw)
+    except (TypeError, ValueError):
+        return [f"query_count is not an integer: {declared_raw!r}"]
+    if not isinstance(queries, list):
+        return []
+    actual = len(queries)
+    if declared != actual:
+        return [f"query_count mismatch: declared {declared}, actual {actual}"]
+    return []
+
+
+def _check_report_contract_shape(report_path: Path) -> list[str]:
+    """Validate the supplied report is a cohort-eval artifact, not a wave note.
+
+    Several lane-local JSON artifacts live under ``reports/rag_eval``. The
+    cohort gate should fail fast with a direct message when a migration wave
+    summary is passed to ``--report`` instead of the baseline cohort-eval
+    output that carries ``per_query`` and 94.0 gate metrics.
+    """
+    report_blob = json.loads(report_path.read_text(encoding="utf-8"))
+    if not isinstance(report_blob, dict):
+        return ["report root must be a JSON object"]
+
+    required_top_level = ("query_count", "overall_pass_rate", "per_cohort", "per_query")
+    missing_top_level = [
+        key for key in required_top_level if key not in report_blob
+    ]
+    metadata = report_blob.get("metadata")
+    missing_metadata = []
+    if not isinstance(metadata, dict):
+        missing_metadata = ["metadata"]
+    else:
+        required_metadata = ("fixture_id", "schema_version", "cohort_distribution_target")
+        missing_metadata = [
+            f"metadata.{key}" for key in required_metadata if key not in metadata
+        ]
+
+    if not missing_top_level and not missing_metadata:
+        return []
+
+    artifact_hints = [
+        key for key in ("wave_id", "baseline_report", "verification", "changes", "notes")
+        if key in report_blob
+    ]
+    errors = [
+        "report is not a cohort-eval baseline artifact: "
+        f"missing {missing_top_level + missing_metadata}"
+    ]
+    if artifact_hints:
+        errors.append(
+            "report looks like a lane summary artifact: "
+            f"found {artifact_hints}"
+        )
+    return errors
+
+
+def _check_report_alignment(qrel_path: Path, report_path: Path) -> list[str]:
+    """Validate a cohort-eval report still matches the current qrel contract.
+
+    This catches the easy-to-miss failure mode where the 94.0 baseline
+    report is reused after the fixture changes underneath it.
+    """
+    qrel_blob = json.loads(qrel_path.read_text(encoding="utf-8"))
+    report_blob = json.loads(report_path.read_text(encoding="utf-8"))
+    if not isinstance(qrel_blob, dict):
+        return []
+
+    errors: list[str] = []
+    qrel_queries = qrel_blob.get("queries") or []
+    qrel_count = len(qrel_queries) if isinstance(qrel_queries, list) else None
+    report_count = report_blob.get("query_count")
+    if qrel_count is not None and report_count != qrel_count:
+        errors.append(
+            f"report.query_count mismatch: report {report_count}, qrels {qrel_count}"
+        )
+    qrel_query_ids = [
+        (q or {}).get("query_id")
+        for q in qrel_queries
+        if isinstance(q, dict)
+    ]
+    qrel_query_by_id = {
+        (q or {}).get("query_id"): q
+        for q in qrel_queries
+        if isinstance(q, dict) and (q or {}).get("query_id")
+    }
+
+    qrel_fixture_id = qrel_blob.get("fixture_id")
+    report_fixture_id = (report_blob.get("metadata") or {}).get("fixture_id")
+    if qrel_fixture_id != report_fixture_id:
+        errors.append(
+            "report.metadata.fixture_id mismatch: "
+            f"report {report_fixture_id!r}, qrels {qrel_fixture_id!r}"
+        )
+
+    qrel_schema = qrel_blob.get("schema_version")
+    report_schema = (report_blob.get("metadata") or {}).get("schema_version")
+    if qrel_schema != report_schema:
+        errors.append(
+            "report.metadata.schema_version mismatch: "
+            f"report {report_schema!r}, qrels {qrel_schema!r}"
+        )
+
+    qrel_target = qrel_blob.get("cohort_distribution_target")
+    report_target = (report_blob.get("metadata") or {}).get("cohort_distribution_target")
+    if qrel_target != report_target:
+        errors.append("report.metadata.cohort_distribution_target mismatch")
+
+    report_per_cohort = report_blob.get("per_cohort")
+    if isinstance(report_per_cohort, dict):
+        actual = Counter((q or {}).get("cohort_tag") for q in qrel_queries)
+        for tag in sorted(VALID_COHORTS):
+            total = (report_per_cohort.get(tag) or {}).get("total")
+            observed = actual.get(tag, 0)
+            if total != observed:
+                errors.append(
+                    f"report.per_cohort.{tag}.total mismatch: report {total}, qrels {observed}"
+                )
+    report_per_query = report_blob.get("per_query")
+    if not isinstance(report_per_query, list):
+        errors.append("report.per_query missing or not a list")
+        return errors
+
+    report_query_ids = [
+        (q or {}).get("query_id")
+        for q in report_per_query
+        if isinstance(q, dict)
+    ]
+    duplicate_report_ids = sorted(
+        query_id for query_id, count in Counter(report_query_ids).items()
+        if query_id and count > 1
+    )
+    if duplicate_report_ids:
+        errors.append(
+            f"report.per_query duplicate query_ids: {duplicate_report_ids}"
+        )
+    missing_query_ids = sorted(set(qrel_query_ids) - set(report_query_ids))
+    unexpected_query_ids = sorted(set(report_query_ids) - set(qrel_query_ids))
+    if missing_query_ids or unexpected_query_ids:
+        msg = ["report.per_query query_id set mismatch"]
+        if missing_query_ids:
+            msg.append(f"missing={missing_query_ids[:5]}")
+        if unexpected_query_ids:
+            msg.append(f"unexpected={unexpected_query_ids[:5]}")
+        errors.append("; ".join(msg))
+    for row in report_per_query:
+        if not isinstance(row, dict):
+            continue
+        query_id = row.get("query_id")
+        qrel_query = qrel_query_by_id.get(query_id)
+        if not qrel_query:
+            continue
+        report_cohort = row.get("cohort_tag")
+        expected_cohort = qrel_query.get("cohort_tag")
+        if report_cohort != expected_cohort:
+            errors.append(
+                "report.per_query cohort_tag mismatch for "
+                f"{query_id}: report {report_cohort!r}, qrels {expected_cohort!r}"
+            )
+    return errors
+
+
+def _check_report_metric_consistency(report_path: Path) -> list[str]:
+    """Validate report-level aggregates still match the per-query rows.
+
+    This catches stale derived metrics when someone edits ``per_query`` or
+    ``per_cohort`` by hand and forgets to recompute the summary fields that
+    the 94.0 gate reads first.
+    """
+    report_blob = json.loads(report_path.read_text(encoding="utf-8"))
+    report_per_query = report_blob.get("per_query")
+    report_per_cohort = report_blob.get("per_cohort")
+    if not isinstance(report_per_query, list):
+        return []
+    if not isinstance(report_per_cohort, dict):
+        return []
+
+    top_k_raw = report_blob.get("top_k", 5)
+    try:
+        top_k = int(top_k_raw)
+    except (TypeError, ValueError):
+        return [f"report.top_k is not an integer: {top_k_raw!r}"]
+
+    errors: list[str] = []
+    total_queries = len(report_per_query)
+    pass_count = sum(1 for row in report_per_query if (row or {}).get("pass_status"))
+    observed_overall = round(pass_count / total_queries, 4) if total_queries else 0.0
+    report_overall = report_blob.get("overall_pass_rate")
+    if report_overall != observed_overall:
+        errors.append(
+            "report.overall_pass_rate mismatch: "
+            f"report {report_overall}, derived {observed_overall}"
+        )
+
+    for tag in sorted(VALID_COHORTS):
+        rows = [
+            row for row in report_per_query
+            if isinstance(row, dict) and row.get("cohort_tag") == tag
+        ]
+        metrics = report_per_cohort.get(tag)
+        if metrics is None:
+            errors.append(f"report.per_cohort missing cohort key: {tag}")
+            continue
+        total = len(rows)
+        cohort_pass_count = sum(1 for row in rows if row.get("pass_status"))
+        primary_hit_top_k = sum(
+            1
+            for row in rows
+            if (rank := row.get("primary_rank")) is not None and rank <= top_k
+        )
+        forbidden_hit_top_k = sum(
+            1
+            for row in rows
+            if (rank := row.get("forbidden_hit_rank")) is not None and rank <= top_k
+        )
+        refusal_clean = sum(
+            1
+            for row in rows
+            if _is_refusal_clean_outcome(str(row.get("actual_outcome")))
+        )
+        reciprocal_rank_sum = sum(
+            1.0 / row["primary_rank"]
+            for row in rows
+            if row.get("primary_rank") is not None and row["primary_rank"] <= top_k
+        )
+        expected_metrics = {
+            "total": total,
+            "pass_count": cohort_pass_count,
+            "pass_rate": round(cohort_pass_count / total, 4) if total else 0.0,
+            f"recall_at_{top_k}": round(primary_hit_top_k / total, 4) if total else 0.0,
+            f"forbidden_hit_rate_at_{top_k}": (
+                round(forbidden_hit_top_k / total, 4) if total else 0.0
+            ),
+            "mrr": round(reciprocal_rank_sum / total, 4) if total else 0.0,
+            "refusal_clean": refusal_clean,
+        }
+        for key, expected in expected_metrics.items():
+            observed = metrics.get(key)
+            if observed != expected:
+                errors.append(
+                    f"report.per_cohort.{tag}.{key} mismatch: "
+                    f"report {observed}, derived {expected}"
+                )
+    extra_tags = sorted(set(report_per_cohort) - set(VALID_COHORTS))
+    for tag in extra_tags:
+        errors.append(f"report.per_cohort has unknown cohort key: {tag}")
+    return errors
+
+
+def _check_report_pass_rate_floor(report_path: Path, minimum: float) -> list[str]:
+    """Validate a candidate baseline report still clears the contract floor."""
+    report_blob = json.loads(report_path.read_text(encoding="utf-8"))
+    observed_raw = report_blob.get("overall_pass_rate")
+    try:
+        observed = float(observed_raw)
+    except (TypeError, ValueError):
+        return [f"report.overall_pass_rate is not numeric: {observed_raw!r}"]
+    if observed < minimum:
+        return [
+            "report.overall_pass_rate below minimum: "
+            f"observed {observed:.4f}, minimum {minimum:.4f}"
+        ]
+    return []
+
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _check_manifest_qrels_alignment(qrel_path: Path, manifest_path: Path) -> list[str]:
+    """Validate the index manifest still points at the current real-qrel fixture."""
+    manifest_blob = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_qrels = (((manifest_blob.get("r3") or {}).get("qrels")) or {})
+    if not isinstance(manifest_qrels, dict):
+        return ["manifest.r3.qrels missing or not an object"]
+
+    qrel_blob = json.loads(qrel_path.read_text(encoding="utf-8"))
+    qrel_queries = qrel_blob.get("queries") if isinstance(qrel_blob, dict) else qrel_blob
+    qrel_count = len(qrel_queries or []) if isinstance(qrel_queries, list) else None
+    qrel_schema = qrel_blob.get("schema_version") if isinstance(qrel_blob, dict) else None
+    qrel_sha = _sha256_file(qrel_path)
+
+    errors: list[str] = []
+    manifest_path_value = manifest_qrels.get("path")
+    qrel_path_value = qrel_path.as_posix()
+    if manifest_path_value != qrel_path_value:
+        errors.append(
+            f"manifest.r3.qrels.path mismatch: manifest {manifest_path_value!r}, qrels {qrel_path_value!r}"
+        )
+
+    manifest_query_count = manifest_qrels.get("query_count")
+    if qrel_count is not None and manifest_query_count != qrel_count:
+        errors.append(
+            "manifest.r3.qrels.query_count mismatch: "
+            f"manifest {manifest_query_count}, qrels {qrel_count}"
+        )
+
+    manifest_schema = manifest_qrels.get("schema_version")
+    if qrel_schema is not None and str(manifest_schema) != str(qrel_schema):
+        errors.append(
+            "manifest.r3.qrels.schema_version mismatch: "
+            f"manifest {manifest_schema!r}, qrels {qrel_schema!r}"
+        )
+
+    manifest_sha = manifest_qrels.get("sha256")
+    if manifest_sha != qrel_sha:
+        errors.append(
+            f"manifest.r3.qrels.sha256 mismatch: manifest {manifest_sha!r}, qrels {qrel_sha!r}"
+        )
+    return errors
+
+
 def _smoke_eval(qrel_path: Path) -> dict:
     suite = load_cohort_qrels(qrel_path)
-    # No-op search returns empty hits → refusal cohorts pass, others fail
-    def _no_op(prompt, *, debug=None, **kwargs):
+    corpus_gap_prompts = {
+        q.prompt for q in suite.queries if q.cohort_tag == "corpus_gap_probe"
+    }
+
+    def _stub_search(prompt, *, debug=None, **kwargs):
+        if prompt in corpus_gap_prompts:
+            if debug is not None:
+                debug["r3_final_paths"] = ["<sentinel:no_confident_match>"]
+            return [{
+                "path": "<sentinel:no_confident_match>",
+                "sentinel": "no_confident_match",
+                "rejected_score": -1.0,
+            }]
         if debug is not None:
             debug["r3_final_paths"] = []
         return []
-    report = evaluate_suite(suite, _no_op, top_k=5, qrel_path=str(qrel_path))
+
+    report = evaluate_suite(suite, _stub_search, top_k=5, qrel_path=str(qrel_path))
     out = {
         "query_count": report.query_count,
         "overall_pass_rate": round(report.overall_pass_rate, 4),
@@ -116,8 +529,8 @@ def _smoke_eval(qrel_path: Path) -> dict:
 
 
 def _expected_smoke_invariants(suite_smoke: dict) -> list[str]:
-    """The no-op smoke MUST yield:
-    - corpus_gap_probe: 100% pass (clean refusal)
+    """The deterministic smoke stub MUST yield:
+    - corpus_gap_probe: 100% pass (tier_downgraded refusal sentinel)
     - forbidden_neighbor: 100% pass (no forbidden hit possible)
     - All other cohorts: 0% pass
     """
@@ -126,14 +539,14 @@ def _expected_smoke_invariants(suite_smoke: dict) -> list[str]:
         if tag in {"corpus_gap_probe", "forbidden_neighbor"}:
             if metrics["pass_rate"] != 1.0:
                 errors.append(
-                    f"{tag} no-op pass_rate {metrics['pass_rate']} != 1.0 "
-                    f"— refusal cohort should pass clean on empty hits"
+                    f"{tag} stub-smoke pass_rate {metrics['pass_rate']} != 1.0 "
+                    f"— refusal cohort should pass on the no_confident_match sentinel or empty hits"
                 )
         else:
             if metrics["pass_rate"] != 0.0:
                 errors.append(
-                    f"{tag} no-op pass_rate {metrics['pass_rate']} != 0.0 "
-                    f"— standard cohort should fail when no hits"
+                    f"{tag} stub-smoke pass_rate {metrics['pass_rate']} != 0.0 "
+                    f"— standard cohort should fail under the deterministic empty-hit stub"
                 )
     return errors
 
@@ -155,6 +568,30 @@ def main(argv: list[str] | None = None) -> int:
         "--catalog",
         type=Path,
         default=Path("knowledge/cs/catalog/concepts.v3.json"),
+    )
+    parser.add_argument(
+        "--sidecar",
+        type=Path,
+        default=Path("state/cs_rag/r3_lexical_sidecar.json"),
+        help="Optional lexical sidecar artifact used to accept current-corpus concept stubs.",
+    )
+    parser.add_argument(
+        "--report",
+        type=Path,
+        default=None,
+        help="Optional cohort-eval report to verify against the qrel contract.",
+    )
+    parser.add_argument(
+        "--min-report-pass-rate",
+        type=float,
+        default=None,
+        help="Optional minimum overall_pass_rate required when --report is supplied.",
+    )
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=Path("state/cs_rag/manifest.json"),
+        help="Optional index manifest whose r3.qrels metadata must match the current fixture.",
     )
     args = parser.parse_args(argv)
 
@@ -194,11 +631,48 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[verify-qrels] WARN: corpus_root missing: {args.corpus_root}")
 
     if args.catalog.exists():
-        errs = _check_concepts_in_catalog(args.qrels, args.catalog)
+        errs = _check_concepts_in_catalog(args.qrels, args.catalog, args.sidecar)
         if errs:
             fails.append(("concepts", errs))
     else:
         print(f"[verify-qrels] WARN: catalog missing: {args.catalog}")
+
+    errs = _check_cohort_distribution_target(args.qrels)
+    if errs:
+        fails.append(("cohort_distribution_target", errs))
+
+    errs = _check_query_count_metadata(args.qrels)
+    if errs:
+        fails.append(("query_count", errs))
+
+    if args.manifest is not None:
+        if args.manifest.exists():
+            errs = _check_manifest_qrels_alignment(args.qrels, args.manifest)
+            if errs:
+                fails.append(("manifest_qrels_alignment", errs))
+        else:
+            fails.append(("manifest_qrels_alignment", [f"manifest missing: {args.manifest}"]))
+
+    if args.report is not None:
+        if args.report.exists():
+            errs = _check_report_contract_shape(args.report)
+            if errs:
+                fails.append(("report_contract_shape", errs))
+            else:
+                errs = _check_report_alignment(args.qrels, args.report)
+                if errs:
+                    fails.append(("report_alignment", errs))
+                errs = _check_report_metric_consistency(args.report)
+                if errs:
+                    fails.append(("report_metrics", errs))
+                if args.min_report_pass_rate is not None:
+                    errs = _check_report_pass_rate_floor(
+                        args.report, args.min_report_pass_rate,
+                    )
+                    if errs:
+                        fails.append(("report_pass_rate_floor", errs))
+        else:
+            fails.append(("report_alignment", [f"report missing: {args.report}"]))
 
     # Only run smoke if loader passed (otherwise it would re-raise)
     if not any(stage == "loader" for stage, _ in fails):
@@ -207,7 +681,7 @@ def main(argv: list[str] | None = None) -> int:
             invariant_errs = _expected_smoke_invariants(smoke)
             if invariant_errs:
                 fails.append(("smoke", invariant_errs))
-            print(f"[verify-qrels] no-op smoke pass_rate: {smoke['overall_pass_rate']}")
+            print(f"[verify-qrels] stub smoke pass_rate: {smoke['overall_pass_rate']}")
             for tag, metrics in sorted(smoke["by_cohort"].items()):
                 print(f"  {tag:25s} pass_rate={metrics['pass_rate']:.2%} n={metrics['total']}")
         except Exception as exc:

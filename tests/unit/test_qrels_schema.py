@@ -126,6 +126,12 @@ class FixtureLevelTest(unittest.TestCase):
         self.assertTrue(any("queries" in str(e.path) or "minItems" in e.message
                             for e in errors))
 
+    def test_query_count_field_passes_schema(self):
+        fixture = _valid_minimal_fixture()
+        fixture["query_count"] = 1
+        errors = sorted(self.validator.iter_errors(fixture), key=lambda e: e.path)
+        self.assertEqual(errors, [], [e.message for e in errors])
+
     def test_unknown_fixture_field_fails(self):
         fixture = _valid_minimal_fixture()
         fixture["unknown_field"] = "x"

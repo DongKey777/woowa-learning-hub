@@ -22,6 +22,18 @@ _QUERY_ENCODING_CACHE: dict[
 _MAX_QUERY_ENCODING_CACHE_ENTRIES = 256
 
 
+def _normalize_optional_text(value: Any) -> str:
+    if value is None:
+        return ""
+    try:
+        if value != value:
+            return ""
+    except Exception:
+        pass
+    text = str(value)
+    return "" if text.casefold() == "nan" else text
+
+
 def load_legacy_documents(index_root: Path | str) -> list[R3Document]:
     """Read the legacy SQLite chunks table as R3Document records."""
 
@@ -243,10 +255,10 @@ def load_lance_documents(
         section_path = _parse_json_list(row.get("section_path"))
         section_title = section_path[-1] if section_path else ""
         sparse_terms = _parse_sparse_terms(row)
-        category = str(row.get("category") or "unknown")
-        concept_id = str(row.get("concept_id") or "")
-        doc_role = str(row.get("doc_role") or "")
-        level = str(row.get("level") or "")
+        category = _normalize_optional_text(row.get("category")) or "unknown"
+        concept_id = _normalize_optional_text(row.get("concept_id"))
+        doc_role = _normalize_optional_text(row.get("doc_role"))
+        level = _normalize_optional_text(row.get("level"))
         signals = [f"category:{category}"]
         if doc_role:
             signals.append(f"doc_role:{doc_role}")
@@ -401,10 +413,10 @@ def load_runtime_dense_candidates(
         anchors = _parse_json_list(row.get("anchors"))
         section_path = _parse_json_list(row.get("section_path"))
         section_title = section_path[-1] if section_path else ""
-        category = str(row.get("category") or "unknown")
-        concept_id = str(row.get("concept_id") or "")
-        doc_role = str(row.get("doc_role") or "")
-        level = str(row.get("level") or "")
+        category = _normalize_optional_text(row.get("category")) or "unknown"
+        concept_id = _normalize_optional_text(row.get("concept_id"))
+        doc_role = _normalize_optional_text(row.get("doc_role"))
+        level = _normalize_optional_text(row.get("level"))
         path = str(row.get("path") or "")
         if not path:
             continue

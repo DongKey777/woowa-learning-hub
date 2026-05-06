@@ -24,6 +24,7 @@ the raw JSON.
 from __future__ import annotations
 
 import json
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -161,7 +162,21 @@ def load_cohort_qrels(path: Path) -> CohortQrelSuite:
         raise ValueError(f"unexpected JSON root in {path}")
     if not isinstance(records, list):
         raise ValueError(f"{path}: 'queries' must be a list")
+    if isinstance(blob, dict) and "query_count" in blob:
+        declared = int(blob["query_count"])
+        actual = len(records)
+        if declared != actual:
+            raise ValueError(
+                f"{path}: query_count mismatch "
+                f"(declared {declared}, actual {actual})"
+            )
     queries = tuple(_record_to_query(r) for r in records)
+    duplicate_ids = sorted(
+        query_id for query_id, count in Counter(q.query_id for q in queries).items()
+        if count > 1
+    )
+    if duplicate_ids:
+        raise ValueError(f"{path}: duplicate query_ids: {duplicate_ids}")
     return CohortQrelSuite(
         schema_version=schema_version,
         queries=queries,

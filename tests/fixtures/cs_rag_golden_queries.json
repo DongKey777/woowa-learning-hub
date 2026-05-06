@@ -1292,11 +1292,14 @@
     },
     {
       "id": "mysql_deadlock_lock_ordering",
-      "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐?",
+      "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐? 인덱스 추가 뒤라 더 헷갈려",
       "learning_points": [],
       "expected_path": "contents/database/deadlock-case-study.md",
       "acceptable_paths": [
         "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md"
+      ],
+      "forbidden_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
       ],
       "max_rank": 1
     },
@@ -1436,7 +1439,7 @@
     },
     {
       "id": "spring_mvc_shortform_korean_spacing_beginner_primer",
-      "prompt": "스프링 M V C 뭐야?",
+      "prompt": "스프링 M V C 뭐야",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
@@ -1449,7 +1452,7 @@
     },
     {
       "id": "spring_mvc_shortform_korean_alias_beginner_primer",
-      "prompt": "스프링 MVC 뭐야?",
+      "prompt": "스프링 MVC 뭐야",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
@@ -3092,6 +3095,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
       "max_rank": 1
     },
     {
@@ -3250,7 +3257,7 @@
     },
     {
       "id": "beginner_dispatcher_servlet_spacing_shortform_lockin",
-      "prompt": "Dispatcher Servlet 이 뭐야?",
+      "prompt": "Dispatcher Servlet 이 뭐야",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
@@ -3263,7 +3270,7 @@
     },
     {
       "id": "beginner_dispatcher_servlet_lowercase_shortform_lockin",
-      "prompt": "dispatcher servlet 이 뭐야?",
+      "prompt": "dispatcher servlet 이 뭐야",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
@@ -3306,6 +3313,9 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3319,6 +3329,9 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3332,7 +3345,15 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
-      "max_rank": 1
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-transaction-propagation-deep-dive.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
+      "companion_max_rank": 4
     },
     {
       "id": "beginner_transactional_korean_meaning_lockin",
@@ -3340,6 +3361,9 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3353,6 +3377,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3366,6 +3394,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3379,6 +3411,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3388,10 +3424,14 @@
     },
     {
       "id": "beginner_transactional_english_meaning_with_annotation_lockin",
-      "prompt": "What does @Transactional mean in Spring?",
+      "prompt": "Why do people put @Transactional on service methods in Spring?",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3405,6 +3445,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-transactional-basics.md",
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
       "max_rank": 1,
       "companion_paths": [
         "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -3854,7 +3898,7 @@
     },
     {
       "id": "beginner_application_context_spacing_english_shortform_lockin",
-      "prompt": "What is Application Context in Spring?",
+      "prompt": "What is Application Context in Spring",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",

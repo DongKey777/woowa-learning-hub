@@ -34,6 +34,11 @@ from .cohort_qrels import CohortQrelSuite, CohortQuery, VALID_COHORTS, load_coho
 SearchFn = Callable[..., list[dict]]
 
 
+def _is_refusal_clean_outcome(actual_outcome: str) -> bool:
+    """True when a corpus-gap query ended in an acceptable refusal path."""
+    return actual_outcome in {"refusal_clean", "tier_downgraded"}
+
+
 # ---------------------------------------------------------------------------
 # Dataclasses
 # ---------------------------------------------------------------------------
@@ -89,7 +94,7 @@ class CohortMetrics:
             self.sum_reciprocal_rank += 1.0 / result.primary_rank
         if result.forbidden_hit_rank and result.forbidden_hit_rank <= top_k:
             self.forbidden_hit_top_k += 1
-        if result.actual_outcome == "refusal_clean":
+        if _is_refusal_clean_outcome(result.actual_outcome):
             self.refusal_clean += 1
 
     def to_dict(self, *, top_k: int) -> dict[str, Any]:

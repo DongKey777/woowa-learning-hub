@@ -53,9 +53,11 @@ enforced in the plan's Phase 2.1 "책임 경계" clause and verified by
 from __future__ import annotations
 
 import json
+import math
 import os
+import re
 import time
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .rag import category_mapping, signal_rules
@@ -64,6 +66,20 @@ from .rag import indexer as rag_indexer
 RAG_RUNTIME_BACKEND_ENV = "WOOWA_RAG_RUNTIME_BACKEND"
 VALID_SEARCH_BACKENDS = {"auto", "legacy", "lance", "r3"}
 R3_LEXICAL_SIDECAR_NAME = "r3_lexical_sidecar.json"
+_KNOWN_CITATION_CATEGORIES = {
+    "algorithm",
+    "data-structure",
+    "database",
+    "design-pattern",
+    "language",
+    "network",
+    "operating-system",
+    "security",
+    "software-engineering",
+    "spring",
+    "system-design",
+}
+_CITATION_BUCKET_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9/_-]*$")
 
 
 def _empty_response_hints() -> dict[str, Any]:
@@ -77,7 +93,17 @@ def _empty_response_hints() -> dict[str, Any]:
     return {
         "citation_markdown": None,
         "citation_paths": [],
+        "citation_trace": [],
+        "tier_downgrade": None,
+        "fallback_disclaimer": None,
     }
+
+
+def _response_hints_with(**overrides: Any) -> dict[str, Any]:
+    """Return a normalized response_hints payload with stable keys."""
+    payload = _empty_response_hints()
+    payload.update(overrides)
+    return payload
 
 
 # Phase 9.3 — tier-downgrade discriminator and Korean fallback line.
@@ -103,31 +129,249 @@ def _is_refusal_sentinel(hits: list[dict[str, Any]] | None) -> bool:
     return isinstance(head, dict) and head.get("sentinel") == "no_confident_match"
 
 
-def _render_citation_block(all_hits: list[dict[str, Any]], *, max_n: int = 3) -> tuple[str | None, list[str]]:
-    """Build the paste-ready `참고:` markdown block from augment hits.
+def _iter_hit_dicts(hits: list[Any] | None) -> list[dict[str, Any]]:
+    """Drop malformed search rows instead of collapsing the whole turn."""
+    if not hits:
+        return []
+    return [hit for hit in hits if isinstance(hit, dict)]
 
-    Returns ``(markdown, paths)``. ``markdown`` is None when there are
-    no hits — the AI session reads None as "no corpus citation owed
-    for this turn". ``paths`` is the deduplicated list of repo-relative
-    paths in citation order, capped at ``max_n``.
 
-    The renderer is deterministic and side-effect-free; tier 0 callers
-    pass an empty hits list and receive (None, []).
-    """
-    seen: set[str] = set()
-    paths: list[str] = []
-    for hit in all_hits:
-        path = str(hit.get("path") or "").strip()
-        if not path or path in seen:
+def _coerce_citation_score(value: Any) -> float:
+    try:
+        score = float(value)
+    except (TypeError, ValueError):
+        return float("-inf")
+    if not math.isfinite(score):
+        return float("-inf")
+    return score
+
+
+def _normalize_citation_path(value: Any) -> str | None:
+    """Accept only repo-relative CS content doc paths for learner citations."""
+    path = str(value or "").strip()
+    if not path or not path.startswith("knowledge/cs/contents/"):
+        return None
+    if any(char.isspace() for char in path):
+        return None
+    if "\\" in path or "#" in path or "?" in path:
+        return None
+    normalized = PurePosixPath(path)
+    # Keep the learner-facing citation block and operator trace on one
+    # canonical repo-relative spelling. Reject dot-segments or duplicate
+    # separators instead of silently rewriting them.
+    if normalized.as_posix() != path:
+        return None
+    if normalized.suffix != ".md":
+        return None
+    parts = normalized.parts
+    if len(parts) < 5 or parts[:3] != ("knowledge", "cs", "contents"):
+        return None
+    if any(part in {"", ".", ".."} for part in parts):
+        return None
+    return path
+
+
+def _normalize_citation_field(value: Any) -> str | None:
+    """Keep trace metadata JSON-safe and free of accidental whitespace payloads."""
+    text = str(value or "").strip()
+    if not text or any(char.isspace() for char in text):
+        return None
+    return text
+
+
+def _sanitize_citation_bucket_segment(value: Any) -> str:
+    """Slug unsafe bucket fragments so trace provenance keeps a stable shape."""
+    raw = str(value or "").strip().lower()
+    if not raw:
+        return "unknown"
+    sanitized = re.sub(r"[^a-z0-9/_-]+", "-", raw)
+    sanitized = re.sub(r"-{2,}", "-", sanitized).strip("-")
+    sanitized = re.sub(r"/{2,}", "/", sanitized).strip("/")
+    return sanitized or "unknown"
+
+
+def _format_citation_bucket(prefix: str, *segments: Any) -> str:
+    """Construct a normalized trace bucket instead of leaking raw query text."""
+    if prefix == "learning_point":
+        return f"{prefix}:{_sanitize_citation_bucket_segment(segments[0])}"
+    if prefix == "fallback":
+        return (
+            f"{prefix}:{_sanitize_citation_bucket_segment(segments[0])}:"
+            f"{_sanitize_citation_bucket_segment(segments[1])}"
+        )
+    raise ValueError(f"unknown citation bucket prefix: {prefix}")
+
+
+def _normalize_citation_bucket(value: Any) -> str | None:
+    """Allow only known trace bucket prefixes in operator-facing payloads."""
+    bucket = _normalize_citation_field(value)
+    if not bucket:
+        return None
+    for prefix in ("learning_point:", "fallback:"):
+        if not bucket.startswith(prefix):
             continue
-        seen.add(path)
-        paths.append(path)
-        if len(paths) >= max_n:
+        suffix = bucket[len(prefix):]
+        if not suffix:
+            return None
+        # Trace buckets should expose exactly one routing provenance,
+        # not nested alias prefixes from accidental reformatting.
+        if suffix.startswith("learning_point:") or suffix.startswith("fallback:"):
+            return None
+        if prefix == "learning_point:":
+            if ":" in suffix:
+                return None
+            if not _CITATION_BUCKET_SEGMENT_RE.fullmatch(suffix):
+                return None
+        elif suffix.count(":") != 1:
+            return None
+        else:
+            category, alias = suffix.split(":", 1)
+            if not (
+                _CITATION_BUCKET_SEGMENT_RE.fullmatch(category)
+                and _CITATION_BUCKET_SEGMENT_RE.fullmatch(alias)
+            ):
+                return None
+        return bucket
+    return None
+
+
+def _citation_bucket_priority(bucket: str | None) -> int:
+    """Prefer learner-specific trace sources when score ties.
+
+    A path can surface through both a learning-point query and a broader
+    fallback query with the same score. In that case keep the more
+    specific learning-point bucket in `citation_trace` so operators do
+    not lose the stronger provenance.
+    """
+    if not bucket:
+        return 0
+    if bucket.startswith("learning_point:"):
+        return 2
+    if bucket.startswith("fallback:"):
+        return 1
+    return 0
+
+
+def _derive_citation_category(path: str, raw_category: Any) -> str:
+    """Keep clean retrieval categories, fall back to the corpus path otherwise."""
+    category = _normalize_citation_field(raw_category)
+    if category in _KNOWN_CITATION_CATEGORIES:
+        return category
+    parts = Path(path).parts
+    try:
+        return parts[3]
+    except IndexError:
+        return ""
+
+
+def _citation_trace_completeness(hit: dict[str, Any]) -> tuple[int, int]:
+    """Prefer ties with cleaner trace metadata for operator debugging."""
+    category = hit.get("category")
+    bucket = hit.get("bucket")
+    return (
+        1 if category else 0,
+        _citation_bucket_priority(bucket),
+        1 if bucket else 0,
+    )
+
+
+def _select_citation_hits(
+    all_hits: list[dict[str, Any]],
+    *,
+    max_n: int = 3,
+) -> list[dict[str, Any]]:
+    """Pick the exact hit set that backs learner-visible citations.
+
+    Both `citation_markdown` and `citation_trace` must derive from the
+    same capped, deduplicated ordering so operators can trust that each
+    trace entry corresponds to one pasted `참고:` line.
+    """
+    best_hit_by_path: dict[str, dict[str, Any]] = {}
+    first_seen_by_path: dict[str, int] = {}
+    for index, hit in enumerate(_iter_hit_dicts(all_hits)):
+        path = _normalize_citation_path(hit.get("path"))
+        if not path:
+            continue
+        score = _coerce_citation_score(hit.get("score"))
+        first_seen_by_path.setdefault(path, index)
+        current = best_hit_by_path.get(path)
+        current_score = (
+            _coerce_citation_score(current.get("score"))
+            if current is not None
+            else float("-inf")
+        )
+        candidate = {
+            "path": path,
+            "score": None if not math.isfinite(score) else score,
+            "category": _derive_citation_category(path, hit.get("category")),
+            "bucket": _normalize_citation_bucket(hit.get("_citation_bucket")),
+        }
+        should_replace = current is None or score > current_score
+        if (
+            not should_replace
+            and current is not None
+            and score == current_score
+            and _citation_trace_completeness(candidate)
+            > _citation_trace_completeness(current)
+        ):
+            should_replace = True
+        if should_replace:
+            best_hit_by_path[path] = {
+                **candidate,
+            }
+    return [
+        best_hit_by_path[path]
+        for path in sorted(
+            best_hit_by_path,
+            key=lambda value: (
+                # Keep equal-score ties aligned with the earliest
+                # retrieval order so `citation_markdown` and
+                # `citation_trace` stay stable across identical-score
+                # reruns and operator diffs remain readable.
+                -_coerce_citation_score(best_hit_by_path[value]["score"]),
+                first_seen_by_path[value],
+                value,
+            ),
+        )[:max_n]
+    ]
+
+
+def _build_citation_payload(
+    all_hits: list[dict[str, Any]],
+    *,
+    max_n: int = 3,
+) -> tuple[str | None, list[str], list[dict[str, Any]]]:
+    """Build learner-facing citation fields from one shared selection pass.
+
+    `citation_markdown`, `citation_paths`, and `citation_trace` are a
+    single contract surface. Deriving them from the same selected hit
+    list avoids drift when selection logic changes or is instrumented in
+    tests.
+    """
+    selected_hits = _select_citation_hits(all_hits, max_n=max_n)
+    normalized_hits: list[dict[str, Any]] = []
+    seen_paths: set[str] = set()
+    for hit in selected_hits:
+        path = _normalize_citation_path(hit.get("path"))
+        if not path or path in seen_paths:
+            continue
+        seen_paths.add(path)
+        score = _coerce_citation_score(hit.get("score"))
+        normalized_hits.append(
+            {
+                "path": path,
+                "score": None if not math.isfinite(score) else score,
+                "category": _derive_citation_category(path, hit.get("category")),
+                "bucket": _normalize_citation_bucket(hit.get("bucket")),
+            }
+        )
+        if len(normalized_hits) >= max_n:
             break
+    paths = [hit["path"] for hit in normalized_hits]
     if not paths:
-        return None, []
+        return None, [], []
     body = "\n".join(f"- {p}" for p in paths)
-    return f"참고:\n{body}", paths
+    return f"참고:\n{body}", paths, normalized_hits
 
 
 def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
@@ -195,6 +439,7 @@ def augment(
     by_fallback: dict[str, list[dict]] = {}
     fallback_reason: str | None = None
     all_hits: list[dict] = []
+    citation_hits: list[dict] = []
     seen_paths: set[str] = set()
     category_filter_fallback = False
     query_candidate_kinds: list[str] = []
@@ -249,6 +494,10 @@ def augment(
         if captured:
             runtime_debug.update(captured)
 
+    def extend_citation_hits(bucket: str, hits: list[dict[str, Any]]) -> None:
+        for hit in _iter_hit_dicts(hits):
+            citation_hits.append({**hit, "_citation_bucket": bucket})
+
     try:
         if learning_points:
             # Peer-derived path: search once per learning point so each
@@ -282,7 +531,8 @@ def augment(
                     break
                 if hits:
                     by_lp[lp] = hits
-                    for h in hits:
+                    extend_citation_hits(_format_citation_bucket("learning_point", lp), hits)
+                    for h in _iter_hit_dicts(hits):
                         if h["path"] not in seen_paths:
                             seen_paths.add(h["path"])
                             all_hits.append(h)
@@ -323,7 +573,15 @@ def augment(
                         break
                     if hits:
                         by_fallback[key] = hits
-                        for h in hits:
+                        extend_citation_hits(
+                            _format_citation_bucket(
+                                "fallback",
+                                sig["category"],
+                                sig["tag"],
+                            ),
+                            hits,
+                        )
+                        for h in _iter_hit_dicts(hits):
                             if h["path"] not in seen_paths:
                                 seen_paths.add(h["path"])
                                 all_hits.append(h)
@@ -355,7 +613,11 @@ def augment(
                     refusal_sentinel_detected = True
                 elif hits:
                     by_fallback[key] = hits
-                    for h in hits:
+                    extend_citation_hits(
+                        _format_citation_bucket("fallback", "general", _top_token(prompt)),
+                        hits,
+                    )
+                    for h in _iter_hit_dicts(hits):
                         if h["path"] not in seen_paths:
                             seen_paths.add(h["path"])
                             all_hits.append(h)
@@ -363,6 +625,17 @@ def augment(
         return _empty_result("search_error", cs_search_mode)
 
     latency_ms = int((time.time() - start) * 1000)
+
+    if refusal_sentinel_detected:
+        # Phase 9.3 sentinel means "no confident corpus answer for this
+        # turn", not "one bucket failed". Drop any earlier provisional
+        # hits so downstream payloads cannot mix tier-0 fallback with
+        # stale citation/sidecar context from a previous bucket.
+        by_lp = {}
+        by_fallback = {}
+        fallback_reason = TIER_DOWNGRADE_REASON
+        all_hits = []
+        citation_hits = []
 
     categories_hit = sorted({h["category"] for h in all_hits})
 
@@ -396,11 +669,14 @@ def augment(
     if runtime_debug:
         meta["runtime_debug"] = runtime_debug
 
-    citation_markdown, citation_paths = _render_citation_block(all_hits)
-    response_hints = {
-        "citation_markdown": citation_markdown,
-        "citation_paths": citation_paths,
-    }
+    citation_markdown, citation_paths, citation_trace = _build_citation_payload(
+        citation_hits
+    )
+    response_hints = _response_hints_with(
+        citation_markdown=citation_markdown,
+        citation_paths=citation_paths,
+        citation_trace=citation_trace,
+    )
 
     # Phase 9.3 — when R3 emitted a refusal sentinel for any of the
     # search buckets, flip this turn into a tier-0 fallback. Citation
@@ -408,12 +684,10 @@ def augment(
     # `tier_downgrade` + `fallback_disclaimer` and responds from
     # training knowledge with the disclaimer as the first line.
     if refusal_sentinel_detected:
-        response_hints = {
-            "citation_markdown": None,
-            "citation_paths": [],
-            "tier_downgrade": TIER_DOWNGRADE_REASON,
-            "fallback_disclaimer": TIER_DOWNGRADE_DISCLAIMER,
-        }
+        response_hints = _response_hints_with(
+            tier_downgrade=TIER_DOWNGRADE_REASON,
+            fallback_disclaimer=TIER_DOWNGRADE_DISCLAIMER,
+        )
         meta["fallback_reason"] = TIER_DOWNGRADE_REASON
 
     return {

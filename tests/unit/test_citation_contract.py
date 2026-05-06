@@ -5,11 +5,17 @@ session can copy it verbatim instead of authoring citation by hand.
 
 Contract:
   * `integration.augment()` return dict gains `response_hints`
-    sub-dict with two keys:
+    sub-dict with citation fields:
       - `citation_markdown`: paste-ready string for tier ≥ 1 with
         hits, else None
       - `citation_paths`: deduplicated list of hit paths used in
         citation_markdown (max 3)
+      - `citation_trace`: per-path trace metadata so operators can
+        explain which retrieval bucket and score backed the pasted
+        `참고:` block
+      - `tier_downgrade` / `fallback_disclaimer`: always-present
+        downgrade keys so consumers can read a stable shape even when
+        citation is absent
   * `bin/rag-ask` JSON output gains a top-level `response_hints`
     field surfaced from augment.
 
@@ -64,6 +70,19 @@ def _hit(path: str, score: float = 1.0) -> dict:
     }
 
 
+def _refusal_sentinel() -> dict:
+    return {
+        "path": "<sentinel:no_confident_match>",
+        "title": "",
+        "category": "",
+        "section_title": "",
+        "section_path": [],
+        "score": -1.5,
+        "snippet_preview": "",
+        "sentinel": "no_confident_match",
+    }
+
+
 def test_augment_emits_citation_markdown_when_hits_present(tmp_path, monkeypatch):
     index_root = tmp_path / "index"
     _write_manifest(index_root)
@@ -103,6 +122,22 @@ def test_augment_emits_citation_markdown_when_hits_present(tmp_path, monkeypatch
     assert rh["citation_paths"] == [
         "knowledge/cs/contents/spring/spring-bean-di-basics.md",
         "knowledge/cs/contents/spring/ioc-di-container.md",
+    ]
+    assert rh["tier_downgrade"] is None
+    assert rh["fallback_disclaimer"] is None
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.92,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.81,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
     ]
 
 
@@ -161,6 +196,357 @@ def test_augment_dedupes_repeated_paths_in_citation(tmp_path, monkeypatch):
     assert rh["citation_paths"].count(same_path) == 1
 
 
+def test_augment_citation_trace_keeps_best_bucket_per_path(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+    same_path = "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+
+    def fake_search(prompt, **kwargs):
+        learning_points = kwargs.get("learning_points") or []
+        if learning_points == ["spring/di"]:
+            return [_hit(same_path, 0.71)]
+        if learning_points == ["spring/ioc"]:
+            return [
+                _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.85),
+                _hit(same_path, 0.94),
+            ]
+        return []
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=["spring/di", "spring/ioc"],
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        same_path,
+        "knowledge/cs/contents/spring/ioc-di-container.md",
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": same_path,
+            "score": 0.94,
+            "category": "spring",
+            "bucket": "learning_point:spring/ioc",
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.85,
+            "category": "spring",
+            "bucket": "learning_point:spring/ioc",
+        },
+    ]
+
+
+def test_augment_ignores_malformed_non_dict_hits_in_citation_trace(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            "junk-row",
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.92),
+            ["nested-junk"],
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.81),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["meta"]["reason"] == "ready"
+    assert result["response_hints"]["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+        "knowledge/cs/contents/spring/ioc-di-container.md",
+    ]
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.92,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.81,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+    ]
+
+
+def test_select_citation_hits_ignores_malformed_non_dict_rows():
+    assert integration._select_citation_hits(
+        [
+            "junk-row",
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            123,
+        ]
+    ) == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": None,
+        }
+    ]
+
+
+def test_select_citation_hits_prefers_cleaner_metadata_on_equal_score():
+    same_path = "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+
+    assert integration._select_citation_hits(
+        [
+            {
+                **_hit(same_path, 0.91),
+                "_citation_bucket": "learning_point:spring/dirty\ntrace:leak",
+            },
+            {
+                **_hit(same_path, 0.91),
+                "_citation_bucket": "learning_point:spring/clean",
+            },
+        ]
+    ) == [
+        {
+            "path": same_path,
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "learning_point:spring/clean",
+        }
+    ]
+
+
+def test_select_citation_hits_prefers_learning_point_bucket_on_equal_score():
+    same_path = "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+
+    assert integration._select_citation_hits(
+        [
+            {
+                **_hit(same_path, 0.91),
+                "_citation_bucket": "fallback:spring:spring_framework",
+            },
+            {
+                **_hit(same_path, 0.91),
+                "_citation_bucket": "learning_point:spring/di",
+            },
+        ]
+    ) == [
+        {
+            "path": same_path,
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "learning_point:spring/di",
+        }
+    ]
+
+
+def test_select_citation_hits_keeps_first_seen_order_on_equal_scores():
+    assert integration._select_citation_hits(
+        [
+            {
+                **_hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+                "_citation_bucket": "fallback:spring:spring_framework",
+            },
+            {
+                **_hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.91),
+                "_citation_bucket": "fallback:spring:spring_framework",
+            },
+            {
+                **_hit("knowledge/cs/contents/spring/bean-scope.md", 0.91),
+                "_citation_bucket": "fallback:spring:spring_framework",
+            },
+        ]
+    ) == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+        {
+            "path": "knowledge/cs/contents/spring/bean-scope.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+    ]
+
+
+def test_augment_citation_trace_matches_pasted_paths_exactly(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.97),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.93),
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.88),
+            _hit("knowledge/cs/contents/spring/bean-scope.md", 0.84),
+            _hit("knowledge/cs/contents/spring/extra-fourth.md", 0.79),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/ioc-di-container.md",
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+        "knowledge/cs/contents/spring/bean-scope.md",
+    ]
+    assert [entry["path"] for entry in rh["citation_trace"]] == rh["citation_paths"]
+    assert all(
+        entry["path"] != "knowledge/cs/contents/spring/extra-fourth.md"
+        for entry in rh["citation_trace"]
+    )
+
+
+def test_augment_builds_citation_markdown_and_trace_from_one_selection_pass(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.97),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.93),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    original_select = integration._select_citation_hits
+    select_calls = 0
+
+    def wrapped_select(all_hits, *, max_n=3):
+        nonlocal select_calls
+        select_calls += 1
+        selected = original_select(all_hits, max_n=max_n)
+        if select_calls == 1:
+            return selected
+        return [
+            {
+                **selected[0],
+                "path": "knowledge/cs/contents/spring/mismatched-second-pass.md",
+            }
+        ]
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert select_calls == 1
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/ioc-di-container.md",
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+    ]
+    assert [entry["path"] for entry in rh["citation_trace"]] == rh["citation_paths"]
+    assert "mismatched-second-pass.md" not in rh["citation_markdown"]
+
+
+def test_augment_revalidates_selected_citation_trace_entries(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.97),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.93),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    def wrapped_select(all_hits, *, max_n=3):
+        return [
+            {
+                "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+                "score": "NaN",
+                "category": " totally-wrong ",
+                "bucket": "manual_override:spring",
+            },
+            {
+                "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+                "score": 0.88,
+                "category": "spring",
+                "bucket": "fallback:spring:spring_framework",
+            },
+            {
+                "path": "knowledge/cs/contents/spring/bean-scope.md\n- leak.md",
+                "score": 0.91,
+                "category": "spring",
+                "bucket": "fallback:spring:spring_framework",
+            },
+            {
+                "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+                "score": 0.93,
+                "category": "database",
+                "bucket": "fallback:spring:spring_framework",
+            },
+        ]
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_paths"] == [
+        "knowledge/cs/contents/spring/ioc-di-container.md",
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+    ]
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": None,
+            "category": "spring",
+            "bucket": None,
+        },
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.93,
+            "category": "database",
+            "bucket": "fallback:spring:spring_framework",
+        },
+    ]
+    assert "bean-scope.md" not in result["response_hints"]["citation_markdown"]
+
+
 def test_augment_empty_hits_returns_none_citation(tmp_path, monkeypatch):
     index_root = tmp_path / "index"
     _write_manifest(index_root)
@@ -181,6 +567,628 @@ def test_augment_empty_hits_returns_none_citation(tmp_path, monkeypatch):
     rh = result["response_hints"]
     assert rh["citation_markdown"] is None
     assert rh["citation_paths"] == []
+    assert rh["citation_trace"] == []
+    assert rh["tier_downgrade"] is None
+    assert rh["fallback_disclaimer"] is None
+
+
+def test_augment_citation_trace_avoids_non_json_scores(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            {**_hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.0), "score": "NaN"},
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": None,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        },
+    ]
+    json.dumps(result["response_hints"], allow_nan=False)
+
+
+def test_augment_citation_trace_ignores_whitespace_injected_paths(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            _hit(
+                "knowledge/cs/contents/spring/ioc-di-container.md\n- leak.md",
+                0.99,
+            ),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+    assert rh["citation_markdown"] == (
+        "참고:\n- knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    )
+
+
+def test_augment_citation_trace_ignores_non_corpus_paths(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            _hit("docs/internal-only.md", 0.99),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+
+
+def test_augment_citation_trace_ignores_non_content_cs_paths(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/README.md", 0.99),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+    assert "knowledge/cs/README.md" not in rh["citation_markdown"]
+
+
+def test_augment_citation_trace_ignores_fragment_and_query_decorated_paths(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md#section", 0.99),
+            _hit("knowledge/cs/contents/spring/spring-aop-basics.md?lang=ko", 0.95),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+    assert "ioc-di-container.md#section" not in rh["citation_markdown"]
+    assert "spring-aop-basics.md?lang=ko" not in rh["citation_markdown"]
+
+
+def test_augment_citation_trace_ignores_parent_traversal_paths(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/../spring/escape.md", 0.99),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+    assert "escape.md" not in rh["citation_markdown"]
+
+
+def test_augment_citation_trace_ignores_dot_segment_paths(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/./spring/dot-segment.md", 0.99),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+    assert "dot-segment.md" not in rh["citation_markdown"]
+
+
+def test_augment_citation_trace_ignores_duplicate_separator_paths(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring//double-slash.md", 0.99),
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_paths"] == [
+        "knowledge/cs/contents/spring/spring-bean-di-basics.md"
+    ]
+    assert rh["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+    assert "double-slash.md" not in rh["citation_markdown"]
+
+
+def test_augment_citation_trace_derives_category_from_path_when_hit_metadata_is_dirty(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            {
+                **_hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+                "category": " spring basics ",
+            }
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+
+
+def test_augment_citation_trace_keeps_valid_hit_category_when_it_differs_from_path(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            {
+                **_hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+                "category": "database",
+            }
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "database",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+
+
+def test_augment_citation_trace_keeps_clean_hyphenated_cross_category_labels(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            {
+                **_hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+                "category": "system-design",
+            }
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "system-design",
+            "bucket": "fallback:spring:spring_framework",
+        }
+    ]
+
+
+def test_augment_citation_trace_nulls_dirty_bucket_metadata(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    original_extend = integration._select_citation_hits
+
+    def wrapped_select(all_hits, *, max_n=3):
+        dirty_hits = [
+            {**hit, "_citation_bucket": "fallback:spring\ntrace:leak"}
+            for hit in all_hits
+        ]
+        return original_extend(dirty_hits, max_n=max_n)
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": None,
+        }
+    ]
+
+
+def test_augment_citation_trace_nulls_unknown_bucket_prefix(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    original_select = integration._select_citation_hits
+
+    def wrapped_select(all_hits, *, max_n=3):
+        dirty_hits = [{**hit, "_citation_bucket": "manual_override:spring"} for hit in all_hits]
+        return original_select(dirty_hits, max_n=max_n)
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": None,
+        }
+    ]
+
+
+def test_augment_citation_trace_nulls_empty_and_nested_bucket_aliases(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.88),
+            _hit("knowledge/cs/contents/spring/spring-aop-basics.md", 0.87),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    original_select = integration._select_citation_hits
+
+    def wrapped_select(all_hits, *, max_n=3):
+        selected = original_select(all_hits, max_n=max_n)
+        return [
+            {**selected[0], "bucket": "fallback:"},
+            {**selected[1], "bucket": "fallback:fallback:spring:spring_framework"},
+            {**selected[2], "bucket": "learning_point:learning_point:spring/di"},
+        ]
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": None,
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.88,
+            "category": "spring",
+            "bucket": None,
+        },
+        {
+            "path": "knowledge/cs/contents/spring/spring-aop-basics.md",
+            "score": 0.87,
+            "category": "spring",
+            "bucket": None,
+        },
+    ]
+
+
+def test_augment_citation_trace_nulls_overqualified_bucket_aliases(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.88),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    original_select = integration._select_citation_hits
+
+    def wrapped_select(all_hits, *, max_n=3):
+        selected = original_select(all_hits, max_n=max_n)
+        return [
+            {**selected[0], "bucket": "learning_point:spring/di:alias"},
+            {**selected[1], "bucket": "fallback:spring:spring_framework:alias"},
+        ]
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": None,
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.88,
+            "category": "spring",
+            "bucket": None,
+        },
+    ]
+
+
+def test_augment_citation_trace_nulls_punctuation_injected_bucket_aliases(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+            _hit("knowledge/cs/contents/spring/ioc-di-container.md", 0.88),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    original_select = integration._select_citation_hits
+
+    def wrapped_select(all_hits, *, max_n=3):
+        selected = original_select(all_hits, max_n=max_n)
+        return [
+            {**selected[0], "bucket": "learning_point:spring/di?topic=bean"},
+            {**selected[1], "bucket": "fallback:spring:spring.framework"},
+        ]
+
+    monkeypatch.setattr(integration, "_select_citation_hits", wrapped_select)
+
+    result = integration.augment(
+        prompt="Spring DI가 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": None,
+        },
+        {
+            "path": "knowledge/cs/contents/spring/ioc-di-container.md",
+            "score": 0.88,
+            "category": "spring",
+            "bucket": None,
+        },
+    ]
 
 
 def test_augment_skip_mode_returns_none_response_hints():
@@ -195,6 +1203,99 @@ def test_augment_skip_mode_returns_none_response_hints():
     assert rh is not None
     assert rh["citation_markdown"] is None
     assert rh["citation_paths"] == []
+    assert rh["citation_trace"] == []
+    assert rh["tier_downgrade"] is None
+    assert rh["fallback_disclaimer"] is None
+
+
+def test_augment_general_fallback_trace_sanitizes_non_ascii_query_token(
+    tmp_path, monkeypatch
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [
+            _hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.91),
+        ]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    monkeypatch.setattr(integration.signal_rules, "detect_signals", lambda *_: [])
+
+    result = integration.augment(
+        prompt="스프링 빈이 뭐야?",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    assert result["response_hints"]["citation_trace"] == [
+        {
+            "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+            "score": 0.91,
+            "category": "spring",
+            "bucket": "fallback:general:unknown",
+        }
+    ]
+
+
+def test_augment_refusal_sentinel_clears_citation_trace(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        return [_refusal_sentinel()]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="rare topic",
+        learning_points=None,
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert rh["citation_markdown"] is None
+    assert rh["citation_paths"] == []
+    assert rh["citation_trace"] == []
+    assert rh["tier_downgrade"] == "corpus_gap_no_confident_match"
+    assert rh["fallback_disclaimer"] is not None
+    assert result["fallback_reason"] == "corpus_gap_no_confident_match"
+
+
+def test_augment_refusal_sentinel_discards_earlier_bucket_hits(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root)
+
+    def fake_search(prompt, **kwargs):
+        learning_points = kwargs.get("learning_points") or []
+        if learning_points == ["spring/di"]:
+            return [_hit("knowledge/cs/contents/spring/spring-bean-di-basics.md", 0.92)]
+        return [_refusal_sentinel()]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="rare topic",
+        learning_points=["spring/di", "spring/ioc"],
+        cs_search_mode="full",
+        index_root=index_root,
+        readiness=_ReadyReport(),
+    )
+
+    rh = result["response_hints"]
+    assert result["by_learning_point"] == {}
+    assert result["by_fallback_key"] == {}
+    assert result["cs_categories_hit"] == []
+    assert result["sidecar"] is None
+    assert result["fallback_reason"] == "corpus_gap_no_confident_match"
+    assert rh["citation_markdown"] is None
+    assert rh["citation_paths"] == []
+    assert rh["citation_trace"] == []
+    assert rh["tier_downgrade"] == "corpus_gap_no_confident_match"
 
 
 # ---------------------------------------------------------------------------
@@ -257,6 +1358,9 @@ def test_rag_ask_output_has_response_hints_stub_for_tier_0(monkeypatch):
     assert "response_hints" in out
     assert out["response_hints"]["citation_markdown"] is None
     assert out["response_hints"]["citation_paths"] == []
+    assert out["response_hints"]["citation_trace"] == []
+    assert out["response_hints"]["tier_downgrade"] is None
+    assert out["response_hints"]["fallback_disclaimer"] is None
 
 
 def test_rag_ask_output_surfaces_augment_response_hints(tmp_path, monkeypatch):
@@ -277,6 +1381,16 @@ def test_rag_ask_output_surfaces_augment_response_hints(tmp_path, monkeypatch):
             "참고:\n- knowledge/cs/contents/spring/spring-bean-di-basics.md",
         "citation_paths":
             ["knowledge/cs/contents/spring/spring-bean-di-basics.md"],
+        "citation_trace": [
+            {
+                "path": "knowledge/cs/contents/spring/spring-bean-di-basics.md",
+                "score": 0.92,
+                "category": "spring",
+                "bucket": "fallback:general:spring",
+            }
+        ],
+        "tier_downgrade": None,
+        "fallback_disclaimer": None,
     }
 
     def fake_augment(**kwargs):
