@@ -995,7 +995,7 @@
         "contents/database/deadlock-case-study.md"
       ],
       "primary_rank": 1,
-      "query_id": "symptom_to_cause:deadlock_after_index_change:001"
+      "query_id": "symptom_to_cause:deadlock_after_index_change_mixed:001"
     },
     {
       "acceptable_paths": [
