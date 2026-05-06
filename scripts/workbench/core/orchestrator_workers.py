@@ -1352,9 +1352,14 @@ def _pilot_lock_violations(changed_files: list[str]) -> list[str]:
 MIGRATION_FLEET_PROFILES = {"migration_v3", "migration_v3_60"}
 
 
-def _pilot_avoid_block(target_paths: list[str]) -> str:
+def _pilot_avoid_block(
+    target_paths: list[str],
+    *,
+    include_all_when_no_overlap: bool = False,
+) -> str:
     """Render the AVOID block listing Pilot paths inside the worker's
-    lane glob — empty string when no Pilot paths overlap.
+    lane glob, or the full Pilot lock list for migration workers that
+    have no corpus target_paths but still must avoid content drift.
 
     Pre-fix the AVOID block lived inline inside ``_build_migration_v3_prompt``,
     which only fires for the four ``migrate_*`` modes. qa/rag/ops
@@ -1367,19 +1372,35 @@ def _pilot_avoid_block(target_paths: list[str]) -> str:
     mode, sees the same explicit AVOID list.
     """
     pilot_paths = _pilot_paths_for_lane(target_paths)
+    fallback_all = False
+    if not pilot_paths and include_all_when_no_overlap:
+        pilot_paths = sorted(_load_pilot_lock_paths())
+        fallback_all = bool(pilot_paths)
     if not pilot_paths:
         return ""
     avoid_lines = "\n".join(f"  - {p}" for p in pilot_paths)
+    scope_note = (
+        "The following "
+        f"{len(pilot_paths)} doc(s) are inside your lane's target_paths\n"
+        "but are part of the Pilot 50 + Phase 4\n"
+        "wave 69 baseline."
+    )
+    if fallback_all:
+        scope_note = (
+            "The following "
+            f"{len(pilot_paths)} doc(s) are Pilot-locked in this repository.\n"
+            "Your target_paths do not include them, so any edit to these\n"
+            "files is both a scope violation and a Pilot lock violation."
+        )
     return (
         "\n==== PILOT LOCK PATHS IN YOUR LANE — NEVER MODIFY ====\n"
-        f"The following {len(pilot_paths)} doc(s) are inside your\n"
-        "lane's target_paths but are part of the Pilot 50 + Phase 4\n"
-        "wave 69 baseline. Modifying them invalidates the OVERALL\n"
+        f"{scope_note} Modifying them invalidates the OVERALL\n"
         "95.5%/94.0% eval contract. The completion gate fails fast\n"
         "on any change to these — but you should not even propose a\n"
         "next_candidate that targets one. If a queue item appears\n"
         "to ask for a change to one of these, return changed_files=[]\n"
-        "and a summary explaining the conflict.\n\n"
+        "and a summary explaining the conflict. This block overrides\n"
+        "all broader Target paths / Work only inside globs below.\n\n"
         f"{avoid_lines}\n"
     )
 
@@ -2173,10 +2194,48 @@ Authorial fields to write (preserve everything else exactly):
   confusable_with — list[string] concept_id of docs that confused
     learners often substitute for this one. doc_role=chooser needs ≥2.
   forbidden_neighbors — list[string] repo-relative .md paths that
-    must NEVER be top-1 retrieval for this doc's concept. The
-    `r3.search` post-rerank forbidden_filter consumes this. Be
-    conservative — only list docs that would actively mislead the
-    learner if surfaced for this concept's queries.
+    must NEVER appear in top-k *when this doc is the top-1 retrieval
+    result*. The `r3.search` post-rerank forbidden_filter consumes
+    this. Read carefully — this is a different dimension from
+    `confusable_with`:
+
+      * confusable_with = "competing/learning-path neighbour"
+        (primer↔primer, chooser↔primer can both be legitimate
+        retrieval answers — the learner just needs to pick).
+      * forbidden_neighbors = "wrong-bucket noise" (must NEVER reach
+        top-k alongside this doc — would actively mislead).
+
+    Cycle-1 regression analysis (2026-05-06) showed that workers
+    were treating these as the same dimension, populating
+    forbidden_neighbors with the canonical primer they themselves
+    pointed at as primary. That made retrieval demote the primer
+    out of top-k whenever the chooser was top-1, regressing
+    confusable_pairs by -7.5pp.
+
+    Concrete rules by doc_role:
+      doc_role = chooser  / bridge / symptom_router:
+        ✅ DO list: other chooser/bridge in the same area (these
+                   are wrong-bucket — same query intent, competing
+                   surface — only one should win)
+        ✅ DO list: deep_dive docs whose surface form is similar
+                   but whose intent is "advanced", not "what is X"
+        ❌ DO NOT list: the canonical primer of the same concept_id
+                       area. primer → chooser is a normal learning
+                       path; demoting primer out of top-k breaks
+                       paraphrase_human and confusable_pairs cohorts.
+
+      doc_role = primer (canonical=true):
+        ✅ DO list: deep_dive / playbook docs whose name pattern
+                   would surface for "what is X" queries despite
+                   being advanced / operational content.
+        ❌ DO NOT list: chooser / bridge of the same area (chooser
+                       being top-k alongside primer is the normal
+                       chooser_pairs cohort surface — not noise).
+
+      doc_role = drill / playbook / deep_dive:
+        ✅ DO list: docs that would crowd out the canonical primer
+                   if surfaced for introductory queries.
+
     **Same `contents/<category>/<slug>.md` format as linked_paths
     above — corpus_lint --strict-v3 enforces both with one rule.**
   expected_queries — list[string] of 5-10 raw Korean/English learner
@@ -2357,8 +2416,12 @@ Allowed authorial actions on the chosen doc:
   - Add 1-3 next_docs that the learner should read next.
   - Add 1-2 confusable_with for chooser/bridge if the doc is
     silent on alternatives.
-  - Add 1-2 forbidden_neighbors when a confusable doc's primer
-    would actively mislead a learner of THIS concept.
+  - Add 1-2 forbidden_neighbors that are *wrong-bucket* siblings
+    (other chooser/bridge in the same area, or deep_dive that
+    crowds the canonical primer). NEVER list the canonical primer
+    here when this doc itself is a chooser/bridge — primer→chooser
+    is a learning path, not a wrong-bucket relation. See the
+    detailed doc_role-aware rules in the field map above.
   - Rewrite contextual_chunk_prefix only if it is out of the token
     target band (50-100 token, ~30-60 글자 × 2-3 문장).
 
@@ -2606,12 +2669,29 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
             f"- Quality gates: {', '.join(quality_gates) if quality_gates else 'none'}",
         ]
     )
+    work_scope_lines = "\n".join(f"- {path}" for path in target_paths)
+    migration_scope_rules = ""
+    if fleet_profile in MIGRATION_FLEET_PROFILES:
+        migration_scope_rules = """- Migration fleet scope rule: `Target paths` / `Work only inside` is a hard write boundary.
+- Pilot lock override: the AVOID block is stricter than Target paths; never edit a listed Pilot path even when it matches `knowledge/cs/contents/**/*.md`.
+- Before choosing a content doc, compare its path against the AVOID list. If it is listed, skip it and either choose a non-Pilot path or return `changed_files=[]` with a conflict summary.
+- Do not edit `knowledge/cs/contents/**` unless that exact corpus subtree is listed in Target paths for this worker.
+- QA/RAG/Ops script profiles should use their fixtures, reports, scripts, or state artifacts; report corpus fixes as next_candidates when out of scope.
+"""
+    pilot_avoid = ""
+    if fleet_profile in MIGRATION_FLEET_PROFILES:
+        pilot_avoid = _pilot_avoid_block(
+            target_paths,
+            include_all_when_no_overlap=True,
+        )
     legacy_prompt = f"""You are {worker}, the persistent lane worker for {lane}.
 
 {profile_block}
 
+{pilot_avoid}
+
 Work only inside:
-- {scope}
+{work_scope_lines}
 
 Task:
 - Item ID: {item['item_id']}
@@ -2628,6 +2708,7 @@ Execution rules:
 - If this is a QA lane, make the smallest high-value fixes that reduce the named quality debt.
 - Platform completion gates run after your JSON response. Touched content docs under `knowledge/cs/contents/**` must pass `scripts/lint_cs_authoring.py`, and touched CS RAG code/tests/fixtures must pass the narrow related pytest target. Gate failures requeue this item.
 - Report every modified path in `changed_files`; missing paths can hide a failing gate and will be treated as worker-quality debt.
+{migration_scope_rules}
 {corpus_quality_rules}
 {balance_snapshot}
 {corpus_balance_rules}
@@ -2641,13 +2722,6 @@ Execution rules:
 Always include next_candidates. Prefer concrete next gaps that avoid repeating the exact same work you just finished.
 """
 
-    # qa/rag/ops workers inside a migration fleet share the same Pilot
-    # lock contract as content workers. The v3 builder above already
-    # injects the AVOID list for migrate_* modes; for non-migrate modes
-    # in the same fleet, append the same block here so every migration
-    # worker sees the explicit "do not touch these paths" list.
-    if fleet_profile in MIGRATION_FLEET_PROFILES:
-        legacy_prompt = legacy_prompt + _pilot_avoid_block(target_paths)
     return legacy_prompt
 
 
