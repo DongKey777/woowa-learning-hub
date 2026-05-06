@@ -16,6 +16,10 @@ from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
 from .personalization import apply_score_adjustments
+from .priority_weighting import (
+    apply_source_priority_weighting,
+    load_path_to_source_priority,
+)
 from .index.lexical_sidecar import load_lexical_sidecar
 from .index.runtime_loader import (
     encode_runtime_query,
@@ -525,6 +529,26 @@ def search(
         started = time.perf_counter()
         fused = fuse_candidates(candidates, limit=fusion_limit)
         _record_stage(stage_ms, "fuse_candidates", started)
+
+        # Cycle 1 fix (2026-05-06) — source_priority post-fusion weight.
+        # RRF aggregates only retriever rank position; the v3 contract's
+        # source_priority gradient (primer 90 / chooser 88 / bridge 85
+        # / deep_dive 80 / playbook 78 / mission_bridge 78) is not
+        # reflected in the fused score. cohort_eval cycle 1 showed
+        # fleet-new chooser/bridge docs outranking baseline canonical
+        # primers because the chooser matched 3-4 channels (BM25 alias
+        # + dense contextual_chunk_prefix + catalog mission_ids/symptoms)
+        # while the primer matched 1-2 — RRF added that lift directly
+        # to the chooser, putting it ahead of the canonical answer.
+        # Multiplying the fused score by ``source_priority / 100``
+        # restores the contract's authority gradient as a small but
+        # decisive tie-breaker on borderline rankings.
+        if path_to_priority := load_path_to_source_priority(catalog_dir):
+            started = time.perf_counter()
+            fused = apply_source_priority_weighting(
+                fused, path_to_priority=path_to_priority,
+            )
+            _record_stage(stage_ms, "source_priority_weight", started)
 
         # Phase 9.2 — personalization-aware ranking. Default off until
         # Phase 8 corpus migration brings v3 concept_id coverage above
