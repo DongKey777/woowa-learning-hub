@@ -698,6 +698,68 @@ def check_corpus_v3_pilot_frontmatter(
                 "candidates (per contract §3.2 chooser)",
             ))
 
+    # 13b. forbidden_neighbors discipline for chooser/bridge/symptom_router
+    #
+    # Cycle 1 cohort_eval (2026-05-06) showed that fleet workers were
+    # populating forbidden_neighbors with the canonical primer of the
+    # same area, treating "competing/learning-path neighbour" the same
+    # as "wrong-bucket noise". The post-rerank forbidden_filter then
+    # demoted the primer out of top-k whenever the chooser became top-1,
+    # regressing confusable_pairs by -7.5pp.
+    #
+    # Wave 2 warning, not a hard error: legacy docs predate this rule
+    # and the lint shouldn't block the migration. New writes that cite
+    # a primer they themselves point at as canonical surface this issue.
+    if doc_role in ("chooser", "bridge", "symptom_router"):
+        forbidden = frontmatter.get("forbidden_neighbors")
+        confusable = frontmatter.get("confusable_with")
+        if isinstance(forbidden, list) and isinstance(confusable, list):
+            # Same path appearing in both fields is the strongest signal
+            # that the worker collapsed the two dimensions. confusable
+            # entries are concept_ids; forbidden entries are paths. Match
+            # the slug fragment so we catch the chooser→primer collision
+            # without needing a full catalog lookup at lint time.
+            # confusable_with entries are concept_ids
+            # (`category/slug`). forbidden_neighbors entries are paths
+            # (`contents/category/filename.md`). The filename slug is
+            # often a longer form than the concept_id slug — e.g.
+            # concept_id `spring/bean-di-basics` corresponds to path
+            # `contents/spring/spring-bean-di-basics.md` (filename
+            # carries a category prefix for in-directory uniqueness).
+            # Substring containment is the cheap robust proxy that
+            # catches both directions.
+            confusable_slugs = {
+                str(c).split("/")[-1].lower()
+                for c in confusable
+                if isinstance(c, str)
+            }
+            for fpath in forbidden:
+                if not isinstance(fpath, str):
+                    continue
+                fslug = fpath.split("/")[-1].removesuffix(".md").lower()
+                # Match if any confusable concept's slug appears as a
+                # substring of the forbidden path's filename slug, or
+                # vice versa. The strict form (cross-checking
+                # canonical=true via catalog) needs whole-corpus access;
+                # this lint runs per-file, so the substring signal is
+                # the cheap proxy.
+                hit = next(
+                    (cs for cs in confusable_slugs if cs and (
+                        cs in fslug or fslug.endswith(cs)
+                    )),
+                    None,
+                )
+                if hit is not None:
+                    out.append(_wave2_violation(
+                        f"doc_role={doc_role}: forbidden_neighbors entry "
+                        f"{fpath!r} matches confusable_with slug {hit!r} — "
+                        "these are different dimensions (forbidden=wrong-"
+                        "bucket, confusable=learning-path neighbour). See "
+                        "cycle 1 regression analysis 2026-05-06 — collapsing "
+                        "the two demotes legitimate primary docs out of "
+                        "top-k.",
+                    ))
+
     # 14. source_priority range (when present)
     # parse_frontmatter is a minimal YAML parser — numeric scalars come back
     # as strings. Accept str digits and int alike.
