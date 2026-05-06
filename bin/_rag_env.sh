@@ -13,11 +13,17 @@ export WOOWA_RAG_R3_RERANK_POLICY="${WOOWA_RAG_R3_RERANK_POLICY:-always}"
 export WOOWA_RAG_R3_FORBIDDEN_FILTER="${WOOWA_RAG_R3_FORBIDDEN_FILTER:-1}"
 export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-1}"
 
-# Phase 9.3 — refusal sentinel threshold. Calibrated 2026-05-05 against
-# 200q × 6 cohort (paraphrase_human positives, corpus_gap_probe
-# negatives) using BAAI/bge-reranker-v2-m3. F1-optimal at 0.1001,
-# rounded down to 0.10 for safety margin (F1=0.974 at this point —
-# 19/20 corpus_gap queries route to tier_downgrade, 1 silent_failure).
+# Phase 9.3 — refusal sentinel threshold. The 2026-05-05 recalibration
+# now treats learner safety as the shipping gate: only a 0.05-grid
+# threshold that preserves every paraphrase_human positive and still
+# catches at least half of corpus_gap_probe negatives can become the
+# runtime default. The latest scored report did not meet that bar, so
+# the wrapper stays on the production-safe disabled default.
+# The calibration artifact still records the raw F1-optimal boundary,
+# the zero-spurious numeric candidate, cross-encoder coverage, and this
+# wrapper's parsed default so future reruns can re-enable the sentinel
+# without manual shell inspection drift. Threshold semantics remain
+# strict (`score < threshold`) when operators override this locally.
 # See reports/rag_eval/refusal_threshold_calibration.json.
-# Override: WOOWA_RAG_REFUSAL_THRESHOLD=off to disable, or any float.
-export WOOWA_RAG_REFUSAL_THRESHOLD="${WOOWA_RAG_REFUSAL_THRESHOLD:-0.10}"
+# Override: WOOWA_RAG_REFUSAL_THRESHOLD=<float> to opt in, or `off`.
+export WOOWA_RAG_REFUSAL_THRESHOLD="${WOOWA_RAG_REFUSAL_THRESHOLD:-off}"

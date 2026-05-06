@@ -32,7 +32,7 @@
       "pass_count": 19,
       "pass_rate": 0.95,
       "recall_at_5": 0.0,
-      "refusal_clean": 0,
+      "refusal_clean": 19,
       "total": 20
     },
     "forbidden_neighbor": {
@@ -985,7 +985,7 @@
         "contents/database/deadlock-case-study.md"
       ],
       "primary_rank": 1,
-      "query_id": "symptom_to_cause:deadlock_after_index_change:001"
+      "query_id": "symptom_to_cause:deadlock_after_index_change_mixed:001"
     },
     {
       "acceptable_paths": [

@@ -14,19 +14,69 @@ across two cohorts and reports the threshold that best separates them:
 Output (JSON, written to ``--out``):
 
   {
-    "schema_version": 1,
+    "schema_version": 4,
     "computed_at": "<isoformat utc>",
     "qrel_path": "<input>",
     "top_k": 5,
+    "use_reformulated_query": true,
     "negative_cohort": "corpus_gap_probe",
     "positive_cohort": "paraphrase_human",
+    "negative_query_count": 20,
+    "positive_query_count": 50,
+    "negative_score_count": 20,
+    "positive_score_count": 50,
+    "negative_score_coverage_rate": 1.0,
+    "positive_score_coverage_rate": 1.0,
     "negative_scores": [..., ...],          # top-1 ce_score per query
     "positive_scores": [..., ...],
     "negative_summary": {"n", "min", "p50", "p90", "p95", "max"},
     "positive_summary": {"n", "min", "p5", "p10", "p50", "max"},
+    "refusal_rule": "top1_cross_encoder_score < threshold",
+    "threshold_semantics": "strict_less_than_preserves_equal_scores",
+    "score_source": "top hit cross_encoder_score (sentinel fallback uses rejected_score)",
+    "coverage_requirement": "full_reranked_scores_per_cohort",
+    "recommended_rounding_policy": "floor_to_nearest_0.05",
+    "separation_diagnostics": {
+      "strict_gap_exists": true,
+      "max_negative_score": <float>,
+      "min_positive_score": <float>,
+      "strict_gap_width": <float>,
+      "negative_overlap_count_at_or_above_min_positive": <int>,
+      "positive_overlap_count_at_or_below_max_negative": <int>,
+      "zero_spurious_margin_below_min_positive": <float>,
+      "zero_spurious_coverage_over_max_negative": <float>,
+      "f1_optimal_margin_below_min_positive": <float>,
+      "f1_optimal_coverage_over_max_negative": <float>
+    },
+    "boundary_diagnostics": {
+      "zero_spurious_negative_equal_count": <int>,
+      "zero_spurious_positive_equal_count": <int>,
+      "f1_optimal_negative_equal_count": <int>,
+      "f1_optimal_positive_equal_count": <int>
+    },
+    "calibration_env_defaults": {...},
+    "calibration_env_applied": {..., "WOOWA_RAG_REFUSAL_THRESHOLD": "off"},
     "f1_optimal_threshold": <float>,         # max-F1 separator
-    "recommended_threshold": <float>,        # f1_optimal rounded down to nice boundary
-    "report": "Set WOOWA_RAG_REFUSAL_THRESHOLD=<recommended>"
+    "f1_optimal_outcomes": {...},            # refusal tradeoff counts at raw optimum
+    "recommendation_policy": "prefer_zero_spurious_floor_0.05_else_off",
+    "recommendation_mode": "zero_spurious_numeric" | "disabled_overlap",
+    "numeric_recommendation_min_negative_recall": 0.50,
+    "zero_spurious_numeric_candidate_threshold": <float>,
+    "zero_spurious_numeric_candidate_env_value": "0.10",
+    "zero_spurious_numeric_candidate_outcomes": {...},
+    "recommended_threshold": <float> | null,
+    "recommended_env_value": "0.10" | "off",
+    "runtime_default_env_file": "bin/_rag_env.sh",
+    "runtime_default_env_value": "0.10",     # parsed from wrapper default
+    "runtime_default_parse_status": "ok",
+    "runtime_default_parse_contract": "accepts export_or_assignment plus literal_or_${...} values, with quoted_or_unquoted fallbacks and inner-quoted defaults",
+    "runtime_default_matches_recommendation": true,
+    "runtime_default_numeric_delta_from_recommendation": 0.0,
+    "runtime_default_drift_severity": "aligned",
+    "runtime_default_comparison_basis": "numeric_if_parseable_else_string",
+    "f1_at_recommended": <float> | null,
+    "recommended_outcomes": {...} | null,    # null when the safe recommendation is "off"
+    "report": "Keep WOOWA_RAG_REFUSAL_THRESHOLD=<recommended>"
   }
 
 The script does not write to ``R3Config`` or any env file — operators
@@ -46,7 +96,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Sequence
@@ -56,6 +108,37 @@ from scripts.learning.rag.r3.eval.cohort_qrels import load_cohort_qrels
 
 NEGATIVE_COHORT = "corpus_gap_probe"
 POSITIVE_COHORT = "paraphrase_human"
+CALIBRATION_ENV_DEFAULTS = {
+    "WOOWA_RAG_R3_ENABLED": "1",
+    "WOOWA_RAG_R3_RERANK_POLICY": "always",
+    "WOOWA_RAG_R3_FORBIDDEN_FILTER": "1",
+    "HF_HUB_OFFLINE": "1",
+}
+RECOMMENDATION_POLICY = "prefer_zero_spurious_floor_0.05_else_off"
+NUMERIC_RECOMMENDATION_MIN_NEGATIVE_RECALL = 0.50
+REPO_ROOT = Path(__file__).resolve().parents[5]
+RUNTIME_ENV_RELATIVE_PATH = Path("bin/_rag_env.sh")
+RUNTIME_ENV_FILE = REPO_ROOT / RUNTIME_ENV_RELATIVE_PATH
+RUNTIME_THRESHOLD_ASSIGNMENT_RE = re.compile(
+    r"^\s*(?:export\s+)?WOOWA_RAG_REFUSAL_THRESHOLD\s*=\s*(?P<rhs>.+?)\s*$"
+)
+RUNTIME_THRESHOLD_FALLBACK_RE = re.compile(
+    r"""^(?P<quote>["']?)\$\{WOOWA_RAG_REFUSAL_THRESHOLD:-(?P<value>[^}]*)\}(?P=quote)$"""
+)
+RUNTIME_THRESHOLD_LITERAL_RE = re.compile(
+    r"""^(?P<quote>["']?)(?P<value>[^"']+?)(?P=quote)$"""
+)
+RUNTIME_DEFAULT_PARSE_CONTRACT = (
+    "accepts export_or_assignment plus literal_or_${...} values, with quoted_or_unquoted "
+    "fallbacks and inner-quoted defaults"
+)
+
+
+def _strip_matching_quotes(value: str) -> str:
+    text = value.strip()
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in {"'", '"'}:
+        return text[1:-1]
+    return text
 
 
 def _percentile(values: Sequence[float], pct: float) -> float:
@@ -107,6 +190,55 @@ def _f1_at_threshold(
     return 2 * precision * recall / (precision + recall)
 
 
+def _threshold_outcomes(
+    *,
+    threshold: float,
+    negatives: Sequence[float],
+    positives: Sequence[float],
+) -> dict[str, Any]:
+    """Summarize refusal-vs-answer outcomes at one threshold.
+
+    The negative class (`corpus_gap_probe`) is the refusal target.
+    Counts are reported explicitly so operators can see the tradeoff:
+    how many corpus-gap queries still slip through as silent failures,
+    and how many paraphrase queries would be spuriously refused.
+    """
+    correct_refusals = sum(1 for s in negatives if s < threshold)
+    silent_failures = sum(1 for s in negatives if s >= threshold)
+    spurious_refusals = sum(1 for s in positives if s < threshold)
+    preserved_answers = sum(1 for s in positives if s >= threshold)
+    precision = (
+        correct_refusals / (correct_refusals + spurious_refusals)
+        if (correct_refusals + spurious_refusals) > 0 else 0.0
+    )
+    recall = (
+        correct_refusals / (correct_refusals + silent_failures)
+        if (correct_refusals + silent_failures) > 0 else 0.0
+    )
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if (precision + recall) > 0 else 0.0
+    )
+    negative_total = len(negatives)
+    positive_total = len(positives)
+    return {
+        "threshold": float(threshold),
+        "correct_refusals": correct_refusals,
+        "silent_failures": silent_failures,
+        "spurious_refusals": spurious_refusals,
+        "preserved_answers": preserved_answers,
+        "negative_recall": recall,
+        "positive_preservation_rate": (
+            preserved_answers / positive_total if positive_total > 0 else 0.0
+        ),
+        "negative_silent_failure_rate": (
+            silent_failures / negative_total if negative_total > 0 else 0.0
+        ),
+        "precision": precision,
+        "f1": f1,
+    }
+
+
 def _f1_optimal_threshold(
     *,
     negatives: Sequence[float],
@@ -116,15 +248,29 @@ def _f1_optimal_threshold(
     return the one with the highest F1.
 
     Tie-break: prefer the *lower* threshold (more conservative refusal
-    — fewer spurious refusals on positives)."""
+    — fewer spurious refusals on positives).
+
+    The candidate sweep also includes one open interval just above the
+    maximum observed score so a max-score negative can still become a
+    correct refusal during calibration."""
     candidates = sorted(set(list(negatives) + list(positives)))
     if not candidates:
         return 0.0
+    # The refusal rule is strict (`score < threshold`), so the
+    # candidate sweep must include one value *above* the max observed
+    # score. Otherwise a max-score negative can never be classified as
+    # refused during calibration even though any threshold just above
+    # it would do so in production.
+    upper_open_candidate = math.nextafter(candidates[-1], math.inf)
+    if upper_open_candidate > candidates[-1]:
+        candidates.append(upper_open_candidate)
     best_threshold = candidates[0]
     best_f1 = -1.0
     for boundary in candidates:
         score = _f1_at_threshold(threshold=boundary, negatives=negatives, positives=positives)
-        if score > best_f1:
+        if score > best_f1 or (
+            score == best_f1 and boundary < best_threshold
+        ):
             best_f1 = score
             best_threshold = boundary
     return float(best_threshold)
@@ -138,7 +284,132 @@ def _round_recommendation(threshold: float) -> float:
     cost of letting a few negatives slip through (preferable for the
     learner UX — silent_failure is recoverable via Phase 8 corpus
     growth, but an unwarranted refusal feels broken to the learner)."""
-    return float(int(threshold * 20) / 20.0)
+    return float(math.floor(threshold * 20) / 20.0)
+
+
+def _format_threshold(threshold: float) -> str:
+    """Render a threshold the same way operators paste it into env files."""
+    return f"{threshold:.2f}"
+
+
+def _zero_spurious_numeric_candidate(
+    *,
+    positives: Sequence[float],
+) -> float:
+    """Return the highest 0.05-grid threshold that preserves all positives."""
+    if not positives:
+        return 0.0
+    return _round_recommendation(float(min(positives)))
+
+
+def _recommend_threshold(
+    *,
+    negatives: Sequence[float],
+    positives: Sequence[float],
+) -> tuple[float | None, str, str, dict[str, Any]]:
+    """Choose a learner-safe default from the observed score overlap.
+
+    Phase 9.3 defaults should not ship a numeric threshold unless the
+    rounded 0.05-grid candidate preserves every positive query while
+    still catching a meaningful share of corpus-gap negatives. When
+    the cohorts overlap too heavily, recommend ``off`` and surface the
+    zero-spurious numeric candidate only as a diagnostic.
+    """
+    candidate_threshold = _zero_spurious_numeric_candidate(positives=positives)
+    candidate_outcomes = _threshold_outcomes(
+        threshold=candidate_threshold,
+        negatives=negatives,
+        positives=positives,
+    )
+    if (
+        candidate_threshold > 0.0
+        and candidate_outcomes["spurious_refusals"] == 0
+        and candidate_outcomes["negative_recall"] >= NUMERIC_RECOMMENDATION_MIN_NEGATIVE_RECALL
+    ):
+        return (
+            candidate_threshold,
+            _format_threshold(candidate_threshold),
+            "zero_spurious_numeric",
+            candidate_outcomes,
+        )
+    return (
+        None,
+        "off",
+        "disabled_overlap",
+        candidate_outcomes,
+    )
+
+
+def _separation_diagnostics(
+    *,
+    negatives: Sequence[float],
+    positives: Sequence[float],
+    recommended_threshold: float,
+    f1_optimal_threshold: float,
+) -> dict[str, Any]:
+    if not negatives or not positives:
+        return {
+            "strict_gap_exists": False,
+            "max_negative_score": None,
+            "min_positive_score": None,
+            "strict_gap_width": None,
+            "negative_overlap_count_at_or_above_min_positive": None,
+            "positive_overlap_count_at_or_below_max_negative": None,
+            "zero_spurious_margin_below_min_positive": None,
+            "zero_spurious_coverage_over_max_negative": None,
+            "f1_optimal_margin_below_min_positive": None,
+            "f1_optimal_coverage_over_max_negative": None,
+        }
+
+    max_negative = float(max(negatives))
+    min_positive = float(min(positives))
+    return {
+        "strict_gap_exists": max_negative < min_positive,
+        "max_negative_score": max_negative,
+        "min_positive_score": min_positive,
+        "strict_gap_width": float(min_positive - max_negative),
+        "negative_overlap_count_at_or_above_min_positive": sum(
+            1 for score in negatives if score >= min_positive
+        ),
+        "positive_overlap_count_at_or_below_max_negative": sum(
+            1 for score in positives if score <= max_negative
+        ),
+        "zero_spurious_margin_below_min_positive": float(
+            min_positive - recommended_threshold
+        ),
+        "zero_spurious_coverage_over_max_negative": float(
+            recommended_threshold - max_negative
+        ),
+        "f1_optimal_margin_below_min_positive": float(
+            min_positive - f1_optimal_threshold
+        ),
+        "f1_optimal_coverage_over_max_negative": float(
+            f1_optimal_threshold - max_negative
+        ),
+    }
+
+
+def _boundary_diagnostics(
+    *,
+    negatives: Sequence[float],
+    positives: Sequence[float],
+    recommended_threshold: float,
+    f1_optimal_threshold: float,
+) -> dict[str, int]:
+    return {
+        "zero_spurious_negative_equal_count": sum(
+            1 for score in negatives if score == recommended_threshold
+        ),
+        "zero_spurious_positive_equal_count": sum(
+            1 for score in positives if score == recommended_threshold
+        ),
+        "f1_optimal_negative_equal_count": sum(
+            1 for score in negatives if score == f1_optimal_threshold
+        ),
+        "f1_optimal_positive_equal_count": sum(
+            1 for score in positives if score == f1_optimal_threshold
+        ),
+    }
 
 
 def _collect_top1_scores(
@@ -184,6 +455,115 @@ def _collect_top1_scores(
     return out
 
 
+def _require_full_score_coverage(
+    *,
+    queries: Sequence[Any],
+    scores: Sequence[float],
+    cohort_name: str,
+) -> None:
+    if len(scores) != len(queries):
+        raise RuntimeError(
+            f"calibration collected {len(scores)}/{len(queries)} reranked scores for "
+            f"{cohort_name!r}. Calibration requires full cohort coverage so the "
+            "recommended threshold is not biased by skipped queries. Ensure the "
+            "R3 reranker weights/index are available and that sidecar-only gating "
+            "did not bypass cross-encoder scoring."
+        )
+
+
+def _env_snapshot(keys: Sequence[str]) -> dict[str, str | None]:
+    return {key: os.environ.get(key) for key in keys}
+
+
+def _restore_env(snapshot: dict[str, str | None]) -> None:
+    for key, value in snapshot.items():
+        if value is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = value
+
+
+def _read_runtime_default_threshold(
+    env_file: Path = RUNTIME_ENV_FILE,
+) -> tuple[str | None, str]:
+    try:
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            if "WOOWA_RAG_REFUSAL_THRESHOLD" not in stripped:
+                continue
+            if "#" in stripped:
+                stripped = stripped.split("#", 1)[0].rstrip()
+            match = RUNTIME_THRESHOLD_ASSIGNMENT_RE.match(stripped)
+            if match is None:
+                return None, "unparseable"
+            rhs = match.group("rhs").strip()
+            fallback_match = RUNTIME_THRESHOLD_FALLBACK_RE.match(rhs)
+            if fallback_match is not None:
+                return _strip_matching_quotes(fallback_match.group("value")), "ok"
+            literal_match = RUNTIME_THRESHOLD_LITERAL_RE.match(rhs)
+            if literal_match is not None:
+                return _strip_matching_quotes(literal_match.group("value")), "ok"
+            return None, "unparseable"
+    except FileNotFoundError:
+        return None, "missing"
+    return None, "not_found"
+
+
+def _parse_threshold_value(raw: str | None) -> float | None:
+    if raw is None:
+        return None
+    text = raw.strip()
+    if not text or text.lower() == "off":
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def _runtime_default_matches_recommendation(
+    runtime_default_raw: str | None,
+    recommended_raw: str,
+) -> bool:
+    runtime_numeric = _parse_threshold_value(runtime_default_raw)
+    recommended_numeric = _parse_threshold_value(recommended_raw)
+    if runtime_numeric is not None and recommended_numeric is not None:
+        return math.isclose(runtime_numeric, recommended_numeric, rel_tol=0.0, abs_tol=1e-12)
+    return runtime_default_raw == recommended_raw
+
+
+def _runtime_default_delta_from_recommendation(
+    runtime_default_raw: str | None,
+    recommended_raw: str,
+) -> float | None:
+    runtime_numeric = _parse_threshold_value(runtime_default_raw)
+    recommended_numeric = _parse_threshold_value(recommended_raw)
+    if runtime_numeric is None or recommended_numeric is None:
+        return None
+    return float(runtime_numeric - recommended_numeric)
+
+
+def _runtime_default_drift_severity(
+    *,
+    runtime_default_raw: str | None,
+    recommended_raw: str,
+    parse_status: str,
+    matches_recommendation: bool,
+) -> str:
+    if parse_status != "ok":
+        return "parse_error"
+    if matches_recommendation:
+        return "aligned"
+    if (
+        _parse_threshold_value(runtime_default_raw) is not None
+        and _parse_threshold_value(recommended_raw) is not None
+    ):
+        return "numeric_drift"
+    return "string_mismatch"
+
+
 def calibrate(
     *,
     qrels_path: Path,
@@ -208,7 +588,9 @@ def calibrate(
     # Force the threshold OFF for the calibration run so R3 returns
     # real top-1 reranks (not sentinels) on negative queries — we
     # need the raw distribution to set the threshold.
-    saved = os.environ.get("WOOWA_RAG_REFUSAL_THRESHOLD")
+    env_keys = tuple(CALIBRATION_ENV_DEFAULTS) + ("WOOWA_RAG_REFUSAL_THRESHOLD",)
+    saved = _env_snapshot(env_keys)
+    os.environ.update(CALIBRATION_ENV_DEFAULTS)
     os.environ["WOOWA_RAG_REFUSAL_THRESHOLD"] = "off"
     try:
         negatives = _collect_top1_scores(
@@ -220,35 +602,175 @@ def calibrate(
             use_reformulated_query=use_reformulated_query,
         )
     finally:
-        if saved is None:
-            os.environ.pop("WOOWA_RAG_REFUSAL_THRESHOLD", None)
-        else:
-            os.environ["WOOWA_RAG_REFUSAL_THRESHOLD"] = saved
+        _restore_env(saved)
+
+    _require_full_score_coverage(
+        queries=negatives_q,
+        scores=negatives,
+        cohort_name=NEGATIVE_COHORT,
+    )
+    _require_full_score_coverage(
+        queries=positives_q,
+        scores=positives,
+        cohort_name=POSITIVE_COHORT,
+    )
 
     f1_optimal = _f1_optimal_threshold(negatives=negatives, positives=positives)
-    recommended = _round_recommendation(f1_optimal)
+    recommended, recommended_env_value, recommendation_mode, zero_spurious_candidate_outcomes = (
+        _recommend_threshold(
+            negatives=negatives,
+            positives=positives,
+        )
+    )
+    recommended_threshold_for_diagnostics = (
+        recommended if recommended is not None else 0.0
+    )
+    runtime_default_env_value, runtime_default_parse_status = _read_runtime_default_threshold()
+    runtime_default_matches_recommendation = _runtime_default_matches_recommendation(
+        runtime_default_env_value,
+        recommended_env_value,
+    )
+    runtime_default_delta = _runtime_default_delta_from_recommendation(
+        runtime_default_env_value,
+        recommended_env_value,
+    )
+    runtime_default_drift_severity = _runtime_default_drift_severity(
+        runtime_default_raw=runtime_default_env_value,
+        recommended_raw=recommended_env_value,
+        parse_status=runtime_default_parse_status,
+        matches_recommendation=runtime_default_matches_recommendation,
+    )
+    f1_optimal_outcomes = _threshold_outcomes(
+        threshold=f1_optimal, negatives=negatives, positives=positives,
+    )
+    recommended_outcomes = (
+        _threshold_outcomes(threshold=recommended, negatives=negatives, positives=positives)
+        if recommended is not None else None
+    )
+    separation_diagnostics = _separation_diagnostics(
+        negatives=negatives,
+        positives=positives,
+        recommended_threshold=recommended_threshold_for_diagnostics,
+        f1_optimal_threshold=f1_optimal,
+    )
+    boundary_diagnostics = _boundary_diagnostics(
+        negatives=negatives,
+        positives=positives,
+        recommended_threshold=recommended_threshold_for_diagnostics,
+        f1_optimal_threshold=f1_optimal,
+    )
 
     return {
-        "schema_version": 1,
+        "schema_version": 4,
         "computed_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "qrel_path": str(qrels_path),
         "top_k": top_k,
         "use_reformulated_query": use_reformulated_query,
+        "calibration_env_defaults": dict(CALIBRATION_ENV_DEFAULTS),
+        "calibration_env_applied": {
+            **CALIBRATION_ENV_DEFAULTS,
+            "WOOWA_RAG_REFUSAL_THRESHOLD": "off",
+        },
         "negative_cohort": NEGATIVE_COHORT,
         "positive_cohort": POSITIVE_COHORT,
+        "negative_query_count": len(negatives_q),
+        "positive_query_count": len(positives_q),
+        "negative_score_count": len(negatives),
+        "positive_score_count": len(positives),
+        "negative_score_coverage_rate": (
+            len(negatives) / len(negatives_q) if negatives_q else 0.0
+        ),
+        "positive_score_coverage_rate": (
+            len(positives) / len(positives_q) if positives_q else 0.0
+        ),
         "negative_scores": negatives,
         "positive_scores": positives,
         "negative_summary": _summary(negatives),
         "positive_summary": _summary(positives),
-        "f1_optimal_threshold": float(f1_optimal),
-        "f1_at_optimal": _f1_at_threshold(
-            threshold=f1_optimal, negatives=negatives, positives=positives,
+        "refusal_rule": "top1_cross_encoder_score < threshold",
+        "threshold_semantics": "strict_less_than_preserves_equal_scores",
+        "score_source": (
+            "top hit cross_encoder_score "
+            "(sentinel fallback uses rejected_score)"
         ),
+        "coverage_requirement": "full_reranked_scores_per_cohort",
+        "recommended_rounding_policy": "floor_to_nearest_0.05",
+        "separation_diagnostics": separation_diagnostics,
+        "boundary_diagnostics": boundary_diagnostics,
+        "f1_optimal_threshold": float(f1_optimal),
+        "f1_at_optimal": f1_optimal_outcomes["f1"],
+        "f1_optimal_outcomes": f1_optimal_outcomes,
+        "recommendation_policy": RECOMMENDATION_POLICY,
+        "recommendation_mode": recommendation_mode,
+        "numeric_recommendation_min_negative_recall": (
+            NUMERIC_RECOMMENDATION_MIN_NEGATIVE_RECALL
+        ),
+        "zero_spurious_numeric_candidate_threshold": (
+            zero_spurious_candidate_outcomes["threshold"]
+        ),
+        "zero_spurious_numeric_candidate_env_value": _format_threshold(
+            zero_spurious_candidate_outcomes["threshold"]
+        ),
+        "zero_spurious_numeric_candidate_outcomes": zero_spurious_candidate_outcomes,
         "recommended_threshold": recommended,
+        "recommended_env_value": recommended_env_value,
+        "runtime_default_env_file": str(RUNTIME_ENV_RELATIVE_PATH),
+        "runtime_default_env_value": runtime_default_env_value,
+        "runtime_default_parse_status": runtime_default_parse_status,
+        "runtime_default_parse_contract": (
+            RUNTIME_DEFAULT_PARSE_CONTRACT
+        ),
+        "runtime_default_matches_recommendation": runtime_default_matches_recommendation,
+        "runtime_default_numeric_delta_from_recommendation": runtime_default_delta,
+        "runtime_default_drift_severity": runtime_default_drift_severity,
+        "runtime_default_comparison_basis": "numeric_if_parseable_else_string",
+        "f1_at_recommended": (
+            recommended_outcomes["f1"] if recommended_outcomes is not None else None
+        ),
+        "recommended_outcomes": recommended_outcomes,
         "report": (
-            f"Set WOOWA_RAG_REFUSAL_THRESHOLD={recommended} to enable Phase 9.3 "
-            f"refusal sentinel. F1-optimal raw value was {f1_optimal:.4f}; "
-            f"recommendation rounds down to nearest 0.05 for safety margin."
+            f"{'Set' if recommended_outcomes is not None else 'Keep'} "
+            f"WOOWA_RAG_REFUSAL_THRESHOLD={recommended_env_value} "
+            f"{'to enable Phase 9.3 refusal sentinel' if recommended_outcomes is not None else 'until Phase 9.3 overlap improves enough for a learner-safe numeric sentinel'}" 
+            f". F1-optimal raw value was {f1_optimal:.4f}; "
+            f"recommendation policy is {RECOMMENDATION_POLICY}. "
+            f"Wrapper default in {RUNTIME_ENV_RELATIVE_PATH} is "
+            f"{runtime_default_env_value or 'unavailable'} "
+            f"({'aligned' if runtime_default_matches_recommendation else 'drifted'}, "
+            f"parse_status={runtime_default_parse_status}, "
+            f"drift_severity={runtime_default_drift_severity}, "
+            f"numeric_delta={runtime_default_delta if runtime_default_delta is not None else 'n/a'}). "
+            f"Negative/positive top-1 scores "
+            f"{'do not overlap' if separation_diagnostics['strict_gap_exists'] else 'overlap'} "
+            f"({separation_diagnostics['negative_overlap_count_at_or_above_min_positive']} "
+            f"negatives at/above the weakest positive, "
+            f"{separation_diagnostics['positive_overlap_count_at_or_below_max_negative']} "
+            f"positives at/below the strongest negative). "
+            f"Zero-spurious numeric candidate leaves a "
+            f"{separation_diagnostics['zero_spurious_margin_below_min_positive']:.4f} "
+            f"margin below the weakest positive and has a "
+            f"{separation_diagnostics['zero_spurious_coverage_over_max_negative']:.4f} "
+            f"delta versus the strongest negative. "
+            f"Exact-boundary scores remain answerable because runtime uses "
+            f"`score < threshold`: "
+            f"{boundary_diagnostics['zero_spurious_positive_equal_count']} positives/"
+            f"{boundary_diagnostics['zero_spurious_negative_equal_count']} negatives sit exactly "
+            f"on the shipped threshold, and "
+            f"{boundary_diagnostics['f1_optimal_positive_equal_count']} positives/"
+            f"{boundary_diagnostics['f1_optimal_negative_equal_count']} negatives sit exactly "
+            f"on the raw F1-optimal threshold. "
+            f"Zero-spurious numeric candidate = "
+            f"{zero_spurious_candidate_outcomes['threshold']:.4f}: "
+            f"{zero_spurious_candidate_outcomes['correct_refusals']}/{len(negatives)} "
+            f"corpus-gap queries downgrade cleanly, "
+            f"{zero_spurious_candidate_outcomes['silent_failures']}/{len(negatives)} "
+            f"still slip through as silent failures, "
+            f"{zero_spurious_candidate_outcomes['spurious_refusals']}/{len(positives)} "
+            f"paraphrase queries are spuriously refused. "
+            f"{'Recommendation stays numeric.' if recommended_outcomes is not None else 'Observed overlap is too high for a learner-safe numeric default, so the shipped recommendation stays off.'} "
+            f"Cross-encoder coverage during calibration was "
+            f"{len(negatives)}/{len(negatives_q)} negatives and "
+            f"{len(positives)}/{len(positives_q)} positives."
         ),
     }
 
