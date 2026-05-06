@@ -1,10 +1,14 @@
 # R3 Pilot 50 Docs Selection (Phase 4 input, 2026-05-02)
 
+> **Status note (2026-05-05)**: this file is the historical Phase 4 selection memo, not the live lock source. The enforceable Pilot lock list now lives in `config/migration_v3/locked_pilot_paths.json` and currently freezes 69 paths. Migration workers should treat the JSON manifest as canonical when deciding whether a path is writable.
+
 > **Purpose**: enumerate the 50 docs that get migrated to v3 frontmatter contract first (Phase 4), serving as the test bed for the Real qrel suite (Phase 3) measurement in Phase 6 Pilot baseline.
 >
 > **Selection rationale**: cover (a) the 10 Korean hard-regression failure cohort, (b) confusable concept pairs the failure cohort + qrel suite stresses, (c) high-frequency primer docs the learner population queries most, (d) symptom_router + chooser + mission_bridge docs that need *creation* (Wave C overlap with Pilot to seed the new doc roles).
 >
 > **Methodology**: every selected doc has a corresponding query in `tests/fixtures/r3_qrels_real_v0_seed.json` or is a known canonical primer for an under-covered concept. Path verification confirmed all "exists today" docs exist in `knowledge/cs/contents/`.
+
+> **Guardrail note**: because the lock manifest evolved after this memo was written, the "Selected 50 docs" list below should be read as baseline planning context only. For QA, migration, and lane-worker scope checks, use the JSON manifest rather than this memo's deduplicated list.
 
 ---
 
@@ -18,6 +22,16 @@
 | Symptom router docs | 8 | mix of exists + NEW |
 | Beginner primer reinforcement | 6 | exists today |
 | **Total** | **50** | |
+
+## Lock Drift Snapshot (2026-05-05)
+
+- Current Pilot lock enforcement comes from `config/migration_v3/locked_pilot_paths.json`, which freezes **69** corpus paths.
+- This memo currently references **56 unique** `knowledge/cs/contents/**` paths across bucket tables, examples, and the final checklist.
+- Of those 56 memo-referenced paths, **32** are also in the live lock manifest.
+- The remaining memo-only references are planning artifacts, not writable authority. Representative examples: `knowledge/cs/contents/database/ghost-reads-mixed-routing-write-fence-tokens.md`, `knowledge/cs/contents/database/compare-and-swap-vs-pessimistic-locks.md`, `knowledge/cs/contents/design-pattern/injected-registry-vs-service-locator-checklist.md`.
+- The live manifest also freezes newer baseline-critical docs that are not enumerated in this historical memo. Representative examples: `knowledge/cs/contents/database/read-your-writes-session-pinning.md`, `knowledge/cs/contents/database/transaction-basics.md`, `knowledge/cs/contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md`.
+
+Worker implication: lane workers should use this memo for Phase 4 selection context only, then consult the JSON manifest for every write/no-write decision so Pilot baseline guards stay deterministic.
 
 ---
 
