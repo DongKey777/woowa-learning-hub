@@ -30,6 +30,7 @@ Production LanceDB v3 backend:
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import sys
 import time
@@ -313,6 +314,70 @@ def _seed_lance_fingerprints(index_root: str, corpus_root: str, model_version: s
     )
 
 
+def _verify_release_corpus_hash(
+    out_dir: Path,
+    repo_root: Path,
+    *,
+    strict: bool,
+) -> str:
+    """Cross-check downloaded manifest's corpus_hash against config lock.
+
+    cycle 2 baseline incident (2026-05-06): bin/cs-index-build silently
+    fetched a stale 2026-05-04 release whose corpus_hash 34b9577…
+    (27,238 docs) did not match the working tree's then-current build
+    d5d8991… (28,108 docs). The fleet measured a baseline against an
+    obsolete corpus and stopped.
+
+    Outcome strings (also returned for tests):
+      ``ok``                — hashes match, or one side missing data
+      ``mismatch_warned``   — hashes differ, warning printed
+      ``mismatch_strict``   — hashes differ, strict mode (caller exits)
+    """
+    manifest_path = out_dir / "manifest.json"
+    config_path = repo_root / "config" / "rag_models.json"
+
+    if not manifest_path.exists() or not config_path.exists():
+        return "ok"
+
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "ok"
+
+    downloaded = manifest.get("corpus_hash")
+    expected = (config.get("index") or {}).get("corpus_hash")
+
+    if not downloaded or not expected or downloaded == expected:
+        return "ok"
+
+    head_msg = (
+        f"[cs-index] release corpus_hash {downloaded[:8]}… "
+        f"!= config expected {expected[:8]}… — "
+        f"this worktree's lock declares unpublished corpus changes."
+    )
+    if strict:
+        print(
+            f"{head_msg}\n"
+            "  Aborting because --strict-release-fetch was set. "
+            "Use --no-release-fetch to fresh-build, "
+            "or rsync state/cs_rag from a worktree with the expected build.",
+            file=sys.stderr,
+            flush=True,
+        )
+        return "mismatch_strict"
+
+    print(
+        f"{head_msg}\n"
+        "  Continuing with the downloaded release index. "
+        "Pass --strict-release-fetch to fail instead, "
+        "or re-publish the release so the lock matches the working tree.",
+        file=sys.stderr,
+        flush=True,
+    )
+    return "mismatch_warned"
+
+
 def main(
     argv: list[str] | None = None,
     *,
@@ -469,6 +534,16 @@ def main(
             "this flag is for CI and integrity audits, not learner sessions."
         ),
     )
+    parser.add_argument(
+        "--strict-release-fetch",
+        action="store_true",
+        help=(
+            "Exit 1 when a fetched release's corpus_hash does not match "
+            "config/rag_models.json's expected lock. Default is to warn "
+            "and continue so learner onboarding still succeeds when a "
+            "lock re-publish is delayed (cycle 2 baseline incident)."
+        ),
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -489,6 +564,13 @@ def main(
                 log=lambda stage, info: _progress(stage, info),
             )
             if outcome in ("fetched", "already_current"):
+                verify_outcome = _verify_release_corpus_hash(
+                    Path(args.out),
+                    repo_root,
+                    strict=args.strict_release_fetch,
+                )
+                if verify_outcome == "mismatch_strict":
+                    return 1
                 print(
                     f"[cs-index] release_fetch={outcome} — skipping local build",
                     flush=True,
