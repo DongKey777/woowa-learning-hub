@@ -337,6 +337,114 @@ def resolve_cross_refs(catalog: ConceptCatalogV3) -> UnresolvedRefs:
 
 
 # ---------------------------------------------------------------------------
+# Bidirectional forbidden_neighbors inference (Phase 8 cycle 1 regression fix)
+# ---------------------------------------------------------------------------
+
+def augment_forbidden_via_confusable_with(catalog: ConceptCatalogV3) -> int:
+    """[DEPRECATED 2026-05-06] do not call from build pipeline.
+
+    Tried-and-failed approach. Rolled back after cohort_eval showed
+    -5pp on confusable_pairs (post: 82.5% → +L2: 77.5%) and net -1
+    query overall (1 gain on symptom_to_cause vs 2 regressions on
+    confusable_pairs). Root cause:
+
+      confusable_with means "competing/learning-path neighbour"
+        (chooser↔primer, primer↔primer can both be valid answers).
+      forbidden_neighbors means "wrong-bucket noise"
+        (must never appear in top-k when primary is top-1).
+
+      Auto-converting confusable → forbidden treats competing-but-
+      valid docs as wrong-bucket. Specifically:
+        * cookie_blocked_vs_scope:001 → primary
+          `cookie-failure-three-way-splitter` got demoted because
+          chooser top-1 `cookie-scope-mismatch-guide` had named it
+          as confusable_with.
+        * deadlock_vs_lock_timeout:001 → two acceptable docs
+          (lock-wait-timeout-symptom-router,
+          lock-wait-deadlock-latch-triage-playbook) got demoted by
+          the same mechanism.
+
+    Replacement plan: rely on fleet-prompt-level forbidden_neighbors
+    discipline (workers explicitly populate forbidden_neighbors with
+    *wrong-bucket* siblings, never with primer they themselves point
+    to as primary), enforced by corpus_lint --strict-v3.
+
+    Function body retained as a regression-prevention reference and
+    so the existing unit tests still document the *shape* of the
+    inference. The build pipeline must NOT call this.
+
+    Rationale (cycle 1 regression analysis 2026-05-06):
+      cohort_eval revealed -7.5pp on confusable_pairs and -6pp on
+      paraphrase_human after fleet output. Root cause traced to
+      fleet's new chooser/bridge docs entering top-k for queries
+      that should resolve to a baseline canonical primer. The
+      retrieval system DOES have a forbidden_filter
+      (``r3.search._apply_forbidden_filter``) that demotes neighbors
+      named in ``forbidden_neighbors``, but that field on most
+      existing primers was authored *before* the fleet wrote the
+      new docs, so primer P does not name the fleet-new chooser C
+      as forbidden, and the filter is a no-op.
+
+    Fleet workers cannot fix this with prompt-only edits because
+    they would need to edit unrelated files (the existing primer)
+    every time they ship a new chooser — fragile, and races against
+    other workers writing the same primer.
+
+    Catalog-level inference fixes this without touching any source
+    file: when chooser C declares ``confusable_with: [P_concept]``,
+    we add C's doc_path to P's forbidden_neighbors at catalog build
+    time. The R3 retriever reads the catalog, so the augmentation
+    propagates to runtime without re-reading frontmatter.
+
+    Symmetry: we do *not* automatically add P's path to C's
+    forbidden_neighbors. The asymmetry is intentional — chooser C
+    competes with primer P on the *same* query intent (a "what is X
+    vs Y" question), and the canonical primer P is the source of
+    truth, so retrieval should bias toward P, not C. The reverse
+    direction would block P from ever being suggested when C is
+    top-1, which is the wrong demotion direction.
+
+    Returns: number of (concept_id, new_path) additions applied.
+    """
+    concepts = catalog.concepts
+    additions: dict[str, set[str]] = {}
+
+    for src_cid, src_entry in concepts.items():
+        if not src_entry.has_frontmatter:
+            continue
+        if not src_entry.doc_path:
+            continue
+        src_full_path = src_entry.doc_path
+        if not src_full_path.startswith("contents/"):
+            src_full_path = f"contents/{src_full_path}"
+        for cw_target_cid in src_entry.confusable_with:
+            target = concepts.get(cw_target_cid)
+            if target is None or not target.has_frontmatter:
+                continue
+            additions.setdefault(cw_target_cid, set()).add(src_full_path)
+
+    if not additions:
+        return 0
+
+    # Apply: replace each affected entry with an augmented copy.
+    import dataclasses
+    n_added = 0
+    for target_cid, new_paths in additions.items():
+        target = concepts[target_cid]
+        existing_set = set(target.forbidden_neighbors)
+        merged = existing_set | new_paths
+        delta = merged - existing_set
+        if not delta:
+            continue
+        n_added += len(delta)
+        concepts[target_cid] = dataclasses.replace(
+            target,
+            forbidden_neighbors=tuple(sorted(merged)),
+        )
+    return n_added
+
+
+# ---------------------------------------------------------------------------
 # Output
 # ---------------------------------------------------------------------------
 
@@ -417,6 +525,16 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     catalog = build_concept_catalog_v3(args.corpus_root)
+    # NOTE: augment_forbidden_via_confusable_with was wired here on
+    # commit (TBD-rollback) and rolled back after the 2026-05-06 cycle 1
+    # measurement showed it caused -5pp on confusable_pairs:
+    # confusable_with and forbidden_neighbors are *different dimensions*
+    # (one is "competing/learning-path neighbour", the other is "wrong-
+    # bucket noise"). Auto-converting one to the other turned acceptable
+    # docs and even primary docs into forbidden, demoting them out of
+    # top-k. The function stays in the module as documentation of the
+    # tried-and-failed approach; do not call it.
+    forbidden_added = 0
     reverse = None if args.no_reverse else build_reverse_indexes(catalog)
     unresolved = None if args.no_resolve else resolve_cross_refs(catalog)
     written = write_concept_catalog_v3(
@@ -428,6 +546,11 @@ def main(argv: list[str] | None = None) -> int:
         f"[concept-catalog-v3] {catalog.concept_count} v3 concepts, "
         f"{catalog.stub_count} pre-v2 stubs"
     )
+    if forbidden_added:
+        print(
+            f"  bidirectional forbidden_neighbors inferred: "
+            f"+{forbidden_added} (confusable_with → forbidden)"
+        )
     if reverse is not None:
         print(
             f"  reverse indexes: "
