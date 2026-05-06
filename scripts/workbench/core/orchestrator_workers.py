@@ -1564,6 +1564,7 @@ def _run_completion_gates(
                 python, "-m", "scripts.learning.rag.corpus_lint",
                 "--strict", "--strict-v3",
                 "--corpus", "knowledge/cs/contents",
+                "--changed-files", *changed_files,
             ])
     else:
         lint_targets = _authoring_lint_targets(changed_files)

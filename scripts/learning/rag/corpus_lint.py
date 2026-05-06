@@ -824,6 +824,7 @@ def lint_corpus(
     repo_root: Path | None = None,
     dedupe_candidates_fn=None,  # optional callable -> list[LintViolation]
     strict_v3: bool = False,
+    strict_v3_paths: set[Path] | None = None,
 ) -> LintReport:
     """Run all checks over ``corpus_root``. ``dedupe_candidates_fn``,
     when provided, is called with the list of (path, text) tuples and
@@ -839,20 +840,30 @@ def lint_corpus(
     ``strict_v3`` toggles the v3 lint mode (default lenient — Wave 2
     role-conditional requirements emit ``corpus_v3_frontmatter_wave2``
     warnings; strict mode promotes them to ``corpus_v3_frontmatter``
-    blockers).
+    blockers). ``strict_v3_paths`` narrows that promotion to specific
+    changed files while keeping legacy files in lenient mode.
     """
     report = LintReport()
     files_with_text: list[tuple[Path, str]] = []
+    resolved_strict_v3_paths = (
+        {path.resolve() for path in strict_v3_paths}
+        if strict_v3_paths is not None
+        else None
+    )
     for path in find_markdown_files(corpus_root):
         text = path.read_text(encoding="utf-8")
         files_with_text.append((path, text))
         report.files_scanned += 1
+        path_strict_v3 = strict_v3 and (
+            resolved_strict_v3_paths is None
+            or path.resolve() in resolved_strict_v3_paths
+        )
         report.violations.extend(check_link_integrity(
             file_path=path, text=text, corpus_root=corpus_root,
             repo_root=repo_root,
         ))
         report.violations.extend(check_frontmatter_schema(
-            file_path=path, text=text, strict_v3=strict_v3,
+            file_path=path, text=text, strict_v3=path_strict_v3,
         ))
     report.violations.extend(check_concept_id_uniqueness(files_with_text))
 
@@ -925,12 +936,34 @@ def main(argv: list[str] | None = None) -> int:
             "for content authoring. Flip on for CI / pre-cutover gating."
         ),
     )
+    parser.add_argument(
+        "--changed-files",
+        nargs="*",
+        default=None,
+        help=(
+            "Restrict strict-v3 promotion to these files only. Other "
+            "legacy files are still linted, but Wave 2 warnings remain "
+            "non-blocking. Passing the flag with no files promotes no "
+            "files and is useful for worker no-op completions."
+        ),
+    )
     args = parser.parse_args(argv)
 
     corpus_root = Path(args.corpus)
     if not corpus_root.exists():
         print(f"[corpus-lint] corpus not found: {corpus_root}", file=sys.stderr)
         return 2
+    changed_files: set[Path] | None = None
+    if args.changed_files is not None:
+        changed_files = set()
+        for raw_path in args.changed_files:
+            changed_path = Path(raw_path)
+            if not changed_path.is_absolute():
+                changed_path = repo_root / changed_path
+            if not changed_path.exists():
+                print(f"[corpus-lint] changed file not found: {raw_path}", file=sys.stderr)
+                return 2
+            changed_files.add(changed_path.resolve())
 
     dedupe_fn = None
     if args.with_dedupe:
@@ -948,6 +981,7 @@ def main(argv: list[str] | None = None) -> int:
         repo_root=repo_root,
         dedupe_candidates_fn=dedupe_fn,
         strict_v3=args.strict_v3,
+        strict_v3_paths=changed_files,
     )
     print(f"[corpus-lint] scanned {report.files_scanned} files")
     by_check = report.by_check()
