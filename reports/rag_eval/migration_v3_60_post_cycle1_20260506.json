@@ -14,7 +14,7 @@
     "query_count": 200,
     "schema_version": 1
   },
-  "overall_pass_rate": 0.83,
+  "overall_pass_rate": 0.915,
   "per_cohort": {
     "confusable_pairs": {
       "cohort_tag": "confusable_pairs",
@@ -30,10 +30,10 @@
       "cohort_tag": "corpus_gap_probe",
       "forbidden_hit_rate_at_5": 0.0,
       "mrr": 0.0,
-      "pass_count": 0,
-      "pass_rate": 0.0,
+      "pass_count": 18,
+      "pass_rate": 0.9,
       "recall_at_5": 0.0,
-      "refusal_clean": 0,
+      "refusal_clean": 18,
       "total": 20
     },
     "forbidden_neighbor": {
@@ -49,10 +49,10 @@
     "mission_bridge": {
       "cohort_tag": "mission_bridge",
       "forbidden_hit_rate_at_5": 0.0,
-      "mrr": 0.8806,
-      "pass_count": 29,
-      "pass_rate": 0.9667,
-      "recall_at_5": 0.9667,
+      "mrr": 0.8472,
+      "pass_count": 28,
+      "pass_rate": 0.9333,
+      "recall_at_5": 0.9333,
       "refusal_clean": 0,
       "total": 30
     },
@@ -101,7 +101,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 61703.365,
+      "duration_ms": 30361.298,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -148,7 +148,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3303.522,
+      "duration_ms": 3517.221,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -192,7 +192,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 2872.126,
+      "duration_ms": 3055.408,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -238,7 +238,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 2860.44,
+      "duration_ms": 3670.46,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -282,7 +282,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3617.088,
+      "duration_ms": 3823.16,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -326,7 +326,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3416.088,
+      "duration_ms": 4300.811,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -372,7 +372,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3753.813,
+      "duration_ms": 4319.155,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -416,7 +416,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3556.992,
+      "duration_ms": 3704.222,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -463,7 +463,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3344.457,
+      "duration_ms": 3329.087,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "qrel_incomplete",
       "failure_focus": [
@@ -510,7 +510,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3348.636,
+      "duration_ms": 3690.219,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -558,7 +558,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4419.413,
+      "duration_ms": 3199.437,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -607,7 +607,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3600.316,
+      "duration_ms": 2979.956,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "forbidden_polluted",
       "failure_focus": [
@@ -655,7 +655,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3346.697,
+      "duration_ms": 3040.364,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -704,7 +704,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3416.03,
+      "duration_ms": 3037.543,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "forbidden_polluted",
       "failure_focus": [
@@ -752,7 +752,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 2862.261,
+      "duration_ms": 2853.243,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -800,7 +800,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3356.541,
+      "duration_ms": 3522.302,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -848,7 +848,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3929.046,
+      "duration_ms": 2784.94,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -897,7 +897,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3323.274,
+      "duration_ms": 2834.728,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -945,7 +945,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3193.822,
+      "duration_ms": 3215.788,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "forbidden_polluted",
       "failure_focus": [
@@ -994,7 +994,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4353.255,
+      "duration_ms": 2947.35,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1042,7 +1042,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3099.73,
+      "duration_ms": 2405.139,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1091,7 +1091,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3118.535,
+      "duration_ms": 3082.223,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1140,7 +1140,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3693.013,
+      "duration_ms": 3038.974,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1188,7 +1188,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3527.701,
+      "duration_ms": 3194.402,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1235,7 +1235,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3325.741,
+      "duration_ms": 2928.463,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1282,7 +1282,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3592.344,
+      "duration_ms": 2752.162,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1332,7 +1332,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3257.345,
+      "duration_ms": 3055.5,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -1360,41 +1360,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md",
-          "contents/language/java/vector-api-performance-caveats.md",
-          "contents/data-structure/bloom-filter-vs-cuckoo-filter.md",
-          "contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md",
-          "contents/design-pattern/observer-vs-command-beginner-bridge.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4090.38,
+      "duration_ms": 2988.778,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "out_of_corpus_probe"
       ],
       "final_paths": [
-        "contents/data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md",
-        "contents/language/java/vector-api-performance-caveats.md",
-        "contents/data-structure/bloom-filter-vs-cuckoo-filter.md",
-        "contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md",
-        "contents/design-pattern/observer-vs-command-beginner-bridge.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:obscure_topic:001"
@@ -1402,41 +1392,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/security/brute-force-protection-basics.md",
-          "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-          "contents/data-structure/calendar-queue.md",
-          "contents/data-structure/ring-buffer.md",
-          "contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3951.938,
+      "duration_ms": 2823.025,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "out_of_corpus_probe"
       ],
       "final_paths": [
-        "contents/security/brute-force-protection-basics.md",
-        "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-        "contents/data-structure/calendar-queue.md",
-        "contents/data-structure/ring-buffer.md",
-        "contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:lattice_attack_crypto:001"
@@ -1444,41 +1424,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/language/java/default-method-contract-evolution-vs-conflict-mini-drill.md",
-          "contents/design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide.md",
-          "contents/database/xa-two-phase-commit-pitfalls.md",
-          "contents/database/adaptive-hash-index-tradeoffs.md",
-          "contents/data-structure/ring-buffer.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 2721.378,
+      "duration_ms": 2904.04,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "frontend_out_of_corpus"
       ],
       "final_paths": [
-        "contents/language/java/default-method-contract-evolution-vs-conflict-mini-drill.md",
-        "contents/design-pattern/chain-of-responsibility-vs-middleware-vs-pipeline-decision-guide.md",
-        "contents/database/xa-two-phase-commit-pitfalls.md",
-        "contents/database/adaptive-hash-index-tradeoffs.md",
-        "contents/data-structure/ring-buffer.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:react_concurrent_mode:001"
@@ -1486,41 +1456,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/language/java/vector-api-performance-caveats.md",
-          "contents/language/java/vector-api-basics.md",
-          "contents/language/java/reflection-generics-annotations.md",
-          "contents/operating-system/epoll-kqueue-io-uring.md",
-          "contents/operating-system/posix-fadvise-madvise-page-cache-hints.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3323.267,
+      "duration_ms": 2930.783,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "frontier_topic"
       ],
       "final_paths": [
-        "contents/language/java/vector-api-performance-caveats.md",
-        "contents/language/java/vector-api-basics.md",
-        "contents/language/java/reflection-generics-annotations.md",
-        "contents/operating-system/epoll-kqueue-io-uring.md",
-        "contents/operating-system/posix-fadvise-madvise-page-cache-hints.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:wasm_simd:001"
@@ -1528,41 +1488,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/database/adaptive-hash-index-tradeoffs.md",
-          "contents/data-structure/ring-buffer.md",
-          "contents/language/java-memory-model-happens-before-volatile-final.md",
-          "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-          "contents/database/xa-two-phase-commit-pitfalls.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3918.356,
+      "duration_ms": 2850.745,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "ml_infrastructure_out_of_corpus"
       ],
       "final_paths": [
-        "contents/database/adaptive-hash-index-tradeoffs.md",
-        "contents/data-structure/ring-buffer.md",
-        "contents/language/java-memory-model-happens-before-volatile-final.md",
-        "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-        "contents/database/xa-two-phase-commit-pitfalls.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:gpu_kernel_fusion:001"
@@ -1588,7 +1538,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3362.702,
+      "duration_ms": 3245.005,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1637,7 +1587,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4110.894,
+      "duration_ms": 3202.368,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1684,7 +1634,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4414.587,
+      "duration_ms": 2901.104,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1734,7 +1684,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3767.296,
+      "duration_ms": 3676.973,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1783,7 +1733,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4213.962,
+      "duration_ms": 3245.736,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1832,7 +1782,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5092.099,
+      "duration_ms": 3047.814,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1879,7 +1829,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3856.568,
+      "duration_ms": 3526.079,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1925,7 +1875,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3372.79,
+      "duration_ms": 3100.049,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -1974,7 +1924,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4465.033,
+      "duration_ms": 3144.134,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "forbidden_polluted",
       "failure_focus": [
@@ -2021,7 +1971,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4139.78,
+      "duration_ms": 3118.684,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2065,7 +2015,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3911.529,
+      "duration_ms": 2760.699,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2109,7 +2059,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4447.817,
+      "duration_ms": 2777.05,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2158,7 +2108,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4895.649,
+      "duration_ms": 3108.023,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2204,7 +2154,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 6689.746,
+      "duration_ms": 3334.002,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2248,7 +2198,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4876.959,
+      "duration_ms": 3086.462,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2292,7 +2242,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4632.98,
+      "duration_ms": 3550.162,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2336,7 +2286,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5693.972,
+      "duration_ms": 3506.438,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2380,7 +2330,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5696.036,
+      "duration_ms": 3134.008,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2424,7 +2374,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5448.898,
+      "duration_ms": 3770.031,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2470,7 +2420,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5620.777,
+      "duration_ms": 3321.114,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2514,7 +2464,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5462.623,
+      "duration_ms": 3478.741,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2558,7 +2508,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5556.602,
+      "duration_ms": 4002.144,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2602,7 +2552,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5124.663,
+      "duration_ms": 3306.514,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2637,16 +2587,10 @@
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/database/transaction-isolation-locking.md",
-          "contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md",
-          "contents/database/application-level-fencing-token-propagation.md",
-          "contents/language/java/optional-stream-immutable-collections-memory-leak-patterns.md",
-          "contents/software-engineering/architectural-fitness-functions.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5077.451,
+      "duration_ms": 3247.61,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "query_understood_badly",
       "failure_focus": [
@@ -2654,11 +2598,7 @@
         "service_layer_purpose"
       ],
       "final_paths": [
-        "contents/database/transaction-isolation-locking.md",
-        "contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md",
-        "contents/database/application-level-fencing-token-propagation.md",
-        "contents/language/java/optional-stream-immutable-collections-memory-leak-patterns.md",
-        "contents/software-engineering/architectural-fitness-functions.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
@@ -2690,7 +2630,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4045.509,
+      "duration_ms": 3179.835,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2734,7 +2674,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4209.748,
+      "duration_ms": 3199.477,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2778,7 +2718,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4496.799,
+      "duration_ms": 3466.324,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2822,7 +2762,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 6175.925,
+      "duration_ms": 2683.811,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2866,7 +2806,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 6825.794,
+      "duration_ms": 3807.059,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2910,7 +2850,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5442.495,
+      "duration_ms": 3228.078,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2954,7 +2894,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4917.052,
+      "duration_ms": 3444.08,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -2998,7 +2938,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4705.613,
+      "duration_ms": 3398.045,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3042,7 +2982,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4290.963,
+      "duration_ms": 3315.181,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3086,7 +3026,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4815.866,
+      "duration_ms": 3735.235,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3133,7 +3073,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4568.291,
+      "duration_ms": 3725.892,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3177,7 +3117,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4062.972,
+      "duration_ms": 3712.172,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3223,7 +3163,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5760.075,
+      "duration_ms": 4505.248,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3267,7 +3207,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4840.686,
+      "duration_ms": 5351.531,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3311,7 +3251,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5506.678,
+      "duration_ms": 6909.421,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3355,7 +3295,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4744.04,
+      "duration_ms": 5089.604,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3399,7 +3339,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5270.024,
+      "duration_ms": 4692.092,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3445,7 +3385,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5577.437,
+      "duration_ms": 5144.612,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3489,7 +3429,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5184.235,
+      "duration_ms": 4396.199,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3536,7 +3476,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4595.063,
+      "duration_ms": 3906.008,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3580,7 +3520,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3694.044,
+      "duration_ms": 3363.646,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3630,7 +3570,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3706.066,
+      "duration_ms": 3395.068,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "forbidden_polluted",
       "failure_focus": [
@@ -3678,7 +3618,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3775.451,
+      "duration_ms": 3392.889,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3722,7 +3662,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4548.143,
+      "duration_ms": 3500.927,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3766,7 +3706,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4162.195,
+      "duration_ms": 3326.96,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3813,7 +3753,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4532.679,
+      "duration_ms": 3866.777,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3859,7 +3799,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5892.233,
+      "duration_ms": 4241.46,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3903,7 +3843,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5044.065,
+      "duration_ms": 4063.194,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -3947,7 +3887,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4823.21,
+      "duration_ms": 3651.467,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "candidate_absent",
       "failure_focus": [
@@ -3991,7 +3931,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 7648.279,
+      "duration_ms": 3996.491,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4037,7 +3977,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 7459.909,
+      "duration_ms": 3994.774,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4081,7 +4021,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5418.386,
+      "duration_ms": 3814.59,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4127,7 +4067,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 6719.281,
+      "duration_ms": 3878.344,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4171,7 +4111,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5170.36,
+      "duration_ms": 3789.222,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4215,7 +4155,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4828.907,
+      "duration_ms": 3329.513,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4259,7 +4199,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4977.494,
+      "duration_ms": 3719.668,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4305,7 +4245,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4744.193,
+      "duration_ms": 3246.31,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4351,7 +4291,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4498.763,
+      "duration_ms": 3257.231,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4395,7 +4335,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5399.232,
+      "duration_ms": 3435.128,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4441,7 +4381,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 6236.654,
+      "duration_ms": 3556.784,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4485,7 +4425,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5063.737,
+      "duration_ms": 3654.878,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4529,7 +4469,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5192.412,
+      "duration_ms": 3961.013,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4575,7 +4515,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3510.863,
+      "duration_ms": 3251.325,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4622,7 +4562,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4442.713,
+      "duration_ms": 3715.722,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4668,7 +4608,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4088.179,
+      "duration_ms": 4133.837,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4714,7 +4654,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3737.509,
+      "duration_ms": 3410.524,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4760,7 +4700,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4053.785,
+      "duration_ms": 3269.811,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4804,7 +4744,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4277.874,
+      "duration_ms": 3720.33,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4848,7 +4788,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4212.164,
+      "duration_ms": 3815.602,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4894,7 +4834,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4454.391,
+      "duration_ms": 3887.882,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -4940,7 +4880,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5447.302,
+      "duration_ms": 4802.793,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "qrel_incomplete",
       "failure_focus": [
@@ -4986,7 +4926,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4769.469,
+      "duration_ms": 3812.331,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "qrel_incomplete",
       "failure_focus": [
@@ -5032,7 +4972,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4132.715,
+      "duration_ms": 3765.285,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "qrel_incomplete",
       "failure_focus": [
@@ -5078,7 +5018,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4821.937,
+      "duration_ms": 9320.415,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5124,7 +5064,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4411.991,
+      "duration_ms": 3179.047,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5168,7 +5108,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3951.67,
+      "duration_ms": 3440.221,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5214,7 +5154,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5525.901,
+      "duration_ms": 3618.894,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5260,7 +5200,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5266.016,
+      "duration_ms": 3531.657,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5306,7 +5246,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4600.107,
+      "duration_ms": 3682.129,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5350,7 +5290,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4945.252,
+      "duration_ms": 3702.624,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5394,7 +5334,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4453.927,
+      "duration_ms": 4215.132,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5438,7 +5378,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3985.224,
+      "duration_ms": 4239.594,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5484,7 +5424,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3993.044,
+      "duration_ms": 4009.63,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5528,7 +5468,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4098.469,
+      "duration_ms": 4013.384,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5574,7 +5514,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4153.71,
+      "duration_ms": 4018.737,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5618,7 +5558,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3516.782,
+      "duration_ms": 4128.27,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5662,7 +5602,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3577.867,
+      "duration_ms": 5254.35,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5706,7 +5646,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3648.604,
+      "duration_ms": 5630.645,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5750,7 +5690,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3732.524,
+      "duration_ms": 3759.521,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5794,7 +5734,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3475.099,
+      "duration_ms": 3386.299,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5838,7 +5778,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4266.335,
+      "duration_ms": 5574.931,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5882,7 +5822,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4245.414,
+      "duration_ms": 6170.133,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -5926,7 +5866,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4605.849,
+      "duration_ms": 4320.491,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "candidate_absent",
       "failure_focus": [
@@ -5970,7 +5910,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5384.039,
+      "duration_ms": 3842.845,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6014,7 +5954,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5486.637,
+      "duration_ms": 3710.967,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6058,7 +5998,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4402.511,
+      "duration_ms": 4171.572,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6102,7 +6042,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5048.334,
+      "duration_ms": 7581.276,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6146,7 +6086,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4267.805,
+      "duration_ms": 4946.007,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "candidate_absent",
       "failure_focus": [
@@ -6192,7 +6132,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3969.048,
+      "duration_ms": 3886.045,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6236,7 +6176,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4295.604,
+      "duration_ms": 4073.858,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6282,7 +6222,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4294.353,
+      "duration_ms": 6066.166,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6329,7 +6269,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 3959.762,
+      "duration_ms": 6505.977,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6375,7 +6315,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4754.767,
+      "duration_ms": 7453.512,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6419,7 +6359,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 6141.893,
+      "duration_ms": 6308.492,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6465,7 +6405,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4805.427,
+      "duration_ms": 5328.001,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6512,7 +6452,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5368.702,
+      "duration_ms": 10022.749,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6559,7 +6499,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4306.794,
+      "duration_ms": 5312.948,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6603,7 +6543,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4651.349,
+      "duration_ms": 4995.381,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6649,7 +6589,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 5056.041,
+      "duration_ms": 4744.514,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6693,7 +6633,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 4718.186,
+      "duration_ms": 4331.596,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6739,7 +6679,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 7019.763,
+      "duration_ms": 4291.028,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6783,7 +6723,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 7285.163,
+      "duration_ms": 4144.002,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6827,7 +6767,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 8555.21,
+      "duration_ms": 3999.941,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6871,7 +6811,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 7514.381,
+      "duration_ms": 4466.392,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6915,7 +6855,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 9851.961,
+      "duration_ms": 4707.758,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -6959,7 +6899,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11186.795,
+      "duration_ms": 4822.682,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7003,7 +6943,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 7604.526,
+      "duration_ms": 4597.773,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7049,7 +6989,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 12991.863,
+      "duration_ms": 4955.045,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7093,7 +7033,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 13777.006,
+      "duration_ms": 3731.572,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7137,7 +7077,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10144.923,
+      "duration_ms": 3759.81,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7181,7 +7121,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 12433.469,
+      "duration_ms": 4007.097,
       "expected_outcome": "primary_in_top_k",
       "failure_class": "candidate_absent",
       "failure_focus": [
@@ -7225,7 +7165,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 9268.683,
+      "duration_ms": 3691.278,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7269,7 +7209,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10460.562,
+      "duration_ms": 4427.367,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7313,7 +7253,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11791.722,
+      "duration_ms": 3986.874,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7362,7 +7302,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 8622.983,
+      "duration_ms": 4120.144,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7390,45 +7330,35 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "primary_hit",
+      "actual_outcome": "miss",
       "cohort_tag": "mission_bridge",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/software-engineering/lotto-domain-invariant-bridge.md",
-          "contents/software-engineering/lotto-winning-numbers-value-object-boundary-bridge.md",
-          "contents/language/java/java-types-class-object-oop-basics.md",
-          "contents/operating-system/open-file-description-dup-fork-shared-offsets.md",
-          "contents/software-engineering/lotto-purchase-amount-value-object-bridge.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10580.476,
+      "duration_ms": 4008.833,
       "expected_outcome": "primary_in_top_k",
-      "failure_class": null,
+      "failure_class": "candidate_absent",
       "failure_focus": [
         "mission_bridge_routing",
         "value_object_invariant"
       ],
       "final_paths": [
-        "contents/software-engineering/lotto-domain-invariant-bridge.md",
-        "contents/software-engineering/lotto-winning-numbers-value-object-boundary-bridge.md",
-        "contents/language/java/java-types-class-object-oop-basics.md",
-        "contents/operating-system/open-file-description-dup-fork-shared-offsets.md",
-        "contents/software-engineering/lotto-purchase-amount-value-object-bridge.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "ko",
       "level": "intermediate",
-      "pass_status": true,
+      "pass_status": false,
       "primary_paths": [
         "contents/software-engineering/lotto-domain-invariant-bridge.md"
       ],
-      "primary_rank": 1,
+      "primary_rank": null,
       "query_id": "mission_bridge:lotto_money_class:001"
     },
     {
@@ -7452,7 +7382,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 12141.622,
+      "duration_ms": 4118.223,
       "expected_outcome": "primary_in_top_k",
       "failure_class": null,
       "failure_focus": [
@@ -7480,41 +7410,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/network/dns-over-https-operational-tradeoffs.md",
-          "contents/software-engineering/ddd-bounded-context-failure-patterns.md",
-          "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
-          "contents/data-structure/ddsketch.md",
-          "contents/operating-system/context-switching-deadlock-lockfree.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11046.753,
+      "duration_ms": 4218.776,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "ml_internals"
       ],
       "final_paths": [
-        "contents/network/dns-over-https-operational-tradeoffs.md",
-        "contents/software-engineering/ddd-bounded-context-failure-patterns.md",
-        "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
-        "contents/data-structure/ddsketch.md",
-        "contents/operating-system/context-switching-deadlock-lockfree.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "ko",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:transformer_attention:001"
@@ -7522,41 +7442,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-          "contents/database/undo-tablespace-truncation-purge-debt.md",
-          "contents/database/xa-two-phase-commit-pitfalls.md",
-          "contents/security/authentication-vs-authorization.md",
-          "contents/data-structure/ring-buffer.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 9131.064,
+      "duration_ms": 3681.691,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "ml_training"
       ],
       "final_paths": [
-        "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-        "contents/database/undo-tablespace-truncation-purge-debt.md",
-        "contents/database/xa-two-phase-commit-pitfalls.md",
-        "contents/security/authentication-vs-authorization.md",
-        "contents/data-structure/ring-buffer.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:rlhf_ppo:001"
@@ -7564,41 +7474,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/system-design/session-store-claim-version-cutover-design.md",
-          "contents/design-pattern/decorator-proxy-basics.md",
-          "contents/operating-system/io-uring-recv-send-zerocopy-teardown-ordering.md",
-          "contents/algorithm/monotone-queue-dp.md",
-          "contents/data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10373.5,
+      "duration_ms": 3974.627,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "frontend_framework_internals"
       ],
       "final_paths": [
-        "contents/system-design/session-store-claim-version-cutover-design.md",
-        "contents/design-pattern/decorator-proxy-basics.md",
-        "contents/operating-system/io-uring-recv-send-zerocopy-teardown-ordering.md",
-        "contents/algorithm/monotone-queue-dp.md",
-        "contents/data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:react_use_effect_internals:001"
@@ -7606,41 +7506,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/software-engineering/README.md",
-          "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-          "contents/database/xa-two-phase-commit-pitfalls.md",
-          "contents/language/java-memory-model-happens-before-volatile-final.md",
-          "contents/database/undo-tablespace-truncation-purge-debt.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10730.557,
+      "duration_ms": 3093.897,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "devops_tooling"
       ],
       "final_paths": [
-        "contents/software-engineering/README.md",
-        "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-        "contents/database/xa-two-phase-commit-pitfalls.md",
-        "contents/language/java-memory-model-happens-before-volatile-final.md",
-        "contents/database/undo-tablespace-truncation-purge-debt.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "intermediate",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:k8s_helm_chart_template:001"
@@ -7648,41 +7538,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/design-pattern/semantic-lock-pending-state-pattern.md",
-          "contents/language/java/escape-analysis-scalar-replacement.md",
-          "contents/database/btree-latch-contention-hot-pages.md",
-          "contents/data-structure/ddsketch.md",
-          "contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 9273.482,
+      "duration_ms": 3258.969,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "iac_tooling"
       ],
       "final_paths": [
-        "contents/design-pattern/semantic-lock-pending-state-pattern.md",
-        "contents/language/java/escape-analysis-scalar-replacement.md",
-        "contents/database/btree-latch-contention-hot-pages.md",
-        "contents/data-structure/ddsketch.md",
-        "contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:terraform_state_lock:001"
@@ -7690,41 +7570,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/spring/spring-mvc-request-lifecycle-basics.md",
-          "contents/spring/spring-startup-runner-smartlifecycle-readiness-warmup.md",
-          "contents/operating-system/stdio-buffering-after-redirect.md",
-          "contents/language/java/pollfirst-polllast-view-semantics-primer.md",
-          "contents/software-engineering/command-dto-vs-query-view-naming-checklist.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 13512.697,
+      "duration_ms": 4582.227,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "mobile_platform"
       ],
       "final_paths": [
-        "contents/spring/spring-mvc-request-lifecycle-basics.md",
-        "contents/spring/spring-startup-runner-smartlifecycle-readiness-warmup.md",
-        "contents/operating-system/stdio-buffering-after-redirect.md",
-        "contents/language/java/pollfirst-polllast-view-semantics-primer.md",
-        "contents/software-engineering/command-dto-vs-query-view-naming-checklist.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "intermediate",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:ios_view_lifecycle:001"
@@ -7732,41 +7602,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/database/index-skip-scan-behavior.md",
-          "contents/design-pattern/projection-rebuild-poison-event-replay-failure-handling.md",
-          "contents/design-pattern/event-contract-drift-triage-rebuilds.md",
-          "contents/data-structure/finite-state-transducer.md",
-          "contents/database/query-tuning-checklist.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10875.393,
+      "duration_ms": 4029.939,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "android_platform"
       ],
       "final_paths": [
-        "contents/database/index-skip-scan-behavior.md",
-        "contents/design-pattern/projection-rebuild-poison-event-replay-failure-handling.md",
-        "contents/design-pattern/event-contract-drift-triage-rebuilds.md",
-        "contents/data-structure/finite-state-transducer.md",
-        "contents/database/query-tuning-checklist.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:android_compose_recomposition:001"
@@ -7774,41 +7634,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/data-structure/cache-aware-data-structure-layouts.md",
-          "contents/software-engineering/migration-funding-model.md",
-          "contents/data-structure/hashmap-internals.md",
-          "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-          "contents/data-structure/ddsketch.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 18959.646,
+      "duration_ms": 3753.352,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "compiler_internals"
       ],
       "final_paths": [
-        "contents/data-structure/cache-aware-data-structure-layouts.md",
-        "contents/software-engineering/migration-funding-model.md",
-        "contents/data-structure/hashmap-internals.md",
-        "contents/data-structure/fenwick-segment-tree-operations-playbook.md",
-        "contents/data-structure/ddsketch.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:llvm_ir_optimization:001"
@@ -7832,7 +7682,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 18667.066,
+      "duration_ms": 3478.633,
       "expected_outcome": "refusal_clean",
       "failure_class": "candidate_absent",
       "failure_focus": [
@@ -7874,7 +7724,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11873.244,
+      "duration_ms": 3171.957,
       "expected_outcome": "refusal_clean",
       "failure_class": "candidate_absent",
       "failure_focus": [
@@ -7900,41 +7750,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/security/oauth-par-jar-basics.md",
-          "contents/data-structure/reclamation-cost-tradeoffs.md",
-          "contents/security/open-redirect-hardening.md",
-          "contents/security/sql-injection-beyond-preparedstatement.md",
-          "contents/database/hot-update-secondary-index-churn.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 10398.377,
+      "duration_ms": 3153.362,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "vector_db_internals"
       ],
       "final_paths": [
-        "contents/security/oauth-par-jar-basics.md",
-        "contents/data-structure/reclamation-cost-tradeoffs.md",
-        "contents/security/open-redirect-hardening.md",
-        "contents/security/sql-injection-beyond-preparedstatement.md",
-        "contents/database/hot-update-secondary-index-churn.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:vector_db_hnsw_internals:001"
@@ -7942,41 +7782,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/database/slot-row-rounding-half-open-dst-junior-checklist.md",
-          "contents/security/identity-lifecycle-provisioning-primer.md",
-          "contents/security/role-vs-scope-vs-ownership-primer.md",
-          "contents/database/active-predicate-alignment-capacity-guards.md",
-          "contents/language/java/connection-budget-alignment-after-loom.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 22360.568,
+      "duration_ms": 3778.953,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "rust_specifics"
       ],
       "final_paths": [
-        "contents/database/slot-row-rounding-half-open-dst-junior-checklist.md",
-        "contents/security/identity-lifecycle-provisioning-primer.md",
-        "contents/security/role-vs-scope-vs-ownership-primer.md",
-        "contents/database/active-predicate-alignment-capacity-guards.md",
-        "contents/language/java/connection-budget-alignment-after-loom.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:rust_borrow_checker:001"
@@ -7984,41 +7814,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/database/n-plus-one-query-detection-solutions.md",
-          "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
-          "contents/language/java-memory-model-happens-before-volatile-final.md",
-          "contents/network/dns-ttl-cache-failure-patterns.md",
-          "contents/data-structure/cache-aware-data-structure-layouts.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 17265.013,
+      "duration_ms": 3507.961,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "graphql_specifics"
       ],
       "final_paths": [
-        "contents/database/n-plus-one-query-detection-solutions.md",
-        "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
-        "contents/language/java-memory-model-happens-before-volatile-final.md",
-        "contents/network/dns-ttl-cache-failure-patterns.md",
-        "contents/data-structure/cache-aware-data-structure-layouts.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:graphql_n_plus_one_dataloader:001"
@@ -8026,41 +7846,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/database/btree-latch-contention-hot-pages.md",
-          "contents/data-structure/ring-buffer.md",
-          "contents/database/undo-tablespace-truncation-purge-debt.md",
-          "contents/database/xa-two-phase-commit-pitfalls.md",
-          "contents/spring/spring-conditionalonsinglecandidate-vs-primary-primer.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 16650.706,
+      "duration_ms": 3208.957,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "realtime_protocol"
       ],
       "final_paths": [
-        "contents/database/btree-latch-contention-hot-pages.md",
-        "contents/data-structure/ring-buffer.md",
-        "contents/database/undo-tablespace-truncation-purge-debt.md",
-        "contents/database/xa-two-phase-commit-pitfalls.md",
-        "contents/spring/spring-conditionalonsinglecandidate-vs-primary-primer.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:webrtc_ice_negotiation:001"
@@ -8068,41 +7878,31 @@
     {
       "acceptable_paths": [],
       "acceptable_rank": null,
-      "actual_outcome": "silent_failure",
+      "actual_outcome": "tier_downgraded",
       "cohort_tag": "corpus_gap_probe",
       "debug": {
         "catalog_channels_used": [
           "mission_bridge",
           "symptom_router"
         ],
-        "fused_paths": [
-          "contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md",
-          "contents/system-design/shard-rebalancing-partition-relocation-design.md",
-          "contents/software-engineering/migration-stop-loss-scope-reduction-governance.md",
-          "contents/system-design/event-bus-control-plane-design.md",
-          "contents/software-engineering/trunk-based-development-vs-feature-branch-tradeoffs.md"
-        ],
+        "fused_paths": [],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 16136.853,
+      "duration_ms": 3463.558,
       "expected_outcome": "refusal_clean",
-      "failure_class": "candidate_absent",
+      "failure_class": null,
       "failure_focus": [
         "honest_gap",
         "messaging_system"
       ],
       "final_paths": [
-        "contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md",
-        "contents/system-design/shard-rebalancing-partition-relocation-design.md",
-        "contents/software-engineering/migration-stop-loss-scope-reduction-governance.md",
-        "contents/system-design/event-bus-control-plane-design.md",
-        "contents/software-engineering/trunk-based-development-vs-feature-branch-tradeoffs.md"
+        "<sentinel:no_confident_match>"
       ],
       "forbidden_hit_rank": null,
       "forbidden_paths": [],
       "language": "mixed",
       "level": "advanced",
-      "pass_status": false,
+      "pass_status": true,
       "primary_paths": [],
       "primary_rank": null,
       "query_id": "corpus_gap_probe:kafka_consumer_rebalance:001"
@@ -8126,7 +7926,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 16047.446,
+      "duration_ms": 3924.472,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8173,7 +7973,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11179.104,
+      "duration_ms": 4114.91,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8219,7 +8019,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 13405.565,
+      "duration_ms": 5408.553,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8265,7 +8065,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 9900.781,
+      "duration_ms": 4710.338,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8311,7 +8111,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11703.769,
+      "duration_ms": 4112.351,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8357,7 +8157,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 12586.169,
+      "duration_ms": 7608.516,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8403,7 +8203,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 17995.408,
+      "duration_ms": 6354.915,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8450,7 +8250,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 14631.446,
+      "duration_ms": 5113.333,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8496,7 +8296,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 17334.286,
+      "duration_ms": 6089.117,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8542,7 +8342,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 9625.621,
+      "duration_ms": 3268.702,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8588,7 +8388,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11316.279,
+      "duration_ms": 3430.621,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8634,7 +8434,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 13872.02,
+      "duration_ms": 7457.365,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8680,7 +8480,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 16363.132,
+      "duration_ms": 4470.737,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8726,7 +8526,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11503.215,
+      "duration_ms": 3987.299,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8772,7 +8572,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 12929.908,
+      "duration_ms": 5583.873,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8818,7 +8618,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11086.391,
+      "duration_ms": 3862.129,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8864,7 +8664,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11866.905,
+      "duration_ms": 3186.886,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8910,7 +8710,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 14671.406,
+      "duration_ms": 3406.605,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -8956,7 +8756,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11184.648,
+      "duration_ms": 4015.201,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -9002,7 +8802,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 8297.902,
+      "duration_ms": 3300.453,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -9048,7 +8848,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 11580.315,
+      "duration_ms": 4381.232,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
@@ -9095,7 +8895,7 @@
         ],
         "reranker_model": "BAAI/bge-reranker-v2-m3"
       },
-      "duration_ms": 8952.237,
+      "duration_ms": 5881.617,
       "expected_outcome": "forbidden_avoidance",
       "failure_class": null,
       "failure_focus": [
