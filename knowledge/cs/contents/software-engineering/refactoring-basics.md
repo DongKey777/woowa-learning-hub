@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 리팩토링 기초
+concept_id: software-engineering/refactoring-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- refactoring-behavior-preservation
+- refactor-vs-feature-vs-bugfix
+- test-safety-before-structure-change
+aliases:
+- refactoring basics
+- 리팩토링 기초
+- 코드 개선 입문
+- 메서드가 너무 길어요
+- 이름이 안 읽혀요
+- 기능은 그대로인데 구조만 정리
+- 외부 동작 유지
+- 리팩토링 vs 기능 추가
+- 리팩토링 vs 버그 수정
+- 테스트 없는 리팩토링 위험
+- 메서드 추출 입문
+- 리팩토링 커밋 분리
+symptoms:
+- 메서드 추출, 책임 이동, DTO 분리, 기능 변경을 모두 구조 정리라고 부르며 기대값 변경 여부를 확인하지 않아
+- 리팩토링 중에 할인율, 예외 규칙, 응답 필드까지 같이 바꿔 무엇이 동작을 바꿨는지 추적하기 어려워
+- 테스트 없이 구조를 크게 바꾸려 해서 외부 동작 보존 여부를 확인할 기준이 없어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/refactoring-feedback-phrase-router
+- software-engineering/refactoring-first-failing-test
+- software-engineering/refactor-commit-split
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+linked_paths:
+- contents/software-engineering/refactoring-feedback-phrase-router.md
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+- contents/software-engineering/refactor-commit-split-primer.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/solid-principles-basics.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/layered-architecture-basics
+- software-engineering/dto-vo-entity-basics
+- software-engineering/test-strategy-basics
+- software-engineering/refactor-commit-split
+forbidden_neighbors: []
+expected_queries:
+- 리팩토링은 외부 동작을 바꾸지 않고 내부 구조만 개선한다는 뜻을 설명해줘
+- 리팩토링과 기능 추가, 버그 수정을 테스트 기대값 변경 여부로 어떻게 구분해?
+- 메서드 추출, 이름 변경, 중복 제거를 beginner가 안전하게 시작하는 순서를 알려줘
+- Controller에서 Service로 책임을 옮기는 것은 레이어 책임 조정까지 같이 봐야 하는 이유가 뭐야?
+- 테스트 없는 리팩토링이 위험할 때 최소 안전망을 어떻게 잡아야 해?
+contextual_chunk_prefix: |
+  이 문서는 refactoring을 externally observable behavior를 유지한 채 internal structure를 개선하는 작업으로 정의하고, feature change, bug fix, layer move, DTO contract change와 구분하는 beginner primer다.
+  long method, extract method, rename variable, behavior preservation, first test before refactor, refactor commit split 같은 자연어 리뷰 질문이 본 문서에 매핑된다.
+---
 # 리팩토링 기초 (Refactoring Basics)
 
 > 한 줄 요약: 리팩토링은 외부 동작을 바꾸지 않고 코드 내부 구조를 개선하는 작업이며, 기능 추가나 버그 수정과 명확히 분리해야 안전하다.

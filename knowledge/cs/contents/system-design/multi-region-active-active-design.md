@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Multi-Region Active-Active 설계
+concept_id: system-design/multi-region-active-active-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- multi-region active-active
+- regional failover
+- write locality
+- split brain
+aliases:
+- multi-region active-active
+- regional failover
+- write locality
+- split brain
+- quorum
+- replication lag
+- data residency
+- conflict resolution
+- active-passive
+- rpo rto
+- global traffic routing
+- disaster recovery drill
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Multi-Region Active-Active 설계 설계 핵심을 설명해줘
+- multi-region active-active가 왜 필요한지 알려줘
+- Multi-Region Active-Active 설계 실무 트레이드오프는 뭐야?
+- multi-region active-active 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Multi-Region Active-Active 설계를 다루는 deep_dive 문서다. 여러 리전에서 동시에 서비스를 제공하면서도 지연, 장애, 충돌을 제어하는 글로벌 아키텍처를 설계한다. 검색 질의가 multi-region active-active, regional failover, write locality, split brain처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Multi-Region Active-Active 설계
 
 > 한 줄 요약: 여러 리전에서 동시에 서비스를 제공하면서도 지연, 장애, 충돌을 제어하는 글로벌 아키텍처를 설계한다.

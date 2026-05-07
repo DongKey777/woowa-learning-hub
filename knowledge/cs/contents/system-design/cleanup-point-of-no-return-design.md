@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Cleanup Point-of-No-Return 설계
+concept_id: system-design/cleanup-point-of-no-return-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- cleanup point of no return
+- contract phase
+- irreversible cleanup
+- rollback boundary
+aliases:
+- cleanup point of no return
+- contract phase
+- irreversible cleanup
+- rollback boundary
+- destructive cleanup
+- decommission safety
+- cleanup freeze
+- post cutover cleanup
+- removal gate
+- irreversible migration
+- adapter retirement
+- verification evidence handoff
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/config-rollback-safety-design.md
+- contents/system-design/bridge-retirement-evidence-packet-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cleanup Point-of-No-Return 설계 설계 핵심을 설명해줘
+- cleanup point of no return가 왜 필요한지 알려줘
+- Cleanup Point-of-No-Return 설계 실무 트레이드오프는 뭐야?
+- cleanup point of no return 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Cleanup Point-of-No-Return 설계를 다루는 deep_dive 문서다. cleanup point-of-no-return 설계는 migration이나 cutover 이후 old path, old schema, old protocol, old infra를 언제 제거하면 rollback이 사실상 불가능해지는지 명확히 정의해, cleanup 작업을 운영적으로 안전하게 분리하는 설계다. 검색 질의가 cleanup point of no return, contract phase, irreversible cleanup, rollback boundary처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Cleanup Point-of-No-Return 설계
 
 > 한 줄 요약: cleanup point-of-no-return 설계는 migration이나 cutover 이후 old path, old schema, old protocol, old infra를 언제 제거하면 rollback이 사실상 불가능해지는지 명확히 정의해, cleanup 작업을 운영적으로 안전하게 분리하는 설계다.

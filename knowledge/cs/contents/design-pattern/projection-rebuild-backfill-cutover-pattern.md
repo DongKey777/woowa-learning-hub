@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Projection Rebuild, Backfill, and Cutover Pattern
+concept_id: design-pattern/projection-rebuild-backfill-cutover-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-rebuild
+- read-model-cutover
+- tail-catch-up-parity
+aliases:
+- projection rebuild
+- projection backfill
+- projection cutover
+- dual projection run
+- read model reindex
+- projection watermark
+- tail catch-up gate
+- projection parity signoff
+- cutover proof packet
+- read model rebuild
+symptoms:
+- projection backfill 완료율이 100%라는 이유만으로 tail catch-up, parity, rollback readiness 없이 cutover를 승인한다
+- 운영 중 신규 이벤트가 계속 들어오는 상황에서 history replay와 live tail catch-up을 같은 단계로 본다
+- old projection을 덮어써 rollback point와 dual-read comparison 근거를 잃는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/read-model-staleness-read-your-writes
+- design-pattern/cqrs-command-query-separation-pattern-language
+- design-pattern/event-upcaster-compatibility-patterns
+next_docs:
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+- design-pattern/canary-promotion-thresholds-projection-cutover
+linked_paths:
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-rebuild-evidence-packet.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/projection-rebuild-poison-event-replay-failure-handling.md
+confusable_with:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+forbidden_neighbors: []
+expected_queries:
+- Projection rebuild와 cutover는 backfill로 새 read model을 채우는 단계와 사용자 조회 경로를 바꾸는 단계가 어떻게 달라?
+- history backfill 후 live tail catch-up을 해야 cutover readiness가 되는 이유가 뭐야?
+- old/new projection dual run과 parity 검증 없이 기존 projection을 덮어쓰면 rollback이 왜 약해져?
+- projection cutover readiness는 applied watermark, backlog age, mismatch rate, fallback, remaining error budget을 어떻게 함께 봐?
+- backfill 완료율이 100%인데도 tail catch-up이나 parity가 부족하면 왜 cutover를 보류해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Projection Rebuild, Backfill, and Cutover Pattern playbook으로,
+  read model을 재구축할 때 history backfill, live tail catch-up, old/new dual run,
+  parity verification, fallback, remaining error budget, rollback readiness를 함께 gate로
+  삼아 cutover approval을 판단하는 운영 전환 패턴을 설명한다.
+---
 # Projection Rebuild, Backfill, and Cutover Pattern
 
 > 한 줄 요약: Projection rebuild/backfill/cutover는 읽기 모델을 새로 만들거나 다시 계산할 때, 운영 중인 시스템을 멈추지 않고 신뢰도와 추적성을 유지하며 전환하는 패턴이다.

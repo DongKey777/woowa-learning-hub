@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Resilience4j Retry CircuitBreaker Bulkhead
+concept_id: spring/resilience4j-retry-circuit-breaker-bulkhead
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- resilience4j-retry-circuit
+- breaker-bulkhead
+- retry-storm
+- circuit-breaker-fallback
+aliases:
+- Resilience4j retry circuit breaker bulkhead
+- Spring retry storm
+- circuit breaker fallback
+- bulkhead resource isolation
+- timeout retry backoff
+- external API resilience
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/system-design/circuit-breaker-basics.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+symptoms:
+- 외부 API 장애 때 retry가 몰려 latency와 thread 사용량이 더 폭증한다.
+- circuit breaker가 열렸는데 fallback이 원인 은폐나 데이터 불일치를 만든다.
+- bulkhead 없이 느린 의존성이 전체 request pool을 고갈시킨다.
+expected_queries:
+- Resilience4j retry circuit breaker bulkhead를 어떤 순서로 설계해야 해?
+- Retry storm을 막으려면 timeout backoff circuit breaker를 어떻게 같이 봐야 해?
+- Bulkhead는 thread pool이나 semaphore로 어떤 자원을 격리하는 거야?
+- Spring 외부 호출 장애에서 fallback은 언제 위험해?
+contextual_chunk_prefix: |
+  이 문서는 Resilience4j를 단순 재시도 도구가 아니라 timeout, retry, circuit breaker,
+  bulkhead, fallback, observability를 함께 설계하는 장애 전파 차단 playbook으로 설명한다.
+  retry storm과 resource exhaustion 방지를 중심에 둔다.
+---
 # Spring Resilience4j: Retry, CircuitBreaker, Bulkhead
 
 > 한 줄 요약: Resilience4j는 외부 호출 실패를 "운 좋게 한 번 더 시도"하는 도구가 아니라, retry storm과 자원 고갈을 막기 위해 timeout, circuit breaker, bulkhead, fallback, observability를 같이 설계하는 방어선이다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Anti-Corruption Layer Integration Patterns
+concept_id: software-engineering/anti-corruption-layer
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- anti-corruption-layer
+- external-integration
+- domain-boundary
+aliases:
+- Anti-Corruption Layer Integration Patterns
+- anti corruption layer
+- ACL translation layer
+- external DTO leak
+- legacy integration boundary
+- 외부 시스템 도메인 오염 방지
+symptoms:
+- 외부 API DTO, status code, error code를 내부 도메인 모델과 use case에 그대로 흘려보내
+- Adapter, Facade, Translator, contract test, circuit breaker를 각각 따로 보느라 ACL이 도메인을 보호하는 번역 경계라는 점을 놓쳐
+- 배송사, PG, ERP 같은 외부 시스템의 불안정한 용어와 실패 방식을 내부 정책 언어로 재분류하지 않아
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/ddd-hexagonal-consistency
+next_docs:
+- software-engineering/anti-corruption-drift
+- software-engineering/contract-drift-governance
+- software-engineering/bff-boundaries
+linked_paths:
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/anti-corruption-mapping-drift.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+- contents/software-engineering/bff-boundaries-client-specific-aggregation.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+confusable_with:
+- software-engineering/anti-corruption-drift
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/bff-boundaries
+forbidden_neighbors: []
+expected_queries:
+- Anti-Corruption Layer는 외부 DTO 변환기가 아니라 도메인 오염을 막는 번역 계층이라는 뜻을 설명해줘
+- PG 배송사 ERP 같은 외부 API status와 error code를 내부 도메인 결과로 어떻게 재분류해야 해?
+- ACL과 adapter facade translator contract test는 어떤 역할로 같이 쓰이는지 알려줘
+- 외부 시스템 용어가 내부 도메인 용어와 다를 때 pass-through 통합이 왜 위험해?
+- API contract testing과 ACL을 같이 두면 어떤 변경 충격을 흡수할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Layer를 외부 시스템 DTO, status, error, schema mismatch가 내부 domain model로 스며들지 않게 막는 translation boundary로 설명하는 advanced deep dive다.
+---
 # Anti-Corruption Layer Integration Patterns
 
 > 한 줄 요약: ACL은 외부 시스템의 개념이 우리 도메인으로 스며드는 것을 막는 번역 계층이다.

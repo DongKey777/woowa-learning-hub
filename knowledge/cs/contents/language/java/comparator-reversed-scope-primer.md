@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Comparator Reversed Scope Primer
+concept_id: language/comparator-reversed-scope-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator-reversed
+- sorting-rule
+- tie-breaker
+aliases:
+- Comparator reversed scope primer
+- reversed whole chain comparator
+- single field reversed comparator
+- thenComparing reversed scope
+- comparator chain 전체 뒤집기
+- grade desc name asc comparator
+- 자바 comparator reversed 범위
+symptoms:
+- reversed()를 다음 필드만 뒤집는 버튼으로 오해하고 호출 시점까지 만든 comparator 전체가 뒤집힌다는 점을 놓쳐
+- a.reversed().thenComparing(b)와 a.thenComparing(b).reversed()의 결과 차이를 설명하지 못해
+- 학년은 내림차순, 이름은 오름차순 같은 mixed direction comparator를 만들 때 reversed 위치를 잘못 둬
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-comparable-comparator-basics
+next_docs:
+- language/comparator-null-reversal-primer
+- language/java-comparator-utility-patterns
+- language/list-sort-vs-stream-sorted-comparator-bridge
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+confusable_with:
+- language/comparator-null-reversal-primer
+- language/java-comparator-utility-patterns
+- language/treeset-treemap-comparator-tie-breaker-basics
+forbidden_neighbors: []
+expected_queries:
+- Comparator reversed는 다음 필드만 뒤집는 게 아니라 지금까지 만든 전체 comparator를 뒤집는다는 뜻이야?
+- a.reversed().thenComparing(b)와 a.thenComparing(b).reversed() 차이를 예제로 보여줘
+- 학년 내림차순 이름 오름차순 comparator와 둘 다 내림차순 comparator를 어떻게 구분해?
+- Java comparator chain에서 reversed 위치를 어디에 둬야 tie-breaker 방향이 맞아?
+- comparator whole-chain reversed와 single-field reversed를 초보자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java Comparator reversed() scope를 whole-chain reversal과 single-field reversal, thenComparing tie-breaker 방향으로 설명하는 beginner primer다.
+  comparator reversed, thenComparing, grade desc name asc, whole chain reversed, mixed direction sorting 질문이 본 문서에 매핑된다.
+---
 # Comparator Reversed Scope Primer
 
 > 한 줄 요약: `reversed()`는 "다음 필드만" 뒤집는 버튼이 아니라, **그 시점까지 만든 comparator 전체**를 뒤집는다. 그래서 `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()`는 비슷해 보여도 다른 규칙이다.

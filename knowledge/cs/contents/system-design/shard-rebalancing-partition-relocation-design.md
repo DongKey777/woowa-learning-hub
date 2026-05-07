@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Shard Rebalancing / Partition Relocation 설계
+concept_id: system-design/shard-rebalancing-partition-relocation-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- shard rebalancing
+- partition relocation
+- hot shard
+- partition migration
+aliases:
+- shard rebalancing
+- partition relocation
+- hot shard
+- partition migration
+- ownership transfer
+- copy catchup cutover
+- shard split
+- rebalance planner
+- drain warmup
+- placement control plane
+- failover policy
+- tenant reassignment
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/consensus-membership-reconfiguration-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+- contents/system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Shard Rebalancing / Partition Relocation 설계 설계 핵심을 설명해줘
+- shard rebalancing가 왜 필요한지 알려줘
+- Shard Rebalancing / Partition Relocation 설계 실무 트레이드오프는 뭐야?
+- shard rebalancing 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Shard Rebalancing / Partition Relocation 설계를 다루는 deep_dive 문서다. shard rebalancing과 partition relocation은 상태를 가진 파티션을 노드 사이에서 점진적으로 옮겨, hot shard 완화와 노드 증설·축소를 서비스 중단 없이 처리하는 stateful platform 운영 기술이다. 검색 질의가 shard rebalancing, partition relocation, hot shard, partition migration처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Shard Rebalancing / Partition Relocation 설계
 
 > 한 줄 요약: shard rebalancing과 partition relocation은 상태를 가진 파티션을 노드 사이에서 점진적으로 옮겨, hot shard 완화와 노드 증설·축소를 서비스 중단 없이 처리하는 stateful platform 운영 기술이다.

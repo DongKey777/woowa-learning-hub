@@ -73,6 +73,14 @@ contextual_chunk_prefix: |
 
 shopping-cart에서 PG 응답을 그대로 도메인에 퍼뜨리면 외부 계약 변경이 주문 모델까지 흔들리므로, 결제 경계에서 우리 언어로 한 번 번역하는 anti-corruption seam이 필요하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "PG 응답 DTO를 그대로 Order나 Payment 엔티티에 넣어도 되나요?" | 외부 결제 승인 응답을 내부 도메인으로 넘기는 단계 | 외부 모델을 내부 결과 타입으로 번역하는 seam을 둔다 |
+| "결제사 status code와 error code가 서비스 전역으로 퍼져요" | PG 코드표가 controller/service/domain/test에 새는 구조 | 외부 코드를 우리 enum/exception/result로 닫는다 |
+| "환불 사유나 승인 실패 코드를 어디서 우리 언어로 바꿔야 하나요?" | PG adapter와 checkout service 경계 | facade/translator가 외부 계약과 내부 유스케이스 언어를 분리한다 |
+
 ## 미션 시나리오
 
 shopping-cart checkout을 붙이다 보면 `PaymentClient`가 내려준 `approved_at`, `result_code`, `pay_method`, `failure_reason` 같은 필드를 그대로 `Order`나 `Payment` 생성자에 넘기기 쉽다. 처음엔 빨라 보이지만, PG 문서 한 번 바뀌면 주문 상태 전이 조건, 예외 메시지, 테스트 fixture가 같이 흔들린다.

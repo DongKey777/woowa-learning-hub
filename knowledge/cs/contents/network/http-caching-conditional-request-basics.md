@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: HTTP 캐싱과 조건부 요청 기초
+concept_id: network/http-caching-conditional-request-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- http-cache-revalidation
+- browser-devtools-cache-debugging
+- etag-last-modified-validator
+aliases:
+- http caching conditional request
+- HTTP 캐싱 조건부 요청
+- Cache-Control ETag Last-Modified 304
+- 304 Not Modified
+- 브라우저 캐시 재검증
+- from disk cache 304 차이
+- If-None-Match
+- If-Modified-Since
+symptoms:
+- DevTools에서 from disk cache와 304 Not Modified를 같은 뜻으로 읽고 있어
+- Cache-Control과 ETag가 왜 같이 필요한지 헷갈려
+- 같은 URL 새로고침인데 어떤 때는 서버를 안 가고 어떤 때는 304가 나와
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-request-response-headers-basics
+next_docs:
+- network/browser-devtools-cache-trace-primer
+- network/strong-vs-weak-etag-validator-precision-cache-correctness
+- network/browser-302-304-401-reload-decision-table-primer
+- system-design/cdn-basics
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-state-session-cache.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/strong-vs-weak-etag-validator-precision-cache-correctness.md
+- contents/system-design/cdn-basics.md
+confusable_with:
+- network/browser-302-304-401-reload-decision-table-primer
+- network/post-redirect-get-prg-beginner-primer
+- network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer
+forbidden_neighbors: []
+expected_queries:
+- 304 Not Modified는 body를 다시 받는 거야 아니면 캐시를 쓰는 거야?
+- Cache-Control과 ETag, Last-Modified가 각각 어떤 역할을 해?
+- from disk cache와 304 Not Modified를 DevTools에서 어떻게 구분해?
+- If-None-Match와 If-Modified-Since는 언제 요청에 붙어?
+- no-cache와 no-store는 왜 이름과 의미가 다르게 느껴져?
+contextual_chunk_prefix: |
+  이 문서는 HTTP cache beginner primer로, Cache-Control freshness와 ETag/Last-Modified validator, If-None-Match/If-Modified-Since 조건부 요청, 304 Not Modified revalidation을 분리한다.
+  from disk cache vs 304, cache-control vs etag, no-cache vs no-store, 같은 URL 새로고침과 cache body 재사용 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304
 
 **난이도: 🟢 Beginner**

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Network Flow Intuition
+concept_id: algorithm/network-flow-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- network-flow-intuition
+- max-flow-min-cut
+- matching-to-flow-reduction
+aliases:
+- network flow intuition
+- max flow
+- flow network
+- maximum throughput
+- min cut
+- residual graph
+- augmenting path
+- bipartite matching flow
+- capacity constrained assignment
+- 네트워크 플로우
+symptoms:
+- shortest path처럼 한 경로의 최소 비용을 구하는 문제와 여러 경로의 총 throughput을 최대화하는 문제를 섞는다
+- bipartite matching이나 worker-job assignment를 unit-capacity flow로 바꿔 볼 수 있다는 reduction을 놓친다
+- 비용 없는 maximum matching과 비용 있는 min-cost max-flow, small-n bitmask DP assignment를 구분하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/graph
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+next_docs:
+- algorithm/min-cost-max-flow-intuition
+- algorithm/hungarian-algorithm-intuition
+- algorithm/bitmask-dp
+- algorithm/topological-sort-patterns
+linked_paths:
+- contents/algorithm/graph.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/topological-sort-patterns.md
+- contents/algorithm/min-cost-max-flow-intuition.md
+- contents/algorithm/bitmask-dp.md
+confusable_with:
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/topological-sort-patterns
+- algorithm/min-cost-max-flow-intuition
+- algorithm/bitmask-dp
+- algorithm/hungarian-algorithm-intuition
+forbidden_neighbors: []
+expected_queries:
+- Network Flow는 capacity가 있는 그래프에서 최대 처리량을 구하는 문제라는 뜻이야?
+- max flow와 min cut은 bottleneck edge set을 어떻게 설명해?
+- bipartite matching을 source left right sink unit capacity flow로 바꾸는 방법을 알려줘
+- shortest path와 network flow는 한 경로 비용과 전체 throughput 관점에서 어떻게 달라?
+- 비용 있는 배정은 min-cost max-flow나 Hungarian으로 넘어가야 하는 기준이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Network Flow intuition deep dive로, source에서 sink로 capacity를 가진
+  edge를 통해 보낼 수 있는 maximum flow, residual graph, augmenting path,
+  min cut, bipartite matching reduction을 설명한다.
+---
 # Network Flow Intuition
 
 > 한 줄 요약: 네트워크 플로우는 "간선의 용량"을 가진 그래프에서 얼마나 많이 흘려보낼 수 있는지 계산하는 문제다.

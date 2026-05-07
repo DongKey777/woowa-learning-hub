@@ -31,12 +31,12 @@ intents:
 - comparison
 - design
 prerequisites:
-- software-engineering/deployment-rollout-rollback-canary-blue-green
-- software-engineering/feature-flags-rollout-dependency-management
+- software-engineering/deployment-rollout-strategy
+- software-engineering/feature-flag-dependency-management
 - software-engineering/service-maturity-model
 next_docs:
-- software-engineering/release-policy-change-freeze-error-budget-coupling
-- software-engineering/lead-time-change-failure-recovery-loop
+- software-engineering/release-policy-error-budget
+- software-engineering/lead-time-change-failure-recovery
 - software-engineering/feature-flag-cleanup-expiration
 linked_paths:
 - contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
@@ -46,9 +46,9 @@ linked_paths:
 - contents/software-engineering/service-maturity-model.md
 - contents/software-engineering/architectural-fitness-functions.md
 confusable_with:
-- software-engineering/deployment-rollout-rollback-canary-blue-green
-- software-engineering/release-policy-change-freeze-error-budget-coupling
-- software-engineering/feature-flags-rollout-dependency-management
+- software-engineering/deployment-rollout-strategy
+- software-engineering/release-policy-error-budget
+- software-engineering/feature-flag-dependency-management
 forbidden_neighbors:
 expected_queries:
 - 우리 조직이 release train을 유지할지 continuous delivery로 갈지 판단할 때 먼저 볼 기준이 뭐야?

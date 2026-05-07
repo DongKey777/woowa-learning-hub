@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "gRPC vs REST"
+concept_id: network/grpc-vs-rest
+canonical: true
+category: network
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- grpc-rest-choice
+- protocol-buffers-vs-http-semantics
+- service-communication-design
+aliases:
+- gRPC vs REST
+- Protocol Buffers vs JSON REST
+- unary streaming RPC
+- schema contract HTTP semantics
+- browser compatibility gRPC
+- API design grpc rest
+symptoms:
+- gRPC를 REST보다 무조건 빠른 대체재로만 보고 browser/tooling/observability 비용을 놓친다
+- REST를 느슨한 JSON 형식으로만 보고 HTTP semantics, cache, proxy compatibility 장점을 놓친다
+- 내부 service-to-service와 외부/public/browser API 경계를 같은 선택 기준으로 본다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- network/http-methods-rest-idempotency
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/grpc-web-vs-bff-vs-rest-browser-boundary-bridge
+- network/grpc-status-trailers-transport-error-mapping
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/h2c-cleartext-upgrade-prior-knowledge-routing
+- network/h2c-operational-traps-proxy-chain-dev-prod
+linked_paths:
+- contents/network/http-methods-rest-idempotency.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/sse-websocket-polling.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/network/h2c-cleartext-upgrade-prior-knowledge-routing.md
+- contents/network/h2c-operational-traps-proxy-chain-dev-prod.md
+confusable_with:
+- network/grpc-web-vs-bff-vs-rest-browser-boundary-bridge
+- network/http-methods-rest-idempotency
+- network/grpc-status-trailers-transport-error-mapping
+- network/rest-websocket-sse-grpc-http2-http3-choice-primer
+forbidden_neighbors: []
+expected_queries:
+- "gRPC와 REST를 서비스 간 통신, 공개 API, 브라우저 호환성 기준으로 비교해줘"
+- "gRPC는 왜 HTTP/2와 protobuf schema contract가 핵심이고 REST는 HTTP semantics가 핵심이야?"
+- "내부 서비스는 gRPC, 외부 공개 API는 REST가 더 나을 수 있는 이유는?"
+- "gRPC streaming과 REST SSE WebSocket polling 선택지를 어떻게 나눠?"
+- "gRPC는 운영 관측성에서 trailers status mapping과 protobuf decode 비용이 있다는 점을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 gRPC와 REST를 Protocol Buffers schema contract, HTTP/2
+  transport, streaming RPC, browser/public API compatibility, HTTP semantics,
+  observability/tooling 기준으로 비교하는 advanced chooser다.
+---
 # gRPC vs REST
 
 > 한 줄 요약: gRPC는 서비스 간 고성능 계약 기반 통신에 강하고, REST는 범용성과 운영 친화성이 좋아서 "어디서, 누구와, 어떤 방식으로" 통신하는지에 따라 선택이 갈린다.

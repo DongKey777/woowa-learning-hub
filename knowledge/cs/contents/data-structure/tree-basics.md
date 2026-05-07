@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: 트리 기초 (Tree Basics)
+concept_id: data-structure/tree-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- tree-vs-graph-basics
+- root-leaf-depth-vocabulary
+- traversal-entrypoint-split
+aliases:
+- tree basics
+- beginner tree
+- 트리 입문
+- 트리가 뭐예요
+- 트리 처음 배우는데
+- 트리 기초
+- 트리 큰 그림
+- 트리 왜 써요
+- 트리 언제 쓰는지
+- root node leaf node
+- tree depth height
+- 트리 순회 입문
+- tree vs graph
+- 트리와 그래프 차이
+- 부모 자식 구조 뭐예요
+symptoms:
+- 트리가 계층 구조라는 말은 알겠는데 그래프랑 어디서 갈라지는지 아직 흐릿해
+- 루트 리프 깊이 높이 용어가 한꺼번에 나와서 문서를 읽기 전에 막혀
+- 트리 순회와 BST와 힙이 다 트리라서 처음 분기가 잘 안 돼
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- data-structure/binary-tree-traversal-routing-guide
+- data-structure/graph-basics
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md
+- contents/data-structure/binary-tree-traversal-routing-guide.md
+- contents/data-structure/graph-basics.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/graph-basics
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+forbidden_neighbors:
+- contents/data-structure/order-statistic-tree.md
+- contents/data-structure/interval-tree.md
+- contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
+expected_queries:
+- 계층형 자료를 표현하는 구조를 처음 이해하고 싶어
+- 부모 자식 관계로 내려가는 구조를 초보자 기준으로 설명해줘
+- 루트 리프 깊이 높이를 한 번에 정리하는 입문 글이 필요해
+- 이진 트리나 BST로 가기 전에 트리 큰 그림부터 잡고 싶어
+- 그래프랑 다른 점을 구조 관점에서 먼저 알고 싶어
+- 파일 시스템 같은 예시로 트리 개념을 익히고 싶어
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 tree를 부모와 자식으로 내려가는 계층 구조로 이해하고, 루트 리프 깊이 높이 같은 기본 어휘와 graph와의 경계를 처음 잡는 primer다. 파일 시스템처럼 내려가기, 사이클 없는 구조, 루트에서 한 경로로 도달, 트리 용어 먼저 정리, BST나 heap 전에 큰 그림 잡기 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 트리 기초 (Tree Basics)
 
 > 한 줄 요약: 트리는 계층 관계를 표현하는 비선형 자료구조로, 루트에서 리프까지 정확히 하나의 경로만 존재한다는 점이 가장 중요하다.

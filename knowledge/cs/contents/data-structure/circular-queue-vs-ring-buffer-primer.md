@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Circular Queue vs Ring Buffer Primer
+concept_id: data-structure/circular-queue-vs-ring-buffer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- circular-queue-ring-buffer
+- bounded-queue-policy
+- producer-consumer-buffer
+aliases:
+- circular queue vs ring buffer
+- circular queue primer
+- ring buffer primer
+- circular buffer
+- 원형 큐 링 버퍼 차이
+- wraparound queue
+- full queue policy
+symptoms:
+- circular queue와 ring buffer가 완전히 다른 구조인지 같은 원형 배열 아이디어의 문맥 차이인지 헷갈린다
+- full empty 구분 구현 문제와 backpressure overwrite drop 같은 운영 정책 문제를 섞어 본다
+- producer consumer buffer에서 FIFO queue 요구인지 latest-n overwrite buffer 요구인지 먼저 자르지 못한다
+intents:
+- comparison
+- definition
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/basic
+- data-structure/bounded-queue-policy-primer
+- data-structure/ring-buffer
+- data-structure/lock-free-spsc-ring-buffer
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/bounded-queue-policy-primer.md
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/applied-data-structures-overview.md
+confusable_with:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/bounded-queue-policy-primer
+- data-structure/ring-buffer
+- data-structure/lock-free-spsc-ring-buffer
+forbidden_neighbors: []
+expected_queries:
+- circular queue와 ring buffer는 같은 구조야 다른 구조야?
+- 원형 큐의 front rear 구현 문제와 ring buffer 운영 정책은 어떻게 달라?
+- ring buffer가 꽉 찼을 때 overwrite drop block 중 무엇을 선택해야 해?
+- producer consumer에서 FIFO queue와 latest n buffer를 어떻게 구분해?
+- circular buffer wraparound와 full empty 구분을 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 circular queue와 ring buffer가 같은 고정 크기 원형 배열 뼈대를
+  공유하지만, 전자는 queue interface 구현 문제, 후자는 producer/consumer
+  버퍼와 backpressure, overwrite, latency 정책 문제로 자주 쓰인다는 점을
+  분리하는 beginner chooser다.
+---
 # Circular Queue vs Ring Buffer Primer
 
 > 한 줄 요약: `circular queue`와 `ring buffer`는 같은 원형 배열 아이디어를 공유하지만, 전자는 면접식 큐 설계 용어이고 후자는 시스템 버퍼링 용어로 더 자주 쓰인다.

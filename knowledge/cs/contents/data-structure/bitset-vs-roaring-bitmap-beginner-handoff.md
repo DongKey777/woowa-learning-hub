@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: BitSet vs Roaring Bitmap Beginner Handoff
+concept_id: data-structure/bitset-vs-roaring-bitmap-handoff
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bitset-beginner-handoff
+- dense-vs-sparse-id-set
+- compressed-bitmap-selection
+aliases:
+- BitSet vs Roaring Bitmap beginner
+- roaring bitmap beginner handoff
+- compressed bitmap first step
+- sparse range bitmap basics
+- dense integer id bitset
+- bitset 언제 충분해요
+- Roaring으로 넘어가는 기준
+symptoms:
+- BitSet과 Roaring Bitmap을 모두 내부 구현 이름으로만 보고 dense id 집합이라는 공통 mental model을 잡지 못한다
+- sparse integer id range에서 plain BitSet의 빈 칸 비용이 커지는 신호를 놓친다
+- contains 몇 번이면 충분한 상황과 exact AND OR ANDNOT 집합 연산이 반복되는 상황을 구분하지 못한다
+intents:
+- comparison
+- definition
+prerequisites:
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+next_docs:
+- data-structure/bitset-vs-boolean-array-beginner-card
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+- data-structure/roaring-bitmap
+- data-structure/roaring-bitmap-selection-playbook
+linked_paths:
+- contents/data-structure/bitset-vs-boolean-array-beginner-card.md
+- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
+- contents/data-structure/plain-bitset-vs-compressed-bitmap-decision-card.md
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- data-structure/bitset-vs-boolean-array-beginner-card
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+- data-structure/roaring-bitmap
+forbidden_neighbors: []
+expected_queries:
+- BitSet과 Roaring Bitmap 차이를 beginner 기준으로 알려줘
+- dense integer id 집합이면 언제 BitSet에서 멈춰도 돼?
+- id 범위가 넓고 듬성듬성하면 왜 Roaring Bitmap을 고려해?
+- BitSet boolean array Roaring Bitmap을 어떤 순서로 배우면 좋아?
+- exact set algebra AND OR ANDNOT가 반복될 때 compressed bitmap으로 넘어가는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 beginner가 BitSet을 dense integer id membership 구조로 먼저
+  이해하고, range가 넓고 sparse하지만 exact set algebra가 반복되는 시점에
+  Roaring Bitmap으로 넘어가도록 돕는 chooser다. boolean array, plain
+  bitset, compressed bitmap의 학습 순서를 분리한다.
+---
 # BitSet vs Roaring Bitmap Beginner Handoff
 
 > 한 줄 요약: beginner는 먼저 `BitSet`을 "정수 id 칸에 체크하는 집합"으로 이해하면 충분하고, `범위가 너무 넓은데 exact 집합 연산을 계속 해야 한다`는 신호가 보일 때만 `Roaring Bitmap`으로 한 단계 더 내려가면 된다.

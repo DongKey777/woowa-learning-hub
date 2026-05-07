@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Lease Handoff Protocol
+concept_id: database/lease-handoff-protocol
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- lease-handoff-protocol
+- ownership-transfer-fencing
+- stale-holder-write-stop
+aliases:
+- lease handoff
+- handoff protocol
+- ownership transfer
+- fencing token
+- grace period
+- lease handoff protocol
+- shard owner handoff
+- worker lease handoff
+- lease handoff 기초
+- lease 소유권 이전
+symptoms:
+- batch worker나 shard owner를 넘길 때 old holder와 new holder가 동시에 write할 위험이 있어
+- lease 만료만으로 handoff를 처리해 progress 저장과 stale writer fencing이 빠져 있어
+- grace period와 fencing token 없이 takeover를 빠르게만 하려 하고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/db-lease-fencing-coordination
+- database/application-level-fencing-token-propagation
+next_docs:
+- database/stale-lease-renewal-failure-fencing
+- database/replication-failover-split-brain
+- database/primary-switch-write-fencing
+linked_paths:
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/stale-lease-renewal-failure-fencing.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/application-level-fencing-token-propagation.md
+- contents/database/primary-switch-write-fencing.md
+confusable_with:
+- database/db-lease-fencing-coordination
+- database/application-level-fencing-token-propagation
+- database/stale-lease-renewal-failure-fencing
+forbidden_neighbors: []
+expected_queries:
+- lease handoff protocol은 old holder를 멈추고 new holder로 ownership을 안전하게 넘기려면 어떤 단계가 필요해?
+- worker lease 만료만 쓰면 왜 중복 실행이나 stale write가 생길 수 있어?
+- handoff에서 fencing token과 grace period는 어떤 역할을 해?
+- shard owner가 바뀔 때 progress 저장 없이 takeover하면 어떤 문제가 생겨?
+- hard expire, grace handoff, fencing-only takeover를 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 worker, shard owner, leader lease를 넘길 때 drain, progress save, fencing token, grace period로 old holder write와 new holder takeover를 조율하는 intermediate playbook이다.
+  lease handoff, ownership transfer, fencing token, grace period 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Lease Handoff Protocol
 
 > 한 줄 요약: lease handoff는 “주인이 바뀐다”를 안전하게 넘겨주는 절차이고, 겹침 구간과 fencing 없이는 사고가 난다.

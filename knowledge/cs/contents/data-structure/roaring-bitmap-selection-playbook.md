@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Roaring Bitmap Selection Playbook
+concept_id: data-structure/roaring-bitmap-selection-playbook
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roaring-selection
+- bitmap-representation-choice
+- exact-set-algebra
+aliases:
+- Roaring Bitmap selection
+- Roaring vs BitSet
+- Roaring vs Elias-Fano
+- compressed bitmap decision guide
+- exact set algebra bitmap
+- bitmap family selection
+- Roaring vs WAH
+symptoms:
+- 압축 integer set이면 무조건 Roaring Bitmap을 기본값으로 고르고 exact set algebra, sorted posting list, rank/select, prefilter 질문을 나누지 않는다
+- Roaring run container와 WAH/EWAH whole bitmap run compression을 같은 최적화 단위로 오해한다
+- mixed-density exact set algebra는 Roaring에 맞지만 dense small id, monotone posting list, approximate membership은 다른 구조가 나을 수 있다는 점을 놓친다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+next_docs:
+- data-structure/roaring-container-transition-heuristics
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/elias-fano-encoded-posting-list
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/elias-fano-encoded-posting-list.md
+- contents/data-structure/succinct-bitvector-rank-select.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+confusable_with:
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+- data-structure/elias-fano-encoded-posting-list
+- data-structure/succinct-bitvector-rank-select
+- data-structure/sketch-filter-selection-playbook
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap은 BitSet Elias-Fano succinct bitvector approximate filter와 어떤 기준으로 골라?
+- exact set algebra가 핵심이면 Roaring이 좋고 membership prefilter면 filter가 맞는 이유는?
+- Roaring run container와 WAH EWAH whole bitmap run compression은 어떻게 달라?
+- sparse sorted posting list에는 Roaring보다 Elias-Fano가 나을 수 있는 이유는?
+- bitmap representation selection playbook을 workload 질문별로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap을 모든 compressed representation의 기본값으로 보지
+  않고 exact set algebra, dense BitSet, sorted posting list, rank/select,
+  approximate membership prefilter 질문별로 고르는 chooser다.
+---
 # Roaring Bitmap Selection Playbook
 
 > 한 줄 요약: Roaring Bitmap은 exact set algebra에 강하지만, 모든 압축 표현의 기본값은 아니며 BitSet, Elias-Fano, succinct bitvector, approximate filter와 질문이 다르다.

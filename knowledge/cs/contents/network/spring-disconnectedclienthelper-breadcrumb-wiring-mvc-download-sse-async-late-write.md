@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Spring DisconnectedClientHelper Breadcrumb Wiring"
+concept_id: network/spring-disconnectedclienthelper-breadcrumb-wiring-mvc-download-sse-async-late-write
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- spring-disconnect
+- breadcrumb-logging
+- late-write
+aliases:
+- DisconnectedClientHelper breadcrumb
+- app.http.disconnect
+- StreamingResponseBody disconnect helper
+- SSE disconnect breadcrumb
+- AsyncRequestNotUsableException breadcrumb
+- client abort breadcrumb
+- broken pipe one-line logging
+symptoms:
+- DisconnectedClientHelper를 root logger suppression 도구로 오해한다
+- expected disconnect와 app regression을 모두 같은 log level로 숨긴다
+- StreamingResponseBody, SseEmitter, async late write의 app-owned write boundary에 helper를 붙이지 않는다
+- committed response 뒤 ProblemDetail이나 JSON error envelope를 다시 쓰려 한다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+next_docs:
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- spring/servlet-container-disconnect-exception-mapping
+- spring/async-mvc-streaming-observability-playbook
+- network/sse-failure-attribution-http1-http2
+linked_paths:
+- contents/network/container-specific-disconnect-logging-recipes-spring-boot.md
+- contents/network/spring-mvc-async-onerror-asyncrequestnotusableexception-crosswalk.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/sse-failure-attribution-http1-http2.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-async-mvc-streaming-observability-playbook.md
+confusable_with:
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- spring/servlet-container-disconnect-exception-mapping
+- spring/async-mvc-streaming-observability-playbook
+forbidden_neighbors: []
+expected_queries:
+- "Spring DisconnectedClientHelper를 어디에 wiring해야 해?"
+- "StreamingResponseBody download에서 broken pipe를 app.http.disconnect breadcrumb로 남기는 법은?"
+- "SseEmitter send heartbeat에서 expected disconnect와 진짜 오류를 어떻게 나눠?"
+- "AsyncRequestNotUsableException late write를 왜 ProblemDetail로 다시 쓰면 안 돼?"
+- "DisconnectedClientHelper는 root logger suppression 도구가 아닌 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 Spring DisconnectedClientHelper를 MVC download, SseEmitter,
+  async late write boundary에 붙여 expected disconnect를 app.http.disconnect
+  breadcrumb로 정규화하는 advanced bridge다.
+---
 # Spring `DisconnectedClientHelper` Breadcrumb Wiring: MVC Download, SSE, Async Late Write
 
 > 한 줄 요약: `DisconnectedClientHelper`는 root logger suppression 도구가 아니라, app-owned write boundary에서 expected disconnect를 `app.http.disconnect` 한 줄 breadcrumb로 정규화하는 도구다. `StreamingResponseBody` download, `SseEmitter` send/heartbeat, `AsyncRequestNotUsableException` late-write advice처럼 "다음 write에서 끊김이 드러나는 지점"에 붙여야 noise만 줄이고 guardrail은 살릴 수 있다.

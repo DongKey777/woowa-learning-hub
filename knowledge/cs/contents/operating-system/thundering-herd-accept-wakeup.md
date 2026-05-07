@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Thundering Herd Accept Wakeup
+concept_id: operating-system/thundering-herd-accept-wakeup
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- thundering-herd-accept
+- wakeup
+- accept-herd
+- epoll-wakeup-herd
+aliases:
+- thundering herd accept wakeup
+- accept herd
+- epoll wakeup herd
+- many waiters one event
+- wakeup storm
+- listener contention
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/reuseport-shard-watermark-tuning.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/futex-requeue-priority-inheritance-convoy-debugging.md
+symptoms:
+- 하나의 accept 이벤트에 너무 많은 worker가 동시에 깨어나 CPU와 lock contention이 커진다.
+- epoll, accept, condition variable wakeup에서 herd 때문에 throughput 대비 p99가 나빠진다.
+- SO_REUSEPORT나 EPOLLONESHOT 같은 ownership model을 고려해야 한다.
+expected_queries:
+- thundering herd는 accept나 epoll wakeup에서 왜 서버를 흔들어?
+- 하나의 이벤트에 많은 대기자가 동시에 깨면 CPU와 lock cost가 어떻게 폭증해?
+- SO_REUSEPORT와 EPOLLONESHOT은 herd를 줄이는 데 어떤 역할을 해?
+- accept wakeup storm을 scheduler wakeup latency와 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 thundering herd를 하나의 event에 많은 waiters가 동시에 깨어나 accept, epoll,
+  lock handoff, condition variable wakeup 비용을 폭증시키는 현상으로 설명한다.
+---
 # Thundering Herd, Accept, Wakeup
 
 > 한 줄 요약: 여러 스레드나 프로세스가 같은 이벤트에 동시에 깨어나는 구조는 간단해 보여도, accept와 wakeup 비용을 폭증시켜 서버를 쉽게 흔든다.

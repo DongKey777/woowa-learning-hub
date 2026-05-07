@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Snapshot Versioning and Compatibility Pattern
+concept_id: design-pattern/snapshot-versioning-compatibility-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- snapshot-versioning
+- snapshot-compatibility
+- restore-format-version
+aliases:
+- snapshot versioning
+- snapshot compatibility
+- snapshot invalidation
+- restore format version
+- snapshot upcast
+- checkpoint schema drift
+- versioned snapshot
+- snapshot restore compatibility
+- 스냅샷 버전
+- 복원 포맷 호환성
+symptoms:
+- event schema version은 관리하지만 snapshot format version은 두지 않아 replay는 되는데 snapshot restore가 깨진다
+- snapshot을 단순 cache로만 보고 오래된 format이 runtime state에 silent corruption을 주입할 수 있음을 놓친다
+- event upcaster가 있으면 snapshot compatibility도 자동으로 해결된다고 생각한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/checkpoint-snapshot-pattern
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/event-sourcing-pattern-language
+next_docs:
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/event-contract-drift-triage-rebuilds
+linked_paths:
+- contents/design-pattern/checkpoint-snapshot-pattern.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/event-sourcing-pattern-language.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/process-manager-state-store-recovery.md
+confusable_with:
+- design-pattern/checkpoint-snapshot-pattern
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/event-contract-drift-triage-rebuilds
+forbidden_neighbors: []
+expected_queries:
+- Snapshot versioning은 event versioning과 별개로 restore format version을 왜 가져야 해?
+- snapshot은 replay optimization인데도 오래 살면 legacy data가 되어 silent corruption을 만들 수 있는 이유가 뭐야?
+- snapshot compatibility에서 invalidate and replay, snapshot upcast, partial restore는 어떻게 선택해?
+- event upcaster가 있어도 snapshot format drift는 별도 policy가 필요한 이유가 뭐야?
+- process manager state store도 snapshot versioning 문제와 비슷하다는 말은 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Snapshot Versioning and Compatibility Pattern playbook으로, snapshot을
+  단순 cache가 아니라 오래 사는 restore artifact로 보고 snapshot format version,
+  invalidate-and-replay, snapshot upcast, partial restore, process manager state compatibility
+  전략을 설계하는 방법을 설명한다.
+---
 # Snapshot Versioning and Compatibility Pattern
 
 > 한 줄 요약: snapshot은 replay 최적화 수단이지만 오래 살수록 schema/version drift가 생기므로, snapshot format version과 invalidation/upcast 전략을 같이 설계해야 복원이 안전하다.

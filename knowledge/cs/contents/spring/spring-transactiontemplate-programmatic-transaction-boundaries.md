@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring TransactionTemplate Programmatic Transaction Boundaries
+concept_id: spring/transactiontemplate-programmatic-transaction-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transactiontemplate-programmatic-transaction
+- boundaries
+- transactiontemplate
+- programmatic-transaction-boundary
+aliases:
+- TransactionTemplate
+- programmatic transaction boundary
+- partial commit loop
+- transaction retry boundary
+- explicit transaction demarcation
+- @Transactional alternative boundary
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-template-classes-beginner-primer.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md
+- contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md
+- contents/spring/spring-transactionsynchronization-ordering-suspend-resume-resource-binding.md
+symptoms:
+- 반복 처리에서 한 건 실패가 전체 @Transactional method rollback으로 번진다.
+- 부분 commit, retry, 비동기 경계를 method annotation만으로 표현하기 어색하다.
+- rollback-only가 찍힌 transaction 안에서 catch-and-continue를 하다 마지막에 터진다.
+expected_queries:
+- TransactionTemplate은 @Transactional의 대체재야 아니면 특정 경계용 도구야?
+- 반복 처리에서 부분 commit과 retry transaction boundary를 어떻게 명시해?
+- TransactionTemplate으로 rollback-only propagation을 피할 수 있는 상황은?
+- programmatic transaction을 service layer boundary와 어떻게 같이 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 TransactionTemplate을 선언형 transaction의 일반 대체재가 아니라 반복 처리,
+  partial commit, retry, async boundary처럼 method-level @Transactional만으로는 표현이
+  어색한 상황에서 명시적으로 boundary를 자르는 도구로 설명한다.
+---
 # Spring `TransactionTemplate` and Programmatic Transaction Boundaries
 
 > 한 줄 요약: `TransactionTemplate`은 선언형 트랜잭션의 대체재가 아니라, 반복 처리·부분 커밋·재시도·비동기 경계처럼 메서드 단위 `@Transactional`만으로는 표현이 어색한 상황에서 명시적으로 경계를 자르는 도구다.

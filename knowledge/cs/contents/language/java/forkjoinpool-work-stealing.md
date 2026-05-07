@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: ForkJoinPool Work-Stealing
+concept_id: language/forkjoinpool-work-stealing
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- forkjoinpool
+- common-pool
+- work-stealing
+aliases:
+- ForkJoinPool work stealing
+- Java commonPool
+- RecursiveTask RecursiveAction
+- ManagedBlocker
+- parallelStream common pool
+- work stealing deque
+- ForkJoinPool starvation
+symptoms:
+- ForkJoinPool을 일반 ExecutorService와 같은 queue worker 모델로 보고 worker deque와 work-stealing의 의미를 놓쳐
+- parallelStream이나 CompletableFuture commonPool에 blocking IO, lock wait, 긴 임계영역을 섞어 starvation을 만든다
+- fork join task granularity를 너무 작거나 크게 잡아 scheduling overhead나 낮은 parallelism을 만든다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/executor-sizing-queue-rejection-policy
+next_docs:
+- language/completablefuture-execution-model-common-pool-pitfalls
+- language/virtual-threads-project-loom
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+confusable_with:
+- language/executor-sizing-queue-rejection-policy
+- language/completablefuture-execution-model-common-pool-pitfalls
+- language/virtual-threads-project-loom
+forbidden_neighbors: []
+expected_queries:
+- ForkJoinPool work stealing이 worker deque와 steal count로 동작하는 방식을 설명해줘
+- parallelStream이나 CompletableFuture commonPool에 blocking IO를 넣으면 왜 starvation이 생길 수 있어?
+- ForkJoinPool RecursiveTask에서 fork join task granularity를 어떻게 생각해야 해?
+- ManagedBlocker는 ForkJoinPool blocking 문제를 어떻게 완화하는 도구야?
+- work-stealing pool과 일반 fixed thread pool을 언제 구분해서 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 ForkJoinPool을 worker deque, work-stealing, commonPool, RecursiveTask/RecursiveAction, ManagedBlocker, blocking I/O starvation 관점으로 설명하는 advanced deep dive다.
+  ForkJoinPool, work stealing, commonPool, parallelStream, ManagedBlocker, starvation 질문이 본 문서에 매핑된다.
+---
 # ForkJoinPool Work-Stealing
 
 > 한 줄 요약: `ForkJoinPool`은 worker deque를 활용한 work-stealing으로 작은 작업을 효율적으로 분산하지만, blocking I/O나 긴 임계영역이 섞이면 오히려 starvation을 만들 수 있다.

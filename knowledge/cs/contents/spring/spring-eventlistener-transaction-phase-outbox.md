@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring EventListener, TransactionalEventListener, and Outbox
+concept_id: spring/eventlistener-transaction-phase-outbox
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- eventlistener-transaction-phase
+- outbox
+- eventlistener
+- transactionaleventlistener
+aliases:
+- Spring EventListener
+- TransactionalEventListener
+- AFTER_COMMIT
+- BEFORE_COMMIT
+- outbox pattern Spring
+- fallbackExecution
+- event listener transaction boundary
+- domain events outbox
+intents:
+- design
+- troubleshooting
+symptoms:
+- @EventListener가 transaction rollback 전에도 외부 I/O를 실행해 DB 상태와 부작용이 어긋난다.
+- @TransactionalEventListener phase를 잘못 골라 commit 전/후 후속 작업 경계가 흐려진다.
+- process crash 때문에 DB commit과 broker publish 사이 이벤트가 유실될 수 있다.
+linked_paths:
+- contents/spring/spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md
+- contents/spring/spring-eventlistener-ordering-async-traps.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+expected_queries:
+- @EventListener와 @TransactionalEventListener는 트랜잭션 경계가 어떻게 달라?
+- AFTER_COMMIT listener는 어떤 후속 작업에 적합해?
+- 이벤트 발행과 DB commit 사이 정합성을 outbox로 해결하는 이유는?
+- fallbackExecution은 transaction이 없을 때 어떤 위험을 만들어?
+contextual_chunk_prefix: |
+  이 문서는 Spring ApplicationEvent의 @EventListener 즉시 실행,
+  @TransactionalEventListener BEFORE_COMMIT/AFTER_COMMIT/AFTER_ROLLBACK phase,
+  fallbackExecution, transaction boundary, external side effect, outbox pattern을
+  함께 다루는 delivery consistency playbook이다.
+---
 # Spring EventListener, TransactionalEventListener, and Outbox
 
 > 한 줄 요약: 이벤트를 "언제" 처리하느냐는 단순한 실행 시점 문제가 아니라, 트랜잭션 경계와 정합성 경계를 어디에 둘지 결정하는 문제다.

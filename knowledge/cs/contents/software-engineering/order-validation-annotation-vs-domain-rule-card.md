@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Order Validation Annotation vs Domain Rule Test Card
+concept_id: software-engineering/order-validation-annotation-vs-domain-rule
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- validation
+- domain-rule
+- controller-test
+- unit-test
+aliases:
+- Order Validation Annotation vs Domain Rule Test Card
+- @Valid vs domain rule order
+- binding error vs domain invariant order
+- WebMvcTest vs unit test validation
+- 주문 validation 400 vs business rule
+- 읽기 실패 controller 의미 실패 domain
+symptoms: []
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+- spring/spring-validation-binding-error-pipeline
+next_docs:
+- software-engineering/controller-contract-vs-service-rule-first-test-mini-card
+- software-engineering/service-layer-basics
+- spring/spring-validation-binding-error-pipeline
+linked_paths:
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+- contents/software-engineering/controller-contract-vs-service-rule-first-test-mini-card.md
+- contents/software-engineering/service-layer-basics.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+confusable_with:
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+- software-engineering/controller-contract-vs-service-rule-first-test-mini-card
+- spring/spring-validation-binding-error-pipeline
+forbidden_neighbors: []
+expected_queries:
+- 주문 생성에서 @Valid와 binding error는 controller test로, 재고 부족이나 취소 주문 결제는 unit test로 보는 이유가 뭐야?
+- 읽기 실패는 controller, 의미 실패는 domain이라는 validation boundary를 초심자에게 설명해줘
+- quantity null은 @WebMvcTest 400으로 테스트하고 stock 부족은 service/domain 단위 테스트로 나누는 예시를 보여줘
+- 400 Bad Request가 난다고 모두 controller validation 문제는 아닌 이유를 알려줘
+- controller에서도 재고를 검사하는 것보다 domain rule을 service/entity 안쪽에 남겨야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 주문 예시에서 @Valid/binding error와 domain invariant를 구분하고 첫 failing test를 WebMvcTest와 unit test 중 어디에 둘지 고르는 beginner chooser이다.
+---
 # 주문 예시로 보는 `@Valid`/바인딩 에러 vs 도메인 규칙 첫 테스트 카드
 
 > 한 줄 요약: 주문 생성에서 `@Valid`와 바인딩 에러는 "요청을 읽을 수 있는가"를 묻고, 도메인 규칙은 "읽힌 요청이 지금 주문 상태에서 허용되는가"를 묻기 때문에 첫 테스트도 `@WebMvcTest`와 단위 테스트로 갈라진다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Succinct Bitvector Rank/Select
+concept_id: data-structure/succinct-bitvector-rank-select
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- succinct-bitvector
+- rank-select
+- compressed-index-primitive
+aliases:
+- succinct bitvector rank select
+- rank select bitvector
+- RRR bitvector
+- compressed bitvector index
+- bitvector rank query
+- bitvector select query
+- succinct index primitive
+symptoms:
+- compressed bitmap과 plain BitSet을 membership 관점으로만 보고 rank(i), select(k)가 필요한 압축 인덱스 primitive를 놓친다
+- Elias-Fano와 Wavelet Tree가 빠른 rank/select bitvector에 의존한다는 연결을 이해하지 못한다
+- update가 잦은 mutable workload에 succinct bitvector를 적용하려 해 build와 재구성 비용을 과소평가한다
+intents:
+- deep_dive
+- comparison
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/elias-fano-encoded-posting-list
+next_docs:
+- data-structure/wavelet-tree
+- data-structure/roaring-bitmap-selection-playbook
+- data-structure/bit-sliced-bitmap-index
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/elias-fano-encoded-posting-list.md
+- contents/data-structure/wavelet-tree.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/roaring-bitmap
+- data-structure/elias-fano-encoded-posting-list
+- data-structure/wavelet-tree
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+forbidden_neighbors: []
+expected_queries:
+- succinct bitvector의 rank와 select는 compressed index에서 왜 중요한 primitive야?
+- rank(i)와 select(k)를 빠르게 지원하면 Elias-Fano와 Wavelet Tree가 어떻게 가능해져?
+- plain BitSet과 Roaring Bitmap과 succinct bitvector는 목적이 어떻게 달라?
+- 압축 상태에서 k번째 1 위치를 찾는 select query는 왜 보조 인덱스가 필요해?
+- immutable compressed index에서 rank/select bitvector를 쓰고 mutable update에는 조심해야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 succinct bitvector를 거의 압축된 크기로 저장하면서 rank(i)와
+  select(k)를 빠르게 지원하는 compressed index primitive로 설명한다. Elias-Fano,
+  Wavelet Tree, posting list, Roaring Bitmap과의 역할 차이를 다룬다.
+---
 # Succinct Bitvector Rank/Select
 
 > 한 줄 요약: Succinct Bitvector with rank/select는 비트열을 거의 정보이론적 크기로 저장하면서 `rank`와 `select` 질의를 빠르게 지원해, 압축 인덱스의 기본 부품이 되는 자료구조다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Backend Delivery and Observability Foundations Primer
+concept_id: software-engineering/backend-delivery-observability-foundations-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- backend-delivery-observability
+- logs-metrics-feature-flag-rollout
+- rollback-incident-response
+aliases:
+- backend delivery observability primer
+- logs vs metrics beginner
+- feature flag vs deploy
+- deploy vs release
+- rollout rollback canary
+- incident response beginner
+- 운영 용어 큰 그림
+- 로그랑 메트릭 차이
+- 배포와 릴리스 차이
+symptoms:
+- logs metrics feature flag rollout rollback을 각각 따로 외워 변경 안전장치 흐름으로 연결하지 못한다
+- deploy와 release를 같은 말로 보고 feature flag가 왜 필요한지 이해하지 못한다
+- 이상 징후가 생겼을 때 rollback, flag off, rollout 축소 중 무엇을 먼저 할지 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/cache-message-observability
+- software-engineering/feature-flag-dependency-management
+- software-engineering/deployment-rollout-strategy
+- software-engineering/incident-review-learning-loop
+linked_paths:
+- contents/software-engineering/cache-message-observability.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/system-design/system-design-foundations.md
+confusable_with:
+- software-engineering/cache-message-observability
+- software-engineering/feature-flag-dependency-management
+- software-engineering/deployment-rollout-strategy
+- software-engineering/incident-review-learning-loop
+forbidden_neighbors: []
+expected_queries:
+- logs와 metrics는 운영에서 각각 어떤 질문에 답해?
+- deploy와 release를 feature flag로 분리한다는 말이 무슨 뜻이야?
+- rollout, canary, rollback은 변경 위험을 어떻게 줄여?
+- 이상 징후가 보이면 flag off, rollout 축소, rollback 중 무엇을 먼저 봐야 해?
+- backend delivery와 observability를 숨기기 조금만 열기 보기 줄이기 배우기 흐름으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 backend delivery와 observability beginner primer로, feature flag,
+  deploy vs release, rollout, canary, logs, metrics, rollback, incident response를
+  안전하게 바꾸고 빨리 알아차리는 한 흐름으로 연결한다.
+---
 # Backend Delivery and Observability Foundations Primer
 
 > 한 줄 요약: 백엔드 운영 입문에서는 `변경을 내보낸다 -> 조금만 연다 -> 신호를 본다 -> 이상하면 빨리 줄이거나 끈다` 흐름으로 logs, metrics, feature flag, rollout, rollback, incident response를 한 묶음으로 보는 편이 가장 덜 헷갈린다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "HTTP/1.1 vs HTTP/2 vs HTTP/3 Beginner Comparison"
+concept_id: network/http1-http2-http3-beginner-comparison
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- http-version-comparison
+- beginner-http
+- transport-mental-model
+aliases:
+- HTTP/1.1 vs HTTP/2 vs HTTP/3
+- H1 H2 H3 difference
+- HTTP version comparison
+- connection reuse vs multiplexing
+- TCP HOL vs QUIC streams
+- why HTTP/3 QUIC
+- HTTP/2 HTTP/3 difference
+symptoms:
+- HTTP 버전을 최신 순서 암기로만 보고 connection과 stream 차이를 놓친다
+- HTTP/2 multiplexing과 HTTP/3 QUIC의 transport 차이를 구분하지 못한다
+- H3 최종 실패 후 H2 fallback을 HTTP/3가 항상 느리다는 증거로 본다
+intents:
+- comparison
+- definition
+- deep_dive
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/tcp-udp-basics
+next_docs:
+- network/http-versions-beginner-overview
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http2-multiplexing-hol-blocking
+- network/http2-http3-connection-reuse-coalescing
+linked_paths:
+- contents/network/http-versions-beginner-overview.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/tcp-udp-basics.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http2-http3-downgrade-attribution-alt-svc-udp-block.md
+confusable_with:
+- network/http-versions-beginner-overview
+- network/http2-multiplexing-hol-blocking
+- network/http3-quic-practical-tradeoffs
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/1.1 HTTP/2 HTTP/3 차이를 초보자에게 비교해줘"
+- "HTTP/2는 한 TCP 연결에 여러 stream을 싣고 HTTP/3는 QUIC을 쓰는 차이를 설명해줘"
+- "HTTP/2 HOL blocking과 HTTP/3 QUIC stream 차이는 뭐야?"
+- "HTTP 버전 비교에서 connection reuse multiplexing fallback을 어떻게 봐야 해?"
+- "왜 HTTP/3가 무조건 더 빠르다고 단정하면 안 돼?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/1.1, HTTP/2, HTTP/3를 connection count,
+  multiplexing, TCP HOL, QUIC stream, fallback 관점으로 비교하는 beginner
+  chooser다.
+---
 # HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교
 
 

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Optional List Empty Collection Symptom Card
+concept_id: language/optional-list-empty-collection-symptom-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional
+- collection
+- null-handling
+aliases:
+- Optional List Empty Collection Symptom Card
+- Optional<List<T>> vs empty collection
+- Optional list beginner
+- Optional collection absence
+- empty list vs Optional list
+- Optional<List> 빈 컬렉션 차이
+symptoms:
+- 여러 건 결과가 0개일 수 있다는 이유로 Optional<List<T>>를 반환해 바깥 Optional과 안쪽 List empty를 모두 확인하게 만들어
+- Optional은 한 건의 없음이고 List Set Map은 0개 이상을 표현한다는 shape 차이를 구분하지 못해
+- 목록 자체가 로드되지 않음과 로드됐지만 비어 있음의 차이가 정말 필요한데 상태 타입 대신 Optional<List<T>>에 의미를 숨겨
+- 빈 컬렉션을 null과 비슷한 실패 상태로 오해해 정상적인 0개 결과를 예외 흐름으로 처리해
+intents:
+- troubleshooting
+- comparison
+- design
+prerequisites:
+- language/java-optional-basics
+- language/java-collections-basics
+- language/optional-collections-domain-null-handling-bridge
+next_docs:
+- language/optional-field-parameter-antipattern-card
+- language/optional-boolean-double-absence-follow-up-card
+- software-engineering/dto-vo-entity-basics
+linked_paths:
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/optional-field-parameter-antipattern-card.md
+- contents/software-engineering/dto-vo-entity-basics.md
+confusable_with:
+- language/optional-collections-domain-null-handling-bridge
+- language/optional-field-parameter-antipattern-card
+- language/optional-boolean-double-absence-follow-up-card
+forbidden_neighbors: []
+expected_queries:
+- Optional<List<T>>보다 빈 List를 반환하는 게 더 좋은 경우를 beginner 기준으로 설명해줘
+- Optional은 한 건의 없음이고 컬렉션은 0개 이상이라는 shape 차이를 알려줘
+- Optional<List<T>>를 쓰면 바깥 Optional empty와 안쪽 List empty를 왜 둘 다 봐야 해서 헷갈려?
+- 목록이 아직 로드 안 됨과 로드됐지만 비어 있음이 다르면 어떤 상태 타입을 고려해야 해?
+- empty collection은 null이 아니라 정상적인 0개 결과라는 점을 예제로 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Optional<List<T>>와 empty collection 혼동을 여러 건 결과의 0개와 한 건의 absence로 분리하는 beginner symptom router다.
+  Optional List, empty collection, Optional collection, 0개 결과, absence shape 질문이 본 문서에 매핑된다.
+---
 # `Optional<List<T>>` vs 빈 컬렉션 증상 카드
 
 > 한 줄 요약: 여러 건 결과에서 "0개"는 보통 빈 컬렉션이 이미 표현하므로, `Optional<List<T>>`는 "목록 자체가 없음"과 "목록이 비어 있음"을 한 번 더 감싸서 초보자 질문만 늘리기 쉽다.

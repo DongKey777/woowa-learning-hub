@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Cache Invalidation Patterns Primer
+concept_id: system-design/cache-invalidation-patterns-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- cache-stale-value-debugging
+- post-write-read-freshness
+- cache-stampede-prevention
+aliases:
+- cache invalidation patterns
+- cache invalidation primer
+- 캐시 무효화 패턴
+- TTL delete-on-write write-through
+- versioned keys cache
+- cache stampede
+- stale while revalidate
+- 저장했는데 예전 값
+symptoms:
+- 저장 직후 읽었는데 캐시 때문에 예전 값이 보이는 이유를 못 가르고 있어
+- TTL, delete-on-write, write-through, versioned key를 모두 같은 캐시 삭제 방식으로 섞고 있어
+- hot key 만료 순간 DB로 요청이 몰리는 stampede를 단순 miss로만 보고 있어
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/caching-basics
+- system-design/caching-vs-read-replica-primer
+next_docs:
+- system-design/distributed-cache-design
+- system-design/cache-admission-policy-design
+- system-design/mixed-cache-replica-read-path-pitfalls
+- system-design/list-detail-monotonicity-bridge
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/read-only-and-graceful-degradation-patterns.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/cache-admission-policy-design.md
+confusable_with:
+- system-design/caching-vs-read-replica-primer
+- system-design/read-after-write-consistency-basics
+- system-design/distributed-cache-design
+forbidden_neighbors: []
+expected_queries:
+- 캐시 무효화는 TTL, delete-on-write, write-through 중 무엇부터 골라야 해?
+- 저장했는데 예전 값이 보이면 cache invalidation에서 어디를 먼저 봐야 해?
+- cache stampede는 단순 cache miss와 무엇이 달라?
+- versioned key를 쓰면 cache purge 누락 문제가 어떻게 줄어들어?
+- write 직후 최신성이 중요한 화면에서 TTL만 쓰면 왜 위험할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 cache invalidation beginner primer로, TTL, delete-on-write, write-through, versioned keys, stampede-safe refresh를 stale value와 post-write freshness 관점에서 비교한다.
+  저장했는데 예전 값, 캐시가 옛값, TTL vs delete-on-write, cache stampede, stale while revalidate 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Cache Invalidation Patterns Primer
 
 > 한 줄 요약: TTL, delete-on-write, write-through, versioned keys, stampede-safe refresh를 "언제 옛 값을 버리고 어떻게 다시 채울지" 관점에서 설명하는 입문 문서다.

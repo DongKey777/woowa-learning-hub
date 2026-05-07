@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > baseball에서 `POST /games`, `POST /games/{id}/guesses`, `POST /games/{id}/restart`가 상태를 바꿨다면, 결과 화면은 그 POST 응답에서 바로 끝내기보다 redirect 뒤 GET으로 다시 여는 편이 새로고침 때 같은 상태 변경이 재생되는 혼선을 줄인다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "추측 성공 화면에서 F5를 누르면 같은 guess가 다시 들어갈까 봐 불안해요" | `POST /games/{id}/guesses` 응답에서 바로 게임 화면을 렌더하는 구조 | 상태 변경 POST 뒤에는 현재 게임 GET으로 redirect해 새로고침 대상을 바꾼다 |
+| "재시작 POST 뒤 주소창이 그대로라 브라우저가 재전송을 물어봐요" | 게임 시작/재시작/추측이 모두 POST view 응답으로 끝나는 baseball 화면 | 결과 화면은 다시 조회 가능한 GET 주소를 갖게 한다 |
+| "PRG를 넣으면 같은 추측 중복 저장도 끝나나요?" | 더블클릭이나 timeout retry가 redirect 전에 이미 들어오는 요청 흐름 | PRG는 브라우저 refresh 경계이고 저장소 dedup은 별도 방어선이다 |
+
 ## 미션 시나리오
 
 console baseball에서는 입력 한 번이 메서드 호출 한 번으로 곧장 이어지니 "방금 실행한 명령을 브라우저가 다시 보낼 수 있다"는 감각이 약하다. 하지만 Spring MVC로 옮기면 게임 시작, 추측, 재시작이 모두 POST 요청이 된다. 이때 처음 구현에서는 controller가 POST를 처리한 직후 모델을 채워 게임 화면을 바로 렌더하기 쉽다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 미션 코드 독해용 DB 체크리스트
+concept_id: database/mission-code-reading-db-checklist
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- mission-db-review-checklist
+- transaction-access-technology-index
+- repository-sql-index-first-pass
+aliases:
+- mission code reading db checklist
+- backend mission db review checklist
+- 미션 코드 독해 DB 체크리스트
+- DB 리뷰 전 점검표
+- transaction boundary access technology index
+- JPA JDBC MyBatis 확인 순서
+- repository mapper entity manager
+- explain before review
+symptoms:
+- DB 관련 PR을 볼 때 트랜잭션 문제인지 접근 기술 문제인지 인덱스 문제인지 먼저 분류하지 못하고 있어
+- Repository라는 이름만 보고 JPA인지 MyBatis인지 JDBC인지 확인하지 않고 리뷰하고 있어
+- 조회 성능 코멘트를 남기면서 WHERE, JOIN, ORDER BY와 인덱스 축을 같이 보지 않고 있어
+intents:
+- troubleshooting
+- mission_bridge
+- design
+prerequisites:
+- database/database-first-step-bridge
+- database/transaction-basics
+- database/index-basics
+next_docs:
+- database/transaction-boundary-external-io-checklist
+- database/jdbc-jpa-mybatis-basics
+- database/index-and-explain
+- spring/transactional-basics
+linked_paths:
+- contents/database/database-first-step-bridge.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/index-basics.md
+- contents/database/index-and-explain.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/transaction-boundary-external-io-checklist
+- database/jdbc-jpa-mybatis-basics
+- database/index-and-explain
+forbidden_neighbors: []
+expected_queries:
+- DB 관련 미션 코드를 리뷰하기 전에 트랜잭션 경계, 접근 기술, 인덱스를 어떤 순서로 봐야 해?
+- Repository가 보이면 JPA, MyBatis, JDBC 중 무엇인지 어떻게 확인해?
+- @Transactional 안에서 외부 HTTP 호출이 보이면 DB 리뷰에서 어떤 메모를 남겨야 해?
+- findByMemberIdOrderByCreatedAtDesc 같은 조회에서 어떤 인덱스 축을 의심해?
+- PR 코멘트 전에 DB 관련 위험을 5분 안에 분류하는 체크리스트가 필요해
+contextual_chunk_prefix: |
+  이 문서는 backend mission DB code-reading playbook으로, transaction boundary, access technology(JPA/JDBC/MyBatis), WHERE/JOIN/ORDER BY index axis를 5분 안에 먼저 고정한다.
+  미션 코드 DB 리뷰, repository mapper 구분, @Transactional 경계, 인덱스 리뷰 메모, explain before review 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 미션 코드 독해용 DB 체크리스트
 
 > 한 줄 요약: 리뷰 전에 5분만 써서 `트랜잭션 경계`, `접근 기술`, `인덱스` 3가지를 먼저 고정하면, DB 관련 PR 코멘트가 훨씬 덜 흔들린다.

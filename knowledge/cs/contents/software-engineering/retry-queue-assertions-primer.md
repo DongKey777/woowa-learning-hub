@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Primer On Retry Queue Assertions
+concept_id: software-engineering/retry-queue-assertions
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- retry
+- batch-testing
+- failure-classification
+- queue
+aliases:
+- retry queue assertions primer
+- item failure assertion basics
+- retry candidate assertion beginner
+- manual review assertion
+- terminal failure assertion
+- 재시도 큐 테스트 기초
+symptoms:
+- retryable, manual-review, terminal failure를 같은 assertion으로만 검사해서 다음 행동 경로가 섞여도 테스트가 통과해
+- RetryCandidate에 원래 itemId나 sourceIndex가 빠져 재처리 시 어떤 item을 다시 다뤄야 하는지 잃어버려
+- manual review 대상이 retry queue에 들어가거나 terminal failure가 재시도 후보가 되는 회귀를 테스트가 잡지 못해
+intents:
+- troubleshooting
+- design
+- drill
+prerequisites:
+- software-engineering/retry-reason-taxonomy
+- software-engineering/testing-named-bulk-contracts
+next_docs:
+- software-engineering/batch-result-testing
+- software-engineering/batch-recovery-runbook
+- software-engineering/bulk-idempotency-keys
+linked_paths:
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/retry-reason-taxonomy-primer.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/bulk-idempotency-keys-for-named-contracts.md
+- contents/software-engineering/http-coalescing-failure-mapping.md
+confusable_with:
+- software-engineering/retry-reason-taxonomy
+- software-engineering/batch-result-testing
+- software-engineering/batch-partial-failure
+forbidden_neighbors: []
+expected_queries:
+- retry queue 테스트에서 retryable, manual-review, terminal failure를 각각 어떤 assertion으로 고정해야 해?
+- ItemFailure가 RetryCandidate가 될 때 stable itemId나 sourceIndex를 잃지 않는지 왜 검증해야 해?
+- manual review failure가 retry queue에 섞이지 않는다는 테스트는 어떻게 작성해?
+- terminal failure가 자동 재시도 후보가 되지 않도록 어떤 beginner assertion을 먼저 둬야 해?
+- batch 실패를 다음 경로로 번역하는 테스트에서 fake, mock, stub은 어떻게 고르면 돼?
+contextual_chunk_prefix: |
+  이 문서는 ItemFailure를 retryable, manual-review, terminal failure와 stable item identifier 관점에서 검증하는 beginner batch testing playbook이다.
+---
 # Primer On Retry Queue Assertions
 
 > 한 줄 요약: `ItemFailure`를 받았다면 초심자 테스트는 "retryable인가", "manual review인가", "terminal failure인가", "원래 item을 잃지 않았는가" 네 질문부터 고정하면 된다.

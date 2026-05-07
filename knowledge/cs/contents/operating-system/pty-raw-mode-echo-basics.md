@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: PTY Raw Mode Echo Basics
+concept_id: operating-system/pty-raw-mode-echo-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- pty-raw-mode
+- echo
+- canonical-non-canonical
+- terminal-mode
+aliases:
+- PTY raw mode echo
+- canonical non-canonical terminal mode
+- echo off
+- interactive CLI PTY
+- terminal line discipline
+- pseudo tty raw mode
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+- contents/operating-system/tty-aware-output-capture-patterns.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/ci-log-merge-behavior-primer.md
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+expected_queries:
+- PTY에서 raw mode와 canonical mode, echo는 무엇을 결정해?
+- interactive CLI는 왜 pipe보다 PTY에서 다르게 동작해?
+- vim이나 shell line editor가 raw/non-canonical echo off를 쓰는 이유는?
+- PTY면 interactive하다는 말을 terminal mode와 line discipline으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 PTY에서 terminal mode가 문자를 언제 program에 넘길지와 입력을 화면에 다시 echo할지
+  결정한다는 점을 설명한다. canonical mode, raw/non-canonical mode, echo on/off를 초급자에게
+  연결한다.
+---
 # PTY Raw Mode and Echo Basics
 
 > 한 줄 요약: PTY에서는 "문자를 언제 프로그램에 넘길지"와 "내가 친 글자를 화면에 다시 보여 줄지"를 terminal mode가 결정한다. simple line-oriented CLI는 보통 canonical mode + echo 위에서 동작하고, shell의 line editor나 `vim` 같은 full-screen app은 raw/non-canonical + echo off 쪽으로 바꿔서 동작한다.

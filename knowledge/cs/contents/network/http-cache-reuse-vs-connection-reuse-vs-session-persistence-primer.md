@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문"
+concept_id: network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- cache-connection-session-separation
+- beginner-http-reuse-vocabulary
+- keepalive-not-login
+aliases:
+- cache reuse vs connection reuse
+- keep-alive vs session
+- cache keep-alive session
+- 304 vs cookie
+- session persistence basics
+- http cache body reuse
+symptoms:
+- keep-alive가 로그인 유지 기능이라고 오해한다
+- 304 Not Modified를 session이 살아 있다는 신호로 읽는다
+- memory cache가 보이면 같은 TCP connection을 재사용했다고 단정한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+- network/keepalive-connection-reuse-basics
+- security/signed-cookies-server-sessions-jwt-tradeoffs
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/keepalive-connection-reuse-basics.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+confusable_with:
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+- network/keepalive-connection-reuse-basics
+- network/http-state-session-cache
+forbidden_neighbors: []
+expected_queries:
+- "cache reuse connection reuse session persistence 차이를 초급 기준으로 설명해줘"
+- "keep-alive가 로그인 유지가 아닌 이유와 session cookie 차이를 알려줘"
+- "304 Not Modified와 JSESSIONID cookie는 각각 어떤 재사용 신호야?"
+- "memory cache가 보이면 같은 TCP 연결을 재사용했다는 뜻이야?"
+- "HTTP cache와 keep-alive와 session을 한 요청 흐름에서 분리해줘"
+contextual_chunk_prefix: |
+  이 문서는 cache reuse는 response body, connection reuse는 TCP/TLS
+  connection, session persistence는 user/login state를 다시 쓰는 것이라는
+  차이를 설명하는 beginner HTTP vocabulary primer다.
+---
 # HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문
 
 > 한 줄 요약: `cache reuse`, `connection reuse`, `session persistence`는 모두 "이전 것을 다시 쓴다"처럼 들리지만, 각각 다시 쓰는 대상이 응답 본문, TCP 연결, 로그인 상태로 다르다.

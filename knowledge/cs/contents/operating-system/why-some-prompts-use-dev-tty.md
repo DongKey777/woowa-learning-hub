@@ -54,6 +54,9 @@ confusable_with:
 - operating-system/subprocess-stdin-eof-primer
 - operating-system/tty-aware-output-capture-patterns
 forbidden_neighbors:
+- contents/operating-system/pty-raw-mode-echo-basics.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/shell-wrapper-boundary-primer.md
 expected_queries:
 - echo로 비밀번호를 pipe 했는데 왜 CLI가 계속 직접 입력하라고 묻는 거야?
 - 어떤 프로그램은 stdin 말고 /dev/tty에서 질문을 받는 이유를 쉽게 설명해줘

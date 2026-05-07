@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring AFTER_COMMIT and Rollback Slice Test Mini Card
+concept_id: spring/after-commit-rollback-slice-test-mini-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- after-commit-rollback
+- slice-test
+- after-commit-test
+- transactionaleventlistener-after-commit
+aliases:
+- AFTER_COMMIT test
+- TransactionalEventListener after commit
+- rollback slice test
+- DataJpaTest after commit
+- TestTransaction end
+- flush is not commit
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/spring/spring-transactional-test-rollback-misconceptions.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+expected_queries:
+- @TransactionalEventListener AFTER_COMMIT이 DataJpaTest에서 왜 안 돌아?
+- flush를 했는데 after commit listener가 실행되지 않는 이유가 뭐야?
+- rollback 기반 slice test로 commit 이후 동작을 검증해도 돼?
+- TestTransaction.end를 언제 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 @TransactionalEventListener(AFTER_COMMIT), flush와 commit 차이,
+  @DataJpaTest rollback 기본값, TestTransaction.end와 @Commit을 beginner 관점에서
+  분리한다. listener가 안 도는 이유가 로직 버그인지 commit이 없어서인지 먼저
+  가르는 mini primer다.
+---
 # Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가
 
 > 한 줄 요약: `@TransactionalEventListener(AFTER_COMMIT)`는 **정말 commit이 끝났을 때만** 실행되므로, 기본이 rollback인 `@DataJpaTest` 같은 slice test는 "리스너 로직이 맞다"보다 "애초에 commit이 없었다"를 더 많이 검증한다.

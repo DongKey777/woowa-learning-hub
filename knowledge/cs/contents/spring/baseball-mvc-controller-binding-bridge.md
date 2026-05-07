@@ -21,6 +21,10 @@ aliases:
 - 콘솔 야구 → HTTP
 - 야구 게임 RequestBody 바인딩
 - baseball 입력 검증 MVC
+- baseball 게임 상태 매 요청 유지
+- baseball session vs DB
+- stateless HTTP game state
+- gameId path vs session state
 intents:
 - mission_bridge
 - design
@@ -30,13 +34,27 @@ linked_paths:
 - contents/spring/spring-mvc-controller-basics.md
 - contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
 - contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/baseball-game-id-session-boundary-bridge.md
+- contents/spring/baseball-game-state-singleton-bean-scope-bridge.md
 forbidden_neighbors:
 - contents/spring/spring-requestbody-400-before-controller-primer.md
+confusable_with:
+- spring/mvc-controller-basics
+- spring/modelattribute-vs-requestbody-binding-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/baseball-game-id-session-boundary-bridge
 expected_queries:
 - 콘솔 야구를 Spring MVC로 옮기면 입력 처리는 어디서 해?
 - 3자리 숫자 추측을 RequestBody로 받을 때 어떻게 검증해?
-- @ModelAttribute랑 @RequestBody 중 야구 미션엔 뭐가 맞아?
+- "@ModelAttribute랑 @RequestBody 중 야구 미션엔 뭐가 맞아?"
 - BindingResult를 Controller에서 어떻게 다뤄야 해?
+- baseball 게임 상태를 매 요청마다 어떻게 유지해? 세션? DB?
+contextual_chunk_prefix: |
+  이 문서는 baseball 콘솔 미션을 Spring MVC로 옮길 때 입력 binding뿐 아니라
+  stateless HTTP에서 gameId, session, DB 중 어디에 게임 상태를 둘지 묻는 mission
+  bridge query를 받는다. Controller는 요청 DTO와 path/session 식별자를 받고,
+  매 요청마다 필요한 game state는 singleton bean 필드가 아니라 session 또는 DB에
+  두어야 한다는 boundary를 함께 설명한다.
 ---
 
 # baseball 미션을 Spring MVC로 옮길 때 Controller binding/validation 어떻게 다루나
@@ -46,6 +64,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: baseball (Woowa Java 트랙) — 콘솔 → MVC 마이그레이션
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "콘솔 야구의 `Scanner.nextLine()`을 Spring에서는 어디로 옮겨요?" | 입력 수집, 문자열 파싱, 게임 판정이 controller에 한꺼번에 들어간 코드 | HTTP 요청 바인딩과 도메인 `Guess` 생성 책임을 분리한다 |
+| "3자리 숫자 형식 검증과 중복 없음 규칙을 둘 다 `@Valid`로 처리하나요?" | `@Pattern`과 도메인 불변식이 한 DTO annotation 묶음으로 섞인 구조 | 형식 검증은 controller 입구, 3자리/중복 없음/1-9 규칙은 도메인으로 본다 |
+| "게임 상태는 controller 필드에 둬도 되나요?" | 콘솔 객체 수명을 웹 singleton/controller 필드 수명으로 그대로 옮기는 시도 | 요청마다 gameId/session/DB로 같은 게임을 다시 찾는 경계를 세운다 |
 
 관련 문서:
 

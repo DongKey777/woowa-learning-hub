@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Event Schema Versioning and Compatibility
+concept_id: software-engineering/event-schema-versioning
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- event-schema
+- versioning
+- compatibility
+- replay
+aliases:
+- Event Schema Versioning and Compatibility
+- event schema compatibility
+- event envelope versioning
+- replay compatibility event schema
+- publisher consumer compatibility
+- 이벤트 스키마 버전 호환성
+symptoms:
+- event schemaVersion은 올렸지만 old consumer가 새 필드를 무시할 수 있는지, new consumer가 old event를 읽을 수 있는지 검증하지 않아
+- replay, backfill, projection rebuild가 과거 이벤트 버전을 다시 읽을 때 nullable field, enum expansion, strict parser 때문에 깨져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/outbox-inbox-domain-events
+next_docs:
+- software-engineering/event-sourcing-cqrs
+- software-engineering/domain-invariants-as-contracts
+- software-engineering/contract-drift-governance
+linked_paths:
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+- contents/software-engineering/event-sourcing-cqrs-adoption-criteria.md
+confusable_with:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/event-sourcing-cqrs
+forbidden_neighbors: []
+expected_queries:
+- 이벤트 스키마 버전 관리는 API 버전보다 왜 더 보수적으로 해야 하는지 설명해줘
+- backward compatible와 forward compatible event schema를 publisher consumer 관점에서 비교해줘
+- OrderPlaced 이벤트에 optional field나 enum 값을 추가할 때 어떤 순서로 배포해야 해?
+- replay와 backfill이 과거 이벤트를 다시 읽을 때 schemaVersion과 upcaster를 어떻게 설계해야 해?
+- envelope version과 payload version을 분리하면 event evolution에 어떤 장점이 있어?
+contextual_chunk_prefix: |
+  이 문서는 event schema versioning을 publisher/consumer compatibility, optional field, envelope, replay/backfill 안전성까지 포함해 다루는 advanced playbook이다.
+---
 # Event Schema Versioning and Compatibility
 
 > 한 줄 요약: 이벤트 스키마 버전 관리는 새 필드를 추가하는 일이 아니라, 발행자와 소비자가 서로 다른 버전을 동시에 읽고도 안전하게 수렴하게 만드는 일이다.

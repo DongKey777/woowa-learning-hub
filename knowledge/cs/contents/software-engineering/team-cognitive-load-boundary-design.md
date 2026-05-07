@@ -37,9 +37,9 @@ prerequisites:
 - software-engineering/service-ownership-catalog-boundaries
 - software-engineering/domain-capability-heatmap
 next_docs:
-- software-engineering/service-split-merge-absorb-evolution-framework
-- software-engineering/brownfield-strangler-org-model
-- software-engineering/architectural-governance-operating-model
+- software-engineering/service-split-merge-absorb-evolution
+- software-engineering/brownfield-strangler-org
+- software-engineering/architectural-governance
 linked_paths:
 - contents/software-engineering/organizational-coupling-conway-effects.md
 - contents/software-engineering/platform-team-product-team-capability-boundaries.md
@@ -50,8 +50,8 @@ linked_paths:
 - contents/software-engineering/service-split-merge-absorb-evolution-framework.md
 confusable_with:
 - software-engineering/organizational-coupling-conway-effects
-- software-engineering/platform-team-product-team-capability-boundaries
-- software-engineering/service-split-merge-absorb-evolution-framework
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/service-split-merge-absorb-evolution
 forbidden_neighbors: []
 expected_queries:
 - 팀 인지 부하 관점에서 서비스 경계를 다시 봐야 한다는 말은 정확히 뭘 측정하라는 거야?
@@ -60,12 +60,12 @@ expected_queries:
 - 플랫폼 팀이 복잡도를 줄여 주는지 오히려 경계를 더 무겁게 만드는지 어떻게 구분해?
 - 경계 재설계를 시작해야 하는 신호를 팀 운영 관점에서 정리해줘
 contextual_chunk_prefix: |
-  이 문서는 서비스 경계나 팀 토폴로지를 논의할 때 기술 구조보다 팀의
-  cognitive load를 먼저 보자는 deep dive다. 서비스 수는 적은데 승인 체인과
-  handoff가 너무 많다, 팀이 알아야 할 API와 운영 범위가 계속 늘어난다,
-  플랫폼이 accidental complexity를 줄이는지 새 규칙만 더하는지 헷갈린다
-  같은 표현을 경계 품질, coordination cost, ownership load 기준으로
-  해석하도록 돕는다.
+  이 문서는 서비스 경계가 기술적으로 예뻐 보여도 팀이 감당할 수 있는지,
+  cognitive load와 coordination cost 관점으로 깊이 잡는 deep_dive다.
+  서비스는 적은데 승인 체인만 길다, handoff가 너무 많다, 알아야 할 API와
+  운영 범위가 계속 늘어난다, 플랫폼이 복잡도를 줄이는지 규칙만 더하는지
+  헷갈린다, on-call 부담이 특정 팀에 몰린다 같은 자연어 paraphrase가 본
+  문서의 경계 품질 기준에 매핑된다.
 ---
 # Team Cognitive Load and Boundary Design
 

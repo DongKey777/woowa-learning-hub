@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Bitmap Locality Remediation Playbook
+concept_id: data-structure/bitmap-locality-remediation
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- bitmap-locality-remediation
+- roaring-hotspot-action
+- row-ordering-compaction-remap
+aliases:
+- bitmap locality remediation
+- roaring hotspot remediation
+- bitmap hotspot playbook
+- row ordering fix bitmap
+- ID remapping bitmap
+- runOptimize scheduling
+- bitmap compaction remediation
+symptoms:
+- profiling에서 bitmap hotspot은 보였지만 row ordering, compaction, ID remapping, runOptimize 중 무엇부터 바꿀지 모른다
+- container threshold나 runOptimize만 조정하면 locality 문제가 해결될 것이라고 보고 row-ID 배치 구조를 놓친다
+- late-arriving rows와 tombstone이 만든 drift인지 전체 ID layout 문제인지 분리하지 못한다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+next_docs:
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/late-arriving-rows-and-bitmap-maintenance
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+- data-structure/roaring-run-optimize-timing-guide
+linked_paths:
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/late-arriving-rows-and-bitmap-maintenance.md
+- contents/data-structure/warehouse-sort-key-co-design-for-bitmap-indexes.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/bit-sliced-bitmap-sort-key-sensitivity.md
+confusable_with:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/roaring-run-optimize-timing-guide
+forbidden_neighbors: []
+expected_queries:
+- Roaring bitmap hotspot이 잡힌 뒤 row ordering compaction remapping runOptimize 중 무엇부터 봐야 해?
+- bitmap locality 문제에서 container threshold보다 row-ID 배치를 먼저 봐야 하는 이유는?
+- late arriving rows와 tombstone이 bitmap run을 깨뜨릴 때 어떻게 remediation 해?
+- runOptimize를 hot path에서 바로 호출하면 왜 위험할 수 있어?
+- profiling 신호를 bitmap layout 변경 액션으로 번역하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 bitmap hotspot profiling 이후 실제 remediation 액션을 고르는
+  playbook이다. row ordering, batch compaction, ID remapping, runOptimize
+  scheduling을 같은 튜닝으로 보지 않고, row-ID 배치 구조와 lifecycle
+  boundary를 먼저 바로잡는 순서를 설명한다.
+---
 # Bitmap Locality Remediation Playbook
 
 > 한 줄 요약: profiling으로 bitmap hotspot이 잡힌 뒤에는 container 임계값보다 먼저 `row ordering`, `batch compaction`, `ID remapping`, `runOptimize()` handoff 시점을 workload lifecycle에 맞게 바로잡아야 locality가 실제로 회복된다.

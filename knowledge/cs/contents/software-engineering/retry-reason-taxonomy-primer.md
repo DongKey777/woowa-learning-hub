@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Primer On Retry Reason Taxonomy
+concept_id: software-engineering/retry-reason-taxonomy
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- retry
+- failure-classification
+- batch
+- operations
+aliases:
+- retry reason taxonomy primer
+- retryable manual review permanent
+- batch failure reason grouping
+- retry reason code starter set
+- manual review permanent failure difference
+- 재시도 이유 분류 기초
+symptoms:
+- reason code를 많이 만들지만 retryable, manual-review, permanent가 다음 행동 기준으로 나뉘지 않아
+- timeout, validation error, business rule violation을 모두 실패로만 적어 retry queue와 운영 backlog가 섞여
+intents:
+- definition
+- comparison
+- design
+prerequisites: []
+next_docs:
+- software-engineering/retry-queue-assertions
+- software-engineering/batch-result-testing
+- software-engineering/batch-recovery-runbook
+linked_paths:
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/bulk-idempotency-keys-for-named-contracts.md
+confusable_with:
+- software-engineering/retry-queue-assertions
+- software-engineering/batch-partial-failure
+- software-engineering/manual-review-backlog-primer
+forbidden_neighbors: []
+expected_queries:
+- retryable, manual-review, permanent failure는 다음 행동 기준으로 어떻게 나누면 돼?
+- batch 실패 reason code를 처음 만들 때 왜 원인 이름보다 다음 행동 표지판으로 봐야 해?
+- timeout은 retryable이고 validation 오류는 manual review나 permanent가 될 수 있는 기준을 설명해줘
+- manual review failure와 permanent failure를 섞으면 retry queue 운영에서 어떤 문제가 생겨?
+- 초심자용 retry reason taxonomy를 세 그룹으로 작게 시작하는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Primer On Retry Reason Taxonomy를 다루는 primer 문서다. retry reason taxonomy primer, retryable manual review permanent, batch failure reason grouping, retry reason code starter set, manual review permanent failure difference 같은 lexical 표현과 retryable, manual-review, permanent failure는 다음 행동 기준으로 어떻게 나누면 돼?, batch 실패 reason code를 처음 만들 때 왜 원인 이름보다 다음 행동 표지판으로 봐야 해? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Primer On Retry Reason Taxonomy
 
 > 한 줄 요약: 초심자용 retry reason taxonomy는 "지금 다시 해볼까", "사람이 먼저 볼까", "이번 정책에서는 종료할까" 세 갈래만 먼저 고정하면 충분하다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Git 워크플로우 기초
+concept_id: software-engineering/git-workflow-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+review_feedback_tags:
+- git-workflow-basics
+- branch-merge-conflict
+- pr-review-flow
+aliases:
+- git workflow basics
+- feature branch workflow
+- branch merge conflict
+- rebase vs merge beginner
+- pull request workflow
+- git 브랜치 입문
+- git conflict 해소
+- PR 흐름 기초
+symptoms:
+- main에서 바로 작업하거나 브랜치 목적을 나누지 않아 PR과 리뷰 흐름이 꼬인다
+- merge와 rebase를 이력 모양과 공유 브랜치 위험 기준으로 구분하지 못한다
+- conflict를 실수로만 보고 같은 파일 같은 부분을 두 변경이 다르게 고친 정상 신호로 해석하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites: []
+next_docs:
+- software-engineering/commit-message-basics
+- software-engineering/code-review-basics
+- software-engineering/trunk-based-development-vs-feature-branch-tradeoffs
+linked_paths:
+- contents/software-engineering/code-review-basics.md
+- contents/software-engineering/commit-message-basics.md
+- contents/software-engineering/trunk-based-development-vs-feature-branch-tradeoffs.md
+confusable_with:
+- software-engineering/commit-message-basics
+- software-engineering/code-review-basics
+- software-engineering/trunk-based-development-vs-feature-branch-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- Git 워크플로우에서 branch, commit, push, pull request, merge 순서를 어떻게 이해해?
+- merge와 rebase는 이력 모양과 협업 위험 기준으로 어떻게 달라?
+- Git conflict가 났을 때 어떤 부분을 직접 선택하고 어떻게 마무리해?
+- feature branch는 main을 보호하면서 독립 작업하는 흐름이라는 걸 어떻게 설명해?
+- PR 리뷰 전에 내 브랜치를 최신 main과 자주 동기화해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Git workflow beginner primer로, branch, commit, push, pull
+  request, review, merge, conflict resolution, merge vs rebase를 협업 흐름
+  기준으로 설명한다.
+---
 # Git 워크플로우 기초 (Git Workflow Basics)
 
 > 한 줄 요약: Git 워크플로우는 브랜치로 작업을 나누고, 머지로 합치며, 충돌이 생기면 직접 해소하는 협업 흐름이다.

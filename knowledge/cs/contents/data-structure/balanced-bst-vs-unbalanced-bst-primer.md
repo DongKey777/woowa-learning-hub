@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Balanced BST vs Unbalanced BST Primer
+concept_id: data-structure/balanced-bst-vs-unbalanced-bst
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bst-height-vs-order
+- treemap-balanced-tree
+- ordered-map-basics
+aliases:
+- balanced bst vs unbalanced bst
+- plain BST worst case
+- skewed BST
+- degenerate BST
+- BST가 O(n) 되는 이유
+- TreeMap balanced tree
+- red black tree basics
+- skip list vs BST
+symptoms:
+- BST라는 이름만 보고 항상 O(log n)이라고 생각해 입력 순서가 만든 편향 트리 위험을 놓친다
+- 정렬된 삽입으로 트리가 연결 리스트처럼 기울어지는 예시와 balanced BST의 차이가 흐릿하다
+- TreeMap, AVL, Red-Black Tree, Skip List를 ordered set/map 대체재로 어떻게 나눌지 헷갈린다
+intents:
+- comparison
+- definition
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/skip-list
+- data-structure/order-statistic-tree
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/skip-list.md
+- contents/data-structure/order-statistic-tree.md
+confusable_with:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/skip-list
+- data-structure/order-statistic-tree
+forbidden_neighbors: []
+expected_queries:
+- BST는 왜 항상 O(log n)이 아니고 O(n)까지 나빠질 수 있어?
+- balanced BST와 plain BST 차이를 beginner 기준으로 설명해줘
+- TreeMap이 안정적으로 ordered map 역할을 하는 이유가 Red-Black Tree 때문이야?
+- sorted insertion으로 BST가 편향되는 예시를 알려줘
+- AVL Red-Black Tree Skip List를 ordered set map 문제에서 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 plain BST가 값의 대소 규칙만 보장하고 높이 균형을 보장하지
+  않는다는 beginner 오해를 바로잡는 chooser다. balanced BST, AVL,
+  Red-Black Tree, Java TreeMap, Skip List를 높이 관리와 ordered set/map
+  요구 기준으로 비교한다.
+---
 # Balanced BST vs Unbalanced BST Primer
 
 > 한 줄 요약: plain `BST`는 삽입 순서가 나쁘면 연결 리스트처럼 기울어 `O(n)`까지 떨어지지만, balanced BST는 높이를 직접 관리하고, skip list와 `TreeMap` 계열은 ordered set/map 문제를 다른 방식으로 안정화한다.

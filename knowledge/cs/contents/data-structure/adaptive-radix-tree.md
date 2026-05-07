@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Adaptive Radix Tree
+concept_id: data-structure/adaptive-radix-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- ordered-in-memory-index
+- radix-tree-vs-art
+- cache-friendly-index
+aliases:
+- adaptive radix tree
+- ART index
+- Node4 Node16 Node48 Node256
+- compressed trie adaptive nodes
+- in-memory ordered index
+- radix tree vs ART
+- ART vs HashMap BTree Trie
+symptoms:
+- exact lookup만 빠른 HashMap과 prefix 또는 range scan이 필요한 ordered index 요구를 섞어 판단한다
+- 일반 trie나 radix tree가 prefix compression만 하면 충분하다고 보고 node fan-out별 cache locality 차이를 놓친다
+- ART를 B+Tree나 LSM-tree 같은 storage index와 같은 운영 층위로 비교해 선택 기준이 흐려진다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/radix-tree
+- data-structure/trie-prefix-search-autocomplete
+next_docs:
+- data-structure/radix-tree
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/cache-aware-data-structure-layouts
+- database/bptree-vs-lsm-tree
+linked_paths:
+- contents/data-structure/radix-tree.md
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/lsm-friendly-index-structures.md
+- contents/database/bptree-vs-lsm-tree.md
+confusable_with:
+- data-structure/radix-tree
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/hashmap-internals
+- database/bptree-vs-lsm-tree
+forbidden_neighbors: []
+expected_queries:
+- Adaptive Radix Tree는 Trie나 Radix Tree와 무엇이 달라?
+- ART의 Node4 Node16 Node48 Node256은 왜 필요한가?
+- HashMap 대신 ART를 쓰는 경우는 exact lookup 말고 어떤 요구 때문이야?
+- in-memory ordered index에서 cache locality가 왜 중요한지 설명해줘
+- ART와 B+Tree LSM Tree를 어떤 기준으로 비교해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Adaptive Radix Tree를 radix tree의 prefix compression과
+  fan-out별 adaptive node layout을 결합한 in-memory ordered index로
+  설명한다. ART, Trie, Radix Tree, HashMap, B+Tree, LSM-tree를 exact
+  lookup, prefix search, range scan, cache locality 기준으로 구분한다.
+---
 # Adaptive Radix Tree
 
 > 한 줄 요약: Adaptive Radix Tree(ART)는 radix tree의 prefix 압축에 노드 크기 적응 전략을 결합해, in-memory ordered index를 cache-friendly하게 만들려는 자료구조다.

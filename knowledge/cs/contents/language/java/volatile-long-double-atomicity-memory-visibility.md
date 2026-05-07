@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: volatile long/double Atomicity and Memory Visibility
+concept_id: language/volatile-long-double-atomicity-memory-visibility
+canonical: true
+category: language
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- volatile-atomicity-visibility
+- jmm-torn-read
+- atomiclong-vs-volatile
+aliases:
+- volatile long
+- volatile double
+- atomicity vs visibility
+- torn read
+- torn write
+- 64-bit atomic
+- JMM visibility
+- happens-before volatile
+- AtomicLong vs volatile
+- volatile value++
+- 원자성 가시성 차이
+- volatile long double
+symptoms:
+- volatile이면 value++ 같은 read-modify-write 복합 연산도 안전하다고 오해한다
+- atomicity와 visibility를 모두 스레드 안전이라는 말로 뭉개서 torn read와 최신 값 관찰 문제를 구분하지 못한다
+- 64비트 long/double의 원자적 읽기 쓰기와 AtomicLong이 필요한 증가 연산을 같은 문제로 본다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- language/java-memory-model-happens-before-volatile-final
+- language/java-concurrency-utilities
+next_docs:
+- language/varhandle-unsafe-atomics
+- language/memory-barriers-varhandle-fences
+- language/java-volatile-counter-atomicity-cause-router
+- operating-system/runtime-symptom-to-os-signal-router-beginner
+linked_paths:
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java/memory-barriers-varhandle-fences.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/volatile-counter-atomicity-cause-router.md
+- contents/operating-system/runtime-symptom-to-os-signal-router-beginner.md
+confusable_with:
+- language/java-memory-model-happens-before-volatile-final
+- language/varhandle-unsafe-atomics
+- language/java-volatile-counter-atomicity-cause-router
+forbidden_neighbors: []
+expected_queries:
+- volatile long과 volatile double은 어떤 atomic read write 보장을 주고 visibility와는 어떻게 다른지 알려줘
+- volatile이면 value++도 thread safe하다고 보면 안 되는 이유를 read modify write 기준으로 설명해줘
+- atomicity와 visibility, happens-before를 JMM에서 각각 어떻게 구분해야 해?
+- torn read와 torn write는 64비트 long double에서 어떤 문제이고 실무에서는 왜 volatile이나 AtomicLong을 쓰는 게 안전해?
+- AtomicLong과 volatile long 중 카운터 증가에는 왜 AtomicLong이 필요하고 단순 상태 관찰에는 무엇이 다른지 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 volatile long/double의 atomicity와 memory visibility를 구분하는 advanced bridge다.
+  JMM, 64-bit atomic read/write, torn read/write, volatile visibility, happens-before, read-modify-write, value++, AtomicLong, VarHandle, memory barriers를 다룬다.
+---
 # `volatile` `long`/`double` Atomicity and Memory Visibility
 
 > 한 줄 요약: non-`volatile` `long`/`double`의 원자성은 역사적으로 구현 의존이었지만, 현재 JMM에서는 `volatile long`/`volatile double`의 읽기와 쓰기가 항상 atomic이고, 진짜 문제는 atomicity와 visibility를 섞어 생각하는 데 있다.

@@ -74,6 +74,14 @@ roomescape 예약 가능 시간 조회는 "예약 row를 어떻게 저장하나"
 
 반대로 저장 직후 한 번만 이전 상태가 보이고 새로고침 뒤에는 맞아진다면, anti-join 의미보다 [roomescape 예약 생성 직후 재조회 ↔ Read-After-Write 브릿지](./roomescape-reservation-create-read-after-write-bridge.md) 쪽이 더 직접적일 수 있다. 이 문서는 blocker 정의가 틀렸을 때 어떤 오판이 생기는지에 초점을 둔다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약된 시간만 빼고 보여 주려는데 가능한 시간이 다 사라져요" | `LEFT JOIN` 뒤 오른쪽 예약 조건을 `WHERE`에 둔 조회 | 후보 시간은 유지하고 active blocker만 제외하는 anti-join 의미를 잡는다 |
+| "취소된 예약은 빼고 싶은데 쿼리 결과가 이상해요" | canceled row를 blocker에서 제외하는 조건이 조회/생성에서 다르게 쓰이는 코드 | active predicate를 availability query와 write-time check에 맞춘다 |
+| "조회에서는 가능한데 저장하면 중복 예약으로 막혀요" | 가능 시간 목록을 최종 동시성 보호 장치로 오해한 흐름 | availability는 힌트이고 최종 admission은 저장 시점 제약/중재가 정한다 |
+
 ## 미션 시나리오
 
 roomescape 미션에서 예약 생성 API를 만든 뒤에는 보통 "이 날짜에 예약 가능한 시간 목록"도 같이 보여 주고 싶어진다. 처음 구현할 때는 `reservation_time`을 기준으로 `reservation`을 `LEFT JOIN`하고, 예약이 없는 시간만 남기면 될 것처럼 보인다.

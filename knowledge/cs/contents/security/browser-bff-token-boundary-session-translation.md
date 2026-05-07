@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Browser / BFF Token Boundary / Session Translation
+concept_id: security/browser-bff-token-boundary-session-translation
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- BFF token handler pattern
+- browser server token boundary
+- session translation
+- server-side token storage
+aliases:
+- BFF token handler pattern
+- browser server token boundary
+- session translation
+- server-side token storage
+- opaque browser session
+- refresh token on server
+- SPA BFF auth
+- token handler
+- downstream token cache
+- browser to backend boundary
+- elevated session
+- step-up session
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/logout-scope-primer.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/oauth-par-jar-basics.md
+- contents/security/oauth-client-authentication-private-key-jwt-mtls.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Browser / BFF Token Boundary / Session Translation 핵심 개념을 설명해줘
+- BFF token handler pattern가 왜 필요한지 알려줘
+- Browser / BFF Token Boundary / Session Translation 실무 설계 포인트는 뭐야?
+- BFF token handler pattern에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Browser / BFF Token Boundary / Session Translation를 다루는 deep_dive 문서다. 브라우저와 서버 경계에서 가장 중요한 질문은 "토큰을 누가 직접 보관하고 누가 외부 IdP 및 downstream API를 대신 호출하는가"이며, BFF는 쿠키 세션과 서버 측 token cache를 이용해 browser-visible credential을 줄이는 대신 CSRF, logout, session mapping을 더 엄격하게 설계해야 한다. 검색 질의가 BFF token handler pattern, browser server token boundary, session translation, server-side token storage처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Browser / BFF Token Boundary / Session Translation
 
 > 한 줄 요약: 브라우저와 서버 경계에서 가장 중요한 질문은 "토큰을 누가 직접 보관하고 누가 외부 IdP 및 downstream API를 대신 호출하는가"이며, BFF는 쿠키 세션과 서버 측 token cache를 이용해 browser-visible credential을 줄이는 대신 CSRF, logout, session mapping을 더 엄격하게 설계해야 한다.

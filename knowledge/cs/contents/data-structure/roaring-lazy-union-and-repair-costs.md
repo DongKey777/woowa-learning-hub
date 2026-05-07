@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Roaring Lazy Union And Repair Costs
+concept_id: data-structure/roaring-lazy-union-and-repair-costs
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-lazy-union-repair-cost
+- repair-debt
+- warehouse-bitmap-or
+aliases:
+- Roaring lazy union repair cost
+- lazy OR materialization cost
+- repairAfterLazy cost
+- result materialization Roaring
+- wide OR warehouse bitmap
+- lazy union finalize debt
+- cached bitmap materialization
+symptoms:
+- lazy OR가 중간 exactness 계산을 미루는 이득과 최종 result를 serialize/cache publish 가능한 artifact로 만드는 비용을 같은 것으로 본다
+- run-heavy input bitmap이면 OR 결과도 자동으로 압축 이득이 유지된다고 보고 provisional container와 repair debt를 계산하지 않는다
+- getCardinality, serialize, runOptimize, cache publish 경계를 너무 일찍 밟아 lazy fan-in savings를 반복 materialization 비용으로 지운다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+next_docs:
+- data-structure/roaring-intermediate-repair-path-guide
+- data-structure/roaring-query-result-ordering-guide
+- data-structure/roaring-run-optimize-timing-guide
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+linked_paths:
+- contents/data-structure/roaring-bitmap-wide-lazy-union-pipeline.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-intermediate-repair-path-guide.md
+- contents/data-structure/roaring-query-result-ordering-guide.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/warehouse-sort-key-co-design-for-bitmap-indexes.md
+- contents/data-structure/late-arriving-rows-and-bitmap-maintenance.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+confusable_with:
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-intermediate-repair-path-guide
+- data-structure/roaring-query-result-ordering-guide
+- data-structure/roaring-run-optimize-timing-guide
+forbidden_neighbors: []
+expected_queries:
+- Roaring lazy OR는 wide fan-in 동안 이득이 있지만 getCardinality serialize에서 repairAfterLazy 비용이 붙는 이유는?
+- run-heavy warehouse bitmap에서 lazy union compression win이 materialization으로 지워지는 경우는?
+- repair debt와 finalize debt를 Roaring query result cache publish 전에 어떻게 계산해?
+- lazy OR 결과를 언제 exact count serialize 가능한 bitmap으로 만들지 결정하는 기준은?
+- Roaring lazy union and repair costs를 warehouse bitmap OR fan-in 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Roaring lazy OR가 wide fan-in 중 exact cardinality 계산을 미루는
+  이득과, getCardinality/serialize/cache publish/runOptimize 경계에서
+  repairAfterLazy와 materialization pass로 되돌아오는 비용을 분리하는 playbook이다.
+---
 # Roaring Lazy Union And Repair Costs
 
 > 한 줄 요약: run-heavy warehouse bitmap에서 lazy OR는 wide fan-in 동안 exact count와 최종 표현 선택을 미뤄 이득을 주지만, 결과가 `getCardinality()`·`serialize()`·cache publish·`runOptimize()` 경계로 올라가면 `repairAfterLazy()`와 materialization pass가 곧바로 붙어 기대한 압축 이득을 쉽게 지워 버릴 수 있다.

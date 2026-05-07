@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Optimizer Switch Knobs and Plan Stability
+concept_id: database/optimizer-switch-plan-stability-invisible-indexes
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- optimizer-switch
+- plan-stability
+- invisible-index
+- mysql-optimizer
+aliases:
+- optimizer_switch
+- plan stability
+- invisible indexes
+- condition_fanout_filter
+- prefer_ordering_index
+- skip_scan
+- use_invisible_indexes
+- optimizer switch knobs
+- invisible index 실험
+- plan stability 유지
+symptoms:
+- 같은 쿼리 plan이 통계 갱신이나 인덱스 추가 뒤 흔들려 optimizer_switch와 invisible index로 원인을 좁혀야 해
+- skip_scan, prefer_ordering_index, condition_fanout_filter 같은 switch가 특정 plan 선택을 바꾸고 있어
+- FORCE INDEX나 optimizer_switch로 임시 복구했지만 장기 plan stability는 통계와 인덱스 관리가 필요해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/mysql-optimizer-hints-index-merge
+- database/statistics-histograms-cardinality-estimation
+next_docs:
+- database/optimizer-trace-reading
+- database/index-skip-scan-behavior
+- database/persistent-stats-sampling-bias
+linked_paths:
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/semijoin-loosescan-firstmatch-duplicateweedout.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/optimizer-trace-reading.md
+- contents/database/index-skip-scan-behavior.md
+- contents/database/persistent-stats-sampling-bias.md
+confusable_with:
+- database/mysql-optimizer-hints-index-merge
+- database/optimizer-trace-reading
+- database/statistics-histograms-cardinality-estimation
+forbidden_neighbors: []
+expected_queries:
+- MySQL optimizer_switch는 plan stability를 영구히 고정하는 도구야 아니면 진단 손잡이야?
+- invisible index로 운영 plan을 안전하게 실험하는 방법을 알려줘
+- prefer_ordering_index나 skip_scan이 plan drift를 만들 때 무엇을 확인해야 해?
+- optimizer_switch, 통계 갱신, 인덱스 설계를 함께 봐야 하는 이유를 설명해줘
+- plan stability를 유지하려면 FORCE INDEX보다 어떤 검증과 관리가 필요해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL optimizer_switch, invisible indexes, skip_scan, prefer_ordering_index를 plan stability 진단과 안전한 인덱스 실험 관점에서 다루는 advanced deep dive다.
+  optimizer_switch, invisible index 실험, plan stability 유지 질문이 본 문서에 매핑된다.
+---
 # Optimizer Switch Knobs and Plan Stability
 
 > 한 줄 요약: optimizer_switch는 실행 계획을 잠깐 바로잡는 도구지, 계획을 영구히 고정하는 장치가 아니고, plan stability는 통계와 인덱스 관리를 같이 해야 지켜진다.

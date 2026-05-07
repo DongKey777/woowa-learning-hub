@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Expiry Worker Race Patterns
+concept_id: database/expiry-worker-race-patterns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- expiry-worker-race
+- confirm-vs-expire-arbitration
+- terminal-transition-contract
+aliases:
+- expiry worker race patterns
+- confirm vs expire race
+- late confirm
+- row lock finalization
+- version column finalization
+- claim path finalization
+- opportunistic release
+- hold finalization contract
+- stale blocker release
+- 만료 worker race
+symptoms:
+- confirm callback과 expiry worker가 같은 hold를 거의 동시에 terminal state로 바꾸려고 해
+- late confirm 정책 없이 마지막 write가 이기는 방식으로 예약 상태가 흔들리고 있어
+- row lock, version column, claim-path finalization 중 어떤 arbitration primitive를 골라야 할지 모르겠어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/reservation-reschedule-cancellation-transition-patterns
+- database/hold-expiration-predicate-drift
+next_docs:
+- database/expired-unreleased-drift-runbook
+- database/compare-and-swap-vs-pessimistic-locks
+- database/compare-and-set-version-columns
+- database/queue-claim-skip-locked-fairness
+linked_paths:
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/expired-unreleased-drift-runbook.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/queue-claim-skip-locked-fairness.md
+- contents/database/transactional-claim-check-job-leasing.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/saga-reservation-consistency.md
+confusable_with:
+- database/compare-and-swap-vs-pessimistic-locks
+- database/compare-and-set-version-columns
+- database/expired-unreleased-drift-runbook
+forbidden_neighbors: []
+expected_queries:
+- confirm callback과 expiry worker가 동시에 같은 hold를 처리하면 누가 terminal transition을 확정해야 해?
+- expiry worker race에서 row lock finalization과 version-column finalization은 어떻게 달라?
+- 늦은 confirm을 strict deadline으로 거절할지 grace를 줄지 DB 기준으로 어떻게 판단해?
+- stale blocker를 next claim path가 inline으로 release하는 전략은 언제 쓰는 게 좋아?
+- reservation hold finalization contract를 status, released_at, version 기준으로 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 confirm callback, expiry worker, next claim path가 같은 hold를 finalize할 때 row lock, version column, claim-path finalization으로 승자를 정하는 advanced playbook이다.
+  confirm vs expire race, late confirm, row lock finalization, version column finalization 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Expiry Worker Race Patterns
 
 > 한 줄 요약: confirm callback, expiry worker, next claim path가 같은 hold를 거의 동시에 finalize할 수 있다면, row lock, version column, claim-path finalization 중 하나로 "누가 terminal transition을 확정하는가"를 DB에 명시해야 한다.

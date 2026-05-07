@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: DTO boundary에서 문자열과 code 값을 enum으로 넘기는 위치
+concept_id: language/enum-string-boundary-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- enum-boundary
+- dto-mapping
+- string-code-mapping
+aliases:
+- DTO enum boundary beginner
+- enum string bridge
+- Java DTO string to enum
+- status code to enum mapping
+- external code value enum primer
+- P 코드 enum 변환
+- DTO enum 변환
+symptoms:
+- DTO의 raw string이나 P, 01 같은 외부 code를 domain enum과 같은 값처럼 다뤄 boundary 해석 단계를 생략해
+- Enum.valueOf가 enum name만 받는다는 점을 놓치고 code 값이나 숫자 문자열 상태값을 바로 valueOf로 올리려 해
+- domain 메서드가 raw string을 직접 받아 내부 enum 비교와 외부 문자열 parsing 책임이 섞여
+intents:
+- definition
+- troubleshooting
+- design
+prerequisites:
+- language/java-enum-basics
+- language/enum-equality-quick-bridge
+next_docs:
+- language/enum-code-name-persistence-bridge
+- language/enum-persistence-json-unknown-value-evolution
+- language/json-null-missing-unknown-field-schema-evolution
+linked_paths:
+- contents/language/java/java-enum-basics.md
+- contents/language/java/enum-equality-quick-bridge.md
+- contents/language/java/enum-code-name-persistence-bridge.md
+- contents/language/java/java-string-basics.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- language/enum-equality-quick-bridge
+- language/enum-code-name-persistence-bridge
+- language/json-null-missing-unknown-field-schema-evolution
+forbidden_neighbors: []
+expected_queries:
+- DTO에서 들어온 문자열이나 P 코드 01 상태값을 enum으로 바꾸는 위치를 어디로 잡아야 해?
+- Enum.valueOf는 PAID 같은 enum name에는 맞지만 P 같은 code에는 왜 바로 못 써?
+- controller DTO boundary에서 raw status를 enum으로 변환하고 domain 내부는 enum만 받게 하는 흐름을 설명해줘
+- enum 비교와 문자열 코드값 해석을 같은 작업으로 섞으면 어떤 문제가 생겨?
+- Java DTO enum 변환에서 null blank unknown policy를 먼저 정해야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 controller/DTO boundary에서 raw String status, external code value, P code, 01 state value를 Java enum으로 해석하고 domain 내부에서는 enum만 비교하게 하는 beginner bridge다.
+  DTO enum 변환, enum string, valueOf failure, status code mapping, raw string to enum boundary 질문이 본 문서에 매핑된다.
+---
 # DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기
 
 > 한 줄 요약: `DTO enum 변환`이 막힐 때는 controller/DTO boundary에서 `"PAID"`뿐 아니라 `"P"` 코드, `"01"` 상태값 같은 외부 표현을 enum으로 해석하고, domain 내부에서는 해석이 끝난 enum만 다루는 식으로 역할을 나누면 된다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: CSRF in SPA + BFF Architecture
+concept_id: security/csrf-in-spa-bff-architecture
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- csrf spa bff basics
+- spa인데 csrf 왜 필요
+- 처음 배우는데 spa csrf
+- bff csrf beginner follow-up
+aliases:
+- csrf spa bff basics
+- spa인데 csrf 왜 필요
+- 처음 배우는데 spa csrf
+- bff csrf beginner follow-up
+- csrf token samesite origin
+- httponly cookie csrf
+- state vs csrf token
+- post-login csrf token rotation
+- social login first post 403
+- bff login completion csrf
+- browser server boundary catalog
+- return to security readme
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/xss-csrf-basics.md
+- contents/security/embedded-login-csrf-bridge.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/cors-samesite-preflight.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/jwt-deep-dive.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/software-engineering/bff-boundaries-client-specific-aggregation.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- CSRF in SPA + BFF Architecture 핵심 개념을 설명해줘
+- csrf spa bff basics가 왜 필요한지 알려줘
+- CSRF in SPA + BFF Architecture 실무 설계 포인트는 뭐야?
+- csrf spa bff basics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 CSRF in SPA + BFF Architecture를 다루는 deep_dive 문서다. SPA라도 BFF 뒤에서 쿠키 기반 인증을 쓰면 CSRF가 사라지지 않는다. 저장 위치보다 브라우저가 자동으로 보내는 credential의 경계를 먼저 봐야 한다. 검색 질의가 csrf spa bff basics, spa인데 csrf 왜 필요, 처음 배우는데 spa csrf, bff csrf beginner follow-up처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # CSRF in SPA + BFF Architecture
 
 > 한 줄 요약: SPA라도 BFF 뒤에서 쿠키 기반 인증을 쓰면 CSRF가 사라지지 않는다. 저장 위치보다 브라우저가 자동으로 보내는 credential의 경계를 먼저 봐야 한다.

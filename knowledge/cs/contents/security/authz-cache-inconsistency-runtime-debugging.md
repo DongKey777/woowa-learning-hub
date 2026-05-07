@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: AuthZ Cache Inconsistency / Runtime Debugging
+concept_id: security/authz-cache-inconsistency-runtime-debugging
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- authz cache inconsistency
+- authorization cache debugging
+- stale decision cache
+- negative cache bug
+aliases:
+- authz cache inconsistency
+- authorization cache debugging
+- stale decision cache
+- negative cache bug
+- policy version drift
+- graph snapshot drift
+- stale graph snapshot
+- authz graph version drift
+- authorization graph caching
+- cache key omission
+- tenant cache mixup
+- authz runtime debug
+symptoms:
+- AuthZ Cache Inconsistency / Runtime Debugging 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authorization-graph-cache-relationship-cache-primer.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/authz-negative-cache-failure-case-study.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/auth-observability-sli-slo-alerting.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- AuthZ Cache Inconsistency / Runtime Debugging 장애가 나면 복구 순서는?
+- authz cache inconsistency 운영 대응 체크리스트가 뭐야?
+- AuthZ Cache Inconsistency / Runtime Debugging에서 blast radius를 어떻게 줄여?
+- authz cache inconsistency 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 AuthZ Cache Inconsistency / Runtime Debugging를 다루는 playbook 문서다. 인가 캐시 문제는 단순 stale TTL보다, cache key 누락, version drift, negative cache, region skew, partial invalidation으로 나타나는 경우가 많아서 decision reason과 cache provenance를 함께 남겨야 디버깅이 가능하다. 검색 질의가 authz cache inconsistency, authorization cache debugging, stale decision cache, negative cache bug처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # AuthZ Cache Inconsistency / Runtime Debugging
 
 > 한 줄 요약: 인가 캐시 문제는 단순 stale TTL보다, cache key 누락, version drift, negative cache, region skew, partial invalidation으로 나타나는 경우가 많아서 decision reason과 cache provenance를 함께 남겨야 디버깅이 가능하다.

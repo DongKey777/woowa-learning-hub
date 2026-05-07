@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Thread Interruption and Cooperative Cancellation Playbook
+concept_id: language/thread-interruption-cooperative-cancellation-playbook
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- interrupt-status-preservation
+- cooperative-cancellation
+- graceful-shutdown
+aliases:
+- thread interruption playbook
+- cooperative cancellation
+- InterruptedException
+- interrupt status
+- Thread.interrupt
+- Future cancel true
+- shutdownNow
+- graceful shutdown
+- virtual thread cancellation
+- Java interrupt
+- 협력적 취소
+- 인터럽트 상태 복구
+symptoms:
+- InterruptedException을 catch하고 로그만 남겨 interrupt status를 잃어버린다
+- interrupt를 스레드 강제 종료로 오해해서 worker loop나 blocking call이 실제로 멈추는 조건을 설계하지 않는다
+- servlet timeout, Future timeout, JDBC cancel, client disconnect를 모두 thread interrupt 하나로 해결하려고 한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/java-concurrency-utilities
+- language/executor-sizing-queue-rejection-policy
+next_docs:
+- language/completablefuture-cancellation-semantics
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/structured-concurrency-scopedvalue
+- language/virtual-threads-project-loom
+linked_paths:
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/structured-concurrency-scopedvalue.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/forkjoinpool-work-stealing.md
+- contents/language/java/java-concurrency-utilities.md
+confusable_with:
+- language/completablefuture-cancellation-semantics
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/structured-concurrency-scopedvalue
+forbidden_neighbors: []
+expected_queries:
+- Java interrupt는 스레드를 강제로 죽이는 기능이 아니라 협력적 취소 신호라는 뜻을 설명해줘
+- InterruptedException을 catch한 뒤 Thread.currentThread().interrupt로 상태를 복구해야 하는 이유가 뭐야?
+- Thread.interrupted와 isInterrupted 차이가 취소 신호를 잃어버리는 버그와 어떻게 연결돼?
+- Executor shutdownNow나 Future cancel true가 실제 작업 중단을 보장하지 않는 이유를 worker contract 기준으로 알려줘
+- request timeout이나 client disconnect, JDBC cancel은 interrupt와 어떤 경계가 다르고 무엇을 같이 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java interrupt와 cooperative cancellation을 shutdown protocol로 다루는 playbook이다.
+  Thread.interrupt, InterruptedException, interrupt status restoration, Thread.interrupted vs isInterrupted, shutdownNow, Future.cancel, blocking call, CPU loop, servlet timeout, JDBC cancel, virtual thread cancellation 경계를 다룬다.
+---
 # Thread Interruption and Cooperative Cancellation Playbook
 
 > 한 줄 요약: Java의 interrupt는 스레드를 강제로 죽이는 기능이 아니라 협력적 취소 신호다. `InterruptedException`을 삼키거나 interrupt status를 잃어버리면 shutdown, timeout, request cancel이 조용히 망가진다.

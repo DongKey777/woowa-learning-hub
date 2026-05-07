@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: BigDecimal toString vs toPlainString Output Policy Mini Bridge
+concept_id: language/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-output-policy
+- serialization-boundary
+- canonicalization-display
+aliases:
+- BigDecimal toString vs toPlainString
+- BigDecimal output policy
+- BigDecimal scientific notation
+- BigDecimal plain string display
+- 자바 BigDecimal 출력 정책
+- BigDecimal 지수표기 방지
+symptoms:
+- stripTrailingZeros로 canonicalization을 한 뒤 toString이 1E+3처럼 보여 값이 바뀐 것으로 오해해
+- 내부 key 정규화와 API 문자열 출력 정책을 같은 문제로 취급해 로그 UI JSON 표현이 섞여
+- toPlainString이 반올림, 소수 자리 고정, JSON 직렬화 정책까지 해결한다고 기대해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+next_docs:
+- language/io-nio-serialization
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/value-object-invariants-canonicalization-boundary-design
+linked_paths:
+- contents/language/java/bigdecimal-construction-policy-beginner-bridge.md
+- contents/language/java/bigdecimal-striptrailingzeros-input-boundary-bridge.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/io-nio-serialization.md
+confusable_with:
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+- language/bigdecimal-setscale-unnecessary-validation-primer
+- language/io-nio-serialization
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal stripTrailingZeros 후 toString이 1E+3처럼 나오는 이유와 toPlainString 차이를 알려줘
+- BigDecimal API 출력에서 toString과 toPlainString을 언제 골라야 해?
+- BigDecimal 내부 canonicalization과 외부 문자열 표시 정책을 어떻게 분리해?
+- 로그나 UI에 BigDecimal을 지수 표기 없이 출력하려면 무엇을 써야 해?
+- JSON 숫자 직렬화와 BigDecimal toPlainString 호출은 같은 문제가 아닌지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal canonicalization 이후 output policy를 toString, toPlainString, scientific notation, log/UI/API serialization boundary로 설명하는 beginner primer다.
+  BigDecimal 1E+3, toPlainString, stripTrailingZeros output, display policy, JSON serialization 질문이 본 문서에 매핑된다.
+---
 # BigDecimal API 출력 입문: canonicalization 뒤 `toString()` vs `toPlainString()`
 
 > 한 줄 요약: 초급자 기준으로는 "`같은 값으로 한 번 정규화`한 뒤, API 바깥으로 사람이 읽는 문자열을 내보낼 때는 `toPlainString()`을 먼저 검토"하면 `1E+3` 같은 surprise를 크게 줄일 수 있다.

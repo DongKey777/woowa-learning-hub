@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "Captive Portal, Intercepting Proxy Behavior"
+concept_id: network/captive-portal-intercepting-proxy-behavior
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- captive-portal-diagnosis
+- intercepting-proxy-dns-tls
+- network-login-walled-garden
+aliases:
+- captive portal
+- intercepting proxy
+- network login
+- DNS hijack
+- HTTPS interception
+- walled garden
+symptoms:
+- Wi-Fi는 연결됐지만 앱 HTTPS 요청은 인증서 mismatch나 TLS failure로 실패한다
+- HTTP는 portal로 redirect되는데 HTTPS는 redirect 없이 깨져 앱 장애처럼 보인다
+- DNS 응답이 portal IP나 이상한 IP로 강제되어 origin 장애로 오해한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/dns-over-https-operational-tradeoffs
+- network/http-proxy-connect-tunnels
+next_docs:
+- network/dns-negative-caching-nxdomain-behavior
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/happy-eyeballs-dual-stack-racing
+- network/http-proxy-connect-tunnels
+linked_paths:
+- contents/network/dns-over-https-operational-tradeoffs.md
+- contents/network/dns-negative-caching-nxdomain-behavior.md
+- contents/network/http-proxy-connect-tunnels.md
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+confusable_with:
+- network/dns-over-https-operational-tradeoffs
+- network/dns-negative-caching-nxdomain-behavior
+- network/http-proxy-connect-tunnels
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+forbidden_neighbors: []
+expected_queries:
+- "Captive portal 때문에 DNS와 HTTPS가 이상하게 실패하는 흐름을 설명해줘"
+- "HTTP는 로그인 페이지로 redirect되는데 HTTPS는 certificate mismatch가 나는 이유가 뭐야?"
+- "Intercepting proxy가 DNS hijack과 walled garden을 만들면 앱 장애와 어떻게 구분해?"
+- "공용 Wi-Fi에서 인터넷 연결됨처럼 보이지만 API가 실패하면 무엇부터 봐?"
+- "portal detection과 HTTPS interception을 운영 진단 관점으로 정리해줘"
+contextual_chunk_prefix: |
+  이 문서는 captive portal, intercepting proxy, network login, DNS hijack,
+  HTTPS interception, walled garden 상태에서 HTTP redirect와 TLS/cert
+  failure가 앱 장애처럼 보이는 증상을 진단하는 advanced playbook이다.
+---
 # Captive Portal, Intercepting Proxy Behavior
 
 > 한 줄 요약: captive portal과 intercepting proxy는 네트워크가 "인터넷처럼 보이지만 아직 인터넷이 아닌" 상태를 만들기 때문에, DNS와 TLS 실패가 이상하게 보일 수 있다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: DB Signal to Service Result Enum to HTTP Response Bridge
+concept_id: database/db-signal-service-result-http-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- db-signal-http
+- service-result-enum
+- duplicate-busy-retryable
+- api-error-mapping
+aliases:
+- db signal to service enum
+- db signal to service result http bridge
+- service result enum http mapping
+- db exception api response primer
+- duplicate key busy retryable http response
+- duplicate key 나오면 바로 409 인가요
+- lock timeout 이면 503 인가요
+- deadlock 이면 http 뭐예요
+- DB 예외 HTTP 응답
+- service enum 뭐예요
+symptoms:
+- DB 예외를 service result label 없이 controller에서 바로 HTTP status로 매핑한다
+- duplicate key를 항상 409로 보내 idempotent replay나 already exists 재사용 기회를 잃는다
+- busy, retryable, conflict를 service layer에서 나누지 않아 HTTP 409, 429, 503 의미가 섞인다
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/three-bucket-terms-common
+- database/insert-if-absent-retry-outcome-guide
+next_docs:
+- database/duplicate-key-vs-busy-response-mapping
+- spring/spring-exception-handling-basics
+- spring/custom-error-dto-to-problemdetail-handoff-primer
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+confusable_with:
+- database/duplicate-key-vs-busy-response-mapping
+- database/db-error-signal-beginner-result-language-mini-card
+- spring/spring-exception-handling-basics
+- database/insert-if-absent-retry-outcome-guide
+forbidden_neighbors: []
+expected_queries:
+- DB 예외를 바로 HTTP로 바꾸지 말고 service result enum을 거쳐야 하는 이유가 뭐야?
+- duplicate key, lock timeout, deadlock, 40001을 ALREADY_EXISTS, BUSY, RETRYABLE로 먼저 번역하고 HTTP를 고르는 표를 보여줘
+- DuplicateKeyException이면 항상 409가 아니라 200 201 replay나 409 conflict가 갈릴 수 있는 이유가 뭐야?
+- lock timeout은 409보다 BUSY라서 503이나 429로 가는 기준을 설명해줘
+- service layer enum과 controller advice HTTP response mapping을 Spring 예시로 보여줘
+contextual_chunk_prefix: |
+  이 문서는 DB Signal to Service Result Enum to HTTP Response Bridge beginner bridge로,
+  DB/JPA/Spring concurrency signal을 바로 HTTP로 매핑하지 않고 ALREADY_EXISTS, BUSY, RETRYABLE,
+  CONFLICT 같은 service result enum으로 번역한 뒤 controller/API 응답을 선택하는 기준을 설명한다.
+---
 # DB 신호 -> 서비스 결과 enum -> HTTP 응답 브리지
 
 > 한 줄 요약: beginner는 DB 예외를 곧바로 HTTP 상태코드로 붙이지 말고, 먼저 service-layer 결과 enum으로 번역한 뒤 API 응답으로 내보내면 중복·혼잡·재시도 판단이 훨씬 덜 흔들린다.

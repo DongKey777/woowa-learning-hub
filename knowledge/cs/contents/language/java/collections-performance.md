@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Java Collections 성능 감각
+concept_id: language/collections-performance
+canonical: true
+category: language
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- java-collections-performance-choice
+- access-pattern-before-collection-type
+- equals-hashcode-comparable-contract
+aliases:
+- Java Collections 성능 감각
+- Java collections performance
+- HashMap ArrayList TreeMap performance
+- LinkedList vs ArrayList
+- hashCode equals collection performance
+- TreeMap range search
+- collection access pattern
+- Java collection choice
+symptoms:
+- 컬렉션을 API 이름으로만 고르고 lookup, insertion, ordering, concurrency 접근 패턴을 먼저 보지 않고 있어
+- LinkedList가 중간 삽입 삭제에 항상 빠르다고 외워 임의 접근 비용을 놓치고 있어
+- HashMap 성능을 평균 O(1)로만 기억하고 key hash, equals, mutable key 위험을 놓치고 있어
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- language/java-collections-basics
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+next_docs:
+- language/concurrenthashmap-compound-actions-hot-key-contention
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+linked_paths:
+- contents/language/java-equals-hashcode-comparable-contracts.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+- contents/language/java/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs.md
+- contents/language/java/blockingqueue-transferqueue-concurrentskiplistset-semantics.md
+- contents/language/java/copyonwritearraylist-snapshot-iteration-write-amplification.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/object-pooling-myths-modern-jvm.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+confusable_with:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/concurrenthashmap-compound-actions-hot-key-contention
+forbidden_neighbors: []
+expected_queries:
+- Java Collections는 조회, 삽입 삭제, 정렬, 순서, 동시성 중 무엇을 기준으로 골라야 해?
+- HashMap이 평균 O(1)이어도 hashCode와 equals, mutable key 때문에 깨질 수 있는 이유는 뭐야?
+- LinkedList가 ArrayList보다 항상 빠르지 않은 이유를 접근 패턴으로 설명해줘
+- TreeMap이나 TreeSet은 해시 기반보다 느려도 range search에 맞는 이유가 뭐야?
+- Java collection 성능 문제를 API 이름보다 workload 기준으로 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 Java Collections performance bridge로, lookup pattern, insertion/deletion pattern, ordering, range query, equality/hashCode, mutable key, concurrency access pattern 기준으로 collection 선택을 설명한다.
+  Java collection performance, ArrayList vs LinkedList, HashMap 성능, TreeMap range query, equals hashCode contract 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java Collections 성능 감각
 
 **난이도: 🔴 Advanced**

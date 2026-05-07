@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Collectors.toMap Duplicate Key Primer
+concept_id: language/collectors-tomap-duplicate-key-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-stream
+- duplicate-key
+- map-collector
+aliases:
+- Collectors.toMap duplicate key
+- Java stream toMap duplicate key
+- duplicate key while collecting map
+- toMap merge function
+- groupingBy vs toMap
+- 자바 Collectors.toMap 중복 키
+symptoms:
+- Collectors.toMap 기본형이 duplicate key를 어떻게 합칠지 몰라 IllegalStateException을 낸다는 점을 놓쳐
+- List 수집과 Map 수집을 같은 모으기 작업으로 보고 key 충돌 정책을 명시하지 않아
+- 중복 key를 하나의 value로 합칠지 groupingBy로 여러 value를 유지할지 결정하지 않고 collector만 바꾸려 해
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- language/java-stream-lambda-basics
+- language/java-collections-basics
+next_docs:
+- language/map-get-null-containskey-getordefault-primer
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+- language/java-stream-lambda-basics
+linked_paths:
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-of-copyof-unmodifiablemap-readonly-bridge.md
+confusable_with:
+- language/java-stream-lambda-basics
+- language/map-get-null-containskey-getordefault-primer
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+forbidden_neighbors: []
+expected_queries:
+- Collectors.toMap에서 duplicate key IllegalStateException이 나는 이유와 merge function을 알려줘
+- Java stream toMap으로 같은 이름 key가 두 번 나오면 기본 collector가 왜 실패해?
+- toMap merge function과 groupingBy를 언제 나눠 써야 해?
+- 중복 key가 있을 때 첫 값 유지, 마지막 값 유지, 합치기 정책을 collector로 어떻게 표현해?
+- List로 collect하는 것과 Map으로 collect하는 것이 key 충돌 때문에 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Java Stream Collectors.toMap duplicate key 문제를 map key collision, merge function, groupingBy, IllegalStateException 관점으로 설명하는 beginner primer다.
+  toMap duplicate key, stream collect map, merge function, groupingBy vs toMap, duplicate key while collecting 질문이 본 문서에 매핑된다.
+---
 # `Collectors.toMap(...)` Duplicate Key Primer
 
 > 한 줄 요약: `Collectors.toMap(...)`은 "하나의 key에 하나의 value"를 만들려는 collector라서, stream 안에서 같은 key가 두 번 나오면 기본형은 실패한다. 중복을 허용해서 하나로 합칠 의도가 있으면 merge function을 직접 써야 한다.

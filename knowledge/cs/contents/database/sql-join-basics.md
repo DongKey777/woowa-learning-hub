@@ -1,8 +1,84 @@
+---
+schema_version: 3
+title: SQL Join Basics
+concept_id: database/sql-join-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- sql
+- join
+- beginner
+- left-join
+- relational-modeling
+aliases:
+- SQL join basics
+- INNER JOIN
+- LEFT JOIN
+- RIGHT JOIN
+- FULL OUTER JOIN
+- Cartesian product
+- ON clause join
+- join result null
+- sql join beginner
+- 조인 기초
+symptoms:
+- JOIN이 두 테이블의 행을 공통 열로 연결한다는 기본 모델이 아직 불명확해
+- INNER JOIN과 LEFT JOIN의 포함 범위 차이를 처음 배우고 있어
+- ON 조건이 빠져 Cartesian product로 row가 폭증하는 위험을 설명해야 해
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- database/sql-relational-modeling-basics
+- database/primary-foreign-key-basics
+next_docs:
+- database/left-join-filter-placement-primer
+- database/sql-joins-and-query-order
+- database/result-row-explosion-debugging
+linked_paths:
+- contents/database/sql-joins-and-query-order.md
+- contents/database/left-join-filter-placement-primer.md
+- contents/database/index-basics.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/left-join-filter-placement-primer
+- database/result-row-explosion-debugging
+- database/sql-joins-and-query-order
+forbidden_neighbors: []
+expected_queries:
+- SQL JOIN이 뭐고 INNER JOIN과 LEFT JOIN 차이를 초보자에게 설명해줘
+- ON 조건 없이 JOIN하면 Cartesian product로 결과가 폭발하는 이유가 뭐야?
+- LEFT JOIN 결과 row 수가 왼쪽 테이블 수보다 많아질 수 있는 이유를 알려줘
+- 조인 결과에서 매칭 없는 row가 NULL로 채워지는 것은 어떤 JOIN이야?
+- 주문한 적 없는 회원을 찾는 LEFT JOIN 패턴을 쉽게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 SQL JOIN basics를 INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN, ON clause, Cartesian product 관점으로 설명하는 beginner primer다.
+  조인 기초, 두 테이블 합치기, LEFT JOIN NULL, join row explosion 초급 질문이 본 문서에 매핑된다.
+---
 # SQL 조인 기초 (SQL Join Basics)
 
 > 한 줄 요약: JOIN은 두 테이블의 행을 공통 열로 연결해 하나의 결과 집합으로 합치는 연산이고, INNER·LEFT·RIGHT·FULL 네 종류가 "어떤 행을 포함할 것인가"를 결정한다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 목록에 member 이름과 theme 이름을 같이 보여주려면 JOIN이 뭔지부터 모르겠어요" | roomescape 관리자 목록, shopping-cart 주문 상세 조회 | 나뉜 테이블을 공통 key로 연결해 결과 row를 만드는 감각을 잡는다 |
+| "`INNER JOIN`과 `LEFT JOIN` 포함 범위가 헷갈려요" | 주문 없는 회원, 예약 없는 시간대까지 보여야 하는 조회 | 매칭 없는 row를 버릴지 NULL로 남길지 먼저 정한다 |
+| "`ON` 조건 없이 조인했더니 row가 폭증해요" | 목록 조회에서 Cartesian product가 생긴 장면 | join 조건이 어떤 row와 row를 연결하는지 명시한다 |
 
 관련 문서:
 

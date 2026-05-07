@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Bean 생명주기와 스코프 함정
+concept_id: spring/bean-lifecycle-scope-traps
+canonical: true
+category: spring
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- bean-lifecycle-scope
+- traps
+- singleton-mutable-state
+- bug
+aliases:
+- Spring bean lifecycle scope traps
+- singleton mutable state bug
+- prototype in singleton
+- request scope async trap
+- scoped proxy ObjectProvider
+- PostConstruct transactional trap
+- bean scope deep dive
+intents:
+- troubleshooting
+- deep_dive
+symptoms:
+- singleton 서비스 필드에 요청별 상태를 넣어 사용자 상태가 서로 섞인다.
+- prototype bean을 singleton에 주입했는데 요청마다 새로 만들어지지 않는다.
+- request scope bean을 async thread로 넘기자 scope가 없다는 오류가 난다.
+linked_paths:
+- contents/spring/spring-bean-lifecycle-basics.md
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-request-scope-proxy-pitfalls.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/database/transaction-basics.md
+expected_queries:
+- Spring singleton bean에 상태 필드를 두면 왜 위험해?
+- prototype bean을 singleton에 주입하면 왜 한 번만 만들어져?
+- @PostConstruct에서 @Transactional을 기대하면 왜 어긋날 수 있어?
+- request scope와 async thread가 같이 쓰이면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Spring Bean lifecycle, singleton/prototype/request/session scope,
+  scoped proxy, ObjectProvider, @PostConstruct와 AOP proxy 적용 시점의 함정을 다룬다.
+  singleton mutable state, prototype 고정 주입, request scope async 오류,
+  초기화 시점 transaction 오해를 진단하는 intermediate playbook이다.
+---
 # Bean 생명주기와 스코프 함정
 
 > 한 줄 요약: Spring Bean은 생성만 되는 객체가 아니라, 생명주기와 스코프, 프록시 시점까지 같이 이해해야 안전하게 쓸 수 있다.

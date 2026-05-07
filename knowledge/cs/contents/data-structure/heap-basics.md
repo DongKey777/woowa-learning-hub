@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 힙 기초 (Heap Basics)
+concept_id: data-structure/heap-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- heap-vs-sorted-structure
+- priorityqueue-minheap-default
+- heap-vs-bst-selection
+aliases:
+- heap basics
+- min heap max heap
+- 힙 입문
+- 힙이 뭐예요
+- priority queue heap
+- heap insert delete
+- 우선순위 큐 힙
+- 최솟값 최댓값 구조
+- beginner heap
+- heap vs bst
+- java priorityqueue heap
+- heap is not sorted
+- 힙은 정렬이 아니다
+- 힙 정렬 착시
+- heap sort confusion
+symptoms:
+- 힙이 트리라는 건 알겠는데 왜 탐색용이 아니라 우선순위용인지 감이 안 와
+- 루트가 최소값인 구조와 전체가 정렬된 구조를 자꾸 같은 걸로 이해하게 돼
+- Java PriorityQueue가 힙 기반이라는 말을 들으면 heap과 queue가 같은 말처럼 느껴져
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+- data-structure/tree-basics
+next_docs:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/java-priorityqueue-pitfalls
+linked_paths:
+- contents/data-structure/tree-basics.md
+- contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/algorithm/sort.md
+- contents/algorithm/greedy-intro.md
+confusable_with:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+forbidden_neighbors:
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/top-k-heap-direction-patterns.md
+- contents/data-structure/mutable-priority-stale-ticket-pattern.md
+expected_queries:
+- 최소값이나 최대값을 빨리 꺼내는 트리 구조를 처음 이해하고 싶어
+- 완전 이진 트리인데 정렬 구조는 아니라는 설명을 쉽게 듣고 싶어
+- 우선순위 작업을 처리할 때 왜 힙을 먼저 떠올리는지 궁금해
+- BST와 다르게 부모만 비교하는 구조라는 점을 초급 기준으로 정리해줘
+- PriorityQueue를 배우기 전에 힙의 역할을 먼저 잡고 싶어
+- top 1만 계속 뽑는 상황에 맞는 자료구조를 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 heap이 왜 전체 정렬 구조가 아니라 루트 최소값이나 최댓값을 빠르게 꺼내는 완전 이진 트리인지, priority queue와 어떤 관계인지 처음 잡는 primer다. 가장 작은 값 빨리 꺼내기, 맨 위 값만 보장, 부모와 자식만 비교, top K, BST 말고 우선순위 처리 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 힙 기초 (Heap Basics)
 
 > 한 줄 요약: 힙은 최솟값 또는 최댓값을 O(1)에 꺼낼 수 있는 완전 이진 트리로, 우선순위 큐를 구현하는 가장 자연스러운 방법이다.

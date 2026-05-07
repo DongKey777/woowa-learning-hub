@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Shadow Process Detection Signals
+concept_id: software-engineering/shadow-process-detection-signals
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- detection
+- override
+- incident-review
+aliases:
+- shadow process detection
+- hidden workflow signal
+- workaround signal
+- unofficial process detection
+- process dark matter
+- shadow 프로세스 탐지 신호
+symptoms:
+- shadow process를 신고에만 의존해 특정 개인 DM 승인, stale doc bypass, 수동 파일 관리 같은 반복 우회가 catalog에 올라오지 않아
+- detection signal에 source, evidence_window, repeat_count, confidence가 없어 의심과 근거가 구분되지 않아
+- override scorecard와 incident clue를 catalog intake로 연결하지 못해 공식 경로가 흡수하지 못한 현실이 계속 anecdote로 남아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/manual-path-ratio-instrumentation
+next_docs:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-process-officialization-absorption-criteria
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-candidate-promotion-thresholds.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/shadow-process-catalog-retirement
+forbidden_neighbors: []
+expected_queries:
+- shadow process detection signal로 개인 DM 승인, off-plane data store, repeated exception, incident clue를 어떻게 잡아?
+- shadow process 의심을 catalog intake로 넘기려면 signal_family, source, evidence_window, repeat_count, confidence를 왜 기록해야 해?
+- override scorecard에서 같은 policy override와 DM 승인 패턴이 반복될 때 shadow candidate로 승격하는 기준은?
+- incident timeline의 문서엔 없지만 원래는 이렇게 한다 같은 표현을 detection signal로 쓰는 방법을 알려줘
+- detection signal이 catalog entry, owner, risk score, target state, review cadence로 이어지게 하려면 어떤 흐름이 필요해?
+contextual_chunk_prefix: |
+  이 문서는 개인 DM 승인, off-plane 파일, repeated override, incident clue 같은 signal을 source와 confidence가 있는 shadow process detection evidence로 바꾸는 advanced playbook이다.
+---
 # Shadow Process Detection Signals
 
 > 한 줄 요약: shadow process는 누군가 신고해 주기를 기다리기보다, override pattern, 개인 DM 승인, stale 문서 우회, 수동 파일 관리 같은 detection signal을 정해 주기적으로 탐지해야 catalog와 retirement가 실제로 굴러간다.

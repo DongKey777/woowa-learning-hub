@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: TLB and Page Table Walk Bridge
+concept_id: operating-system/tlb-page-table-walk-bridge
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- tlb-page-table
+- walk
+- tlb-miss-vs
+- page-fault
+aliases:
+- TLB page table walk
+- TLB miss vs page fault
+- address translation cache
+- page table overhead
+- huge page TLB
+- virtual memory translation
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/operating-system/page-table-overhead-memory-footprint.md
+- contents/operating-system/thp-huge-pages-tlb-latency.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/virtual-memory-basics.md
+- contents/operating-system/memory-management-basics.md
+expected_queries:
+- TLB miss와 page fault는 무엇이 달라?
+- page table walk가 끝난 뒤에도 translation을 얻지 못하면 page fault야?
+- huge page는 TLB pressure와 page table walk cost를 어떻게 줄여?
+- virtual memory address translation을 초급과 advanced 사이에서 bridge해줘
+contextual_chunk_prefix: |
+  이 문서는 TLB miss를 address translation cache miss로, page fault를 page table walk 후에도
+  사용할 수 있는 mapping을 얻지 못한 상태로 구분하는 bridge다. huge page와 page table overhead로 이어진다.
+---
 # TLB and Page Table Walk Bridge
 
 > 한 줄 요약: TLB miss는 주소 변환 캐시를 못 찾았다는 뜻이고, page fault는 page table walk가 끝난 뒤에도 지금 쓸 수 있는 번역을 얻지 못했다는 뜻이다.

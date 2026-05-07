@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Support Operating Models: Self-Service, Office Hours, On-Call
+concept_id: software-engineering/support-operating-models
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- support-model
+- office-hours
+- on-call
+- handoff
+aliases:
+- support operating model
+- self service office hours on-call
+- support lane handoff
+- temporary surge support
+- support mode selection
+- 지원 운영 모델 선택
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/support-contract-request-type-severity-matrix
+next_docs:
+- software-engineering/on-call-ownership-boundaries
+- software-engineering/service-criticality-tiering
+- software-engineering/change-ownership-handoff
+linked_paths:
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/support-contract-request-type-severity-matrix.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/service-criticality-tiering-control-intensity.md
+confusable_with:
+- software-engineering/support-contract-request-type-severity-matrix
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/on-call-ownership-boundaries
+forbidden_neighbors: []
+expected_queries:
+- self-service, office hours, business-hours support, on-call escalation은 request type과 service criticality에 따라 어떻게 고르면 돼?
+- office hours가 migration이나 deprecation 질문을 묶어 처리하는 lane이지만 urgent blocker를 숨기면 안 되는 이유는?
+- on-call lane은 active incident와 after-hours blocker에 집중하고 planned work 우회를 막으려면 어떤 entry condition이 필요해?
+- temporary surge support profile은 대규모 migration cutover나 sunset 직전에 어떻게 시작일과 종료일을 둬야 해?
+- support lane handoff에서 transfer packet, receiving owner acceptance, SLA clock reset 여부가 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 self-service, office hours, business-hours support, on-call escalation, temporary surge lane을 request type, criticality, handoff rule 기준으로 고르는 advanced chooser이다.
+---
 # Support Operating Models: Self-Service, Office Hours, On-Call
 
 > 한 줄 요약: 모든 지원을 같은 방식으로 처리하면 팀 피로와 대기 시간이 함께 커지므로, self-service, office hours, business-hours support, on-call escalation 같은 운영 모델을 request type과 service criticality에 따라 나눠 설계해야 한다.

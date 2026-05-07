@@ -68,7 +68,12 @@ expected_queries:
 - single-source shortest path와 all-pairs shortest path를 문제 문장에서 어떻게 구분하지?
 - 음수 간선이 보일 때 다익스트라를 버리고 무엇을 더 확인해야 하는지 알려줘
 contextual_chunk_prefix: |
-  이 문서는 최단 경로 문제를 읽는 학습자가 무가중치, 음수 간선, 모든 정점 쌍 거리처럼 조건을 먼저 잘라 BFS, Dijkstra, Bellman-Ford, Floyd-Warshall 중 무엇을 쓸지 결정하는 chooser다. 간선 비용 부호를 먼저 봐야 하나, 시작점 하나만 계산하면 되나, 거리 행렬이 필요한가, 위상 순서로 풀 수 있는 그래프인가, 음수 사이클 검사까지 필요한가 같은 자연어 paraphrase가 본 문서의 라우팅 기준에 매핑된다.
+  이 문서는 최단 경로 문제를 읽는 학습자가 무가중치인지, DAG인지,
+  음수 간선이 있는지, 모든 정점 쌍 거리인지부터 잘라 BFS,
+  Dijkstra, Bellman-Ford, Floyd-Warshall 중 무엇을 고를지 결정하는
+  chooser다. 최소 칸 수 문제인가, 출발점 하나 거리표인가, 음수 비용이
+  섞였나, 경유지 전체 조합을 봐야 하나, 경로 문제와 순서 문제를 어떻게
+  가르나 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
 ---
 # Dijkstra, Bellman-Ford, Floyd-Warshall
 

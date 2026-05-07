@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: posix_spawn Attributes Primer
+concept_id: operating-system/posix-spawn-attributes-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- posix-spawn-attributes
+- posix-spawnattr-t
+- posix-spawn-setpgroup
+- posix-spawn-setsigmask
+aliases:
+- posix_spawn attributes
+- posix_spawnattr_t
+- POSIX_SPAWN_SETPGROUP
+- POSIX_SPAWN_SETSIGMASK
+- process group signal mask default
+- spawn attrs vs file actions
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/operating-system/posix-spawn-file-actions-primer.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn.md
+- contents/operating-system/session-vs-process-group-primer.md
+- contents/operating-system/proc-pid-status-signal-fields-debugging-primer.md
+expected_queries:
+- posix_spawnattr_t는 child fd가 아니라 process state를 설정하는 묶음이야?
+- posix_spawn file actions와 attributes는 왜 분리되어 있어?
+- POSIX_SPAWN_SETPGROUP, SETSIGMASK, SETSIGDEF를 초급자에게 설명해줘
+- process group과 signal mask default를 posix_spawn attrs에서 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 posix_spawnattr_t를 child가 어떤 fd를 볼까가 아니라 어떤 process state로 시작할까를
+  적는 설정 묶음으로 설명한다. beginner 단계에서는 process group, signal mask, signal default를
+  먼저 구분한다.
+---
 # posix_spawn Attributes Primer
 
 > 한 줄 요약: `posix_spawnattr_t`는 "`child가 어떤 fd를 볼까`"가 아니라 "`child가 어떤 프로세스 상태로 시작할까`"를 적는 설정 묶음이고, beginner 단계에서는 process group, signal mask, signal default 세 가지만 먼저 잡으면 충분하다.

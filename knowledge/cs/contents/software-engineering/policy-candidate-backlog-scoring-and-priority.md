@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Policy Candidate Backlog Scoring and Priority
+concept_id: software-engineering/policy-candidate-backlog
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- policy-as-code
+- backlog
+- prioritization
+- governance
+aliases:
+- Policy Candidate Backlog Scoring and Priority
+- policy candidate backlog
+- policy scoring
+- policy prioritization matrix
+- policy adoption queue
+- guardrail candidate scoring
+symptoms:
+- policy 후보를 impact, readiness, friction, dependency unlock으로 나누지 않고 loudest request나 특정 개인 취향으로 adoption queue를 정해
+- high impact지만 remediation/owner/metadata가 부족한 policy를 바로 enforcement로 보내거나, dependency unlocker policy를 낮게 평가해 후속 guardrail이 막혀
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/policy-as-code-adoption-order
+- software-engineering/policy-as-code-rollout-stages
+next_docs:
+- software-engineering/platform-policy-override-governance
+- software-engineering/override-burndown-exemption-debt
+- software-engineering/incident-feedback-policy-ownership-closure
+linked_paths:
+- contents/software-engineering/policy-as-code-adoption-order-and-sequencing.md
+- contents/software-engineering/policy-as-code-rollout-adoption-stages.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+confusable_with:
+- software-engineering/policy-as-code-adoption-order
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/platform-policy-override-governance
+forbidden_neighbors: []
+expected_queries:
+- policy candidate backlog을 impact, readiness, friction, dependency unlock 기준으로 scoring하는 방법을 알려줘
+- high impact policy라도 readiness가 낮으면 prepare-next나 visibility-first로 보내야 하는 이유가 뭐야?
+- ownership metadata required 같은 dependency enabler가 flashy rule보다 adoption queue 앞에 올 수 있는 이유는?
+- policy priority와 rollout stage는 각각 무엇을 먼저 다룰지와 얼마나 강하게 적용할지를 어떻게 나눠?
+- incident-driven policy와 platform baseline policy 후보를 backlog review에서 재평가하는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 policy-as-code 후보를 impact, readiness, friction, dependency unlock으로 점수화해 adoption queue, rollout wave, next action을 정하는 advanced playbook이다.
+---
 # Policy Candidate Backlog Scoring and Priority
 
 > 한 줄 요약: policy-as-code adoption order를 실제로 운영하려면 규칙 후보를 감으로 고르지 말고, impact, readiness, friction, dependency unlock을 함께 점수화해 adoption queue와 rollout wave를 정해야 한다.

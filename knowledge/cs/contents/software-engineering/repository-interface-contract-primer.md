@@ -9,6 +9,14 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- repository-interface-contract
+- repository-interface
+- repository-contract
+- repository-port
 aliases:
 - repository interface
 - repository contract
@@ -39,12 +47,20 @@ contextual_chunk_prefix: |
   JPA/MyBatis 구현체 교체, ports & adapters 같은 자연어 paraphrase가 본
   문서의 핵심 약속에 매핑된다.
 ---
-
 # Repository Interface Contract Primer
 
 > 한 줄 요약: Repository 인터페이스는 "DB 코드를 감추는 장식"이 아니라 application/domain이 기대하는 저장 약속이고, JPA/MyBatis/JDBC 구현체는 그 약속을 맞춰 끼우는 교체 부품이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| persistence 장면 | 먼저 볼 contract |
+|---|---|
+| Service가 `JpaRepository` 세부 메서드에 직접 의존한다 | domain/application 저장 약속이 있는가 |
+| DAO와 Repository를 같은 이름으로 쓰며 역할이 섞인다 | SQL access와 domain persistence 계약을 나눴는가 |
+| 테스트에서 DB 없이 저장소 규칙을 바꾸고 싶다 | interface/fake 경계가 필요한가 |
+| Entity mapping 변경에 use case 코드가 같이 흔들린다 | persistence adapter가 내부 세부를 숨기는가 |
 
 <details>
 <summary>Table of Contents</summary>

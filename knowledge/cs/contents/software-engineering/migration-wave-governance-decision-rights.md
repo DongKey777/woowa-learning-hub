@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Migration Wave Governance and Decision Rights
+concept_id: software-engineering/migration-wave-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- migration
+- governance
+- decision-rights
+- wave-planning
+aliases:
+- Migration Wave Governance and Decision Rights
+- migration wave governance
+- migration decision rights
+- pause authority migration
+- wave planning cutover board
+- 다음 wave 승인 권한
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/migration-scorecards
+- software-engineering/consumer-migration-playbook
+next_docs:
+- software-engineering/migration-stop-loss-governance
+- software-engineering/migration-funding-model
+- software-engineering/data-migration-cutover
+linked_paths:
+- contents/software-engineering/migration-scorecards.md
+- contents/software-engineering/migration-funding-model.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/data-migration-rehearsal-reconciliation-cutover.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/migration-carrying-cost-cost-of-delay.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+confusable_with:
+- software-engineering/migration-scorecards
+- software-engineering/consumer-migration-playbook
+- software-engineering/migration-stop-loss-governance
+forbidden_neighbors: []
+expected_queries:
+- migration에서 누가 다음 wave로 넘어가고 누가 rollout을 멈출 수 있는지 decision rights를 어떻게 정해?
+- wave governance와 migration scorecard와 consumer migration playbook과 stop-loss 문서는 각각 어떤 질문에 답해?
+- migration wave를 일정 단위가 아니라 위험 단위로 나눠야 하는 이유를 설명해줘
+- pause authority를 producer owner 혼자가 아니라 on-call, data steward, consumer owner와 나눠야 하는 경우는 언제야?
+- lagging consumer exception에 owner, expiry, compensating control, next review를 붙여야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 migration을 wave별 entry/exit criteria, pause authority, advance decision rights, consumer exception으로 운영하게 돕는 advanced chooser이다.
+---
 # Migration Wave Governance and Decision Rights
 
 > 한 줄 요약: `누가 다음 wave로 넘어가고, 누가 rollout을 멈출 수 있나요?`처럼 승인 권한과 pause 권한이 섞여 헷갈릴 때 먼저 보는 governance 문서로, migration을 기술 작업 묶음이 아니라 wave별 목표·중단 기준·decision right가 있는 프로그램으로 정리한다.

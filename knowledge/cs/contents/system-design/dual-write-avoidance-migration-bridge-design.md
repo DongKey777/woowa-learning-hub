@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Dual-Write Avoidance / Migration Bridge 설계
+concept_id: system-design/dual-write-avoidance-migration-bridge-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- dual write avoidance
+- migration bridge
+- write bridge
+- old new system cutover
+aliases:
+- dual write avoidance
+- migration bridge
+- write bridge
+- old new system cutover
+- single source of truth
+- change feed projection
+- shadow write hazard
+- write fence
+- bridge outbox
+- migration compatibility window
+- bridge retirement
+- authority transfer
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Dual-Write Avoidance / Migration Bridge 설계 차이를 실무 기준으로 설명해줘
+- dual write avoidance를 언제 선택해야 해?
+- Dual-Write Avoidance / Migration Bridge 설계 설계 판단 기준이 뭐야?
+- dual write avoidance에서 자주 헷갈리는 경계는?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Dual-Write Avoidance / Migration Bridge 설계를 다루는 bridge 문서다. dual-write avoidance와 migration bridge 설계는 old/new 시스템 전환 중 두 개의 source of truth를 동시에 쓰지 않도록 브리지 계층과 change feed를 두고, 읽기 검증과 점진 cutover로 상태 오염을 막는 마이그레이션 운영 설계다. 검색 질의가 dual write avoidance, migration bridge, write bridge, old new system cutover처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Dual-Write Avoidance / Migration Bridge 설계
 
 > 한 줄 요약: dual-write avoidance와 migration bridge 설계는 old/new 시스템 전환 중 두 개의 source of truth를 동시에 쓰지 않도록 브리지 계층과 change feed를 두고, 읽기 검증과 점진 cutover로 상태 오염을 막는 마이그레이션 운영 설계다.

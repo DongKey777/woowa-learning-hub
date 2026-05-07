@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: io_uring Operational Hazards Registered Resources SQPOLL
+concept_id: operating-system/io-uring-operational-hazards-registered-resources-sqpoll
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+review_feedback_tags:
+- io-uring-operational
+- hazards-registered-resources
+- sqpoll
+- hazards
+aliases:
+- io_uring operational hazards
+- registered resources pinning
+- SQPOLL hazards
+- CQ consumption discipline
+- pointer lifetime io_uring
+- registered buffers files lifecycle
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-sq-cq-basics.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-sqpoll-fdinfo-worker-mode-submit-debugging.md
+- contents/operating-system/io-uring-cancel-scope-fixed-files-mixed-ops.md
+- contents/operating-system/io-uring-direct-descriptor-slot-reuse-files-update-close-direct-hygiene.md
+symptoms:
+- SQ/CQ는 빠르지만 registered buffer/file lifetime과 pointer ownership이 꼬여 운영 장애가 난다.
+- SQPOLL을 켰지만 submit side visibility와 fdinfo 해석을 제대로 못 한다.
+- CQ consumption discipline이 부족해 overflow와 stale resource reference가 생긴다.
+expected_queries:
+- io_uring 운영에서 registered resources, SQPOLL, CQ consumption의 hazard는 뭐야?
+- pointer lifetime과 fixed buffer/file pinning을 잘못 다루면 어떤 장애가 생겨?
+- SQPOLL을 켰을 때 fdinfo와 worker-mode submit side를 어떻게 봐?
+- io_uring이 빠르더라도 운영에서 더 교묘한 장애를 만드는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 io_uring 성능보다 운영 위험을 중심으로 본다. SQ/CQ 자체보다 pointer lifetime,
+  registered resource pinning, fixed files/buffers, SQPOLL submit semantics, CQ consumption
+  discipline을 틀리면 교묘한 장애가 생긴다.
+---
 # io_uring Operational Hazards, Registered Resources, SQPOLL
 
 > 한 줄 요약: `io_uring`은 빠를 수 있지만, SQ/CQ 자체보다 pointer lifetime, registered resource pinning, SQPOLL 특성, CQ consumption discipline을 틀리면 운영에서 훨씬 더 교묘한 장애를 만든다.

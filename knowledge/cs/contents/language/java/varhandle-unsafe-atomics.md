@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: VarHandle Unsafe Atomics
+concept_id: language/varhandle-unsafe-atomics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- concurrency
+- varhandle
+- atomics
+aliases:
+- VarHandle Unsafe Atomics
+- Java VarHandle Unsafe Atomic CAS
+- AtomicInteger AtomicLong CAS memory ordering
+- VarHandle acquire release opaque volatile
+- low level concurrency fence
+- 자바 VarHandle Unsafe Atomics
+symptoms:
+- AtomicInteger 같은 고수준 CAS 도구와 VarHandle, Unsafe를 모두 빠른 쓰기 도구로만 보고 memory ordering과 visibility 차이를 놓쳐
+- Unsafe가 강력하다는 이유로 표준 API가 제공하는 VarHandle의 typed access, access mode, lookup safety 장점을 무시해
+- CAS loop에서 실패 재시도 비용, ABA problem, acquire/release/volatile access mode를 고려하지 않아 lock-free 코드가 더 위험해져
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/jvm-gc-jmm-overview
+- language/java-concurrency-utilities
+- language/memory-barriers-varhandle-fences
+next_docs:
+- language/java-aba-problem
+- language/stampedlock-optimistic-read-conversion-pitfalls
+- operating-system/cpu-cache-coherence-memory-barrier
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/aba-problem-atomicstampedreference-markable-reference.md
+- contents/language/java/classloader-exception-boundaries-object-contracts.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+confusable_with:
+- language/memory-barriers-varhandle-fences
+- language/java-aba-problem
+- language/java-concurrency-utilities
+forbidden_neighbors: []
+expected_queries:
+- VarHandle은 Unsafe보다 어떤 점에서 표준적이고 안전한 low-level concurrency API야?
+- AtomicInteger와 VarHandle은 CAS와 memory ordering을 어떤 추상화 수준으로 다뤄?
+- VarHandle acquire release opaque volatile access mode는 JMM visibility와 어떻게 연결돼?
+- Unsafe는 왜 위험하고 VarHandle lookup과 typed access가 어떤 장점을 줘?
+- lock-free CAS loop에서 ABA 문제와 retry cost를 왜 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 VarHandle, Unsafe, Atomic*를 CAS, memory ordering, acquire/release/volatile access mode, ABA problem 관점에서 비교하는 advanced deep dive다.
+  VarHandle, Unsafe, Atomics, CAS, memory ordering, ABA 질문이 본 문서에 매핑된다.
+---
 # VarHandle, Unsafe, Atomics
 
 > 한 줄 요약: VarHandle은 Unsafe의 더 안전한 대안이고, 둘 다 결국 원자 연산과 메모리 배리어를 정확히 다루기 위한 도구다.

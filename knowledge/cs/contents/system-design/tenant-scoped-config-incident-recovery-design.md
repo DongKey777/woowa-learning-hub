@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Tenant-Scoped Config Incident Recovery 설계
+concept_id: system-design/tenant-scoped-config-incident-recovery-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- tenant scoped config recovery
+- tenant override rollback
+- config incident recovery
+- tenant config freeze
+aliases:
+- tenant scoped config recovery
+- tenant override rollback
+- config incident recovery
+- tenant config freeze
+- scoped last known good
+- tenant policy rollback
+- override blast radius
+- tenant-specific config incident
+- scoped config recovery
+- tenant config quarantine
+- tenant write freeze
+- tenant rollback window
+symptoms:
+- Tenant-Scoped Config Incident Recovery 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/config-rollback-safety-design.md
+- contents/system-design/write-freeze-rollback-window-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/cell-based-architecture-blast-radius-isolation-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant-Scoped Config Incident Recovery 설계 장애 대응 순서를 알려줘
+- tenant scoped config recovery 복구 설계 체크리스트가 뭐야?
+- Tenant-Scoped Config Incident Recovery 설계에서 blast radius를 어떻게 제한해?
+- tenant scoped config recovery 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Tenant-Scoped Config Incident Recovery 설계를 다루는 playbook 문서다. tenant-scoped config incident recovery 설계는 특정 tenant override, tenant-class 정책, route/entitlement cutover 오배포가 났을 때 global config는 유지한 채 영향 scope만 write-freeze, scoped rollback, reversible soak으로 복구하는 multi-tenant 운영 설계다. 검색 질의가 tenant scoped config recovery, tenant override rollback, config incident recovery, tenant config freeze처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Tenant-Scoped Config Incident Recovery 설계
 
 > 한 줄 요약: tenant-scoped config incident recovery 설계는 특정 tenant override, tenant-class 정책, route/entitlement cutover 오배포가 났을 때 global config는 유지한 채 영향 scope만 write-freeze, scoped rollback, reversible soak으로 복구하는 multi-tenant 운영 설계다.

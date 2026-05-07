@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Guard-Row Contention Observability Cheatsheet
+concept_id: database/guard-row-contention-observability-cheatsheet
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- guard-row-contention-observability
+- lock-wait-vs-duplicate-vs-deadlock
+- same-key-wait-metrics
+aliases:
+- guard row observability cheatsheet
+- guard-row contention observability
+- guard row lock wait vs duplicate key
+- guard row deadlock slow query difference
+- hot row observability beginner
+- same key wait metrics
+- guard row timeout logs
+- duplicate key vs lock wait metrics
+- guard row 관측
+- 같은 key 대기
+symptoms:
+- guard row 경합을 duplicate-key, deadlock, slow query와 섞어 오분류하고 있어
+- lock wait timeout 로그가 같은 guard key에 몰리는지 확인하지 못하고 있어
+- duplicate-key는 이미 winner가 있는 문제이고 guard-row lock wait는 같은 key queue 문제라는 차이를 설명해야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/guard-row-hot-row-symptoms-primer
+- database/lock-wait-deadlock-latch-triage-playbook
+next_docs:
+- database/guard-row-dashboard-starter-card
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/pool-metrics-lock-wait-timeout-mini-bridge
+linked_paths:
+- contents/database/guard-row-dashboard-starter-card.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with:
+- database/guard-row-dashboard-starter-card
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/lock-duplicate-three-bucket-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- guard-row contention을 lock wait, duplicate key, deadlock, slow query로 어떻게 나눠서 관측해?
+- 같은 guard key에 lock wait timeout이 몰리면 어떤 지표를 먼저 봐야 해?
+- duplicate key와 guard-row lock wait는 로그와 metric에서 어떻게 다르게 보여?
+- guard row deadlock과 단순 hot key queue를 deadlock share로 어떻게 구분해?
+- guard row observability 초보자는 wait time, top key concentration, deadlock share 중 무엇부터 봐?
+contextual_chunk_prefix: |
+  이 문서는 guard row 경합을 same-key lock wait, duplicate-key conflict, deadlock, generic slow query로 나눠 관측하는 beginner playbook이다.
+  guard row observability, lock wait vs duplicate key, same key wait metrics, deadlock slow query difference 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Guard-Row Contention Observability Cheatsheet
 
 > 한 줄 요약: guard row 경합은 보통 "같은 key 앞에 줄이 길어지는" 모습으로 먼저 보이고, duplicate-key는 "이미 승자가 있다", deadlock은 "순환 대기에서 희생자가 뽑힌다", generic slow query는 "같은 key가 아니라 SQL 자체가 오래 돈다"로 읽으면 초보자 오분류가 크게 줄어든다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Cross-Primer Glossary Anchors
+concept_id: system-design/cross-primer-glossary-anchors
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- consistency glossary anchors
+- recent-write 뜻
+- read-after-write 뜻
+- monotonic read 뜻
+aliases:
+- consistency glossary anchors
+- recent-write 뜻
+- read-after-write 뜻
+- monotonic read 뜻
+- min-version floor 뜻
+- monotonic guard 뜻
+- 역행 방지 하한선
+- watermark 뜻
+- required watermark 뜻
+- causal token 뜻
+- watermark vs causal token
+- recent-write vs min-version floor
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/first-15-minute-triage-flow-card.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/database/causal-consistency-intuition.md
+- contents/system-design/cache-acceptance-rules-for-causal-reads.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cross-Primer Glossary Anchors 설계 핵심을 설명해줘
+- consistency glossary anchors가 왜 필요한지 알려줘
+- Cross-Primer Glossary Anchors 실무 트레이드오프는 뭐야?
+- consistency glossary anchors 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Cross-Primer Glossary Anchors를 다루는 deep_dive 문서다. `recent-write`, `min-version floor`, `stale window`, `headroom`은 각각 다른 질문에 답하는 용어이며, 초보자는 "지금 어떤 질문을 풀고 있나"부터 고정하면 용어 충돌을 빠르게 줄일 수 있다. 검색 질의가 consistency glossary anchors, recent-write 뜻, read-after-write 뜻, monotonic read 뜻처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Cross-Primer Glossary Anchors
 
 > 한 줄 요약: `recent-write`, `min-version floor`, `stale window`, `headroom`은 각각 다른 질문에 답하는 용어이며, 초보자는 "지금 어떤 질문을 풀고 있나"부터 고정하면 용어 충돌을 빠르게 줄일 수 있다.

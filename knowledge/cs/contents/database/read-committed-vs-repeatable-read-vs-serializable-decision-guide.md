@@ -38,7 +38,7 @@ prerequisites:
 - database/transaction-basics
 - database/transaction-isolation-basics
 next_docs:
-- database/read-committed-vs-repeatable-read-anomalies
+- database/read-committed-repeatable-read-anomalies
 - database/postgresql-vs-mysql-isolation-cheat-sheet
 - database/postgresql-serializable-retry-playbook
 linked_paths:
@@ -51,7 +51,7 @@ linked_paths:
 - contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
 confusable_with:
 - database/transaction-isolation-basics
-- database/read-committed-vs-repeatable-read-anomalies
+- database/read-committed-repeatable-read-anomalies
 - database/postgresql-serializable-retry-playbook
 forbidden_neighbors:
 - contents/database/transaction-basics.md
@@ -71,12 +71,19 @@ contextual_chunk_prefix: |
   READ COMMITTED로 낮춰도 되나 같은 자연어 질문이 이 문서의 결정
   매트릭스와 오선택 패턴에 연결되도록 작성됐다.
 ---
-
 # Read Committed vs Repeatable Read vs Serializable 결정 가이드
 
 ## 한 줄 요약
 
 > 최신 committed 값이 더 중요하면 `READ COMMITTED`, 같은 트랜잭션 안의 재조회 그림을 고정하고 싶으면 `REPEATABLE READ`, count·overlap·absence-check 같은 집합 규칙까지 동시에 안전해야 하면 `SERIALIZABLE`을 먼저 본다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "roomescape 예약 겹침을 막으려고 isolation level만 올리면 되나요?" | absence check, overlap count, insert가 query 기반 판단으로 이어지는 코드 | row 재조회 일관성과 집합 규칙 arbitration을 분리한다 |
+| "shopping-cart 목록은 최신이면 되는데 트랜잭션 안에서 다시 읽으면 값이 바뀌어요" | 관리자/목록 조회처럼 statement마다 최신 committed 값이 더 자연스러운 화면 | 최신성 우선이면 READ COMMITTED가 자연스러운지 본다 |
+| "Repeatable Read면 phantom도 다 막힌 줄 알았어요" | MySQL/PostgreSQL 격리 수준 이름을 DB별 동작 차이 없이 해석하는 상황 | 같은 이름보다 DB별 predicate/range 보호와 retry 비용을 확인한다 |
 
 ## 결정 매트릭스
 

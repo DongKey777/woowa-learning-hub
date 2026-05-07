@@ -31,8 +31,8 @@ prerequisites:
   - software-engineering/runbook-playbook-automation-boundaries
 next_docs:
   - software-engineering/rollout-approval-workflow
-  - software-engineering/kill-switch-fast-fail-ops
-  - software-engineering/release-policy-change-freeze-error-budget-coupling
+  - software-engineering/kill-switch-fast-fail
+  - software-engineering/release-policy-error-budget
 linked_paths:
   - contents/software-engineering/production-readiness-review.md
   - contents/software-engineering/rollout-approval-workflow.md
@@ -50,14 +50,13 @@ expected_queries:
   - readiness evidence가 rollout speed를 바꾼다는 말은 뭐야?
   - launch 전에 어떤 drill evidence가 있어야 승인 강도를 낮출 수 있어?
 contextual_chunk_prefix: |
-  이 문서는 운영 준비도를 체크리스트 존재가 아니라 rollback, kill switch,
+  이 문서는 운영 준비도를 문서 존재가 아니라 rollback, kill switch,
   degraded mode, comms flow를 실제로 연습한 evidence로 보고 변경 안전
-  전략을 세우는 playbook이다. 배포 전에 무엇을 리허설해야 하나, game day를
-  왜 하냐, 승인 강도를 어떤 연습 기록으로 낮추나, launch 전 drill evidence가
-  rollout 속도를 어떻게 바꾸나 같은 자연어 paraphrase가 본 문서의 실행
-  기준에 매핑된다.
+  전략으로 막는 playbook이다. 배포 전에 뭘 리허설해야 하나, game day를 왜
+  하냐, 연습 기록이 승인 강도와 rollout 속도를 어떻게 바꾸나, launch 전에
+  어떤 readiness evidence가 필요하나 같은 자연어 paraphrase가 본 문서의
+  실행 기준에 매핑된다.
 ---
-
 # Operational Readiness Drills and Change Safety
 
 > 한 줄 요약: operational readiness는 체크리스트를 채웠다고 증명되지 않고, rollback, kill switch, degraded mode, restore, comms flow를 실제로 연습해 본 evidence가 있어야 하며, 그 evidence가 change safety의 risk tier와 rollout speed를 결정해야 한다.

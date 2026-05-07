@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Incremental Summary Table Refresh and Watermark Discipline
+concept_id: database/incremental-summary-table-refresh-watermark
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- incremental-summary-refresh
+- watermark-dedup-discipline
+- late-arrival-replay-safe-aggregation
+aliases:
+- summary table refresh
+- materialized view refresh
+- incremental aggregation
+- watermark discipline
+- late arriving event
+- replay safe refresh
+- aggregation dedup
+- summary drift
+- bounded rebuild
+- incremental summary table
+symptoms:
+- summary table이 어느 원본 변경까지 반영됐는지 watermark가 없어 freshness를 설명하지 못하고 있어
+- late arrival, CDC 재전송, 재처리 배치가 summary aggregate를 중복 반영할 위험이 있어
+- full rebuild 대신 incremental refresh를 하려는데 dedup, rewind, bounded rebuild 계약이 필요해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/normalization-denormalization-tradeoffs
+- database/online-backfill-consistency
+next_docs:
+- database/summary-drift-detection-bounded-rebuild
+- database/cdc-debezium-outbox-binlog
+- database/replica-lag-observability-routing-slo
+- database/idempotency-key-and-deduplication
+linked_paths:
+- contents/database/normalization-denormalization-tradeoffs.md
+- contents/database/online-backfill-consistency.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/online-backfill-verification-cutover-gates.md
+confusable_with:
+- database/summary-drift-detection-bounded-rebuild
+- database/online-backfill-consistency
+- database/cdc-debezium-outbox-binlog
+forbidden_neighbors: []
+expected_queries:
+- summary table incremental refresh에서 watermark는 updated_at보다 log position이나 sequence가 더 안전할 때가 있어?
+- late arriving event나 replay가 summary aggregate를 중복 반영하지 않게 dedup을 어떻게 설계해?
+- materialized view 대체 summary table이 어느 시점까지 최신인지 freshness를 어떻게 노출해?
+- full rebuild 대신 affected bucket window recompute와 watermark rewind를 언제 써야 해?
+- summary drift가 생겼을 때 bounded rebuild와 invalidation을 어떤 기준으로 실행해?
+contextual_chunk_prefix: |
+  이 문서는 summary table, read model, materialized-view 대체 구조를 incremental watermark, dedup, late arrival replay, bounded rebuild로 안전하게 갱신하는 advanced playbook이다.
+  summary table refresh, incremental aggregation, watermark discipline, summary drift 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Incremental Summary Table Refresh and Watermark Discipline
 
 > 한 줄 요약: summary table은 조회를 빠르게 만드는 대신, 원본 변경을 어떤 watermark와 dedup 규칙으로 따라잡을지 계속 관리해야 한다.

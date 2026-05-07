@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Tombstone Response Template and Consumer Guidance
+concept_id: software-engineering/tombstone-response-template-consumer-guidance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- deprecation
+- tombstone
+- api-error
+- consumer-guidance
+aliases:
+- tombstone response template
+- deprecated API response
+- 410 Gone replacement guidance
+- sunset error contract
+- tombstone consumer guidance
+- tombstone 응답 템플릿
+symptoms:
+- sunset된 API가 plain 404나 vague 410만 반환해 consumer가 endpoint typo인지 deprecation인지 구분하지 못해
+- tombstone response에 replacement_id, docs_url, support_channel, trace_id, machine-readable error_code가 없어 support와 observability가 연결되지 않아
+- tombstone guidance가 응답 body에만 있고 deprecation docs, support runbook, severity matrix, dashboard annotation과 같은 code로 연결되지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/service-deprecation-sunset-lifecycle
+next_docs:
+- software-engineering/support-contract-request-type-severity-matrix
+- software-engineering/deprecation-communication-playbook
+- software-engineering/api-lifecycle-stage
+linked_paths:
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/deprecation-communication-playbook.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/support-contract-request-type-severity-matrix.md
+- contents/software-engineering/api-lifecycle-stage-model.md
+confusable_with:
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/deprecation-communication-playbook
+- software-engineering/service-deprecation-sunset-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- tombstone mode에서 plain 404나 vague 410 대신 controlled failure contract를 주어야 하는 이유는?
+- tombstone response body에 error_code, replacement, docs_url, support_channel, trace_id를 어떻게 넣어야 해?
+- machine-readable field와 human-readable guidance를 함께 넣으면 consumer automation과 사람이 각각 무엇을 얻어?
+- warning, allowlist-only, hard tombstone stage별로 response message가 달라져야 하는 이유는?
+- tombstone hit count, top remaining consumers, support ticket volume, replacement adoption을 같은 code로 보는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 deprecated path를 tombstone mode로 차단할 때 error_code, replacement, docs_url, support_channel, trace_id를 포함한 controlled failure contract와 consumer guidance를 설계하는 advanced playbook이다.
+---
 # Tombstone Response Template and Consumer Guidance
 
 > 한 줄 요약: tombstone mode는 단순한 실패 응답이 아니라, deprecated path를 호출한 소비자가 왜 막혔는지와 어디로 가야 하는지를 즉시 이해하도록 돕는 controlled failure contract이므로, response template과 guidance를 표준화할 필요가 있다.

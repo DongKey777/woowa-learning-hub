@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Custom Error DTO to ProblemDetail Handoff Primer
+concept_id: spring/custom-error-dto-to-problemdetail-handoff-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- custom-error-dto
+- to-problemdetail-handoff
+- problemdetail-handoff
+- validation-400-problemdetail
+aliases:
+- ProblemDetail handoff
+- validation 400 ProblemDetail
+- custom ErrorResponse DTO
+- Spring standard error body
+- ResponseEntityExceptionHandler
+- API error response contract
+- BindingResult ProblemDetail
+intents:
+- definition
+- design
+linked_paths:
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-roomescape-validation-400-vs-business-conflict-409-primer.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/network/gateway-json-vs-app-json-tiny-card.md
+- contents/spring/spring-problemdetail-error-response-design.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+expected_queries:
+- validation 400 응답 바디는 custom DTO와 ProblemDetail 중 무엇을 써야 해?
+- Spring ProblemDetail은 언제 도입하는 게 자연스러워?
+- BindingResult로 로컬 처리한 400도 ProblemDetail로 맞춰야 해?
+- 팀 ErrorResponse DTO에서 표준 오류 바디로 넘어가는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC validation 400 응답 바디를 팀 custom ErrorResponse DTO로
+  둘지 ProblemDetail로 표준화할지 beginner 관점에서 연결한다.
+  BindingResult 로컬 처리, MethodArgumentNotValidException, JSON parse error,
+  ResponseEntityExceptionHandler, API error response contract handoff를 다룬다.
+---
 # Spring validation `400` 4단계 `ProblemDetail` handoff primer: 커스텀 Error DTO에서 표준 오류 바디로 넘어가기
 
 > 한 줄 요약: 이 문서는 Spring MVC 바인딩/validation `400` 주 라우트의 마지막 `4단계 ProblemDetail` handoff를 설명한다. 처음에는 팀 전용 `ErrorResponse` DTO로도 충분하지만, Spring 기본 예외와 여러 API 실패를 한 계약으로 묶고 싶어지는 순간부터 `ProblemDetail`이 "표준 error body" 후보로 의미를 갖기 시작한다.

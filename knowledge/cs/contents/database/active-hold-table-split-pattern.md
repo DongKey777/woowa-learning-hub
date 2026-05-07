@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Active Hold Table Split Pattern
+concept_id: database/active-hold-table-split-pattern
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- active-hold-table
+- reservation-hold
+- soft-delete-drift
+- capacity-arbitration
+aliases:
+- active hold table split pattern
+- live hold archive split
+- hold history table
+- active hold row presence
+- reservation hold archive
+- active table uniqueness
+- live row arbitration
+- deleted_at blocking truth
+- active hold 분리
+- 예약 hold active history 분리
+symptoms:
+- 만료된 hold가 deleted_at이나 archive batch 지연 때문에 계속 좌석이나 slot을 막는다
+- UI는 expires_at 기준으로 비었다고 보이는데 write path는 soft delete predicate 때문에 실패한다
+- active set은 작고 history는 긴데 한 테이블에 섞여 active index와 cleanup predicate가 비대해진다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/hold-expiration-predicate-drift
+- database/soft-delete-uniqueness-indexing-lifecycle
+- database/exclusion-constraint-overlap-case-studies
+next_docs:
+- database/expired-unreleased-drift-runbook
+- database/slotization-migration-backfill-playbook
+- database/online-backfill-verification-cutover-gates
+linked_paths:
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/expired-unreleased-drift-runbook.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/slotization-migration-backfill-playbook.md
+- contents/database/online-backfill-verification-cutover-gates.md
+confusable_with:
+- database/hold-expiration-predicate-drift
+- database/soft-delete-uniqueness-indexing-lifecycle
+- database/active-predicate-alignment-capacity-guards
+- database/active-predicate-drift-reservation-arbitration
+forbidden_neighbors: []
+expected_queries:
+- active hold table과 hold history table을 분리해 deleted_at이 blocking truth가 되지 않게 하는 기준은 뭐야?
+- 예약 hold가 만료됐는데 archive나 soft delete 지연 때문에 계속 막는 문제를 active row presence로 어떻게 풀어?
+- expires_at, released_at, deleted_at을 한 테이블에 섞으면 active membership drift가 생기는 이유가 뭐야?
+- hold_active에서 row가 사라지는 것을 release truth로 보고 history는 audit으로만 쓰는 설계를 설명해줘
+- reservation hold split migration에서 live truth 전환과 history backfill은 어떤 순서로 해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Active Hold Table Split Pattern deep dive로, expirable reservation hold에서
+  active relation row presence를 blocking truth로 삼고 released/expired/canceled rows를 history로 이동해
+  deleted_at, archive lag, cleanup truth가 live arbitration을 오염시키지 않게 하는 설계를 설명한다.
+---
 # Active Hold Table Split Pattern
 
 > 한 줄 요약: hold가 자원을 막는 truth를 `deleted_at`에 매달지 말고, 지금 blocking 중인 row만 `active_hold`에 남기고 종료된 hold는 `history`로 옮겨 active membership를 row 존재 여부로 고정하는 패턴이다.

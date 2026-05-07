@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: beginner
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- cookie-scope-mismatch
+- cookie-stored-not
+- sent
+- domain-path-samesite
 aliases:
 - cookie scope mismatch
 - cookie stored not sent
@@ -33,7 +38,6 @@ expected_queries:
 contextual_chunk_prefix: |
   이 문서는 Application에는 cookie가 보이는데 request에는 안 실리는 상황에서 Domain, Path, SameSite, host-only 범위가 어떻게 전송 판정을 바꾸는지 깊이 잡는 deep_dive다. 저장은 됐는데 다음 요청이 anonymous로 보임, 서브도메인만 바뀌어도 왜 안 가나, callback 뒤 다시 로그인 화면으로 튐, scope 문제와 wrong-scheme 갈래를 어디서 자르나 같은 자연어 paraphrase가 본 문서의 핵심 원인 분기에 매핑된다.
 ---
-
 # Cookie Scope Mismatch Guide
 
 > 한 줄 요약: 브라우저에 cookie가 "저장돼 있다"와 현재 요청에 cookie가 "실려 간다"는 다른 문제다. `Domain`, `Path`, `SameSite`, subdomain 범위가 안 맞으면 login 직후에도 다시 `/login`으로 튈 수 있다.

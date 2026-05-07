@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 해시 테이블 기초
+concept_id: data-structure/hash-table-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- hash-table-o1-average-not-always
+- collision-load-factor-basics
+- hashcode-equals-contract
+aliases:
+- hash table basics
+- 해시 테이블 입문
+- hash map basics
+- 해시맵이 뭐예요
+- hash function basics
+- collision basics
+- 해시 충돌이란
+- chaining open addressing
+- key value store basics
+- o1 lookup
+- load factor rehashing
+- hashmap vs treemap beginner
+symptoms:
+- HashMap은 항상 O(1)이라고 들었는데 충돌이 많으면 왜 느려지는지 모르겠어
+- hashCode가 같으면 같은 객체인지 헷갈려
+- load factor와 rehashing이 성능에 어떤 영향을 주는지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/backend-data-structure-starter-pack
+next_docs:
+- data-structure/hashmap-internals
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- language/java-equals-hashcode-comparable-contracts
+- algorithm/time-complexity-intro
+linked_paths:
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/basic.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/algorithm/time-complexity-intro.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- data-structure/hashmap-internals
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- language/java-equals-hashcode-comparable-contracts
+forbidden_neighbors: []
+expected_queries:
+- 해시 테이블은 key를 어떻게 O(1)에 가까운 인덱스로 바꿔?
+- 해시 충돌이 나면 chaining과 open addressing이 어떻게 달라?
+- HashMap이 평균 O(1)이지만 최악에는 왜 O(n)이 될 수 있어?
+- hashCode가 같아도 equals가 다르면 왜 다른 key일 수 있어?
+- load factor가 높아지면 rehashing과 메모리 사용이 어떻게 바뀌어?
+contextual_chunk_prefix: |
+  이 문서는 hash table을 key를 hash function으로 bucket index에 매핑해 평균 O(1) lookup을 제공하지만 collision, chaining, open addressing, load factor, rehashing, hashCode/equals contract에 따라 실제 성능과 정확성이 달라지는 자료구조로 설명하는 beginner primer다.
+  HashMap은 항상 O(1)인가, hash collision, load factor, rehash, hashCode equals 차이 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 해시 테이블 기초 (Hash Table Basics)
 
 > 한 줄 요약: 해시 테이블은 key를 해시 함수로 인덱스로 변환해 O(1) 평균 조회를 만드는 구조로, 충돌이 발생하면 그 처리 방식이 성능을 좌우한다.
@@ -12,6 +81,14 @@
 - [시간복잡도 입문](../algorithm/time-complexity-intro.md)
 
 retrieval-anchor-keywords: hash table basics, 해시 테이블 입문, hash map basics, 해시맵이 뭐예요, hash function basics, collision basics, 해시 충돌이란, chaining open addressing, key value store basics, o(1) lookup, 해시 테이블 원리, beginner hash, hash collision handling, hashmap vs treemap beginner, hash table basics basics
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "HashMap이면 조회가 항상 빠른 거 아닌가요?" | lotto 번호 중복 검사, shopping-cart 상품 id 조회, roomescape 예약 시간 lookup에 Map을 쓰는 코드 | 평균 O(1)과 충돌이 심한 최악 상황을 구분한다 |
+| "`hashCode`가 같으면 같은 객체라는 뜻인가요?" | 값 객체를 Set/Map key로 넣었는데 중복 판단이 이상한 테스트 | `hashCode` bucket 후보와 `equals` 동등성 판정을 분리한다 |
+| "LinkedHashMap이나 TreeMap으로 바꾸라는 리뷰가 왜 나오죠?" | 출력 순서, 정렬 순서, 삽입 순서가 결과 요구사항에 드러나는 미션 | 해시 테이블은 빠른 lookup 기본값이고 순서 계약은 별도 자료구조 문제로 본다 |
 
 ## 핵심 개념
 

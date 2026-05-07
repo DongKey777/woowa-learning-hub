@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: CompletableFuture allOf, join, Timeout, and Exception Handling Hazards
+concept_id: language/completablefuture-allof-join-timeout-exception-handling-hazards
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- completablefuture
+- async-error-handling
+- timeout-cancellation
+aliases:
+- CompletableFuture allOf join timeout hazards
+- CompletableFuture allOf partial failure
+- join vs get CompletionException
+- CompletableFuture exceptionally handle whenComplete
+- orTimeout completeOnTimeout
+- async fan-out fan-in failure
+symptoms:
+- CompletableFuture allOf가 결과를 모아 준다고 생각해 개별 future 결과와 실패 원인을 별도로 회수하지 않아
+- join이 CompletionException으로 실패 원인을 감싸는 점을 놓쳐 운영 로그에서 root cause를 잃어버려
+- orTimeout이나 completeOnTimeout을 내부 작업 중단으로 오해해 timeout 뒤에도 DB/HTTP 작업이 남는 문제를 만든다
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/completablefuture-execution-model-common-pool-pitfalls
+next_docs:
+- language/completablefuture-cancellation-semantics
+- language/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards
+- language/partial-success-fan-in-patterns
+linked_paths:
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+- contents/language/java/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/partial-success-fan-in-patterns.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+confusable_with:
+- language/completablefuture-cancellation-semantics
+- language/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards
+- language/partial-success-fan-in-patterns
+forbidden_neighbors: []
+expected_queries:
+- CompletableFuture allOf는 결과를 모아 주는지 완료 합류만 하는지 설명해줘
+- join과 get의 예외 wrapper 차이를 CompletionException ExecutionException 관점으로 알려줘
+- orTimeout completeOnTimeout이 실제 내부 작업을 중단하지 않을 수 있는 이유가 뭐야?
+- CompletableFuture exceptionally handle whenComplete를 실패 은닉 없이 어떻게 써야 해?
+- fan-out fan-in에서 partial failure와 성공 결과 일부를 어떻게 집계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 CompletableFuture allOf, join/get, timeout, exceptionally/handle/whenComplete, partial success fan-in을 error flow와 background task lifecycle 관점으로 설명하는 advanced deep dive다.
+  allOf join timeout, CompletionException, orTimeout, completeOnTimeout, async fan-out fan-in, partial failure 질문이 본 문서에 매핑된다.
+---
 # `CompletableFuture` `allOf`, `join`, Timeout, and Exception Handling Hazards
 
 > 한 줄 요약: `CompletableFuture` 체인은 조합이 쉬워 보여도 `allOf`, `join`, `orTimeout`, `handle`, `exceptionally`의 의미를 섞으면 실패 원인 은닉, partial success 누락, thread starvation, timeout 후 백그라운드 작업 잔류가 생긴다.

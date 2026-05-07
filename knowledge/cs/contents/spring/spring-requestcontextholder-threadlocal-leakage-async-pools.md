@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Spring RequestContextHolder ThreadLocal Leakage Across Async Pools
+concept_id: spring/requestcontextholder-threadlocal-leakage-async-pools
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- requestcontextholder-threadlocal-leakage
+- async-pools
+- request-context-async
+- pool
+aliases:
+- RequestContextHolder ThreadLocal leakage
+- request context async pool
+- ThreadLocal stale request
+- TaskDecorator request attributes
+- context propagation cleanup
+- async request information leak
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-request-scope-proxy-pitfalls.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- spring/request-scope-proxy-pitfalls
+- spring/async-context-propagation-restclient-http-interface-clients
+- spring/securitycontext-propagation-async-reactive-boundaries
+- spring/mvc-async-deferredresult-callable-dispatch
+symptoms:
+- async 작업에서 RequestContextHolder가 비어 있거나 엉뚱한 요청 값을 본다.
+- ThreadLocal을 복사한 뒤 cleanup하지 않아 다음 요청 정보가 남는다.
+- MDC나 request id가 thread pool 경계를 넘어 섞여 보인다.
+expected_queries:
+- RequestContextHolder를 @Async thread pool에서 그대로 써도 돼?
+- ThreadLocal request context 누수는 왜 사라짐보다 더 위험해?
+- TaskDecorator로 request attributes를 복사할 때 cleanup은 어떻게 해야 해?
+- SecurityContext와 request context propagation은 어떤 위험이 달라?
+contextual_chunk_prefix: |
+  이 문서는 RequestContextHolder와 ThreadLocal request context가 thread pool, @Async,
+  MVC async 경계를 넘을 때 사라지거나 더 위험하게 남는 leakage 문제를 증상별로 라우팅한다.
+  context propagation은 copy와 cleanup을 한 쌍으로 봐야 한다.
+---
 # Spring `RequestContextHolder`, `ThreadLocal`, and Request Context Leakage Across Async Pools
 
 > 한 줄 요약: 요청 컨텍스트는 요청 스레드에 붙어 있다는 가정 위에서 안전한데, thread pool과 async 경계를 넘기며 `ThreadLocal`이나 `RequestContextHolder`를 잘못 복사하면 "사라짐"보다 더 위험한 "다른 요청 정보가 남아 있음" 문제가 생긴다.

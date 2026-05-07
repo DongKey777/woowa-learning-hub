@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Read Snapshot Pinning
+concept_id: database/read-snapshot-pinning
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- snapshot-pinning
+- mvcc
+- pagination
+- read-routing
+- consistency-token
+aliases:
+- read snapshot pinning
+- snapshot pinning
+- consistent snapshot
+- export snapshot
+- read view token
+- version watermark
+- page token
+- pinned read view
+- 페이지네이션 스냅샷 고정
+- 보고서 snapshot consistency
+symptoms:
+- 목록 1페이지와 2페이지가 서로 다른 시점이라 중복이나 누락이 생겨
+- 보고서 생성 중간에 데이터가 바뀌어 집계 숫자가 흔들려
+- read-your-writes와 snapshot pinning의 차이를 구분해야 해
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- database/mvcc-read-view-consistent-read-internals
+- database/mvcc-history-list-snapshot-too-old
+next_docs:
+- database/read-your-writes-session-pinning
+- database/pagination-offset-vs-seek
+- database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide
+linked_paths:
+- contents/database/mvcc-read-view-consistent-read-internals.md
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/pagination-offset-vs-seek.md
+- contents/database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide.md
+- contents/database/read-after-write-routing-decision-guide.md
+confusable_with:
+- database/read-your-writes-session-pinning
+- database/monotonic-reads-session-guarantees
+- database/client-consistency-tokens
+forbidden_neighbors: []
+expected_queries:
+- 페이지네이션에서 같은 snapshot을 고정하지 않으면 왜 중복이나 누락이 생길 수 있어?
+- snapshot pinning과 read-your-writes session pinning은 어떤 일관성 문제를 각각 해결해?
+- 보고서 생성에서 consistent snapshot이나 version watermark를 전달하는 이유가 뭐야?
+- 오래된 read view를 오래 잡으면 MVCC history list나 purge에 어떤 부담이 생겨?
+- replica read routing에서 pinned snapshot을 쓰려면 replica freshness를 왜 확인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 read snapshot pinning, consistent snapshot, read view token, version watermark를 pagination과 report consistency 관점으로 설명하는 advanced deep dive다.
+  page token, export snapshot, snapshot consistency, read-your-writes와의 차이 질문이 본 문서에 매핑된다.
+---
 # Read Snapshot Pinning
 
 > 한 줄 요약: snapshot pinning은 한 번 본 읽기 시점을 다음 조회에도 유지해서, 페이지나 단계가 바뀌어도 같은 세상을 보게 만드는 전략이다.

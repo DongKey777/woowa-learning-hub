@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "X-Request-Id Gateway App Log Trace Beginner Bridge"
+concept_id: network/x-request-id-gateway-app-log-trace-beginner-bridge
+canonical: true
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- observability
+- request-id
+- trace-correlation
+aliases:
+- X-Request-Id propagation
+- request id basics
+- gateway app log trace bridge
+- trace id vs request id
+- traceparent vs X-Request-Id
+- DevTools X-Request-Id
+- log trace correlation
+symptoms:
+- DevTools에서 X-Request-Id를 보면 app이 반드시 성공 처리했다고 단정한다
+- gateway 로그에는 있는데 app 로그에는 없는 요청을 app 장애로만 본다
+- X-Request-Id와 traceparent traceId를 같은 문자열이어야 한다고 생각한다
+- request id를 발견하고도 URL status gateway upstream app log 순서로 이어 찾지 않는다
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- network/browser-devtools-gateway-error-header-clue-card
+- network/browser-devtools-traceparent-vs-tracestate-mini-card
+next_docs:
+- network/api-gateway-reverse-proxy-operational-points
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/access-log-correlation-recipes-tomcat-jetty-undertow
+- spring/observability-micrometer-tracing
+linked_paths:
+- contents/network/browser-devtools-traceparent-vs-tracestate-mini-card.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/access-log-correlation-recipes-tomcat-jetty-undertow.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-observability-micrometer-tracing.md
+confusable_with:
+- network/browser-devtools-traceparent-vs-tracestate-mini-card
+- network/browser-devtools-gateway-error-header-clue-card
+- network/proxy-local-reply-vs-upstream-error-attribution
+- spring/observability-micrometer-tracing
+forbidden_neighbors: []
+expected_queries:
+- "DevTools에서 X-Request-Id를 봤으면 다음에 어디 로그를 봐야 해?"
+- "X-Request-Id와 traceparent traceId는 어떻게 달라?"
+- "gateway 로그에는 request id가 있는데 app 로그에는 없으면 어떻게 해석해?"
+- "502와 X-Request-Id를 가지고 gateway app trace를 순서대로 찾는 법은?"
+- "request id propagation을 초보자에게 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 network 카테고리에서 X-Request-Id Gateway App Log Trace Beginner Bridge를 다루는 bridge 문서다. X-Request-Id propagation, request id basics, gateway app log trace bridge, trace id vs request id, traceparent vs X-Request-Id 같은 lexical 표현과 DevToolsìì X-Request-Idë¥¼ ë´¤ì¼ë©´ ë¤ìì ì´ë ë¡ê·¸ë¥¼ ë´ì¼ í´?, X-Request-Idì traceparent traceIdë ì´ë»ê² ë¬ë¼? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # DevTools 뒤 `X-Request-Id`는 어디로 가나요? Gateway -> App Log -> Trace Beginner Bridge
 
 > 한 줄 요약: DevTools에서 `X-Request-Id`를 봤다면 그 값은 "다음에 어디를 봐야 하나"를 정하는 추적 표식이다. 초급자는 이 값을 gateway 로그, app 로그, tracing 화면에서 같은 요청을 다시 찾는 순서표로 쓰면 된다.

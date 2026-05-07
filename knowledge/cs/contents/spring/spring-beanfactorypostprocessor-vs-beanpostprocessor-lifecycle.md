@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle
+concept_id: spring/beanfactorypostprocessor-vs-beanpostprocessor-lifecycle
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- beanfactorypostprocessor-vs-beanpostprocessor
+- lifecycle
+- beanfactorypostprocessor
+- beanpostprocessor
+aliases:
+- BeanFactoryPostProcessor
+- BeanPostProcessor
+- BeanDefinition lifecycle
+- postProcessBeanFactory
+- postProcessBeforeInitialization
+- postProcessAfterInitialization
+- Spring lifecycle hook
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-application-context-refresh-phases.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-factorybean-smartinitializingsingleton-extension-points.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+expected_queries:
+- BeanFactoryPostProcessor와 BeanPostProcessor는 어떤 순서로 실행돼?
+- BeanDefinition을 고치는 단계와 Bean 인스턴스를 감싸는 단계는 어떻게 달라?
+- AOP proxy는 BeanPostProcessor 체인에서 언제 붙어?
+- Spring container extension point를 definition phase와 instance phase로 나눠 설명해줘.
+contextual_chunk_prefix: |
+  이 문서는 BeanFactoryPostProcessor가 BeanDefinition을 수정하는 단계이고
+  BeanPostProcessor가 생성된 Bean 인스턴스를 감싸거나 바꾸는 단계라는 차이를
+  lifecycle 관점에서 설명한다. Spring refresh phase, AOP proxy, validation wrapper,
+  FactoryBean, SmartInitializingSingleton과 이어지는 advanced deep dive다.
+---
 # Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle
 
 > 한 줄 요약: `BeanFactoryPostProcessor`는 Bean 정의를 고치고, `BeanPostProcessor`는 실제 Bean 인스턴스를 감싸거나 바꾸는 단계라서 둘을 구분하지 않으면 컨테이너 확장 포인트를 잘못 쓴다.

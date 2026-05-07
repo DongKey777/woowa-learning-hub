@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Lock-Free SPSC Ring Buffer
+concept_id: data-structure/lock-free-spsc-ring-buffer
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- lock-free-spsc-ring
+- low-latency-queue
+- memory-ordering-publication
+aliases:
+- Lock-Free SPSC Ring Buffer
+- single producer single consumer queue
+- SPSC queue
+- bounded ring queue
+- low latency queue
+- wait-free fast path
+- head tail padding
+symptoms:
+- producer와 consumer가 각각 하나뿐인데 CAS가 많은 범용 concurrent queue를 써서 latency와 contention을 키운다
+- producer는 tail만, consumer는 head만 전진한다는 ownership 분리가 SPSC fast path를 단순하게 만든다는 점을 놓친다
+- slot write와 tail publish 순서, tail read와 slot read 순서 같은 memory ordering을 구현 detail로만 보고 correctness 핵심으로 보지 않는다
+intents:
+- definition
+- design
+prerequisites:
+- data-structure/ring-buffer
+next_docs:
+- data-structure/lock-free-mpsc-queue
+- data-structure/bounded-mpmc-queue
+- data-structure/work-stealing-deque
+linked_paths:
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/work-stealing-deque.md
+confusable_with:
+- data-structure/ring-buffer
+- data-structure/lock-free-mpsc-queue
+- data-structure/bounded-mpmc-queue
+- data-structure/work-stealing-deque
+forbidden_neighbors: []
+expected_queries:
+- Lock-Free SPSC Ring Buffer는 single producer single consumer 제약으로 왜 빠른가?
+- SPSC queue에서 producer가 tail만 consumer가 head만 전진한다는 의미는?
+- low latency bounded ring queue에서 publication order와 memory ordering이 왜 중요해?
+- SPSC MPSC MPMC queue를 참여자 수 기준으로 어떻게 나눠?
+- false sharing padding과 cached index가 SPSC ring buffer 성능에 주는 영향은?
+contextual_chunk_prefix: |
+  이 문서는 단일 producer와 단일 consumer 경로에서 head/tail ownership을
+  분리해 CAS를 줄이는 Lock-Free SPSC Ring Buffer primer다. bounded ring,
+  low latency, publication ordering, memory barrier, false sharing padding을
+  다룬다.
+---
 # Lock-Free SPSC Ring Buffer
 
 > 한 줄 요약: Lock-Free SPSC Ring Buffer는 단일 producer와 단일 consumer 경로를 전제로 head/tail 경합을 분리해, 매우 낮은 오버헤드와 예측 가능한 지연시간을 노리는 저지연 큐 구조다.

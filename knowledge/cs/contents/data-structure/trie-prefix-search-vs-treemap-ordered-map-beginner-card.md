@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Trie Prefix Search vs TreeMap Ordered Map Beginner Card
+concept_id: data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- trie-vs-treemap
+- prefix-vs-ordered-neighbor
+- string-key-router
+aliases:
+- Trie vs TreeMap beginner
+- prefix search vs ordered map
+- string key Trie or TreeMap
+- startsWith vs next key
+- prefix candidates vs lexicographic range
+- autocomplete vs ordered neighbor
+- 문자열 key Trie TreeMap
+symptoms:
+- 문자열 key라는 이유만으로 Trie를 고르고 실제 질문이 lexicographic next key나 range view인지 확인하지 않는다
+- TreeMap도 string ordering이 있으니 prefix candidate collection과 autocomplete까지 Trie처럼 자연스럽게 처리한다고 오해한다
+- startsWith 후보 묶음, exact lookup, ordered neighbor, lexicographic range를 같은 문자열 검색으로 묶어 자료구조 선택이 흔들린다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+- data-structure/treemap-neighbor-query-micro-drill
+next_docs:
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/treemap-string-prefix-range-mini-drill
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+linked_paths:
+- contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md
+- contents/data-structure/treemap-string-prefix-range-mini-drill.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/language/java/treemap-range-view-live-window-primer.md
+- contents/system-design/search-system-design.md
+confusable_with:
+- data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+- data-structure/treemap-string-prefix-range-mini-drill
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/treemap-neighbor-query-micro-drill
+forbidden_neighbors: []
+expected_queries:
+- 문자열 key에서 prefix 후보 묶음이면 Trie이고 사전순 다음 key면 TreeMap이라는 걸 설명해줘
+- Trie와 TreeMap을 string key 검색에서 어떻게 나눠 선택해야 해?
+- startsWith autocomplete와 lexicographic range lookup은 질문이 어떻게 달라?
+- TreeMap으로도 prefix range를 흉내낼 수 있는데 Trie를 배우는 이유는?
+- exact lookup prefix search ordered neighbor range를 문자열 검색에서 구분하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 문자열 key를 다룰 때 Trie와 TreeMap을 prefix candidate collection과
+  ordered neighbor/range query로 나누는 beginner chooser다. startsWith autocomplete,
+  lexicographic next key, subMap range, HashMap exact lookup의 경계를 설명한다.
+---
 # Trie Prefix Search vs TreeMap Ordered Map Beginner Card
 
 > 한 줄 요약: 문자열 key를 다룬다고 `Trie`와 `TreeMap`이 같은 자리를 차지하는 것은 아니다. `"이 prefix로 시작하는 후보 묶음"`이 핵심이면 `Trie`, `"사전순 다음/이전 key"`나 `"정렬된 범위"`가 핵심이면 `TreeMap`으로 먼저 자르면 된다.

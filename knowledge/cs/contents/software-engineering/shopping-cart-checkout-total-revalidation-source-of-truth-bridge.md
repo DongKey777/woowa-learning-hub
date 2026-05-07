@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart checkout에서 화면이 보여 준 총액은 "사용자에게 보인 스냅샷"일 뿐이고, 실제 주문 확정 금액은 서버가 현재 상품 가격, 쿠폰 상태, 재고 조건을 다시 읽어 계산한 값을 source of truth로 삼는 편이 안전하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "장바구니 화면에서 본 총액을 그대로 보내도 되나요?" | 프론트가 계산한 `totalPrice`를 checkout command에 싣는 구조 | 화면 총액은 snapshot이고 주문 확정 금액은 서버 source of truth로 다시 계산한다 |
+| "결제 직전에 가격이나 쿠폰 상태가 바뀌면 서버가 어디까지 다시 계산해야 하나요?" | 상품 가격 변경, 쿠폰 소진, 재고 변경 사이 checkout | 최신 상품/쿠폰/재고 상태를 읽어 command를 재검증한다 |
+| "클라이언트가 준 최종 금액을 믿지 말라는 리뷰가 이해가 안 돼요" | 결제 금액 mismatch 처리 | client hint와 authoritative order amount를 분리한다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 장바구니 화면은 보통 상품 금액 합계, 쿠폰 할인,

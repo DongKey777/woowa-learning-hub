@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Topological DP
+concept_id: algorithm/topological-dp
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- topological-dp
+- dag-path-optimization
+- dependency-accumulation
+aliases:
+- topological dp
+- DAG DP
+- dag dynamic programming
+- dag shortest path
+- dag longest path
+- topological relaxation
+- dependency accumulation dp
+- critical path method
+- earliest completion time
+symptoms:
+- DAG에서 실행 순서만 필요한 문제와 위상 순서로 값 누적 최적화가 필요한 문제를 구분하지 못한다
+- 사이클이 섞인 그래프에 topological DP를 그대로 적용하려고 한다
+- DAG shortest path와 일반 shortest path 선택 문제를 cycle, negative edge, all-pairs 여부 없이 섞어 본다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/topological-sort-patterns
+- algorithm/dp-intro
+next_docs:
+- algorithm/scc-tarjan-kosaraju
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- system-design/job-queue-design
+linked_paths:
+- contents/algorithm/topological-sort-patterns.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/scc-tarjan-kosaraju.md
+- contents/algorithm/graph.md
+confusable_with:
+- algorithm/topological-sort-patterns
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/scc-tarjan-kosaraju
+- algorithm/dp-intro
+forbidden_neighbors: []
+expected_queries:
+- Topological DP는 DAG에서 위상 순서를 이용해 dp 값을 어떻게 전달해?
+- 위상 정렬 문제와 topological DP 문제는 출력이 order인지 비용 누적인지로 어떻게 갈라?
+- DAG longest path와 shortest path는 cycle이 없어서 왜 위상 순서로 풀 수 있어?
+- dependency graph에서 earliest finish time이나 critical path를 어떻게 계산해?
+- cycle이 있으면 SCC로 압축한 뒤 DAG로 만들어야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Topological DP deep dive로, DAG를 topological order로 처리하며
+  predecessor에서 successor로 dp value를 relax해 shortest path, longest path,
+  earliest finish time, dependency accumulation을 계산하는 패턴을 설명한다.
+---
 # Topological DP
 
 > 한 줄 요약: Topological DP는 DAG를 위상 순서로 훑으면서, 각 정점의 최적값을 선행 정점에서 전달받아 갱신하는 패턴이다.

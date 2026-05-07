@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: AuthZ Kill Switch / Break-Glass Governance
+concept_id: security/authz-kill-switch-break-glass-governance
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- authz kill switch
+- break glass
+- emergency override
+- authorization override governance
+aliases:
+- authz kill switch
+- break glass
+- emergency override
+- authorization override governance
+- policy bypass control
+- emergency access
+- scoped override
+- expiry override
+- audited override
+- rollback switch
+- break glass notification
+- emergency access timeline
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/incident-close-break-glass-gate.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- AuthZ Kill Switch / Break-Glass Governance 핵심 개념을 설명해줘
+- authz kill switch가 왜 필요한지 알려줘
+- AuthZ Kill Switch / Break-Glass Governance 실무 설계 포인트는 뭐야?
+- authz kill switch에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 AuthZ Kill Switch / Break-Glass Governance를 다루는 deep_dive 문서다. 인가 장애에서 필요한 것은 무조건적인 우회가 아니라, 어떤 정책을 어떤 범위에서 얼마 동안 완화할지 통제하는 break-glass 제어면이며, audit, expiry, approval, rollback이 없으면 emergency override 자체가 새로운 취약점이 된다. 검색 질의가 authz kill switch, break glass, emergency override, authorization override governance처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # AuthZ Kill Switch / Break-Glass Governance
 
 > 한 줄 요약: 인가 장애에서 필요한 것은 무조건적인 우회가 아니라, 어떤 정책을 어떤 범위에서 얼마 동안 완화할지 통제하는 break-glass 제어면이며, audit, expiry, approval, rollback이 없으면 emergency override 자체가 새로운 취약점이 된다.

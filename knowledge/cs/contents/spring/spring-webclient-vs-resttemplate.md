@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring WebClient vs RestTemplate
+concept_id: spring/webclient-vs-resttemplate
+canonical: true
+category: spring
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- webclient-vs-resttemplate
+- blocking-client-vs
+- reactive-client
+- resttemplate-simple-blocking
+aliases:
+- WebClient vs RestTemplate
+- blocking client vs reactive client
+- RestTemplate simple blocking
+- WebClient reactive backpressure
+- RestClient vs WebClient
+- HTTP client choice Spring
+intents:
+- comparison
+- design
+linked_paths:
+- contents/spring/spring-template-classes-beginner-primer.md
+- contents/spring/spring-boot-customizer-vs-top-level-bean-replacement-primer.md
+- contents/spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md
+- contents/spring/spring-mvc-sseemitter-vs-webflux-sse-timeout-behavior.md
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+- contents/network/timeout-types-connect-read-write.md
+confusable_with:
+- spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
+- spring/webflux-vs-mvc
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+expected_queries:
+- Spring에서 RestTemplate과 WebClient는 언제 골라야 해?
+- blocking HTTP client와 reactive client의 운영 차이는 뭐야?
+- WebClient를 MVC 앱에서 block해서 쓰면 RestTemplate과 어떤 차이가 남아?
+- RestClient, RestTemplate, WebClient 선택 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 RestTemplate을 단순 blocking client, WebClient를 reactive pipeline과 backpressure까지
+  고려하는 client로 비교한다. MVC/WebFlux runtime, timeout, connection pool, RestClient
+  builder customization과 연결해 HTTP client 선택을 돕는다.
+---
 # Spring WebClient vs RestTemplate
 
 > 한 줄 요약: RestTemplate은 단순한 블로킹 클라이언트이고, WebClient는 reactive 체인과 backpressure까지 고려하는 비동기 클라이언트다.

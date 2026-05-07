@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: ko
 source_priority: 80
+review_feedback_tags:
+- mvcc-read-view
+- consistent-read-internals
+- consistent-read
+- snapshot-read
 aliases:
 - MVCC read view
 - consistent read
@@ -41,7 +46,6 @@ contextual_chunk_prefix: |
   consistent read 내부, snapshot read internals, undo chain traversal
   같은 자연어 paraphrase가 본 문서의 핵심 메커니즘에 매핑된다.
 ---
-
 # MVCC Read View and Consistent Read Internals
 
 > 한 줄 요약: MVCC의 핵심은 "과거 버전을 남긴다"가 아니라, read view가 어떤 버전을 볼 수 있는지 정확히 잘라내는 내부 규칙이다.

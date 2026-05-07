@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Outbox vs Inbox Order Example Primer
+concept_id: software-engineering/outbox-vs-inbox-order-example
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- outbox
+- inbox
+- order-event
+- beginner
+aliases:
+- Outbox vs Inbox Order Example Primer
+- outbox vs inbox beginner
+- order outbox inbox example
+- outbox producer inbox consumer
+- outbox 유실 방지 inbox 중복 방지
+- 주문 아웃박스 인박스 예시
+symptoms: []
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+- software-engineering/outbox-inbox-domain-events
+next_docs:
+- software-engineering/outbox-message-adapter-test-matrix
+- database/transactional-inbox-dedup-design
+- spring/service-layer-external-io-after-commit-outbox-primer
+linked_paths:
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/database/transactional-inbox-dedup-design.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+confusable_with:
+- software-engineering/outbox-inbox-domain-events
+- database/transactional-inbox-dedup-design
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+forbidden_neighbors: []
+expected_queries:
+- outbox와 inbox 차이를 주문 이벤트 producer와 consumer 예시로 초심자에게 설명해줘
+- outbox는 보내는 쪽 유실 방지이고 inbox는 받는 쪽 중복 방지라는 뜻을 알려줘
+- 주문 저장과 outbox row를 같은 commit에 남겨야 하는 이유가 뭐야?
+- 같은 OrderPlaced 이벤트가 두 번 와도 알림 row가 한 번만 생기게 하려면 inbox나 dedup key를 어떻게 써?
+- AFTER_COMMIT listener와 outbox가 같은 것이 아닌 이유를 주문 예시로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Outbox vs Inbox Order Example Primer를 다루는 chooser 문서다. Outbox vs Inbox Order Example Primer, outbox vs inbox beginner, order outbox inbox example, outbox producer inbox consumer, outbox 유실 방지 inbox 중복 방지 같은 lexical 표현과 outbox와 inbox 차이를 주문 이벤트 producer와 consumer 예시로 초심자에게 설명해줘, outbox는 보내는 쪽 유실 방지이고 inbox는 받는 쪽 중복 방지라는 뜻을 알려줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Outbox vs Inbox 주문 예시 입문 카드
 
 > 한 줄 요약: outbox는 "주문을 저장하면서 보낼 사실도 같이 남기는 쪽"이고, inbox는 "받은 주문 이벤트를 한 번만 반영하게 막는 쪽"이라서, 같은 주문 예시라도 producer와 consumer 질문을 분리해서 읽어야 덜 헷갈린다.

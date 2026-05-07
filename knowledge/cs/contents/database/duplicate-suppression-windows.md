@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Duplicate Suppression Windows
+concept_id: database/duplicate-suppression-windows
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- duplicate-suppression-window
+- ttl-dedup
+- idempotency-storage-retention
+aliases:
+- duplicate suppression window
+- dedup window
+- ttl dedup
+- time bucket dedup
+- duplicate suppression
+- event id TTL
+- request hash bucket
+- 중복 억제 기간
+- dedup window 설계
+symptoms:
+- 모든 중복 요청을 영원히 저장해야 안전하다고 생각해 storage retention과 조회 비용을 놓친다
+- suppression window를 너무 짧게 잡아 느린 retry나 redelivery를 새 요청으로 처리한다
+- 중요한 결제 주문 경로와 알림 캐시 경로의 영구 dedup과 window dedup 선택 기준을 나누지 못한다
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/transactional-inbox-dedup-design
+- database/exactly-once-myths-db-queue
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/transactional-inbox-dedup-design.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- database/idempotency-key-and-deduplication
+- database/transactional-inbox-dedup-design
+- database/exactly-once-myths-db-queue
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+forbidden_neighbors: []
+expected_queries:
+- duplicate suppression window는 중복을 왜 영원히 기억하지 않고 기간으로 잡아?
+- dedup window가 너무 짧으면 어떤 retry나 redelivery를 놓칠 수 있어?
+- event id와 TTL 또는 time bucket으로 중복 억제를 구현하는 기본 아이디어를 알려줘
+- 결제 주문은 영구 dedup이고 알림 웹훅은 window dedup인 선택 기준이 뭐야?
+- duplicate suppression window와 idempotency key store는 어떤 관계야?
+contextual_chunk_prefix: |
+  이 문서는 duplicate suppression window bridge로, event_id TTL,
+  request hash time bucket, Redis expiry, DB unique key on bucket 같은 방법으로
+  운영 가능한 기간 동안만 중복을 억제하는 전략을 설명한다.
+---
 # Duplicate Suppression Windows
 
 > 한 줄 요약: duplicate suppression window는 같은 이벤트를 무한히 기억하지 않고, 일정 시간 동안만 중복을 막는 현실적인 dedup 전략이다.

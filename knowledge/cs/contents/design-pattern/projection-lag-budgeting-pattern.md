@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Projection Lag Budgeting Pattern
+concept_id: design-pattern/projection-lag-budgeting-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-lag-budget
+- freshness-budget
+- cutover-lag-reserve
+aliases:
+- projection lag budget
+- freshness budget decomposition
+- consumer backlog budget
+- watermark headroom
+- mode specific lag budget
+- projection budget burn
+- cutover lag reserve
+- fallback headroom contract
+- projection freshness budget
+- lag budget decomposition
+symptoms:
+- projection lag를 무조건 0으로 만들려 해 strict 화면, 운영 목록, 통계 대시보드의 freshness tier 차이를 무시한다
+- backlog 건수만 보고 backlog age나 watermark gap 같은 시간 기준 지표로 환산하지 않는다
+- cutover와 rebuild 중 normal mode 예산을 이미 다 써 버려 fallback reserve와 lag headroom이 남아 있지 않다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/read-model-staleness-read-your-writes
+- design-pattern/projection-freshness-slo-pattern
+- design-pattern/outbox-relay-idempotent-publisher
+next_docs:
+- design-pattern/fallback-capacity-and-headroom-contracts
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+linked_paths:
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+confusable_with:
+- design-pattern/projection-freshness-slo-pattern
+- design-pattern/fallback-capacity-and-headroom-contracts
+- design-pattern/read-model-cutover-guardrails
+- database/replica-lag-observability-routing-slo
+forbidden_neighbors: []
+expected_queries:
+- Projection lag는 0으로 없앨 대상이 아니라 tier별 freshness budget으로 관리해야 하는 이유가 뭐야?
+- end-to-end freshness budget을 relay, backlog, projector, storage, fallback reserve slice로 나누면 어떤 도움이 돼?
+- backlog 건수보다 backlog age나 watermark gap을 cutover readiness와 SLO 판단에 쓰는 이유가 뭐야?
+- strict path와 relaxed dashboard는 projection lag budget과 degrade policy가 어떻게 달라야 해?
+- rebuild나 cutover mode에서는 normal mode lag budget과 별도 임시 budget을 왜 승인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Projection Lag Budgeting Pattern playbook으로, read model lag를
+  모든 경로에서 0으로 만들기보다 usecase별 STRICT/STANDARD/RELAXED freshness tier와
+  relay, backlog, projector, storage, fallback reserve slice로 예산화하고, normal/rebuild/cutover
+  mode별 lag budget과 degrade/fallback policy를 운영 계약으로 정하는 방법을 설명한다.
+---
 # Projection Lag Budgeting Pattern
 
 > 한 줄 요약: projection lag는 없앨 대상이 아니라 관리할 예산이므로, 유스케이스별 freshness budget과 consumer backlog 예산, 모드별 headroom, degrade 정책을 함께 두어 read model 운영을 설계해야 한다.

@@ -50,7 +50,7 @@ linked_paths:
 confusable_with:
 - data-structure/map-vs-set-requirement-bridge
 - data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
-forbidden_neighbors:
+forbidden_neighbors: []
 expected_queries:
 - Java BFS에서 정점 번호가 0부터 촘촘할 때 visited를 왜 boolean 배열로 두는 게 편해?
 - 노드 id가 sparse하면 BFS 방문 체크를 배열 대신 Set으로 바꿔야 하는 이유를 알려줘

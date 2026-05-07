@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Insert-if-Absent Retry Outcome Guide
+concept_id: database/insert-if-absent-retry-outcome-guide
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- insert-if-absent-retry-outcome
+- already-exists-busy-retryable
+- duplicate-lock-timeout-deadlock-classifier
+aliases:
+- insert-if-absent retry outcome
+- insert if absent retry guide
+- duplicate key vs lock wait
+- duplicate key vs lock timeout
+- insert-if-absent timeout vs duplicate
+- duplicate key already exists
+- lock timeout busy signal
+- deadlock whole transaction retry
+- serialization failure whole transaction retry
+- insert if absent 결과 분류
+symptoms:
+- service-layer insert-if-absent에서 duplicate, lock timeout, deadlock, 40001을 같은 retry 정책으로 처리하려 해
+- CannotAcquireLockException과 PostgreSQL 40001을 혼동해 busy와 retryable 라벨을 잘못 붙이고 있어
+- already exists, busy, retryable 결과 언어를 HTTP/API 응답까지 일관되게 연결해야 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/insert-if-absent-log-reading-examples-primer
+next_docs:
+- database/spring-insert-if-absent-sqlstate-cheat-sheet
+- database/duplicate-key-vs-busy-response-mapping
+- database/nowait-vs-short-lock-timeout-busy-guide
+- database/idempotent-transaction-retry-envelopes
+linked_paths:
+- contents/database/insert-if-absent-log-reading-examples-primer.md
+- contents/database/spring-insert-if-absent-sqlstate-cheat-sheet.md
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/nowait-vs-short-lock-timeout-busy-guide.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/database/idempotency-key-and-deduplication.md
+confusable_with:
+- database/insert-if-absent-log-reading-examples-primer
+- database/duplicate-key-vs-busy-response-mapping
+- database/cannotacquirelockexception-40001-insert-if-absent-faq
+forbidden_neighbors: []
+expected_queries:
+- insert-if-absent에서 duplicate key, lock timeout, deadlock, serialization failure를 already exists busy retryable로 어떻게 나눠?
+- CannotAcquireLockException은 root code를 보고 busy 또는 retryable로 다시 분류해야 하는 이유는 뭐야?
+- PostgreSQL 40001은 deadlock이 아니라 serialization failure지만 왜 retryable bucket에 들어가?
+- lock timeout은 자동 retry보다 busy로 보고 blocker와 hot key를 먼저 확인해야 해?
+- insert-if-absent API에서 already exists, busy, retryable 결과 라벨을 어떻게 응답 언어로 통일해?
+contextual_chunk_prefix: |
+  이 문서는 insert-if-absent 실패 신호를 duplicate/already exists, lock timeout/busy, deadlock or serialization failure/retryable로 고르는 beginner chooser다.
+  insert-if-absent retry outcome, duplicate key vs lock wait, CannotAcquireLockException 40001 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Insert-if-Absent Retry Outcome Guide
 
 > 한 줄 요약: service-layer `insert-if-absent` 경로에서는 실패 신호를 먼저 `already exists` / `busy` / `retryable` 3버킷으로 고정하고, `deadlock`/`serialization failure`는 같은 `retryable` 안에서 원인만 구분한다.

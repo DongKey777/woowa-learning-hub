@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Semaphore and Monitor Basics
+concept_id: operating-system/semaphore-monitor-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 72
+review_feedback_tags:
+- semaphore-monitor
+- counting-semaphore
+- monitor-synchronization
+- shared-resource-access
+aliases:
+- semaphore monitor basics
+- counting semaphore
+- monitor synchronization
+- shared resource access
+- condition variable monitor
+- concurrency primitive beginner
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/operating-system/futex-mutex-semaphore-spinlock.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/lock-contention-futex-offcpu-debugging.md
+- contents/language/java/java-concurrency-utilities.md
+expected_queries:
+- semaphore와 monitor는 공유 자원 접근을 어떻게 다르게 제어해?
+- semaphore는 counter이고 monitor는 객체 단위 synchronization 추상화라는 뜻은?
+- mutex, semaphore, monitor, condition variable을 초급자에게 비교해줘
+- Java synchronized monitor와 OS semaphore 개념은 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 semaphore를 counter로 여러 thread의 shared resource access를 제어하는 primitive로,
+  monitor를 object 단위로 mutual exclusion과 condition synchronization을 묶는 higher-level
+  abstraction으로 설명하는 beginner primer다.
+---
 # 세마포어와 모니터 기초
 
 > 한 줄 요약: 세마포어는 카운터로 여러 스레드의 공유 자원 접근을 제어하고, 모니터는 그 복잡함을 숨겨 객체 단위로 안전한 동기화를 제공하는 고수준 추상화다.

@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Open File Description dup fork Shared Offsets
+concept_id: operating-system/open-file-description-dup-fork-shared-offsets
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- open-file-description
+- dup-fork-shared
+- offsets
+- shared-offset
+aliases:
+- open file description shared offset
+- dup fork fd shared offsets
+- O_APPEND shared file status
+- nonblocking shared status flags
+- subprocess IO shared offset
+- file descriptor vs open file description
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/deleted-open-file-space-leak-log-rotation.md
+expected_queries:
+- file descriptor 번호가 달라도 같은 open file description을 공유하면 무엇이 함께 움직여?
+- dup와 fork 후 shared offset 때문에 로그 쓰기나 subprocess I/O가 예상과 다를 수 있어?
+- O_APPEND, nonblocking 같은 file status flag는 fd마다 독립이야?
+- file descriptor와 open file description 차이를 운영 문제로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 file descriptor number와 open file description을 구분한다. dup나 fork로 다른 fd가
+  같은 open file description을 공유하면 offset, append mode, nonblocking status가 함께 움직여
+  subprocess I/O와 logging에서 예상과 다른 동작이 나올 수 있다.
+---
 # Open File Description, dup, fork, Shared Offsets
 
 > 한 줄 요약: file descriptor 숫자는 각각 달라도 같은 open file description을 공유하면 offset, append mode, nonblocking 상태가 함께 움직일 수 있어 로그 쓰기, 파이프라인, 서브프로세스 I/O에서 예상과 다른 동작이 나온다.

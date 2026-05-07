@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: HTTP Coalescing Failure Mapping
+concept_id: software-engineering/http-coalescing-failure-mapping
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- bulk-http
+- partial-failure
+- retry
+- idempotency
+aliases:
+- HTTP Coalescing Failure Mapping
+- bulk HTTP partial result mapping
+- per-item receipt mapping
+- batch receipt retry decision
+- vendor index to stable item id
+- HTTP bulk 부분 실패 매핑
+symptoms:
+- bulk HTTP 응답이 200 OK라서 전체 item이 성공했다고 처리하고 validation reject, timeout, unknown item을 분리하지 않아
+- vendor가 failedIndexes처럼 배열 위치만 돌려줬는데 retry queue에 stable item id와 idempotency key 대신 index를 저장해 재시도 drift가 생겨
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- software-engineering/adapter-bulk-optimization
+- software-engineering/batch-partial-failure
+next_docs:
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/bulk-idempotency-keys
+- software-engineering/testing-named-bulk-contracts
+linked_paths:
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/bulk-idempotency-keys-for-named-contracts.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/network/http-status-codes-basics.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- software-engineering/adapter-bulk-optimization
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/batch-partial-failure
+forbidden_neighbors: []
+expected_queries:
+- bulk HTTP 호출에서 batch receipt와 per-item receipt와 retry decision을 왜 분리해야 해?
+- 200 OK bulk response인데 일부 item만 실패하거나 unknown이면 어떻게 매핑해야 해?
+- vendor failedIndexes를 retry queue에 그대로 저장하면 왜 retry payload 재정렬 때 drift가 생겨?
+- bulk endpoint 부분 실패를 stable item id와 idempotency key로 추적하는 방법을 알려줘
+- timeout, validation reject, missing item을 각각 retry, manual review, reconcile로 나누는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 bulk HTTP coalescing 응답을 batch receipt, per-item receipt, retry decision으로 펼쳐 partial failure와 retry drift를 막는 beginner playbook이다.
+---
 # HTTP Coalescing Failure Mapping
 
 > 한 줄 요약: HTTP adapter가 여러 item 요청을 한 번의 bulk 호출로 묶더라도, 결과는 `batch receipt`, `per-item receipt`, `retry decision`으로 다시 펼쳐야 부분 실패를 안전하게 설명할 수 있다.

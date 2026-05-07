@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Direct IO Alignment Checklist
+concept_id: operating-system/direct-io-alignment-checklist
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- direct-io-alignment
+- o-direct-buffer
+- alignment
+- direct-io-offset
+aliases:
+- Direct IO alignment checklist
+- O_DIRECT buffer alignment
+- direct IO offset length alignment
+- direct IO EINVAL
+- page cache bypass contract
+- storage alignment
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/buffered-vs-direct-io-mixing-coherency-pitfalls.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/blk-mq-cgroup-io-writeback-timeline-debugging.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+symptoms:
+- O_DIRECT를 켰지만 buffer address, length, offset alignment가 맞지 않아 EINVAL이나 fallback이 난다.
+- direct I/O로 page cache를 우회하려 했지만 alignment와 storage path 때문에 더 느려진다.
+- 같은 파일에서 buffered/direct mixing까지 겹쳐 장애 분석이 어려워진다.
+expected_queries:
+- Direct I/O는 buffer address length offset alignment를 왜 맞춰야 해?
+- O_DIRECT가 켜졌는데 EINVAL이나 성능 저하가 나는 체크리스트를 알려줘
+- direct I/O를 켜기만 하면 page cache 우회 최적화가 자동으로 되는 거야?
+- direct I/O alignment와 blk-mq, dirty writeback timeline은 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 direct I/O가 켜기만 하는 최적화가 아니라 buffer, address, length, offset,
+  filesystem/block device alignment 계약을 만족해야 의미가 있다는 점을 checklist로 설명한다.
+---
 # Direct I/O Alignment Checklist
 
 > 한 줄 요약: direct I/O는 켜기만 하면 되는 최적화가 아니라, buffer/address/length/offset/alignment 계약을 만족해야 의미가 있고, 이 계약이 흐리면 성능은 안 좋아지고 장애 분석만 어려워진다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Slot Delta Reschedule Semantics
+concept_id: database/slot-delta-reschedule-semantics
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- slot-inventory
+- reschedule
+- tombstone
+- backfill
+- idempotency
+aliases:
+- slot delta reschedule semantics
+- slot claim delta apply
+- old slots new slots union
+- slot union lock
+- booking slot claim tombstone cleanup
+- slot release tombstone watermark
+- slot occupancy parity
+- interval to slot delta semantics
+- slot claim mutation idempotency
+- reschedule slot delta
+symptoms:
+- create, cancel, reschedule을 서로 다른 SQL로 흩뜨려 active occupancy truth가 흔들려
+- old_slots와 new_slots의 union을 같은 lock/order/tombstone contract로 다뤄야 해
+- tombstone cleanup lag가 admission truth를 바꾸지 못하게 active claim과 history를 분리해야 해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/hot-path-slot-arbitration-choices
+- database/slotization-migration-backfill-playbook
+next_docs:
+- database/slotization-precheck-overlap-rounding-dst
+- database/active-hold-table-split-pattern
+- database/soft-delete-uniqueness-indexing-lifecycle
+linked_paths:
+- contents/database/hot-path-slot-arbitration-choices.md
+- contents/database/slotization-migration-backfill-playbook.md
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/expiry-worker-race-patterns.md
+confusable_with:
+- database/slotization-migration-backfill-playbook
+- database/slot-row-rounding-half-open-dst-junior-checklist
+- database/soft-delete-uniqueness-indexing-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- slot claim table에서 create cancel reschedule을 old_slots new_slots delta로 통일해야 하는 이유가 뭐야?
+- reschedule할 때 touched_slots는 old slots와 new slots의 union이고 같은 순서로 lock해야 한다는 뜻을 설명해줘
+- tombstone은 release evidence이지 blocking truth가 아니라는 말을 slot occupancy 관점으로 알려줘
+- active claim table과 tombstone table을 분리하지 않으면 cleanup lag가 hot path에 어떤 문제를 만들어?
+- slot claim mutation idempotency를 claim_version과 source_mutation_key로 어떻게 지켜?
+contextual_chunk_prefix: |
+  이 문서는 slot delta reschedule semantics를 old_slots/new_slots/touched_slots, union lock, tombstone watermark, active/history split으로 설명하는 advanced playbook이다.
+  slot claim delta apply, reschedule slot delta, release tombstone, slot occupancy parity 질문이 본 문서에 매핑된다.
+---
 # Slot Delta Reschedule Semantics
 
 > 한 줄 요약: slot claim table에서는 create/cancel/reschedule을 서로 다른 SQL로 흩뜨리지 말고, `old_slots/new_slots`에서 계산한 delta를 같은 union lock과 같은 tombstone contract 아래에서 한 번만 적용해야 backfill, catch-up, cleanup이 같은 occupancy truth를 본다.

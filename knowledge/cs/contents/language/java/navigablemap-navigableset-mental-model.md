@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: NavigableMap and NavigableSet Mental Model
+concept_id: language/navigablemap-navigableset-mental-model
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- navigableset
+- comparator
+aliases:
+- NavigableMap and NavigableSet Mental Model
+- TreeMap floor ceiling lower higher basics
+- NavigableSet nearest neighbor lookup
+- comparator coordinate system collection
+- first last floor ceiling lower higher
+- 자바 NavigableMap NavigableSet 멘탈 모델
+symptoms:
+- TreeMap과 TreeSet을 자동 정렬 출력 도구로만 이해해 comparator가 lookup 좌표계를 만든다는 점을 놓쳐
+- floor ceiling lower higher의 포함 여부를 섞어 exact match가 있을 때 결과를 잘못 예측해
+- TreeMap navigation이 value가 아니라 key 기준으로 entry나 key를 찾는 API라는 점을 설명하지 못해
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- language/java-collections-basics
+- language/java-comparable-comparator-basics
+- language/treeset-treemap-comparator-tie-breaker-basics
+next_docs:
+- language/navigable-range-api-mini-drill
+- language/lower-vs-floor-exact-match-mini-drill
+- language/submap-boundaries-primer
+linked_paths:
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/language/java/java-collections-basics.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/navigable-range-api-mini-drill.md
+- contents/language/java/lower-vs-floor-exact-match-mini-drill.md
+- contents/language/java/ceiling-vs-higher-exact-match-mini-drill.md
+- contents/language/java/firstentry-lastentry-vs-firstkey-lastkey-bridge.md
+- contents/language/java/pollfirst-polllast-vs-first-last-beginner-bridge.md
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/java-time-instant-localdatetime-boundaries.md
+confusable_with:
+- language/lower-vs-floor-exact-match-mini-drill
+- language/ceiling-vs-higher-exact-match-mini-drill
+- language/submap-boundaries-primer
+forbidden_neighbors: []
+expected_queries:
+- NavigableMap과 NavigableSet은 comparator 순서 위에서 무엇을 찾는 API야?
+- TreeMap floorKey ceilingKey lowerKey higherKey의 포함 여부를 beginner 기준으로 설명해줘
+- TreeMap floorEntry는 value가 아니라 key 기준으로 찾는다는 뜻을 예제로 알려줘
+- comparator를 reverseOrder로 바꾸면 floor와 ceiling 감각이 왜 헷갈릴 수 있어?
+- TreeSet TreeMap에서 first last floor ceiling lower higher를 한 장 표로 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 NavigableMap과 NavigableSet을 comparator가 만든 ordered coordinate system 위의 nearest-neighbor lookup으로 설명하는 beginner primer다.
+  NavigableMap, NavigableSet, TreeMap floor ceiling, lower higher, comparator order 질문이 본 문서에 매핑된다.
+---
 # NavigableMap and NavigableSet Mental Model
 
 > 한 줄 요약: `NavigableSet`/`NavigableMap`의 `first`/`last`/`floor`/`ceiling`/`lower`/`higher`는 정렬 결과를 예쁘게 보여 주는 API가 아니라, comparator가 만든 순서 위에서 가까운 이웃을 찾는 조회 API다.

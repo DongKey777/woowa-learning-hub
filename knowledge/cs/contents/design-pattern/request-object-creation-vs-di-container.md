@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Request Object Creation vs DI Container
+concept_id: design-pattern/request-object-creation-vs-di-container
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- request-object
+- di-container
+- command-object
+- value-object-creation
+aliases:
+- request object creation vs di container
+- request dto vs di container
+- command object creation
+- value object creation beginner
+- builder vs spring bean
+- request object constructor or builder
+- static factory for dto
+- request body dto not bean
+- 요청 객체를 빈으로 만들면 안 되나요
+- 스프링 빈으로 DTO 만들면 안 되나
+symptoms:
+- CreateOrderRequest, PlaceOrderCommand, EmailAddress 같은 요청 값 객체를 Spring bean으로 등록하려 한다
+- DI 컨테이너가 오래 사는 협력자를 연결하는 역할과 호출부가 이번 요청 데이터를 만드는 역할을 섞는다
+- builder, static factory, factory pattern, DI container를 모두 객체 생성 방법이라는 말로만 묶어 선택 기준을 잃는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- spring/bean-di-basics
+- design-pattern/factory-vs-di-container-wiring
+next_docs:
+- design-pattern/request-scope-vs-plain-request-objects
+- design-pattern/record-vs-builder-request-model-chooser
+- design-pattern/invariant-preserving-command-model
+- language/record-value-object-equality-basics
+linked_paths:
+- contents/design-pattern/request-scope-vs-plain-request-objects.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/record-vs-builder-request-model-chooser.md
+- contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
+- contents/design-pattern/builder-pattern-basics.md
+- contents/design-pattern/invariant-preserving-command-model.md
+- contents/spring/spring-bean-di-basics.md
+- contents/language/java/record-value-object-equality-basics.md
+confusable_with:
+- design-pattern/request-scope-vs-plain-request-objects
+- design-pattern/factory-vs-di-container-wiring
+- design-pattern/record-vs-builder-request-model-chooser
+- spring/bean-di-basics
+forbidden_neighbors: []
+expected_queries:
+- 요청 DTO나 command object를 Spring bean으로 만들지 않고 생성자 static factory builder로 만드는 이유가 뭐야?
+- DI container는 오래 사는 collaborator를 연결하고 request object는 호출부가 만드는 데이터라는 차이를 설명해줘
+- request body DTO가 Spring MVC binder로 만들어졌다고 container-managed bean은 아닌 이유가 뭐야?
+- command object에 repository나 policy를 주입하지 않고 service가 command를 해석하는 편이 나은 이유는 뭐야?
+- builder와 DI container는 둘 다 객체를 만들지만 request 값 조립과 collaborator wiring에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Request Object Creation vs DI Container beginner chooser로, Spring DI container가
+  service, repository, client 같은 long-lived collaborator를 wiring하고 request DTO, command,
+  value object는 caller/binder가 이번 호출의 data와 invariant를 담아 생성한다는 기준을 설명한다.
+---
 # 요청 객체는 왜 DI 컨테이너가 아니라 생성자/정적 팩토리/빌더로 만들까
 
 > 한 줄 요약: DI 컨테이너는 오래 사는 협력자를 연결하고, 요청 DTO·command·value object는 이번 호출의 데이터와 규칙을 담아 호출부에서 생성하는 편이 더 자연스럽다.

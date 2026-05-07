@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Spring/JPA PostgreSQL 55P03 Retry Policy Bridge
+concept_id: database/spring-jpa-postgresql-55p03-retry-policy-bridge
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- spring
+- jpa
+- postgresql
+- 55p03
+- retry-policy
+aliases:
+- Spring JPA PostgreSQL 55P03 retry policy
+- Spring 55P03 NOWAIT lock timeout
+- CannotAcquireLockException 55P03
+- JPA LockTimeoutException 55P03
+- Postgres NOWAIT vs lock_timeout Spring
+- 55P03 blind retry
+- Spring retry policy busy vs retryable
+- SQLSTATE 55P03
+- NOWAIT lock timeout
+- lock timeout nowait difference
+symptoms:
+- PostgreSQL 55P03가 NOWAIT인지 lock_timeout인지 Spring/JPA surface만으로는 헷갈려
+- CannotAcquireLockException이나 LockTimeoutException을 보고 whole transaction blind retry를 붙이려 해
+- 55P03은 deadlock/serialization failure가 아니라 보통 busy 축이라는 정책을 설명해야 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+next_docs:
+- database/nowait-vs-short-lock-timeout-busy-guide
+- database/spring-retry-proxy-boundary-pitfalls
+- spring/jdbctemplate-sqlexception-translation
+linked_paths:
+- contents/database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/nowait-vs-short-lock-timeout-busy-guide.md
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/spring/spring-jdbctemplate-sqlexception-translation.md
+confusable_with:
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/nowait-vs-short-lock-timeout-busy-guide
+- database/spring-cannotacquirelockexception-root-sql-code
+forbidden_neighbors: []
+expected_queries:
+- Spring/JPA에서 PostgreSQL SQLSTATE 55P03이 NOWAIT인지 lock_timeout인지 어떻게 나눠 읽어?
+- 55P03은 deadlock이나 serialization failure가 아니라 보통 busy로 보고 blind whole-transaction retry를 피해야 하는 이유가 뭐야?
+- CannotAcquireLockException 55P03과 JPA LockTimeoutException surface가 비슷해도 SQL 의도를 함께 봐야 하는 이유는?
+- NOWAIT는 기다리지 않고 즉시 포기하고 lock_timeout은 예산만큼 기다렸다는 차이를 retry policy로 어떻게 반영해?
+- 40P01과 40001은 retryable 후보지만 55P03은 혼잡/락 대기 정책부터 보는 기준을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring/JPA에서 PostgreSQL SQLSTATE 55P03을 NOWAIT와 lock_timeout 의도로 나눠 busy vs retryable 정책을 정하는 intermediate bridge다.
+  CannotAcquireLockException 55P03, JPA LockTimeoutException, 55P03 blind retry, nowait lock_timeout 차이 질문이 본 문서에 매핑된다.
+---
 # Spring/JPA에서 PostgreSQL `55P03`를 `NOWAIT`와 `lock_timeout`으로 나눠 읽는 Retry Policy Bridge
 
 > 한 줄 요약: PostgreSQL에서는 `NOWAIT`와 `lock_timeout`이 둘 다 `55P03`로 올라올 수 있고, Spring/JPA에서도 비슷한 lock 예외로 뭉개져 보이기 쉬우므로, **예외 이름보다 `SQLSTATE 55P03` + SQL 의도(`NOWAIT` vs wait budget) + retry 경계**를 함께 읽어야 whole-transaction blind retry 오분류를 줄일 수 있다.

@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Auth Incident Triage / Blast-Radius Recovery Matrix
+concept_id: security/auth-incident-triage-blast-radius-recovery-matrix
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- auth incident triage
+- authentication incident recovery
+- blast radius matrix
+- auth outage classification
+aliases:
+- auth incident triage
+- authentication incident recovery
+- blast radius matrix
+- auth outage classification
+- login incident
+- verification outage
+- revocation lag incident
+- replay outage
+- authz bug recovery
+- identity incident runbook
+- control plane auth incident
+- incident close gate
+symptoms:
+- Auth Incident Triage / Blast-Radius Recovery Matrix 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/incident-close-break-glass-gate.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Auth Incident Triage / Blast-Radius Recovery Matrix 장애가 나면 복구 순서는?
+- auth incident triage 운영 대응 체크리스트가 뭐야?
+- Auth Incident Triage / Blast-Radius Recovery Matrix에서 blast radius를 어떻게 줄여?
+- auth incident triage 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Auth Incident Triage / Blast-Radius Recovery Matrix를 다루는 playbook 문서다. 인증 장애는 로그인, 검증, revocation, authz, replay defense가 각기 다른 방식으로 망가지므로, incident 초기에 stage, blast radius, integrity risk, 가능한 완화 레버를 매트릭스로 분류해야 잘못된 복구를 줄일 수 있다. 검색 질의가 auth incident triage, authentication incident recovery, blast radius matrix, auth outage classification처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Auth Incident Triage / Blast-Radius Recovery Matrix
 
 > 한 줄 요약: 인증 장애는 로그인, 검증, revocation, authz, replay defense가 각기 다른 방식으로 망가지므로, incident 초기에 stage, blast radius, integrity risk, 가능한 완화 레버를 매트릭스로 분류해야 잘못된 복구를 줄일 수 있다.

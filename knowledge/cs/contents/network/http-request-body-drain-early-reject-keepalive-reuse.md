@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "HTTP Request Body Drain, Early Reject, Keep-Alive Reuse"
+concept_id: network/http-request-body-drain-early-reject-keepalive-reuse
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- request-body-drain
+- early-reject-keepalive
+- unread-body-cleanup
+aliases:
+- request body drain
+- early reject keep-alive
+- unread request body
+- 413 payload too large
+- discard body connection close
+- leftover bytes
+symptoms:
+- 401 413 429 early reject 후 남은 request body를 drain하지 않고 keep-alive connection을 재사용하려 한다
+- proxy buffering ON/OFF 차이 때문에 origin app이 slow upload와 unread body를 직접 처리하는지 놓친다
+- HTTP/2 upload reject에서 RST_STREAM과 flow-control cleanup을 HTTP/1.1 byte drain과 같은 방식으로 본다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/expect-100-continue-proxy-request-buffering
+- network/gateway-buffering-vs-spring-early-reject
+next_docs:
+- network/proxy-to-container-upload-cleanup-matrix
+- network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- spring/security-exceptiontranslation-entrypoint-accessdeniedhandler
+linked_paths:
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/http2-upload-early-reject-rst-stream-flow-control-cleanup.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+confusable_with:
+- network/expect-100-continue-proxy-request-buffering
+- network/gateway-buffering-vs-spring-early-reject
+- network/proxy-to-container-upload-cleanup-matrix
+- network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+- "HTTP early reject 뒤 unread request body를 drain할지 connection close할지 어떻게 정해?"
+- "401 413 429를 body 전에 보내면 keep-alive 재사용이 왜 위험해질 수 있어?"
+- "Proxy request buffering이 켜진 경우와 꺼진 경우 request body drain 책임이 어떻게 달라?"
+- "HTTP/1.1 leftover bytes와 HTTP/2 RST_STREAM upload cleanup 차이를 설명해줘"
+- "Spring Security upload reject에서 body를 안 읽고 응답하면 어떤 connection 문제가 생겨?"
+contextual_chunk_prefix: |
+  이 문서는 request body를 다 읽기 전 401/413/429 early reject를 할 때
+  unread body drain, Connection: close, proxy buffering, keep-alive reuse,
+  HTTP/2 RST_STREAM/flow-control cleanup을 설계하는 advanced playbook이다.
+---
 # HTTP Request Body Drain, Early Reject, Keep-Alive Reuse
 
 > 한 줄 요약: 서버나 proxy가 요청 본문을 끝까지 읽기 전에 `401`, `413`, `429` 같은 early reject를 하려면, 남은 body를 drain할지 connection을 닫을지 명확히 정해야 한다. 그렇지 않으면 keep-alive 재사용이 꼬이고 다음 요청까지 오염될 수 있다.

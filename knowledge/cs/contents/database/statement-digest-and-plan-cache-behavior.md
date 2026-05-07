@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Statement Digest and Plan Cache Behavior
+concept_id: database/statement-digest-plan-cache-behavior
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- statement-digest
+- plan-cache
+- prepared-statement
+- performance-schema
+- plan-stability
+aliases:
+- statement digest
+- plan cache
+- prepared statement
+- events_statements_summary_by_digest
+- digest_text
+- query normalization
+- performance_schema digest
+- MySQL plan stability
+- prepared statement plan
+- query shape aggregation
+symptoms:
+- literal만 다른 비슷한 쿼리들이 많아 어떤 SQL shape가 뜨거운지 digest로 묶어 보고 싶어
+- statement digest를 plan cache처럼 이해해서 실행 계획이 고정된다고 오해하고 있어
+- prepared statement를 써도 통계 변화 때문에 plan regression이 생길 수 있음을 설명해야 해
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/statistics-histograms-cardinality-estimation
+next_docs:
+- database/slow-query-analysis-playbook
+- database/statistics-histograms-cardinality-estimation
+- database/optimizer-switch-plan-stability-invisible-indexes
+linked_paths:
+- contents/database/optimizer-switch-plan-stability-invisible-indexes.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with:
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/statistics-histograms-cardinality-estimation
+- database/slow-query-analysis-playbook
+forbidden_neighbors: []
+expected_queries:
+- MySQL statement digest는 plan cache가 아니라 query shape 관찰 도구라는 뜻이 뭐야?
+- events_statements_summary_by_digest에서 literal만 다른 쿼리를 어떻게 한 형태로 묶어 보나?
+- prepared statement는 parse 비용을 줄이지만 plan stability를 보장하지 못하는 이유가 뭐야?
+- 같은 digest의 SQL도 statistics나 optimizer_switch 변화로 실행 계획이 달라질 수 있어?
+- 느린 쿼리 패턴을 digest_text 기준으로 찾은 뒤 어떤 문서로 내려가야 해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL statement digest, performance_schema events_statements_summary_by_digest, prepared statement, plan cache 오해를 plan stability와 query normalization 관점으로 설명하는 advanced deep dive다.
+  digest_text, query shape aggregation, prepared statement plan, plan regression 질문이 본 문서에 매핑된다.
+---
 # Statement Digest and Plan Cache Behavior
 
 > 한 줄 요약: MySQL은 일반적인 의미의 전역 plan cache보다 statement digest로 쿼리 형태를 집계하고, prepared statement는 parse 비용을 줄이지만 plan 안정성을 자동 보장하지는 않는다.

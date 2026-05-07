@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 동적 계획법 입문
+concept_id: algorithm/dp-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- dp-overlapping-subproblems
+- recurrence-base-case
+- greedy-vs-dp-split
+aliases:
+- dp intro
+- dynamic programming basics
+- 동적 계획법 입문
+- DP 기초
+- memoization 입문
+- 메모이제이션 기초
+- top down bottom up
+- dp 점화식
+- 피보나치 메모이제이션
+- overlapping subproblems
+- optimal substructure
+- dp vs greedy beginner
+- 0-1 knapsack beginner
+symptoms:
+- 재귀와 DP를 둘 다 작은 문제로 푼다고만 알고 중복 부분 문제 저장이라는 차이를 설명하지 못해
+- 점화식, base case, dp 배열 의미를 정하지 않은 채 코드부터 쓰다가 인덱스 오류가 난다
+- 그리디로 풀어도 될 문제와 전체 경우를 저장해 비교해야 하는 DP 문제를 구분하지 못해
+intents:
+- definition
+- comparison
+prerequisites:
+- algorithm/basic
+- algorithm/recursion-intro
+next_docs:
+- algorithm/greedy-vs-dp-decision-card
+- algorithm/greedy-intro
+- data-structure/hash-table-basics
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/greedy-vs-dp-decision-card.md
+- contents/algorithm/greedy.md
+- contents/algorithm/greedy-intro.md
+- contents/data-structure/hash-table-basics.md
+confusable_with:
+- algorithm/greedy-vs-dp-decision-card
+- algorithm/greedy-intro
+- algorithm/greedy
+forbidden_neighbors: []
+expected_queries:
+- 동적 계획법을 중복 부분 문제와 메모이제이션 기준으로 처음부터 설명해줘
+- 재귀만 쓰면 피보나치가 왜 지수 시간이 되고 memo를 붙이면 O(n)이 되는지 알려줘
+- top-down memoization과 bottom-up tabulation 차이를 beginner 기준으로 비교해줘
+- DP 점화식과 base case를 세울 때 마지막 선택을 먼저 본다는 뜻이 뭐야?
+- greedy와 DP를 어떻게 구분하고 언제 DP 상태 정의를 해야 해?
+contextual_chunk_prefix: |
+  이 문서는 dynamic programming을 overlapping subproblems와 optimal substructure를 가진 문제에서 recurrence와 base case를 세우고 memoization 또는 tabulation으로 중복 계산을 제거하는 beginner primer다.
+  dp, memoization, top-down, bottom-up, recurrence relation, base case, fibonacci, knapsack, greedy vs dp 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 동적 계획법 입문 (Dynamic Programming Basics)
 
 > 한 줄 요약: 동적 계획법은 "이미 계산한 부분 문제의 결과를 저장해 두고 재사용"하는 기법이며, 재귀로 생각하고 메모이제이션으로 중복 계산을 제거하면 처음 접근하기 쉽다.

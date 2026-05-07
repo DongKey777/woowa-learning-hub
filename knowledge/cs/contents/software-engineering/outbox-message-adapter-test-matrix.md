@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Outbox and Message Adapter Test Matrix
+concept_id: software-engineering/outbox-message-adapter-test-matrix
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- outbox
+- inbox
+- message-adapter
+- test-strategy
+aliases:
+- Outbox and Message Adapter Test Matrix
+- outbox test matrix
+- inbox dedup integration test
+- message-driven adapter contract test
+- event consumer contract test
+- 메시지 어댑터 테스트 매트릭스
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/message-driven-adapter
+next_docs:
+- software-engineering/inbound-adapter-testing-matrix
+- software-engineering/event-schema-versioning
+- system-design/change-data-capture-outbox-relay-design
+linked_paths:
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/spring/spring-rollbackonly-vs-checked-exception-commit-surprise-card.md
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+confusable_with:
+- software-engineering/inbound-adapter-testing-matrix
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/event-schema-versioning
+forbidden_neighbors: []
+expected_queries:
+- outbox, inbox, message-driven adapter 테스트를 unit, integration, contract test로 어떻게 나눠야 해?
+- outbox producer에서 domain state 저장과 outbox row 기록 원자성은 왜 integration test가 필요해?
+- inbox consumer에서 duplicate delivery가 와도 side effect가 한 번만 남는지 어디서 검증해야 해?
+- event schema, topic, header, version 호환성은 왜 contract test로 분리해야 해?
+- flush와 commit, rollback-only 예외 때문에 outbox 테스트 위치가 헷갈릴 때 어떻게 나눠 읽어?
+contextual_chunk_prefix: |
+  이 문서는 outbox producer, inbox consumer, message-driven adapter의 결정 로직, transaction/broker wiring, event schema contract를 테스트 계층별로 나누는 advanced chooser이다.
+---
 # Outbox and Message Adapter Test Matrix
 
 > 한 줄 요약: outbox/inbox와 message-driven adapter는 같은 메시징 흐름 안에 있지만, unit test는 결정 로직, integration test는 트랜잭션·브로커·중복 제어 wiring, contract test는 이벤트 schema 약속을 검증하도록 분리해야 한다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 문자열 처리 알고리즘
+concept_id: algorithm/string
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- string-algorithm-entrypoint
+- exact-pattern-matching
+- prefix-suffix-reuse
+aliases:
+- string algorithms
+- string matching
+- pattern matching
+- substring search
+- KMP rolling hash Aho-Corasick
+- prefix suffix string
+- 문자열 알고리즘
+- 문자열 패턴 매칭
+- 텍스트 검색 알고리즘
+symptoms:
+- 문자열을 단순 char 배열 비교로만 보고 prefix suffix 반복 패턴 정보를 재사용하는 알고리즘 축을 놓친다
+- exact match, multiple pattern match, suffix structure 문제를 모두 KMP 하나로 해결하려 한다
+- 로그 검색, 금칙어 필터링, 자동완성 같은 backend text processing 질문을 어떤 문자열 문서로 내려보낼지 모른다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- algorithm/basic
+next_docs:
+- algorithm/kmp-vs-z-algorithm
+- algorithm/rolling-hash-rabin-karp
+- algorithm/aho-corasick
+- algorithm/trie-vs-radix-vs-suffix-automaton-comparison
+linked_paths:
+- contents/algorithm/kmp-vs-z-algorithm.md
+- contents/algorithm/rolling-hash-rabin-karp.md
+- contents/algorithm/aho-corasick.md
+- contents/algorithm/suffix-array-lcp.md
+- contents/algorithm/suffix-automaton.md
+confusable_with:
+- algorithm/kmp-vs-z-algorithm
+- algorithm/rolling-hash-rabin-karp
+- algorithm/aho-corasick
+- algorithm/trie-vs-radix-vs-suffix-automaton-comparison
+forbidden_neighbors: []
+expected_queries:
+- 문자열 알고리즘은 exact pattern matching과 multiple pattern matching을 어떻게 나눠?
+- KMP와 Z와 rolling hash와 Aho-Corasick은 어떤 질문에서 각각 봐야 해?
+- 문자열에서 prefix suffix 정보를 재사용한다는 말이 무슨 뜻이야?
+- 로그나 텍스트에서 특정 패턴을 빠르게 찾는 알고리즘 입구를 알려줘
+- suffix array나 suffix automaton은 단순 substring search보다 어떤 깊은 문제에 쓰여?
+contextual_chunk_prefix: |
+  이 문서는 string algorithm entrypoint primer로, exact pattern matching,
+  KMP, Z algorithm, rolling hash/Rabin-Karp, Aho-Corasick, suffix array,
+  suffix automaton을 prefix/suffix와 substring search 관점에서 라우팅한다.
+---
 # 문자열 처리 알고리즘
 
 > 작성자 : [서그림](https://github.com/Seogeurim)

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Unit of Work Pattern
+concept_id: design-pattern/unit-of-work-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- unit-of-work-pattern
+- dirty-checking
+- transaction-change-set
+aliases:
+- unit of work pattern
+- unit of work
+- identity map
+- dirty checking
+- flush commit
+- persistence context
+- local transaction
+- change set commit
+- 트랜잭션 변경 추적
+- JPA persistence context
+symptoms:
+- save 호출이 즉시 SQL 반영이라고 생각해 flush와 commit 시점 차이를 설명하지 못한다
+- 여러 엔티티 변경을 개별 저장으로 흩어 중간 실패와 저장 순서 문제를 만든다
+- Repository와 Unit of Work를 모두 저장소라고 보고 조회/저장 계약과 변경 집합 추적을 구분하지 못한다
+intents:
+- deep_dive
+- definition
+- troubleshooting
+prerequisites:
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- database/transaction-boundary-isolation-locking-framework
+next_docs:
+- design-pattern/repository-pattern-vs-antipattern
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/repository-pattern-vs-antipattern
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/event-sourcing-pattern-language
+forbidden_neighbors: []
+expected_queries:
+- Unit of Work pattern은 한 transaction 안에서 new dirty removed entity를 어떻게 모아 commit해?
+- JPA persistence context와 dirty checking은 Unit of Work와 어떤 관계야?
+- save와 flush와 commit은 변경 추적과 SQL 반영 시점에서 어떻게 달라?
+- Repository는 aggregate 조회 저장 계약이고 Unit of Work는 change set 관리라는 차이를 설명해줘
+- 여러 엔티티 변경을 즉시 저장하지 않고 Unit of Work로 묶는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Unit of Work Pattern deep dive로, 한 local transaction 안에서
+  new/dirty/removed 객체를 identity map과 dirty checking으로 추적하고 flush/commit
+  시점에 일괄 반영하는 persistence change-set 패턴을 설명한다.
+---
 # Unit of Work Pattern: 트랜잭션 경계 안에서 변경을 모으기
 
 > 한 줄 요약: Unit of Work 패턴은 여러 엔티티의 변경을 한 덩어리로 추적하고 커밋 시점에 한 번에 반영해, 일관된 트랜잭션 경계를 만든다.

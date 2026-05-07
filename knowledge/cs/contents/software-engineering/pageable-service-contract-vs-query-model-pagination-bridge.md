@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Pageable Service Contract vs Query Model Pagination Bridge
+concept_id: software-engineering/pageable-query-model-pagination
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- pageable
+- service-contract
+- query-model
+- pagination
+aliases:
+- Pageable leak vs query-model pagination bridge
+- service가 Pageable을 받는 냄새
+- Spring Data Pageable leak
+- query model pagination
+- PageRequest value object
+- service contract pagination boundary
+symptoms: []
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/service-contract-smell-cards
+- software-engineering/query-model-separation-read-heavy
+next_docs:
+- software-engineering/same-db-query-repository-vs-separate-read-store
+- design-pattern/cursor-pagination-sort-stability-pattern
+- software-engineering/bulk-helper-vs-query-model
+linked_paths:
+- contents/software-engineering/service-contract-smell-cards.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/same-db-query-repository-vs-separate-read-store.md
+- contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+confusable_with:
+- software-engineering/service-contract-smell-cards
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/same-db-query-repository-vs-separate-read-store
+forbidden_neighbors: []
+expected_queries:
+- service가 Pageable을 받는다는 리뷰는 pagination 자체가 아니라 Spring Data 타입이 유스케이스 계약을 대신했다는 뜻인가?
+- Pageable을 controller나 JPA adapter에서는 써도 service 계약에서는 query/result 언어로 감싸는 이유를 설명해줘
+- FindOrdersQuery와 OrderPageResult로 pagination 의도를 표현하고 adapter에서 Pageable로 번역하는 흐름을 알려줘
+- Page<OrderEntity>나 Page<OrderResponse>를 public service contract로 반환하면 어떤 경계 누수가 생겨?
+- cursor pagination이나 Slice를 써도 같은 contract boundary 질문이 적용되는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Spring Data Pageable을 pagination 기능과 구분하고, service contract는 query/result 언어로, adapter/query repository는 Pageable 번역으로 나눌지 고르는 intermediate chooser이다.
+---
 # `Pageable` leak vs query-model pagination bridge
 
 > 한 줄 요약: `service가 Pageable을 받아요`라는 리뷰는 보통 "pagination이 문제"가 아니라 "Spring Data 타입이 유스케이스 계약을 대신했다"는 뜻이다. pagination 자체는 필요할 수 있지만, 초심자 기본값은 service 계약에서 한 번 `query` 언어로 좁히고 adapter/query repository 쪽에서 `Pageable`로 번역하는 흐름이다.

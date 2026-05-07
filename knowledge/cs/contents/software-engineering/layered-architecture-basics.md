@@ -9,28 +9,58 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- layered-architecture
+- controller-service-repository
+- layer
+- software-engineering
 aliases:
 - layered architecture
 - controller service repository
 - layer
 - 계층형 아키텍처
+- controller service repository 왜 나눠
+- Controller가 너무 많은 걸 알아요
+- Service 책임이 애매해요
+- Repository를 Controller에서 바로 호출
 intents:
 - definition
 linked_paths:
 - contents/software-engineering/service-layer-basics.md
 - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/dto-vo-entity-basics.md
 expected_queries:
 - 계층형 아키텍처가 뭐야?
 - controller service repository는 왜 나눠?
 - controller에서 바로 repository를 부르면 안 돼?
 - service layer는 무슨 일을 해?
+contextual_chunk_prefix: |
+  이 문서는 layered architecture beginner primer로 Controller, Service, Repository,
+  presentation/business/persistence layer, 입력 형식 검증, 업무 규칙, 트랜잭션 경계,
+  저장 책임을 어디에 둘지 묻는 질문에 답한다.
+  Controller가 너무 많은 일을 하거나 Repository를 Controller에서 바로 호출하는 증상을 service layer와 책임 분리로 연결한다.
 ---
-
 # 계층형 아키텍처 기초 (Layered Architecture Basics)
 
 > 한 줄 요약: 계층형 아키텍처는 코드를 역할별로 쌓아 올려 각 계층이 바로 아래 계층에만 의존하도록 구조를 나누는 가장 흔한 설계 패턴이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 미션 리뷰 문장 | 먼저 의심할 계층 |
+|---|---|
+| Controller가 너무 많은 걸 알아요 | presentation 밖 규칙이 남았는가 |
+| Service 책임이 애매해요 | 유스케이스 조립과 기술 세부가 섞였는가 |
+| Repository를 Controller에서 바로 호출해요 | HTTP 진입점에 업무 규칙이 묶였는가 |
+| DTO, Entity, VO가 모두 한 객체처럼 쓰인다 | 계층별 데이터 모양이 분리됐는가 |
 
 관련 문서:
 

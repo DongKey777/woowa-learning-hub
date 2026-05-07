@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Overlap Predicate Index Design for Booking Tables
+concept_id: database/overlap-predicate-index-design-booking-tables
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 93
+mission_ids: []
+review_feedback_tags:
+- booking-overlap
+- composite-index
+- gap-lock
+- lock-footprint
+aliases:
+- overlap predicate index design
+- booking overlap probe
+- composite index lock footprint
+- btree scan axis interval predicate
+- room booking start_at end_at index
+- mysql overlap locking read
+- next-key lock overlap probe
+- active booking probe index
+- 예약 overlap 인덱스
+- start_at end_at 인덱스 어느 쪽
+symptoms:
+- booking overlap probe에서 WHERE predicate 전체가 잠긴다고 믿고 composite index의 actual scan axis를 보지 않고 있어
+- resource_id, active_flag, start_at 또는 end_at 순서에 따라 false positive scan과 lock wait가 크게 달라져
+- MySQL locking read를 phantom-safe invariant로 과장하지 않고 slot row, guard row, exclusion constraint fallback과 비교해야 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/gap-lock-next-key-lock
+next_docs:
+- database/mysql-overlap-fallback-beginner-bridge
+- database/engine-fallbacks-overlap-enforcement
+- database/guard-row-scope-design-multi-day-bookings
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/mysql-explain-range-locking-primer.md
+- contents/database/mysql-empty-result-locking-reads.md
+confusable_with:
+- database/mysql-empty-result-locking-reads
+- database/mysql-overlap-fallback-beginner-bridge
+- database/exclusion-constraint-overlap-case-studies
+forbidden_neighbors: []
+expected_queries:
+- booking overlap query에서 start_at index와 end_at index가 lock footprint를 다르게 만드는 이유가 뭐야?
+- composite index가 overlap predicate 전체를 정확히 잠그지 못하는 이유를 B-tree scan axis로 설명해줘
+- active_flag를 prefix로 올리면 예약 overlap probe의 scan과 lock wait가 어떻게 줄어?
+- MySQL overlap locking read에서 false positive scan이 false positive lock wait가 되는 과정을 알려줘
+- continuous booking overlap에서 index tuning과 guard row fallback의 경계를 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 booking overlap predicate가 B-tree의 한 scan axis로만 잠겨 start_at, end_at composite index에 따라 lock footprint와 false positive scan이 달라지는 advanced deep dive다.
+  예약 overlap 인덱스, start_at end_at 어느 쪽, composite index lock footprint 질문이 본 문서에 매핑된다.
+---
 # Overlap Predicate Index Design for Booking Tables
 
 > 한 줄 요약: booking overlap probe에서 composite index는 "논리 규칙"을 그대로 잠그지 않고, B-tree가 실제로 스캔하는 축을 잠그므로 `(resource_id, start_at)`와 `(resource_id, end_at)`는 같은 쿼리라도 전혀 다른 lock footprint를 만든다.

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Policy as Code Adoption Order and Sequencing
+concept_id: software-engineering/policy-as-code-adoption-order
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- policy-as-code
+- adoption
+- sequencing
+- governance
+aliases:
+- Policy as Code Adoption Order and Sequencing
+- policy adoption order
+- policy sequencing
+- first policy candidates
+- governance rollout order
+- policy maturity ladder
+symptoms:
+- policy as code를 너무 복잡하거나 business semantics가 강한 규칙부터 hard block으로 도입해 false positive, override debt, shadow path가 커져
+- ownership metadata, lifecycle stage, service criticality 같은 선행 정책 없이 deprecation block이나 PRR gate를 바로 자동화하려 해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/policy-as-code
+- software-engineering/policy-candidate-backlog
+next_docs:
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/platform-policy-override-governance
+- software-engineering/incident-feedback-policy-ownership-closure
+linked_paths:
+- contents/software-engineering/policy-as-code-rollout-adoption-stages.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/policy-candidate-backlog-scoring-and-priority.md
+confusable_with:
+- software-engineering/policy-candidate-backlog
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/policy-as-code
+forbidden_neighbors: []
+expected_queries:
+- policy as code를 어떤 규칙부터 도입해야 하는지 adoption order와 sequencing 기준을 알려줘
+- ownership metadata required 같은 low-friction dependency unlocker를 먼저 도입해야 하는 이유가 뭐야?
+- policy dependency graph 없이 high-risk config staged rollout이나 PRR gate를 먼저 강제하면 왜 위험해?
+- incident-driven candidate와 platform baseline candidate를 균형 있게 섞는 adoption plan은 어떻게 짜?
+- business semantics가 강한 policy를 가장 늦게 자동화해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 policy as code 도입을 low-friction dependency enabler에서 lifecycle/rollout policy, business semantic guardrail 순서로 확장하는 advanced playbook이다.
+---
 # Policy as Code Adoption Order and Sequencing
 
 > 한 줄 요약: policy as code를 잘 도입하려면 모든 규칙을 한 번에 옮기지 말고, 낮은 논쟁도와 높은 관측 가능성을 가진 규칙부터 시작해 boundary, deprecation, rollout, ownership 같은 고난도 영역으로 점진 확장하는 adoption order가 필요하다.

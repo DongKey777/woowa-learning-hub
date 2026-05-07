@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 불변 객체와 방어적 복사 입문
+concept_id: language/java-immutable-object-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+review_feedback_tags:
+- immutable-object-basics
+- defensive-copy
+- record-shallow-immutability
+aliases:
+- java immutable object basics
+- immutable object java beginner
+- defensive copy basics
+- final field vs immutable
+- record defensive copy
+- read only view vs snapshot
+- List.copyOf defensive copy
+- 불변 객체 입문
+- 방어적 복사 기초
+symptoms:
+- final 필드면 참조 대상 객체까지 불변이라고 오해해 List나 배열 내부 변경을 놓친다
+- record component가 final이라 가변 입력에 대해 자동 방어적 복사가 된다고 생각한다
+- Collections.unmodifiableList 같은 읽기 전용 view와 List.copyOf snapshot의 차이를 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-array-copy-clone-basics
+next_docs:
+- language/immutable-objects-and-defensive-copying
+- language/record-value-object-equality-basics
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- software-engineering/oop-design-basics
+linked_paths:
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/map-of-copyof-unmodifiablemap-readonly-bridge.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/java-types-class-object-oop-basics.md
+confusable_with:
+- language/immutable-objects-and-defensive-copying
+- language/record-value-object-equality-basics
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- language/java-array-copy-clone-basics
+forbidden_neighbors: []
+expected_queries:
+- Java에서 final field와 immutable object는 왜 같은 말이 아니야?
+- 방어적 복사는 생성자와 getter에서 각각 왜 필요해?
+- record는 List나 배열 component를 자동으로 깊게 불변으로 만들어 줘?
+- List.copyOf와 Collections.unmodifiableList는 snapshot과 view 관점에서 어떻게 달라?
+- 불변 객체를 만들 때 setter 없음 private final field 외에 어떤 조건을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java immutable object beginner primer로, final reference와
+  object immutability의 차이, mutable input defensive copy, record shallow
+  immutability, read-only view vs snapshot을 설명한다.
+---
 # 불변 객체와 방어적 복사 입문
 
 > 한 줄 요약: 불변 객체는 생성 후 상태가 바뀌지 않는 객체이고, 방어적 복사는 외부에서 넘어온 가변 객체가 내부를 몰래 바꾸는 것을 막는 패턴이다.

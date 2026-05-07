@@ -1,8 +1,84 @@
+---
+schema_version: 3
+title: Circuit Breaker 기초
+concept_id: system-design/circuit-breaker-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- circuit-breaker-open-half-open-closed
+- cascading-failure-containment
+- fallback-after-open
+aliases:
+- circuit breaker basics
+- circuit breaker what is
+- circuit breaker 처음
+- circuit breaker 언제 써요
+- 왜 재시도만 하면 안 되나요
+- open half-open closed
+- cascading failure basics
+- fail fast pattern
+- fallback basics
+- external api failure
+- resilience4j basics
+- 외부 API 장애 차단
+symptoms:
+- 외부 API가 느릴 때 계속 호출하면 왜 내 서비스까지 느려지는지 모르겠어
+- Circuit Breaker의 Open, Half-Open, Closed 상태가 헷갈려
+- timeout과 retry와 circuit breaker가 각각 무엇을 막는지 구분이 안 돼
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- system-design/request-deadline-timeout-budget-primer
+- system-design/retry-amplification-and-backpressure-primer
+next_docs:
+- system-design/read-only-and-graceful-degradation-patterns
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-retry-backoff-practical
+linked_paths:
+- contents/system-design/request-deadline-timeout-budget-primer.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/system-design/read-only-and-graceful-degradation-patterns.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- system-design/retry-amplification-and-backpressure-primer
+- system-design/request-deadline-timeout-budget-primer
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- circuit breaker가 Open, Half-Open, Closed 상태로 어떻게 동작하는지 알려줘
+- 외부 API 장애 때 retry만 하면 왜 cascading failure가 생길 수 있어?
+- timeout, retry, circuit breaker의 역할 차이를 beginner 기준으로 비교해줘
+- circuit breaker가 열렸을 때 fallback으로 무엇을 돌려줄 수 있어?
+- Resilience4j circuit breaker를 쓰기 전에 어떤 개념을 알아야 해?
+contextual_chunk_prefix: |
+  이 문서는 circuit breaker를 외부 서비스 실패가 계속될 때 호출을 잠깐 차단해 cascading failure와 thread pool 고갈을 막는 resilience pattern으로 설명하는 beginner primer다.
+  Open, Half-Open, Closed 상태 전환, timeout과 retry와의 역할 차이, fail-fast, fallback, 외부 API 장애 차단, Resilience4j 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Circuit Breaker 기초 (Circuit Breaker Basics)
 
 > 한 줄 요약: Circuit Breaker는 고장 난 외부 서비스를 잠깐 "닫아 두고", 내 서비스까지 같이 멈추지 않게 막아 주는 실패 차단 패턴이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| backend/payment 장면 | 먼저 볼 circuit 질문 |
+|---|---|
+| 외부 API 실패율이 높은데 모든 요청이 계속 나간다 | Open으로 fail-fast해야 하는가 |
+| timeout과 retry만 늘려 thread pool이 묶인다 | circuit breaker가 필요한 실패 지속 상태인가 |
+| Half-Open에서 많은 요청을 한꺼번에 보낸다 | 복구 확인 traffic을 제한했는가 |
+| fallback 응답이 stale/partial이라는 사실을 숨긴다 | degrade contract가 명확한가 |
 
 관련 문서:
 

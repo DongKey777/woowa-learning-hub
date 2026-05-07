@@ -1,8 +1,84 @@
+---
+schema_version: 3
+title: Spring ActiveProfiles vs test property override primer
+concept_id: spring/spring-activeprofiles-vs-test-overrides-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- activeprofiles-profile-selection
+- test-property-source-override
+- application-test-yml-confusion
+aliases:
+- activeprofiles vs testpropertysource
+- activeprofiles vs application-test.yml
+- Spring ActiveProfiles test override primer
+- @ActiveProfiles test profile
+- application-test.yml not loaded
+- @TestPropertySource beginner
+- SpringBootTest properties
+- WebMvcTest properties
+- DataJpaTest properties
+- profile selection vs property override
+- activeprofiles 왜 안 바뀌어요
+- test profile file loading
+symptoms:
+- @ActiveProfiles를 property 값을 직접 바꾸는 annotation으로 오해해서 application-test.yml이 실제 값 공급자라는 점을 놓쳐
+- application-test.yml은 읽히는데 특정 테스트 클래스에서 값 하나만 덮는 방법을 @TestPropertySource와 annotation properties 중에서 못 고르겠어
+- profile 선택 문제와 property source 우선순위 문제를 한 덩어리로 봐서 테스트 설정이 왜 안 바뀌는지 추적하지 못해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- spring/spring-testing-basics
+next_docs:
+- spring/test-property-override-boundaries-primer
+- spring/property-source-precedence-quick-guide
+- spring/external-config-file-precedence-primer
+- spring/spring-testing-basics
+linked_paths:
+- contents/spring/spring-testing-basics.md
+- contents/spring/spring-test-property-override-boundaries-primer.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-external-config-file-precedence-primer.md
+- contents/database/transaction-basics.md
+confusable_with:
+- spring/test-property-override-boundaries-primer
+- spring/property-source-precedence-quick-guide
+- spring/external-config-file-precedence-primer
+forbidden_neighbors: []
+expected_queries:
+- Spring @ActiveProfiles와 application-test.yml, @TestPropertySource 차이를 profile 선택과 property override 기준으로 설명해줘
+- @ActiveProfiles("test")를 붙였는데 값이 안 바뀌면 무엇부터 확인해야 해?
+- application-test.yml과 @SpringBootTest(properties) 중 언제 어떤 걸 써야 해?
+- 테스트 클래스 하나에서만 property 값을 바꾸려면 annotation properties와 @TestPropertySource 중 무엇이 좋아?
+- profile을 켜는 문제와 같은 key 우선순위 문제를 어떻게 분리해서 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring test에서 @ActiveProfiles는 active profile selector이고 application-test.yml, @TestPropertySource, annotation properties는 property value provider 또는 override라는 경계를 설명하는 beginner primer다.
+  activeprofiles not working, application-test yml not loaded, SpringBootTest properties, TestPropertySource, profile selection vs property override 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`
 
 > 한 줄 요약: `@ActiveProfiles`는 **어떤 profile을 켤지 고르는 스위치**이고, `application-test.yml`, `@TestPropertySource`, 테스트 annotation의 `properties`는 **실제 property 값을 어디서 가져올지 정하는 도구**다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 `@ActiveProfiles`, `application-test.yml`, `@TestPropertySource`, `@SpringBootTest(properties = ...)`를 초보자가 "profile 선택"과 "property override"라는 두 축으로 분리해 이해하도록 돕는 **beginner testing primer**를 담당한다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`@ActiveProfiles(\"test\")` 붙였는데 값이 안 바뀌어요" | roomescape test DB 설정이 application-test.yml에서 읽히는지 확인하는 상황 | profile 선택과 property 값 공급을 분리한다 |
+| "테스트 하나에서만 설정 값을 바꾸고 싶어요" | 특정 `@SpringBootTest`에서 timeout, base URL, feature flag만 덮는 코드 | annotation properties와 `@TestPropertySource`의 override 용도를 본다 |
+| "application-test.yml이 읽힌 건지 우선순위가 밀린 건지 모르겠어요" | profile file은 로드됐지만 같은 key를 다른 source가 덮는 디버깅 | active profile 여부와 property source precedence를 따로 추적한다 |
 
 **난이도: 🟢 Beginner**
 

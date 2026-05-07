@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "Fetch `redirect: \"error\"` tiny card"
+concept_id: network/fetch-redirect-error-choice-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- fetch-redirect-mode-choice
+- api-contract-fail-fast
+- hidden-login-html
+aliases:
+- fetch redirect error
+- redirect error mode
+- fetch redirect follow manual error
+- api got login html
+- redirect should fail fast
+- fetch login redirect contract
+symptoms:
+- redirect: error를 redirect 정보를 더 자세히 보는 모드로 오해한다
+- JSON API가 /login HTML 200을 받는 숨은 성공 표면을 follow로 계속 삼킨다
+- page redirect UX와 API contract redirect 금지를 같은 기준으로 처리한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- network/fetch-redirected-response-url-opaqueredirect-mini-card
+next_docs:
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- network/ssr-view-render-vs-json-api-response-basics
+- security/browser-401-vs-302-login-redirect-guide
+linked_paths:
+- contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md
+- contents/network/fetch-redirected-response-url-opaqueredirect-mini-card.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/fetch-redirected-response-url-opaqueredirect-mini-card
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- security/browser-401-vs-302-login-redirect-guide
+forbidden_neighbors: []
+expected_queries:
+- "fetch redirect error는 redirect를 자세히 보기 위한 옵션이 아니라 fail-fast 옵션이야?"
+- "JSON API에서 /login redirect가 나오면 follow manual error 중 무엇을 써야 해?"
+- "API가 hidden login HTML 200을 받는 문제를 redirect: error로 어떻게 드러내?"
+- "page navigation redirect와 fetch API contract redirect 금지는 어떻게 달라?"
+- "fetch redirect mode follow manual error를 beginner 기준으로 비교해줘"
+contextual_chunk_prefix: |
+  이 문서는 fetch redirect mode 중 follow, manual, error를 API JSON 계약,
+  /login redirect, hidden login HTML 200, fail-fast 처리 기준으로 고르는
+  beginner chooser다.
+---
 # Fetch `redirect: "error"` tiny card
 
 > 한 줄 요약: `fetch`에서 redirect가 나오면 안 되는 JSON/API 계약이라면 `redirect: "error"`가 가장 깔끔한 선택이고, 최종 도착지만 읽으면 되는 경우는 `follow`, redirect 자체를 DevTools와 함께 추적하려는 경우는 `manual`이 더 잘 맞는다.

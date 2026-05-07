@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Bit-Sliced Bitmap Index
+concept_id: data-structure/bit-sliced-bitmap-index
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- bitmap-index-bsi
+- range-filter-bit-slice
+- warehouse-index-compression
+aliases:
+- bit sliced bitmap index
+- BSI bitmap index
+- bit slice index
+- bitmap range filter
+- bitwise aggregation
+- columnar bitmap index
+- numeric bitmap slice
+symptoms:
+- 숫자 컬럼의 range predicate를 값별 bitmap이나 HashMap exact lookup처럼만 보고 bit slice 방식의 장점을 놓친다
+- high-cardinality numeric value마다 bitmap을 만들려 해 bitmap 수가 폭증한다
+- BSI를 OLTP point lookup 인덱스로 오해하고 row ordering과 compression 조건을 같이 보지 않는다
+intents:
+- deep_dive
+- design
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+next_docs:
+- data-structure/bit-sliced-bitmap-sort-key-sensitivity
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+- data-structure/elias-fano-encoded-posting-list
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/bit-sliced-bitmap-sort-key-sensitivity.md
+- contents/data-structure/warehouse-sort-key-co-design-for-bitmap-indexes.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/elias-fano-encoded-posting-list.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/adaptive-radix-tree.md
+confusable_with:
+- data-structure/roaring-bitmap
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+- data-structure/elias-fano-encoded-posting-list
+- data-structure/hashmap-internals
+forbidden_neighbors: []
+expected_queries:
+- Bit-Sliced Bitmap Index는 숫자 range filter를 어떻게 bitmap으로 처리해?
+- 값별 bitmap과 bit slice bitmap index는 무엇이 달라?
+- high-cardinality numeric column에서 bitmap index를 어떻게 설계해야 해?
+- BSI가 range query와 aggregation에 유리한 이유를 설명해줘
+- BSI를 HashMap이나 posting list와 비교하면 어떤 요구에 맞아?
+contextual_chunk_prefix: |
+  이 문서는 numeric column을 bit position별 bitmap slice로 나누어 range
+  filter와 aggregation을 비트 연산으로 처리하는 Bit-Sliced Bitmap Index
+  playbook이다. 값별 bitmap 폭증, high-cardinality numeric value, row
+  ordering, compressed bitmap, warehouse analytic query 맥락을 다룬다.
+---
 # Bit-Sliced Bitmap Index
 
 > 한 줄 요약: Bit-Sliced Bitmap Index는 숫자 값을 비트 단위 bitmap slice로 분해해 저장함으로써, exact value lookup뿐 아니라 range filter와 집계를 비트 연산으로 빠르게 처리하려는 인덱스 구조다.

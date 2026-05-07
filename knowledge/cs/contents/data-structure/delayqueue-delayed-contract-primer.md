@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: DelayQueue Delayed Contract Primer
+concept_id: data-structure/delayqueue-delayed-contract-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- delayed-contract
+- compareto-getdelay-alignment
+- timer-deadline-ordering
+aliases:
+- DelayQueue Delayed contract
+- Delayed compareTo getDelay
+- compareTo getDelay mismatch
+- expired head DelayQueue
+- deadlineNanos Delayed
+- timer priority policy split
+- getDelay negative but not head
+symptoms:
+- compareTo는 business priority를 보고 getDelay는 deadline을 봐서 가장 먼저 만료된 task가 head에 오지 않는다
+- getDelay가 음수인 task가 있는데 head가 아니어서 DelayQueue가 계속 기다리는 이상 현상을 만든다
+- mutable deadline, currentTimeMillis clock, same deadline tie-breaker를 Delayed contract와 함께 설계하지 않는다
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/java-priorityqueue-pitfalls
+next_docs:
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge
+- data-structure/java-timer-clock-choice-primer
+- data-structure/timer-priority-policy-split
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge.md
+- contents/data-structure/java-timer-clock-choice-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/timer-priority-policy-split.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+confusable_with:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/timer-priority-policy-split
+- data-structure/java-timer-clock-choice-primer
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue에서 compareTo와 getDelay는 왜 같은 deadline 기준을 봐야 해?
+- getDelay가 만료됐는데 task가 head가 아니라서 실행되지 않는 버그는 어떻게 생겨?
+- Delayed 구현에서 business priority와 deadline ordering을 섞으면 왜 위험해?
+- deadlineNanos와 sequence tie-breaker로 DelayQueue task ordering을 구현하는 법을 알려줘
+- DelayQueue Delayed contract를 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java DelayQueue의 Delayed contract에서 compareTo는 queue head
+  ordering을, getDelay는 head expiry gate를 맡기 때문에 두 판단이 같은
+  deadlineNanos 기준으로 정렬되어야 한다는 primer다. business priority,
+  clock choice, tie-breaker, mutable deadline 함정을 다룬다.
+---
 # DelayQueue Delayed Contract Primer
 
 > 한 줄 요약: `DelayQueue`에서 `compareTo()`는 "누가 줄 맨 앞인가"를 정하고, `getDelay()`는 "맨 앞 사람이 지금 나가도 되는가"를 정하므로 두 판단은 같은 deadline을 기준으로 맞아야 한다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "Proxy-to-Container Upload Cleanup Matrix"
+concept_id: network/proxy-to-container-upload-cleanup-matrix
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- upload-cleanup
+- proxy-container
+- multipart
+aliases:
+- proxy to container upload cleanup matrix
+- edge 401 413 499 mapping
+- gateway buffering Expect 100-continue servlet cleanup
+- origin fast reject edge late upload
+- request body bytes received vs consumed
+- gateway local reply vs upstream 413
+- multipart auth reject cleanup matrix
+symptoms:
+- edge 401 413 499를 서로 배타적인 단일 사건으로 읽는다
+- origin이 빠르게 401을 만들었는데 edge가 2GB body를 이미 받은 상황을 설명하지 못한다
+- Expect 100-continue와 proxy buffering이 reject ownership과 cleanup tail을 바꾸는 점을 놓친다
+- servlet container unread body drain/close 정책이 keep-alive 재사용과 499를 바꾸는 점을 보지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/gateway-buffering-vs-spring-early-reject
+- network/expect-100-continue-proxy-request-buffering
+next_docs:
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/spring-multipart-exception-translation-matrix
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- spring/multipart-upload-request-pipeline
+linked_paths:
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/spring-multipart-exception-translation-matrix.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/http2-upload-early-reject-rst-stream-flow-control-cleanup.md
+- contents/spring/spring-multipart-upload-request-pipeline.md
+confusable_with:
+- network/gateway-buffering-vs-spring-early-reject
+- network/expect-100-continue-proxy-request-buffering
+- network/spring-multipart-exception-translation-matrix
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+forbidden_neighbors: []
+expected_queries:
+- "upload incident에서 edge 401 413 499를 proxy to container cleanup matrix로 설명해줘"
+- "origin은 401인데 edge는 499가 같이 보일 수 있는 이유는?"
+- "gateway buffering과 Expect 100-continue가 upload reject ownership을 어떻게 바꿔?"
+- "request_body_bytes_received_edge와 bytes_consumed_app를 왜 같이 봐야 해?"
+- "Tomcat Jetty Undertow unread body cleanup이 keep-alive 재사용에 미치는 영향은?"
+contextual_chunk_prefix: |
+  이 문서는 upload incident에서 gateway buffering, Expect 100-continue,
+  Spring/container reject phase, unread body drain/close cleanup이 edge 401/413/499
+  표면으로 번역되는 방식을 다루는 advanced bridge다.
+---
 # Proxy-to-Container Upload Cleanup Matrix
 
 > 한 줄 요약: edge에서 본 `401/413/499`는 gateway buffering, `Expect: 100-continue`, Spring의 reject phase, servlet container의 unread-body cleanup 조합에 따라 같은 업로드 incident의 서로 다른 번역본이 된다. 이 문서는 그 번역 규칙을 한 매트릭스로 묶어 edge symptom을 origin behavior로 되짚는다.

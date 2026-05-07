@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: API 설계와 예외 처리
+concept_id: software-engineering/api-design-error-handling
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+- missions/backend
+review_feedback_tags:
+- api-error-response-contract
+- controller-valid-vs-service-rule
+- exception-to-http-translation
+aliases:
+- api design error handling
+- API 설계와 예외 처리
+- API error response envelope
+- problem details
+- RFC 7807
+- HTTP status code semantics
+- error code taxonomy
+- exception to API translation
+- 예외 처리 설계
+- controller validation service validation
+- 입력 검증 vs 업무 규칙 검증
+- 400 vs 409
+- 409 vs 422
+- validation error response example
+symptoms:
+- @Valid로 잡을 입력 검증과 Service나 Domain에서 막을 업무 규칙이 헷갈려
+- 예외를 Controller, Service, Domain 중 어디에서 던지고 어디서 HTTP 응답으로 바꿔야 할지 모르겠어
+- 400, 409, 422 중 어떤 상태 코드가 맞는지 일관성이 없어
+intents:
+- design
+- comparison
+prerequisites:
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+next_docs:
+- software-engineering/test-strategy-basics
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/api-contract-testing
+- software-engineering/http-409-vs-422-selection-guide
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/exception-handling-basics.md
+- contents/software-engineering/http-409-vs-422-selection-guide.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- software-engineering/service-layer-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+forbidden_neighbors: []
+expected_queries:
+- API 예외 처리는 Domain, Service, Controller, GlobalExceptionHandler 중 어디에서 나눠야 해?
+- @Valid 형식 검증과 업무 규칙 검증은 왜 Controller와 Service/Domain으로 나눠야 해?
+- 중복 신청, 이미 배송된 주문, 필수값 누락은 각각 400, 409, 422 중 무엇을 생각해야 해?
+- error response envelope과 error code taxonomy를 왜 일관되게 설계해야 해?
+- 좋은 API가 호출자에게 실패 이유를 소스코드 없이 알려주려면 무엇을 공개해야 해?
+contextual_chunk_prefix: |
+  이 문서는 API 설계와 예외 처리를 공개 계약, 실패 표현, 예외 위치, HTTP status code, error response envelope 기준으로 설명하고, Controller의 입력 형식 검증과 Service/Domain의 업무 규칙 검증을 나누는 intermediate primer다.
+  @Valid vs business rule, 400 vs 409 vs 422, domain exception, global exception handler, problem details, error code taxonomy 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # API 설계와 예외 처리 🟡 Intermediate
 
 
@@ -48,6 +123,15 @@ retrieval-anchor-keywords: api design error handling basics, api design error ha
 > - MethodArgumentNotValidException
 > - field error array
 > - validation error response example
+
+## 미션 진입 증상
+
+| backend API 장면 | 먼저 볼 계약 |
+|---|---|
+| 필수값 누락과 중복 예약이 모두 400이다 | validation 실패와 conflict를 나눴는가 |
+| 로그인 안 됨과 권한 없음이 같은 응답이다 | 401과 403 의미가 분리됐는가 |
+| 같은 idempotency key 다른 payload가 replay된다 | 409 conflict로 닫아야 하는가 |
+| 예외 message가 그대로 API body로 나간다 | 공개 error code/message taxonomy가 있는가 |
 
 ## 핵심 개념
 

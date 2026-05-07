@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 시간복잡도 입문
+concept_id: algorithm/time-complexity-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- complexity-before-pattern-choice
+- big-o-growth-rate
+- nested-loop-triage
+aliases:
+- time complexity intro
+- time complexity basics
+- big o notation beginner
+- 시간복잡도 입문
+- 시간복잡도 기초
+- 빅오 표기법이 뭐예요
+- o n o n squared 차이
+- o log n 의미
+- loop complexity
+- nested loop complexity
+- 중첩 루프 복잡도
+- 이중 for문 시간복잡도
+symptoms:
+- O(n)과 O(n^2)이 입력 크기가 커질 때 왜 완전히 달라지는지 모르겠어
+- 이중 for문이면 무조건 O(n^2)인지 헷갈려
+- 알고리즘을 고르기 전에 입력 크기로 통과 가능성을 어떻게 가늠하는지 궁금해
+intents:
+- definition
+- comparison
+prerequisites: []
+next_docs:
+- algorithm/backend-algorithm-starter-pack
+- algorithm/amortized-analysis-pitfalls
+- algorithm/binary-search-patterns
+- data-structure/hash-table-basics
+- data-structure/backend-data-structure-starter-pack
+linked_paths:
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/basic.md
+- contents/data-structure/hash-table-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- algorithm/amortized-analysis-pitfalls
+- algorithm/backend-algorithm-starter-pack
+- data-structure/hash-table-basics
+forbidden_neighbors: []
+expected_queries:
+- 시간복잡도와 Big-O 표기법을 처음 배우는 사람 기준으로 설명해줘
+- O(n), O(log n), O(n log n), O(n^2)가 입력 크기별로 얼마나 달라져?
+- 이중 for문이면 항상 O(n^2)인지 예외가 있는지 알고 싶어
+- n이 10만이면 어떤 복잡도까지 보통 가능하다고 판단해?
+- 알고리즘 문제를 풀기 전에 시간 제한과 입력 크기로 풀이를 거르는 법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 시간복잡도를 입력 크기 n이 커질수록 연산 횟수가 얼마나 빠르게 늘어나는지 Big-O로 표현하는 beginner primer로 설명한다.
+  O(1), O(log n), O(n), O(n log n), O(n^2), nested loop, 입력 크기와 시간 제한으로 풀이 가능성을 가늠하는 자연어 질문이 본 문서에 매핑된다.
+---
 # 시간복잡도 입문 (Time Complexity Basics)
 
 > 한 줄 요약: 시간복잡도는 "입력 크기 n이 커질 때 연산 횟수가 얼마나 빠르게 늘어나는가"를 Big-O 표기법으로 나타내며, 코드를 짜기 전에 풀이가 통과할지 가늠하는 첫 번째 도구다.

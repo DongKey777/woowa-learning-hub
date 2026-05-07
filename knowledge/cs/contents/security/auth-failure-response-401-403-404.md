@@ -9,6 +9,15 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- auth-failure-response
+- 401-403-404
+- 401-vs-403
+- vs-404
 summary: 401, 403, 404를 인증 실패, 권한 부족, 존재 은닉으로 처음 구분하게 돕는 beginner chooser다.
 aliases:
 - 401 vs 403 vs 404
@@ -16,6 +25,10 @@ aliases:
 - 로그인 됐는데 왜 403
 - token valid but forbidden
 - 404 concealment
+symptoms:
+- 로그인하지 않은 요청과 로그인했지만 권한이 없는 요청을 같은 status로 내려보낸다
+- 남의 주문이나 예약을 조회할 때 403을 줄지 404로 숨길지 기준이 없다
+- 브라우저에서는 login HTML 200이 보여 API의 원래 401/403을 놓친다
 intents:
 - comparison
 - design
@@ -55,12 +68,20 @@ contextual_chunk_prefix: |
   막힘, 인증 vs 인가 응답 코드 같은 자연어 paraphrase가 본 문서의 세 분기에
   매핑된다.
 ---
-
 # Beginner Guide to Auth Failure Responses: `401` / `403` / `404`
 
 > 한 줄 요약: `401`은 다시 인증, `403`은 인증은 됐지만 거절, `404`는 진짜 없음 또는 존재 은닉으로 먼저 읽으면 초보자도 흔한 혼동을 줄일 수 있다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| auth failure 장면 | 먼저 볼 응답 의미 |
+|---|---|
+| 로그인하지 않았는데 보호 API를 호출한다 | 401로 다시 인증을 요구할 상황인가 |
+| 로그인은 됐지만 admin API가 막힌다 | 403 권한 부족인가 |
+| 남의 주문/예약 존재를 숨기고 싶다 | 404 concealment 정책인가 |
+| fetch가 login HTML 200을 받는다 | redirect 뒤 최종 응답만 보는가 |
 
 > 문서 역할: 이 문서는 `401` / `403` / `404`를 처음 구분하는 beginner primer다. 운영 사고, cache stale deny, concealment 설계, 브라우저 redirect 세부는 관련 문서로 넘긴다.
 

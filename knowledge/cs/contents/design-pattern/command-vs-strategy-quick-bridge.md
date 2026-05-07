@@ -10,6 +10,7 @@ level: intermediate
 language: ko
 source_priority: 85
 mission_ids:
+- missions/baseball
 - missions/blackjack
 - missions/lotto
 review_feedback_tags:
@@ -57,6 +58,8 @@ confusable_with:
 - design-pattern/command-pattern-basics
 - design-pattern/strategy-pattern-basics
 forbidden_neighbors:
+- contents/design-pattern/observer-vs-command-beginner-bridge.md
+- contents/design-pattern/command-bus-pattern.md
 expected_queries:
 - execute 모양이 비슷한데 command와 strategy를 어떻게 가르면 돼?
 - 큐에 넣어 재시도하는 작업은 전략 패턴이 아니라 왜 command에 가까워?

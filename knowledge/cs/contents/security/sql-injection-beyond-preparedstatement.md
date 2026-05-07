@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: SQL Injection beyond PreparedStatement
+concept_id: security/sql-injection-beyond-preparedstatement
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- sql injection beyond preparedstatement
+- preparedstatement만 쓰면 끝인가요
+- preparedstatement 써도 왜 위험해요
+- order by sql injection
+aliases:
+- sql injection beyond preparedstatement
+- preparedstatement만 쓰면 끝인가요
+- preparedstatement 써도 왜 위험해요
+- order by sql injection
+- 동적 정렬 sql injection
+- 컬럼명 바인딩 안 되나요
+- sql 구조 주입
+- 2차 sql injection
+- stored sql injection
+- sql injection advanced
+- native query injection
+- jdbc dynamic query safety
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/sql-injection-basics.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/password-storage-bcrypt-scrypt-argon2.md
+- contents/security/xss-csrf-spring-security.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SQL Injection beyond PreparedStatement 핵심 개념을 설명해줘
+- sql injection beyond preparedstatement가 왜 필요한지 알려줘
+- SQL Injection beyond PreparedStatement 실무 설계 포인트는 뭐야?
+- sql injection beyond preparedstatement에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SQL Injection beyond PreparedStatement를 다루는 deep_dive 문서다. PreparedStatement는 값 바인딩을 안전하게 해주지만, SQL 구조 자체를 안전하게 만들지는 못한다. 식별자, 정렬, 동적 조건, 2차 저장값이 남는 구멍을 같이 막아야 한다. 검색 질의가 sql injection beyond preparedstatement, preparedstatement만 쓰면 끝인가요, preparedstatement 써도 왜 위험해요, order by sql injection처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SQL Injection beyond PreparedStatement
 
 > 한 줄 요약: PreparedStatement는 값 바인딩을 안전하게 해주지만, SQL 구조 자체를 안전하게 만들지는 못한다. 식별자, 정렬, 동적 조건, 2차 저장값이 남는 구멍을 같이 막아야 한다.

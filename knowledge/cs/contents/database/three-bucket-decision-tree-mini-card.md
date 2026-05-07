@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Three-bucket Exception Decision Tree Mini Card
+concept_id: database/three-bucket-decision-tree
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- exception-mapping
+- duplicate-key
+- lock-timeout
+- retry
+- beginner
+aliases:
+- three bucket decision tree
+- 3버킷 결정 트리
+- already exists busy retryable
+- exception signal bucket
+- duplicate busy retryable
+- beginner retry classifier
+- mysql 1062 1205 1213
+- sqlstate bucket mapping
+- deadlock root code
+- service outcome bucket
+symptoms:
+- duplicate key, lock timeout, deadlock, serialization failure를 모두 같은 실패로 보고 있어
+- Spring 예외 이름보다 root SQLSTATE나 vendor code로 service outcome을 먼저 분류해야 해
+- lock timeout을 무조건 retryable로 보거나 duplicate key를 blind retry하려 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/unique-vs-locking-read-duplicate-primer
+next_docs:
+- database/insert-if-absent-retry-outcome-guide
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/postgresql-serializable-retry-playbook
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/spring-cannotacquirelockexception-root-sql-code-card.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/postgresql-serializable-retry-playbook.md
+confusable_with:
+- database/three-bucket-terms-common
+- database/insert-if-absent-retry-outcome-guide
+- database/lock-duplicate-three-bucket-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- duplicate key, lock timeout, deadlock, serialization failure를 already exists busy retryable로 어떻게 나눠?
+- MySQL 1062, 1205, 1213과 PostgreSQL 23505, 55P03, 40P01, 40001을 어떤 버킷에 넣어?
+- lock timeout은 왜 무조건 retryable이 아니라 busy로 먼저 보고 blocker를 확인해야 해?
+- duplicate key는 왜 보통 재시도보다 winner fresh read로 이어져야 해?
+- Spring 예외 이름이 같아 보여도 root SQLSTATE와 errno로 service action을 고정하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 DB 예외 신호를 already exists, busy, retryable 3버킷으로 빠르게 고르는 beginner chooser다.
+  duplicate key, lock timeout, deadlock, serialization failure, MySQL 1062/1205/1213, SQLSTATE mapping 질문이 본 문서에 매핑된다.
+---
 # 3버킷 결정 트리 미니카드
 
 > 한 줄 요약: 예외 이름을 길게 외우기보다, 먼저 `already exists` / `busy` / `retryable` 3버킷으로 번역하면 기본 동작이 빨라진다.

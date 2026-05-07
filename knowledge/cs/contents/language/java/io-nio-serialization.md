@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Java IO, NIO, Serialization, JSON Mapping
+concept_id: language/io-nio-serialization
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/payment
+review_feedback_tags:
+- java-io
+- serialization
+- json-mapping
+aliases:
+- Java IO NIO Serialization JSON Mapping
+- 자바 IO NIO 직렬화 JSON 매핑
+- ByteBuffer FileChannel SocketChannel basics
+- Java native serialization risks
+- Jackson JSON mapping schema evolution
+- blocking IO non blocking NIO 차이
+symptoms:
+- IO와 NIO를 단순히 오래된 API와 새 API로만 구분해 buffer, channel, selector 비용 모델을 설명하지 못해
+- ByteBuffer flip clear compact 상태 전이를 놓쳐 읽은 데이터가 비어 보이거나 position limit이 꼬이는 문제를 추적하지 못해
+- Java native serialization을 장기 저장 포맷으로 쉽게 선택해 serialVersionUID, 보안, schema evolution 위험을 놓쳐
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/charset-utf8-bom-malformed-input-decoder-policy
+- language/serialization-compatibility-serial-version-uid
+- language/json-null-missing-unknown-field-schema-evolution
+next_docs:
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/record-serialization-evolution
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+linked_paths:
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/serialpersistentfields-readobjectnodata-evolution-escape-hatches.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/language/java/java-time-instant-localdatetime-boundaries.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java/charset-utf8-bom-malformed-input-decoder-policy.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+confusable_with:
+- language/serialization-compatibility-serial-version-uid
+- language/json-null-missing-unknown-field-schema-evolution
+- language/direct-buffer-offheap-memory-troubleshooting
+forbidden_neighbors: []
+expected_queries:
+- Java IO와 NIO의 차이를 stream buffer channel 관점에서 설명해줘
+- ByteBuffer에서 flip clear compact를 언제 쓰는지 예제로 알려줘
+- Java native serialization을 운영에서 조심해야 하는 이유가 뭐야?
+- JSON mapping과 native serialization을 schema evolution 관점에서 비교해줘
+- blocking IO와 non blocking NIO를 언제 선택해야 하는지 판단 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java IO, NIO, ByteBuffer, Channel, native serialization, JSON mapping을 운영 비용과 schema evolution 관점에서 연결하는 advanced deep dive다.
+  IO vs NIO, ByteBuffer flip, Java serialization risk, Jackson JSON mapping, blocking vs non-blocking 질문이 본 문서에 매핑된다.
+---
 # Java IO, NIO, Serialization, JSON Mapping
 
 **난이도: 🔴 Advanced**

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Approximate Counting for Rate Limiting and Observability
+concept_id: data-structure/approximate-counting-rate-limiting-observability
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- approximate-counting
+- rate-limit-hot-key
+- observability-high-cardinality
+aliases:
+- approximate counting rate limiting
+- approximate counting observability
+- Count-Min Sketch rate limiter
+- heavy hitter detection
+- hot key observability
+- sketch exact fallback
+- soft limiter sketch signal
+symptoms:
+- tenant, user, endpoint, token, ip 조합별 exact counter가 너무 많아져 메모리와 eviction 정책이 먼저 무너진다
+- Count-Min Sketch 추정값을 그대로 429 차단 근거로 써도 되는지 헷갈린다
+- hot key 후보와 point query 빈도 추정을 분리하지 않아 관측은 되지만 운영 액션이 나오지 않는다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/count-min-sketch
+- data-structure/space-saving-heavy-hitters
+next_docs:
+- data-structure/count-min-sketch
+- data-structure/space-saving-heavy-hitters
+- data-structure/count-min-vs-hyperloglog
+- data-structure/sketch-filter-selection-playbook
+- algorithm/top-k-streaming-heavy-hitters
+linked_paths:
+- contents/data-structure/count-min-sketch.md
+- contents/data-structure/space-saving-heavy-hitters.md
+- contents/data-structure/count-min-vs-hyperloglog.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+confusable_with:
+- data-structure/count-min-sketch
+- data-structure/count-min-vs-hyperloglog
+- data-structure/space-saving-heavy-hitters
+- algorithm/top-k-streaming-heavy-hitters
+forbidden_neighbors: []
+expected_queries:
+- rate limiting에서 Count-Min Sketch를 exact counter 대신 바로 써도 돼?
+- 고카디널리티 key별 카운터가 터질 때 approximate counting을 어떻게 붙여?
+- hot key observability에서 sketch와 heavy hitter 후보 추적은 어떻게 역할이 달라?
+- approximate counting을 soft signal과 exact fallback으로 나누는 이유를 알려줘
+- Count-Min Sketch와 HyperLogLog 중 rate limiting에는 무엇이 맞아?
+contextual_chunk_prefix: |
+  이 문서는 high-cardinality backend에서 exact per-key counter가 어려울 때
+  Count-Min Sketch, heavy hitter 후보 추적, exact fallback을 조합해 rate
+  limiting과 observability를 설계하는 playbook이다. sketch는 hard block이
+  아니라 수상한 key를 깨우는 soft signal이라는 경계를 강조한다.
+---
 # Approximate Counting for Rate Limiting and Observability
 
 > 한 줄 요약: approximate counting은 Count-Min Sketch와 heavy-hitter 후보 추적을 이용해, backend에서 정확한 per-key 카운터를 전부 들고 있지 않고도 rate limiting과 hot key 관측을 가능하게 한다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Mutable Elements in HashSet and TreeSet Primer
+concept_id: language/mutable-elements-hashset-treeset-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- mutable-state
+- hashset
+- treeset
+aliases:
+- Mutable Elements in HashSet and TreeSet Primer
+- HashSet TreeSet mutable element after insertion
+- mutate equality field after add Set
+- mutate ordering field after add TreeSet
+- Set contains remove false after mutation
+- 자바 HashSet TreeSet 원소 변경
+symptoms:
+- HashSet에 넣은 원소의 equals/hashCode 참여 필드를 바꾼 뒤 contains와 remove가 false가 되는 이유를 찾지 못해
+- TreeSet에 넣은 원소의 compareTo 또는 Comparator 참여 필드를 바꾼 뒤 정렬 위치와 lookup 경로가 어긋나는 문제를 놓쳐
+- 같은 객체 reference를 들고 있으면 Set이 반드시 찾을 것이라고 생각해 삽입 당시 bucket이나 tree path를 고려하지 않아
+- TreeSet이 자동 정렬 컬렉션이라 원소 필드가 바뀌면 내부 자리도 자동으로 재정렬된다고 오해해
+intents:
+- troubleshooting
+- comparison
+- definition
+prerequisites:
+- language/mutable-element-pitfalls-list-set-primer
+- language/java-equality-identity-basics
+- language/java-comparable-comparator-basics
+next_docs:
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/hashset-mutable-element-removal-drill
+linked_paths:
+- contents/language/java/mutable-element-pitfalls-list-set-primer.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/mutable-hash-keys-hashset-hashmap-bridge.md
+- contents/language/java/hashset-mutable-element-removal-drill.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/mutable-element-pitfalls-list-set-primer
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/treeset-treemap-mutable-comparator-fields-primer
+forbidden_neighbors: []
+expected_queries:
+- HashSet과 TreeSet에 넣은 원소를 수정하면 contains와 remove가 왜 실패할 수 있어?
+- HashSet은 equals hashCode 기준 필드 mutation에 왜 약한지 beginner 기준으로 설명해줘
+- TreeSet은 compareTo나 Comparator 기준 필드를 바꿔도 자동으로 재정렬되지 않는 이유가 뭐야?
+- 같은 객체인데도 Set에서 못 찾는 경우를 HashSet과 TreeSet으로 비교해줘
+- mutable element를 Set에 넣을 때 안전한 기본 패턴은 무엇이야?
+contextual_chunk_prefix: |
+  이 문서는 HashSet과 TreeSet에서 mutable element가 contains/remove 실패를 만드는 원인을 hash bucket과 ordering path로 비교하는 beginner symptom router다.
+  HashSet mutable element, TreeSet mutable element, contains false, remove false, equals hashCode compareTo mutation 질문이 본 문서에 매핑된다.
+---
 # Mutable Elements in HashSet and TreeSet Primer
 
 > 한 줄 요약: `HashSet`과 `TreeSet`에 넣은 뒤 원소의 "같다고 판단하는 값"이나 "정렬에 쓰는 값"을 바꾸면, 컬렉션이 원소를 새 자리로 옮겨 주지 않아서 `contains()`와 `remove()` 기대가 깨질 수 있다.

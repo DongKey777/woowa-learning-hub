@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Verifier Overlap Hard-Reject Retirement Gates 설계
+concept_id: system-design/verifier-overlap-hard-reject-retirement-gates-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- verifier overlap hard reject retirement gates
+- verifier overlap drain
+- bounded fallback retirement
+- parser dark observe
+aliases:
+- verifier overlap hard reject retirement gates
+- verifier overlap drain
+- bounded fallback retirement
+- parser dark observe
+- legacy parser hard reject
+- overlap drained cutoff
+- fallback disable sequencing
+- rollback safe reject rollout
+- identity edge retirement
+- origin introspection fallback retirement
+- deprecated claim hard reject
+- verifier class region route gate
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/edge-verifier-claim-skew-fallback-design.md
+- contents/system-design/capability-sunset-gate-matrix-design.md
+- contents/system-design/bridge-retirement-evidence-packet-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/refresh-reauth-escalation-matrix-design.md
+- contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Verifier Overlap Hard-Reject Retirement Gates 설계 설계 핵심을 설명해줘
+- verifier overlap hard reject retirement gates가 왜 필요한지 알려줘
+- Verifier Overlap Hard-Reject Retirement Gates 설계 실무 트레이드오프는 뭐야?
+- verifier overlap hard reject retirement gates 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Verifier Overlap Hard-Reject Retirement Gates 설계를 다루는 deep_dive 문서다. verifier overlap hard-reject retirement gates 설계는 bounded fallback으로 overlap을 버틴 뒤, `dark-observe`, scoped canary, hard reject, cleanup handoff를 분리해 unknown claim fallback을 종료하면서도 rollback 손잡이는 마지막까지 보존하는 은퇴 운영 설계다. 검색 질의가 verifier overlap hard reject retirement gates, verifier overlap drain, bounded fallback retirement, parser dark observe처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Verifier Overlap Hard-Reject Retirement Gates 설계
 
 > 한 줄 요약: verifier overlap hard-reject retirement gates 설계는 bounded fallback으로 overlap을 버틴 뒤, `dark-observe`, scoped canary, hard reject, cleanup handoff를 분리해 unknown claim fallback을 종료하면서도 rollback 손잡이는 마지막까지 보존하는 은퇴 운영 설계다.

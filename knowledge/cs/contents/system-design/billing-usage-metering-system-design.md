@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Billing / Usage Metering System 설계
+concept_id: system-design/billing-usage-metering-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- billing
+- usage metering
+- invoice
+- proration
+aliases:
+- billing
+- usage metering
+- invoice
+- proration
+- rating
+- ledger
+- quota
+- usage aggregation
+- billing period
+- metered events
+- revenue recognition
+- Billing / Usage Metering System 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/entitlement-quota-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Billing / Usage Metering System 설계 설계 핵심을 설명해줘
+- billing가 왜 필요한지 알려줘
+- Billing / Usage Metering System 설계 실무 트레이드오프는 뭐야?
+- billing 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Billing / Usage Metering System 설계를 다루는 deep_dive 문서다. billing과 usage metering은 사용량을 정확히 집계하고, 과금과 한도를 안전하게 연결하는 재무-운영 결합 시스템이다. 검색 질의가 billing, usage metering, invoice, proration처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Billing / Usage Metering System 설계
 
 > 한 줄 요약: billing과 usage metering은 사용량을 정확히 집계하고, 과금과 한도를 안전하게 연결하는 재무-운영 결합 시스템이다.

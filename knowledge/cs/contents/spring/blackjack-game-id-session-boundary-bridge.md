@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > blackjack를 웹으로 옮기면 한 판의 게임은 메모리 객체 하나보다 `gameId`로 식별되는 긴 수명의 상태가 된다. 그래서 다음 `hit`, `stand` 요청은 `currentGame` 필드를 공유하기보다 "어느 게임에 대한 요청인가"를 식별자로 다시 말해 주는 편이 Spring의 요청 모델과 맞다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "게임 시작 뒤 hit 요청이 방금 만든 게임인지 어떻게 알아요?" | `POST /games` 다음 `POST /games/{id}/hit` 계약이 아직 없는 API | 다음 요청이 같은 게임임을 `gameId`로 다시 증명하게 한다 |
+| "세션에 Game 객체를 통째로 넣으면 편하지 않나요?" | 세션을 상태 원천처럼 쓰고 request path/body에는 식별자가 없는 구조 | 세션은 작은 참조를 보관하고 실제 상태는 저장소에서 찾는 경계를 본다 |
+| "`currentGame` 필드를 없애면 어디서 현재 게임을 찾죠?" | controller/service 필드 공유를 제거한 뒤 lookup 위치가 불명확한 코드 | request identity propagation과 state store 조회를 한 흐름으로 묶는다 |
+
 ## 미션 시나리오
 
 콘솔 blackjack에서는 `Game game = new Game()` 한 객체를 잡고 플레이어가 `hit`,

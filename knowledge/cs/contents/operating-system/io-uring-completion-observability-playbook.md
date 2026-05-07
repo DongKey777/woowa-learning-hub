@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: io_uring Completion Observability Playbook
+concept_id: operating-system/io-uring-completion-observability-playbook
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- io-uring-completion
+- observability
+- cq-backlog-eventfd
+- coalescing
+aliases:
+- io_uring completion observability
+- CQ backlog eventfd coalescing
+- fdinfo ring CQ snapshot
+- io_uring tracepoint rate
+- IOWQ saturation
+- iou-wrk scheduler signal
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/accept-overload-observability-playbook.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-fdinfo-pbuf-status-enobufs-reconciliation-playbook.md
+- contents/operating-system/io-uring-provided-buffer-exhaustion-observability-playbook.md
+- contents/operating-system/io-uring-iowq-affinity-max-workers-decision-guide.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-sqpoll-fdinfo-worker-mode-submit-debugging.md
+symptoms:
+- eventfd wakeup 수만 보면 완료가 적은 것 같지만 CQ backlog와 coalescing을 구분하지 못한다.
+- fdinfo ring snapshot과 perf tracepoint rate, BPF iou-wrk signal이 서로 다르게 보인다.
+- IOWQ saturation인지 CQ overflow인지 provided buffer exhaustion인지 분리해야 한다.
+expected_queries:
+- io_uring completion 관측은 eventfd wakeup만 보면 왜 부족해?
+- fdinfo CQ snapshot, perf io_uring tracepoint, BPF iou-wrk signal을 어떻게 묶어 봐?
+- CQ backlog와 eventfd coalescing, IOWQ saturation을 구분하는 playbook은?
+- io_uring 장애에서 completion fan-out이 tail latency를 만드는지 확인하려면?
+contextual_chunk_prefix: |
+  이 문서는 io_uring 장애를 eventfd wakeup 수만으로 판단하지 않고 fdinfo CQ snapshot,
+  perf io_uring tracepoint rate, BPF iou-wrk scheduler signal을 함께 보며 CQ backlog,
+  eventfd coalescing, IOWQ saturation, provided buffer exhaustion을 구분한다.
+---
 # io_uring Completion Observability Playbook
 
 > 한 줄 요약: `io_uring` 장애를 볼 때는 eventfd wakeup 수만 믿지 말고, `/proc/<pid>/fdinfo/<ring-fd>`의 CQ snapshot, `perf`의 `io_uring` tracepoint rate, BPF의 `iou-wrk` scheduler 신호를 같이 묶어 CQ backlog, eventfd coalescing, IOWQ saturation을 구분해야 한다.

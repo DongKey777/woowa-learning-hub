@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: List.sort vs Stream.sorted Comparator Bridge
+concept_id: language/list-sort-vs-stream-sorted-comparator-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- sorting
+- stream
+- comparator
+aliases:
+- List.sort vs Stream.sorted Comparator Bridge
+- java list sort vs stream sorted
+- same comparator list sort stream sorted
+- stream sorted original list unchanged
+- List.sort mutates list
+- 리스트 정렬과 stream.sorted 차이
+symptoms:
+- List.sort와 stream.sorted가 서로 다른 Comparator 규칙을 쓴다고 생각해 정렬 규칙 정의와 적용 위치를 분리하지 못해
+- stream.sorted를 호출하면 원본 리스트가 정렬된다고 오해하거나 List.sort가 새 리스트를 반환한다고 오해해
+- mixed-direction comparator chain을 API 호출마다 중복 작성해 List.sort와 stream.sorted에서 서로 다른 정렬 방향을 만든다
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-comparator-utility-patterns
+- language/java-stream-lambda-basics
+next_docs:
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- language/comparator-reversed-scope-primer
+- language/arrays-sort-comparator-reuse-bridge
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/arrays-sort-comparator-reuse-bridge.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/stream-tolist-vs-collectors-tolist-mutability-bridge.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/list-sort-vs-collections-sort-mini-bridge.md
+confusable_with:
+- language/list-sort-vs-collections-sort-mini-bridge
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- language/arrays-sort-comparator-reuse-bridge
+forbidden_neighbors: []
+expected_queries:
+- List.sort와 Stream.sorted는 같은 Comparator를 어디에 적용하느냐가 어떻게 달라?
+- List.sort는 원본 리스트를 바꾸고 stream.sorted는 새 결과를 받는 차이를 예제로 보여줘
+- 같은 정렬 규칙을 Comparator 변수나 팩토리 메서드로 뽑아 재사용하는 방법을 알려줘
+- 학년 오름차순 점수 내림차순 이름 오름차순 comparator를 List.sort와 stream.sorted 양쪽에서 써줘
+- stream.sorted 뒤 toList 결과 mutability는 어디서 결정되는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 같은 Comparator를 List.sort의 in-place sorting과 stream.sorted의 pipeline sorting에 적용하는 차이를 설명하는 beginner chooser다.
+  List.sort vs stream.sorted, original list mutation, Comparator reuse, sorted stream, mixed-direction comparator 질문이 본 문서에 매핑된다.
+---
 # `List.sort` vs `Stream.sorted` Comparator Bridge
 
 > 한 줄 요약: `List.sort(...)`와 `stream.sorted(...)`는 서로 다른 정렬 API처럼 보이지만, 핵심은 같은 `Comparator` 정렬 규칙을 어디에 적용하느냐의 차이다.

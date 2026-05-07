@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Transaction Boundary External I/O Checklist Card
+concept_id: database/transaction-boundary-external-io-checklist
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- transaction-boundary
+- external-io
+- code-review
+- outbox
+- spring
+aliases:
+- transaction boundary checklist
+- external IO inside transaction
+- @Transactional external API review
+- beginner transaction review questions
+- PR comment transaction review
+- outbox before after snippet
+- external delay to lock pool timeout
+- 조회성 검증 예외
+- 임시 draft 예외
+- 트랜잭션 경계 체크리스트
+symptoms:
+- '@Transactional' 안에서 HTTP, gRPC, Redis, S3, 메시지 브로커 호출을 기다리는지 코드리뷰해야 해
+- 외부 API 지연이 lock wait, connection pool timeout으로 번질 수 있는 경로를 설명해야 해
+- AFTER_COMMIT, outbox, idempotency, transaction retry boundary를 초급자 언어로 이어서 안내해야 해
+intents:
+- troubleshooting
+- drill
+- design
+prerequisites:
+- database/transaction-locking-connection-pool-primer
+- database/timeout-tuning-order-checklist
+next_docs:
+- database/transaction-boundary-isolation-locking-framework
+- database/outbox-saga-eventual-consistency
+- spring/service-layer-external-io-after-commit-outbox-primer
+linked_paths:
+- contents/database/transaction-locking-connection-pool-primer.md
+- contents/database/timeout-tuning-order-checklist-card.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/database/outbox-saga-eventual-consistency.md
+confusable_with:
+- database/timeout-tuning-order-checklist
+- database/transaction-boundary-isolation-locking-framework
+- database/spring-retry-proxy-boundary-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- '@Transactional' 안에서 외부 API 호출을 기다리는지 코드리뷰할 때 어떤 5문항을 보면 돼?
+- 외부 I/O가 느려지면 DB lock 보유 시간과 connection pool timeout이 같이 늘어나는 흐름을 설명해줘
+- DB write 후 외부 API 응답을 기다리고 다시 DB write하는 구조를 어떻게 나눠야 해?
+- 외부 API 실패를 DB rollback만으로 복구하려는 구조가 왜 위험하고 outbox나 보상이 필요한가?
+- 조회성 검증, 임시 draft, outbox 전환은 transaction boundary 예외로 언제 볼 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 transaction boundary checklist를 external I/O inside @Transactional, lock wait, pool timeout, AFTER_COMMIT/outbox, idempotency 기준으로 점검하는 beginner playbook이다.
+  트랜잭션 경계 체크리스트, 외부 API tx 안 호출, PR comment, external delay to lock pool timeout 질문이 본 문서에 매핑된다.
+---
 # 트랜잭션 경계 체크리스트 카드
 
 > 한 줄 요약: 코드리뷰에서 "`@Transactional` 안에 외부 I/O가 섞였는지"는 5문항만 보면 빠르게 1차 판별할 수 있다.

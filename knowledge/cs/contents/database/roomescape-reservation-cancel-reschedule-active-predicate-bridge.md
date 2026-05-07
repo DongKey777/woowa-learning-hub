@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 roomescape에서 예약 변경과 취소는 "row 상태만 바꾸는 작업"이 아니라 기존에 막고 있던 슬롯을 어떤 기준으로 해제하고 새 슬롯을 어떤 기준으로 점유하는지에 대한 상태 전이다. 그래서 `CANCELED` 라벨, 실제 blocker 해제 시점, 새 슬롯 선점 순서를 따로 보면 drift가 난다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 변경은 기존 예약 삭제하고 새로 만들면 안 되나요?" | `delete -> insert`로 old slot을 먼저 풀고 new slot을 나중에 잡는 코드 | 변경을 release와 acquire 두 작업이 아니라 하나의 상태 전이로 본다 |
+| "취소했는데 가능한 시간 목록에서는 아직 막힌 것처럼 보여요" | `status='CANCELED'` 라벨과 실제 blocker 조건이 다르게 쓰이는 쿼리 | active predicate가 조회와 생성에서 같은 의미인지 확인한다 |
+| "취소 요청과 시간 변경 요청이 같이 오면 마지막 요청만 이기면 되나요?" | 같은 reservation에 대한 cancel/reschedule 경합을 last write로 덮는 구조 | reservation-local fence와 직렬화 기준을 먼저 잡는다 |
+
 ## 미션 시나리오
 
 roomescape 미션이 예약 생성에서 끝나지 않고 변경이나 취소까지 붙기 시작하면, 학습자는 가장 먼저 "기존 예약을 지우고 새 예약을 만들면 되지 않나?"라는 생각을 하게 된다. 구현도 보통 `delete -> insert` 또는 `update status='CANCELED'` 뒤 새 시간으로 저장하는 식으로 흘러간다.

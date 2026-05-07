@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Arrays.sort 뒤 binarySearch 전제 브리지
+concept_id: language/arrays-sort-binarysearch-precondition-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-array-search
+- comparator-reuse
+- binary-search-precondition
+aliases:
+- arrays sort binarysearch precondition bridge
+- Java Arrays binarySearch precondition
+- sort order must match search order
+- binarySearch same comparator
+- 자바 정렬 기준 검색 기준 일치
+- Arrays.sort 후 binarySearch
+symptoms:
+- Arrays.sort를 호출했는데 binarySearch 결과가 이상한 이유를 정렬 기준과 검색 기준 불일치로 보지 못해
+- object 배열을 comparator로 정렬하고 검색할 때 같은 comparator overload를 써야 한다는 전제가 빠져 있어
+- primitive 내림차순 배열에 표준 binarySearch를 그대로 붙여도 된다고 오해해
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/java-array-sorting-searching-basics
+next_docs:
+- language/arrays-sort-comparator-reuse-bridge
+- language/primitive-array-descending-binarysearch-primer
+- language/binarysearch-duplicate-boundary-primer
+- algorithm/binary-search-patterns
+linked_paths:
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/arrays-sort-comparator-reuse-bridge.md
+- contents/language/java/primitive-array-descending-binarysearch-primer.md
+- contents/language/java/binarysearch-duplicate-boundary-primer.md
+- contents/algorithm/binary-search-patterns.md
+confusable_with:
+- language/arrays-sort-comparator-reuse-bridge
+- language/primitive-array-descending-binarysearch-primer
+- algorithm/binary-search-patterns
+forbidden_neighbors: []
+expected_queries:
+- Arrays.sort 했는데 binarySearch 결과가 이상한 이유를 정렬 기준과 검색 기준으로 설명해줘
+- Java object array를 comparator로 정렬한 뒤 binarySearch도 같은 comparator를 써야 하나?
+- primitive 배열 내림차순 정렬 후 Arrays.binarySearch를 그대로 쓰면 왜 위험해?
+- 자바 배열 정렬 후 검색 전 체크리스트를 초보자용으로 알려줘
+- binarySearch는 정렬되어 있기만 하면 되는지 같은 기준으로 정렬되어야 하는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java Arrays.sort 이후 binarySearch precondition을 정렬 기준과 검색 기준 일치로 설명하는 beginner primer다.
+  Arrays.binarySearch 이상한 결과, same comparator, object array search, primitive descending search, binary search precondition 질문이 본 문서에 매핑된다.
+---
 # `Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지
 
 > 한 줄 요약: `Arrays.binarySearch(...)`는 "정렬되어 있기만 하면 된다"가 아니라 **검색할 때 쓰는 기준과 같은 기준으로 정렬되어 있어야 한다**는 점이 초보자 함정이며, 가장 안전한 습관은 "정렬 규칙 확인 → 같은 규칙으로 검색" 체크리스트를 먼저 거치는 것이다.

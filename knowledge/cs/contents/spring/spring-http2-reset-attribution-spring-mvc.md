@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Spring HTTP/2 Reset Attribution in Spring MVC
+concept_id: spring/http2-reset-attribution-spring-mvc
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- http2-reset-attribution
+- mvc
+- http-2-reset
+- attribution
+aliases:
+- Spring HTTP/2 reset attribution
+- RST_STREAM
+- GOAWAY
+- stream reset
+- client cancel
+- Tomcat CloseNowException
+- Jetty EofException reset
+- Undertow ClosedChannelException
+intents:
+- symptom
+- troubleshooting
+symptoms:
+- HTTP/2 요청에서 broken pipe 대신 RST_STREAM이나 stream reset 계열 예외가 먼저 보인다.
+- redeploy, graceful shutdown, drain 중 GOAWAY 이후 일부 stream만 실패하거나 재시도된다.
+- Tomcat, Jetty, Undertow별 HTTP/2 disconnect surface가 달라 client abort attribution이 흔들린다.
+linked_paths:
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-async-mvc-streaming-observability-playbook.md
+- contents/spring/spring-async-timeout-disconnect-decision-tree.md
+- contents/spring/spring-observability-micrometer-tracing.md
+confusable_with:
+- spring/servlet-container-disconnect-exception-mapping
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- spring/async-timeout-disconnect-decision-tree
+expected_queries:
+- HTTP/2에서 RST_STREAM과 GOAWAY는 Spring MVC 로그에서 어떻게 보일 수 있어?
+- h2 요청의 client cancel을 classic broken pipe와 어떻게 구분해?
+- Tomcat CloseNowException이나 Jetty EofException reset은 어떤 bucket으로 봐야 해?
+- stream reset과 connection drain을 observability tag로 어떻게 분리해?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC 운영에서 HTTP/2 RST_STREAM, GOAWAY, client cancel,
+  stream reset, connection drain을 classic broken pipe와 구분한다. Tomcat
+  CloseNowException/StreamException, Jetty EofException reset/Output shutdown,
+  Undertow ClosedChannelException surface와 AsyncRequestNotUsableException
+  attribution에 매핑된다.
+---
 # Spring HTTP/2 Reset Attribution in Spring MVC
 
 > 한 줄 요약: HTTP/2에선 client cancel과 connection drain이 `broken pipe`보다 먼저 `RST_STREAM`과 `GOAWAY`로 표현되므로, Spring MVC 운영 해석도 "socket이 끊겼나"보다 "stream이 reset됐나, connection이 drain 중인가"를 먼저 봐야 한다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Ring Buffer
+concept_id: data-structure/ring-buffer
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- ring-buffer
+- bounded-queue-policy
+- producer-consumer-buffer
+aliases:
+- ring buffer
+- circular buffer
+- systems ring buffer
+- bounded queue
+- head tail wraparound
+- producer consumer pipeline
+- fixed capacity queue
+symptoms:
+- circular queue 구현 문제와 systems ring buffer의 producer consumer backpressure 정책 문제를 같은 층위로 본다
+- full일 때 reject, overwrite, blocking, upstream throttle 중 무엇을 선택해야 하는지 workload loss semantics와 연결하지 못한다
+- SPSC, MPSC, MPMC ring buffer의 participant count와 memory ordering 차이를 구분하지 못한다
+intents:
+- definition
+- design
+prerequisites:
+- data-structure/circular-queue-vs-ring-buffer
+- data-structure/bounded-queue-policy-primer
+next_docs:
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/lock-free-mpsc-queue
+- data-structure/bounded-mpmc-queue
+- data-structure/sequencer-based-ring-buffer-coordination
+linked_paths:
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/circular-queue-vs-ring-buffer-primer.md
+- contents/data-structure/bounded-queue-policy-primer.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/bounded-mpmc-queue.md
+- contents/data-structure/sequencer-based-ring-buffer-coordination.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/work-stealing-deque.md
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+confusable_with:
+- data-structure/circular-queue-vs-ring-buffer
+- data-structure/bounded-queue-policy-primer
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/bounded-mpmc-queue
+forbidden_neighbors: []
+expected_queries:
+- Ring Buffer는 circular queue와 같은 원형 배열이지만 systems context에서 무엇이 달라?
+- bounded ring buffer가 꽉 찼을 때 reject overwrite blocking backpressure를 어떻게 고르지?
+- producer consumer pipeline에서 head tail wraparound를 어떻게 이해해?
+- SPSC MPSC MPMC ring buffer는 participant count에 따라 무엇이 달라?
+- fixed capacity queue가 low latency와 predictable memory에 유리한 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Ring Buffer를 고정 크기 배열을 원형으로 쓰는 producer/consumer
+  buffer primer로 설명한다. circular queue와 systems ring buffer의 차이,
+  head/tail wraparound, full policy, backpressure, SPSC/MPSC/MPMC 변형을 다룬다.
+---
 # Ring Buffer
 
 > 한 줄 요약: Ring Buffer는 고정 크기 배열을 원형으로 써서, 큐 연산을 빠르고 예측 가능하게 만드는 자료구조다.

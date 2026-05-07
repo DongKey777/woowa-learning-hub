@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Page Cache Thrash vs Direct IO
+concept_id: operating-system/page-cache-thrash-vs-direct-io
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- page-cache-thrash
+- vs-direct-io
+- cache-thrashing
+- direct-io-bypass
+aliases:
+- page cache thrash vs direct IO
+- cache thrashing
+- direct IO bypass page cache
+- O_DIRECT choice
+- streaming read cache pollution
+- page cache workload fit
+intents:
+- comparison
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-sendfile-splice-zero-copy.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/buffered-vs-direct-io-mixing-coherency-pitfalls.md
+- contents/operating-system/direct-io-alignment-checklist.md
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+confusable_with:
+- operating-system/buffered-vs-direct-io-mixing-coherency-pitfalls
+- operating-system/direct-io-alignment-checklist
+- operating-system/page-cache-active-inactive-reclaim-debugging
+expected_queries:
+- page cache thrash와 direct I/O 중 어느 쪽을 골라야 해?
+- streaming read가 cache를 계속 밀어내면 direct I/O가 도움이 될 수 있어?
+- direct I/O를 선택하면 alignment와 coherency pitfall도 같이 봐야 해?
+- page cache가 workload와 안 맞을 때 fadvise, readahead, direct IO를 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 page cache thrash를 hot working set이 계속 밀려나는 상황으로, direct I/O를 그 경로를
+  우회하는 선택으로 비교한다. 둘 다 workload와 맞지 않으면 더 느려질 수 있어 alignment,
+  coherency, fadvise, readahead를 함께 본다.
+---
 # Page Cache Thrash vs Direct I/O
 
 > 한 줄 요약: page cache thrash는 캐시가 계속 밀려나는 상황이고, direct I/O는 그 경로를 아예 우회하는 선택이지만 둘 다 워크로드와 맞지 않으면 더 느려질 수 있다.

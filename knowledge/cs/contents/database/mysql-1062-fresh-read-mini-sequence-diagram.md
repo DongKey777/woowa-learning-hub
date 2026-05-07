@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: MySQL 1062 Fresh-Read Mini Sequence Diagram
+concept_id: database/mysql-1062-fresh-read-mini-sequence-diagram
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- duplicate-key
+- idempotency
+- fresh-read
+- mysql-1062
+aliases:
+- mysql 1062 fresh read sequence
+- duplicate key fresh read flow
+- 1062 duplicate key winner row
+- duplicatekeyexception sequence diagram
+- primary read after duplicate
+- replay busy conflict diagram
+- mysql 1062 이후 뭐함
+- 중복키 fresh read 시퀀스
+- duplicate key는 다시 insert하나요
+symptoms:
+- MySQL 1062 duplicate key를 받은 뒤 같은 INSERT를 다시 던질지 winner row를 읽을지 헷갈려
+- duplicate key 뒤 fresh read에서 replay busy conflict를 어떻게 나누는지 그림으로 보고 싶어
+- idempotency key 재전송과 payload conflict를 같은 duplicate key 안에서 구분해야 해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/three-bucket-terms-common
+- database/duplicate-key-fresh-read-classifier-mini-card
+next_docs:
+- database/primary-read-after-duplicate-checklist
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/insert-if-absent-retry-outcome-guide
+linked_paths:
+- contents/database/primary-read-after-duplicate-checklist.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/three-bucket-terms-common-card.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/primary-read-after-duplicate-checklist
+forbidden_neighbors: []
+expected_queries:
+- MySQL 1062 duplicate key 후에 왜 같은 insert 재시도보다 primary fresh read를 먼저 해?
+- duplicate key winner row를 읽고 replay busy conflict로 나누는 흐름을 시퀀스로 설명해줘
+- same key same hash와 different hash를 1062 이후 어떻게 응답으로 번역해?
+- 1062 직후 SELECT가 null이면 winner가 없다고 보면 되는지 알려줘
+- idempotency key duplicate를 초보자용으로 한 장 그림처럼 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL 1062 duplicate key 이후 primary fresh read로 winner row를 확인하고 replay, busy, conflict로 재분류하는 beginner primer다.
+  1062 이후 뭐함, duplicate key는 다시 insert하나요, winner row sequence diagram 질문이 본 문서에 매핑된다.
+---
 # MySQL `1062` 후 Fresh-Read 경로 미니 시퀀스 다이어그램
 
 > 한 줄 요약: MySQL `1062 duplicate key`는 끝이 아니라 시작이다. `INSERT`를 다시 던지기보다 **primary/fresh read로 winner row를 확인해 `replay` / `busy` / `conflict`로 재분류**하는 것이 초보자 기본 흐름이다.

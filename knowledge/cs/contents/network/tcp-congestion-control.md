@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "TCP Congestion Control"
+concept_id: network/tcp-congestion-control
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tcp
+- congestion-control
+- network-performance
+aliases:
+- TCP congestion control
+- congestion window
+- cwnd
+- slow start
+- congestion avoidance
+- packet loss throughput
+- BBR CUBIC
+symptoms:
+- TCP throughput 저하를 항상 application 처리 지연으로 본다
+- cwnd congestion 병목과 rwnd receiver window 병목을 구분하지 못한다
+- slow start, loss recovery, RTT 증가가 short request latency에 미치는 영향을 놓친다
+- BBR와 CUBIC 차이를 이름만 외우고 signal model을 설명하지 못한다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- network/tcp-udp-basics
+- network/ip-address-port-basics
+next_docs:
+- network/bbr-vs-cubic-congestion-intuition
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/packet-loss-jitter-reordering-diagnostics
+- network/http2-multiplexing-hol-blocking
+linked_paths:
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/tcp-zero-window-persist-probe-receiver-backpressure.md
+- contents/network/bbr-vs-cubic-congestion-intuition.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+confusable_with:
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/packet-loss-jitter-reordering-diagnostics
+- network/bbr-vs-cubic-congestion-intuition
+- network/http2-multiplexing-hol-blocking
+forbidden_neighbors: []
+expected_queries:
+- "TCP congestion control을 cwnd slow start congestion avoidance 관점으로 설명해줘"
+- "cwnd 병목과 receiver window rwnd zero window 병목은 어떻게 달라?"
+- "packet loss가 TCP throughput과 tail latency에 미치는 영향은?"
+- "BBR와 CUBIC congestion control의 intuition 차이는?"
+- "HTTP/2 over TCP에서 packet loss가 여러 stream에 전파되는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 TCP congestion control, cwnd, slow start, congestion avoidance,
+  loss recovery, RTT, BBR/CUBIC과 receiver window 병목 구분을 다루는
+  intermediate deep dive다.
+---
 # TCP 혼잡 제어
 
 > 한 줄 요약: TCP 혼잡 제어는 네트워크가 감당할 수 있는 속도로만 보내서, 재전송 폭풍과 지연 붕괴를 막는 장치다.

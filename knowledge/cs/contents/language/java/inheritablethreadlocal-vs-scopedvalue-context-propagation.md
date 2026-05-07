@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: InheritableThreadLocal vs ScopedValue Context Propagation Boundaries
+concept_id: language/inheritablethreadlocal-vs-scopedvalue-context-propagation
+canonical: true
+category: language
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- context-propagation
+- threadlocal
+- virtual-thread
+aliases:
+- InheritableThreadLocal vs ScopedValue
+- ScopedValue context propagation boundary
+- InheritableThreadLocal executor propagation
+- virtual thread context propagation Java
+- thread-bound context vs scope-bound context
+- 자바 ThreadLocal ScopedValue 컨텍스트 전파 차이
+symptoms:
+- InheritableThreadLocal이 executor task마다 현재 부모 값을 자동으로 전파한다고 기대해 pool worker 생성 시점 snapshot 문제를 놓쳐
+- request id나 tenant id 같은 immutable context를 mutable ThreadLocal로 계속 덮어써 nested call restore 문제를 만들고도 원인을 찾지 못해
+- virtual thread를 쓰면 context propagation 의미가 자동으로 해결된다고 생각해 scope lifetime과 thread lifetime을 구분하지 못해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/threadlocal-leaks-context-propagation
+- language/structured-concurrency-scopedvalue
+- language/virtual-threads-project-loom
+next_docs:
+- language/virtual-thread-migration-pinning
+- language/structured-concurrency-scopedvalue
+- language/threadlocal-leaks-context-propagation
+linked_paths:
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/structured-concurrency-scopedvalue.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+confusable_with:
+- language/threadlocal-leaks-context-propagation
+- language/structured-concurrency-scopedvalue
+- language/virtual-thread-migration-pinning
+forbidden_neighbors: []
+expected_queries:
+- InheritableThreadLocal과 ScopedValue는 context propagation 모델이 어떻게 달라?
+- executor pool에서 InheritableThreadLocal 값이 기대처럼 안 넘어가는 이유를 설명해줘
+- Java ScopedValue가 ThreadLocal 대안으로 적합한 경우와 아닌 경우를 비교해줘
+- virtual thread에서 request id 같은 context를 어떤 방식으로 전달하는 게 안전해?
+- thread-bound mutable state와 scope-bound read-only context를 어떻게 구분해야 해?
+contextual_chunk_prefix: |
+  이 문서는 InheritableThreadLocal의 child thread creation snapshot 모델과 ScopedValue의 scope-bound read-only context 모델을 비교하는 advanced chooser다.
+  InheritableThreadLocal executor propagation, ScopedValue, ThreadLocal context leak, virtual thread context propagation 질문이 본 문서에 매핑된다.
+---
 # `InheritableThreadLocal` vs `ScopedValue` Context Propagation Boundaries
 
 > 한 줄 요약: `InheritableThreadLocal`은 thread 생성 시점 복사 모델이고, `ScopedValue`는 scope-bound 읽기 전용 context 모델이다. 둘을 같은 "자동 전파"로 이해하면 executor, virtual thread, structured concurrency 경계에서 기대와 실제가 어긋난다.

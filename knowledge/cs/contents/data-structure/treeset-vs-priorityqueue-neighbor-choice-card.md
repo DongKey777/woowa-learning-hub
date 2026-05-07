@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: TreeSet vs PriorityQueue Neighbor-Choice Card
+concept_id: data-structure/treeset-vs-priorityqueue-neighbor-choice-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- treeset-priorityqueue-choice
+- neighbor-query-vs-min-extraction
+- beginner-data-structure-router
+aliases:
+- TreeSet vs PriorityQueue neighbor choice
+- next smallest confusion
+- ordered neighbor query
+- repeated min extraction
+- ceiling vs poll
+- priority queue vs sorted set
+- next after x vs global min
+symptoms:
+- next smallest라는 표현을 기준값 x 다음 이웃인지 전체 최소 반복 추출인지 번역하지 않고 PriorityQueue를 고른다
+- PriorityQueue가 정렬 구조라고 생각해 arbitrary x 주변의 ceiling higher floor lower query를 자연스럽게 할 수 있다고 오해한다
+- TreeSet이 정렬돼 있으니 repeated global min extraction도 PriorityQueue와 같은 역할이라고 뭉뚱그린다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/treeset-exact-match-drill
+next_docs:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/top-k-heap-direction-patterns
+- data-structure/treemap-key-entry-strictness-bridge
+linked_paths:
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/top-k-heap-direction-patterns.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/treeset-exact-match-drill
+- data-structure/top-k-heap-direction-patterns
+forbidden_neighbors: []
+expected_queries:
+- next smallest가 기준값 x 다음 이웃이면 TreeSet이고 전체 최소 반복 추출이면 PriorityQueue라는 걸 설명해줘
+- PriorityQueue로 25 바로 다음 값을 찾기 불편한 이유는?
+- TreeSet ceiling higher와 PriorityQueue poll을 어떤 질문에서 나눠야 해?
+- 전체에서 가장 작은 작업을 계속 꺼내는 문제와 x 주변 이웃을 찾는 문제를 구분하고 싶어
+- sorted set과 priority queue를 초보자 기준으로 선택하는 카드가 필요해
+contextual_chunk_prefix: |
+  이 문서는 TreeSet과 PriorityQueue를 next smallest 표현의 두 의미로 구분하는 chooser다.
+  기준값 x 주변의 ordered neighbor query는 TreeSet, 전체 최소값 반복 추출은 PriorityQueue로
+  나누며 ceiling/higher와 poll/peek의 역할 차이를 설명한다.
+---
 # TreeSet vs PriorityQueue Neighbor-Choice Card
 
 > 한 줄 요약: 학습자가 `next smallest`를 물을 때는 "기준값 주변 이웃을 찾는가"와 "최솟값을 계속 꺼내는가"를 먼저 나누면 `TreeSet`과 `PriorityQueue`를 훨씬 덜 헷갈린다.

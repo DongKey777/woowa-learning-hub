@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: "SSE/WebFlux Streaming Cancel After First Byte"
+concept_id: network/sse-webflux-streaming-cancel-after-first-byte
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- sse
+- webflux-cancel
+- streaming-disconnect
+aliases:
+- SSE disconnect after first byte
+- WebFlux first byte commit
+- partial flush failure
+- cancellation lag
+- text/event-stream broken pipe
+- Last-Event-ID gap
+- Reactor Netty cancel lag
+symptoms:
+- SSE first byte가 commit되면 스트림 전체가 성공했다고 판단한다
+- downstream disconnect, partial flush failure, producer stop 시각을 하나로 본다
+- partial event write 시도 id와 client가 정상 처리한 Last-Event-ID를 구분하지 않는다
+- WebFlux cancel이 boundedElastic이나 prefetch 작업까지 즉시 멈춘다고 생각한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/sse-websocket-polling
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+next_docs:
+- network/sse-last-event-id-replay-window
+- network/webflux-cancel-lag-tuning
+- network/sse-failure-attribution-http1-http2
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+linked_paths:
+- contents/network/sse-websocket-polling.md
+- contents/network/sse-last-event-id-replay-window.md
+- contents/network/webflux-cancel-lag-tuning.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/sse-failure-attribution-http1-http2.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+confusable_with:
+- network/sse-last-event-id-replay-window
+- network/webflux-cancel-lag-tuning
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+forbidden_neighbors: []
+expected_queries:
+- "SSE first byte commit 후 client가 끊기면 어떤 시계를 따로 봐야 해?"
+- "WebFlux streaming cancel lag 때문에 producer가 계속 도는 이유는?"
+- "partial flush failure와 Last-Event-ID gap을 어떻게 해석해?"
+- "text/event-stream에서 첫 이벤트 일부만 쓰고 broken pipe가 나면 client는 어디까지 받았어?"
+- "SSE disconnect 후 duplicate suppression과 replay window를 어떻게 설계해?"
+contextual_chunk_prefix: |
+  이 문서는 SSE/WebFlux streaming에서 first byte commit 이후 downstream
+  disconnect, partial flush failure, reactive cancellation lag, producer stop,
+  Last-Event-ID replay window를 다루는 advanced playbook이다.
+---
 # SSE/WebFlux Streaming Cancel After First Byte
 
 > 한 줄 요약: SSE/WebFlux 스트리밍은 first byte commit이 성공해도 끝난 요청이 아니다. 그 뒤에는 downstream disconnect 감지 시각, partial flush failure 발생 지점, reactive cancellation 전파, 실제 producer 중단 시점이 서로 어긋날 수 있다.

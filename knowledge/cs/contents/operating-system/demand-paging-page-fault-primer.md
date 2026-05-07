@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Demand Paging and Page Fault Primer
+concept_id: operating-system/demand-paging-page-fault-primer
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- virtual-memory-page-fault
+- lazy-allocation-first-touch
+- cow-mmap-runtime-cost
+aliases:
+- demand paging page fault
+- demand paging primer
+- page fault primer
+- major minor page fault
+- lazy allocation memory
+- first touch memory
+- copy-on-write page fault
+- mmap page fault
+symptoms:
+- page fault를 무조건 장애나 메모리 오류로 해석하고 있어
+- malloc, fork, mmap에서 실제 메모리 비용이 언제 드러나는지 헷갈려
+- minor fault와 major fault를 심각도 차이로만 이해하고 있어
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- operating-system/virtual-memory-basics
+- operating-system/memory-management-basics
+next_docs:
+- operating-system/major-minor-page-faults-runtime-diagnostics
+- operating-system/fork-exec-copy-on-write-behavior
+- operating-system/mmap-vs-read-page-cache-behavior
+- operating-system/page-table-overhead-memory-footprint
+linked_paths:
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/tlb-page-table-walk-bridge.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/page-table-overhead-memory-footprint.md
+confusable_with:
+- operating-system/virtual-memory-basics
+- operating-system/memory-management-basics
+- operating-system/fork-exec-copy-on-write-behavior
+- operating-system/mmap-vs-read-page-cache-behavior
+forbidden_neighbors: []
+expected_queries:
+- page fault는 항상 에러가 아니라 정상 제어 흐름일 수 있는 이유가 뭐야?
+- demand paging은 왜 프로그램 시작 때 모든 페이지를 물리 메모리에 올리지 않아?
+- minor page fault와 major page fault는 심각도가 아니라 어떤 경로 차이야?
+- fork 뒤 첫 write에서 copy-on-write page fault가 나는 흐름을 설명해줘
+- mmap은 왜 시스템 콜 시점보다 실제 접근 시점에 비용이 드러나?
+contextual_chunk_prefix: |
+  이 문서는 virtual memory에서 demand paging으로 넘어가는 bridge로, lazy allocation, first touch, page fault trap, minor/major fault, copy-on-write, mmap file-backed page를 설명한다.
+  page fault가 에러인지, malloc 후 첫 touch, fork 첫 write, mmap 접근 지연, major vs minor page fault 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Demand Paging and Page Fault Primer
 
 > 한 줄 요약: demand paging은 "필요할 때만 페이지를 준비하자"는 가상 메모리의 실행 전략이고, page fault는 그 약속을 실제 메모리 상태로 바꾸는 진입점이다.

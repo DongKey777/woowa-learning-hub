@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: N+1 Query Detection and Solutions
+concept_id: database/n-plus-one-query-detection-solutions
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- jpa-n-plus-one-fetch-plan
+- lazy-loading-query-count
+- fetch-join-entitygraph-batchsize
+aliases:
+- N+1 query
+- N plus one problem
+- JPA N+1
+- lazy loading N+1
+- fetch join
+- EntityGraph
+- BatchSize
+- query count test
+symptoms:
+- repository는 한 번 호출했는데 DTO 변환이나 엔티티 순회 중 SQL이 여러 번 나가는 이유를 못 찾고 있어
+- lazy loading을 버그로만 보고 fetch plan을 조회 시점에 명시해야 한다는 점을 놓치고 있어
+- fetch join, EntityGraph, BatchSize를 쿼리 수만 줄이는 같은 해결책으로 보고 pagination/컬렉션 제약을 놓치고 있어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- spring/spring-data-jpa-basics
+- database/index-and-explain
+next_docs:
+- spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
+- database/covering-index-composite-ordering
+- software-engineering/datasource-proxy-vs-statistics
+- software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells
+linked_paths:
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+- contents/spring/jpa-dirty-checking-version-strategy.md
+- contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/transaction-isolation-locking.md
+- contents/software-engineering/datasource-proxy-vs-hibernate-statistics-query-count-batch-primer.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+confusable_with:
+- spring/spring-data-jpa-basics
+- spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
+- database/covering-index-composite-ordering
+- software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells
+forbidden_neighbors: []
+expected_queries:
+- N+1 query는 왜 repository 호출 한 번인데 SQL이 1+N번 나가는 문제야?
+- lazy loading 때문에 DTO 변환 중 SQL이 여러 번 찍힐 때 어디서 fetch plan을 잡아야 해?
+- fetch join, EntityGraph, BatchSize는 각각 어떤 제약과 장점이 있어?
+- collection fetch join과 pagination을 같이 쓰면 왜 위험해?
+- N+1을 query count test로 어떻게 탐지하고 회귀를 막아?
+contextual_chunk_prefix: |
+  이 문서는 JPA/Hibernate N+1 troubleshooting playbook으로, lazy loading, entity traversal, fetch plan, fetch join, EntityGraph, BatchSize, query count test, pagination with collection fetch join을 다룬다.
+  N+1 뭐예요, 조회 한 번인데 SQL 여러 번, lazy loading SQL 폭증, fetch join 언제, EntityGraph, BatchSize 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # N+1 Query Detection and Solutions
 
 > 한 줄 요약: 이 문서는 `"N+1 뭐예요?"`, `"왜 조회 한 번 했는데 쿼리가 여러 번 나가요?"`, `"lazy loading 때문에 SQL이 갑자기 많이 찍혀요"` 같은 첫 질문에서 먼저 잡히는 primer를 목표로 하며, N+1을 "ORM이 느리다"가 아니라 지연 로딩과 fetch plan 경계가 어긋난 증상으로 설명한다.

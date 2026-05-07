@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > 콘솔 lotto의 `InputView`가 하던 문자열 입력 수집은 Spring MVC에서 DTO 바인딩으로 옮겨 오지만, `6개`, `중복 없음`, `1~45`, `보너스 번호는 당첨 번호와 달라야 함` 같은 규칙까지 controller가 떠안으면 HTTP 입구와 도메인 경계가 다시 섞인다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "콘솔 `InputView`에서 하던 split을 controller에 그대로 넣어도 되나요?" | controller가 문자열 분리, 숫자 변환, Lotto 생성까지 한 메서드에서 처리하는 코드 | HTTP 바인딩/형식 검증과 도메인 불변식 검증을 분리한다 |
+| "구매 금액 오류와 번호 중복 오류를 같은 `@Valid`로 막고 싶어요" | 요청 필드 형식과 Lotto 규칙이 DTO annotation에 모두 들어간 구조 | 요청 한 장으로 알 수 있는 형식 오류와 값 조합 규칙을 다른 층으로 본다 |
+| "`@RequestBody`랑 `@ModelAttribute` 중 lotto에는 뭐가 맞아요?" | JSON API와 HTML form 입력 방식을 같은 controller signature로 처리하려는 상황 | content type과 UI 흐름에 맞춰 바인딩 방식을 먼저 선택한다 |
+
 ## 미션 시나리오
 
 콘솔 lotto에서는 `InputView`가 구매 금액, 수동 번호, 당첨 번호를 읽고 쉼표로

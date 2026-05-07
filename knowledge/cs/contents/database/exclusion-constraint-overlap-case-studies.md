@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Exclusion Constraint Case Studies for Overlap and Range Invariants
+concept_id: database/exclusion-constraint-overlap-case-studies
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- exclusion-constraint-overlap
+- range-invariant-arbitration
+- booking-overlap-phantom-safe
+aliases:
+- exclusion constraint overlap
+- PostgreSQL EXCLUDE USING gist
+- range overlap invariant
+- booking overlap constraint
+- phantom-safe modeling
+- temporal uniqueness
+- tstzrange exclusion
+- SQLSTATE 23P01
+- overlap preflight scan
+- 예약 겹침 제약
+symptoms:
+- 예약 겹침 금지를 조회 후 insert 방식으로 처리해 phantom이나 write skew를 만들고 있어
+- PostgreSQL exclusion constraint를 걸기 전에 equality dimension, range boundary, active predicate를 정하지 않았어
+- hold 만료나 soft delete 상태 때문에 앱의 active predicate와 DB constraint predicate가 어긋나고 있어
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/range-invariant-enforcement-write-skew-phantom
+- database/transaction-isolation-locking
+next_docs:
+- database/engine-fallbacks-overlap-enforcement
+- database/overlap-predicate-index-design-booking-tables
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+linked_paths:
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/write-skew-detection-compensation-patterns.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/online-backfill-verification-cutover-gates.md
+confusable_with:
+- database/engine-fallbacks-overlap-enforcement
+- database/range-invariant-enforcement-write-skew-phantom
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL exclusion constraint로 예약 겹침을 막으려면 equality dimension과 range predicate를 어떻게 잡아?
+- overlap 금지는 조회해서 비어 있으면 insert하는 방식이 왜 phantom-safe하지 않아?
+- tstzrange와 EXCLUDE USING gist로 booking overlap constraint를 설계하는 기준을 알려줘
+- active predicate가 앱 쿼리와 DB constraint에서 어긋나면 어떤 문제가 생겨?
+- SQLSTATE 23P01 exclusion conflict와 serialization failure는 어떻게 다르게 처리해?
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL exclusion constraint와 range invariant로 예약, blackout, maintenance window의 overlap을 DB 저장 시점에 중재하는 advanced deep dive다.
+  exclusion constraint, booking overlap, tstzrange, SQLSTATE 23P01, active predicate 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Exclusion Constraint Case Studies for Overlap and Range Invariants
 
 > 한 줄 요약: overlap 금지는 "겹치는 row가 없는지 조회"가 아니라 equality dimension, range boundary, active predicate를 DB가 저장 시점에 중재하게 만드는 문제다.

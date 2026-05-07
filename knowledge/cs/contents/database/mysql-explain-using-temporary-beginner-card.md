@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL EXPLAIN Using Temporary Beginner Card
+concept_id: database/mysql-explain-using-temporary-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- mysql-explain
+- using-temporary
+- group-by
+- beginner-card
+aliases:
+- mysql explain using temporary
+- using temporary what is
+- explain using temporary beginner
+- temporary table in explain
+- group by using temporary
+- distinct using temporary
+- using temporary 뭐예요
+- explain 중간 결과 정리
+- group by 헷갈려요
+symptoms:
+- MySQL EXPLAIN Extra에 Using temporary가 보여 중간 결과 정리인지 디스크 장애인지 헷갈려
+- GROUP BY, DISTINCT, ORDER BY 축이 달라 temporary와 filesort가 붙는 이유를 이해해야 해
+- 인덱스를 탔는데도 Using temporary가 남아 필터 인덱스와 집계 정렬 축을 혼동하고 있어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/explain-first-read-timeout-mini-card
+- database/sql-aggregate-groupby-basics
+next_docs:
+- database/distinct-vs-group-by-beginner-card
+- database/group-by-order-by-different-axis-mysql-postgresql-bridge
+- database/index-condition-pushdown-filesort-temporary-table
+linked_paths:
+- contents/database/explain-first-read-timeout-mini-card.md
+- contents/database/index-and-explain.md
+- contents/database/sql-aggregate-groupby-basics.md
+- contents/database/group-by-order-by-different-axis-mysql-postgresql-bridge.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/distinct-vs-group-by-beginner-card.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/database/mysql-explain-type-all-beginner-card.md
+confusable_with:
+- database/mysql-explain-type-all-beginner-card
+- database/index-condition-pushdown-filesort-temporary-table
+- database/distinct-vs-group-by-beginner-card
+forbidden_neighbors: []
+expected_queries:
+- MySQL EXPLAIN에서 Using temporary는 무조건 디스크 임시 테이블을 만든다는 뜻이야?
+- GROUP BY나 DISTINCT 때문에 Using temporary가 붙는 이유를 초보자용으로 설명해줘
+- 인덱스를 탔는데도 Using temporary가 남는 상황을 key와 Extra 관점에서 알려줘
+- Using temporary와 Using filesort가 같이 보이면 어떤 집계 정렬 축을 확인해야 해?
+- explain Extra의 temporary를 없앨지 받아들일지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL EXPLAIN Extra의 Using temporary를 GROUP BY, DISTINCT, 재정렬에 따른 중간 결과 정리 단계로 읽는 beginner symptom card다.
+  using temporary 뭐예요, group by using temporary, explain 중간 결과 정리 질문이 본 문서에 매핑된다.
+---
 # MySQL `EXPLAIN`에서 `Using temporary`가 보여요
 
 > 한 줄 요약: MySQL `EXPLAIN`의 `Using temporary`는 `GROUP BY`, `DISTINCT`, 재정렬 때문에 중간 결과를 한 번 더 모으는 신호이고, 초보자는 "무조건 장애"보다 "왜 중간 정리가 필요했나"를 먼저 보면 된다.

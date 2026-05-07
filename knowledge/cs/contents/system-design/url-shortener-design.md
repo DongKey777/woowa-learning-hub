@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: URL 단축기 설계
+concept_id: system-design/url-shortener-design
+canonical: false
+category: system-design
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- url shortener design basics
+- url shortener design beginner
+- url shortener design intro
+- system design basics
+aliases:
+- url shortener design basics
+- url shortener design beginner
+- url shortener design intro
+- system design basics
+- beginner system design
+- 처음 배우는데 url shortener design
+- url shortener design 입문
+- url shortener design 기초
+- what is url shortener design
+- how to url shortener design
+- URL 단축기 설계
+- url shortener design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/database/transaction-basics.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/database/mvcc-replication-sharding.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- URL 단축기 설계 설계 핵심을 설명해줘
+- url shortener design basics가 왜 필요한지 알려줘
+- URL 단축기 설계 실무 트레이드오프는 뭐야?
+- url shortener design basics 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 URL 단축기 설계를 다루는 deep_dive 문서다. 긴 URL을 짧고 안전하게 저장하고, 빠르게 리다이렉트하며, 트래픽과 분석 요구를 함께 감당하는 설계다. 검색 질의가 url shortener design basics, url shortener design beginner, url shortener design intro, system design basics처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # URL 단축기 설계
 
 > 한 줄 요약: 긴 URL을 짧고 안전하게 저장하고, 빠르게 리다이렉트하며, 트래픽과 분석 요구를 함께 감당하는 설계다.

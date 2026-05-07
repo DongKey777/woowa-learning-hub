@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: van Emde Boas Layout vs Eytzinger vs Blocked Arrays
+concept_id: data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- ordered-search-layout
+- cache-oblivious-vs-cache-aware
+- lower-bound-scan-locality
+aliases:
+- van Emde Boas layout vs Eytzinger
+- vEB layout
+- Eytzinger vs blocked array
+- cache-oblivious ordered search
+- lower_bound layout comparison
+- scan-heavy ordered search
+- blocked search array
+symptoms:
+- lower_bound만 뜨거운지 lower_bound 뒤 scan이 이어지는지 구분하지 않고 Eytzinger, vEB, blocked layout을 고른다
+- vEB layout이 cache-oblivious라서 Eytzinger나 blocked array보다 항상 낫다고 오해한다
+- ordered scan locality가 search path locality와 다른 문제라는 점을 놓쳐 Eytzinger search 이득을 scan-heavy workload에도 그대로 기대한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+next_docs:
+- data-structure/ordered-search-workload-matrix
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+linked_paths:
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/cache-oblivious-vs-cache-aware-layouts.md
+- contents/data-structure/ordered-search-workload-matrix.md
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/cache-oblivious-b-tree-vs-plain-veb-layout.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+- contents/data-structure/lsm-friendly-index-structures.md
+confusable_with:
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+- data-structure/hybrid-top-index-leaf-layouts
+- data-structure/ordered-search-workload-matrix
+forbidden_neighbors: []
+expected_queries:
+- vEB layout Eytzinger blocked array는 lower_bound와 scan locality 관점에서 어떻게 골라?
+- Eytzinger는 search path에는 좋지만 ordered scan에는 덜 자연스러운 이유는?
+- cache-oblivious vEB layout이 항상 blocked array보다 좋은 선택은 아닌 이유는?
+- lower_bound 뒤에 range scan이 이어지면 blocked array나 B-Tree형 layout이 유리한 이유는?
+- immutable ordered index에서 search path locality와 scan continuation locality를 분리해 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 immutable ordered search layout에서 van Emde Boas layout, Eytzinger,
+  blocked arrays를 비교하는 chooser다. lower_bound hot path, scan continuation locality,
+  cache-oblivious vs cache-aware block reasoning, hybrid leaf layout을 다룬다.
+---
 # van Emde Boas Layout vs Eytzinger vs Blocked Arrays
 
 > 한 줄 요약: vEB-style cache-oblivious layout은 여러 메모리 계층에서 root-to-leaf locality를 고르게 노리고, Eytzinger는 단순한 search path와 prefetch friendliness를, blocked array는 `lower_bound` 뒤 scan 연결을 가장 직접적으로 챙긴다.

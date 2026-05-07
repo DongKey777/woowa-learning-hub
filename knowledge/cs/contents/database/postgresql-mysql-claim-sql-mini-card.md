@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: PostgreSQL MySQL Claim SQL Mini Card
+concept_id: database/postgresql-mysql-claim-sql-mini-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- idempotency
+- postgresql
+- mysql
+- upsert
+aliases:
+- postgresql mysql claim sql mini card
+- insert on conflict do nothing on duplicate key comparison
+- idempotency claim sql beginner
+- plain insert duplicate key vs do nothing vs on duplicate key
+- on conflict do nothing 0 rows
+- on duplicate key update affected rows
+- first writer wins sql
+- 멱등성 claim sql 비교
+- insert do nothing on duplicate key 차이
+- postgres mysql claim path
+symptoms:
+- idempotency claim에서 plain INSERT, PostgreSQL ON CONFLICT DO NOTHING, MySQL ON DUPLICATE KEY UPDATE의 loser 신호를 섞고 있어
+- DO NOTHING은 0-row loser signal이고 MySQL ON DUPLICATE KEY UPDATE는 update branch success처럼 보일 수 있다는 차이를 놓치고 있어
+- affectedRows나 statement success만으로 created winner를 단정하고 fresh read, request_hash 비교를 생략하려 해
+intents:
+- comparison
+- design
+prerequisites:
+- database/unique-claim-existing-row-reuse-primer
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/do-nothing-vs-do-update-outcome-primer-postgresql-mysql
+- database/mysql-on-duplicate-key-update-safety-primer
+- database/duplicate-key-fresh-read-classifier-mini-card
+linked_paths:
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/do-nothing-vs-do-update-outcome-primer-postgresql-mysql.md
+- contents/database/mysql-on-duplicate-key-update-safety-primer.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+confusable_with:
+- database/do-nothing-vs-do-update-outcome-primer-postgresql-mysql
+- database/mysql-on-duplicate-key-update-safety-primer
+- database/duplicate-key-fresh-read-classifier-mini-card
+forbidden_neighbors: []
+expected_queries:
+- idempotency claim SQL에서 plain INSERT, PostgreSQL DO NOTHING, MySQL ON DUPLICATE KEY UPDATE의 loser 신호를 비교해줘
+- PostgreSQL ON CONFLICT DO NOTHING RETURNING이 0 rows를 주면 winner row를 어떻게 분류해야 해?
+- MySQL ON DUPLICATE KEY UPDATE가 statement success처럼 끝나도 내가 winner라고 단정하면 안 되는 이유가 뭐야?
+- affectedRows로 created 여부를 닫지 말고 fresh read와 request_hash를 봐야 하는 이유를 알려줘
+- 멱등성 claim path를 PostgreSQL과 MySQL에서 초보자용으로 한 장 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 idempotency first-writer-wins claim SQL에서 plain INSERT duplicate exception, PostgreSQL ON CONFLICT DO NOTHING 0-row loser, MySQL ON DUPLICATE KEY UPDATE update branch를 비교하는 beginner chooser다.
+  멱등성 claim sql 비교, insert do nothing on duplicate key 차이, on conflict do nothing 0 rows 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL / MySQL Claim SQL 미니 카드
 
 > 한 줄 요약: 같은 `idempotency_key`를 한 번만 선점하는 목적은 셋 다 같지만, 초보자는 `INSERT`는 **duplicate 예외**, PostgreSQL `ON CONFLICT DO NOTHING`은 **0-row loser 신호**, MySQL `ON DUPLICATE KEY UPDATE`는 **update branch 성공 신호**로 읽는다고 먼저 고정하면 덜 헷갈린다.

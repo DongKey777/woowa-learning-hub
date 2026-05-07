@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Middleware Pattern Language
+concept_id: design-pattern/middleware-pattern-language
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- middleware
+- request-pipeline
+- cross-cutting-concern
+- chain-of-responsibility
+aliases:
+- middleware pattern language
+- middleware pattern
+- request response pipeline
+- middleware stack
+- cross cutting concern pipeline
+- before after hooks
+- request filter stack
+- 미들웨어 패턴
+- 요청 응답 파이프라인
+symptoms:
+- 인증, 로깅, tracing, error translation 같은 공통 관심사가 controller나 handler마다 반복된다
+- Chain of Responsibility, filter, interceptor, middleware, pipeline을 같은 이름으로만 묶고 순서 정책을 놓친다
+- middleware 순서가 바뀌면 결과가 달라지는데 등록 순서와 실패 처리 계약이 문서화되어 있지 않다
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- design-pattern/chain-of-responsibility-filters-interceptors
+- design-pattern/pipeline-vs-chain-of-responsibility
+next_docs:
+- design-pattern/retry-policy-vs-decorator-chain
+- design-pattern/template-method-vs-filter-interceptor-chain
+- spring/request-cross-cutting-hook-decision-guide
+linked_paths:
+- contents/design-pattern/chain-of-responsibility-filters-interceptors.md
+- contents/design-pattern/pipeline-vs-chain-of-responsibility.md
+- contents/design-pattern/retry-policy-vs-decorator-chain.md
+- contents/design-pattern/template-method-vs-filter-interceptor-chain.md
+- contents/design-pattern/anti-pattern.md
+- contents/spring/spring-request-cross-cutting-hook-decision-guide.md
+confusable_with:
+- design-pattern/chain-of-responsibility-filters-interceptors
+- design-pattern/pipeline-vs-chain-of-responsibility
+- design-pattern/retry-policy-vs-decorator-chain
+- design-pattern/template-method-vs-filter-interceptor-chain
+forbidden_neighbors: []
+expected_queries:
+- Middleware와 Chain of Responsibility는 요청 처리 스택과 책임 위임 관점에서 어떻게 달라?
+- 인증 로깅 tracing error translation을 controller마다 넣지 않고 middleware stack으로 빼는 기준은 뭐야?
+- middleware 순서가 정책이 된다는 말은 auth, logging, error handler 배치에서 어떤 의미야?
+- filter interceptor middleware pipeline 중 어떤 hook을 써야 할지 판단 기준을 알려줘
+- retry policy를 middleware처럼 넣을 때 decorator chain과 무엇을 조심해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Middleware Pattern Language bridge로, request/response pipeline 중간에 auth,
+  logging, tracing, rate limit, error translation 같은 cross-cutting concern을 순서 있는
+  middleware stack으로 조합하는 기준과 Chain, Pipeline, Decorator와의 차이를 설명한다.
+---
 # Middleware Pattern Language: 요청과 응답 사이에 끼는 공통 관심사
 
 > 한 줄 요약: Middleware는 요청/응답 파이프라인 중간에 들어가 공통 관심사를 조합하는 패턴 언어다.
@@ -50,6 +116,17 @@ middleware는 등록 순서가 결과를 바꾼다.
 - auth 먼저
 - logging 나중
 - error translation은 가장 바깥
+
+### 4. 실패 계약도 stack의 일부다
+
+middleware를 설계할 때 정상 흐름만 보면 안 된다.
+
+- 앞 단계가 요청을 차단하면 뒤 단계가 실행되는가?
+- 예외를 삼키는가, 변환하는가, 다시 던지는가?
+- tracing/logging은 실패 응답도 기록하는가?
+- retry가 있으면 idempotency 조건을 확인했는가?
+
+이 실패 계약이 없으면 middleware stack은 공통화가 아니라 숨은 제어 흐름이 된다.
 
 ---
 
@@ -136,4 +213,3 @@ Middleware는 공통 관심사를 조합하기 좋은 패턴 언어다.
 ## 한 줄 정리
 
 Middleware는 요청과 응답 사이에 공통 관심사를 끼워 넣는 조합형 패턴 언어다.
-

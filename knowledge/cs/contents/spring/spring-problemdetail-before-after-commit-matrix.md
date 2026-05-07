@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Spring ProblemDetail Before After Commit Matrix
+concept_id: spring/problemdetail-before-after-commit-matrix
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- problemdetail-before-after
+- commit
+- problemdetail-before-response
+- problemdetail-after-response
+aliases:
+- ProblemDetail before response commit
+- ProblemDetail after response commit
+- response already committed
+- exception resolver cannot write
+- AsyncRequestNotUsableException
+- streaming error response commit
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-problemdetail-error-response-design.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-async-timeout-disconnect-decision-tree.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-requestbody-responsebodyadvice-pipeline.md
+- contents/spring/spring-httpmessagenotwritableexception-failure-taxonomy.md
+- contents/spring/spring-problemdetail-vs-error-handoff-matrix.md
+- contents/spring/spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+confusable_with:
+- spring/problemdetail-error-response-design
+- spring/mvc-exception-resolver-chain-contract
+- spring/async-timeout-disconnect-decision-tree
+- spring/httpmessagenotwritableexception-failure-taxonomy
+- spring/problemdetail-vs-error-handoff-matrix
+symptoms:
+- @ExceptionHandler가 있는데도 클라이언트가 표준 ProblemDetail을 받지 못한다.
+- streaming 응답 일부가 나간 뒤 예외가 발생해 오류 JSON으로 바뀌지 않는다.
+- response already committed 로그 뒤 BasicErrorController나 resolver가 동작하지 않는다.
+expected_queries:
+- ProblemDetail이 나오지 않는 이유를 response commit 전후로 어떻게 나눠?
+- 예외가 나도 이미 commit된 응답은 왜 오류 JSON으로 바꿀 수 없어?
+- Spring MVC exception resolver와 BasicErrorController는 commit 이후에도 동작해?
+- StreamingResponseBody나 SSE 중간 실패는 ProblemDetail로 보낼 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring ProblemDetail 실패를 예외 타입보다 먼저 response commit 전후로 나누어
+  라우팅한다. commit 전에는 resolver와 BasicErrorController가 관여할 수 있지만,
+  commit 후에는 transport/write 실패로 해석해야 한다는 matrix를 제공한다.
+---
 # Spring `ProblemDetail` Before-After Commit Matrix
 
 > 한 줄 요약: `ProblemDetail`이 나올 수 있는지는 예외 이름보다 먼저 "response가 아직 commit되지 않았고 여전히 쓸 수 있는가"로 갈리며, commit 이후 실패는 resolver 문제가 아니라 transport/write 문제로 해석해야 한다.

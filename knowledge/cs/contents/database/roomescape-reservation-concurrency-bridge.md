@@ -29,13 +29,24 @@ prerequisites:
 linked_paths:
 - contents/database/lock-basics.md
 - contents/database/constraint-first-booking-primer.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
 forbidden_neighbors:
 - contents/database/deadlock-vs-lock-wait-timeout-primer.md
+confusable_with:
+- database/lock-basics
+- database/constraint-first-booking-primer
+- database/connection-timeout-vs-lock-timeout-card
 expected_queries:
 - 룸이스케이프에서 같은 시간 예약이 두 개 들어오면 어떻게 막아?
 - 예약 중복을 락으로 막을지 unique 제약으로 막을지 어떻게 골라?
 - 비관적 락이랑 낙관적 락 중에 어떤 게 미션에 맞아?
-- @Transactional만 걸어도 동시 예약 막히는 거 아니야?
+- "@Transactional만 걸어도 동시 예약 막히는 거 아니야?"
+contextual_chunk_prefix: |
+  이 문서는 roomescape 예약 생성에서 같은 날짜와 시간대에 동시 요청이
+  들어올 때 UNIQUE 제약, 비관적 락, 낙관적 락을 어떻게 고르는지 다루는
+  mission_bridge다. 룸이스케이프 동일 시간 예약, 예약 중복 방지,
+  @Transactional만으로 막히는지, unique 제약과 락 선택 같은 질의를
+  데이터베이스 동시성 설계와 미션 코드 결정으로 연결한다.
 ---
 
 # 같은 시간대 예약 동시 요청 — 락 vs 유니크 제약 vs 낙관적 락 결정
@@ -45,6 +56,14 @@ expected_queries:
 **난이도: 🟡 Intermediate**
 
 **미션 컨텍스트**: spring-roomescape-admin (Woowa Spring 트랙) — 예약 동시성 단계
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "같은 시간 예약이 두 개 들어오면 어떻게 막아요?" | 두 사용자가 같은 날짜/시간 슬롯을 동시에 예약 | `(date, time_id)` UNIQUE 제약을 기본 보호선으로 본다 |
+| "락으로 막을지 unique 제약으로 막을지 모르겠어요" | 중복 예약 방지 도구 선택 | 중복 방지만 필요하면 constraint-first, 함께 갱신할 자원이 있으면 lock을 검토한다 |
+| "`@Transactional`만 걸어도 동시 예약이 막히나요?" | read-before-insert race가 남은 예약 생성 flow | 트랜잭션 경계와 phantom/unique arbitration을 분리한다 |
 
 관련 문서:
 

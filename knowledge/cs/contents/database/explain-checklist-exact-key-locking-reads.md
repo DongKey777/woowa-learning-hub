@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: EXPLAIN Checklist for Exact-Key Locking Reads
+concept_id: database/explain-checklist-exact-key-locking-reads
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- exact-key-locking-read-explain
+- duplicate-precheck-plan-verification
+- unique-key-path-drift
+aliases:
+- explain checklist exact key locking read
+- explain duplicate precheck
+- exact key explain beginner
+- full unique key equality path
+- for update unique index explain
+- duplicate pre-check explain
+- locking read explain checklist
+- exact-key locking read 체크리스트
+symptoms:
+- SELECT FOR UPDATE를 썼다는 사실만 보고 exact-key lock이라고 가정하고 있어
+- duplicate pre-check SQL이 실제로 unique key full equality path를 타는지 확인하지 않았어
+- ORM 리팩터링 뒤 lock clause는 남았지만 EXPLAIN key와 rows가 달라진 것을 놓치고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/unique-vs-locking-read-duplicate-primer
+- database/index-and-explain
+next_docs:
+- database/hibernate-sql-log-explain-lock-verification-primer
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/mysql-explain-range-locking-primer
+- database/spring-jpa-exact-key-lock-mapping
+linked_paths:
+- contents/database/hibernate-sql-log-explain-lock-verification-primer.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/mysql-explain-range-locking-primer.md
+- contents/database/mysql-rr-exact-key-probe-assumptions-checklist.md
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/mysql-repeatable-read-safe-range-checklist.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/index-and-explain.md
+confusable_with:
+- database/unique-vs-locking-read-duplicate-primer
+- database/mysql-explain-range-locking-primer
+- database/mysql-rr-exact-key-probe-assumptions-checklist
+forbidden_neighbors: []
+expected_queries:
+- SELECT FOR UPDATE duplicate pre-check가 exact-key unique index를 타는지 EXPLAIN으로 어떻게 확인해?
+- 중복 검사 locking read에서 key, type, rows가 어떤 모양이어야 안전해?
+- full composite unique key equality path가 깨지면 어떤 EXPLAIN 신호가 보여?
+- JPA 쿼리 변경 후 locking read plan drift를 어떻게 점검해?
+- FOR SHARE나 FOR UPDATE를 썼는데도 exact-key lock이라고 바로 믿으면 안 되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 duplicate pre-check locking read가 실제로 intended unique-key full equality path를 타는지 EXPLAIN으로 확인하는 beginner playbook이다.
+  exact key locking read, duplicate precheck explain, FOR UPDATE unique index, key type rows checklist 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # EXPLAIN Checklist for Exact-Key Locking Reads
 
 > 한 줄 요약: exact-key duplicate pre-check를 믿기 전에 `EXPLAIN`으로 정말 **full unique-key equality path**를 타는지 먼저 확인하는 beginner checklist다.

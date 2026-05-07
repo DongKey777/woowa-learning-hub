@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: DDD, Hexagonal Architecture, Consistency Boundary
+concept_id: software-engineering/ddd-hexagonal-consistency
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- ddd
+- hexagonal-architecture
+- consistency-boundary
+- architecture-boundary
+aliases:
+- DDD Hexagonal Architecture Consistency Boundary
+- DDD와 헥사고날과 정합성 경계
+- domain dependency consistency boundaries
+- ports and adapters with DDD
+- aggregate consistency boundary comparison
+- 도메인 경계 의존성 경계 정합성 경계
+symptoms: []
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/bounded-context-failure-patterns
+next_docs:
+- software-engineering/anti-corruption-layer
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/architectural-fitness-functions
+linked_paths:
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+confusable_with:
+- software-engineering/bounded-context-failure-patterns
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/consistency-boundary
+forbidden_neighbors: []
+expected_queries:
+- DDD, Hexagonal Architecture, Consistency Boundary는 각각 어떤 경계를 다루는지 비교해줘
+- 도메인 경계와 의존성 경계와 트랜잭션 정합성 경계를 같이 설계해야 하는 이유가 뭐야?
+- aggregate를 서비스 경계나 트랜잭션 경계와 항상 1대1로 맞추면 안 되는 이유를 설명해줘
+- ports and adapters 구조에서 DDD 모델이 외부 API나 DB에 오염되지 않게 하려면 어떻게 해?
+- 모놀리스에서 MSA로 갈 때 DDD, 헥사고날, eventual consistency를 어떤 순서로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 DDD, Hexagonal Architecture, Consistency Boundary를 다루는 chooser 문서다. DDD Hexagonal Architecture Consistency Boundary, DDD와 헥사고날과 정합성 경계, domain dependency consistency boundaries, ports and adapters with DDD, aggregate consistency boundary comparison 같은 lexical 표현과 DDD, Hexagonal Architecture, Consistency Boundary는 각각 어떤 경계를 다루는지 비교해줘, 도메인 경계와 의존성 경계와 트랜잭션 정합성 경계를 같이 설계해야 하는 이유가 뭐야? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # DDD, Hexagonal Architecture, Consistency Boundary
 
 > 한 줄 요약: DDD는 도메인 경계를, Hexagonal Architecture는 의존 경계를, Consistency Boundary는 정합성 경계를 다루며, 세 가지를 함께 봐야 설계와 운영이 같은 방향으로 맞는다.

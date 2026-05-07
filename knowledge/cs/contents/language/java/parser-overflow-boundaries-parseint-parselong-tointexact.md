@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Parser Overflow Boundaries parseInt parseLong toIntExact
+concept_id: language/parser-overflow-boundaries-parseint-parselong-tointexact
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/lotto
+- missions/payment
+review_feedback_tags:
+- numeric-boundary
+- parsing
+- overflow
+aliases:
+- Parser Overflow Boundaries parseInt parseLong toIntExact
+- Java parseInt parseLong toIntExact boundary
+- NumberFormatException numeric payload validation
+- parser overflow vs arithmetic overflow
+- narrowing conversion Math.toIntExact
+- 자바 숫자 파싱 오버플로 경계
+symptoms:
+- parseInt overflow를 arithmetic overflow처럼 silent wraparound된다고 생각해 NumberFormatException fail-fast boundary를 놓쳐
+- long으로 parse한 뒤 int로 줄이는 narrowing conversion에서 Math.toIntExact 같은 별도 경계를 두지 않아 값이 잘리거나 예외 의미가 흐려져
+- whitespace sign radix leading zero 허용 여부를 parser contract로 문서화하지 않아 API boundary마다 숫자 payload 해석이 달라져
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+- language/biginteger-unsigned-parsing-boundaries
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+next_docs:
+- language/biginteger-radix-leading-zero-sign-policies
+- language/saturating-arithmetic-clamping-domain-contracts
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+linked_paths:
+- contents/language/java/integer-overflow-exact-arithmetic-unit-conversion-pitfalls.md
+- contents/language/java/biginteger-unsigned-parsing-boundaries.md
+- contents/language/java/biginteger-radix-leading-zero-sign-policies.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+confusable_with:
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+- language/biginteger-unsigned-parsing-boundaries
+- language/saturating-arithmetic-clamping-domain-contracts
+forbidden_neighbors: []
+expected_queries:
+- parseInt와 parseLong overflow는 arithmetic overflow와 어떻게 다르게 실패해?
+- long으로 parse한 값을 int로 줄일 때 Math.toIntExact를 쓰는 이유가 뭐야?
+- NumberFormatException을 API validation error로 번역할 때 어떤 boundary를 정해야 해?
+- 숫자 payload에서 whitespace sign radix leading zero 허용 정책을 parser contract로 정해야 하는 이유가 뭐야?
+- missing invalid number overflow narrowing failure를 primitive binding 전에 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 parseInt, parseLong, Math.toIntExact를 중심으로 parser overflow, narrowing conversion, numeric payload validation boundary를 점검하는 advanced playbook이다.
+  parser overflow, parseInt, parseLong, toIntExact, NumberFormatException, numeric boundary 질문이 본 문서에 매핑된다.
+---
 # Parser Overflow Boundaries: `parseInt`, `parseLong`, and `toIntExact`
 
 > 한 줄 요약: parser overflow는 연산 overflow와 다른 층의 문제다. 입력 문자열이 아예 타입 범위를 넘는지, parse 후 축소 변환에서 깨지는지, whitespace/sign/radix를 어디까지 허용할지 정하지 않으면 숫자 payload 경계가 구현마다 달라진다.

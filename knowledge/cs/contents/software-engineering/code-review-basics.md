@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: 코드 리뷰 기초
+concept_id: software-engineering/code-review-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- code-review-basics
+- pr-feedback-interpretation
+- review-comment-severity
+aliases:
+- code review basics
+- 코드 리뷰 기초
+- PR 리뷰 기초
+- pull request review beginner
+- 리뷰 받는 법
+- 코드 리뷰 목적
+- nit comment
+- blocker review comment
+- review comment severity
+- beginner code review
+symptoms:
+- 리뷰 댓글을 모두 같은 강도의 지적으로 받아들여 nit, suggestion, blocker 우선순위를 구분하지 못한다
+- 코드 리뷰가 작성자를 평가하는 자리라고 느껴 설계 의도 질문과 수정 요청을 방어적으로 처리한다
+- PR 크기와 테스트 설명이 리뷰 품질에 어떤 영향을 주는지 설명하지 못한다
+intents:
+- definition
+- mission_bridge
+prerequisites: []
+next_docs:
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/test-strategy-basics
+- software-engineering/solid-principles-basics
+- software-engineering/pair-programming-code-review-tradeoffs
+linked_paths:
+- contents/software-engineering/pair-programming-code-review-tradeoffs.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/solid-principles-basics.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/test-strategy-basics
+- software-engineering/solid-principles-basics
+forbidden_neighbors: []
+expected_queries:
+- 코드 리뷰는 버그 잡기뿐 아니라 설계 기준과 학습을 맞추는 과정이라는 뜻을 설명해줘
+- 리뷰 댓글에서 nit, suggestion, blocker를 어떻게 구분하고 어떤 순서로 대응해야 해?
+- PR 리뷰를 받기 전에 변경 이유와 테스트 방법을 어떻게 적어야 리뷰어가 맥락을 이해하기 쉬워?
+- 이 메서드의 책임이 두 개로 보인다는 리뷰는 비판이 아니라 어떤 설계 질문으로 읽어야 해?
+- 큰 PR이 리뷰 품질을 떨어뜨리는 이유와 기능 단위로 작게 나누는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 코드 리뷰를 PR 품질 보완과 팀 학습 루프로 이해하는 beginner primer다.
+  review comment severity, nit, suggestion, blocker, PR size, author response, reviewer question, test evidence, 우테코 미션 리뷰 피드백 해석을 다룬다.
+---
 # 코드 리뷰 기초 (Code Review Basics)
 
 > 한 줄 요약: 코드 리뷰는 변경된 코드를 팀원이 함께 읽으며 버그·설계 문제·가독성을 개선하는 협업 관행이며, 비판이 아니라 학습과 품질 향상이 목적이다.

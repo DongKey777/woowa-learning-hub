@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: TreeSet Range View Mini Drill
+concept_id: data-structure/treeset-range-view-mini-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- treeset-range-view
+- subset-headset-tailset
+- navigableset-boundary
+aliases:
+- TreeSet range view mini drill
+- TreeSet subSet headSet tailSet
+- NavigableSet range slice
+- sorted set range beginner
+- headSet tailSet subSet practice
+- 시작 포함 끝 제외 TreeSet
+- exact match shortcut to range view
+symptoms:
+- TreeSet lower floor ceiling higher 한 칸 lookup과 headSet tailSet subSet range view의 관계를 연결하지 못한다
+- subSet(20, 50) 기본형에서 오른쪽 경계 50이 제외된다는 점을 놓쳐 boundary off-by-one을 만든다
+- range view를 live view semantics나 concurrent modification 이슈까지 한꺼번에 떠올려 초급 range slicing 자체가 흔들린다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/treeset-exact-match-drill
+next_docs:
+- data-structure/treemap-submap-schedule-window-mini-drill
+- data-structure/treemap-headmap-tailmap-default-boundary-card
+linked_paths:
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/treemap-submap-schedule-window-mini-drill.md
+- contents/language/java/navigable-range-api-mini-drill.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/treeset-exact-match-drill
+- data-structure/treemap-submap-schedule-window-mini-drill
+- data-structure/treemap-headmap-tailmap-default-boundary-card
+- data-structure/treemap-key-entry-strictness-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeSet headSet tailSet subSet 기본 경계를 손으로 맞히는 drill을 풀고 싶어
+- TreeSet subSet(20, 50)에서 50이 빠지는 이유는?
+- lower floor ceiling higher 한 칸 lookup에서 range view로 어떻게 확장돼?
+- TreeSet range view의 시작 포함 끝 제외 감각을 TreeMap subMap으로 옮기는 방법은?
+- headSet은 앞쪽 창 tailSet은 뒤쪽 창 subSet은 가운데 창이라는 걸 예시로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeSet의 headSet, tailSet, subSet을 exact-match neighbor lookup에서
+  range view로 확장해 연습하는 mini drill이다. start-inclusive, end-exclusive boundary와
+  TreeMap subMap으로 이어지는 key range slicing 감각을 다룬다.
+---
 # TreeSet Range View Mini Drill
 
 > 한 줄 요약: `TreeSet`의 `subSet`, `headSet`, `tailSet`은 exact-match shortcut인 `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음`을 `앞쪽 창 / 시작 포함 뒤쪽 창 / 가운데 창`으로 넓혀 읽으면 자연스럽게 이어지고, 이 `시작 포함, 끝 제외` 감각은 `TreeMap subMap`으로 거의 그대로 넘어간다.

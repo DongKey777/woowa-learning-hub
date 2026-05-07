@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Rollout Guardrail Profiles, Auto-Pause, and Manual Resume
+concept_id: software-engineering/rollout-guardrail-profiles
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- rollout
+- guardrail
+- auto-pause
+- release-governance
+aliases:
+- rollout guardrail profiles
+- auto pause manual resume
+- canary threshold profile
+- release guardrail profile
+- rollout pause resume rule
+- 배포 가드레일 프로파일
+symptoms:
+- 모든 변경에 같은 canary threshold를 적용해서 config change, schema change, data migration의 실제 위험 차이가 반영되지 않아
+- auto-pause 기준은 있지만 manual resume에서 owner ack, drift review, mitigation 확인이 빠져 원인 이해 없이 재개해
+- 5xx와 latency만 보고 business KPI, conversion, payment success rate 같은 rollout guardrail signal을 놓쳐
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/rollout-approval-workflow
+- software-engineering/deployment-rollout-strategy
+next_docs:
+- software-engineering/release-policy-error-budget
+- software-engineering/service-criticality-tiering
+- software-engineering/operational-readiness-drills-and-change-safety
+linked_paths:
+- contents/software-engineering/rollout-approval-workflow.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/service-criticality-tiering-control-intensity.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+confusable_with:
+- software-engineering/rollout-approval-workflow
+- software-engineering/release-policy-error-budget
+- software-engineering/deployment-rollout-strategy
+forbidden_neighbors: []
+expected_queries:
+- rollout guardrail profile을 change type과 service criticality에 따라 나누는 기준을 설명해줘
+- auto pause와 manual resume을 분리해야 하는 이유와 resume 승인 조건을 알려줘
+- canary threshold를 기술 지표뿐 아니라 business signal까지 포함해 설계하려면 어떻게 해야 해?
+- schema change와 config-only change에 서로 다른 rollout profile을 적용하는 예시를 보여줘
+- false positive를 줄이기 위해 warm-up window와 minimum sample size를 어떻게 넣어야 해?
+contextual_chunk_prefix: |
+  이 문서는 rollout guardrail을 change archetype과 service criticality별 profile로 나누고 auto-pause와 manual-resume 기준을 설계하는 advanced playbook이다.
+---
 # Rollout Guardrail Profiles, Auto-Pause, and Manual Resume
 
 > 한 줄 요약: rollout governance가 실전에서 작동하려면 모든 변경에 같은 기준을 쓰는 대신 change archetype과 service criticality에 따라 guardrail profile을 나누고, 자동 pause와 사람의 resume 판단을 분리해야 한다.

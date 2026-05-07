@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Transaction Timeout vs Lock Timeout
+concept_id: database/transaction-timeout-vs-lock-timeout
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- timeout
+- transaction-timeout
+- lock-timeout
+- statement-timeout
+- retry
+aliases:
+- transaction timeout
+- lock wait timeout
+- statement timeout
+- query timeout
+- Spring transactional timeout
+- innodb_lock_wait_timeout
+- JDBC query timeout
+- timeout taxonomy
+- 작업 시간 락 대기 문장 실행
+- timeout 종류 구분
+symptoms:
+- transaction timeout, lock timeout, statement timeout, query timeout을 하나로 뭉쳐서 대응하고 있어
+- 쿼리는 빨리 끝났는데 외부 호출 포함 transaction이 오래 열려 lock과 connection을 붙잡아
+- lock wait timeout이 경쟁 신호인지, statement timeout이 느린 쿼리 신호인지 구분해야 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/transaction-isolation-locking
+- database/deadlock-case-study
+next_docs:
+- database/timeout-tuning-order-checklist
+- database/transaction-retry-serialization-failure-patterns
+- database/connection-timeout-vs-lock-timeout-card
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/deadlock-case-study.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/timeout-tuning-order-checklist-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+confusable_with:
+- database/timeout-tuning-order-checklist
+- database/connection-timeout-vs-lock-timeout-card
+- database/statement-timeout-vs-lock-timeout-card
+forbidden_neighbors: []
+expected_queries:
+- transaction timeout, lock timeout, statement timeout, query timeout은 각각 어떤 시간을 재는 거야?
+- query는 빨리 끝났는데 transaction이 오래 열려 있으면 어떤 timeout과 lock 문제가 생겨?
+- lock wait timeout은 경쟁 때문에 retry 후보일 수 있지만 statement timeout은 쿼리 튜닝이 먼저라는 차이를 설명해줘
+- Spring @Transactional timeout과 innodb_lock_wait_timeout, JDBC query timeout을 어떻게 구분해?
+- timeout을 늘리기 전에 원인이 락 대기인지 느린 쿼리인지 전체 작업 시간인지 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 transaction timeout, lock wait timeout, statement/query timeout을 작업 시간, 락 대기, SQL 문장 실행 레이어로 구분하는 advanced chooser다.
+  timeout 종류 구분, innodb_lock_wait_timeout, Spring transactional timeout, query timeout 질문이 본 문서에 매핑된다.
+---
 # Transaction Timeout과 Lock Timeout
 
 > 한 줄 요약: 오래 걸린다고 다 같은 실패가 아니고, “쿼리가 느린 것”과 “락을 못 얻는 것”은 다른 문제로 다뤄야 한다.

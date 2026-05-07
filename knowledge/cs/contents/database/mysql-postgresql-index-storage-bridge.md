@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL Clustered Index and PostgreSQL Heap Index Storage Bridge
+concept_id: database/mysql-postgresql-index-storage-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- index-storage
+- mysql-postgresql-bridge
+- clustered-index
+- heap-storage
+aliases:
+- mysql vs postgresql index storage
+- innodb clustered index beginner
+- postgresql heap index basics
+- postgres primary key clustered
+- postgres cluster one time reorder
+- using index vs index only scan
+- heap fetches after cluster
+- PostgreSQL PK도 clustered인가요
+- CLUSTER 한번 하면 계속 정렬되나요
+- MySQL 저장구조와 PostgreSQL 저장구조 차이
+symptoms:
+- InnoDB clustered primary key 직관을 PostgreSQL heap plus index 구조에 그대로 적용하고 있어
+- PostgreSQL CLUSTER 명령을 InnoDB clustered index 같은 항상 유지되는 저장 모델로 오해하고 있어
+- MySQL Using index와 PostgreSQL Index Only Scan, Heap Fetches를 같은 용어 번역처럼 붙여 헷갈려
+intents:
+- comparison
+- definition
+prerequisites:
+- database/index-basics
+- database/index-and-explain
+next_docs:
+- database/clustered-index-locality
+- database/covering-index-vs-index-only-scan
+- database/page-split-merge-fill-factor
+linked_paths:
+- contents/database/index-basics.md
+- contents/database/index-and-explain.md
+- contents/database/clustered-index-locality.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+- contents/database/page-directory-and-record-layout-intuition.md
+- contents/database/page-split-merge-fill-factor.md
+confusable_with:
+- database/clustered-index-locality
+- database/covering-index-vs-index-only-scan
+- database/page-split-merge-fill-factor
+forbidden_neighbors: []
+expected_queries:
+- MySQL InnoDB clustered index와 PostgreSQL heap plus index 저장 구조를 초보자용으로 비교해줘
+- PostgreSQL primary key도 InnoDB처럼 테이블 본문을 항상 PK 순서로 저장하나요?
+- PostgreSQL CLUSTER를 한 번 실행하면 이후 row도 계속 정렬되는지 설명해줘
+- MySQL Using index와 PostgreSQL Index Only Scan을 같은 말로 보면 안 되는 이유가 뭐야?
+- InnoDB PK locality와 PostgreSQL fillfactor, HOT update 감각을 어떻게 연결해서 이해해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL InnoDB clustered index 직관과 PostgreSQL heap plus index, CLUSTER, Index Only Scan, Heap Fetches 차이를 연결하는 beginner bridge다.
+  PostgreSQL PK도 clustered인가요, CLUSTER 한번 하면 계속 정렬되나요, Using index vs Index Only Scan 질문이 본 문서에 매핑된다.
+---
 # MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지
 
 > 한 줄 요약: InnoDB에서는 primary key 순서가 row 저장 위치 감각과 거의 붙어 있지만, PostgreSQL은 heap row와 index가 기본적으로 분리돼 있어서 `CLUSTER`를 한 번 실행해도 "PK를 타면 본문도 항상 같이 정렬돼 있다"는 기본 저장 모델이 되지는 않는다.

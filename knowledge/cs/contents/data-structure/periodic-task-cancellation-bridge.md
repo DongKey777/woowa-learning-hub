@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Periodic Task Cancellation Bridge
+concept_id: data-structure/periodic-task-cancellation-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- periodic-task-cancellation
+- scheduledfuture-cancel
+- reenqueue-stop
+aliases:
+- periodic task cancellation
+- ScheduledFuture cancel periodic task
+- scheduleAtFixedRate cancel next run
+- scheduleWithFixedDelay cancel next run
+- periodic re-enqueue stop
+- future cancel stops later rounds
+- 주기 작업 취소
+symptoms:
+- periodic task가 반복되는 이유를 실행 후 다음 deadline ticket을 재등록하는 흐름으로 보지 못해 cancel의 의미를 헷갈린다
+- ScheduledFuture.cancel이 이미 시작한 한 라운드를 되돌리는 것인지 이후 ticket 재등록을 끊는 것인지 구분하지 못한다
+- fixed-rate와 fixed-delay는 재등록 기준만 다르고 cancel은 그 흐름을 끊는 handle이라는 모델을 놓친다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/delayqueue-repeating-task-primer
+next_docs:
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/delayqueue-cancel-while-running-primer
+linked_paths:
+- contents/data-structure/slow-periodic-task-primer.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/fixed-rate-vs-fixed-delay-overrun-primer.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+confusable_with:
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/delayqueue-cancel-while-running-primer
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+forbidden_neighbors: []
+expected_queries:
+- ScheduledFuture cancel은 periodic task의 이번 실행을 멈추는 거야 다음 실행을 끊는 거야?
+- scheduleAtFixedRate나 scheduleWithFixedDelay 취소를 DelayQueue ticket model로 설명해줘
+- periodic task가 실행 후 다음 ticket을 re-enqueue한다는 모델은 cancel과 어떻게 연결돼?
+- 이미 실행 중인 periodic round를 cancel하면 이후 라운드는 왜 멈춰?
+- 주기 작업 취소를 beginner 기준으로 timeline으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 periodic task가 실행 후 다음 deadline ticket을 re-enqueue해서
+  반복된다는 mental model을 바탕으로 ScheduledFuture.cancel이 이후 재등록
+  흐름을 끊는 handle이라는 점을 설명하는 primer다.
+---
 # Periodic Task Cancellation Bridge
 
 > 한 줄 요약: `scheduleAtFixedRate()`와 `scheduleWithFixedDelay()`의 반복 실행은 "한 번 돌 때마다 다음 deadline ticket을 다시 queue에 넣는 흐름"으로 보면 쉽고, `ScheduledFuture.cancel()`은 그 **다음 재등록을 끊어서 이후 라운드가 더 생기지 않게 하는 손잡이**로 이해하면 된다.

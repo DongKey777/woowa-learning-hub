@@ -40,8 +40,8 @@ prerequisites:
 - spring/requestbody-400-before-controller-primer
 - network/browser-devtools-accept-vs-content-type-mini-card
 next_docs:
-- spring/spring-handlermethodreturnvaluehandler-chain
-- spring/spring-mvc-exception-resolver-chain-contract
+- spring/handlermethodreturnvaluehandler-chain
+- spring/mvc-exception-resolver-chain-contract
 - spring/spring-api-401-vs-browser-302-beginner-bridge
 linked_paths:
 - contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
@@ -60,7 +60,7 @@ confusable_with:
 - spring/requestbody-415-unsupported-media-type-primer
 - spring/requestbody-400-before-controller-primer
 - spring/spring-api-401-vs-browser-302-beginner-bridge
-- spring/spring-handlermethodreturnvaluehandler-chain
+- spring/handlermethodreturnvaluehandler-chain
 forbidden_neighbors: []
 expected_queries:
 - Spring에서 415 Unsupported Media Type과 406 Not Acceptable을 어떤 기준으로 나눠 봐야 해?
@@ -75,7 +75,6 @@ contextual_chunk_prefix: |
   advanced deep dive다. 초급 415 primer와 API redirect 브리지를 더 깊은
   negotiation 관점으로 이어 준다.
 ---
-
 # Spring Content Negotiation Pitfalls
 
 > 한 줄 요약: Content negotiation은 같은 엔드포인트라도 `Accept`, `Content-Type`, converter 조합에 따라 전혀 다른 응답이 나오게 하므로, API 계약과 렌더링 계약을 같이 봐야 한다.

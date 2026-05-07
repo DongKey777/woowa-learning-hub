@@ -42,7 +42,7 @@ prerequisites:
 - spring/modelattribute-vs-requestbody-binding-primer
 next_docs:
 - spring/spring-bindingresult-local-validation-400-primer
-- spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+- spring/methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
 - spring/spring-exception-handling-basics
 linked_paths:
 - contents/spring/spring-requestbody-400-vs-validation-400-vs-business-409-decision-guide.md
@@ -58,7 +58,7 @@ confusable_with:
 - spring/requestbody-400-vs-validation-400-vs-business-409-decision-guide
 - spring/requestbody-400-before-controller-primer
 - spring/spring-bindingresult-local-validation-400-primer
-- spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+- spring/methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
 - spring/controller-not-hit-cause-router
 - spring/json-request-400-cause-router
 forbidden_neighbors: []

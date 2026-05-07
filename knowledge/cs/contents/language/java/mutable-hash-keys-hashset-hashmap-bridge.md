@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Mutable Hash Keys Bridge
+concept_id: language/mutable-hash-keys-hashset-hashmap-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- mutable-key
+- hashmap
+- hashset
+aliases:
+- Mutable Hash Keys Bridge
+- HashMap mutable key lookup failure
+- HashSet mutable element hashCode field
+- mutate field used by equals hashCode
+- same object not found in HashMap
+- 자바 HashMap key 변경 함정
+symptoms:
+- HashMap key 객체의 hashCode 참여 필드를 put 이후 바꿔 get, containsKey, remove가 실패하는 원인을 찾지 못해
+- HashSet 원소를 바꾼 뒤 출력에는 보이는데 contains와 remove가 false인 상황을 same reference 문제로만 오해해
+- equals와 hashCode가 보는 필드를 mutable하게 열어 둬 hash bucket 경로가 삽입 시점과 조회 시점에 달라지는 버그를 만들어
+- TreeMap mutable key 문제와 HashMap mutable key 문제를 같은 정렬 문제로 섞어 hash route와 comparator route를 구분하지 못해
+intents:
+- troubleshooting
+- comparison
+- definition
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-collections-basics
+- language/collections-equality-mutable-state-foundations
+next_docs:
+- language/hashmap-treemap-mutable-key-lookup-primer
+- language/hashset-mutable-element-removal-drill
+- language/treeset-treemap-mutable-comparator-fields-primer
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/mutable-elements-hashset-treeset-primer.md
+- contents/language/java/hashset-mutable-element-removal-drill.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/hashmap-treemap-mutable-key-lookup-primer
+- language/mutable-elements-hashset-treeset-primer
+- language/treeset-treemap-mutable-comparator-fields-primer
+forbidden_neighbors: []
+expected_queries:
+- HashMap key 객체를 넣은 뒤 필드를 바꾸면 get이 왜 null을 반환할 수 있어?
+- HashSet에 같은 객체가 보이는데 contains와 remove가 실패하는 mutable hash key 문제를 설명해줘
+- equals hashCode 참여 필드는 왜 immutable하게 두는 게 안전해?
+- HashMap mutable key와 TreeMap mutable key lookup failure는 어떤 기준이 달라?
+- 같은 reference를 들고 있어도 hash bucket을 못 찾는 이유를 beginner 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HashSet element와 HashMap key의 equals/hashCode 기준 필드를 삽입 후 변경할 때 lookup이 실패하는 증상을 다루는 beginner symptom router다.
+  mutable hash key, HashMap get null, HashSet contains false, equals hashCode mutation 질문이 본 문서에 매핑된다.
+---
 # Mutable Hash Keys Bridge
 
 > 한 줄 요약: `HashSet` 원소나 `HashMap` key의 `equals()`/`hashCode()` 기준 필드를 넣은 뒤 바꾸면, 같은 객체가 안 보이거나 삭제가 실패하는 초보자 함정을 `hash 컬렉션` 관점만 좁혀 설명하는 bridge다.

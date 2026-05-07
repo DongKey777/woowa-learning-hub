@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Heavy-Light Decomposition
+concept_id: data-structure/heavy-light-decomposition
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- heavy-light-decomposition
+- tree-path-query
+- segment-tree-on-tree
+aliases:
+- Heavy-Light Decomposition
+- HLD
+- tree path query
+- chain decomposition
+- segment tree on tree
+- LCA path query
+- tree flattening
+symptoms:
+- 트리에서 두 노드 사이 path sum max update 질의를 매번 DFS로 처리하려고 해 쿼리 수가 많을 때 비용이 커진다
+- 트리 경로를 heavy chain 몇 개의 배열 구간 질의로 바꾸는 핵심 변환을 이해하지 못한다
+- LCA, binary lifting, segment tree를 각각 따로 보고 HLD의 path query 흐름으로 연결하지 못한다
+intents:
+- deep_dive
+- design
+prerequisites:
+- algorithm/binary-lifting
+- data-structure/segment-tree-lazy-propagation
+next_docs:
+- algorithm/binary-lifting
+- algorithm/rerooting-dp
+- data-structure/segment-tree-lazy-propagation
+linked_paths:
+- contents/algorithm/binary-lifting.md
+- contents/algorithm/rerooting-dp.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+confusable_with:
+- algorithm/binary-lifting
+- algorithm/rerooting-dp
+- data-structure/segment-tree-lazy-propagation
+- data-structure/fenwick-tree
+forbidden_neighbors: []
+expected_queries:
+- Heavy-Light Decomposition은 트리 경로 질의를 어떻게 배열 구간 질의로 바꿔?
+- HLD에서 heavy edge와 chain head는 무엇을 의미해?
+- LCA와 Segment Tree를 HLD path query에서 어떻게 같이 써?
+- tree path sum max update가 많을 때 HLD가 필요한 이유는?
+- 경로 질의가 거의 없으면 HLD가 과한 구조인 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Heavy-Light Decomposition을 트리 path query를 heavy chain의
+  연속 배열 구간 질의로 바꾸는 deep dive로 설명한다. heavy edge, chain
+  head, LCA, binary lifting, segment tree on tree, path update/query를 다룬다.
+---
 # Heavy-Light Decomposition
 
 > 한 줄 요약: Heavy-Light Decomposition은 트리 경로를 몇 개의 체인으로 나눠 경로 질의를 배열 질의처럼 바꾸는 기법이다.

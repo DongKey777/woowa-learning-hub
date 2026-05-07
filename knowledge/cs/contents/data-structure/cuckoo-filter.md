@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Cuckoo Filter
+concept_id: data-structure/cuckoo-filter
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cuckoo-filter
+- approximate-membership
+- deletion-friendly-filter
+aliases:
+- Cuckoo Filter
+- approximate membership filter
+- fingerprint bucket filter
+- deletion-friendly membership filter
+- cuckoo filter false positive
+- alternate bucket fingerprint
+- cache admission filter
+symptoms:
+- 삭제가 가능하다는 이유로 Cuckoo Filter를 exact set처럼 보고 false positive가 있는 prefilter라는 사실을 놓친다
+- fingerprint만 저장하는 공간 절약과 false positive trade-off를 HashSet membership과 비교하지 못한다
+- bucket relocation과 alternate index 계산이 Cuckoo Hashing에서 온다는 연결을 이해하지 못한다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/cuckoo-hashing
+next_docs:
+- data-structure/bloom-filter
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/quotient-filter
+- data-structure/xor-filter
+- data-structure/cuckoo-hashing
+linked_paths:
+- contents/data-structure/hash-table-basics.md
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/bloom-filter-vs-cuckoo-filter.md
+- contents/data-structure/quotient-filter.md
+- contents/data-structure/xor-filter.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/cuckoo-hashing.md
+confusable_with:
+- data-structure/bloom-filter
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/cuckoo-hashing
+- data-structure/quotient-filter
+- data-structure/xor-filter
+forbidden_neighbors: []
+expected_queries:
+- Cuckoo Filter는 Bloom Filter와 달리 왜 삭제가 더 자연스러워?
+- fingerprint만 저장하는 Cuckoo Filter가 false positive를 가질 수밖에 없는 이유는?
+- Cuckoo Filter에서 alternate bucket과 relocation은 어떻게 동작해?
+- 삭제 가능한 membership prefilter를 exact HashSet처럼 쓰면 왜 위험해?
+- Cuckoo Hashing과 Cuckoo Filter의 관계를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Cuckoo Filter를 fingerprint bucket과 alternate bucket relocation을
+  쓰는 approximate membership prefilter로 설명한다. 삭제 가능성, false
+  positive, exact path 필요성, Cuckoo Hashing과의 관계를 다룬다.
+---
 # Cuckoo Filter
 
 > 한 줄 요약: Cuckoo Filter는 짧은 fingerprint를 bucket에 저장하는 approximate membership 구조로, Bloom Filter보다 복잡하지만 삭제와 높은 적재율을 더 자연스럽게 지원한다.

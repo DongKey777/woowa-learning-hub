@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Modern C++ Basics
+concept_id: language/modern-cpp
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- cpp-modern
+- smart-pointer
+- move-semantics
+aliases:
+- Modern C++ basics
+- C++11 C++14 features
+- C++ auto lambda smart pointer move semantics
+- modern cpp primer
+- unique_ptr shared_ptr basics
+- C++ 이동 시맨틱
+- 모던 C++ 입문
+symptoms:
+- auto, lambda, smart pointer, move semantics를 각각 문법 조각으로만 외우고 왜 등장했는지 연결하지 못해
+- unique_ptr와 shared_ptr이 raw pointer 메모리 해제 문제를 어떻게 줄이는지 설명해야 해
+- lvalue rvalue move semantics가 복사 비용과 소유권 이전 문제로 이어지는 이유가 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/cpp-stl-basics
+next_docs:
+- language/cpp-multithread-programming
+- operating-system/virtual-memory-basics
+- data-structure/backend-data-structure-starter-pack
+linked_paths:
+- contents/operating-system/virtual-memory-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/language/coroutine.md
+- contents/operating-system/process-thread-basics.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+confusable_with:
+- language/cpp-stl-basics
+- operating-system/virtual-memory-basics
+forbidden_neighbors: []
+expected_queries:
+- Modern C++에서 auto lambda smart pointer move semantics가 왜 중요한지 큰 그림으로 설명해줘
+- unique_ptr shared_ptr이 raw pointer memory leak 문제를 어떻게 줄여?
+- C++ move semantics와 lvalue rvalue를 복사 비용 관점으로 이해하고 싶어
+- C++11 이후 기능을 STL 사용 경험과 연결해서 알려줘
+- 모던 C++ 입문에서 auto와 iterator를 같이 쓰는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Modern C++를 auto, range-for, lambda, smart pointer, move semantics, lvalue/rvalue 관점으로 설명하는 intermediate primer다.
+  C++11 C++14, unique_ptr shared_ptr, raw pointer memory leak, lambda capture, move semantics, auto iterator 질문이 본 문서에 매핑된다.
+---
 # Modern C++
 
 

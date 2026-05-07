@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Readahead Tuning Page Cache
+concept_id: operating-system/readahead-tuning-page-cache
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- readahead-tuning-page
+- cache
+- readahead-tuning
+- page-cache-readahead
+aliases:
+- readahead tuning
+- page cache readahead
+- sequential read optimization
+- random read cache pollution
+- useless IO readahead
+- posix_fadvise readahead
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/posix-fadvise-madvise-page-cache-hints.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+symptoms:
+- sequential read를 기대하고 readahead를 키웠지만 실제 pattern이 random이라 useless I/O가 증가한다.
+- page cache pollution 때문에 hot page가 밀려나고 refault가 늘어난다.
+- fadvise/madvise hint와 readahead tuning 중 어느 쪽을 먼저 볼지 판단해야 한다.
+expected_queries:
+- readahead는 sequential read를 빠르게 하지만 pattern과 어긋나면 왜 느려질 수 있어?
+- page cache pollution과 useless I/O를 readahead tuning에서 어떻게 확인해?
+- random read workload에서 readahead를 줄이는 기준은?
+- posix_fadvise, madvise, readahead를 함께 쓰는 판단 흐름은?
+contextual_chunk_prefix: |
+  이 문서는 readahead가 sequential read에는 도움이 되지만 workload access pattern과 어긋나면
+  useless I/O와 page cache pollution을 늘려 hot pages를 밀어낼 수 있다는 page cache tuning
+  playbook이다.
+---
 # Readahead Tuning, Page Cache
 
 > 한 줄 요약: readahead는 순차 읽기를 빠르게 만들 수 있지만, 패턴과 어긋나면 쓸모없는 I/O와 page cache 오염을 늘린다.

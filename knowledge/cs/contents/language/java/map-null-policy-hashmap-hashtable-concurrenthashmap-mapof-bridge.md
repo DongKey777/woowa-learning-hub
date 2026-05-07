@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Map null policy HashMap Hashtable ConcurrentHashMap Map.of Bridge
+concept_id: language/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-null
+- hashmap
+- concurrenthashmap
+aliases:
+- Map null policy HashMap Hashtable ConcurrentHashMap Map.of bridge
+- HashMap null key null value
+- ConcurrentHashMap null key value forbidden
+- Map.of null not allowed
+- Hashtable null policy
+- 자바 Map null 허용 구현체 차이
+symptoms:
+- Map 인터페이스면 모든 구현체가 null key와 null value를 똑같이 허용한다고 생각해 구현체 계약 차이를 놓쳐
+- HashMap에서 get이 null을 반환할 때 missing key와 stored null value를 구분하지 못해 containsKey 확인을 빠뜨려
+- ConcurrentHashMap이나 Map.of에 null을 넣고 NullPointerException을 컬렉션 공통 동작으로 오해해 null 정책을 진단하지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/map-put-get-remove-containskey-return-cheat-sheet
+next_docs:
+- language/map-get-null-containskey-getordefault-primer
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+- language/concurrenthashmap-compound-actions-hot-key-contention
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-of-copyof-unmodifiablemap-readonly-bridge.md
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+confusable_with:
+- language/map-get-null-containskey-getordefault-primer
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+- language/concurrenthashmap-compound-actions-hot-key-contention
+forbidden_neighbors: []
+expected_queries:
+- HashMap Hashtable ConcurrentHashMap Map.of는 null key와 null value 허용 여부가 어떻게 달라?
+- ConcurrentHashMap은 왜 null value를 허용하지 않는지 beginner 기준으로 설명해줘
+- HashMap get이 null을 반환할 때 key가 없는지 value가 null인지 어떻게 구분해?
+- Map.of에 null을 넣으면 왜 NullPointerException이 나는지 알려줘
+- Java Map 구현체별 null 정책을 표로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 HashMap, Hashtable, ConcurrentHashMap, Map.of의 null key/value 허용 정책을 beginner 기준으로 비교하는 primer다.
+  Map null policy, HashMap null, ConcurrentHashMap null forbidden, Map.of NullPointerException 질문이 본 문서에 매핑된다.
+---
 # Map null 허용 여부 구현체 브리지: `HashMap` vs `Hashtable` vs `ConcurrentHashMap` vs `Map.of`
 
 > 한 줄 요약: 초보자 기준으로는 `HashMap`은 `null` key/value를 허용할 수 있고, `Hashtable`·`ConcurrentHashMap`·`Map.of(...)`는 `null`을 허용하지 않는다고 먼저 나누면 가장 덜 헷갈린다.

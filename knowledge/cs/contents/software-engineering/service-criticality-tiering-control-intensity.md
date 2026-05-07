@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Service Criticality Tiering and Control Intensity
+concept_id: software-engineering/service-criticality-tiering
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- service-governance
+- criticality
+- control-profile
+- readiness
+aliases:
+- service criticality tiering
+- control intensity by service tier
+- governance intensity profile
+- service risk tier
+- operational rigor by criticality
+- 서비스 중요도 티어링
+symptoms:
+- 모든 서비스에 같은 PRR, drill, on-call, rollout gate를 적용해 핵심 서비스에는 약하고 낮은 중요도 서비스에는 과한 통제가 생겨
+- traffic만 보고 service criticality를 정해 revenue impact, legal risk, blast radius, manual workaround 가능성을 놓쳐
+- service stage와 criticality tier를 같은 축으로 봐서 temporary service의 높은 위험이나 active service의 낮은 위험을 설명하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/sla-slo-ownership-model
+next_docs:
+- software-engineering/rollout-guardrail-profiles
+- software-engineering/production-readiness-review
+- software-engineering/on-call-ownership-boundaries
+linked_paths:
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/sla-slo-ownership-model.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/support-operating-models-self-service-office-hours-oncall.md
+confusable_with:
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/service-maturity-model
+- software-engineering/rollout-guardrail-profiles
+forbidden_neighbors: []
+expected_queries:
+- service criticality tier는 traffic보다 business impact와 blast radius 기준으로 어떻게 나눠야 해?
+- tier 0부터 tier 3까지 control intensity를 PRR, rollout, drill, on-call 기준으로 다르게 두는 예시를 알려줘
+- service stage와 criticality tier를 혼동하면 lifecycle governance에서 어떤 문제가 생겨?
+- 낮은 중요도 서비스에 과한 PRR을 줄이고 핵심 서비스에는 강한 evidence를 요구하려면 어떻게 설계해?
+- criticality tier가 시간이 지나 바뀔 때 control profile을 재평가하는 운영 흐름을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 서비스의 business impact, dependency centrality, recovery urgency에 따라 criticality tier를 나누고 review, drill, rollout, on-call control intensity를 조정하는 advanced playbook이다.
+---
 # Service Criticality Tiering and Control Intensity
 
 > 한 줄 요약: 모든 서비스를 같은 수준으로 review, on-call, PRR, drill, rollout gate에 태우면 비효율이 크므로, service criticality를 tier로 나누고 그에 맞는 control intensity를 정해야 lifecycle governance와 delivery speed가 함께 유지된다.

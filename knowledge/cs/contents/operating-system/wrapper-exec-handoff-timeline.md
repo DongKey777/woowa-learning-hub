@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Wrapper exec Handoff Timeline
+concept_id: operating-system/wrapper-exec-handoff-timeline
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- wrapper-exec-handoff
+- timeline
+- exec-app
+- shell-wrapper-final
+aliases:
+- wrapper exec handoff
+- exec app "$@"
+- shell wrapper final exec
+- PID signal fd handoff
+- wrapper child vs replacement
+- container entrypoint exec
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/shell-wrapper-boundary-primer.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/signals-process-supervision.md
+expected_queries:
+- shell wrapper 마지막에 exec app \"$@\"를 쓰면 PID, signal, fd tracking이 왜 단순해져?
+- wrapper가 child를 하나 더 들고 있는 구조와 wrapper 자신이 app으로 교체되는 구조는 어떻게 달라?
+- container entrypoint script에서 마지막 exec가 중요한 이유는?
+- exec handoff timeline으로 shell wrapper process tree를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shell wrapper가 마지막에 exec app "$@"를 쓰면 wrapper가 child를 하나 더 들고 있는
+  구조가 아니라 wrapper process image가 app으로 교체되어 PID, signal, fd 추적이 단순해지는
+  timeline을 설명한다.
+---
 # Wrapper `exec` Handoff Timeline
 
 > 한 줄 요약: shell wrapper가 마지막에 `exec app "$@"`를 쓰면 "wrapper가 child를 하나 더 들고 있는 구조"가 아니라 "wrapper 자신이 app으로 교체되는 구조"가 되어 PID, signal, fd 추적이 훨씬 단순해진다.

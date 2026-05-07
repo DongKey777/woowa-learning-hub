@@ -53,11 +53,12 @@ expected_queries:
 - DB가 잠겨 보일 때 triage 순서를 한 번에 보고 싶어
 - blocker SQL 이 안 보여도 DB 내부 경합을 의심해야 하는 경우가 뭐야?
 contextual_chunk_prefix: |
-  이 문서는 운영에서 "DB가 잠겼다"는 한 문장 안에 row lock wait, deadlock,
-  metadata lock, page latch contention이 섞여 있을 때 어떤 질문으로 분기하고
-  어떤 완화책을 먼저 쓰는지 정리한 playbook이다. deadlock debugging,
-  metadata lock vs row lock, hot page contention, db lock triage 같은 incident
-  phrasing이 본 문서의 분류표와 대응된다.
+  이 문서는 운영에서 "DB가 잠겨서 요청이 멈춘다", "lock timeout과 deadlock이
+  섞여 보인다", "DDL 배포 후 갑자기 다 대기한다", "blocker SQL은 안 보이는데 TPS만
+  눌린다" 같은 증상을 row lock wait, deadlock, metadata lock, page latch
+  contention으로 나눠 triage하게 돕는 advanced playbook이다. metadata lock vs row
+  lock, deadlock debugging, hot page contention, db lock incident response, retry
+  policy를 언제 다르게 가져가야 하는지 묻는 검색을 첫 분기 질문과 완화 순서로 연결한다.
 ---
 
 # Lock Wait, Deadlock, and Latch Contention Triage Playbook

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Vector API Basics
+concept_id: language/vector-api-basics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- vector-api
+- performance
+- simd
+aliases:
+- Vector API Basics
+- Java Vector API SIMD basics
+- vector lane shape species
+- HotSpot intrinsic vectorization
+- scalar fallback Vector API
+- 자바 Vector API SIMD
+symptoms:
+- Vector API를 단순히 빠른 for loop 대체로 보고 lane, species, shape, scalar fallback, CPU support 조건을 고려하지 않아
+- JIT auto-vectorization이 항상 성공한다고 생각하거나 반대로 SIMD는 JNI native로만 해야 한다고 생각해 Java Vector API의 의도를 놓쳐
+- 작은 input이나 branch-heavy loop에서 Vector API overhead가 이득보다 클 수 있다는 점을 benchmark 없이 가정해
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/jit-warmup-deoptimization
+- language/escape-analysis-scalar-replacement
+- language/jmh-benchmarking-pitfalls
+next_docs:
+- language/vector-api-performance-caveats
+- language/jni-native-call-overhead
+- language/method-inlining-heuristics-deopt-triggers
+linked_paths:
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/jni-native-call-overhead.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+confusable_with:
+- language/vector-api-performance-caveats
+- language/jmh-benchmarking-pitfalls
+- language/jni-native-call-overhead
+forbidden_neighbors: []
+expected_queries:
+- Java Vector API는 CPU SIMD lane shape species를 코드로 표현한다는 뜻이 뭐야?
+- Vector API는 scalar loop보다 언제 빠를 수 있고 언제 fallback이나 overhead 때문에 이득이 작아질 수 있어?
+- JIT auto-vectorization과 Vector API의 차이를 beginner 이후 단계로 설명해줘
+- JNI로 SIMD를 직접 호출하는 것과 Java Vector API를 쓰는 선택을 어떻게 비교해?
+- Vector API 성능은 JMH로 shape input size warmup을 왜 반드시 측정해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java Vector API를 SIMD lane, shape/species, intrinsic vectorization, scalar fallback, JMH benchmark 관점에서 소개하는 advanced deep dive다.
+  Vector API, SIMD, lane, shape, species, scalar fallback, vectorization 질문이 본 문서에 매핑된다.
+---
 # Vector API Basics
 
 > 한 줄 요약: Vector API는 CPU SIMD 벡터 연산을 Java 코드로 표현하게 해 주는 도구이고, scalar loop보다 빠를 수 있지만 데이터 정렬, shape, fallback 경로를 같이 생각해야 한다.

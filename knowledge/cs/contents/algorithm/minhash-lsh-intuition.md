@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MinHash and LSH Intuition
+concept_id: algorithm/minhash-lsh-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- minhash-lsh
+- jaccard-similarity
+- near-duplicate-search
+aliases:
+- minhash
+- lsh
+- locality sensitive hashing
+- minhash lsh
+- jaccard similarity approximation
+- near duplicate detection
+- approximate similarity search
+- shingling
+- banding strategy
+- 유사 문서 탐색
+symptoms:
+- near-duplicate 문서를 찾으려는데 모든 쌍을 full compare해서 비용이 폭발한다
+- exact equality와 approximate similarity search를 섞어 MinHash/LSH가 정확 매칭을 보장한다고 오해한다
+- LSH banding 파라미터가 recall과 false positive 후보 수를 어떻게 바꾸는지 설명하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/rolling-hash-rabin-karp
+- data-structure/hashmap-internals
+- data-structure/bloom-filter
+next_docs:
+- data-structure/hyperloglog
+- algorithm/reservoir-sampling
+- algorithm/top-k-streaming-heavy-hitters
+linked_paths:
+- contents/algorithm/rolling-hash-rabin-karp.md
+- contents/data-structure/hyperloglog.md
+- contents/data-structure/bloom-filter.md
+- contents/algorithm/trie-vs-radix-vs-suffix-automaton-comparison.md
+confusable_with:
+- algorithm/rolling-hash-rabin-karp
+- data-structure/hyperloglog
+- data-structure/bloom-filter
+- algorithm/top-k-streaming-heavy-hitters
+forbidden_neighbors: []
+expected_queries:
+- MinHash는 Jaccard similarity를 어떻게 signature로 근사해?
+- LSH는 비슷한 항목을 같은 bucket 후보로 보내기 위해 banding을 어떻게 써?
+- near-duplicate 문서 탐지에서 full compare 전에 MinHash 후보 생성을 쓰는 이유가 뭐야?
+- MinHash/LSH와 exact string matching은 정확도 보장이 어떻게 달라?
+- LSH band 수와 row 수를 바꾸면 recall과 false positive 후보가 어떻게 바뀌어?
+contextual_chunk_prefix: |
+  이 문서는 MinHash and LSH intuition deep dive로, shingle 집합의 Jaccard
+  similarity를 MinHash signature로 근사하고 LSH banding으로 near-duplicate
+  후보를 줄이는 방법과 정확 매칭과의 차이를 설명한다.
+---
 # MinHash and LSH Intuition
 
 > 한 줄 요약: MinHash는 집합의 Jaccard 유사도를 압축해 근사하고, LSH는 비슷한 항목끼리 같은 버킷에 들어가도록 설계하는 검색 기법이다.

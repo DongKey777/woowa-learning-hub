@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Bulk Idempotency Keys For Named Contracts
+concept_id: software-engineering/bulk-idempotency-keys
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- bulk-contract
+- idempotency
+- duplicate-suppression
+aliases:
+- Bulk Idempotency Keys For Named Contracts
+- named contract idempotency scope
+- run file chunk item idempotency
+- file-level idempotency key
+- same file uploaded twice
+- bulk idempotency scope
+symptoms:
+- bulk를 run, file, chunk, item 같은 named contract로 나눴는데 idempotency key는 하나로만 두어 중복 시작, 파일 재업로드, chunk 재전송, item side effect를 구분하지 못해
+- file hash를 run key처럼 쓰거나 chunk 번호만으로 chunk key를 만들어 부모 scope가 빠진 약한 dedup key를 만들어
+- retry와 새 business intent를 구분하지 못해 같은 의도 재시도에는 새 UUID를 만들고, 수정본 파일에는 기존 key를 재사용하는 실수를 해
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/batch-idempotency-keys
+next_docs:
+- software-engineering/batch-result-modeling
+- software-engineering/batch-recovery-runbook
+- system-design/job-queue-design
+linked_paths:
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/http-coalescing-failure-mapping.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- software-engineering/batch-idempotency-keys
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/http-coalescing-failure-mapping
+forbidden_neighbors: []
+expected_queries:
+- bulk named contract에서 run file chunk item idempotency key를 각각 왜 나눠야 해?
+- 같은 file을 다시 업로드한 것과 새 수정본 file을 올린 것을 fileKey로 어떻게 구분해?
+- runKey가 있어도 file 중복 등록, chunk 재전송, item side effect 중복을 자동으로 막지 못하는 이유가 뭐야?
+- retry는 같은 key를 재사용하고 새 business intent는 새 key를 써야 한다는 기준을 설명해줘
+- chunkKey에 chunk 번호만 넣으면 왜 너무 약하고 file/run 부모 scope가 필요한가?
+contextual_chunk_prefix: |
+  이 문서는 named bulk contract의 run, file, chunk, item 경계별 idempotency key scope를 정해 duplicate-safe retry, replay, re-upload를 설계하는 beginner bridge다.
+---
 # Bulk Idempotency Keys For Named Contracts
 
 > 한 줄 요약: bulk를 `run`, `file`, `chunk`, `item` 같은 이름 있는 계약으로 나눴다면, idempotency key도 "같은 일을 다시 하는가"라는 질문을 그 네 경계로 따로 답하게 만들어야 안전하다.

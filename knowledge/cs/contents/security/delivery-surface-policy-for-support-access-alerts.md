@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Delivery Surface Policy for Support Access Alerts
+concept_id: security/delivery-surface-policy-for-support-access-alerts
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- delivery surface policy for support access alerts
+- support access delivery surface
+- support access alert channel policy
+- support access email vs inbox vs timeline
+aliases:
+- delivery surface policy for support access alerts
+- support access delivery surface
+- support access alert channel policy
+- support access email vs inbox vs timeline
+- support access alternate verified channel
+- compromised mailbox support access alert
+- mailbox compromise notification routing
+- primary email suppression policy
+- verified alternate channel
+- verified secondary email
+- tenant security contact fallback
+- recovery center inbox
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-access-alert-router-primer.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/email-magic-link-threat-model.md
+- contents/security/password-reset-threat-modeling.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Delivery Surface Policy for Support Access Alerts 핵심 개념을 설명해줘
+- delivery surface policy for support access alerts가 왜 필요한지 알려줘
+- Delivery Surface Policy for Support Access Alerts 실무 설계 포인트는 뭐야?
+- delivery surface policy for support access alerts에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Delivery Surface Policy for Support Access Alerts를 다루는 deep_dive 문서다. support access alert는 security timeline을 canonical evidence로 고정한 뒤 email, in-app inbox, alternate verified channel을 mailbox trust와 actionability 기준으로 선택해야 하며, mailbox compromise가 의심되면 primary email은 즉시 인지 수단의 기본값에서 내려야 한다. 검색 질의가 delivery surface policy for support access alerts, support access delivery surface, support access alert channel policy, support access email vs inbox vs timeline처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Delivery Surface Policy for Support Access Alerts
 
 > 한 줄 요약: support access alert는 security timeline을 canonical evidence로 고정한 뒤 email, in-app inbox, alternate verified channel을 mailbox trust와 actionability 기준으로 선택해야 하며, mailbox compromise가 의심되면 primary email은 즉시 인지 수단의 기본값에서 내려야 한다.

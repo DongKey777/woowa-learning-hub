@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: ADRs and Decision Records at Scale
+concept_id: software-engineering/adr-decision-records
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- adr
+- architecture-governance
+- decision-history
+aliases:
+- ADRs and Decision Records at Scale
+- architecture decision record
+- ADR decision log
+- decision hygiene
+- design rationale
+- architectural decision 기록
+symptoms:
+- 중요한 설계 선택이 구두 합의와 PR 댓글에 흩어져 신규 합류자가 왜 그런 구조가 됐는지 추적하지 못해
+- 이미 버린 대안을 반복 논의하거나 폐기된 ADR을 현재 정책처럼 읽어 decision lifecycle이 흐려져
+- ADR을 회의록처럼 길게 쓰거나 사소한 구현 취향까지 기록해 정작 변경 비용이 큰 결정이 묻혀
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- software-engineering/rfc-vs-adr-decision-flow
+- software-engineering/architectural-governance
+next_docs:
+- software-engineering/decision-revalidation-lifecycle
+- software-engineering/architecture-council-cadence
+- software-engineering/architecture-exception-process
+linked_paths:
+- contents/software-engineering/rfc-vs-adr-decision-flow.md
+- contents/software-engineering/architectural-governance-operating-model.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/architecture-exception-process.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+confusable_with:
+- software-engineering/rfc-vs-adr-decision-flow
+- software-engineering/decision-revalidation-lifecycle
+- software-engineering/architectural-governance
+forbidden_neighbors: []
+expected_queries:
+- ADR은 회의록이 아니라 왜 당시 그 결정을 했는지 남기는 기록이라는 뜻을 설명해줘
+- 어떤 설계 결정은 ADR로 남기고 어떤 것은 코드 리뷰나 주석으로 충분한지 기준이 뭐야?
+- ADR이 많아질 때 accepted deprecated superseded 상태와 owner를 어떻게 관리해야 해?
+- 이미 폐기된 아키텍처 결정을 삭제하지 않고 superseded 링크로 남기는 이유는 뭐야?
+- 팀이 커질수록 decision record가 architecture governance와 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 ADR과 architecture decision record를 design rationale, alternatives, trade-off history, supersession lifecycle, governance 운영 관점에서 다루는 advanced playbook이다.
+---
 # ADRs and Decision Records at Scale
 
 > 한 줄 요약: ADR은 "왜 이렇게 했는가"를 남기는 문서가 아니라, 팀이 커져도 설계 결정의 맥락과 대안을 잃지 않게 하는 운영 장치다.

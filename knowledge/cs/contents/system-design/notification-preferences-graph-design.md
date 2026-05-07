@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Notification Preferences Graph 설계
+concept_id: system-design/notification-preferences-graph-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- notification-precedence-graph
+- preference-explainability
+- next-doc-graph-ladder
+aliases:
+- notification preferences graph
+- notification preference precedence
+- quiet hours precedence
+- mandatory notification override
+- channel preference graph
+- tenant policy user override
+- notification opt in opt out
+- notification suppression graph
+- 알림 설정 그래프 뭐예요
+- quiet hours 왜 무시돼요
+- 왜 결제 알림은 밤에도 와요
+- channel override 언제 이기나요
+- preference policy graph design
+- notification policy explanation
+symptoms:
+- tenant 기본 정책과 사용자 알림 설정이 충돌할 때 설명 기준이 흔들려요
+- quiet hours를 무시한 필수 알림을 precedence 관점으로 설명하지 못하고 있어요
+- 사용자에게 왜 이 알림이 갔는지 audit와 explainability까지 함께 설계해야 하는지 헷갈려요
+intents:
+- design
+- comparison
+- deep_dive
+prerequisites:
+- system-design/notification-system-design
+- system-design/causal-consistency-notification-primer
+- security/role-vs-scope-vs-ownership-primer
+next_docs:
+- system-design/config-distribution-system-design
+- system-design/audit-log-pipeline-design
+- system-design/causal-consistency-notification-primer
+linked_paths:
+- contents/system-design/notification-system-design.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/system-design/mobile-push-notification-pipeline-design.md
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+confusable_with:
+- system-design/notification-system-design
+- system-design/causal-consistency-notification-primer
+- security/permission-model-drift-authz-graph-design
+forbidden_neighbors: []
+expected_queries:
+- 알림 설정 그래프가 뭐예요
+- quiet hours인데 왜 결제 알림은 밤에도 와
+- tenant 정책과 사용자 설정이 충돌하면 누가 이겨
+- notification preference를 key value가 아니라 graph로 설계해야 하는 이유를 설명해줘
+- 사용자가 왜 이 알림을 받았는지 precedence와 audit로 설명하는 방법이 궁금해
+contextual_chunk_prefix: |
+  이 문서는 system-design 카테고리의 advanced deep dive다. notification
+  preference를 단순 key-value 설정이 아니라 tenant 정책, user override,
+  channel capability, quiet hours, mandatory rule이 경쟁하는 precedence
+  graph로 모델링하는 방법을 다룬다. 왜 결제 알림은 밤에도 오는지, tenant
+  policy와 user preference가 충돌하면 누가 이기는지, explainability와
+  audit를 어떻게 남길지 같은 질문이 이 문서의 설계 축으로 연결된다.
+---
 # Notification Preferences Graph 설계
 
 > 한 줄 요약: notification preferences graph는 사용자 설정, tenant 정책, quiet hours, 필수 알림 예외를 "어느 규칙이 최종 승리하는가"라는 precedence graph로 모델링하는 설계다.

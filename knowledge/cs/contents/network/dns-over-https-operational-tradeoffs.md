@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "DNS over HTTPS Operational Trade-offs"
+concept_id: network/dns-over-https-operational-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- doh-operational-tradeoff
+- resolver-privacy-policy
+- split-horizon-observability
+aliases:
+- DNS over HTTPS
+- DoH
+- DoT
+- resolver privacy
+- enterprise DNS policy
+- split-horizon DNS
+symptoms:
+- DoH를 켜면 무조건 더 안전하고 운영 부작용은 없다고 생각한다
+- 기업 DNS 정책과 split-horizon name resolution이 DoH로 우회될 수 있음을 놓친다
+- browser DoH resolver와 OS resolver, dig 결과가 다른 것을 단순 DNS 장애로만 본다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- network/dns-basics
+- network/https-rr-resolver-drift-primer
+next_docs:
+- network/dns-split-horizon-behavior
+- network/dns-ttl-cache-failure-patterns
+- network/https-rr-resolver-drift-primer
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+linked_paths:
+- contents/network/https-rr-resolver-drift-primer.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+confusable_with:
+- network/https-rr-resolver-drift-primer
+- network/dns-split-horizon-behavior
+- network/dns-ttl-cache-failure-patterns
+- network/captive-portal-intercepting-proxy-behavior
+forbidden_neighbors: []
+expected_queries:
+- "DNS over HTTPS는 privacy를 높이지만 enterprise DNS policy를 어떻게 어렵게 만들어?"
+- "DoH와 DoT 차이를 운영 가시성과 filtering 관점으로 비교해줘"
+- "split-horizon DNS 환경에서 browser DoH가 내부 도메인 해석을 꼬이게 하는 이유는?"
+- "browser resolver와 OS resolver와 dig 결과가 다를 때 DoH를 어떻게 의심해?"
+- "DoH resolver bootstrap 문제와 장애 분석 trade-off를 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 DNS over HTTPS/DoT를 resolver privacy, enterprise DNS policy,
+  content filtering, split-horizon DNS, resolver bootstrap, observability
+  trade-off 관점으로 설명하는 advanced DNS deep dive다.
+---
 # DNS over HTTPS Operational Trade-offs
 
 > 한 줄 요약: DoH는 DNS를 HTTPS로 숨겨 프라이버시와 무결성을 높이지만, 기업 네트워크의 가시성과 정책 제어를 약하게 만들 수 있다.

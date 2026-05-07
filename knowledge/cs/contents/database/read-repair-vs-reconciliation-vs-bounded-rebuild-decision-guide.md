@@ -48,8 +48,7 @@ confusable_with:
 - database/read-repair-reconciliation-after-failover
 - database/cdc-gap-repair-reconciliation-playbook
 - database/summary-drift-detection-bounded-rebuild
-forbidden_neighbors:
-- contents/database/summary-drift-detection-bounded-rebuild.md
+forbidden_neighbors: []
 expected_queries:
 - failover 뒤 stale read가 보일 때 read repair랑 reconciliation job 중 어디서 시작해?
 - 캐시 한두 건만 틀린데 bounded rebuild까지 해야 하는 상황이야?

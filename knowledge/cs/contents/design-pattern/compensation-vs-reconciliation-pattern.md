@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Compensation vs Reconciliation Pattern
+concept_id: design-pattern/compensation-vs-reconciliation-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- compensation-reconciliation
+- unknown-external-state
+- corrective-workflow
+aliases:
+- compensation vs reconciliation
+- compensating action
+- reconciliation loop
+- corrective workflow
+- unknown external state
+- business rollback limit
+- manual repair path
+- operational repair loop
+- saga compensation
+- external state reconciliation
+symptoms:
+- timeout이나 500 응답을 명확한 실패로 단정해 즉시 보상 처리하면서 실제 성공한 외부 side effect와 충돌한다
+- 결제, 배송, webhook처럼 외부 상태가 불명확한데 truth source 재조회 없이 취소와 환불을 먼저 실행한다
+- 실패 복구를 retry와 cancel 두 가지로만 모델링해 manual review, reconciliation, correction record가 없다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/outbox-relay-idempotent-publisher
+next_docs:
+- design-pattern/reservation-hold-expiry-consistency-seam
+- design-pattern/human-approval-manual-review-workflow-pattern
+- design-pattern/domain-event-translation-pipeline
+linked_paths:
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/reservation-hold-expiry-consistency-seam.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/process-manager-state-store-recovery.md
+- contents/design-pattern/human-approval-manual-review-workflow-pattern.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+confusable_with:
+- design-pattern/reservation-hold-expiry-consistency-seam
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/human-approval-manual-review-workflow-pattern
+forbidden_neighbors: []
+expected_queries:
+- timeout이나 외부 500 응답을 바로 실패로 보고 compensation하면 위험한 이유가 뭐야?
+- compensation과 reconciliation은 saga 실패 복구에서 어떤 기준으로 나눠야 해?
+- 결제 승인 여부가 unknown state일 때 왜 먼저 PG 상태를 재조회해야 해?
+- 이미 외부 side effect가 일어났을 수 있는 workflow에서는 cancel보다 reconciliation loop가 필요한 이유가 뭐야?
+- manual review와 correction record는 compensation으로 닫기 어려운 실패를 어떻게 보완해?
+contextual_chunk_prefix: |
+  이 문서는 Compensation vs Reconciliation Pattern chooser로, 분산 workflow 실패를
+  즉시 보상할 수 있는 명확한 실패와 외부 truth가 불명확해 재조회/대조/수동 검토가 필요한
+  unknown state로 나누어 compensation, reconciliation, manual review를 선택하는 기준을 설명한다.
+---
 # Compensation vs Reconciliation Pattern
 
 > 한 줄 요약: 분산 실패를 모두 즉시 보상으로 덮으려 하지 말고, 되돌릴 수 있는 건 compensation으로, 이미 세계가 갈라진 건 reconciliation으로 다루는 것이 운영적으로 더 안전하다.
@@ -30,6 +99,8 @@
 - reconciliation: 현재 세계의 불일치를 검사하고 설명 가능한 방식으로 다시 맞춤
 
 보상은 흐름 설계의 일부이고, reconciliation은 운영 루프의 일부에 더 가깝다.
+
+짧게 판별하면, **실패 사실과 side effect 부재가 확실하면 compensation**, **성공 여부나 외부 상태가 불명확하면 reconciliation**, **자동 판단 비용이 너무 크면 manual review**로 보내는 식이다. 이 판별을 명시하지 않으면 timeout, retry, cancel이 같은 의미로 섞인다.
 
 ### Retrieval Anchors
 

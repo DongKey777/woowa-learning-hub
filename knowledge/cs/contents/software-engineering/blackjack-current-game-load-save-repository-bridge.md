@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > blackjack에서 `hit` 한 번은 "어느 게임을 읽어 와서 규칙을 적용하고 다시 보관하는가"까지 포함한 유스케이스다. 이 경계가 controller나 session 코드에 흩어지면 Repository가 맡아야 할 저장 계약이 흐려진다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "controller가 session Map에서 Game을 꺼내 수정하고 다시 넣고 있어요" | 저장 기술 세부와 유스케이스 흐름이 controller에 함께 있는 코드 | 현재 게임을 읽고 저장하는 계약을 Repository 경계로 감싼다 |
+| "hit 한 번 처리할 때 조회와 저장은 어느 계층이 맡죠?" | `gameId` lookup, `Game.hit`, save가 여러 계층에 흩어진 흐름 | service가 load-modify-save 순서를 조립하고 repository는 저장 계약을 제공한다 |
+| "메모리 Map이면 repository가 굳이 필요한가요?" | DB가 없다는 이유로 저장소 계약을 controller/service 시그니처에 노출한 구조 | 저장 기술이 Map이어도 application은 `find/save` 계약만 믿게 한다 |
+
 ## 미션 시나리오
 
 콘솔 blackjack에서는 `Game` 객체 하나를 계속 들고 가면 되니 저장 경계가 거의

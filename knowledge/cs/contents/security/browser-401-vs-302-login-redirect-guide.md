@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- browser-401-vs
+- 302-login-redirect
+- 302
+- login-redirect
 summary: 브라우저에서 보이는 302 로그인 이동이 raw 401, cookie 전송 문제, server-anonymous 복원 문제 중 무엇인지 처음 가르는 chooser다.
 aliases:
 - browser 401 vs 302
@@ -55,7 +60,6 @@ contextual_chunk_prefix: |
   있는데 다시 로그인, login HTML 200을 받았지만 API는 실패 같은 자연어
   paraphrase가 본 문서의 분기 진단에 매핑된다.
 ---
-
 # Browser `401` vs `302` Login Redirect Guide
 
 > 한 줄 요약: 브라우저 앱에서 보이는 `302 -> /login`은 종종 raw `401`을 브라우저 UX로 감싼 `browser 401 -> 302 /login bounce`이고, `fetch` 최종 login HTML `200`은 API 성공이 아니라 redirect를 따라간 마지막 표면일 수 있으며, 초보자가 말하는 `hidden session`은 대개 cookie reference는 보이지만 서버가 auth/session을 못 복원하는 장면을 뜻한다.

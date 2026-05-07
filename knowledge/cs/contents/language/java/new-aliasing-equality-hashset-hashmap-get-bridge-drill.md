@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: New Aliasing Equality HashSet HashMap Get Bridge Drill
+concept_id: language/new-aliasing-equality-hashset-hashmap-get-bridge-drill
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: drill
+level: intermediate
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- equality
+- aliasing
+- hash-lookup
+aliases:
+- new aliasing equality HashSet HashMap get bridge drill
+- Java new aliasing equals hash lookup
+- identity equality hash collection prediction
+- HashSet HashMap get equality drill
+- same object same value lookup drill
+- 자바 new aliasing equality 드릴
+symptoms:
+- new를 몇 번 호출했는지와 단순 대입 aliasing 여부를 세지 않고 ==와 equals 결과를 바로 추측해
+- equals와 hashCode가 같은 값 규칙을 제공하면 HashSet 중복 제거와 HashMap get lookup으로 이어진다는 흐름을 끊어서 외워
+- 같은 값 객체 두 개와 같은 객체 별칭을 구분하지 못해 identity, equality, hash lookup 결과를 섞어 예측해
+intents:
+- drill
+- comparison
+- definition
+prerequisites:
+- language/java-parameter-passing-pass-by-value-side-effects-primer
+- language/java-equality-identity-basics
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+next_docs:
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/record-value-object-equality-basics
+- language/collections-equality-mutable-state-foundations
+linked_paths:
+- contents/language/java/java-parameter-passing-pass-by-value-side-effects-primer.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/mutable-hash-keys-hashset-hashmap-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java에서 new와 aliasing을 먼저 세고 == equals HashSet HashMap get 결과를 예측하는 드릴을 해보고 싶어
+- 같은 객체 alias와 같은 값 copy는 ==와 equals와 HashSet 결과가 어떻게 달라?
+- equals hashCode가 구현된 값 객체를 HashMap key로 넣으면 copy로 get이 되는 이유를 설명해줘
+- 객체 수에서 identity equality hash lookup으로 이어지는 순서를 beginner에서 intermediate로 연습하고 싶어
+- HashSet은 하나로 보이는데 HashMap get도 되는지 한 흐름으로 예측하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 new 호출 수, aliasing, ==, equals, HashSet, HashMap#get을 한 흐름으로 예측하는 intermediate bridge drill이다.
+  Java aliasing, identity equality, HashSet duplicate, HashMap get, equals hashCode lookup 질문이 본 문서에 매핑된다.
+---
 # `new`/별칭에서 `HashSet`/`HashMap#get`까지: Equality Lookup Bridge Drill
 
 > 한 줄 요약: `new`를 몇 번 했는지와 별칭(aliasing) 여부부터 세고, 그다음 `==`, `equals()`, `HashSet`, `HashMap#get` 결과를 한 흐름으로 예측하게 만드는 intermediate practice drill이다.

@@ -51,10 +51,7 @@ confusable_with:
 - design-pattern/roomescape-strategy-vs-factory-bridge
 - design-pattern/service-locator-antipattern
 - design-pattern/strategy-state-policy-object-decision-guide
-forbidden_neighbors:
-- contents/design-pattern/roomescape-reservation-status-state-pattern-bridge.md
-- contents/design-pattern/roomescape-strategy-vs-factory-bridge.md
-- contents/design-pattern/service-locator-antipattern.md
+forbidden_neighbors: []
 expected_queries:
 - roomescape 예약 서비스에서 상태 분기랑 검증 분기가 한꺼번에 커질 때 무엇부터 갈라 봐야 해?
 - ReservationService switch 문이 커졌다는 리뷰를 받으면 패턴 선택을 어떤 질문 순서로 해야 해?

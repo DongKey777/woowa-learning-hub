@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Query Object and Search Criteria Pattern
+concept_id: design-pattern/query-object-search-criteria-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- query-object
+- search-criteria
+- read-contract
+aliases:
+- query object
+- search criteria pattern
+- read query contract
+- search condition object
+- query parameter object
+- admin search model
+- search normalization
+- cursor pagination
+- repository method explosion
+- search criteria DTO
+symptoms:
+- 검색 파라미터가 늘어날수록 repository method 이름과 controller 시그니처가 폭발한다
+- 화면별 필터, 정렬, 페이징, keyword 요구를 domain entity나 command model에 섞는다
+- 하나의 AnythingSearchCriteria에 모든 화면 조건을 몰아넣어 read contract 목적이 흐려진다
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/cqrs-command-query-separation-pattern-language
+next_docs:
+- design-pattern/search-normalization-query-pattern
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+linked_paths:
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/search-normalization-query-pattern.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/command-handler-pattern.md
+confusable_with:
+- design-pattern/specification-pattern
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/search-normalization-query-pattern
+- design-pattern/cursor-pagination-sort-stability-pattern
+forbidden_neighbors: []
+expected_queries:
+- Query Object와 Search Criteria는 복잡한 조회 파라미터를 read contract로 모으는 패턴이야?
+- repository method explosion이 생길 때 search(criteria) 형태로 공개 계약을 안정화하는 이유가 뭐야?
+- Query Object는 write command와 목적이 다르고 화면 조회 조건, 정렬, paging 요구를 담는 이유가 뭐야?
+- 검색 조건 객체가 domain specification과 섞이면 화면 요구가 도메인 언어를 오염시키는 이유가 뭐야?
+- criteria object는 blank keyword, page size cap, default sort 같은 normalization 책임을 어디까지 가져도 돼?
+contextual_chunk_prefix: |
+  이 문서는 Query Object and Search Criteria Pattern playbook으로, 관리자 검색이나 list
+  API의 날짜 범위, 상태 목록, keyword, sort, page/size 같은 파라미터를 read contract로
+  모아 Query Service와 Read Repository 경계를 안정화하고 repository method explosion을 줄이는
+  방법을 설명한다.
+---
 # Query Object and Search Criteria Pattern
 
 > 한 줄 요약: Query Object는 복잡한 조회 파라미터를 하나의 읽기 계약으로 모아 Query Service와 Read Repository 경계를 선명하게 하고, 화면별 검색 요구가 repository 메서드 폭발로 번지는 것을 막아 준다.
@@ -33,6 +102,8 @@
 - 화면 전용 필터
 
 핵심은 이걸 도메인 엔티티가 아니라 **read contract**로 다룬다는 점이다.
+
+따라서 Query Object는 "도메인 규칙을 판단하는 객체"라기보다, 특정 조회 목적을 안전하게 전달하고 정규화하는 read-side 입력 계약에 가깝다.
 
 ### Retrieval Anchors
 

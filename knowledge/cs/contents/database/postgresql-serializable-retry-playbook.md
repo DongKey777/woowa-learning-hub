@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: PostgreSQL SERIALIZABLE Retry Playbook for Beginners
+concept_id: database/postgresql-serializable-retry-playbook
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- serializable
+- retry-envelope
+- sqlstate-40001
+aliases:
+- postgresql serializable retry playbook
+- postgres serializable beginner
+- SQLSTATE 40001 handling
+- serialization failure retry whole transaction
+- could not serialize access retry
+- serializable retry envelope
+- no retry inside same transaction
+- postgresql 40001 뭐예요
+- transaction retry beginner
+- SSI retry
+symptoms:
+- PostgreSQL SERIALIZABLE을 모든 row를 먼저 lock하는 모드로 오해하고 SQL 한 줄만 retry하려 해
+- SQLSTATE 40001이 나면 failed transaction attempt 전체를 버리고 새 transaction으로 다시 시작해야 하는데 같은 transaction 안에서 재시도하고 있어
+- duplicate key, exclusion violation, deadlock, lock timeout을 모두 40001과 같은 blanket retry bucket에 넣으려 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/duplicate-key-vs-serialization-failure-mini-card
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+next_docs:
+- database/idempotent-transaction-retry-envelopes
+- database/serializable-retry-telemetry-set-invariants
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+linked_paths:
+- contents/database/duplicate-key-vs-serialization-failure-mini-card.md
+- contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+- contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/database/spring-jpa-locking-example-guide.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/serializable-retry-telemetry-set-invariants.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+confusable_with:
+- database/duplicate-key-vs-serialization-failure-mini-card
+- database/cannotacquirelockexception-40001-insert-if-absent-faq
+- database/postgresql-23p01-handling-note
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL SERIALIZABLE에서 SQLSTATE 40001이 나면 왜 SQL 한 줄이 아니라 transaction attempt 전체를 retry해야 해?
+- Serializable Snapshot Isolation은 모든 row를 먼저 lock하는 방식인지 SSI abort 방식인지 설명해줘
+- duplicate key 23505와 serialization failure 40001을 retry 정책에서 어떻게 다르게 처리해?
+- Spring @Transactional 바깥 facade에 serializable retry envelope를 둬야 하는 이유가 뭐야?
+- 외부 API 호출이나 outbox publish를 serializable retry loop 안에 두면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL SERIALIZABLE, SSI, SQLSTATE 40001 serialization failure를 whole-transaction retry envelope로 처리하는 beginner playbook이다.
+  PostgreSQL 40001 뭐예요, serializable retry envelope, no retry inside same transaction 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL SERIALIZABLE Retry Playbook for Beginners
 
 > 한 줄 요약: PostgreSQL `SERIALIZABLE`은 "모든 걸 먼저 잠그는 모드"가 아니라 SSI로 위험한 동시성 패턴을 `SQLSTATE 40001`로 끊어 내는 모드라서, 서비스 계층은 실패한 SQL 한 줄이 아니라 **트랜잭션 시도 전체**를 새로 시작하는 retry envelope를 가져야 한다.

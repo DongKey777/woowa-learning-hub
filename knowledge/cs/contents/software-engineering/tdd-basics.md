@@ -1,6 +1,83 @@
+---
+schema_version: 3
+title: TDD 기초
+concept_id: software-engineering/tdd-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- red-green-refactor-cycle
+- first-failing-test-choice
+- unit-slice-integration-boundary
+aliases:
+- TDD basics
+- Test Driven Development basics
+- Red Green Refactor
+- 테스트 주도 개발 기초
+- 테스트 먼저 작성
+- first failing test
+- TDD 어디부터 테스트
+- 도메인 규칙 TDD
+symptoms:
+- TDD를 모든 테스트를 한 번에 먼저 쓰는 방식으로 오해하고 있어
+- Controller, DB, transaction까지 처음부터 붙여 Red-Green cycle이 너무 느려지고 있어
+- Red-Green만 반복하고 Refactor 단계를 건너뛰어 테스트는 있지만 설계가 굳어지고 있어
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/refactoring-basics
+next_docs:
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+- software-engineering/testing-strategy-and-test-doubles
+- spring/spring-testing-basics
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/refactoring-basics.md
+- contents/software-engineering/refactor-commit-split-primer.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/test-strategy-basics
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+forbidden_neighbors: []
+expected_queries:
+- TDD의 Red Green Refactor 사이클은 각 단계에서 무엇을 확인해?
+- TDD를 처음 시작할 때 controller나 DB보다 도메인 unit test가 안전한 이유는 뭐야?
+- 컴파일 실패도 Red 상태로 보는 이유는 뭐야?
+- Green 단계에서 하드코딩이 다음 테스트로 일반화되는 흐름은 어떻게 작동해?
+- TDD에서 unit test, slice test, app integration test를 질문별로 어떻게 골라?
+contextual_chunk_prefix: |
+  이 문서는 TDD beginner primer로, Red-Green-Refactor, first failing test, domain unit test, slice test, app integration test, transaction boundary selection을 설명한다.
+  TDD 뭐예요, 테스트 먼저, Red Green Refactor, 어디부터 테스트, controller 말고 domain test, transaction test 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # TDD 기초 (Test-Driven Development Basics)
 
 > 한 줄 요약: TDD는 테스트를 먼저 작성하고 그 테스트를 통과하는 최소 코드만 구현한 뒤 리팩토링하는 Red-Green-Refactor 사이클이다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "TDD는 모든 테스트를 먼저 다 써야 하나요?" | lotto 번호 규칙을 만들기도 전에 controller, DB, 인수 테스트를 한꺼번에 시작하는 흐름 | 첫 실패 테스트 하나로 Red-Green-Refactor를 작게 돈다 |
+| "SpringBootTest부터 쓰니까 너무 느려요" | roomescape 예약 생성 규칙을 검증하려고 전체 context와 DB를 매번 띄우는 테스트 | domain unit, slice, integration 중 가장 작은 경계를 고른다 |
+| "테스트는 있는데 설계가 더 굳었어요" | Red-Green 뒤 리팩토링 없이 중복과 이름이 남아 다음 요구가 어려워진 코드 | Green 뒤 Refactor 단계가 TDD 사이클의 일부임을 잡는다 |
 
 **난이도: 🟢 Beginner**
 

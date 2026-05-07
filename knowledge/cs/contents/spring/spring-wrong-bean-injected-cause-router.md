@@ -32,7 +32,7 @@ intents:
 - symptom
 - troubleshooting
 prerequisites:
-- spring/spring-bean-di-basics
+- spring/bean-di-basics
 next_docs:
 - spring/same-type-bean-injection-failure-cause-router
 - spring/primary-qualifier-collection-injection
@@ -52,7 +52,10 @@ confusable_with:
 - spring/same-type-bean-injection-failure-cause-router
 - spring/primary-qualifier-collection-injection
 - spring/primary-conditionalonmissingbean-bean-override-decision-guide
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/spring/lotto-manual-auto-generator-qualifier-bridge.md
+- contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
 expected_queries:
 - 스프링에서 같은 타입 구현이 여러 개인데 왜 내가 생각한 Bean이 아니라 다른 구현이 들어가요?
 - '@Primary를 붙였는데도 원하는 구현체가 선택되지 않을 때 어디부터 나눠서 봐야 해?'
@@ -67,7 +70,6 @@ contextual_chunk_prefix: |
   symptom_router다. 같은 타입 여러 개, 다른 구현체 주입, qualifier 안 먹는
   느낌 같은 검색을 원인 문서로 보내는 입구로 사용한다.
 ---
-
 # 원하는 Bean이 안 들어가요 원인 라우터
 
 ## 한 줄 요약

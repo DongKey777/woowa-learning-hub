@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "WebFlux Request-Body Abort Surface Map"
+concept_id: network/webflux-request-body-abort-surface-map
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- webflux
+- request-body-abort
+- reactor-netty
+aliases:
+- WebFlux request body abort map
+- Reactor Netty AbortedException
+- request.receive abort
+- ServerWebInputException failed to read HTTP message
+- DataBufferLimitException
+- ContentTooLargeException
+- WebFlux multipart truncation
+- request body cancel before handler
+symptoms:
+- WebFlux에도 servlet ClientAbortException MultipartException dialect가 그대로 나온다고 기대한다
+- transport AbortedException, codec DecodingException, framework ServerWebInputException을 같은 층으로 본다
+- handler 전에 터졌는지 여부를 annotation signature와 subscribe 시점 없이 판단한다
+- functional endpoint와 annotation style의 wrapper surface 차이를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+next_docs:
+- network/webflux-cancel-lag-tuning
+- network/sse-webflux-streaming-cancel-after-first-byte
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+linked_paths:
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/webflux-cancel-lag-tuning.md
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+confusable_with:
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/webflux-cancel-lag-tuning
+- network/sse-webflux-streaming-cancel-after-first-byte
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+forbidden_neighbors: []
+expected_queries:
+- "WebFlux request body abort는 Reactor Netty AbortedException부터 어떻게 surface돼?"
+- "ServerWebInputException과 DecodingException, DataBufferLimitException 차이는?"
+- "WebFlux에서 handler 전에 request body read가 터졌는지 어떻게 판단해?"
+- "annotation WebFlux와 functional endpoint에서 body abort wrapper가 다를 수 있어?"
+- "Servlet ClientAbortException과 WebFlux AbortedException surface를 비교해줘"
+contextual_chunk_prefix: |
+  이 문서는 WebFlux/Reactor Netty request body abort에서 AbortedException,
+  IOException, DecodingException, DataBufferLimitException, ServerWebInputException,
+  ContentTooLargeException surface를 연결하는 advanced bridge다.
+---
 # WebFlux Request-Body Abort Surface Map
 
 > 한 줄 요약: Reactor Netty/WebFlux에서 request-read EOF/reset, truncated multipart, pre-handler cancel은 servlet container 전용 `ClientAbortException`/`MultipartException` dialect 대신 `AbortedException`/`IOException` -> `DecodingException`/`DataBufferLimitException` -> `ServerWebInputException`/`ContentTooLargeException` 계층으로 surface된다. 다만 어떤 시그니처가 body를 언제 subscribe하느냐에 따라 "handler 전에 터졌는가" 경계가 달라진다.

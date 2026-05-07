@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: Database Scaling Primer
+concept_id: system-design/database-scaling-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+- missions/backend
+review_feedback_tags:
+- query-tuning-before-sharding
+- primary-replica-read-write-split
+- replica-lag-read-your-writes
+aliases:
+- database scaling primer
+- db scaling basics
+- primary replica basics
+- read write split
+- indexing before sharding
+- query tuning before sharding
+- read scaling write scaling
+- replica lag
+- read after write
+- partitioning vs sharding
+- shard key basics
+- DB가 느린데 replica부터 붙이나요
+- write가 느린데 replica가 왜 도움이 안 돼요
+symptoms:
+- DB가 느린데 replica부터 붙여야 하는지 sharding부터 해야 하는지 모르겠어
+- write가 느린데 read replica가 왜 직접 해결책이 아닌지 헷갈려
+- 방금 저장한 값이 replica에서 안 보여서 read-write split 문제가 궁금해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/system-design-foundations
+- database/index-and-explain
+next_docs:
+- system-design/caching-vs-read-replica-primer
+- system-design/read-after-write-consistency-basics
+- system-design/shard-key-selection-basics
+- database/replica-lag-read-after-write-strategies
+- database/mvcc-replication-sharding
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/shard-key-selection-basics.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/database/index-and-explain.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+confusable_with:
+- system-design/caching-vs-read-replica-primer
+- system-design/read-after-write-consistency-basics
+- system-design/shard-key-selection-basics
+- database/index-and-explain
+forbidden_neighbors: []
+expected_queries:
+- DB가 느릴 때 index, cache, replica, partitioning, sharding을 어떤 순서로 봐야 해?
+- read replica는 읽기 확장에 좋다는데 write 병목에는 왜 직접 도움이 안 돼?
+- read-write split 후 방금 저장한 값이 안 보이면 어떤 정책을 봐야 해?
+- partitioning과 sharding을 초보자 기준으로 어떻게 구분해?
+- 쿼리 하나가 느린데 replica보다 EXPLAIN과 index를 먼저 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 DB가 느릴 때 바로 sharding으로 뛰지 않고 query와 index, cache, primary replica, read-write split, partitioning, sharding 순서로 병목을 구분하는 beginner primer다.
+  read scaling과 write scaling의 차이, replica lag와 read-your-writes, primary fallback, partitioning vs sharding, shard key와 hot partition, query tuning before sharding 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Database Scaling Primer
 
 > 한 줄 요약: 초보자가 "DB가 느리다"에서 바로 sharding으로 뛰지 않고, index -> primary/replica -> read-write split -> partitioning -> sharding 순서로 어떤 문제를 푸는지 잡는 입문 문서다.
@@ -5,6 +84,14 @@
 retrieval-anchor-keywords: database scaling primer, primary replica basics, read write split, indexing basics, query tuning before sharding, read scaling, write scaling, replica lag, read after write, primary fallback, session stickiness, strong read consistency, partitioning vs sharding, shard key basics, hot partition detection
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "DB가 느린데 replica부터 붙여야 하나요, sharding부터 해야 하나요?" | 장바구니/결제 API 성능 병목을 처음 분류하는 단계 | 느린 쿼리, 많은 read, write 한계, 데이터 크기 문제를 나눈다 |
+| "write가 느린데 read replica가 왜 해결책이 아닌지 모르겠어요" | 주문 생성/결제 승인처럼 쓰기 경로가 막힌 장면 | read scaling과 write scaling을 다른 레버로 본다 |
+| "방금 저장한 값이 조회에서 안 보여요" | read-write split 뒤 최신성 문제 | replica lag와 read-your-writes 정책을 scaling 판단에 포함한다 |
 
 관련 문서:
 

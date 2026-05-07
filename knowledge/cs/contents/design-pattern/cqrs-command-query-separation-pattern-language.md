@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: CQRS: Command Query Responsibility Segregation
+concept_id: design-pattern/cqrs-command-query-separation-pattern-language
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cqrs
+- command-query-separation
+- read-model-projection
+aliases:
+- CQRS
+- command query responsibility segregation
+- command query separation
+- read model
+- write model
+- projection
+- materialized view
+- query service boundary
+- 명령 조회 책임 분리
+- 읽기 모델 쓰기 모델
+symptoms:
+- CQRS를 무조건 DB를 둘로 나누거나 이벤트 소싱을 도입해야 하는 아키텍처로 오해한다
+- 조회 화면 최적화를 위해 write aggregate와 repository를 비대하게 만들어 command/query 요구가 충돌한다
+- projection lag와 read-your-writes 문제를 고려하지 않고 read model을 분리한다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- design-pattern/command-handler-pattern
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/read-model-staleness-read-your-writes
+next_docs:
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/saga-coordinator-pattern-language
+linked_paths:
+- contents/design-pattern/command-pattern-undo-queue.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+confusable_with:
+- design-pattern/command-pattern-undo-queue
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/read-model-staleness-read-your-writes
+- design-pattern/event-sourcing-pattern-language
+forbidden_neighbors: []
+expected_queries:
+- CQRS는 command와 query 책임 분리이지 반드시 DB를 둘로 나누는 뜻이 아닌 이유가 뭐야?
+- write model은 aggregate invariant에 집중하고 read model은 화면 조회 최적화에 집중한다는 기준을 설명해줘
+- repository가 복잡한 화면 조회 때문에 비대해질 때 CQRS나 read model 분리를 고려하는 신호는 뭐야?
+- projection을 따로 두면 eventual consistency와 read-your-writes 문제가 왜 생겨?
+- Command Pattern과 CQRS는 요청 캡슐화와 읽기 쓰기 책임 분리 관점에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 CQRS chooser로, Command Query Responsibility Segregation이
+  반드시 별도 DB나 event sourcing을 뜻하는 것이 아니라 write model은 상태 변경과
+  invariant, read model/query service는 조회 최적화와 projection에 집중하도록 책임을
+  분리하는 패턴 언어임을 설명한다.
+---
 # CQRS: Command와 Query를 분리하는 패턴 언어
 
 > 한 줄 요약: CQRS는 쓰기와 읽기의 관심사를 분리해, 명령은 상태 변경에 집중하고 조회는 읽기 최적화 모델에 집중하게 만든다.

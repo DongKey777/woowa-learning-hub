@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 재귀 입문
+concept_id: algorithm/recursion-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- recursion-basics
+- base-case-recursive-case
+- call-stack-stack-overflow
+aliases:
+- recursion intro
+- recursion basics
+- recursive function beginner
+- base case recursive case
+- call stack recursion
+- stack overflow recursion
+- 재귀 입문
+- 재귀 함수 기초
+- 종료 조건 재귀
+symptoms:
+- 재귀의 base case와 recursive case를 구분하지 못해 종료 조건 없는 무한 호출을 만든다
+- 재귀를 DP와 같은 말로 오해하고 중복 계산 저장 여부를 분리하지 못한다
+- 큰 입력에서 Java call stack 한계를 고려하지 않고 재귀만 사용한다
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- algorithm/basic
+next_docs:
+- algorithm/brute-force-intro
+- algorithm/backtracking-intro
+- algorithm/dp-intro
+- data-structure/tree-basics
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/dp-intro.md
+- contents/data-structure/tree-basics.md
+- contents/algorithm/backtracking-intro.md
+confusable_with:
+- algorithm/dp-intro
+- algorithm/backtracking-intro
+- algorithm/brute-force-intro
+- data-structure/tree-basics
+forbidden_neighbors: []
+expected_queries:
+- 재귀 함수에서 base case와 recursive case는 각각 어떤 역할을 해?
+- 재귀 호출이 종료 조건에 가까워지지 않으면 왜 stack overflow가 나?
+- 재귀와 반복문은 call stack과 상태 저장 관점에서 어떻게 달라?
+- 피보나치 순수 재귀는 왜 느리고 메모이제이션을 붙이면 DP가 되는 거야?
+- Java에서 입력이 아주 크면 재귀 대신 반복문이나 명시적 스택을 고려해야 해?
+contextual_chunk_prefix: |
+  이 문서는 recursion beginner primer로, base case, recursive case, call stack,
+  stack overflow, recursion vs loop, recursion vs DP를 설명한다. 트리 순회,
+  완전 탐색, 백트래킹, DP로 이어지는 첫 재귀 감각을 제공한다.
+---
 # 재귀 입문 (Recursion Basics)
 
 > 한 줄 요약: 재귀는 함수가 자기 자신을 호출해 문제를 더 작은 같은 구조로 쪼개는 방법이며, 종료 조건(base case)이 없으면 무한 루프처럼 스택이 터진다.

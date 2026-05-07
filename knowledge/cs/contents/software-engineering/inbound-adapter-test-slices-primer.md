@@ -48,8 +48,8 @@ prerequisites:
 - software-engineering/hexagonal-testing-seams-primer
 next_docs:
 - software-engineering/inbound-adapter-testing-matrix
-- software-engineering/message-driven-adapter-example
-- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- software-engineering/message-driven-adapter
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
 linked_paths:
 - contents/software-engineering/test-strategy-basics.md
 - contents/software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge.md
@@ -82,7 +82,6 @@ contextual_chunk_prefix: |
   controller test scope가 흐려질 때 어디서 경계를 끊어야 하는지 같은 학습자
   질문을 adapter translation 책임과 runtime wiring 책임 구분으로 매핑한다.
 ---
-
 # Inbound Adapter Test Slices Primer
 
 > 한 줄 요약: Hexagonal Architecture에서 controller와 message handler test는 port 경계에서 멈춰 adapter 번역 책임만 볼 때는 slice test로, 실제 트랜잭션/브로커/보안 wiring까지 실패 모드가 이어질 때는 앱 통합 테스트(app integration test)로 나눈다.

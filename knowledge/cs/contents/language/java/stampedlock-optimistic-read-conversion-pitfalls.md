@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: StampedLock Optimistic Read and Conversion Pitfalls
+concept_id: language/stampedlock-optimistic-read-conversion-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- concurrency
+- stampedlock
+- optimistic-read
+aliases:
+- StampedLock Optimistic Read and Conversion Pitfalls
+- StampedLock optimistic read validate
+- tryConvertToWriteLock failure
+- StampedLock non-reentrant
+- optimistic read mutable object graph
+- 자바 StampedLock optimistic read
+symptoms:
+- StampedLock optimistic read를 lock-free snapshot처럼 이해해 validate 전 값으로 부작용을 일으키거나 검증 실패 fallback을 빠뜨려
+- StampedLock이 non-reentrant라는 점을 모르고 lock을 잡은 채 같은 lock 경로로 재진입하는 메서드나 callback을 호출해
+- tryConvertToWriteLock이 항상 성공한다고 가정해 read 후 조건 확인과 write upgrade 실패 경로를 안전하게 설계하지 않아
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/java-concurrency-utilities
+- language/thread-dump-state-interpretation
+- language/java-memory-model-happens-before-volatile-final
+next_docs:
+- language/varhandle-unsafe-atomics
+- language/locksupport-park-unpark-permit-semantics
+- language/thread-interruption-cooperative-cancellation-playbook
+linked_paths:
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+confusable_with:
+- language/java-concurrency-utilities
+- language/varhandle-unsafe-atomics
+- language/thread-dump-state-interpretation
+forbidden_neighbors: []
+expected_queries:
+- StampedLock optimistic read는 lock-free snapshot이 아니라 validate하는 추측이라는 뜻이 뭐야?
+- StampedLock optimistic read에서 validate 실패 시 read lock fallback을 어떻게 설계해야 해?
+- mutable object graph를 optimistic read로 읽으면 서로 다른 시점 값이 섞일 수 있는 이유가 뭐야?
+- StampedLock은 non-reentrant라서 ReentrantReadWriteLock과 어떤 사고방식이 달라?
+- tryConvertToWriteLock이 실패할 수 있는 fast path라면 update flow를 어떻게 짜야 해?
+contextual_chunk_prefix: |
+  이 문서는 StampedLock optimistic read, validate, read fallback, non-reentrant behavior, tryConvertToWriteLock failure, mutable object graph pitfalls를 점검하는 advanced playbook이다.
+  StampedLock, optimistic read, validate, lock conversion, non-reentrant 질문이 본 문서에 매핑된다.
+---
 # `StampedLock` Optimistic Read and Conversion Pitfalls
 
 > 한 줄 요약: `StampedLock`의 optimistic read는 lock-free snapshot이 아니라 "읽고 나서 validate하는 추측"이다. non-reentrant 특성, lock conversion 실패, 긴 읽기 구간, mutable object graph를 함께 이해하지 않으면 오히려 더 위험한 동시성 코드를 만들 수 있다.

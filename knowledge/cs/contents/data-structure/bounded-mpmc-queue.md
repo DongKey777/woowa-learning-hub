@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Bounded MPMC Queue
+concept_id: data-structure/bounded-mpmc-queue
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- bounded-concurrent-queue
+- mpmc-ring-sequence
+- backpressure-queue-policy
+aliases:
+- bounded MPMC queue
+- Vyukov queue
+- MPMC ring buffer
+- per-slot sequence queue
+- slot generation counter queue
+- fixed capacity concurrent queue
+- bounded worker queue
+symptoms:
+- multiple producer multiple consumer handoff가 필요하지만 unbounded linked queue로 메모리 상한과 backpressure를 잃고 있다
+- ring buffer에서 head tail raw index만 보고 wraparound 세대 구분을 놓친다
+- enqueue claim과 payload publish를 같은 단계로 보아 consumer가 덜 쓴 slot을 읽을 수 있는 race를 만든다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/ring-buffer
+- data-structure/aba-problem-tagged-pointers
+next_docs:
+- data-structure/ring-buffer
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/lock-free-mpsc-queue
+- data-structure/michael-scott-lock-free-queue
+- data-structure/sequencer-based-ring-buffer-coordination
+linked_paths:
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+- contents/data-structure/sequencer-based-ring-buffer-coordination.md
+- contents/data-structure/aba-problem-and-tagged-pointers.md
+- contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md
+confusable_with:
+- data-structure/ring-buffer
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/lock-free-mpsc-queue
+- data-structure/michael-scott-lock-free-queue
+- data-structure/aba-problem-tagged-pointers
+forbidden_neighbors: []
+expected_queries:
+- Bounded MPMC Queue는 per-slot sequence로 여러 producer consumer를 어떻게 조율해?
+- 고정 크기 ring 기반 queue가 unbounded lock-free queue보다 나은 경우는?
+- enqueue claim과 publish를 분리해야 하는 이유를 설명해줘
+- ring buffer wraparound에서 sequence number가 세대 표식으로 쓰이는 방식은?
+- bounded worker queue에서 full일 때 drop block throttle 중 무엇을 선택해야 해?
+contextual_chunk_prefix: |
+  이 문서는 고정 크기 ring 위에서 per-slot sequence를 generation counter처럼
+  사용해 multiple producer multiple consumer handoff를 조율하는 bounded
+  MPMC queue playbook이다. 메모리 상한, backpressure, claim/publish 분리,
+  ABA-like wraparound 세대 구분을 함께 다룬다.
+---
 # Bounded MPMC Queue
 
 > 한 줄 요약: Bounded MPMC Queue는 고정 크기 ring 위에서 per-slot sequence를 세대 표식처럼 사용해, 다중 producer와 다중 consumer의 경쟁을 조율하면서 메모리 상한과 backpressure를 구조적으로 강제하는 concurrent handoff queue다.

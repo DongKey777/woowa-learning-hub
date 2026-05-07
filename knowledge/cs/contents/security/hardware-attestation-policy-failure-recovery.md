@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Hardware Attestation Policy / Failure Recovery
+concept_id: security/hardware-attestation-policy-failure-recovery
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- attestation policy
+- hardware attestation failure
+- attestation drift
+- device attestation outage
+aliases:
+- attestation policy
+- hardware attestation failure
+- attestation drift
+- device attestation outage
+- attestation recovery
+- hardware-backed key policy
+- attestation allowlist
+- attestation fallback
+- attestation trust anchor recovery
+- attestation root rollover
+- attestation bundle drift
+- key attestation compromise
+symptoms:
+- Hardware Attestation Policy / Failure Recovery 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/hardware-backed-keys-attestation.md
+- contents/security/device-binding-caveats.md
+- contents/security/proof-of-possession-vs-bearer-token-tradeoffs.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/signing-key-compromise-recovery-playbook.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Hardware Attestation Policy / Failure Recovery 장애가 나면 복구 순서는?
+- attestation policy 운영 대응 체크리스트가 뭐야?
+- Hardware Attestation Policy / Failure Recovery에서 blast radius를 어떻게 줄여?
+- attestation policy 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Hardware Attestation Policy / Failure Recovery를 다루는 playbook 문서다. hardware-backed key보다 더 어려운 것은 attestation policy 운영이며, attestation 실패를 무조건 fatal로 처리하면 정상 사용자가 대량 차단되고, 너무 느슨하면 신뢰 모델이 무너진다. 검색 질의가 attestation policy, hardware attestation failure, attestation drift, device attestation outage처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Hardware Attestation Policy / Failure Recovery
 
 > 한 줄 요약: hardware-backed key보다 더 어려운 것은 attestation policy 운영이며, attestation 실패를 무조건 fatal로 처리하면 정상 사용자가 대량 차단되고, 너무 느슨하면 신뢰 모델이 무너진다.

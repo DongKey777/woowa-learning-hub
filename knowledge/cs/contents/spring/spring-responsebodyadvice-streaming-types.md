@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring ResponseBodyAdvice on Streaming Types
+concept_id: spring/responsebodyadvice-streaming-types
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- responsebodyadvice-streaming-types
+- responsebodyadvice-streaming
+- responsebodyemitter-advice
+- sseemitter-json-envelope
+aliases:
+- ResponseBodyAdvice streaming
+- ResponseBodyEmitter advice
+- SseEmitter JSON envelope
+- StreamingResponseBody advice limitation
+- NDJSON envelope breakage
+- streaming return value handler
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-requestbody-responsebodyadvice-pipeline.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-responsebodyemitter-media-type-boundaries.md
+- contents/spring/spring-httpmessagenotwritableexception-failure-taxonomy.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-mvc-flux-json-vs-ndjson-sse-adaptation.md
+confusable_with:
+- spring/handlermethodreturnvaluehandler-chain
+- spring/requestbody-responsebodyadvice-pipeline
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- spring/httpmessagenotwritableexception-failure-taxonomy
+symptoms:
+- 전역 JSON envelope를 ResponseBodyAdvice로 적용했더니 SSE나 NDJSON wire format이 깨진다.
+- StreamingResponseBody 반환에는 advice가 기대대로 적용되지 않는다.
+- streaming 응답 일부가 나간 뒤 오류 JSON이나 ProblemDetail로 감쌀 수 없다.
+expected_queries:
+- ResponseBodyAdvice는 SseEmitter나 StreamingResponseBody에도 적용돼?
+- 전역 JSON envelope가 streaming response contract를 깨뜨리는 이유는?
+- ResponseBodyEmitter NDJSON SSE는 어떤 return value handler가 ownership을 가져가?
+- streaming 응답은 왜 일반 @ResponseBody처럼 감싸면 안 돼?
+contextual_chunk_prefix: |
+  이 문서는 ResponseBodyAdvice가 일반 JSON body에는 유용하지만 ResponseBodyEmitter,
+  SseEmitter, StreamingResponseBody 같은 streaming return type에서는 return value handler와
+  wire contract ownership이 달라지는 한계를 증상 중심으로 설명한다.
+---
 # Spring `ResponseBodyAdvice` on Streaming Types: `ResponseBodyEmitter`, `SseEmitter`, `StreamingResponseBody`
 
 > 한 줄 요약: global JSON envelope를 `ResponseBodyAdvice`로 통일하고 싶어도 `ResponseBodyEmitter`, `SseEmitter`, `StreamingResponseBody`는 별도 return value handler가 ownership을 가져가므로 advice가 적용되지 않거나 handler 선택 자체가 바뀌며, 억지로 감싸면 `text/event-stream`, NDJSON, binary stream 같은 wire contract를 깨뜨리기 쉽다.

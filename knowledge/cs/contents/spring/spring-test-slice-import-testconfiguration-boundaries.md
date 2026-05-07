@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Test Slice Import TestConfiguration Boundary Leaks
+concept_id: spring/test-slice-import-testconfiguration-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- test-slice-import
+- testconfiguration-boundaries
+- testconfiguration
+- webmvctest-import-boundary
+aliases:
+- test slice Import TestConfiguration
+- @WebMvcTest import boundary
+- @DataJpaTest custom test config
+- slice test boundary leak
+- security filter in slice test
+- quasi integration test
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-test-context-cache-split-triage-guide.md
+symptoms:
+- @WebMvcTest에 @Import를 계속 붙이다 보니 full integration test처럼 느려진다.
+- @TestConfiguration이 slice boundary를 넓혀 의도하지 않은 bean이 들어온다.
+- custom security filter를 얹은 뒤 slice test가 빠른 계약 테스트 역할을 잃는다.
+expected_queries:
+- Spring test slice에서 @Import와 @TestConfiguration은 어디까지 허용해야 해?
+- @WebMvcTest에 service나 security config를 import하면 slice boundary가 어떻게 변해?
+- slice test가 느린 준통합 테스트가 되는 boundary leak을 어떻게 막아?
+- @DataJpaTest custom config는 full SpringBootTest와 같은 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Spring slice test가 작게 유지될 때 가치가 있는데 @Import, @TestConfiguration,
+  custom filter/security config를 무심코 얹으면 빠른 단위 계약 검증이 느린 준통합 테스트로
+  변하는 boundary leak을 다룬다.
+---
 # Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks
 
 > 한 줄 요약: slice test는 작게 유지될 때 가치가 있는데, `@Import`, `@TestConfiguration`, custom filter/security 설정을 무심코 얹으면 빠른 단위 계약 검증이 아니라 느리고 왜곡된 준통합 테스트가 되기 쉽다.

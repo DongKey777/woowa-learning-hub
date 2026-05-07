@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: CPU Migration Load Balancing Locality Debugging
+concept_id: operating-system/cpu-migration-load-balancing-locality-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- cpu-migration-load
+- balancing-locality
+- cpu-migration-locality
+- scheduler-load-balancing
+aliases:
+- CPU migration locality debugging
+- scheduler load balancing
+- migration churn
+- backend p99 CPU migration
+- run queue locality
+- task migration cache locality
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/schedstat-proc-sched-runtime-debugging.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/autonuma-vs-manual-locality-tradeoffs.md
+- contents/operating-system/numa-autobalancing-runtime-debugging.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+symptoms:
+- 평균 CPU 사용률은 괜찮은데 migration churn 때문에 cache locality가 깨지고 p99가 흔들린다.
+- scheduler가 load balancing을 위해 task를 옮기지만 hot path locality가 손실된다.
+- affinity를 완전히 고정하자 load imbalance가 생겨 다른 형태의 latency가 나타난다.
+expected_queries:
+- CPU migration과 scheduler load balancing은 locality와 어떤 긴장 관계야?
+- migration churn이 backend p99 latency를 흔드는지 어떻게 디버깅해?
+- schedstat와 runqlat로 task migration wakeup latency를 어떻게 봐?
+- CPU affinity를 고정할지 scheduler balancing에 맡길지 판단 기준은?
+contextual_chunk_prefix: |
+  이 문서는 task를 여러 CPU에 고르게 퍼뜨리는 load balancing과 같은 core에 오래 붙여
+  cache/NUMA locality를 살리는 목표가 긴장 관계에 있다는 점을 설명한다. migration churn,
+  schedstat, runqlat, backend p99를 연결한다.
+---
 # CPU Migration, Load Balancing, Locality Debugging
 
 > 한 줄 요약: 태스크를 여러 CPU에 고르게 퍼뜨리는 것과 같은 코어에 오래 붙여 locality를 살리는 것은 서로 긴장 관계에 있고, migration churn이 커지면 평균 CPU가 멀쩡해도 backend p99는 쉽게 흔들린다.

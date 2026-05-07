@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: KMP vs Z Algorithm
+concept_id: algorithm/kmp-vs-z-algorithm
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- kmp-vs-z-algorithm
+- prefix-function-vs-z-array
+- exact-string-matching
+aliases:
+- KMP vs Z Algorithm
+- kmp z algorithm comparison
+- prefix function
+- failure function
+- z array
+- linear time string search
+- exact match string
+- kmp와 z 알고리즘 차이
+symptoms:
+- KMP와 Z를 모두 선형 문자열 매칭으로만 보고 failure function과 Z array가 저장하는 정보 차이를 설명하지 못한다
+- prefix 반복 구조 분석에 KMP만 떠올리고 Z algorithm이 자연스러운 경우를 놓친다
+- hash collision을 허용하지 않아야 하는 exact match에서 rolling hash와 KMP Z의 선택 기준을 구분하지 못한다
+intents:
+- comparison
+- definition
+- deep_dive
+prerequisites:
+- algorithm/string
+next_docs:
+- algorithm/rolling-hash-rabin-karp
+- algorithm/aho-corasick
+- algorithm/suffix-array-lcp
+linked_paths:
+- contents/algorithm/string.md
+- contents/algorithm/suffix-array-lcp.md
+- contents/algorithm/rolling-hash-rabin-karp.md
+confusable_with:
+- algorithm/rolling-hash-rabin-karp
+- algorithm/aho-corasick
+- algorithm/suffix-array-lcp
+- algorithm/string
+forbidden_neighbors: []
+expected_queries:
+- KMP와 Z Algorithm은 prefix 정보를 각각 어떤 배열에 저장해?
+- failure function과 prefix function과 Z array는 문자열 매칭에서 무엇이 달라?
+- 한 패턴을 긴 텍스트에서 찾을 때 KMP가 자연스러운 이유가 뭐야?
+- prefix 반복 구조를 넓게 분석할 때 Z algorithm이 편한 이유가 뭐야?
+- hash collision을 허용하기 싫으면 rolling hash 대신 KMP나 Z를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 KMP vs Z Algorithm bridge로, KMP는 실패 지점에서 패턴 포인터가
+  어디로 돌아갈지 failure/prefix function을 만들고, Z algorithm은 각 위치가
+  전체 prefix와 얼마나 일치하는지 Z array로 계산한다.
+---
 # KMP vs Z Algorithm
 
 > 한 줄 요약: KMP는 패턴 실패 지점을 기억하고, Z 알고리즘은 각 위치에서 접두사와 얼마나 길게 일치하는지 계산한다.

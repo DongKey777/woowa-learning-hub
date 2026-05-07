@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Datasource Proxy vs Hibernate Statistics Query Count and Batch Primer
+concept_id: software-engineering/datasource-proxy-vs-statistics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- jpa-observability
+- query-count
+- batch-testing
+aliases:
+- Datasource Proxy vs Hibernate Statistics Query Count and Batch Primer
+- datasource-proxy vs hibernate statistics
+- p6spy vs hibernate statistics
+- query count verification beginner
+- batchExecutionCount statistics
+- JDBC capture vs ORM counters
+symptoms:
+- datasource-proxy/p6spy와 Hibernate statistics를 모두 쿼리 확인 도구로만 보고 실제 SQL 장면과 ORM 내부 요약 숫자의 관찰 위치를 구분하지 못해
+- N+1 query count를 묻는데 prepareStatementCount 같은 statistics 숫자만 보고 실제 select 횟수/파라미터 반복을 놓쳐
+- batch 검증에서 proxy 로그에 insert가 반복된다는 사실만 보고 Hibernate batchExecutionCount 신호 없이 batch 실패를 단정해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/sql-log-vs-hibernate-statistics
+- software-engineering/batch-execution-count
+next_docs:
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/identity-sequence-batch-verification
+- database/n-plus-one-query-detection-solutions
+linked_paths:
+- contents/software-engineering/sql-log-vs-hibernate-statistics-verification-boundaries.md
+- contents/software-engineering/batch-execution-count-assertion-boundaries-primer.md
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/identity-vs-sequence-batch-verification-example.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+- contents/database/n-plus-one-query-detection-solutions.md
+confusable_with:
+- software-engineering/sql-log-vs-hibernate-statistics
+- software-engineering/batch-execution-count
+- database/n-plus-one-query-detection-solutions
+forbidden_neighbors: []
+expected_queries:
+- datasource-proxy p6spy와 Hibernate statistics는 query count와 batch 검증에서 각각 무엇을 보는 도구야?
+- N+1을 확인할 때 실제 SQL count와 바인딩 파라미터는 proxy가 더 직접적인 이유가 뭐야?
+- Hibernate statistics의 prepareStatementCount와 실제 select query count는 왜 같은 말이 아닐 수 있어?
+- batchExecutionCount는 statistics가 더 직접적인데 proxy 로그는 어떤 설명 보조 역할을 해?
+- query count와 batch 확인에서 proxy와 statistics를 같이 쓸 때 어떤 순서로 보면 덜 헷갈려?
+contextual_chunk_prefix: |
+  이 문서는 datasource-proxy/p6spy의 JDBC SQL capture와 Hibernate statistics의 ORM internal counters를 query-count, N+1, batchExecutionCount 관점에서 비교하는 beginner bridge다.
+---
 # Datasource Proxy vs Hibernate Statistics Query Count and Batch Primer
 
 > 한 줄 요약: datasource-proxy/p6spy는 "JDBC로 실제 무엇이 나갔는가"를 잡는 바깥쪽 관찰기이고, Hibernate statistics는 "Hibernate가 내부적으로 몇 번 준비하고 몇 번 batch를 실행했는가"를 보여 주는 안쪽 계기판이다. 초심자는 둘 다 쿼리 확인 도구로 보지만, query-count와 batch 검증에서 답하는 질문이 다르다.

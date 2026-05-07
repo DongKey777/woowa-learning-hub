@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Chrome NetLog H3 421 Drilldown: DevTools로 부족할 때 Coalescing Rejection과 Retry Decision 읽기"
+concept_id: network/chrome-netlog-h3-421-drilldown
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- chrome-netlog-h3
+- http421-coalescing-retry
+- devtools-netlog-drilldown
+aliases:
+- chrome netlog h3 421
+- netlog coalescing rejection
+- netlog retry decision
+- h3 421 drilldown
+- chrome net-export 421
+- quic connection retry netlog
+symptoms:
+- DevTools에 421 -> 200 두 줄이 보이지만 connection reuse recovery인지 프론트 중복 호출인지 확신이 없다
+- Connection ID 열이 없어 H3 retry가 새 connection인지 DevTools만으로 판단하기 어렵다
+- 421 뒤 403이나 200이 섞여 coalescing rejection과 app-level response를 한 원인으로 묶는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http3-421-observability-primer
+- network/browser-devtools-protocol-column-labels-primer
+next_docs:
+- network/browser-netlog-h3-alt-svc-https-rr-appendix
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/h3-stale-alt-svc-421-recovery-primer
+linked_paths:
+- contents/network/http3-421-observability-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/browser-netlog-h3-alt-svc-https-rr-appendix.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/browser-devtools-protocol-column-labels-primer.md
+confusable_with:
+- network/http3-421-observability-primer
+- network/browser-netlog-h3-alt-svc-https-rr-appendix
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/h3-stale-alt-svc-421-recovery-primer
+forbidden_neighbors: []
+expected_queries:
+- "Chrome NetLog로 H3 421 뒤 retry decision을 어떻게 확인해?"
+- "DevTools 421 -> 200만으로 coalescing rejection인지 확신이 없을 때 무엇을 봐?"
+- "NetLog에서 QUIC session과 retry job 흔적을 beginner도 읽는 순서를 알려줘"
+- "421 뒤 403이 보이면 transport recovery와 app response를 어떻게 나눠?"
+- "Connection ID가 없는 브라우저에서 H3 새 연결 retry 근거를 어떻게 보강해?"
+contextual_chunk_prefix: |
+  이 문서는 Chrome NetLog로 HTTP/3 421 Misdirected Request, connection
+  coalescing rejection, QUIC session, retry decision을 DevTools trace와
+  함께 읽는 intermediate H3 observability deep dive다.
+---
 # Chrome NetLog H3 421 Drilldown: DevTools로 부족할 때 Coalescing Rejection과 Retry Decision 읽기
 
 

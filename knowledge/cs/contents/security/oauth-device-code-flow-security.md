@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: OAuth Device Code Flow / Security Model
+concept_id: security/oauth-device-code-flow-security
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- device code flow
+- cli login oauth
+- tv login oauth
+- user code phishing
+aliases:
+- device code flow
+- cli login oauth
+- tv login oauth
+- user code phishing
+- verification uri
+- wrong verification url
+- expired user code
+- slow_down error
+- authorization_pending
+- over aggressive polling
+- browserless login basics
+- device authorization
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/jwt-deep-dive.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/spring/spring-security-architecture.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/rate-limiting-vs-brute-force-defense.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- OAuth Device Code Flow / Security Model 핵심 개념을 설명해줘
+- device code flow가 왜 필요한지 알려줘
+- OAuth Device Code Flow / Security Model 실무 설계 포인트는 뭐야?
+- device code flow에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 OAuth Device Code Flow / Security Model를 다루는 deep_dive 문서다. Device Code Flow는 브라우저가 없는 기기를 위한 OAuth 흐름이다. 로그인 창 redirect를 붙이는 대신, 다른 기기에서 승인하고 현재 기기는 polling으로 기다린다. 검색 질의가 device code flow, cli login oauth, tv login oauth, user code phishing처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # OAuth Device Code Flow / Security Model
 
 > 한 줄 요약: Device Code Flow는 브라우저가 없는 기기를 위한 OAuth 흐름이다. 로그인 창 redirect를 붙이는 대신, 다른 기기에서 승인하고 현재 기기는 polling으로 기다린다.

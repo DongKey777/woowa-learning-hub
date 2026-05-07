@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Alt-Svc Endpoint Migration Rollout Symptom Bridge
+concept_id: network/alt-svc-endpoint-migration-rollout-symptom-bridge
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- alt-svc-rollout
+- h3-endpoint-migration
+- stale-client-hint
+aliases:
+- Alt-Svc endpoint migration
+- H3 endpoint moved symptoms
+- Alt-Svc rollout symptom
+- H3 421 after endpoint move
+- h3 to h2 temporary fallback
+- stale client hint after deploy
+- protocol changed after rollout
+symptoms:
+- Alt-Svc endpoint migration 직후 일부 repeat visitor만 421, h3 to h2, 첫 요청 지연을 겪는 현상을 서버 전체 장애로만 해석한다
+- stale client hint와 새 서버 현실의 짧은 불일치가 브라우저 recovery 재시도 후 수렴할 수 있다는 점을 놓친다
+- DevTools cache disable이 Alt-Svc cache까지 지우는 것으로 오해해 browser cache, Alt-Svc cache, DNS cache를 섞는다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- network/alt-svc-cache-lifecycle-basics
+- network/h3-stale-alt-svc-421-recovery-primer
+next_docs:
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/alt-svc-vs-https-rr-freshness-bridge
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+linked_paths:
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/421-retry-path-mini-guide-fresh-h3-vs-h2-fallback.md
+- contents/network/alt-svc-vs-https-rr-freshness-bridge.md
+- contents/network/quic-connection-migration-path-change.md
+- contents/network/browser-cache-toggles-vs-alt-svc-dns-cache-primer.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/alt-svc-vs-https-rr-freshness-bridge
+- network/alt-svc-cache-vs-per-origin-421-recovery
+forbidden_neighbors: []
+expected_queries:
+- Alt-Svc endpoint migration 직후 일부 사용자만 421 뒤 200이나 h3 to h2 fallback을 보는 이유는?
+- H3 endpoint를 옮기는 rollout에서 stale client hint가 첫 요청을 흔들 수 있다는 걸 설명해줘
+- rollout 후 같은 URL이 421 h3 뒤 200 h3 또는 200 h2로 회복되는 trace는 정상 수렴일 수 있어?
+- DevTools cache disable과 Alt-Svc cache는 왜 같은 cache가 아니야?
+- Alt-Svc endpoint migration 장애 메모에서 Status Protocol Connection ID를 같이 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Alt-Svc H3 endpoint migration rollout에서 repeat visitor의 stale client hint가
+  421, h3->h2 fallback, fresh H3 retry 같은 transient symptom을 만들 수 있음을 설명한다.
+  배포 직후 client cache 수렴과 DevTools 관찰 축을 다룬다.
+---
 # Alt-Svc Endpoint Migration Rollout Symptom Bridge
 
 > 한 줄 요약: H3 `Alt-Svc` endpoint를 옮기는 rollout에서는 일부 브라우저가 예전 힌트를 잠깐 들고 있어서 `421 -> 재시도 성공`, `h3 -> h2` 같은 짧은 흔들림이 보일 수 있고, 이것은 대개 배포 직후의 정상적인 수렴 구간이다.

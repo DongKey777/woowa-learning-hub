@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Override Burn-Down Review Cadence and Scorecards
+concept_id: software-engineering/override-burndown-scorecards
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- override
+- scorecard
+- burn-down
+- governance
+aliases:
+- Override Burn-Down Review Cadence and Scorecards
+- override review cadence
+- override scorecard
+- exemption review scorecard
+- age bucket repeated owner exit blocker
+- override debt review cadence
+symptoms:
+- override registry는 있지만 age bucket, repeated owner, same-policy concentration, blocked exit condition을 보는 scorecard와 review cadence가 없어 실제 burn-down이 안 돼
+- override count는 줄었지만 manual path ratio, shadow candidate count, recurrence_after_closure가 그대로라 비공식 경로가 계속 살아 있어
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/override-burndown-exemption-debt
+- software-engineering/manual-path-ratio-instrumentation
+next_docs:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/platform-policy-override-governance
+linked_paths:
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/consumer-exception-state-machine-review-cadence.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+confusable_with:
+- software-engineering/override-burndown-exemption-debt
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/platform-scorecards
+forbidden_neighbors: []
+expected_queries:
+- override burn-down scorecard에서 stock, flow, structure를 age bucket과 repeated owner로 어떻게 나눠 봐?
+- weekly local review, monthly portfolio review, quarterly governance review는 각각 어떤 override 결정을 다뤄야 해?
+- same-policy concentration과 blocked exit condition이 policy redesign이나 governance escalation 신호가 되는 이유가 뭐야?
+- override 수는 줄었는데 manual_path_ratio가 그대로면 왜 shadow process retirement 실패로 봐야 해?
+- shadow_candidate_count와 recurrence_after_closure를 override scorecard에 넣어야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 override debt를 age bucket, repeated owner, same-policy concentration, blocked exit condition, manual path ratio로 보는 scorecard와 layered review cadence를 설계하는 advanced playbook이다.
+---
 # Override Burn-Down Review Cadence and Scorecards
 
 > 한 줄 요약: override debt를 줄이려면 registry만 있어서는 부족하고, age bucket, repeated owner, blocked exit condition, same-policy concentration을 보는 scorecard와 정기 review cadence가 함께 있어야 실제 burn-down이 진행된다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: HAVING vs WHERE 초보자 비교 카드
+concept_id: database/having-vs-where-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- having-vs-where-beginner
+- row-filter-vs-group-filter
+- aggregate-filter-basics
+aliases:
+- having vs where
+- where vs having 차이
+- having 언제 써요
+- where 언제 써요
+- sql 집계 조건 초보
+- group by having beginner
+- aggregate filter basics
+- row filter vs group filter
+- HAVING WHERE 차이
+- COUNT WHERE error
+symptoms:
+- COUNT, SUM, AVG 같은 집계 결과 조건을 WHERE에 넣으려 하고 있어
+- 행을 먼저 거를 조건과 그룹을 만든 뒤 거를 조건을 구분하지 못하고 있어
+- WHERE와 HAVING을 아무 데나 써도 된다고 생각해 SQL 의미가 바뀌고 있어
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/sql-aggregate-groupby-basics
+- database/sql-joins-and-query-order
+next_docs:
+- database/group-by-order-by-different-axis-mysql-postgresql-bridge
+- database/distinct-vs-group-by-beginner-card
+- database/join-row-increase-distinct-symptom-card
+linked_paths:
+- contents/database/sql-aggregate-groupby-basics.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/group-by-order-by-different-axis-mysql-postgresql-bridge.md
+- contents/database/distinct-vs-group-by-beginner-card.md
+- contents/database/join-row-increase-distinct-symptom-card.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/sql-aggregate-groupby-basics
+- database/distinct-vs-group-by-beginner-card
+- database/group-by-order-by-different-axis-mysql-postgresql-bridge
+forbidden_neighbors: []
+expected_queries:
+- WHERE와 HAVING의 차이를 행 필터와 그룹 필터 기준으로 설명해줘
+- COUNT(*) > 3 같은 집계 조건을 WHERE가 아니라 HAVING에 써야 하는 이유는 뭐야?
+- WHERE와 HAVING을 같이 쓰는 SQL은 어떤 논리 순서로 읽어야 해?
+- 개별 행 조건과 집계 결과 조건을 초보자 기준으로 어떻게 구분해?
+- GROUP BY HAVING을 처음 배우는데 FROM WHERE GROUP BY HAVING SELECT 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 WHERE는 그룹 전 row filter, HAVING은 GROUP BY 후 aggregate/group filter라는 차이를 설명하는 beginner chooser다.
+  having vs where, group by having, aggregate filter, COUNT WHERE error 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HAVING vs WHERE 초보자 비교 카드
 
 > 한 줄 요약: 개별 행을 먼저 거를 조건이면 `WHERE`, `GROUP BY`로 묶은 뒤 집계 결과를 거를 조건이면 `HAVING`으로 고르면 초보자 실수가 크게 줄어든다.

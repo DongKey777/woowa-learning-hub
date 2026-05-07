@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: BinarySearch With Nullable Wrapper Sort Keys
+concept_id: language/binarysearch-nullable-wrapper-sort-keys
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- nullable-wrapper-comparator
+- binary-search
+- comparator-chain
+aliases:
+- binarySearch nullable wrapper sort keys
+- Java nullable wrapper binarySearch
+- Arrays sort binarySearch same comparator
+- comparator tie breaker probe object
+- 자바 nullable wrapper 정렬 검색
+- nullsLast binarySearch
+symptoms:
+- nullable Integer Long Double sort key를 comparator로 정렬했지만 binarySearch에서 같은 comparator를 재사용하지 않아 검색 결과가 깨져
+- tie-breaker까지 붙은 comparator에서 probe object가 전체 comparator chain을 만족해야 한다는 점을 놓쳐
+- negative insertion point를 못 찾음으로만 해석하고 정렬 기준 불일치 가능성을 보지 않아
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- language/arrays-sort-binarysearch-precondition-bridge
+- language/nullable-wrapper-comparator-bridge
+next_docs:
+- language/binarysearch-duplicate-boundary-primer
+- language/priority-only-range-search-follow-up
+- language/treeset-treemap-comparator-tie-breaker-basics
+linked_paths:
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/binarysearch-duplicate-boundary-primer.md
+- contents/language/java/priority-only-range-search-follow-up.md
+- contents/language/java/primitive-array-descending-binarysearch-primer.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+confusable_with:
+- language/nullable-wrapper-comparator-bridge
+- language/binarysearch-duplicate-boundary-primer
+- language/arrays-sort-binarysearch-precondition-bridge
+forbidden_neighbors: []
+expected_queries:
+- nullable Integer sort key로 정렬한 배열에서 Arrays.binarySearch도 같은 comparator를 써야 하는 이유가 뭐야?
+- nullsLast comparator로 정렬했는데 binarySearch 결과가 이상할 때 무엇을 확인해야 해?
+- tie breaker가 있는 comparator에서 probe object도 전체 chain을 따라야 하는 이유를 설명해줘
+- Java binarySearch negative insertion point가 comparator mismatch 때문에 나올 수 있어?
+- nullable wrapper sort key와 binarySearch 검색 기준을 초보자에게 알려줘
+contextual_chunk_prefix: |
+  이 문서는 nullable wrapper sort key가 있는 Java object array에서 Arrays.sort와 Arrays.binarySearch에 같은 comparator chain을 재사용해야 하는 이유를 설명하는 beginner primer다.
+  nullable Integer, nullsFirst/nullsLast, comparator mismatch, binarySearch insertion point, probe object tie breaker 질문이 본 문서에 매핑된다.
+---
 # BinarySearch With Nullable Wrapper Sort Keys
 
 > 한 줄 요약: "정렬은 됐는데 검색 결과가 이상하다"는 증상이 nullable `Integer`/`Long`/`Double` sort key에서 나오면, 먼저 `Arrays.sort(...)`에 쓴 comparator를 `Arrays.binarySearch(..., probe, comparator)`에도 그대로 재사용하는지 확인하면 된다. tie-breaker까지 붙어 있다면 probe object도 그 **전체 comparator chain**을 따라야 한다.

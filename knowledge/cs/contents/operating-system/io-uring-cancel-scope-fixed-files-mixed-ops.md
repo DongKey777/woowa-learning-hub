@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: io_uring Cancel Scope Fixed Files Mixed Ops
+concept_id: operating-system/io-uring-cancel-scope-fixed-files-mixed-ops
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-cancel
+- scope-fixed-files
+- mixed-ops
+- scope
+aliases:
+- io_uring cancel scope
+- fixed files cancel
+- mixed recv send poll cancel
+- user_data cancel key
+- fd ALL OP cancel
+- direct descriptor cancellation
+intents:
+- comparison
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-direct-descriptor-slot-reuse-files-update-close-direct-hygiene.md
+- contents/operating-system/io-uring-poll-remove-vs-generic-cancel-shared-readiness-paths.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/epoll-kqueue-io-uring.md
+confusable_with:
+- operating-system/io-uring-poll-remove-vs-generic-cancel-shared-readiness-paths
+- operating-system/io-uring-multishot-cancel-rearm-drain-shutdown
+- operating-system/io-uring-direct-descriptor-slot-reuse-files-update-close-direct-hygiene
+expected_queries:
+- io_uring cancel은 user_data, fd, ALL, OP 중 어떤 scope를 골라야 해?
+- fixed file direct descriptor와 mixed recv send poll path에서 cancel key를 어떻게 좁혀?
+- 한 descriptor 아래 여러 pending op를 함께 정리할 때 fd/ALL/OP cancel이 맞아?
+- io_uring cancellation을 shutdown drain lifecycle과 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 io_uring cancel을 무엇을 끊고 싶은가라는 ownership question으로 시작해,
+  direct descriptor와 mixed recv/send/poll path에서는 user_data가 가장 좁고 안전한 key이며
+  fd/ALL/OP는 한 descriptor 아래 여러 pending operation을 함께 정리할 때 선택한다고 설명한다.
+---
 # io_uring Cancel Scope with Fixed Files and Mixed recv/send/poll Paths
 
 > 한 줄 요약: `io_uring` cancel은 "무엇을 끊고 싶은가"를 먼저 정해야 한다. direct descriptor와 mixed recv/send/poll path에서는 보통 `user_data`가 가장 안전한 좁은 키이고, `fd`/`ALL`/`OP` 조합은 **한 descriptor 아래 여러 pending op를 함께 정리할 때**만 선택해야 한다.

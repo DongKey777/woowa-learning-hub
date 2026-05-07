@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Functional Index vs LOWER() Duplicate-Check Bridge
+concept_id: database/functional-index-vs-lower-duplicate-check-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- functional-index-lower-duplicate-check
+- case-insensitive-unique-key
+- normalized-email-index-path
+aliases:
+- functional index lower email duplicate check
+- case insensitive email duplicate
+- lower email unique index
+- normalized email exact key index
+- lower function breaks index path
+- generated column email normalized
+- unique lower email mysql
+- lower email for update problem
+- 이메일 lower 중복 체크
+- 대소문자 무시 이메일 중복 검사
+symptoms:
+- email plain unique index를 믿고 있는데 duplicate check가 LOWER(email)로 바뀌어 exact-key path가 깨지고 있어
+- 대소문자 무시 유일성을 app LOWER 처리와 DB uniqueness가 서로 다르게 강제하고 있어
+- case-insensitive collation, functional index, generated normalized column 중 무엇을 골라야 할지 모르겠어
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- database/index-basics
+- database/index-and-explain
+next_docs:
+- database/generated-columns-functional-index-migration
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/spring-jpa-exact-key-lock-mapping
+- database/exact-key-pre-check-decision-card
+linked_paths:
+- contents/database/index-basics.md
+- contents/database/index-and-explain.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/generated-columns-functional-index-migration.md
+- contents/database/primary-foreign-key-basics.md
+- contents/database/exact-key-pre-check-decision-card.md
+confusable_with:
+- database/generated-columns-functional-index-migration
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/exact-key-pre-check-decision-card
+forbidden_neighbors: []
+expected_queries:
+- LOWER(email)로 중복 검사를 하면 plain email unique index exact-key path가 깨질 수 있어?
+- 이메일 대소문자 무시 유일성은 case-insensitive collation, functional index, generated column 중 무엇으로 잡아야 해?
+- duplicate check에서 LOWER()를 습관적으로 붙이면 locking read와 EXPLAIN key에 어떤 문제가 생겨?
+- normalized email 컬럼과 unique index를 써야 하는 기준을 초보자 기준으로 알려줘
+- service normalization rule과 DB uniqueness rule을 같은 축으로 맞춰야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 LOWER(email) duplicate check가 plain email index path와 어긋나는 문제를 case-insensitive collation, functional index, generated normalized column 선택으로 연결하는 beginner chooser다.
+  functional index lower email, case insensitive duplicate check, normalized email exact key 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Functional Index vs `LOWER()` Duplicate-Check Bridge
 
 > 한 줄 요약: `email = ?`용 인덱스를 믿고 있었는데 duplicate check가 `LOWER(email) = LOWER(?)`로 바뀌면, DB는 더 이상 "같은 인덱스 칸"을 그대로 찾지 못할 수 있다. 이때는 `LOWER()`를 습관처럼 붙이는 대신, **정규화 규칙과 인덱스 규칙을 같은 축으로 다시 맞춰야 한다.**

@@ -44,9 +44,9 @@ prerequisites:
 - software-engineering/test-strategy-basics
 next_docs:
 - software-engineering/stub-vs-spy-first-test-primer
-- software-engineering/repository-fake-design-guide
+- software-engineering/repository-fake-design
 - software-engineering/outbound-notifier-mock-boundary-primer
-- software-engineering/refactoring-first-failing-test-bridge
+- software-engineering/refactoring-first-failing-test
 linked_paths:
 - contents/software-engineering/dummy-vs-stub-beginner-mini-card.md
 - contents/software-engineering/service-refactor-first-test-examples-pack.md
@@ -60,7 +60,7 @@ linked_paths:
 confusable_with:
 - software-engineering/stub-vs-spy-first-test-primer
 - software-engineering/outbound-notifier-mock-boundary-primer
-- software-engineering/repository-fake-design-guide
+- software-engineering/repository-fake-design
 - software-engineering/testing-strategy-and-test-doubles
 forbidden_neighbors:
 - contents/software-engineering/stub-vs-spy-first-test-primer.md
@@ -79,7 +79,6 @@ contextual_chunk_prefix: |
   않게 어떤 test double을 골라야 하는지 같은 학습자 질문을 입문 기준으로
   정리한다.
 ---
-
 # Fake vs Mock 첫 테스트 프라이머
 
 > 한 줄 요약: 작은 service 리팩토링에서 첫 failing test를 고를 때는 보통 `결과를 읽는 fake`로 시작하고, `호출 자체가 답`일 때만 mock으로 좁히면 초심자도 구현 순서에 덜 묶인다.

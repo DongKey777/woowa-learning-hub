@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: "gRPC keepalive와 HTTP/2 PING, TCP keepalive 차이 입문"
+concept_id: network/grpc-keepalive-vs-http2-ping-vs-tcp-keepalive-beginner-bridge
+canonical: true
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- grpc-keepalive-ping-tcp
+- keepalive-layer-separation
+- beginner-transport-liveness
+aliases:
+- grpc keepalive vs http2 ping
+- http2 ping vs tcp keepalive
+- grpc ping keepalive 차이
+- too many pings beginner
+- transport liveness
+- tcp keepalive layer
+symptoms:
+- gRPC keepalive와 HTTP/2 PING과 TCP keepalive를 모두 같은 기능으로 외운다
+- keepalive를 켜면 느린 RPC deadline 문제가 해결된다고 생각한다
+- too_many_pings를 server dead로 읽고 aggressive ping policy 가능성을 놓친다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/grpc-keepalive-goaway-max-connection-age
+next_docs:
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- spring/webclient-connection-pool-timeout-tuning
+- network/grpc-deadlines-cancellation-propagation
+linked_paths:
+- contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md
+- contents/network/grpc-keepalive-goaway-max-connection-age.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/grpc-keepalive-goaway-max-connection-age
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/grpc-deadlines-cancellation-propagation
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+forbidden_neighbors: []
+expected_queries:
+- "gRPC keepalive와 HTTP/2 PING과 TCP keepalive 차이를 층별로 설명해줘"
+- "gRPC keepalive는 정책이고 HTTP/2 PING은 실제 frame이라는 말이 무슨 뜻이야?"
+- "TCP keepalive는 gRPC stream 상태를 모르는 OS socket probe라는 점을 알려줘"
+- "too_many_pings가 보이면 ping policy가 너무 공격적일 수 있어?"
+- "keepalive와 deadline timeout GOAWAY는 각각 어떤 문제를 해결해?"
+contextual_chunk_prefix: |
+  이 문서는 gRPC keepalive policy, HTTP/2 PING control frame,
+  TCP keepalive socket probe, deadline/timeout, GOAWAY를 layer별로
+  분리하는 beginner bridge다.
+---
 # gRPC keepalive와 HTTP/2 PING, TCP keepalive 차이 입문
 
 > 한 줄 요약: "`gRPC keepalive`와 `PING`, `TCP keepalive`가 뭐가 다른가요?"라는 질문에는 층부터 나눠 답하면 된다. gRPC keepalive는 "언제 PING을 보낼지 정한 정책"이고, HTTP/2 PING은 "실제로 오가는 프레임"이며, TCP keepalive는 "OS가 보는 소켓 생존 확인"이다.

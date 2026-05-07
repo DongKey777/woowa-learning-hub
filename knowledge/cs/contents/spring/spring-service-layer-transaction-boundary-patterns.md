@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Service Layer Transaction Boundary Patterns
+concept_id: spring/service-layer-transaction-boundary-patterns
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- service-layer-transaction
+- boundary
+- transactional-service-boundary
+- use-atomic-boundary
+aliases:
+- service layer transaction boundary
+- @Transactional service boundary
+- use case atomic boundary
+- repository vs service transaction
+- transaction script application service
+- external IO transaction boundary
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+- contents/spring/spring-aop-basics.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+symptoms:
+- repository마다 @Transactional을 붙여 유스케이스 단위 원자성이 깨진다.
+- service method가 외부 API와 DB commit을 한 transaction처럼 취급한다.
+- self invocation 때문에 service boundary에 붙인 transaction advice가 적용되지 않는다.
+expected_queries:
+- @Transactional은 repository가 아니라 service layer 어디에 두는 게 좋아?
+- 하나의 비즈니스 유스케이스 transaction boundary는 어떻게 잡아?
+- 외부 API 호출과 DB 변경을 같은 service method에서 어떻게 분리해?
+- service layer transaction boundary와 self invocation proxy 문제는 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 @Transactional을 DB 호출 위치가 아니라 하나의 business use case를 어디까지
+  atomic하게 묶을지 선언하는 service-layer boundary로 설명한다. repository 분산 transaction,
+  external I/O, self-invocation, routing datasource와 연결한다.
+---
 # Spring Service-Layer Transaction Boundary Patterns
 
 > 한 줄 요약: `@Transactional`은 "어디서 DB를 호출하느냐"가 아니라, 하나의 비즈니스 유스케이스를 어디까지 원자적으로 묶을지 선언하는 경계다.

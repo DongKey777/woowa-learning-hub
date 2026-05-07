@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Statement Timeout vs Lock Timeout 비교 카드
+concept_id: database/statement-timeout-vs-lock-timeout-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timeout-lock-wait-vs-slow-query
+- statement-timeout-first-check
+- db-timeout-timeline-reading
+aliases:
+- statement timeout vs lock timeout
+- query timeout vs lock wait timeout
+- SQL timeout vs row lock wait
+- statement timeout lock wait or slow query
+- 57014 55P03
+- 느린 SQL vs 막힌 SQL
+- 실행 지연 vs 락 대기 지연
+- lock wait vs slow query
+symptoms:
+- statement timeout을 보면 무조건 느린 쿼리라고 닫아 lock wait 가능성을 놓치고 있어
+- lock timeout을 SQL 자체 성능 문제로만 보고 blocker transaction과 hot row를 먼저 보지 않고 있어
+- 같은 요청에 55P03과 57014가 같이 보일 때 시간축으로 원인을 분리하지 못하고 있어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- database/lock-basics
+- database/index-and-explain
+next_docs:
+- database/lock-timeout-blocker-first-check
+- database/explain-first-read-timeout-mini-card
+- database/timeout-log-timeline-first-failure-checklist-card
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/lock-timeout-blocker-first-check-mini-card.md
+- contents/database/explain-first-read-timeout-mini-card.md
+- contents/database/pool-timeout-term-matching-card.md
+- contents/database/timeout-log-timeline-first-failure-checklist-card.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/spring/spring-transactional-basics.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+confusable_with:
+- database/explain-first-read-timeout-mini-card
+- database/lock-timeout-blocker-first-check
+- database/connection-timeout-vs-lock-timeout-card
+- database/transaction-timeout-vs-lock-timeout
+forbidden_neighbors: []
+expected_queries:
+- statement timeout과 lock timeout은 시간이 어디서 쓰였는지 기준으로 어떻게 구분해?
+- statement timeout이 보여도 앞줄 lock wait 신호를 먼저 봐야 하는 경우는 언제야?
+- 57014와 55P03이 같은 요청에 같이 보이면 타임라인을 어떻게 읽어?
+- 느린 SQL과 막힌 SQL을 EXPLAIN과 blocker transaction 기준으로 어떻게 나눠?
+- lock timeout이면 인덱스보다 hot row와 긴 트랜잭션을 먼저 봐야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 DB timeout chooser로, statement timeout은 SQL execution budget, lock timeout은 blocker transaction/row lock wait이라는 시간 소비 위치를 구분한다.
+  statement timeout vs lock timeout, 57014, 55P03, lock wait or slow query, 느린 SQL vs 막힌 SQL 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Statement Timeout vs Lock Timeout 비교 카드
 
 > 한 줄 요약: `statement timeout`이 보여도 먼저 **락을 기다린 시간인지**, **SQL 실행 자체가 느린 시간인지**부터 분리해야 한다.

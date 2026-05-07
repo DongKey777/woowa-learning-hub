@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Facade vs Adapter vs Proxy
+concept_id: design-pattern/facade-vs-adapter-vs-proxy
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- facade-vs-adapter-vs-proxy
+- wrapper-pattern-comparison
+- interface-translation-vs-call-control
+aliases:
+- facade vs adapter vs proxy
+- wrapper pattern comparison
+- adapter vs facade
+- facade vs proxy
+- adapter vs proxy
+- interface translation
+- simplified entrypoint
+- call interception
+- 레거시 번역기
+- 호출 제어 패턴
+symptoms:
+- 중간에 끼는 객체라는 구조만 보고 Facade, Adapter, Proxy를 모두 wrapper로 뭉뚱그린다
+- 복잡한 호출 순서를 단순화해야 하는 Facade 문제를 interface signature mismatch인 Adapter 문제로 오해한다
+- Spring AOP나 @Transactional처럼 호출을 가로채는 Proxy를 단순 Facade나 Decorator로 설명한다
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- design-pattern/adapter
+- design-pattern/decorator-vs-proxy
+- design-pattern/pattern-selection
+next_docs:
+- design-pattern/facade-anti-corruption-seam
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/adapter-chaining-smells
+linked_paths:
+- contents/design-pattern/adapter.md
+- contents/design-pattern/decorator-vs-proxy.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/adapter-chaining-smells.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/adapter
+- design-pattern/decorator-vs-proxy
+- design-pattern/facade-anti-corruption-seam
+- design-pattern/ports-and-adapters-vs-classic-patterns
+forbidden_neighbors: []
+expected_queries:
+- Facade와 Adapter와 Proxy는 모두 중간 객체처럼 보여도 복잡성 숨김, 인터페이스 번역, 호출 제어로 어떻게 달라?
+- 외부 SDK 메서드 시그니처가 내부 interface와 안 맞으면 Facade가 아니라 Adapter인 이유가 뭐야?
+- 주문 흐름의 여러 하위 서비스를 단순 진입점으로 묶는 것은 Facade인 이유가 뭐야?
+- Spring AOP와 @Transactional은 왜 Facade보다 Proxy에 가까워?
+- Ports and Adapters와 GoF Adapter를 Facade Adapter Proxy 비교에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Facade vs Adapter vs Proxy chooser로, 세 패턴이 모두 wrapper처럼 보이지만
+  Facade는 복잡한 subsystem 흐름을 단순 entrypoint로 숨기고, Adapter는 incompatible interface를
+  target interface에 맞추며, Proxy는 실제 객체 호출을 대신 받아 access/cache/transaction 같은
+  call control을 수행한다는 기준을 설명한다.
+---
 # Facade vs Adapter vs Proxy
 
 > 한 줄 요약: 세 패턴 모두 "중간에 끼는 객체"처럼 보이지만, Facade는 복잡성을 숨기고, Adapter는 인터페이스를 맞추고, Proxy는 호출을 제어한다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: SameSite Login Callback Primer
+concept_id: security/samesite-login-callback-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- samesite login callback primer
+- same-origin same-site cross-site login primer
+- social login same-site vs same-origin
+- external idp callback samesite
+aliases:
+- samesite login callback primer
+- same-origin same-site cross-site login primer
+- social login same-site vs same-origin
+- external idp callback samesite
+- iframe login samesite beginner
+- auth.example.com app.example.com same-site
+- sibling subdomain not cross-site
+- samesite 뭐예요
+- samesite login callback primer basics
+- samesite login callback primer beginner
+- samesite login callback primer intro
+- security basics
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/social-login-to-local-session-bridge.md
+- contents/security/cookie-rejection-reason-primer.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/callback-cookie-name-splitter.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/subdomain-login-callback-boundaries.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SameSite Login Callback Primer 핵심 개념을 설명해줘
+- samesite login callback primer가 왜 필요한지 알려줘
+- SameSite Login Callback Primer 실무 설계 포인트는 뭐야?
+- samesite login callback primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SameSite Login Callback Primer를 다루는 primer 문서다. login callback에서 `SameSite`를 볼 때는 `same-origin`이 아니라 `same-site`를 먼저 봐야 한다. `auth.example.com`과 `app.example.com`은 origin은 달라도 보통 same-site이고, external IdP callback이나 partner iframe은 cross-site일 수 있다. 검색 질의가 samesite login callback primer, same-origin same-site cross-site login primer, social login same-site vs same-origin, external idp callback samesite처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SameSite Login Callback Primer
 
 > 한 줄 요약: login callback에서 `SameSite`를 볼 때는 `same-origin`이 아니라 `same-site`를 먼저 봐야 한다. `auth.example.com`과 `app.example.com`은 origin은 달라도 보통 same-site이고, external IdP callback이나 partner iframe은 cross-site일 수 있다.

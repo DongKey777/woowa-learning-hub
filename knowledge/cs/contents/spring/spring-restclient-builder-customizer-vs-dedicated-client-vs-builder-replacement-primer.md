@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring RestClient Builder Customizer Dedicated Client Builder Replacement Primer
+concept_id: spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- restclient-builder-customizer
+- vs-dedicated-client
+- vs-builder-replacement
+- restclientcustomizer-vs-dedicated
+aliases:
+- RestClient.Builder customizer
+- RestClientCustomizer vs dedicated RestClient
+- builder replacement primer
+- Spring Boot HTTP client customization
+- common default vs per API client
+intents:
+- comparison
+- design
+linked_paths:
+- contents/spring/spring-boot-customizer-vs-top-level-bean-replacement-primer.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-restclient-vs-webclient-lifecycle-boundaries.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+confusable_with:
+- spring/boot-customizer-vs-top-level-bean-replacement-primer
+- spring/spring-restclient-vs-webclient-lifecycle-boundaries
+- spring/webclient-vs-resttemplate
+expected_queries:
+- RestClient.Builder를 RestClientCustomizer로 덧칠할지 전용 client bean을 만들지 어떻게 골라?
+- Spring Boot에서 공용 builder를 교체하는 건 언제 위험해?
+- 특정 외부 API용 RestClient와 앱 전체 기본 timeout 설정은 어디에 둬야 해?
+- RestClientCustomizer 전용 RestClient builder replacement 차이를 초급자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring RestClient.Builder customization을 앱 공용 기본값 덧칠,
+  특정 외부 API용 dedicated client bean, top-level builder replacement 세 가지로 나누는
+  beginner chooser다. WebClient, RestTemplate, Boot customizer 패턴과 연결한다.
+---
 # Spring `RestClient.Builder` 입문 브리지: `RestClientCustomizer`, 전용 `RestClient` bean, builder 교체는 언제 고르나
 
 > 한 줄 요약: `RestClient.Builder`를 건드릴 때는 "앱 공용 기본값 덧칠", "특정 API용 클라이언트 하나 만들기", "공용 builder owner 직접 맡기"를 먼저 갈라서 보면 덜 헷갈린다.

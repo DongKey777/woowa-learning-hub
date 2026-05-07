@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: mmap sendfile splice zero-copy
+concept_id: operating-system/mmap-sendfile-splice-zero-copy
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- mmap-sendfile-splice
+- zero-copy
+- kernel-zero-copy
+- file-transfer
+aliases:
+- mmap sendfile splice zero-copy
+- kernel zero copy file transfer
+- user space copy avoidance
+- sendfile vs read write
+- splice pipe zero copy
+- large file transfer CPU efficiency
+intents:
+- definition
+- comparison
+- design
+linked_paths:
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+expected_queries:
+- mmap sendfile splice zero-copy는 사용자 공간 복사를 어떻게 줄여?
+- 큰 파일 전송에서 sendfile과 read/write loop는 어떤 CPU 비용 차이가 있어?
+- splice는 pipe와 kernel buffer를 어떻게 활용해 copy를 줄여?
+- zero-copy를 쓰면 항상 좋은가 아니면 page cache와 socket backpressure를 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 큰 file이나 stream을 많이 옮길 때 user-space copy와 syscall overhead를 줄이기 위해
+  mmap, sendfile, splice 같은 kernel-assisted zero-copy path를 비교하는 intermediate primer다.
+---
 # mmap, sendfile, splice, zero-copy
 
 > 한 줄 요약: 큰 파일이나 스트림을 많이 옮길수록, 사용자 공간 복사를 줄이고 커널이 데이터를 직접 전달하게 만드는 구조가 성능과 CPU 효율을 좌우한다.

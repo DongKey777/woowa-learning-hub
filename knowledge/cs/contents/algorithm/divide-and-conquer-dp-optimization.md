@@ -44,7 +44,9 @@ linked_paths:
 confusable_with:
 - algorithm/knuth-optimization-intuition
 - algorithm/convex-hull-trick-basics
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/convex-hull-trick-basics.md
+- contents/algorithm/knuth-optimization-intuition.md
 expected_queries:
 - 분할 정복 DP 최적화는 어떤 단조성 조건이 있어야 적용할 수 있어?
 - opt 배열이 오른쪽으로만 움직인다는 말이 divide and conquer DP에서 왜 중요한지 설명해줘

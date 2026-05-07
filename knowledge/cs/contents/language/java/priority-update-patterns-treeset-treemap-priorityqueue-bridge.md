@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Priority Update Patterns TreeSet TreeMap PriorityQueue Bridge
+concept_id: language/priority-update-patterns-treeset-treemap-priorityqueue-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- priority-queue
+- sorted-collection
+- mutable-state
+aliases:
+- Priority Update Patterns
+- priority update patterns TreeSet TreeMap PriorityQueue bridge
+- Java priority change remove reinsert stale entry
+- TreeSet priority update
+- PriorityQueue decrease key Java
+- 자바 우선순위 변경 패턴
+symptoms:
+- TreeSet TreeMap PriorityQueue에 들어간 객체의 priority 필드만 바꾸면 자동으로 재정렬될 것이라고 기대해
+- TreeSet 원소나 TreeMap key의 comparator 참여 필드를 in-place로 바꾼 뒤 contains remove get이 실패하는 문제를 만들어
+- PriorityQueue 계열에서 기존 entry를 제자리 수정하려고 하며 Java에는 일반적인 decrease-key가 없고 stale entry 패턴이 필요할 수 있음을 놓쳐
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/treeset-treemap-comparator-tie-breaker-basics
+- data-structure/java-priorityqueue-pitfalls
+next_docs:
+- language/priorityblockingqueue-cancellation-stale-entry-mini-bridge
+- data-structure/mutable-priority-stale-ticket-pattern
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+linked_paths:
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/priorityblockingqueue-cancellation-stale-entry-mini-bridge.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+confusable_with:
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/priorityblockingqueue-cancellation-stale-entry-mini-bridge
+- data-structure/java-priorityqueue-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- TreeSet TreeMap PriorityQueue에서 priority를 바꾸면 자동으로 재정렬되는지 알려줘
+- TreeSet priority update는 remove change add 패턴이 왜 안전해?
+- TreeMap key에 priority가 들어 있으면 old key remove 후 new key put을 해야 하는 이유가 뭐야?
+- PriorityQueue에는 decrease-key가 없으니 새 entry를 넣고 stale entry를 버리는 패턴을 설명해줘
+- 우선순위 변경 요구에서 TreeSet TreeMap PriorityQueue 중 어떤 구조를 고르면 좋아?
+contextual_chunk_prefix: |
+  이 문서는 TreeSet, TreeMap, PriorityQueue 계열에서 priority field update를 remove/reinsert, key replacement, stale entry pattern으로 고르는 beginner chooser다.
+  priority update, TreeSet remove add, TreeMap key update, PriorityQueue decrease-key, stale entry 질문이 본 문서에 매핑된다.
+---
 # Priority Update Patterns
 
 > 한 줄 요약: `TreeSet`, `TreeMap`, `PriorityQueue` 계열은 "priority 필드를 바꾸면 자동 재정렬된다"라고 기대하면 안 되고, 각 구조에 맞는 안전한 update 패턴을 골라야 한다.

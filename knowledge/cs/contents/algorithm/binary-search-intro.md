@@ -9,7 +9,8 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/lotto
 review_feedback_tags:
 - lower-bound-vs-exact-match
 - binary-search-loop-invariant

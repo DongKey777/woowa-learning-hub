@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: LinkedHashMap get vs Existing Key put Access-Order Mini Drill
+concept_id: language/linkedhashmap-get-put-existing-key-access-order-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- linkedhashmap
+- access-order
+- map-order
+aliases:
+- LinkedHashMap get put existing key access-order mini drill
+- get changes order LinkedHashMap drill
+- existing key put moves to end accessOrder true
+- 기본 LinkedHashMap vs access-order
+- 같은 키 다시 put하면 왜 뒤로 가요
+- 조회만 했는데 LinkedHashMap 순서 변경
+symptoms:
+- 기본 LinkedHashMap과 accessOrder=true 모드를 같은 것으로 읽어 get이나 기존 key put 뒤 순서 변화 여부를 예측하지 못해
+- 새 key put과 기존 key value 갱신을 모두 삽입으로만 생각해 access-order에서 기존 key가 뒤로 가는 동작을 놓쳐
+- LRU 캐시 문제를 보기 전에 get과 existing-key put이 access event인지 손으로 확인하지 못해
+intents:
+- drill
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/linkedhashmap-access-order-mini-primer
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+- language/linkedhashmap-access-order-cache-behavior-bridge
+next_docs:
+- language/linkedhashmap-access-order-vs-treemap-navigable-mini-drill
+- data-structure/lru-cache-basics
+- language/map-implementation-selection-mini-drill
+linked_paths:
+- contents/language/java/linkedhashmap-access-order-vs-treemap-navigable-mini-drill.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/linkedhashmap-access-order-cache-behavior-bridge.md
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/data-structure/lru-cache-basics.md
+confusable_with:
+- language/linkedhashmap-access-order-cache-behavior-bridge
+- data-structure/linkedhashmap-access-order-mini-primer
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+forbidden_neighbors: []
+expected_queries:
+- LinkedHashMap에서 get과 기존 key put이 accessOrder=true일 때 순서를 어떻게 바꾸는지 드릴로 보여줘
+- 기본 LinkedHashMap과 access-order LinkedHashMap은 get(B) 뒤 keySet 결과가 어떻게 달라?
+- 같은 key에 다시 put하면 새 삽입인지 기존 값 갱신인지 access-order에서 어떻게 읽어야 해?
+- get만 했는데 LinkedHashMap 순서가 바뀌면 어떤 생성자 옵션을 봐야 해?
+- LRU 캐시 전에 LinkedHashMap access-order를 손으로 예측하는 연습을 해줘
+contextual_chunk_prefix: |
+  이 문서는 LinkedHashMap 기본 insertion-order와 accessOrder=true에서 get 및 existing-key put이 순서에 미치는 차이를 연습하는 beginner drill이다.
+  LinkedHashMap get order, existing key put, accessOrder true, insertion-order vs access-order 질문이 본 문서에 매핑된다.
+---
 # LinkedHashMap `get()` vs 기존 key `put()` access-order 미니 드릴
 
 > 한 줄 요약: 기본 `LinkedHashMap`과 `LinkedHashMap(access-order=true)`를 헷갈릴 때는 `get()`과 "기존 key에 다시 `put()`" 두 장면만 따로 떼어 보면 된다. 기본 모드는 자리 유지, access-order 모드는 최근에 다시 만진 항목이 뒤로 간다.

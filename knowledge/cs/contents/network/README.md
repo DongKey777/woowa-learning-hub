@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Network 네트워크 라우팅 인덱스
+concept_id: network/network-routing-index
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- network-first-router
+- http-browser-entrypoint
+- beginner-navigation
+aliases:
+- network readme
+- 네트워크 처음 라우터
+- HTTP 요청 흐름 뭐부터
+- browser request lifecycle basics
+- status redirect cache cookie route
+- 302 303 304 401 basics
+- network category entrypoint
+symptoms:
+- 네트워크를 처음 볼 때 request lifecycle, status code, redirect, PRG, cache, cookie/session 중 어디서 시작할지 모르겠다
+- 302, 303, 304, 401이 한 덩어리로 보이고 이동, cache, 인증을 다음 행동 기준으로 자르지 못한다
+- HTTP 질문에서 갑자기 Spring, Security, proxy, Alt-Svc 같은 운영형 갈래로 내려가며 beginner entrypoint를 잃는다
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites: []
+next_docs:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-status-codes-basics
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/post-redirect-get-prg-beginner-primer
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-status-codes-basics.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- network/http-status-codes-basics
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+- security/session-cookie-jwt-basics
+forbidden_neighbors: []
+expected_queries:
+- 네트워크 처음 공부할 때 요청 흐름 상태 코드 redirect cache cookie 중 어디서 시작해야 해?
+- 302 303 304 401이 헷갈릴 때 network beginner route를 잡아줘
+- 브라우저 request lifecycle에서 URL DNS TCP TLS HTTP status Keep-Alive 순서를 먼저 보고 싶어
+- POST 다음 GET이 보이면 PRG인지 redirect인지 cache인지 어떻게 나눠?
+- HTTP 다음 Spring이나 Security로 넘어가기 전에 Network 입구 문서로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 network category의 beginner routing index다. request lifecycle, HTTP status,
+  redirect/PRG, cache, cookie/session을 첫 갈래로 나누고, Spring/Security/proxy/Alt-Svc
+  운영형 갈래로 내려가기 전의 복귀 지점을 제공한다.
+---
 # Network (네트워크)
 
 > 한 줄 요약: 이 README는 네트워크 카테고리의 입구로, 처음 보는 사람이 `요청 흐름`, `상태 코드`, `redirect/PRG`, `cookie/session`, `cache` 중 어디서 시작할지 증상 질문 기준으로 빠르게 고르게 돕는다.

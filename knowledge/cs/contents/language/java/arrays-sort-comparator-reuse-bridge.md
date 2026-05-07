@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Arrays.sort, List.sort, stream.sorted Comparator Reuse Bridge
+concept_id: language/arrays-sort-comparator-reuse-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-comparator
+- sorting-api-choice
+- stream-vs-inplace-sort
+aliases:
+- Arrays.sort List.sort stream.sorted comparator reuse
+- Java comparator reuse
+- same comparator array list stream
+- 자바 같은 comparator 재사용
+- Arrays sort List sort Stream sorted 비교
+- comparator chain reuse
+symptoms:
+- Arrays.sort, List.sort, stream.sorted를 서로 다른 정렬 규칙처럼 외우고 같은 Comparator를 재사용할 수 있음을 놓쳐
+- 원본 배열이나 리스트를 바꾸는 정렬과 stream.sorted 새 결과 생성을 구분하지 못해
+- comparator chain을 매번 다시 써서 reversed 범위나 tie-breaker가 달라지는 실수를 해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-comparable-comparator-basics
+next_docs:
+- language/arrays-sort-vs-list-sort-bridge
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/comparator-reversed-scope-primer
+- language/arrays-sort-binarysearch-precondition-bridge
+linked_paths:
+- contents/language/java/arrays-sort-vs-list-sort-bridge.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/primitive-descending-array-sort-bridge.md
+confusable_with:
+- language/arrays-sort-vs-list-sort-bridge
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/comparator-reversed-scope-primer
+forbidden_neighbors: []
+expected_queries:
+- Arrays.sort List.sort stream.sorted가 같은 Comparator를 재사용할 수 있는지 비교해줘
+- Java에서 배열 정렬 리스트 정렬 스트림 정렬은 원본 변경 여부가 어떻게 달라?
+- comparator chain을 변수로 뽑아 Arrays sort와 List sort에 같이 쓰는 예제를 보여줘
+- stream.sorted는 원본 리스트를 바꾸는지 새 결과를 만드는지 설명해줘
+- 자바 정렬 API 세 가지를 초보자 기준으로 side by side로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java comparator reuse를 Arrays.sort, List.sort, Stream.sorted 세 API에 같은 정렬 규칙을 적용하는 관점으로 설명하는 beginner primer다.
+  comparator chain reuse, array list stream sorting, in-place sort vs stream result, reversed scope 질문이 본 문서에 매핑된다.
+---
 # `Arrays.sort`, `List.sort`, `stream.sorted` Comparator Reuse Bridge
 
 > 한 줄 요약: 같은 `Comparator` chain은 다시 만들 필요 없이 `Arrays.sort(...)`, `List.sort(...)`, `stream.sorted(...)`에 그대로 연결할 수 있고, 초보자 기준 핵심 차이는 "무엇을 정렬하나"와 "원본을 바꾸나" 두 가지다.

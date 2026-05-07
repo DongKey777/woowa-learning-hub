@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: AbortController 검색 자동완성 canceled trace 카드
+concept_id: network/abortcontroller-search-autocomplete-canceled-trace-card
+canonical: false
+category: network
+difficulty: intermediate
+doc_role: symptom_router
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- devtools-canceled
+- abortcontroller-autocomplete
+- frontend-request-cancel
+aliases:
+- AbortController autocomplete canceled
+- search autocomplete canceled trace
+- DevTools canceled not backend bug
+- fetch canceled by AbortController
+- stale request abort trace
+- 검색창 입력 canceled
+- autocomplete latest request only
+symptoms:
+- 검색 자동완성에서 query가 길어지며 이전 요청이 canceled 되고 마지막 요청만 200인 trace를 백엔드 장애로 바로 오해한다
+- canceled면 서버 로그가 절대 없다고 단정해 브라우저 취소 시점과 서버 수신 가능성을 구분하지 않는다
+- page navigation, tab close, duplicate effect, retry로 인한 canceled와 AbortController 기반 stale request cleanup을 구분하지 못한다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- data-structure/trie-prefix-search-autocomplete
+- software-engineering/browser-e2e-cost-vs-signal-checklist
+linked_paths:
+- contents/network/browser-devtools-blocked-canceled-failed-primer.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/browser-fetch-vs-page-navigation-redirect-trace-card.md
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/software-engineering/browser-e2e-cost-vs-signal-checklist.md
+confusable_with:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- network/browser-devtools-first-checklist-1minute-card
+- data-structure/trie-prefix-search-autocomplete
+forbidden_neighbors: []
+expected_queries:
+- 검색 자동완성에서 이전 fetch 요청이 canceled 되고 마지막만 200이면 백엔드 버그야?
+- AbortController가 stale autocomplete request를 취소하는 DevTools trace를 어떻게 읽어?
+- query가 a ab abc로 길어질 때 canceled row가 여러 개 보이는 이유는?
+- DevTools canceled가 frontend intentional abort인지 page navigation 취소인지 구분하려면 뭘 봐?
+- autocomplete race condition을 막기 위해 이전 요청을 abort하는 패턴을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 검색 자동완성에서 AbortController가 이전 XHR/fetch 요청을 취소해
+  DevTools에 canceled가 남고 마지막 요청만 200으로 완료되는 trace를 해석한다.
+  frontend stale request cleanup, backend bug 오진 방지, page navigation cancel과의 구분을 다룬다.
+---
 # AbortController 검색 자동완성 `canceled` trace 카드
 
 > 한 줄 요약: 검색 자동완성에서 이전 요청을 `AbortController`로 끊고 마지막 요청만 남기는 trace는 DevTools `canceled`를 백엔드 장애가 아니라 프론트의 의도된 정리 동작으로 읽게 도와주는 대표 패턴이다.

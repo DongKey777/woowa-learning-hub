@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries
+concept_id: spring/mvc-filter-interceptor-controlleradvice-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- mvc-filter-interceptor
+- controlleradvice-boundaries
+- filter-vs-interceptor
+- handlerinterceptor
+aliases:
+- filter vs interceptor
+- Spring filter vs interceptor
+- HandlerInterceptor
+- ControllerAdvice
+- servlet filter
+- RestControllerAdvice
+- DispatcherServlet boundary
+- cross-cutting boundary
+intents:
+- comparison
+- troubleshooting
+linked_paths:
+- contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+- contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+confusable_with:
+- spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge
+- spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+- spring/mvc-request-lifecycle
+- spring/security-architecture
+expected_queries:
+- Spring Filter HandlerInterceptor ControllerAdvice는 각각 어느 경계에서 동작해?
+- filter와 interceptor 차이를 beginner 관점으로 설명해줘.
+- 인증, 요청 로깅, 예외 응답 표준화는 각각 어디에 두는 게 자연스러워?
+- ControllerAdvice는 filter나 interceptor처럼 요청을 막는 도구야?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC에서 Filter, HandlerInterceptor, @ControllerAdvice의
+  위치와 책임을 비교하는 bridge다. Filter는 servlet container 앞단,
+  HandlerInterceptor는 DispatcherServlet 이후 handler 전후, ControllerAdvice는
+  controller exception response shaping이라는 cross-cutting boundary를 분리한다.
+---
 # Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries
 
 > 한 줄 요약: 처음 배우는데 `filter vs interceptor`가 헷갈리면 "`Filter`는 서블릿 입구, `HandlerInterceptor`는 컨트롤러 앞뒤, `@ControllerAdvice`는 예외 응답"이라는 큰 그림부터 잡으면 된다.

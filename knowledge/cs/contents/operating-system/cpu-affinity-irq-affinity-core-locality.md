@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: CPU Affinity IRQ Affinity Core Locality
+concept_id: operating-system/cpu-affinity-irq-affinity-core-locality
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- cpu-affinity-irq
+- affinity-core-locality
+- affinity
+- core-locality
+aliases:
+- CPU affinity IRQ affinity
+- core locality
+- taskset irqbalance
+- hot core imbalance
+- CPU pinning locality
+- interrupt affinity tuning
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/cpu-migration-load-balancing-locality-debugging.md
+- contents/operating-system/autonuma-vs-manual-locality-tradeoffs.md
+- contents/operating-system/scheduler-classes-nice-rt-tradeoffs.md
+- contents/operating-system/numa-autobalancing-runtime-debugging.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+symptoms:
+- 특정 core만 뜨겁고 나머지는 놀며 p99 latency가 튄다.
+- IRQ와 worker thread가 서로 다른 NUMA node나 core에 흩어져 locality가 깨진다.
+- affinity를 고정했더니 migration은 줄었지만 load balancing이 망가진다.
+expected_queries:
+- CPU affinity와 IRQ affinity는 core locality를 어떻게 개선하거나 망칠 수 있어?
+- taskset으로 pinning하면 왜 한 core만 뜨거워질 수 있어?
+- IRQ affinity와 softirq latency를 backend p99와 어떻게 연결해?
+- NUMA locality와 CPU pinning을 함께 튜닝할 때 무엇을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 CPU affinity와 IRQ affinity가 작업과 interrupt를 특정 core에 붙여 locality를
+  살릴 수 있지만 잘못 고정하면 hot core, load imbalance, softirq latency를 만들 수 있다는
+  운영 playbook이다.
+---
 # CPU Affinity, IRQ Affinity, Core Locality
 
 > 한 줄 요약: affinity는 특정 코어에 작업과 인터럽트를 붙여 locality를 살리는 도구지만, 잘못 고정하면 한 코어만 뜨거워지고 나머지는 놀게 된다.

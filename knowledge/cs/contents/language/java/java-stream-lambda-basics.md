@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Java Stream and Lambda Basics
+concept_id: language/java-stream-lambda-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- stream
+- lambda
+- collection-transform
+aliases:
+- Java 스트림과 람다 입문
+- java stream lambda basics
+- filter map reduce beginner
+- for loop to stream conversion
+- Stream.toList Collectors.toList mutability
+- 람다와 스트림 filter map 차이
+symptoms:
+- stream을 반복을 없애는 마법으로만 이해해 filter map collect가 기존 for if add 흐름과 어떻게 대응되는지 설명하지 못해
+- break continue 인덱스 제어가 핵심인 반복까지 억지로 stream으로 바꿔 가독성을 떨어뜨려
+- Stream.toList 결과 mutability나 Collectors.toMap duplicate key 같은 후속 함정을 모른 채 모든 stream 결과를 같은 List로 생각해
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- language/java-loop-control-scope-follow-up-primer
+- language/java-collections-basics
+- language/java-types-class-object-oop-basics
+next_docs:
+- language/stream-filter-vs-map-decision-mini-card
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+linked_paths:
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/stream-filter-vs-map-decision-mini-card.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/stream-tolist-vs-collectors-tolist-mutability-bridge.md
+- contents/language/java/collectors-tomap-duplicate-key-primer.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/java-loop-control-scope-follow-up-primer.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-optional-basics.md
+- contents/spring/ioc-di-container.md
+confusable_with:
+- language/java-loop-control-scope-follow-up-primer
+- language/stream-filter-vs-map-decision-mini-card
+- language/list-sort-vs-stream-sorted-comparator-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java stream과 lambda를 for loop filter map collect 대응으로 설명해줘
+- for문과 stream은 언제 무엇을 선택해야 하는지 beginner 기준으로 알려줘
+- filter와 map 차이를 주문 목록 예제로 보여줘
+- Stream.toList와 Collectors.toList 결과 mutability 차이는 어디서 이어서 봐야 해?
+- stream은 항상 for loop보다 빠른지와 parallelStream 위험을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java lambda와 Stream API를 for loop, filter, map, collect/toList 대응으로 설명하는 beginner primer다.
+  stream lambda basics, for to stream, filter vs map, stream.toList, parallelStream 질문이 본 문서에 매핑된다.
+---
 # Java 스트림과 람다 입문
 
 > 한 줄 요약: 람다는 익명 함수를 간결하게 쓰는 문법이고, 스트림은 컬렉션을 filter/map/reduce 파이프라인으로 처리하는 선언적 API다.

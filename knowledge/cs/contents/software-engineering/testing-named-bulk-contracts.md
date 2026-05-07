@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Testing Named Bulk Contracts
+concept_id: software-engineering/testing-named-bulk-contracts
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- bulk-contract
+- batch-testing
+- adapter-test
+- partial-failure
+aliases:
+- testing named bulk contracts
+- named bulk adapter test
+- chunk invariants test
+- item failure mapping test
+- receipt correlation test
+- named bulk 계약 테스트
+symptoms:
+- bulk adapter test가 successCount, failureCount만 검증하고 실패가 정확히 어느 item에 붙었는지와 stable itemId 번역을 확인하지 않아
+- receiptId가 null이 아닌지만 보고 runId, chunkNo, partnerId와 같은 묶음 correlation이 깨지는 회귀를 놓쳐
+- SettlementChunk 같은 named bulk input의 empty, oversize, mixed partner, missing item id invariant가 테스트로 잠겨 있지 않아
+intents:
+- troubleshooting
+- design
+- drill
+prerequisites:
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/batch-result-testing
+next_docs:
+- software-engineering/retry-queue-assertions
+- software-engineering/bulk-idempotency-keys
+- software-engineering/hexagonal-testing-seams-primer
+linked_paths:
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/bulk-idempotency-keys-for-named-contracts.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/http-coalescing-failure-mapping.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+confusable_with:
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/batch-result-testing
+- software-engineering/retry-queue-assertions
+forbidden_neighbors: []
+expected_queries:
+- named bulk contract 테스트에서 chunk invariant, item failure mapping, receipt correlation을 왜 먼저 검증해야 해?
+- SettlementChunk가 empty, oversized, mixed partner를 막는지 어떤 unit test로 고정하면 좋아?
+- vendor sourceIndex를 stable itemId와 reasonCode로 번역하는 item-failure mapping test는 어떻게 작성해?
+- receiptId가 같은 runId, chunkNo, partnerId에 붙었는지 correlation을 확인해야 하는 이유는?
+- count assertion은 보조이고 named field assertion이 bulk adapter 회귀를 더 잘 잡는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 SettlementChunk, ChunkSubmitResult, ItemFailure 같은 named bulk contract를 chunk invariants, item-failure mapping, receipt correlation 세 축으로 테스트하는 beginner playbook이다.
+---
 # Testing Named Bulk Contracts
 
 > 한 줄 요약: named bulk contract 테스트는 "이 chunk가 계약을 지키는가", "실패가 맞는 item에 붙는가", "영수증이 같은 묶음을 가리키는가" 세 질문을 먼저 고정하면 초심자도 bulk adapter 회귀를 빠르게 잡을 수 있다.

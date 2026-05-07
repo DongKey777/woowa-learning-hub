@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Consumer Exception Operating Model
+concept_id: software-engineering/consumer-exception-model
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- consumer-exception
+- waiver-governance
+- operating-model
+aliases:
+- Consumer Exception Operating Model
+- consumer exception operating rhythm
+- exception registry state machine cadence
+- exception review forum
+- consumer waiver operating model
+- closure verification
+symptoms:
+- consumer exception registry는 있지만 owner, expiry, evidence, last_verified_at이 낡고 review 회의는 expiring/blocked item을 먼저 보지 않아
+- state machine, review cadence, automation quality gate가 서로 끊겨 proposed, active, expiring, blocked, closed 상태가 실제 decision checkpoint로 작동하지 않아
+- 반복되는 exception path가 retire해야 할 bypass인지 absorb해야 할 schema/control-plane gap인지 같은 언어로 판정하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/consumer-exception-registry
+- software-engineering/consumer-exception-state-machine
+next_docs:
+- software-engineering/consumer-exception-registry-quality
+- software-engineering/compatibility-waiver-governance
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+linked_paths:
+- contents/software-engineering/consumer-exception-registry-templates.md
+- contents/software-engineering/consumer-exception-state-machine-review-cadence.md
+- contents/software-engineering/consumer-exception-registry-quality-automation.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+confusable_with:
+- software-engineering/consumer-exception-registry
+- software-engineering/consumer-exception-state-machine
+- software-engineering/consumer-exception-registry-quality
+forbidden_neighbors: []
+expected_queries:
+- consumer exception operating model은 registry schema, state machine, review cadence, automation quality gate를 어떻게 하나로 묶어?
+- consumer exception record에는 identity responsibility timebox evidence 묶음이 왜 필요해?
+- proposed approved active expiring blocked closed 상태가 단순 label이 아니라 decision checkpoint가 되려면 어떤 entry exit 기준이 필요해?
+- weekly intake, weekly exception review, monthly portfolio scorecard, quarterly policy forum을 왜 나눠야 해?
+- repeated exception path를 retire할 bypass인지 absorb할 capability gap인지 어떻게 판정해?
+contextual_chunk_prefix: |
+  이 문서는 consumer exception을 registry schema, lifecycle state machine, review cadence, automation quality gates, closure verification이 연결된 운영 모델로 다루는 advanced playbook이다.
+---
 # Consumer Exception Operating Model
 
 > 한 줄 요약: consumer exception을 운영 가능한 backlog로 유지하려면 registry schema, state machine, review cadence, automation quality gate가 끊기지 않는 하나의 operating model이어야 하며, 각 예외는 owner, evidence, expiry, closure verification을 계속 갱신해야 한다.

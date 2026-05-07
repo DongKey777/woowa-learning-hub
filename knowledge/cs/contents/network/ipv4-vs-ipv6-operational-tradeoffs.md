@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "IPv4 vs IPv6 Operational Trade-offs"
+concept_id: network/ipv4-vs-ipv6-operational-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- ipv4-ipv6
+- dual-stack
+- operational-tradeoffs
+aliases:
+- IPv4 vs IPv6
+- dual-stack
+- address exhaustion
+- IPv6 routing
+- IPv4 NAT
+- end-to-end reachability
+- IPv6 firewall policy
+symptoms:
+- IPv4와 IPv6를 주소 길이 차이로만 설명하고 NAT, routing, firewall 정책 차이를 놓친다
+- dual-stack에서 A/AAAA 경로 품질 차이를 앱 장애로만 본다
+- IPv6가 항상 더 빠르거나 항상 더 안전하다고 단정한다
+- IPv4 NAT conntrack/port exhaustion과 IPv6 end-to-end 모델의 trade-off를 구분하지 못한다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- network/ip-address-port-basics
+- network/dns-cdn-websocket-http2-http3
+next_docs:
+- network/happy-eyeballs-dual-stack-racing
+- network/nat64-dns64-operational-intuition
+- network/syn-retransmission-handshake-timeout
+- network/packet-loss-jitter-reordering-diagnostics
+linked_paths:
+- contents/network/happy-eyeballs-dual-stack-racing.md
+- contents/network/nat64-dns64-operational-intuition.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/syn-retransmission-handshake-timeout.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+confusable_with:
+- network/happy-eyeballs-dual-stack-racing
+- network/nat64-dns64-operational-intuition
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/dns-ttl-cache-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- "IPv4와 IPv6 운영 trade-off를 주소 길이 말고 설명해줘"
+- "dual-stack에서 IPv6 경로만 느린 문제를 어떻게 봐야 해?"
+- "IPv4 NAT와 IPv6 end-to-end reachability의 장단점은?"
+- "A와 AAAA가 같이 있을 때 Happy Eyeballs가 필요한 이유는?"
+- "IPv6 firewall routing observability가 운영에서 어려운 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 IPv4/IPv6 operational trade-offs, dual-stack, NAT, routing,
+  firewall policy, observability, address selection과 fallback을 다루는 advanced
+  playbook이다.
+---
 # IPv4 vs IPv6 Operational Trade-offs
 
 > 한 줄 요약: IPv4와 IPv6는 주소 길이만 다른 게 아니라, 라우팅, 방화벽, NAT, 관측, 실패 복구 방식까지 운영 감각이 다르다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Online Backfill Consistency and Watermark Strategy
+concept_id: database/online-backfill-consistency
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- online-backfill
+- watermark
+- catch-up
+- idempotent-retry
+aliases:
+- online backfill consistency
+- backfill watermark
+- chunk copy
+- dual write catch-up
+- validation checksum
+- sample diff
+- late write catch up
+- 온라인 백필 워터마크
+- backfill 누락 방지
+- chunk backfill idempotent
+symptoms:
+- 운영 중 copy만 끝내면 backfill이 완료된다고 보고 복사 중 들어온 write와 delete를 놓치고 있어
+- chunk 재시도나 partial failure가 발생했을 때 idempotent upsert와 watermark 없이 중복 또는 누락이 생겨
+- cutover 전 catch-up과 validation 기준이 없어 late write가 target에 반영됐는지 확인하지 못해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/online-schema-change-strategies
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/online-backfill-verification-cutover-gates
+- database/cdc-gap-repair-reconciliation-playbook
+- database/destructive-schema-cleanup-column-retirement
+linked_paths:
+- contents/database/online-schema-change-strategies.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+confusable_with:
+- database/online-backfill-verification-cutover-gates
+- database/cdc-gap-repair-reconciliation-playbook
+- database/online-schema-change-strategies
+forbidden_neighbors: []
+expected_queries:
+- 온라인 백필에서 watermark와 catch-up이 왜 필요한지 설명해줘
+- chunk copy 중 원본 row가 업데이트되면 누락을 어떻게 막아?
+- backfill을 idempotent하게 만들어야 하는 이유와 SQL 패턴을 알려줘
+- row count만으로 backfill 검증을 끝내면 안 되는 이유가 뭐야?
+- copy, catch-up, validation, cutover gate를 online backfill 순서로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 online backfill을 snapshot copy가 아니라 watermark, catch-up, idempotent chunk retry, validation으로 다루는 advanced playbook이다.
+  backfill watermark, chunk copy, late write catch-up, 온라인 백필 누락 방지 질문이 본 문서에 매핑된다.
+---
 # Online Backfill Consistency와 워터마크 전략
 
 > 한 줄 요약: 백필은 “한 번 복사하면 끝”이 아니라, 복사 중에 들어오는 변경까지 포함해 정합성을 맞추는 절차다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Hybrid Top-Index Leaf Layouts
+concept_id: data-structure/hybrid-top-index-leaf-layouts
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- hybrid-search-layout
+- guide-index-leaf-block
+- lower-bound-scan-locality
+aliases:
+- hybrid top index leaf layout
+- guide index plus contiguous leaves
+- Eytzinger top index leaf blocks
+- lower_bound then scan continuation
+- leaf packed hybrid ordered search
+- fence key array leaf blocks
+- sampled separators over leaves
+symptoms:
+- lower_bound 경로 locality와 그 뒤 range scan continuation locality를 한 레이아웃 하나로만 해결하려 한다
+- pure Eytzinger나 pure vEB layout이 point search에는 좋지만 긴 ordered scan에는 아쉬울 수 있다는 점을 놓친다
+- separator guide index와 contiguous leaf block을 분리해 top search와 leaf scan을 각각 최적화하는 절충을 고려하지 않는다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/ordered-search-workload-matrix
+- data-structure/eytzinger-layout-and-cache-friendly-search
+next_docs:
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/lsm-friendly-index-structures
+linked_paths:
+- contents/data-structure/ordered-search-workload-matrix.md
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+- contents/data-structure/cache-oblivious-b-tree-vs-plain-veb-layout.md
+- contents/data-structure/cache-oblivious-vs-cache-aware-layouts.md
+- contents/data-structure/lsm-friendly-index-structures.md
+confusable_with:
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/lsm-friendly-index-structures
+forbidden_neighbors: []
+expected_queries:
+- Hybrid top-index leaf layout은 lower_bound와 scan continuation을 어떻게 나눠 최적화해?
+- guide index와 packed contiguous leaves를 같이 쓰는 ordered index 설계는?
+- Eytzinger top index와 leaf block 구조를 언제 쓰면 좋아?
+- pure search layout이 range scan workload에서 부족한 이유는?
+- fence key separator로 leaf 후보를 찾고 그 뒤 sequential scan하는 구조를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 ordered search workload에서 top guide index는 lower_bound search
+  path locality를, contiguous leaf blocks는 scan continuation locality를 맡는
+  hybrid layout chooser다. Eytzinger top index, separator/fence key, packed
+  leaves, range iterator locality를 다룬다.
+---
 # Hybrid Top-Index / Leaf Layouts
 
 > 한 줄 요약: hybrid top-index / leaf layout은 상단에는 Eytzinger나 재귀 guide index를 두고, 하단에는 정렬 순서의 contiguous leaf block을 유지해서 `lower_bound`와 scan continuation locality를 분리해 챙기는 절충안이다.

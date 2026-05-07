@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Domain Events vs Integration Events
+concept_id: design-pattern/domain-events-vs-integration-events
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- domain-event
+- integration-event
+- outbox-translation
+aliases:
+- domain events vs integration events
+- domain event
+- integration event
+- event contract
+- after commit publication
+- outbox translation
+- bounded context event boundary
+- published language versioning
+- 도메인 이벤트
+- 통합 이벤트
+symptoms:
+- aggregate가 만든 domain event를 그대로 Kafka로 보내면 integration event가 된다고 오해한다
+- 내부 model field가 외부 event contract로 굳어져 consumer 호환성 때문에 domain model 진화가 막힌다
+- DB transaction은 실패했는데 broker publish는 이미 나가는 after-commit/outbox 문제를 놓친다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/bounded-context-relationship-patterns
+- design-pattern/event-envelope-pattern
+- design-pattern/outbox-relay-idempotent-publisher
+next_docs:
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/tolerant-reader-event-contract-pattern
+linked_paths:
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/event-envelope-pattern.md
+- contents/design-pattern/bounded-context-relationship-patterns.md
+confusable_with:
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/event-envelope-pattern
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/tolerant-reader-event-contract-pattern
+forbidden_neighbors: []
+expected_queries:
+- Domain Event와 Integration Event는 내부 도메인 의미와 외부 계약 메시지 관점에서 어떻게 달라?
+- Aggregate가 기록한 Domain Event를 Kafka로 바로 보내면 왜 내부 모델 누수가 생겨?
+- after-commit outbox translation으로 Domain Event를 Integration Event로 바꾸는 이유가 뭐야?
+- 모든 domain event가 integration event로 공개되어야 하는 것은 아닌 이유를 설명해줘
+- Integration Event는 published language와 version compatibility를 왜 따로 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Domain Events vs Integration Events chooser로, Domain Event는 bounded
+  context 내부의 domain fact이고 Integration Event는 외부 consumer를 위한 published
+  language contract이며, after-commit outbox translation으로 message shape와 publish
+  시점을 분리해야 함을 설명한다.
+---
 # Domain Events vs Integration Events
 
 > 한 줄 요약: Domain Event는 bounded context 내부 의미를 표현하고, Integration Event는 외부 계약을 위한 번역된 메시지다.

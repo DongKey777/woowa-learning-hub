@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring ResponseBodyEmitter Media Type Boundaries
+concept_id: spring/responsebodyemitter-media-type-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- responsebodyemitter-media-type
+- boundaries
+- ndjson-vs-json
+- array
+aliases:
+- ResponseBodyEmitter media type
+- NDJSON vs JSON array
+- text event stream boundary
+- streaming flush cadence
+- streaming client parsing
+- ResponseBodyEmitter send converter
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-mvc-flux-json-vs-ndjson-sse-adaptation.md
+- contents/spring/spring-streaming-client-parsing-matrix.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-responsebodyadvice-streaming-types.md
+- contents/spring/spring-httpmessagenotwritableexception-failure-taxonomy.md
+expected_queries:
+- ResponseBodyEmitter에서 NDJSON text/plain JSON array는 어떻게 다르게 설계해?
+- flush가 됐다고 클라이언트 메시지 경계가 생기는 건 아니야?
+- ResponseBodyEmitter send는 media type과 converter에 어떤 영향을 받아?
+- streaming 응답에서 JSON envelope나 JSON array가 위험한 이유는?
+contextual_chunk_prefix: |
+  이 문서는 ResponseBodyEmitter가 send timing과 converter 위임을 제공할 뿐 wire document
+  boundary를 자동으로 만들어 주지 않는다는 점을 설명한다. NDJSON, plain text, JSON array,
+  SSE, client parsing, flush cadence를 분리해 media type contract를 설계한다.
+---
 # Spring `ResponseBodyEmitter` Media-Type Boundaries: NDJSON, Plain Text, JSON Array
 
 > 한 줄 요약: `ResponseBodyEmitter`는 `send()` 타이밍과 converter 위임만 제공할 뿐 wire document 경계를 자동으로 만들어 주지 않으므로, `application/x-ndjson`, `text/plain`, `application/json`이 각각 어떤 parsing 계약을 가지는지 분리해서 설계해야 flush cadence를 메시지 경계로 착각하지 않게 된다.

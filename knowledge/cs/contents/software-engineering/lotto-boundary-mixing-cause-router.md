@@ -52,11 +52,7 @@ confusable_with:
   - software-engineering/lotto-purchase-flow-service-layer-bridge
   - design-pattern/lotto-manual-auto-number-generator-strategy-bridge
   - software-engineering/lotto-winning-statistics-result-object-bridge
-forbidden_neighbors:
-  - contents/software-engineering/lotto-inputview-domain-conversion-boundary-bridge.md
-  - contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md
-  - contents/design-pattern/lotto-manual-auto-number-generator-strategy-bridge.md
-  - contents/software-engineering/lotto-winning-statistics-result-object-bridge.md
+forbidden_neighbors: []
 expected_queries:
   - 로또 미션 코드가 자꾸 한 군데로 몰리는데 먼저 입력 쪽을 자를지 서비스 흐름을 자를지 어떻게 판단해?
   - controller에서 Lotto를 만들고 OutputView에서 수익률까지 계산하면 어떤 책임이 섞인 거야?

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Contract Drift Detection and Rollout Governance
+concept_id: software-engineering/contract-drift-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- contract-drift
+- rollout-governance
+- runtime-compatibility
+aliases:
+- Contract Drift Detection and Rollout Governance
+- contract drift detection
+- producer consumer drift
+- runtime compatibility drift
+- semantic drift rollout pause
+- contract rollout governance
+symptoms:
+- contract drift를 schema diff로만 보고 producer 선언, 실제 payload, consumer parser/fallback/business rule이 어긋나는 semantic drift를 놓쳐
+- additive change, field removal, enum emission, semantic reinterpretation을 같은 rollout 경로로 처리해 consumer tolerance 배포 순서와 pause 기준이 흐려져
+- runtime parse error, unknown enum fallback, semantic diff, version skew 신호가 registry와 owner/pause authority에 연결되지 않아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/backward-compatibility-gates
+- software-engineering/contract-registry-governance
+next_docs:
+- software-engineering/consumer-migration-playbook
+- software-engineering/compatibility-waiver-governance
+- software-engineering/strangler-verification-shadow-traffic-metrics
+linked_paths:
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/contract-registry-governance.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/rollout-approval-workflow.md
+- contents/software-engineering/strangler-verification-shadow-traffic-metrics.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+confusable_with:
+- software-engineering/backward-compatibility-gates
+- software-engineering/contract-registry-governance
+- software-engineering/consumer-migration-playbook
+forbidden_neighbors: []
+expected_queries:
+- contract drift detection은 schema diff가 아니라 producer declared contract, produced behavior, consumed behavior 차이를 보는 거야?
+- 새 enum emission이나 optional field가 parser는 통과해도 silent misclassification을 만들 수 있는 이유를 설명해줘
+- additive change, field removal, semantic reinterpretation은 producer/consumer rollout 순서를 어떻게 달리해야 해?
+- runtime unknown enum fallback rate, semantic diff rate, version skew를 rollout pause 기준에 어떻게 연결해?
+- contract registry와 telemetry가 닫힌 루프를 만들어야 drift governance가 작동하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 contract drift를 declared contract, produced payload, consumed behavior 사이의 semantic/runtime mismatch로 보고 rollout pause, registry update, consumer impact governance로 연결하는 advanced playbook이다.
+---
 # Contract Drift Detection and Rollout Governance
 
 > 한 줄 요약: contract drift detection은 schema diff를 찾는 기능이 아니라, producer 선언과 consumer 기대, runtime 실제 사용이 어긋나는 순간을 잡아 rollout 순서와 중단 기준으로 연결하는 운영 체계다.

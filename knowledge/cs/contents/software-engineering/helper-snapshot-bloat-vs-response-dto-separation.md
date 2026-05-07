@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Helper Snapshot Bloat Vs Response DTO Separation
+concept_id: software-engineering/helper-snapshot-response-dto-separation
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- dto
+- query-view
+- helper-snapshot
+- response-contract
+aliases:
+- Helper Snapshot Bloat Vs Response DTO Separation
+- helper snapshot vs response DTO
+- command support snapshot vs query view
+- screen DTO smell
+- response DTO separation beginner
+- helper snapshot bloat
+symptoms: []
+intents:
+- comparison
+- symptom
+- troubleshooting
+prerequisites:
+- software-engineering/command-dto-vs-query-view-naming-checklist
+- software-engineering/module-api-dto-patterns
+next_docs:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/bulk-helper-vs-query-model
+- software-engineering/persistence-model-leakage
+linked_paths:
+- contents/software-engineering/command-dto-vs-query-view-naming-checklist.md
+- contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/module-api-dto-patterns.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/repository-dao-entity.md
+confusable_with:
+- software-engineering/command-dto-vs-query-view-naming-checklist
+- software-engineering/bulk-helper-vs-query-model
+- software-engineering/query-model-separation-read-heavy
+forbidden_neighbors: []
+expected_queries:
+- helper snapshot과 query view와 response DTO는 각각 어떤 질문에 답하는 타입인지 비교해줘
+- command 판단 재료용 snapshot에 badgeLabel, displayName, sortPriority가 붙으면 왜 screen DTO 냄새가 나?
+- helper snapshot을 GET 응답으로 그대로 반환해도 되는 경우와 response DTO로 나눠야 하는 경우를 알려줘
+- Decide, Display, Deliver 기준으로 command support data와 API response contract를 분리하는 방법은 뭐야?
+- controller가 여러 helper port를 조립해 list row를 만들기 시작하면 query view를 둬야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 helper snapshot, query view, response DTO를 Decide/Display/Deliver 책임으로 나누어 초심자가 snapshot bloat와 API 응답 계약을 구분하게 돕는 beginner chooser이다.
+---
 # Helper Snapshot Bloat Vs Response DTO Separation
 
 > 한 줄 요약: helper snapshot은 command가 판단할 재료를 모으는 타입이고, response DTO는 API가 외부에 약속하는 계약이다. helper snapshot에 화면 컬럼과 표시 규칙이 붙기 시작하면 query view를 하나 끼워서 책임을 나누는 편이 더 단순하다.

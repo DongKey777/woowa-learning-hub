@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Java Overloading vs Overriding Beginner Primer
+concept_id: language/java-overloading-vs-overriding-beginner-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/racingcar
+review_feedback_tags:
+- oop-basics
+- overloading
+- overriding
+aliases:
+- Java 오버로딩 vs 오버라이딩 입문
+- java overloading vs overriding beginner
+- compile time vs runtime method selection
+- 같은 이름 다른 parameter overloading
+- 같은 signature override
+- @Override 기초
+symptoms:
+- 메서드 이름이 같으면 모두 overriding이라고 생각해 parameter 목록과 상속 관계를 확인하지 못해
+- 부모 타입 변수에 자식 객체를 담으면 자식에만 있는 overload도 호출 가능하다고 오해해 compile-time 시그니처 선택을 놓쳐
+- @Override 없이 오타 메서드를 만들어 놓고 부모 메서드를 재정의했다고 착각해
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- language/java-methods-constructors-practice-primer
+- language/java-inheritance-overriding-basics
+- language/java-types-class-object-oop-basics
+next_docs:
+- language/interface-default-method-diamond-conflict-basics
+- language/java-abstract-class-vs-interface-basics
+- language/object-oriented-core-principles
+linked_paths:
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/interface-default-method-diamond-conflict-basics.md
+confusable_with:
+- language/java-inheritance-overriding-basics
+- language/interface-default-method-diamond-conflict-basics
+- language/java-methods-constructors-practice-primer
+forbidden_neighbors: []
+expected_queries:
+- Java overloading과 overriding 차이를 컴파일 시점과 런타임 선택으로 설명해줘
+- 같은 이름인데 parameter가 다르면 왜 overriding이 아니라 overloading이야?
+- 부모 타입 변수로 자식 객체를 담았을 때 어떤 메서드가 호출 가능한지 예제로 보여줘
+- @Override를 붙이는 이유와 오타를 잡는 효과를 알려줘
+- default method 충돌에서도 override와 overload를 signature 기준으로 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Java overloading과 overriding을 method signature, inheritance, compile-time overload selection, runtime override dispatch로 설명하는 beginner primer다.
+  오버로딩 오버라이딩 차이, @Override, 같은 이름 다른 파라미터, 부모 타입 자식 객체 호출 질문이 본 문서에 매핑된다.
+---
 # Java 오버로딩 vs 오버라이딩 입문
 
 > 한 줄 요약: `overloading`은 같은 이름에 다른 parameter 목록을 여는 것이고, `overriding`은 상속 관계에서 같은 시그니처의 instance method 구현을 바꾸는 것이다. 입문자는 "컴파일 시그니처 선택 -> 런타임 구현 선택" 두 단계로 읽으면 헷갈림이 크게 줄어든다.

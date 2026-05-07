@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Instant ADD COLUMN Metadata Semantics
+concept_id: database/instant-add-column-metadata-semantics
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- instant-add-column-metadata
+- default-synthesis-old-row-layout
+- metadata-only-ddl-semantics
+aliases:
+- instant add column
+- metadata semantics
+- default synthesis
+- row format
+- ALGORITHM=INSTANT
+- metadata only
+- column append
+- instant ddl add column
+- 기존 row default synthesis
+- instant column metadata
+symptoms:
+- instant ADD COLUMN 후 기존 row에 새 컬럼 값이 물리적으로 저장된 것인지 default synthesis인지 헷갈려
+- metadata-only DDL이라 빠르지만 old row layout과 read-time value 해석을 고려하지 않고 있어
+- column position이나 type 변경 때문에 instant가 inplace/copy로 떨어지는 조건을 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/instant-ddl-vs-copy-inplace-algorithms
+- database/metadata-lock-ddl-blocking
+next_docs:
+- database/ddl-metadata-version-visibility
+- database/online-schema-change-strategies
+- database/destructive-schema-cleanup-column-retirement
+linked_paths:
+- contents/database/instant-ddl-vs-copy-inplace-algorithms.md
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/clustered-index-locality.md
+- contents/database/ddl-metadata-version-visibility.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+confusable_with:
+- database/instant-ddl-vs-copy-inplace-algorithms
+- database/ddl-metadata-version-visibility
+- database/metadata-lock-ddl-blocking
+forbidden_neighbors: []
+expected_queries:
+- instant ADD COLUMN은 기존 row를 다시 쓰지 않는데 새 컬럼 default 값은 어떻게 보이는 거야?
+- metadata-only DDL에서 기존 row layout과 읽기 시점 default synthesis를 어떻게 이해해?
+- ALGORITHM=INSTANT가 가능한 column append와 inplace/copy로 떨어지는 변경은 어떻게 구분해?
+- instant add column 뒤 backfill이 없어도 읽기 결과가 default처럼 보일 수 있는 이유는 뭐야?
+- instant DDL과 metadata version visibility는 어떤 관계가 있어?
+contextual_chunk_prefix: |
+  이 문서는 instant ADD COLUMN이 기존 row page를 재작성하지 않고 metadata와 default synthesis로 새 컬럼을 보이게 하는 semantics를 설명하는 advanced deep dive다.
+  instant add column, metadata semantics, ALGORITHM=INSTANT, default synthesis 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Instant ADD COLUMN Metadata Semantics
 
 > 한 줄 요약: instant ADD COLUMN은 기존 row를 다시 쓰지 않고 메타데이터로 새 컬럼을 설명하는 방식이라, 읽을 때 값이 합성되는 의미를 이해해야 한다.

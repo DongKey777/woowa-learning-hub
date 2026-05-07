@@ -1,9 +1,87 @@
+---
+schema_version: 3
+title: 인증·인가·세션 기초 흐름
+concept_id: security/authentication-authorization-session-foundations
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- authn-authz-session-entrypoint
+- principal-session-permission-model
+- login-valid-token-not-enough
+aliases:
+- authentication authorization session foundations
+- auth foundation primer
+- authn authz session primer
+- principal session permission model basics
+- 인증 인가 세션 기초
+- 인증 인가 세션 헷갈려요
+- session이 뭐예요
+- principal이 뭐예요
+- permission model 뭐예요
+- 로그인 됐는데 왜 403
+- token valid but 403 basics
+- auth session cookie jwt 뭐부터
+symptoms:
+- 인증, 인가, 세션, principal이 한 흐름으로 안 잡혀
+- 로그인은 됐는데 특정 API는 왜 403인지 모르겠어
+- JWT가 valid인데 application permission에서 거부될 수 있다는 말이 헷갈려
+intents:
+- definition
+- troubleshooting
+prerequisites: []
+next_docs:
+- security/authentication-vs-authorization
+- security/session-cookie-jwt-basics
+- security/permission-model-bridge-authn-to-role-scope-ownership
+- security/auth-failure-response-401-403-404
+- security/oauth2-basics
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/oauth2-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with:
+- security/authentication-vs-authorization
+- security/session-cookie-jwt-basics
+- security/auth-failure-response-401-403-404
+- security/permission-model-bridge-authn-to-role-scope-ownership
+forbidden_neighbors: []
+expected_queries:
+- 인증 인가 세션 principal permission model을 한 요청 흐름으로 설명해줘
+- 로그인 성공과 API 허용이 왜 같은 말이 아니야?
+- JWT valid인데도 403이 날 수 있는 이유를 beginner 기준으로 알려줘
+- cookie session JWT BFF가 인증 결과를 다음 요청으로 이어 주는 방식을 비교해줘
+- security 처음 공부할 때 authn authz session을 어떤 순서로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 security 카테고리의 beginner entrypoint로 인증은 누구인지 확인하고, session cookie JWT BFF는 인증 결과를 다음 요청으로 이어 주며, 인가는 role scope ownership tenant permission model로 행동 허용 여부를 다시 판단한다는 흐름을 설명한다.
+  로그인은 됐는데 403, token valid but denied, principal과 session과 permission model 차이, authn authz session cookie JWT가 섞인 자연어 질문이 본 문서에 매핑된다.
+---
 # 인증·인가·세션 기초 흐름
 
 > 한 줄 요약: 인증은 `누구인가`를 확인하고 principal을 만들며, 세션·쿠키·JWT·BFF는 그 결과를 다음 요청으로 이어 가고, 인가는 permission model을 기준으로 `이 행동을 허용할까`를 다시 판단하는 단계다.
 
 **난이도: 🟢 Beginner**
 
+## 미션 진입 증상
+
+| browser/backend 장면 | 먼저 볼 질문 |
+|---|---|
+| 로그인은 됐는데 다음 API가 401이다 | principal/session이 다음 요청으로 이어졌는가 |
+| token은 valid인데 특정 API만 403이다 | 인가 role/scope/ownership 문제인가 |
+| cookie와 JWT와 session을 모두 같은 인증 결과로 본다 | 전달 방식과 permission check를 나눴는가 |
+| 관리자 권한 변경 뒤에도 계속 403이다 | 권한 freshness/cache 문제로 넘어갈 때인가 |
 
 관련 문서:
 

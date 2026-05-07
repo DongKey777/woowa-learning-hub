@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Timer Cancellation and Reschedule Stale Entry Primer
+concept_id: data-structure/timer-cancellation-reschedule-stale-entry-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timer-stale-entry
+- delayqueue-reschedule
+- generation-token-scheduler
+aliases:
+- timer cancellation stale entry
+- timer reschedule stale entry
+- DelayQueue cancellation
+- stale timer ticket
+- generation token scheduler
+- latest generation timer
+- lazy stale skip
+symptoms:
+- DelayQueue가 deadline까지 기다려 주면 cancel, reschedule, 최신 예약 판정까지 자동으로 해결된다고 오해한다
+- queue 안 ticket의 deadline을 직접 mutate해 heap ordering이 깨지는 reschedule 버그를 만든다
+- cancel 뒤 reschedule이 있을 때 boolean cancelled만 보고 old ticket과 new ticket을 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/delayqueue-delayed-contract-primer
+next_docs:
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/mutable-priority-stale-ticket-pattern
+- data-structure/timing-wheel-vs-delay-queue
+linked_paths:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/mutable-priority-stale-ticket-pattern.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+confusable_with:
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/mutable-priority-stale-ticket-pattern
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue timer를 cancel하거나 reschedule할 때 stale entry를 어떻게 처리해야 해?
+- timer reschedule에서 기존 ticket deadline을 mutate하면 왜 heap ordering이 깨져?
+- cancel 뒤 재예약이 있으면 cancelled boolean보다 generation token이 안전한 이유는?
+- worker가 stale timer ticket을 꺼냈을 때 latest generation을 어떻게 검사해?
+- DelayQueue는 언제 꺼낼지 해결하지만 유효한 ticket인지는 왜 애플리케이션이 판단해야 해?
+contextual_chunk_prefix: |
+  이 문서는 DelayQueue timer에서 cancel과 reschedule이 남기는 stale entry를
+  generation token, immutable ticket, lazy stale skip으로 처리하는 beginner primer다.
+  deadline heap ordering과 ScheduledFuture cancellation mental model을 연결한다.
+---
 # Timer Cancellation and Reschedule Stale Entry Primer
 
 > 한 줄 요약: `DelayQueue`를 골라도 "시간이 될 때까지 기다리기"만 해결될 뿐, 이미 queue 안에 들어간 timer를 취소하거나 다시 예약할 때는 `generation` 같은 최신성 표식과 lazy stale skip 정책을 따로 정해야 한다.

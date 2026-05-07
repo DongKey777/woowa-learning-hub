@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: TreeMap Range View Live Window Primer
+concept_id: language/treemap-range-view-live-window-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- range-view
+- live-view
+aliases:
+- TreeMap range view live window primer
+- Java TreeMap subMap live view
+- headMap tailMap not copy
+- backing map view beginner
+- subMap copy vs view Java
+- 자바 TreeMap subMap live view
+symptoms:
+- subMap headMap tailMap을 잘라낸 복사본으로 생각해 view 수정이 원본에 반영되고 원본 수정이 view에 보이는 live view 성질을 놓쳐
+- range 밖 key를 view에 put하려고 하거나 범위가 비어 있을 때 null이 아니라 empty view가 나온다는 점을 혼동해
+- snapshot이 필요한 상황에서도 new TreeMap<>(subMap) 같은 명시적 복사를 하지 않아 원본 mutation에 끌려가는 버그를 만들어
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/submap-boundaries-primer
+- language/navigablemap-navigableset-mental-model
+- language/descending-view-mental-model
+next_docs:
+- language/collection-update-strategy-primer
+- language/map-remove-during-iteration-safety-primer
+- language/navigable-range-api-mini-drill
+linked_paths:
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/collection-update-strategy-primer.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+confusable_with:
+- language/submap-boundaries-primer
+- language/descending-view-mental-model
+- language/map-remove-during-iteration-safety-primer
+forbidden_neighbors: []
+expected_queries:
+- TreeMap subMap headMap tailMap은 복사본이 아니라 live view라서 원본과 서로 mutation이 보이나?
+- subMap view에 range 밖 key를 put하면 왜 실패할 수 있어?
+- TreeMap range view가 비어 있을 때 null이 아니라 empty view라는 뜻을 설명해줘
+- snapshot이 필요하면 new TreeMap<>(subMap)으로 복사해야 하는 이유가 뭐야?
+- NavigableMap range view와 descending view의 live backing map 성질을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap subMap/headMap/tailMap이 backing map과 연결된 live range view이며 snapshot이 아니라는 점을 설명하는 beginner primer다.
+  TreeMap subMap, headMap, tailMap, live view, backing map, snapshot 질문이 본 문서에 매핑된다.
+---
 # `subMap()` / `headMap()` / `tailMap()` Live View Primer
 
 > 한 줄 요약: `TreeMap`의 range API는 잘라낸 복사본이 아니라 **원본 위에 열린 실시간 창(view)** 이라서, 한쪽에서 바꾸면 다른 쪽에서도 바로 보인다.

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Bitmap vs Set Dense Integer ID Beginner Bridge
+concept_id: data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- set-vs-bitmap-boundary
+- dense-id-vs-sparse-id
+- premature-bitmap-optimization
+aliases:
+- bitmap vs set beginner
+- bitset vs set basics
+- dense integer id membership
+- set or bitmap when to use
+- sparse integer id range
+- sparse range bitset wasteful
+- roaring bitmap beginner handoff
+- compressed bitmap first step
+- 비트맵 셋 차이
+- bitset 뭐예요
+- dense id 처음
+- sparse id 처음
+- bitmap 언제 worth it
+- 정수 id 집합 헷갈림
+- 왜 bitset이 아까워요
+symptoms:
+- 정수 id 집합이라는데 그냥 Set으로 끝내도 되는지 모르겠어
+- 비트맵이 빠르다길래 무조건 바꿔야 하는지 헷갈려
+- id가 듬성듬성한데 bitset을 쓰면 왜 아깝다는 건지 감이 안 와
+intents:
+- comparison
+prerequisites:
+- data-structure/basic
+- data-structure/map-vs-set-requirement-bridge
+next_docs:
+- data-structure/bitset-vs-boolean-array-beginner-card
+- data-structure/set-vs-bitmap-audience-selection-mini-drill
+- data-structure/bitset-vs-roaring-bitmap-handoff
+linked_paths:
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+- contents/data-structure/bitset-vs-boolean-array-beginner-card.md
+- contents/data-structure/set-vs-bitmap-audience-selection-mini-drill.md
+- contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/roaring-bitmap.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/bitset-vs-boolean-array-beginner-card
+- data-structure/bitset-vs-roaring-bitmap-handoff
+forbidden_neighbors: []
+expected_queries:
+- dense integer id 집합이면 Set 대신 bitmap을 생각하는 기준
+- 사용자 id 집합을 다룰 때 Set과 bitset을 어디서 가를까
+- sparse한 정수 id 범위에서 plain bitset이 왜 비효율적인지 입문 설명
+- 대상자 세그먼트를 계속 교집합할 때 어떤 구조로 출발해야 해
+- 비트맵이 membership 구조라는 감각을 beginner 기준으로 잡고 싶어
+- 문자열 id면 Set이고 정수 id면 bitmap이라는 말이 항상 맞아?
+contextual_chunk_prefix: |
+  이 문서는 bitmap vs Set beginner bridge로 dense integer id membership,
+  sparse id range, bitset, compressed bitmap, Roaring bitmap handoff를 처음 분기한다.
+  단건 contains와 자유로운 문자열/UUID id는 Set에서 시작하고, 0..n 정수 id 집합을 반복 AND/OR 할 때 bitmap/bitset 후보로 넘긴다.
+---
 # Bitmap vs Set Dense Integer ID Beginner Bridge
 
 > 한 줄 요약: `Set`은 "이 값이 있나?"를 가장 자연스럽게 시작하는 기본 명단이고, `bitmap/bitset`은 `0..n` 정수 id를 아주 많이 겹쳐 보거나 메모리를 더 빡빡하게 아껴야 할 때 고려하는 한 단계 더 구조화된 명단이다.

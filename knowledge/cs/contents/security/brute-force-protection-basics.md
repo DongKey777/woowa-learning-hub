@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: 브루트포스 공격 방어 기초
+concept_id: security/brute-force-protection-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- brute force protection basics
+- 브루트포스 공격
+- 로그인 반복 시도
+- account lockout
+aliases:
+- brute force protection basics
+- 브루트포스 공격
+- 로그인 반복 시도
+- account lockout
+- 계정 잠금
+- login throttling beginner
+- 비밀번호 대입 공격
+- captcha 왜 쓰나요
+- mfa 기초
+- credential stuffing 이란
+- 로그인 실패 횟수 제한
+- brute force beginner
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/password-hashing-basics.md
+- contents/security/input-validation-basics.md
+- contents/network/http-methods-rest-idempotency.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 브루트포스 공격 방어 기초 핵심 개념을 설명해줘
+- brute force protection basics가 왜 필요한지 알려줘
+- 브루트포스 공격 방어 기초 실무 설계 포인트는 뭐야?
+- brute force protection basics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 브루트포스 공격 방어 기초를 다루는 primer 문서다. 브루트포스 공격은 비밀번호를 계속 대입해 보는 공격이고, 계정 잠금·로그인 지연·캡차·MFA가 이 공격의 비용을 올려 사실상 불가능하게 만든다. 검색 질의가 brute force protection basics, 브루트포스 공격, 로그인 반복 시도, account lockout처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # 브루트포스 공격 방어 기초
 
 > 한 줄 요약: 브루트포스 공격은 비밀번호를 계속 대입해 보는 공격이고, 계정 잠금·로그인 지연·캡차·MFA가 이 공격의 비용을 올려 사실상 불가능하게 만든다.

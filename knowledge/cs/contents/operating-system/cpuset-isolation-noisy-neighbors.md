@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Cpuset Isolation Noisy Neighbors
+concept_id: operating-system/cpuset-isolation-noisy-neighbors
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- cpuset-isolation-noisy
+- neighbors
+- cpu-numa-node
+- isolation
+aliases:
+- cpuset isolation noisy neighbors
+- CPU NUMA node isolation
+- hot path cpuset
+- cgroup cpuset locality
+- noisy neighbor isolation
+- worker placement cpuset
+intents:
+- troubleshooting
+- design
+- deep_dive
+linked_paths:
+- contents/operating-system/autonuma-vs-manual-locality-tradeoffs.md
+- contents/operating-system/numa-first-touch-remote-memory-locality-debugging.md
+- contents/operating-system/numa-autobalancing-runtime-debugging.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/cpu-migration-load-balancing-locality-debugging.md
+- contents/operating-system/cgroup-cpu-throttling-quota-runtime-debugging.md
+- contents/operating-system/container-cgroup-namespace.md
+symptoms:
+- noisy neighbor를 CPU 시간 quota로 제한했지만 hot path와 같은 core/NUMA node를 공유해 latency가 튄다.
+- cpuset으로 worker placement를 나눴는데 memory first-touch와 IRQ affinity가 따라오지 않는다.
+- isolation을 세게 걸자 load balancing 여지가 줄어 오히려 특정 core가 뜨거워진다.
+expected_queries:
+- cpuset은 noisy neighbor를 시간 제한이 아니라 공간 격리로 줄인다는 게 무슨 뜻이야?
+- CPU와 NUMA node cpuset을 나눌 때 first-touch와 worker placement는 어떻게 맞춰야 해?
+- cgroup CPU quota와 cpuset isolation은 어떤 문제가 달라?
+- hot path latency를 줄이려고 cpuset을 쓸 때 어떤 부작용을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 cpuset이 noisy neighbor를 시간으로 제한하는 도구가 아니라 CPU와 NUMA node 공간을
+  잘라 hot path가 섞일 수 있는 영역 자체를 줄이는 locality/isolation 도구라는 점을 설명한다.
+---
 # Cpuset Isolation, Noisy Neighbors
 
 > 한 줄 요약: cpuset은 noisy neighbor를 시간으로 제한하는 도구가 아니라, CPU와 NUMA node 경계를 잘라 hot path가 섞일 수 있는 공간 자체를 줄이는 도구다.

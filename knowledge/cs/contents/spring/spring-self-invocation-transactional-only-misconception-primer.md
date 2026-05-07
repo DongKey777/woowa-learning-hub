@@ -9,11 +9,20 @@ doc_role: playbook
 level: beginner
 language: mixed
 source_priority: 78
+review_feedback_tags:
+- self-invocation-proxy
+- misconception
+- self-invocation
+- this-method-call
 aliases:
 - self invocation
 - this method call
 - proxy bypass
 - 내부 호출
+- 프록시 우회
+- '@Cacheable @Validated 안 먹어요'
+- cacheable validated proxy bypass
+- Spring AOP annotation skipped
 intents:
 - troubleshooting
 - design
@@ -30,8 +39,14 @@ expected_queries:
 - 같은 클래스 내부 호출이면 왜 Transactional이 안 먹어?
 - this.method 호출은 왜 프록시를 우회해?
 - Transactional이 안 먹을 때 먼저 뭘 봐야 해?
+- 프록시를 우회하니까 @Cacheable, @Validated 같은 기능이 안 먹어요
+contextual_chunk_prefix: |
+  이 문서는 @Transactional만의 문제가 아니라 Spring AOP proxy를 지나야 동작하는
+  @Transactional, @Async, @Cacheable, @Validated, @PreAuthorize 같은 annotation
+  기능이 같은 클래스 내부 호출(this.method), private method, new로 만든 객체에서
+  조용히 빠지는 공통 원인을 설명한다. "프록시를 우회하니까 cacheable/validated가
+  안 먹는다"는 symptom query는 이 self-invocation primer로 라우팅한다.
 ---
-
 # Spring Self-Invocation 공통 오해 1페이지 카드: "`@Transactional`만 문제"가 아니다
 
 > 한 줄 요약: self-invocation(내부 호출)은 `@Transactional` 전용 버그가 아니라, "프록시를 안 지나면 annotation 기능이 빠질 수 있다"는 공통 규칙이다.

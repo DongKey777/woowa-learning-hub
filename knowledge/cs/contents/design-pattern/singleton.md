@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Singleton Design Pattern
+concept_id: design-pattern/singleton
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- singleton-pattern
+- global-instance
+- shared-state-risk
+aliases:
+- singleton basics
+- singleton beginner
+- singleton intro
+- design pattern basics
+- what is singleton
+- how to singleton
+- singleton pattern
+- global object
+- monostate singleton
+- module singleton
+symptoms:
+- 애플리케이션 전체에서 하나만 쓰고 싶다는 이유로 도메인 상태나 테스트에 영향을 주는 mutable global object를 만든다
+- Singleton, module singleton, monostate처럼 instance identity와 shared state를 구분하지 못한다
+- DI container singleton scope와 GoF Singleton을 같은 것으로 이해해 테스트, lifecycle, dependency visibility를 놓친다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/registry-pattern
+- software-engineering/dependency-injection-basics
+next_docs:
+- design-pattern/singleton-java
+- design-pattern/singleton-vs-di-container-scope
+- design-pattern/service-locator-antipattern
+linked_paths:
+- contents/design-pattern/singleton-java.md
+- contents/design-pattern/singleton-vs-di-container-scope.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/software-engineering/dependency-injection-basics.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/singleton-java
+- design-pattern/singleton-vs-di-container-scope
+- design-pattern/registry-pattern
+- design-pattern/service-locator-antipattern
+forbidden_neighbors: []
+expected_queries:
+- Singleton Pattern은 전역적으로 접근 가능한 인스턴스를 하나만 두는 패턴이라는 게 무슨 뜻이야?
+- Singleton은 하나의 인스턴스와 전역 접근을 제공하지만 mutable global state가 테스트와 동시성을 어렵게 만드는 이유가 뭐야?
+- module singleton, monostate, GoF Singleton은 instance identity와 shared state 관점에서 어떻게 달라?
+- DI container singleton scope와 직접 구현한 Singleton은 lifecycle과 의존성 주입 관점에서 어떻게 달라?
+- Singleton을 configuration이나 registry에는 쓸 수 있지만 domain service나 mutable state에는 조심해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Singleton Design Pattern primer로, 애플리케이션에서 단 하나의 instance/global
+  object를 제공하는 패턴의 목적과 module singleton, monostate, global mutable state, DI container
+  singleton scope, service locator 위험을 함께 설명한다.
+---
 # 싱글톤 (Singleton) 디자인 패턴
 
 

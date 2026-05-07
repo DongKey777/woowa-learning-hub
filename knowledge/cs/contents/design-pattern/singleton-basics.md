@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: 싱글톤 패턴 기초
+concept_id: design-pattern/singleton-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- singleton-hidden-global-state
+- singleton-vs-spring-bean-scope
+- testability-di-boundary
+aliases:
+- singleton pattern basics
+- 싱글톤 패턴 기초
+- singleton pattern
+- 인스턴스 하나
+- 전역 객체 패턴
+- singleton hidden state
+- singleton test difficulty
+- Spring singleton bean 차이
+symptoms:
+- 인스턴스가 하나면 상태와 동시성도 자동으로 안전하다고 생각하고 있어
+- GoF Singleton과 Spring singleton bean scope를 같은 말로 섞고 있어
+- getInstance 직접 호출이 테스트 대역 교체와 의존성 가시성을 해친다는 점을 놓치고 있어
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/oop-design-basics
+- spring/bean-di-basics
+next_docs:
+- design-pattern/singleton-java
+- design-pattern/singleton-vs-di-container-scope
+- design-pattern/service-locator-antipattern
+- spring/ioc-container-internals
+linked_paths:
+- contents/design-pattern/singleton-java.md
+- contents/design-pattern/singleton-vs-di-container-scope.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-bean-di-basics.md
+confusable_with:
+- design-pattern/singleton-vs-di-container-scope
+- design-pattern/service-locator-antipattern
+- spring/bean-di-basics
+forbidden_neighbors: []
+expected_queries:
+- 싱글톤 패턴은 무엇이고 인스턴스를 하나만 두는 이유는 뭐야?
+- 싱글톤의 숨은 전역 상태와 테스트 어려움은 왜 생겨?
+- Spring singleton bean과 GoF Singleton pattern은 어떻게 달라?
+- static utility와 singleton은 객체와 상태 관점에서 어떻게 구분해?
+- 설정 객체를 직접 getInstance로 만들지 DI bean으로 둘지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 Singleton beginner primer로, instance one, hidden global state, getInstance coupling, static utility, Spring singleton bean scope, DI testability를 분리한다.
+  싱글톤이 뭐예요, 싱글톤 단점, 전역 상태, Spring bean singleton 차이, 테스트 격리 어려움 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 싱글톤 패턴 기초 (Singleton Basics)
 
 > 한 줄 요약: 싱글톤은 인스턴스를 하나만 만들어 어디서든 같은 객체를 쓰게 하는 패턴인데, 숨은 전역 상태와 테스트 어려움을 함께 가져온다는 점을 알고 써야 한다.

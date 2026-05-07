@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring Transaction Propagation Mandatory Supports NotSupported Boundaries
+concept_id: spring/transaction-propagation-mandatory-supports-not-supported-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- transaction-propagation-mandatory
+- supports-not-supported
+- boundaries
+- mandatory-supports-not
+aliases:
+- MANDATORY SUPPORTS NOT_SUPPORTED
+- Spring transaction propagation context
+- transaction required boundary
+- non transactional section
+- propagation contract
+- suspend transaction boundary
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md
+expected_queries:
+- MANDATORY SUPPORTS NOT_SUPPORTED propagation은 언제 써?
+- 새 transaction을 만들지 않는 전파 옵션은 어떤 문맥 계약을 표현해?
+- NOT_SUPPORTED는 기존 transaction을 suspend하고 어떤 작업을 분리해?
+- SUPPORTS는 transaction이 있을 때와 없을 때 동작이 달라서 위험할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 MANDATORY, SUPPORTS, NOT_SUPPORTED를 새 transaction 생성 여부보다
+  이 method가 어떤 transaction context에서 실행되어야 하는지 고정하는 propagation contract로
+  설명한다. suspend, optional transaction, request flow boundary를 다룬다.
+---
 # Spring Transaction Propagation: `MANDATORY` / `SUPPORTS` / `NOT_SUPPORTED` Boundaries
 
 > 한 줄 요약: `MANDATORY`, `SUPPORTS`, `NOT_SUPPORTED`는 "새 트랜잭션을 만들까"보다, **이 메서드가 요청 흐름 어디에서 어떤 트랜잭션 문맥으로 실행되어야 하는가**를 선명하게 고정하는 전파 계약이다.

@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Startup Runner SmartLifecycle Readiness Warmup
+concept_id: spring/startup-runner-smartlifecycle-readiness-warmup
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- startup-runner-smartlifecycle
+- readiness-warmup
+- commandlinerunner-applicationrunner-smartlifecycle
+- startup-warmup-readiness
+aliases:
+- CommandLineRunner ApplicationRunner SmartLifecycle
+- Spring startup warmup readiness
+- startup hook selection
+- application context refresh phases
+- readiness before traffic
+- graceful shutdown lifecycle
+intents:
+- comparison
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-application-context-refresh-phases.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-actuator-exposure-security.md
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+symptoms:
+- startup hook에서 외부 API나 cache warmup을 실행했더니 readiness 전에 traffic이 들어온다.
+- CommandLineRunner에 오래 걸리는 작업을 넣어 boot가 멈춘 것처럼 보인다.
+- shutdown 때 background lifecycle bean 정리가 startup 순서와 맞지 않는다.
+expected_queries:
+- CommandLineRunner ApplicationRunner SmartLifecycle은 언제 골라야 해?
+- Spring readiness 이전 warmup 작업은 어디에 둬야 해?
+- startup hook이 boot를 막아도 되는 작업과 비동기로 돌릴 작업은 어떻게 나눠?
+- SmartLifecycle은 startup과 shutdown 순서에서 어떤 장점이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring startup hook 선택을 취향이 아니라 boot blocking 여부, readiness before
+  traffic, warmup completion, lifecycle phase, shutdown reverse ordering 기준으로 설명하는
+  playbook이다.
+---
 # Spring Startup Hooks: `CommandLineRunner`, `ApplicationRunner`, `SmartLifecycle`, and Readiness Warmup
 
 > 한 줄 요약: Spring startup hook 선택은 단순 취향이 아니라, 어떤 작업이 부팅을 막아야 하는지, readiness 이전에 끝나야 하는지, shutdown 때 역순 정리가 필요한지를 정하는 운영 설계다.

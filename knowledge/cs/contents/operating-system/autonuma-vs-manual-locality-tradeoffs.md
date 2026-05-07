@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: AutoNUMA vs Manual Locality Trade-offs
+concept_id: operating-system/autonuma-vs-manual-locality-tradeoffs
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- autonuma-vs-manual
+- locality-tradeoffs
+- locality
+- automatic-numa-balancing
+aliases:
+- AutoNUMA vs manual locality
+- automatic NUMA balancing
+- first touch locality
+- cpuset worker placement
+- remote memory access
+- NUMA locality tradeoff
+intents:
+- comparison
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/numa-autobalancing-runtime-debugging.md
+- contents/operating-system/numa-first-touch-remote-memory-locality-debugging.md
+- contents/operating-system/numa-production-debugging.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/cpu-migration-load-balancing-locality-debugging.md
+- contents/operating-system/cpuset-isolation-noisy-neighbors.md
+confusable_with:
+- operating-system/numa-autobalancing-runtime-debugging
+- operating-system/numa-first-touch-remote-memory-locality-debugging
+- operating-system/cpuset-isolation-noisy-neighbors
+expected_queries:
+- AutoNUMA와 manual NUMA locality tuning은 언제 골라야 해?
+- first-touch, cpuset, worker placement로 remote access를 줄이는 기준은?
+- automatic NUMA balancing은 이미 생긴 remote access를 뒤늦게 고치는 방식이야?
+- NUMA latency 문제에서 auto balancing과 manual placement를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 AutoNUMA를 이미 발생한 remote memory access를 sampling과 migration으로 늦게
+  줄이는 reactive mechanism으로 보고, manual locality는 first-touch, cpuset, CPU affinity,
+  worker placement로 애초에 remote access를 덜 만드는 설계로 비교한다.
+---
 # AutoNUMA vs Manual Locality Trade-offs
 
 > 한 줄 요약: autoNUMA는 이미 발생한 remote access를 뒤늦게 고치려는 반응형 메커니즘이고, manual locality는 first-touch, cpuset, worker placement로 애초에 remote access를 덜 만들려는 설계다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Partition Pruning and Hot/Cold Data
+concept_id: database/partition-pruning-hot-cold-data
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- partition-pruning
+- hot-cold-data
+- archive
+- query-tuning
+aliases:
+- partition pruning
+- range partitioning
+- hot cold data
+- cold archive
+- partition elimination
+- time-series partition
+- hot partition
+- 핫콜드 데이터
+- 파티션 pruning
+- 오래된 데이터 archive
+symptoms:
+- 파티셔닝만 하면 자동으로 빨라진다고 보고 partition key와 WHERE 조건 정합성을 확인하지 않고 있어
+- 최근 데이터와 오래된 audit/archive row가 섞여 hot query가 전체 table과 cold partition까지 훑고 있어
+- DATE(created_at) 같은 함수 조건 때문에 partition pruning이나 index usage가 약해지고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/schema-migration-partitioning-cdc-cqrs
+- database/index-and-explain
+next_docs:
+- database/multi-tenant-tenant-id-index-topology
+- database/online-backfill-consistency
+- database/destructive-schema-cleanup-column-retirement
+linked_paths:
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/index-and-explain.md
+- contents/database/multi-tenant-tenant-id-index-topology.md
+- contents/database/online-backfill-consistency.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/schema-migration-partitioning-cdc-cqrs
+- database/multi-tenant-tenant-id-index-topology
+- database/destructive-schema-cleanup-column-retirement
+forbidden_neighbors: []
+expected_queries:
+- partition pruning은 파티셔닝하면 자동으로 되는 게 아니라 WHERE 조건과 왜 맞아야 해?
+- hot data와 cold data를 분리하면 최근 주문 조회와 archive 운영에 어떤 이점이 있어?
+- WHERE DATE(created_at) 조건이 pruning과 index 사용을 약하게 만드는 이유를 알려줘
+- range partition과 hash partition을 hot/cold data 관점에서 비교해줘
+- partition pruning이 index를 대체하지 않는 이유와 각 파티션 내부 인덱스 필요성을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 partition pruning, range partitioning, hot/cold data, cold archive를 query predicate와 partition key 정합성 기준으로 다루는 intermediate playbook이다.
+  파티션 pruning, 핫콜드 데이터, 오래된 데이터 archive, DATE(created_at) pruning 실패 질문이 본 문서에 매핑된다.
+---
 # Partition Pruning and Hot/Cold Data
 
 

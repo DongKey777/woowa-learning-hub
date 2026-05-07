@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: 멀티 테넌트 SaaS 격리 설계
+concept_id: system-design/multi-tenant-saas-isolation-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- 멀티 테넌트 SaaS 격리 설계
+- multi tenant saas isolation design
+aliases:
+- 멀티 테넌트 SaaS 격리 설계
+- multi tenant saas isolation design
+- tenant isolation
+- noisy neighbor 방지
+- shared schema vs separate database
+- tenant blast radius
+- tenant별 rate limit cache queue 분리
+- data residency tenant boundary
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/database/normalization-denormalization-tradeoffs.md
+- contents/database/partition-pruning-hot-cold-data.md
+- contents/security/authentication-vs-authorization.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/system-design/cell-based-architecture-blast-radius-isolation-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 멀티 테넌트 SaaS 격리 설계 설계 핵심을 설명해줘
+- 멀티 테넌트 SaaS 격리 설계가 왜 필요한지 알려줘
+- 멀티 테넌트 SaaS 격리 설계 실무 트레이드오프는 뭐야?
+- 멀티 테넌트 SaaS 격리 설계 설계에서 흔한 실수는 무엇이야?
+- 한 tenant의 폭주가 다른 tenant에 영향을 주지 않게 하려면 어떻게 설계해?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 멀티 테넌트 SaaS 격리 설계를 다루는 deep_dive 문서다. 여러 고객이 같은 플랫폼을 쓰더라도, 한 tenant의 폭주와 실수가 다른 tenant의 성능, 보안, 데이터 경계를 무너뜨리지 않게 만드는 설계다. 검색 질의가 멀티 테넌트 SaaS 격리 설계, multi tenant saas isolation design처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # 멀티 테넌트 SaaS 격리 설계
 
 > 한 줄 요약: 여러 고객이 같은 플랫폼을 쓰더라도, 한 tenant의 폭주와 실수가 다른 tenant의 성능, 보안, 데이터 경계를 무너뜨리지 않게 만드는 설계다.

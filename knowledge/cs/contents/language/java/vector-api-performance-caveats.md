@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Vector API Performance Caveats
+concept_id: language/vector-api-performance-caveats
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- vector-api
+- performance
+- benchmarking
+aliases:
+- Vector API Performance Caveats
+- Java Vector API performance pitfalls
+- SIMD masking alignment fallback
+- vector shape lane benchmark
+- Vector API가 항상 빠른가요
+- 자바 Vector API 성능 주의점
+symptoms:
+- Vector API를 쓰면 입력 크기, lane shape, mask, scalar fallback과 무관하게 항상 빨라진다고 판단해
+- JMH warmup, dead-code elimination, cache effect를 통제하지 않은 microbenchmark로 SIMD 성능 결론을 내려
+- 작은 input이나 branch-heavy loop, 불규칙 memory access에서 Vector API overhead가 이득보다 클 수 있다는 점을 놓쳐
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- language/vector-api-basics
+- language/jmh-benchmarking-pitfalls
+- language/jit-warmup-deoptimization
+next_docs:
+- language/jni-native-call-overhead
+- language/method-inlining-heuristics-deopt-triggers
+- language/code-cache-jit-profiling
+linked_paths:
+- contents/language/java/vector-api-basics.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/jni-native-call-overhead.md
+- contents/language/java/method-inlining-heuristics-deopt-triggers.md
+- contents/language/java/code-cache-jit-profiling.md
+confusable_with:
+- language/vector-api-basics
+- language/jmh-benchmarking-pitfalls
+- language/jni-native-call-overhead
+forbidden_neighbors: []
+expected_queries:
+- Java Vector API가 항상 scalar loop보다 빠르지 않은 이유를 shape masking alignment 관점에서 설명해줘
+- Vector API benchmark를 JMH 없이 보면 왜 warmup DCE cache effect 때문에 틀릴 수 있어?
+- 작은 배열이나 branch-heavy loop에서 Vector API overhead가 더 커지는 경우를 알려줘
+- SIMD lane shape와 tail masking이 Vector API 성능에 어떤 영향을 줘?
+- Vector API와 JNI SIMD, JIT auto-vectorization을 성능 검증 관점에서 어떻게 비교해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java Vector API의 성능 caveat를 input size, vector shape/species, masking, memory alignment, scalar fallback, JMH benchmark 관점에서 점검하는 advanced playbook이다.
+  Vector API 성능 저하, SIMD masking, alignment, scalar fallback, JMH 검증 질문이 본 문서에 매핑된다.
+---
 # Vector API Performance Caveats
 
 > 한 줄 요약: Vector API는 SIMD 표현을 Java로 끌어오지만, 항상 빠른 것은 아니며 shape, masking, alignment, fallback, input size, benchmark design이 성능을 좌우한다.

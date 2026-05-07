@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- application-context-refresh
+- phases
+- applicationcontext-refresh
+- refresh-phases
 aliases:
 - ApplicationContext refresh
 - refresh phases
@@ -36,7 +41,6 @@ contextual_chunk_prefix: |
   후처리까지 끝내는 순서 같은 자연어 paraphrase가 본 문서의 단계별
   설명에 매핑된다.
 ---
-
 # Spring ApplicationContext Refresh Phases
 
 > 한 줄 요약: ApplicationContext refresh는 한 번의 "시작"이 아니라 Bean 정의, 후처리, 초기화, 이벤트 발행이 순서대로 맞물리는 부팅 파이프라인이다.

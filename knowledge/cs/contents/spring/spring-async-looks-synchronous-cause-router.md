@@ -35,9 +35,9 @@ prerequisites:
 - spring/aop-basics
 next_docs:
 - spring/self-invocation-proxy-misconception
-- spring/spring-scheduler-async-boundaries
-- spring/spring-transactional-async-composition-traps
-- spring/spring-async-context-propagation-restclient-http-interface-clients
+- spring/scheduler-async-boundaries
+- spring/transactional-async-composition-traps
+- spring/async-context-propagation-restclient-http-interface-clients
 linked_paths:
 - contents/spring/spring-async-self-invocation-same-thread-symptom-card.md
 - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
@@ -47,8 +47,8 @@ linked_paths:
 - contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
 confusable_with:
 - spring/self-invocation-proxy-misconception
-- spring/spring-scheduler-async-boundaries
-- spring/spring-transactional-async-composition-traps
+- spring/scheduler-async-boundaries
+- spring/transactional-async-composition-traps
 forbidden_neighbors: []
 expected_queries:
 - 'Spring에서 @Async를 붙였는데 왜 호출한 쪽과 같은 스레드 이름이 찍혀요?'
@@ -65,7 +65,6 @@ contextual_chunk_prefix: |
   async 안 먹음, 같은 thread 로그, 비동기 메서드가 바로 실행됨 같은 검색을
   원인 문서로 보내는 입구로 사용한다.
 ---
-
 # 비동기가 동기처럼 보여요 원인 라우터
 
 ## 한 줄 요약

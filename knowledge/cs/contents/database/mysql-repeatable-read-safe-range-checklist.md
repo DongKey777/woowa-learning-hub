@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: MySQL REPEATABLE READ Safe-Range Checklist
+concept_id: database/mysql-repeatable-read-safe-range-checklist
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- repeatable-read
+- gap-lock
+- safe-range
+- overlap-check
+aliases:
+- mysql repeatable read safe range checklist
+- innodb safe range checklist
+- repeatable read absence check checklist
+- overlap probe checklist mysql
+- next-key lock checklist
+- chosen index path lock footprint
+- empty result safe range
+- absence check not predicate lock
+- RR safe range 점검
+- overlap probe checklist
+symptoms:
+- InnoDB REPEATABLE READ라서 WHERE 절 전체가 잠겼다고 설명하지만 실제 chosen index path와 writer protocol을 확인하지 않았어
+- overlap, absence, active predicate check가 plan drift나 mixed writer path 때문에 RR에서도 샐 수 있어
+- safe-range 가정을 EXPLAIN, data_locks, 두 세션 재현 증거로 문서화해야 해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/gap-lock-next-key-lock
+- database/mysql-empty-result-locking-reads
+next_docs:
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/overlap-predicate-index-design-booking-tables
+- database/engine-fallbacks-overlap-enforcement
+linked_paths:
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/mysql-explain-range-locking-primer.md
+confusable_with:
+- database/mysql-empty-result-locking-reads
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/range-invariant-enforcement-write-skew-phantom
+forbidden_neighbors: []
+expected_queries:
+- MySQL REPEATABLE READ에서 safe range lock 가정을 어떤 체크리스트로 검증해야 해?
+- FOR UPDATE를 썼으니 WHERE 절 전체가 잠긴다고 말하면 왜 틀릴 수 있어?
+- overlap probe가 RR에서도 안전하려면 chosen index path와 writer protocol을 어떻게 확인해?
+- empty result absence check를 predicate lock이 아니라 scanned gap으로 해석해야 하는 이유가 뭐야?
+- EXPLAIN과 performance_schema data_locks로 next-key lock footprint를 어떻게 증명해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL InnoDB REPEATABLE READ에서 safe-range, next-key lock, gap lock 가정을 statement, chosen index path, writer protocol 증거로 점검하는 advanced playbook이다.
+  RR safe range 점검, overlap probe checklist, absence check not predicate lock 질문이 본 문서에 매핑된다.
+---
 # MySQL REPEATABLE READ Safe-Range Checklist
 
 > 한 줄 요약: InnoDB `REPEATABLE READ`에서 next-key/gap lock은 "`WHERE` 절 전체"가 아니라 **실제로 스캔한 인덱스 range**를 보호하므로, absence check, overlap probe, index-path assumption을 한 체크리스트로 검증해야 한다.

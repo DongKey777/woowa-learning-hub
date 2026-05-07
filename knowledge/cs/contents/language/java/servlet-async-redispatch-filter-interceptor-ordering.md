@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Servlet Async Redispatch Filter Interceptor Ordering
+concept_id: language/servlet-async-redispatch-filter-interceptor-ordering
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- servlet-async
+- spring-mvc
+- threadlocal
+aliases:
+- Servlet REQUEST ASYNC ERROR Redispatch Ordering for Filters and Interceptors
+- servlet async redispatch interceptor ordering
+- AsyncHandlerInterceptor afterConcurrentHandlingStarted
+- request lifetime vs thread lifetime
+- OncePerRequestFilter async error dispatch
+- servlet async MDC cleanup
+symptoms:
+- async MVC에서 request-lifetime state와 thread-bound ThreadLocal MDC view를 섞어 원래 REQUEST thread에 context가 새거나 async redispatch에서 context가 빠져
+- async가 시작됐는데 filter finally에서 request wrapper나 cleanup handle을 너무 일찍 닫아 ASYNC redispatch가 쓰는 state를 잃어
+- afterCompletion만 믿고 cleanup을 두어 REQUEST dispatch에서 async 시작 시 afterConcurrentHandlingStarted만 호출되는 경로를 놓쳐
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/servlet-asynclistener-cleanup-patterns
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/threadlocal-leaks-context-propagation
+next_docs:
+- language/servlet-async-timeout-downstream-deadline-propagation
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+- spring/onceperrequestfilter-async-error-dispatch-traps
+linked_paths:
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/streamingresponsebody-sseemitter-terminal-cleanup-matrix.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+confusable_with:
+- language/servlet-asynclistener-cleanup-patterns
+- language/threadlocal-leaks-context-propagation
+- spring/onceperrequestfilter-async-error-dispatch-traps
+forbidden_neighbors: []
+expected_queries:
+- Servlet async에서 REQUEST ASYNC ERROR redispatch 순서와 filter interceptor callback ordering을 설명해줘
+- AsyncHandlerInterceptor afterConcurrentHandlingStarted는 왜 original REQUEST thread state를 비우는 데 중요해?
+- request attribute로 살아야 하는 state와 ThreadLocal MDC처럼 dispatch thread에만 붙는 view를 어떻게 나눠?
+- async가 시작된 REQUEST dispatch에서 afterCompletion이 바로 호출되지 않을 수 있는 이유가 뭐야?
+- OncePerRequestFilter async error dispatch와 ThreadLocal cleanup traps를 Spring MVC 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Servlet async REQUEST/ASYNC/ERROR redispatch에서 filter, interceptor, AsyncHandlerInterceptor, ThreadLocal/MDC cleanup ordering을 진단하는 advanced playbook이다.
+  servlet async redispatch, filter ordering, interceptor afterConcurrentHandlingStarted, ThreadLocal cleanup, MDC 질문이 본 문서에 매핑된다.
+---
 # Servlet `REQUEST` / `ASYNC` / `ERROR` Redispatch Ordering for Filters and Interceptors
 
 > 한 줄 요약: servlet async에서 오래 살아야 하는 상태는 request/async lifecycle에 붙이고, `MDC`나 custom `ThreadLocal` 같은 thread-bound view는 각 dispatch마다 다시 bind/clear해야 한다. `REQUEST`에서 async가 시작되면 Spring interceptor는 `afterConcurrentHandlingStarted`로 원래 스레드 상태를 비우고, 실제 최종 release는 `AsyncListener`나 Spring async callback이 맡는 편이 안전하다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Outbox, Saga, and Eventual Consistency
+concept_id: database/outbox-saga-eventual-consistency
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- outbox
+- saga
+- eventual-consistency
+- idempotent-consumer
+aliases:
+- outbox pattern
+- saga pattern
+- eventual consistency
+- outbox relay
+- local transaction plus event
+- distributed transaction alternative
+- compensating transaction
+- consumer idempotency
+- replay and retry
+- 메시지 발행과 DB 커밋 정합성
+symptoms:
+- DB commit과 message publish를 하나의 distributed transaction으로 묶지 못해 outbox나 CDC relay를 검토해야 해
+- Saga 보상 작업, 중복 이벤트, 순서 뒤틀림, retry 폭주를 운영 규칙으로 설계해야 해
+- eventual consistency를 단순히 나중에 맞음으로만 말하고 수렴 기준과 drift repair를 정하지 않았어
+intents:
+- deep_dive
+- design
+prerequisites:
+- design-pattern/outbox-relay-idempotent-publisher
+- database/idempotency-key-and-deduplication
+next_docs:
+- system-design/change-data-capture-outbox-relay-design
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- database/cdc-debezium-outbox-binlog
+linked_paths:
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/idempotency-key-and-deduplication.md
+confusable_with:
+- database/cdc-debezium-outbox-binlog
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/read-model-staleness-read-your-writes
+forbidden_neighbors: []
+expected_queries:
+- Outbox pattern은 DB commit과 message publish 정합성 문제를 어떻게 줄여?
+- Saga pattern에서 compensating transaction이 rollback과 다른 이유를 설명해줘
+- eventual consistency를 허용할 때 중복 이벤트와 순서 뒤틀림을 consumer가 어떻게 방어해야 해?
+- outbox relay와 CDC 기반 이벤트 발행의 차이를 알려줘
+- 분산 트랜잭션 대신 outbox와 saga를 쓰는 tradeoff를 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 outbox pattern, saga pattern, eventual consistency를 local transaction plus event, compensating transaction, idempotent consumer, replay/retry 관점에서 다루는 advanced deep dive다.
+  DB 커밋과 메시지 발행 정합성, outbox relay, saga 보상 작업, distributed transaction alternative 질문이 본 문서에 매핑된다.
+---
 # Outbox, Saga, Eventual Consistency
 
 **난이도: 🔴 Advanced**

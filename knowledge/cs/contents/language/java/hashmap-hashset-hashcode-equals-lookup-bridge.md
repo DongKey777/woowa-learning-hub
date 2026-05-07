@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: HashMap / HashSet hashCode equals lookup bridge
+concept_id: language/hashmap-hashset-hashcode-equals-lookup-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- hash-collection
+- equals-hashcode
+- map-lookup-debug
+aliases:
+- HashMap HashSet hashCode equals lookup bridge
+- hashCode then equals lookup flow
+- HashMap get hashCode equals order
+- HashSet contains hashCode equals order
+- hash bucket equals lookup
+- 자바 HashMap hashCode equals 조회 흐름
+symptoms:
+- HashMap/HashSet이 hashCode만으로 중복이나 조회를 결정한다고 생각해 bucket 후보 찾기와 equals 최종 판정을 구분하지 못해
+- hashCode가 같으면 무조건 같은 값이라고 오해하거나 equals만 맞으면 hashCode는 신경 쓰지 않아도 된다고 생각해
+- contains false, get null 문제에서 hashCode/equals 흐름과 mutable key 가능성을 순서대로 점검하지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-equality-identity-basics
+next_docs:
+- language/collections-equality-mutable-state-foundations
+- language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+- language/mutable-hash-keys-hashset-hashmap-bridge
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/new-aliasing-equality-hashset-hashmap-get-bridge-drill.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+- contents/language/java/mutable-hash-keys-hashset-hashmap-bridge.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/collections-performance.md
+confusable_with:
+- language/collections-equality-mutable-state-foundations
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/hashset-vs-treeset-duplicate-semantics
+forbidden_neighbors: []
+expected_queries:
+- HashMap과 HashSet이 hashCode로 bucket을 찾고 equals로 최종 확인하는 흐름을 설명해줘
+- hashCode가 같으면 같은 값인지 아니면 equals까지 봐야 하는지 알려줘
+- HashSet contains와 HashMap get이 hashCode equals 순서로 동작하는 예제를 보여줘
+- HashMap get이 null일 때 equals hashCode와 mutable key를 어떤 순서로 점검해야 해?
+- 같은 hash collision은 중복 확정이 아니라 후보 bucket이라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java HashMap/HashSet lookup flow를 hashCode bucket selection과 equals final check로 설명하는 beginner bridge다.
+  hashCode then equals, HashMap get null, HashSet contains, hash collision, equals hashCode contract 질문이 본 문서에 매핑된다.
+---
 # `HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까
 
 > 한 줄 요약: Java 입문자가 `equals()`/`hashCode()` 기초 다음 단계에서 `HashMap`/`HashSet`이 실제로는 "`hashCode()`로 후보를 찾고 `equals()`로 마지막 확인을 한다"는 lookup 흐름을 한 장으로 연결하도록 만든 beginner bridge다.

@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: CDS Startup Profiling
+concept_id: language/cds-startup-profiling
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- jvm-startup
+- class-data-sharing
+- profiling
+aliases:
+- CDS startup profiling
+- AppCDS cold start profiling
+- Java class loading startup
+- shared archive reuse
+- JFR startup profiling
+- JVM cold start
+symptoms:
+- CDS나 AppCDS를 적용했다는 사실만 보고 archive가 실제로 재사용됐는지 측정하지 않아
+- class loading, static initialization, JIT warmup, first request latency를 하나의 startup 문제로 섞어 진단해
+- cold start 개선과 warmup 개선을 구분하지 못해 CDS 효과를 과대평가해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/class-data-sharing-appcds
+next_docs:
+- language/jfr-jmc-performance-playbook
+- language/jit-warmup-deoptimization
+- language/classloader-memory-leak-playbook
+linked_paths:
+- contents/language/java/class-data-sharing-appcds.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/classloader-memory-leak-playbook.md
+confusable_with:
+- language/class-data-sharing-appcds
+- language/jit-warmup-deoptimization
+- language/jfr-jmc-performance-playbook
+forbidden_neighbors: []
+expected_queries:
+- Java CDS AppCDS startup profiling에서 archive reuse 여부를 왜 확인해야 해?
+- CDS가 class loading startup은 줄여도 첫 요청 warmup은 그대로 느릴 수 있는 이유가 뭐야?
+- JFR로 JVM cold start에서 class loading JIT warmup을 어떻게 분리해?
+- AppCDS 적용 효과를 startup latency와 RSS로 측정하는 방법을 알려줘
+- Java startup profiling에서 cold start와 first request latency를 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 JVM CDS/AppCDS startup profiling을 class loading, shared archive reuse, cold start, JIT warmup, JFR measurement 관점으로 설명하는 advanced deep dive다.
+  CDS profiling, AppCDS, startup latency, class loading time, archive reuse, first request latency 질문이 본 문서에 매핑된다.
+---
 # CDS Startup Profiling
 
 > 한 줄 요약: CDS/AppCDS는 startup profiling에서 class loading과 metadata 비용을 줄이는 수단이며, 진짜 개선 효과를 보려면 cold start와 archive 재사용 여부를 같이 측정해야 한다.

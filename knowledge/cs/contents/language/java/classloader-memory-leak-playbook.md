@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: ClassLoader Memory Leak Playbook
+concept_id: language/classloader-memory-leak-playbook
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- classloader-leak
+- memory-leak
+- redeploy
+aliases:
+- ClassLoader memory leak
+- redeploy memory leak
+- webapp classloader retention
+- ThreadLocal classloader leak
+- metaspace leak
+- VM.classloader_stats
+- old ClassLoader not collected
+symptoms:
+- redeploy 후 메모리가 줄지 않고 old ClassLoader가 살아 있어 heap과 metaspace가 함께 늘어나
+- ThreadLocal, background thread, static cache, JDBC driver가 webapp classloader를 붙잡는 경로를 끊지 못해
+- heap leak만 보고 ClassLoader 자체가 GC되지 않는 누수 유형을 놓쳐
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/classloader-delegation-edge-cases
+next_docs:
+- language/jcmd-diagnostic-command-cheatsheet
+- language/oom-heap-dump-playbook
+- language/threadlocal-leaks-context-propagation
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+confusable_with:
+- language/classloader-delegation-edge-cases
+- language/oom-heap-dump-playbook
+- language/jvm-gc-jmm-overview
+forbidden_neighbors: []
+expected_queries:
+- Java redeploy 후 old ClassLoader가 살아남아 memory leak이 나는 원인을 어떻게 찾지?
+- ThreadLocal이 webapp classloader leak을 만드는 이유와 remove 패턴을 설명해줘
+- jcmd VM.classloader_stats와 GC.class_histogram으로 classloader leak을 어떻게 본다?
+- heap leak과 ClassLoader leak은 어떻게 다르고 metaspace leak과 어떻게 연결돼?
+- static cache background thread JDBC driver가 classloader를 붙잡는 경로를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java ClassLoader memory leak을 redeploy, ThreadLocal, static cache, background thread, JDBC driver, VM.classloader_stats, heap dump 관점으로 진단하는 advanced playbook이다.
+  ClassLoader leak, redeploy memory leak, old ClassLoader not collected, metaspace leak, ThreadLocal cleanup 질문이 본 문서에 매핑된다.
+---
 # ClassLoader Memory Leak Playbook
 
 > 한 줄 요약: Java 메모리 누수는 heap에만 생기지 않고, ClassLoader를 붙잡으면 redeploy 후에도 살아남는다.

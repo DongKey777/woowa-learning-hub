@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Set Remove During Iteration Safety Primer
+concept_id: language/set-remove-during-iteration-safety-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- concurrentmodificationexception
+- set
+- removeif
+aliases:
+- Set remove during iteration safety primer
+- Java Set ConcurrentModificationException for-each remove
+- Set iterator remove removeIf
+- HashSet remove while iterating
+- TreeSet remove during iteration
+- 자바 Set 순회 중 삭제
+symptoms:
+- for-each로 Set을 순회하면서 set.remove를 직접 호출해 ConcurrentModificationException이 발생해
+- ConcurrentModificationException을 멀티스레드 문제로만 이해해 같은 스레드의 fail-fast structural modification 의미를 놓쳐
+- 조건 삭제가 목적임에도 removeIf 대신 Iterator와 set.remove를 섞어 순회 통로와 삭제 통로를 다르게 만들어
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/java-collections-basics
+- language/collection-update-strategy-primer
+- language/mutable-element-pitfalls-list-set-primer
+next_docs:
+- language/map-remove-during-iteration-safety-primer
+- language/collections-equality-mutable-state-foundations
+- language/mutable-elements-hashset-treeset-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collection-update-strategy-primer.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+- contents/language/java/mutable-element-pitfalls-list-set-primer.md
+confusable_with:
+- language/map-remove-during-iteration-safety-primer
+- language/mutable-element-pitfalls-list-set-primer
+- language/collection-update-strategy-primer
+forbidden_neighbors: []
+expected_queries:
+- Set을 for-each로 순회하면서 set.remove를 호출하면 왜 ConcurrentModificationException이 나?
+- Set 순회 중 안전하게 삭제하려면 Iterator.remove와 removeIf 중 무엇을 쓰면 좋아?
+- ConcurrentModificationException은 멀티스레드가 아니어도 같은 스레드 structural modification으로 발생할 수 있어?
+- 조건 삭제라면 Set.removeIf가 Iterator보다 더 읽기 좋은 경우를 알려줘
+- HashSet TreeSet을 순회하면서 삭제할 때 Do와 Don't를 표로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Set iteration 중 remove를 안전하게 수행하는 방법을 Iterator.remove, removeIf, ConcurrentModificationException 증상 중심으로 설명하는 beginner symptom router다.
+  Set remove during iteration, Iterator.remove, removeIf, ConcurrentModificationException, fail-fast 질문이 본 문서에 매핑된다.
+---
 # Set 수정 중 순회 안전 가이드
 
 > 한 줄 요약: `Set`을 돌면서 지워야 할 때는 `for-each` 안에서 `set.remove(...)`를 바로 부르지 말고, `Iterator.remove()` 또는 `removeIf(...)`처럼 순회가 허용한 삭제 통로를 써야 안전하다.

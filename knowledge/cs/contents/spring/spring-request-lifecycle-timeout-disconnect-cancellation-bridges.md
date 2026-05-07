@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Spring Request Lifecycle Timeout Disconnect Cancellation Bridges
+concept_id: spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- request-lifecycle-timeout
+- disconnect-cancellation-bridges
+- request-timeout-disconnect
+- cancellation
+aliases:
+- Spring request timeout disconnect cancellation
+- client disconnect broken pipe Spring MVC
+- 499 in Spring application
+- AsyncRequestTimeoutException
+- response commit timeout budget
+- servlet cancellation boundary
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-requestbody-responsebodyadvice-pipeline.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- spring/mvc-request-lifecycle
+- spring/mvc-async-deferredresult-callable-dispatch
+- spring/onceperrequestfilter-async-error-dispatch-traps
+- spring/problemdetail-before-after-commit-matrix
+symptoms:
+- 애플리케이션 로그에는 broken pipe가 남지만 실제 원인은 client disconnect처럼 보인다.
+- upstream timeout budget이 Spring async timeout보다 짧아 499 또는 gateway timeout이 먼저 난다.
+- response commit 이후 예외가 ProblemDetail로 바뀌지 않고 write failure로 끝난다.
+expected_queries:
+- Spring MVC에서 499 broken pipe client disconnect를 어떻게 해석해?
+- timeout budget과 Spring async timeout은 어떤 순서로 맞춰야 해?
+- response commit 이후 cancel이나 disconnect가 나면 애플리케이션 버그로 봐야 해?
+- Servlet lifecycle과 network lifecycle을 같이 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC 요청 lifecycle을 controller code만이 아니라 timeout budget,
+  async redispatch, response commit, client disconnect, proxy 499와 연결해서 진단한다.
+  broken pipe를 애플리케이션 예외와 network cancellation으로 나누는 router 역할을 한다.
+---
 # Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges
 
 > 한 줄 요약: Spring MVC 요청은 컨트롤러 로직만으로 끝나지 않고 timeout budget, async redispatch, response commit, client disconnect가 함께 얽히므로, 499나 broken pipe를 애플리케이션 버그와 구분하려면 Spring lifecycle과 네트워크 lifecycle을 같이 봐야 한다.

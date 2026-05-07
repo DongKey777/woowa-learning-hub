@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Connection Reuse vs Service Discovery Churn"
+concept_id: network/connection-reuse-vs-service-discovery-churn
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- connection-reuse-discovery-churn
+- stale-endpoint-routing
+- pool-refresh-dns-ttl
+aliases:
+- connection reuse service discovery churn
+- stale routing
+- stale endpoint
+- DNS change pool refresh
+- backend rotation keep-alive
+- endpoint update connection pool
+symptoms:
+- DNS나 service registry는 바뀌었는데 app connection pool이 오래된 endpoint를 계속 친다
+- backend rotation 직후 일부 요청만 실패하는데 DNS TTL만 보고 opened connection lifetime을 놓친다
+- connection reuse 최적화가 service discovery refresh와 충돌하는 장면을 보지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/dns-ttl-cache-failure-patterns
+next_docs:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/dns-negative-caching-nxdomain-behavior
+- network/http2-http3-connection-reuse-coalescing
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+linked_paths:
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/dns-negative-caching-nxdomain-behavior.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/dns-negative-caching-nxdomain-behavior
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+- network/http2-http3-connection-reuse-coalescing
+- network/idle-timeout-mismatch-lb-proxy-app
+forbidden_neighbors: []
+expected_queries:
+- "Service discovery가 바뀌었는데 connection pool이 stale endpoint를 계속 쓰는 이유가 뭐야?"
+- "DNS TTL과 pool idle lifetime과 endpoint refresh interval을 어떻게 맞춰야 해?"
+- "backend rotation 뒤 일부 요청만 실패하면 connection reuse와 discovery churn을 어떻게 의심해?"
+- "새 주소는 알아도 옛 keep-alive connection을 계속 쓰는 상태를 어떻게 진단해?"
+- "Blue-green canary 배포에서 pool refresh가 늦으면 어떤 장애가 생겨?"
+contextual_chunk_prefix: |
+  이 문서는 connection reuse, service discovery churn, DNS TTL,
+  endpoint refresh, stale routing, backend rotation, pool idle eviction,
+  validation on borrow를 연결하는 advanced operational playbook이다.
+---
 # Connection Reuse vs Service Discovery Churn
 
 > 한 줄 요약: connection reuse는 handshake를 아끼지만, service discovery가 자주 바뀌는 환경에서는 오래된 연결이 새 라우팅 현실과 어긋날 수 있다.

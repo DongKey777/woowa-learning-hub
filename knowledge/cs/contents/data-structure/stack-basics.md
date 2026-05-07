@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 스택 기초 (Stack Basics)
+concept_id: data-structure/stack-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- stack-vs-queue-basics
+- call-stack-entrypoint
+- undo-bracket-pattern
+aliases:
+- stack basics
+- lifo
+- 스택 입문
+- 스택이 뭐예요
+- stack push pop
+- call stack
+- undo stack
+- bracket matching
+- 괄호 짝 맞추기
+- stack vs queue beginner
+- 스택과 큐 차이
+- beginner stack
+- stack overflow basics
+- stack basics basics
+- stack basics beginner
+symptoms:
+- 최근에 넣은 값이 먼저 나온다는 규칙은 알겠는데 어떤 문제에서 바로 떠올려야 할지 모르겠어
+- 괄호 짝 맞추기와 재귀 호출이 왜 같은 스택 이야기로 묶이는지 감이 안 와
+- 큐와 비교할 때 순서 차이는 말할 수 있는데 실제 사용 장면이 바로 연결되지 않아
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+next_docs:
+- algorithm/recursion-intro
+- data-structure/monotonic-queue-and-stack
+- data-structure/queue-basics
+linked_paths:
+- contents/data-structure/basic.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/queue-basics.md
+- contents/algorithm/recursion-intro.md
+confusable_with:
+- data-structure/queue-basics
+- algorithm/recursion-intro
+forbidden_neighbors:
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+expected_queries:
+- 후입선출 구조를 처음 배우는 사람 눈높이로 설명해줘
+- 되돌리기나 괄호 검사에서 왜 이 자료구조를 쓰는지 알고 싶어
+- 함수 호출이 쌓였다가 돌아오는 흐름을 자료구조 관점으로 이해하고 싶어
+- 큐와 반대 순서를 가지는 선형 구조를 예시로 비교해줘
+- push pop peek이 어떤 감각인지 쉬운 장면으로 익히고 싶어
+- 재귀를 보기 전에 스택 기본기를 먼저 정리하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 stack의 LIFO 규칙을 이해하고, 되돌리기와 괄호 짝 검사, 함수 호출이 왜 모두 최근 상태를 먼저 꺼내는 장면인지 처음 잡는 primer다. 마지막에 넣은 것이 먼저 나옴, 최근 작업 되돌리기, 여는 괄호 쌓기, 함수가 끝나며 돌아오기, 큐와 반대 순서 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 스택 기초 (Stack Basics)
 
 > 한 줄 요약: 스택은 마지막에 넣은 것이 먼저 나오는 LIFO 구조로, "되돌리기"나 "짝 맞추기"처럼 가장 최근 상태가 중요한 문제에 잘 맞는다.

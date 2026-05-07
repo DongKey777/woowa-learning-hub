@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring Self Call Verification Test Mini Guide
+concept_id: spring/self-call-verification-test-mini-guide
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- self-call-verification
+- test
+- self-invocation-verification
+- configuration-bean-self
+aliases:
+- Spring self invocation verification test
+- @Configuration bean self call test
+- assertSame assertNotSame bean identity
+- proxyBeanMethods verification
+- Kotlin configuration self invocation
+intents:
+- drill
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-legacy-configuration-bean-self-call-detection-card.md
+- contents/spring/spring-full-vs-lite-configuration-examples.md
+- contents/spring/spring-transactional-self-invocation-test-bridge-primer.md
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+expected_queries:
+- @Configuration @Bean self invocation이 같은 bean을 쓰는지 테스트로 어떻게 확인해?
+- assertSame assertNotSame으로 Spring bean identity를 검증하는 예시가 필요해
+- proxyBeanMethods true false 차이를 Java Kotlin 테스트로 확인하고 싶어
+- @Transactional self invocation 테스트와 @Bean self call 테스트는 무엇이 달라?
+contextual_chunk_prefix: |
+  이 문서는 @Configuration의 @Bean self-invocation 의심 상황에서 container bean과 실제 주입
+  객체가 같은 인스턴스인지 assertSame/assertNotSame으로 빠르게 검증하는 mini guide다.
+  proxyBeanMethods, full/lite configuration, transactional self invocation과 구분한다.
+---
 # Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기
 
 > 한 줄 요약: `@Configuration`의 `@Bean` self-invocation(내부 호출)이 의심되면, "컨테이너의 Bean"과 "실제로 주입된 객체"가 같은 인스턴스인지 `assertSame` / `assertNotSame`으로 먼저 확인하면 된다. Java와 Kotlin 모두 같은 질문으로 검증한다.

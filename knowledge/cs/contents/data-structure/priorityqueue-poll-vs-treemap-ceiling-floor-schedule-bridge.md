@@ -66,12 +66,13 @@ expected_queries:
 - 전체에서 가장 이른 예약 처리와 특정 시각 이후 첫 예약 조회를 자료구조로 구분해줘
 - roomescape에서 예약 조회 로직과 처리 순서 로직을 같은 구조로 보면 안 되는 이유가 궁금해
 contextual_chunk_prefix: |
-  이 문서는 예약표 조회 질문에서 PriorityQueue.poll과 TreeMap
-  ceiling/floor를 어떻게 갈라 읽는지 헷갈리는 학습자에게 전체 최소값
-  꺼내기와 기준 시각 주변 이웃 찾기를 Woowa 미션과 연결해 잇는
-  mission_bridge다. 가장 이른 예약 처리, 10시 15분 이후 첫 예약, poll이
-  왜 조회가 아냐, 기준 시각 주변 찾기, key와 value 같이 읽기 같은
-  자연어 paraphrase가 본 문서의 스케줄 조회 선택에 매핑된다.
+  이 문서는 roomescape 예약표를 읽다가 전체에서 가장 빠른 항목을
+  꺼내는 문제와 특정 시각 기준으로 앞뒤 예약을 찾는 문제를 섞는
+  학습자에게 PriorityQueue.poll과 TreeMap ceiling/floor를 Woowa
+  미션 맥락에서 갈라 주는 mission_bridge다. 가장 빠른 하나 빼기, 10시
+  15분 뒤 첫 예약, 조회인데 poll이 떠오름, 기준 시각 주변 예약 찾기,
+  시작 시각으로 value까지 읽기 같은 자연어 paraphrase가 본 문서의
+  선택 기준에 매핑된다.
 ---
 # PriorityQueue.poll() vs TreeMap `ceiling`/`floor` Schedule Bridge
 
@@ -90,6 +91,14 @@ contextual_chunk_prefix: |
 - [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md)
 
 retrieval-anchor-keywords: priorityqueue poll vs treemap ceiling floor, schedule neighbor query bridge, treemap ceilingkey floorkey reservation, priorityqueue poll schedule 왜 틀려요, ceiling floor 있는데 poll을 왜 쓰죠, ordered map vs priority queue schedule, key value schedule nearest neighbor, exact neighbor query treemap, reservation next previous lookup, poll removes global min, what is ceiling floor schedule, 처음 schedule neighbor query, 왜 priorityqueue poll이 안 맞아요, floorentry ceilingentry value read
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "roomescape 예약표에서 다음 예약을 찾는데 `poll()`을 쓰면 안 되나요?" | 특정 기준 시각 이후 첫 예약을 조회해야 하는 schedule 코드 | 전체 최소를 제거하는 연산과 기준점 주변 이웃 조회를 분리한다 |
+| "`TreeMap<start, reservation>`인데 value까지 어떻게 읽죠?" | 시작 시각 key로 앞뒤 예약 객체를 찾아 검증해야 하는 예약표 | `ceilingEntry`/`floorEntry`처럼 key와 value를 함께 읽는 API를 본다 |
+| "가장 이른 예약 처리와 10:15 이후 첫 예약 조회가 같은 정렬 문제 아닌가요?" | 처리 순서 queue와 화면/검증용 neighbor lookup이 같은 자료구조로 섞인 코드 | 자료구조 전체 head와 질의 기준점 `x`를 다른 질문으로 읽는다 |
 
 ## 핵심 개념
 

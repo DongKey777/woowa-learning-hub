@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Topological Sort Patterns
+concept_id: algorithm/topological-sort-patterns
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- dependency-ordering
+- dag-cycle-detection
+- topological-sort-vs-path-optimization
+aliases:
+- topological sort patterns
+- topological ordering
+- DAG ordering
+- dependency graph ordering
+- Kahn algorithm
+- indegree queue
+- course schedule
+- build order
+- workflow dependency order
+- 위상 정렬 패턴
+- 의존성 순서
+- 진입 차수
+- 빌드 순서
+symptoms:
+- 선후 관계 순서만 필요한 문제와 비용이 붙은 경로 최적화 문제를 모두 위상 정렬 하나로 설명하려고 한다
+- indegree가 0인 노드를 queue에 넣는 이유는 외웠지만 cycle 검출 근거를 설명하지 못한다
+- 작업 의존성 그래프에서 순서, 병렬 가능성, 용량 제한 배분 문제를 섞어 라우팅한다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- algorithm/graph
+- algorithm/dfs-bfs-intro
+next_docs:
+- algorithm/topological-dp
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/network-flow-intuition
+- system-design/job-queue-design
+linked_paths:
+- contents/algorithm/graph.md
+- contents/algorithm/topological-dp.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/network-flow-intuition.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- algorithm/topological-dp
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/network-flow-intuition
+forbidden_neighbors: []
+expected_queries:
+- 위상 정렬은 어떤 그래프 문제에서 쓰고 indegree 0 queue를 왜 사용하는지 설명해줘
+- course schedule이나 build order 문제에서 cycle이 있으면 왜 topological ordering이 불가능한지 알려줘
+- DAG에서 순서만 구하는 문제와 최소 비용 경로를 구하는 topological DP 문제를 어떻게 구분해?
+- Kahn 알고리즘과 DFS 기반 위상 정렬의 차이를 사이클 검출 기준으로 비교해줘
+- 워크플로우 의존성 순서와 네트워크 플로우 같은 용량 배분 문제를 왜 따로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 DAG dependency ordering을 topological sort로 라우팅하는 bridge다.
+  indegree, Kahn algorithm, DFS topological sort, cycle detection, course schedule, build order, workflow dependencies, topological DP, shortest path, network flow와의 문제 정의 차이를 다룬다.
+---
 # Topological Sort Patterns
 
 > 한 줄 요약: 선후 관계가 있는 작업을 순서대로 배치하는 문제를 푸는 패턴이다.

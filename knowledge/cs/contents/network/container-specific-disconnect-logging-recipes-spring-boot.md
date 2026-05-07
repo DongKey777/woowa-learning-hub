@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "Container-Specific Disconnect Logging Recipes for Spring Boot"
+concept_id: network/container-specific-disconnect-logging-recipes-spring-boot
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- spring-boot-disconnect-logging
+- servlet-container-abort
+- late-write-regression-guardrail
+aliases:
+- spring boot disconnect logging
+- client abort logging category
+- DisconnectedClientHelper
+- Tomcat ClientAbortException
+- Jetty EofException
+- Undertow request io logger
+symptoms:
+- client abort noise를 줄이려고 root logger나 container namespace 전체를 낮춰 late-write regression까지 숨긴다
+- Tomcat Jetty Undertow의 quiet I/O category와 request/protocol category를 구분하지 않는다
+- Spring AsyncRequestNotUsableException이나 broken pipe를 access log bytes duration과 연결하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+next_docs:
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/access-log-correlation-recipes-tomcat-jetty-undertow
+- network/spring-disconnectedclienthelper-breadcrumb-wiring-mvc-download-sse-async-late-write
+- spring/servlet-container-disconnect-exception-mapping
+linked_paths:
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/access-log-correlation-recipes-tomcat-jetty-undertow.md
+- contents/network/spring-mvc-async-onerror-asyncrequestnotusableexception-crosswalk.md
+- contents/network/spring-disconnectedclienthelper-breadcrumb-wiring-mvc-download-sse-async-late-write.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+confusable_with:
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/access-log-correlation-recipes-tomcat-jetty-undertow
+- spring/servlet-container-disconnect-exception-mapping
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+forbidden_neighbors: []
+expected_queries:
+- "Spring Boot에서 client abort logging noise를 줄이면서 late write regression을 숨기지 않는 방법은?"
+- "Tomcat ClientAbortException Jetty EofException Undertow request io logger를 어떻게 나눠 설정해?"
+- "DisconnectedClientHelper로 broken pipe와 connection reset breadcrumb를 한 줄로 남기는 법을 알려줘"
+- "container logger를 통째로 끄면 어떤 disconnect 회귀 신호를 놓치게 돼?"
+- "access log bytes duration과 AsyncRequestNotUsableException을 같이 읽는 recipe가 필요해"
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot에서 Tomcat, Jetty, Undertow client abort/disconnect
+  logging category를 좁게 조정하고 DisconnectedClientHelper, access log,
+  late-write guardrail을 함께 유지하는 advanced operational playbook이다.
+---
 # Container-Specific Disconnect Logging Recipes for Spring Boot
 
 > 한 줄 요약: Spring Boot에서 client abort 노이즈를 줄이려면 root logger를 내리지 말고, 공통 app-side disconnect category 하나와 container별 narrow logger category 하나만 다뤄야 한다. Tomcat은 `DisconnectedClientHelper` + `org.apache.coyote` guardrail, Jetty는 `org.eclipse.jetty.io` vs `org.eclipse.jetty.server`, Undertow는 `io.undertow.request.io` vs `io.undertow.request` 분리가 핵심이다.

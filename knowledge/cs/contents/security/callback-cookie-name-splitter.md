@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Callback Cookie Name Splitter
+concept_id: security/callback-cookie-name-splitter
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- callback cookie name splitter
+- callback cookie vs duplicate cookie
+- callback cookie same name as session
+- callback cookie vs app session cookie
+aliases:
+- callback cookie name splitter
+- callback cookie vs duplicate cookie
+- callback cookie same name as session
+- callback cookie vs app session cookie
+- same name different role
+- callback 400 loop
+- app first request anonymous
+- social login handoff cookie confusion
+- callback verification cookie vs main session cookie
+- auth callback session name collision
+- 왜 같은 이름인데 역할이 달라
+- 왜 callback은 되는데 app은 anonymous
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/samesite-login-callback-primer.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/subdomain-login-callback-boundaries.md
+- contents/security/social-login-to-local-session-bridge.md
+- contents/security/duplicate-cookie-name-shadowing.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/security/oauth-login-state-cookie-cleanup.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Callback Cookie Name Splitter 핵심 개념을 설명해줘
+- callback cookie name splitter가 왜 필요한지 알려줘
+- Callback Cookie Name Splitter 실무 설계 포인트는 뭐야?
+- callback cookie name splitter에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Callback Cookie Name Splitter를 다루는 deep_dive 문서다. login callback용 one-time cookie와 main session cookie가 같은 이름을 써도, 둘은 같은 역할이 아니다. 먼저 "이 cookie가 callback 확인용인지, 이후 요청의 로그인 유지용인지"를 갈라야 `SameSite`, `Domain`, duplicate shadowing을 헷갈리지 않는다. 검색 질의가 callback cookie name splitter, callback cookie vs duplicate cookie, callback cookie same name as session, callback cookie vs app session cookie처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Callback Cookie Name Splitter
 
 > 한 줄 요약: login callback용 one-time cookie와 main session cookie가 같은 이름을 써도, 둘은 같은 역할이 아니다. 먼저 "이 cookie가 callback 확인용인지, 이후 요청의 로그인 유지용인지"를 갈라야 `SameSite`, `Domain`, duplicate shadowing을 헷갈리지 않는다.

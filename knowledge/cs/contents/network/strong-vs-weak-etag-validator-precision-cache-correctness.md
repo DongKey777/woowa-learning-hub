@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Strong vs Weak ETag Validator Precision and Cache Correctness"
+concept_id: network/strong-vs-weak-etag-validator-precision-cache-correctness
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- http-cache
+- etag-validator
+- cache-correctness
+aliases:
+- strong ETag
+- weak ETag
+- validator precision
+- weak comparison
+- strong comparison
+- If-None-Match weak comparison
+- If-Match strong comparison
+- compressed variant ETag
+symptoms:
+- weak ETag를 틀린 ETag라고 생각하거나 모든 조건부 요청에 안전하다고 생각한다
+- GET/HEAD revalidation과 If-Match write protection, If-Range range resume을 같은 validator 정밀도로 본다
+- gzip identity brotli representation에 같은 ETag를 써도 byte identity 문제가 없다고 본다
+- Last-Modified 초 단위 precision 한계를 cache correctness와 연결하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http-caching-conditional-request-basics
+- network/browser-devtools-cache-trace-primer
+next_docs:
+- network/cache-control-practical
+- network/vary-content-negotiation-basics-language-compression
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+linked_paths:
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/cache-control-practical.md
+- contents/network/vary-content-negotiation-basics-language-compression.md
+- contents/network/compression-cache-vary-accept-encoding-personalization.md
+- contents/network/cache-vary-accept-encoding-edge-case-playbook.md
+- contents/network/cdn-cache-key-invalidation.md
+confusable_with:
+- network/http-caching-conditional-request-basics
+- network/vary-content-negotiation-basics-language-compression
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+forbidden_neighbors: []
+expected_queries:
+- "strong ETag와 weak ETag 차이를 cache correctness 관점에서 설명해줘"
+- "weak ETag는 GET revalidation에는 괜찮지만 If-Match에는 왜 부적합해?"
+- "If-None-Match weak comparison과 If-Match strong comparison 차이는?"
+- "gzip identity variant에 같은 ETag를 쓰면 어떤 문제가 생겨?"
+- "If-Range에는 왜 strong validator가 필요해?"
+contextual_chunk_prefix: |
+  이 문서는 strong/weak ETag, validator precision, weak/strong comparison,
+  If-None-Match, If-Match, If-Range, compressed variant와 cache correctness를
+  다루는 advanced playbook이다.
+---
 # Strong vs Weak ETag: validator 정밀도와 cache correctness
 
 > 한 줄 요약: weak ETag는 "틀린 ETag"가 아니라 비교 강도가 낮은 validator다. `GET`/`HEAD` 재검증에는 쓸 수 있지만, `If-Match`, `If-Range`, compressed variant처럼 byte identity가 필요한 경계에서는 strong semantics가 필요하다.

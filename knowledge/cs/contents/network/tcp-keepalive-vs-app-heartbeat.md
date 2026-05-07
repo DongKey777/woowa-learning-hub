@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "TCP Keepalive vs App Heartbeat"
+concept_id: network/tcp-keepalive-vs-app-heartbeat
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- keepalive
+- heartbeat
+- connection-liveness
+aliases:
+- TCP keepalive
+- app heartbeat
+- keepalive probe
+- ping pong
+- dead peer detection
+- idle NAT
+- socket option
+- session heartbeat
+symptoms:
+- TCP keepalive와 WebSocket/app heartbeat를 같은 기능으로 본다
+- TCP keepalive 기본값이 너무 느려 실시간 장애 감지에 부족한 점을 놓친다
+- app heartbeat만 있으면 커널 레벨 dead peer cleanup이 필요 없다고 생각한다
+- NAT/LB/proxy idle timeout보다 heartbeat 간격이 길어 연결이 조용히 끊긴다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/idle-timeout-mismatch-lb-proxy-app
+next_docs:
+- network/websocket-heartbeat-backpressure-reconnect
+- network/nat-keepalive-tuning-connection-lifetime
+- network/fin-rst-half-close-eof-semantics
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+linked_paths:
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+confusable_with:
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/websocket-heartbeat-backpressure-reconnect
+- network/nat-keepalive-tuning-connection-lifetime
+- network/idle-timeout-mismatch-lb-proxy-app
+forbidden_neighbors: []
+expected_queries:
+- "TCP keepalive와 app heartbeat는 어떻게 달라?"
+- "WebSocket heartbeat가 있는데도 TCP keepalive가 필요한 이유는?"
+- "TCP keepalive 기본값이 실시간 서비스 장애 감지에 부족한 이유는?"
+- "NAT LB proxy idle timeout보다 heartbeat를 어떻게 짧게 잡아야 해?"
+- "ping pong heartbeat와 kernel keepalive probe를 같이 쓰는 기준은?"
+contextual_chunk_prefix: |
+  이 문서는 TCP keepalive probe와 application heartbeat/ping-pong의 계층 차이,
+  dead peer detection, idle NAT/LB/proxy timeout과 session liveness를 다루는
+  advanced playbook이다.
+---
 # TCP Keepalive vs App Heartbeat
 
 > 한 줄 요약: TCP keepalive는 죽은 연결을 커널이 감지하는 보조 장치이고, app heartbeat는 살아 있는 세션을 애플리케이션이 확인하는 운영 장치다.

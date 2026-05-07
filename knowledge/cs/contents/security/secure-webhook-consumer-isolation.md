@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Secure Webhook Consumer Isolation
+concept_id: security/secure-webhook-consumer-isolation
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- webhook consumer isolation
+- sandbox
+- least privilege
+- queue isolation
+aliases:
+- webhook consumer isolation
+- sandbox
+- least privilege
+- queue isolation
+- dead letter queue
+- replay
+- idempotent consumer
+- tenant isolation
+- poison message
+- event ingestion
+- Secure Webhook Consumer Isolation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/webhook-signature-verification-replay-defense.md
+- contents/security/webhook-sender-hardening.md
+- contents/security/ssrf-egress-control.md
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/security/secret-scanning-credential-leak-response.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Secure Webhook Consumer Isolation 핵심 개념을 설명해줘
+- webhook consumer isolation가 왜 필요한지 알려줘
+- Secure Webhook Consumer Isolation 실무 설계 포인트는 뭐야?
+- webhook consumer isolation에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Secure Webhook Consumer Isolation를 다루는 deep_dive 문서다. webhook consumer는 외부 입력을 받아 내부 비즈니스 로직으로 바로 연결하는 특수한 경계이므로, 격리된 실행 환경과 최소 권한, idempotent 처리로 피해 범위를 잘라야 한다. 검색 질의가 webhook consumer isolation, sandbox, least privilege, queue isolation처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Secure Webhook Consumer Isolation
 
 > 한 줄 요약: webhook consumer는 외부 입력을 받아 내부 비즈니스 로직으로 바로 연결하는 특수한 경계이므로, 격리된 실행 환경과 최소 권한, idempotent 처리로 피해 범위를 잘라야 한다.

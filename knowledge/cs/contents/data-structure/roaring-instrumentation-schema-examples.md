@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Roaring Instrumentation Schema Examples
+concept_id: data-structure/roaring-instrumentation-schema-examples
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-instrumentation-schema
+- bitmap-observability-contract
+- transition-event-schema
+aliases:
+- Roaring instrumentation schema
+- Roaring metrics hook
+- Roaring dashboard schema
+- container transition event schema
+- repairAfterLazy instrumentation
+- runOptimize instrumentation
+- high key transition log
+symptoms:
+- Java RoaringBitmap과 CRoaring 계측이 서로 다른 metric name/tag를 써서 대시보드에서 같은 현상을 합쳐 읽지 못한다
+- high_key나 bitmap_id 같은 고카디널리티 label을 항상 켜 시계열 cardinality 폭발을 만든다
+- phase, op, owner, before/after type, repair_kind를 고정하지 않아 ingest churn과 query repair churn이 섞인다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+next_docs:
+- data-structure/roaring-intermediate-repair-path-guide
+- data-structure/roaring-run-optimize-timing-guide
+- data-structure/roaring-run-formation-and-row-ordering
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-intermediate-repair-path-guide.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+confusable_with:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/roaring-intermediate-repair-path-guide
+- data-structure/roaring-container-transition-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap 운영 계측에서 phase op high_key before_type after_type 같은 event schema를 어떻게 잡아?
+- Java RoaringBitmap과 CRoaring을 같은 dashboard에서 비교하려면 metric contract를 어떻게 맞춰?
+- high_key를 시계열 label로 올리지 않고 sampled hotspot event로 남겨야 하는 이유는?
+- repairAfterLazy runOptimize container transition을 관측하는 schema 예시를 보여줘
+- Roaring observability에서 low-cardinality rollup과 sampled transition event를 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap observability를 위한 instrumentation schema
+  playbook이다. phase, op, owner, high_key, before/after type, repair_kind,
+  sample_rate를 공통 event contract로 고정하고 Java/CRoaring 계측과 dashboard
+  cardinality를 관리한다.
+---
 # Roaring Instrumentation Schema Examples
 
 > 한 줄 요약: Roaring 운영 계측은 라이브러리별 metric 이름보다 `phase`, `op`, `owner`, `high_key`, `before/after` 같은 공통 스키마를 먼저 고정하고, Java `RoaringBitmap`과 CRoaring에서 같은 snapshot/diff emitter를 두는 편이 가장 안정적이다.

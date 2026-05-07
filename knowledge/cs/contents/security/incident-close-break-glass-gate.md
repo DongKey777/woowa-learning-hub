@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Incident-Close Break-Glass Gate
+concept_id: security/incident-close-break-glass-gate
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- incident close break glass gate
+- incident close gate
+- break glass closure blocker
+- incident closure override gate
+aliases:
+- incident close break glass gate
+- incident close gate
+- break glass closure blocker
+- incident closure override gate
+- incident closed with active break glass
+- incident cannot close active override
+- close eligible emergency access
+- control plane closure check
+- break glass close criteria
+- active break glass grant count zero
+- active policy override count zero
+- fully blocked confirmed incident close
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/aobo-revocation-audit-event-schema.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/delegated-session-tail-cleanup.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Incident-Close Break-Glass Gate 핵심 개념을 설명해줘
+- incident close break glass gate가 왜 필요한지 알려줘
+- Incident-Close Break-Glass Gate 실무 설계 포인트는 뭐야?
+- incident close break glass gate에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Incident-Close Break-Glass Gate를 다루는 deep_dive 문서다. incident는 사용자 영향이 잦아들었다고 바로 닫는 것이 아니라, break-glass grant와 policy override가 control plane, evaluator, cleanup surface에서 모두 비활성화됐음을 증명한 뒤에만 close-eligible로 넘어가야 한다. 검색 질의가 incident close break glass gate, incident close gate, break glass closure blocker, incident closure override gate처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Incident-Close Break-Glass Gate
 
 > 한 줄 요약: incident는 사용자 영향이 잦아들었다고 바로 닫는 것이 아니라, break-glass grant와 policy override가 control plane, evaluator, cleanup surface에서 모두 비활성화됐음을 증명한 뒤에만 close-eligible로 넘어가야 한다.

@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: intermediate
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- aop-proxy-mechanism
+- aop-proxy
+- proxy
+- jdk-dynamic-proxy
 aliases:
 - AOP proxy
 - Spring proxy
@@ -35,7 +40,6 @@ contextual_chunk_prefix: |
   중간에서 가로채기, self invocation, JDK proxy, CGLIB 같은 자연어
   paraphrase가 프록시 기반 interception 설명에 매핑된다.
 ---
-
 # AOP와 프록시 메커니즘
 
 > 한 줄 요약: Spring AOP는 "마법"이 아니라, 빈 앞뒤에 프록시를 끼워 넣어 호출을 가로채는 구조다.

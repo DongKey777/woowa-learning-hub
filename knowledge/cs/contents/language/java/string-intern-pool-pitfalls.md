@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: String Intern and Pool Pitfalls
+concept_id: language/string-intern-pool-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/payment
+review_feedback_tags:
+- string
+- memory
+- equality
+aliases:
+- String Intern and Pool Pitfalls
+- Java String.intern string pool
+- string literal equals vs double equals
+- canonical representation string pool
+- intern memory retention lookup cost
+- 자바 String intern pool 함정
+symptoms:
+- 문자열 리터럴 비교에서 ==가 가끔 true인 현상을 보고 String 내용 비교 기본값을 equals가 아니라 ==로 잘못 학습해
+- 외부 입력이나 unique ID를 무분별하게 intern해 전역 pool lookup 비용과 memory retention을 증가시켜
+- intern을 canonicalization 만능 도구로 보고 Locale case mapping, Unicode normalization, bounded domain 여부를 함께 검토하지 않아
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-string-basics
+- language/java-equality-identity-basics
+- language/locale-root-case-mapping-unicode-normalization
+next_docs:
+- language/classloader-memory-leak-playbook
+- language/jit-warmup-deoptimization
+- language/io-nio-serialization
+linked_paths:
+- contents/language/java/java-string-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+confusable_with:
+- language/java-string-basics
+- language/java-equality-identity-basics
+- language/locale-root-case-mapping-unicode-normalization
+forbidden_neighbors: []
+expected_queries:
+- String.intern과 string pool 때문에 ==가 가끔 true로 보이는 이유를 설명해줘
+- Java 문자열 내용 비교는 여전히 equals가 기본이고 intern은 언제 조심해야 해?
+- 외부 입력이나 request id를 무분별하게 intern하면 pool lookup 비용과 memory retention이 왜 문제야?
+- String canonicalization은 intern만이 아니라 Locale.ROOT case mapping과 Unicode normalization도 봐야 해?
+- string literal과 new String과 DB나 network에서 온 문자열의 identity equality 차이를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 String.intern, string pool, literal identity, equals vs ==, pool lookup cost, memory retention, canonicalization pitfalls를 설명하는 advanced deep dive다.
+  String intern, string pool, equals vs ==, memory retention, canonicalization 질문이 본 문서에 매핑된다.
+---
 # String Intern and Pool Pitfalls
 
 > 한 줄 요약: `String.intern()`은 문자열의 canonical representation을 돌려주지만, 무분별하게 쓰면 전역 pool lookup 비용, 메모리 보류, `==` 오해 같은 문제를 만들 수 있다.

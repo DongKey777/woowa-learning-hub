@@ -1,8 +1,76 @@
+---
+schema_version: 3
+title: Test Data Strategy Across Environments
+concept_id: software-engineering/test-data-strategy-cross-environment
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- test-data
+- environment-parity
+- fixtures
+- staging
+aliases:
+- test data strategy across environments
+- environment parity test data
+- production-like data strategy
+- synthetic data distribution
+- fixture data drift
+- 환경별 테스트 데이터 전략
+symptoms:
+- local, CI, staging에서 같은 fixture를 쓰면 충분하다고 생각한다
+- production-like data를 가져올 때 masking, retention, access control을 놓친다
+- schema 변화 뒤 fixture와 staging seed가 오래된 계약을 계속 통과시킨다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/architectural-fitness-functions
+- software-engineering/deployment-rollout-strategy
+linked_paths:
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+confusable_with:
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/test-strategy-basics
+- software-engineering/schema-contract-evolution-cross-service
+forbidden_neighbors: []
+expected_queries:
+- local, CI, staging, production 환경마다 테스트 데이터의 진실 수준을 다르게 설계해야 하는 이유는?
+- CI에는 작은 deterministic fixture가 맞고 staging에는 production-like snapshot이나 synthetic distribution이 필요한 기준은?
+- synthetic data에서 값 자체보다 null 조합, 상태 전이, 실패 비율 같은 분포가 중요한 이유는?
+- production data를 테스트 환경으로 가져올 때 masking, anonymization, access control, retention을 어떻게 봐야 해?
+- fixture와 staging seed가 schema나 contract 변화를 반영하지 못하는 data drift를 어떻게 감시해?
+contextual_chunk_prefix: |
+  이 문서는 local, CI, staging, production 환경별 목적에 맞춰 fixture, synthetic data, anonymized snapshot, production-like distribution의 신뢰도와 안전성을 고르는 advanced chooser이다.
+---
 # Test Data Strategy Across Environments
 
 > 한 줄 요약: 테스트 데이터 전략은 "샘플을 넣는 일"이 아니라, local, CI, staging, production의 목적이 다를 때 어떤 데이터가 어디까지 진실이어야 하는지 설계하는 문제다.
 
 **난이도: 🔴 Advanced**
+
+## 미션 진입 증상
+
+| 환경 | 먼저 볼 데이터 질문 |
+|---|---|
+| local | 작고 deterministic한 fixture면 충분한가 |
+| CI | 실패 재현성과 속도를 우선했는가 |
+| staging | production-like distribution과 개인정보 보호를 같이 봤는가 |
 
 > 관련 문서:
 > - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)

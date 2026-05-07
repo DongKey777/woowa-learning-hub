@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Shadow Process Officialization and Absorption Criteria
+concept_id: software-engineering/shadow-process-officialization-absorption-criteria
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- officialize
+- absorb
+- retire
+aliases:
+- shadow process officialization criteria
+- retire vs absorb vs officialize
+- absorb into control plane
+- officialize workaround
+- shadow process decision criteria
+- shadow 공식화 흡수 기준
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/shadow-process-detection-signals
+next_docs:
+- software-engineering/override-burndown-exemption-debt
+- software-engineering/shadow-temporary-hold-exit-criteria
+- software-engineering/shadow-retirement-proof-metrics
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/platform-control-plane-delegation-boundaries.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/consumer-exception-operating-model.md
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/platform-control-plane-delegation
+- software-engineering/runbook-playbook-automation-boundaries
+forbidden_neighbors: []
+expected_queries:
+- shadow process를 retire, officialize, absorb, temporary hold 중 어디로 보낼지 어떤 기준으로 판단해?
+- structured data와 반복 예외가 핵심이면 absorb가 맞고 사람 판단 순서와 훈련이 핵심이면 officialize가 맞는 이유는?
+- rollout 예외 spreadsheet는 왜 문서로 officialize하기보다 control plane에 absorb해야 해?
+- deprecation 연장 DM이 이미 공식 registry를 우회한다면 왜 retire가 맞는지 설명해줘
+- officialize가 영구 면책이 아니라 scope, scorecard, burn-down 계획을 요구하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 발견된 shadow process를 retire, officialize, absorb, temporary_hold 중 어느 target state로 보낼지 repeatability, control, structure fit 기준으로 고르는 advanced chooser이다.
+---
 # Shadow Process Officialization and Absorption Criteria
 
 > 한 줄 요약: shadow process를 발견했다고 모두 없애야 하는 것은 아니며, 실제로 가치가 있는 경로는 officialize 또는 control plane/runbook으로 absorb하고, 위험만 큰 경로는 retire하는 기준이 있어야 shadow catalog가 cleanup으로 이어진다.

@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: mmap Shared Truncate SIGBUS Coherency Pitfalls
+concept_id: operating-system/mmap-shared-truncate-sigbus-coherency-pitfalls
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- mmap-shared-truncate
+- sigbus-coherency-pitfalls
+- mmap-truncate-sigbus
+- map-shared-coherency
+aliases:
+- mmap truncate SIGBUS
+- MAP_SHARED coherency
+- stale mmap mapping
+- external writer visibility
+- file-backed mmap pitfall
+- EOF beyond mapping SIGBUS
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/mmap-map-shared-vs-map-private-write-semantics.md
+- contents/operating-system/mmap-msync-hole-punching-file-replace-update-patterns.md
+- contents/operating-system/posix-fadvise-madvise-page-cache-hints.md
+- contents/operating-system/rename-atomicity-directory-fsync-crash-consistency.md
+symptoms:
+- mmap 영역을 읽던 중 file truncate나 replace 뒤 SIGBUS가 난다.
+- MAP_SHARED와 external writer visibility timing을 일반 memory write처럼 기대한다.
+- msync, stale mapping, coherency 문제가 섞여 file update 후 reader가 다른 값을 본다.
+expected_queries:
+- mmap된 파일이 truncate되면 EOF 밖 접근에서 왜 SIGBUS가 날 수 있어?
+- MAP_SHARED mmap은 external writer와 coherency timing을 어떻게 보장하거나 보장하지 않아?
+- stale mapping과 msync, rename replace update pattern을 어떻게 구분해?
+- file-backed mmap failure mode를 page cache와 SIGBUS 관점에서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 mmap이 file을 memory처럼 보이게 하지만 truncate, MAP_SHARED, msync, external writer,
+  file replacement가 섞이면 EOF 밖 접근 SIGBUS, visibility timing, stale mapping 같은
+  별도 failure mode가 생긴다는 점을 라우팅한다.
+---
 # mmap Shared, Truncate, SIGBUS, Coherency Pitfalls
 
 > 한 줄 요약: `mmap()`은 파일을 메모리처럼 보이게 하지만, `truncate`, `MAP_SHARED`, `msync`, external writers가 섞이면 EOF 밖 접근의 `SIGBUS`, visibility timing, stale mapping 같은 전혀 다른 실패 모드를 만든다.

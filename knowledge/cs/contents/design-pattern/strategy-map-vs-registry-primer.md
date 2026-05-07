@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- strategy-map-vs
+- registry
+- map-key-strategy
+- strategy-collection
 aliases:
 - strategy map vs registry
 - Map<Key Strategy>
@@ -33,8 +38,12 @@ expected_queries:
 - 같은 Map 모양인데 행동 교체와 단순 lookup을 어떻게 구분해?
 - strategy map과 registry 차이를 처음 배우는데 어디서 봐?
 - 전략 컬렉션을 selector라고 불러도 되는지 헷갈려
+contextual_chunk_prefix: |
+  이 문서는 Map<Key, Strategy> 형태가 strategy collection인지 plain registry인지
+  헷갈릴 때 질문의 축을 나누는 chooser다. 행동 교체, keyed lookup, selector,
+  registry, strategy map 같은 질의를 자료구조 모양이 아니라 런타임 처리
+  방식을 고르는 설계 판단으로 연결한다.
 ---
-
 # Strategy Map vs Registry Primer: 같은 `Map` 모양인데 질문이 다르다
 
 > 한 줄 요약: `Map<Key, ...>`를 쓴다고 다 같은 설계는 아니다. 같은 역할의 행동을 바꿔 끼우면 strategy collection이고, 이름표로 기존 객체나 정보를 찾기만 하면 plain registry다.

@@ -34,7 +34,7 @@ intents:
 prerequisites:
 - spring/blackjack-game-id-session-boundary-bridge
 - spring/modelattribute-vs-requestbody-binding-primer
-- spring/spring-mvc-controller-basics
+- spring/mvc-controller-basics
 next_docs:
 - spring/blackjack-game-id-session-boundary-bridge
 - spring/blackjack-mvc-controller-binding-validation-bridge

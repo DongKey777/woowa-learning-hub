@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: JUnit5 Callback Model vs Classic xUnit Template Skeleton
+concept_id: design-pattern/junit5-callback-model-vs-classic-xunit-template-skeleton
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- junit5-callback
+- template-method
+- test-lifecycle
+- fixture-design
+aliases:
+- junit5 callback model
+- junit 5 callback model
+- junit5 beforeeach aftereach
+- junit 5 beforeeach aftereach
+- classic xunit template skeleton
+- beforeeach aftereach reading order
+- junit5 callback order confusion
+- junit5 extension callback
+- JUnit5 콜백 모델
+- BeforeEach AfterEach 순서
+symptoms:
+- JUnit 5의 @BeforeEach, @AfterEach, @ExtendWith를 classic xUnit setUp tearDown override와 완전히 같은 구조로 본다
+- 여러 BeforeEach와 extension callback 순서를 읽지 못해 테스트 fixture가 어디서 준비되는지 헷갈린다
+- hook에 assertion이나 핵심 의도가 숨어 테스트 본문만 읽어서는 무엇을 검증하는지 알기 어렵다
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- design-pattern/template-method
+- design-pattern/template-method-framework-lifecycle-examples
+- design-pattern/composition-over-inheritance-practical
+next_docs:
+- design-pattern/template-hook-smells
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/test-strategy-basics
+linked_paths:
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/design-pattern/template-method.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/composition-over-inheritance-practical.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/test-strategy-basics.md
+confusable_with:
+- design-pattern/template-method
+- design-pattern/template-method-framework-lifecycle-examples
+- design-pattern/template-hook-smells
+- design-pattern/composition-over-inheritance-practical
+forbidden_neighbors: []
+expected_queries:
+- JUnit 5 @BeforeEach @AfterEach와 classic xUnit setUp tearDown template skeleton은 어떻게 달라?
+- JUnit5 extension callback model을 Template Method라고만 부르면 과한 이유가 뭐야?
+- multiple BeforeEach AfterEach order가 헷갈릴 때 test body와 fixture hook을 어떻게 읽어야 해?
+- 테스트 hook이 길어져 본문 assertion이 안 보이면 fixture helper로 어떻게 접어야 해?
+- classic runBare setUp test tearDown skeleton과 JUnit5 annotation callback composition을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 JUnit5 Callback Model vs Classic xUnit Template Skeleton bridge로,
+  classic xUnit runBare/setUp/test/tearDown inheritance skeleton과 JUnit 5 annotation,
+  extension callback composition, fixture hook order를 비교해 Template Method와 callback 모델의 차이를 설명한다.
+---
 # JUnit 5 Callback Model vs Classic xUnit Template Skeleton
 
 > 한 줄 요약: classic xUnit의 `runBare -> setUp/test/tearDown`는 템플릿 스켈레톤으로 읽기 쉽지만, JUnit 5의 `@BeforeEach` / `@AfterEach`와 extension API는 **상속 기반 skeleton 하나**보다 **annotation + callback composition**에 더 가깝다.

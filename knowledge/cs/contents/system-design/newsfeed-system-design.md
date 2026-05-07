@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Newsfeed 시스템 설계
+concept_id: system-design/newsfeed-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- newsfeed system design
+- 뉴스피드 시스템 설계
+- feed system 뭐예요
+- 처음 배우는데 피드 설계
+aliases:
+- newsfeed system design
+- 뉴스피드 시스템 설계
+- feed system 뭐예요
+- 처음 배우는데 피드 설계
+- fan-out on write vs read
+- follower graph feed
+- hot key feed
+- infinite scroll cursor feed
+- personalized feed cache
+- ranking feed architecture
+- newsfeed timeline design
+- 피드 캐시 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/recommendation-feed-ranking-architecture.md
+- contents/system-design/caching-basics.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/chat-system-design.md
+- contents/database/mvcc-replication-sharding.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Newsfeed 시스템 설계 설계 핵심을 설명해줘
+- newsfeed system design가 왜 필요한지 알려줘
+- Newsfeed 시스템 설계 실무 트레이드오프는 뭐야?
+- newsfeed system design 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Newsfeed 시스템 설계를 다루는 deep_dive 문서다. 뉴스피드는 팔로우 그래프, fan-out, 캐시, 정렬, hot key를 동시에 다루는 읽기 중심 분산 시스템이다. 검색 질의가 newsfeed system design, 뉴스피드 시스템 설계, feed system 뭐예요, 처음 배우는데 피드 설계처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Newsfeed 시스템 설계
 
 > 한 줄 요약: 뉴스피드는 팔로우 그래프, fan-out, 캐시, 정렬, hot key를 동시에 다루는 읽기 중심 분산 시스템이다.

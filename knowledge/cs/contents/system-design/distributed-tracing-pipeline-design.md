@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Distributed Tracing Pipeline 설계
+concept_id: system-design/distributed-tracing-pipeline-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- distributed tracing
+- spans
+- trace context
+- head sampling
+aliases:
+- distributed tracing
+- spans
+- trace context
+- head sampling
+- tail sampling
+- baggage
+- span ingestion
+- trace query
+- exemplars
+- service dependency graph
+- high cardinality tags
+- canary trace
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Distributed Tracing Pipeline 설계 설계 핵심을 설명해줘
+- distributed tracing가 왜 필요한지 알려줘
+- Distributed Tracing Pipeline 설계 실무 트레이드오프는 뭐야?
+- distributed tracing 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Distributed Tracing Pipeline 설계를 다루는 deep_dive 문서다. distributed tracing pipeline은 요청이 여러 서비스를 건너갈 때 span과 context를 수집, 샘플링, 저장해 지연과 오류의 인과 경로를 복원하는 관측성 시스템이다. 검색 질의가 distributed tracing, spans, trace context, head sampling처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Distributed Tracing Pipeline 설계
 
 > 한 줄 요약: distributed tracing pipeline은 요청이 여러 서비스를 건너갈 때 span과 context를 수집, 샘플링, 저장해 지연과 오류의 인과 경로를 복원하는 관측성 시스템이다.

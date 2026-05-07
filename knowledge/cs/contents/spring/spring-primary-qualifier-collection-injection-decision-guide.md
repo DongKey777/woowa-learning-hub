@@ -69,6 +69,8 @@ expected_queries:
   - 기본값 하나면 @Primary고 이번 주입만 고르면 @Qualifier라고 봐도 돼?
 forbidden_neighbors:
   - contents/spring/spring-allow-bean-definition-overriding-test-boundaries-primer.md
+  - contents/spring/lotto-manual-auto-generator-qualifier-bridge.md
+  - contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md
 contextual_chunk_prefix: |
   이 문서는 같은 타입 Bean 후보가 여러 개일 때 기본값 하나를 둘지, 이번
   주입만 집어줄지, 후보를 전부 받아 runtime에 고를지 빠르게 결정하게 돕는
@@ -82,6 +84,14 @@ contextual_chunk_prefix: |
 > 한 줄 요약: 같은 타입 bean이 여러 개일 때 `@Primary`는 "기본으로 하나", `@Qualifier`는 "이번 주입에서 이걸", `List<T>`/`Map<String, T>`는 "후보를 전부 달라"에 가깝다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 단일 후보 기본값, 명시 선택, 다중 후보 수집을 한 표와 짧은 예제로 먼저 구분하게 돕는 **beginner quick decision guide**를 담당한다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "같은 타입 Bean이 두 개라 `found 2`가 떠요" | lotto number generator나 shopping-cart payment client 후보가 둘 이상 등록된 상황 | 기본값, 명시 선택, 후보 전체 수집 중 어떤 문제인지 고른다 |
+| "이번 주입만 특정 구현체를 쓰고 싶어요" | 대부분은 real client를 쓰지만 한 service만 fake/stub 전략을 고정하고 싶은 코드 | local injection choice면 `@Qualifier` 쪽을 먼저 본다 |
+| "요청마다 구현체를 바꾸고 싶으면 `@Qualifier`인가요?" | 결제수단이나 할인 타입별로 runtime strategy를 선택하는 service | 후보를 `List`/`Map`으로 모은 뒤 router가 고르는 경계를 본다 |
 
 **난이도: 🟢 Beginner**
 

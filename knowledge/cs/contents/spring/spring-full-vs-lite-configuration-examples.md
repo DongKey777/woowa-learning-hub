@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring Full vs Lite Configuration Examples
+concept_id: spring/full-vs-lite-configuration-examples
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- full-vs-lite
+- configuration
+- full-configuration
+- lite-configuration
+aliases:
+- full configuration
+- lite configuration
+- proxyBeanMethods example
+- proxyBeanMethods false safe pattern
+- @Bean self invocation
+- method parameter injection bean
+- inter-bean reference
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/ioc-di-container.md
+expected_queries:
+- Spring full configuration과 lite configuration 차이를 예제로 설명해줘.
+- proxyBeanMethods=false에서 @Bean 메서드 self-invocation이 왜 위험해?
+- @Bean 메서드 파라미터 주입은 proxyBeanMethods=false에서도 왜 안전해?
+- inter-bean reference를 직접 호출과 파라미터 주입 중 어떻게 골라?
+contextual_chunk_prefix: |
+  이 문서는 Spring full configuration과 lite configuration을 proxyBeanMethods,
+  @Bean self-invocation, method parameter injection 예제로 비교한다.
+  proxyBeanMethods=true는 inter-bean self-call을 컨테이너 조회로 보정하고,
+  proxyBeanMethods=false에서는 파라미터 주입이 안전 패턴이라는 beginner primer다.
+---
 # Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입
 
 > mini guide로 돌아가기: [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)

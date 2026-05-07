@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Serialization Proxy Pattern and Invariant Preservation
+concept_id: language/serialization-proxy-pattern-invariant-preservation
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- serialization
+- value-object
+- invariant
+aliases:
+- Serialization Proxy Pattern and Invariant Preservation
+- serialization proxy pattern writeReplace readResolve
+- Java native serialization invariant preservation
+- stable proxy schema value object
+- InvalidObjectException readObject guard
+- 자바 serialization proxy pattern
+symptoms:
+- value object를 기본 serialization으로 복원하면서 생성자 validation과 canonicalization을 우회해 invariant가 깨질 수 있는 경로를 놓쳐
+- 내부 필드 구조를 그대로 직렬화 계약으로 노출해 구현 변경이 외부 저장 포맷 변경으로 이어져
+- writeReplace readResolve readObject guard를 함께 쓰지 않아 proxy 경유 규칙이 강제되지 않고 직접 역직렬화가 열려
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/serialization-compatibility-serial-version-uid
+- language/value-object-invariants-canonicalization-boundary-design
+- language/io-nio-serialization
+next_docs:
+- language/serialpersistentfields-readobjectnodata-evolution-escape-hatches
+- language/record-serialization-evolution
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+linked_paths:
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/serialpersistentfields-readobjectnodata-evolution-escape-hatches.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/io-nio-serialization.md
+confusable_with:
+- language/serialization-compatibility-serial-version-uid
+- language/serialpersistentfields-readobjectnodata-evolution-escape-hatches
+- language/record-serialization-evolution
+forbidden_neighbors: []
+expected_queries:
+- serialization proxy pattern은 writeReplace와 readResolve로 value object invariant를 어떻게 지켜?
+- 기본 Java serialization이 생성자 validation을 우회해 불변식을 깨뜨릴 수 있는 이유가 뭐야?
+- readObject에서 InvalidObjectException을 던져 직접 역직렬화를 막는 이유를 설명해줘
+- 내부 표현 대신 stable proxy schema를 직렬화하면 evolution 여지가 왜 늘어나?
+- serialization proxy와 serialPersistentFields는 native serialization evolution에서 어떻게 다르게 쓰여?
+contextual_chunk_prefix: |
+  이 문서는 Java native serialization에서 serialization proxy pattern을 writeReplace, readResolve, readObject guard로 적용해 value object invariant와 format evolution을 지키는 advanced playbook이다.
+  serialization proxy, writeReplace, readResolve, InvalidObjectException, invariant preservation 질문이 본 문서에 매핑된다.
+---
 # Serialization Proxy Pattern and Invariant Preservation
 
 > 한 줄 요약: Java native serialization에서 내부 표현을 직접 직렬화하면 필드 구조와 불변식이 외부 계약이 된다. serialization proxy pattern은 `writeReplace`/`readResolve`로 안정된 proxy를 직렬화해 value object 불변식과 진화 여지를 더 잘 지키게 해준다.

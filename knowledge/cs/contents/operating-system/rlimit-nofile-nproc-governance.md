@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: RLIMIT NOFILE NPROC Governance
+concept_id: operating-system/rlimit-nofile-nproc-governance
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- rlimit-nofile-nproc
+- governance
+- rlimit-nofile-rlimit
+- nproc
+aliases:
+- RLIMIT_NOFILE RLIMIT_NPROC
+- nofile nproc governance
+- fd limit process limit
+- ulimit governance
+- too many open files
+- process spawn limit
+intents:
+- troubleshooting
+- design
+- deep_dive
+linked_paths:
+- contents/operating-system/fd-exhaustion-ulimit-diagnostics.md
+- contents/operating-system/pid-limit-process-table-exhaustion.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/container-cgroup-namespace.md
+symptoms:
+- RLIMIT_NOFILE이 낮아 정상 connection workload가 먼저 EMFILE로 막힌다.
+- RLIMIT_NPROC나 cgroup pids.max 때문에 worker/thread/process 생성이 실패한다.
+- limits를 폭주 방어로 쓰려다 정상 트래픽 headroom까지 잘라 버린다.
+expected_queries:
+- RLIMIT_NOFILE과 RLIMIT_NPROC는 서버 폭주 방어와 정상 workload headroom을 어떻게 조절해?
+- too many open files와 process spawn failure를 limit governance로 어떻게 진단해?
+- ulimit, cgroup pids.max, fd exhaustion을 함께 보는 기준은?
+- nofile nproc 값을 크게 올리기만 하면 안전한가?
+contextual_chunk_prefix: |
+  이 문서는 RLIMIT_NOFILE과 RLIMIT_NPROC를 fd와 process/thread count 폭주를 막는 governance로
+  보되, 너무 낮으면 정상 workload가 먼저 막힌다는 headroom/trade-off를 다룬다.
+---
 # RLIMIT NOFILE, NPROC Governance
 
 > 한 줄 요약: `RLIMIT_NOFILE`과 `RLIMIT_NPROC`는 서버가 열 수 있는 fd와 프로세스 수를 제한해 폭주를 막지만, 잘못 잡으면 정상 워크로드도 먼저 막는다.

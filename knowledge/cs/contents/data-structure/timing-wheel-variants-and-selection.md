@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Timing Wheel Variants and Selection
+concept_id: data-structure/timing-wheel-variants-and-selection
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- timing-wheel-variants
+- timer-queue-selection
+- scheduler-data-structure-choice
+aliases:
+- timing wheel variants
+- hashed wheel timer selection
+- single timing wheel
+- hierarchical timing wheel
+- calendar queue vs timing wheel
+- radix heap timer queue
+- timer queue chooser
+symptoms:
+- heap vs timing wheel 이분법으로만 timer queue를 고르고 single wheel, hierarchical wheel, calendar queue, radix heap의 workload 가정을 나누지 않는다
+- tick granularity, deadline distribution, monotone key, exact earliest ordering 같은 계약을 확인하지 않고 구조 이름만 보고 선택한다
+- timing wheel의 O(1) 삽입 기대만 보고 cascade, tombstone, bucket skew, precision tradeoff를 무시한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/timing-wheel-vs-delay-queue
+- data-structure/heap-variants
+next_docs:
+- data-structure/hierarchical-timing-wheel
+- data-structure/calendar-queue
+- data-structure/radix-heap
+linked_paths:
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/data-structure/calendar-queue.md
+- contents/data-structure/radix-heap.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+confusable_with:
+- data-structure/hierarchical-timing-wheel
+- data-structure/calendar-queue
+- data-structure/radix-heap
+- data-structure/heap-variants
+- data-structure/timing-wheel-vs-delay-queue
+forbidden_neighbors: []
+expected_queries:
+- single timing wheel hierarchical timing wheel calendar queue radix heap은 timer workload별로 어떻게 골라?
+- timing wheel variants를 고를 때 tick precision deadline distribution monotone key를 어떻게 봐야 해?
+- hierarchical timing wheel은 long delay timeout에서 single wheel의 round 문제를 어떻게 줄여?
+- calendar queue와 timing wheel은 둘 다 bucket 구조인데 선택 기준이 어떻게 달라?
+- radix heap을 timer queue처럼 쓰려면 deadline이 monotone이어야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 timer queue 선택을 single timing wheel, hierarchical timing wheel,
+  calendar queue, radix heap, binary heap의 workload 계약으로 나누는 chooser다.
+  tick granularity, distribution skew, monotone key, exact deadline ordering을 비교한다.
+---
 # Timing Wheel Variants and Selection
 
 > 한 줄 요약: timing wheel 계열은 timer churn을 싸게 처리하려고 시간을 bucket으로 바꾸는 구조들이며, single wheel, hierarchical wheel, calendar queue, radix heap은 각각 workload 가정이 다르다.

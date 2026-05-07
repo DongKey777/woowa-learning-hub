@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: 분산 스케줄러 설계
+concept_id: system-design/distributed-scheduler-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- distributed scheduler
+- cron job
+- lease
+- leader election
+aliases:
+- distributed scheduler
+- cron job
+- lease
+- leader election
+- delayed job
+- trigger
+- misfire
+- worker heartbeat
+- schedule drift
+- timezone
+- exactly once execution
+- at-least-once execution
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/workflow-orchestration-saga-design.md
+- contents/system-design/distributed-lock-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 분산 스케줄러 설계 설계 핵심을 설명해줘
+- distributed scheduler가 왜 필요한지 알려줘
+- 분산 스케줄러 설계 실무 트레이드오프는 뭐야?
+- distributed scheduler 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 분산 스케줄러 설계를 다루는 deep_dive 문서다. 분산 스케줄러는 시간을 기준으로 job을 배치하고, 중복 실행과 장애 전파를 막으면서 정해진 시점에 작업을 실행하는 시스템이다. 검색 질의가 distributed scheduler, cron job, lease, leader election처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # 분산 스케줄러 설계
 
 > 한 줄 요약: 분산 스케줄러는 시간을 기준으로 job을 배치하고, 중복 실행과 장애 전파를 막으면서 정해진 시점에 작업을 실행하는 시스템이다.

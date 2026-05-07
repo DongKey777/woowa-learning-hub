@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Grant Path Freshness and Stale Deny Basics
+concept_id: security/grant-path-freshness-stale-deny-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- grant path freshness
+- stale deny basics
+- permission granted still 403
+- newly granted permission still forbidden
+aliases:
+- grant path freshness
+- stale deny basics
+- permission granted still 403
+- newly granted permission still forbidden
+- new role still 403
+- grant but still denied
+- stale deny after grant
+- fresh grant stale deny
+- cached 404 after grant
+- cached concealment 404 after grant
+- 403 until claim refresh
+- 403 until cache invalidation
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/jwt-claims-roles-authorities-permissions-mapping.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/authz-session-versioning-patterns.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/authorization-graph-caching.md
+- contents/security/authz-negative-cache-failure-case-study.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Grant Path Freshness and Stale Deny Basics 핵심 개념을 설명해줘
+- grant path freshness가 왜 필요한지 알려줘
+- Grant Path Freshness and Stale Deny Basics 실무 설계 포인트는 뭐야?
+- grant path freshness에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Grant Path Freshness and Stale Deny Basics를 다루는 primer 문서다. 권한을 방금 부여해 source of truth에서는 allow가 맞아도, 현재 요청이 보는 session/JWT claim과 deny cache가 아직 옛 상태면 `403`이 계속 나올 수 있으므로 `grant -> claim refresh -> cache invalidation -> 재평가`가 한 경로로 맞물려야 한다. 검색 질의가 grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Grant Path Freshness and Stale Deny Basics
 
 > 한 줄 요약: 권한을 방금 부여해 source of truth에서는 allow가 맞아도, 현재 요청이 보는 session/JWT claim과 deny cache가 아직 옛 상태면 `403`이 계속 나올 수 있으므로 `grant -> claim refresh -> cache invalidation -> 재평가`가 한 경로로 맞물려야 한다.

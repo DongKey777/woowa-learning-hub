@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Envelope Encryption / KMS Basics
+concept_id: security/envelope-encryption-kms-basics
+canonical: true
+category: security
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- envelope encryption
+- KMS
+- data key
+- master key
+aliases:
+- envelope encryption
+- KMS
+- data key
+- master key
+- CMK
+- DEK
+- key wrapping
+- unwrap
+- envelope
+- rotation
+- ciphertext
+- key hierarchy
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/key-rotation-runbook.md
+- contents/security/secret-scanning-credential-leak-response.md
+- contents/security/https-hsts-mitm.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Envelope Encryption / KMS Basics 핵심 개념을 설명해줘
+- envelope encryption가 왜 필요한지 알려줘
+- Envelope Encryption / KMS Basics 실무 설계 포인트는 뭐야?
+- envelope encryption에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Envelope Encryption / KMS Basics를 다루는 primer 문서다. envelope encryption은 데이터 키와 마스터 키를 분리해 대량 데이터는 빠르게 암호화하고, 상위 키는 KMS로 더 강하게 보호하는 방식이다. 검색 질의가 envelope encryption, KMS, data key, master key처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Envelope Encryption / KMS Basics
 
 > 한 줄 요약: envelope encryption은 데이터 키와 마스터 키를 분리해 대량 데이터는 빠르게 암호화하고, 상위 키는 KMS로 더 강하게 보호하는 방식이다.

@@ -43,9 +43,9 @@ prerequisites:
 - spring/spring-bindingresult-local-validation-400-primer
 - spring/spring-exception-handling-basics
 next_docs:
-- spring/spring-mvc-exception-resolver-chain-contract
-- spring/spring-conversion-service-formatter-binder-pipeline
-- spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+- spring/mvc-exception-resolver-chain-contract
+- spring/conversion-service-formatter-binder-pipeline
+- spring/methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
 linked_paths:
 - contents/spring/spring-valid-400-vs-message-conversion-400-primer.md
 - contents/spring/spring-bindingresult-local-validation-400-primer.md
@@ -60,8 +60,8 @@ linked_paths:
 confusable_with:
 - spring/valid-400-vs-message-conversion-400-primer
 - spring/spring-bindingresult-local-validation-400-primer
-- spring/spring-conversion-service-formatter-binder-pipeline
-- spring/spring-mvc-exception-resolver-chain-contract
+- spring/conversion-service-formatter-binder-pipeline
+- spring/mvc-exception-resolver-chain-contract
 forbidden_neighbors: []
 expected_queries:
 - Spring MVC에서 바인딩 실패와 validation 실패가 정확히 어떤 순서로 일어나는지 설명해줘
@@ -76,7 +76,6 @@ contextual_chunk_prefix: |
   `DTO를 못 만들었나, 만든 뒤 규칙을 어겼나`를 더 세밀한 파이프라인
   단계로 분해해 주는 역할을 맡는다.
 ---
-
 # Spring Validation and Binding Error Pipeline
 
 > 한 줄 요약: Spring validation은 단순히 `@Valid`를 붙이는 일이 아니라, 바인딩 실패와 검증 실패가 어떤 순서로 발생하고 어떤 응답으로 번역되는지 이해하는 문제다.

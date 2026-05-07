@@ -35,11 +35,11 @@ intents:
 - troubleshooting
 prerequisites:
 - software-engineering/rfc-vs-adr-decision-flow
-- software-engineering/architectural-governance-operating-model
+- software-engineering/architectural-governance
 - software-engineering/architectural-fitness-functions
 next_docs:
-- software-engineering/policy-as-code-architecture-linting
-- software-engineering/architecture-council-domain-stewardship-cadence
+- software-engineering/policy-as-code
+- software-engineering/architecture-council-cadence
 - software-engineering/architecture-exception-process
 linked_paths:
 - contents/software-engineering/rfc-vs-adr-decision-flow.md
@@ -53,7 +53,7 @@ linked_paths:
 - contents/software-engineering/architecture-council-domain-stewardship-cadence.md
 - contents/software-engineering/architecture-exception-process.md
 confusable_with:
-- software-engineering/architectural-governance-operating-model
+- software-engineering/architectural-governance
 - software-engineering/rfc-vs-adr-decision-flow
 - software-engineering/architectural-fitness-functions
 forbidden_neighbors: []
@@ -64,11 +64,11 @@ expected_queries:
 - 리뷰는 통과했는데 운영 장애가 난 경우 아키텍처 리뷰가 놓친 신호를 어떻게 찾지?
 - 소규모 변경까지 모두 architecture review를 태우면 왜 governance fatigue가 생겨?
 contextual_chunk_prefix: |
-  이 문서는 architecture review를 운영할 때 approval theater, cargo
-  cult architecture, decision bottleneck, governance fatigue 같은 실패
-  패턴을 구분해 읽는 deep_dive다. 리뷰가 구조를 개선하는 장치인지, 결정을
-  지연시키는 의식인지 판단하려는 학습자에게 기준, 자동화, 운영 맥락 연결의
-  중요성을 설명하는 문서라는 맥락을 각 청크 앞에 붙인다.
+  이 문서는 architecture review가 설계를 돕는 검증 루프인지, 결정을 늦추는
+  의식으로 변질됐는지 깊이 잡는 deep_dive다. 리뷰가 병목이 된다, 유행 구조를
+  그냥 따라간다, 체크리스트만 남고 운영 위험은 못 본다, 소수 승인자에게
+  결정이 몰린다 같은 자연어 paraphrase가 본 문서의 실패 패턴과 운영 기준에
+  매핑된다.
 ---
 # Architecture Review Anti-Patterns
 

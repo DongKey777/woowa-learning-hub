@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: MFA / Step-Up Auth Design
+concept_id: security/mfa-step-up-auth-design
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- MFA
+- step-up auth
+- risk-based auth
+- TOTP
+aliases:
+- MFA
+- step-up auth
+- risk-based auth
+- TOTP
+- WebAuthn
+- recovery code
+- reauthentication
+- sensitive action
+- account takeover
+- session age
+- auth assurance
+- elevated session
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/rate-limiting-vs-brute-force-defense.md
+- contents/security/webauthn-passkeys-phishing-resistant-login.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/jwt-deep-dive.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- MFA / Step-Up Auth Design 핵심 개념을 설명해줘
+- MFA가 왜 필요한지 알려줘
+- MFA / Step-Up Auth Design 실무 설계 포인트는 뭐야?
+- MFA에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 MFA / Step-Up Auth Design를 다루는 deep_dive 문서다. MFA는 로그인 한 번으로 끝나는 기능이 아니라, 위험도에 따라 추가 검증을 요구하는 step-up 정책으로 설계해야 운영이 된다. 검색 질의가 MFA, step-up auth, risk-based auth, TOTP처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # MFA / Step-Up Auth Design
 
 > 한 줄 요약: MFA는 로그인 한 번으로 끝나는 기능이 아니라, 위험도에 따라 추가 검증을 요구하는 step-up 정책으로 설계해야 운영이 된다.

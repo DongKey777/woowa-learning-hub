@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Job Queue 설계
+concept_id: system-design/job-queue-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- async-worker-queue-design
+- retry-dlq-idempotency
+- backpressure-worker-pool
+aliases:
+- job queue design
+- 작업 큐 설계
+- durable job queue
+- worker pool retry DLQ
+- visibility timeout
+- at-least-once processing
+- delayed job
+- redrive queue
+symptoms:
+- 큐를 단순히 나중에 처리하는 저장소로만 보고 retry, ack, visibility timeout을 놓치고 있어
+- at-least-once 전달에서 중복 처리가 왜 필수인지 헷갈려
+- backlog가 쌓일 때 worker만 늘리면 된다고 생각하고 producer rate limit과 backpressure를 놓치고 있어
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- system-design/message-queue-basics
+- system-design/back-of-envelope-estimation
+- network/timeout-retry-backoff-practical
+next_docs:
+- system-design/workflow-orchestration-saga-design
+- system-design/replay-repair-orchestration-control-plane-design
+- system-design/rate-limiter-design
+- system-design/notification-system-design
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/system-design/workflow-orchestration-saga-design.md
+- contents/system-design/notification-system-design.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+confusable_with:
+- system-design/message-queue-basics
+- system-design/workflow-orchestration-saga-design
+- system-design/rate-limiter-design
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- Job Queue를 설계할 때 producer, queue, worker, ack 흐름을 어떻게 잡아?
+- at-least-once queue에서 왜 idempotency와 dedup key가 필요해?
+- visibility timeout과 retry, DLQ는 worker crash를 어떻게 다뤄?
+- backlog가 쌓이면 worker 수만 늘리는 게 위험한 이유는 뭐야?
+- 순서가 중요한 job은 partition key를 어떻게 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 job queue design deep dive로, producer enqueue, worker pool, ack, visibility timeout, retry/backoff, DLQ, at-least-once, idempotency, backlog/backpressure를 다룬다.
+  작업 큐 설계, durable delivery, worker crash retry, visibility timeout, dead letter queue, backlog, delayed job 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Job Queue 설계
 
 > 한 줄 요약: 느린 작업을 요청 경로에서 분리하고, 버퍼링과 재시도로 시스템을 안정화하는 비동기 작업 처리 설계다.

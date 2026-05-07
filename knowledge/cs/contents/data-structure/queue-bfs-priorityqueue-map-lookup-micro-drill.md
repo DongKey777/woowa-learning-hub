@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill
+concept_id: data-structure/queue-bfs-priorityqueue-map-lookup-micro-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- queue-bfs-priorityqueue-map-router
+- beginner-data-structure-classification
+- bfs-queue-visited
+aliases:
+- queue vs bfs vs priority queue vs map lookup
+- queue BFS difference beginner
+- priority queue 언제 써요
+- map lookup 뭐예요
+- one line problem classification
+- queue 문제예요 BFS 문제예요
+- 자료구조 처음 분류
+symptoms:
+- 순서대로 처리하는 FIFO queue 문제와 가까운 칸부터 거리 순서로 탐색하는 BFS 문제를 같은 것으로 본다
+- 가장 급한 것 하나를 계속 꺼내는 priority queue와 key로 바로 찾는 map lookup 요구를 문제 문장에서 못 자른다
+- BFS를 고른 뒤에도 queue와 visited가 구현 기본형이라는 연결을 놓친다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/queue-basics
+- data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer
+next_docs:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/bfs-zero-one-bfs-dijkstra-classification
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- algorithm/dfs-bfs-intro
+linked_paths:
+- contents/data-structure/queue-basics.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/bfs-zero-one-bfs-dijkstra-one-line-classification-card.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/queue-basics
+- algorithm/dfs-bfs-intro
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+forbidden_neighbors: []
+expected_queries:
+- queue 문제인지 BFS 문제인지 priority queue인지 map lookup인지 한 줄 문제로 연습하고 싶어
+- 최소 이동 횟수면 queue가 아니라 BFS로 읽는 이유는?
+- FIFO 처리와 BFS 거리 순서 탐색은 어떻게 달라?
+- 가장 이른 작업은 priority queue, orderId 조회는 map lookup이라는 분기를 알려줘
+- BFS 기본 구현이 queue plus visited라는 것을 beginner drill로 확인하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 beginner가 한 줄 문제를 보고 FIFO queue, BFS queue+visited,
+  priority queue, map lookup을 구분하는 micro drill이다. 순서대로 처리,
+  가까운 칸부터 탐색, 가장 급한 것부터 추출, key로 바로 찾기 신호를 분리한다.
+---
 # Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill
 
 > 한 줄 요약: 한 줄 문제를 읽을 때 `순서대로 처리`면 `queue`, `가까운 칸부터`면 `BFS`, `가장 급한 것부터`면 `priority queue`, `key로 바로 찾기`면 `map lookup`으로 먼저 자르면 초급 오분류가 크게 줄어든다.

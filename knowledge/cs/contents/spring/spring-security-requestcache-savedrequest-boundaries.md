@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Security RequestCache SavedRequest Boundaries
+concept_id: spring/security-requestcache-savedrequest-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- security-requestcache-savedrequest
+- boundaries
+- requestcache-savedrequest
+- security-saved-request
+aliases:
+- RequestCache SavedRequest
+- Spring Security saved request
+- login success original URL
+- hidden session from request cache
+- API stateless login loop
+- 302 redirect after login
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/spring/spring-oauth2-jwt-integration.md
+symptoms:
+- 로그인 성공 후 원래 URL로 돌아갔지만 마지막에 403이 난다.
+- API를 stateless로 만들었는데 RequestCache 때문에 session이 생긴다.
+- 인증 실패 요청이 login loop나 예상 못한 302 redirect로 이어진다.
+expected_queries:
+- Spring Security RequestCache와 SavedRequest는 로그인 후 원래 URL 복귀를 어떻게 처리해?
+- stateless API에서 RequestCache를 끄지 않으면 hidden session이 생길 수 있어?
+- 로그인 성공 후 final 403은 SavedRequest와 role mapping 중 어디를 봐야 해?
+- 브라우저 UX와 API 인증 흐름에서 RequestCache 경계를 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 Spring Security RequestCache와 SavedRequest가 로그인 전 원래 요청을 저장하고
+  로그인 성공 뒤 redirect하는 별도 browser UX 흐름이라는 점을 설명한다. API/stateless,
+  hidden session, login loop, final 403 증상을 playbook으로 연결한다.
+---
 # Spring Security `RequestCache` / `SavedRequest` Boundaries
 
 > 한 줄 요약: Spring Security의 로그인 후 원래 URL 복귀는 `RequestCache`와 `SavedRequest`가 만드는 별도 흐름이므로, 브라우저 UX와 API/stateless 경계를 분리하지 않으면 302 redirect, hidden session 생성, login loop가 쉽게 생긴다.

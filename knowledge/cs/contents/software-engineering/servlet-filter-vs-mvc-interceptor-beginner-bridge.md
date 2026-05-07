@@ -34,7 +34,7 @@ prerequisites:
 - software-engineering/inbound-adapter-test-slices-primer
 next_docs:
 - spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
-- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
 - spring/spring-security-filter-chain
 linked_paths:
 - contents/software-engineering/inbound-adapter-test-slices-primer.md
@@ -44,7 +44,7 @@ linked_paths:
 - contents/spring/spring-security-filter-chain.md
 confusable_with:
 - spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
-- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
 - spring/spring-security-filter-chain
 forbidden_neighbors: []
 expected_queries:
@@ -60,7 +60,6 @@ contextual_chunk_prefix: |
   앞단 concern인지, handler 정보가 필요한 concern인지 같은 질문을 servlet
   경계와 MVC 경계의 차이로 연결한다.
 ---
-
 # Servlet Filter vs MVC Interceptor Beginner Bridge
 
 > 한 줄 요약: 처음 배우는데 `filter`와 `interceptor`가 비슷해 보이면, `filter`는 서블릿 입구에서 요청 자체를 다루고 `interceptor`는 컨트롤러 앞뒤에서 MVC 공통 처리를 다룬다고 먼저 나누면 된다.

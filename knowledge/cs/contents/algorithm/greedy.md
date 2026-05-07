@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Greedy Algorithm
+concept_id: algorithm/greedy
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- greedy-choice-property
+- exchange-argument
+- greedy-vs-dp
+aliases:
+- greedy algorithm
+- greedy algorithm overview
+- greedy proof
+- greedy choice property
+- optimal substructure
+- exchange argument
+- local optimum global optimum
+- when greedy works
+- greedy counterexample
+- 탐욕 알고리즘
+- 그리디 알고리즘
+- 그리디 증명
+- 탐욕 선택 속성
+- 교환 논증
+symptoms:
+- 지금 가장 좋아 보이는 선택을 고르면 항상 최적인 줄 알고 greedy 반례를 점검하지 않는다
+- greedy choice property와 optimal substructure를 말로는 알지만 문제에서 어떤 증명 어휘로 확인해야 하는지 모른다
+- interval greedy, MST, Dijkstra처럼 greedy가 맞는 계열과 0-1 knapsack처럼 깨지는 계열을 섞는다
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites:
+- algorithm/greedy-intro
+- algorithm/problem-signal-to-pattern-router-beginner
+next_docs:
+- algorithm/greedy-vs-dp-decision-card
+- algorithm/interval-greedy-patterns
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+linked_paths:
+- contents/algorithm/greedy-intro.md
+- contents/algorithm/greedy-vs-dp-decision-card.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/sweep-line-overlap-counting.md
+confusable_with:
+- algorithm/greedy-vs-dp-decision-card
+- algorithm/interval-greedy-patterns
+- algorithm/dp-intro
+forbidden_neighbors: []
+expected_queries:
+- greedy 알고리즘은 언제 써도 되고 언제 반례를 먼저 찾아야 하는지 판단 기준을 알려줘
+- greedy choice property와 optimal substructure가 무슨 뜻인지 interval scheduling 예시로 설명해줘
+- 교환 논증 exchange argument로 그리디 선택이 안전하다는 것을 어떻게 보이는지 알고 싶어
+- 0-1 knapsack이나 TSP에서 지금 좋아 보이는 선택이 왜 전체 최적을 보장하지 않는지 예시로 알려줘
+- 그리디와 DP를 문제 문장에서 어떻게 구분하고 어떤 경우에 greedy-vs-DP 카드로 넘어가야 해?
+contextual_chunk_prefix: |
+  이 문서는 greedy algorithm의 적용 조건과 증명 어휘를 잡는 bridge다.
+  greedy choice property, optimal substructure, exchange argument, stays ahead proof, cut property, local optimum vs global optimum, interval greedy, MST, Dijkstra, greedy counterexample, DP와의 경계를 다룬다.
+---
 # Greedy Algorithm
 
 > 한 줄 요약: greedy는 매 단계에서 가장 좋아 보이는 선택을 하되, 그 국소 선택이 전체 최적해로 이어진다는 근거가 있을 때만 안전한 설계 기법이다.

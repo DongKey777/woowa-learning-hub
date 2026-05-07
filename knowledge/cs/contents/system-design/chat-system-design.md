@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: 채팅 시스템 설계
+concept_id: system-design/chat-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- chat system design
+- 채팅 시스템 설계
+- 채팅 서버 뭐예요
+- 처음 배우는데 채팅 설계
+aliases:
+- chat system design
+- 채팅 시스템 설계
+- 채팅 서버 뭐예요
+- 처음 배우는데 채팅 설계
+- websocket chat architecture
+- message ordering chat
+- offline message delivery
+- chat ack retry
+- chat idempotency
+- group chat fanout
+- 채팅 순서 보장
+- 채팅 읽음 표시 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/network/websocket-basics.md
+- contents/network/sse-websocket-polling.md
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/grpc-vs-rest.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/system-design/message-queue-basics.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/index-and-explain.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 채팅 시스템 설계 설계 핵심을 설명해줘
+- chat system design가 왜 필요한지 알려줘
+- 채팅 시스템 설계 실무 트레이드오프는 뭐야?
+- chat system design 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 채팅 시스템 설계를 다루는 deep_dive 문서다. 실시간 연결, 메시지 순서, 오프라인 전달, 중복 방지를 동시에 만족시키는 메시징 시스템의 설계다. 검색 질의가 chat system design, 채팅 시스템 설계, 채팅 서버 뭐예요, 처음 배우는데 채팅 설계처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # 채팅 시스템 설계
 
 > 한 줄 요약: 실시간 연결, 메시지 순서, 오프라인 전달, 중복 방지를 동시에 만족시키는 메시징 시스템의 설계다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Anti-Corruption Adapter Layering
+concept_id: design-pattern/anti-corruption-adapter-layering
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- anti-corruption-layer
+- adapter-layering
+- boundary-translation
+aliases:
+- anti corruption adapter layering
+- anti corruption layer
+- ACL layering
+- adapter layering
+- boundary translation stack
+- model translation layer
+- legacy system shielding
+- translator layering
+- 외부 모델 격리
+- 안티 코럽션 레이어
+symptoms:
+- 외부 API 응답 파싱, 도메인 변환, 호출 순서 조율을 하나의 adapter에 모두 넣어 경계 코드가 비대해진다
+- provider의 field name이나 status code가 내부 도메인 용어로 그대로 침투한다
+- GoF Adapter와 ACL layering, facade, port, translator 책임을 구분하지 못한다
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- design-pattern/bounded-context-relationship-patterns
+- design-pattern/adapter
+- design-pattern/hexagonal-ports-pattern-language
+next_docs:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/anti-corruption-translation-map-pattern
+linked_paths:
+- contents/design-pattern/bounded-context-relationship-patterns.md
+- contents/design-pattern/anti-corruption-layer-operational-pattern.md
+- contents/design-pattern/anti-corruption-contract-test-pattern.md
+- contents/design-pattern/hexagonal-ports-pattern-language.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/adapter.md
+confusable_with:
+- design-pattern/adapter
+- design-pattern/hexagonal-ports-pattern-language
+- design-pattern/facade-anti-corruption-seam
+- design-pattern/bridge-storage-provider-abstractions
+forbidden_neighbors: []
+expected_queries:
+- Anti-Corruption Layer에서 adapter, facade, port, translator를 나눠야 하는 이유가 뭐야?
+- 외부 provider 모델이 도메인 언어로 침투하지 않게 ACL layering을 어떻게 설계해?
+- GoF Adapter와 anti-corruption adapter layering은 연결 책임과 경계 보호 관점에서 어떻게 달라?
+- legacy payment 응답을 내부 PaymentResult로 바꿀 때 translator를 별도로 두는 기준은 뭐야?
+- 외부 API field나 enum이 자주 바뀌면 단일 adapter보다 layered ACL이 나은 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Adapter Layering bridge로, 외부 시스템 통합에서
+  port, adapter, facade, translator 책임을 나눠 provider model이 domain language로
+  침투하지 않도록 boundary translation stack을 설계하는 기준을 설명한다.
+---
 # Anti-Corruption Adapter Layering: 경계 번역을 여러 층으로 나누기
 
 > 한 줄 요약: Anti-corruption layering은 adapter, facade, port, translator를 분리해 외부 모델이 도메인에 침투하는 걸 막는 설계다.

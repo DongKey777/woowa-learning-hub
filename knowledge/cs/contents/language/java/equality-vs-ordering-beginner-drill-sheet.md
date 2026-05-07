@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Beginner Drill Sheet: Equality vs Ordering
+concept_id: language/equality-vs-ordering-beginner-drill-sheet
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- equality-ordering
+- collection-drill
+- comparator-contract
+aliases:
+- equality vs ordering beginner drill sheet
+- Java equals compareTo practice
+- HashSet TreeSet result prediction
+- TreeMap put overwrite drill
+- compareTo 0 duplicate rule
+- 자바 equals compareTo 연습문제
+symptoms:
+- equals와 compareTo를 모두 같은지 판단하는 메서드로 섞어 HashSet, TreeSet, TreeMap 결과를 실행 전 예측하지 못해
+- compareTo 0이면 sorted collection에서 같은 자리로 보고 TreeSet duplicate 제거나 TreeMap value overwrite가 생긴다는 점을 놓쳐
+- comparator tie-breaker 추가 전후의 collection result 차이를 손으로 먼저 검증하는 습관이 부족해
+intents:
+- drill
+- definition
+- comparison
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-comparable-comparator-basics
+next_docs:
+- language/hashset-vs-treeset-duplicate-semantics
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/bigdecimal-sorted-collection-bridge
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/record-comparator-60-second-mini-drill.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+confusable_with:
+- language/comparator-consistency-with-equals-bridge
+- language/hashset-vs-treeset-duplicate-semantics
+- language/bigdecimal-sorted-collection-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java equals와 compareTo 차이를 HashSet TreeSet TreeMap 결과 예측으로 연습하고 싶어
+- HashSet은 size 2인데 TreeSet은 size 1이 되는 record comparator 예제를 설명해줘
+- TreeMap put에서 compareTo 0이면 value가 덮어써지는 이유를 드릴로 보여줘
+- comparator tie-breaker를 추가하면 sorted collection 결과가 어떻게 달라지는지 예측해줘
+- equality vs ordering beginner drill을 실행 전에 풀어보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 equals/hashCode equality와 compareTo/Comparator ordering을 HashSet, TreeSet, TreeMap 결과 예측으로 연습하는 beginner drill sheet다.
+  equality vs ordering, equals compareTo, HashSet TreeSet, TreeMap overwrite, comparator tie-breaker 질문이 본 문서에 매핑된다.
+---
 # Beginner Drill Sheet: Equality vs Ordering
 
 > 한 줄 요약: `equals()`와 `compareTo()`를 "같은지 판단"과 "순서 판단"으로 분리해, `HashSet`/`TreeSet`/`TreeMap` 결과를 실행 전에 먼저 예측해 보는 초급 연습 시트다.

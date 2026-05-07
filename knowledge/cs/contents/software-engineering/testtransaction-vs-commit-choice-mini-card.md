@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: '`TestTransaction.end()` vs `@Commit` 선택 미니 카드'
+concept_id: software-engineering/testtransaction-vs-commit-choice-mini-card
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- testtransaction-vs-commit
+- rollback-default-confusion
+- after-commit-test-boundary
+aliases:
+- testtransaction vs @commit
+- testtransaction.end 뭐예요
+- '@commit 테스트 언제 써요'
+- commit visible test choice
+- spring transactional test commit choice
+- rollback test commit path
+- commit 전후 비교 테스트
+- 한 테스트 안에서 commit 보고 싶어요
+- 처음 testtransaction 헷갈려요
+- beginner commit visible spring test
+- what is testtransaction
+- '@rollback false vs @commit'
+symptoms:
+- commit 뒤에 보이는 데이터를 테스트에서 어떻게 확인해야 할지 모르겠어요
+- TestTransaction.end()와 @Commit 중 뭘 쓰는지가 계속 헷갈려요
+- rollback 테스트는 초록인데 AFTER_COMMIT 검증이 불안해요
+intents:
+- drill
+prerequisites:
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/after-commit-listener-rollback-test-beginner-bridge
+- software-engineering/outbox-message-adapter-test-matrix
+linked_paths:
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/after-commit-listener-rollback-test-beginner-bridge.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/spring/spring-after-commit-rollback-slice-test-mini-card.md
+- contents/spring/spring-transactional-test-rollback-misconceptions.md
+confusable_with:
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+- software-engineering/after-commit-listener-rollback-test-beginner-bridge
+- software-engineering/outbox-message-adapter-test-matrix
+forbidden_neighbors:
+  - contents/spring/spring-after-commit-rollback-slice-test-mini-card.md
+  - contents/spring/spring-transactional-test-rollback-misconceptions.md
+expected_queries:
+- 한 테스트 메서드 안에서 커밋 전후 상태를 이어서 보려면 어떤 선택이 더 자연스러워?
+- 테스트 끝에서만 실제 반영을 확인하면 될 때는 어떤 트랜잭션 도구를 쓰면 돼?
+- commit path를 열어야 하는 검증과 그냥 rollback 테스트로 끝나는 검증을 어떻게 구분해?
+- AFTER_COMMIT 리스너 확인 때문에 테스트 구조를 바꿔야 할 때 가장 쉬운 판단 기준이 뭐야?
+- 초심자 기준으로 중간 커밋이 필요한 테스트와 마지막 커밋만 필요한 테스트를 나눠줘
+contextual_chunk_prefix: |
+  이 문서는 rollback 기본 테스트에서 commit 순간을 열어야 할 때 한
+  메서드 안에서 전후 상태를 이어 볼지, 끝에서만 실제 반영을 볼지
+  확인 질문으로 굳히는 drill이다. 중간 커밋 필요, 커밋 뒤 재조회,
+  after commit 검증, 마지막에만 반영 확인, 롤백 테스트에서 실제 반영
+  보기 같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # `TestTransaction.end()` vs `@Commit` 선택 미니 카드
 
 > 한 줄 요약: commit-visible 테스트가 필요할 때는 "한 테스트 안에서 commit 전/후를 이어서 볼 것인가"를 먼저 묻고, 그렇다면 `TestTransaction.end()`, 아니라면 `@Commit`을 먼저 고르면 초심자 판단이 가장 덜 흔들린다.

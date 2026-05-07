@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Persistent Segment Tree Basics
+concept_id: data-structure/persistent-segment-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- persistent-segment-tree
+- versioned-range-query
+- path-copying
+aliases:
+- Persistent Segment Tree
+- versioned segment tree
+- path copying segment tree
+- historical query
+- time travel query
+- k-th number persistent tree
+- functional segment tree
+symptoms:
+- 업데이트 후에도 과거 버전 range query를 해야 하는데 일반 segment tree로 덮어써 이전 상태를 잃는다
+- path copying으로 변경 경로만 새 node를 만들고 나머지는 공유한다는 persistence 핵심을 놓친다
+- version 수와 update 수에 따라 메모리 비용이 늘어나는 trade-off를 보지 않는다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/segment-tree-lazy-propagation
+- data-structure/coordinate-compression-patterns
+next_docs:
+- data-structure/disjoint-sparse-table
+- data-structure/fenwick-vs-segment-tree
+- data-structure/order-statistic-tree
+linked_paths:
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/disjoint-sparse-table.md
+- contents/data-structure/coordinate-compression-patterns.md
+confusable_with:
+- data-structure/segment-tree-lazy-propagation
+- data-structure/disjoint-sparse-table
+- data-structure/order-statistic-tree
+- data-structure/fenwick-tree
+forbidden_neighbors: []
+expected_queries:
+- Persistent Segment Tree는 이전 버전을 보존하면서 range query를 어떻게 해?
+- path copying으로 segment tree update 경로만 복사한다는 뜻은?
+- 과거 시점 k번째 수나 versioned range query를 처리할 때 왜 persistent tree를 써?
+- version 수가 많아지면 Persistent Segment Tree memory cost가 어떻게 늘어?
+- 일반 Segment Tree와 Persistent Segment Tree를 역사 조회 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Persistent Segment Tree를 update 때 기존 node를 덮어쓰지 않고
+  path copying으로 새 version root를 만드는 versioned range query primer로
+  설명한다. historical query, k-th number, immutable structure, memory cost를
+  다룬다.
+---
 # Persistent Segment Tree Basics
 
 > 한 줄 요약: Persistent Segment Tree는 구간 트리의 이전 버전을 보존하면서 시간 축 버전 조회를 가능하게 하는 구조다.

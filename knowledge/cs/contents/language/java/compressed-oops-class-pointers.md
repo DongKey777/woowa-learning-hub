@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Compressed Oops and Class Pointers
+concept_id: language/compressed-oops-class-pointers
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- jvm-memory-layout
+- object-header
+- heap-footprint
+aliases:
+- compressed oops
+- compressed class pointers
+- narrow oop
+- narrow klass
+- Java object header pointer compression
+- HotSpot pointer compression
+- compressed ordinary object pointer
+symptoms:
+- 64-bit JVM에서 reference가 항상 64-bit로 저장된다고 생각해 compressed oops가 heap footprint와 cache density를 바꾸는 이유를 놓쳐
+- JOL 같은 object layout 출력에서 mark word, klass pointer, instance fields를 압축 여부와 함께 해석하지 못해
+- heap 크기 변경이 compressed oops 활성 조건과 object layout 감각을 바꿀 수 있다는 점을 고려하지 않아
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/object-layout-jol-intuition
+next_docs:
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/class-data-sharing-appcds
+- language/stack-vs-heap-escape-intuition
+linked_paths:
+- contents/language/java/stack-vs-heap-escape-intuition.md
+- contents/language/java/object-layout-jol-intuition.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/class-data-sharing-appcds.md
+confusable_with:
+- language/object-layout-jol-intuition
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/class-data-sharing-appcds
+forbidden_neighbors: []
+expected_queries:
+- HotSpot compressed oops와 compressed class pointers가 heap footprint를 줄이는 원리를 설명해줘
+- Java object header에서 mark word와 klass pointer를 JOL 출력으로 어떻게 읽어야 해?
+- 64-bit JVM에서 reference가 항상 64-bit가 아니라 narrow oop로 저장될 수 있다는 뜻이야?
+- heap size를 키우면 compressed oops 전제가 달라질 수 있는 이유가 뭐야?
+- compressed ordinary object pointer와 cache locality의 관계를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HotSpot compressed oops와 compressed class pointers를 object header, mark word, klass pointer, narrow oop, heap footprint, cache locality 관점으로 설명하는 advanced deep dive다.
+  compressed oops, compressed class pointer, JOL, object layout, 64-bit JVM reference 질문이 본 문서에 매핑된다.
+---
 # Compressed Oops and Class Pointers
 
 > 한 줄 요약: compressed oops와 compressed class pointers는 64-bit JVM에서 포인터 표현을 줄여 메모리 효율과 캐시 친화성을 얻는 HotSpot 최적화이지만, heap 크기와 object header 해석을 같이 봐야 한다.

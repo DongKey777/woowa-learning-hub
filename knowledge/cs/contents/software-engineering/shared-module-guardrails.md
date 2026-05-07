@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Shared Module Guardrails
+concept_id: software-engineering/shared-module-guardrails
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- modular-monolith
+- shared-module
+- boundary
+- architecture-lint
+aliases:
+- shared module guardrails
+- shared common module
+- modular monolith shared kernel
+- common module anti pattern
+- shared runtime kernel testkit
+- shared common 가드레일
+symptoms:
+- shared/common에 중복 제거라는 이유만으로 도메인 정책, entity, repository, workflow service가 들어가 경계가 다시 연결돼
+- shared module이 feature module internal이나 ORM, web adapter를 참조해 modular monolith dependency direction이 깨져
+- owner, review rule, exit condition 없이 common 폴더가 덤프 공간이 되어 모든 팀이 다 같이 쓰지만 아무도 책임지지 않아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/bounded-context-failure-patterns
+next_docs:
+- software-engineering/shared-library-vs-platform-service
+- software-engineering/policy-as-code
+- software-engineering/clean-architecture-layered-modular-monolith
+linked_paths:
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/shared-library-vs-platform-service-tradeoffs.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+confusable_with:
+- software-engineering/shared-library-vs-platform-service
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/bounded-context-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- modular monolith에서 shared/common module은 어떤 guardrail이 있을 때만 허용해야 해?
+- shared module에 entity, repository, workflow policy, 도메인 규칙을 넣으면 왜 boundary erosion이 생겨?
+- 기술적 공통 관심사, explicit shared kernel, testkit을 shared/runtime, shared/kernel, shared/testkit으로 나누는 기준은?
+- shared가 feature module internal에 의존하지 않도록 architecture lint로 무엇을 막아야 해?
+- 애매하면 shared보다 duplication이나 module API, ACL이 더 안전한 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 modular monolith의 shared/common을 domain-neutral runtime, explicit shared kernel, testkit으로 제한하고 ownership과 architecture lint로 덤프 공간화를 막는 intermediate playbook이다.
+---
 # Shared Module Guardrails
 
 > 한 줄 요약: 모듈러 모놀리스에서 `shared/common`은 "중복이 보인다"가 아니라, **도메인 중립적이거나 명시적 shared kernel이며 ownership과 lint 규칙까지 갖췄다**는 조건을 만족할 때만 허용된다.

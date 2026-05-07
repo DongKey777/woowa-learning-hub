@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Bloom Filter
+concept_id: data-structure/bloom-filter
+canonical: true
+category: data-structure
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- bloom-filter-approximate-membership
+- false-positive-no-false-negative
+- prefilter-not-source-of-truth
+aliases:
+- bloom filter
+- approximate membership
+- exact membership vs approximate membership
+- false positive no false negative
+- mightContain semantics
+- membership prefilter
+- negative lookup filter
+- bloom filter vs hashset
+- 블룸 필터 입문
+symptoms:
+- Bloom Filter의 mightContain true를 실제 존재 확정으로 받아들여 DB나 exact set 검증을 생략한다
+- false positive와 false negative 방향을 반대로 기억해 결제 중복 방지 같은 경로에 단독 적용한다
+- 삭제가 필요한 요구사항에서도 Counting Bloom이나 Cuckoo Filter와의 차이를 보지 않는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/hash-table-basics
+- data-structure/applied-data-structures-overview
+next_docs:
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/cuckoo-filter
+- data-structure/sketch-filter-selection-playbook
+- data-structure/bitset-vs-roaring-bitmap-handoff
+linked_paths:
+- contents/data-structure/hash-table-basics.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/lru-cache-design.md
+- contents/data-structure/cuckoo-filter.md
+- contents/data-structure/quotient-filter.md
+- contents/data-structure/xor-filter.md
+- contents/data-structure/bloom-filter-vs-cuckoo-filter.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- data-structure/hash-table-basics
+- data-structure/hashset-vs-treeset-beginner-bridge
+- data-structure/cuckoo-filter
+- data-structure/bloom-filter-vs-cuckoo-filter
+- database/idempotency-key-and-deduplication
+forbidden_neighbors: []
+expected_queries:
+- Bloom Filter는 false positive와 false negative 중 무엇이 가능해?
+- HashSet과 Bloom Filter는 membership check에서 어떤 역할 차이가 있어?
+- mightContain true를 보고 바로 존재한다고 확정하면 왜 위험해?
+- 결제 idempotency나 권한 검사처럼 오답이 없어야 하는 곳에 Bloom Filter를 단독으로 쓰면 안 되는 이유가 뭐야?
+- 삭제가 필요하면 Bloom Filter와 Cuckoo Filter 중 무엇을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Bloom Filter bridge로, approximate membership, false positive,
+  no false negative, mightContain semantics, negative lookup prefilter를 설명한다.
+  Bloom Filter는 정답 저장소가 아니라 없음 후보를 빠르게 거르는 선필터다.
+---
 # Bloom Filter
 
 > 한 줄 요약: 메모리를 적게 쓰면서 "아마 없다"를 빠르게 걸러내는 확률적 집합 검사 구조다.

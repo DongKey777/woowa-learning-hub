@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: SSE Last Event ID Replay Reconnect Ownership
+concept_id: language/sse-last-event-id-replay-reconnect-ownership
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- sse
+- reconnect
+- cleanup
+aliases:
+- SSE Last-Event-ID Replay Window Reconnect Ownership With SseEmitter
+- SseEmitter replay ownership
+- Last-Event-ID logical stream cursor
+- SSE reconnect cleanup ownership
+- replay window heartbeat reconnect backstop cleanup
+- Spring SSE Last-Event-ID recovery
+symptoms:
+- Last-Event-ID를 emitter instance 상태로 취급해 reconnect attempt가 새 emitter라는 사실과 logical stream cursor ownership을 구분하지 못해
+- heartbeat나 welcome control event에 id를 붙여 browser cursor를 business event가 아닌 frame으로 전진시켜 replay semantics를 흐려
+- reconnect 시 old emitter replacement, heartbeat scheduler cancel, broker subscription cancel, replay window miss 처리를 하나의 cleanup ownership으로 묶지 않아 duplicate producer가 남아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+- language/servlet-asynclistener-cleanup-patterns
+next_docs:
+- spring/sse-replay-buffer-last-event-id-recovery-patterns
+- spring/sse-disconnect-observability-patterns
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+linked_paths:
+- contents/language/java/streaming-response-abort-surfaces-servlet-virtual-threads.md
+- contents/language/java/streamingresponsebody-sseemitter-terminal-cleanup-matrix.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/spring/spring-sse-replay-buffer-last-event-id-recovery-patterns.md
+- contents/spring/spring-sse-disconnect-observability-patterns.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+- language/servlet-asynclistener-cleanup-patterns
+- spring/sse-replay-buffer-last-event-id-recovery-patterns
+forbidden_neighbors: []
+expected_queries:
+- SseEmitter에서 Last-Event-ID는 emitter 상태가 아니라 logical stream cursor라는 뜻이 뭐야?
+- SSE heartbeat나 welcome event에 id를 붙이면 replay cursor semantics가 왜 흐려질 수 있어?
+- reconnect가 들어오면 old emitter replacement와 heartbeat scheduler broker subscription cleanup을 어떻게 소유해야 해?
+- replay window miss나 stale cursor reset을 조용히 무시하지 말고 branch로 명시해야 하는 이유가 뭐야?
+- SSE reconnect storm과 EventSource retry lock-step을 관측하고 완화하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 SseEmitter에서 Last-Event-ID를 logical stream cursor로 다루고 replay window, reconnect, heartbeat, emitter cleanup ownership을 분리하는 advanced playbook이다.
+  SSE, Last-Event-ID, SseEmitter, replay window, reconnect ownership, heartbeat cleanup 질문이 본 문서에 매핑된다.
+---
 # SSE `Last-Event-ID`, Replay Window, and Reconnect Ownership With `SseEmitter`
 
 > 한 줄 요약: `SseEmitter`에서 resume를 안전하게 만들려면 `Last-Event-ID`를 emitter 상태가 아니라 **논리 스트림 cursor**로 다루고, replay window/heartbeat/reconnect/backstop cleanup을 servlet container signal과 분리된 ownership으로 설계해야 한다.

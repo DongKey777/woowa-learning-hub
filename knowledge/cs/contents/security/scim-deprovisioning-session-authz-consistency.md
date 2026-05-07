@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: SCIM Deprovisioning / Session / AuthZ Consistency
+concept_id: security/scim-deprovisioning-session-authz-consistency
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- SCIM deprovisioning
+- deprovision session revoke
+- SCIM authz consistency
+- identity lifecycle consistency
+aliases:
+- SCIM deprovisioning
+- deprovision session revoke
+- SCIM authz consistency
+- identity lifecycle consistency
+- deprovisioning lag
+- orphan session
+- directory drift authz
+- SCIM membership revoke
+- access shutdown
+- deprovision tail
+- directory backfill
+- auth shadow evaluation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/scim-provisioning-security.md
+- contents/security/scim-drift-reconciliation.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SCIM Deprovisioning / Session / AuthZ Consistency 핵심 개념을 설명해줘
+- SCIM deprovisioning가 왜 필요한지 알려줘
+- SCIM Deprovisioning / Session / AuthZ Consistency 실무 설계 포인트는 뭐야?
+- SCIM deprovisioning에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SCIM Deprovisioning / Session / AuthZ Consistency를 다루는 deep_dive 문서다. SCIM deprovisioning은 계정 상태만 바꾸는 이벤트가 아니라, 세션 revoke, tenant membership 제거, authz cache invalidation까지 이어져야 의미가 있으며, 이 연결이 끊기면 퇴사자/탈퇴자 access tail이 남는다. 검색 질의가 SCIM deprovisioning, deprovision session revoke, SCIM authz consistency, identity lifecycle consistency처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SCIM Deprovisioning / Session / AuthZ Consistency
 
 > 한 줄 요약: SCIM deprovisioning은 계정 상태만 바꾸는 이벤트가 아니라, 세션 revoke, tenant membership 제거, authz cache invalidation까지 이어져야 의미가 있으며, 이 연결이 끊기면 퇴사자/탈퇴자 access tail이 남는다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Adapter Retirement / Compatibility Bridge Decommission 설계
+concept_id: system-design/adapter-retirement-compatibility-bridge-decommission-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- adapter retirement
+- compatibility bridge decommission
+- protocol adapter cleanup
+- bridge removal gate
+aliases:
+- adapter retirement
+- compatibility bridge decommission
+- protocol adapter cleanup
+- bridge removal gate
+- deprecation traffic
+- adapter observability
+- compatibility bridge sunset
+- retirement soak window
+- adapter dependency map
+- decommission safety
+- compatibility envelope exit
+- capability sunset
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/bridge-retirement-evidence-packet-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/capability-negotiation-feature-gating-design.md
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Adapter Retirement / Compatibility Bridge Decommission 설계 차이를 실무 기준으로 설명해줘
+- adapter retirement를 언제 선택해야 해?
+- Adapter Retirement / Compatibility Bridge Decommission 설계 설계 판단 기준이 뭐야?
+- adapter retirement에서 자주 헷갈리는 경계는?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Adapter Retirement / Compatibility Bridge Decommission 설계를 다루는 bridge 문서다. adapter retirement와 compatibility bridge decommission 설계는 migration과 skew 대응을 위해 잠시 도입한 변환 계층을 negotiated capability, compatibility envelope, retained replay horizon, rollback boundary를 기준으로 언제 제거할지 정해 기술 부채를 줄이면서도 안전한 decommission을 만드는 운영 설계다. 검색 질의가 adapter retirement, compatibility bridge decommission, protocol adapter cleanup, bridge removal gate처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Adapter Retirement / Compatibility Bridge Decommission 설계
 
 > 한 줄 요약: adapter retirement와 compatibility bridge decommission 설계는 migration과 skew 대응을 위해 잠시 도입한 변환 계층을 negotiated capability, compatibility envelope, retained replay horizon, rollback boundary를 기준으로 언제 제거할지 정해 기술 부채를 줄이면서도 안전한 decommission을 만드는 운영 설계다.

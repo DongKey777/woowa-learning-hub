@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Inbound Adapter Testing Matrix
+concept_id: software-engineering/inbound-adapter-testing-matrix
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- hexagonal
+- adapter-test
+- controller-test
+- message-consumer
+aliases:
+- Inbound Adapter Testing Matrix
+- controller consumer scheduler testing matrix
+- hexagonal inbound adapter test portfolio
+- primary adapter testing matrix
+- message consumer ack retry DLQ test
+- scheduled job lock misfire test
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/message-driven-adapter
+- software-engineering/hexagonal-testing-seams-primer
+next_docs:
+- software-engineering/outbox-message-adapter-test-matrix
+- software-engineering/api-contract-testing
+- system-design/distributed-scheduler-design
+linked_paths:
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/webhook-and-broker-boundary-primer.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/system-design/distributed-scheduler-design.md
+confusable_with:
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/hexagonal-testing-seams-primer
+- software-engineering/outbox-message-adapter-test-matrix
+forbidden_neighbors: []
+expected_queries:
+- controller, message consumer, scheduled job inbound adapter는 왜 테스트 비율이 같지 않은지 비교해줘
+- controller adapter는 web slice test를 많이 두고 message consumer는 ack retry DLQ integration test가 필요한 이유가 뭐야?
+- scheduled job adapter에서 clock, lock, misfire, no-overlap test를 어떻게 포트폴리오로 잡아?
+- hexagonal architecture에서 use case test와 adapter test의 책임을 어떻게 나눠야 해?
+- webhook receiver와 broker consumer가 모두 inbound adapter여도 실패 모드가 다른 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 controller, message consumer, scheduled job 같은 inbound adapter별 실패 모드에 맞춰 slice, integration, contract, clock/lock test 비율을 고르는 intermediate chooser이다.
+---
 # Inbound Adapter Testing Matrix
 
 > 한 줄 요약: controller, message consumer, scheduled job는 모두 같은 inbound adapter지만, hexagonal 테스트 포트폴리오는 채널별 실패 모드에 맞춰 `slice-heavy`, `integration-heavy`, `clock/lock-heavy`로 다르게 가져가야 한다.

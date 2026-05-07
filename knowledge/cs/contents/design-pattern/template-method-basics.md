@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: 템플릿 메소드 패턴 기초 (Template Method Pattern Basics)
+concept_id: design-pattern/template-method-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- template-method-basics
+- parent-controls-flow
+- hook-vs-abstract-step
+aliases:
+- template method basics
+- template method beginner
+- template method big picture
+- template method when to use beginner
+- report template pattern
+- export report template
+- hook method beginner
+- abstract step beginner
+- template method vs strategy beginner
+- 처음 배우는데 템플릿 메소드
+- 템플릿 메소드 기초
+- 추상 클래스면 다 템플릿 메소드인가요
+symptoms:
+- 추상 클래스가 보이면 다 template method처럼 느껴져서 경계가 안 보여
+- hook method와 abstract step이 둘 다 override처럼 보여서 차이가 안 잡혀
+- 부모가 흐름을 쥔다라는 말을 들었는데 언제 써야 하는지 감이 안 와
+intents:
+- definition
+- design
+prerequisites:
+- language/java-inheritance-overriding-basics
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/composition-over-inheritance-basics
+next_docs:
+- design-pattern/template-method-vs-strategy
+- design-pattern/template-method-framework-lifecycle-examples
+- design-pattern/template-method
+linked_paths:
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/design-pattern/template-method.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- template method가 뭐예요
+- template method는 언제 써요
+- hook method와 abstract step 차이를 처음부터 알고 싶어요
+- 추상 클래스면 다 template method인가요
+- strategy랑 비교하기 전에 template method 큰 그림부터 보고 싶어요
+contextual_chunk_prefix: |
+  이 문서는 design-pattern category에서 template method의 canonical primer다.
+  부모 클래스가 고정 순서를 쥐고 자식은 일부 단계만 채우는 구조,
+  hook method와 abstract step의 차이, 추상 클래스 일반론과의 경계를
+  beginner 눈높이에서 먼저 고정한 뒤 다음 비교 문서로 보내는 역할을 한다.
+---
 # 템플릿 메소드 패턴 기초 (Template Method Pattern Basics)
 
 > 한 줄 요약: 템플릿 메소드 패턴은 부모 클래스가 전체 순서를 고정하고, 자식 클래스는 그 안의 일부 단계만 채우는 패턴이다.

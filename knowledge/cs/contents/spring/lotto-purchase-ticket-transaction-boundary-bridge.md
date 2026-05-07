@@ -34,7 +34,7 @@ prerequisites:
 - database/lotto-purchase-ticket-parent-child-modeling-bridge
 - spring/transactional-basics
 next_docs:
-- spring/spring-service-layer-transaction-boundary-patterns
+- spring/service-layer-transaction-boundary-patterns
 - database/lotto-purchase-duplicate-submit-idempotency-bridge
 - database/transaction-basics
 linked_paths:
@@ -62,12 +62,19 @@ contextual_chunk_prefix: |
   확정하기, 반쯤 저장된 구매를 막기 같은 학습자 표현을 Spring 서비스 경계와
   원자성 감각으로 매핑한다.
 ---
-
 # lotto 구매 1회/여러 장 티켓 저장 ↔ Spring @Transactional 경계 브릿지
 
 ## 한 줄 요약
 
 > lotto 구매 한 번이 `purchase` 1건과 `ticket` 여러 장을 함께 확정하는 유스케이스라면, 트랜잭션 경계도 Controller나 Repository가 아니라 그 흐름을 조립하는 Service 메서드에 두는 편이 자연스럽다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "purchase 저장 후 ticket 저장이 실패하면 어디까지 남아요?" | 구매 1건과 티켓 여러 장을 따로 저장하다 중간 실패가 생기는 lotto 저장 흐름 | 부모 row와 자식 row를 한 유스케이스 트랜잭션으로 묶는다 |
+| "controller가 구매 흐름을 다 아니까 `@Transactional`을 붙여도 되나요?" | HTTP 요청 처리와 DB 원자성 경계가 controller에 같이 들어간 코드 | 트랜잭션은 구매 유스케이스를 조립하는 service 메서드에 두는 편이 자연스럽다 |
+| "중복 구매 방지도 transaction으로 해결되나요?" | 더블클릭 재전송과 purchase-ticket 원자성을 같은 문제로 보는 설계 | atomic save와 idempotency/dedup을 다른 축으로 분리한다 |
 
 ## 미션 시나리오
 

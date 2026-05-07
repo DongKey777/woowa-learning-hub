@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Page Split, Merge, and Fill Factor
+concept_id: database/page-split-merge-fill-factor
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- page-split
+- fill-factor
+- btree
+- fragmentation
+aliases:
+- page split
+- page merge
+- fill factor
+- B+Tree fragmentation
+- leaf page split
+- insert hotspot page split
+- fanout
+- page fullness
+- UUID 인덱스 쓰기 비용
+- delete해도 공간이 안 줄어요
+symptoms:
+- random insert나 wide index 때문에 leaf page split, redo, latch contention, fragmentation이 늘고 있어
+- delete 후 공간이 바로 줄지 않아 page merge와 fragmentation 회수 비용을 이해해야 해
+- fill factor와 key design이 split 빈도, fanout, buffer pool pressure에 미치는 영향을 설명해야 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/bptree-vs-lsm-tree
+- database/page-directory-and-record-layout-intuition
+next_docs:
+- database/insert-hotspot-page-contention
+- database/secondary-index-maintenance-statistics-skew
+- database/innodb-buffer-pool-internals
+linked_paths:
+- contents/database/bptree-vs-lsm-tree.md
+- contents/database/clustered-index-locality.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/page-directory-and-record-layout-intuition.md
+- contents/database/insert-hotspot-page-contention.md
+confusable_with:
+- database/page-directory-and-record-layout-intuition
+- database/insert-hotspot-page-contention
+- database/clustered-index-locality
+forbidden_neighbors: []
+expected_queries:
+- B+Tree page split이 왜 redo와 latch contention, fragmentation 비용을 만들까?
+- fill factor는 random insert와 append-heavy workload에서 어떻게 다르게 봐야 해?
+- delete를 많이 해도 table이나 index 공간이 바로 줄지 않는 이유가 뭐야?
+- UUID 같은 random key 인덱스가 page split을 자주 만드는 과정을 설명해줘
+- page merge를 너무 적극적으로 하면 왜 split merge 반복 비용이 생길 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 B+Tree page split, page merge, fill factor, fragmentation, fanout을 write amplification과 storage locality 관점에서 다루는 advanced deep dive다.
+  UUID 인덱스 쓰기 비용, delete해도 공간이 안 줄어요, page split 비용 질문이 본 문서에 매핑된다.
+---
 # Page Split, Merge, and Fill Factor
 
 > 한 줄 요약: page split은 B+Tree가 성장하는 방식이지만, 너무 자주 일어나면 쓰기 비용과 fragmentation이 운영 문제로 바뀐다.

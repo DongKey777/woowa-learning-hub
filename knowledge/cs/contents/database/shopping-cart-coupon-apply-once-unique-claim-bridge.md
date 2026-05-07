@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 shopping-cart에서 같은 회원이 같은 쿠폰 적용을 다시 보내는 장면은 "할인 규칙 계산"보다 먼저 "같은 coupon-use 시도를 한 row로 선점하고 재사용할 수 있나"의 문제다. 이때 출발점은 선조회보다 `UNIQUE` claim이고, 뒤 요청은 새 row를 만들지 말고 기존 `PENDING` 또는 `APPLIED` row를 읽어야 한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "쿠폰 적용 버튼을 두 번 누르면 같은 쿠폰이 두 번 먹어요" | 동일 회원/주문/쿠폰 적용 요청 중복 | `UNIQUE` claim으로 같은 coupon-use row를 한 번만 만든다 |
+| "timeout 뒤 재시도되면 할인 row가 중복돼요" | coupon apply 재전송과 duplicate key | 뒤 요청은 실패만 하지 말고 existing row 상태를 읽어 재사용한다 |
+| "쿠폰 중복 적용은 payment idempotency랑 같은가요?" | 할인 policy와 write arbitration이 섞인 설계 | 할인 가능 여부 판정과 coupon-use 선점/재사용을 분리한다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 쿠폰 적용 API를 붙이면 학습자는 자주 `findByCouponIdAndMemberId()`로 먼저 조회하고, 없으면 coupon-use row를 insert하거나 주문 할인 row를 저장한다. 한 요청만 보면 자연스럽지만, 사용자가 버튼을 연속 클릭하거나 앱이 timeout 뒤 같은 요청을 재전송하면 두 요청이 모두 "없다"고 보고 각각 insert로 들어갈 수 있다.

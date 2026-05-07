@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Late-Arriving Rows and Bitmap Maintenance
+concept_id: data-structure/late-arriving-rows-and-bitmap-maintenance
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- bitmap-maintenance
+- late-arriving-row-locality
+- hot-cold-bitmap-tier
+aliases:
+- late arriving rows bitmap
+- bitmap maintenance
+- bitmap compaction
+- bitmap rebuild
+- warehouse reclustering bitmap
+- upsert bitmap locality
+- delete bitmap fragmentation
+symptoms:
+- bulk build 직후 압축률만 보고 late-arriving row, upsert, delete가 run locality를 깨뜨리는 운영 비용을 놓친다
+- hot mutable bitmap tier와 cold compacted bitmap tier를 나누지 않아 write path와 query path가 서로 성능을 망친다
+- compaction으로 복구 가능한 최근 drift와 row ordering 자체가 틀어져 rebuild가 필요한 전역 drift를 구분하지 못한다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/roaring-bitmap
+next_docs:
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/roaring-production-profiling-checklist
+- data-structure/bitmap-locality-remediation
+linked_paths:
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/warehouse-sort-key-co-design-for-bitmap-indexes.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/bitmap-locality-remediation
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+forbidden_neighbors: []
+expected_queries:
+- late-arriving rows와 upsert delete가 bitmap index run locality를 어떻게 깨뜨려?
+- bitmap maintenance에서 hot mutable tier와 cold compacted tier를 왜 나눠?
+- row ordering drift가 compact로 복구 가능한지 rebuild가 필요한지 어떻게 판단해?
+- warehouse bitmap index에서 late data와 tombstone이 압축률과 query hit spread에 미치는 영향은?
+- bitmap locality를 유지하려면 compaction recluster rebuild를 어떤 순서로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 bitmap index 운영에서 late-arriving rows, upsert, delete, tombstone이
+  run locality와 row ordering을 훼손하는 문제를 다루는 maintenance playbook이다.
+  hot mutable tier, cold compacted tier, compaction, recluster, rebuild 판단을
+  설명한다.
+---
 # Late-Arriving Rows and Bitmap Maintenance
 
 > 한 줄 요약: bitmap index 운영의 핵심은 bulk build 직후 압축률보다, late-arriving row·upsert·delete가 깨뜨린 run locality를 hot tier에서 얼마나 흡수하고 언제 compact/rebuild로 다시 정렬하느냐다.

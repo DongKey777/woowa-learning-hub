@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Persistent Stats Sampling and Bias
+concept_id: database/persistent-stats-sampling-bias
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- optimizer-statistics
+- sampling-bias
+- persistent-stats
+- plan-regression
+aliases:
+- persistent stats
+- sampling bias
+- stats sample
+- statistics drift
+- ANALYZE TABLE
+- cardinality estimate
+- skewed pages
+- InnoDB persistent statistics
+- persistent stats 편향
+- 통계 샘플링 bias
+symptoms:
+- persistent statistics가 plan 안정성은 주지만 샘플링 편향까지 오래 고정해 특정 쿼리 plan regression을 만들고 있어
+- hot value나 skewed page가 생겼는데 cardinality estimate가 현실을 반영하지 못해 wrong index를 고르고 있어
+- ANALYZE TABLE, sample pages, histogram reset 중 무엇으로 stats drift를 다룰지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/statistics-histograms-cardinality-estimation
+- database/histogram-drift-auto-analyze-thresholds
+next_docs:
+- database/optimizer-trace-reading
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/secondary-index-maintenance-statistics-skew
+linked_paths:
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/histogram-drift-auto-analyze-thresholds.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/optimizer-trace-reading.md
+- contents/database/optimizer-switch-plan-stability-invisible-indexes.md
+- contents/database/query-tuning-checklist.md
+confusable_with:
+- database/statistics-histograms-cardinality-estimation
+- database/histogram-drift-auto-analyze-thresholds
+- database/optimizer-switch-plan-stability-invisible-indexes
+forbidden_neighbors: []
+expected_queries:
+- InnoDB persistent stats가 plan stability를 주지만 sampling bias를 오래 고정할 수 있는 이유가 뭐야?
+- persistent statistics에서 샘플 페이지가 skew되면 cardinality estimate가 어떻게 틀어져?
+- ANALYZE TABLE을 해도 특정 인덱스 선택이 계속 이상하면 어떤 stats bias를 의심해?
+- innodb_stats_persistent_sample_pages를 늘리는 tradeoff를 설명해줘
+- histogram drift와 persistent stats sampling bias를 어떻게 구분해서 봐?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB persistent statistics가 plan stability를 주는 동시에 sampling bias, skewed pages, cardinality estimate 오류를 오래 보존할 수 있음을 다루는 advanced deep dive다.
+  persistent stats 편향, 통계 샘플링 bias, wrong cardinality estimate 질문이 본 문서에 매핑된다.
+---
 # Persistent Stats Sampling and Bias
 
 > 한 줄 요약: persistent stats는 통계를 유지해 주지만, 샘플이 편향되면 오래 유지되는 잘못된 추정도 함께 고정될 수 있다.

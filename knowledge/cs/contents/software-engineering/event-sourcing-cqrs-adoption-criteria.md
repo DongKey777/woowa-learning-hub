@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Event Sourcing, CQRS Adoption Criteria
+concept_id: software-engineering/event-sourcing-cqrs
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- event-sourcing
+- cqrs
+- event-store
+- projection
+aliases:
+- Event Sourcing CQRS Adoption Criteria
+- event sourcing vs CQRS
+- CQRS adoption criteria
+- event store replay projection rebuild
+- history as source of truth
+- 이벤트 소싱 CQRS 도입 기준
+symptoms: []
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/event-schema-versioning
+next_docs:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/consistency-boundary
+- software-engineering/monolith-to-msa-failure-patterns
+linked_paths:
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/consistency-boundary-patterns.md
+confusable_with:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/event-schema-versioning
+- software-engineering/consistency-boundary
+forbidden_neighbors: []
+expected_queries:
+- Event Sourcing과 CQRS는 각각 저장 방식과 모델 분리 방식으로 어떻게 다른지 비교해줘
+- 감사 추적, replay, projection rebuild가 중요한 도메인에서 event sourcing을 언제 선택해야 해?
+- 단순 CRUD에서 Event Sourcing과 CQRS를 쓰면 과해지는 이유를 설명해줘
+- Outbox와 Event Sourcing은 이벤트를 쓰지만 목적이 어떻게 다른가?
+- CQRS에서 read model이 stale해질 때 사용자 경험과 운영 보정을 어떻게 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Event Sourcing과 CQRS를 감사 추적, history as source of truth, read/write model separation, projection rebuild 기준으로 선택하게 돕는 advanced chooser이다.
+---
 # Event Sourcing, CQRS Adoption Criteria
 
 > 한 줄 요약: Event Sourcing과 CQRS는 "멋진 아키텍처"가 아니라, 감사 추적과 읽기/쓰기 모델 분리 요구가 명확할 때만 값어치가 생긴다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Change Buffer Merge Debt
+concept_id: database/change-buffer-merge-debt
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- change-buffer
+- merge-debt
+- secondary-index
+- write-debt
+aliases:
+- change buffer merge debt
+- delayed merge
+- secondary index merge
+- write debt
+- buffer pool miss
+- I/O spike
+- innodb_change_buffering
+- change buffer backlog
+- merge debt
+- 변경 버퍼 merge debt
+symptoms:
+- write-heavy batch 뒤에는 쓰기 latency가 괜찮았는데 이후 read latency와 I/O spike가 튄다
+- secondary index 변경을 change buffer에 미뤄 둔 비용이 나중에 page read/merge 시점에 몰린다
+- change buffer를 write 최적화로만 보고 merge debt와 buffer pool miss를 함께 보지 않는다
+intents:
+- symptom
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/change-buffer-myths-vs-reality
+- database/secondary-index-change-propagation
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/change-buffer-purge-history-length
+- database/slow-query-analysis-playbook
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/change-buffer-myths-vs-reality.md
+- contents/database/change-buffer-purge-history-length.md
+- contents/database/secondary-index-change-propagation-path.md
+- contents/database/innodb-buffer-pool-internals.md
+confusable_with:
+- database/change-buffer-myths-vs-reality
+- database/change-buffer-purge-history-length
+- database/secondary-index-change-propagation
+- database/buffer-pool-read-ahead-eviction-interaction
+forbidden_neighbors: []
+expected_queries:
+- change buffer merge debt는 secondary index 변경을 나중에 merge하면서 read latency와 I/O spike로 돌아오는 현상이야?
+- write-heavy 배치 직후 조회가 느려지는 것을 change buffer backlog와 merge debt로 어떻게 설명해?
+- change buffer는 write path를 가볍게 보이게 하지만 나중에 비용을 치르는 구조라는 말이 무슨 뜻이야?
+- secondary index가 많고 buffer pool miss가 많으면 change buffer merge debt가 커지는 이유가 뭐야?
+- innodb_change_buffering을 볼 때 write latency뿐 아니라 read path merge 비용도 같이 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Change Buffer Merge Debt symptom router로, InnoDB change buffer가 secondary index changes를
+  지연 반영해 write path 비용을 나중의 page read/merge, buffer pool miss, I/O spike, read latency로 이동시키는
+  증상을 설명한다.
+---
 # Change Buffer Merge Debt
 
 > 한 줄 요약: change buffer merge debt는 쓰기를 미뤄 둔 비용이 한꺼번에 터질 때 생기는 뒤늦은 정산이며, 읽기 병목으로 돌아올 수 있다.

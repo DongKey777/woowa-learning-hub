@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: DDSketch
+concept_id: data-structure/ddsketch
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- ddsketch
+- quantile-sketch
+- latency-p99-observability
+aliases:
+- DDSketch
+- relative error quantile sketch
+- latency p99 sketch
+- mergeable percentile telemetry
+- log bucket sketch
+- wide range latency quantile
+- approximate percentile
+symptoms:
+- latency p99를 raw sample 없이 근사해야 하는데 absolute error와 relative error 보장 차이를 구분하지 못한다
+- wide dynamic range telemetry에서 작은 값과 큰 값을 같은 절대 오차로 다루어 percentile 해석이 왜곡된다
+- DDSketch, HDR Histogram, KLL, t-Digest를 모두 quantile sketch로만 묶고 merge와 error model 차이를 놓친다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/sketch-filter-selection-playbook
+next_docs:
+- data-structure/hdr-histogram
+- data-structure/kll-sketch
+- data-structure/t-digest
+- data-structure/sketch-filter-selection-playbook
+linked_paths:
+- contents/data-structure/hdr-histogram.md
+- contents/data-structure/kll-sketch.md
+- contents/data-structure/t-digest.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/hyperloglog.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+confusable_with:
+- data-structure/hdr-histogram
+- data-structure/kll-sketch
+- data-structure/t-digest
+- data-structure/hyperloglog
+forbidden_neighbors: []
+expected_queries:
+- DDSketch는 latency p99에서 relative error를 어떻게 보장해?
+- wide range latency telemetry에서 absolute error보다 relative error가 중요한 이유는?
+- DDSketch와 HDR Histogram KLL t-Digest를 어떤 기준으로 비교해?
+- log bucket quantile sketch가 merge-friendly하다는 뜻은?
+- p99 observability에서 raw sample 없이 percentile을 근사하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 DDSketch를 로그 버킷과 상대 오차 보장을 사용하는 merge-friendly
+  quantile sketch로 설명한다. latency p99, wide dynamic range telemetry,
+  relative error, HDR Histogram, KLL, t-Digest와의 선택 기준을 다룬다.
+---
 # DDSketch
 
 > 한 줄 요약: DDSketch는 값 크기에 비례한 상대 오차를 보장하면서 quantile을 근사하는 merge-friendly telemetry sketch로, wide-range latency p99 관측에 특히 잘 맞는다.

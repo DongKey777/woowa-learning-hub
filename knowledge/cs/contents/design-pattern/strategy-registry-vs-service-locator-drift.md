@@ -9,6 +9,11 @@ doc_role: bridge
 level: beginner
 language: mixed
 source_priority: 85
+review_feedback_tags:
+- strategy-registry-vs
+- service-locator-drift
+- service-locator
+- strategy-lookup-helper
 aliases:
 - strategy registry vs service locator
 - strategy lookup helper smell
@@ -22,13 +27,22 @@ linked_paths:
 - contents/design-pattern/service-locator-antipattern.md
 - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
 - contents/software-engineering/dependency-injection-basics.md
+confusable_with:
+- design-pattern/strategy-map-vs-registry-primer
+- design-pattern/service-locator-antipattern
+- design-pattern/injected-registry-vs-service-locator-checklist
+- software-engineering/dependency-injection-basics
 expected_queries:
 - strategy registry가 언제 service locator 냄새가 돼?
 - Map으로 전략을 찾는 helper가 숨은 의존성이 되는 기준은 뭐야?
 - payment strategy registry를 전역 조회소처럼 쓰면 왜 문제야?
 - strategy selector와 service locator를 리뷰에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 좁은 strategy registry나 selector가 전역 service locator로 흐르는
+  경계를 설명하는 bridge다. 전략 조회 helper, 숨은 의존성, 전역 lookup,
+  PaymentStrategyRegistry 냄새 같은 질의를 명시적 주입과 숨은 의존성
+  구분 기준으로 연결한다.
 ---
-
 # Strategy Registry vs Service Locator Drift Note
 
 > 한 줄 요약: 전략을 key로 찾는 helper는 좁은 selector일 수 있지만, 아무 전략이나 전역에서 꺼내 주기 시작하면 service locator 냄새가 난다.

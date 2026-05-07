@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Rate Limiter 설계
+concept_id: system-design/rate-limiter-design
+canonical: false
+category: system-design
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- distributed rate limiter design
+- distributed rate limiter basics
+- redis rate limiter
+- token bucket vs sliding window
+aliases:
+- distributed rate limiter design
+- distributed rate limiter basics
+- redis rate limiter
+- token bucket vs sliding window
+- sliding window counter design
+- per user per tenant rate limit
+- rate limiter hot key
+- rate limiter lua script
+- rate limiter edge vs app layer
+- rate limiter consistency vs availability
+- 분산 rate limiter 설계
+- redis rate limit 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/rate-limiting-basics.md
+- contents/database/transaction-basics.md
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Rate Limiter 설계 설계 핵심을 설명해줘
+- distributed rate limiter design가 왜 필요한지 알려줘
+- Rate Limiter 설계 실무 트레이드오프는 뭐야?
+- distributed rate limiter design 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Rate Limiter 설계를 다루는 deep_dive 문서다. 요청 폭주를 제어하고, 특정 사용자나 키가 시스템을 망가뜨리지 못하게 하는 방어선의 설계다. 검색 질의가 distributed rate limiter design, distributed rate limiter basics, redis rate limiter, token bucket vs sliding window처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Rate Limiter 설계
 
 > 한 줄 요약: 요청 폭주를 제어하고, 특정 사용자나 키가 시스템을 망가뜨리지 못하게 하는 방어선의 설계다.

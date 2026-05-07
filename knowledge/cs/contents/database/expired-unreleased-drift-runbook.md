@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Expired-Unreleased Drift Runbook
+concept_id: database/expired-unreleased-drift-runbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- expired-unreleased-drift
+- hold-release-lag-slo
+- blocking-truth-repair
+aliases:
+- expired unreleased drift
+- expired but unreleased
+- deadline passed still blocking
+- release lag SLO
+- post expiry conflict
+- stale hold repair
+- blocking truth repair
+- cleanup lag repair
+- expired hold runbook
+- 만료됐는데 아직 막고 있음
+symptoms:
+- expires_at은 지났는데 released_at이 비어 있어 예약 hold가 계속 자원을 막고 있어
+- cleanup worker 지연인지 active predicate drift인지 구분하지 못하고 있어
+- post-expiry conflict가 늘어 expired row repair와 worker 원인 분리를 같이 해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/hold-expiration-predicate-drift
+- database/expiry-worker-race-patterns
+next_docs:
+- database/active-hold-table-split-pattern
+- database/queue-claim-skip-locked-fairness
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/slotization-migration-backfill-playbook
+linked_paths:
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/expiry-worker-race-patterns.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/queue-claim-skip-locked-fairness.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/slotization-migration-backfill-playbook.md
+confusable_with:
+- database/hold-expiration-predicate-drift
+- database/expiry-worker-race-patterns
+- database/active-hold-table-split-pattern
+forbidden_neighbors: []
+expected_queries:
+- 예약 hold가 만료됐는데 active set에 남아서 계속 충돌할 때 어떻게 복구해?
+- expired-unreleased drift는 cleanup backlog와 active predicate drift를 어떻게 구분해?
+- release lag SLO를 expired hold backlog와 oldest lag로 어떻게 측정해?
+- deadline passed still blocking row를 idempotent하게 repair하는 runbook을 알려줘
+- post-expiry conflict가 늘 때 worker stall, lock contention, transition bug를 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 expires_at이 지난 row가 released_at 없이 active/blocking truth에 남아 post-expiry conflict를 만드는 expired-unreleased drift를 진단하고 복구하는 advanced playbook이다.
+  expired but unreleased, release lag SLO, stale hold repair, deadline passed still blocking 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Expired-Unreleased Drift Runbook
 
 > 한 줄 요약: deadline은 지났는데 blocking truth가 아직 살아 있는 row는 단순 cleanup backlog가 아니라 availability와 constraint arbitration을 동시에 흔드는 incident이므로, backlog count·release lag·post-expiry conflict를 같은 runbook으로 다뤄야 한다.

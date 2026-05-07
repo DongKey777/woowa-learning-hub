@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: OIDC Back-Channel Logout / Session Coherence
+concept_id: security/oidc-backchannel-logout-session-coherence
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- OIDC backchannel logout
+- federated logout
+- RP-initiated logout
+- frontchannel logout
+aliases:
+- OIDC backchannel logout
+- federated logout
+- RP-initiated logout
+- frontchannel logout
+- logout token
+- sid claim
+- single logout
+- session coherence
+- IdP session
+- refresh token revocation
+- distributed logout
+- elevated session revoke
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/session-fixation-in-federated-login.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/bff-session-store-outage-degradation-recovery.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- OIDC Back-Channel Logout / Session Coherence 핵심 개념을 설명해줘
+- OIDC backchannel logout가 왜 필요한지 알려줘
+- OIDC Back-Channel Logout / Session Coherence 실무 설계 포인트는 뭐야?
+- OIDC backchannel logout에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 OIDC Back-Channel Logout / Session Coherence를 다루는 deep_dive 문서다. federated logout은 브라우저 redirect 한 번으로 끝나는 문제가 아니라, IdP 세션, RP 세션, refresh token family, API access token의 생명주기를 일관되게 맞추는 분산 무효화 문제다. 검색 질의가 OIDC backchannel logout, federated logout, RP-initiated logout, frontchannel logout처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # OIDC Back-Channel Logout / Session Coherence
 
 > 한 줄 요약: federated logout은 브라우저 redirect 한 번으로 끝나는 문제가 아니라, IdP 세션, RP 세션, refresh token family, API access token의 생명주기를 일관되게 맞추는 분산 무효화 문제다.

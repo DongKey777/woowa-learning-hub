@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Metadata Lock and DDL Blocking
+concept_id: database/metadata-lock-ddl-blocking
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- metadata-lock
+- ddl-blocking
+- long-transaction
+- online-schema-change
+aliases:
+- metadata lock
+- MDL
+- table metadata lock
+- DDL blocking
+- ALTER TABLE waiting
+- Waiting for table metadata lock
+- long transaction blocks alter table
+- row lock이 없는데 ALTER가 안 끝나요
+- SELECT가 DDL을 막아요
+- 테이블이 잠긴 것처럼 보여요
+symptoms:
+- ALTER TABLE이나 online schema cutover가 Waiting for table metadata lock 상태로 오래 멈춰 있어
+- row lock 대기는 보이지 않는데 long transaction이나 SELECT가 DDL을 막고 있어
+- DDL이 pending 된 뒤 같은 테이블의 신규 요청까지 줄줄이 밀리고 있어
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/transaction-isolation-locking
+- database/online-schema-change-strategies
+next_docs:
+- database/metadata-lock-outage-triage-cancel-recovery
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+- database/ddl-metadata-version-visibility
+linked_paths:
+- contents/database/online-schema-change-strategies.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/metadata-lock-outage-triage-cancel-recovery.md
+- contents/database/gh-ost-pt-osc-cutover-precheck-runbook.md
+- contents/database/ddl-metadata-version-visibility.md
+confusable_with:
+- database/gap-lock-next-key-lock
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/transaction-timeout-vs-lock-timeout
+forbidden_neighbors: []
+expected_queries:
+- ALTER TABLE이 metadata lock 때문에 기다릴 때 어떤 세션을 먼저 봐야 해?
+- row lock은 없는데 테이블 변경이 멈추는 이유를 MDL 기준으로 설명해줘
+- online schema change cutover에서 metadata lock 대기를 줄이는 체크포인트는 뭐야?
+- SELECT 하나가 DDL을 막는 상황을 transaction boundary와 연결해서 알려줘
+- Waiting for table metadata lock 로그가 나오면 lock wait와 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL metadata lock, MDL, ALTER TABLE waiting, online schema change cutover 대기를 row lock과 구분하는 advanced symptom router다.
+  row lock은 없는데 DDL이 멈춤, SELECT가 ALTER를 막음, Waiting for table metadata lock 같은 운영 증상 질문이 본 문서에 매핑된다.
+---
 # Metadata Lock and DDL Blocking
 
 > 한 줄 요약: 테이블이 "잠긴 것처럼 보이는" 현상은 보통 row lock이 아니라 metadata lock 때문에 생기고, 그 차이를 알아야 배포가 멈추지 않는다.

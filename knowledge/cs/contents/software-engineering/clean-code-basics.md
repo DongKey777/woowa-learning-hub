@@ -1,6 +1,81 @@
+---
+schema_version: 3
+title: 클린 코드 기초
+concept_id: software-engineering/clean-code-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- readable-naming-small-functions
+- abstraction-level-layering
+- clean-code-vs-refactoring
+aliases:
+- clean code basics
+- 클린 코드 기초
+- 읽기 좋은 코드
+- 변수명 짓는 법
+- 함수 하나의 일
+- 매직 넘버 제거
+- 주석보다 코드
+- 코드 가독성
+symptoms:
+- 클린 코드를 예쁘게 짧게 쓰는 문제로만 이해하고 의도 전달과 수정 비용을 놓치고 있어
+- temp, data, result 같은 이름으로 역할을 감춰 코드 리뷰에서 의미 질문을 받고 있어
+- 메서드 추출로 읽기는 나아졌지만 레이어 책임 분리는 여전히 흐린 상태를 구분하지 못하고 있어
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/oop-design-basics
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+next_docs:
+- software-engineering/refactoring-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+- software-engineering/solid-principles-basics
+linked_paths:
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/refactoring-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/solid-principles-basics.md
+confusable_with:
+- software-engineering/refactoring-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+forbidden_neighbors: []
+expected_queries:
+- 클린 코드는 왜 동작하는 코드보다 읽고 수정하기 쉬운 코드에 초점을 둬?
+- 변수명과 메서드명은 어떤 기준으로 의도를 드러내야 해?
+- 메서드가 너무 길 때 단계 이름을 드러내는 추출은 어떻게 시작해?
+- 주석보다 코드로 의도를 표현한다는 말은 언제 맞고 언제 주석이 필요해?
+- 클린 코드 문제와 레이어 책임 문제를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Clean Code beginner primer로, intent-revealing names, small functions, abstraction level, magic number removal, comments for why, readability vs layering vs refactoring을 분리한다.
+  클린 코드, 변수명, 함수 분리, 매직 넘버, 주석, readable code, Controller가 너무 많은 책임 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 클린 코드 기초 (Clean Code Basics)
 
 > 한 줄 요약: 클린 코드는 의도를 드러내는 이름, 작은 함수, 일관된 추상화 수준으로 다음 사람이 바로 읽고 수정할 수 있는 코드다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`data`, `result`, `temp`가 많다는 리뷰를 받았어요" | lotto 당첨 통계나 roomescape 예약 결과를 임시 변수명으로만 전달하는 코드 | 이름이 역할과 의도를 드러내는지 먼저 본다 |
+| "메서드가 긴데 어디서 나눠야 할지 모르겠어요" | baseball 한 턴 처리나 shopping-cart checkout이 한 method 안에서 단계별로 길어지는 구조 | 단계 이름이 보이는 단위로 한 번만 추출한다 |
+| "Controller가 너무 많은 걸 아는 것도 클린 코드 문제인가요?" | request parsing, domain rule, repository call, response mapping이 controller에 모인 코드 | 표현 문제와 layer responsibility 문제를 구분한다 |
 
 **난이도: 🟢 Beginner**
 

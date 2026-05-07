@@ -34,7 +34,7 @@ intents:
 prerequisites:
 - data-structure/basic
 next_docs:
-- data-structure/balanced-bst-vs-unbalanced-bst-primer
+- data-structure/balanced-bst-vs-unbalanced-bst
 - data-structure/heap-variants
 - data-structure/segment-tree-not-bst-or-heap-bridge
 linked_paths:
@@ -46,7 +46,7 @@ linked_paths:
 - contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
 - contents/data-structure/segment-tree-lazy-propagation.md
 confusable_with:
-- data-structure/balanced-bst-vs-unbalanced-bst-primer
+- data-structure/balanced-bst-vs-unbalanced-bst
 - data-structure/segment-tree-not-bst-or-heap-bridge
 - data-structure/heap-variants
 forbidden_neighbors:

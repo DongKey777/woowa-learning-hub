@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring MVC Flux Adaptation JSON vs NDJSON and SSE
+concept_id: spring/mvc-flux-json-vs-ndjson-sse-adaptation
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- mvc-flux-json
+- vs-ndjson-sse
+- adaptation
+- mvc-flux-adaptation
+aliases:
+- Spring MVC Flux adaptation
+- Flux application/json
+- Flux NDJSON
+- Flux SSE
+- ReactiveTypeHandler
+- ResponseBodyEmitterReturnValueHandler
+- DeferredResult List
+- application/x-ndjson Spring MVC
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-responsebodyemitter-media-type-boundaries.md
+- contents/spring/spring-streaming-client-parsing-matrix.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-mvc-sseemitter-vs-webflux-sse-timeout-behavior.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-webflux-vs-mvc.md
+expected_queries:
+- Spring MVC에서 Flux를 반환하면 application/json은 왜 List로 모았다가 쓰는 경우가 있어?
+- Flux와 NDJSON, SSE media type은 MVC에서 어떻게 다르게 adaptation돼?
+- ReactiveTypeHandler와 ResponseBodyEmitterReturnValueHandler는 어떤 역할을 해?
+- application/json, application/x-ndjson, text/event-stream의 item boundary 차이는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC annotated controller의 Flux multi-value reactive return이
+  media type에 따라 application/json 집계 DeferredResult<List<?>> 경로,
+  application/x-ndjson ResponseBodyEmitter streaming 경로, text/event-stream
+  SseEmitter 경로로 adaptation되는 방식을 deep dive한다.
+---
 # Spring MVC `Flux` Adaptation: `application/json` vs NDJSON and SSE
 
 > 한 줄 요약: Spring MVC에서 `Flux<?>` 같은 multi-value reactive return은 "reactive라서 무조건 streaming"이 아니라, **응답 media type이 item 경계를 표현할 수 있느냐**에 따라 `DeferredResult<List<?>>` 집계 경로와 `ResponseBodyEmitter`/`SseEmitter` 스트리밍 경로로 갈린다.

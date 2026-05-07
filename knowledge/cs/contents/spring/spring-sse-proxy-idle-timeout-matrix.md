@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring SSE Proxy Idle Timeout Matrix
+concept_id: spring/sse-proxy-idle-timeout-matrix
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- sse-proxy-idle
+- timeout
+- sseemitter-heartbeat-interval
+- alb-nginx-cdn
+aliases:
+- SSE proxy idle timeout
+- SseEmitter heartbeat interval
+- ALB Nginx CDN idle timeout
+- EventSource reconnect timer
+- shortest idle timeout chain
+- heartbeat operating contract
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-mvc-sseemitter-vs-webflux-sse-timeout-behavior.md
+- contents/spring/spring-sseemitter-timeout-callback-race-matrix.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-sse-buffering-compression-checklist.md
+- contents/network/sse-failure-attribution-http1-http2.md
+symptoms:
+- SSE 연결이 일정 시간마다 끊기고 EventSource reconnect가 반복된다.
+- heartbeat를 보내는데도 ALB, Nginx, CDN 중 한 계층에서 idle close가 난다.
+- Spring timeout 값만 늘렸는데 proxy idle timeout은 그대로라 효과가 없다.
+expected_queries:
+- Spring SSE heartbeat interval은 ALB Nginx CDN idle timeout과 어떻게 맞춰야 해?
+- 가장 짧은 proxy idle timeout을 넘기지 않는 운영 계약이 왜 필요해?
+- SseEmitter timeout과 proxy idle timeout은 같은 값으로 보면 돼?
+- EventSource reconnect timer까지 포함해 SSE timeout matrix를 만들고 싶어
+contextual_chunk_prefix: |
+  이 문서는 SSE heartbeat를 단순 ping이 아니라 ALB, Nginx, CDN, browser EventSource reconnect가
+  서로 다른 timer를 갖는 chain에서 가장 짧은 effective idle timeout을 넘기지 않게 만드는
+  운영 계약으로 설명한다.
+---
 # Spring SSE Proxy Idle-Timeout Matrix
 
 > 한 줄 요약: `SseEmitter` heartbeat는 단순한 "연결 유지용 ping"이 아니라 ALB, Nginx, CDN, 브라우저 reconnect가 서로 다른 타이머를 갖는 체인에서 가장 짧은 유효 idle timeout을 넘기지 않게 만드는 운영 계약이다.

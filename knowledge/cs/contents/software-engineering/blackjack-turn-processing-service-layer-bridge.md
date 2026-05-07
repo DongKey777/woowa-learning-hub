@@ -75,6 +75,14 @@ contextual_chunk_prefix: |
 
 > blackjack에서 한 번의 `hit` 또는 `stand` 요청은 입력 형식 검증, 게임 식별, 도메인 진행, 응답 조립이 이어지는 유스케이스다. Controller는 HTTP 입구를 맡고, 그 순서를 끝까지 묶는 자리는 Service에 더 가깝다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "controller가 gameId 조회부터 hit 처리, 응답 조립까지 다 해요" | HTTP 입구가 한 턴 유스케이스 순서를 전부 알고 있는 코드 | 요청 바인딩과 한 턴 orchestration을 분리한다 |
+| "Service가 얇아 보여서 controller에 둬도 될 것 같아요" | service를 복잡한 계산이 있을 때만 필요한 계층으로 보는 상황 | 얇더라도 `load -> action -> result` 순서를 한곳에 모으는 책임을 본다 |
+| "hit/stand 가능 여부는 누가 확인하죠?" | 입력 action 검증, 현재 게임 상태, 도메인 규칙이 controller에 섞인 구현 | service는 순서를 조립하고 가능 여부/점수 규칙은 domain 객체가 보장하게 한다 |
+
 ## 미션 시나리오
 
 blackjack를 웹으로 옮기면 `POST /games/{gameId}/actions` 한 번이 단순 메서드

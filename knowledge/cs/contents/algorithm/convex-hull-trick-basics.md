@@ -46,7 +46,9 @@ linked_paths:
 confusable_with:
 - algorithm/divide-and-conquer-dp-optimization
 - algorithm/monotone-queue-dp
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/divide-and-conquer-dp-optimization.md
+- contents/algorithm/monotone-queue-dp.md
 expected_queries:
 - DP 점화식을 직선 최소값 질의로 바꾸는 Convex Hull Trick 감각을 설명해줘
 - 기울기 순서가 정렬된 경우와 아닌 경우에 CHT 구현 선택이 어떻게 달라져?

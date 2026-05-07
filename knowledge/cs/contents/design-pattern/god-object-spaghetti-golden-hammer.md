@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: God Object Spaghetti Golden Hammer
+concept_id: design-pattern/god-object-spaghetti-golden-hammer
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: symptom_router
+level: intermediate
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- god-object
+- spaghetti-code
+- golden-hammer
+- pattern-abuse
+aliases:
+- god object spaghetti golden hammer
+- god object
+- god class
+- god service
+- spaghetti code
+- golden hammer
+- big ball of mud
+- pattern abuse
+- 거대 클래스
+- 황금 망치
+symptoms:
+- 하나의 service나 manager가 주문, 결제, 할인, 알림, 통계처럼 변경 이유가 다른 책임을 모두 흡수한다
+- if-else, 전역 상태, 숨은 부수 효과가 얽혀 제어 흐름을 따라가기 어렵다
+- Strategy, Proxy, Builder 같은 한 가지 패턴을 모든 문제에 반복 적용해 오히려 구조가 복잡해진다
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/anti-pattern
+- design-pattern/pattern-selection
+- software-engineering/oop-design-basics
+next_docs:
+- design-pattern/coordinator-vs-manager-object-smell
+- design-pattern/strategy-explosion-smell
+- design-pattern/template-hook-smells
+- design-pattern/domain-service-vs-pattern-abuse
+linked_paths:
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/pattern-selection.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/strategy-explosion-smell.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/coordinator-vs-manager-object-smell.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/coordinator-vs-manager-object-smell
+- design-pattern/strategy-explosion-smell
+- design-pattern/template-hook-smells
+- design-pattern/domain-service-vs-pattern-abuse
+forbidden_neighbors: []
+expected_queries:
+- God Object, Spaghetti Code, Golden Hammer는 각각 책임 과다, 제어 흐름 혼란, 패턴 과사용으로 어떻게 달라?
+- OrderManager가 주문 결제 할인 알림 통계를 모두 처리하면 god service인지 어떻게 판단해?
+- 전략 패턴을 모든 if문 제거에 쓰면 golden hammer와 strategy explosion이 되는 이유가 뭐야?
+- 큰 클래스와 God Object를 변경 이유 개수 기준으로 구분하는 방법을 알려줘
+- spaghetti code는 줄 수보다 제어 흐름과 숨은 부수 효과가 문제라는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 God Object, Spaghetti Code, Golden Hammer symptom router로, 책임이 과도하게
+  모인 god service/class, 추적 어려운 control flow, 한 패턴을 모든 문제에 적용하는 pattern abuse를
+  구분하고 변경 이유 기준의 리팩터링 방향을 설명한다.
+---
 # God Object / Spaghetti / Golden Hammer
 
 > 한 줄 요약: 디자인 패턴을 몰라서 실패하는 것보다, 패턴을 과하게 믿어서 구조가 망가지는 경우가 더 흔하다.

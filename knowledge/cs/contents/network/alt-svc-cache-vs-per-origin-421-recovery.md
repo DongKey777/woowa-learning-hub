@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Alt-Svc Cache vs Per-Origin 421 Recovery
+concept_id: network/alt-svc-cache-vs-per-origin-421-recovery
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- alt-svc-421-recovery
+- per-origin-recovery
+- h3-fallback
+aliases:
+- Alt-Svc cache vs 421 recovery
+- warm Alt-Svc but 421
+- per-origin 421 recovery
+- Alt-Svc cache survives 421
+- H3 retry vs H2 fallback
+- same origin 421 new H3
+- same origin 421 H2 fallback
+symptoms:
+- 421 하나를 보고 Alt-Svc cache 전체가 지워졌거나 HTTP/3 전체가 실패했다고 단정한다
+- Alt-Svc cache가 warm하면 421 뒤에도 무조건 같은 H3 connection/path를 다시 쓴다고 오해한다
+- per-origin recovery가 방금 실패한 origin과 connection 문맥에 대한 교정이라는 점을 HTTP cache나 session 상태와 섞는다
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+next_docs:
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http3-421-observability-primer
+linked_paths:
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/h3-fallback-trace-bridge.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/browser-cache-toggles-vs-alt-svc-dns-cache-primer.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/http2-http3-421-retry-after-wrong-coalescing
+forbidden_neighbors: []
+expected_queries:
+- Alt-Svc cache가 warm한데 특정 origin에서 421이 뜨면 cache 전체가 죽은 거야?
+- 421 뒤에 새 H3로 retry할지 H2 fallback할지는 브라우저가 무엇을 다시 판단해?
+- per-origin 421 recovery는 Alt-Svc cache와 어떤 층위가 달라?
+- Alt-Svc cache는 배운 후보이고 421은 방금 쓴 connection path가 틀렸다는 신호라는 걸 설명해줘
+- warm Alt-Svc but 421 trace에서 same URL이 h3 또는 h2로 다시 성공하는 과정을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Alt-Svc cache가 warm한 상태와 특정 origin의 421 recovery를 분리하는 bridge다.
+  421을 H3 전체 실패나 Alt-Svc cache 전체 삭제로 보지 않고, 방금 쓴 connection/path에 대한
+  per-origin correction으로 해석한다.
+---
 # Alt-Svc Cache vs Per-Origin 421 Recovery
 
 > 한 줄 요약: `Alt-Svc` cache가 아직 warm해도 특정 origin의 H3 reuse만 `421`로 교정될 수 있으며, 브라우저는 그 origin에 대해 새 H3로 다시 시도할지, 더 보수적으로 H2로 돌아갈지를 따로 판단한다.

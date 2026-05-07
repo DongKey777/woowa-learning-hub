@@ -53,7 +53,9 @@ confusable_with:
 - language/domain-state-type-primer-enum-record-value-object
 - design-pattern/roomescape-reservation-status-state-pattern-bridge
 - design-pattern/shopping-cart-order-status-state-pattern-bridge
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
 expected_queries:
 - roomescape나 shopping-cart 미션에서 상태 enum은 있는데 setStatus로 아무 데서나 바꾸지 말라는 리뷰가 무슨 뜻이야?
 - 예약 확정이나 주문 취소를 setter 대신 confirm cancel 메서드로 감싸라는 이유를 자바 미션 예제로 설명해줘
@@ -74,6 +76,14 @@ contextual_chunk_prefix: |
 > 한 줄 요약: enum을 "상태 이름표"로만 두지 말고 `setStatus(...)` 대신 `confirm()`/`cancel()` 같은 도메인 행동 안에서 전이 규칙을 묶기 시작하면, 미션 코드에서 상태 변경 이유와 허용 범위를 훨씬 쉽게 추적할 수 있다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`setStatus`를 열어 두지 말고 행동 메서드로 바꾸라는 리뷰가 이해가 안 돼요" | 예약 확정/취소, 주문 상태 변경 리팩토링 | 상태값 변경이 아니라 허용된 도메인 행동으로 읽는다 |
+| "enum은 만들었는데 상태 전이 규칙이 service if문마다 흩어져요" | roomescape/shopping-cart 상태 로직 분산 | enum 이름표 다음 단계로 전이 규칙을 한곳에 모은다 |
+| "취소나 완료 뒤에도 다시 진행 상태로 바뀌는 걸 어디서 막죠?" | terminal 상태 guard 누락 | `confirm()`, `cancel()` 같은 도메인 메서드에서 금지 전이를 막는다 |
 
 관련 문서:
 

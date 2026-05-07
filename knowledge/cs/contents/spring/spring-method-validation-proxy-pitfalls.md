@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring Method Validation Proxy Pitfalls
+concept_id: spring/method-validation-proxy-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- method-validation-proxy
+- pitfalls
+- method-validation
+- validated
+aliases:
+- method validation
+- @Validated
+- executable validation
+- proxy validation
+- self invocation validation
+- ConstraintViolationException
+- parameter validation
+- return value validation
+intents:
+- troubleshooting
+- deep_dive
+symptoms:
+- service method에 제약 annotation을 붙였는데 method validation이 실행되지 않는다.
+- 같은 클래스 내부 호출이라 @Validated proxy를 통과하지 못한다.
+- request body validation 예외와 method-level ConstraintViolationException의 에러 계약이 섞인다.
+linked_paths:
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-security-method-security-deep-dive.md
+expected_queries:
+- Spring method validation은 @Valid와 뭐가 달라?
+- @Validated를 붙였는데 service method parameter validation이 안 되는 이유는?
+- method validation도 self-invocation이면 proxy를 우회해?
+- ConstraintViolationException을 API error contract로 어떻게 번역해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring method validation이 @Validated와 proxy interception으로 동작하는
+  방식을 다룬다. parameter/return value validation, validation groups,
+  self-invocation proxy bypass, ConstraintViolationException, @Valid request body
+  validation과 method-level validation의 경계를 진단하는 playbook이다.
+---
 # Spring Method Validation Proxy Pitfalls
 
 > 한 줄 요약: method validation은 `@Validated`와 proxy 기반 interception으로 동작하므로, self-invocation과 계층 경계를 잘못 잡으면 검증이 조용히 빠질 수 있다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Mirror Lag SLA Calibration
+concept_id: software-engineering/mirror-lag-sla-calibration
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- mirror-lag
+- shadow-process
+- sla
+- manual-path
+aliases:
+- Mirror Lag SLA Calibration
+- mirror_lag_minutes SLA
+- control plane sync SLA
+- approval mirror lag
+- off-plane artifact mirror breach
+- mirror breach severity class
+symptoms:
+- DM, sheet, Notion 같은 off-plane state가 공식 control plane에 언제 반영돼야 하는지 workflow role별 SLA 없이 팀마다 임의 숫자로 비교해
+- approval_gate, sheet_authoritative_state, artifact_required_for_progress를 같은 mirror lag 기준으로 세어 과민하거나 너무 느슨한 manual breach가 생겨
+- raw minutes만 보고 within_sla, soft_breach, hard_breach, structural_breach 같은 공통 breach class를 쓰지 않아 팀 간 비교가 안 돼
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/shadow-process-detection-signals
+next_docs:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/consumer-exception-registry-quality
+- software-engineering/break-glass-segmentation
+linked_paths:
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/shadow-candidate-promotion-thresholds.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/rollout-approval-workflow.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/consumer-exception-registry-quality-automation.md
+confusable_with:
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/shadow-process-detection-signals
+- software-engineering/support-sla-escalation-contracts
+forbidden_neighbors: []
+expected_queries:
+- mirror_lag SLA는 팀 반응 속도가 아니라 off-plane state가 얼마나 오래 authoritative하게 남아도 되는지로 정해야 하는 이유가 뭐야?
+- approval_gate, sheet_authoritative_state, artifact_required_for_progress별 mirror lag default band를 어떻게 잡아?
+- within_sla, soft_breach, hard_breach, structural_breach class로 mirror breach를 비교하는 방법을 알려줘
+- DM approval과 spreadsheet state를 같은 15분 SLA로 재면 왜 왜곡될 수 있어?
+- manual_path_ratio와 shadow candidate promotion이 같은 mirror lag calibration table을 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 off-plane approval, sheet, artifact가 공식 control plane에 mirror되는 지연을 workflow role별 SLA band와 common breach class로 보정하는 advanced playbook이다.
+---
 # Mirror Lag SLA Calibration
 
 > 한 줄 요약: `mirror_lag` SLA는 팀 반응 속도가 아니라 workflow가 off-plane 상태를 얼마나 오래 허용할 수 있는지로 정해야 하며, approval, sheet, off-plane artifact별 default band와 공통 breach class를 같이 고정해야 manual breach 분류가 팀 간 비교 가능해진다.

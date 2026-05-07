@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "RST on Idle Keep-Alive Reuse"
+concept_id: network/rst-on-idle-keepalive-reuse
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- stale-socket
+- keep-alive
+- tcp-rst
+aliases:
+- RST on idle keep-alive reuse
+- idle reuse RST
+- stale socket
+- ECONNRESET after idle
+- broken pipe after idle
+- first request after idle
+- connection pool stale
+symptoms:
+- idle 뒤 첫 요청만 RST나 broken pipe로 실패하고 retry는 성공한다
+- client pool은 살아 있다고 믿지만 LB/proxy/origin이 먼저 idle close한 상황을 놓친다
+- 배포 후 reset 증가를 draining이나 timeout hierarchy와 연결하지 못한다
+- RST를 항상 app crash나 server bug로 본다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/keepalive-reuse-stale-idle-connection-primer
+- network/idle-timeout-mismatch-lb-proxy-app
+next_docs:
+- network/tcp-reset-storms-idle-reuse-stale-sockets
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/fin-rst-half-close-eof-semantics
+- network/lb-connection-draining-deployment-safe-close
+linked_paths:
+- contents/network/tcp-reset-storms-idle-reuse-stale-sockets.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/http-keepalive-timeout-mismatch-deeper-cases.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/lb-connection-draining-deployment-safe-close.md
+confusable_with:
+- network/keepalive-reuse-stale-idle-connection-primer
+- network/tcp-reset-storms-idle-reuse-stale-sockets
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/idle-timeout-mismatch-lb-proxy-app
+forbidden_neighbors: []
+expected_queries:
+- "idle 후 keep-alive 재사용 시 RST가 나는 이유는?"
+- "첫 요청은 ECONNRESET인데 retry는 성공하는 stale socket 패턴을 설명해줘"
+- "client pool idle lifetime과 LB proxy timeout을 어떻게 맞춰?"
+- "배포 후 reset 증가가 connection draining과 관련 있는 이유는?"
+- "RST on idle reuse와 FIN/RST half-close 의미를 어떻게 구분해?"
+contextual_chunk_prefix: |
+  이 문서는 network 카테고리에서 RST on Idle Keep-Alive Reuse를 다루는 playbook 문서다. RST on idle keep-alive reuse, idle reuse RST, stale socket, ECONNRESET after idle, broken pipe after idle 같은 lexical 표현과 idle í keep-alive ì¬ì¬ì© ì RSTê° ëë ì´ì ë?, ì²« ìì²­ì ECONNRESETì¸ë° retryë ì±ê³µíë stale socket í¨í´ì ì¤ëª
+  í´ì¤ 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # RST on Idle Keep-Alive Reuse
 
 > 한 줄 요약: idle 후 keep-alive 재사용 시 RST가 나는 것은 대개 중간 장비가 소켓을 먼저 닫았는데 클라이언트 풀만 아직 믿고 있기 때문이다.

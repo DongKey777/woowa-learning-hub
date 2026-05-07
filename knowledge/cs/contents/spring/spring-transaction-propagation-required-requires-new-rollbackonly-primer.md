@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring Transaction Propagation Required RequiresNew RollbackOnly Primer
+concept_id: spring/transaction-propagation-required-requires-new-rollbackonly-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 77
+review_feedback_tags:
+- transaction-propagation-required
+- requires-new-rollbackonly
+- required-requires-new
+- rollback-only
+aliases:
+- REQUIRED REQUIRES_NEW rollback-only
+- Spring transaction propagation beginner
+- 같이 망하게 둘지 따로 남길지
+- rollback-only marker primer
+- UnexpectedRollbackException propagation
+intents:
+- definition
+- comparison
+- troubleshooting
+linked_paths:
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-rollbackonly-vs-checked-exception-commit-surprise-card.md
+- contents/spring/spring-unexpectedrollbackexception-mini-debugging-card.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-transaction-debugging-playbook.md
+expected_queries:
+- REQUIRED와 REQUIRES_NEW를 초급자에게 어떻게 설명해?
+- transaction propagation을 같이 망하게 둘지 따로 남길지로 이해해도 돼?
+- rollback-only marker 때문에 마지막에 UnexpectedRollbackException이 나는 이유는?
+- 서비스 메서드 전파 옵션을 새 transaction 기술로 외우지 않고 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Spring transaction propagation을 초급자에게 REQUIRED, REQUIRES_NEW,
+  rollback-only 중심으로 설명한다. 전파 옵션을 새 transaction 기술로 외우기보다
+  같이 망하게 둘지, 따로 남길지, 이미 실패 예정인지로 잡게 한다.
+---
 # Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only
 
 > 한 줄 요약: 초급자는 전파 옵션을 "새 트랜잭션 기술"로 외우기보다, "같이 망하게 둘지, 따로 남길지, 이미 실패 예정인지"를 서비스 메서드 이야기로 먼저 잡는 편이 훨씬 덜 헷갈린다.

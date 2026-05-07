@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: descendingKeySet vs descendingMap Beginner Bridge
+concept_id: language/descendingkeyset-vs-descendingmap-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- navigablemap
+- ordered-map
+- descending-view
+aliases:
+- descendingKeySet vs descendingMap
+- Java descendingKeySet descendingMap difference
+- TreeMap descending key view vs entry view
+- NavigableMap key view entry view
+- key only view vs map view
+- 자바 descendingKeySet descendingMap 차이
+symptoms:
+- descendingKeySet과 descendingMap을 둘 다 내림차순 view라는 공통점만 보고 key-only view와 entry map view 차이를 놓쳐
+- key만 필요한 작업에 descendingMap을 쓰거나 value까지 필요한 작업에 descendingKeySet을 써서 API 선택이 어긋나
+- 반환 타입이 NavigableSet인지 NavigableMap인지에 따라 쓸 수 있는 first/higher와 firstEntry/higherEntry가 달라진다는 점이 헷갈려
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/descending-view-mental-model
+next_docs:
+- language/navigablemap-navigableset-mental-model
+- language/treemap-range-view-live-window-primer
+- language/pollfirst-polllast-view-semantics-primer
+linked_paths:
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/treemap-range-view-live-window-primer.md
+- contents/language/java/pollfirst-polllast-vs-first-last-beginner-bridge.md
+confusable_with:
+- language/descending-view-mental-model
+- language/pollfirst-polllast-view-semantics-primer
+- language/submap-boundaries-primer
+forbidden_neighbors: []
+expected_queries:
+- descendingKeySet과 descendingMap 차이를 key-only view와 entry map view로 설명해줘
+- TreeMap에서 key만 내림차순으로 순회할 때 descendingKeySet을 쓰는 이유가 뭐야?
+- value까지 같이 필요하면 descendingMap firstEntry higherEntry를 써야 하는지 알려줘
+- descendingKeySet은 NavigableSet이고 descendingMap은 NavigableMap이라는 반환 타입 차이를 예제로 보여줘
+- 자바 TreeMap 내림차순 key view와 map view를 초보자 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap descendingKeySet과 descendingMap을 key-only NavigableSet view와 entry-aware NavigableMap view로 구분하는 beginner primer다.
+  descendingKeySet, descendingMap, key view, entry view, NavigableMap descending API 질문이 본 문서에 매핑된다.
+---
 # `descendingKeySet()` vs `descendingMap()` Beginner Bridge
 
 > 한 줄 요약: `descendingKeySet()`은 **key만 보는 `NavigableSet<K>` view**이고, `descendingMap()`은 **key와 value를 함께 다루는 `NavigableMap<K, V>` view**다. 초보자는 "`key 줄만 필요하면 set view`, `entry 작업까지 필요하면 map view`"로 나누면 덜 헷갈린다.

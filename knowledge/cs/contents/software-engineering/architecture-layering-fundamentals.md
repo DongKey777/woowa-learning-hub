@@ -95,6 +95,15 @@ contextual_chunk_prefix: |
 
 
 retrieval-anchor-keywords: architecture layering fundamentals, layered architecture vs clean architecture 차이, modular monolith 뭐예요, bounded context 처음, repository entity separation, dto contract 어디까지, entity를 dto로 써도 되나요, service가 너무 비대해요, 패키지만 나눴는데 왜 복잡해요, clean architecture beginner, modular monolith beginner, beginner architecture map, what is layered architecture, software engineering bridge
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "controller/service/repository는 나눴는데 왜 계속 service가 비대하대요?" | roomescape나 shopping-cart 유스케이스가 service 한 클래스에 쌓이는 코드 | 계층 이름보다 유스케이스 조립, 도메인 규칙, 저장 경계가 어디 섞였는지 본다 |
+| "Clean Architecture랑 Layered Architecture 중 하나를 골라야 하나요?" | 미션 구조 개선을 아키텍처 이름 대결로 이해하는 상황 | 서로 대체 관계보다 의존 방향, 모듈 공개 범위, 경계 번역 질문을 구분한다 |
+| "Entity를 DTO로 바로 써도 되는지 리뷰가 계속 달려요" | API 응답 모델과 저장 모델, 도메인 객체가 같은 타입으로 흘러나가는 코드 | 내부 모델과 외부 계약의 변경 이유가 같은지 먼저 확인한다 |
+
 <details>
 <summary>Table of Contents</summary>
 

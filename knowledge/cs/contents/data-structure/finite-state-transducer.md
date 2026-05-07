@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Finite State Transducer
+concept_id: data-structure/finite-state-transducer
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- finite-state-transducer
+- compressed-dictionary
+- static-autocomplete-index
+aliases:
+- Finite State Transducer
+- FST
+- compressed dictionary
+- automaton index
+- autocomplete index
+- minimal FST
+- static string index
+symptoms:
+- 대규모 문자열 사전에서 Trie나 Radix Tree의 pointer/node overhead만 늘리고 정적 dictionary 압축 구조를 고려하지 않는다
+- FST가 prefix뿐 아니라 동일한 suffix 상태도 합쳐 state minimization을 한다는 점을 놓친다
+- membership automaton과 key-value output을 싣는 transducer 차이를 구분하지 못한다
+intents:
+- deep_dive
+- comparison
+prerequisites:
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/radix-tree
+next_docs:
+- data-structure/adaptive-radix-tree
+- data-structure/lsm-friendly-index-structures
+- data-structure/trie-prefix-search-autocomplete
+linked_paths:
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/data-structure/radix-tree.md
+- contents/data-structure/adaptive-radix-tree.md
+- contents/data-structure/lsm-friendly-index-structures.md
+confusable_with:
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/radix-tree
+- data-structure/adaptive-radix-tree
+- data-structure/lsm-friendly-index-structures
+forbidden_neighbors: []
+expected_queries:
+- Finite State Transducer는 Trie나 Radix Tree보다 왜 더 작을 수 있어?
+- FST가 prefix와 suffix 상태를 압축해 static dictionary를 만든다는 뜻은?
+- autocomplete index에서 minimal FST를 쓰는 이유를 알려줘
+- FSA와 FST는 membership만 보느냐 output value를 싣느냐로 어떻게 달라?
+- read-heavy term dictionary에서 FST가 맞는 조건은?
+contextual_chunk_prefix: |
+  이 문서는 Finite State Transducer를 정적 문자열 사전과 autocomplete index를
+  위한 compressed key-value automaton으로 설명한다. Trie/Radix Tree의 prefix
+  sharing에서 suffix state minimization과 output encoding까지 확장한다.
+---
 # Finite State Transducer
 
 > 한 줄 요약: Finite State Transducer(FST)는 공통 prefix와 suffix를 압축하면서 key에 값을 연결하는 정적 인덱스 구조로, 대용량 문자열 사전과 autocomplete 인덱스를 매우 작게 들고 가는 데 강하다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: JDBC JPA MyBatis 기초
+concept_id: database/jdbc-jpa-mybatis-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- jdbc-jpa-mybatis-sql-location
+- repository-entity-mapper-boundary
+- persistence-technology-first-read
+aliases:
+- jdbc jpa mybatis basics
+- JDBC JPA MyBatis 기초
+- jdbc vs jpa
+- jpa mybatis 차이
+- SQL 어디서 찾나요
+- Repository 구현체가 안 보여요
+- save만 보이는데 SQL이 안 보여
+- mapper xml 어디서 봐요
+- JdbcTemplate PreparedStatement
+- Entity Repository Mapper DAO 차이
+- transactional이면 jpa인가요
+symptoms:
+- Repository나 save 호출만 보고 실제 SQL을 어디서 찾아야 하는지 몰라 코드 독해가 멈춰
+- JPA를 쓰면 JDBC는 안 쓰는 것인지, MyBatis mapper와 JDBC template은 어떤 층위인지 헷갈려
+- @Entity, Repository, Mapper, @Transactional을 모두 저장 기술 이름처럼 섞어서 이해하고 있어
+intents:
+- definition
+- comparison
+prerequisites:
+- database/database-first-step-bridge
+next_docs:
+- database/jdbc-code-patterns
+- database/jdbc-jpa-mybatis
+- spring/spring-data-jpa-basics
+- software-engineering/repository-dao-entity
+linked_paths:
+- contents/database/database-first-step-bridge.md
+- contents/database/transaction-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/jdbc-code-patterns.md
+- contents/database/jdbc-jpa-mybatis.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/jdbc-jpa-mybatis
+- spring/spring-data-jpa-basics
+- software-engineering/repository-dao-entity
+- database/transaction-basics
+forbidden_neighbors: []
+expected_queries:
+- JDBC, JPA, MyBatis 차이를 SQL을 어디서 만들고 찾는지 기준으로 설명해줘
+- JPA를 쓰면 JDBC는 안 쓰는 것인지 마지막 DB 통신 계층을 알려줘
+- Repository, DAO, Mapper, Entity가 각각 어떤 역할인지 초급자 기준으로 정리해줘
+- save만 보이고 SQL이 안 보일 때 JPA 코드에서 무엇을 따라가야 해?
+- @Transactional은 persistence technology가 아니라 transaction boundary라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 JDBC, JPA, MyBatis를 SQL 위치와 persistence boundary 기준으로 비교하고 Repository, DAO, Mapper, Entity, Transactional을 처음 코드 독해에서 분리하는 beginner primer다.
+  jdbc vs jpa, mybatis mapper xml, JpaRepository save SQL hidden, repository entity confusion, transactional boundary, JdbcTemplate PreparedStatement 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # JDBC · JPA · MyBatis 기초
 
 > 한 줄 요약: JDBC · JPA · MyBatis의 첫 차이는 "SQL을 코드 어디서 만들고 찾느냐"로 보면 가장 덜 헷갈린다. `deadlock`, `pool timeout`, `OSIV`는 이 입문 문서의 본문이 아니라 다음 관련 문서 가지다.

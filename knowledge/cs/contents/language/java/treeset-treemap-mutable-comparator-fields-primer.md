@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Mutable Fields Inside Sorted Collections
+concept_id: language/treeset-treemap-mutable-comparator-fields-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- sorted-collection
+- mutable-state
+- comparator
+aliases:
+- Mutable Fields Inside Sorted Collections
+- TreeSet mutable field bug
+- TreeMap mutable key bug
+- comparator depends on mutable field
+- compareTo mutable field bug
+- 자바 TreeSet TreeMap mutable field
+symptoms:
+- TreeSet 안 원소의 comparator 참여 필드를 바꾼 뒤 first contains remove floor 결과가 현재 값 기준과 맞지 않는 문제를 만들어
+- TreeMap key 객체의 compareTo나 comparator 참여 필드를 바꿔 get containsKey remove가 null 또는 false로 흔들리는 문제를 만들어
+- sorted collection이 객체 필드 변경을 감시해 자동 재배치한다고 오해해 remove 후 reinsert 패턴을 적용하지 않아
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/mutable-elements-hashset-treeset-primer
+- language/treeset-treemap-comparator-tie-breaker-basics
+next_docs:
+- language/priority-update-patterns-treeset-treemap-priorityqueue-bridge
+- language/navigablemap-navigableset-mental-model
+- language/java-immutable-object-basics
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/mutable-elements-hashset-treeset-primer.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/priority-update-patterns-treeset-treemap-priorityqueue-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/language/java/java-equality-identity-basics.md
+confusable_with:
+- language/mutable-elements-hashset-treeset-primer
+- language/priority-update-patterns-treeset-treemap-priorityqueue-bridge
+- language/treeset-treemap-natural-ordering-compareto-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeSet 안 원소의 comparator field를 바꾸면 왜 contains remove first가 이상해질 수 있어?
+- TreeMap key의 compareTo 참여 필드를 바꾸면 get이 null을 반환할 수 있는 이유가 뭐야?
+- sorted collection은 객체 변경을 감시해서 자동 재정렬하지 않는다는 뜻을 설명해줘
+- priority를 바꾸려면 TreeSet에서는 remove change add 패턴이 왜 안전해?
+- mutable hash key 문제와 mutable sorted key 문제를 HashSet TreeSet TreeMap으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeSet/TreeMap에 들어간 뒤 comparator나 compareTo가 보는 mutable field를 바꾸면 tree position과 current value가 어긋나는 증상을 라우팅하는 beginner symptom router다.
+  mutable sorted collection, TreeSet contains false, TreeMap get null, comparator field mutation 질문이 본 문서에 매핑된다.
+---
 # Mutable Fields Inside Sorted Collections
 
 > 한 줄 요약: `TreeSet`/`TreeMap` 안에 들어간 뒤 comparator나 `compareTo()`가 보는 필드를 바꾸면, 객체의 현재 값과 트리 내부 위치가 어긋나서 정렬, 조회, 삭제가 이상해질 수 있다.

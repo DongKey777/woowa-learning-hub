@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Primitive Descending Array Sort Bridge
+concept_id: language/primitive-descending-array-sort-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- arrays
+- primitive
+- comparator
+aliases:
+- Primitive Descending Array Sort Bridge
+- Java int array descending sort no comparator
+- Arrays.sort int[] Comparator.reverseOrder compile error
+- primitive array reverse order beginner
+- boxed sorted reverseOrder int stream
+- 자바 int 배열 내림차순 정렬
+symptoms:
+- int[]에 Arrays.sort(numbers, Comparator.reverseOrder())를 호출하려 해 primitive 배열과 object 배열 overload 차이를 컴파일 에러로 마주쳐
+- 내림차순 결과가 필요한 상황과 검색 전제를 유지해야 하는 상황을 구분하지 못해 배열을 실제로 뒤집은 뒤 binarySearch를 재사용해
+- comparator 규칙이 꼭 필요한데 primitive 배열을 고수하다가 wrapper 배열 전환이나 boxed stream 선택지를 놓쳐
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-array-sorting-searching-basics
+- language/java-comparator-utility-patterns
+- language/collection-vs-collections-vs-arrays-utility-mini-bridge
+next_docs:
+- language/primitive-array-descending-binarysearch-primer
+- language/primitive-reverse-copy-vs-view-bridge
+- language/binarysearch-nullable-wrapper-sort-keys
+linked_paths:
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/primitive-array-descending-binarysearch-primer.md
+- contents/language/java/collection-vs-collections-vs-arrays-utility-mini-bridge.md
+- contents/language/java/java-comparator-utility-patterns.md
+confusable_with:
+- language/primitive-array-descending-binarysearch-primer
+- language/primitive-reverse-copy-vs-view-bridge
+- language/java-comparator-utility-patterns
+forbidden_neighbors: []
+expected_queries:
+- int 배열을 내림차순 정렬할 때 Arrays.sort에 Comparator.reverseOrder를 넘기면 왜 컴파일 에러가 나?
+- primitive 배열 내림차순은 오름차순 정렬 후 뒤집기와 뒤에서부터 읽기와 Integer[] 전환 중 무엇을 고르면 좋아?
+- 검색도 같이 해야 하면 primitive 배열은 왜 오름차순으로 유지하는 게 안전해?
+- comparator 규칙이 꼭 필요하면 int[] 대신 Integer[]나 boxed stream을 쓰는 기준을 알려줘
+- primitive array와 object array의 Arrays.sort overload 차이를 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 primitive 배열 내림차순 정렬에서 comparator overload가 없다는 제약 때문에 reverse copy, backward iteration, wrapper array 전환 중 하나를 고르는 beginner chooser다.
+  primitive descending sort, int array Comparator.reverseOrder, Arrays.sort overload, reverse array 질문이 본 문서에 매핑된다.
+---
 # Primitive Descending Array Sort Bridge
 
 > 한 줄 요약: `int[]` 같은 primitive 배열은 `Comparator`를 받는 `Arrays.sort(...)` overload가 없어서, "내림차순 comparator를 바로 넘긴다"가 아니라 **오름차순 정렬 후 뒤집기 / 뒤에서부터 읽기 / wrapper 배열로 전환** 중 하나를 고르는 것이 안전하다.

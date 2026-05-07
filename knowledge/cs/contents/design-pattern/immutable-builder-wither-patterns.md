@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Immutable Builder and Wither Patterns
+concept_id: design-pattern/immutable-builder-wither-patterns
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- immutable-builder
+- wither-pattern
+- immutable-update
+aliases:
+- immutable builder
+- wither pattern
+- value object update
+- copy with modification
+- fluent construction
+- toBuilder pattern
+- immutable object builder
+- withX method
+- copy based update
+- 불변 객체 갱신
+symptoms:
+- 불변 객체 필드가 많아지자 생성자 파라미터가 길어지고 호출부가 어떤 값이 무엇인지 읽기 어려워진다
+- 일부 필드만 바꾸려고 setter를 추가해 불변 객체의 장점을 깨뜨린다
+- toBuilder나 wither가 기존 객체를 바꾸는 것이 아니라 새 객체를 만든다는 의미를 fluent mutation과 혼동한다
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- design-pattern/builder-pattern
+- design-pattern/composition-over-inheritance-practical
+- design-pattern/builder-vs-fluent-mutation-smell
+next_docs:
+- design-pattern/prototype-pattern-caveats
+- design-pattern/invariant-preserving-command-model
+- language/object-oriented-core-principles
+linked_paths:
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/factory-vs-abstract-factory-vs-builder.md
+- contents/design-pattern/composition-over-inheritance-practical.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/builder-vs-fluent-mutation-smell.md
+- contents/design-pattern/prototype-pattern-caveats.md
+confusable_with:
+- design-pattern/builder-vs-fluent-mutation-smell
+- design-pattern/prototype-pattern-caveats
+- design-pattern/builder-pattern
+- design-pattern/factory-vs-abstract-factory-vs-builder
+forbidden_neighbors: []
+expected_queries:
+- Immutable Builder는 필드가 많은 불변 객체를 단계적으로 만들고 최종 객체는 immutable하게 유지하는 패턴이야?
+- Wither는 setter처럼 기존 객체를 바꾸지 않고 일부 값만 바꾼 새 객체를 반환한다는 점이 어떻게 달라?
+- toBuilder는 기존 상태를 복사해 새 builder로 수정하는 방식이라 fluent mutation보다 안전한 이유가 뭐야?
+- 불변 객체에 setter를 추가하지 않고 withX나 builder를 쓰는 기준은 뭐야?
+- Builder, Wither, Prototype은 객체 생성과 복제/부분 수정 관점에서 어떻게 고르면 돼?
+contextual_chunk_prefix: |
+  이 문서는 Immutable Builder and Wither Patterns playbook으로, 복잡한 불변 객체를 builder로
+  안전하게 생성하고 withX/toBuilder로 기존 객체를 보존한 채 일부 필드만 바꾼 새 인스턴스를
+  만드는 방법을 fluent mutation smell과 구분해 설명한다.
+---
 # Immutable Builder and Wither Patterns: 불변 객체를 안전하게 갱신하기
 
 > 한 줄 요약: Immutable Builder는 복잡한 객체 생성을 안정적으로 만들고, Wither는 불변 객체를 조금씩 바꿔 새 인스턴스를 만드는 패턴이다.
@@ -181,4 +248,3 @@ public final class PricePolicy {
 ## 한 줄 정리
 
 Immutable Builder는 복잡한 불변 객체 생성을 돕고, Wither는 불변 객체를 안전하게 변형하는 수단이다.
-

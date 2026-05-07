@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: "OSI 7 Layer Basics"
+concept_id: network/osi-7-layer-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- osi-layer
+- network-basics
+- troubleshooting-model
+aliases:
+- OSI 7계층
+- OSI layer basics
+- 네트워크 계층 모델
+- TCP IP 계층 모델
+- L4 vs L7
+- application transport network layer
+- 7계층 쉽게 설명
+symptoms:
+- OSI 7계층을 실제 인터넷 구현체로 오해한다
+- HTTP, TCP/UDP, IP, MAC이 어느 계층 책임인지 구분하지 못한다
+- L4 로드밸런서와 L7 로드밸런서 차이를 포트와 HTTP 헤더 기준으로 설명하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites: []
+next_docs:
+- network/tcp-udp-basics
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/ip-address-port-basics
+- system-design/load-balancer-basics
+linked_paths:
+- contents/network/tcp-udp-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/ip-address-port-basics.md
+- contents/system-design/load-balancer-basics.md
+confusable_with:
+- network/tcp-udp-basics
+- network/ip-address-port-basics
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+forbidden_neighbors: []
+expected_queries:
+- "OSI 7계층을 초보자에게 쉽게 설명해줘"
+- "HTTP TCP UDP IP는 OSI 계층에서 각각 어디에 있어?"
+- "OSI 7계층과 TCP/IP 4계층은 어떻게 대응돼?"
+- "L4와 L7 로드밸런서 차이를 계층 모델로 설명해줘"
+- "네트워크 장애를 계층별로 좁히는 방법은?"
+contextual_chunk_prefix: |
+  이 문서는 network 카테고리에서 OSI 7 Layer Basics를 다루는 primer 문서다. OSI 7계층, OSI layer basics, 네트워크 계층 모델, TCP IP 계층 모델, L4 vs L7 같은 lexical 표현과 OSI 7ê³ì¸µì ì´ë³´ììê² ì½ê² ì¤ëª
+  í´ì¤, HTTP TCP UDP IPë OSI ê³ì¸µìì ê°ê° ì´ëì ìì´? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # OSI 7계층 기초
 
 > 한 줄 요약: OSI 7계층은 네트워크 통신을 7단계로 나눈 모델이며, 각 계층이 무엇을 담당하는지 알면 문제가 어느 층에서 생겼는지 좁혀서 볼 수 있다.

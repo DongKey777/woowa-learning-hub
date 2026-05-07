@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Covering Index vs Index-Only Scan
+concept_id: database/covering-index-vs-index-only-scan
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- covering-index-vs-index-only-scan
+- mysql-using-index-vs-postgresql-index-only
+- heap-fetches-beginner-confusion
+aliases:
+- covering index vs index only scan
+- mysql using index vs postgresql index only scan
+- using index meaning
+- index only scan meaning
+- heap fetches remain
+- 커버링 인덱스와 인덱스 온리 스캔 차이
+- using index 무슨 뜻
+- index only scan 무슨 뜻
+symptoms:
+- MySQL Using index와 PostgreSQL Index Only Scan을 같은 뜻으로 번역하고 있어
+- Index Only Scan인데 Heap Fetches가 남는 이유를 인덱스 설계 문제로만 오해하고 있어
+- 커버링 인덱스 설계와 실제 실행 계획 신호를 분리해서 설명하지 못하고 있어
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/index-basics
+next_docs:
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/mysql-postgresql-index-storage-bridge
+- database/covering-index-composite-ordering
+- database/covering-index-width-fanout-write-amplification
+linked_paths:
+- contents/database/index-basics.md
+- contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md
+- contents/database/mysql-postgresql-index-storage-bridge.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+confusable_with:
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/mysql-postgresql-index-storage-bridge
+- database/covering-index-composite-ordering
+forbidden_neighbors: []
+expected_queries:
+- MySQL Using index와 PostgreSQL Index Only Scan은 같은 말이야?
+- 커버링 인덱스는 설계 용어고 index only scan은 실행 계획 용어라는 차이를 설명해줘
+- PostgreSQL에서 Index Only Scan인데 Heap Fetches가 남는 이유가 뭐야?
+- Using index가 보이면 테이블 본문을 절대 안 읽는다고 봐도 돼?
+- covering index와 index-only scan을 초보자 기준으로 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL Using index, covering index 설계, PostgreSQL Index Only Scan, Heap Fetches를 구분하는 beginner chooser다.
+  covering index vs index only scan, using index meaning, heap fetches remain 같은 자연어 비교 질문이 본 문서에 매핑된다.
+---
 # Covering Index vs Index-Only Scan
 
 > 한 줄 요약: MySQL `Using index`는 보통 "이 조회가 인덱스 값만으로 답이 되나"를 읽는 신호이고, PostgreSQL `Index Only Scan`은 "이번 실행에서 heap 재방문을 얼마나 줄였나"를 읽는 plan node라서 같은 칸에 놓고 바로 번역하면 헷갈린다.

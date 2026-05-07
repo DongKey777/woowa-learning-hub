@@ -48,11 +48,7 @@ confusable_with:
 - software-engineering/blackjack-big-if-responsibility-cause-router
 - software-engineering/blackjack-ace-scoring-domain-invariant-bridge
 - design-pattern/blackjack-turn-flow-state-pattern-bridge
-forbidden_neighbors:
-- contents/software-engineering/blackjack-ace-scoring-domain-invariant-bridge.md
-- contents/design-pattern/blackjack-turn-flow-state-pattern-bridge.md
-- contents/design-pattern/blackjack-action-input-command-bridge.md
-- contents/design-pattern/blackjack-winner-decision-policy-object-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 블랙잭 미션 테스트를 하나 추가할 때마다 다른 테스트가 깨지면 무엇이 섞인 거야?
 - blackjack에서 점수 계산만 검증하고 싶은데 입력 처리와 턴 흐름까지 같이 따라오는 이유가 뭐야?

@@ -49,7 +49,9 @@ linked_paths:
 confusable_with:
 - algorithm/sliding-window-patterns
 - algorithm/binary-search-intro
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/binary-search-patterns.md
 expected_queries:
 - 두 포인터를 처음 배울 때 어떤 문제에서 이분 탐색보다 먼저 떠올려야 하는지 알고 싶어
 - 정렬된 배열에서 합이 k인 두 수를 왜 양끝 포인터로 푸는지 단계별로 설명해줘

@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring ProblemDetail Error Response Design
+concept_id: spring/problemdetail-error-response-design
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- problemdetail-error-response
+- problemdetail
+- rfc-7807-error
+- response
+aliases:
+- Spring ProblemDetail
+- RFC 7807 error response
+- Spring error response design
+- @ExceptionHandler ProblemDetail
+- validation error ProblemDetail
+- BasicErrorController ProblemDetail
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-actuator-exposure-security.md
+expected_queries:
+- Spring ProblemDetail로 에러 응답 계약을 어떻게 설계해?
+- status title detail type instance는 각각 어떤 의미로 써야 해?
+- validation error와 domain error를 ProblemDetail에 어떻게 담아?
+- @ExceptionHandler와 BasicErrorController의 ProblemDetail 책임은 어떻게 나뉘어?
+contextual_chunk_prefix: |
+  이 문서는 Spring에서 ProblemDetail을 단순 오류 DTO가 아니라 HTTP status, type,
+  title, detail, instance를 포함한 error response contract로 설계하는 deep dive다.
+  validation, domain, auth, default error path, actuator 노출 경계를 함께 다룬다.
+---
 # Spring `ProblemDetail` Error Response Design
 
 > 한 줄 요약: `ProblemDetail`은 예외를 표준 HTTP 오류 응답으로 모델링하는 방식이라, 상태 코드와 에러 본문 계약을 함께 설계해야 한다.

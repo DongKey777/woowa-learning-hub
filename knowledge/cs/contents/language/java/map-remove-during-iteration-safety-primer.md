@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Map Remove During Iteration Safety Primer
+concept_id: language/map-remove-during-iteration-safety-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- concurrentmodificationexception
+- map-iteration
+- removeif
+aliases:
+- Map remove during iteration safety primer
+- Java Map ConcurrentModificationException for-each remove
+- Iterator.remove map entrySet
+- entrySet removeIf Map
+- map.remove while iterating
+- 자바 Map 순회 중 삭제
+symptoms:
+- for-each로 entrySet을 돌면서 map.remove를 직접 호출해 ConcurrentModificationException이 발생해
+- ConcurrentModificationException을 멀티스레드 문제로만 해석해 같은 스레드의 structural modification fail-fast 의미를 놓쳐
+- Map 자체에 removeIf가 있다고 생각하거나 keySet entrySet values view에서 removeIf를 호출해야 한다는 점을 놓쳐
+- entry.setValue로 값만 바꾸는 것과 put/remove로 구조를 바꾸는 차이를 구분하지 못해 순회 중 수정 규칙을 잘못 적용해
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/map-iteration-patterns-cheat-sheet
+- language/iterable-collection-map-iteration-bridge
+next_docs:
+- language/map-entry-setvalue-vs-put-remove-structural-change-bridge
+- language/concurrenthashmap-compound-actions-hot-key-contention
+- language/list-remove-during-iteration-index-shift-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/map-entry-setvalue-vs-put-remove-structural-change-bridge.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+confusable_with:
+- language/map-entry-setvalue-vs-put-remove-structural-change-bridge
+- language/map-iteration-patterns-cheat-sheet
+- language/concurrenthashmap-compound-actions-hot-key-contention
+forbidden_neighbors: []
+expected_queries:
+- Map을 for-each로 순회하면서 map.remove를 호출하면 왜 ConcurrentModificationException이 나?
+- Map 순회 중 안전하게 삭제하려면 Iterator.remove와 entrySet.removeIf 중 무엇을 써야 해?
+- ConcurrentModificationException은 멀티스레드가 아니어도 발생할 수 있는지 설명해줘
+- entry.setValue는 괜찮은데 put이나 remove는 왜 structural modification으로 문제가 될 수 있어?
+- Map에는 removeIf가 없는데 entrySet keySet values에서 removeIf를 쓰는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Map iteration 중 remove를 안전하게 수행하는 방법을 ConcurrentModificationException 증상 중심으로 라우팅하는 beginner symptom router다.
+  Map remove during iteration, Iterator.remove, entrySet.removeIf, fail-fast, ConcurrentModificationException 질문이 본 문서에 매핑된다.
+---
 # Map 수정 중 순회 안전 가이드
 
 > 한 줄 요약: `Map`을 돌면서 지워야 할 때는 `for-each` 안에서 `map.remove(...)`를 바로 부르지 말고, `Iterator.remove()` 또는 `entrySet().removeIf(...)`처럼 "순회가 허용한 삭제 통로"를 써야 한다.

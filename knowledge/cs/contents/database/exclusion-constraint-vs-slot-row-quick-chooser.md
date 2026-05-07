@@ -58,7 +58,11 @@ confusable_with:
 - database/unique-vs-slot-row-vs-guard-row-quick-chooser
 - database/phantom-safe-booking-patterns-primer
 - database/constraint-first-booking-primer
+- database/overlapping-bookings-both-succeed-symptom-router
 forbidden_neighbors:
+- contents/database/exact-key-pre-check-decision-card.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
 expected_queries:
 - 예약 시간이 겹치면 PostgreSQL 에서는 exclusion constraint 랑 slot row 중 뭘 먼저 봐?
 - 숙박처럼 연속 구간 예약이면 slot row 보다 다른 방법이 더 맞아?
@@ -66,12 +70,12 @@ expected_queries:
 - 예약 겹침 방지에서 continuous interval 과 discrete slot 을 어떻게 나눠 생각해?
 - roomescape 같은 예약 문제를 볼 때 exclusion constraint 와 slot row 차이를 빨리 보고 싶어
 contextual_chunk_prefix: |
-  이 문서는 예약 겹침 방지에서 학습자가 continuous interval truth와
-  discrete slot truth를 구분해 exclusion constraint와 slot row 중 무엇을
-  먼저 볼지 결정하게 돕는 beginner chooser다. 정확히 같은 키 문제는 아님,
-  시간대가 조금만 겹쳐도 막아야 함, 숙박 일수 칸으로 잘라야 하나,
-  PostgreSQL 구간 제약을 써야 하나, roomescape 예약 모델을 어떤
-  진실원천으로 둘까 같은 자연어 표현이 이 문서의 선택 기준에 매핑된다.
+  이 문서는 예약 겹침 방지에서 학습자가 연속 시간 구간 자체를 막을지, 잘린
+  시간 칸 충돌로 바꿔 막을지 구분해 exclusion constraint와 slot row 중
+  무엇을 먼저 볼지 결정하게 돕는 beginner chooser다. 시간이 조금만 겹쳐도
+  막기, 숙박 날짜를 칸으로 쪼개기, 예약 진실원천을 booking row에 둘지 slot
+  claim에 둘지, exact key 중복이 아니라 시간 겹침을 다루는 문제 같은
+  자연어 paraphrase가 이 문서의 선택 기준에 매핑된다.
 ---
 # Exclusion Constraint vs Slot Row 빠른 선택 가이드
 

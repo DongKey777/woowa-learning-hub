@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Session Store Design at Scale
+concept_id: system-design/session-store-design-at-scale
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session store
+- sticky session
+- external session store
+- token-based auth
+aliases:
+- session store
+- sticky session
+- external session store
+- token-based auth
+- stateless sessions primer
+- session pinning
+- monotonic reads
+- read-your-writes
+- revocation
+- TTL
+- distributed session
+- cache
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/session-revocation-at-scale.md
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/system-design/session-revocation-basics.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Store Design at Scale 설계 핵심을 설명해줘
+- session store가 왜 필요한지 알려줘
+- Session Store Design at Scale 실무 트레이드오프는 뭐야?
+- session store 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Session Store Design at Scale를 다루는 deep_dive 문서다. session store at scale은 세션 생성, 조회, 폐기, 핀닝, 복제 지연을 관리해 사용자 흐름의 상태 일관성을 제공하는 분산 저장소 설계다. 검색 질의가 session store, sticky session, external session store, token-based auth처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Session Store Design at Scale
 
 > 한 줄 요약: session store at scale은 세션 생성, 조회, 폐기, 핀닝, 복제 지연을 관리해 사용자 흐름의 상태 일관성을 제공하는 분산 저장소 설계다.

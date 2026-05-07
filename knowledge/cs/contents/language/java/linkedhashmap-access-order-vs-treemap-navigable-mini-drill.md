@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: LinkedHashMap Access-Order vs TreeMap Navigable API Mini Drill
+concept_id: language/linkedhashmap-access-order-vs-treemap-navigable-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- linkedhashmap
+- treemap
+- navigable-map
+aliases:
+- LinkedHashMap access-order vs TreeMap navigable API
+- linkedhashmap get changes order vs treemap floorKey
+- TreeMap floorKey subMap beginner drill
+- ordered map symptom drill
+- 조회만 했는데 순서가 바뀐다 vs 가까운 key 범위 조회
+- access-order와 navigable API 구분
+symptoms:
+- LinkedHashMap과 TreeMap을 둘 다 순서 있는 Map이라고만 묶어 access-order와 sorted key coordinate를 구분하지 못해
+- get 호출 뒤 순서가 바뀌는 증상을 TreeMap 정렬 문제로 오해하거나 floorKey/subMap 요구를 LinkedHashMap으로 풀려고 해
+- subMap boundary나 floorKey 같은 navigable API를 최근 접근 순서 문제와 섞어 검색해 잘못된 문서로 들어가
+intents:
+- drill
+- comparison
+- troubleshooting
+prerequisites:
+- language/map-implementation-selection-mini-drill
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+- data-structure/linkedhashmap-access-order-mini-primer
+next_docs:
+- language/navigablemap-navigableset-mental-model
+- language/submap-boundaries-primer
+- language/linkedhashmap-access-order-cache-behavior-bridge
+linked_paths:
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/linkedhashmap-access-order-cache-behavior-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+confusable_with:
+- language/linkedhashmap-access-order-cache-behavior-bridge
+- language/navigablemap-navigableset-mental-model
+- language/submap-boundaries-primer
+forbidden_neighbors: []
+expected_queries:
+- LinkedHashMap access-order와 TreeMap floorKey subMap은 순서 의미가 어떻게 달라?
+- get만 했는데 순서가 바뀌면 LinkedHashMap accessOrder=true를 의심해야 하는 이유를 알려줘
+- 87 이하에서 가장 가까운 key를 찾는 요구는 왜 TreeMap floorKey 문제야?
+- LinkedHashMap은 최근 접근 순서이고 TreeMap은 정렬된 key 범위라는 차이를 드릴로 풀어줘
+- subMap은 언제 쓰고 access-order Map과 왜 다른지 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 LinkedHashMap access-order의 recent access order와 TreeMap NavigableMap의 sorted key neighbor/range API를 증상으로 구분하는 beginner drill이다.
+  LinkedHashMap vs TreeMap, get changes order, floorKey, subMap, ordered map confusion 질문이 본 문서에 매핑된다.
+---
 # LinkedHashMap access-order vs TreeMap navigable API 미니 드릴
 
 > 한 줄 요약: "`get()`만 했는데 순서가 바뀐다"면 `LinkedHashMap(access-order=true)` 쪽이고, "`x` 이하에서 가장 가까운 key`"나 "`20` 이상 `40` 미만만 자르고 싶다`"면 `TreeMap`의 `floorKey`/`subMap` 쪽이라는 감각을 증상부터 빠르게 고정하는 beginner drill이다.

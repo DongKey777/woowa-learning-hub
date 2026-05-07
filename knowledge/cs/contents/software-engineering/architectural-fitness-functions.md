@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Architectural Fitness Functions
+concept_id: software-engineering/architectural-fitness-functions
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- architectural-fitness
+- policy-as-code
+- boundary-test
+aliases:
+- Architectural Fitness Functions
+- architecture fitness function
+- architecture regression guard
+- policy as code architecture lint
+- ArchUnit boundary test
+- 아키텍처 경계 자동 검증
+symptoms:
+- 아키텍처 경계를 좋은 구조로 유지하자는 리뷰 말에만 의존하고 CI에서 반복 가능한 rule로 강제하지 않아
+- 기능 테스트와 architecture boundary test를 섞어 모듈 의존 방향, schema compatibility, forbidden import 같은 구조 회귀를 놓쳐
+- fitness function을 경고판으로만 두고 release gate나 PR block 정책과 연결하지 않아 위반이 누적돼
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/archunit-brownfield-rollout-playbook
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/event-schema-versioning
+linked_paths:
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/archunit-brownfield-rollout-playbook.md
+confusable_with:
+- software-engineering/policy-as-code
+- software-engineering/archunit-brownfield-rollout-playbook
+- software-engineering/backward-compatibility-gates
+forbidden_neighbors: []
+expected_queries:
+- architectural fitness function은 기능 테스트와 달리 어떤 구조 회귀를 자동으로 잡아?
+- ArchUnit 같은 boundary test로 모듈 간 직접 참조나 forbidden dependency를 어떻게 막아?
+- API contract test와 schema compatibility check도 architecture fitness function으로 볼 수 있어?
+- fitness function을 CI 경고가 아니라 PR block release gate 정책으로 연결하는 기준은 뭐야?
+- policy as code가 과해져 개발 속도를 늦추지 않으려면 어떤 규칙부터 자동화해야 해?
+contextual_chunk_prefix: |
+  이 문서는 architectural fitness function을 모듈 의존성, contract compatibility, schema evolution, configuration policy를 CI와 release gate에서 반복 측정하는 architecture regression guard로 설명하는 advanced playbook이다.
+---
 # Architectural Fitness Functions
 
 > 한 줄 요약: Architectural fitness function은 아키텍처의 "좋음"을 감으로 판단하지 않고, 코드와 CI에서 반복 측정 가능한 규칙으로 바꾸는 장치다.

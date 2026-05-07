@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Read-Before-Write Race Timeline Across MySQL and PostgreSQL
+concept_id: database/read-before-write-race
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- duplicate-check
+- check-then-insert
+- unique-constraint
+- upsert
+- mysql-postgresql
+aliases:
+- read before write race
+- check then insert race
+- select then insert race
+- duplicate check race
+- mysql vs postgresql duplicate race
+- 조회 후 insert 경쟁
+- 없으면 insert 패턴
+- 먼저 select 하고 insert
+- unique constraint loser
+- upsert conflict branch
+symptoms:
+- SELECT로 먼저 없음을 확인했는데 동시에 INSERT가 들어오면 중복이나 duplicate key가 발생하는 이유를 설명해야 해
+- MySQL READ COMMITTED와 REPEATABLE READ에서 check-then-insert 동작 차이를 비교해야 해
+- PostgreSQL empty-result locking read가 부재를 예약하는지 헷갈려 해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/primary-foreign-key-basics
+next_docs:
+- database/unique-vs-locking-read-duplicate-primer
+- database/upsert-contention-unique-index-locking
+- database/mysql-rc-duplicate-check-pitfall-note
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+linked_paths:
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/mysql-rc-duplicate-check-pitfall-note.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+confusable_with:
+- database/unique-vs-locking-read-duplicate-primer
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/insert-if-absent-retry-outcome-guide
+forbidden_neighbors: []
+expected_queries:
+- SELECT로 먼저 조회하고 없으면 INSERT하는 코드가 왜 race condition을 만들 수 있어?
+- MySQL과 PostgreSQL에서 check then insert duplicate race 타임라인을 비교해줘
+- READ COMMITTED와 REPEATABLE READ에서 없으면 insert 패턴이 어떻게 다르게 보이나?
+- empty result FOR UPDATE가 absence lock을 잡는다고 생각하면 왜 위험해?
+- UNIQUE constraint와 upsert가 read-before-write race의 최종 판정을 맡는다는 뜻이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 SELECT 후 INSERT, check-then-insert, read-before-write race를 MySQL과 PostgreSQL 격리수준별 타임라인으로 설명하는 beginner bridge다.
+  duplicate key, unique violation, upsert conflict branch, empty-result locking read 질문이 본 문서에 매핑된다.
+---
 # Read-Before-Write Race Timeline Across MySQL and PostgreSQL
 
 > 한 줄 요약: `SELECT`로 먼저 확인하고 `INSERT`하는 경로는 MySQL과 PostgreSQL 모두에서 race window가 남고, RC/RR 차이는 "앞단 queue가 얼마나 생기느냐"에 더 가깝다. 최종 승자는 `UNIQUE`나 upsert가 write 시점에 정한다.

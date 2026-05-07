@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: BinarySearch Duplicate Boundary Primer
+concept_id: language/binarysearch-duplicate-boundary-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- binary-search
+- duplicate-boundary
+- array-search
+aliases:
+- binarySearch duplicate boundary primer
+- Arrays.binarySearch duplicates
+- first last occurrence after binarySearch
+- lower bound upper bound Java
+- 자바 binarySearch 중복 첫 위치
+- duplicate range after binary search
+symptoms:
+- Arrays.binarySearch가 중복값 중 첫 위치를 보장한다고 생각해 첫 번째/마지막 인덱스 계산을 잘못해
+- 존재 여부와 duplicate block boundary 찾기를 같은 문제로 섞어 처리해
+- lowerBound upperBound로 바로 뛰기 전에 hit 위치에서 좌우 확장하는 beginner mental model이 필요해
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- language/java-array-sorting-searching-basics
+- language/arrays-sort-binarysearch-precondition-bridge
+next_docs:
+- language/binarysearch-nullable-wrapper-sort-keys
+- language/priority-only-range-search-follow-up
+- algorithm/binary-search-patterns
+linked_paths:
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+- contents/language/java/priority-only-range-search-follow-up.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/primitive-array-descending-binarysearch-primer.md
+- contents/algorithm/binary-search-patterns.md
+confusable_with:
+- algorithm/binary-search-patterns
+- language/binarysearch-nullable-wrapper-sort-keys
+- language/arrays-sort-binarysearch-precondition-bridge
+forbidden_neighbors: []
+expected_queries:
+- Arrays.binarySearch는 중복값에서 첫 번째 위치를 보장하지 않는다는 뜻이야?
+- Java binarySearch로 찾은 뒤 duplicate block의 first last index를 어떻게 구해?
+- 중복값이 있는 정렬 배열에서 hit 위치에서 좌우 확장하는 beginner 패턴을 보여줘
+- lowerBound upperBound로 넘어가기 전에 binarySearch duplicate range를 쉽게 설명해줘
+- 자바 binarySearch 중복 첫 위치와 마지막 위치를 찾는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java Arrays.binarySearch duplicate boundary를 hit index, scan left/right, first occurrence, last occurrence, lower bound handoff로 설명하는 beginner primer다.
+  binarySearch duplicates, first last index, duplicate block, lowerBound upperBound, sorted array range 질문이 본 문서에 매핑된다.
+---
 # BinarySearch Duplicate Boundary Primer
 
 > 한 줄 요약: `Arrays.binarySearch()`는 중복값이 있을 때 "아무 일치 위치 하나"만 줄 수 있으므로, 초보자에게 가장 쉬운 follow-up은 "찾은 위치에서 왼쪽/오른쪽으로 같은 값 구간을 확장해 첫 위치와 마지막 위치를 읽는 것"이다.

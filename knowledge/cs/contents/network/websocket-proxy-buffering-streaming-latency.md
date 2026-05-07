@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "WebSocket Proxy Buffering, Streaming Latency"
+concept_id: network/websocket-proxy-buffering-streaming-latency
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- websocket
+- proxy-buffering
+- streaming-latency
+aliases:
+- WebSocket proxy buffering
+- streaming latency
+- response buffering
+- low latency streaming
+- SSE buffering
+- chunked transfer flush
+- reverse proxy buffering
+symptoms:
+- 서버 로그상 write는 됐는데 client는 메시지를 늦게 받는다
+- WebSocket ping/pong은 되는데 사용자 payload만 묶여 늦게 온다
+- SSE chunk가 proxy나 TLS record에서 모여 실시간성이 깨지는 문제를 놓친다
+- proxy buffering을 끄면 항상 좋다고 보고 slow client backpressure 비용을 무시한다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/websocket-heartbeat-backpressure-reconnect
+- network/api-gateway-reverse-proxy-operational-points
+next_docs:
+- network/tls-record-sizing-flush-streaming-latency
+- network/http-response-compression-buffering-streaming-tradeoffs
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/nagle-delayed-ack-small-packet-latency
+linked_paths:
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/tcp-keepalive-vs-app-heartbeat.md
+- contents/network/nagle-delayed-ack-small-packet-latency.md
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+confusable_with:
+- network/websocket-heartbeat-backpressure-reconnect
+- network/tls-record-sizing-flush-streaming-latency
+- network/http-response-compression-buffering-streaming-tradeoffs
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+forbidden_neighbors: []
+expected_queries:
+- "WebSocket이나 SSE가 proxy buffering 때문에 실시간성이 깨지는 패턴은?"
+- "서버는 보냈는데 client는 늦게 받으면 proxy flush를 어떻게 확인해?"
+- "ping pong은 정상인데 메시지만 늦는 이유가 buffering일 수 있어?"
+- "proxy_buffering off가 streaming latency에는 좋지만 slow client에는 위험한 이유는?"
+- "TLS record flush와 HTTP compression buffering까지 같이 봐야 하는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 WebSocket/SSE/chunked streaming에서 reverse proxy buffering,
+  flush, TLS record sizing, compression buffering, slow client backpressure를
+  다루는 advanced playbook이다.
+---
 # WebSocket Proxy Buffering, Streaming Latency
 
 > 한 줄 요약: WebSocket과 streaming 트래픽은 proxy buffering이 켜져 있으면 실시간성이 무너질 수 있어서, 버퍼링 정책을 별도로 봐야 한다.

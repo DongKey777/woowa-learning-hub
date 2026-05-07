@@ -9,6 +9,11 @@ doc_role: symptom_router
 level: beginner
 language: ko
 source_priority: 80
+review_feedback_tags:
+- lock-timeout-blocker
+- first-check
+- who-is-blocking
+- lock-timeout
 aliases:
 - lock timeout blocker first check
 - who is blocking lock timeout
@@ -18,7 +23,7 @@ aliases:
 - 누구를 기다렸나
 symptoms:
 - 갑자기 트랜잭션이 다 lock timeout으로 떨어지고 있다
-- 'Lock wait timeout exceeded' 에러가 특정 시간대에 자주 뜬다
+- "'Lock wait timeout exceeded' 에러가 특정 시간대에 자주 뜬다"
 - lock timeout이 떨어지는데 그 SQL은 평소엔 빠르다
 - pg_blocking_pids에 다른 트랜잭션이 보인다
 intents:
@@ -50,7 +55,6 @@ contextual_chunk_prefix: |
   기다렸나, blocker first check 같은 자연어 paraphrase가 본 문서의 진단
   순서에 매핑된다.
 ---
-
 # Lock Timeout 났을 때 blocker 먼저 보는 미니카드
 
 > 한 줄 요약: `lock timeout`이 났다면 초보자 첫 질문은 "이 SQL이 느렸나?"보다 **"지금 누구를 기다렸나?"** 에 가깝다.

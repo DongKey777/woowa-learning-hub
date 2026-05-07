@@ -9,7 +9,10 @@ doc_role: chooser
 level: beginner
 language: ko
 source_priority: 88
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/backend
 review_feedback_tags:
 - queue-implementation-default
 - bfs-queue-concrete-type
@@ -85,6 +88,14 @@ contextual_chunk_prefix: |
 - [data-structure 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: arraydeque vs linkedlist queue, java queue implementation default, java bfs queue default, arraydeque linkedlist 차이, linkedlist 대신 arraydeque, java queue 뭐 써요, bfs queue java beginner, service code fifo queue java, queue implementation intro, arraydeque for beginners, linkedlist queue beginner, java queue basics, arraydeque queue interface, deque in name queue in use, bfs arraydeque queue
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "BFS 예제에서 `LinkedList`를 봤는데 그대로 써도 되나요?" | baseball/blackjack 상태 탐색이나 초급 알고리즘 풀이에서 FIFO queue를 구현하는 코드 | 구현체 기본값은 `ArrayDeque`, 변수 타입은 `Queue`로 잡는 감각을 먼저 세운다 |
+| "`ArrayDeque`는 Deque인데 일반 queue로 써도 되나요?" | `offer`, `poll`, `peek`만 쓰는 로컬 FIFO 흐름 | 자료구조 이름보다 실제로 쓰는 연산 계약이 FIFO인지 확인한다 |
+| "서비스 코드에 queue가 보이면 자료구조 선택만 보면 되나요?" | 단일 스레드 임시 큐와 worker handoff 큐가 같은 이름으로 보이는 백엔드 코드 | 로컬 FIFO면 이 문서, thread handoff면 BlockingQueue 쪽으로 분기한다 |
 
 ## 핵심 개념
 

@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Class Initialization Ordering
+concept_id: language/class-initialization-ordering
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- class-initialization
+- static-initializer
+- jvm-runtime
+aliases:
+- Java class initialization ordering
+- clinit static initializer
+- static field order
+- initialization on demand holder
+- circular class initialization
+- Java static initialization
+- 클래스 초기화 순서
+symptoms:
+- class loading과 class initialization을 같은 단계로 보고 static field와 static block 실행 순서를 놓쳐
+- static initializer에서 뒤에 선언된 필드나 순환 참조 클래스를 읽어 null이나 default 중간 상태를 만든다
+- class initialization 실패가 이후 NoClassDefFoundError처럼 보일 수 있다는 예외 경계를 추적하지 못해
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- language/java-memory-model-happens-before-volatile-final
+next_docs:
+- language/classloader-delegation-edge-cases
+- language/jit-warmup-deoptimization
+- language/java-agent-instrumentation-basics
+linked_paths:
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/java-agent-instrumentation-basics.md
+confusable_with:
+- language/classloader-delegation-edge-cases
+- language/java-constructors-initialization-order-basics
+- language/java-memory-model-happens-before-volatile-final
+forbidden_neighbors: []
+expected_queries:
+- Java class loading과 class initialization은 어떻게 다르고 clinit은 언제 실행돼?
+- static field와 static block 선언 순서 때문에 null이 되는 예제를 설명해줘
+- circular class initialization이 중간 상태를 보게 만드는 이유가 뭐야?
+- initialization-on-demand holder 패턴이 lazy singleton에 안전한 이유를 알려줘
+- class initialization 실패 후 NoClassDefFoundError처럼 보이는 상황을 어떻게 추적해?
+contextual_chunk_prefix: |
+  이 문서는 Java class initialization ordering을 load/link/init, clinit, static field order, static block, circular initialization, holder pattern 관점으로 설명하는 advanced deep dive다.
+  class initialization, clinit, static initializer, circular initialization, NoClassDefFoundError 질문이 본 문서에 매핑된다.
+---
 # Class Initialization Ordering
 
 > 한 줄 요약: Java 클래스 초기화는 로딩과 별개로 `clinit` 순서를 가지며, static 필드와 초기화 블록의 순서를 잘못 설계하면 NPE, 순환 초기화, 예상치 못한 side effect가 생긴다.

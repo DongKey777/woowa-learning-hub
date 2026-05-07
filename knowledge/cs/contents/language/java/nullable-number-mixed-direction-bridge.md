@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Nullable Number Mixed Direction Bridge
+concept_id: language/nullable-number-mixed-direction-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator
+- null-handling
+- numeric-sort
+aliases:
+- Nullable Number Mixed Direction Bridge
+- nullable Integer descending nullsLast
+- nullable Long reverseOrder nullsFirst
+- nullable Double comparator chain
+- Comparator nullsLast reverseOrder number
+- 자바 nullable 숫자 내림차순 정렬
+symptoms:
+- nullable 숫자 정렬에서 null 위치와 숫자 오름내림 방향을 한 번에 뒤집어 null이 예상과 반대쪽으로 이동해
+- Comparator.reversed를 chain 전체에 적용해 값 방향뿐 아니라 null placement까지 함께 뒤집히는 문제를 놓쳐
+- Integer Long Double wrapper 필드를 primitive comparator 습관으로 처리하다가 null unboxing이나 NPE 위험을 만든다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-comparator-utility-patterns
+- language/nullable-wrapper-comparator-bridge
+next_docs:
+- language/comparator-reversed-scope-primer
+- language/binarysearch-nullable-wrapper-sort-keys
+- language/nullable-enum-comparator-bridge
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+confusable_with:
+- language/nullable-wrapper-comparator-bridge
+- language/comparator-reversed-scope-primer
+- language/nullable-enum-comparator-bridge
+forbidden_neighbors: []
+expected_queries:
+- nullable Integer를 내림차순으로 정렬하되 null은 뒤에 두려면 Comparator를 어떻게 써?
+- Comparator.nullsLast(reverseOrder())와 reversed()를 전체에 거는 것의 차이를 설명해줘
+- nullable Long이나 Double comparator chain에서 null 위치와 값 방향을 따로 읽는 방법이 뭐야?
+- wrapper 숫자 필드를 comparingInt처럼 처리하면 null에서 어떤 문제가 생길 수 있어?
+- 숫자는 큰 값 먼저인데 null은 앞으로 보내는 comparator를 beginner 기준으로 보여줘
+contextual_chunk_prefix: |
+  이 문서는 nullable Integer, Long, Double 정렬에서 null placement와 numeric direction을 분리해 Comparator를 고르는 beginner chooser다.
+  nullable number comparator, nullsLast reverseOrder, mixed direction, wrapper numeric sorting 질문이 본 문서에 매핑된다.
+---
 # Nullable Number Mixed-Direction Bridge
 
 > 한 줄 요약: nullable `Integer`/`Long`/`Double` 정렬에서 가장 쉬운 읽는 법은 "`null` 위치는 바깥 `nullsFirst`/`nullsLast`가 정하고, 오름/내림 방향은 안쪽 숫자 comparator가 정한다"이다.

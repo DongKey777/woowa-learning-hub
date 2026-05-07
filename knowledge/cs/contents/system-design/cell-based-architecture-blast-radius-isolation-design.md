@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Cell-Based Architecture / Blast Radius Isolation 설계
+concept_id: system-design/cell-based-architecture-blast-radius-isolation-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- cell based architecture
+- blast radius isolation
+- cell routing
+- compartmentalization
+aliases:
+- cell based architecture
+- blast radius isolation
+- cell routing
+- compartmentalization
+- noisy neighbor isolation
+- failure containment
+- tenant pinning
+- shard cell
+- regional cell
+- operational cell
+- tenant partition strategy
+- Cell-Based Architecture / Blast Radius Isolation 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cell-Based Architecture / Blast Radius Isolation 설계 설계 핵심을 설명해줘
+- cell based architecture가 왜 필요한지 알려줘
+- Cell-Based Architecture / Blast Radius Isolation 설계 실무 트레이드오프는 뭐야?
+- cell based architecture 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Cell-Based Architecture / Blast Radius Isolation 설계를 다루는 deep_dive 문서다. cell-based architecture는 서비스를 여러 개의 독립된 운영 셀로 분할해 장애, noisy neighbor, 배포 실수, 데이터 문제의 blast radius를 제한하는 확장·격리 설계다. 검색 질의가 cell based architecture, blast radius isolation, cell routing, compartmentalization처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Cell-Based Architecture / Blast Radius Isolation 설계
 
 > 한 줄 요약: cell-based architecture는 서비스를 여러 개의 독립된 운영 셀로 분할해 장애, noisy neighbor, 배포 실수, 데이터 문제의 blast radius를 제한하는 확장·격리 설계다.

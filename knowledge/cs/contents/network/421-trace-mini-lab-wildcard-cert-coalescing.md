@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: '421 Trace Mini-Lab: Wildcard Cert Coalescing Rejection Walkthrough'
+concept_id: network/wildcard-cert-coalescing-421-trace-mini-lab
+canonical: false
+category: network
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- wildcard-cert-does-not-mean-same-route
+- devtools-curl-proxy-triangulation
+- authority-vs-routing-boundary
+aliases:
+- 421 trace mini lab
+- wildcard cert 421 basics
+- wildcard certificate 421 walkthrough
+- same cert different backend 421
+- wildcard cert connection reuse rejected
+- wrong connection wildcard cert
+- coalescing rejection beginner
+symptoms:
+- wildcard certificate가 맞는데도 `421`이 떠서 인증서 문제인지 라우팅 경계 문제인지 실습으로 분리해 보고 싶다
+- "`www`와 `admin`이 같은 cert를 쓰는데 왜 같은 connection reuse가 거절되는지 DevTools와 `curl`로 따라가며 확인하고 싶다"
+- proxy log에서 upstream이 비어 있는 `421`를 보고 edge local reply인지 앱 문제인지 손으로 판독하는 연습이 필요하다
+intents:
+- drill
+prerequisites:
+- network/http-421-troubleshooting-trace-examples
+- network/http3-421-observability-primer
+next_docs:
+- network/vendor-edge-421-field-map
+- network/browser-421-but-curl-200-symptom-router
+linked_paths:
+- contents/network/wildcard-cert-routing-boundary-primer.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/vendor-edge-421-field-map.md
+- contents/network/browser-devtools-protocol-column-labels-primer.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+confusable_with:
+- network/http-421-troubleshooting-trace-examples
+- network/browser-421-but-curl-200-symptom-router
+- network/vendor-edge-421-field-map
+forbidden_neighbors: []
+expected_queries:
+- wildcard cert는 맞는데 421이 나는 상황을 따라 해 볼 수 있는 예제가 있어?
+- DevTools와 curl, proxy log를 같이 보면서 421 coalescing rejection을 연습하고 싶어
+- 같은 인증서인데 admin host만 421이 뜨는 trace를 어떻게 읽는지 미니 실습으로 보여줘
+- upstream이 비어 있는 421 access log를 beginner 관점에서 판독하는 훈련 자료가 필요해
+- wildcard certificate와 routing boundary 차이를 421 trace로 확인하는 drill이 있어?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 wildcard certificate가 맞아도 routing boundary가 다르면
+  `421`이 날 수 있다는 사실을 DevTools, `curl`, proxy log 세 화면으로
+  직접 따라가 보게 만드는 network drill이다. same cert different backend,
+  `421` local reply, admin host만 실패, 두 줄 trace 같은 자연어 표현이
+  coalescing rejection 실습 순서와 관찰 포인트에 매핑된다.
+---
 # 421 Trace Mini-Lab: Wildcard Cert Coalescing Rejection Walkthrough
 
 

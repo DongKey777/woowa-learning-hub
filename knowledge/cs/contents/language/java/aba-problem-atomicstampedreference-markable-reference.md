@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: ABA Problem, AtomicStampedReference, and AtomicMarkableReference
+concept_id: language/java-aba-problem
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- java-concurrency
+- compare-and-set
+- lock-free
+aliases:
+- ABA problem
+- Java ABA problem
+- AtomicStampedReference
+- AtomicMarkableReference
+- versioned CAS
+- lock-free ABA
+- CAS 이력 상실
+symptoms:
+- CAS가 A에서 B를 거쳐 다시 A가 된 변화를 감지하지 못하는 문제를 값 동일성과 이력 상실로 구분해야 해
+- lock-free stack이나 free-list에서 같은 reference로 돌아온 것이 안전하지 않을 수 있음을 설명해야 해
+- AtomicStampedReference와 AtomicMarkableReference가 어떤 메타정보를 CAS에 붙이는지 비교해야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-memory-model-happens-before-volatile-final
+- language/varhandle-unsafe-atomics
+next_docs:
+- language/stampedlock-optimistic-read-conversion-pitfalls
+- language/thread-interruption-cooperative-cancellation-playbook
+- operating-system/context-switching-deadlock-lockfree
+linked_paths:
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/stampedlock-optimistic-read-conversion-pitfalls.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+confusable_with:
+- language/varhandle-unsafe-atomics
+- language/stampedlock-optimistic-read-conversion-pitfalls
+- operating-system/context-switching-deadlock-lockfree
+forbidden_neighbors: []
+expected_queries:
+- ABA problem이 CAS에서 왜 생기고 A B A 변화가 왜 위험한지 설명해줘
+- AtomicStampedReference가 version stamp로 ABA를 어떻게 줄이는지 알려줘
+- AtomicMarkableReference와 AtomicStampedReference 차이를 lock-free 구조 관점으로 비교해줘
+- lock-free stack에서 같은 reference로 돌아왔는데 CAS가 성공하는 문제가 왜 bug야?
+- CAS는 현재 값만 보는데 중간 변화 이력을 어떻게 감지할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java concurrency의 ABA problem을 CAS, A-B-A transition, versioned CAS, AtomicStampedReference, AtomicMarkableReference, lock-free stack 관점으로 설명하는 advanced deep dive다.
+  ABA problem, compare-and-set, CAS history loss, stamp mark bit, lock-free bug 질문이 본 문서에 매핑된다.
+---
 # ABA Problem, `AtomicStampedReference`, and `AtomicMarkableReference`
 
 > 한 줄 요약: CAS는 값이 "지금 A인가"만 본다. 그 사이 A -> B -> A가 일어나도 다시 A면 성공해버리므로, pointer-like state나 lock-free 구조에선 ABA 문제가 correctness bug가 될 수 있다.

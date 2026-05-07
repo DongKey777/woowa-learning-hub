@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Coroutine Basics
+concept_id: language/coroutine-basics
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 77
+mission_ids: []
+review_feedback_tags:
+- coroutine
+- cooperative-multitasking
+- async-vs-thread
+aliases:
+- coroutine basics
+- cooperative routine
+- coroutine vs thread
+- coroutine yield resume
+- C# IEnumerator coroutine
+- 코루틴 입문
+- 협력형 멀티태스킹
+symptoms:
+- coroutine을 thread처럼 병렬 실행하는 것으로 오해하고 cooperative multitasking과 구분하지 못해
+- yield return, suspend, resume가 일반 함수 return과 어떻게 다른지 설명해야 해
+- Unity나 C# 예제에서 StartCoroutine과 IEnumerator의 역할이 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- operating-system/process-thread-basics
+next_docs:
+- operating-system/thread-safety-and-race-condition
+- language/cpp-multithread-programming
+- software-engineering/async-nonblocking-background-work-bridge
+linked_paths:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- language/cpp-multithread-programming
+- operating-system/process-thread-basics
+- software-engineering/async-nonblocking-background-work-bridge
+forbidden_neighbors: []
+expected_queries:
+- coroutine이 thread와 다른 점을 cooperative multitasking 관점으로 설명해줘
+- 코루틴에서 yield suspend resume이 일반 함수 return과 어떻게 달라?
+- Unity C# StartCoroutine과 IEnumerator가 어떤 역할을 하는지 알려줘
+- 코루틴은 실제 병렬 실행인지 동시에 일어나는 것처럼 보이는 건지 구분해줘
+- coroutine을 비동기와 비교해서 초보자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 coroutine을 cooperative routine, suspend/resume, yield return, IEnumerator, coroutine vs thread 관점으로 설명하는 intermediate primer다.
+  코루틴 입문, coroutine thread difference, cooperative multitasking, Unity StartCoroutine, C# IEnumerator 질문이 본 문서에 매핑된다.
+---
 # Coroutine
 
 

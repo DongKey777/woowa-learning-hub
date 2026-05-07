@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Enum Persistence, JSON, and Unknown Value Evolution
+concept_id: language/enum-persistence-json-unknown-value-evolution
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- enum-evolution
+- wire-contract
+- backward-compatibility
+aliases:
+- enum persistence json unknown value evolution
+- Enum ordinal persistence risk
+- EnumType STRING contract
+- unknown enum value
+- Enum.valueOf failure
+- JSON enum compatibility
+- enum wire contract
+symptoms:
+- enum ordinal을 DB나 메시지 저장 형식으로 쓰면 선언 순서 변경이 데이터 오염이 될 수 있다는 위험을 놓쳐
+- name 기반 저장이 ordinal보다 안전하지만 상수 rename과 새 값 추가가 여전히 breaking change라는 점을 과소평가해
+- 외부 시스템이 새 enum 값을 먼저 보내면 old consumer의 Enum.valueOf나 JSON binding이 실패할 수 있다는 compatibility 정책이 없다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- language/java-enum-basics
+- language/enum-code-name-persistence-bridge
+next_docs:
+- language/io-nio-serialization
+- language/java-binary-compatibility-linkage-errors
+- language/sealed-interfaces-exhaustive-switch-design
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+- contents/language/java/sealed-interfaces-exhaustive-switch-design.md
+- contents/language/java/enum-code-name-persistence-bridge.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+confusable_with:
+- language/enum-code-name-persistence-bridge
+- language/json-null-missing-unknown-field-schema-evolution
+- language/java-binary-compatibility-linkage-errors
+forbidden_neighbors: []
+expected_queries:
+- Java enum ordinal을 DB에 저장하면 상수 순서 변경 때 왜 위험한지 설명해줘
+- EnumType.STRING도 enum name rename이나 unknown value에 취약하다는 뜻이야?
+- 외부 JSON에서 모르는 enum 값이 들어오면 strict fail UNKNOWN fallback raw value 보존 중 무엇을 고를까?
+- Enum.valueOf만 믿으면 schema evolution과 forward compatibility에서 어떤 문제가 생겨?
+- enum을 wire contract로 볼 때 DB JSON message 경계에서 어떤 값을 저장해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java enum persistence와 JSON wire contract를 ordinal/name/code, unknown value handling, backward/forward compatibility, Enum.valueOf failure 관점으로 설명하는 advanced deep dive다.
+  enum ordinal, EnumType.STRING, unknown enum value, JSON enum, schema evolution, wire contract 질문이 본 문서에 매핑된다.
+---
 # Enum Persistence, JSON, and Unknown Value Evolution
 
 > 한 줄 요약: enum은 코드 안에서는 닫힌 집합처럼 보이지만, DB/JSON/메시지 경계를 넘는 순간 이름과 저장 방식이 곧 외부 계약이 된다. `ordinal()`에 기대거나 `Enum.valueOf()`만 믿으면 배포 순서와 스키마 진화에 취약해진다.

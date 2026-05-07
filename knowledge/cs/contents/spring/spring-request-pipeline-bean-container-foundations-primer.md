@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+review_feedback_tags:
+- request-pipeline-bean
+- container
+- request-pipeline
+- dispatcherservlet
 aliases:
 - Spring request pipeline
 - DispatcherServlet
@@ -33,12 +38,19 @@ contextual_chunk_prefix: |
   HandlerInterceptor를 거쳐 controller에 도달하는 단계, 레이어 흐름 같은
   자연어 paraphrase가 본 문서의 큰 그림에 매핑된다.
 ---
-
 # Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기
 
 > 한 줄 요약: Spring 입문에서는 "요청은 `DispatcherServlet`이 길을 찾고, 일은 controller -> service -> repository로 흐르며, 그 객체들은 Bean 컨테이너가 미리 만들어 연결해 둔다"는 한 장의 그림만 먼저 잡으면 된다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Spring 요청 흐름과 Bean 컨테이너가 한꺼번에 나와서 헷갈려요" | controller -> service -> repository 첫 요청 흐름 읽기 | 요청 처리 타임라인과 객체 조립 타임라인을 분리한다 |
+| "요청마다 Service Bean을 새로 만드는 건가요?" | Bean 생명주기와 controller 호출 시점을 처음 구분하는 단계 | 앱 시작 때 wiring하고, 요청 때 이미 준비된 Bean을 사용한다는 감각을 잡는다 |
+| "404, 400, bean missing, transaction 문제가 다 Spring 한 문제처럼 보여요" | 미션 에러 로그 첫 분기 | MVC 길찾기, 값 바인딩, 객체 조립, 트랜잭션 경계를 따로 본다 |
 
 관련 문서:
 

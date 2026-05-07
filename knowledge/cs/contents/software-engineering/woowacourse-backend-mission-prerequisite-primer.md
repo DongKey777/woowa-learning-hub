@@ -1,8 +1,96 @@
+---
+schema_version: 3
+title: 우테코 백엔드 미션 선행 개념 입문
+concept_id: software-engineering/woowacourse-backend-mission-prerequisite-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- backend-mission-first-ladder
+- controller-service-repository-mental-model
+- queue-bfs-service-responsibility-split
+aliases:
+- woowacourse backend mission prerequisite
+- backend mission prerequisite primer
+- 우테코 백엔드 미션 선행지식
+- 처음 백엔드 미션 뭐부터
+- controller service repository beginner
+- dto vo entity beginner
+- service repository mental model
+- java oop before spring
+- spring first route
+- woowacourse backend learning ladder
+- service 코드인데 queue가 왜 나와요
+- queue handoff vs bfs beginner
+symptoms:
+- 처음 백엔드 미션인데 Java, HTTP, Spring, DB 중 무엇부터 읽어야 할지 모르겠어
+- Controller, Service, Repository, DTO, Entity 역할이 한 요청 흐름으로 안 잡혀
+- queue가 service handoff인지 BFS인지 헷갈려서 미션 코드를 못 읽겠어
+intents:
+- mission_bridge
+- definition
+prerequisites: []
+next_docs:
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/service-layer-basics
+- data-structure/backend-data-structure-starter-pack
+- algorithm/backend-algorithm-starter-pack
+- spring/request-pipeline-bean-container
+- database/jdbc-jpa-mybatis-basics
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/database/transaction-isolation-basics.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+confusable_with:
+- software-engineering/service-layer-basics
+- data-structure/backend-data-structure-starter-pack
+- algorithm/backend-algorithm-starter-pack
+- spring/request-pipeline-bean-container
+forbidden_neighbors: []
+expected_queries:
+- 처음 우테코 백엔드 미션을 시작할 때 Java, HTTP, Spring, DB를 어떤 순서로 읽어야 해?
+- controller service repository dto entity 역할을 입력 규칙 저장 응답 흐름으로 설명해줘
+- service 코드에 queue가 보이면 worker handoff인지 BFS 도구인지 어떻게 구분해?
+- 백엔드 미션에서 자료구조와 알고리즘과 Service 책임을 한 번에 헷갈리지 않는 사다리가 필요해
+- Spring deep dive 전에 객체, 컬렉션, HTTP, MVC, 저장 경계를 어디까지 잡아야 해?
+contextual_chunk_prefix: |
+  이 문서는 Woowacourse 백엔드 미션을 처음 읽는 학습자가 Java 객체와 컬렉션, HTTP 요청, Spring MVC, Controller Service Repository, DTO VO Entity, DB 저장 경계를 한 요청 흐름으로 붙이는 mission bridge다.
+  처음 백엔드 미션 뭐부터, controller service repository 역할, queue가 service handoff인지 BFS인지, map set queue가 미션 코드에서 왜 나오는지 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 우테코 백엔드 미션 선행 개념 입문
 
 > 한 줄 요약: 우테코 백엔드 미션 전에는 모든 프레임워크 기능을 외우기보다, 입력을 받아 규칙을 적용하고 저장/응답으로 연결하는 흐름과 `Service`/`Repository`/`DTO`/`Entity`의 역할 구분을 먼저 잡는 편이 안전하다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "처음 백엔드 미션인데 Java, HTTP, Spring, DB 중 뭐부터 봐야 해요?" | 야구/로또/방탈출 첫 코드 읽기 | 입력, 규칙, 저장, 응답 흐름을 한 미션 사다리로 정렬한다 |
+| "Controller, Service, Repository, DTO, Entity가 한 화면에 섞여요" | API 요청 하나를 따라가며 레이어 역할을 구분하는 단계 | 요청을 받는 곳, 규칙을 적용하는 곳, 저장을 맡는 곳을 분리한다 |
+| "service 코드에 queue가 보이는데 BFS인지 작업 대기열인지 모르겠어요" | 자료구조와 서비스 책임이 같이 등장한 리뷰 코멘트 | 자료구조 선택 질문과 Service 책임 질문을 먼저 갈라낸다 |
 
 관련 문서:
 

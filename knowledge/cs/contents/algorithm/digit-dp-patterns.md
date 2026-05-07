@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Digit DP Patterns
+concept_id: algorithm/digit-dp-patterns
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- digit-dp
+- tight-state
+- range-counting
+aliases:
+- digit dp
+- digit dynamic programming
+- tight state
+- number counting dp
+- bounded number counting
+- prefix constraint dp
+- leading zero digit dp
+- digit mask dp
+- 자릿수 dp
+- 숫자 범위 카운팅
+symptoms:
+- 숫자 범위가 커서 완전탐색이 불가능한데도 모든 수를 순회하려고 한다
+- tight 상태가 상한과 같은 접두사인지 이미 작아진 접두사인지 구분하지 못한다
+- leading zero 처리와 실제 숫자 시작 여부를 같은 상태로 뭉개서 중복 카운트한다
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- algorithm/dp-intro
+- algorithm/bitmask-dp
+- algorithm/backtracking-intro
+next_docs:
+- algorithm/meet-in-the-middle
+- algorithm/knuth-optimization-intuition
+- algorithm/topological-dp
+linked_paths:
+- contents/algorithm/dp-intro.md
+- contents/algorithm/bitmask-dp.md
+- contents/algorithm/backtracking-intro.md
+- contents/algorithm/meet-in-the-middle.md
+confusable_with:
+- algorithm/backtracking-intro
+- algorithm/bitmask-dp
+- algorithm/meet-in-the-middle
+- algorithm/binary-search-patterns
+forbidden_neighbors: []
+expected_queries:
+- Digit DP에서 tight 상태는 상한과 같은 접두사인지 어떻게 표현해?
+- 큰 숫자 범위에서 조건을 만족하는 수의 개수를 완전탐색 없이 세려면 어떻게 해?
+- leading zero와 started 상태를 분리하지 않으면 digit DP에서 왜 중복 카운트가 생겨?
+- 숫자 합이나 특정 digit 포함 여부를 digit DP 상태에 어떻게 넣어?
+- count(upper) - count(lower - 1)로 구간 카운트를 만드는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 algorithm 카테고리에서 Digit DP Patterns를 다루는 deep_dive 문서다. digit dp, digit dynamic programming, tight state, number counting dp, bounded number counting 같은 lexical 표현과 Digit DP에서 tight 상태는 상한과 같은 접두사인지 어떻게 표현해?, 큰 숫자 범위에서 조건을 만족하는 수의 개수를 완전탐색 없이 세려면 어떻게 해? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Digit DP Patterns
 
 > 한 줄 요약: Digit DP는 자릿수 제약을 상태로 들고 가며, 특정 숫자 조건을 만족하는 개수를 세는 패턴이다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Map Integer containsKey get getOrDefault Bridge
+concept_id: language/map-integer-containskey-get-getordefault-bridge
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-null
+- integer-key
+- getordefault
+aliases:
+- Map<Integer,V> containsKey get getOrDefault bridge
+- map integer key lookup null default
+- containsKey(1) get(1) getOrDefault(1)
+- Map getOrDefault null value not default
+- Integer key lookup semantics
+- 자바 Map<Integer> key 조회 차이
+symptoms:
+- Map<Integer,V>에서 숫자 1을 List index처럼 읽어 key lookup이라는 점보다 위치 감각을 먼저 적용해
+- containsKey, get, getOrDefault가 모두 key 1에 대해 같은 질문을 한다고 생각해 존재 여부, 현재 value, fallback 정책을 구분하지 못해
+- getOrDefault가 key는 있지만 value가 null인 경우에도 default를 반환한다고 오해해 nullable value 정책을 잘못 읽어
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/map-get-null-containskey-getordefault-primer
+- language/map-integer-get-remove-two-arg-remove-bridge
+- language/map-put-get-remove-containskey-return-cheat-sheet
+next_docs:
+- language/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge
+- data-structure/map-vs-set-requirement-bridge
+- language/list-integer-remove-overload-practice-drill
+linked_paths:
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-integer-get-remove-two-arg-remove-bridge.md
+- contents/language/java/map-put-get-remove-containskey-return-cheat-sheet.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/language/java/list-integer-remove-overload-practice-drill.md
+- contents/language/java/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge.md
+confusable_with:
+- language/map-get-null-containskey-getordefault-primer
+- language/map-integer-get-remove-two-arg-remove-bridge
+- language/list-integer-remove-overload-practice-drill
+forbidden_neighbors: []
+expected_queries:
+- Map<Integer,V>에서 containsKey(1), get(1), getOrDefault(1, x)는 각각 무엇을 묻는 API야?
+- Map<Integer>의 1은 index가 아니라 key라는 점을 List와 비교해서 설명해줘
+- getOrDefault는 key가 있는데 value가 null이면 default를 반환하지 않는 이유가 뭐야?
+- containsKey 후 get으로 missing key와 null value를 분리하는 예제를 보여줘
+- Map<Integer> key lookup과 List<Integer>.remove(1) overload 혼동을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Map<Integer,V>에서 containsKey(1), get(1), getOrDefault(1, default)의 존재 확인, 현재 value 조회, key 부재 fallback 의미를 구분하는 intermediate primer다.
+  Map Integer key, containsKey get getOrDefault, null value, missing key, index confusion 질문이 본 문서에 매핑된다.
+---
 # `Map<Integer, V>`에서 `containsKey(1)` / `get(1)` / `getOrDefault(1, ...)`를 언제 갈라 읽을까
 
 > 한 줄 요약: `Map<Integer, V>`에서 `1`은 index가 아니라 key이고, `containsKey(1)`은 "존재 여부", `get(1)`은 "저장된 현재 값", `getOrDefault(1, ...)`는 "key가 없을 때만 대체값"을 묻는다. `null` value를 허용하면 이 셋을 같은 질문으로 읽으면 오해가 생긴다.

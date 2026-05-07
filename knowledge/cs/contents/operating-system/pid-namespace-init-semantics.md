@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: PID Namespace Init Semantics
+concept_id: operating-system/pid-namespace-init-semantics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- pid-namespace-init
+- semantics
+- container-init-process
+- pid-1-child
+aliases:
+- PID namespace init semantics
+- container init process
+- PID 1 child reaping
+- namespace signal delivery
+- zombie orphan namespace
+- container process supervision
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/pid-limit-process-table-exhaustion.md
+- contents/operating-system/fd-exhaustion-ulimit-diagnostics.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+expected_queries:
+- PID namespace에서 init은 왜 단순 첫 process가 아니라 child reaper와 signal owner야?
+- container PID 1과 namespace init semantics를 어떻게 이해해야 해?
+- zombie orphan process와 PID namespace init 책임은 어떻게 연결돼?
+- signal delivery가 namespace boundary에서 달라지는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 PID namespace의 init을 단순 첫 process가 아니라 child reaping, orphan adoption,
+  signal delivery, container supervision responsibility를 가진 운영자 역할로 설명한다.
+---
 # PID Namespace, Init Semantics
 
 > 한 줄 요약: PID namespace에서 init은 단순 첫 프로세스가 아니라, 자식 회수와 signal 전달 책임을 지는 컨테이너의 사실상 운영자다.

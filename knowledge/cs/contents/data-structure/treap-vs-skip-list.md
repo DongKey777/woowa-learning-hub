@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Treap vs Skip List
+concept_id: data-structure/treap-vs-skip-list
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- treap-skiplist
+- probabilistic-balance
+- ordered-set-choice
+aliases:
+- Treap vs Skip List
+- randomized balanced tree
+- probabilistic ordered set
+- BST heap priority treap
+- skip list level jump
+- ordered set range query
+- expected logarithmic time
+symptoms:
+- Treap과 Skip List를 모두 확률적 정렬 구조로만 묶고 tree rotation과 level shortcut의 구현 차이를 구분하지 못한다
+- subtree aggregate, order statistic, split merge가 필요한데 Skip List만 떠올리거나 Treap augmentation 장점을 놓친다
+- concurrent ordered map 구현에서는 rotation보다 Skip List pointer update가 유리할 수 있다는 실무 맥락을 보지 못한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/skip-list
+- data-structure/balanced-bst-vs-unbalanced-bst
+next_docs:
+- data-structure/concurrent-skiplist-internals
+- data-structure/order-statistic-tree
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+linked_paths:
+- contents/data-structure/skip-list.md
+- contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/order-statistic-tree.md
+- contents/data-structure/concurrent-skiplist-internals.md
+confusable_with:
+- data-structure/skip-list
+- data-structure/balanced-bst-vs-unbalanced-bst
+- data-structure/order-statistic-tree
+- data-structure/concurrent-skiplist-internals
+forbidden_neighbors: []
+expected_queries:
+- Treap과 Skip List는 둘 다 randomized balance인데 구조적으로 어떻게 달라?
+- Treap은 BST key order와 heap priority를 어떻게 결합해서 균형을 맞춰?
+- Skip List는 tree rotation 대신 level jump로 ordered search를 어떻게 처리해?
+- subtree size나 order statistic이 필요하면 Treap과 Skip List 중 무엇이 더 자연스러워?
+- concurrent ordered set에서는 Skip List가 Treap보다 실용적일 수 있는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Treap과 Skip List를 확률적으로 균형 잡힌 ordered structure로 비교한다.
+  Treap의 BST plus heap priority rotation과 Skip List의 randomized level shortcut,
+  range query, order statistic augmentation tradeoff를 다룬다.
+---
 # Treap vs Skip List
 
 > 한 줄 요약: Treap과 Skip List는 둘 다 확률적으로 균형을 맞춰 정렬 구조를 유지하지만, Treap은 트리 회전이고 Skip List는 레벨 점프다.

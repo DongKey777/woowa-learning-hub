@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Reference Other Aggregates by ID
+concept_id: design-pattern/aggregate-reference-by-id
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- aggregate-id-reference
+- object-graph-leakage
+- orm-association-boundary
+aliases:
+- reference other aggregates by id
+- aggregate id reference
+- foreign aggregate reference
+- cross aggregate navigation
+- object graph leakage
+- lazy loading trap
+- aggregate snapshot
+- 다른 aggregate id 참조
+- 애그리거트 ID 참조
+symptoms:
+- Order가 Member나 Product aggregate 객체를 직접 필드로 가져 object graph 탐색과 일관성 경계가 함께 커진다
+- JPA 연관관계가 곧 aggregate boundary라고 생각해 cascade와 lazy loading이 도메인 규칙처럼 번진다
+- 주문 시점 상품명이나 가격처럼 과거 시점 의미가 필요한 값을 live reference로 매번 따라간다
+intents:
+- troubleshooting
+- design
+- comparison
+prerequisites:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/repository-boundary-aggregate-vs-read-model
+next_docs:
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/repository-pattern-vs-antipattern
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/repository-pattern-vs-antipattern.md
+confusable_with:
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/cqrs-command-query-separation-pattern-language
+forbidden_neighbors: []
+expected_queries:
+- 다른 aggregate는 객체 참조보다 ID로 참조하라는 DDD 기본값은 왜 필요해?
+- JPA 연관관계와 aggregate boundary를 같은 것으로 보면 어떤 lazy loading 문제가 생겨?
+- Order가 Product 전체가 아니라 productId와 주문 시점 snapshot을 저장하는 이유가 뭐야?
+- aggregate 간 객체 graph 탐색이 편해 보여도 일관성 경계가 흐려지는 이유가 뭐야?
+- 다른 aggregate 정보가 필요할 때 application service 조회와 snapshot 중 무엇을 선택해?
+contextual_chunk_prefix: |
+  이 문서는 Reference Other Aggregates by ID playbook으로, 다른 aggregate를
+  live object graph로 붙이지 않고 ID와 필요한 snapshot으로 참조해 consistency
+  boundary, loading cost, ORM association leakage를 통제하는 기준을 설명한다.
+---
 # Reference Other Aggregates by ID
 
 > 한 줄 요약: 다른 aggregate를 직접 객체 참조로 물고 가지 말고 ID나 snapshot으로 참조하면, 일관성 경계와 로딩 비용이 함께 커지는 일을 막을 수 있다.

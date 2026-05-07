@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Transactional Inbox and Dedup Design
+concept_id: database/transactional-inbox-dedup-design
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- inbox
+- dedup
+- idempotency
+- message-consumer
+- outbox
+aliases:
+- transactional inbox
+- inbox dedup
+- consumer idempotency
+- message inbox table
+- processed event
+- at least once dedup
+- consumer_id event_id unique
+- payload_hash
+- ack after process
+- 이벤트 중복 처리 방지
+symptoms:
+- at-least-once 메시지가 중복 전달되어 consumer가 같은 이벤트 효과를 두 번 반영할 수 있어
+- 처리 성공 후 ack 전에 죽으면 메시지가 다시 와서 inbox dedup이 필요한 상황이야
+- idempotency key와 transactional inbox, outbox의 역할 차이를 구분해야 해
+intents:
+- design
+- troubleshooting
+- comparison
+prerequisites:
+- database/exactly-once-myths-db-queue
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/transactional-claim-check-job-leasing
+- database/outbox-saga-eventual-consistency
+- database/exactly-once-myths-db-queue
+linked_paths:
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/transactional-claim-check-job-leasing.md
+confusable_with:
+- database/transactional-claim-check-job-leasing
+- database/idempotency-key-and-deduplication
+- database/outbox-saga-eventual-consistency
+forbidden_neighbors: []
+expected_queries:
+- transactional inbox는 at-least-once 메시지 중복을 어떻게 consumer_id event_id unique key로 흡수해?
+- 처리 성공 후 broker ack 전에 죽으면 같은 메시지가 다시 올 수 있는데 inbox dedup이 왜 필요해?
+- inbox는 메시지를 받았는지보다 이벤트 효과를 한 번만 반영했는지 기록한다는 뜻이 뭐야?
+- idempotency key는 요청 재전송 방지이고 inbox는 이벤트 소비 중복 방지라는 차이를 설명해줘
+- payload_hash를 inbox에 저장하면 같은 event_id에 다른 payload가 온 경우를 어떻게 감지할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 transactional inbox와 dedup design을 at-least-once delivery, consumer idempotency, message inbox table, processed event 상태로 설명하는 advanced playbook이다.
+  inbox dedup, consumer_id event_id unique, ack 실패 후 재전달, payload_hash 질문이 본 문서에 매핑된다.
+---
 # Transactional Inbox와 Dedup Design
 
 > 한 줄 요약: inbox는 “메시지를 받았는가”와 “처리했는가”를 분리해서, 재전달된 이벤트를 안전하게 한 번만 반영하게 해 준다.

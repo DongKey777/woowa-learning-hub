@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Servlet AsyncListener Cleanup Patterns
+concept_id: language/servlet-asynclistener-cleanup-patterns
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- servlet-async
+- cleanup
+- cancellation
+aliases:
+- Servlet AsyncListener Cleanup Patterns for Callable WebAsyncTask DeferredResult
+- AsyncListener cleanup patterns
+- servlet async cleanup coordinator
+- Callable WebAsyncTask DeferredResult cleanup
+- async timeout producer cancel resource cleanup
+- Spring MVC async cleanup
+symptoms:
+- servlet async 종료를 timeout response 선택, producer 중단, request resource 해제 한 콜백에 뭉개 timeout과 disconnect와 normal completion 경로가 다르게 새어
+- onTimeout에서만 취소하고 onError나 onComplete backstop을 놓쳐 client disconnect나 network error 뒤 producer가 계속 실행돼
+- AsyncListener가 async cycle 단위로 붙는다는 점을 모르고 onStartAsync에서 listener 재등록을 하지 않아 redispatch 이후 cleanup 이벤트를 놓쳐
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/servlet-async-redispatch-filter-interceptor-ordering
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/thread-interruption-cooperative-cancellation-playbook
+next_docs:
+- language/servlet-async-timeout-downstream-deadline-propagation
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+linked_paths:
+- contents/language/java/servlet-async-redispatch-filter-interceptor-ordering.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/streaming-response-abort-surfaces-servlet-virtual-threads.md
+- contents/language/java/streamingresponsebody-sseemitter-terminal-cleanup-matrix.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+confusable_with:
+- language/servlet-async-redispatch-filter-interceptor-ordering
+- language/servlet-async-timeout-downstream-deadline-propagation
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+forbidden_neighbors: []
+expected_queries:
+- AsyncListener onTimeout onError onComplete onStartAsync를 cleanup coordinator에 어떻게 연결해야 해?
+- Callable WebAsyncTask DeferredResult에서 timeout response 선택과 producer cancel과 final resource cleanup을 왜 분리해야 해?
+- AsyncListener는 async cycle마다 붙기 때문에 onStartAsync에서 재등록해야 한다는 뜻이 뭐야?
+- client disconnect error path에서 onTimeout만 믿으면 producer가 계속 도는 이유를 설명해줘
+- Spring MVC async callback과 servlet AsyncListener cleanup을 idempotent coordinator로 묶는 패턴을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Servlet AsyncListener와 Spring MVC Callable/WebAsyncTask/DeferredResult callback을 idempotent cleanup coordinator로 연결해 timeout, error, complete, redispatch cleanup 누락을 막는 advanced playbook이다.
+  AsyncListener, servlet async cleanup, Callable, WebAsyncTask, DeferredResult, cancellation coordinator 질문이 본 문서에 매핑된다.
+---
 # Servlet `AsyncListener` Cleanup Patterns for `Callable`, `WebAsyncTask`, and `DeferredResult`
 
 > 한 줄 요약: servlet async cleanup은 "timeout 응답 만들기", "실제 producer 중단시키기", "요청에 묶인 리소스 정리"를 한 콜백에 뭉개지 말고, `AsyncListener`와 Spring async callback을 같은 idempotent coordinator로 연결할 때 가장 휴대성이 좋다.

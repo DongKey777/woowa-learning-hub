@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "WebSocket Basics"
+concept_id: network/websocket-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- websocket
+- realtime
+- beginner-network
+aliases:
+- WebSocket basics
+- 웹소켓 기초
+- HTTP vs WebSocket
+- WebSocket upgrade
+- 101 Switching Protocols
+- ws wss 차이
+- 양방향 통신
+- server push
+symptoms:
+- WebSocket이 처음부터 HTTP가 아닌 별도 연결로 시작한다고 생각한다
+- 서버 push가 필요한 모든 기능을 polling이나 일반 HTTP만으로 해결하려 한다
+- WebSocket 연결 유지가 서버 자원과 LB idle timeout에 미치는 영향을 놓친다
+- ws와 wss 차이와 HTTPS 페이지의 mixed content 문제를 모른다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/sse-websocket-polling
+- network/websocket-heartbeat-backpressure-reconnect
+- network/websocket-proxy-buffering-streaming-latency
+- network/rest-websocket-sse-grpc-http2-http3-choice-primer
+linked_paths:
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-stateless-state-management-basics.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- network/sse-websocket-polling
+- network/rest-websocket-sse-grpc-http2-http3-choice-primer
+- network/http-stateless-state-management-basics
+forbidden_neighbors: []
+expected_queries:
+- "WebSocket이 무엇이고 HTTP와 어떻게 달라?"
+- "WebSocket Upgrade와 101 Switching Protocols 흐름을 설명해줘"
+- "ws와 wss는 어떤 차이가 있어?"
+- "채팅이나 실시간 알림에서 WebSocket을 쓰는 이유는?"
+- "WebSocket 연결이 많아지면 서버와 로드밸런서에서 무엇을 조심해야 해?"
+contextual_chunk_prefix: |
+  이 문서는 WebSocket basics, HTTP Upgrade, 101 Switching Protocols,
+  ws/wss, 양방향 통신, server push와 연결 유지 비용을 설명하는 beginner primer다.
+---
 # 웹소켓 기초 (WebSocket Basics)
 
 > 한 줄 요약: 웹소켓은 HTTP로 연결을 업그레이드한 뒤 양방향 통신 채널을 유지하고, 서버가 먼저 데이터를 보낼 수 있다.

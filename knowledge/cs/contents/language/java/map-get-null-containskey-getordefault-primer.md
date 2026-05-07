@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Map get null containsKey getOrDefault Primer
+concept_id: language/map-get-null-containskey-getordefault-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-null
+- containskey
+- getordefault
+aliases:
+- Map get null containsKey getOrDefault primer
+- java map get null missing key null value
+- Map getOrDefault null value not default
+- containsKey 언제 쓰나
+- key 없음 null 값 차이
+- 자바 Map get null 의미
+symptoms:
+- Map.get(key)가 null이면 key가 없다고 단정해 null value 허용 Map에서 missing key와 stored null을 구분하지 못해
+- getOrDefault가 key는 있지만 value가 null인 경우에도 default를 반환한다고 오해해 fallback 정책을 잘못 세워
+- Optional과 빈 컬렉션의 없음 감각을 Map key lookup의 null ambiguity에 그대로 적용해 containsKey 필요성을 놓쳐
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge
+- language/map-put-get-remove-containskey-return-cheat-sheet
+- language/java-optional-basics
+next_docs:
+- language/map-integer-containskey-get-getordefault-bridge
+- language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+- language/optional-collections-domain-null-handling-bridge
+linked_paths:
+- contents/language/java/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge.md
+- contents/language/java/map-put-get-remove-containskey-return-cheat-sheet.md
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/optional-list-empty-collection-symptom-card.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/map-integer-containskey-get-getordefault-bridge.md
+confusable_with:
+- language/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge
+- language/map-integer-containskey-get-getordefault-bridge
+- language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- Map.get이 null을 반환하면 key가 없는지 value가 null인지 어떻게 구분해?
+- containsKey와 get과 getOrDefault는 각각 어떤 질문에 답하는 API야?
+- getOrDefault는 key가 있는데 value가 null이면 default를 쓰는지 알려줘
+- Optional empty와 빈 List와 Map get null의 없음 표현 차이를 beginner 기준으로 설명해줘
+- HashMap ConcurrentHashMap Map.of의 null 허용 정책이 Map get null 해석에 어떤 영향을 줘?
+contextual_chunk_prefix: |
+  이 문서는 Map.get(key)의 null ambiguity를 containsKey, get, getOrDefault 선택으로 분리하는 beginner primer다.
+  Map get null, missing key vs null value, containsKey, getOrDefault, Optional empty와 빈 컬렉션 비교 질문이 본 문서에 매핑된다.
+---
 # Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머
 
 > 한 줄 요약: `Map.get(key)`가 `null`을 돌려주면 "key가 없음"일 수도 있고 "value가 정말 null임"일 수도 있다. 그래서 "존재 여부가 중요하면 `containsKey()`", "없을 때 대신 쓸 기본값이 필요하면 `getOrDefault()`"로 나눠 읽는 편이 초보자에게 가장 안전하다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "DNS Split-Horizon Behavior"
+concept_id: network/dns-split-horizon-behavior
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- split-horizon-dns
+- resolver-policy-debugging
+- internal-external-view
+aliases:
+- split-horizon DNS
+- internal DNS external DNS
+- view-based resolution
+- private zone public zone
+- resolver policy
+- DNS inconsistency
+symptoms:
+- 같은 도메인이 사내/VPN/외부에서 다른 IP를 주는 것을 DNS 전파 오류로만 본다
+- 내부 노트북이 외부 resolver나 DoH를 써서 split-horizon view를 벗어난다
+- view별 TTL과 resolver cache 차이로 일부 사용자만 옛 경로를 보는 문제를 놓친다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- network/dns-basics
+- network/dns-over-https-operational-tradeoffs
+next_docs:
+- network/dns-ttl-cache-failure-patterns
+- network/connection-reuse-vs-service-discovery-churn
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/happy-eyeballs-dual-stack-racing
+linked_paths:
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/dns-over-https-operational-tradeoffs.md
+- contents/network/connection-reuse-vs-service-discovery-churn.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+confusable_with:
+- network/dns-over-https-operational-tradeoffs
+- network/dns-ttl-cache-failure-patterns
+- network/dns-negative-caching-nxdomain-behavior
+- network/connection-reuse-vs-service-discovery-churn
+forbidden_neighbors: []
+expected_queries:
+- "Split-horizon DNS는 같은 이름이 내부와 외부에서 왜 다른 IP를 줘?"
+- "VPN 접속 여부나 resolver 위치에 따라 DNS 답이 다른 장면을 어떻게 디버깅해?"
+- "DoH를 쓰면 split-horizon DNS가 왜 깨질 수 있어?"
+- "internal private zone과 public zone의 TTL cache가 다르면 어떤 장애가 생겨?"
+- "같은 도메인이 사내에서는 되고 집에서는 안 될 때 DNS view를 어떻게 확인해?"
+contextual_chunk_prefix: |
+  이 문서는 split-horizon DNS, internal/external resolver view, private/public
+  zone, VPN/DoH resolver drift, view별 TTL cache가 같은 이름의 다른 답을
+  만드는 운영 특성을 설명하는 advanced DNS deep dive다.
+---
 # DNS Split-Horizon Behavior
 
 > 한 줄 요약: split-horizon DNS는 같은 이름이 내부와 외부에서 다른 주소를 돌려주게 만들어, 편리하지만 정책과 디버깅을 동시에 어렵게 한다.

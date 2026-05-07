@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Consistent Hashing Rebalancing Cost Model
+concept_id: data-structure/consistent-hashing-rebalancing-cost-model
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- consistent-hashing-rebalance
+- vnode-distribution
+- shard-migration-cost
+aliases:
+- consistent hashing rebalancing cost
+- vnode distribution
+- key movement model
+- shard migration cost
+- cluster expansion rebalance
+- partition movement
+- load skew consistent hashing
+symptoms:
+- consistent hashing을 쓰면 rebalancing cost가 거의 0이라고 생각해 key movement와 replica movement를 모델링하지 않는다
+- vnode 개수가 load skew를 줄이지만 metadata와 운영 오버헤드를 키운다는 trade-off를 놓친다
+- 노드 증감 시 이동 key 수만 보고 cache miss, metadata update, replica rebuild가 만든 운영 흔들림을 계산하지 않는다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/consistent-hashing-ring
+next_docs:
+- data-structure/consistent-hashing-ring
+- data-structure/hashmap-internals
+- algorithm/top-k-streaming-heavy-hitters
+linked_paths:
+- contents/data-structure/consistent-hashing-ring.md
+- contents/data-structure/hashmap-internals.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+confusable_with:
+- data-structure/consistent-hashing-ring
+- data-structure/hashmap-internals
+- algorithm/top-k-streaming-heavy-hitters
+forbidden_neighbors: []
+expected_queries:
+- Consistent Hashing에서 노드 추가 삭제 시 실제로 얼마나 많은 key가 움직여?
+- vnode 수가 rebalancing cost와 load skew에 어떤 영향을 줘?
+- consistent hashing을 써도 shard migration 비용을 모델링해야 하는 이유는?
+- 캐시 클러스터 확장 때 key movement와 cache miss를 어떻게 계산해?
+- consistent hashing rebalancing에서 replica 정책까지 같이 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 consistent hashing의 rebalancing cost를 노드 증감, vnode 분포,
+  key movement, replica movement, cache miss, metadata update 비용으로
+  모델링하는 playbook이다. consistent hashing이 전체 재해시는 줄여도 운영
+  이동 비용을 0으로 만들지는 않는다는 점을 강조한다.
+---
 # Consistent Hashing Rebalancing Cost Model
 
 > 한 줄 요약: Consistent Hashing의 재배치 비용은 노드 증감으로 영향을 받는 키 구간의 크기와 vnode 분포 품질로 거의 결정된다.

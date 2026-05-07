@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Read Ahead and Sequential Scan Behavior
+concept_id: database/read-ahead-sequential-scan-behavior
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- read-ahead
+- sequential-scan
+- buffer-pool
+- storage-internals
+aliases:
+- read ahead
+- linear read ahead
+- random read ahead
+- sequential scan
+- buffer pool pollution
+- innodb_read_ahead_threshold
+- prefetch
+- page access pattern
+- 미리 읽기
+- sequential read ahead
+symptoms:
+- range scan이나 sequential scan이 빠르거나 느려진 원인을 read-ahead heuristic과 buffer pool locality로 설명해야 해
+- random lookup 중심 workload에서 read-ahead를 기대했지만 prefetch page가 곧 쓰이지 않아 효과가 작아
+- 대량 scan 뒤 OLTP API가 느려지는 현상을 read-ahead가 hot set을 밀어낸 결과로 의심해야 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/innodb-buffer-pool-internals
+- database/clustered-index-locality
+next_docs:
+- database/read-ahead-false-positives-buffer-pollution
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/flush-neighbors-adaptive-flushing-io-capacity
+linked_paths:
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/flush-neighbors-adaptive-flushing-io-capacity.md
+- contents/database/clustered-index-locality.md
+- contents/database/bptree-vs-lsm-tree.md
+- contents/database/read-ahead-false-positives-buffer-pollution.md
+- contents/database/buffer-pool-read-ahead-eviction-interaction.md
+confusable_with:
+- database/read-ahead-false-positives-buffer-pollution
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/clustered-index-locality
+forbidden_neighbors: []
+expected_queries:
+- InnoDB read-ahead는 sequential scan에서 왜 도움이 되고 random lookup에서는 왜 이득이 작아?
+- innodb_read_ahead_threshold와 linear read ahead, random read ahead를 접근 패턴 기준으로 설명해줘
+- 큰 range scan 뒤 OLTP hot set이 buffer pool에서 밀리는 현상을 어떻게 봐야 해?
+- read-ahead를 켜고 끄는 문제보다 index locality와 page access pattern을 먼저 봐야 하는 이유가 뭐야?
+- sequential scan behavior와 buffer pool pollution tradeoff를 초보자보다 깊게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 InnoDB read ahead, linear read ahead, random read ahead, sequential scan behavior를 page access pattern과 buffer pool pollution tradeoff로 설명하는 advanced deep dive다.
+  미리 읽기, innodb_read_ahead_threshold, sequential read ahead 질문이 본 문서에 매핑된다.
+---
 # Read Ahead and Sequential Scan Behavior
 
 > 한 줄 요약: read-ahead는 "미리 읽기"지만, 범위와 패턴이 맞을 때만 이득이고 틀리면 버퍼 풀 오염만 늘린다.

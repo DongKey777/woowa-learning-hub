@@ -31,12 +31,12 @@ intents:
 - mission_bridge
 prerequisites:
 - software-engineering/dto-vo-entity-basics
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 next_docs:
 - spring/roomescape-admin-reservation-list-fetch-plan-bridge
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 - software-engineering/command-dto-vs-query-view-naming-checklist
-- spring/spring-controller-entity-return-vs-dto-return-primer
+- spring/controller-entity-return-vs-dto-return-primer
 linked_paths:
 - contents/spring/roomescape-admin-reservation-list-fetch-plan-bridge.md
 - contents/software-engineering/query-model-separation-read-heavy-apis.md
@@ -44,11 +44,10 @@ linked_paths:
 - contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
 confusable_with:
 - spring/roomescape-admin-reservation-list-fetch-plan-bridge
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 - software-engineering/command-dto-vs-query-view-naming-checklist
-- spring/spring-controller-entity-return-vs-dto-return-primer
-forbidden_neighbors:
-- contents/spring/roomescape-admin-reservation-list-fetch-plan-bridge.md
+- spring/controller-entity-return-vs-dto-return-primer
+forbidden_neighbors: []
 expected_queries:
 - roomescape 관리자 예약 목록에서 Reservation 엔티티를 그대로 반환하지 말라는 리뷰는 어떤 선택을 하라는 뜻이야?
 - roomescape 목록 조회는 response dto만 분리하면 충분한지 query model까지 가야 하는지 한 표로 보고 싶어
@@ -63,7 +62,6 @@ contextual_chunk_prefix: |
   plan 문제와 API 계약 문제를 어떻게 분리하는지 같은 자연어 질문을 목록 조회
   설계 분기표로 연결한다.
 ---
-
 # roomescape 관리자 예약 목록 Entity vs Query Model vs Response DTO 결정 가이드
 
 ## 한 줄 요약

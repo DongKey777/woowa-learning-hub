@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Roaring ANDNOT Result Heuristics
+concept_id: data-structure/roaring-andnot-result-heuristics
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- roaring-andnot-heuristics
+- bitmap-difference-result
+- shrink-driven-demotion
+aliases:
+- Roaring ANDNOT result
+- Roaring difference heuristic
+- set difference result
+- bitmap andnot demotion
+- shrink driven direct demotion
+- Roaring subtract output container
+- Run minus Array heuristic
+symptoms:
+- ANDNOT difference를 OR/XOR lazy union과 같은 repairAfterLazy 경로로 생각해 실제 비용 위치를 잘못 본다
+- shrink-only 연산에서 exact cardinality를 유지하며 array/bitmap direct demotion이 일어난다는 점을 놓친다
+- Run - small Array, Run - Run처럼 run result가 경쟁하는 특별한 경로와 일반 bitmap/array 경로를 구분하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/roaring-set-op-result-heuristics
+next_docs:
+- data-structure/roaring-container-transition-heuristics
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+confusable_with:
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-container-transition-heuristics
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+forbidden_neighbors: []
+expected_queries:
+- Roaring ANDNOT difference는 OR XOR lazy union과 왜 repairAfterLazy 비용 위치가 달라?
+- Bitmap - Array나 Bitmap - Bitmap difference에서 exact cardinality와 array demotion은 어떻게 결정돼?
+- Roaring difference가 shrink-driven direct demotion이라는 뜻을 설명해줘
+- Run - small Array와 Run - Run에서 output container heuristic은 어떻게 달라?
+- Roaring ANDNOT가 느릴 때 repair debt보다 exact bitcount와 conversion을 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap의 ANDNOT/difference result heuristic을 OR/XOR lazy
+  union과 분리해 설명하는 playbook이다. shrink-only operation, exact
+  cardinality, bitmap-to-array demotion, run-to-efficient-container, repairAfterLazy
+  부재를 다룬다.
+---
 # Roaring ANDNOT Result Heuristics
 
 > 한 줄 요약: Java `RoaringBitmap` 계열의 `ANDNOT`/difference는 결과가 줄어드는 연산이라 `OR/XOR`처럼 lazy bitmap repair를 거의 만들지 않고, 대개 exact cardinality를 유지한 채 `array` 또는 `bitmap`으로 바로 끝난다. run 결과가 적극적으로 경쟁하는 경로는 주로 `Run - small Array`와 `Run - Run`뿐이다.

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Data Contract Ownership and Lifecycle
+concept_id: software-engineering/data-contract-lifecycle
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- data-contract
+- ownership
+- schema-governance
+aliases:
+- Data Contract Ownership and Lifecycle
+- data contract ownership
+- contract lifecycle
+- contract steward
+- schema governance
+- contract deprecation
+symptoms:
+- data contract를 schema file로만 보고 field meaning, producer, consumer, steward, notification, deprecation/sunset 책임을 정의하지 않아
+- producer owner와 contract steward, consumer owner 역할을 구분하지 않아 필드 의미 변경과 consumer impact 판단이 흐려져
+- contract lifecycle에서 생성만 관리하고 deprecated, sunset, retired 전환 조건과 consumer migration 완료 증거를 놓쳐
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/contract-registry-governance
+next_docs:
+- software-engineering/event-schema-versioning
+- software-engineering/consumer-migration-playbook
+- software-engineering/api-versioning-contracts-acl
+linked_paths:
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/contract-registry-governance.md
+confusable_with:
+- software-engineering/contract-registry-governance
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/event-schema-versioning
+forbidden_neighbors: []
+expected_queries:
+- data contract는 schema가 아니라 field meaning, owner, consumers, lifecycle, notification까지 포함한다는 뜻이 뭐야?
+- producer owner, contract steward, consumer owner는 각각 어떤 책임을 가져야 해?
+- data contract lifecycle draft proposed active deprecated sunset retired에서 누가 무엇을 검증해야 해?
+- 계약 의미가 바뀔 때 notification과 consumer migration window를 data contract ownership에 포함해야 하는 이유는?
+- contract registry가 data contract drift와 deprecated field 생존을 어떻게 줄여?
+contextual_chunk_prefix: |
+  이 문서는 data contract를 schema file이 아니라 field semantics, producer owner, contract steward, consumer owner, lifecycle, registry, deprecation까지 포함하는 운영 계약으로 다루는 advanced playbook이다.
+---
 # Data Contract Ownership and Lifecycle
 
 > 한 줄 요약: data contract는 스키마만 의미하지 않고, 누가 정의하고, 검증하고, 변경 공지하고, 폐기까지 책임지는지까지 포함하는 운영 계약이다.

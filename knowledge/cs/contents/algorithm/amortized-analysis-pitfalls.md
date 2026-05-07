@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Amortized Analysis Pitfalls
+concept_id: algorithm/amortized-analysis-pitfalls
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- amortized-analysis-pitfalls
+- average-vs-amortized
+- tail-latency-spike
+aliases:
+- amortized analysis pitfalls
+- amortized O(1)
+- average vs amortized
+- worst case vs amortized
+- resize spike
+- rehash cost
+- dynamic array growth
+- tail latency spike
+- 상각 분석
+symptoms:
+- amortized O(1)을 매번 O(1)이라고 설명해 resize나 rehash 순간 비용을 놓친다
+- average case와 amortized analysis를 같은 말로 보고 입력 분포와 연산 묶음 기반 설명을 구분하지 못한다
+- p99 latency가 중요한 서비스에서 상각 평균 처리량만 보고 순간 spike 위험을 고려하지 않는다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- algorithm/basic
+- data-structure/hashmap-internals
+next_docs:
+- algorithm/union-find-amortized-proof-intuition
+- algorithm/monotone-deque-proof-intuition
+- data-structure/lru-cache-design
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/union-find-amortized-proof-intuition.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/lru-cache-design.md
+confusable_with:
+- algorithm/union-find-amortized-proof-intuition
+- algorithm/monotone-deque-proof-intuition
+- data-structure/hashmap-internals
+- data-structure/lru-cache-design
+forbidden_neighbors: []
+expected_queries:
+- amortized O(1)은 매번 O(1)이 아니라 여러 연산 평균이라는 뜻이야?
+- average case와 amortized analysis는 입력 분포와 연산 묶음 기준으로 어떻게 달라?
+- HashMap resize나 rehash는 왜 평균 처리량은 좋아도 p99 latency spike를 만들 수 있어?
+- dynamic array append가 amortized O(1)인 직관을 설명해줘
+- 상각 분석 결과를 서비스 latency 해석에 그대로 쓰면 어떤 함정이 있어?
+contextual_chunk_prefix: |
+  이 문서는 amortized analysis pitfalls bridge로, amortized O(1)은 매 연산 O(1)이
+  아니라 연산 묶음 전체 평균이며 average case와 다르다는 점, HashMap rehash나
+  ArrayList resize가 tail latency spike를 만들 수 있다는 점을 설명한다.
+---
 # Amortized Analysis Pitfalls
 
 > 한 줄 요약: 상각 분석은 평균처럼 보이지만, 실제 서비스에서는 순간 비용과 꼬리 지연을 함께 봐야 한다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Dual-Read Comparison / Verification Platform 설계
+concept_id: system-design/dual-read-comparison-verification-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- dual read comparison
+- verification platform
+- shadow read
+- response diff
+aliases:
+- dual read comparison
+- verification platform
+- shadow read
+- response diff
+- invariant check
+- read path cutover
+- compare budget
+- sampled verification
+- semantic diff
+- baseline response
+- read parity
+- promotion gate
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/tenant-split-out-service-identity-rollout-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/document-search-ranking-platform-design.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Dual-Read Comparison / Verification Platform 설계 설계 핵심을 설명해줘
+- dual read comparison가 왜 필요한지 알려줘
+- Dual-Read Comparison / Verification Platform 설계 실무 트레이드오프는 뭐야?
+- dual read comparison 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Dual-Read Comparison / Verification Platform 설계를 다루는 deep_dive 문서다. dual-read comparison과 verification 플랫폼은 old/new read path를 동시에 평가해 응답 차이, invariant 위반, 성능 편차를 측정하고, 안전한 read cutover를 위한 증거를 축적하는 검증 제어 시스템이다. 검색 질의가 dual read comparison, verification platform, shadow read, response diff처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Dual-Read Comparison / Verification Platform 설계
 
 > 한 줄 요약: dual-read comparison과 verification 플랫폼은 old/new read path를 동시에 평가해 응답 차이, invariant 위반, 성능 편차를 측정하고, 안전한 read cutover를 위한 증거를 축적하는 검증 제어 시스템이다.

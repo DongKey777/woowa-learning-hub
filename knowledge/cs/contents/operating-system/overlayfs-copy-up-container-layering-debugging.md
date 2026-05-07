@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: OverlayFS Copy-up Container Layering Runtime Debugging
+concept_id: operating-system/overlayfs-copy-up-container-layering-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- overlayfs-copy-up
+- container-layering
+- container-writable-layer
+- growth
+aliases:
+- OverlayFS copy-up
+- container writable layer growth
+- overlayfs container layering
+- copy-up I/O spike
+- upperdir lower layer
+- container filesystem latency
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/vfs-dentry-inode-cache-pressure.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+- contents/operating-system/tmpfs-shmem-cgroup-memory-accounting.md
+symptoms:
+- container에서 작은 파일 수정처럼 보였지만 OverlayFS copy-up으로 큰 I/O와 writable layer 증가가 생긴다.
+- lower layer file을 수정하는 첫 write가 upperdir copy와 dirty writeback latency를 만든다.
+- image layer, writable layer, page cache accounting을 구분하지 못한다.
+expected_queries:
+- OverlayFS copy-up은 container에서 작은 수정도 왜 큰 I/O로 만들 수 있어?
+- lower layer 파일을 upperdir로 copy-up할 때 writable layer size가 커지는 이유는?
+- container filesystem latency를 overlayfs copy-up, fsync, page cache로 어떻게 디버깅해?
+- OverlayFS layering과 cgroup memory/storage accounting을 같이 봐야 하는 상황은?
+contextual_chunk_prefix: |
+  이 문서는 container에서 작은 수정처럼 보이는 write도 OverlayFS가 lower layer file을 upperdir로
+  copy-up하면서 예상보다 큰 I/O, writable layer growth, page cache/writeback latency를 만들 수
+  있음을 설명한다.
+---
 # OverlayFS Copy-up, Container Layering, Runtime Debugging
 
 > 한 줄 요약: 컨테이너에서 "작은 수정"처럼 보여도 OverlayFS는 lower layer의 파일을 upperdir로 copy-up 하면서 예상보다 큰 I/O와 writable layer 증가를 만들 수 있다.

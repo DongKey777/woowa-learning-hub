@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Purge Backlog Remediation, Throttling, and Recovery Playbook
+concept_id: database/purge-backlog-remediation-throttle-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- purge-backlog
+- history-list-length
+- throttling
+- incident-recovery
+aliases:
+- purge backlog remediation
+- purge debt recovery
+- history list length incident
+- innodb_max_purge_lag remediation
+- undo debt throttle
+- cleanup backlog playbook
+- purge incident routing
+- history backlog triage
+- purge backlog 복구
+- history list length 폭증
+symptoms:
+- InnoDB history list length와 undo debt가 계속 증가하는데 purge thread 수만 올리려 하고 long transaction blocker를 먼저 보지 않아
+- giant batch update/delete나 soft delete churn 때문에 purge cleanup 속도보다 debt 생성 속도가 더 빨라지고 있어
+- remediation 중 write throttling과 purge capacity 조정, trend reversal 확인, throttling 해제 순서를 정해야 해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/vacuum-purge-freeze-risk-runbook-routing
+- database/mvcc-history-list-snapshot-too-old
+next_docs:
+- database/purge-thread-scheduling-lag-control
+- database/undo-tablespace-truncation-purge-debt
+- database/vacuum-purge-debt-forensics-symptom-map
+linked_paths:
+- contents/database/vacuum-purge-freeze-risk-runbook-routing.md
+- contents/database/purge-thread-scheduling-lag-control.md
+- contents/database/undo-tablespace-truncation-purge-debt.md
+- contents/database/change-buffer-purge-history-length.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/database/mvcc-history-list-snapshot-too-old.md
+confusable_with:
+- database/purge-thread-scheduling-lag-control
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/mvcc-history-list-snapshot-too-old
+forbidden_neighbors: []
+expected_queries:
+- purge backlog remediation에서 purge thread를 늘리기 전에 long transaction blocker를 먼저 봐야 하는 이유가 뭐야?
+- history list length가 계속 오를 때 write churn과 cleanup capacity를 어떤 순서로 줄여야 해?
+- innodb_max_purge_lag throttling은 실패가 아니라 안정화 수단이라는 말을 설명해줘
+- purge debt incident에서 trend reversal은 어떤 지표로 확인해?
+- 야간 delete batch 후 undo debt가 폭증했을 때 chunk 축소와 throttle 해제 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 InnoDB purge backlog, history list length incident, undo debt recovery를 blocker 제거, write throttling, purge capacity 조정, trend reversal 확인 순서로 다루는 advanced playbook이다.
+  purge backlog 복구, history list length 폭증, innodb_max_purge_lag remediation 질문이 본 문서에 매핑된다.
+---
 # Purge Backlog Remediation, Throttling, and Recovery Playbook
 
 > 한 줄 요약: purge backlog remediation의 핵심은 thread 수를 올리는 것보다, backlog를 만든 long transaction과 write churn을 먼저 줄이고 그다음 throttling과 cleanup capacity를 조절하는 순서를 지키는 것이다.

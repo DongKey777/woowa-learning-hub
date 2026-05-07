@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: FD Exhaustion ulimit Diagnostics
+concept_id: operating-system/fd-exhaustion-ulimit-diagnostics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- fd-exhaustion-emfile-enfile
+- too-many-open-files-triage
+- container-fd-pressure
+aliases:
+- FD exhaustion ulimit diagnostics
+- too many open files
+- EMFILE ENFILE
+- ulimit -n
+- RLIMIT_NOFILE
+- file-nr file-max
+- lsof proc pid fd
+- container fd pressure
+symptoms:
+- Too many open files가 떴는데 프로세스 한도와 노드 전체 한도를 구분하지 못하고 있어
+- EMFILE과 ENFILE을 같은 fd 고갈로만 보고 어디 상자가 찼는지 확인하지 않고 있어
+- 컨테이너 안 fd pressure와 호스트 file-nr를 따로 보지 않아 원인 범위를 놓치고 있어
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- operating-system/file-descriptor-basics
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+next_docs:
+- operating-system/container-fd-pressure-emfile-enfile-bridge
+- operating-system/proc-pid-fdinfo-epoll-runtime-debugging
+- operating-system/tcp-backlog-somaxconn-listen-queue
+- operating-system/epoll-kqueue-io-uring
+linked_paths:
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/proc-pid-fdinfo-epoll-runtime-debugging.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/container-fd-pressure-emfile-enfile-bridge.md
+- contents/operating-system/epoll-kqueue-io-uring.md
+confusable_with:
+- operating-system/file-descriptor-basics
+- operating-system/container-fd-pressure-emfile-enfile-bridge
+- operating-system/tcp-backlog-somaxconn-listen-queue
+forbidden_neighbors: []
+expected_queries:
+- Too many open files가 났을 때 EMFILE과 ENFILE을 어떻게 구분해?
+- ulimit -n, /proc/pid/limits, /proc/pid/fd, file-nr를 어떤 순서로 봐야 해?
+- fd exhaustion이 accept 실패와 새 연결 장애로 이어지는 이유는 뭐야?
+- lsof에서 IPv4, IPv6, REG, deleted 파일 비중을 어떻게 해석해?
+- 컨테이너 안에서는 fd 한도와 호스트 file-max를 왜 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 FD exhaustion troubleshooting playbook으로, EMFILE vs ENFILE, RLIMIT_NOFILE, ulimit -n, /proc/<pid>/fd, fs.file-nr, lsof type 분포, container fd pressure를 빠르게 가른다.
+  too many open files, EMFILE, ENFILE, ulimit, file-nr high, lsof deleted, accept fails 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # FD Exhaustion, ulimit, Diagnostics
 
 > 한 줄 요약: fd exhaustion은 "파일이 많다"가 아니라, 프로세스와 시스템이 더 이상 열린 자원을 받지 못해 서버 전체를 흔드는 운영 장애다.

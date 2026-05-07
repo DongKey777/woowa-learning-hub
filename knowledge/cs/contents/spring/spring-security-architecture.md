@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring Security Architecture
+concept_id: spring/security-architecture
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 92
+review_feedback_tags:
+- security-architecture
+- security-filter-chain
+- authentication-authorization-flow
+- securitycontext
+aliases:
+- Spring Security architecture
+- security filter chain
+- authentication authorization flow
+- SecurityContext
+- AuthenticationManager AuthorizationManager
+- exception translation 401 403
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-oauth2-jwt-integration.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-security-method-security-deep-dive.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/security/authentication-vs-authorization.md
+expected_queries:
+- Spring Security는 요청을 어떤 filter chain 순서로 인증하고 인가해?
+- Authentication과 Authorization은 Spring Security architecture에서 어떻게 나뉘어?
+- SecurityContext는 어디에 저장되고 request마다 어떻게 복원돼?
+- 401 403 redirect JSON 응답은 Spring MVC가 아니라 Security filter에서 결정돼?
+contextual_chunk_prefix: |
+  이 문서는 Spring Security를 요청 차단 도구가 아니라 Servlet filter chain 위에서
+  Authentication, SecurityContext, Authorization, ExceptionTranslation, method security를
+  일관되게 연결하는 security infrastructure로 설명한다.
+---
 # Spring Security 아키텍처
 
 > 한 줄 요약: Spring Security는 "요청을 막는 프레임워크"가 아니라, 필터 체인 위에서 인증 정보와 권한 판단을 일관되게 흘려보내는 보안 인프라다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Escape Analysis and Scalar Replacement
+concept_id: language/escape-analysis-scalar-replacement
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- jit-optimization
+- allocation-pressure
+- scalar-replacement
+aliases:
+- escape analysis
+- scalar replacement
+- allocation elimination
+- lock elision
+- HotSpot escape analysis
+- NoEscape ArgEscape GlobalEscape
+- stack allocation myth
+symptoms:
+- no escape이면 무조건 stack allocation이 된다고 단순화하고 allocation elimination, scalar replacement, lock elision의 실제 의미를 놓쳐
+- 작은 객체를 많이 만들면 항상 느리다고 생각해 HotSpot EA와 JIT 최적화 가능성을 고려하지 않아
+- benchmark에서 사라진 allocation을 production에서도 항상 사라지는 설계 보장으로 오해해
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/jit-warmup-deoptimization
+next_docs:
+- language/escape-analysis-stack-allocation-benchmark-misconceptions
+- language/jmh-benchmarking-pitfalls
+- language/object-layout-jol-intuition
+linked_paths:
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/escape-analysis-stack-allocation-benchmark-misconceptions.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+confusable_with:
+- language/escape-analysis-stack-allocation-benchmark-misconceptions
+- language/jit-warmup-deoptimization
+- language/jmh-benchmarking-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- HotSpot escape analysis와 scalar replacement가 객체 allocation을 없앨 수 있다는 뜻을 설명해줘
+- NoEscape ArgEscape GlobalEscape를 Java JIT 최적화 관점으로 비교해줘
+- escape analysis가 lock elision까지 가능하게 하는 이유가 뭐야?
+- 작은 객체 생성이 항상 느린 것이 아닌 이유를 JIT allocation elimination으로 알려줘
+- escape analysis를 stack allocation으로만 이해하면 왜 오해가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 HotSpot escape analysis를 NoEscape, ArgEscape, GlobalEscape, allocation elimination, scalar replacement, lock elision 관점으로 설명하는 advanced deep dive다.
+  escape analysis, scalar replacement, object allocation elimination, lock elision, JIT optimization 질문이 본 문서에 매핑된다.
+---
 # Escape Analysis and Scalar Replacement
 
 > 한 줄 요약: escape analysis는 객체가 method/thread 밖으로 새는지 판단하고, no-escape로 판정되면 HotSpot은 allocation과 일부 lock을 없애거나 scalar replacement로 바꿀 수 있다.

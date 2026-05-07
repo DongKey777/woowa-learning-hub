@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: '템플릿 메소드 첫 질문 라우터: `hook method`, `abstract step`, `template method vs strategy`'
+concept_id: design-pattern/template-method-query-router-beginner
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- template-method-ladder-entry
+- hook-vs-abstract-step-router
+- template-method-vs-strategy-first-cut
+aliases:
+- template method beginner route
+- hook method primer
+- abstract step primer
+- template method vs strategy beginner
+- abstract step vs hook
+- hook vs abstract step
+- required step vs optional hook
+- 처음 배우는데 hook abstract step 차이
+- 추상 클래스면 다 템플릿 메소드인가
+- 부모가 흐름을 쥔다
+- 호출자가 전략을 고른다
+- onceperrequestfilter beginner route
+symptoms:
+- hook method와 abstract step이 둘 다 override처럼 보여서 구분이 안 돼
+- template method와 strategy를 둘 다 뭔가 바꾸는 패턴으로만 읽고 있어
+- onceperrequestfilter 같은 프레임워크 예시가 먼저 보여서 큰 그림이 안 잡혀
+intents:
+- comparison
+- definition
+prerequisites:
+- language/java-abstract-class-vs-interface-basics
+next_docs:
+- design-pattern/template-method-basics
+- design-pattern/template-method-vs-strategy
+- design-pattern/template-method-framework-lifecycle-examples
+linked_paths:
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/abstract-class-vs-interface-injection-bridge.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/design-pattern/template-method.md
+- contents/design-pattern/template-hook-smells.md
+confusable_with:
+- design-pattern/template-method-basics
+- design-pattern/template-method-vs-strategy
+- design-pattern/template-method-framework-lifecycle-examples
+forbidden_neighbors: []
+expected_queries:
+- hook method가 뭐예요
+- abstract step이 뭐예요
+- template method vs strategy가 뭐가 달라요
+- 처음 배우는데 hook method와 abstract step이 같이 헷갈려요
+- onceperrequestfilter가 왜 template method 예시인지 들어가기 전에 큰 그림이 필요해요
+contextual_chunk_prefix: |
+  이 문서는 template method 학습 경로의 첫 라우터다. hook method,
+  abstract step, template method vs strategy가 한 번에 섞일 때
+  부모가 흐름을 고정하는지, 호출자가 전략을 고르는지로 먼저 자르고
+  basics, comparison, framework example 문서로 안전하게 보내는 역할을 한다.
+---
 # 템플릿 메소드 첫 질문 라우터: `hook method`, `abstract step`, `template method vs strategy`
 
 > 한 줄 요약: 처음 배우는데 `hook method`, `abstract step`, `template method vs strategy`가 한꺼번에 헷갈리면, 먼저 "부모가 흐름을 쥔다 vs 호출자가 전략을 고른다" 큰 그림으로 자르고 다음 primer로 보내는 작은 엔트리포인트다.

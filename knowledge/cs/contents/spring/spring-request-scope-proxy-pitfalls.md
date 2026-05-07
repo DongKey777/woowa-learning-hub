@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Request Scope Proxy Pitfalls
+concept_id: spring/request-scope-proxy-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- request-scope-proxy
+- pitfalls
+- scoped-proxy-pitfalls
+- request-scoped-bean
+aliases:
+- request scope proxy
+- scoped proxy pitfalls
+- request scoped bean async thread
+- RequestContextHolder missing
+- request context not active
+- request scope thread boundary
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-requestcontextholder-threadlocal-leakage-async-pools.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+symptoms:
+- request scoped bean을 singleton에 주입했더니 proxy가 생겼지만 async thread에서 터진다.
+- No thread-bound request found 또는 request context not active 예외가 난다.
+- 요청마다 달라야 할 값이 thread pool 재사용 때문에 섞여 보인다.
+expected_queries:
+- Spring request scope proxy는 singleton 주입에서 어떻게 동작해?
+- request scoped bean을 @Async나 thread pool에서 쓰면 왜 깨져?
+- RequestContextHolder와 request scope proxy 차이를 설명해줘
+- request scope 상태를 보관할 때 ThreadLocal 누수를 어떻게 피해야 해?
+contextual_chunk_prefix: |
+  이 문서는 request scope bean과 scoped proxy가 HTTP request thread boundary 위에서만
+  안전하다는 점을 playbook으로 설명한다. singleton injection, RequestContextHolder,
+  @Async, MVC async, SecurityContext propagation과 연결해 증상을 진단한다.
+---
 # Spring Request Scope Proxy Pitfalls
 
 > 한 줄 요약: request scope는 웹 요청과 함께 살아가는 상태를 담는 도구지만, proxy와 thread boundary를 잘못 이해하면 가장 안전해야 할 컨텍스트가 가장 빨리 사라진다.

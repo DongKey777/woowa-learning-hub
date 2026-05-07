@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Authorization Graph Caching
+concept_id: security/authorization-graph-caching
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- authorization graph cache
+- authorization graph caching
+- graph cache
+- relationship-based access control
+aliases:
+- authorization graph cache
+- authorization graph caching
+- graph cache
+- relationship-based access control
+- relationship cache
+- relationship edge cache
+- path cache
+- edge cache
+- authz graph
+- invalidation
+- policy version
+- graph snapshot
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authorization-graph-cache-relationship-cache-primer.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Authorization Graph Caching 핵심 개념을 설명해줘
+- authorization graph cache가 왜 필요한지 알려줘
+- Authorization Graph Caching 실무 설계 포인트는 뭐야?
+- authorization graph cache에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Authorization Graph Caching를 다루는 deep_dive 문서다. authorization graph caching은 관계 기반 권한 계산을 빠르게 하지만, 그래프 업데이트와 policy version이 늦으면 잘못된 권한을 계속 허용할 수 있다. 검색 질의가 authorization graph cache, authorization graph caching, graph cache, relationship-based access control처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Authorization Graph Caching
 
 > 한 줄 요약: authorization graph caching은 관계 기반 권한 계산을 빠르게 하지만, 그래프 업데이트와 policy version이 늦으면 잘못된 권한을 계속 허용할 수 있다.

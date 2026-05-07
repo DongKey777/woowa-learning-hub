@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Auth Observability Primer Bridge
+concept_id: security/auth-observability-primer-bridge
+canonical: false
+category: security
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- auth observability primer bridge
+- missing audit trail primer
+- missing-audit-trail primer
+- auth-signal-gap primer
+aliases:
+- auth observability primer bridge
+- missing audit trail primer
+- missing-audit-trail primer
+- auth-signal-gap primer
+- auth telemetry gap beginner
+- decision log missing beginner
+- allow deny reason code missing
+- 401 403 spike no reason bucket
+- observability blind spot auth beginner
+- auth evidence basics
+- auth signal evidence separation
+- request state decision reason audit trail
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Auth Observability Primer Bridge 차이를 실무 기준으로 설명해줘
+- auth observability primer bridge를 언제 선택해야 해?
+- Auth Observability Primer Bridge를 헷갈리지 않게 비교해줘
+- auth observability primer bridge 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Auth Observability Primer Bridge를 다루는 bridge 문서다. `missing-audit-trail`이나 `auth-signal-gap`이 보일 때는 먼저 "요청 상태", "판단 근거", "감사 증적" 3칸을 분리한 뒤 deep dive로 내려가야 원인 축을 덜 헷갈린다. 검색 질의가 auth observability primer bridge, missing audit trail primer, missing-audit-trail primer, auth-signal-gap primer처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Auth Observability Primer Bridge
 
 > 한 줄 요약: `missing-audit-trail`이나 `auth-signal-gap`이 보일 때는 먼저 "요청 상태", "판단 근거", "감사 증적" 3칸을 분리한 뒤 deep dive로 내려가야 원인 축을 덜 헷갈린다.

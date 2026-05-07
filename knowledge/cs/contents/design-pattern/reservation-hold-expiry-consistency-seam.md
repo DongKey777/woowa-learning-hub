@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Reservation, Hold, and Expiry as a Consistency Seam
+concept_id: design-pattern/reservation-hold-expiry-consistency-seam
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- reservation-hold-expiry
+- consistency-seam
+- confirm-release-workflow
+aliases:
+- reservation pattern
+- hold expiry
+- inventory reservation
+- temporary claim
+- consistency seam
+- confirm or release
+- reservation expiry
+- seat hold
+- coupon hold
+- stock hold before payment
+symptoms:
+- 주문, 재고, 결제를 한 트랜잭션으로 묶으려다 aggregate boundary가 커지고 외부 실패를 rollback으로 해결하려 한다
+- hold를 만들었지만 confirm, release, expire 책임자가 불명확해 임시 점유가 영구 잠김으로 남는다
+- 만료된 hold에 뒤늦은 결제 성공이나 retry가 도착했을 때 stale confirm을 막는 상태 전이 규칙이 없다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/semantic-lock-pending-state-pattern
+next_docs:
+- design-pattern/compensation-vs-reconciliation-pattern
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/aggregate-version-optimistic-concurrency-pattern
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/semantic-lock-pending-state-pattern.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/compensation-vs-reconciliation-pattern.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+confusable_with:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/compensation-vs-reconciliation-pattern
+forbidden_neighbors: []
+expected_queries:
+- reservation hold expiry 패턴은 주문과 재고를 한 transaction으로 묶지 않고 어떻게 consistency seam을 만들까?
+- hold를 만들 때 confirm, release, expire 책임을 같이 설계해야 하는 이유가 뭐야?
+- 결제 성공 이벤트가 hold 만료 후 늦게 도착하면 왜 stale confirm을 거부해야 해?
+- 재고나 좌석처럼 일시 점유 가능한 자원에서 reservation id와 expiry token이 필요한 이유가 뭐야?
+- cross aggregate 즉시 일관성이 비쌀 때 reservation seam과 process manager deadline을 어떻게 결합해?
+contextual_chunk_prefix: |
+  이 문서는 Reservation, Hold, and Expiry as a Consistency Seam playbook으로,
+  주문/재고/좌석/쿠폰처럼 cross-aggregate 즉시 일관성을 강제하기 어려운 흐름에서
+  임시 권리인 hold를 만들고 deadline, confirm, release, expiry, stale signal guard로
+  consistency seam을 설계하는 방법을 설명한다.
+---
 # Reservation, Hold, and Expiry as a Consistency Seam
 
 > 한 줄 요약: cross-aggregate 즉시 일관성을 억지로 강제하기 어렵다면, reservation/hold/expiry 패턴으로 일시적 권리를 먼저 확보하고 이후 confirm 또는 release로 일관성 seam을 설계할 수 있다.
@@ -32,6 +103,8 @@
 - release
 
 이 패턴은 완전한 즉시 일관성 대신, **시간이 포함된 일관성 seam**을 설계하게 해준다.
+
+그래서 hold는 "재고를 잠깐 빼는 테이블"이 아니라 `reservationId`, `expiresAt`, 현재 상태, confirm/release command의 idempotency key가 함께 움직이는 작은 workflow로 보는 편이 안전하다.
 
 ### Retrieval Anchors
 

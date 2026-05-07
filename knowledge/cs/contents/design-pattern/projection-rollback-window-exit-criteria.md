@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Rollback Window Exit Criteria
+concept_id: design-pattern/projection-rollback-window-exit-criteria
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- rollback-window-exit
+- old-projection-decommission
+- latent-bug-audit
+aliases:
+- rollback window exit criteria
+- projection rollback window
+- old projection decommission
+- old path retirement
+- rollback command verification
+- rollback rehearsal
+- post-primary audit cadence
+- latent bug audit
+- business cycle coverage
+- final rollback verification
+symptoms:
+- primary promotion 직후 일정 시간이 지났다는 이유만으로 old projection을 제거해 rollback window와 forensic 비교 지점을 잃는다
+- average mismatch가 낮다는 이유로 strict sentinel, tail bucket, legacy cursor 같은 latent-bug audit를 생략한다
+- rollback command가 문서에 있다는 것만 확인하고 종료 직전 실제 switch, 권한, old projection warm 상태를 검증하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+next_docs:
+- design-pattern/cursor-rollback-packet
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/projection-freshness-slo-pattern
+linked_paths:
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/projection-canary-cohort-selection.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/cursor-rollback-packet.md
+confusable_with:
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/cursor-rollback-packet
+forbidden_neighbors: []
+expected_queries:
+- Rollback window exit은 primary promotion과 old projection decommission을 왜 별도 승인으로 봐야 해?
+- old projection을 지우기 전에 business-cycle coverage, audit cadence, latent-bug sweep, final rollback verification을 왜 봐야 해?
+- rollback command verification은 runbook 존재가 아니라 topology, auth, old projection warm, RTO를 실제로 확인해야 하는 이유가 뭐야?
+- low-QPS 서비스에서 evidence 기준을 낮추기보다 rollback window를 늘려야 하는 이유가 뭐야?
+- 전체 mismatch rate가 낮아도 strict sentinel이나 tail bucket audit가 남으면 old path 제거를 보류해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Rollback Window Exit Criteria playbook으로, projection primary promotion 후
+  old projection 제거를 시간 경과가 아니라 business-cycle coverage, audit cadence, latent-bug
+  bucket sweep, final rollback command verification, old projection warm state, measured RTO가 모두
+  green인 별도 decommission approval로 다루는 방법을 설명한다.
+---
 # Rollback Window Exit Criteria
 
 > 한 줄 요약: primary promotion 뒤 old projection을 제거하는 시점은 단순 시간 경과가 아니라 audit cadence 완료, latent-bug bucket 재검증, rollback command 최종 green, business-cycle coverage가 모두 증명됐을 때다.

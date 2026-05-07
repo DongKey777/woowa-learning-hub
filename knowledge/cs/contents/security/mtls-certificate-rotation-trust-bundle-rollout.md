@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: mTLS Certificate Rotation / Trust Bundle Rollout
+concept_id: security/mtls-certificate-rotation-trust-bundle-rollout
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- mTLS
+- certificate rotation
+- trust bundle
+- CA bundle
+aliases:
+- mTLS
+- certificate rotation
+- trust bundle
+- CA bundle
+- SVID
+- workload identity
+- rolling rollout
+- cert expiry
+- root CA
+- intermediate CA
+- trust anchor
+- trust bundle recovery
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/signing-key-compromise-recovery-playbook.md
+- contents/security/hardware-attestation-policy-failure-recovery.md
+- contents/security/https-hsts-mitm.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/service-mesh-sidecar-proxy.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- mTLS Certificate Rotation / Trust Bundle Rollout 핵심 개념을 설명해줘
+- mTLS가 왜 필요한지 알려줘
+- mTLS Certificate Rotation / Trust Bundle Rollout 실무 설계 포인트는 뭐야?
+- mTLS에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 mTLS Certificate Rotation / Trust Bundle Rollout를 다루는 deep_dive 문서다. mTLS는 연결이 아니라 인증서 생명주기를 운영하는 문제다. 회전, trust bundle 배포, 폐기 타이밍을 따로 설계해야 장애 없이 안전하게 바꿀 수 있다. 검색 질의가 mTLS, certificate rotation, trust bundle, CA bundle처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # mTLS Certificate Rotation / Trust Bundle Rollout
 
 > 한 줄 요약: mTLS는 연결이 아니라 인증서 생명주기를 운영하는 문제다. 회전, trust bundle 배포, 폐기 타이밍을 따로 설계해야 장애 없이 안전하게 바꿀 수 있다.

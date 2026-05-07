@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Customer-Facing Support Access Notifications
+concept_id: security/customer-facing-support-access-notifications
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- customer-facing support access notifications
+- support access notification
+- support access email copy
+- support access push copy
+aliases:
+- customer-facing support access notifications
+- support access notification
+- support access email copy
+- support access push copy
+- support access in-app notification copy
+- support access inbox copy
+- support access security timeline
+- notification channel copy pattern
+- privacy safe notification copy
+- privacy safe email subject
+- privacy safe push notification
+- privacy safe in app copy
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-access-alert-router-primer.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/delivery-surface-policy-for-support-access-alerts.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Customer-Facing Support Access Notifications 핵심 개념을 설명해줘
+- customer-facing support access notifications가 왜 필요한지 알려줘
+- Customer-Facing Support Access Notifications 실무 설계 포인트는 뭐야?
+- customer-facing support access notifications에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Customer-Facing Support Access Notifications를 다루는 deep_dive 문서다. acting-on-behalf-of(AOBO)와 break-glass는 ordinary login 알림처럼 섞어 보여 주면 안 되며, 고객에게는 이유 범주, 범위, 시간, 종료 상태를 알리되 operator PII와 내부 incident 세부는 숨긴 privacy-safe projection이 필요하다. 검색 질의가 customer-facing support access notifications, support access notification, support access email copy, support access push copy처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Customer-Facing Support Access Notifications
 
 > 한 줄 요약: acting-on-behalf-of(AOBO)와 break-glass는 ordinary login 알림처럼 섞어 보여 주면 안 되며, 고객에게는 이유 범주, 범위, 시간, 종료 상태를 알리되 operator PII와 내부 incident 세부는 숨긴 privacy-safe projection이 필요하다.

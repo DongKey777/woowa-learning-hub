@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Count-Min Sketch vs HyperLogLog
+concept_id: data-structure/count-min-vs-hyperloglog
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- sketch-frequency-vs-cardinality
+- observability-sketch-choice
+- streaming-analytics
+aliases:
+- Count-Min Sketch vs HyperLogLog
+- frequency vs cardinality
+- streaming sketch comparison
+- approximate analytics sketch
+- hot keys vs unique count
+- distinct users HyperLogLog
+- sketch tradeoff
+symptoms:
+- 요청 빈도 frequency를 묻는지 고유 사용자 수 cardinality를 묻는지 구분하지 않고 CMS와 HLL을 바꿔 쓴다
+- hot key 탐지와 distinct count dashboard를 같은 sketch 하나로 해결하려 한다
+- Count-Min Sketch의 collision overestimation과 HyperLogLog의 statistical cardinality error 차이를 놓친다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/count-min-sketch
+- data-structure/hyperloglog
+next_docs:
+- data-structure/approximate-counting-rate-limiting-observability
+- data-structure/sketch-filter-selection-playbook
+- algorithm/top-k-streaming-heavy-hitters
+linked_paths:
+- contents/data-structure/count-min-sketch.md
+- contents/data-structure/hyperloglog.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+confusable_with:
+- data-structure/count-min-sketch
+- data-structure/hyperloglog
+- data-structure/space-saving-heavy-hitters
+- data-structure/sketch-filter-selection-playbook
+forbidden_neighbors: []
+expected_queries:
+- Count-Min Sketch와 HyperLogLog는 frequency와 cardinality 중 무엇을 답해?
+- hot key 탐지에는 CMS, distinct user 추정에는 HLL을 쓰는 이유는?
+- 요청 수와 고유 사용자 수를 observability dashboard에서 어떻게 다른 sketch로 봐?
+- CMS의 과대 추정과 HLL의 cardinality 오차는 어떻게 달라?
+- streaming analytics에서 Count-Min Sketch와 HyperLogLog를 선택하는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 Count-Min Sketch와 HyperLogLog를 streaming sketch로 비교하는
+  chooser다. CMS는 item frequency와 hot key를, HLL은 distinct cardinality와
+  unique users를 추정한다. frequency vs cardinality 질문 분리를 강조한다.
+---
 # Count-Min Sketch vs HyperLogLog
 
 > 한 줄 요약: Count-Min Sketch는 빈도 추정, HyperLogLog는 고유 개수 추정에 쓰이며 둘 다 스트리밍 친화적이지만 질문 자체가 다르다.

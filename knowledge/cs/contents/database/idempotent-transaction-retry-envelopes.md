@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Idempotent Transaction Retry Envelopes
+concept_id: database/idempotent-transaction-retry-envelopes
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- idempotent-transaction-retry-envelope
+- exception-classifier-backoff-budget
+- side-effect-retry-boundary
+aliases:
+- retry envelope
+- idempotent retry
+- idempotent transaction retry
+- exception classifier
+- backoff policy
+- attempt budget
+- spring retry envelope placement
+- retry outside transaction
+- replay safe retry
+- transaction retry envelope
+symptoms:
+- catch 후 무조건 retry를 넣어 serialization failure, deadlock, non-retryable business failure를 구분하지 않고 있어
+- transaction retry 안에 외부 결제나 message publish가 들어 있어 중복 side effect가 날 수 있어
+- retry attempt budget, backoff, idempotency key, final failure state를 하나의 envelope로 설계해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/spring-retry-envelope-placement-primer
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/transaction-retry-serialization-failure-patterns
+- database/exactly-once-myths-db-queue
+- database/idempotency-review-sentence-card
+- database/idempotency-key-status-contract-examples
+linked_paths:
+- contents/database/spring-retry-envelope-placement-primer.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/idempotency-review-sentence-card.md
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/outbox-saga-eventual-consistency.md
+confusable_with:
+- database/spring-retry-envelope-placement-primer
+- database/transaction-retry-serialization-failure-patterns
+- database/exactly-once-myths-db-queue
+forbidden_neighbors: []
+expected_queries:
+- idempotent transaction retry envelope에는 exception classifier, backoff, attempt budget, idempotency key가 왜 같이 필요해?
+- serialization failure나 deadlock retry를 넣을 때 중복 결제를 막으려면 envelope를 어떻게 설계해?
+- retry 가능한 실패와 재시도하면 안 되는 business failure를 어떻게 분류해?
+- transaction 안의 외부 side effect를 retry envelope 바깥이나 outbox로 빼야 하는 이유는 뭐야?
+- retry 최종 실패를 운영자가 재현할 수 있게 어떤 상태와 메타데이터를 남겨야 해?
+contextual_chunk_prefix: |
+  이 문서는 transaction retry를 exception classifier, backoff, attempt budget, idempotency key, side effect boundary, final failure state로 감싸는 advanced playbook이다.
+  retry envelope, idempotent retry, retry outside transaction, exception classifier 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Idempotent Transaction Retry Envelopes
 
 > 한 줄 요약: retry는 반복 실행이 아니라, 같은 작업을 안전하게 다시 시도할 수 있게 감싸는 envelope 설계다.

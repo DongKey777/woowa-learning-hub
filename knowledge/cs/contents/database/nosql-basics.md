@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: NoSQL Basics
+concept_id: database/nosql-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- nosql
+- data-modeling
+- scale-out
+- database-choice
+aliases:
+- nosql basics
+- nosql 이란
+- nosql vs rdb
+- document store beginner
+- key-value store beginner
+- column-family beginner
+- graph database beginner
+- 수평 확장 DB
+- NoSQL 언제 쓰나요
+- MongoDB Redis Cassandra 차이
+symptoms:
+- RDB와 NoSQL을 속도나 유행 기준으로만 비교하고 데이터 모델과 조회 패턴 기준을 놓치고 있어
+- document, key-value, column-family, graph store의 용도 차이를 입문 수준에서 구분해야 해
+- NoSQL이면 schema와 transaction이 완전히 없다고 단정하고 있어
+intents:
+- definition
+- comparison
+prerequisites:
+- database/database-first-step-bridge
+next_docs:
+- database/mvcc-replication-sharding
+- database/schema-migration-partitioning-cdc-cqrs
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/database/mvcc-replication-sharding.md
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/database/database-first-step-bridge.md
+confusable_with:
+- database/mvcc-replication-sharding
+- database/schema-migration-partitioning-cdc-cqrs
+- database/index-basics
+forbidden_neighbors: []
+expected_queries:
+- NoSQL은 RDB와 무엇이 다르고 언제 선택해야 해?
+- key-value, document, column-family, graph database를 초보자용으로 비교해줘
+- NoSQL이면 schema나 transaction이 아예 없다고 보면 안 되는 이유가 뭐야?
+- 수평 확장이 필요하면 무조건 NoSQL을 골라야 하는지 설명해줘
+- MongoDB, Redis, Cassandra의 대표 사용 사례를 데이터 모델 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 NoSQL을 key-value, document, column-family, graph 데이터 모델과 scale-out 관점에서 RDB와 비교하는 beginner primer다.
+  NoSQL 이란, NoSQL vs RDB, 수평 확장 DB, MongoDB Redis Cassandra 차이 질문이 본 문서에 매핑된다.
+---
 # NoSQL 기초 (NoSQL Basics)
 
 > 한 줄 요약: NoSQL은 관계형 DB의 고정 스키마와 조인 제약을 포기하는 대신 유연한 데이터 모델과 수평 확장을 선택한 DB 계열이다.

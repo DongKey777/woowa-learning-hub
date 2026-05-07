@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Sealed Interfaces and Exhaustive Switch Design
+concept_id: language/sealed-interfaces-exhaustive-switch-design
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/baseball
+- missions/payment
+review_feedback_tags:
+- sealed
+- pattern-matching
+- domain-state
+aliases:
+- Sealed Interfaces and Exhaustive Switch Design
+- sealed interface exhaustive switch
+- Java permits closed hierarchy
+- pattern matching switch default branch
+- algebraic data type Java
+- 자바 sealed exhaustive switch
+symptoms:
+- sealed interface를 단순 상속 제한 문법으로만 이해해 도메인 상태 집합을 닫고 exhaustive switch로 분기 누락을 줄이는 설계 의도를 놓쳐
+- sealed hierarchy switch에 default를 습관적으로 넣어 새 variant 추가 시 컴파일러가 누락 branch를 잡지 못하게 만들어
+- 내부 도메인 closed hierarchy와 외부 payload compatibility 문제를 구분하지 않아 runtime unknown variant 처리 전략 없이 sealed만 믿어
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- language/records-sealed-pattern-matching
+- language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+- language/object-oriented-core-principles
+next_docs:
+- language/record-serialization-evolution
+- language/java-binary-compatibility-linkage-errors
+- language/enum-persistence-json-unknown-value-evolution
+linked_paths:
+- contents/language/java/records-sealed-pattern-matching.md
+- contents/language/java/record-sealed-hierarchy-evolution-pattern-matching-compatibility.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/jit-warmup-deoptimization.md
+confusable_with:
+- language/records-sealed-pattern-matching
+- language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+- language/enum-persistence-json-unknown-value-evolution
+forbidden_neighbors: []
+expected_queries:
+- sealed interface와 exhaustive switch는 도메인 상태 분기 누락을 어떻게 줄여?
+- sealed hierarchy에서 default branch를 넣으면 새 variant 추가를 컴파일러가 못 잡을 수 있는 이유가 뭐야?
+- permits로 닫힌 타입 집합을 만들 때 internal domain model과 external payload compatibility를 어떻게 나눠야 해?
+- record와 sealed interface를 함께 써서 Success Failure Pending 결과 타입을 모델링하는 예를 보여줘
+- Java sealed class는 algebraic data type처럼 쓸 수 있지만 evolution safety에서 무엇을 조심해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java sealed interface와 exhaustive pattern matching switch를 closed domain state, permits, default branch hazard, variant evolution 관점에서 설명하는 advanced deep dive다.
+  sealed interface, exhaustive switch, pattern matching, default branch, closed hierarchy 질문이 본 문서에 매핑된다.
+---
 # Sealed Interfaces and Exhaustive Switch Design
 
 > 한 줄 요약: sealed interface는 허용된 구현체를 타입 수준에서 고정해 도메인 상태를 좁히고, exhaustive switch는 그 닫힌 집합을 안전하게 다루게 해준다.

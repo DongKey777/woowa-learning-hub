@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Capability-Based Roadmap Planning
+concept_id: software-engineering/capability-roadmap
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roadmap
+- capability-planning
+- portfolio
+aliases:
+- Capability-Based Roadmap Planning
+- capability roadmap
+- capability maturity planning
+- business capability roadmap
+- investment sequencing
+- capability heatmap planning
+symptoms:
+- roadmap을 feature backlog 나열로만 잡아 실제 병목인 contract stability, rollback readiness, observability maturity 같은 capability 투자를 놓쳐
+- product feature와 platform capability의 우선순위를 value와 risk, debt interest, migration blocker 기준으로 같이 보지 않아
+- capability maturity가 scorecard와 heatmap에서 바뀌어도 roadmap sequencing에 반영하지 않아 계획이 정적 문서로 남아
+intents:
+- design
+- deep_dive
+- comparison
+prerequisites:
+- software-engineering/domain-capability-heatmap
+- software-engineering/platform-product-capability-boundaries
+next_docs:
+- software-engineering/service-maturity-model
+- software-engineering/migration-scorecards
+- software-engineering/architecture-runway
+linked_paths:
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/organizational-coupling-conway-effects.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/migration-scorecards.md
+- contents/software-engineering/architecture-runway-refactoring-window.md
+- contents/software-engineering/domain-capability-heatmap.md
+confusable_with:
+- software-engineering/domain-capability-heatmap
+- software-engineering/service-maturity-model
+- software-engineering/migration-scorecards
+forbidden_neighbors: []
+expected_queries:
+- capability-based roadmap planning은 feature roadmap과 어떻게 다르고 어떤 능력을 먼저 성숙시킬지 정하는 방식이야?
+- 결제 재시도, 관측성, 계약 안정성, rollback readiness 같은 capability를 roadmap에 넣는 기준을 알려줘
+- capability 병목과 migration blocker를 value risk debt interest 기준으로 어떻게 우선순위화해?
+- capability heatmap과 service maturity scorecard가 roadmap sequencing에 어떻게 반영돼?
+- platform 투자와 product feature 사이의 균형을 capability roadmap으로 어떻게 설명해?
+contextual_chunk_prefix: |
+  이 문서는 feature list가 아니라 business capability maturity, bottleneck, risk, debt interest, migration readiness를 기준으로 investment sequencing을 잡는 advanced roadmap playbook이다.
+---
 # Capability-Based Roadmap Planning
 
 > 한 줄 요약: capability-based roadmap planning은 기능 목록이 아니라 business capability의 성숙도와 병목을 기준으로 언제 무엇을 먼저 바꿀지 정하는 전략이다.

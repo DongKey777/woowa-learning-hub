@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Software Engineering Category Index
+concept_id: software-engineering/software-engineering-index
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- software-engineering-index
+- beginner-route
+- mission-prerequisite
+- design-boundary-routing
+aliases:
+- software engineering readme
+- software engineering category index
+- software engineering beginner route
+- 소프트웨어 공학 입문 지도
+- controller service test boundary route
+- 메서드가 너무 길어요
+- 첫 테스트가 막혀요
+symptoms:
+- 메서드가 너무 길다, Controller가 많은 것을 안다, 첫 테스트가 막힌다 같은 리뷰 문장을 설계 용어로 바로 번역하지 못해
+- clean architecture, layered architecture, DDD, test double, transaction boundary 문서가 많아 첫 클릭 위치를 고르지 못해
+- 운영 incident나 governance 문서로 바로 들어가 beginner primer와 mission bridge를 건너뛰어
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- language/java-types-class-object-oop-basics
+- spring/request-pipeline-bean-container
+next_docs:
+- software-engineering/woowacourse-backend-mission-prerequisite-primer
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+- software-engineering/test-strategy-basics
+linked_paths:
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/oop-design-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/mission-review-vocabulary-primer.md
+- contents/software-engineering/common-confusion-wayfinding-notes.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- software-engineering/woowacourse-backend-mission-prerequisite-primer
+- software-engineering/common-confusion-wayfinding
+- software-engineering/mission-review-vocabulary-primer
+forbidden_neighbors: []
+expected_queries:
+- software engineering 카테고리에서 처음 읽을 때 readable code layering test feedback을 어떤 순서로 보면 좋아?
+- 메서드가 너무 길어요 Controller가 너무 많은 걸 알아요 첫 테스트가 막혀요 같은 리뷰 문장은 어디로 라우팅해?
+- 소프트웨어 공학 README에서 primer entry primer bridge deep dive catalog를 어떻게 구분해?
+- 우테코 백엔드 미션 전에 software engineering 카테고리에서 최소로 읽을 문서를 추천해줘
+- clean architecture DDD governance incident 문서가 많을 때 beginner가 바로 깊게 들어가지 않는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Software Engineering Category Index primer로, beginner가 리뷰 문장과 미션 증상을 readable code, layering, service boundary, test strategy, DTO/VO/entity, architecture catalog로 안전하게 라우팅하도록 돕는 입구 문서다.
+---
 # Software Engineering (소프트웨어 공학)
 
 > 한 줄 요약: 초심자는 이 README를 용어 백과사전이 아니라, "지금 막힌 질문에 맞는 primer를 고르는 시작 지도"로 읽으면 된다.

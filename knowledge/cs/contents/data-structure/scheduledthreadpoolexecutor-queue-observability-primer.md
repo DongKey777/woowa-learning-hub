@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: ScheduledThreadPoolExecutor Queue Observability Primer
+concept_id: data-structure/scheduledthreadpoolexecutor-queue-observability-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- scheduled-executor-observability
+- queue-size-not-backlog
+- cancelled-task-retention
+aliases:
+- ScheduledThreadPoolExecutor queue observability
+- scheduled executor queue size
+- getQueue size active count completed task count
+- queue size not backlog
+- cancelled task retention metrics
+- scheduled executor metrics beginner
+symptoms:
+- getQueue.size를 runnable backlog와 동일시해 future deadline task, cancelled retained entry, active worker를 구분하지 못한다
+- getActiveCount와 getCompletedTaskCount를 queue cleanup metric으로 잘못 읽어 실행 중 work와 완료된 execution count를 섞는다
+- cancel이 많은 timeout workload에서 queue size는 큰데 completed count가 평평한 상황을 CPU backlog로 오진한다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/scheduledfuture-cancel-stale-entries
+next_docs:
+- data-structure/delayqueue-queue-size-vs-live-timers-primer
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+linked_paths:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/delayqueue-queue-size-vs-live-timers-primer.md
+- contents/data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md
+- contents/data-structure/periodic-task-cancellation-bridge.md
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- data-structure/delayqueue-queue-size-vs-live-timers-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- spring/taskexecutor-taskscheduler-overload-rejection-semantics
+forbidden_neighbors: []
+expected_queries:
+- ScheduledThreadPoolExecutor getQueue size가 큰데 실제 backlog인지 cancelled retention인지 어떻게 구분해?
+- getQueue size activeCount completedTaskCount를 각각 어떻게 해석해야 해?
+- cancel된 scheduled task가 많을 때 queue size와 completed count가 왜 같이 움직이지 않아?
+- scheduled executor metrics에서 queue entries와 live runnable work를 구분하는 방법은?
+- ScheduledThreadPoolExecutor 관측성에서 queue size만 보면 안 되는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 ScheduledThreadPoolExecutor 관측 지표를 queue entries, active workers,
+  completed executions, live scheduled work로 분리한다. cancelled delayed task retention과
+  future deadline entry 때문에 queue size가 runnable backlog와 다를 수 있음을 설명한다.
+---
 # ScheduledThreadPoolExecutor Queue Observability Primer
 
 > 한 줄 요약: cancelled delayed task가 stale entry로 남을 수 있는 `ScheduledThreadPoolExecutor`에서는 `getQueue().size()`, `getActiveCount()`, `getCompletedTaskCount()`가 각각 "상자 안 흔적", "지금 손에 든 일", "끝난 실행 횟수"를 뜻하므로 한 숫자로 backlog를 단정하면 안 된다.

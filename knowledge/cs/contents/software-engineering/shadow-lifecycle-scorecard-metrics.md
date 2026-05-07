@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Shadow Lifecycle Scorecard Metrics
+concept_id: software-engineering/shadow-lifecycle-scorecard-metrics
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- scorecard
+- lifecycle-metrics
+- dashboard
+aliases:
+- shadow lifecycle scorecard metrics
+- shadow lifecycle dashboard
+- lifecycle_state aging dashboard
+- blocked duration dashboard
+- hold expiry dashboard
+- shadow 생명주기 스코어카드
+symptoms:
+- shadow catalog 건강도를 total entry count만 보고 decision_pending 정체, blocked orphan, overdue hold, proof gap을 구분하지 못해
+- lifecycle_state_age_days는 보지만 temporary_hold의 expires_at, blocked의 escalation SLA, verification_pending의 metric freshness를 별도 clock으로 보지 않아
+- verification_pending을 단일 점수로 합쳐 manual_path_ratio fail이나 audit log gap 같은 hard gate를 다른 개선 지표로 덮어
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-catalog-review-cadence-profiles
+next_docs:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/shadow-retirement-scorecard-schema
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/shadow-retirement-scorecard-schema.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/shadow-catalog-review-cadence-profiles
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/shadow-retirement-scorecard-schema
+forbidden_neighbors: []
+expected_queries:
+- shadow lifecycle scorecard는 total count보다 lifecycle aging, blocked duration, hold expiry, retirement verification health를 왜 나눠 봐야 해?
+- lifecycle_state_age_days와 state_clock_breach를 함께 두면 state별 queue discipline 붕괴를 어떻게 볼 수 있어?
+- blocked panel에서 blocker_owner, blocked_from_state, blocker_class를 보여야 orphan backlog를 찾을 수 있는 이유는?
+- temporary_hold dashboard는 age보다 expires_at risk bucket과 extension_count를 왜 중심에 둬야 해?
+- verification_pending health를 hard gate matrix로 보지 않고 단일 점수로 합치면 어떤 closure 오류가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 shadow catalog scorecard를 lifecycle aging, blocked duration, hold expiry, retirement verification health 패널로 나눠 backlog 정체와 가짜 retirement를 드러내는 advanced metrics playbook이다.
+---
 # Shadow Lifecycle Scorecard Metrics
 
 > 한 줄 요약: shadow catalog scorecard는 총량보다 `lifecycle_state`별 aging, `blocked_duration`, `hold_time_to_expiry`, `retirement_verification_health`를 분리해 보여 줘야 backlog 정체, parking-lot hold, blocker orphan, 가짜 retirement를 동시에 드러낼 수 있다.

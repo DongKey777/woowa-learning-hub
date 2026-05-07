@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "Spring MVC Async onError to AsyncRequestNotUsableException Crosswalk"
+concept_id: network/spring-mvc-async-onerror-asyncrequestnotusableexception-crosswalk
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- spring-async
+- async-disconnect
+- late-write
+aliases:
+- async onError timeline
+- AsyncRequestNotUsableException timeline
+- Spring MVC async onError
+- response not usable after response errors
+- committed response race
+- late write Spring MVC
+- emitter onError AsyncRequestNotUsableException
+symptoms:
+- AsyncRequestNotUsableException을 항상 1차 원인으로 읽고 raw write/flush failure를 놓친다
+- AsyncListener.onError, Spring ERROR state, producer late write를 서로 다른 incident로 중복 집계한다
+- response가 이미 commit된 뒤 JSON error envelope를 쓰려고 한다
+- onCompletion 이후에도 scheduler/producer가 멈추지 않아 tail exception이 반복된다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- network/spring-disconnectedclienthelper-breadcrumb-wiring-mvc-download-sse-async-late-write
+next_docs:
+- spring/mvc-async-deferredresult-callable-dispatch
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- spring/servlet-container-disconnect-exception-mapping
+- network/container-specific-disconnect-logging-recipes-spring-boot
+linked_paths:
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/container-specific-disconnect-logging-recipes-spring-boot.md
+- contents/network/spring-disconnectedclienthelper-breadcrumb-wiring-mvc-download-sse-async-late-write.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+confusable_with:
+- network/spring-disconnectedclienthelper-breadcrumb-wiring-mvc-download-sse-async-late-write
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/sse-webflux-streaming-cancel-after-first-byte
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- "Spring MVC async onError와 AsyncRequestNotUsableException은 같은 disconnect의 다른 시계야?"
+- "AsyncRequestNotUsableException이 1차 원인이 아니라 late write guard일 수 있는 이유는?"
+- "committed response race에서 raw ClientAbortException과 Spring ERROR state를 어떻게 읽어?"
+- "Response not usable after response errors 메시지는 무엇을 의미해?"
+- "SseEmitter나 DeferredResult producer가 onCompletion 뒤에도 쓰면 어떤 문제가 생겨?"
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC async에서 AsyncListener.onError, raw container write
+  failure, Spring ERROR state, AsyncRequestNotUsableException, late producer write를
+  하나의 timeline으로 연결하는 advanced bridge다.
+---
 # Spring MVC Async `onError` -> `AsyncRequestNotUsableException` Crosswalk
 
 > 한 줄 요약: Spring MVC async에서 `AsyncListener.onError`와 `AsyncRequestNotUsableException`은 같은 disconnect incident의 서로 다른 시계일 때가 많다. container가 먼저 본 1차 write/flush 실패, Spring이 `ERROR` 상태로 바꾼 시점, 그 뒤 늦게 깨어난 producer의 2차 late write를 한 타임라인으로 맞춰 읽어야 committed-response race를 오해하지 않는다.

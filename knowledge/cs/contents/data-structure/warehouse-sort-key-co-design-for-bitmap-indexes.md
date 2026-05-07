@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Warehouse Sort-Key Co-Design for Bitmap Indexes
+concept_id: data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- warehouse-sort-key
+- bitmap-index-co-design
+- dictionary-rowgroup-locality
+aliases:
+- warehouse sort key bitmap index
+- sort-key co-design
+- dictionary encoding bitmap
+- row group bitmap compression
+- columnar warehouse bitmap compression
+- micro partition bitmap
+- bitmap index clustering
+symptoms:
+- warehouse sort key를 pruning 변수로만 보고 dictionary encoding, row group boundary, bitmap run shape가 같이 변한다는 점을 놓친다
+- local dictionary distinct count가 좋아지면 bitmap compression도 자동으로 좋아진다고 가정해 predicate row-group spread를 측정하지 않는다
+- WAH/EWAH clean run과 Roaring chunk-local density가 sort key와 row-group sizing 영향을 다르게 받는다는 점을 구분하지 못한다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+next_docs:
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/bit-sliced-bitmap-index
+- data-structure/roaring-bitmap-selection-playbook
+linked_paths:
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+- contents/data-structure/roaring-bitmap.md
+confusable_with:
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/bit-sliced-bitmap-index
+forbidden_neighbors: []
+expected_queries:
+- warehouse sort key가 dictionary encoding row group bitmap compression을 같이 바꾸는 이유는?
+- columnar warehouse에서 bitmap index를 위해 sort key와 row-group sizing을 어떻게 같이 설계해?
+- local dictionary distinct count와 bitmap run length는 같은 지표가 아닌 이유는?
+- WAH EWAH CONCISE와 Roaring은 warehouse sort key locality를 어떻게 다르게 받아?
+- country status event_date 같은 low-cardinality 필터를 sort key 앞에 둘 때 bitmap compression 효과는?
+contextual_chunk_prefix: |
+  이 문서는 columnar warehouse sort key를 dictionary encoding, row-group boundary,
+  bitmap run shape, compression codec 결과와 함께 설계하는 playbook이다. WAH/EWAH/CONCISE의
+  clean run과 Roaring의 chunk-local density, bit-sliced bitmap 영향을 비교한다.
+---
 # Warehouse Sort-Key Co-Design for Bitmap Indexes
 
 > 한 줄 요약: columnar warehouse에서 sort key는 pruning용 정렬이 아니라, `dictionary encoding -> row-group 경계 -> bitmap 모양 -> 압축 codec 결과`를 함께 바꾸는 상위 설계 변수다.

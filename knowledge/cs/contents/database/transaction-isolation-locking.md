@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 트랜잭션 격리수준과 락
+concept_id: database/transaction-isolation-locking
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- transaction-isolation-locking-bridge
+- for-update-locking-read-follow-up
+- deadlock-lock-timeout-routing
+aliases:
+- transaction isolation locking
+- 트랜잭션 격리수준과 락
+- isolation level and locks
+- FOR UPDATE next step
+- locking read follow-up
+- optimistic pessimistic lock
+- deadlock lock timeout retry
+- phantom read gap lock
+symptoms:
+- 트랜잭션, 격리 수준, 락을 모두 같은 동시성 안전장치로 묶어서 어디까지 보장되는지 헷갈려
+- SELECT FOR UPDATE를 붙이면 없는 row나 범위 불변식까지 자동 보호된다고 생각하고 있어
+- deadlock, lock timeout, 40001 같은 실제 증상이 보였는데 입문 개념 문서에서 계속 머물고 있어
+intents:
+- comparison
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/transaction-basics
+- database/transaction-isolation-basics
+- database/lock-basics
+next_docs:
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/transaction-retry-serialization-failure-patterns
+- database/gap-lock-next-key-lock
+- database/write-skew-phantom-read-case-studies
+linked_paths:
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/lock-basics.md
+- contents/spring/spring-transactional-basics.md
+- contents/database/jdbc-jpa-mybatis.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/jdbc-code-patterns.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/write-skew-phantom-read-case-studies.md
+confusable_with:
+- database/transaction-isolation-basics
+- database/lock-basics
+- database/compare-and-swap-vs-pessimistic-locks
+- database/gap-lock-next-key-lock
+forbidden_neighbors: []
+expected_queries:
+- 트랜잭션 경계, 격리 수준, 락은 각각 어떤 문제를 다르게 해결해?
+- SELECT FOR UPDATE는 plain SELECT와 무엇이 다르고 언제 써야 해?
+- 격리 수준 표를 봤는데 phantom read나 gap lock은 다음에 어디서 봐야 해?
+- deadlock, lock timeout, 40001이 보이면 개념 학습에서 incident routing으로 어떻게 넘어가?
+- 낙관적 락과 비관적 락은 충돌 빈도와 retry 비용 기준으로 어떻게 고르나?
+contextual_chunk_prefix: |
+  이 문서는 transaction isolation and locking bridge로, transaction boundary, isolation visibility, locking read, optimistic/pessimistic lock, FOR UPDATE, phantom/gap lock, deadlock/lock timeout/serialization retry를 연결한다.
+  격리 수준 다음 단계, FOR UPDATE 언제, locking read follow-up, deadlock 나면 다음 뭐 봐요, lock timeout retry 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 트랜잭션 격리수준과 락
 
 > 한 줄 요약: 이 문서는 [트랜잭션 기초](./transaction-basics.md)와 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) 다음 단계에서, "무엇을 같이 되돌릴까"와 "동시에 실행될 때 무엇이 보일까"가 실제 락/incident 대응으로 어떻게 이어지는지 묶어 주는 심화 bridge다.

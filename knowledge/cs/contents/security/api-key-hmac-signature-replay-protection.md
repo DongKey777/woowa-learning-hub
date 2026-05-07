@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: API Key, HMAC Signed Request, Replay Protection
+concept_id: security/api-key-hmac-signature-replay-protection
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- api key
+- HMAC
+- signed request
+- request signing
+aliases:
+- api key
+- HMAC
+- signed request
+- request signing
+- replay protection
+- nonce
+- timestamp
+- canonical string
+- constant-time compare
+- body hash
+- idempotency key
+- nonce store outage
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/jwt-deep-dive.md
+- contents/security/cors-samesite-preflight.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/security/https-hsts-mitm.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- API Key, HMAC Signed Request, Replay Protection 핵심 개념을 설명해줘
+- api key가 왜 필요한지 알려줘
+- API Key, HMAC Signed Request, Replay Protection 실무 설계 포인트는 뭐야?
+- api key에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 API Key, HMAC Signed Request, Replay Protection를 다루는 deep_dive 문서다. API key는 "누가 요청하는지"를 식별하는 값이고, HMAC 서명은 "요청이 중간에 바뀌지 않았고 비밀키를 가진 주체가 보냈다"를 증명한다. replay protection이 없으면 둘 다 쉽게 재사용된다. 검색 질의가 api key, HMAC, signed request, request signing처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # API Key, HMAC Signed Request, Replay Protection
 
 > 한 줄 요약: API key는 "누가 요청하는지"를 식별하는 값이고, HMAC 서명은 "요청이 중간에 바뀌지 않았고 비밀키를 가진 주체가 보냈다"를 증명한다. replay protection이 없으면 둘 다 쉽게 재사용된다.

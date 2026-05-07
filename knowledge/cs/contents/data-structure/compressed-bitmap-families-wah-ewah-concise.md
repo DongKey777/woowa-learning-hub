@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Compressed Bitmap Families WAH EWAH CONCISE
+concept_id: data-structure/compressed-bitmap-families-wah-ewah-concise
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- compressed-bitmap-family
+- wah-ewah-concise
+- run-heavy-bitmap
+aliases:
+- compressed bitmap families
+- WAH EWAH CONCISE bitmap
+- word aligned hybrid bitmap
+- word-aligned RLE bitmap
+- run length bitmap
+- clean word dirty word bitmap
+- Roaring vs EWAH break even
+symptoms:
+- bitmap compression을 모두 Roaring으로만 생각해 word-aligned run codec 계열의 장단점을 놓친다
+- 긴 0 run이나 1 run이 많은 exact bitmap에서 raw BitSet과 compressed bitmap의 scan cost 차이를 설명하지 못한다
+- Roaring의 16-bit container boundary와 WAH/EWAH의 whole word stream run 감각을 구분하지 못한다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+next_docs:
+- data-structure/chunk-boundary-pathologies-in-roaring
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/bit-sliced-bitmap-index
+- data-structure/succinct-bitvector-rank-select
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/chunk-boundary-pathologies-in-roaring.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/succinct-bitvector-rank-select.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/roaring-bitmap
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+- data-structure/chunk-boundary-pathologies-in-roaring
+- data-structure/succinct-bitvector-rank-select
+forbidden_neighbors: []
+expected_queries:
+- WAH EWAH CONCISE compressed bitmap은 Roaring Bitmap과 무엇이 달라?
+- run-heavy bitmap에서 word-aligned compression이 왜 유리한지 설명해줘
+- clean word dirty word literal word fill word가 compressed bitmap에서 무슨 뜻이야?
+- Roaring의 chunk boundary와 EWAH 같은 whole bitmap run codec을 비교해줘
+- exact bitwise set algebra를 유지하면서 bitmap을 압축하는 계열을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 WAH, EWAH, CONCISE 같은 word-aligned compressed bitmap
+  family를 Roaring Bitmap과 비교한다. run-heavy bitmap, clean word, dirty
+  word, literal/fill word, exact bitwise set algebra, whole bitmap run codec과
+  16-bit chunk boundary 차이를 다룬다.
+---
 # Compressed Bitmap Families: WAH, EWAH, CONCISE
 
 > 한 줄 요약: WAH/EWAH/CONCISE는 긴 run이 많은 bitmap을 word-aligned 방식으로 압축해, exact bitwise set algebra를 유지하면서 저장 공간과 scan 비용을 줄이려는 compressed bitmap 계열이다.

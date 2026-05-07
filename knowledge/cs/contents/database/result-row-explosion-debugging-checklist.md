@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Result-row Explosion Debugging Checklist
+concept_id: database/result-row-explosion-debugging
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- sql-join
+- row-explosion
+- cardinality
+- group-by
+- uniqueness
+aliases:
+- result row explosion
+- duplicated rows after join
+- join duplicates checklist
+- SQL duplicate rows debugging
+- join cardinality debugging
+- row multiplication after join
+- why join returns duplicates
+- one to many join duplicate
+- many to many row explosion
+- DISTINCT로 덮는 문제
+symptoms:
+- JOIN 뒤 결과 row가 예상보다 많아져서 중복이라고 생각하고 있어
+- LEFT JOIN이나 INNER JOIN 후 DISTINCT를 붙여서 증상만 덮으려 해
+- 부모 1건에 자식 여러 건이 붙는 1:N cardinality를 놓치고 있어
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- database/sql-join-basics
+- database/primary-foreign-key-basics
+next_docs:
+- database/join-row-increase-distinct-symptom-card
+- database/sql-relational-modeling-basics
+- database/join-table-composite-key-basics
+linked_paths:
+- contents/database/join-row-increase-distinct-symptom-card.md
+- contents/database/sql-join-basics.md
+- contents/database/sql-aggregate-groupby-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/primary-foreign-key-basics.md
+- contents/database/join-table-composite-key-basics.md
+confusable_with:
+- database/join-row-increase-distinct-symptom-card
+- database/distinct-vs-group-by-beginner-card
+- database/having-vs-where-beginner-card
+forbidden_neighbors: []
+expected_queries:
+- JOIN 결과가 갑자기 너무 많아졌을 때 cardinality를 어떤 순서로 확인해야 해?
+- duplicated rows after join을 DISTINCT로 덮기 전에 무엇을 먼저 봐야 해?
+- 1:N 관계를 JOIN하면 부모 row가 반복되는 것이 왜 정상일 수 있어?
+- GROUP BY로 요약해야 하는지 상세 row를 봐야 하는지 어떻게 구분해?
+- email 같은 조인 키가 UNIQUE가 아니면 row explosion이 생기는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 JOIN 뒤 result row explosion, duplicated rows after join, cardinality, grouping intent, uniqueness assumption을 beginner checklist로 디버깅하는 playbook이다.
+  DISTINCT로 덮기, row multiplication, one-to-many join duplicate, group by intent 질문이 본 문서에 매핑된다.
+---
 # Result-row Explosion Debugging Checklist
 
 > 한 줄 요약: JOIN 뒤 결과 row가 예상보다 많아졌다면, 먼저 "버그가 생겼다"보다 **어느 관계에서 몇 배가 붙는지, 지금 필요한 결과가 상세 row인지 요약 row인지, 유일하다고 믿은 값이 실제로도 유일한지**를 순서대로 확인해야 한다.

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Webhook Consumer Platform 설계
+concept_id: system-design/webhook-consumer-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- webhook consumer
+- inbound webhook
+- signature verification
+- replay defense
+aliases:
+- webhook consumer
+- inbound webhook
+- signature verification
+- replay defense
+- deduplication
+- inbox
+- ordering
+- dead letter queue
+- retry
+- event intake
+- webhook idempotency
+- consumer dedup store
+symptoms:
+- 결제사 webhook이 두 번 오거나 순서가 뒤집힐 때 내부 상태를 어떻게 한 번만 반영할지 모르겠다
+- webhook payload를 바로 처리하고 200 OK를 보내도 되는지 durable acceptance 경계가 흐리다
+- 서명 검증, replay 방지, dedup, DLQ를 각각 따로만 보고 consumer platform 흐름으로 묶지 못한다
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/webhook-delivery-platform-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/event-bus-control-plane-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/notification-system-design.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/security/webhook-signature-verification-replay-defense.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Webhook Consumer Platform 설계 설계 핵심을 설명해줘
+- webhook consumer가 왜 필요한지 알려줘
+- Webhook Consumer Platform 설계 실무 트레이드오프는 뭐야?
+- webhook consumer 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Webhook Consumer Platform 설계를 다루는 deep_dive 문서다. webhook consumer platform은 외부 벤더의 웹훅을 안정적으로 수신, 검증, 정렬, 재처리하는 역방향 이벤트 수집 시스템이다. 검색 질의가 webhook consumer, inbound webhook, signature verification, replay defense처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Webhook Consumer Platform 설계
 
 > 한 줄 요약: webhook consumer platform은 외부 벤더의 웹훅을 안정적으로 수신, 검증, 정렬, 재처리하는 역방향 이벤트 수집 시스템이다.
@@ -14,6 +73,14 @@ retrieval-anchor-keywords: webhook consumer, inbound webhook, signature verifica
 > - [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
 > - [Notification 시스템 설계](./notification-system-design.md)
 > - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
+
+## 미션 진입 증상
+
+| webhook 장면 | 이 문서에서 먼저 잡을 질문 |
+|---|---|
+| 같은 provider event가 다시 온다 | dedup key와 replay-safe 응답이 있는가 |
+| payload 저장 전 `200 OK`를 보낸다 | durable acceptance 전에 성공 신호를 보낸 것은 아닌가 |
+| 처리 실패 이벤트가 쌓인다 | retry와 DLQ 경계가 있는가 |
 
 ## 핵심 개념
 

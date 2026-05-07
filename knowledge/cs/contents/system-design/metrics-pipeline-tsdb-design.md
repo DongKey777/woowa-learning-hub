@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Metrics Pipeline / TSDB 설계
+concept_id: system-design/metrics-pipeline-tsdb-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- metrics pipeline
+- tsdb
+- time series
+- cardinality
+aliases:
+- metrics pipeline
+- tsdb
+- time series
+- cardinality
+- rollup
+- retention
+- scrape
+- ingest
+- downsampling
+- prometheus
+- observability
+- trace exemplar
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/alert-reevaluation-correction-design.md
+- contents/system-design/dashboard-restatement-ux-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Metrics Pipeline / TSDB 설계 설계 핵심을 설명해줘
+- metrics pipeline가 왜 필요한지 알려줘
+- Metrics Pipeline / TSDB 설계 실무 트레이드오프는 뭐야?
+- metrics pipeline 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Metrics Pipeline / TSDB 설계를 다루는 deep_dive 문서다. metrics pipeline과 TSDB는 대규모 시계열 데이터를 수집, 집계, 보관, 조회해 운영 가시성을 제공하는 시스템이다. 검색 질의가 metrics pipeline, tsdb, time series, cardinality처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Metrics Pipeline / TSDB 설계
 
 > 한 줄 요약: metrics pipeline과 TSDB는 대규모 시계열 데이터를 수집, 집계, 보관, 조회해 운영 가시성을 제공하는 시스템이다.

@@ -61,6 +61,9 @@ confusable_with:
 - spring/lotto-manual-auto-generator-qualifier-bridge
 - spring/shopping-cart-payment-method-router-qualifier-bridge
 forbidden_neighbors:
+  - contents/design-pattern/bean-name-vs-domain-key-lookup.md
+  - contents/design-pattern/strategy-registry-vs-service-locator-drift.md
+  - contents/design-pattern/router-dispatcher-handlermapping-vs-selector-factory.md
 expected_queries:
 - router는 언제 쓰고 qualifier는 언제 써?
 - 처음 배우는데 router랑 qualifier 차이가 뭐야?
@@ -82,6 +85,14 @@ contextual_chunk_prefix: |
 > 한 줄 요약: `@Qualifier`는 "컨테이너가 이 주입 지점에 어떤 bean을 꽂을지"를 정하는 장치이고, `Map<String, Bean>`/router 패턴은 "애플리케이션 코드가 요청마다 어떤 전략을 실행할지"를 정하는 장치다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 "주입할 때 후보를 고르는 문제"와 "실행 중 전략을 고르는 문제"를 결제/알림 예제로 분리해 주는 **beginner boundary primer**를 담당한다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`@Qualifier`를 요청마다 바꿔서 전략을 고를 수 있나요?" | lotto/shopping-cart에서 요청 값으로 할인/생성/결제 전략을 고르려는 Spring service | injection-time bean 선택과 runtime routing을 분리한다 |
+| "`Map<String, Bean>` 주입은 언제 쓰나요?" | 여러 strategy bean을 모두 받아 request key로 dispatch해야 하는 구조 | 후보 전체를 컬렉션으로 받고 application router가 선택하게 한다 |
+| "같은 타입 Bean이 많아져 `@Primary`와 router가 헷갈려요" | 기본 Bean 하나 지정 문제와 요청별 전략 선택 문제를 같은 wiring으로 푸는 상황 | default injection, explicit qualifier, runtime router의 책임을 나눈다 |
 
 **난이도: 🟢 Beginner**
 

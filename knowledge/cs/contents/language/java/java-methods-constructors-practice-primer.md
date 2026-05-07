@@ -65,11 +65,12 @@ expected_queries:
 - new 다음에 생성자가 실행되고 그 뒤 메서드가 상태를 바꾸는 흐름을 예제로 보고 싶어
 - 자바 클래스에서 field와 object state를 메서드/생성자와 같이 설명하는 글이 있어?
 contextual_chunk_prefix: |
-  이 문서는 Java 입문 학습자가 객체를 만들고 상태를 바꾸는 흐름 안에서
-  생성자와 메서드의 역할, parameter와 return type, overloading을 함께
-  처음 잡는 primer다. 객체 만들기 순서, new 다음 생성자, 상태 바꾸는
-  메서드, field와 parameter 차이, 메서드랑 생성자 연결해서 보기 같은
-  자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+  이 문서는 Java 입문 학습자가 클래스 한 장 안에서 객체 생성과 상태 변경을
+  같이 보며 생성자와 메서드의 역할, parameter와 return type, overloading을
+  한 흐름으로 처음 잡는 primer다. new 하면 무엇이 먼저 실행되나, 시작값은
+  누가 정하나, 이미 만든 객체를 언제 움직이나, field와 인자가 왜 다른가,
+  같은 이름 메서드가 여러 개 있는 이유가 뭔가 같은 자연어 paraphrase가 본
+  문서의 핵심 개념에 매핑된다.
 ---
 # Java 메서드와 생성자 실전 입문
 

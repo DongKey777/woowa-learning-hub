@@ -1,6 +1,84 @@
+---
+schema_version: 3
+title: Spring Data JPA 기초
+concept_id: spring/spring-data-jpa-basics
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- jparepository-proxy-implementation
+- query-method-basics
+- spring-data-vs-domain-repository
+aliases:
+- spring data jpa basics
+- Spring Data JPA 기초
+- 스프링 jpa 처음
+- jparepository 입문
+- spring data jpa 왜 써요
+- repository 인터페이스 입문
+- 쿼리 메서드 뭐예요
+- findby 메서드 입문
+- entity 입문
+- crud repository 입문
+- jpql 처음
+- spring data repository vs domain repository
+- repository가 두개처럼 보여요
+symptoms:
+- JpaRepository는 인터페이스뿐인데 왜 save findById가 동작하는지 모르겠어
+- findByEmail 같은 query method를 Spring Data JPA가 어떻게 쿼리로 바꾸는지 궁금해
+- JpaRepository와 도메인 repository가 같은 말인지 다른 경계인지 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- database/jdbc-jpa-mybatis-basics
+- spring/spring-persistence-transaction-web-service-repository-primer
+next_docs:
+- spring/jpa-dirty-checking-version-strategy
+- spring/data-vs-domain-repository-bridge
+- spring/data-jpa-save-persist-merge-state-transitions
+- database/index-and-explain
+linked_paths:
+- contents/spring/jpa-dirty-checking-version-strategy.md
+- contents/spring/spring-data-vs-domain-repository-bridge.md
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/database/index-and-explain.md
+confusable_with:
+- database/jdbc-jpa-mybatis-basics
+- spring/spring-persistence-transaction-web-service-repository-primer
+- spring/data-vs-domain-repository-bridge
+forbidden_neighbors: []
+expected_queries:
+- JpaRepository 인터페이스만 선언했는데 Spring Data JPA가 어떻게 구현체를 만들어?
+- JPA, Spring Data JPA, JpaRepository 차이를 beginner 기준으로 정리해줘
+- findByEmail, findByUsernameContaining 같은 query method가 어떤 방식으로 쿼리가 돼?
+- save를 호출해야만 저장되는지 dirty checking과 어떻게 연결되는지 알고 싶어
+- JpaRepository와 도메인 repository 계약을 왜 나눌 수 있는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring Data JPA를 JPA 위에서 repository 구현 반복을 줄여 주는 도구로 설명하고, JpaRepository 인터페이스를 선언하면 Spring이 proxy implementation을 만들어 CRUD와 query method를 실행한다는 beginner primer다.
+  JpaRepository interface만 있는데 동작, findBy query method, @Entity, save persist merge, dirty checking, Spring Data repository vs domain repository 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Spring Data JPA 기초: Repository로 DB를 다루는 방법
 
 > 한 줄 요약: Spring Data JPA는 `JpaRepository` 인터페이스를 상속하는 것만으로 기본 CRUD와 쿼리 메서드를 자동 생성해, 반복적인 데이터 접근 코드를 거의 없애준다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`JpaRepository`는 인터페이스뿐인데 왜 `save`가 동작해요?" | roomescape reservation repository를 interface로 만들고 구현체 없이 테스트가 통과하는 상황 | Spring Data가 proxy implementation을 만들어 CRUD를 연결한다는 점을 본다 |
+| "`findByEmail` 쿼리는 누가 만들어요?" | member 로그인/조회에서 query method 이름만 선언한 코드 | method name parsing과 generated query의 기본 감각을 잡는다 |
+| "도메인 repository와 `JpaRepository`가 같은 말인가요?" | service가 domain contract를 기대하는데 persistence interface가 그대로 노출되는 구조 | domain repository 계약과 Spring Data adapter를 분리해서 본다 |
 
 **난이도: 🟢 Beginner**
 

@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Clocksource Timer Resolution Jitter
+concept_id: operating-system/clocksource-timer-resolution-jitter
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- clocksource-timer-resolution
+- jitter
+- clocksource-timer-jitter
+- timer-resolution
+aliases:
+- clocksource timer jitter
+- timer resolution
+- hrtimer jiffy
+- CLOCK_MONOTONIC
+- timerfd nohz
+- timekeeping latency measurement
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/monotonic-clock-wall-clock-timeout-deadline.md
+- contents/operating-system/scheduler-classes-nice-rt-tradeoffs.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+expected_queries:
+- clocksource와 timer resolution, jitter는 latency 측정에 어떤 영향을 줘?
+- CLOCK_MONOTONIC hrtimer jiffy timerfd를 어떻게 구분해?
+- 주기 작업이 흔들릴 때 scheduler와 timer jitter 중 무엇을 봐야 해?
+- nohz나 clocksource 품질이 timeout deadline 정확도에 영향을 줄 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 timer resolution을 얼마나 자주 깨울 수 있나의 문제로, clocksource 품질과
+  timer jitter를 latency measurement, periodic task accuracy, timeout/deadline drift에
+  영향을 주는 timekeeping 문제로 설명한다.
+---
 # Clocksource, Timer Resolution, Jitter
 
 > 한 줄 요약: timer resolution은 "얼마나 자주 깨울 수 있나"의 문제이고, clocksource 품질과 timer jitter는 지연 측정과 주기 작업의 정확도를 흔든다.

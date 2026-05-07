@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring ConversionService, Formatter, and Binder Pipeline
+concept_id: spring/conversion-service-formatter-binder-pipeline
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- conversion-service-formatter
+- binder-pipeline
+- conversionservice
+- formatter
+aliases:
+- ConversionService
+- Formatter
+- WebDataBinder
+- Spring type conversion pipeline
+- conversion error
+- data binding internals
+- @InitBinder
+- PropertyEditor
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+expected_queries:
+- Spring ConversionService Formatter WebDataBinder는 각각 어떤 역할을 해?
+- query parameter나 form data binding에서 conversion error가 나는 이유는?
+- @InitBinder와 Formatter는 언제 써야 해?
+- @RequestBody 400과 WebDataBinder binding error는 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC의 ConversionService, Formatter, WebDataBinder,
+  PropertyEditor, @InitBinder, data binding pipeline을 advanced 관점에서 설명한다.
+  query/form/path variable 변환 오류와 @RequestBody message conversion 오류를
+  분리하고, validation binding pipeline과 MVC lifecycle로 연결한다.
+---
 # Spring ConversionService, Formatter, and Binder Pipeline
 
 ## 한 줄 요약

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "gRPC Deadlines, Cancellation Propagation"
+concept_id: network/grpc-deadlines-cancellation-propagation
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- grpc-deadline-cancellation
+- deadline-budget-propagation
+- zombie-work-prevention
+aliases:
+- gRPC deadline
+- cancellation propagation
+- grpc-timeout
+- DEADLINE_EXCEEDED CANCELLED
+- deadline budget
+- grpc Context interceptor
+symptoms:
+- DEADLINE_EXCEEDED를 한 서비스의 timeout 설정 문제로만 보고 전체 요청 예산 전파를 놓친다
+- client가 이미 취소했는데 downstream DB/RPC 작업이 계속 돌아 zombie work가 남는다
+- retry가 남은 deadline budget을 보지 않고 새 호출을 시작해 overload를 키운다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/grpc-vs-rest
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+next_docs:
+- network/grpc-deadline-exceeded-first-triage-card
+- network/grpc-status-trailers-transport-error-mapping
+- network/grpc-keepalive-goaway-max-connection-age
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+linked_paths:
+- contents/network/grpc-vs-rest.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/operating-system/monotonic-clock-wall-clock-timeout-deadline.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/grpc-keepalive-goaway-max-connection-age.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+confusable_with:
+- network/grpc-deadline-exceeded-first-triage-card
+- network/grpc-status-trailers-transport-error-mapping
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- "gRPC deadline과 timeout은 어떻게 다르고 cancellation propagation은 왜 중요해?"
+- "grpc-timeout과 Context를 downstream으로 전파하지 않으면 어떤 zombie work가 남아?"
+- "DEADLINE_EXCEEDED와 CANCELLED를 요청 예산과 사용자 취소 관점으로 구분해줘"
+- "retry가 deadline budget을 보지 않으면 gRPC 장애가 왜 증폭돼?"
+- "client disconnect를 gRPC cancellation으로 backend 작업 중단까지 연결하는 법을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 gRPC deadline, grpc-timeout metadata, Context cancellation,
+  DEADLINE_EXCEEDED, CANCELLED, deadline budget propagation, retry budget,
+  zombie work prevention을 다루는 advanced gRPC playbook이다.
+---
 # gRPC Deadlines, Cancellation Propagation
 
 > 한 줄 요약: gRPC에서 deadline은 전체 요청 예산이고 cancellation은 그 예산이 끝났다는 신호이므로, downstream까지 전파되지 않으면 느린 작업이 계속 돈다.

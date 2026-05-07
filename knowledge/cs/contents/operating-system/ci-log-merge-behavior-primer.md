@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: CI Log Merge Behavior Primer
+concept_id: operating-system/ci-log-merge-behavior-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- ci-log-merge
+- behavior
+- stdout-stderr-merge
+- order
+aliases:
+- CI log merge behavior
+- stdout stderr merge order
+- child pipe buffering
+- test runner transcript ordering
+- source timestamp sequence log
+- separate stream merge
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/tty-aware-output-capture-patterns.md
+- contents/operating-system/subprocess-pipe-backpressure-primer.md
+- contents/operating-system/pseudo-tty-vs-pipe-behavior.md
+expected_queries:
+- CI에서 stdout stderr 로그 순서가 로컬과 다르게 섞이는 이유는?
+- child process stdout stderr를 별도 pipe로 받으면 merge order가 흔들릴 수 있어?
+- 로그 순서가 중요하면 source timestamp sequence id를 왜 같이 남겨야 해?
+- test runner transcript에서 무슨 일이 먼저였는지 판단하기 어려운 이유는?
+contextual_chunk_prefix: |
+  이 문서는 test runner나 CI가 child process stdout/stderr를 별도 pipe로 받으면 stream 내부
+  순서는 유지되어도 parent merge timing과 buffering 때문에 전체 log order가 흔들릴 수 있음을
+  설명한다.
+---
 # CI Log Merge Behavior Primer
 
 > 한 줄 요약: test runner나 CI가 child의 stdout/stderr를 따로 받으면 각 stream 내부 순서는 대체로 유지돼도, 둘을 합친 전체 순서는 reader timing과 buffering 때문에 흔들릴 수 있다. 그래서 "무슨 일이 먼저였는가"가 중요하면 로그 줄마다 source, timestamp, sequence id를 같이 남기는 편이 안전하다.

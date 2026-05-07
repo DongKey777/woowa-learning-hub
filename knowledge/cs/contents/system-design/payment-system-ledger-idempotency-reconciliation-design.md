@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Payment System Ledger, Idempotency, Reconciliation
+concept_id: system-design/payment-system-ledger-idempotency-reconciliation-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- payment auth capture refund
+- ledger
+- transaction log
+- reconciliation
+aliases:
+- payment auth capture refund
+- ledger
+- transaction log
+- reconciliation
+- idempotency key
+- duplicate charge
+- partial refund
+- settlement
+- PG callback
+- chargeback
+- provider timeout recovery
+- replay-safe retry
+symptoms:
+- PG는 결제 성공인데 내부 주문이나 원장 상태가 아직 pending으로 남아 있다
+- timeout 뒤 같은 결제 요청을 재시도하면 중복 승인인지 replay인지 구분하지 못한다
+- 결제 승인, 매입, 환불, reconciliation을 단순 payment status 하나로만 표현하려 한다
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-methods-rest-idempotency.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/database/transaction-case-studies.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/system-design/reconciliation-window-cutoff-control-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Payment System Ledger, Idempotency, Reconciliation 설계 핵심을 설명해줘
+- payment auth capture refund가 왜 필요한지 알려줘
+- Payment System Ledger, Idempotency, Reconciliation 실무 트레이드오프는 뭐야?
+- payment auth capture refund 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Payment System Ledger, Idempotency, Reconciliation를 다루는 deep_dive 문서다. 결제 시스템은 외부 PG 상태와 내부 원장을 동시에 맞춰야 하므로, auth/capture/refund 흐름, 멱등성, 원장, 재조정(reconciliation)을 한 덩어리로 설계해야 한다. 검색 질의가 payment auth capture refund, ledger, transaction log, reconciliation처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Payment System Ledger, Idempotency, Reconciliation
 
 > 한 줄 요약: 결제 시스템은 외부 PG 상태와 내부 원장을 동시에 맞춰야 하므로, auth/capture/refund 흐름, 멱등성, 원장, 재조정(reconciliation)을 한 덩어리로 설계해야 한다.
@@ -5,6 +65,14 @@
 retrieval-anchor-keywords: payment auth capture refund, ledger, transaction log, reconciliation, idempotency key, duplicate charge, partial refund, settlement, PG callback, chargeback, provider timeout recovery, replay-safe retry, reconciliation window, correction cutoff
 
 **난이도: 🔴 Advanced**
+
+## 미션 진입 증상
+
+| payment 장면 | 이 문서에서 먼저 잡을 질문 |
+|---|---|
+| PG dashboard와 내부 주문 상태가 다르다 | reconciliation 대상인가 |
+| 같은 payment key로 요청이 다시 왔다 | idempotent replay인가 새 요청인가 |
+| 환불/취소/부분 환불이 섞인다 | ledger event로 설명 가능한가 |
 
 > 관련 문서:
 > - [HTTP 메서드, REST, 멱등성](../network/http-methods-rest-idempotency.md)

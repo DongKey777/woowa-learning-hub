@@ -9,7 +9,12 @@ doc_role: bridge
 level: beginner
 language: mixed
 source_priority: 85
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/backend
 review_feedback_tags:
 - map-vs-set-requirement-split
 - dedupe-vs-key-value-storage

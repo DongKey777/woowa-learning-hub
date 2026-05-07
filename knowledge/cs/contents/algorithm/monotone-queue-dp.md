@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Monotone Queue DP
+concept_id: algorithm/monotone-queue-dp
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- monotone-queue-dp
+- sliding-window-dp
+- constrained-transition-optimization
+aliases:
+- monotone queue dp
+- monotonic queue dp
+- deque optimization DP
+- sliding window DP
+- constrained transition
+- window minimum DP
+- optimized DP transition
+- 단조 큐 DP
+symptoms:
+- DP 전이에서 최근 k개 상태의 최소 최대만 필요하다는 구조를 보고도 매번 k개를 전부 순회한다
+- prefix min으로 충분한 전이와 window가 이동하며 오래된 후보를 제거해야 하는 전이를 구분하지 못한다
+- monotone deque의 dominated candidate 증명을 DP 전이 최적화와 연결하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/monotone-deque-proof-intuition
+- algorithm/sliding-window-patterns
+- algorithm/dp-intro
+next_docs:
+- algorithm/bitset-optimization-patterns
+- data-structure/segment-tree-lazy-propagation
+- algorithm/amortized-analysis-pitfalls
+linked_paths:
+- contents/algorithm/monotone-deque-proof-intuition.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- algorithm/monotone-deque-proof-intuition
+- algorithm/sliding-window-patterns
+- algorithm/bitset-optimization-patterns
+- data-structure/segment-tree-lazy-propagation
+forbidden_neighbors: []
+expected_queries:
+- Monotone Queue DP는 dp 전이 범위의 최솟값이나 최댓값을 deque로 어떻게 유지해?
+- dp[i]가 최근 k개 dp[j]의 min/max에 의존하면 왜 sliding window DP가 돼?
+- prefix min으로 충분한 경우와 오래된 후보를 제거해야 하는 window DP는 어떻게 달라?
+- Segment Tree DP와 Monotone Queue DP는 range query 일반성 기준으로 어떻게 나눠?
+- monotone deque proof의 dominated candidate가 DP 전이 최적화에서 어떻게 쓰여?
+contextual_chunk_prefix: |
+  이 문서는 Monotone Queue DP advanced deep dive로, DP transition이 최근 k개
+  상태의 minimum/maximum 같은 sliding window optimum에 의존할 때 monotone
+  deque로 후보를 유지해 O(nk)를 O(n) 근처로 줄이는 패턴을 설명한다.
+---
 # Monotone Queue DP
 
 > 한 줄 요약: Monotone Queue DP는 DP 전이식이 슬라이딩 윈도우 최적값으로 바뀔 때 단조 덱으로 상태를 최적화하는 패턴이다.

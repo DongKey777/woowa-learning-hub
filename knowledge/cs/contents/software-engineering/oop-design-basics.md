@@ -1,6 +1,81 @@
+---
+schema_version: 3
+title: 객체지향 설계 기초
+concept_id: software-engineering/oop-design-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- oop-role-responsibility
+- encapsulation-polymorphism-abstraction
+- composition-over-inheritance
+aliases:
+- OOP design basics
+- 객체지향 설계 기초
+- 객체지향 4원칙
+- 캡슐화 상속 다형성 추상화
+- 역할과 책임
+- 객체 협력
+- Tell Dont Ask
+- composition over inheritance
+symptoms:
+- 클래스를 현실 명사 기준으로만 나누고 시스템 안의 책임과 메시지를 보지 못하고 있어
+- getter로 상태를 꺼내 외부에서 판단하는 코드를 객체지향이라고 오해하고 있어
+- 상속을 코드 재사용 도구로 먼저 떠올리고 조합이나 다형성 선택지를 놓치고 있어
+intents:
+- definition
+- design
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-inheritance-overriding-basics
+next_docs:
+- software-engineering/solid-principles-basics
+- design-pattern/composition-over-inheritance-basics
+- language/java-abstract-class-vs-interface-basics
+- software-engineering/service-layer-basics
+linked_paths:
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/software-engineering/solid-principles-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- software-engineering/solid-principles-basics
+- design-pattern/composition-over-inheritance-basics
+- language/java-abstract-class-vs-interface-basics
+forbidden_neighbors: []
+expected_queries:
+- 객체지향 설계에서 역할과 책임을 기준으로 클래스를 나누는 이유는 뭐야?
+- 캡슐화, 상속, 다형성, 추상화는 각각 어떤 설계 문제를 줄여?
+- getter로 상태를 꺼내 외부에서 판단하면 캡슐화가 깨지는 이유는 뭐야?
+- 상속보다 조합을 먼저 고려해야 하는 신호는 뭐야?
+- instanceof 분기가 많으면 다형성 관점에서 어떤 냄새가 나?
+contextual_chunk_prefix: |
+  이 문서는 OOP design beginner primer로, role/responsibility, object collaboration, encapsulation, inheritance, polymorphism, abstraction, Tell Don't Ask, composition over inheritance를 설명한다.
+  객체지향 설계, 캡슐화, 다형성, 상속 언제, 객체 책임, getter 남용 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 객체지향 설계 기초 (OOP Design Basics)
 
 > 한 줄 요약: 객체지향 설계는 현실의 역할과 책임을 객체 단위로 나눠 협력하게 만드는 방식이며, 캡슐화·상속·다형성·추상화가 그 네 기둥이다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "클래스를 명사대로 나눴는데 책임이 어색해요" | baseball `Game`, `Player`, `Referee` 이름은 있지만 누가 판정하고 상태를 바꾸는지 흐린 코드 | 현실 명사보다 시스템 안 메시지와 책임을 먼저 본다 |
+| "getter로 꺼내서 service에서 다 판단해도 되나요?" | lotto 번호, blackjack 점수, cart 수량을 밖에서 꺼내 if문으로 검사하는 구조 | Tell Don't Ask와 캡슐화 위반 신호를 잡는다 |
+| "상속으로 중복을 없애면 객체지향인가요?" | controller/service 공통 코드를 부모 클래스로 올려 흐름이 묶이는 설계 | 재사용 목적 상속보다 조합과 다형성 후보를 먼저 검토한다 |
 
 **난이도: 🟢 Beginner**
 

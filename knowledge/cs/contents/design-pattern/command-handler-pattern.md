@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Command Handler Pattern
+concept_id: design-pattern/command-handler-pattern
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- command-handler
+- validation-placement
+- usecase-flow
+aliases:
+- command handler pattern
+- command handler validation flow
+- request validator in command handler
+- aggregate invariant in command handler
+- policy object in command handler
+- layered validation command handler
+- handler validation order
+- 커맨드 핸들러
+- 검증 위치
+symptoms:
+- Command Handler를 모든 검증과 비즈니스 규칙을 몰아넣는 큰 service class로 만든다
+- request validator, policy object, aggregate invariant가 맡는 실패 의미를 구분하지 못한다
+- 입력 형식은 정상인데 현재 aggregate 상태에서 금지된 전이를 validator에서 잡으려 한다
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- design-pattern/layered-validation-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/policy-object-pattern
+next_docs:
+- design-pattern/invariant-preserving-command-model
+- design-pattern/command-bus-pattern
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/layered-validation-pattern.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/invariant-preserving-command-model.md
+- contents/language/java/object-oriented-core-principles.md
+confusable_with:
+- design-pattern/layered-validation-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/command-bus-pattern
+forbidden_neighbors: []
+expected_queries:
+- Command Handler에서 request validator, policy object, aggregate invariant는 어떤 순서로 책임을 나눠?
+- 입력 validation이 있는데 aggregate invariant guard가 또 필요한 이유가 뭐야?
+- Command Handler를 큰 서비스로 만들지 않고 usecase 흐름을 조립하는 방식은 어떻게 설계해?
+- 정책 판단은 policy object에 두고 현재 상태 전이 규칙은 aggregate에 두는 기준이 뭐야?
+- command handler에서 validation placement를 어디에 둘지 초보자 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Command Handler Pattern playbook으로, command side usecase에서
+  request validator는 입력 형식, policy object는 외부 조건이 섞인 실행 가능성,
+  aggregate invariant는 현재 상태 전이 규칙을 순서대로 담당하도록 검증 위치를 나누는
+  방법을 설명한다.
+---
 # Command Handler Pattern: 검증을 어디에 두는가
 
 > 한 줄 요약: Command Handler는 검증을 한곳에 몰아넣는 클래스가 아니라, request validator, policy object, aggregate invariant를 순서대로 연결하는 유스케이스 흐름이다.

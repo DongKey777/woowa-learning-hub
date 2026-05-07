@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart checkout은 "요청을 받아 결제사를 부르고 주문 상태를 확정하는 한 번의 유스케이스"라서 Service가 흐름을 조립하는 편이 자연스럽다. Controller는 HTTP 입출력, Domain은 규칙, Repository는 저장을 맡고 Service가 그 사이 순서를 묶는다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "컨트롤러에서 결제 API까지 불러도 되나요?" | `CheckoutController`가 PaymentClient와 Repository를 직접 조합 | HTTP 입구와 checkout 유스케이스 orchestration을 분리한다 |
+| "주문 저장과 결제 승인 순서를 어디서 묶어야 하나요?" | pending order, payment approval, confirm 흐름 | Service가 여러 협력자를 조합해 한 유스케이스 순서를 만든다 |
+| "service가 DTO만 넘기고 너무 얇은데 맞나요?" | 얇은 service와 도메인/외부 client 책임이 헷갈리는 단계 | 얇아 보여도 순서 조립과 경계 유지가 Service 책임임을 본다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 초반 구현은 Controller가 `request`를 해석한 뒤 `PaymentClient`를 직접 호출하고, 성공하면 `OrderRepository.save()`까지 이어서 부르는 모양으로 자주 시작한다. 한 파일에서 다 보이니 빨라 보이지만, 리뷰에서는 "웹 계층이 결제 흐름과 저장 순서를 모두 안다"는 지적을 받기 쉽다.

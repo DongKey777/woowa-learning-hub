@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Semaphore CountDownLatch CyclicBarrier Phaser Coordination Semantics
+concept_id: language/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- concurrency
+- coordination
+- semaphore
+aliases:
+- Semaphore CountDownLatch CyclicBarrier Phaser Coordination Semantics
+- Java coordination primitive chooser
+- Semaphore permit CountDownLatch one-shot
+- CyclicBarrier rendezvous Phaser phase
+- permit leak broken barrier startup hang
+- 자바 동시성 coordination primitive
+symptoms:
+- Semaphore CountDownLatch CyclicBarrier Phaser를 모두 스레드 대기 도구로만 묶어 permit control, one-shot gate, rendezvous, phase progression 의미 차이를 놓쳐
+- CountDownLatch를 반복 round에 쓰거나 CyclicBarrier 실패 경로를 처리하지 않아 startup hang, broken barrier, retry 꼬임을 만들어
+- Semaphore permit ownership이 lock과 다르다는 점을 모르고 release 누락이나 double release로 bulkhead permit leak을 만든다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-concurrency-utilities
+- language/thread-interruption-cooperative-cancellation-playbook
+- language/wait-notify-condition-spurious-wakeup-lost-signal
+next_docs:
+- language/locksupport-park-unpark-permit-semantics
+- language/remote-bulkhead-metrics-under-virtual-threads
+- language/executor-sizing-queue-rejection-policy
+linked_paths:
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- language/locksupport-park-unpark-permit-semantics
+- language/wait-notify-condition-spurious-wakeup-lost-signal
+- language/java-concurrency-utilities
+forbidden_neighbors: []
+expected_queries:
+- Semaphore CountDownLatch CyclicBarrier Phaser는 각각 무엇을 세고 기다리는 도구야?
+- Semaphore는 lock이 아니라 ownership 없는 permit라서 permit leak double release를 조심해야 하는 이유가 뭐야?
+- CountDownLatch는 one-shot gate라 반복 라운드에는 왜 맞지 않을 수 있어?
+- CyclicBarrier는 rendezvous라 참가자 실패나 interrupt 때 broken barrier를 어떻게 처리해야 해?
+- Phaser는 phase와 dynamic registration을 다룰 수 있지만 언제 과한 선택이야?
+contextual_chunk_prefix: |
+  이 문서는 Semaphore, CountDownLatch, CyclicBarrier, Phaser를 permit control, one-shot gate, rendezvous barrier, multi-phase progression으로 구분하는 advanced chooser다.
+  Semaphore, CountDownLatch, CyclicBarrier, Phaser, permit leak, broken barrier 질문이 본 문서에 매핑된다.
+---
 # `Semaphore`, `CountDownLatch`, `CyclicBarrier`, and `Phaser` Coordination Semantics
 
 > 한 줄 요약: 이 도구들은 모두 "스레드를 기다리게 한다"는 공통점이 있지만 의미가 전혀 다르다. permit 제어, one-shot 완료 대기, rendezvous barrier, 다단계 phase 진행을 섞어 쓰면 startup hang, permit leak, broken barrier, 재시도 꼬임이 생긴다.

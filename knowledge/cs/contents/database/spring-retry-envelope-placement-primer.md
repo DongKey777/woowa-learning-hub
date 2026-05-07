@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Spring Retry Envelope Placement Primer
+concept_id: database/spring-retry-envelope-placement-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- spring
+- retry
+- transactional
+- proxy
+- beginner
+aliases:
+- Spring retry envelope placement
+- Spring retry outside transaction
+- retry outside @Transactional
+- @Transactional retry beginner
+- rollback-only retry same transaction
+- UnexpectedRollbackException retry
+- fresh transaction per attempt
+- Spring retry before after
+- deadlock whole transaction retry
+- serialization failure whole transaction retry
+symptoms:
+- retry를 @Transactional 안에서 돌려 실패한 transaction을 되살릴 수 있다고 생각하고 있어
+- deadlock이나 serialization failure는 SQL 한 줄이 아니라 fresh transaction per attempt로 다시 시작해야 해
+- UnexpectedRollbackException이 나는 이유를 rollback-only transaction과 retry 위치로 설명해야 해
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- database/spring-retry-proxy-boundary-pitfalls
+- database/transaction-retry-serialization-failure-patterns
+next_docs:
+- database/idempotent-transaction-retry-envelopes
+- database/postgresql-serializable-retry-playbook
+- database/transaction-boundary-external-io-checklist
+linked_paths:
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+confusable_with:
+- database/spring-retry-proxy-boundary-pitfalls
+- database/idempotent-transaction-retry-envelopes
+- database/transaction-retry-serialization-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 retry는 @Transactional 안이 아니라 바깥 envelope에서 새 transaction per attempt로 감싸야 하는 이유가 뭐야?
+- rollback-only transaction 안에서 loop를 돌면 왜 UnexpectedRollbackException이나 오염된 상태 반복이 생겨?
+- deadlock과 serialization failure는 SQL 한 줄 재시도가 아니라 whole transaction retry라는 말을 초보자에게 설명해줘
+- retry facade는 바깥, transactional service는 안쪽으로 나누는 before after 예제를 보여줘
+- @Retryable과 @Transactional을 어디에 배치해야 fresh read fresh write attempt가 돼?
+contextual_chunk_prefix: |
+  이 문서는 Spring retry envelope placement를 retry outside @Transactional, fresh transaction per attempt, rollback-only retry, UnexpectedRollbackException 관점으로 설명하는 beginner primer다.
+  Spring retry 바깥 경계, @Transactional retry beginner, deadlock whole transaction retry 질문이 본 문서에 매핑된다.
+---
 # Spring Retry Envelope 위치 Primer
 
 > 한 줄 요약: Spring에서 retry는 실패한 `@Transactional` 안을 되살리는 장치가 아니라, **트랜잭션 한 번의 시도 바깥에서 새 시도를 다시 시작하는 경계**다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Migration Funding Model
+concept_id: software-engineering/migration-funding-model
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- migration
+- funding
+- modernization
+- budget
+aliases:
+- Migration Funding Model
+- migration funding
+- modernization investment budget
+- transformation budget ownership
+- dual-run cost funding
+- migration ROI funding model
+symptoms:
+- migration을 제품 개발의 남는 시간이나 각 팀 로드맵 여유로 처리해 funding owner와 budget line이 없어 wave가 길어질수록 밀려
+- shadow compare, contract update, data backfill, training, dual-run 비용이 분산되어 누가 승인하고 유지할지 불명확해
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- software-engineering/migration-carrying-cost-delay
+- software-engineering/architecture-runway
+next_docs:
+- software-engineering/migration-wave-governance
+- software-engineering/migration-scorecards
+- software-engineering/migration-stop-loss-governance
+linked_paths:
+- contents/software-engineering/brownfield-strangler-org-model.md
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/migration-scorecards.md
+- contents/software-engineering/architecture-runway-refactoring-window.md
+- contents/software-engineering/architectural-debt-interest-model.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/migration-carrying-cost-cost-of-delay.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+confusable_with:
+- software-engineering/migration-carrying-cost-delay
+- software-engineering/migration-wave-governance
+- software-engineering/architecture-runway
+forbidden_neighbors: []
+expected_queries:
+- migration funding model은 전환을 남는 일이 아니라 별도 예산과 책임으로 다루는 방식이라고 설명해줘
+- dual-run, shadow compare, contract adoption, backfill 비용을 누가 부담할지 어떻게 정해야 해?
+- migration ROI를 단기 기능 가치가 아니라 장애 감소, 운영 단순화, 배포 속도 개선까지 포함해 보는 이유가 뭐야?
+- funding owner와 budget line이 없으면 modernization이 왜 계속 밀리는지 알려줘
+- migration budget을 wave exit criteria와 scorecard, release train에 연결하려면 어떻게 해?
+contextual_chunk_prefix: |
+  이 문서는 migration과 modernization을 남는 시간이 아니라 dedicated budget, funding owner, ROI, dual-run cost allocation으로 운영하는 advanced playbook이다.
+---
 # Migration Funding Model
 
 > 한 줄 요약: migration funding model은 전환 작업을 "남는 일"로 취급하지 않고, 별도 예산과 책임으로 관리해 지속 가능한 전환을 가능하게 하는 재정 모델이다.

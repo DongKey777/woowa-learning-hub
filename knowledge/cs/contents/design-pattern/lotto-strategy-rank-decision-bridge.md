@@ -29,13 +29,23 @@ prerequisites:
 linked_paths:
 - contents/design-pattern/strategy-pattern-basics.md
 - contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/strategy-explosion-smell.md
 forbidden_neighbors:
 - contents/design-pattern/strategy-explosion-smell.md
+confusable_with:
+- design-pattern/strategy-pattern-basics
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/strategy-explosion-smell
 expected_queries:
 - 로또 등수 결정에 if 6개를 쓰는 게 맞아 enum이 맞아?
 - LottoRank를 enum으로 둘지 Strategy로 둘지 어떻게 골라?
 - 일치 개수랑 보너스 매칭 분기를 깔끔하게 하려면 어떻게?
 - 로또 당첨 결정 로직이 길어지는데 패턴이 필요해?
+contextual_chunk_prefix: |
+  이 문서는 lotto 미션의 당첨 등수 결정 로직에서 enum, Strategy, 단순 분기
+  중 무엇이 자연스러운지 판단하는 mission_bridge다. LottoRank, 일치 개수와
+  보너스 매칭, if-else 분기 냄새, Strategy 패턴 도입 여부 같은 질의를
+  과한 패턴 도입 방지와 도메인 규칙 모델링 관점으로 연결한다.
 ---
 
 # lotto 당첨 등수 결정 로직에서 Strategy 패턴이 어울리는 이유
@@ -45,6 +55,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: lotto (Woowa Java 트랙) — 결과 산출 단계
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "등수 결정 if문이 길어지는데 Strategy를 써야 하나요?" | `matchCount`, `bonusMatched`로 1등~미당첨을 분기하는 lotto 결과 코드 | 행동 알고리즘 교체인지, 닫힌 등수표 매핑인지 먼저 구분한다 |
+| "`Rank` enum이랑 Strategy 중 뭐가 맞는지 모르겠어요" | 등수/상금/보너스 여부가 닫힌 규칙인데 패턴 이름부터 고르는 상황 | lotto 등수는 enum 데이터와 정적 매칭 메소드가 보통 더 자연스럽다 |
+| "패턴을 넣으면 if문이 줄어드니까 좋은 거 아닌가요?" | 작은 닫힌 분기를 전략 클래스로 과하게 쪼개려는 설계 | 분기 제거보다 변경 축과 확장 가능성이 실제로 있는지 먼저 본다 |
 
 관련 문서:
 

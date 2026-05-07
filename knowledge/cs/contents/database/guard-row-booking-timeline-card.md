@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Guard Row Booking Timeline Card
+concept_id: database/guard-row-booking-timeline-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- guard-row-booking-timeline
+- constraint-first-booking-order
+- existing-row-queue-surface
+aliases:
+- guard row booking timeline
+- when to use guard row
+- guard row for update booking
+- constraint first booking
+- booking locking timeline
+- slot row vs guard row
+- exclusion constraint vs guard row
+- guard row 처음
+- 언제 guard row
+- 예약 guard row
+symptoms:
+- 예약 동시성 문제를 보자마자 base booking table에 FOR UPDATE를 붙이려 하고 있어
+- UNIQUE, slot row, exclusion constraint, guard row 순서를 구분하지 못하고 있어
+- 0 row FOR UPDATE와 existing guard row queue를 같은 방식으로 이해하고 있어
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- database/constraint-first-booking-primer
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+next_docs:
+- database/booking-guard-row-retry-card
+- database/guard-row-scope-quick-examples
+- database/phantom-safe-booking-patterns-primer
+- database/guard-row-contention-observability-cheatsheet
+linked_paths:
+- contents/database/constraint-first-booking-primer.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/booking-guard-row-retry-card.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/guard-row-scope-quick-examples.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/system-design/inventory-reservation-system-design.md
+confusable_with:
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/phantom-safe-booking-patterns-primer
+forbidden_neighbors: []
+expected_queries:
+- 예약 동시성 문제에서 UNIQUE, slot row, exclusion constraint, guard row는 어떤 순서로 고려해야 해?
+- guard row FOR UPDATE는 언제 쓰고 0 row FOR UPDATE와 무엇이 달라?
+- constraint-first booking이 먼저이고 guard row가 나중인 이유를 초보자 기준으로 설명해줘
+- room_type day 재고처럼 여러 write path를 같은 대표 key로 직렬화해야 할 때 guard row를 쓰는 이유는 뭐야?
+- slot row와 guard row 중 예약 재고 모델에 무엇이 더 맞는지 timeline으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 예약 동시성에서 UNIQUE, slot row, PostgreSQL exclusion constraint, guard row FOR UPDATE를 어떤 순서로 선택할지 설명하는 beginner chooser다.
+  guard row booking timeline, constraint first booking, slot row vs guard row, 0 row FOR UPDATE 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Guard Row Booking Timeline Card
 
 > 한 줄 요약: 예약 동시성 문제를 처음 보면 `FOR UPDATE`부터 붙이기 쉽지만, beginner 기준 더 안전한 순서는 `UNIQUE` -> slot row -> exclusion constraint -> guard row이고, guard row는 이 앞선 선택지들로 충돌 truth를 더 이상 깔끔하게 표현하기 어려울 때 등장한다.

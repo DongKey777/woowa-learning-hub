@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: HashMap vs LinkedHashMap vs TreeMap Key Contract Bridge
+concept_id: language/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-implementation
+- key-contract
+- mutable-key
+aliases:
+- HashMap LinkedHashMap TreeMap key contract bridge
+- Java Map key contract beginner
+- HashMap LinkedHashMap TreeMap comparison
+- Map lookup rule iteration order
+- immutable key map
+- 자바 HashMap LinkedHashMap TreeMap 비교
+symptoms:
+- HashMap LinkedHashMap TreeMap 차이를 반복 순서만으로 보거나 key lookup contract 차이를 놓쳐
+- LinkedHashMap은 순서가 있으니 key lookup이 더 안전할 것이라고 오해하지만 HashMap과 같은 equals/hashCode 규칙을 쓴다는 점을 모른다
+- TreeMap은 compareTo/Comparator 기준으로 key를 찾고, 세 구현체 모두 key 기준 필드가 안정적이어야 한다는 공통점을 놓쳐
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+next_docs:
+- language/hashmap-vs-treemap-beginner-selection-bridge
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+- language/hashmap-treemap-mutable-key-lookup-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/hashmap-vs-treemap-beginner-selection-bridge.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/stable-id-map-key-primer.md
+- contents/language/java/java-comparable-comparator-basics.md
+confusable_with:
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+- language/hashmap-vs-treemap-beginner-selection-bridge
+- language/hashmap-treemap-mutable-key-lookup-primer
+forbidden_neighbors: []
+expected_queries:
+- HashMap LinkedHashMap TreeMap은 key를 어떤 규칙으로 찾고 어떤 순서로 반복하는지 비교해줘
+- LinkedHashMap은 HashMap과 lookup 규칙은 같고 iteration order만 다른지 설명해줘
+- TreeMap은 compareTo나 Comparator로 key 자리를 찾는다는 뜻이야?
+- HashMap LinkedHashMap TreeMap 모두 key 기준 필드가 map 안에서 안정적이어야 하는 이유가 뭐야?
+- Java Map 구현체 선택을 key contract와 iteration order로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 HashMap, LinkedHashMap, TreeMap key contract를 equals/hashCode lookup, insertion/access order, compareTo/Comparator ordered lookup, immutable key stability 관점으로 설명하는 beginner primer다.
+  HashMap LinkedHashMap TreeMap comparison, Map key contract, iteration order, mutable key 질문이 본 문서에 매핑된다.
+---
 # HashMap vs LinkedHashMap vs TreeMap Key Contract Bridge
 
 > 한 줄 요약: `HashMap`과 `LinkedHashMap`은 `equals()`/`hashCode()`로 key를 찾고, `TreeMap`은 `compareTo()`/`Comparator`로 key를 찾으며, 세 구현체 모두 key 기준 필드는 map 안에 있는 동안 안정적이어야 한다.

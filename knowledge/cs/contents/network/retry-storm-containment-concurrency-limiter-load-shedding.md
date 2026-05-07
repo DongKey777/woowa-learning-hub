@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Retry Storm Containment, Concurrency Limiter, Load Shedding"
+concept_id: network/retry-storm-containment-concurrency-limiter-load-shedding
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- retry-storm
+- load-shedding
+- concurrency-limiter
+aliases:
+- retry storm containment
+- concurrency limiter
+- load shedding
+- queue cap
+- fail-fast
+- overload control
+- retry amplification
+- adaptive concurrency
+symptoms:
+- retry budget만 있으면 retry storm이 자동으로 제어된다고 생각한다
+- 이미 늦은 요청을 queue 안에 오래 살려 timeout budget과 retry를 증폭시킨다
+- 429/503 local shedding을 장애로만 보고 healthy path 보호 목적을 놓친다
+- status code만 보고 local rate limit, no healthy upstream, adaptive reject retry 정책을 똑같이 둔다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/proxy-retry-budget-discipline
+- network/alb-elb-retry-amplification-proxy-chain
+next_docs:
+- network/upstream-queueing-connection-pool-wait-tail-latency
+- network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+linked_paths:
+- contents/network/proxy-retry-budget-discipline.md
+- contents/network/alb-elb-retry-amplification-proxy-chain.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md
+confusable_with:
+- network/proxy-retry-budget-discipline
+- network/upstream-queueing-connection-pool-wait-tail-latency
+- network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors: []
+expected_queries:
+- "retry storm을 retry budget만으로 막기 어려운 이유는?"
+- "concurrency limiter queue cap load shedding fail-fast를 어떻게 같이 써?"
+- "overload 상황에서 일부 503 shedding이 healthy path 보호일 수 있는 이유는?"
+- "retry가 pending queue와 tail latency를 어떻게 증폭시켜?"
+- "local rate limit 429와 adaptive concurrency 503은 retry 정책이 왜 달라야 해?"
+contextual_chunk_prefix: |
+  이 문서는 retry storm containment에서 retry budget, concurrency limiter,
+  queue cap, local shedding, fail-fast, healthy path protection을 다루는
+  advanced playbook이다.
+---
 # Retry Storm Containment, Concurrency Limiter, Load Shedding
 
 > 한 줄 요약: retry budget만으로는 이미 시작된 폭풍을 다 막지 못한다. overload 구간에서는 concurrency limiter, queue cap, local shedding, fail-fast가 함께 있어야 retry가 healthy path까지 집어삼키지 않는다.

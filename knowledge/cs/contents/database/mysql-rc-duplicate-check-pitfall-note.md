@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: MySQL RC Duplicate-Check Pitfall Note
+concept_id: database/mysql-rc-duplicate-check-pitfall-note
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- read-committed
+- duplicate-check
+- unique-backstop
+- exact-key-probe
+aliases:
+- mysql rc duplicate check pitfall
+- mysql read committed duplicate race
+- rr downgrade duplicate error surge
+- read committed exact key precheck
+- duplicate precheck under RC
+- why duplicate errors increase after read committed
+- 왜 RC로 내리니 duplicate 늘어남
+- MySQL duplicate precheck beginner
+- RR에서만 duplicate check가 막혀요
+symptoms:
+- MySQL REPEATABLE READ에서 조용하던 exact-key pre-check가 READ COMMITTED 전환 뒤 duplicate-key error를 더 많이 드러내
+- UNIQUE는 그대로인데 SELECT FOR SHARE pre-check가 missing key queue를 덜 만들어 둘 다 INSERT까지 달려
+- duplicate correctness를 pre-check가 아니라 UNIQUE와 duplicate handling 중심으로 다시 정리해야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+next_docs:
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/upsert-contention-unique-index-locking
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+linked_paths:
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+confusable_with:
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/unique-vs-locking-read-duplicate-primer
+forbidden_neighbors: []
+expected_queries:
+- MySQL에서 READ COMMITTED로 내리니 duplicate key error가 늘어난 이유가 뭐야?
+- RR exact-key pre-check가 RC에서 missing key queue를 못 만드는 흐름을 초보자용으로 설명해줘
+- UNIQUE는 그대로인데 duplicate race가 INSERT 지점으로 더 많이 올라오는 이유를 알려줘
+- SELECT FOR SHARE pre-check를 correctness가 아니라 조기 감지로 봐야 하는 이유가 뭐야?
+- RC duplicate check pitfall을 upsert나 duplicate handling 중심으로 어떻게 고쳐?
+contextual_chunk_prefix: |
+  이 문서는 MySQL REPEATABLE READ exact-key pre-check가 READ COMMITTED에서 약해져 duplicate-key error가 INSERT 시점으로 더 많이 드러나는 beginner primer다.
+  RC로 내리니 duplicate 늘어남, read committed duplicate race, UNIQUE backstop 질문이 본 문서에 매핑된다.
+---
 # MySQL RC Duplicate-Check Pitfall Note
 
 > 한 줄 요약: MySQL `REPEATABLE READ`에서 exact-key duplicate pre-check가 잠깐 줄을 세워 주던 느낌은 `READ COMMITTED`로 내리면 크게 사라진다. 그래서 `UNIQUE`는 그대로인데도 duplicate race와 duplicate-key error가 더 자주 눈에 띈다.

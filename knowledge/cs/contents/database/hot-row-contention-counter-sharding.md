@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Guard-Row Hot-Row Contention Mitigation
+concept_id: database/hot-row-contention-counter-sharding
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- guard-row-hot-row-mitigation
+- striped-guard-row-counter-sharding
+- hot-aggregate-admission-surface
+aliases:
+- hot row contention
+- guard row hotspot
+- striped guard rows
+- guard row sharding
+- counter sharding
+- capacity hotspot mitigation
+- quota hotspot
+- reservation ledger fallback
+- sharded guard counter
+- hot aggregate row
+symptoms:
+- capacity guard row 하나가 전역 admission mutex가 되어 lock timeout과 p99가 치솟고 있어
+- hard invariant를 유지하면서 single guard row 경합을 striped guard row나 counter shard로 분산해야 해
+- 쓰기 경합을 줄이면 읽기 fan-in, shard rebalance, summary drift repair 비용이 생기는 tradeoff를 판단해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/guard-row-hot-row-symptoms-primer
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+next_docs:
+- database/striped-guard-row-budgeting
+- database/hot-path-slot-arbitration-choices
+- database/shared-pool-guard-design-room-type-inventory
+- database/summary-drift-detection-bounded-rebuild
+linked_paths:
+- contents/database/striped-guard-row-budgeting-primer.md
+- contents/database/hot-path-slot-arbitration-choices.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+confusable_with:
+- database/guard-row-hot-row-symptoms-primer
+- database/striped-guard-row-budgeting
+- database/summary-drift-detection-bounded-rebuild
+forbidden_neighbors: []
+expected_queries:
+- guard row hotspot을 striped guard row, counter sharding, ledger projection 중 무엇으로 완화해야 해?
+- capacity guard row가 hot aggregate row가 되면 hard invariant를 유지하면서 경합을 어떻게 분산해?
+- counter sharding은 write contention을 줄이지만 read fan-in과 shard rebalance 비용이 왜 생겨?
+- guard row sharding을 하기 전에 같은 key wait metrics로 hotspot을 어떻게 확인해?
+- ledger projection은 admission control과 audit/replay/repair에서 어떤 장단점이 있어?
+contextual_chunk_prefix: |
+  이 문서는 capacity/quota guard row가 hot aggregate mutex가 될 때 striped guard row, counter sharding, ledger projection으로 arbitration surface를 재구성하는 advanced playbook이다.
+  hot row contention, guard row hotspot, striped guard rows, counter sharding 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Guard-Row Hot-Row Contention Mitigation
 
 > 한 줄 요약: capacity나 quota를 지키는 guard row가 너무 뜨거워지면 락을 없애는 게 아니라 arbitration surface를 striped guard row, counter shard, ledger projection으로 재구성해야 한다.

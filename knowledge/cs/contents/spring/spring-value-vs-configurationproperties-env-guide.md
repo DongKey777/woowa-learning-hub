@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring Value vs ConfigurationProperties Env Guide
+concept_id: spring/value-vs-configurationproperties-env-guide
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- value-vs-configurationproperties
+- env
+- env-var-binding
+- configurationproperties-prefix
+aliases:
+- @Value vs @ConfigurationProperties
+- env var binding guide
+- ConfigurationProperties prefix
+- single property vs grouped config
+- relaxed binding config bean
+intents:
+- comparison
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-configurationproperties-binding-internals.md
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-spring-application-json-primer.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+confusable_with:
+- spring/configurationproperties-binding-internals
+- spring/relaxed-binding-env-var-cheatsheet
+- spring/spring-application-json-primer
+expected_queries:
+- Spring에서 @Value와 @ConfigurationProperties 중 무엇으로 env var를 읽어야 해?
+- 설정 값 하나면 @Value, prefix 아래 여러 값이면 ConfigurationProperties가 맞아?
+- ConfigurationProperties가 초급자에게 더 읽기 쉬운 기준은 무엇이야?
+- 환경 변수 binding이 안 될 때 relaxed binding과 property source를 어디서 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 환경 변수 하나를 빠르게 읽을 때는 @Value도 충분하지만 같은 prefix 아래
+  설정이 여러 개 모이면 @ConfigurationProperties로 묶는 편이 더 읽기 쉽고 type-safe하다는
+  beginner chooser다.
+---
 # Spring `@Value` vs `@ConfigurationProperties` Env Guide
 
 > 한 줄 요약: 환경 변수 하나만 빠르게 읽을 때는 `@Value`로도 충분하지만, 같은 prefix 아래 설정이 2~3개 이상 모이기 시작하면 `@ConfigurationProperties`로 묶는 편이 초급자에게도 더 읽기 쉽고 덜 헷갈린다.

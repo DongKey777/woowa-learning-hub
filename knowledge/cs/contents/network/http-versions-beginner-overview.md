@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: HTTP 버전 비교 시작 가이드
+concept_id: network/http-versions-beginner-overview
+canonical: true
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- http-version-first-routing
+- h1-h2-h3-comparison
+- browser-version-selection
+aliases:
+- http version beginner overview
+- HTTP 버전 비교 시작
+- H1 H2 H3 차이
+- HTTP/1.1 HTTP/2 HTTP/3 큰 그림
+- HTTP version routing
+- browser chooses h2 or h3
+- ALPN Alt-Svc entrypoint
+- HTTP connection stream transport
+- first request h2 next request h3
+- HTTP 버전 헷갈림
+symptoms:
+- HTTP/1.1, HTTP/2, HTTP/3 차이 자체를 묻는 질문과 브라우저가 왜 특정 버전을 골랐는지 묻는 질문을 섞는다
+- connection, stream, transport, fallback 용어를 같은 층위로 읽어 H2/H3 증상을 오분류한다
+- Protocol이 h2로 보였다는 사실만 보고 H3 fallback이라고 단정한다
+intents:
+- definition
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/tcp-udp-basics
+next_docs:
+- network/http1-http2-http3-beginner-comparison
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-cache-lifecycle-basics
+- network/http2-multiplexing-hol-blocking
+linked_paths:
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/tcp-udp-basics.md
+confusable_with:
+- network/http1-http2-http3-beginner-comparison
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-cache-lifecycle-basics
+forbidden_neighbors: []
+expected_queries:
+- HTTP/1.1 HTTP/2 HTTP/3 차이를 처음 배울 때 connection stream transport 기준으로 어떻게 나눠야 해?
+- HTTP 버전 차이를 묻는 질문과 브라우저가 h2나 h3를 선택한 이유를 묻는 질문은 어떤 문서로 갈라야 해?
+- DevTools Protocol에 h2가 보이면 fallback이라고 바로 말하면 안 되는 이유가 뭐야?
+- 첫 요청은 h2인데 다음 새 연결이 h3로 바뀌는 현상을 ALPN Alt-Svc 기준으로 설명해줘
+- HTTP/2와 HTTP/3 모두 multiplexing을 하는데 QUIC transport가 왜 다른지 큰 그림으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HTTP/1.1, HTTP/2, HTTP/3 질문을 첫 분기하는 beginner bridge다.
+  connection, stream, transport, fallback, ALPN, Alt-Svc, H2/H3 browser selection, HTTP version comparison, main primer handoff를 다룬다.
+---
 # HTTP 버전 비교 시작 가이드 (3분 브리지)
 
 > 한 줄 요약: 이 문서는 빠른 방향 잡기용이고, 실제 첫 학습 엔트리는 `HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교`다.

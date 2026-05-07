@@ -33,12 +33,12 @@ intents:
 - mission_bridge
 prerequisites:
 - spring/bean-lifecycle-basics
-- spring/mvc-request-lifecycle-basics
+- spring/spring-mvc-request-lifecycle-basics
 next_docs:
 - spring/baseball-game-state-singleton-bean-scope-bridge
 - spring/bean-lifecycle-basics
 - spring/request-scope-proxy-pitfalls
-- spring/mvc-request-lifecycle-basics
+- spring/spring-mvc-request-lifecycle-basics
 linked_paths:
 - contents/spring/baseball-game-state-singleton-bean-scope-bridge.md
 - contents/spring/spring-bean-lifecycle-basics.md
@@ -64,7 +64,6 @@ contextual_chunk_prefix: |
   request마다 덱 초기화, 웹 상태 저장 위치 같은 학습자 표현을 원인별로
   연결한다.
 ---
-
 # blackjack 웹 전환 후 게임 상태 혼선 원인 라우터
 
 ## 한 줄 요약

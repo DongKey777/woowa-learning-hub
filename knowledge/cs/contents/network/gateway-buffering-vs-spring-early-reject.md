@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: "Gateway Buffering vs Spring Early Reject"
+concept_id: network/gateway-buffering-vs-spring-early-reject
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- gateway-buffering-upload
+- spring-security-early-reject
+- request-body-observability
+aliases:
+- gateway buffering vs spring early reject
+- proxy_request_buffering spring upload
+- AuthenticationEntryPoint upload 401
+- unread body observability
+- request body bytes received vs consumed
+- upload early reject bridge
+symptoms:
+- Spring Security는 3ms 만에 401을 만들었는데 edge에서는 2GB upload 후 401로 보여 서로 모순이라고 생각한다
+- proxy_request_buffering on/off가 Spring early reject의 wire-level 절약 여부를 바꾸는 점을 놓친다
+- request bytes received와 app consumed body를 같은 지표로 해석한다
+- 499 after spring reject를 client disconnect와 unread body cleanup 없이 읽는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/expect-100-continue-proxy-request-buffering
+- network/http-request-body-drain-early-reject-keepalive-reuse
+next_docs:
+- network/proxy-to-container-upload-cleanup-matrix
+- network/multipart-parsing-vs-auth-reject-boundary
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- spring/security-exceptiontranslation-entrypoint-accessdeniedhandler
+linked_paths:
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-mvc-request-lifecycle.md
+confusable_with:
+- network/expect-100-continue-proxy-request-buffering
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/multipart-parsing-vs-auth-reject-boundary
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/proxy-to-container-upload-cleanup-matrix
+forbidden_neighbors: []
+expected_queries:
+- "Spring Security는 빠르게 401을 만들었는데 gateway는 긴 upload 후 401로 보이는 이유는?"
+- "proxy_request_buffering on이면 Spring early reject가 upload 절약으로 이어지지 않을 수 있어?"
+- "request body bytes received와 consumed body를 업로드 early reject에서 어떻게 구분해?"
+- "Expect 100-continue와 gateway buffering과 AuthenticationEntryPoint를 한 체인으로 설명해줘"
+- "499 after Spring reject가 보이면 unread body cleanup과 client disconnect를 어떻게 봐?"
+contextual_chunk_prefix: |
+  이 문서는 large upload path에서 gateway/proxy buffering, Expect:
+  100-continue, Spring Security early reject, AuthenticationEntryPoint,
+  unread body drain/close, edge access log bytes를 함께 보는 advanced playbook이다.
+---
 # Gateway Buffering vs Spring Early Reject
 
 > 한 줄 요약: 업로드 경로에서 `Expect: 100-continue`, gateway request buffering, Spring Security/filter early reject, unread-body cleanup는 하나의 체인이다. 어느 홉이 body를 실제로 읽었는지 분리해 관측하지 않으면 edge의 긴 upload와 Spring의 빠른 `401/403`을 동시에 보고도 원인을 거꾸로 해석하게 된다.

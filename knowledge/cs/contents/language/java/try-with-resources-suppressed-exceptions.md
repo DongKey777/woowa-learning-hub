@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Try With Resources and Suppressed Exceptions
+concept_id: language/try-with-resources-suppressed-exceptions
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/payment
+review_feedback_tags:
+- exception-handling
+- resource-cleanup
+- io
+aliases:
+- Try-With-Resources and Suppressed Exceptions
+- Java try-with-resources suppressed exception
+- AutoCloseable close exception masking
+- primary exception suppressed exception
+- JDBC file socket close failure
+- 자바 try-with-resources suppressed exception
+symptoms:
+- try-with-resources 본문 예외와 close 예외가 동시에 날 때 close 예외만 보고 primary exception을 놓쳐 장애 원인을 반대로 해석해
+- finally에서 수동 close를 하며 close 누락, 중복 close, 원인 예외 masking을 만들어 try-with-resources의 suppressed exception semantics를 활용하지 않아
+- 로깅에서 suppressed exceptions를 버려 close 실패가 커넥션 풀 고갈이나 파일 핸들 누수 신호일 수 있다는 정보를 잃어
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/io-nio-serialization
+- language/oom-heap-dump-playbook
+- language/java-exception-handling-basics
+next_docs:
+- language/phantom-weak-soft-references
+- language/cleaner-vs-finalize-deprecation
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+confusable_with:
+- language/io-nio-serialization
+- language/phantom-weak-soft-references
+- language/cleaner-vs-finalize-deprecation
+forbidden_neighbors: []
+expected_queries:
+- try-with-resources에서 본문 예외와 close 예외가 동시에 나면 suppressed exception은 어떻게 읽어야 해?
+- finally 수동 close보다 try-with-resources가 원인 예외 masking을 줄이는 이유가 뭐야?
+- 여러 resource는 선언 역순으로 close되고 close failure는 suppressed로 붙는다는 뜻을 설명해줘
+- 로그에서 suppressed exceptions를 버리면 close 실패나 resource leak 신호를 놓칠 수 있어?
+- JDBC file socket cleanup에서 primary exception과 suppressed close exception을 어떻게 분석해?
+contextual_chunk_prefix: |
+  이 문서는 try-with-resources와 AutoCloseable close failure가 primary exception과 suppressed exception으로 기록되는 방식을 resource cleanup 진단 관점에서 설명하는 advanced playbook이다.
+  try-with-resources, suppressed exception, AutoCloseable, close failure, primary exception 질문이 본 문서에 매핑된다.
+---
 # Try-With-Resources and Suppressed Exceptions
 
 > 한 줄 요약: try-with-resources는 자원 해제를 자동화하지만, 본문 예외와 close 예외가 동시에 나올 수 있으므로 suppressed exceptions를 읽지 못하면 장애 원인을 반대로 해석할 수 있다.

@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Fsync Batching Semantics
+concept_id: operating-system/fsync-batching-semantics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- fsync-batching-semantics
+- durability-batching
+- group-commit-fsync
+- batch-size-fsync
+aliases:
+- fsync batching semantics
+- durability batching
+- group commit fsync
+- batch size fsync latency
+- data loss window
+- directory fsync crash consistency
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/dirty-page-ratios-writeback-tuning.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+- contents/operating-system/rename-atomicity-directory-fsync-crash-consistency.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+symptoms:
+- fsync를 매 요청마다 호출해 tail latency가 커지거나, 너무 모아 data loss window가 커진다.
+- batching으로 throughput은 좋아졌지만 durability acknowledgement 의미가 불명확해졌다.
+- directory fsync나 rename atomicity까지 포함한 crash consistency 경계를 놓친다.
+expected_queries:
+- fsync batching은 latency와 durability loss window를 어떻게 trade-off해?
+- group commit처럼 여러 write를 묶어 fsync할 때 acknowledgement 의미는 무엇이야?
+- batch size와 timing을 잘못 잡으면 왜 지연과 데이터 손실 위험을 동시에 키워?
+- rename atomicity와 directory fsync까지 durability contract에 포함해야 해?
+contextual_chunk_prefix: |
+  이 문서는 fsync batching을 여러 write 결과를 묶어 durability를 확보하는 전략으로 보되,
+  batch size와 timing, acknowledgement semantics, crash consistency, data loss window를 함께
+  설계해야 한다는 점을 설명한다.
+---
 # Fsync Batching Semantics
 
 > 한 줄 요약: fsync batching은 여러 쓰기 결과를 묶어 내구성을 확보하는 전략이지만, 배치 크기와 타이밍을 잘못 잡으면 지연과 데이터 손실 위험을 동시에 키운다.

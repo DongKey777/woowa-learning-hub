@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Runbook, Playbook, Automation Boundaries
+concept_id: software-engineering/runbook-playbook-automation-boundaries
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- runbook
+- playbook
+- automation
+- incident-response
+aliases:
+- runbook playbook automation boundary
+- runbook vs playbook
+- safe automation boundary
+- operational procedure guide
+- operator decision point
+- 운영 런북 플레이북 자동화 경계
+symptoms:
+- 모든 운영 문서를 runbook이라고 불러 절차, 판단 기준, 자동화 가능 범위가 서로 섞여
+- 자동화가 불완전한 정보로 데이터 변경이나 외부 결제 중단 같은 되돌리기 어려운 판단까지 맡아
+- runbook에 선행 조건, 기대 결과, 실패 시 다음 단계, 중단 조건이 없어 장애 중 따라 하기 어렵다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/incident-review-learning-loop
+- software-engineering/deployment-rollout-strategy
+next_docs:
+- software-engineering/kill-switch-fast-fail
+- software-engineering/operational-readiness-drills-and-change-safety
+- software-engineering/shadow-process-catalog-entry-schema
+linked_paths:
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+confusable_with:
+- software-engineering/kill-switch-fast-fail
+- software-engineering/incident-review-learning-loop
+- software-engineering/operational-readiness-drills-and-change-safety
+forbidden_neighbors: []
+expected_queries:
+- runbook, playbook, automation은 운영 대응에서 각각 어떤 책임을 가져야 해?
+- 어떤 장애 대응 절차는 자동화해도 되고 어떤 판단은 operator decision point로 남겨야 해?
+- 좋은 runbook에는 선행 조건, 명령어, 기대 결과, 실패 시 다음 단계가 왜 필요해?
+- kill switch 자동화는 어디까지 맡기고 사람의 resume 판단은 어디에 남겨야 해?
+- 운영 문서가 실행 로그와 drill 결과를 통해 낡지 않게 유지되는 구조를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Runbook, Playbook, Automation Boundaries를 다루는 chooser 문서다. runbook playbook automation boundary, runbook vs playbook, safe automation boundary, operational procedure guide, operator decision point 같은 lexical 표현과 runbook, playbook, automation은 운영 대응에서 각각 어떤 책임을 가져야 해?, 어떤 장애 대응 절차는 자동화해도 되고 어떤 판단은 operator decision point로 남겨야 해? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Runbook, Playbook, Automation Boundaries
 
 > 한 줄 요약: Runbook은 사람이 따라 하는 복구 절차이고, playbook은 판단 기준을 묶은 대응 프레임이며, automation은 그중 안전하게 기계가 대신할 수 있는 부분만 맡는다.

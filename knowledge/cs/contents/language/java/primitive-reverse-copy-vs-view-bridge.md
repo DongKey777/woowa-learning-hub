@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Primitive Reverse Copy vs View Bridge
+concept_id: language/primitive-reverse-copy-vs-view-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- arrays
+- reverse
+- copy
+aliases:
+- Primitive Reverse Copy vs View Bridge
+- Java primitive array reverse copy vs backward iteration
+- int array reverse or iterate backwards
+- primitive array descending view idea
+- reverse array physically or just loop backwards
+- 자바 primitive 배열 뒤집기 vs 뒤에서 순회
+symptoms:
+- 출력만 거꾸로 필요할 때도 배열을 실제로 뒤집어 원본 순서와 binarySearch 전제를 깨뜨려
+- 원본은 유지해야 하는데 in-place reverse를 사용해 이후 로직이나 다른 참조가 같은 배열 변경의 영향을 받아
+- primitive 배열에는 descending view API가 없다는 점과 for loop 방향을 바꿔 view처럼 읽을 수 있다는 점을 구분하지 못해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-array-copy-clone-basics
+- language/java-arrays-method-choice-30-second-card
+- language/primitive-descending-array-sort-bridge
+next_docs:
+- language/primitive-array-descending-binarysearch-primer
+- language/descending-view-mental-model
+- language/java-array-copy-clone-basics
+linked_paths:
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-arrays-method-choice-30-second-card.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/primitive-descending-array-sort-bridge.md
+- contents/language/java/primitive-array-descending-binarysearch-primer.md
+- contents/language/java/descending-view-mental-model.md
+confusable_with:
+- language/primitive-descending-array-sort-bridge
+- language/primitive-array-descending-binarysearch-primer
+- language/descending-view-mental-model
+forbidden_neighbors: []
+expected_queries:
+- primitive 배열을 거꾸로 보여주기만 할 때 실제로 reverse하지 말고 뒤에서부터 순회하는 게 왜 좋아?
+- int 배열 원본은 유지하고 반대 순서 배열이 필요하면 reversed copy를 어떻게 만들면 돼?
+- 배열을 in-place reverse해야 하는 경우와 backward iteration이면 충분한 경우를 비교해줘
+- primitive 배열에는 descendingSet 같은 live view가 없지만 for loop로 view처럼 읽을 수 있다는 뜻이 뭐야?
+- reverse array를 한 뒤 binarySearch를 쓰면 검색 전제가 왜 깨질 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 primitive 배열을 거꾸로 다룰 때 backward iteration, reversed copy, in-place reverse를 요구와 mutation 범위에 따라 고르는 beginner chooser다.
+  primitive array reverse, backward iteration, reversed copy, in-place reverse, descending view idea 질문이 본 문서에 매핑된다.
+---
 # Primitive Reverse Copy vs View Bridge
 
 > 한 줄 요약: primitive 배열을 거꾸로 다루고 싶을 때는 항상 배열을 뒤집을 필요가 없다. **읽기만 거꾸로면 뒤에서부터 순회하고, 독립된 반대 순서 배열이 필요하면 복사해서 뒤집고, 원본 순서 자체를 바꿔야 할 때만 실제 배열을 뒤집는 것**이 초보자에게 가장 안전하다.

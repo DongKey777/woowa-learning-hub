@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: SCIM Drift / Reconciliation
+concept_id: security/scim-drift-reconciliation
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- SCIM drift
+- reconciliation
+- identity sync
+- directory sync
+aliases:
+- SCIM drift
+- reconciliation
+- identity sync
+- directory sync
+- diff
+- backfill
+- orphan account
+- entitlement reconciliation
+- deprovisioning lag
+- source of truth
+- authz consistency
+- cleanup evidence
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/scim-provisioning-security.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SCIM Drift / Reconciliation 핵심 개념을 설명해줘
+- SCIM drift가 왜 필요한지 알려줘
+- SCIM Drift / Reconciliation 실무 설계 포인트는 뭐야?
+- SCIM drift에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SCIM Drift / Reconciliation를 다루는 deep_dive 문서다. SCIM drift는 IdP와 서비스의 사용자, 그룹, 역할 상태가 어긋나는 현상이며, reconciliation은 그 차이를 안전하게 되돌리는 작업이다. 검색 질의가 SCIM drift, reconciliation, identity sync, directory sync처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SCIM Drift / Reconciliation
 
 > 한 줄 요약: SCIM drift는 IdP와 서비스의 사용자, 그룹, 역할 상태가 어긋나는 현상이며, reconciliation은 그 차이를 안전하게 되돌리는 작업이다.

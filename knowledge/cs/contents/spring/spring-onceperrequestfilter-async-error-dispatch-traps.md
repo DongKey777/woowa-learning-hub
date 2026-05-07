@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Spring OncePerRequestFilter Async and Error Dispatch Traps
+concept_id: spring/onceperrequestfilter-async-error-dispatch-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- onceperrequestfilter-async-error
+- dispatch-traps
+- onceperrequestfilter-async-dispatch
+- onceperrequestfilter-error-dispatch
+aliases:
+- OncePerRequestFilter async dispatch
+- OncePerRequestFilter error dispatch
+- shouldNotFilterAsyncDispatch
+- shouldNotFilterErrorDispatch
+- duplicate filter log
+- filter missing on error dispatch
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
+- spring/mvc-async-deferredresult-callable-dispatch
+- spring/spring-security-filter-chain-ordering
+- spring/security-exceptiontranslation-entrypoint-accessdeniedhandler
+symptoms:
+- 같은 요청의 filter 로그가 async 처리 후 두 번 찍힌다.
+- 예외 응답에서는 인증 로깅이나 request id filter가 빠져 보인다.
+- security filter에서 이미 commit된 응답을 다시 쓰려다 오류가 난다.
+expected_queries:
+- OncePerRequestFilter가 async dispatch에서 두 번 실행되는 이유는?
+- shouldNotFilterAsyncDispatch와 shouldNotFilterErrorDispatch는 언제 바꿔야 해?
+- ERROR dispatch에서 filter가 빠지거나 중복되는 문제를 어떻게 디버깅해?
+- Spring Security filter와 ControllerAdvice 예외 응답이 충돌하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 OncePerRequestFilter가 요청당 한 번이라는 직관과 달리 REQUEST, ASYNC,
+  ERROR dispatch별로 실행 여부가 달라지는 함정을 증상 중심으로 라우팅한다.
+  async redispatch, error dispatch, security filter, response commit 경계를 함께 설명한다.
+---
 # Spring `OncePerRequestFilter` Async / Error Dispatch Traps
 
 > 한 줄 요약: `OncePerRequestFilter`는 "한 요청당 한 번"처럼 보이지만 실제론 request, async redispatch, error dispatch가 갈라지므로 dispatch type을 모르면 로깅·인증·예외 응답이 중복되거나 빠져 보일 수 있다.

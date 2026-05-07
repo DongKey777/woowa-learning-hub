@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Golden Path Escape Hatch Policy
+concept_id: software-engineering/golden-path-escape-hatch-policy
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- golden-path
+- escape-hatch
+- platform-governance
+- policy-as-code
+aliases:
+- Golden Path Escape Hatch Policy
+- golden path escape hatch
+- paved road exception policy
+- platform guardrail exception
+- policy gated escape hatch
+- 표준 경로 예외 승인 정책
+symptoms:
+- golden path가 너무 엄격해 legacy integration, regulatory requirement, high-throughput case가 unofficial bypass로 빠져
+- escape hatch가 너무 쉬워 expiry, review, ADR, approval 없이 영구 예외와 platform drift가 늘어나
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/platform-paved-road
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/platform-policy-override-governance
+- software-engineering/service-template-tradeoffs
+- software-engineering/prototype-spike-productionization
+linked_paths:
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/service-template-tradeoffs.md
+- contents/software-engineering/architecture-review-anti-patterns.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/prototype-spike-productionization-boundaries.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+confusable_with:
+- software-engineering/platform-paved-road
+- software-engineering/platform-policy-override-governance
+- software-engineering/architecture-exception-process
+forbidden_neighbors: []
+expected_queries:
+- golden path를 유지하면서 정당한 예외를 escape hatch로 승인하려면 어떤 정책이 필요해?
+- paved road가 너무 엄격하면 왜 unofficial bypass가 생기고 어떻게 공식 예외 경로로 흡수해야 해?
+- escape hatch에 reason, owner, approval, expiry, review date를 넣어야 하는 이유를 설명해줘
+- 예외가 많아졌을 때 scorecard로 golden path 자체를 개선해야 하는 신호는 뭐야?
+- policy as code와 exception registry로 platform guardrail 예외를 추적하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 golden path와 platform paved road의 기본 경로를 유지하면서 필요한 예외를 approval, expiry, ADR, policy gate로 통제하는 advanced playbook이다.
+---
 # Golden Path Escape Hatch Policy
 
 > 한 줄 요약: golden path는 기본 경로를 쉽게 만들지만, 예외가 필요한 팀을 막지 않도록 escape hatch 정책을 같이 설계해야 한다.

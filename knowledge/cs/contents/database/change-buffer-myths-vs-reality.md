@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Change Buffer Myths vs Reality
+concept_id: database/change-buffer-myths-vs-reality
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- change-buffer
+- insert-buffer
+- secondary-index
+- delayed-merge
+aliases:
+- change buffer myths
+- change buffer myths vs reality
+- insert buffer
+- secondary index change buffering
+- merge cost
+- delayed merge
+- innodb_change_buffering
+- unique index change buffer
+- change buffer 현실
+- insert buffer 오해
+symptoms:
+- change buffer를 쓰기 최적화 만능 장치로 보고 나중의 merge cost와 read path 비용을 놓친다
+- secondary index면 모두 change buffer가 적용된다고 생각하고 unique index 즉시 검증 요구를 무시한다
+- write latency가 줄어든 것처럼 보여도 비용이 사라진 것이 아니라 merge 시점으로 이동했다는 점을 보지 않는다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/secondary-index-maintenance-statistics-skew
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/change-buffer-merge-debt
+- database/change-buffer-purge-history-length
+- database/secondary-index-change-propagation
+linked_paths:
+- contents/database/change-buffer-purge-history-length.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/change-buffer-merge-debt.md
+confusable_with:
+- database/change-buffer-merge-debt
+- database/change-buffer-purge-history-length
+- database/secondary-index-change-propagation
+- database/redo-log-write-amplification
+forbidden_neighbors: []
+expected_queries:
+- change buffer는 secondary index 변경 비용을 없애는 게 아니라 나중 merge로 미루는 장치야?
+- insert buffer와 change buffer는 같은 개념인지, 오늘날 어떻게 이해하면 좋은지 알려줘
+- unique secondary index에는 change buffer가 똑같이 적용되지 않는 이유가 뭐야?
+- change buffer를 믿고 secondary index를 많이 달면 write와 read path에서 어떤 비용이 생겨?
+- change buffer myth와 실제 delayed merge cost를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Change Buffer Myths vs Reality chooser로, InnoDB change buffer/insert buffer가
+  non-unique secondary index changes를 지연해 random I/O를 줄일 수 있지만 비용을 제거하지 않고
+  later merge/read path로 이동시키는 trade-off를 설명한다.
+---
 # Change Buffer Myths vs Reality
 
 > 한 줄 요약: change buffer는 "쓰기 최적화의 만능 열쇠"가 아니라, 특정 secondary index 변경을 뒤로 미루는 지연 메커니즘이다.

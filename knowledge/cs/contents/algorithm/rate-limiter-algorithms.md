@@ -9,7 +9,10 @@ doc_role: symptom_router
 level: advanced
 language: mixed
 source_priority: 80
-mission_ids: []
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
 review_feedback_tags:
 - fixed-window-boundary-burst
 - token-bucket-vs-leaky-bucket
@@ -45,7 +48,7 @@ linked_paths:
 confusable_with:
 - algorithm/top-k-streaming-heavy-hitters
 - algorithm/monotone-deque-proof-intuition
-forbidden_neighbors:
+forbidden_neighbors: []
 expected_queries:
 - burst는 조금 허용하면서 평균 요청 수만 제한하고 싶을 때 어떤 rate limit 방식이 맞아?
 - 고정 윈도우로 막았더니 경계 시점에 요청이 두 배처럼 몰리는 이유를 설명해줘
@@ -54,11 +57,13 @@ expected_queries:
 - token bucket과 leaky bucket을 실무에서 어떤 기준으로 골라야 하는지 감이 안 와
 - API throttling에서 순간 버스트 허용이 필요하면 어떤 시간 모델로 생각해야 해?
 contextual_chunk_prefix: |
-  이 문서는 요청 제한을 붙였는데 순간 몰림을 어디까지 허용할지, 창 경계에서
-  quota가 새는 이유가 뭔지 같은 증상에서 출발해 시간 모델별 원인으로 이어지는
-  symptom router다. 평균만 제한하고 싶다, 두 구간 끝에서 한꺼번에 통과한다,
-  최근 기록을 많이 들고 있는 게 부담된다, 일정한 배출 속도로 평탄화하고
-  싶다 같은 자연어 paraphrase가 본 문서의 limiter 선택 기준에 매핑된다.
+  이 문서는 요청 제한을 붙였는데 burst를 얼마나 허용할지, 창 경계에서
+  quota가 왜 두 번 새는지 헷갈리는 학습자를 fixed window,
+  sliding window, token bucket, leaky bucket 선택으로 이어 주는
+  symptom router다. 순간 몰림만 부드럽게 넘기고 싶다, 최근 요청 기록을
+  다 들고 있기엔 무겁다, 일정한 속도로 평탄화하고 싶다, 로그인 시도
+  제한을 어디까지 세밀하게 잡아야 하나 같은 자연어 paraphrase가 본
+  문서의 원인 분기에 매핑된다.
 ---
 # Rate Limiter Algorithms
 

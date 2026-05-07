@@ -9,12 +9,21 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- db-lock-deadlock
+- vs-proxy-rollback
+- db-lock-vs
+- proxy
 aliases:
 - db lock vs spring proxy
 - deadlock vs self invocation
 - lock timeout vs transactional not applied
 - rollback not working vs lock wait
 - spring db lock decision matrix
+- transaction marked rollback-only
+- Transaction rolled back because it has been marked as rollback-only
+- 정상 흐름인데 rollback-only
+- rollback-only marker vs deadlock
 intents:
 - comparison
 - design
@@ -32,15 +41,16 @@ expected_queries:
 - deadlock인지 self-invocation인지 헷갈릴 때 어떤 분기표를 봐?
 - rollback이 안 된 것처럼 보이는데 DB lock 문제인지 Spring 문제인지 모르겠어
 - CannotAcquireLockException과 rollback-only가 같이 보이면 어디서 시작해?
+- 정상 흐름인데 'Transaction rolled back because it has been marked as rollback-only' 메시지가 떠요
 contextual_chunk_prefix: |
   이 문서는 트랜잭션이 안 풀리거나 lock timeout이 떨어졌을 때 학습자가
   "DB가 진짜 락을 걸어 막힌 건지, Spring proxy/AOP가 트랜잭션을 안 열어줬는지,
   또는 @Transactional 표시가 잘못 붙어 안 풀린 건지" 헷갈리는 상황을
   먼저 가르는 분기표 chooser다. DB lock vs Spring proxy, deadlock vs
   self-invocation, lock wait vs transactional not applied, rollback이 안 됨
-  vs lock 잡힘 같은 자연어 표현이 본 문서의 분기 갈래에 매핑된다.
+  vs lock 잡힘, transaction marked rollback-only 같은 자연어 표현이 본 문서의
+  분기 갈래에 매핑된다.
 ---
-
 # DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표
 
 > 한 줄 요약: `lock wait`, `deadlock`, `왜 @Transactional이 안 먹지`, `왜 안 롤백되지`가 한 문장에 섞여도 먼저 "DB가 실제로 기다리고 있나"와 "Spring 프록시/롤백 규칙이 깨졌나"를 분리하면 잘못된 branch로 깊게 들어가는 일을 줄일 수 있다.

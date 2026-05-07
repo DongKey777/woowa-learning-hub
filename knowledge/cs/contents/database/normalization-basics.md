@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 정규화 기초
+concept_id: database/normalization-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- normalization-anomaly-basics
+- nf1-nf2-nf3-dependency-separation
+- table-design-consistency-first
+aliases:
+- normalization basics
+- 정규화 기초
+- 정규화란
+- 1NF 2NF 3NF
+- first normal form beginner
+- second normal form beginner
+- third normal form beginner
+- 테이블 설계 기초
+- 중복 제거 db
+- 삽입 수정 삭제 이상
+- 함수 종속 입문
+- join이 늘어나도 정규화해야 하나요
+symptoms:
+- 정규화를 성능 최적화로만 이해해서 데이터 중복과 이상 현상 방지 목적을 놓쳐
+- 1NF, 2NF, 3NF를 이름만 외우고 원자값, 부분 종속, 이행 종속 차이를 설명하지 못해
+- 주문, 고객, 상품 정보를 한 테이블에 넣어도 되는지 테이블 분리 기준이 헷갈려
+intents:
+- definition
+- design
+prerequisites:
+- database/database-first-step-bridge
+next_docs:
+- database/normalization-denormalization-tradeoffs
+- database/sql-joins-and-query-order
+- database/sql-relational-modeling-basics
+- software-engineering/repository-dao-entity
+linked_paths:
+- contents/database/normalization-denormalization-tradeoffs.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/normalization-vs-denormalization-vs-summary-table-decision-guide.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/repository-dao-entity.md
+confusable_with:
+- database/normalization-denormalization-tradeoffs
+- database/sql-joins-and-query-order
+- database/sql-relational-modeling-basics
+forbidden_neighbors: []
+expected_queries:
+- DB 정규화가 무엇이고 삽입, 수정, 삭제 이상을 왜 줄이는지 설명해줘
+- 1NF, 2NF, 3NF를 원자값, 부분 함수 종속, 이행 함수 종속 기준으로 비교해줘
+- 주문 테이블에 고객 이름과 주소를 같이 저장하면 어떤 문제가 생겨?
+- 정규화는 성능보다 데이터 일관성을 위한 설계라는 뜻을 알려줘
+- 정규화를 한 뒤 JOIN이 늘어나면 언제 반정규화를 검토해야 해?
+contextual_chunk_prefix: |
+  이 문서는 database normalization을 중복 데이터로 생기는 insert, update, delete anomaly를 줄이기 위해 table을 나누는 beginner primer로 설명한다.
+  1NF, 2NF, 3NF, atomic value, partial dependency, transitive dependency, customer order table split, normalization vs performance 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 정규화 기초 (Normalization Basics)
 
 > 한 줄 요약: 정규화는 테이블을 쪼개서 중복을 없애는 과정이고, 1NF·2NF·3NF 세 단계가 "어떤 종류의 중복인가"를 순서대로 제거한다.

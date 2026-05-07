@@ -58,7 +58,7 @@ confusable_with:
 - security/role-vs-scope-vs-ownership-primer
 - security/jwt-claims-roles-authorities-permissions-mapping
 - security/permission-model-bridge-authn-to-role-scope-ownership
-forbidden_neighbors:
+forbidden_neighbors: []
 expected_queries:
 - access token에 orders.read가 있어도 orders API가 거부하면 무엇부터 봐야 해?
 - audience와 scope와 비즈니스 권한을 어떤 순서로 확인해야 하나요

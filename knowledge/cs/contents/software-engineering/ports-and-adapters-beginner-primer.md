@@ -41,7 +41,7 @@ prerequisites:
 - software-engineering/layered-architecture-basics
 - software-engineering/service-layer-basics
 next_docs:
-- software-engineering/message-driven-adapter-example
+- software-engineering/message-driven-adapter
 - software-engineering/hexagonal-testing-seams-primer
 - design-pattern/ports-and-adapters-vs-classic-patterns
 linked_paths:
@@ -58,9 +58,9 @@ linked_paths:
 - contents/design-pattern/hexagonal-ports-pattern-language.md
 - contents/system-design/job-queue-design.md
 confusable_with:
-- software-engineering/message-driven-adapter-example
+- software-engineering/message-driven-adapter
 - design-pattern/ports-and-adapters-vs-classic-patterns
-- software-engineering/repository-interface-contract-primer
+- software-engineering/repository-interface-contract
 forbidden_neighbors:
 - contents/data-structure/queue-basics.md
 - contents/algorithm/dfs-bfs-intro.md
@@ -81,7 +81,6 @@ contextual_chunk_prefix: |
   입구인가, queue 얘기가 왜 같이 나오나, 외부 API와 DB를 왜 adapter로
   부르나 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
 ---
-
 # Ports and Adapters Beginner Primer
 
 > 한 줄 요약: Ports and Adapters는 도메인과 유스케이스를 중심에 두고, 웹/DB/외부 API 같은 입출력 세부를 바깥 어댑터로 분리하는 초급용 구조 규칙이다.

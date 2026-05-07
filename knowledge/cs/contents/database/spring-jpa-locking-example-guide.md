@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Spring/JPA Locking Example Guide
+concept_id: database/spring-jpa-locking-example-guide
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- spring
+- jpa
+- locking
+- optimistic-lock
+- pessimistic-lock
+aliases:
+- Spring JPA locking example
+- Spring optimistic locking example
+- Spring pessimistic locking example
+- JPA version column service flow
+- SELECT FOR UPDATE Spring Data JPA
+- optimistic lock retry facade
+- retry boundary transactional Spring
+- ObjectOptimisticLockingFailureException
+- rollback only optimistic lock
+- JPA PESSIMISTIC_WRITE limitation
+symptoms:
+- Spring/JPA에서 @Version, SELECT FOR UPDATE, retry loop를 각각 어떤 책임으로 써야 하는지 예제가 필요해
+- retry boundary를 @Transactional 바깥 facade에 둬야 fresh transaction per attempt가 된다는 점을 설명해야 해
+- Optimistic lock failure나 pessimistic lock timeout 이후 rollback-only transaction 안에서 다시 시도하려 해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/jdbc-jpa-mybatis
+- database/compare-and-set-version-columns
+next_docs:
+- database/spring-jpa-exact-key-lock-mapping
+- database/range-locking-limits-jpa
+- database/spring-retry-proxy-boundary-pitfalls
+linked_paths:
+- contents/database/jdbc-jpa-mybatis.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/range-locking-limits-jpa.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+confusable_with:
+- database/spring-jpa-exact-key-lock-mapping
+- database/spring-retry-proxy-boundary-pitfalls
+- database/compare-and-swap-vs-pessimistic-locks
+forbidden_neighbors: []
+expected_queries:
+- Spring/JPA에서 @Version optimistic locking, PESSIMISTIC_WRITE, retry facade를 예제로 설명해줘
+- ObjectOptimisticLockingFailureException이 나면 왜 같은 @Transactional 안에서 loop를 돌기보다 바깥 facade에서 새 transaction으로 재시도해야 해?
+- SELECT FOR UPDATE Spring Data JPA 예제에서 lock timeout과 deadlock만 bounded retry 후보로 보는 이유는?
+- JPA @Version은 충돌 감지, FOR UPDATE는 선점 보호, retry boundary는 재실행 경계라는 차이를 알려줘
+- absence invariant나 range invariant는 JPA row lock 예제 문서가 아니라 guard row/serializable 문서로 내려가야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring/JPA locking example을 @Version optimistic lock, PESSIMISTIC_WRITE/FOR UPDATE, retry facade, transactional service boundary로 설명하는 advanced playbook이다.
+  Spring optimistic locking example, ObjectOptimisticLockingFailureException, rollback-only retry, JPA for update 질문이 본 문서에 매핑된다.
+---
 # Spring/JPA 락킹 예제 가이드
 
 > 한 줄 요약: Spring 서비스 계층에서는 `@Version`, `SELECT ... FOR UPDATE`, retry loop를 각각 "충돌 감지", "선점 보호", "재실행 경계"로 분리해야 코드와 운영 해석이 단순해진다.

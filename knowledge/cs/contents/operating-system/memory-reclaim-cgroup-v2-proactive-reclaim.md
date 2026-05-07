@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: memory.reclaim Cgroup v2 Proactive Reclaim
+concept_id: operating-system/memory-reclaim-cgroup-v2-proactive-reclaim
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- memory-reclaim-cgroup
+- v2-proactive-reclaim
+- memory-reclaim
+- cgroup-v2-proactive
+aliases:
+- memory.reclaim
+- cgroup v2 proactive reclaim
+- proactive page cache reclaim
+- cold memory reclaim
+- cgroup reclaim control
+- pressure before OOM
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+- contents/operating-system/memory-low-min-reclaim-protection.md
+- contents/operating-system/workingset-refault-page-cache-reclaim-debugging.md
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+symptoms:
+- OOM이 터진 뒤가 아니라 미리 특정 cgroup의 cold memory나 page cache를 줄이고 싶다.
+- memory.reclaim을 실행했더니 refault와 PSI pressure가 증가해 workload 영향을 확인해야 한다.
+- memory.low/min protection과 proactive reclaim의 충돌 여부를 판단해야 한다.
+expected_queries:
+- memory.reclaim은 OOM을 고치는 장치야 아니면 proactive reclaim 제어야?
+- cgroup v2에서 특정 workload의 page cache cold memory를 미리 줄이는 방법은?
+- proactive reclaim 후 workingset refault와 PSI를 어떻게 확인해?
+- memory.low min protection과 memory.reclaim은 어떻게 같이 설계해?
+contextual_chunk_prefix: |
+  이 문서는 memory.reclaim을 이미 터진 OOM을 고치는 수단이 아니라 특정 cgroup의 page cache나
+  cold memory를 의식적으로 줄여 pressure를 미리 정리하는 cgroup v2 운영 제어로 설명한다.
+---
 # memory.reclaim, Cgroup v2 Proactive Reclaim
 
 > 한 줄 요약: `memory.reclaim`은 이미 터진 OOM을 고치는 장치가 아니라, 특정 cgroup의 page cache나 cold memory를 의식적으로 줄여 pressure를 앞당겨 정리하려는 운영 제어 수단이다.

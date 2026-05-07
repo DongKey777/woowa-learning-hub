@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Java 스레드와 동기화 기초
+concept_id: language/java-thread-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- java-thread-start-run-boundary
+- synchronized-race-condition-basics
+- volatile-visibility-not-atomicity
+aliases:
+- java thread basics
+- Java 스레드와 동기화 기초
+- 스레드 입문
+- thread runnable beginner
+- start run 차이
+- synchronized 기초
+- race condition beginner
+- volatile 가시성
+- volatile 원자성 아님
+- Java 멀티스레드 입문
+- 공유 자원 보호 방법
+symptoms:
+- thread.start와 thread.run의 차이를 몰라서 새 스레드가 실제로 만들어지는 시점을 헷갈려
+- count++ 같은 공유 변수 변경에서 race condition이 왜 생기는지 설명하지 못해
+- volatile이 보이기만 보장하고 복합 연산의 원자성은 보장하지 않는다는 점이 헷갈려
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/process-thread-basics
+next_docs:
+- language/java-concurrency-utilities
+- language/java-memory-model-happens-before-volatile-final
+- operating-system/mutex-deadlock-basics
+- language/java-volatile-counter-atomicity-cause-router
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/volatile-long-double-atomicity-memory-visibility.md
+- contents/language/java/volatile-counter-atomicity-cause-router.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/mutex-deadlock-basics.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+confusable_with:
+- language/java-memory-model-happens-before-volatile-final
+- language/java-volatile-counter-atomicity-cause-router
+- operating-system/mutex-deadlock-basics
+- operating-system/process-thread-basics
+forbidden_neighbors: []
+expected_queries:
+- Java에서 thread.start와 thread.run 차이를 초급자 기준으로 설명해줘
+- synchronized가 race condition을 막는 이유와 임계구역 개념을 알려줘
+- volatile은 가시성만 보장하고 count++ 원자성은 보장하지 않는다는 뜻이 뭐야?
+- Java에서 공유 카운터를 여러 스레드가 바꾸면 왜 AtomicInteger나 synchronized가 필요해?
+- 서버에서는 직접 new Thread보다 ExecutorService나 thread pool을 쓰는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java Thread의 start와 run 차이, Runnable 실행 흐름, synchronized critical section, race condition, volatile visibility와 atomicity 차이를 다루는 beginner primer다.
+  thread.start vs run, synchronized, count++ race, volatile not atomic, AtomicInteger, Java thread pool 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java 스레드와 동기화 기초
 
 > 한 줄 요약: 스레드는 프로세스 안에서 독립적으로 실행되는 흐름이고, 여러 스레드가 같은 데이터를 동시에 쓸 때 synchronized로 한 번에 하나씩만 접근하도록 보호해야 한다.

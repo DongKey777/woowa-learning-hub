@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring @ConfigurationProperties Binding Internals
+concept_id: spring/configurationproperties-binding-internals
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- configurationproperties-binding-internals
+- configurationproperties
+- binder
+- relaxed-binding
+aliases:
+- @ConfigurationProperties
+- Spring Binder
+- relaxed binding
+- constructor binding
+- configuration metadata
+- BindHandler
+- property source precedence
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-kotlin-configurationproperties-detection-primer.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-conversion-service-formatter-binder-pipeline.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+- contents/spring/spring-application-context-refresh-phases.md
+expected_queries:
+- @ConfigurationProperties는 @Value와 다르게 어떤 binding pipeline을 타?
+- Spring Binder와 relaxed binding은 어떻게 동작해?
+- 환경 변수에서는 YAML과 다르게 ConfigurationProperties가 안 묶이는 이유가 뭐야?
+- constructor binding과 validation은 startup 시점에 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 @ConfigurationProperties가 property source, Binder, relaxed binding,
+  ConversionService, validation, constructor binding, configuration metadata를 통해
+  typed configuration object를 만드는 내부 파이프라인을 설명한다. 값은 있는데
+  바인딩이 안 되거나 env var key mapping이 어긋나는 증상에 매핑된다.
+---
 # Spring `@ConfigurationProperties` Binding Internals
 
 > 한 줄 요약: `@ConfigurationProperties`는 단순 프로퍼티 주입이 아니라 binder, conversion, validation, metadata가 결합된 바인딩 파이프라인이다.

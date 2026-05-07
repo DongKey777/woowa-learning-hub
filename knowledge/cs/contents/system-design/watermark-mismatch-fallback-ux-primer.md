@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Watermark Mismatch Fallback UX Primer
+concept_id: system-design/watermark-mismatch-fallback-ux-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- watermark mismatch fallback ux primer
+- watermark mismatch ux
+- required watermark applied watermark fallback
+- stale hit rejection watermark
+aliases:
+- watermark mismatch fallback ux primer
+- watermark mismatch ux
+- required watermark applied watermark fallback
+- stale hit rejection watermark
+- stale cache hit reject watermark
+- processing placeholder watermark mismatch
+- primary fallback watermark mismatch
+- watermark mismatch decision table
+- stale read placeholder beginner
+- read model lag user visible behavior
+- downstream read stale reject
+- required greater than applied
+symptoms: []
+intents:
+- definition
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/projection-applied-watermark-basics.md
+- contents/system-design/outbox-watermark-token-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/notification-read-to-min-version-bridge.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Watermark Mismatch Fallback UX Primer 설계 핵심을 설명해줘
+- watermark mismatch fallback ux primer가 왜 필요한지 알려줘
+- Watermark Mismatch Fallback UX Primer 실무 트레이드오프는 뭐야?
+- watermark mismatch fallback ux primer 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Watermark Mismatch Fallback UX Primer를 다루는 primer 문서다. `required_watermark > applied_watermark`라는 mismatch는 "틀린 값을 자신 있게 보여 주지 말라"는 신호이고, 초보자용 첫 대응은 `stale hit reject`, `processing placeholder`, `primary fallback` 세 가지 UX 중 하나로 단순하게 고르는 것이다. 검색 질의가 watermark mismatch fallback ux primer, watermark mismatch ux, required watermark applied watermark fallback, stale hit rejection watermark처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Watermark Mismatch Fallback UX Primer
 
 > 한 줄 요약: `required_watermark > applied_watermark`라는 mismatch는 "틀린 값을 자신 있게 보여 주지 말라"는 신호이고, 초보자용 첫 대응은 `stale hit reject`, `processing placeholder`, `primary fallback` 세 가지 UX 중 하나로 단순하게 고르는 것이다.

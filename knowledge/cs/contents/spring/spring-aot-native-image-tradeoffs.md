@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring AOT and Native Image Trade-offs
+concept_id: spring/aot-native-image-tradeoffs
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- aot-native-image
+- tradeoffs
+- aot
+- native-image
+aliases:
+- Spring AOT
+- native image
+- GraalVM native
+- runtime hints
+- reflection hints
+- closed world assumption
+- build-time initialization
+intents:
+- comparison
+- design
+- deep_dive
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+- contents/spring/spring-security-method-security-deep-dive.md
+expected_queries:
+- Spring AOT와 native image는 어떤 trade-off가 있어?
+- GraalVM native image에서 reflection hint가 왜 필요해?
+- Spring native image가 로컬 JVM에서는 되는데 빌드에서 깨지는 이유가 뭐야?
+- 어떤 Spring 서비스가 native image에 적합해?
+contextual_chunk_prefix: |
+  이 문서는 Spring AOT와 GraalVM native image의 시작 속도, 메모리,
+  closed-world assumption, reflection/runtime/proxy hints, build-time analysis
+  trade-off를 설명한다. 단순 성능 튜닝이 아니라 Spring의 동적 프록시와
+  reflection-heavy 설계를 native 환경으로 옮길 때의 비용을 다룬다.
+---
 # Spring AOT and Native Image Trade-offs
 
 > 한 줄 요약: Spring AOT와 native image는 시작 속도와 메모리 이점을 주지만, reflection과 dynamic proxy에 의존한 설계를 바꾸지 않으면 빌드와 런타임이 더 까다로워진다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Capability Sunset Gate Matrix 설계
+concept_id: system-design/capability-sunset-gate-matrix-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- capability sunset gate matrix
+- capability sunset
+- overlap signal
+- soak signal
+aliases:
+- capability sunset gate matrix
+- capability sunset
+- overlap signal
+- soak signal
+- cleanup signal
+- downgrade decision
+- dark deny
+- hard reject
+- deprecated capability last seen
+- sunset silence window
+- capability deprecation matrix
+- bridge sunset decision
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/capability-negotiation-feature-gating-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/edge-verifier-claim-skew-fallback-design.md
+- contents/system-design/verifier-overlap-hard-reject-retirement-gates-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/bridge-retirement-evidence-packet-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Capability Sunset Gate Matrix 설계 설계 핵심을 설명해줘
+- capability sunset gate matrix가 왜 필요한지 알려줘
+- Capability Sunset Gate Matrix 설계 실무 트레이드오프는 뭐야?
+- capability sunset gate matrix 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Capability Sunset Gate Matrix 설계를 다루는 deep_dive 문서다. capability sunset gate matrix 설계는 deprecated capability를 제거할 때 overlap, soak, cleanup 신호를 서로 다른 강도의 증거로 읽어 `downgrade`, `dark-deny`, `hard-reject`를 순서대로 허용하는 운영 설계다. 검색 질의가 capability sunset gate matrix, capability sunset, overlap signal, soak signal처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Capability Sunset Gate Matrix 설계
 
 > 한 줄 요약: capability sunset gate matrix 설계는 deprecated capability를 제거할 때 overlap, soak, cleanup 신호를 서로 다른 강도의 증거로 읽어 `downgrade`, `dark-deny`, `hard-reject`를 순서대로 허용하는 운영 설계다.

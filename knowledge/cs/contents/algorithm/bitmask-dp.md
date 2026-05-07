@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Bitmask DP
+concept_id: algorithm/bitmask-dp
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- bitmask-dp-subset-state
+- small-n-assignment
+- tsp-held-karp-router
+aliases:
+- bitmask dp
+- subset dp
+- state compressed dp
+- subset state optimization
+- small n assignment dp
+- popcount assignment
+- traveling salesman dp
+- held karp
+- 상태 압축 DP
+- 비트마스크 DP
+symptoms:
+- worker job assignment라는 단어만 보고 flow나 Hungarian으로 바로 가고 N <= 20, dp[mask], popcount 신호를 놓친다
+- bitmask가 단순 bit operation 문제라고 오해하고 선택한 원소 집합을 상태로 저장하는 DP 패턴을 보지 못한다
+- TSP처럼 방문 집합과 마지막 위치가 같이 필요한 문제에서 dp[mask]와 dp[mask][last] 차이를 구분하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/dp-intro
+- algorithm/brute-force-intro
+next_docs:
+- algorithm/hungarian-algorithm-intuition
+- algorithm/network-flow-intuition
+- algorithm/min-cost-max-flow-intuition
+- algorithm/meet-in-the-middle
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/dp-intro.md
+- contents/algorithm/brute-force-intro.md
+- contents/algorithm/hungarian-algorithm-intuition.md
+- contents/algorithm/network-flow-intuition.md
+- contents/algorithm/min-cost-max-flow-intuition.md
+confusable_with:
+- algorithm/hungarian-algorithm-intuition
+- algorithm/network-flow-intuition
+- algorithm/min-cost-max-flow-intuition
+- algorithm/meet-in-the-middle
+- algorithm/backtracking-intro
+forbidden_neighbors: []
+expected_queries:
+- Bitmask DP는 선택한 원소 집합을 mask로 표현해 어떤 상태를 저장하는 패턴이야?
+- n <= 20 assignment에서 dp[mask]와 popcount(mask)를 어떻게 해석해?
+- TSP Held-Karp에서는 왜 dp[mask][last]처럼 마지막 위치도 상태에 넣어야 해?
+- assignment 문제를 bitmask DP, Hungarian, network flow 중 어디로 분기해야 해?
+- subset state optimization과 state compression DP를 예제로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 bitmask DP advanced deep dive로, 선택한 원소 집합을 bit mask로
+  표현해 subset-state를 memoization하는 패턴을 설명한다. small-n assignment,
+  popcount(mask), dp[mask], dp[mask][last], TSP Held-Karp, Hungarian vs
+  flow 분기를 다룬다.
+---
 # Bitmask DP
 
 > 한 줄 요약: Bitmask DP는 선택한 원소 집합을 비트로 표현해, 부분집합 상태를 메모이제이션하는 DP 패턴이다.

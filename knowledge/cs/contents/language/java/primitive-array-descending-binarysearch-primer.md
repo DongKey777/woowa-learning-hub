@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Primitive Array Descending BinarySearch Primer
+concept_id: language/primitive-array-descending-binarysearch-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- arrays
+- binary-search
+- primitive
+aliases:
+- Primitive Array Descending Search Primer
+- primitive array descending binarySearch primer
+- Java int array descending binarySearch
+- Arrays.binarySearch primitive no comparator
+- keep primitive array ascending search
+- 자바 primitive 배열 내림차순 binarySearch
+symptoms:
+- int 배열을 내림차순으로 뒤집어 둔 뒤 Arrays.binarySearch를 그대로 호출해 오름차순 전제를 깨뜨려 잘못된 결과를 얻어
+- primitive 배열에는 sort와 binarySearch comparator overload가 없다는 점을 모르고 Comparator.reverseOrder를 넘기려 해
+- 화면은 내림차순이어야 하지만 검색은 오름차순 저장 배열에서 처리하고 인덱스만 변환하는 안전 패턴을 떠올리지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-array-sorting-searching-basics
+- language/primitive-descending-array-sort-bridge
+- language/primitive-reverse-copy-vs-view-bridge
+next_docs:
+- language/binarysearch-nullable-wrapper-sort-keys
+- language/java-comparator-utility-patterns
+- language/descending-view-mental-model
+linked_paths:
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/java-comparator-utility-patterns.md
+confusable_with:
+- language/primitive-descending-array-sort-bridge
+- language/primitive-reverse-copy-vs-view-bridge
+- language/binarysearch-nullable-wrapper-sort-keys
+forbidden_neighbors: []
+expected_queries:
+- int 배열을 내림차순으로 뒤집은 뒤 Arrays.binarySearch를 쓰면 왜 위험해?
+- primitive 배열 binarySearch는 comparator를 못 받으니 오름차순 저장을 유지하는 게 왜 안전해?
+- 내림차순 화면 인덱스가 필요할 때 오름차순 검색 결과를 어떻게 변환해?
+- Arrays.sort int[]와 Arrays.binarySearch int[]에 Comparator.reverseOrder를 넘길 수 없는 이유가 뭐야?
+- primitive 배열 descending search를 wrapper 배열이나 custom search로 바꿔야 하는 경우를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 primitive 배열에서 Arrays.binarySearch가 ascending order를 전제하고 comparator overload가 없기 때문에 descending view는 읽기 방향으로 처리하는 beginner primer다.
+  primitive array, descending binarySearch, Arrays.binarySearch, int array comparator, ascending search 질문이 본 문서에 매핑된다.
+---
 # Primitive Array Descending Search Primer
 
 > 한 줄 요약: primitive 배열에서는 `Arrays.sort(array, comparator)`와 `Arrays.binarySearch(array, key, comparator)` overload가 없으므로, **배열 자체는 오름차순으로 유지하고 필요할 때만 내림차순으로 읽는 패턴**이 초보자에게 가장 안전하다.

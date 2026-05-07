@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart checkout은 "현재 cart를 계속 보여 주는 일"이 아니라 "그 순간의 구매 사실을 굳히는 일"이라서, 주문은 cart row를 계속 참조하기보다 주문 시점의 상품명, 가격, 수량, 할인 결과를 snapshot으로 복사해 두는 편이 안전하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "주문 상세가 예전 결제 내용이 아니라 현재 장바구니 상태를 따라 바뀌어요" | checkout 뒤 cart를 다시 수정했는데 order detail이 흔들림 | mutable cart와 immutable order record를 분리한다 |
+| "상품 가격이 바뀐 뒤 예전 주문 금액까지 같이 달라져 보여요" | 상품 master 값을 주문 조회 때 다시 읽는 구조 | 주문 시점 상품명, 단가, 수량, 할인 결과를 snapshot으로 남긴다 |
+| "cart를 참조하지 말고 snapshot을 남기라는 리뷰가 헷갈려요" | 주문 생성 시점의 구매 사실 보존 | 현재 작업 공간과 감사/재현용 확정 기록을 다른 모델로 본다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 주문 생성 로직을 처음 붙일 때는 `cart`와 `cart_item`을

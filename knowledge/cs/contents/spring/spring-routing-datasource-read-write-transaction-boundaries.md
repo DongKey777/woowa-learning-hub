@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Routing DataSource Read Write Transaction Boundaries
+concept_id: spring/routing-datasource-read-write-transaction-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- routing-datasource-read
+- write-transaction-boundaries
+- write
+- abstractroutingdatasource-transaction-boundary
+aliases:
+- Routing DataSource read write
+- AbstractRoutingDataSource transaction boundary
+- readOnly transaction replica routing
+- connection acquisition timing
+- read after write consistency
+- primary replica routing anomaly
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/spring-transaction-isolation-readonly-pitfalls.md
+- contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md
+- contents/spring/spring-multiple-transaction-managers-qualifier-boundaries.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+symptoms:
+- readOnly transaction인데도 primary로 붙거나 쓰기 트랜잭션 안의 조회가 replica로 나간다.
+- 방금 쓴 데이터를 바로 읽었는데 replica lag 때문에 안 보인다.
+- routing lookup key를 바꿨는데 이미 획득한 connection에는 반영되지 않는다.
+expected_queries:
+- Spring AbstractRoutingDataSource에서 read write routing은 transaction과 어떻게 엮여?
+- readOnly=true면 항상 replica로 가도 돼?
+- connection acquisition timing 때문에 routing key 변경이 안 먹는 이유는?
+- read-after-write 일관성을 primary replica 환경에서 어떻게 보장해?
+contextual_chunk_prefix: |
+  이 문서는 Spring read/write routing을 lookup key 선택이 아니라 transaction boundary,
+  connection acquisition timing, readOnly flag, primary/replica lag, read-after-write consistency
+  문제로 설명하는 playbook이다.
+---
 # Spring Routing DataSource Read/Write Transaction Boundaries
 
 > 한 줄 요약: Spring의 read/write routing은 lookup key를 고르는 문제보다, 트랜잭션에서 실제 커넥션이 언제 획득되는지와 read-after-write 일관성을 어떻게 보장할지의 문제다.

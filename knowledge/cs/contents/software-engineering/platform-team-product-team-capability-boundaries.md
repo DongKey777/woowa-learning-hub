@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Platform Team, Product Team, and Business Capability Boundaries
+concept_id: software-engineering/platform-product-capability-boundaries
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- platform-team
+- product-team
+- capability-boundary
+- ownership
+aliases:
+- Platform Team Product Team Business Capability Boundaries
+- platform product capability boundary
+- business capability mapping
+- internal platform team boundary
+- golden path domain ownership
+- 플랫폼 제품 팀 capability 경계
+symptoms:
+- 플랫폼 팀이 공통 도구를 넘어서 제품 도메인 판단까지 흡수하거나, 제품 팀이 배포/관측/인증 같은 공통 플랫폼 책임을 반복 구현해
+- capability map 없이 조직도나 서비스 이름만 기준으로 platform/product ownership을 나눠 중복, 책임 전가, BFF 공통 기능 복제가 생겨
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/domain-capability-heatmap
+next_docs:
+- software-engineering/platform-control-plane-delegation
+- software-engineering/team-apis-interaction-modes
+- software-engineering/organizational-coupling-conway-effects
+linked_paths:
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/bff-boundaries-client-specific-aggregation.md
+- contents/software-engineering/platform-control-plane-delegation-boundaries.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/domain-capability-heatmap.md
+confusable_with:
+- software-engineering/platform-control-plane-delegation
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/organizational-coupling-conway-effects
+forbidden_neighbors: []
+expected_queries:
+- 플랫폼 팀과 제품 팀의 경계를 business capability map 기준으로 어떻게 나눠야 해?
+- 공통 인증, 배포, observability는 platform capability지만 주문 lifecycle 같은 도메인 판단은 product team이 가져야 하는 이유는?
+- 플랫폼이 모든 것을 흡수하면 제품 팀의 domain ownership이 약해지는 문제를 설명해줘
+- BFF가 늘어날 때 제품 팀 요구와 플랫폼 공통 capability를 어떻게 분리해야 해?
+- capability map을 ADR, service catalog, on-call ownership과 같이 관리해야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 platform team과 product team의 책임을 조직도가 아니라 business capability ownership, golden path, control plane, domain decision boundary로 나누는 advanced bridge이다.
+---
 # Platform Team, Product Team, and Business Capability Boundaries
 
 > 한 줄 요약: 플랫폼 팀과 제품 팀의 경계는 업무 범위만이 아니라, 어떤 business capability를 공통화하고 어떤 capability를 제품 소유로 둘지 정하는 문제다.

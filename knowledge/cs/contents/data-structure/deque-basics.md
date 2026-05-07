@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 덱 기초
+concept_id: data-structure/deque-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- deque-stack-queue-basics
+- arraydeque-java
+- sliding-window-router
+aliases:
+- deque basics
+- double ended queue
+- arraydeque java
+- deque vs queue vs stack
+- addFirst addLast pollFirst pollLast
+- plain deque simulation
+- monotonic deque entrypoint
+- 덱 입문
+- 양방향 큐
+symptoms:
+- Deque를 Queue나 Stack과 같은 단방향 구조로 이해해 양끝 삽입 삭제를 놓친다
+- Java에서 Stack이나 LinkedList를 기본 선택하고 ArrayDeque의 장단점을 비교하지 않는다
+- plain deque, monotonic deque, 0-1 BFS를 모두 같은 deque 사용법으로 섞는다
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- data-structure/stack-basics
+- data-structure/queue-basics
+next_docs:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/deque-router-example-pack
+- data-structure/monotonic-deque-walkthrough
+- algorithm/two-pointer-intro
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/deque-router-example-pack.md
+- contents/data-structure/stack-basics.md
+- contents/data-structure/queue-basics.md
+- contents/algorithm/two-pointer-intro.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+confusable_with:
+- data-structure/queue-basics
+- data-structure/stack-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/monotonic-deque-walkthrough
+- algorithm/zero-one-bfs-state-space-bridge
+forbidden_neighbors: []
+expected_queries:
+- Deque는 Queue와 Stack과 무엇이 달라?
+- Java에서 Stack 대신 ArrayDeque를 쓰는 이유가 뭐야?
+- addFirst addLast pollFirst pollLast는 각각 어느 쪽 끝을 다뤄?
+- plain deque와 monotonic deque와 0-1 BFS는 어떻게 구분해?
+- sliding window 최솟값 문제에서 Deque를 왜 쓰는지 입문자용으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Deque beginner primer로, 양쪽 끝 삽입 삭제, Java ArrayDeque,
+  queue와 stack 대체, plain deque, monotonic deque, 0-1 BFS 라우팅을
+  구분한다. 덱과 큐, 덱과 스택 차이를 묻는 질문이 본 문서에 매핑된다.
+---
 # 덱 기초 (Deque Basics)
 
 > 한 줄 요약: 덱(Deque)은 앞과 뒤 양쪽에서 삽입·삭제가 가능한 구조로, 스택과 큐를 모두 대체할 수 있는 더 유연한 선형 자료구조다.

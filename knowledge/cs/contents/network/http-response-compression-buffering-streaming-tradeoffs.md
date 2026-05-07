@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "HTTP Response Compression, Buffering, Streaming Trade-offs"
+concept_id: network/http-response-compression-buffering-streaming-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- response-compression
+- streaming-latency
+- proxy-buffering
+aliases:
+- HTTP response compression
+- gzip streaming
+- brotli streaming
+- compression flush
+- response buffering
+- chunk latency
+- proxy gzip
+- content-encoding latency
+symptoms:
+- gzip이나 brotli를 켠 뒤 streaming 이벤트가 몇 개씩 묶여 늦게 도착한다
+- TTFB와 chunk cadence 악화를 네트워크 지연으로만 본다
+- app, proxy, CDN 중 어디서 압축하거나 buffering하는지 분리하지 못한다
+- content-encoding과 cache Vary 정책을 보지 않고 압축 정책만 바꾼다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/request-timing-decomposition
+- network/websocket-proxy-buffering-streaming-latency
+next_docs:
+- network/tls-record-sizing-flush-streaming-latency
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+- network/api-gateway-reverse-proxy-operational-points
+linked_paths:
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/mtu-fragmentation-mss-blackhole.md
+- contents/network/compression-cache-vary-accept-encoding-personalization.md
+- contents/network/cache-vary-accept-encoding-edge-case-playbook.md
+confusable_with:
+- network/websocket-proxy-buffering-streaming-latency
+- network/tls-record-sizing-flush-streaming-latency
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+forbidden_neighbors: []
+expected_queries:
+- "HTTP 응답 압축이 streaming latency를 악화시키는 이유는?"
+- "gzip brotli compression flush 때문에 SSE chunk가 늦게 오는 패턴을 설명해줘"
+- "proxy response buffering과 compression buffering을 어떻게 구분해?"
+- "content-encoding과 Vary Accept-Encoding을 같이 봐야 하는 이유는?"
+- "TTFB는 괜찮은데 chunk cadence가 몰아서 오는 원인을 어떻게 추적해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP gzip/brotli response compression, compression flush,
+  proxy/CDN response buffering, streaming chunk latency, content-encoding과
+  cache Vary 상호작용을 다루는 advanced playbook이다.
+---
 # HTTP Response Compression, Buffering, Streaming Trade-offs
 
 > 한 줄 요약: gzip이나 brotli는 대역폭을 줄이는 좋은 도구지만, streaming 경로에서는 압축 단위와 flush 타이밍이 늦어져 first byte와 chunk cadence를 망칠 수 있다.

@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Multi-tenant Template Rendering Service 설계
+concept_id: system-design/multitenant-template-rendering-service-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- multitenant template rendering
+- brand theme
+- locale rendering
+- template version
+aliases:
+- multitenant template rendering
+- brand theme
+- locale rendering
+- template version
+- sandboxed renderer
+- personalization
+- preview
+- partials
+- cache
+- tenant isolation
+- Multi-tenant Template Rendering Service 설계
+- multitenant template rendering service design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/document-generation-rendering-service-design.md
+- contents/system-design/file-storage-presigned-url-cdn-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/email-delivery-platform-design.md
+- contents/system-design/object-metadata-service-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Multi-tenant Template Rendering Service 설계 설계 핵심을 설명해줘
+- multitenant template rendering가 왜 필요한지 알려줘
+- Multi-tenant Template Rendering Service 설계 실무 트레이드오프는 뭐야?
+- multitenant template rendering 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Multi-tenant Template Rendering Service 설계를 다루는 deep_dive 문서다. multi-tenant template rendering service는 여러 고객의 브랜드, 언어, 정책을 분리하면서 같은 렌더링 엔진으로 콘텐츠를 생성하는 서비스다. 검색 질의가 multitenant template rendering, brand theme, locale rendering, template version처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Multi-tenant Template Rendering Service 설계
 
 > 한 줄 요약: multi-tenant template rendering service는 여러 고객의 브랜드, 언어, 정책을 분리하면서 같은 렌더링 엔진으로 콘텐츠를 생성하는 서비스다.

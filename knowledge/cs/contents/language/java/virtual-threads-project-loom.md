@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: Virtual Threads(Project Loom)
+concept_id: language/virtual-threads-project-loom
+canonical: true
+category: language
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- virtual-thread-is-not-async
+- carrier-thread-pinning
+- loom-vs-reactive-boundary
+aliases:
+- virtual thread
+- project loom
+- java virtual threads
+- loom carrier thread
+- loom pinning
+- mount unmount
+- blocking io with loom
+- virtual thread vs platform thread
+- thread per request loom
+- virtual thread reactive 비교
+symptoms:
+- blocking 코드는 그대로인데 virtual thread를 왜 쓰는지 감이 안 와
+- reactive로 가야 할지 loom으로도 충분한지 비교 기준이 필요해
+- carrier thread랑 pinning 얘기가 나오면 어디까지가 핵심인지 헷갈려
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites:
+- language/java-thread-basics
+- language/java-concurrency-utilities
+- operating-system/io-models-and-event-loop
+next_docs:
+- language/virtual-thread-migration-pinning
+- language/virtual-thread-framework-integration
+- language/mvc-async-executor-boundaries
+linked_paths:
+- contents/language/java/java-thread-basics.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/virtual-thread-mvc-async-executor-boundaries.md
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/spring/spring-mvc-request-lifecycle.md
+confusable_with:
+- language/virtual-thread-migration-pinning
+- language/virtual-thread-framework-integration
+- language/virtual-thread-reactive-db
+forbidden_neighbors:
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/virtual-thread-mvc-async-executor-boundaries.md
+expected_queries:
+- Java virtual thread가 platform thread랑 어떻게 다른지 전체 그림부터 설명해줘
+- Project Loom이 blocking 코드를 유지한 채 동시성을 늘린다는 말이 무슨 뜻이야
+- virtual thread와 reactive 중 언제 무엇을 먼저 떠올려야 하는지 알고 싶어
+- carrier thread, mount, pinning을 입문자가 헷갈리지 않게 정리한 문서가 필요해
+- thread per request 모델이 Loom에서 왜 다시 가능해졌는지 설명해줘
+- JDBC나 HTTP 호출이 많은 서버에서 Loom이 어디까지 도움 되는지 큰 그림을 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 Virtual Thread를 기존 platform thread와
+  비교하며 Project Loom이 blocking 스타일 코드를 유지한 채 어떤 종류의
+  동시성 이득을 주는지 전체 그림부터 잡는 canonical primer다. carrier
+  thread, mount/unmount, pinning, thread-per-request 복귀, reactive와
+  Loom 비교, DB나 HTTP 대기 시간이 많은 서버에서 어느 병목이 줄고 어느
+  자원 제약은 그대로 남는지 같은 자연어 paraphrase가 본 문서의 핵심
+  개념에 매핑된다.
+---
 # Virtual Threads(Project Loom)
 
 > 한 줄 요약: Virtual Thread는 "스레드를 더 싸게 많이 쓰는 방법"이 아니라, blocking 코드를 유지한 채 더 많은 동시성을 다루게 해주는 실행 모델이다.

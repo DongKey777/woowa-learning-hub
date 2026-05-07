@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring MVC Customizer Ladder WebMvcConfigurer Primer
+concept_id: spring/mvc-customizer-ladder-webmvcconfigurer-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- mvc-customizer-ladder
+- webmvcconfigurer
+- mvc-customizer-vs
+- core-bean-replacement
+aliases:
+- WebMvcConfigurer primer
+- MVC customizer vs core bean replacement
+- addInterceptors
+- addCorsMappings
+- addFormatters
+- addArgumentResolvers
+- extendMessageConverters
+- @EnableWebMvc caution
+intents:
+- definition
+- design
+linked_paths:
+- contents/spring/spring-boot-customizer-vs-top-level-bean-replacement-primer.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-handlermethodargumentresolver-pipeline.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-cors-security-vs-mvc-ownership.md
+expected_queries:
+- Spring MVC 커스터마이징은 WebMvcConfigurer와 bean replacement 중 어떻게 골라?
+- HandlerInterceptor나 CORS를 추가하려면 core MVC bean을 교체해야 해?
+- extendMessageConverters와 configureMessageConverters는 어떻게 구분해?
+- @EnableWebMvc를 붙이면 Boot MVC 기본 설정에 어떤 영향이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC customization ladder를 beginner 관점에서 설명한다.
+  WebMvcConfigurer의 addInterceptors, addCorsMappings, addFormatters,
+  addArgumentResolvers, extendMessageConverters 같은 좁은 훅과 DispatcherServlet,
+  RequestMappingHandlerAdapter 같은 core MVC bean replacement를 구분한다.
+---
 # Spring MVC Customizer Ladder 입문: `WebMvcConfigurer`로 덧붙이고, core MVC bean 교체는 마지막에 둔다
 
 > 한 줄 요약: 인터셉터, CORS, 포매터, argument resolver 같은 **웹 동작 미세 조정**은 보통 `WebMvcConfigurer` 같은 확장 훅으로 충분하고, `DispatcherServlet`이나 `RequestMappingHandlerAdapter` 같은 core MVC bean 교체는 "엔진 자체를 바꾸겠다"는 더 큰 선택이다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java Loop Control and Scope Follow-up Primer
+concept_id: language/java-loop-control-scope-follow-up-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- loop-control
+- scope
+- off-by-one
+aliases:
+- Java 반복문과 스코프 follow-up 입문
+- java loop scope primer
+- break continue difference beginner
+- while infinite loop why
+- nested loop break scope
+- 배열 length까지 돌면 왜 에러
+symptoms:
+- while loop 안에서 종료 조건 상태를 바꾸지 않아 무한 루프가 생기는데 condition/update 계약을 분리해 보지 못해
+- break와 continue가 각각 루프 종료와 이번 회차 건너뛰기라는 점을 혼동해 의도와 다른 흐름을 만든다
+- 반복문 안에서 선언한 변수 scope와 배열의 length/off-by-one 경계를 구분하지 못해 컴파일 에러나 인덱스 예외를 만든다
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/java-language-basics
+- language/java-methods-constructors-practice-primer
+- language/java-array-common-confusion-checklist
+next_docs:
+- language/java-2d-array-traversal-primer
+- language/java-stream-lambda-basics
+- algorithm/time-complexity-intro
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-2d-array-traversal-primer.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/algorithm/time-complexity-intro.md
+- contents/language/java/java-stream-lambda-basics.md
+confusable_with:
+- language/java-2d-array-traversal-primer
+- language/java-array-common-confusion-checklist
+- language/java-stream-lambda-basics
+forbidden_neighbors: []
+expected_queries:
+- Java for while break continue scope를 반복 계약 관점으로 설명해줘
+- while 무한 루프가 생기는 흔한 이유와 상태 update를 어떻게 확인해야 해?
+- break와 continue 차이를 초보자 예제로 보여줘
+- 중첩 루프에서 break는 어디까지 빠져나가는지 알려줘
+- 배열 순회에서 i <= arr.length가 왜 ArrayIndexOutOfBoundsException을 만들 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java loop control을 initialization, condition, update, break/continue, scope 계약으로 라우팅하는 beginner symptom router다.
+  while infinite loop, break continue, nested loop break, variable scope, i <= arr.length 질문이 본 문서에 매핑된다.
+---
 # Java 반복문과 스코프 follow-up 입문
 
 > 한 줄 요약: `for`/`while`/`break`/`continue`/변수 스코프를 "반복 계약" 관점으로 묶어, Java 제어문 첫 읽기 다음 단계를 짧게 연습하는 beginner primer다.

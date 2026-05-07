@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Spring HttpMessageNotWritableException Failure Taxonomy
+concept_id: spring/httpmessagenotwritableexception-failure-taxonomy
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- httpmessagenotwritableexception-failure-taxonomy
+- httpmessagenotwritableexception
+- no-converter-for
+- return-value
+aliases:
+- HttpMessageNotWritableException
+- no converter for return value
+- no suitable converter
+- Could not write JSON
+- response committed already
+- partial response
+- truncated JSON
+- ProblemDetail handoff
+intents:
+- symptom
+- troubleshooting
+symptoms:
+- No converter for return value 또는 preset Content-Type 때문에 body converter를 고르지 못한다.
+- converter는 골랐지만 Jackson serialization 중 Could not write JSON으로 실패한다.
+- first flush 이후 response가 이미 commit되어 ProblemDetail이나 /error로 새 body를 만들 수 없다.
+linked_paths:
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-requestbody-responsebodyadvice-pipeline.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-problemdetail-vs-error-handoff-matrix.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+confusable_with:
+- spring/handlermethodreturnvaluehandler-chain
+- spring/requestbody-responsebodyadvice-pipeline
+- spring/spring-content-negotiation-pitfalls
+- spring/problemdetail-before-after-commit-matrix
+- spring/problemdetail-vs-error-handoff-matrix
+expected_queries:
+- HttpMessageNotWritableException은 converter 선택 실패와 serialization 실패를 어떻게 나눠?
+- No converter for return value with preset Content-Type은 무엇을 봐야 해?
+- Could not write JSON이 pre-commit인지 post-commit인지 왜 중요해?
+- partial response나 truncated JSON이 나면 ProblemDetail로 바꿀 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 HttpMessageNotWritableException을 converter-selection pre-commit,
+  serialization pre-commit, first flush post-commit, partial-write post-commit으로
+  나누는 failure taxonomy다. HttpMessageConverter, ResponseBodyAdvice,
+  response commit, ProblemDetail, /error handoff, truncated JSON 증상을 분기한다.
+---
 # Spring `HttpMessageNotWritableException` Failure Taxonomy
 
 > 한 줄 요약: `HttpMessageNotWritableException`는 "converter를 못 골랐는가", "converter는 골랐지만 serialize에서 막혔는가", "first flush에서 commit이 넘어갔는가", "일부 body를 이미 내보낸 뒤 잘렸는가"를 분리해서 읽어야만 pre-commit 오류와 post-commit partial response를 구분할 수 있다.

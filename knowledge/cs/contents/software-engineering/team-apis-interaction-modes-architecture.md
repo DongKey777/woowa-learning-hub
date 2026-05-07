@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Team APIs and Interaction Modes in Architecture
+concept_id: software-engineering/team-apis-interaction-modes
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- team-api
+- socio-technical
+- interaction-mode
+- conway
+aliases:
+- team APIs and interaction modes
+- socio technical interface
+- team boundary protocol
+- collaboration mode architecture
+- request path between teams
+- 팀 API 상호작용 모드
+symptoms:
+- 코드 API는 있지만 변경 요청, 승인, 지원, escalation 경로 같은 team API가 없어 협업 비용이 개인 DM과 구두 절차로 흐른다
+- self-service로 풀 수 있어야 할 요청이 특정 개인 승인에 묶이거나 incident와 override가 같은 interaction mode로 처리돼
+- 공식 team API가 느리거나 불명확해 shadow process와 unofficial approval path가 코드 경계보다 먼저 시스템 경계를 무너뜨려
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/organizational-coupling-conway-effects
+- software-engineering/team-cognitive-load-boundary-design
+next_docs:
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/platform-product-capability-boundaries
+linked_paths:
+- contents/software-engineering/organizational-coupling-conway-effects.md
+- contents/software-engineering/team-cognitive-load-boundary-design.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/support-operating-models-self-service-office-hours-oncall.md
+confusable_with:
+- software-engineering/organizational-coupling-conway-effects
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/support-sla-escalation-contracts
+forbidden_neighbors: []
+expected_queries:
+- team API와 interaction mode는 코드 API와 별개로 어떤 요청, 승인, 지원 프로토콜을 설계한다는 뜻이야?
+- self-service, stewardship review, collaboration, escalation interaction mode를 어떻게 구분해야 해?
+- 기술 API는 안정적인데 consumer 질문이 슬랙 DM에 의존하면 어떤 socio-technical coupling 문제가 생겨?
+- 공식 경로가 느리거나 불명확하면 shadow process가 생기는 이유를 team API 관점에서 설명해줘
+- service stage, criticality, ownership maturity에 따라 team API가 진화해야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 architecture design을 코드 API뿐 아니라 팀 간 request path, approval flow, support responsibility, escalation protocol까지 포함하는 socio-technical interface로 설계하는 advanced playbook이다.
+---
 # Team APIs and Interaction Modes in Architecture
 
 > 한 줄 요약: 소프트웨어 경계는 코드 API만으로 유지되지 않고, 팀 사이의 요청 경로, 승인 방식, 지원 책임 같은 team API와 interaction mode가 맞아야 지속 가능하므로, architecture design은 기술 경계와 협업 경계를 함께 설계해야 한다.

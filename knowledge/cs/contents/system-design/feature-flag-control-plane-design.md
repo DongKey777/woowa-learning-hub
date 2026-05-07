@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Feature Flag Control Plane 설계
+concept_id: system-design/feature-flag-control-plane-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- feature flag control plane
+- rollout
+- kill switch
+- targeting
+aliases:
+- feature flag control plane
+- rollout
+- kill switch
+- targeting
+- evaluation
+- bucketing
+- experimentation
+- flag cache
+- approval workflow
+- config sync
+- progressive delivery
+- canary guardrail
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/entitlement-quota-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Feature Flag Control Plane 설계 설계 핵심을 설명해줘
+- feature flag control plane가 왜 필요한지 알려줘
+- Feature Flag Control Plane 설계 실무 트레이드오프는 뭐야?
+- feature flag control plane 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Feature Flag Control Plane 설계를 다루는 deep_dive 문서다. feature flag control plane은 기능 노출을 동적으로 제어하고, 점진 배포와 실험, 장애 격리를 안전하게 운영하는 정책 시스템이다. 검색 질의가 feature flag control plane, rollout, kill switch, targeting처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Feature Flag Control Plane 설계
 
 > 한 줄 요약: feature flag control plane은 기능 노출을 동적으로 제어하고, 점진 배포와 실험, 장애 격리를 안전하게 운영하는 정책 시스템이다.

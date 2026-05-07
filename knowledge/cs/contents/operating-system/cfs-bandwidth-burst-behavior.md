@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: CFS Bandwidth Burst Behavior
+concept_id: operating-system/cfs-bandwidth-burst-behavior
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- cfs-bandwidth-burst
+- behavior
+- cpu-quota-period
+- throttling
+aliases:
+- CFS bandwidth burst behavior
+- cpu quota period throttling
+- nr_periods nr_throttled
+- cpu.max cpu.stat
+- quota refill burst
+- cgroup CPU burst
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/cgroup-cpu-throttling-quota-runtime-debugging.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/scheduler-classes-nice-rt-tradeoffs.md
+expected_queries:
+- CFS bandwidth controller에서 quota period와 burst throttling은 어떻게 동작해?
+- cpu.stat의 nr_periods nr_throttled를 어떻게 해석해?
+- 평균 CPU 사용률은 낮은데 cgroup throttling이 나는 이유는?
+- quota refill과 burst 소모 패턴을 latency spike와 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 CFS bandwidth controller를 평균 quota만으로 보지 않고 period 안에서 burst가
+  quota를 소모하고 throttling으로 막혔다가 refill 때 회복되는 패턴으로 설명한다.
+  cpu.max, cpu.stat, nr_throttled, PSI와 연결한다.
+---
 # CFS Bandwidth, Burst Behavior
 
 > 한 줄 요약: CFS bandwidth controller는 평균 quota만 보지 말고 period 안에서의 burst 소모와 throttling 회복 패턴을 같이 봐야 한다.

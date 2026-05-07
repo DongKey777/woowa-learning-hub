@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Meet-in-the-Middle
+concept_id: algorithm/meet-in-the-middle
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- meet-in-the-middle
+- subset-split-search
+- exponential-state-reduction
+aliases:
+- meet in the middle
+- MITM algorithm
+- subset split
+- half enumeration
+- subset sum meet in the middle
+- exponential optimization
+- split search
+- state space reduction
+- 중간에서 만나기
+symptoms:
+- n이 30에서 40 정도인 subset search를 2^n 완전 탐색으로 바로 처리하려 한다
+- 상태 공간을 반으로 나눈 뒤 정렬 이진 탐색이나 해시로 결합하는 전략을 떠올리지 못한다
+- DP 상태를 만들기 어렵다는 이유만으로 조합 폭발을 그대로 감수한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/brute-force-intro
+- algorithm/bitmask-dp
+next_docs:
+- algorithm/binary-search-patterns
+- algorithm/bitmask-dp
+- algorithm/dp-intro
+linked_paths:
+- contents/algorithm/bitmask-dp.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/basic.md
+confusable_with:
+- algorithm/bitmask-dp
+- algorithm/brute-force-intro
+- algorithm/binary-search-patterns
+- algorithm/dp-intro
+forbidden_neighbors: []
+expected_queries:
+- Meet-in-the-Middle은 2^n 탐색을 왜 2^(n/2) 두 묶음으로 줄여?
+- subset sum에서 왼쪽 절반 합과 오른쪽 절반 합을 어떻게 결합해?
+- n이 30에서 40인 조합 탐색에서 brute force와 DP 사이에 MITM을 보는 기준이 뭐야?
+- 반으로 나눈 결과를 정렬해서 binary search로 목표를 찾는 패턴을 설명해줘
+- Meet-in-the-Middle도 여전히 메모리와 정렬 비용이 있다는 tradeoff는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Meet-in-the-Middle advanced deep dive로, subset sum과 조합 탐색에서
+  상태 공간을 왼쪽/오른쪽 절반으로 나눠 각각 가능한 값을 만들고 hash 또는
+  binary search로 결합해 exponential search를 줄이는 기법을 설명한다.
+---
 # Meet-in-the-Middle
 
 > 한 줄 요약: Meet-in-the-Middle은 상태 공간을 반으로 나눠 각 절반을 계산한 뒤, 결과를 합쳐 조합 폭발을 줄이는 기법이다.

@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Cursor and Pagination Parity During Read-Model Migration
+concept_id: design-pattern/cursor-pagination-parity-read-model-migration
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- pagination-parity
+- read-model-migration
+- cursor-cutover
+aliases:
+- read model migration pagination parity
+- projection replacement pagination
+- list endpoint cutover
+- cursor invalidation policy
+- legacy cursor verdict
+- next page parity
+- two page continuity
+- stable sort parity
+- cursor accept reissue reject
+- pagination rollback trigger
+symptoms:
+- read-model migration에서 목록 endpoint를 first-page key 비교만으로 승격해 page2부터 중복/누락이 발생한다
+- legacy cursor를 ACCEPT, REISSUE, REJECT 중 어떤 정책으로 다룰지 정하지 않은 채 새 projection으로 넘긴다
+- old/new projection의 sort, null ordering, collation, page size cap 차이를 row parity와 구분하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/search-normalization-query-pattern
+next_docs:
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/cursor-rollback-packet
+- design-pattern/strict-pagination-fallback-contracts
+linked_paths:
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/design-pattern/cursor-rollback-packet.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/search-normalization-query-pattern.md
+- contents/design-pattern/normalization-version-rollout-playbook.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/read-model-cutover-guardrails
+forbidden_neighbors: []
+expected_queries:
+- Read model migration에서 목록 endpoint cutover는 first page 비교만으로 부족하고 cursor continuity까지 봐야 하는 이유가 뭐야?
+- legacy cursor policy를 ACCEPT, REISSUE, REJECT 중 하나로 고정해야 하는 이유가 뭐야?
+- stable sort audit에서 default sort, tie breaker, null ordering, collation, mutable sort key를 확인해야 하는 이유가 뭐야?
+- page1 -> next cursor -> page2 chain을 dual-read sample로 남겨야 pagination parity를 제대로 검증하는 이유가 뭐야?
+- rollback할 때 data route만 old projection으로 되돌리면 cursor world가 정리되지 않는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Cursor and Pagination Parity During Read-Model Migration playbook으로,
+  read-model/projection cutover에서 list endpoint의 normalized query, stable sort, legacy
+  cursor verdict, next cursor emission, page1->page2 continuity, duplicate/gap, rollback
+  cursor policy를 함께 검증하는 방법을 설명한다.
+---
 # Cursor and Pagination Parity During Read-Model Migration
 
 > 한 줄 요약: read-model migration에서 목록 endpoint cutover는 first-page 결과 비교만으로 충분하지 않고, stable sort 계약, legacy cursor verdict, next-page continuity를 함께 고정해야 projection replacement가 안전하다.
@@ -35,6 +109,8 @@ retrieval-anchor-keywords: read model migration pagination parity, projection re
 - duplicate/gap 없는지
 
 이 중 하나라도 바뀌면 projection replacement는 데이터는 맞아도 사용자 경험은 달라질 수 있다.
+
+따라서 목록 cutover의 단위는 row set이 아니라 **normalized query contract와 cursor contract가 결합된 page chain**이다.
 
 ### Retrieval Anchors
 

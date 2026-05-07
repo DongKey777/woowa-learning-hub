@@ -37,7 +37,7 @@ next_docs:
 - database/duplicate-key-fresh-read-classifier-mini-card
 - database/read-your-writes-session-pinning
 - database/replica-lag-read-after-write-strategies
-- database/read-before-write-race-timeline-mysql-postgresql
+- database/read-before-write-race
 linked_paths:
 - contents/database/duplicate-key-fresh-read-classifier-mini-card.md
 - contents/database/primary-read-after-duplicate-checklist.md
@@ -63,7 +63,6 @@ contextual_chunk_prefix: |
   확인 분기로 이어진다.
 retrieval-anchor-keywords: duplicate 뒤 row 안 보임, 1062 뒤 select null, duplicate key not found why, winner row 안 보여요, stale replica duplicate read, stale snapshot duplicate key, duplicate after fresh read, read your writes duplicate, 처음 duplicate key 헷갈림, what is duplicate winner row
 ---
-
 # Duplicate Key 뒤 row가 안 보임 원인 라우터
 
 > 한 줄 요약: `duplicate key`는 "누군가 먼저 썼다"는 뜻인데 follow-up read가 `null`이면, row가 없는 게 아니라 읽는 경로나 시점이 stale한 경우가 더 흔하다.

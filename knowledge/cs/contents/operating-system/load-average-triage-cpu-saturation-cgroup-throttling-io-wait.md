@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Load Average Triage CPU Saturation cgroup Throttling IO Wait
+concept_id: operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- load-average-triage
+- cpu-saturation-cgroup
+- throttling-io-wait
+- cpu-saturation-vs
+aliases:
+- load average triage
+- CPU saturation vs cgroup throttling vs IO wait
+- high load average cause
+- run queue IO wait
+- container CPU throttling load average
+- beginner load average
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/operating-system/beginner-symptom-to-doc-map.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/cgroup-cpu-throttling-quota-runtime-debugging.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+symptoms:
+- load average나 CPU alert만 보고 scheduler contention으로 결론내렸지만 원인이 섞여 있다.
+- CPU saturation, cgroup throttling, I/O wait 중 어느 축이 load를 만든 건지 빠르게 나눠야 한다.
+- container에서는 host CPU 여유와 workload throttling이 동시에 보인다.
+expected_queries:
+- load average가 높을 때 CPU saturation, cgroup throttling, I/O wait를 어떻게 1분 안에 나눠?
+- CPU 경보가 울렸다고 곧바로 scheduler contention으로 보면 왜 틀릴 수 있어?
+- container에서 load average와 cgroup CPU throttling을 함께 해석하는 법은?
+- beginner가 high load average를 triage할 첫 관찰 순서는?
+contextual_chunk_prefix: |
+  이 문서는 load average나 CPU alert만으로 scheduler contention을 단정하지 않고 CPU saturation,
+  cgroup throttling, I/O wait 세 원인을 1분 안에 분리하는 beginner symptom router다.
+---
 # Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait
 
 > 한 줄 요약: `load average`나 CPU 경보가 울렸다는 사실만으로 scheduler contention으로 결론내리면 자주 틀리고, 먼저 CPU saturation, cgroup throttling, I/O wait를 갈라야 한다.

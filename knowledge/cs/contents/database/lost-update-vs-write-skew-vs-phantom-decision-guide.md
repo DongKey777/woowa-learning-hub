@@ -73,6 +73,14 @@ contextual_chunk_prefix: |
 
 > 같은 existing row가 조용히 덮이면 `lost update`, 서로 다른 row는 멀쩡히 저장됐는데 전체 규칙이 깨지면 `write skew`, 비어 있다고 믿은 범위 사이로 새 row가 들어오면 `phantom`을 먼저 본다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "재고가 꼬였는데 같은 row 덮어쓰기인지 범위 문제인지 모르겠어요" | shopping-cart stock, cart quantity, roomescape booking race | same row, different row invariant, new row absence check를 먼저 나눈다 |
+| "두 요청이 다른 row를 바꿨는데 전체 규칙이 깨졌어요" | capacity, active reservation count, 당직/slot 규칙 | write skew나 range invariant 문제로 본다 |
+| "비어 있다고 보고 insert했는데 뒤늦게 겹치는 row가 생겼어요" | 예약 겹침, 중복 생성 방지, overlap check | lost update가 아니라 phantom/absence check race로 분류한다 |
+
 ## 결정 매트릭스
 
 | 지금 깨진 것 | `lost update` | `write skew` | `phantom` |

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Undo Record Version Chain Traversal
+concept_id: database/undo-record-version-chain-traversal
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- undo-log
+- mvcc
+- consistent-read
+- purge
+- read-view
+aliases:
+- undo record
+- version chain traversal
+- read view
+- consistent read
+- undo chain
+- MVCC visibility
+- rollback segment
+- undo record chain
+- history list traversal
+- read view visible version
+symptoms:
+- MVCC consistent read가 현재 row가 아니라 undo chain을 따라가며 read view에 맞는 버전을 찾는다는 점을 설명해야 해
+- index는 좋아 보이는데 오래된 snapshot과 purge lag 때문에 SELECT가 느려질 수 있어
+- rollback과 undo traversal은 같은 undo를 쓰지만 목적이 다르다는 점을 구분해야 해
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- database/mvcc-read-view-consistent-read-internals
+- database/mvcc-history-list-snapshot-too-old
+next_docs:
+- database/undo-tablespace-truncation-purge-debt
+- database/change-buffer-purge-history-length
+- database/redo-undo-checkpoint-crash-recovery
+linked_paths:
+- contents/database/mvcc-read-view-consistent-read-internals.md
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/undo-tablespace-truncation-purge-debt.md
+- contents/database/change-buffer-purge-history-length.md
+confusable_with:
+- database/mvcc-history-list-snapshot-too-old
+- database/undo-tablespace-truncation-purge-debt
+- database/redo-undo-checkpoint-crash-recovery
+forbidden_neighbors: []
+expected_queries:
+- MVCC consistent read는 왜 최신 row가 아니라 undo record chain을 따라가며 read view에 맞는 버전을 찾는 거야?
+- 오래 열린 transaction과 purge lag가 undo chain traversal 비용을 어떻게 키워서 SELECT latency를 늘려?
+- rollback과 version chain traversal은 같은 undo record를 쓰지만 목적이 어떻게 달라?
+- history list length가 커진 날에는 단순 SELECT도 왜 더 느려질 수 있어?
+- 대량 UPDATE 후 read path가 느려지는 현상을 undo record chain 관점으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 undo record version chain traversal을 MVCC read view, consistent read, undo chain, purge lag, rollback segment 관점으로 설명하는 advanced deep dive다.
+  read view visible version, history list traversal, undo chain length, MVCC visibility 질문이 본 문서에 매핑된다.
+---
 # Undo Record Version Chain Traversal
 
 > 한 줄 요약: MVCC 읽기는 현재 row를 보는 게 아니라, undo record chain을 따라가며 내 read view에 맞는 버전을 찾는 과정이다.

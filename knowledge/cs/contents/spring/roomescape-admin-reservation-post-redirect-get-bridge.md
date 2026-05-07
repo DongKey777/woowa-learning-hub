@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/roomescape
+- missions/spring-roomescape
 review_feedback_tags:
 - redirect-after-post
 - refresh-resubmit-boundary
@@ -69,6 +70,14 @@ contextual_chunk_prefix: |
 ## 한 줄 요약
 
 > roomescape에서 관리자 예약 생성이 상태를 바꾸는 POST라면, 완료 화면은 그 응답에서 바로 끝내기보다 redirect 뒤 목록 GET으로 다시 열어야 브라우저 새로고침이 같은 생성 요청을 다시 재생하는 혼란을 줄일 수 있다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약을 추가한 뒤 목록 화면에서 F5를 누르면 같은 POST가 다시 나갈까 불안해요" | 관리자 예약 생성 성공 후 브라우저 새로고침 | 상태 변경 POST와 다시 열 조회 GET을 redirect로 분리한다 |
+| "POST 응답에서 바로 HTML을 그렸더니 양식 재전송을 묻는 이유를 모르겠어요" | 성공 화면이 POST 응답에 묶인 장면 | 결과 화면 주소를 GET으로 바꿔 브라우저 재열기 계약을 안정화한다 |
+| "PRG와 중복 제출 방어, read-after-write가 같은 해결책인지 헷갈려요" | 예약 생성 뒤 목록 확인과 더블클릭 방지 | redirect, dedup, 직후 조회 freshness를 다른 축으로 본다 |
 
 ## 미션 시나리오
 

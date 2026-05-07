@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring WebClient Connection Pool and Timeout Tuning
+concept_id: spring/webclient-connection-pool-timeout-tuning
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- webclient-connection-pool
+- timeout-tuning
+- timeout
+- reactor-netty-pool
+aliases:
+- WebClient connection pool timeout
+- Reactor Netty pool tuning
+- pending acquire timeout
+- connect response read write timeout
+- upstream slow WebClient
+- reactive client resource exhaustion
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+symptoms:
+- WebClient가 비동기인데도 느린 upstream 때문에 pending acquire와 tail latency가 늘어난다.
+- connect timeout, response timeout, read/write timeout, pool acquire timeout을 섞어 설정한다.
+- retry와 connection pool이 맞지 않아 장애 때 더 오래 upstream connection을 붙잡는다.
+expected_queries:
+- WebClient connection pool과 timeout은 어떻게 같이 튜닝해야 해?
+- pending acquire timeout과 connect read response timeout은 어떻게 달라?
+- WebClient는 비동기라서 connection pool exhaustion에서 안전한가?
+- slow upstream에서 retry circuit breaker pool timeout을 어떤 순서로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 WebClient가 reactive/non-blocking이라고 자동으로 안전한 것이 아니며
+  connection pool, pending acquire, connect/read/write/response timeout, retry, circuit breaker,
+  observability를 맞추지 않으면 느린 upstream을 더 오래 붙잡는 client가 된다는 점을 다룬다.
+---
 # Spring WebClient Connection Pool and Timeout Tuning
 
 > 한 줄 요약: WebClient는 비동기라고 해서 자동으로 안전한 것이 아니며, connection pool과 timeout을 안 맞추면 느린 upstream을 더 오래 붙잡는 클라이언트가 된다.

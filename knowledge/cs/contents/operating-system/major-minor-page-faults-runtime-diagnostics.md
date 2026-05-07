@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Major Minor Page Faults Runtime Diagnostics
+concept_id: operating-system/major-minor-page-faults-runtime-diagnostics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- major-minor-page
+- faults-diagnostics
+- faults
+- page-fault-diagnostics
+aliases:
+- major minor page faults
+- page fault runtime diagnostics
+- demand paging fault
+- swap-in major fault
+- minor fault latency
+- page table walk fault
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/demand-paging-page-fault-primer.md
+- contents/operating-system/swap-in-reclaim-fault-path-primer.md
+- contents/operating-system/tlb-page-table-walk-bridge.md
+- contents/operating-system/memory-management-numa-page-replacement-thrashing.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+symptoms:
+- 서버가 멈칫하는데 CPU busy가 아니라 major fault나 reclaim path가 원인처럼 보인다.
+- minor fault가 많아도 실제 I/O는 없지만 page table setup 비용이 p99에 누적된다.
+- swap-in, page cache miss, NUMA page placement를 fault 지표만으로 구분하기 어렵다.
+expected_queries:
+- major page fault와 minor page fault는 runtime latency에서 어떻게 달라?
+- page fault는 단순히 메모리에 없었다는 뜻보다 어떤 신호로 봐야 해?
+- swap-in reclaim path와 page cache fault를 어떻게 구분해?
+- minor fault가 많으면 왜 I/O 없이도 latency에 영향을 줄 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 page fault를 단순히 page가 memory에 없었다는 뜻이 아니라 server가 왜 멈칫했는지
+  보여주는 runtime signal로 본다. major fault, minor fault, swap-in, reclaim,
+  page table walk, NUMA placement를 연결한다.
+---
 # Major, Minor Page Faults, Runtime Diagnostics
 
 > 한 줄 요약: page fault는 단순히 "메모리에 없었다"는 뜻이 아니라, 서버가 왜 멈칫했는지 보여주는 가장 직접적인 런타임 신호다.

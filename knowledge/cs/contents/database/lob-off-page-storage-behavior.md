@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: LOB and Off-Page Storage Behavior
+concept_id: database/lob-off-page-storage-behavior
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- lob-off-page-storage
+- row-size-page-locality
+- overflow-page-cost
+aliases:
+- LOB
+- off-page storage
+- BLOB
+- TEXT
+- overflow page
+- pointer storage
+- row size
+- page locality
+- large column storage
+- LOB off-page
+symptoms:
+- TEXT/BLOB 같은 큰 컬럼을 읽을 때 목록은 빠른데 상세 조회만 page fetch가 늘어 느려져
+- row가 너무 커져 page density와 locality가 떨어지는 문제를 인덱스만으로 설명하려 하고 있어
+- covering index가 있어도 large column/off-page payload를 읽으면 본문 접근이 필요할 수 있다는 점을 놓치고 있어
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/innodb-buffer-pool-internals
+- database/page-directory-and-record-layout-intuition
+next_docs:
+- database/clustered-index-locality
+- database/covering-index-width-fanout-write-amplification
+- database/page-directory-and-record-layout-intuition
+linked_paths:
+- contents/database/clustered-index-locality.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/page-directory-and-record-layout-intuition.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+confusable_with:
+- database/covering-index-vs-index-only-scan
+- database/clustered-index-locality
+- database/page-directory-and-record-layout-intuition
+forbidden_neighbors: []
+expected_queries:
+- InnoDB에서 TEXT나 BLOB 같은 LOB는 왜 row 안에 다 들어가지 않고 off-page로 나갈 수 있어?
+- 목록 조회는 빠른데 상세에서 큰 body를 읽을 때 추가 page fetch가 생기는 이유는 뭐야?
+- off-page storage와 overflow page가 page locality와 row size에 주는 영향을 설명해줘
+- covering index가 있어도 large column을 읽으면 왜 본문 접근이 필요할 수 있어?
+- 큰 payload 컬럼을 별도 table로 분리해야 하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 BLOB/TEXT 같은 LOB가 row page에 모두 들어가지 않고 off-page/overflow page에 저장될 수 있어 page locality와 추가 I/O가 생기는 원리를 설명하는 advanced deep dive다.
+  LOB, off-page storage, overflow page, TEXT, BLOB, page locality 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # LOB and Off-Page Storage Behavior
 
 > 한 줄 요약: 큰 문자열과 BLOB/TEXT는 row 안에 다 들어가지 않고 off-page로 밀려날 수 있어서, 조회 비용과 page locality를 따로 봐야 한다.

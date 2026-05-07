@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Version Column Retry Walkthrough
+concept_id: database/version-column-retry-walkthrough
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- optimistic-locking
+- version-column
+- retry
+- spring
+- conflict
+aliases:
+- version column retry walkthrough
+- optimistic locking failure flow
+- ObjectOptimisticLockingFailureException walkthrough
+- stale object state retry
+- version conflict user message
+- rollback only optimistic lock
+- update count 0 version column
+- 409 conflict optimistic locking
+- retry boundary optimistic lock
+- other user already changed message
+symptoms:
+- version column optimistic locking 실패를 예외 한 줄이 아니라 UPDATE count 0, rollback-only, service response 흐름으로 이해해야 해
+- ObjectOptimisticLockingFailureException 이후 같은 transaction 안에서 다시 시도하려 해
+- 자동 retry와 409 conflict 사용자 메시지 중 무엇을 선택할지 service-layer에서 결정해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/compare-and-set-version-columns
+- database/spring-jpa-locking-example-guide
+next_docs:
+- database/spring-retry-proxy-boundary-pitfalls
+- database/idempotent-transaction-retry-envelopes
+- database/lost-update-detection-patterns
+linked_paths:
+- contents/database/compare-and-set-version-columns.md
+- contents/database/spring-jpa-locking-example-guide.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/database/lost-update-detection-patterns.md
+confusable_with:
+- database/compare-and-set-version-columns
+- database/spring-retry-proxy-boundary-pitfalls
+- database/spring-jpa-locking-example-guide
+forbidden_neighbors: []
+expected_queries:
+- @Version optimistic locking 실패는 update count 0에서 ObjectOptimisticLockingFailureException으로 어떻게 전파돼?
+- version column conflict 이후 같은 transaction을 살리는 게 아니라 새 attempt나 409 conflict를 선택해야 하는 이유는?
+- rollback-only optimistic lock 상태에서 retry loop를 돌리면 UnexpectedRollbackException이 생기는 흐름을 설명해줘
+- 사용자에게 다른 사람이 먼저 수정했다는 409 conflict message를 낼지 자동 retry할지 어떻게 판단해?
+- JPA version column retry boundary는 transactional service와 facade를 어떻게 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 version column optimistic locking failure를 UPDATE WHERE version count 0, rollback-only transaction, retry facade, user conflict message로 추적하는 advanced playbook이다.
+  ObjectOptimisticLockingFailureException, update count 0, 409 conflict optimistic locking 질문이 본 문서에 매핑된다.
+---
 # Version Column Retry Walkthrough
 
 > 한 줄 요약: optimistic locking 실패는 `@Version` 예외 한 줄이 아니라, `UPDATE ... WHERE version = ?` 실패가 transaction rollback, service-layer 분기, 사용자 conflict 메시지까지 전파되는 전체 흐름으로 이해해야 한다.

@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Protocol Version Skew / Compatibility 설계
+concept_id: system-design/protocol-version-skew-compatibility-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- protocol version skew
+- compatibility
+- mixed version fleet
+- client server skew
+aliases:
+- protocol version skew
+- compatibility
+- mixed version fleet
+- client server skew
+- event schema compatibility
+- backward compatible protocol
+- forward compatible protocol
+- deprecation window
+- unknown field handling
+- version negotiation
+- capability negotiation
+- Protocol Version Skew / Compatibility 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/service-mesh-control-plane-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/event-bus-control-plane-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/config-rollback-safety-design.md
+- contents/system-design/capability-negotiation-feature-gating-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Protocol Version Skew / Compatibility 설계 설계 핵심을 설명해줘
+- protocol version skew가 왜 필요한지 알려줘
+- Protocol Version Skew / Compatibility 설계 실무 트레이드오프는 뭐야?
+- protocol version skew 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Protocol Version Skew / Compatibility 설계를 다루는 deep_dive 문서다. protocol version skew와 compatibility 설계는 old/new producer, consumer, client, server가 동시에 존재하는 기간에도 요청과 이벤트가 안전하게 해석되도록 버전 호환 규칙과 deprecation 경계를 운영하는 설계다. 검색 질의가 protocol version skew, compatibility, mixed version fleet, client server skew처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Protocol Version Skew / Compatibility 설계
 
 > 한 줄 요약: protocol version skew와 compatibility 설계는 old/new producer, consumer, client, server가 동시에 존재하는 기간에도 요청과 이벤트가 안전하게 해석되도록 버전 호환 규칙과 deprecation 경계를 운영하는 설계다.

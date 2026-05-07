@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: khugepaged Runtime Behavior
+concept_id: operating-system/khugepaged-runtime-behavior
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- khugepaged-behavior
+- thp-collapse-background
+- transparent-huge-page
+- latency
+aliases:
+- khugepaged runtime behavior
+- THP collapse background
+- transparent huge page latency
+- memory fragmentation khugepaged
+- hugepage collapse spike
+- THP madvise tuning
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/thp-huge-pages-tlb-latency.md
+- contents/operating-system/thp-madvise-modes-runtime-tuning.md
+- contents/operating-system/compaction-fragmentation-latency.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+symptoms:
+- khugepaged가 THP collapse를 시도하면서 일부 workload에 latency spike가 생긴다.
+- memory locality와 fragmentation 상태에 따라 THP 이득과 compaction 비용이 바뀐다.
+- THP madvise mode를 켜야 할지 always를 피해야 할지 runtime behavior로 판단해야 한다.
+expected_queries:
+- khugepaged는 THP를 background collapse하면서 어떤 latency tradeoff를 만들어?
+- THP collapse와 compaction fragmentation latency는 어떻게 연결돼?
+- khugepaged runtime behavior를 PSI page fault THP metrics로 어떻게 봐?
+- THP madvise mode와 khugepaged tuning은 어떤 기준으로 잡아야 해?
+contextual_chunk_prefix: |
+  이 문서는 khugepaged를 transparent huge page를 background에서 collapse하려는 kernel thread로
+  설명한다. memory locality와 fragmentation 상태에 따라 TLB 이득과 compaction latency spike가
+  모두 생길 수 있다.
+---
 # khugepaged, Runtime Behavior
 
 > 한 줄 요약: khugepaged는 THP를 배경에서 collapse하려는 커널 스레드라서, 메모리 지역성과 fragmentation 상태에 따라 성능 이득도, latency spike도 만든다.

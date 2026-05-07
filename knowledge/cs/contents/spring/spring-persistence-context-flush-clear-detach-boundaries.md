@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Persistence Context Flush Clear Detach Boundaries
+concept_id: spring/persistence-context-flush-clear-detach-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- persistence-context-flush
+- clear-detach-boundaries
+- clear-detach
+- jpa-first-level
+aliases:
+- persistence context flush clear detach
+- JPA first level cache
+- dirty checking write behind
+- bulk update stale state
+- managed detached entity boundary
+- flush before clear
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-datajpatest-bulk-update-stale-state-mini-guide.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-transaction-isolation-readonly-pitfalls.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+- contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md
+symptoms:
+- bulk update 뒤 조회했는데 같은 트랜잭션 안에서 이전 값이 계속 보인다.
+- batch insert/update 중 persistence context가 커져 메모리가 증가한다.
+- detach된 entity 변경이 commit 때 반영되지 않거나 merge 결과가 헷갈린다.
+expected_queries:
+- JPA flush clear detach의 차이를 Spring transaction 안에서 설명해줘
+- bulk update 뒤 stale state가 보이는 이유는 persistence context 때문이야?
+- first level cache와 dirty checking write behind는 어떤 순서로 동작해?
+- batch 처리에서 flush clear를 왜 주기적으로 호출해?
+contextual_chunk_prefix: |
+  이 문서는 JPA persistence context를 단순 cache가 아니라 dirty checking, first-level cache,
+  write-behind를 가진 작업 단위로 설명한다. flush, clear, detach, merge, bulk update stale
+  state, batch 메모리 경계를 운영 증상과 연결한다.
+---
 # Spring Persistence Context Flush / Clear / Detach Boundaries
 
 > 한 줄 요약: 영속성 컨텍스트는 단순 캐시가 아니라 변경 감지와 쓰기 지연을 가진 작업 단위이므로, `flush`, `clear`, `detach`의 경계를 모르면 메모리 증가, stale state, 숨은 SQL 문제를 피하기 어렵다.

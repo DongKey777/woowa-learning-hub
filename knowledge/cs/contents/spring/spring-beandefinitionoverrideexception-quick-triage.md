@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: BeanDefinitionOverrideException Quick Triage
+concept_id: spring/beandefinitionoverrideexception-quick-triage
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- beandefinitionoverrideexception-triage
+- beandefinitionoverrideexception
+- bean-override-startup
+- error
+aliases:
+- BeanDefinitionOverrideException
+- bean override startup error
+- The bean could not be registered
+- same bean name collision
+- overriding is disabled
+- existing bean found
+- expected single matching bean but found 2
+intents:
+- symptom
+- troubleshooting
+symptoms:
+- startup 로그에 The bean 'x' could not be registered 또는 overriding is disabled가 나온다.
+- ConditionEvaluationReport에 existing bean found가 보여 Boot 기본 Bean이 back-off된다.
+- 같은 타입 Bean이 둘 이상이라 expected single matching bean but found 2로 주입이 실패한다.
+linked_paths:
+- contents/spring/spring-primary-vs-bean-override-primer.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-di-exception-quick-triage.md
+- contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+- contents/software-engineering/dependency-injection-basics.md
+confusable_with:
+- spring/spring-primary-vs-bean-override-primer
+- spring/spring-conditionalonmissingbean-vs-primary-primer
+- spring/di-exception-quick-triage
+expected_queries:
+- BeanDefinitionOverrideException은 같은 이름 bean 충돌이야?
+- overriding is disabled가 나오면 allow-bean-definition-overriding을 켜면 돼?
+- existing bean found와 expected single matching bean but found 2는 어떻게 달라?
+- Spring startup에서 bean override, back-off, 후보 선택 실패를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 BeanDefinitionOverrideException, overriding is disabled,
+  The bean could not be registered, existing bean found, expected single matching
+  bean but found 2를 beginner startup triage로 나눈다. 같은 이름 bean 충돌,
+  auto-configuration back-off, injection candidate selection failure를 분리한다.
+---
 # BeanDefinitionOverrideException Quick Triage: 같은 이름 충돌인지, back-off인지, 후보 선택 문제인지 먼저 가르기
 
 > 한 줄 요약: startup 로그에 override 비슷한 말이 보여도, 실제 원인은 `같은 bean 이름 충돌`, `auto-configuration back-off`, `여러 후보 중 하나를 못 고름` 셋 중 하나인 경우가 많다.

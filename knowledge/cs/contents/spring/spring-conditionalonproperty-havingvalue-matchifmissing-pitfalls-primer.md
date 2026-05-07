@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring @ConditionalOnProperty havingValue matchIfMissing Pitfalls Primer
+concept_id: spring/conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- conditionalonproperty-havingvalue-matchifmissing
+- pitfalls
+- conditionalonproperty
+- havingvalue
+aliases:
+- @ConditionalOnProperty
+- havingValue
+- matchIfMissing
+- property missing vs false
+- feature flag bean missing
+- env var key mismatch Spring
+- Spring property condition
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+expected_queries:
+- @ConditionalOnProperty에서 havingValue와 matchIfMissing은 어떻게 달라?
+- property가 없을 때 ConditionalOnProperty는 기본적으로 match돼?
+- local에서는 bean이 뜨는데 prod에서는 property 때문에 안 뜨는 이유가 뭐야?
+- 환경 변수 이름이 달라서 conditional bean이 빠지는 문제를 어떻게 찾지?
+contextual_chunk_prefix: |
+  이 문서는 @ConditionalOnProperty의 key 존재 여부, havingValue 비교,
+  matchIfMissing 기본값, property missing과 false 차이, env var relaxed binding
+  차이를 beginner 관점에서 설명한다. feature flag bean missing, local/prod
+  property drift, ConditionEvaluationReport first-debug로 이어지는 primer다.
+---
 # Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이
 
 > 한 줄 요약: `@ConditionalOnProperty`는 "property가 있는가, 값이 기대와 같은가, 없으면 missing을 허용할까"를 순서대로 보므로, missing property와 `false`, 환경별 key/value 차이를 분리해야 bean 누락 원인이 보인다.

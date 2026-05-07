@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: io_uring Direct Descriptor Slot Reuse files_update close_direct Hygiene
+concept_id: operating-system/io-uring-direct-descriptor-slot-reuse-files-update-close-direct-hygiene
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-direct
+- descriptor-slot-reuse
+- files-update-close
+- direct-timing
+aliases:
+- io_uring direct descriptor slot reuse
+- files_update close_direct timing
+- fixed file slot lifecycle
+- direct descriptor hygiene
+- in-flight request old file ref
+- io_uring private file table
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-cancel-scope-fixed-files-mixed-ops.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-sq-cq-basics.md
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+symptoms:
+- direct descriptor slot number를 object identity처럼 재사용해 in-flight request가 old file ref를 잡는다.
+- files_update나 close_direct timing을 잘못 잡아 slot target과 completion ownership이 헷갈린다.
+- fixed file table lifecycle과 cancel/drain 순서가 맞지 않아 stale completion이 보인다.
+expected_queries:
+- io_uring direct descriptor slot은 object identity가 아니라 lookup key라는 게 무슨 뜻이야?
+- files_update와 close_direct는 in-flight request의 old file ref에 어떤 영향을 줘?
+- fixed file slot reuse 전에 cancel drain completion을 어떤 순서로 확인해야 해?
+- direct descriptor lifecycle hygiene를 completion observability와 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 io_uring direct descriptor slot number를 object identity가 아니라 private file table
+  lookup key로 설명한다. files_update와 close_direct는 lookup target을 바꾸거나 비우지만,
+  이미 slot을 resolve한 in-flight request는 old file reference를 completion까지 잡는다.
+---
 # io_uring Direct Descriptor Slot Reuse, `files_update` / `close_direct` Timing, Lifecycle Hygiene
 
 > 한 줄 요약: direct descriptor slot 번호는 object identity가 아니라 `io_uring` private file table lookup key다. `files_update`와 `close_direct`는 그 lookup target을 바꾸거나 비우는 작업일 뿐이고, 이미 slot을 resolve한 in-flight request는 old file ref를 completion까지 계속 쥔다.

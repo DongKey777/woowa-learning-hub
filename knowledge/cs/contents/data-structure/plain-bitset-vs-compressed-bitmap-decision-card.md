@@ -32,7 +32,7 @@ intents:
 - design
 prerequisites:
 - data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
-- data-structure/bitset-vs-roaring-bitmap-beginner-handoff
+- data-structure/bitset-vs-roaring-bitmap-handoff
 next_docs:
 - data-structure/roaring-bitmap
 - data-structure/compressed-bitmap-families-wah-ewah-concise
@@ -46,7 +46,7 @@ linked_paths:
 - contents/algorithm/bitset-optimization-patterns.md
 confusable_with:
 - data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
-- data-structure/bitset-vs-roaring-bitmap-beginner-handoff
+- data-structure/bitset-vs-roaring-bitmap-handoff
 - data-structure/roaring-bitmap
 forbidden_neighbors:
 expected_queries:

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Union-Find Amortized Proof Intuition
+concept_id: algorithm/union-find-amortized-proof-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- union-find-amortized-proof
+- path-compression-rank
+- inverse-ackermann-intuition
+aliases:
+- union find amortized proof
+- union-find amortized proof intuition
+- path compression intuition
+- union by rank
+- union by size
+- inverse ackermann
+- almost constant time DSU
+- tree flattening
+- 유니온 파인드 상각 분석
+symptoms:
+- Union-Find가 거의 O(1)이라는 말을 매번 상수 시간으로 받아들이고 상각 분석 의미를 놓친다
+- path compression과 union by size rank가 각각 어떤 방식으로 트리 높이를 낮추는지 설명하지 못한다
+- edge deletion이 있는 동적 연결성에도 기본 Union-Find가 잘 맞는다고 오해한다
+intents:
+- deep_dive
+- definition
+- comparison
+prerequisites:
+- data-structure/union-find-deep-dive
+- algorithm/amortized-analysis-pitfalls
+next_docs:
+- algorithm/dsu-rollback
+- algorithm/kruskal-union-find-beginner-bridge
+- data-structure/deletion-aware-connectivity-bridge
+linked_paths:
+- contents/data-structure/union-find-deep-dive.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+- contents/algorithm/graph.md
+- contents/algorithm/dsu-rollback.md
+confusable_with:
+- data-structure/union-find-deep-dive
+- algorithm/amortized-analysis-pitfalls
+- algorithm/dsu-rollback
+- data-structure/deletion-aware-connectivity-bridge
+forbidden_neighbors: []
+expected_queries:
+- Union-Find가 path compression과 union by rank로 거의 상수 시간처럼 보이는 이유가 뭐야?
+- inverse Ackermann O(alpha n)은 실전에서 어떤 감각으로 이해하면 돼?
+- path compression은 한 번 비싼 find를 다음 find들이 싸게 만드는 상각 효과가 있어?
+- union by size나 rank 없이 path compression만 쓰면 어떤 문제가 생길 수 있어?
+- 삭제가 섞인 dynamic connectivity에는 왜 기본 Union-Find보다 rollback이나 다른 구조를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Union-Find amortized proof intuition deep dive로, path compression과
+  union by size/rank가 tree height를 낮추고 find 경로를 평탄화해 여러 연산
+  전체에서 O(alpha(n))에 가까운 비용을 보이는 이유를 설명한다.
+---
 # Union-Find Amortized Proof Intuition
 
 > 한 줄 요약: Union-Find가 거의 O(1)처럼 보이는 이유는 path compression과 union by size/rank가 트리 높이를 계속 눌러 주기 때문이다.

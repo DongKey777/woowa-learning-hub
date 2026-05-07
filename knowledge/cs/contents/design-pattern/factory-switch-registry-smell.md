@@ -53,8 +53,8 @@ confusable_with:
   - design-pattern/service-locator-antipattern
   - design-pattern/strategy-pattern
 forbidden_neighbors:
-  - contents/design-pattern/factory-basics.md
-  - contents/design-pattern/service-locator-antipattern.md
+  - contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+  - contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
 expected_queries:
   - factory switch가 점점 커질 때 registry로 옮겨야 하는 기준을 알고 싶어
   - 문자열 key로 구현체를 고르는 factory를 리팩터링하다가 service locator가 되는 걸 어떻게 피하지?

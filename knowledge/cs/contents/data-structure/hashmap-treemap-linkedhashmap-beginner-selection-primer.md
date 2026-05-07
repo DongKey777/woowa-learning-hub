@@ -1,8 +1,89 @@
+---
+schema_version: 3
+title: HashMap TreeMap LinkedHashMap Beginner Selection Primer
+concept_id: data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/backend
+review_feedback_tags:
+- java-map-implementation-choice
+- ordered-map-beginner-routing
+- hashmap-order-misconception
+aliases:
+- HashMap TreeMap LinkedHashMap
+- Java Map implementation choice
+- map selection primer
+- HashMap vs TreeMap vs LinkedHashMap
+- LinkedHashMap insertion order
+- TreeMap range query
+- floor ceiling lower higher
+- Map 뭐 써야 해
+symptoms:
+- Map을 골라야 하는데 lookup, insertion order, sorted neighbor/range 요구를 구분하지 못하고 있어
+- HashMap 출력 순서를 계약처럼 믿거나 LinkedHashMap을 정렬 map으로 오해하고 있어
+- TreeMap을 단순 정렬 출력용으로만 보고 floor/ceiling/subMap 요구를 놓치고 있어
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/hash-table-basics
+- data-structure/map-vs-set-requirement-bridge
+next_docs:
+- data-structure/map-order-symptom-router-card
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treemap-interval-entry-primer
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+linked_paths:
+- contents/data-structure/map-order-symptom-router-card.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/map-order-symptom-router-card
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+forbidden_neighbors: []
+expected_queries:
+- HashMap, LinkedHashMap, TreeMap 중 어떤 Map 구현체를 골라야 해?
+- 순서가 필요 없을 때와 삽입 순서가 필요할 때 Map 선택이 어떻게 달라?
+- TreeMap은 단순 정렬 출력보다 floor, ceiling, subMap에 강한 이유가 뭐야?
+- HashMap 출력 순서가 로컬에서 유지되는 것처럼 보여도 믿으면 안 되는 이유는 뭐야?
+- 문자열 key 조회에서 Trie가 아니라 Map을 고르는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java Map implementation chooser로, HashMap은 unordered exact lookup, LinkedHashMap은 insertion/access order, TreeMap은 sorted neighbor/range query라는 요구사항 축을 분리한다.
+  HashMap TreeMap LinkedHashMap 차이, Map 뭐 써야 해, 삽입 순서 유지, floor ceiling, subMap, HashMap 순서 보장 오해 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HashMap, TreeMap, LinkedHashMap Beginner Selection Primer
 
 > 한 줄 요약: `Map`을 처음 고를 때는 "순서가 필요 없는가, 넣은 순서가 필요한가, 정렬과 범위 탐색이 필요한가" 세 갈래로 먼저 자르면 대부분의 첫 선택 실수를 줄일 수 있다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Map을 골라야 하는데 `HashMap`, `LinkedHashMap`, `TreeMap` 기준이 없어요" | baseball/lotto/blackjack/roomescape에서 key lookup과 순서 요구가 섞인 코드 | exact lookup, insertion order, sorted range/neighbor 요구를 나눈다 |
+| "`HashMap` 출력 순서가 로컬에서 유지되는 것처럼 보여도 믿어도 되나요?" | 테스트가 우연한 iteration order에 기대는 장면 | `HashMap`은 순서 계약이 없고, 순서가 필요하면 별도 구현체를 고른다 |
+| "`TreeMap`은 단순 정렬 출력용인가요?" | 예약 시간 이웃 조회, 구간/범위 탐색, floor/ceiling 질문 | 정렬 출력보다 neighbor/range query가 핵심인지 본다 |
 
 관련 문서:
 

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Monotonic Reads and Session Guarantees
+concept_id: database/monotonic-reads-session-guarantees
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- session-consistency
+- replica-routing
+- monotonic-read
+- consistency-token
+aliases:
+- monotonic reads
+- monotonic read
+- session guarantees
+- session consistency
+- read goes backward
+- saw newer then older
+- sticky session read
+- session watermark
+- 읽기가 뒤로 감
+- 새로고침했더니 옛값이 다시 보여요
+symptoms:
+- 같은 세션에서 한 번 최신 값을 본 뒤 새로고침이나 다음 화면에서 더 오래된 값이 다시 보여
+- replica routing이 요청마다 바뀌면서 사용자가 saw newer then older 현상을 겪고 있어
+- read-your-writes는 일부 지켰지만 세션이 이미 관측한 version보다 뒤로 떨어지는 문제가 남아 있어
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/replica-lag-read-after-write-strategies
+- database/read-your-writes-session-pinning
+next_docs:
+- database/client-consistency-tokens
+- database/causal-consistency-intuition
+- database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/client-consistency-tokens.md
+- contents/database/causal-consistency-intuition.md
+- contents/database/read-after-write-routing-decision-guide.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide.md
+confusable_with:
+- database/read-your-writes-session-pinning
+- database/causal-consistency-intuition
+- database/client-consistency-tokens
+forbidden_neighbors: []
+expected_queries:
+- 같은 세션에서 최신 값을 봤다가 다시 옛값을 보는 건 어떤 consistency 문제야?
+- monotonic read와 read-your-writes를 replica routing 관점에서 비교해줘
+- session watermark나 version token으로 읽기가 뒤로 가지 않게 만드는 방법을 알려줘
+- saw newer then older 문제가 replica lag만 작으면 해결되는지 설명해줘
+- 결제나 권한 화면에서 session guarantee를 어디까지 강하게 걸어야 해?
+contextual_chunk_prefix: |
+  이 문서는 monotonic reads, session guarantees, session watermark, sticky replica routing으로 같은 사용자 세션의 읽기가 뒤로 가지 않게 만드는 advanced symptom router다.
+  새로고침 후 옛값, saw newer then older, read goes backward, session consistency 질문이 본 문서에 매핑된다.
+---
 # Monotonic Reads와 Session Guarantees
 
 > 한 줄 요약: 한 세션 안에서는 시간이 뒤로 가지 않아야 하고, 그 약속을 지키려면 읽기 라우팅이 “가장 최근에 본 값”을 기억해야 한다.

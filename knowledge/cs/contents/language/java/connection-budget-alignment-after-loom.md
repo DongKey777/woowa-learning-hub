@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Connection Budget Alignment After Loom
+concept_id: language/connection-budget-alignment-after-loom
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- virtual-threads
+- capacity-planning
+- connection-budget
+aliases:
+- connection budget alignment after loom
+- datasource pool sizing after virtual threads
+- DB concurrency budget after Loom
+- outbound HTTP bulkhead budget
+- HikariCP after Loom
+- virtual thread capacity planning
+- request admission after Loom
+symptoms:
+- virtual thread가 request thread scarcity를 줄였다는 사실을 connection, DB lock, upstream permit 상한이 늘어난 것으로 오해해
+- datasource pool size, DB safe concurrency, outbound HTTP bulkhead, request admission cap을 각각 따로 잡아 병목을 downstream으로 밀어
+- 총 request latency로 예산을 계산하고 connection hold time, remote wait time, fan-out retry amplification을 phase별로 보지 않아
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- language/virtual-threads-project-loom
+- database/hikari-connection-pool-tuning
+next_docs:
+- language/jdbc-observability-under-virtual-threads
+- language/remote-bulkhead-metrics-under-virtual-threads
+- database/transaction-boundary-isolation-locking-framework
+- system-design/backpressure-and-load-shedding-design
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/remote-bulkhead-metrics-under-virtual-threads.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/virtual-thread-vs-reactive-db-observability.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+confusable_with:
+- language/virtual-threads-project-loom
+- database/hikari-connection-pool-tuning
+- system-design/backpressure-and-load-shedding-design
+forbidden_neighbors: []
+expected_queries:
+- Loom 이후 virtual thread를 많이 만들 수 있어도 JDBC connection과 DB concurrency budget은 왜 그대로 제한돼?
+- HikariCP pool size, DB safe concurrency, outbound HTTP bulkhead를 하나의 예산 원장으로 맞추는 방법을 알려줘
+- virtual thread 환경에서 request admission cap을 downstream budget 전에 둬야 하는 이유가 뭐야?
+- connection hold time과 remote wait time으로 DB pool과 HTTP permit을 계산하는 방법을 설명해줘
+- Loom 도입 후 pool만 키우면 queue가 DB lock wait나 upstream retry storm으로 이동하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Project Loom 이후 connection budget alignment를 datasource pool, DB safe concurrency, outbound HTTP bulkhead, request admission, phase hold time, Little's Law 관점으로 설명하는 advanced deep dive다.
+  virtual threads, HikariCP after Loom, DB concurrency budget, HTTP bulkhead, request admission cap, connection hold time 질문이 본 문서에 매핑된다.
+---
 # Connection Budget Alignment After Loom
 
 > 한 줄 요약: virtual thread가 request-thread scarcity를 지운 뒤에는 `datasource` pool, DB safe concurrency, outbound HTTP bulkhead, request admission을 하나의 예산 원장으로 맞춰야 한다. 늘어난 것은 thread 수이지 connection, lock, upstream permit이 아니다.

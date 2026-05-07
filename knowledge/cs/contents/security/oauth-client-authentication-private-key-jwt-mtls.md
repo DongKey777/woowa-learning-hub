@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: 'OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS'
+concept_id: security/oauth-client-authentication-private-key-jwt-mtls
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- OAuth client authentication
+- token endpoint auth
+- client_secret_basic
+- client_secret_post
+aliases:
+- OAuth client authentication
+- token endpoint auth
+- client_secret_basic
+- client_secret_post
+- private_key_jwt
+- client assertion
+- mutual TLS
+- confidential client
+- OAuth client credential proof
+- sender constrained token
+- client secret rotation
+- token endpoint security
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/oauth-par-jar-basics.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/mtls-client-auth-vs-certificate-bound-access-token.md
+- contents/security/jwk-rotation-cache-invalidation-kid-rollover.md
+- contents/security/key-rotation-runbook.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 'OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS 핵심 개념을 설명해줘'
+- OAuth client authentication가 왜 필요한지 알려줘
+- 'OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS 실무 설계 포인트는 뭐야?'
+- OAuth client authentication에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS를 다루는 deep_dive 문서다. OAuth의 어려운 지점은 사용자 로그인만이 아니라 token endpoint에서 "어떤 client가 토큰을 요청하는가"를 안전하게 증명하는 일이며, 공유 secret보다 비대칭 키와 채널 바인딩이 운영 사고를 줄이는 경우가 많다. 검색 질의가 OAuth client authentication, token endpoint auth, client_secret_basic, client_secret_post처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS
 
 > 한 줄 요약: OAuth의 어려운 지점은 사용자 로그인만이 아니라 token endpoint에서 "어떤 client가 토큰을 요청하는가"를 안전하게 증명하는 일이며, 공유 secret보다 비대칭 키와 채널 바인딩이 운영 사고를 줄이는 경우가 많다.

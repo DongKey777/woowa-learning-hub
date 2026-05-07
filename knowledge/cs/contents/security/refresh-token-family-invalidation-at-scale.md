@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Refresh Token Family Invalidation at Scale
+concept_id: security/refresh-token-family-invalidation-at-scale
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- refresh token family
+- family invalidation
+- reuse detection
+- distributed revocation
+aliases:
+- refresh token family
+- family invalidation
+- reuse detection
+- distributed revocation
+- session lineage
+- token graph
+- logout all devices
+- revocation propagation
+- token family id
+- replay containment
+- device session graph
+- Refresh Token Family Invalidation at Scale
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/device-session-graph-revocation-design.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/jwt-deep-dive.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Refresh Token Family Invalidation at Scale 핵심 개념을 설명해줘
+- refresh token family가 왜 필요한지 알려줘
+- Refresh Token Family Invalidation at Scale 실무 설계 포인트는 뭐야?
+- refresh token family에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Refresh Token Family Invalidation at Scale를 다루는 deep_dive 문서다. refresh token family invalidation은 한 토큰을 끊는 문제가 아니라, 같은 family로 이어진 모든 세션과 디바이스를 분산 환경에서 일관되게 무효화하는 문제다. 검색 질의가 refresh token family, family invalidation, reuse detection, distributed revocation처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Refresh Token Family Invalidation at Scale
 
 > 한 줄 요약: refresh token family invalidation은 한 토큰을 끊는 문제가 아니라, 같은 family로 이어진 모든 세션과 디바이스를 분산 환경에서 일관되게 무효화하는 문제다.

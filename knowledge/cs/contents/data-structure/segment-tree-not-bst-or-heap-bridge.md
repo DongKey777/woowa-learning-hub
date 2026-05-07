@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Segment Tree Is Not BST or Heap
+concept_id: data-structure/segment-tree-not-bst-or-heap-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- segment-tree-mental-model
+- tree-family-confusion
+- range-aggregation-tree
+aliases:
+- segment tree is not BST or heap
+- segment tree vs BST vs heap
+- range aggregation tree
+- 구간 집계 트리
+- segment tree beginner bridge
+- 세그먼트 트리 BST 차이
+- 세그먼트 트리 힙 차이
+symptoms:
+- segment tree를 tree라는 이름 때문에 ordered search tree나 priority queue처럼 이해한다
+- 노드가 key 하나가 아니라 index interval과 aggregate value를 뜻한다는 점을 놓친다
+- range query, point update, range update 문제를 BST나 heap으로 풀려 해 자료구조 선택이 흔들린다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+next_docs:
+- data-structure/fenwick-vs-segment-tree
+- data-structure/segment-tree-lazy-propagation
+- data-structure/interval-tree
+linked_paths:
+- contents/data-structure/binary-tree-vs-bst-vs-heap-bridge.md
+- contents/data-structure/fenwick-vs-segment-tree.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/interval-tree.md
+- contents/data-structure/applied-data-structures-overview.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+confusable_with:
+- data-structure/binary-tree-vs-bst-vs-heap-bridge
+- data-structure/fenwick-vs-segment-tree
+- data-structure/interval-tree
+- data-structure/heap-variants
+forbidden_neighbors: []
+expected_queries:
+- segment tree가 BST나 heap이 아니라 range aggregation tree인 이유는?
+- 세그먼트 트리 노드는 key가 아니라 구간 집계값이라는 말이 무슨 뜻이야?
+- range sum range min 문제에서 segment tree와 BST heap을 어떻게 구분해?
+- segment tree vs Fenwick tree vs interval tree를 초보자 기준으로 나눠줘
+- 세그먼트 트리를 처음 배울 때 왜 ordered search tree로 보면 안 돼?
+contextual_chunk_prefix: |
+  이 문서는 segment tree를 BST나 heap이 아니라 index interval의 sum/min/max
+  집계값을 저장하는 range aggregation tree로 설명한다. ordered search,
+  priority extraction, interval overlap 구조와의 혼동을 줄이는 beginner bridge다.
+---
 # Segment Tree Is Not BST or Heap
 
 > 한 줄 요약: 세그먼트 트리는 `정렬 탐색`이나 `우선순위 추출`용 트리가 아니라, 구간을 반씩 나누며 `sum/min/max` 같은 집계값을 저장하는 binary tree다.

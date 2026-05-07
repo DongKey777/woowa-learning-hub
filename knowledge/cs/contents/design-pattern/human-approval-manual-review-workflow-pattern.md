@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Human Approval and Manual Review Workflow Pattern
+concept_id: design-pattern/human-approval-manual-review-workflow-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- human-approval
+- manual-review-workflow
+- review-queue-audit
+aliases:
+- manual review workflow
+- human approval step
+- review queue pattern
+- human in the loop workflow
+- approval sla
+- review override audit
+- escalation policy
+- reassignment policy
+- manual review step
+- 수동 검토 workflow
+symptoms:
+- manual review를 관리자 화면 예외 처리로만 붙이고 workflow status, SLA, timeout, audit를 모델링하지 않는다
+- queue assignment와 business decision semantics를 한 필드로 섞어 누가 보고 어떤 결정을 했는지 추적하기 어렵다
+- 사람이 검토 중인 상태에서 자동 취소나 자동 환불이 동시에 진행되어 semantic lock이 깨진다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/workflow-owner-vs-participant-context
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/semantic-lock-pending-state-pattern
+next_docs:
+- design-pattern/escalation-reassignment-queue-ownership-pattern
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/compensation-vs-reconciliation-pattern
+linked_paths:
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/process-manager-state-store-recovery.md
+- contents/design-pattern/escalation-reassignment-queue-ownership-pattern.md
+- contents/design-pattern/semantic-lock-pending-state-pattern.md
+- contents/design-pattern/compensation-vs-reconciliation-pattern.md
+confusable_with:
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/escalation-reassignment-queue-ownership-pattern
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/workflow-owner-vs-participant-context
+forbidden_neighbors: []
+expected_queries:
+- Human approval이나 manual review는 관리자 화면이 아니라 first-class workflow step으로 왜 모델링해야 해?
+- manual review에는 queue assignment, decision semantics, SLA, timeout, override audit가 왜 함께 필요해?
+- UNDER_REVIEW 같은 상태는 semantic lock과 함께 어떤 자동 전이를 막아야 해?
+- reviewer가 SLA를 넘기면 auto reject, escalate, reassignment 같은 deadline policy를 어떻게 설계해?
+- human override는 자동 rule과 어떻게 공존하고 audit record에는 무엇을 남겨야 해?
+contextual_chunk_prefix: |
+  이 문서는 Human Approval and Manual Review Workflow Pattern playbook으로, 사람이
+  들어오는 고위험/규제 workflow를 예외 UI가 아니라 UNDER_REVIEW/PENDING_APPROVAL 같은 상태,
+  queue assignment, decision semantics, SLA/deadline, semantic lock, override audit, escalation/reassignment를
+  가진 first-class workflow step으로 모델링하는 방법을 설명한다.
+---
 # Human Approval and Manual Review Workflow Pattern
 
 > 한 줄 요약: 자동화가 위험하거나 규제상 설명 가능성이 필요한 흐름은 human approval/manual review를 first-class workflow step으로 모델링해야 하며, queue, SLA, timeout, override, audit를 함께 설계해야 한다.

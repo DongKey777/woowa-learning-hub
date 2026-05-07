@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring OncePerRequestFilter vs Filter Beginner Primer
+concept_id: spring/onceperrequestfilter-vs-filter-beginner-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- onceperrequestfilter-vs-filter
+- custom-filter
+- servlet-filter
+- request-per-filter
+aliases:
+- OncePerRequestFilter vs Filter
+- Spring custom filter beginner
+- servlet Filter primer
+- request per filter execution
+- JWT filter OncePerRequestFilter
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/network/http-methods-rest-idempotency-basics.md
+expected_queries:
+- Spring에서 OncePerRequestFilter와 일반 Filter 중 뭘 써야 해?
+- JWT 인증 필터는 왜 OncePerRequestFilter로 많이 만들어?
+- servlet Filter와 Spring filter 구현의 차이를 초급자에게 설명해줘
+- 요청당 한 번 실행된다는 말은 async error dispatch에서도 항상 맞아?
+contextual_chunk_prefix: |
+  이 문서는 초급자가 Spring custom filter를 만들 때 일반 Servlet Filter와
+  OncePerRequestFilter 중 어디서 시작할지 판단하는 primer다. 요청당 한 번 실행이라는
+  편의와 async/error dispatch 예외, JWT 필터 적용 지점을 함께 설명한다.
+---
 # Spring `OncePerRequestFilter` vs 일반 `Filter` 입문: 언제 상속부터 시작할까
 
 > 한 줄 요약: 초급자 기준으로는 "요청당 한 번만 돌려야 하는 Spring용 커스텀 필터"라면 먼저 `OncePerRequestFilter`를 떠올리고, 정말 서블릿 표준 `Filter`만으로 충분할 때만 일반 `Filter`로 내려가면 된다.

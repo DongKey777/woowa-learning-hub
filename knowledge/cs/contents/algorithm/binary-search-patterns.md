@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Binary Search Patterns
+concept_id: algorithm/binary-search-patterns
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- binary-search-boundary-pattern
+- monotonic-predicate-design
+- parametric-search-feasibility
+aliases:
+- binary search patterns
+- answer space binary search
+- first true boundary
+- last false boundary
+- monotonic predicate
+- lower bound upper bound
+- parametric search
+- boundary search
+- 이분 탐색 패턴
+- 답의 범위 이분 탐색
+- 처음 참 경계 찾기
+- 단조 조건 판정
+symptoms:
+- 정렬 배열에서 값 하나 찾는 코드만 외워서 가능한 최소값이나 최대 허용치 문제를 이분 탐색으로 못 바꿔
+- lower_bound와 upper_bound를 exact match 탐색과 섞어서 중복 값이나 경계 조건에서 자주 틀려
+- 판정 함수가 단조적인지 확인하지 않고 mid만 줄여서 답이 우연히 맞는 코드가 나온다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- algorithm/binary-search-intro
+- algorithm/sort-to-binary-search-bridge
+next_docs:
+- algorithm/longest-increasing-subsequence-patterns
+- algorithm/sliding-window-patterns
+- algorithm/two-pointer
+- algorithm/problem-signal-to-pattern-router-beginner
+linked_paths:
+- contents/algorithm/binary-search-intro.md
+- contents/algorithm/sort-to-binary-search-bridge.md
+- contents/algorithm/longest-increasing-subsequence-patterns.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/two-pointer.md
+- contents/algorithm/problem-signal-to-pattern-router-beginner.md
+confusable_with:
+- algorithm/sliding-window-patterns
+- algorithm/two-pointer
+- algorithm/longest-increasing-subsequence-patterns
+forbidden_neighbors: []
+expected_queries:
+- 이분 탐색을 정렬된 배열 검색 말고 답의 범위에서 처음 참이 되는 경계 찾기로 쓰는 법을 설명해줘
+- lower bound와 upper bound가 exact match 탐색과 어떻게 다른지 중복 값 예시로 알려줘
+- parametric search에서 가능한지 판정하는 함수가 왜 단조적이어야 하는지 알고 싶어
+- 길이 L의 연속 구간이 가능한지 확인하는 문제에서 이분 탐색과 슬라이딩 윈도우가 어떻게 같이 쓰이는지 비교해줘
+- LIS에서 binary search가 서브루틴으로 쓰일 때와 문제 자체가 이분 탐색인 경우를 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 이분 탐색을 단순 값 검색이 아니라 단조 조건의 경계 탐색으로 확장하는 bridge다.
+  lower_bound, upper_bound, first true, last false, answer space binary search, parametric search, feasibility check, LIS의 binary search 서브루틴, sliding window 판정 함수와의 조합을 구분한다.
+---
 # Binary Search Patterns
 
 > 한 줄 요약: 이분 탐색은 "정렬된 배열에서 값 찾기"가 아니라, `조건이 처음 참이 되는 지점`을 빠르게 찾는 패턴이다.

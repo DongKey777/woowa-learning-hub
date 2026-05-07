@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Gap Lock Starvation과 Fairness
+concept_id: database/gap-lock-starvation-and-fairness
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- gap-lock-starvation
+- hot-range-fairness
+- insert-intention-wait
+aliases:
+- gap lock starvation
+- next-key lock fairness
+- insert intention lock
+- hot range starvation
+- range lock fairness
+- queue range insert blocked
+- gap lock fairness
+- insert 계속 대기
+- hot range
+- starvation vs deadlock
+symptoms:
+- 데드락은 아닌데 특정 hot range에 insert가 계속 밀려 starvation이 생기고 있어
+- worker queue나 WAITING 상태 범위 조회가 반복되며 신규 row insert를 오래 막고 있어
+- 재시도가 같은 range를 계속 두드려 공정성 문제를 더 키우고 있어
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/gap-lock-next-key-lock
+- database/transaction-isolation-locking
+next_docs:
+- database/queue-claim-skip-locked-fairness
+- database/insert-hotspot-page-contention
+- database/lock-timeout-blocker-first-check
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/deadlock-case-study.md
+- contents/database/queue-claim-skip-locked-fairness.md
+- contents/database/insert-hotspot-page-contention.md
+- contents/database/lock-timeout-blocker-first-check-mini-card.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+confusable_with:
+- database/gap-lock-next-key-lock
+- database/deadlock-vs-lock-wait-timeout-primer
+- database/queue-claim-skip-locked-fairness
+forbidden_neighbors: []
+expected_queries:
+- gap lock starvation은 deadlock과 어떻게 다르고 어떤 hot range에서 생겨?
+- SELECT FOR UPDATE range lock이 반복되면서 insert가 계속 대기하면 무엇을 봐야 해?
+- insert intention lock이 있어도 gap이 풀리지 않으면 왜 신규 row가 굶을 수 있어?
+- SKIP LOCKED나 queue partitioning이 gap lock fairness 문제를 어떻게 완화해?
+- 특정 status나 created_at range에만 insert latency가 튀면 gap lock starvation을 어떻게 진단해?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB gap lock과 next-key lock이 hot range에서 insert starvation, fairness 문제, insert intention wait를 만드는 상황을 설명하는 advanced deep dive다.
+  gap lock starvation, next-key lock fairness, hot range insert blocked, starvation vs deadlock 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Gap Lock Starvation과 Fairness
 
 > 한 줄 요약: gap lock은 범위를 보호하지만, 같은 범위를 오래 또는 자주 잡으면 새 insert가 계속 굶는 starvation이 생긴다.

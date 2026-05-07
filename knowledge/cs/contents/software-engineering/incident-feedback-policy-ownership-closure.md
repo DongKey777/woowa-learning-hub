@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Incident Feedback to Policy and Ownership Closure
+concept_id: software-engineering/incident-feedback-policy-ownership-closure
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- incident-review
+- policy-closure
+- ownership
+- governance
+aliases:
+- Incident Feedback to Policy and Ownership Closure
+- incident policy closure
+- ownership closure after incident
+- recurrence closure governance
+- socio technical failure closure
+- incident action item closure
+symptoms:
+- incident action item이 code fix와 티켓 종료로만 닫혀 policy, ownership, rollout rule, team interface 변화가 반영되지 않아 같은 사고가 반복돼
+- wrong team first page, DM 승인, shadow process, 오래된 ownership metadata 같은 team interface 문제가 개인 실수처럼 처리돼
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/incident-review-learning-loop
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/change-ownership-handoff
+- software-engineering/team-apis-interaction-modes
+- software-engineering/shadow-process-catalog-retirement
+linked_paths:
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+confusable_with:
+- software-engineering/incident-review-learning-loop
+- software-engineering/change-ownership-handoff
+- software-engineering/policy-as-code
+forbidden_neighbors: []
+expected_queries:
+- incident action item을 code closure, policy closure, ownership closure로 나눠야 하는 이유가 뭐야?
+- postmortem이 코드 수정에서 끝나면 recurrence risk가 남는 사례를 설명해줘
+- wrong team first page나 DM approval 같은 socio-technical failure를 ownership closure로 닫으려면 어떻게 해?
+- incident 결과를 policy as code, rollout rule, service template 변경으로 연결하는 방법은 뭐야?
+- closed의 정의를 티켓 종료가 아니라 deployed and verified change로 잡아야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 incident review action item을 code, control, policy, ownership, runway closure로 분류해 반복 사고를 governance와 ownership 변화로 닫는 advanced playbook이다.
+---
 # Incident Feedback to Policy and Ownership Closure
 
 > 한 줄 요약: 인시던트 액션 아이템이 반복되는 이유는 코드 수정에서 끝나고 policy, ownership, rollout rule, team interaction까지 닫히지 않기 때문이며, 좋은 closure는 incident를 governance와 ownership 변화로 회수하는 구조를 가진다.

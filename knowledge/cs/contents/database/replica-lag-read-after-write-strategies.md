@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- replica-lag-read
+- after-write-strategies
+- replica-lag
+- read-after-write
 aliases:
 - replica lag
 - read-after-write
@@ -37,7 +42,6 @@ contextual_chunk_prefix: |
   복제 지연으로 인한 일관성 깨짐, write 직후 read stale, primary fallback
   같은 자연어 paraphrase가 본 문서의 전략에 매핑된다.
 ---
-
 # Replica Lag and Read-after-write Strategies
 
 > 한 줄 요약: replica를 붙인 뒤 "방금 쓴 데이터가 안 보인다"는 문제는 설계가 아니라 전파 지연을 다루는 방식의 문제다.

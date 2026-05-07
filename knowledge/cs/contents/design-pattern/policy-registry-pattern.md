@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Policy Registry Pattern
+concept_id: design-pattern/policy-registry-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- policy-registry
+- policy-selection
+- runtime-rule-selection
+aliases:
+- policy registry
+- policy lookup
+- policy selection
+- runtime rule selection
+- strategy registry
+- refund policy registry
+- approval policy registry
+- policy object registry
+- 정책 registry
+- 정책 선택
+symptoms:
+- 환불, 배송, 승인 정책이 늘어나는데 if-else로 직접 분기하며 정책 객체 선택 기준이 흩어진다
+- Policy Registry가 단순 key lookup을 넘어 복잡한 decision engine처럼 커지는데 Specification이나 decision table로 분리하지 않는다
+- policy와 strategy를 모두 같은 registry에 넣어 허용/판정 규칙과 실행 알고리즘 선택 의미가 섞인다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- design-pattern/registry-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/specification-pattern
+next_docs:
+- design-pattern/specification-combinator-libraries
+- design-pattern/domain-service-vs-pattern-abuse
+- design-pattern/factory-misnaming-checklist
+linked_paths:
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/specification-combinator-libraries.md
+confusable_with:
+- design-pattern/registry-pattern
+- design-pattern/strategy-pattern
+- design-pattern/specification-pattern
+- design-pattern/policy-object-pattern
+forbidden_neighbors: []
+expected_queries:
+- Policy Registry는 여러 Policy Object를 key나 context로 찾아 적용하는 구조야?
+- RefundPolicy, ShippingPolicy, ApprovalPolicy가 많아질 때 Policy Registry로 if else를 줄이는 기준은 뭐야?
+- policy는 허용 여부나 판정 의미가 강하고 strategy는 실행 방법 의미가 강하다는 차이가 뭐야?
+- policy selection이 복잡해지면 Registry 안에 숨은 if else 대신 Specification이나 decision table로 분리해야 하는 이유가 뭐야?
+- Policy Registry와 일반 Registry Pattern은 lookup 구조는 같지만 도메인 정책 선택에 특화된다는 점이 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Policy Registry Pattern playbook으로, 환불/배송/승인/과금 같은 Policy Object를
+  key나 context로 등록해 런타임에 찾아 적용하고, policy selection이 복잡해질 때 Specification,
+  decision table, Policy Object 경계로 나누는 기준을 설명한다.
+---
 # Policy Registry Pattern: 정책 객체를 키로 찾아 조합하기
 
 > 한 줄 요약: Policy Registry 패턴은 여러 정책 객체를 키나 조건으로 등록해두고, 런타임에 적절한 정책을 선택하게 만든다.
@@ -143,4 +209,3 @@ Policy Registry는 정책을 조건별로 선택하는 실전 구조다.
 ## 한 줄 정리
 
 Policy Registry는 여러 정책 객체를 런타임에 찾아 적용하는 구조로, 정책이 많은 도메인에서 if-else를 줄여준다.
-

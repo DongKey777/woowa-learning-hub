@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: B-Tree Page Compression Trade-offs
+concept_id: database/btree-page-compression-tradeoffs
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 79
+mission_ids: []
+review_feedback_tags:
+- page-compression
+- btree-storage
+- write-amplification
+- compression-cost
+aliases:
+- b-tree page compression trade-offs
+- page compression
+- row_format compressed
+- key_block_size
+- compression level
+- compressed pages
+- B-Tree compression
+- compression failure threshold
+- write amplification compression
+- 페이지 압축 tradeoff
+symptoms:
+- page compression을 저장 공간만 줄이는 최적화로 보고 split/merge 재압축 비용과 CPU 비용을 놓친다
+- write-heavy OLTP 테이블에 compression을 켰다가 p99 latency와 CPU가 튄다
+- KEY_BLOCK_SIZE나 compression level을 공간 절감만 보고 조정해 write amplification을 키운다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/page-split-merge-fill-factor
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/redo-log-write-amplification
+- database/clustered-index-locality
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/redo-log-write-amplification.md
+- contents/database/clustered-index-locality.md
+confusable_with:
+- database/clustered-index-locality
+- database/page-split-merge-fill-factor
+- database/redo-log-write-amplification
+- database/buffer-pool-read-ahead-eviction-interaction
+forbidden_neighbors: []
+expected_queries:
+- B-Tree page compression은 저장 공간과 I/O를 줄이지만 split merge 재압축 비용을 만든다는 뜻이야?
+- ROW_FORMAT COMPRESSED와 KEY_BLOCK_SIZE를 write-heavy OLTP에 적용할 때 p99와 CPU를 조심해야 하는 이유가 뭐야?
+- page compression을 읽기/보관 중심 테이블에는 고려하고 랜덤 insert가 많은 테이블에는 조심하는 기준을 알려줘
+- 압축 테이블에서 page split이 일어나면 왜 재압축과 write amplification 비용이 커져?
+- 저장 공간 절감과 CPU latency trade-off를 database page compression 관점에서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 B-Tree Page Compression Trade-offs chooser로, InnoDB ROW_FORMAT=COMPRESSED와
+  KEY_BLOCK_SIZE 같은 page compression이 storage/I/O를 줄이는 대신 CPU, recompression, split/merge,
+  write amplification 비용을 B-Tree write path에 추가하는 기준을 설명한다.
+---
 # B-Tree Page Compression Trade-offs
 
 > 한 줄 요약: page compression은 저장 공간과 I/O를 줄일 수 있지만, 압축과 재압축 비용이 B-Tree의 split/merge path에 추가 세금을 붙인다.

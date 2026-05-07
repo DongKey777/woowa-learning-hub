@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Capability Negotiation / Feature Gating 설계
+concept_id: system-design/capability-negotiation-feature-gating-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- capability negotiation
+- feature gating
+- capability bit
+- negotiated feature set
+aliases:
+- capability negotiation
+- feature gating
+- capability bit
+- negotiated feature set
+- graceful downgrade
+- mixed version fleet
+- protocol handshake
+- compatibility matrix
+- feature capability advertisement
+- versionless negotiation
+- compatibility envelope
+- mandatory capability
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/service-mesh-control-plane-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/event-bus-control-plane-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/config-rollback-safety-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Capability Negotiation / Feature Gating 설계 설계 핵심을 설명해줘
+- capability negotiation가 왜 필요한지 알려줘
+- Capability Negotiation / Feature Gating 설계 실무 트레이드오프는 뭐야?
+- capability negotiation 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Capability Negotiation / Feature Gating 설계를 다루는 deep_dive 문서다. capability negotiation과 feature gating 설계는 old/new client, service, consumer가 동시에 존재하는 기간에도 상대가 실제로 이해하는 기능 집합과 compatibility envelope를 기준으로 native path, downgrade, adapter bridge, reject를 결정해 version skew를 안전하게 흡수하는 운영 설계다. 검색 질의가 capability negotiation, feature gating, capability bit, negotiated feature set처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Capability Negotiation / Feature Gating 설계
 
 > 한 줄 요약: capability negotiation과 feature gating 설계는 old/new client, service, consumer가 동시에 존재하는 기간에도 상대가 실제로 이해하는 기능 집합과 compatibility envelope를 기준으로 native path, downgrade, adapter bridge, reject를 결정해 version skew를 안전하게 흡수하는 운영 설계다.

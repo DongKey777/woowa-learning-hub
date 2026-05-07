@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: GROUP BY 결과를 왜 다시 ORDER BY 하면 느려지나요?
+concept_id: database/group-by-order-by-different-axis-mysql-postgresql-bridge
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- group-by-order-by-different-axis
+- using-temporary-filesort-bridge
+- aggregate-sort-plan-bridge
+aliases:
+- group by order by why slow
+- group by order by different key
+- using temporary using filesort why
+- group by result order by
+- order by count desc slow
+- group by order by different axis
+- PostgreSQL group by sort
+- GROUP BY ORDER BY 느림
+- 집계 기준과 정렬 기준이 달라요
+- group by 후 order by
+symptoms:
+- GROUP BY로 묶는 축과 ORDER BY로 정렬하는 축이 달라 Using temporary나 Sort가 붙는 이유를 모르겠어
+- ORDER BY COUNT(*) DESC나 MAX(created_at) DESC가 인덱스 한 번으로 끝나기 어렵다는 점을 놓치고 있어
+- MySQL Extra와 PostgreSQL plan node를 같은 질문으로 읽는 bridge가 필요해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/sql-aggregate-groupby-basics
+- database/index-and-explain
+next_docs:
+- database/distinct-vs-group-by-beginner-card
+- database/explain-first-read-timeout-mini-card
+- database/index-condition-pushdown-filesort-temporary-table
+- database/covering-index-composite-ordering
+linked_paths:
+- contents/database/sql-aggregate-groupby-basics.md
+- contents/database/mysql-explain-using-temporary-beginner-card.md
+- contents/database/index-and-explain.md
+- contents/database/postgresql-plan-node-mini-card.md
+- contents/database/postgresql-explain-analyze-terms-mini-bridge.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/distinct-vs-group-by-beginner-card.md
+- contents/database/explain-first-read-timeout-mini-card.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/sql-aggregate-groupby-basics
+- database/index-condition-pushdown-filesort-temporary-table
+- database/covering-index-composite-ordering
+forbidden_neighbors: []
+expected_queries:
+- GROUP BY 축과 ORDER BY 축이 다르면 왜 Using temporary와 Using filesort가 붙어 느려져?
+- ORDER BY COUNT(*) DESC는 왜 인덱스 순서만으로 바로 끝나기 어려워?
+- MySQL의 Using temporary/filesort와 PostgreSQL의 HashAggregate/Sort를 어떻게 비교해서 읽어?
+- GROUP BY status ORDER BY status는 괜찮은데 GROUP BY status ORDER BY COUNT DESC는 왜 다른가?
+- 집계 후 생기는 값을 다시 정렬하는 plan을 초보자에게 어떻게 설명해?
+contextual_chunk_prefix: |
+  이 문서는 GROUP BY로 묶는 축과 ORDER BY로 정렬하는 축이 달라 MySQL Using temporary/filesort나 PostgreSQL Aggregate/Sort가 붙는 이유를 설명하는 intermediate chooser다.
+  group by order by why slow, using temporary, order by count desc slow, aggregate sort 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # `GROUP BY` 결과를 왜 다시 `ORDER BY` 하면 느려지나요?
 
 > 한 줄 요약: `GROUP BY`로 묶는 축과 `ORDER BY`로 줄 세우는 축이 다르면, DB는 보통 "먼저 집계하고 그 결과를 다시 정렬"해야 해서 인덱스 한 번만으로 끝내기 어려워진다.

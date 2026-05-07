@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: THP Huge Pages TLB Latency
+concept_id: operating-system/thp-huge-pages-tlb-latency
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- thp-huge-pages
+- tlb-latency
+- transparent-huge-pages
+- tlb-miss-reduction
+aliases:
+- THP huge pages TLB latency
+- transparent huge pages
+- TLB miss reduction
+- compaction fault stall
+- huge page latency spike
+- khugepaged THP
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/khugepaged-runtime-behavior.md
+- contents/operating-system/thp-madvise-modes-runtime-tuning.md
+- contents/operating-system/compaction-fragmentation-latency.md
+- contents/operating-system/tlb-page-table-walk-bridge.md
+- contents/operating-system/page-table-overhead-memory-footprint.md
+symptoms:
+- THP로 TLB miss는 줄었지만 compaction이나 fault stall 때문에 tail latency가 커진다.
+- huge page allocation이 memory fragmentation 상태에 따라 성능 이득과 지연 spike를 동시에 만든다.
+- always/madvise/never 중 어떤 THP mode가 workload에 맞는지 판단해야 한다.
+expected_queries:
+- THP와 huge page는 TLB miss를 줄이지만 왜 latency spike를 만들 수 있어?
+- compaction과 fault stall을 THP tuning에서 어떻게 봐?
+- huge page가 page table overhead와 TLB latency를 줄이는 원리는?
+- THP를 켤지 madvise로 제한할지 운영 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 huge page와 THP가 TLB miss와 page table overhead를 줄여 throughput을 올릴 수 있지만,
+  compaction, allocation fault stall, khugepaged collapse가 tail latency를 키울 수 있다는
+  trade-off를 설명한다.
+---
 # THP, Huge Pages, TLB Latency
 
 > 한 줄 요약: huge page는 TLB miss를 줄여 성능을 올릴 수 있지만, 잘못 켜면 compaction과 fault stall이 지연을 더 키울 수 있다.

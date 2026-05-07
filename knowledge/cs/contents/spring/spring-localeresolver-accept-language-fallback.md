@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring LocaleResolver and Accept-Language Fallback
+concept_id: spring/localeresolver-accept-language-fallback
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- localeresolver-accept-language
+- fallback
+- localeresolver
+- accept-language
+aliases:
+- LocaleResolver
+- Accept-Language
+- LocaleContextHolder
+- AcceptHeaderLocaleResolver
+- SessionLocaleResolver
+- locale fallback
+- request locale
+- language negotiation
+intents:
+- troubleshooting
+- deep_dive
+symptoms:
+- 브라우저 Accept-Language는 한국어인데 validation이나 error message가 영어로 나온다.
+- 사용자가 언어를 바꿨는데 다음 요청에서 locale이 유지되지 않는다.
+- async boundary를 넘은 뒤 LocaleContextHolder 기반 locale이 사라진다.
+linked_paths:
+- contents/spring/spring-messagesource-i18n-resolution-flow.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-problemdetail-error-response-design.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+expected_queries:
+- Spring LocaleResolver는 MessageSource와 어떤 순서로 동작해?
+- Accept-Language header와 default locale fallback을 어떻게 봐야 해?
+- SessionLocaleResolver는 사용자가 바꾼 언어를 어떻게 기억해?
+- LocaleContextHolder가 async thread에서 사라지는 문제는 어떻게 처리해?
+contextual_chunk_prefix: |
+  이 문서는 요청별 LocaleResolver, Accept-Language negotiation,
+  AcceptHeaderLocaleResolver, SessionLocaleResolver, LocaleContextHolder,
+  default locale fallback을 MessageSource보다 앞단 locale 결정 계층으로 설명한다.
+  validation message와 ProblemDetail localization, async context propagation에 연결된다.
+---
 # Spring LocaleResolver and Accept-Language Fallback
 
 > 한 줄 요약: `LocaleResolver`는 요청별 locale을 정하는 계층이고, `MessageSource`는 그 locale을 바탕으로 메시지를 찾는 계층이라 둘을 분리해 봐야 i18n이 안정적으로 동작한다.

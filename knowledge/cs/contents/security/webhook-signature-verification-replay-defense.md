@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Webhook Signature Verification / Replay Defense
+concept_id: security/webhook-signature-verification-replay-defense
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- webhook signature
+- raw body
+- event id
+- idempotency
+aliases:
+- webhook signature
+- raw body
+- event id
+- idempotency
+- replay defense
+- provider secret
+- HMAC
+- timestamp window
+- delivery retry
+- constant-time compare
+- replay containment
+- Webhook Signature Verification / Replay Defense
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/https-hsts-mitm.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Webhook Signature Verification / Replay Defense 핵심 개념을 설명해줘
+- webhook signature가 왜 필요한지 알려줘
+- Webhook Signature Verification / Replay Defense 실무 설계 포인트는 뭐야?
+- webhook signature에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Webhook Signature Verification / Replay Defense를 다루는 deep_dive 문서다. webhook은 inbound callback이므로 transport만 믿지 말고, raw body 기준 서명 검증과 idempotent 처리로 재전송까지 막아야 한다. 검색 질의가 webhook signature, raw body, event id, idempotency처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Webhook Signature Verification / Replay Defense
 
 > 한 줄 요약: webhook은 inbound callback이므로 transport만 믿지 말고, raw body 기준 서명 검증과 idempotent 처리로 재전송까지 막아야 한다.

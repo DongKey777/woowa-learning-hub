@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Replay Store Outage / Degradation Recovery
+concept_id: security/replay-store-outage-degradation-recovery
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- replay store outage
+- nonce store outage
+- jti replay cache outage
+- replay defense degradation
+aliases:
+- replay store outage
+- nonce store outage
+- jti replay cache outage
+- replay defense degradation
+- dedup store outage
+- nonce validation outage
+- replay recovery drill
+- fail-open fail-closed replay
+- bounded fallback
+- Replay Store Outage / Degradation Recovery
+- replay store outage degradation recovery
+symptoms:
+- Replay Store Outage / Degradation Recovery 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/security/dpop-token-binding-basics.md
+- contents/security/webhook-signature-verification-replay-defense.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Replay Store Outage / Degradation Recovery 장애가 나면 복구 순서는?
+- replay store outage 운영 대응 체크리스트가 뭐야?
+- Replay Store Outage / Degradation Recovery에서 blast radius를 어떻게 줄여?
+- replay store outage 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Replay Store Outage / Degradation Recovery를 다루는 playbook 문서다. nonce, `jti`, event id, replay cache 같은 저장소가 죽으면 재전송 방어가 사라지므로, replay defense 시스템도 risk-tiered fail policy, bounded fallback, recovery drill을 따로 가져야 한다. 검색 질의가 replay store outage, nonce store outage, jti replay cache outage, replay defense degradation처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Replay Store Outage / Degradation Recovery
 
 > 한 줄 요약: nonce, `jti`, event id, replay cache 같은 저장소가 죽으면 재전송 방어가 사라지므로, replay defense 시스템도 risk-tiered fail policy, bounded fallback, recovery drill을 따로 가져야 한다.

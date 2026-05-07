@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Stream toList vs Collectors toList Mutability Bridge
+concept_id: language/stream-tolist-vs-collectors-tolist-mutability-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- stream
+- mutability
+- collection-result
+aliases:
+- Stream.toList vs Collectors.toList Result Mutability Bridge
+- Java stream toList unmodifiable
+- Collectors.toList mutability no guarantees
+- toCollection ArrayList mutable result
+- stream result list mutability
+- 자바 Stream.toList Collectors.toList 차이
+symptoms:
+- sorted는 순서를 정하는 API이고 toList collect는 결과 리스트 계약을 정하는 API라는 두 질문을 섞어
+- Stream.toList 결과에 add remove sort를 호출해 UnsupportedOperationException이 나는 이유를 mutability contract가 아니라 sort 문제로 오해해
+- Collectors.toList가 항상 mutable ArrayList를 보장한다고 기대해 API contract와 구현 세부를 구분하지 못해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-stream-lambda-basics
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/java-collections-basics
+next_docs:
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- language/java-immutable-object-basics
+- language/stream-groupingby-result-shape-primer
+linked_paths:
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+- language/set-of-copyof-unmodifiableset-readonly-primer
+forbidden_neighbors: []
+expected_queries:
+- Stream.toList와 Collectors.toList는 결과 List mutability가 어떻게 달라?
+- sorted는 순서를 정하고 toList는 결과 리스트 계약을 정한다는 뜻을 설명해줘
+- Stream.toList 결과에 add나 sort를 하면 UnsupportedOperationException이 날 수 있는 이유가 뭐야?
+- 수정 가능한 ArrayList 결과가 필요하면 Collectors.toCollection(ArrayList::new)를 명시하는 게 왜 좋아?
+- Collectors.toList는 항상 mutable ArrayList를 보장하지 않는다는 contract를 beginner 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Stream.toList, Collectors.toList, Collectors.toCollection(ArrayList::new)을 result list mutability contract로 구분하는 beginner chooser다.
+  Stream.toList, Collectors.toList, unmodifiable list, mutable result, toCollection ArrayList 질문이 본 문서에 매핑된다.
+---
 # `Stream.toList()` vs `Collectors.toList()` Result Mutability Bridge
 
 > 한 줄 요약: `sorted(...)`는 순서를 정하고, `toList()`/`Collectors.toList()`는 결과 리스트 계약을 정한다. 초보자 기준으로는 `Stream.toList()`를 "읽기 전용 결과", 수정 가능한 결과가 필요할 때는 `toCollection(ArrayList::new)`를 명시하는 식으로 구분하면 가장 덜 헷갈린다.

@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring TransactionSynchronization Ordering Suspend Resume Resource Binding
+concept_id: spring/transactionsynchronization-ordering-suspend-resume-resource-binding
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transactionsynchronization-ordering-suspend
+- resume-resource-binding
+- transactionsynchronization-ordering
+- suspend-resume-resource
+aliases:
+- TransactionSynchronization ordering
+- suspend resume resource binding
+- transaction synchronization lifecycle
+- afterCommit ordering
+- nested propagation resource cleanup
+- transaction callback chain
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md
+- contents/spring/spring-transactiontemplate-programmatic-transaction-boundaries.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-delivery-reliability-retryable-resilience4j-outbox-relay.md
+- contents/spring/spring-transaction-debugging-playbook.md
+expected_queries:
+- TransactionSynchronization ordering과 suspend resume은 어떤 lifecycle로 동작해?
+- resource binding cleanup 시점을 모르면 nested propagation에서 어떤 side effect가 생겨?
+- afterCommit hook만이 아니라 beforeCommit afterCompletion ordering은 어떻게 봐야 해?
+- TransactionSynchronization과 TransactionTemplate, REQUIRES_NEW는 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 TransactionSynchronization을 단순 afterCommit hook이 아니라 transaction lifecycle,
+  ordering, resource binding, suspend/resume, cleanup까지 포함한 계약으로 설명한다.
+  nested propagation과 callback chain side effect를 함께 다룬다.
+---
 # Spring `TransactionSynchronization` Ordering, Suspend / Resume, and Resource Binding
 
 > 한 줄 요약: `TransactionSynchronization`는 단순 `afterCommit` 훅이 아니라 자원 바인딩과 suspend/resume까지 포함한 lifecycle 계약이므로, ordering과 resource cleanup 감각이 없으면 nested propagation이나 callback 체인에서 이상한 side effect가 생긴다.

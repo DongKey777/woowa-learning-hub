@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Roaring Production Profiling Checklist
+concept_id: data-structure/roaring-production-profiling-checklist
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roaring-production-profiling
+- chunk-local-shape-drift
+- container-churn-hotspot
+aliases:
+- Roaring production profiling
+- chunk-local cardinality histogram
+- run count profiling
+- container churn hotspot
+- repairAfterLazy profiling
+- active chunk heatmap
+- 4096 boundary hotspot
+symptoms:
+- Roaring 성능 문제를 전체 bitmap cardinality나 평균 density로만 보고 hot high_key chunk와 phase별 churn을 놓친다
+- build, update, query_result, repair phase를 섞어 array/bitmap/run transition의 원인을 잘못 해석한다
+- 4096 boundary pressure, run fragmentation, repairAfterLazy debt, active chunk spread를 함께 계측하지 않는다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/roaring-container-transition-heuristics
+next_docs:
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/bitmap-locality-remediation
+- data-structure/roaring-instrumentation-schema-examples
+- data-structure/row-ordering-and-bitmap-compression-playbook
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-intermediate-repair-path-guide.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/bitmap-locality-remediation-playbook.md
+- contents/data-structure/roaring-instrumentation-schema-examples.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/roaring-instrumentation-schema-examples
+- data-structure/bitmap-locality-remediation
+- data-structure/roaring-container-transition-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap production profiling에서 전체 cardinality보다 chunk-local histogram을 봐야 하는 이유는?
+- array bitmap run transition counter와 run count profiling을 어떤 tag로 남겨야 해?
+- build update query_result repair phase를 분리해 Roaring hotspot을 찾는 체크리스트가 필요해
+- 4096 boundary pressure와 repairAfterLazy hotspot을 production에서 어떻게 관측해?
+- Roaring workload observability에서 active chunk heatmap과 sampled hotspot event를 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 production Roaring Bitmap profiling에서 전체 cardinality가 아니라
+  chunk-local cardinality histogram, run count, container transition frequency,
+  phase/op/high_key tags를 함께 계측하는 checklist다.
+---
 # Roaring Production Profiling Checklist
 
 > 한 줄 요약: Roaring 운영 이슈는 전체 cardinality보다 `chunk-local cardinality histogram`, `run 수`, `container 전환 빈도`가 더 직접적으로 드러내므로, 실제 workload 경로에서 이 세 축을 함께 계측해야 한다.

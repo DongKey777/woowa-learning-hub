@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: SSRF / Egress Control
+concept_id: security/ssrf-egress-control
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- SSRF
+- egress control
+- allowlist
+- denylist
+aliases:
+- SSRF
+- egress control
+- allowlist
+- denylist
+- metadata service
+- DNS rebinding
+- redirect chain
+- URL parser
+- network policy
+- IMDS
+- outbound proxy
+- SSRF / Egress Control
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/nat-conntrack-ephemeral-port-exhaustion.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SSRF / Egress Control 핵심 개념을 설명해줘
+- SSRF가 왜 필요한지 알려줘
+- SSRF / Egress Control 실무 설계 포인트는 뭐야?
+- SSRF에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SSRF / Egress Control를 다루는 deep_dive 문서다. SSRF는 단순한 URL 검증 실패가 아니라, 사용자 입력이 내부 네트워크로 이어지는 신뢰 경계 붕괴다. 앱 검증과 네트워크 egress 통제가 같이 있어야 막을 수 있다. 검색 질의가 SSRF, egress control, allowlist, denylist처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SSRF / Egress Control
 
 > 한 줄 요약: SSRF는 단순한 URL 검증 실패가 아니라, 사용자 입력이 내부 네트워크로 이어지는 신뢰 경계 붕괴다. 앱 검증과 네트워크 egress 통제가 같이 있어야 막을 수 있다.

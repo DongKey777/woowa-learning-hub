@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Spring Transactional Async Composition Traps
+concept_id: spring/transactional-async-composition-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transactional-async-composition
+- traps
+- async-transaction-boundary
+- transaction-lost-after
+aliases:
+- @Transactional @Async composition
+- async transaction boundary
+- transaction lost after async
+- thread boundary transaction ownership
+- failure propagation async transaction
+- transactional event vs async
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- spring/scheduler-async-boundaries
+- spring/async-context-propagation-restclient-http-interface-clients
+- spring/eventlistener-transaction-phase-outbox
+- spring/service-layer-transaction-boundary-patterns
+symptoms:
+- @Transactional 메서드에서 @Async를 호출했는데 async 작업은 같은 transaction에 묶이지 않는다.
+- async 작업 실패가 원래 request transaction rollback으로 전파될 거라 기대했다가 빠진다.
+- 같은 method에 @Transactional과 @Async를 붙였는데 proxy order와 self invocation 때문에 동작이 다르다.
+expected_queries:
+- @Transactional과 @Async를 같이 쓰면 같은 논리 작업이 유지돼?
+- thread가 바뀌면 transaction ownership과 failure propagation은 어떻게 갈라져?
+- async 후속 작업은 AFTER_COMMIT 이벤트나 outbox와 어떻게 비교해야 해?
+- @Async self invocation과 @Transactional proxy가 함께 있으면 어떤 trap이 생겨?
+contextual_chunk_prefix: |
+  이 문서는 @Transactional과 @Async를 조합해도 thread boundary가 생기는 순간 transaction
+  ownership, persistence context, failure propagation, SecurityContext/MDC propagation이
+  분리된다는 점을 증상별로 라우팅한다.
+---
 # Spring `@Transactional` and `@Async` Composition Traps
 
 > 한 줄 요약: `@Transactional`과 `@Async`를 함께 쓴다고 해서 하나의 논리적 작업이 유지되는 것은 아니며, 스레드가 바뀌는 순간 트랜잭션 소유권과 실패 전파가 갈라진다.

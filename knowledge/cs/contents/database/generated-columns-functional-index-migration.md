@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Generated Columns, Functional Indexes, and Query-Safe Migration
+concept_id: database/generated-columns-functional-index-migration
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- generated-column-functional-index
+- sargable-predicate-migration
+- query-safe-rollout
+aliases:
+- generated column functional index migration
+- generated column
+- functional index
+- expression index
+- sargable predicate
+- query-safe migration
+- lower email index
+- derived key index
+- online backfill generated column
+- 함수 조건 인덱스
+symptoms:
+- LOWER, DATE, JSON_EXTRACT 같은 함수 조건 때문에 기존 인덱스를 못 타는 쿼리를 안전하게 바꾸고 싶어
+- generated column과 functional index 중 운영 가독성, backfill, 배포 순서를 기준으로 선택해야 해
+- 새 파생 키 인덱스를 만들기 전후로 old query와 new query가 같이 살아야 하는 migration 순서를 짜야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/index-and-explain
+- database/query-tuning-checklist
+next_docs:
+- database/online-schema-change-strategies
+- database/online-backfill-consistency
+- database/functional-index-vs-lower-duplicate-check-bridge
+- system-design/zero-downtime-schema-migration-platform-design
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/online-backfill-consistency.md
+- contents/database/functional-index-vs-lower-duplicate-check-bridge.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+confusable_with:
+- database/query-tuning-checklist
+- database/functional-index-vs-lower-duplicate-check-bridge
+- database/online-schema-change-strategies
+forbidden_neighbors: []
+expected_queries:
+- LOWER(email), DATE(created_at), JSON_EXTRACT 조건을 sargable하게 만들려면 generated column과 functional index 중 무엇을 써야 해?
+- generated column을 추가하고 읽기 경로를 전환하는 query-safe migration 순서를 알려줘
+- expression index는 좋은데 팀 가독성이 떨어질 때 generated column이 더 나은 이유는 뭐야?
+- functional index 도입 전 기존 쿼리와 새 인덱스가 같이 살아남게 하려면 어떤 배포 순서가 안전해?
+- 파생 키 규칙이 바뀔 수 있으면 generated column backfill과 검증을 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 함수가 걸린 non-sargable predicate를 generated column, functional index, expression index, online backfill, query-safe rollout로 전환하는 advanced playbook이다.
+  generated column, functional index, expression index, sargable predicate, lower email index 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Generated Columns, Functional Indexes, and Query-Safe Migration
 
 > 한 줄 요약: 함수가 걸린 조건을 빠르게 만들고 싶을 때는 "쿼리를 바꾸자"로 끝나지 않고, generated column·functional index·배포 순서를 함께 설계해야 한다.

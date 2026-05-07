@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Quotient Filter
+concept_id: data-structure/quotient-filter
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- quotient-filter
+- approximate-membership
+- cache-friendly-filter
+aliases:
+- Quotient Filter
+- quotient remainder filter
+- compact hash filter
+- approximate membership filter
+- fingerprint filter
+- cache-friendly filter
+- Bloom alternative
+symptoms:
+- approximate membership filter를 Bloom과 Cuckoo만으로 보고 quotient/remainder locality 기반 filter 선택지를 놓친다
+- quotient는 bucket 위치, remainder는 compact fingerprint payload라는 분리를 이해하지 못한다
+- metadata bit로 cluster/run 경계를 유지하는 구현 복잡도와 locality 이점을 함께 보지 않는다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/bloom-filter-vs-cuckoo-filter
+next_docs:
+- data-structure/bloom-filter
+- data-structure/cuckoo-filter
+- data-structure/xor-filter
+- data-structure/sketch-filter-selection-playbook
+linked_paths:
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/cuckoo-filter.md
+- contents/data-structure/xor-filter.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+confusable_with:
+- data-structure/bloom-filter
+- data-structure/cuckoo-filter
+- data-structure/xor-filter
+- data-structure/bloom-filter-vs-cuckoo-filter
+forbidden_neighbors: []
+expected_queries:
+- Quotient Filter는 Bloom Filter나 Cuckoo Filter와 무엇이 달라?
+- quotient remainder로 fingerprint를 나눠 cache-friendly membership filter를 만드는 방식은?
+- Quotient Filter의 metadata bits는 cluster와 run boundary를 어떻게 유지해?
+- SSD-backed on-disk filter나 compact negative lookup filter에 Quotient Filter가 맞는 이유는?
+- approximate membership filter에서 Bloom Cuckoo Xor Quotient를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Quotient Filter를 hash fingerprint를 quotient와 remainder로 나누어
+  cache-friendly하게 저장하는 approximate membership chooser로 설명한다.
+  Bloom, Cuckoo, Xor filter와 비교하고 metadata bit, cluster/run locality를 다룬다.
+---
 # Quotient Filter
 
 > 한 줄 요약: Quotient Filter는 fingerprint를 quotient/remainder로 나눠 저장하는 approximate membership 구조로, Bloom보다 locality가 좋고 일부 동적 운영도 가능한 compact filter다.

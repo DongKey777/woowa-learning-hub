@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: System Call and User Kernel Boundary
+concept_id: operating-system/syscall-user-kernel-boundary
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- syscall-user-kernel
+- boundary
+- user-space-kernel
+- space-transition
+aliases:
+- syscall user kernel boundary
+- user space kernel space transition
+- syscall overhead
+- privileged resource access
+- file socket memory boundary
+- strace syscall latency
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/syscall-basics.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/interrupt-basics.md
+- contents/operating-system/mmap-sendfile-splice-zero-copy.md
+expected_queries:
+- system call은 user space에서 kernel space로 넘어가는 어떤 boundary야?
+- syscall transition cost가 I/O performance와 bottleneck 해석의 출발점인 이유는?
+- strace로 syscall latency를 볼 때 user-kernel boundary를 어떻게 이해해야 해?
+- file, socket, memory 같은 privileged resource를 요청하는 경계는 어디야?
+contextual_chunk_prefix: |
+  이 문서는 syscall을 application이 user space에서 kernel space로 넘어가 file, socket, memory 같은
+  privileged resource를 요청하는 boundary로 설명한다. 이 round-trip cost가 I/O 성능과 병목 해석의
+  출발점이다.
+---
 # 시스템 콜과 User-Kernel Boundary
 
 > 한 줄 요약: 시스템 콜은 애플리케이션이 user space에서 kernel space로 넘어가 파일, 소켓, 메모리 같은 특권 자원을 요청하는 경계이며, 이 왕복 비용이 I/O 성능과 병목 해석의 출발점이다.

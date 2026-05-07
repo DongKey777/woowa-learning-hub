@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- factory-selector-resolver
+- factory-vs-selector
+- vs-resolver
+- selector-naming
 aliases:
 - factory selector resolver
 - Factory vs Selector vs Resolver
@@ -40,7 +45,6 @@ contextual_chunk_prefix: |
   Strategy>를 selector라 불러야 하나 strategy라 불러야 하나 같은 자연어
   paraphrase가 본 문서의 분기 질문에 매핑된다.
 ---
-
 # Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림
 
 > 한 줄 요약: 이름을 붙이기 전에 먼저 질문을 고정한다. **"지금 새로 만들고 있나?"**면 `Factory`, 아니면 선택/해석 책임을 먼저 본다.

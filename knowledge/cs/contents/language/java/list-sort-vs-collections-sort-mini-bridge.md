@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: List.sort vs Collections.sort Mini Bridge
+concept_id: language/list-sort-vs-collections-sort-mini-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- sorting
+- comparator
+- collections-utility
+aliases:
+- List.sort vs Collections.sort mini bridge
+- java list sort collections sort
+- list in-place sort beginner
+- Collections.sort natural ordering
+- list.sort null natural ordering
+- 자바 List.sort Collections.sort 차이
+symptoms:
+- List.sort와 Collections.sort 중 어느 쪽이 원본을 바꾸는지 다르다고 생각해 둘 다 제자리 정렬이라는 사실을 놓쳐
+- list.sort(null)의 null을 비교하지 않는다는 뜻으로 오해하고 natural ordering 규약을 헷갈려
+- 배열 정렬, 리스트 정렬, stream sorted를 모두 같은 API로 섞어 Arrays.sort/List.sort/Stream.sorted 선택 경계를 잃어
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-comparator-utility-patterns
+- language/collection-vs-collections-vs-arrays-utility-mini-bridge
+next_docs:
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/arrays-sort-vs-list-sort-bridge
+- language/arrays-sort-comparator-reuse-bridge
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/arrays-sort-vs-list-sort-bridge.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/collection-vs-collections-vs-arrays-utility-mini-bridge.md
+- contents/language/java/java-collections-basics.md
+confusable_with:
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/arrays-sort-vs-list-sort-bridge
+- language/collection-vs-collections-vs-arrays-utility-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- List.sort와 Collections.sort는 둘 다 원본 List를 제자리 정렬하는지 설명해줘
+- custom Comparator가 있으면 list.sort(comparator)를 먼저 떠올리는 이유가 뭐야?
+- Collections.sort(list)와 list.sort(null)은 natural ordering 관점에서 어떻게 같아?
+- Arrays.sort와 List.sort와 Collections.sort를 beginner 기준으로 구분해줘
+- List.sort와 Stream.sorted가 원본 변경 여부에서 어떻게 달라지는지 이어서 알려줘
+contextual_chunk_prefix: |
+  이 문서는 List.sort와 Collections.sort가 모두 List를 in-place sort하며 comparator/natural ordering 호출 모양만 다르다는 점을 설명하는 beginner chooser다.
+  List.sort vs Collections.sort, in-place sort, natural ordering, list.sort null, Comparator 질문이 본 문서에 매핑된다.
+---
 # `List.sort` vs `Collections.sort` 미니 브리지
 
 > 한 줄 요약: 둘 다 `List`를 제자리 정렬하지만, 초급 기준에서는 보통 `list.sort(...)`를 먼저 떠올리고, natural ordering을 아주 짧게 보여 주거나 기존 코드 스타일을 따라갈 때 `Collections.sort(...)`도 충분히 쓸 수 있다.

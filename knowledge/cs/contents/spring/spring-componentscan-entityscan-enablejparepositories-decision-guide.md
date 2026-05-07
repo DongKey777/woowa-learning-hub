@@ -10,7 +10,11 @@ level: beginner
 language: mixed
 source_priority: 88
 mission_ids: []
-review_feedback_tags: []
+review_feedback_tags:
+- componentscan-entityscan-enablejparepositories
+- componentscan-vs-entityscan
+- entityscan-vs-enablejparepositories
+- scanbasepackages-jpa-split
 aliases:
 - '@ComponentScan vs @EntityScan'
 - '@EntityScan vs @EnableJpaRepositories'
@@ -30,8 +34,8 @@ prerequisites:
 - spring/bean-di-basics
 next_docs:
 - spring/component-scan-failure-patterns
-- spring/jpa-scan-boundaries
-- spring/scanbasepackages-import-autoconfiguration-selection
+- spring/jpa-entityscan-enablejparepositories-boundaries
+- spring/scanbasepackages-vs-import-autoconfiguration-selection
 linked_paths:
 - contents/spring/spring-component-scan-failure-patterns.md
 - contents/spring/spring-jpa-entityscan-enablejparepositories-boundaries.md
@@ -39,8 +43,8 @@ linked_paths:
 - contents/spring/spring-boot-autoconfiguration.md
 confusable_with:
 - spring/component-scan-failure-patterns
-- spring/jpa-scan-boundaries
-- spring/scanbasepackages-import-autoconfiguration-selection
+- spring/jpa-entityscan-enablejparepositories-boundaries
+- spring/scanbasepackages-vs-import-autoconfiguration-selection
 forbidden_neighbors:
 - contents/spring/spring-boot-autoconfiguration.md
 expected_queries:
@@ -58,7 +62,6 @@ contextual_chunk_prefix: |
   entity scan 차이, @EnableJpaRepositories는 언제 쓰나 같은 자연어 질문이
   이 문서의 세 갈래 결정표에 매핑된다.
 ---
-
 # Spring `@ComponentScan` vs `@EntityScan` vs `@EnableJpaRepositories` 결정 가이드
 
 ## 한 줄 요약

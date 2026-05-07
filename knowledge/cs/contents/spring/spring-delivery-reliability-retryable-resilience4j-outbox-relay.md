@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Spring Delivery Reliability with Retryable, Resilience4j, and Outbox Relay
+concept_id: spring/delivery-reliability-retryable-resilience4j-outbox-relay
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- delivery-reliability-retryable
+- resilience4j-outbox-relay
+- retryable
+- resilience4j
+aliases:
+- @Retryable
+- Resilience4j
+- outbox relay worker
+- idempotent publish
+- poison message
+- circuit breaker
+- backoff
+- dead letter
+intents:
+- design
+- troubleshooting
+symptoms:
+- 단순 retry가 외부 장애를 더 자주 때려 retry storm처럼 부하를 증폭한다.
+- DB commit과 broker publish 사이에서 프로세스가 죽어 이벤트 전달이 누락된다.
+- outbox relay worker가 중복 실행되어 idempotency와 poison message 처리가 필요하다.
+linked_paths:
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-transactiontemplate-programmatic-transaction-boundaries.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+expected_queries:
+- @Retryable만으로 delivery reliability를 보장할 수 있어?
+- Resilience4j retry circuit breaker bulkhead와 outbox는 어떤 역할을 나눠?
+- transactional outbox relay worker는 왜 필요한가?
+- 외부 API 호출 성공 여부가 애매할 때 idempotency와 retry를 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 Spring delivery reliability를 @Retryable, Resilience4j retry/circuit
+  breaker/bulkhead, transactional outbox, relay worker, idempotent publish,
+  poison message, backoff, observability 계층으로 나눠 설계하는 playbook이다.
+  실패하면 다시 한다는 단순 retry의 한계와 전달 보장 경계를 다룬다.
+---
 # Spring Delivery Reliability: `@Retryable`, Resilience4j, and Outbox Relay Worker Design
 
 > 한 줄 요약: `@Retryable`은 간단한 재시도에 좋지만, 진짜 전달 보장은 outbox relay worker, idempotency, circuit breaker, and observability까지 같이 설계해야 나온다.

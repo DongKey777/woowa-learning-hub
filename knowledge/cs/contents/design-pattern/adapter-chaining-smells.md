@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Adapter Chaining Smells
+concept_id: design-pattern/adapter-chaining-smells
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- adapter-chaining
+- translation-layering-smell
+- boundary-responsibility
+aliases:
+- adapter chaining smell
+- adapter chain smell
+- chained adapters
+- multiple adapters
+- adapter layering smell
+- translation pipeline smell
+- multi step conversion
+- double adapter
+- adapter over adapter
+- boundary translation stack
+symptoms:
+- AAdapter, BAdapter, CAdapter처럼 어댑터가 연쇄되어 어느 단계에서 변환됐는지 추적하기 어렵다
+- 모든 경계 객체가 Adapter라는 이름을 달고 있어 facade, translator, port, orchestration 책임이 구분되지 않는다
+- 외부 SDK 포맷과 내부 도메인 포맷 사이 중간 포맷이 코드 곳곳에 노출된다
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/adapter
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/ports-and-adapters-vs-classic-patterns
+next_docs:
+- design-pattern/facade-anti-corruption-seam
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/anti-corruption-translation-map-pattern
+linked_paths:
+- contents/design-pattern/adapter.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/bridge-storage-provider-abstractions.md
+- contents/design-pattern/anti-corruption-translation-map-pattern.md
+confusable_with:
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/facade-anti-corruption-seam
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/ports-and-adapters-vs-classic-patterns
+forbidden_neighbors: []
+expected_queries:
+- Adapter chaining smell은 AAdapter에서 BAdapter로 계속 감싸며 변환 책임이 흐려지는 문제야?
+- 어댑터가 여러 개 연쇄될 때 facade, translator, port 책임을 나눠야 하는 이유가 뭐야?
+- adapter chain과 healthy layered anti-corruption translation은 어떻게 구분해?
+- 외부 SDK 포맷을 내부 도메인으로 바꾸는 과정에서 중간 포맷이 노출되면 왜 smell이야?
+- adapter over adapter 구조를 줄이려면 translator와 facade로 책임을 어떻게 재배치해?
+contextual_chunk_prefix: |
+  이 문서는 Adapter Chaining Smells symptom router로, Adapter가 AAdapter->BAdapter->CAdapter처럼
+  연쇄되어 변환 책임, 예외 위치, boundary translation이 흐려지는 증상을 facade, translator,
+  port, anti-corruption layering으로 재배치하는 기준을 설명한다.
+---
 # Adapter Chaining Smells: 어댑터를 줄줄이 엮을 때 생기는 냄새
 
 > 한 줄 요약: Adapter chaining은 여러 변환을 얹어 호환성을 만들지만, 단계가 늘면 디버깅과 의미 추적이 어려워진다.

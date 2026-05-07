@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "QUIC Connection Migration, Path Change"
+concept_id: network/quic-connection-migration-path-change
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- quic
+- connection-migration
+- path-validation
+aliases:
+- QUIC connection migration
+- QUIC path change
+- connection ID
+- NAT rebinding
+- mobility
+- path validation
+- HTTP/3 migration
+- UDP endpoint change
+symptoms:
+- QUIC connection migration을 IP가 바뀌어도 무조건 자동 유지되는 기능으로 본다
+- path validation, LB UDP state, firewall policy가 맞아야 한다는 점을 놓친다
+- 모바일 Wi-Fi LTE 전환 후 latency 증가를 migration success/failure와 연결하지 못한다
+- NAT rebinding과 명시적 network migration을 같은 사건으로 뭉갠다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http3-quic-practical-tradeoffs
+- network/packet-loss-jitter-reordering-diagnostics
+next_docs:
+- network/quic-version-negotiation-fallback
+- network/udp-fragmentation-quic-packetization
+- network/happy-eyeballs-dual-stack-racing
+- network/nat-keepalive-tuning-connection-lifetime
+linked_paths:
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+confusable_with:
+- network/quic-version-negotiation-fallback
+- network/http3-quic-practical-tradeoffs
+- network/happy-eyeballs-dual-stack-racing
+- network/nat-keepalive-tuning-connection-lifetime
+forbidden_neighbors: []
+expected_queries:
+- "QUIC connection migration은 IP와 port가 바뀌어도 어떻게 연결을 유지해?"
+- "QUIC path validation이 migration에서 왜 필요해?"
+- "Wi-Fi에서 LTE로 바뀐 뒤 HTTP/3 연결이 유지되거나 끊기는 이유는?"
+- "NAT rebinding과 QUIC connection migration은 어떻게 달라?"
+- "LB와 firewall이 QUIC migration을 막을 수 있는 지점은?"
+contextual_chunk_prefix: |
+  이 문서는 QUIC connection ID, NAT rebinding, path change, path validation,
+  모바일 network migration, UDP LB/firewall 정책을 다루는 advanced playbook이다.
+---
 # QUIC Connection Migration, Path Change
 
 > 한 줄 요약: QUIC의 connection migration은 IP가 바뀌어도 연결을 이어가게 하지만, 경로 검증과 LB/방화벽 정책이 맞아야 진짜 이득이 난다.

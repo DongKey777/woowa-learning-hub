@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "MTU, PMTUD, ICMP Blackhole Path Diagnostics"
+concept_id: network/mtu-pmtud-icmp-blackhole-path-diagnostics
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- mtu
+- pmtud
+- icmp-blackhole
+aliases:
+- MTU PMTUD diagnostics
+- path MTU discovery
+- ICMP fragmentation needed
+- PMTUD blackhole
+- MSS clamp
+- DF bit
+- tunnel overhead
+symptoms:
+- 작은 요청은 되는데 큰 응답이나 큰 header 요청만 timeout된다
+- ping은 되는데 실제 서비스는 안 되는 상황을 application 문제로만 본다
+- ICMP fragmentation needed 차단과 PMTUD 실패를 구분하지 못한다
+- VPN 터널 오버레이에서 path MTU가 줄어드는 문제를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/mtu-fragmentation-mss-blackhole
+- network/packet-loss-jitter-reordering-diagnostics
+next_docs:
+- network/udp-fragmentation-quic-packetization
+- network/syn-retransmission-handshake-timeout
+- network/timeout-retry-backoff-practical
+- network/http3-quic-practical-tradeoffs
+linked_paths:
+- contents/network/mtu-fragmentation-mss-blackhole.md
+- contents/network/tcp-congestion-control.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/syn-retransmission-handshake-timeout.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- network/mtu-fragmentation-mss-blackhole
+- network/udp-fragmentation-quic-packetization
+- network/packet-loss-jitter-reordering-diagnostics
+- network/syn-retransmission-handshake-timeout
+forbidden_neighbors: []
+expected_queries:
+- "MTU PMTUD ICMP blackhole을 어떻게 진단해?"
+- "작은 JSON은 되는데 큰 응답만 끊기면 path MTU를 어떻게 의심해?"
+- "ICMP fragmentation needed가 막히면 왜 PMTUD가 조용히 실패해?"
+- "VPN 뒤에서만 특정 API가 timeout될 때 MSS clamp를 어떻게 봐?"
+- "ping은 되는데 서비스는 안 되는 MTU blackhole 패턴을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 MTU와 PMTUD, ICMP fragmentation needed, DF bit, tunnel overhead,
+  MSS clamp, blackhole path diagnostics를 다루는 advanced playbook이다.
+---
 # MTU, PMTUD, ICMP Blackhole Path Diagnostics
 
 > 한 줄 요약: MTU 문제는 "패킷이 크다"가 아니라 PMTUD가 깨져서 경로가 조용히 죽는 운영 문제로 봐야 한다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "UDP Fragmentation, QUIC Packetization"
+concept_id: network/udp-fragmentation-quic-packetization
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- quic-packetization
+- udp-fragmentation
+- pmtu
+aliases:
+- UDP fragmentation
+- QUIC packetization
+- PMTU
+- path MTU
+- datagram reassembly
+- QUIC packet size
+- UDP loss fragmentation
+symptoms:
+- 특정 VPN이나 터널 네트워크에서만 HTTP/3 QUIC이 불안정하다
+- UDP fragment 하나 손실이 전체 datagram 실패로 이어지는 위험을 놓친다
+- QUIC packet size와 crypto overhead, path MTU를 함께 보지 않는다
+- UDP 위 QUIC도 TCP처럼 조각화와 재전송을 자동으로 흡수한다고 생각한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/http3-quic-practical-tradeoffs
+next_docs:
+- network/quic-connection-migration-path-change
+- network/packet-loss-jitter-reordering-diagnostics
+- network/mtu-fragmentation-mss-blackhole
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+linked_paths:
+- contents/network/mtu-pmtud-icmp-blackhole-path-diagnostics.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/quic-connection-migration-path-change.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/tcp-fast-open-tradeoffs.md
+confusable_with:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/http3-quic-practical-tradeoffs
+- network/packet-loss-jitter-reordering-diagnostics
+- network/quic-connection-migration-path-change
+forbidden_neighbors: []
+expected_queries:
+- "UDP fragmentation이 QUIC HTTP/3에서 왜 위험해?"
+- "QUIC packetization과 path MTU를 어떻게 같이 봐야 해?"
+- "VPN 뒤에서 HTTP/3만 불안정하면 MTU blackhole을 어떻게 의심해?"
+- "UDP fragment 하나가 빠지면 전체 datagram이 실패하는 이유는?"
+- "QUIC packet size를 크게 잡는 것과 작게 잡는 것의 trade-off는?"
+contextual_chunk_prefix: |
+  이 문서는 UDP fragmentation, QUIC packetization, PMTU/path MTU,
+  datagram reassembly loss, HTTP/3 특정 네트워크 불안정성을 다루는 advanced
+  playbook이다.
+---
 # UDP Fragmentation, QUIC Packetization
 
 > 한 줄 요약: UDP는 조각난 패킷의 손실을 TCP처럼 흡수하지 못하므로, QUIC은 packetization과 MTU를 훨씬 더 신중하게 다뤄야 한다.

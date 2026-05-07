@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Java enum 기초
+concept_id: language/java-enum-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-enum-state-model
+- enum-vs-optional
+- enum-string-boundary
+aliases:
+- java enum basics
+- enum 입문
+- 열거형 기초
+- enum why use
+- enum vs int constants
+- java enum switch
+- enum ordinal name
+- java 상태값 enum
+- enum vs optional
+- 없음의 이유 enum
+- enum object state behavior
+symptoms:
+- enum을 단순 문자열이나 정수 상수 대체로만 보고 객체 상태 field와 behavior 연결을 놓친다
+- Optional의 없음과 enum의 상태 후보를 섞어 없음의 이유가 필요한 상황을 표현하지 못한다
+- ordinal을 저장하거나 외부 문자열 payload를 enum 상수와 바로 비교하는 경계 실수를 한다
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-optional-basics
+next_docs:
+- language/enum-string-boundary-bridge
+- language/enum-equality-quick-bridge
+- language/enum-to-state-transition-beginner-bridge
+- language/enummap-status-policy-lookup-primer
+linked_paths:
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/enum-to-state-transition-beginner-bridge.md
+- contents/language/java/enummap-status-policy-lookup-primer.md
+- contents/language/java/enum-equality-quick-bridge.md
+- contents/language/java/enum-string-boundary-bridge.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-exception-handling-basics.md
+confusable_with:
+- language/java-optional-basics
+- language/enum-string-boundary-bridge
+- language/enum-equality-quick-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java enum은 정수 상수나 문자열 상태값 대신 언제 쓰는지 beginner 기준으로 설명해줘
+- Optional의 없음과 enum의 상태 후보는 어떤 질문이 달라서 서로 대체재가 아닌지 알려줘
+- enum field가 객체 상태가 되고 behavior가 그 상태를 읽는 흐름을 ReservationStatus 예시로 보고 싶어
+- enum ordinal을 DB에 저장하면 왜 위험하고 name이나 별도 code를 어떻게 봐야 해?
+- DTO에서 받은 상태 문자열을 enum 상수와 바로 비교하지 말고 boundary에서 변환해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java enum을 고정된 상태 후보와 객체 상태 field로 이해하는 beginner primer다.
+  enum vs int constants, enum switch, name vs ordinal, enum equality, enum vs Optional, 없음의 이유, DTO string payload to enum boundary, state transition, EnumMap lookup을 다룬다.
+---
 # Java enum 기초
 
 > 한 줄 요약: enum은 미리 정의한 상수 집합을 타입으로 만들어서, 정수 상수 대신 이름 있는 값으로 컴파일 시점에 안전하게 사용하는 기능이다.

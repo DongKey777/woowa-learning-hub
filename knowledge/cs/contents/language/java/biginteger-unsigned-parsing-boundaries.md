@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: BigInteger, Unsigned Parsing, and Numeric Boundary Semantics
+concept_id: language/biginteger-unsigned-parsing-boundaries
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- unsigned-parsing
+- numeric-boundary
+- serialization-contract
+aliases:
+- BigInteger unsigned parsing
+- parseUnsignedInt parseUnsignedLong
+- unsigned value Java
+- large numeric identifier
+- signed vs unsigned boundary
+- bigint payload
+- unsigned 파싱 경계
+symptoms:
+- unsigned를 별도 타입이 아니라 해석 방식으로 봐야 한다는 점을 놓쳐 signed long과 비교 결과를 섞어
+- 큰 numeric identifier를 JSON number로 내보내 JavaScript client precision 손실을 만들 수 있어
+- BigInteger로 애플리케이션 범위를 넓혔지만 DB/API/message schema 범위는 그대로라 boundary에서 다시 깨져
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+next_docs:
+- language/biginteger-radix-leading-zero-sign-policies
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/io-nio-serialization
+linked_paths:
+- contents/language/java/integer-overflow-exact-arithmetic-unit-conversion-pitfalls.md
+- contents/language/java/biginteger-radix-leading-zero-sign-policies.md
+- contents/language/java/parser-overflow-boundaries-parseint-parselong-tointexact.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/biginteger-radix-leading-zero-sign-policies
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/io-nio-serialization
+forbidden_neighbors: []
+expected_queries:
+- Java에서 unsigned parsing은 타입이 아니라 해석 방식이라는 뜻을 설명해줘
+- BigInteger와 parseUnsignedLong을 언제 구분해서 써야 해?
+- 큰 ID를 JSON number 대신 string으로 계약하는 이유가 뭐야?
+- BigInteger로 바꿨는데 DB BIGINT나 API schema boundary에서 다시 깨지는 상황을 알려줘
+- signed unsigned numeric boundary와 decimal string contract를 어떻게 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java BigInteger와 unsigned parsing을 signed/unsigned interpretation, large numeric identifier, JSON/DB/API boundary, decimal string contract 관점으로 설명하는 advanced deep dive다.
+  parseUnsignedInt, parseUnsignedLong, BigInteger, unsigned long, large id string, numeric range validation 질문이 본 문서에 매핑된다.
+---
 # `BigInteger`, Unsigned Parsing, and Numeric Boundary Semantics
 
 > 한 줄 요약: `long`을 넘는 정수나 unsigned 값을 다룰 때 `BigInteger`와 `parseUnsigned*`는 단순한 대체 API가 아니다. 표현 범위, signed/unsigned 해석, 직렬화 문자열 계약, DB/API 경계가 함께 바뀐다.

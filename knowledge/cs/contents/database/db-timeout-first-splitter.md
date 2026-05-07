@@ -72,6 +72,14 @@ contextual_chunk_prefix: |
 
 > `connection timeout`은 앱 풀 입구, `lock timeout`은 DB 락 줄, `statement timeout`은 SQL 실행 예산에서 실패한 신호라서 먼저 실패한 지점을 갈라야 한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`Connection is not available`이면 DB 쿼리가 느린 건가요?" | 요청이 DB 안으로 들어가기 전 커넥션 풀에서 대기하다 실패한 로그 | 앱 풀 입구 대기와 DB 내부 실행/락 대기를 분리한다 |
+| "`Lock wait timeout`이랑 `statement timeout`이 같이 보이면 뭐부터 봐요?" | 같은 요청 타임라인에 pool, lock, statement 로그가 섞인 장애 | 이름보다 먼저 찍힌 실패 신호와 blocker 존재를 확인한다 |
+| "timeout이면 그냥 retry하면 되지 않나요?" | blocker가 남아 있는 lock timeout과 일시적인 deadlock/retry 후보를 같은 버킷으로 묶는 처리 | timeout 종류별로 재시도 의미와 수정 지점을 다르게 본다 |
+
 ## 결정 매트릭스
 
 | 지금 먼저 보이는 신호 | 기다린 위치 | 초보자 첫 질문 | 바로 갈 문서 |

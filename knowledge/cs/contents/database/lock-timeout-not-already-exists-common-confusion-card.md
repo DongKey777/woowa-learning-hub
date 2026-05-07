@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: lock timeout != already exists 공통 오해 카드
+concept_id: database/lock-timeout-not-already-exists-common-confusion-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- lock-timeout-not-already-exists
+- busy-not-winner
+- duplicate-vs-lock-timeout
+aliases:
+- lock timeout not already exists
+- lock timeout busy not winner
+- duplicate key already exists vs lock timeout
+- beginner lock timeout confusion
+- busy vs already exists lock timeout
+- lock wait timeout not duplicate
+- 락 타임아웃 already exists 오해
+- lock timeout 바쁨 신호
+- 중복키와 락 타임아웃 차이
+- timeout winner not known
+symptoms:
+- lock wait timeout을 이미 누가 만들었다는 already exists 신호로 오해하고 있어
+- duplicate key와 lock timeout을 둘 다 같은 중복 처리로 닫으려 해
+- lock timeout 뒤에 blocker 확인, 짧은 retry, fresh read 중 무엇을 해야 할지 헷갈려
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/deadlock-vs-lock-wait-timeout-primer
+next_docs:
+- database/busy-fail-fast-vs-one-short-retry-card
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/insert-if-absent-retry-outcome-guide
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/busy-fail-fast-vs-one-short-retry-card.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+confusable_with:
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/duplicate-key-vs-busy-response-mapping
+- database/deadlock-vs-lock-wait-timeout-primer
+forbidden_neighbors: []
+expected_queries:
+- lock timeout은 이미 누가 만들었다는 already exists 신호가 아니라 busy 신호라는 걸 설명해줘
+- duplicate key와 lock wait timeout은 서비스 결과 라벨이 어떻게 달라?
+- lock timeout 뒤에 winner row가 확정됐다고 단정하면 왜 위험해?
+- lock timeout은 blocker 확인과 짧은 retry/fresh read 중 어떤 흐름으로 가야 해?
+- lock timeout not already exists를 초보자용 5줄 카드로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 lock timeout을 already exists가 아니라 busy, 즉 winner 확정 전 대기 포기 신호로 읽게 하는 beginner chooser다.
+  lock timeout not already exists, busy not winner, duplicate key vs lock timeout 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # `lock timeout` != `already exists` 공통 오해 카드
 
 > 한 줄 요약: `lock timeout`은 "이미 누가 만들었다"가 아니라 "기다리다 이번 시도를 끝냈다"에 더 가깝다.

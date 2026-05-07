@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: PriorityBlockingQueue Cancellation Stale Entry Mini Bridge
+concept_id: language/priorityblockingqueue-cancellation-stale-entry-mini-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- priorityblockingqueue
+- cancellation
+- stale-entry
+aliases:
+- PriorityBlockingQueue Cancellation Update Mini Bridge
+- PriorityBlockingQueue stale entry
+- PriorityBlockingQueue cancel pattern
+- PriorityBlockingQueue duplicate entry update
+- versioned entry lazy deletion
+- 자바 PriorityBlockingQueue 취소 stale entry
+symptoms:
+- PriorityBlockingQueue 안 entry를 직접 수정하면 자동으로 heap order가 갱신될 것이라고 기대해 priority update가 반영되지 않는 문제를 만든다
+- cancel 후에도 queue 안에 entry가 남아 있으면 실행도 반드시 된다고 오해해 queue residue와 worker stale skip을 구분하지 못해
+- 같은 task의 duplicate entry가 보이면 곧바로 버그라고 판단하고 versioned latest check나 inactive state check를 설계하지 않아
+intents:
+- troubleshooting
+- design
+- comparison
+prerequisites:
+- language/priority-update-patterns-treeset-treemap-priorityqueue-bridge
+- language/thread-interruption-cooperative-cancellation-playbook
+- data-structure/java-priorityqueue-pitfalls
+next_docs:
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/mutable-priority-stale-ticket-pattern
+- language/thread-interruption-cooperative-cancellation-playbook
+linked_paths:
+- contents/language/java/priority-update-patterns-treeset-treemap-priorityqueue-bridge.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/mutable-priority-stale-ticket-pattern.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+confusable_with:
+- language/priority-update-patterns-treeset-treemap-priorityqueue-bridge
+- data-structure/mutable-priority-stale-ticket-pattern
+- data-structure/java-priorityqueue-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- PriorityBlockingQueue에서 priority update나 cancel은 새 entry를 넣고 old entry를 stale로 버리는 패턴이 왜 기본이야?
+- PriorityBlockingQueue에 duplicate entry가 남아도 worker가 latest version과 active 상태를 확인하면 괜찮아?
+- 취소했는데 queue 안에 흔적이 남아 있는 것과 실제 실행을 막는 것은 어떻게 달라?
+- PriorityBlockingQueue remove가 항상 싼 구조가 아니어서 lazy deletion을 쓰는 이유를 알려줘
+- versioned entry stale skip 패턴을 beginner 코드로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 PriorityBlockingQueue에서 priority update와 cancellation을 duplicate versioned entry, inactive state, stale skip으로 처리하는 beginner playbook이다.
+  PriorityBlockingQueue, cancellation, stale entry, lazy deletion, versioned entry 질문이 본 문서에 매핑된다.
+---
 # `PriorityBlockingQueue` Cancellation/Update Mini Bridge
 
 > 한 줄 요약: `PriorityBlockingQueue`에서 cancel이나 priority update가 들어오면, 초보자 기본값은 **queue 안 entry를 직접 고치기보다 새 entry를 넣고 예전 entry는 stale로 버리는 것**이다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Slotization Migration and Backfill Playbook
+concept_id: database/slotization-migration-backfill-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- slotization
+- migration
+- backfill
+- cutover
+- double-booking
+aliases:
+- slotization migration
+- interval to slot migration
+- continuous interval to slot table
+- slot table backfill
+- reservation slot claim
+- no double booking cutover
+- dual write fence
+- watermark drain
+- slot shadow table
+- slot cutover playbook
+symptoms:
+- continuous interval booking table을 slot claim table로 옮기면서 double-booking 없이 cutover해야 해
+- historical backfill이 끝나기 전 target slot table을 admission에 써서 recent write를 놓칠 위험이 있어
+- old interval writer와 new slot writer가 동시에 승인하는 split-brain arbitration을 막아야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/range-invariant-enforcement-write-skew-phantom
+- database/slot-row-rounding-half-open-dst-junior-checklist
+next_docs:
+- database/slotization-precheck-overlap-rounding-dst
+- database/slot-delta-reschedule-semantics
+- database/online-backfill-verification-cutover-gates
+linked_paths:
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/slotization-precheck-overlap-rounding-dst.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/slot-delta-reschedule-semantics.md
+- contents/database/online-backfill-consistency.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/idempotency-key-and-deduplication.md
+confusable_with:
+- database/slotization-precheck-overlap-rounding-dst
+- database/slot-delta-reschedule-semantics
+- database/online-backfill-consistency
+forbidden_neighbors: []
+expected_queries:
+- interval table을 slot table로 migration할 때 backfill, catch-up, fenced cutover 순서를 어떻게 잡아?
+- slotization cutover에서 한 시점에 admission authority가 하나만 있어야 double booking을 막는 이유가 뭐야?
+- old interval writer와 new slot writer가 동시에 승인하면 split-brain arbitration이 되는 예시를 설명해줘
+- target slot table을 backfill 중 projection으로만 쓰고 admission에는 쓰면 안 되는 phase는 언제야?
+- slot expansion, active predicate, watermark drain, conflict quarantine을 migration playbook으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 continuous interval to slot table migration을 backfill, catch-up, fenced cutover, single admission authority, no double booking 원칙으로 다루는 advanced playbook이다.
+  slotization migration, slot table backfill, dual write fence, watermark drain 질문이 본 문서에 매핑된다.
+---
 # Slotization Migration and Backfill Playbook
 
 > 한 줄 요약: continuous interval 테이블을 slot 테이블로 옮길 때 핵심은 "복사 완료"가 아니라, 한 시점에 오직 하나의 admission authority만 유지하면서 backfill, catch-up, cutover를 거쳐도 double-booking이 생기지 않게 하는 것이다.

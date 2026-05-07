@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Password Reset Threat Modeling
+concept_id: security/password-reset-threat-modeling
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- password reset
+- account recovery
+- reset token
+- one-time link
+aliases:
+- password reset
+- account recovery
+- reset token
+- one-time link
+- email verification
+- step-up auth
+- brute force
+- reset abuse
+- account takeover
+- recovery flow
+- burn after read
+- token consume race
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/mfa-step-up-auth-design.md
+- contents/security/rate-limiting-vs-brute-force-defense.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/one-time-token-consumption-race-burn-after-read.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Password Reset Threat Modeling 핵심 개념을 설명해줘
+- password reset가 왜 필요한지 알려줘
+- Password Reset Threat Modeling 실무 설계 포인트는 뭐야?
+- password reset에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Password Reset Threat Modeling를 다루는 deep_dive 문서다. password reset은 계정 복구의 편의 기능이 아니라, 가장 자주 공격받는 계정 탈취 경로이므로 토큰, 이메일, 세션, rate limit을 함께 설계해야 한다. 검색 질의가 password reset, account recovery, reset token, one-time link처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Password Reset Threat Modeling
 
 > 한 줄 요약: password reset은 계정 복구의 편의 기능이 아니라, 가장 자주 공격받는 계정 탈취 경로이므로 토큰, 이메일, 세션, rate limit을 함께 설계해야 한다.

@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring External Config File Precedence Primer
+concept_id: spring/external-config-file-precedence-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- external-config-file
+- precedence
+- external-config-precedence
+- packaged-vs-external
+aliases:
+- Spring external config precedence
+- packaged vs external application.yml
+- spring.config.location
+- spring.config.import
+- jar 안 application.yml
+- jar 밖 application.yml
+- external profile overrides packaged profile
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-properties-vs-yaml-same-location-precedence-primer.md
+- contents/spring/spring-multidocument-yaml-on-profile-primer.md
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+- contents/spring/spring-configurationproperties-binding-internals.md
+expected_queries:
+- jar 안 application.yml과 jar 밖 application.yml 중 무엇이 이겨?
+- spring.config.location과 spring.config.import는 어떻게 달라?
+- external application-prod.yml이 packaged application.yml보다 우선하는 이유는?
+- Spring Boot config file precedence를 beginner 관점으로 설명해줘.
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot external config file precedence를 packaged application.yml,
+  packaged profile file, external application.yml, external profile file,
+  spring.config.location, spring.config.import로 설명한다. 같은 key가 여러 위치에
+  있을 때 최종값이 무엇인지 beginner mental model로 정리한다.
+---
 # Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`
 
 > 한 줄 요약: Spring Boot에서 jar 안 `application.yml`은 보통 **기본값**, jar 밖 `application.yml`은 보통 **환경별 override**로 생각하면 된다. `spring.config.location`은 "어디를 찾을지"를 바꾸는 스위치이고, `spring.config.import`는 "이 파일이 다른 파일도 읽게 하라"는 선언이다.

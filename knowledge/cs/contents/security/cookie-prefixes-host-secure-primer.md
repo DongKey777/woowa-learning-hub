@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: 'Cookie Prefixes Primer: `__Host-` vs `__Secure-`'
+concept_id: security/cookie-prefixes-host-secure-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- cookie prefix primer
+- __host __secure cookie primer
+- __host cookie rejected beginner
+- __secure cookie rejected beginner
+aliases:
+- cookie prefix primer
+- __host __secure cookie primer
+- __host cookie rejected beginner
+- __secure cookie rejected beginner
+- cookie prefix error secure domain path
+- __host prefix no domain path=/ secure
+- __secure prefix requires secure
+- browser cookie prefix error primer
+- cookie prefix rules beginner
+- devtools __host __secure blocked
+- cookie prefixes host secure guide
+- prefix cookie rule interaction
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/cookie-rejection-reason-primer.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/cookie-devtools-field-checklist-primer.md
+- contents/security/host-cookie-migration-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 'Cookie Prefixes Primer: `__Host-` vs `__Secure-` 핵심 개념을 설명해줘'
+- cookie prefix primer가 왜 필요한지 알려줘
+- 'Cookie Prefixes Primer: `__Host-` vs `__Secure-` 실무 설계 포인트는 뭐야?'
+- cookie prefix primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 Cookie Prefixes Primer: `__Host-` vs `__Secure-`를 다루는 primer 문서다. `__Secure-`와 `__Host-`는 "멋있어 보이는 이름"이 아니라 브라우저가 추가 규칙을 검사하는 cookie 이름 prefix다. 그래서 prefix 에러를 보면 value보다 먼저 `Secure`, `Domain`, `Path` 조합이 규칙을 만족하는지 보면 된다. 검색 질의가 cookie prefix primer, __host __secure cookie primer, __host cookie rejected beginner, __secure cookie rejected beginner처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # Cookie Prefixes Primer: `__Host-` vs `__Secure-`
 
 > 한 줄 요약: `__Secure-`와 `__Host-`는 "멋있어 보이는 이름"이 아니라 브라우저가 추가 규칙을 검사하는 cookie 이름 prefix다. 그래서 prefix 에러를 보면 value보다 먼저 `Secure`, `Domain`, `Path` 조합이 규칙을 만족하는지 보면 된다.

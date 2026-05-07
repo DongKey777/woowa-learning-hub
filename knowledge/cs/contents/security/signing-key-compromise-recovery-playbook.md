@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Signing Key Compromise Recovery Playbook
+concept_id: security/signing-key-compromise-recovery-playbook
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- signing key compromise
+- JWT signing key leak
+- private key compromise
+- emergency key revoke
+aliases:
+- signing key compromise
+- JWT signing key leak
+- private key compromise
+- emergency key revoke
+- compromised signer recovery
+- token trust cutoff
+- forged token incident
+- secret leak recovery
+- compromised key runbook
+- jwks compromise response
+- compromised kid reject
+- trust bundle recovery
+symptoms:
+- Signing Key Compromise Recovery Playbook 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/key-rotation-runbook.md
+- contents/security/jwk-rotation-cache-invalidation-kid-rollover.md
+- contents/security/jwks-rotation-cutover-failure-recovery.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/hardware-backed-keys-attestation.md
+- contents/security/secret-scanning-credential-leak-response.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Signing Key Compromise Recovery Playbook 장애가 나면 복구 순서는?
+- signing key compromise 운영 대응 체크리스트가 뭐야?
+- Signing Key Compromise Recovery Playbook에서 blast radius를 어떻게 줄여?
+- signing key compromise 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Signing Key Compromise Recovery Playbook를 다루는 playbook 문서다. JWT signing key나 request-signing key가 유출됐을 때는 단순 rotation이 아니라, 어느 토큰이 더 이상 신뢰 불가인지 범위를 정하고 signer 중지, verifier policy tighten, session/token 회수, 포렌식까지 묶은 compromise runbook이 필요하다. 검색 질의가 signing key compromise, JWT signing key leak, private key compromise, emergency key revoke처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Signing Key Compromise Recovery Playbook
 
 > 한 줄 요약: JWT signing key나 request-signing key가 유출됐을 때는 단순 rotation이 아니라, 어느 토큰이 더 이상 신뢰 불가인지 범위를 정하고 signer 중지, verifier policy tighten, session/token 회수, 포렌식까지 묶은 compromise runbook이 필요하다.

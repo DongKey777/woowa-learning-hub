@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계
+concept_id: system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- receiver warmup
+- cache prefill
+- write freeze cutover
+- cold start mitigation
+aliases:
+- receiver warmup
+- cache prefill
+- write freeze cutover
+- cold start mitigation
+- prewarm cache
+- donor receiver handoff
+- fenced freeze
+- cutover soak
+- stateful warmup
+- staged traffic enable
+- rollback window
+- Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/write-freeze-rollback-window-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계 설계 핵심을 설명해줘
+- receiver warmup가 왜 필요한지 알려줘
+- Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계 실무 트레이드오프는 뭐야?
+- receiver warmup 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계를 다루는 deep_dive 문서다. receiver warmup, cache prefill, write freeze cutover 설계는 상태를 새 수신 노드나 새 경로로 옮길 때 cold start와 stale routing, final write race를 줄이기 위해 예열, 사전 적재, 짧은 동결 구간을 조합하는 운영 전환 설계다. 검색 질의가 receiver warmup, cache prefill, write freeze cutover, cold start mitigation처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계
 
 > 한 줄 요약: receiver warmup, cache prefill, write freeze cutover 설계는 상태를 새 수신 노드나 새 경로로 옮길 때 cold start와 stale routing, final write race를 줄이기 위해 예열, 사전 적재, 짧은 동결 구간을 조합하는 운영 전환 설계다.

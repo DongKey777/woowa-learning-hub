@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > blackjack에서 `POST /games`나 `POST /games/{id}/actions`가 상태를 바꿨다면, 결과 화면은 그 POST 응답에서 바로 끝내기보다 redirect 뒤 `GET`으로 다시 열어야 새로고침이 같은 상태 변경을 반복할 가능성을 줄일 수 있다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "hit 하고 F5를 누르면 카드가 한 장 더 뽑힐까 봐 불안해요" | action POST 응답에서 바로 결과 view를 렌더하는 blackjack 화면 | 상태 변경 POST 뒤에는 현재 게임 GET으로 redirect해 새로고침 대상을 바꾼다 |
+| "게임 시작 POST에서 바로 화면을 그리면 뭐가 문제죠?" | 완료/결과 화면 주소 없이 POST 응답 view에 머무는 구조 | 결과 화면을 재조회 가능한 `GET /games/{id}` 계약으로 분리한다 |
+| "PRG랑 action 중복 제출 방지는 같은 말인가요?" | 더블클릭, retry, refresh replay가 한 문제로 묶인 controller 설계 | 브라우저 refresh 경계와 저장소 idempotency 경계를 나눠 본다 |
+
 ## 미션 시나리오
 
 blackjack를 웹으로 옮기면 `게임 시작`, `hit`, `stand`가 더 이상 메서드 호출 한

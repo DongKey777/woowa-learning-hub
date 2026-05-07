@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 비밀번호 저장 기초
+concept_id: security/password-hashing-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- password-hashing
+- bcrypt-salt
+- credential-leak-response
+aliases:
+- password hashing basics
+- 비밀번호 저장 방법
+- 비밀번호 해시
+- why not encrypt password
+- plain text password danger
+- MD5 SHA256 password storage
+- bcrypt salt
+- rainbow table attack
+- password storage beginner
+- BCryptPasswordEncoder
+symptoms:
+- 비밀번호를 평문이나 복호화 가능한 암호화로 저장해도 된다고 생각해 DB 유출 시 전체 계정 위험을 놓친다
+- MD5나 SHA-256 같은 빠른 해시를 비밀번호 저장용 느린 해시와 같은 보안 수준으로 본다
+- salt가 왜 사용자별 동일 비밀번호의 같은 해시와 rainbow table 공격을 막는지 설명하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- security/security-basics-what-and-why
+next_docs:
+- security/password-storage-bcrypt-scrypt-argon2
+- security/brute-force-protection-basics
+- security/secret-management-rotation-leak-patterns
+- security/log-masking-basics
+linked_paths:
+- contents/security/password-storage-bcrypt-scrypt-argon2.md
+- contents/security/brute-force-protection-basics.md
+- contents/security/security-basics-what-and-why.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/log-masking-basics.md
+confusable_with:
+- security/password-storage-bcrypt-scrypt-argon2
+- security/secrets-management-basics
+- security/brute-force-protection-basics
+forbidden_neighbors: []
+expected_queries:
+- 비밀번호는 왜 평문이나 복호화 가능한 암호화가 아니라 bcrypt 같은 느린 해시로 저장해야 해?
+- MD5나 SHA-256은 해시인데도 비밀번호 저장에는 왜 너무 빠르다는 문제가 있어?
+- salt는 무엇이고 같은 비밀번호를 가진 사용자들의 해시를 다르게 만들어 rainbow table 공격을 어떻게 줄여?
+- Spring Security BCryptPasswordEncoder로 가입 시 encode하고 로그인 시 matches하는 흐름을 설명해줘
+- 비밀번호 해시를 써도 brute force 방어와 로그인 시도 제한이 따로 필요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 비밀번호 저장을 평문/가역 암호화/빠른 해시가 아니라 salt가 포함된 느린 해시로 해야 하는 이유를 설명하는 beginner primer다.
+  password hashing, bcrypt, scrypt, argon2, salt, rainbow table, MD5/SHA-256 weakness, BCryptPasswordEncoder, credential leak, brute force protection을 다룬다.
+---
 # 비밀번호 저장 기초: 왜 해시를 써야 하나
 
 > 한 줄 요약: 비밀번호는 복호화할 수 있는 암호화가 아니라, 느린 해시로 저장해야 한다. 평문·MD5·SHA-256 저장은 DB 한 번 유출로 계정 전체가 위험해진다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Invariant-Preserving Command Model
+concept_id: design-pattern/invariant-preserving-command-model
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- invariant-preserving-command
+- intent-rich-command
+- patch-command-smell
+aliases:
+- invariant preserving command
+- intent rich command
+- command precondition
+- patch vs command model
+- expected version command
+- aggregate safe input model
+- command model design
+- partial dto smell
+- 화면 patch vs command
+- command granularity
+symptoms:
+- HTTP PATCH DTO나 화면 form을 그대로 command로 써 nullable field 조합 해석이 service 계층으로 샌다
+- expected version, actor, reason, idempotency key 같은 실행 전제조건 없이 aggregate가 안전하게 상태 전이를 판단하게 만든다
+- 하나의 UpdateEverything command가 여러 business intent를 섞어 aggregate invariant guard가 약해진다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- design-pattern/command-handler-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/layered-validation-pattern
+next_docs:
+- design-pattern/aggregate-version-optimistic-concurrency-pattern
+- design-pattern/transaction-script-vs-rich-domain-model
+- design-pattern/domain-service-vs-pattern-abuse
+linked_paths:
+- contents/design-pattern/command-handler-pattern.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+- contents/design-pattern/transaction-script-vs-rich-domain-model.md
+- contents/design-pattern/layered-validation-pattern.md
+- contents/design-pattern/state-pattern-workflow-payment.md
+confusable_with:
+- design-pattern/command-handler-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/transaction-script-vs-rich-domain-model
+- design-pattern/layered-validation-pattern
+forbidden_neighbors: []
+expected_queries:
+- Invariant preserving command model은 화면 patch DTO 대신 business intent와 precondition을 담는다는 게 무슨 뜻이야?
+- UpdateOrderPatch처럼 nullable field를 나열하면 service가 조합 해석과 invariant 검증을 떠안는 이유가 뭐야?
+- expectedVersion, actorId, reason, idempotencyKey는 command에 담아도 business logic 누수가 아닌 이유가 뭐야?
+- command granularity를 하나의 business sentence 단위로 맞추는 기준은 뭐야?
+- read DTO를 write command로 재사용하면 read concern이 aggregate invariant를 오염시키는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Invariant-Preserving Command Model playbook으로, generic patch DTO나
+  nullable field list 대신 aggregate가 불변식을 지키며 해석할 수 있는 intent-rich command와
+  expectedVersion, actor, reason, idempotencyKey 같은 precondition을 설계하는 기준을 설명한다.
+---
 # Invariant-Preserving Command Model
 
 > 한 줄 요약: 좋은 command model은 화면 patch를 그대로 운반하지 않고, aggregate가 불변식을 지키며 해석할 수 있는 의도와 전제조건을 담아 서비스 계층의 규칙 누수를 줄인다.
@@ -28,6 +95,8 @@
 - 어떤 상태에서 허용되는지 분기
 
 Invariant-Preserving Command Model은 command가 aggregate 불변식을 지키는 방향으로 **의도와 전제조건을 먼저 드러내는 입력 모델**이어야 한다는 관점이다.
+
+좋은 command 이름은 대개 "무엇을 바꾼다"보다 "무슨 일을 요청한다"에 가깝다. `status=CANCELLED`보다 `RequestOrderCancellation`이 aggregate에게 더 많은 의미와 검증 지점을 제공한다.
 
 ### Retrieval Anchors
 

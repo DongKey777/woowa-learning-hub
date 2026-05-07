@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Dashboard Restatement UX 설계
+concept_id: system-design/dashboard-restatement-ux-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- dashboard restatement ux
+- corrected metric display
+- analytics correction badge
+- restated dashboard
+aliases:
+- dashboard restatement ux
+- corrected metric display
+- analytics correction badge
+- restated dashboard
+- metric provenance
+- corrected period banner
+- diff before after
+- data freshness indicator
+- restatement notice
+- dashboard trust
+- backfill correction ux
+- metric version history
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/analytics-late-data-reconciliation-design.md
+- contents/system-design/reconciliation-window-cutoff-control-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/alert-reevaluation-correction-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/audit-log-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Dashboard Restatement UX 설계 설계 핵심을 설명해줘
+- dashboard restatement ux가 왜 필요한지 알려줘
+- Dashboard Restatement UX 설계 실무 트레이드오프는 뭐야?
+- dashboard restatement ux 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Dashboard Restatement UX 설계를 다루는 deep_dive 문서다. dashboard restatement UX 설계는 late data, replay, correction으로 숫자가 바뀔 때 사용자가 어떤 기간과 지표가 왜 수정되었는지 이해할 수 있게 표시, provenance, 비교, 공지 방식을 제공하는 분석 운영 설계다. 검색 질의가 dashboard restatement ux, corrected metric display, analytics correction badge, restated dashboard처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Dashboard Restatement UX 설계
 
 > 한 줄 요약: dashboard restatement UX 설계는 late data, replay, correction으로 숫자가 바뀔 때 사용자가 어떤 기간과 지표가 왜 수정되었는지 이해할 수 있게 표시, provenance, 비교, 공지 방식을 제공하는 분석 운영 설계다.

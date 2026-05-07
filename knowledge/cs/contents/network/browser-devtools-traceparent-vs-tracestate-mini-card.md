@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: "Browser DevTools `traceparent` vs `tracestate` 초급 미니 카드"
+concept_id: network/browser-devtools-traceparent-vs-tracestate-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- traceparent-tracestate
+- tracing-header-first-pass
+- devtools-observability-header
+aliases:
+- traceparent vs tracestate
+- devtools traceparent tracestate
+- beginner tracing headers
+- traceparent first check
+- tracestate vendor memo
+- distributed tracing header basics
+symptoms:
+- traceparent와 tracestate가 같이 보이면 둘 다 즉시 완전히 해석해야 한다고 생각한다
+- tracestate 값이 길어 보여서 traceparent보다 더 중요한 추적 키로 착각한다
+- traceparent가 있으면 app이 직접 응답을 만든 증거라고 오해한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-request-response-headers-basics
+next_docs:
+- network/browser-devtools-traceid-vs-spanid-mini-card
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- network/browser-devtools-gateway-error-header-clue-card
+- spring/observability-micrometer-tracing
+linked_paths:
+- contents/network/x-request-id-gateway-app-log-trace-beginner-bridge.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/http-request-response-headers-basics.md
+- contents/spring/spring-observability-micrometer-tracing.md
+confusable_with:
+- network/browser-devtools-traceid-vs-spanid-mini-card
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- network/browser-devtools-gateway-error-header-clue-card
+- spring/observability-micrometer-tracing
+forbidden_neighbors: []
+expected_queries:
+- "traceparent와 tracestate가 DevTools에 같이 보이면 무엇부터 봐야 해?"
+- "tracestate는 vendor별 메모라서 초급자는 나중에 봐도 되는 이유를 설명해줘"
+- "traceparent가 있으면 request ID 대신 traceId 중심 추적이라고 봐도 돼?"
+- "502 응답에 traceparent가 있어도 app이 직접 만든 에러라고 단정하면 안 되는 이유가 뭐야?"
+- "브라우저 tracing header first pass 규칙을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 DevTools request/response headers의 traceparent를 표준 tracing
+  propagation key로 먼저 읽고, tracestate는 vendor-specific 메모로 우선순위를
+  낮추는 beginner observability header primer다.
+---
 # Browser DevTools `traceparent` vs `tracestate` 초급 미니 카드
 
 > 한 줄 요약: DevTools에서 `traceparent`와 `tracestate`가 같이 보여도 초급자는 먼저 `traceparent`를 "같은 요청을 다시 찾는 공용 표식"으로 읽고, `tracestate` 값 해석은 보통 뒤로 미뤄도 된다.

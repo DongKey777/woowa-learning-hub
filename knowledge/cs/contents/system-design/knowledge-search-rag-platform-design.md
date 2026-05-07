@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Knowledge Search / RAG Platform 설계
+concept_id: system-design/knowledge-search-rag-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- knowledge search
+- RAG
+- retrieval augmented generation
+- embeddings
+aliases:
+- knowledge search
+- RAG
+- retrieval augmented generation
+- embeddings
+- vector search
+- reranking
+- citation
+- chunking
+- context assembly
+- grounding
+- source ranking
+- Knowledge Search / RAG Platform 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/search-system-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/recommendation-feed-ranking-architecture.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/experimentation-ab-testing-platform-design.md
+- contents/system-design/audit-log-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Knowledge Search / RAG Platform 설계 설계 핵심을 설명해줘
+- knowledge search가 왜 필요한지 알려줘
+- Knowledge Search / RAG Platform 설계 실무 트레이드오프는 뭐야?
+- knowledge search 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Knowledge Search / RAG Platform 설계를 다루는 deep_dive 문서다. knowledge search / RAG platform은 문서 수집, 검색, 재랭킹, 컨텍스트 조립, 출처 추적을 결합해 지식 기반 응답을 만드는 시스템이다. 검색 질의가 knowledge search, RAG, retrieval augmented generation, embeddings처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Knowledge Search / RAG Platform 설계
 
 > 한 줄 요약: knowledge search / RAG platform은 문서 수집, 검색, 재랭킹, 컨텍스트 조립, 출처 추적을 결합해 지식 기반 응답을 만드는 시스템이다.

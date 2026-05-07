@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "HTML vs Static Asset 캐시 실험 분기표: Browser DevTools `Disable cache` ON/OFF"
+concept_id: network/browser-devtools-disable-cache-on-off-experiment-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- disable-cache-experiment
+- html-vs-static-asset-cache
+- cache-observation-discipline
+aliases:
+- disable cache on off
+- browser disable cache experiment
+- html vs static asset cache
+- first visit repeat visit cache
+- disable cache serviceworker
+- fingerprinted asset cache
+symptoms:
+- Disable cache ON 결과를 평소 사용자 반복 방문 cache 동작으로 해석한다
+- HTML document와 fingerprinted static asset의 cache 패턴을 같은 기준으로 비교한다
+- from ServiceWorker가 보이는데도 HTTP cache Disable cache 실험만으로 결론낸다
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-cache-trace-primer
+- network/http-caching-conditional-request-basics
+next_docs:
+- network/service-worker-vs-http-cache-devtools-primer
+- network/cache-control-practical
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-cache-lifecycle-basics
+- system-design/cdn-basics
+linked_paths:
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/system-design/cdn-basics.md
+confusable_with:
+- network/browser-devtools-cache-trace-primer
+- network/service-worker-vs-http-cache-devtools-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-cache-lifecycle-basics
+- system-design/cdn-basics
+forbidden_neighbors: []
+expected_queries:
+- "DevTools Disable cache ON/OFF 실험은 첫 방문과 반복 방문을 어떻게 나눠야 해?"
+- "HTML 문서와 app.js 같은 정적 파일은 cache trace가 왜 다르게 보여?"
+- "Disable cache를 켰는데 from ServiceWorker가 보이면 어떤 실험으로 읽어야 해?"
+- "브라우저 cache 실험에서 OFF 자연 경로와 ON 강제 우회 결과를 비교하는 법을 알려줘"
+- "fingerprinted asset과 HTML document cache 정책을 DevTools에서 어떻게 관찰해?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools Disable cache ON/OFF 실험을 first visit, repeat visit,
+  body source, Service Worker 개입 여부, HTML document vs fingerprinted
+  static asset 차이로 나누어 읽는 beginner drill card다.
+---
 # HTML vs Static Asset 캐시 실험 분기표: Browser DevTools `Disable cache` ON/OFF
 
 **난이도: 🟢 Beginner**

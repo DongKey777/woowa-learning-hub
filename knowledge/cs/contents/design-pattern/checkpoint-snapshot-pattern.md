@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Checkpoint / Snapshot Pattern
+concept_id: design-pattern/checkpoint-snapshot-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- checkpoint-snapshot
+- replay-optimization
+- restore-point
+aliases:
+- checkpoint snapshot
+- checkpoint snapshot pattern
+- replay optimization
+- state checkpoint
+- restore point
+- event replay shortcut
+- snapshot versioning
+- checkpoint restore
+- 스냅샷 패턴
+- 체크포인트 복원
+symptoms:
+- event sourcing이나 workflow replay가 길어졌는데도 매번 처음부터 전체 이벤트를 재생해 startup/recovery 시간이 커진다
+- snapshot과 checkpoint를 같은 말로만 보고 저장된 상태 덩어리와 replay 기준점의 강조 차이를 구분하지 못한다
+- snapshot 간격을 성능만 보고 정해 저장 비용과 version compatibility 비용을 함께 고려하지 않는다
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/event-sourcing-pattern-language
+- design-pattern/memento-vs-event-sourcing
+- design-pattern/unit-of-work-pattern
+next_docs:
+- design-pattern/snapshot-versioning-compatibility-pattern
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/state-machine-library-vs-state-pattern
+linked_paths:
+- contents/design-pattern/memento-vs-event-sourcing.md
+- contents/design-pattern/event-sourcing-pattern-language.md
+- contents/design-pattern/snapshot-versioning-compatibility-pattern.md
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+confusable_with:
+- design-pattern/memento-vs-event-sourcing
+- design-pattern/snapshot-versioning-compatibility-pattern
+- design-pattern/event-sourcing-pattern-language
+- design-pattern/process-manager-state-store-recovery
+forbidden_neighbors: []
+expected_queries:
+- Checkpoint와 Snapshot은 replay 기준점과 복원용 상태 덩어리 관점에서 어떻게 달라?
+- event sourcing에서 replay 비용이 커질 때 snapshot을 두면 startup restore가 왜 빨라져?
+- snapshot을 너무 자주 찍으면 저장 비용과 compatibility 관리 비용이 커지는 이유가 뭐야?
+- Memento와 Checkpoint/Snapshot은 undo/restore와 long replay optimization 관점에서 어떻게 달라?
+- snapshot을 도입한 뒤 snapshot versioning을 같이 봐야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Checkpoint / Snapshot Pattern primer로, 긴 event history나 workflow state
+  replay 비용을 줄이기 위해 특정 시점의 state snapshot과 replay checkpoint를 저장하고,
+  interval, restore time, storage cost, version compatibility를 함께 고려하는 방법을 설명한다.
+---
 # Checkpoint / Snapshot Pattern: 긴 이력을 짧게 접는 복원 전략
 
 > 한 줄 요약: Checkpoint/Snapshot은 누적 이력의 중간 시점을 저장해, 긴 replay 비용을 줄이고 복원을 빠르게 만드는 패턴이다.

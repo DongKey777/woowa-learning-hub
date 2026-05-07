@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > baseball에서 추측 한 번은 "`어느 게임을 다시 읽어 와서 규칙을 적용하고 다음 요청을 위해 보관하는가`"까지 포함한 유스케이스다. 이 경계가 controller나 session 코드에 흩어지면 Repository가 맡아야 할 저장 계약이 흐려진다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "controller가 Map에서 game을 직접 꺼내고 다시 넣어요" | 저장소 세부와 추측 처리 흐름이 controller에 같이 있는 코드 | 현재 게임을 읽고 저장하는 계약을 Repository 경계로 감싼다 |
+| "gameId는 있는데 현재 게임을 다시 읽는 계약이 코드에 안 보여요" | path/session 식별자는 있지만 service가 저장 모델을 직접 뒤지는 구조 | service는 repository의 `find/save` 계약을 통해 load-modify-save를 조립한다 |
+| "session에 게임을 넣으면 repository는 필요 없나요?" | 저장 기술이 session이나 Map이라는 이유로 application boundary가 사라진 설계 | 기술이 무엇이든 application은 현재 게임 저장 계약만 알게 한다 |
+
 ## 미션 시나리오
 
 콘솔 baseball에서는 `Game` 객체 하나를 계속 들고 가면 되니 조회와 저장이 거의

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "TCP Fast Open Trade-offs"
+concept_id: network/tcp-fast-open-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- tcp-fast-open
+- handshake-latency
+- replay-risk
+aliases:
+- TCP Fast Open
+- TFO
+- data in SYN
+- SYN data
+- handshake RTT reduction
+- TCP cookie
+- replay risk
+- middlebox compatibility
+symptoms:
+- TCP Fast Open을 단순 latency win으로만 보고 replay/compatibility 문제를 놓친다
+- SYN data가 middlebox나 firewall에서 차단될 수 있음을 고려하지 않는다
+- idempotent하지 않은 요청을 early data와 비슷하게 안전하다고 본다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- network/syn-retransmission-handshake-timeout
+- network/tcp-congestion-control
+next_docs:
+- network/tls-session-resumption-0rtt-replay-risk
+- network/http3-quic-practical-tradeoffs
+- network/packet-loss-jitter-reordering-diagnostics
+- network/udp-fragmentation-quic-packetization
+linked_paths:
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/syn-retransmission-handshake-timeout.md
+- contents/network/tcp-congestion-control.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/timeout-types-connect-read-write.md
+confusable_with:
+- network/tls-session-resumption-0rtt-replay-risk
+- network/syn-retransmission-handshake-timeout
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "TCP Fast Open은 data in SYN으로 어떤 latency를 줄여?"
+- "TFO의 replay risk와 TLS 0-RTT replay risk는 어떻게 비슷하고 달라?"
+- "TCP Fast Open이 middlebox 때문에 실패하거나 fallback될 수 있는 이유는?"
+- "idempotent하지 않은 요청을 TFO early data로 보내면 왜 위험해?"
+- "SYN handshake timeout과 TCP Fast Open trade-off를 같이 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 TCP Fast Open(TFO), data in SYN, TCP cookie,
+  handshake RTT 절감, middlebox compatibility, replay risk trade-off를 다루는
+  advanced playbook이다.
+---
 # TCP Fast Open Trade-offs
 
 > 한 줄 요약: TCP Fast Open은 첫 데이터 전송을 앞당길 수 있지만, 재전송·호환성·보안 정책까지 같이 봐야 실제 이득이 난다.

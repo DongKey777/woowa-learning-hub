@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: OAuth Login State Cookie Cleanup
+concept_id: security/oauth-login-state-cookie-cleanup
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- oauth login state cookie cleanup
+- social login callback cookie cleanup
+- old login_state cookie cleanup
+- oauth callback host migration cookie cleanup
+aliases:
+- oauth login state cookie cleanup
+- social login callback cookie cleanup
+- old login_state cookie cleanup
+- oauth callback host migration cookie cleanup
+- oauth callback path migration cookie cleanup
+- state mismatch after callback move
+- old oauth session cookie survives callback migration
+- social login callback migration primer
+- callback host changed old cookie remains
+- callback path changed old cookie remains
+- host-only login state cleanup
+- oauth cookie tombstone exact path
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/samesite-login-callback-primer.md
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/callback-cookie-name-splitter.md
+- contents/security/subdomain-login-callback-boundaries.md
+- contents/security/cookie-scope-migration-cleanup.md
+- contents/security/duplicate-cookie-name-shadowing.md
+- contents/security/host-cookie-migration-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- OAuth Login State Cookie Cleanup 핵심 개념을 설명해줘
+- oauth login state cookie cleanup가 왜 필요한지 알려줘
+- OAuth Login State Cookie Cleanup 실무 설계 포인트는 뭐야?
+- oauth login state cookie cleanup에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 OAuth Login State Cookie Cleanup를 다루는 deep_dive 문서다. OAuth/social login callback host나 path를 옮길 때는 새 `login_state`/session cookie를 발급하는 것과, 예전 callback scope에 남은 old cookie를 지우는 것을 따로 설계해야 한다. 특히 old cookie가 host-only였거나 `Path=/oauth2`처럼 좁았다면, **옛 host/path를 정확히 맞춘 cleanup tombstone**이 없으면 callback loop나 `state mismatch`가 오래 남을 수 있다. 검색 질의가 oauth login state cookie cleanup, social login callback cookie cleanup, old login_state cookie cleanup, oauth callback host migration cookie cleanup처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # OAuth Login State Cookie Cleanup
 
 > 한 줄 요약: OAuth/social login callback host나 path를 옮길 때는 새 `login_state`/session cookie를 발급하는 것과, 예전 callback scope에 남은 old cookie를 지우는 것을 따로 설계해야 한다. 특히 old cookie가 host-only였거나 `Path=/oauth2`처럼 좁았다면, **옛 host/path를 정확히 맞춘 cleanup tombstone**이 없으면 callback loop나 `state mismatch`가 오래 남을 수 있다.

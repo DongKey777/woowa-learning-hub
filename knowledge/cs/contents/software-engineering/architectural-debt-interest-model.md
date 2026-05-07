@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Architectural Debt Interest Model
+concept_id: software-engineering/architectural-debt-interest
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- architectural-debt
+- refactoring-timing
+- change-friction
+aliases:
+- Architectural Debt Interest Model
+- architecture debt interest
+- debt principal vs interest
+- refactoring cost change friction
+- architectural debt payoff
+- 구조적 부채 이자 모델
+symptoms:
+- architectural debt를 나중에 한 번 고칠 principal로만 보고 변경 지연, 테스트 비용, 장애 복구 난이도 같은 반복 이자를 계산하지 않아
+- 변경 빈도가 높은 주문/결제/계약/외부 연동 경계에서 작은 결합이 계속 기능 개발 속도를 갉아먹는 신호를 놓쳐
+- debt payoff를 큰 리팩터링 한 번으로만 계획해 runway, fitness function, 작은 상환 단위를 같이 설계하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/technical-debt-refactoring-timing
+- software-engineering/architecture-runway
+next_docs:
+- software-engineering/architectural-fitness-functions
+- software-engineering/brownfield-modularization
+- software-engineering/migration-carrying-cost-delay
+linked_paths:
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/architecture-runway-refactoring-window.md
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/migration-carrying-cost-cost-of-delay.md
+confusable_with:
+- software-engineering/technical-debt-refactoring-timing
+- software-engineering/architecture-runway
+- software-engineering/migration-carrying-cost-delay
+forbidden_neighbors: []
+expected_queries:
+- architectural debt를 principal과 interest로 나눠서 보는 이유를 설명해줘
+- 구조적 부채의 이자가 변경 충돌, 테스트 비용, rollout 지연, 온보딩 지연으로 나타나는 신호는 뭐야?
+- 변경 빈도가 높은 영역의 작은 coupling이 왜 architecture debt interest를 크게 만들어?
+- architecture runway와 fitness function이 debt interest를 낮추는 방식은 어떻게 달라?
+- 큰 리팩터링 대신 boundary 하나씩 점진 상환하는 판단 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 architectural debt를 principal과 recurring interest로 나눠 change friction, coupling cost, test breakage, rollout delay, refactoring payoff를 판단하는 advanced playbook이다.
+---
 # Architectural Debt Interest Model
 
 > 한 줄 요약: architectural debt는 나중에 갚을 비용이 아니라, 지금 구조를 유지하는 동안 매일 붙는 이자까지 포함해 봐야 하는 복합 부채다.

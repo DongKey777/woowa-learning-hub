@@ -1,3 +1,83 @@
+---
+schema_version: 3
+title: OAuth2 Authorization Code Grant
+concept_id: security/oauth2-authorization-code-grant
+canonical: true
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- oauth-code-flow-boundary
+- pkce-state-redirect-uri
+- social-login-callback-hardening
+aliases:
+- OAuth2 Authorization Code Grant
+- authorization code grant
+- OAuth code flow
+- authorization code with PKCE
+- OAuth callback code exchange
+- redirect_uri state PKCE
+- 인가 코드 그랜트
+- 소셜 로그인 callback hardening
+symptoms:
+- OAuth2 Authorization Code Grant를 브라우저가 토큰을 직접 받는 흐름으로 이해하고 있어
+- state, redirect_uri, PKCE, callback, token endpoint 역할을 한 번에 섞고 있어
+- 외부 IdP 인증 결과와 내부 세션, 권한 매핑 책임을 구분하지 못하고 있어
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- security/oauth2-basics
+- security/authentication-vs-authorization
+- security/browser-storage-threat-model-for-tokens
+next_docs:
+- security/oauth2-oidc-social-login-primer
+- security/login-callback-artifact-cheat-sheet
+- security/pkce-failure-modes-recovery
+- security/oidc-id-token-userinfo-boundaries
+- security/oauth-client-authentication-private-key-jwt-mtls
+linked_paths:
+- contents/security/oauth2-basics.md
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/login-callback-artifact-cheat-sheet.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/jwt-deep-dive.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/oauth-par-jar-basics.md
+- contents/security/oauth-client-authentication-private-key-jwt-mtls.md
+- contents/security/oauth-device-code-flow-security.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/open-redirect-hardening.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/session-fixation-in-federated-login.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/email-magic-link-threat-model.md
+- contents/spring/spring-security-architecture.md
+- contents/network/http-state-session-cache.md
+- contents/network/tls-loadbalancing-proxy.md
+confusable_with:
+- security/oauth2-basics
+- security/oauth2-oidc-social-login-primer
+- security/oidc-id-token-userinfo-boundaries
+- security/browser-storage-threat-model-for-tokens
+forbidden_neighbors: []
+expected_queries:
+- OAuth2 Authorization Code Grant는 왜 브라우저가 access token을 직접 받지 않게 해?
+- authorization code와 PKCE code_verifier는 token exchange에서 어떻게 연결돼?
+- state와 redirect_uri 검증은 callback에서 각각 무엇을 막아?
+- OAuth2 code flow 이후 내부 세션과 권한 매핑은 우리 서비스 책임인 이유가 뭐야?
+- OIDC social login에서 id token, access token, internal session을 어떻게 분리해?
+contextual_chunk_prefix: |
+  이 문서는 OAuth2 Authorization Code Grant deep dive로, browser front-channel authorization code, backend token endpoint exchange, PKCE verifier, state, redirect_uri 검증, internal session issuance boundary를 설명한다.
+  OAuth code flow, authorization code with PKCE, callback hardening, social login internal session, id token vs access token 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # OAuth2 Authorization Code Grant
 
 > 한 줄 요약: Authorization Code Grant는 브라우저가 직접 토큰을 받지 않고, 인가 코드를 통해 서버가 안전하게 토큰을 교환하는 표준 흐름이다.

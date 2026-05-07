@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Stateless Sessions Primer
+concept_id: system-design/stateless-sessions-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- stateless sessions primer
+- what is stateless session
+- stateless session beginner
+- stateless 큰 그림
+aliases:
+- stateless sessions primer
+- what is stateless session
+- stateless session beginner
+- stateless 큰 그림
+- stateless 처음 배우는데
+- 세션이 뭐예요
+- 로그인 상태 어디 저장
+- 왜 stateless를 써요
+- sticky session
+- sticky session 왜 문제
+- external session store
+- token-based auth
+symptoms: []
+intents:
+- definition
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/system-design/session-revocation-basics.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/load-balancer-drain-and-affinity-primer.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Stateless Sessions Primer 설계 핵심을 설명해줘
+- stateless sessions primer가 왜 필요한지 알려줘
+- Stateless Sessions Primer 실무 트레이드오프는 뭐야?
+- stateless sessions primer 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Stateless Sessions Primer를 다루는 primer 문서다. sticky session, external session store, token-based auth를 비교해 왜 stateless app tier가 load balancer, autoscaling, failover에 더 잘 맞는지 설명하는 입문 문서다. 검색 질의가 stateless sessions primer, what is stateless session, stateless session beginner, stateless 큰 그림처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Stateless Sessions Primer
 
 > 한 줄 요약: sticky session, external session store, token-based auth를 비교해 왜 stateless app tier가 load balancer, autoscaling, failover에 더 잘 맞는지 설명하는 입문 문서다.

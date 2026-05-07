@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: 조인 테이블과 복합 키 기초
+concept_id: database/join-table-composite-key-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- join-table-composite-key
+- many-to-many-link-table
+- duplicate-link-prevention
+aliases:
+- join table basics
+- composite primary key beginner
+- many to many table design
+- n:m modeling intro
+- link table duplicate prevention
+- user role mapping beginner
+- enrollment table basics
+- 연결 테이블
+- 복합 기본 키
+- 다대다 모델링
+symptoms:
+- N:M 관계를 문자열 컬럼이나 배열 한 칸에 넣으려 하고 있어
+- join table은 조회 문법 JOIN과 같은 뜻이라고 오해하고 있어
+- surrogate id를 추가하면서 원래 필요한 UNIQUE(student_id, course_id)를 빼 중복 연결을 허용하려 해
+intents:
+- definition
+- design
+prerequisites:
+- database/primary-foreign-key-basics
+- database/sql-relational-modeling-basics
+next_docs:
+- database/sql-join-basics
+- database/index-basics
+- spring/spring-data-jpa-basics
+linked_paths:
+- contents/database/primary-foreign-key-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/index-basics.md
+- contents/database/sql-join-basics.md
+- contents/database/normalization-basics.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/primary-foreign-key-basics
+- database/sql-join-basics
+- database/normalization-basics
+forbidden_neighbors: []
+expected_queries:
+- N:M 관계는 왜 join table로 풀고 두 FK 조합을 composite primary key로 잡아?
+- join table과 SQL JOIN은 이름이 비슷하지만 역할이 어떻게 달라?
+- user_role 같은 link table에서 PRIMARY KEY(user_id, role_id)가 중복 연결을 어떻게 막아?
+- surrogate id를 넣어도 UNIQUE(student_id, course_id)를 같이 남겨야 하는 이유는 뭐야?
+- 다대다 모델링과 복합 기본 키를 초보자 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 N:M 관계를 join table로 풀고 두 FK 조합의 composite primary key 또는 unique constraint로 같은 연결 중복을 막는 beginner primer다.
+  join table, composite primary key, many-to-many table design, 연결 테이블 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 조인 테이블과 복합 키 기초 (Join Table & Composite Key Basics)
 
 > 한 줄 요약: N:M 관계는 두 테이블 사이에 연결 테이블을 하나 더 두어 풀고, 이때 두 FK 조합을 복합 기본 키로 잡으면 "같은 연결이 두 번 저장되는 문제"를 가장 직접적으로 막을 수 있다.

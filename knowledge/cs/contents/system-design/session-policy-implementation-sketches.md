@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Session Policy Implementation Sketches
+concept_id: system-design/session-policy-implementation-sketches
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session policy implementation sketches
+- session policy hint propagation
+- gateway app database hint propagation
+- gateway app db pseudo code
+aliases:
+- session policy implementation sketches
+- session policy hint propagation
+- gateway app database hint propagation
+- gateway app db pseudo code
+- recent-write min-version write-sequence
+- recent write min version write seq
+- session hint envelope
+- session context propagation
+- freshness hint propagation
+- write sequence propagation beginner
+- beginner session guarantee code example
+- gateway repository database routing
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/cache-hit-miss-session-policy-bridge.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/monotonic-writes-ordering-primer.md
+- contents/system-design/writes-follow-reads-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Policy Implementation Sketches 설계 핵심을 설명해줘
+- session policy implementation sketches가 왜 필요한지 알려줘
+- Session Policy Implementation Sketches 실무 트레이드오프는 뭐야?
+- session policy implementation sketches 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Session Policy Implementation Sketches를 다루는 deep_dive 문서다. session policy는 거창한 마법이 아니라, `recent-write`, `min-version`, `write-sequence` 같은 작은 힌트 봉투를 gateway가 꺼내고 app이 해석하고 database가 실제 read/write 조건으로 집행하는 방식으로 시작하면 된다. 검색 질의가 session policy implementation sketches, session policy hint propagation, gateway app database hint propagation, gateway app db pseudo code처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Session Policy Implementation Sketches
 
 > 한 줄 요약: session policy는 거창한 마법이 아니라, `recent-write`, `min-version`, `write-sequence` 같은 작은 힌트 봉투를 gateway가 꺼내고 app이 해석하고 database가 실제 read/write 조건으로 집행하는 방식으로 시작하면 된다.

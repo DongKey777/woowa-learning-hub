@@ -9,6 +9,11 @@ doc_role: symptom_router
 level: intermediate
 language: ko
 source_priority: 80
+review_feedback_tags:
+- cache-replica-split
+- read-inconsistency
+- cache-vs-replica
+- stale
 aliases:
 - cache replica split
 - cache vs replica stale
@@ -30,19 +35,19 @@ linked_paths:
 - contents/database/replica-read-routing-anomalies.md
 - contents/database/read-your-writes-session-pinning.md
 - contents/system-design/caching-vs-read-replica-primer.md
+confusable_with:
+- database/replica-lag-read-after-write-strategies
+- database/replica-lag-observability-routing-slo
+- database/replica-read-routing-anomalies
+- database/read-your-writes-session-pinning
 expected_queries:
 - 캐시랑 replica가 갈라져서 stale read가 나면 어디부터 봐?
 - cache miss 때만 옛값이 보이면 cache 문제야 replica 문제야?
 - 수정은 됐는데 목록 화면에는 옛날 데이터가 보일 때 원인 후보가 뭐야?
 - 같은 사용자가 detail에선 새 값, list에선 옛값을 보면 어디로 가?
 contextual_chunk_prefix: |
-  이 문서는 사용자가 수정 직후 목록 화면에서 옛 데이터를 보거나 detail/list가
-  서로 다른 상태로 보일 때 학습자가 원인을 cache stale, replica lag, mixed
-  source 세 갈래로 가르는 symptom_router다. 수정은 됐는데 목록에는 옛 데이터,
-  방금 저장했는데 새로고침해야 보임, cache miss 후 옛값, 목록과 상세 다른
-  상태 같은 자연어 paraphrase가 본 문서의 진단 분기에 매핑된다.
+  이 문서는 database 카테고리에서 Cache와 Replica가 갈라질 때의 Read Inconsistency를 다루는 symptom_router 문서다. cache replica split, cache vs replica stale, mixed stale source, 캐시 미스 후 리플리카 옛값, 목록과 상세가 서로 다른 상태 같은 lexical 표현과 캐시랑 replica가 갈라져서 stale read가 나면 어디부터 봐?, cache miss 때만 옛값이 보이면 cache 문제야 replica 문제야? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
 ---
-
 # Cache와 Replica가 갈라질 때의 Read Inconsistency
 
 > 한 줄 요약: 캐시와 replica가 서로 다른 시점을 들고 있으면, 둘 중 어느 쪽을 읽어도 맞는 것 같지만 둘 다 틀릴 수 있다.

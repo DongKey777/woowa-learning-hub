@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: BBR vs CUBIC Congestion Intuition
+concept_id: network/bbr-vs-cubic-congestion-intuition
+canonical: false
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- congestion-control
+- bbr-vs-cubic
+- tail-latency-network
+aliases:
+- BBR vs CUBIC
+- TCP congestion control
+- loss based congestion control
+- model based congestion control
+- bandwidth delay product
+- pacing RTT queue
+- CUBIC loss BBR bandwidth RTT
+symptoms:
+- CUBIC과 BBR을 모두 TCP가 속도를 조절한다는 말로만 보고 loss-based와 model-based signal 차이를 설명하지 못한다
+- 대역폭은 충분한데 p99 latency가 흔들리는 문제에서 queueing, RTT, pacing, cwnd를 혼잡 제어 신호로 보지 않는다
+- bulk transfer와 작은 RPC 체감 차이를 HTTP/2 HOL, Nagle/delayed ACK, loss/jitter와 함께 보지 않는다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- network/tcp-congestion-control
+- network/packet-loss-jitter-reordering-diagnostics
+next_docs:
+- network/ecn-congestion-signal-tail-latency
+- network/http3-quic-practical-tradeoffs
+- network/http2-multiplexing-hol-blocking
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/ecn-congestion-signal-tail-latency.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/nagle-delayed-ack-small-packet-latency.md
+confusable_with:
+- network/tcp-congestion-control
+- network/ecn-congestion-signal-tail-latency
+- network/packet-loss-jitter-reordering-diagnostics
+- network/http2-multiplexing-hol-blocking
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- BBR과 CUBIC은 loss-based와 bandwidth RTT model-based 관점에서 어떻게 달라?
+- CUBIC은 손실을 보고 줄이고 BBR은 bottleneck bandwidth와 RTT를 보고 pacing한다는 걸 설명해줘
+- 대역폭은 충분한데 tail latency가 높을 때 cwnd pacing queue RTT를 어떻게 봐?
+- BBR이 queue를 덜 키워 매끄럽게 느껴질 수 있지만 경로별 편차가 있는 이유는?
+- bulk upload와 작은 RPC latency가 congestion control, HOL blocking, delayed ACK 때문에 다르게 보이는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 TCP congestion control에서 CUBIC의 loss-based window 조절과 BBR의
+  bottleneck bandwidth/RTT model 기반 pacing을 비교하는 bridge다. queueing, RTT,
+  cwnd, pacing_rate, tail latency와 HTTP/2/HTTP3 체감 차이를 연결한다.
+---
 # BBR vs CUBIC Congestion Intuition
 
 > 한 줄 요약: CUBIC은 손실을 보고 속도를 조절하고, BBR은 대역폭과 RTT 모델을 보고 보내는 양을 정하므로, 네트워크 성질에 따라 체감이 다르다.

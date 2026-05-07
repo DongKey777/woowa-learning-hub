@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Aggregate Invariant Guard Pattern
+concept_id: design-pattern/aggregate-invariant-guard-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- aggregate-invariant-guard
+- domain-invariant
+- rich-domain-model
+aliases:
+- aggregate invariant guard
+- domain invariant guard
+- state transition guard
+- behavior rich aggregate
+- collection mutation guard
+- invariant preserving command
+- aggregate consistency protection
+- 애그리거트 불변식
+- 도메인 불변식 가드
+symptoms:
+- service layer에서 aggregate 내부 컬렉션을 직접 수정해 도메인 불변식 검증이 여러 곳에 흩어진다
+- DTO validation과 aggregate invariant를 같은 것으로 보고 현재 상태에서 허용되지 않는 전이를 놓친다
+- public setter나 getLines().add 같은 API 때문에 root를 통하지 않는 상태 변경이 가능하다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/transaction-script-vs-rich-domain-model
+- design-pattern/layered-validation-pattern
+next_docs:
+- design-pattern/invariant-preserving-command-model
+- design-pattern/specification-pattern
+- design-pattern/state-pattern-workflow-payment
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/invariant-preserving-command-model.md
+- contents/design-pattern/transaction-script-vs-rich-domain-model.md
+- contents/design-pattern/layered-validation-pattern.md
+- contents/design-pattern/specification-pattern.md
+confusable_with:
+- design-pattern/layered-validation-pattern
+- design-pattern/transaction-script-vs-rich-domain-model
+- design-pattern/specification-pattern
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+forbidden_neighbors: []
+expected_queries:
+- Aggregate Invariant Guard는 service layer로 도메인 규칙이 새지 않게 어떻게 막아?
+- DTO validation과 aggregate invariant는 형식 검증과 상태 전이 규칙 관점에서 어떻게 달라?
+- public setter 대신 markPaid나 changeShippingAddress 같은 의도 메서드를 쓰는 이유가 뭐야?
+- aggregate 내부 컬렉션을 getLines().add로 열면 어떤 불변식 누수가 생겨?
+- 외부 정책이 필요한 규칙은 aggregate guard와 specification을 어떻게 조합해?
+contextual_chunk_prefix: |
+  이 문서는 Aggregate Invariant Guard Pattern playbook으로, aggregate root를
+  통해서만 상태 전이와 컬렉션 변경을 허용하고 DTO validation과 다른 domain
+  invariant를 intent method와 policy/specification 조합으로 보호하는 방법을 설명한다.
+---
 # Aggregate Invariant Guard Pattern
 
 > 한 줄 요약: Aggregate Invariant Guard는 aggregate의 상태 전이와 컬렉션 변경을 오직 의도 있는 메서드로만 통제해, 도메인 불변식이 서비스 계층으로 새지 않게 막는 설계다.

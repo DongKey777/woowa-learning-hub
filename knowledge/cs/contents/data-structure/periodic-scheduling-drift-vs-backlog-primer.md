@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Periodic Scheduling Drift vs Backlog Primer
+concept_id: data-structure/periodic-scheduling-drift-vs-backlog-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- periodic-drift-vs-backlog
+- fixed-rate-fixed-delay-overrun
+- scheduler-overload-triage
+aliases:
+- periodic scheduling drift vs backlog
+- fixed rate backlog mental model
+- fixed delay drift mental model
+- overdue deadline debt
+- periodic catch up execution
+- scheduler drift alarm
+- 알람이 밀려 울려요
+symptoms:
+- scheduleAtFixedRate가 끝나자마자 다시 실행되는 현상과 scheduleWithFixedDelay가 점점 늦어지는 현상을 같은 backlog로 부른다
+- fixed-rate의 overdue deadline debt와 fixed-delay의 breathing room 유지 drift를 구분하지 못한다
+- ready queue starvation이나 TaskScheduler overload 신호와 periodic overrun 현상을 함께 보지 않는다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- data-structure/slow-periodic-task-primer
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+next_docs:
+- data-structure/periodic-overrun-catch-up-primer
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/ready-queue-starvation-primer
+- spring/taskexecutor-taskscheduler-overload-rejection-semantics
+linked_paths:
+- contents/data-structure/slow-periodic-task-primer.md
+- contents/data-structure/fixed-rate-vs-fixed-delay-overrun-primer.md
+- contents/data-structure/periodic-overrun-catch-up-primer.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/ready-queue-starvation-primer.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/periodic-overrun-catch-up-primer
+- data-structure/ready-queue-starvation-primer
+- spring/taskexecutor-taskscheduler-overload-rejection-semantics
+forbidden_neighbors: []
+expected_queries:
+- scheduleAtFixedRate는 backlog처럼 보이고 scheduleWithFixedDelay는 drift처럼 보이는 이유는?
+- periodic scheduling drift와 overdue deadline debt를 어떻게 구분해?
+- fixed-rate 작업이 끝나자마자 다시 도는 건 왜 생겨?
+- fixed-delay는 왜 숨 고를 간격은 유지하지만 실제 시작 시각이 뒤로 밀려?
+- 주기 작업이 밀릴 때 scheduler overload와 ready queue starvation도 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 periodic scheduling에서 fixed-rate overrun은 overdue deadline debt와
+  catch-up pressure로, fixed-delay overrun은 schedule drift와 breathing room
+  유지로 나타난다는 symptom router다. Ready queue starvation과 scheduler
+  overload로의 연결도 제공한다.
+---
 # Periodic Scheduling Drift vs Backlog Primer
 
 > 한 줄 요약: `scheduleAtFixedRate`는 원래 박자를 지키려다 실행이 밀리면 **overdue deadline debt**가 쌓여 끝나자마자 다시 돌기 쉽고, `scheduleWithFixedDelay`는 매번 종료 시각에서 다시 출발해서 **drift**가 커지지만 숨 고를 간격은 유지한다.

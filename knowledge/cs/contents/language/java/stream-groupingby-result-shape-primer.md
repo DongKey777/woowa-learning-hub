@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Stream groupingBy Result Shape Primer
+concept_id: language/stream-groupingby-result-shape-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- stream
+- collector
+- map-shape
+aliases:
+- Stream groupingBy Result Shape Primer
+- Java Collectors.groupingBy Map List
+- groupingBy result shape beginner
+- groupingBy counting mapping
+- stream group bucket mental model
+- 자바 groupingBy 결과 모양
+symptoms:
+- groupingBy 결과를 Map<K, List<T>> 버킷 구조로 읽지 못해 key 하나에 여러 요소가 모이는 shape를 놓쳐
+- toMap과 groupingBy를 모두 Map을 만드는 collector로만 묶어 key 하나에 최종 값 하나인지 key 하나에 list 여러 개인지 구분하지 못해
+- groupingBy downstream collector인 counting이나 mapping을 보기 전에 기본 result shape를 잡지 못해 nested generic을 해석하지 못해
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- language/java-stream-lambda-basics
+- language/java-collections-basics
+- language/map-value-shape-drill
+next_docs:
+- language/collectors-tomap-duplicate-key-primer
+- language/map-iteration-patterns-cheat-sheet
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+linked_paths:
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/map-value-shape-drill.md
+- contents/language/java/collectors-tomap-duplicate-key-primer.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+confusable_with:
+- language/collectors-tomap-duplicate-key-primer
+- language/map-value-shape-drill
+- language/stream-filter-vs-map-decision-mini-card
+forbidden_neighbors: []
+expected_queries:
+- Collectors.groupingBy 결과는 왜 기본적으로 Map<K List<T>> 모양으로 읽어?
+- Java stream groupingBy는 같은 key끼리 bucket에 모으는 collector라는 뜻을 설명해줘
+- groupingBy와 toMap은 key 하나에 list 여러 개와 value 하나라는 result shape가 어떻게 달라?
+- groupingBy counting mapping으로 결과 모양을 바꾸기 전에 기본 Map<K List<V>>를 어떻게 해석해?
+- 주문을 status별로 groupingBy하면 Map<String List<Order>>를 어떻게 읽으면 돼?
+contextual_chunk_prefix: |
+  이 문서는 Collectors.groupingBy의 기본 결과를 Map<K,List<T>> bucket shape로 읽고 toMap과 구분하는 beginner primer다.
+  groupingBy, Collectors.groupingBy, Map List, stream group by, result shape 질문이 본 문서에 매핑된다.
+---
 # Stream `groupingBy` Result Shape Primer
 
 > 한 줄 요약: `Collectors.groupingBy(...)`는 stream 요소를 key별로 "버킷에 모으는" collector라서, 가장 기본형 결과를 `Map<K, List<V>>`로 읽는 감각을 먼저 잡으면 이후 `counting()`이나 `mapping()` 변형도 훨씬 덜 헷갈린다.

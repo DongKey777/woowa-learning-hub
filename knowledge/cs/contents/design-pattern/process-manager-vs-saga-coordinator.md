@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Process Manager vs Saga Coordinator
+concept_id: design-pattern/process-manager-vs-saga-coordinator
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- process-manager
+- saga-coordinator
+- long-running-workflow
+aliases:
+- process manager
+- saga coordinator
+- process manager vs saga coordinator
+- long running workflow
+- event driven process state
+- compensation orchestration
+- timeout reminder workflow
+- deadline signal
+- workflow recovery
+- human approval workflow
+symptoms:
+- Saga Coordinator와 Process Manager를 모두 긴 흐름 조율이라고만 보고 보상 중심인지 장기 상태/타이머 중심인지 구분하지 못한다
+- 며칠 동안 이어지는 approval, timeout, retry state를 단발성 coordinator 메서드 안에 억지로 넣는다
+- Process Manager라는 이름 아래 상태 저장, 이벤트 해석, 명령 발행, 보상 정책을 한 클래스에 몰아넣는다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/orchestration-vs-choreography-pattern-language
+- design-pattern/command-bus-pattern
+next_docs:
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/human-approval-manual-review-workflow-pattern
+linked_paths:
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/orchestration-vs-choreography-pattern-language.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/process-manager-state-store-recovery.md
+- contents/design-pattern/human-approval-manual-review-workflow-pattern.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/reservation-hold-expiry-consistency-seam.md
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+- contents/design-pattern/command-bus-pattern.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+confusable_with:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/workflow-owner-vs-participant-context
+forbidden_neighbors: []
+expected_queries:
+- Process Manager와 Saga Coordinator는 보상 중심 step orchestration과 장기 event-driven state 관리 관점에서 어떻게 달라?
+- 며칠 이상 이어지는 workflow, timeout, reminder, human approval이 있으면 Process Manager가 더 맞는 이유가 뭐야?
+- 짧고 명확한 주문 결제 재고 보상 플로우는 Saga Coordinator로 보는 기준이 뭐야?
+- Process Manager가 모든 정책을 빨아들이는 God Object가 되지 않게 상태 모델과 decision policy를 어떻게 나눠?
+- Saga와 Process Manager를 함께 쓰는 hand-off 지점은 어떻게 정해?
+contextual_chunk_prefix: |
+  이 문서는 Process Manager vs Saga Coordinator chooser로, Saga Coordinator는
+  단계 실행, 보상, 재시도를 지휘하는 짧은 distributed workflow에 가깝고, Process Manager는
+  이벤트를 받으며 장기 상태, timeout, reminder, human approval, recovery를 기억하고 다음 command를
+  결정하는 프로세스 상태 기계에 가깝다는 기준을 설명한다.
+---
 # Process Manager vs Saga Coordinator
 
 > 한 줄 요약: Saga Coordinator는 단계 실행과 보상을 지휘하는 데 초점을 두고, Process Manager는 이벤트를 들으며 장기 상태를 유지하고 다음 명령을 결정하는 도메인 프로세스에 가깝다.

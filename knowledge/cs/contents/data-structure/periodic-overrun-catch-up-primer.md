@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Periodic Overrun Catch-Up Primer
+concept_id: data-structure/periodic-overrun-catch-up-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- periodic-overrun-policy
+- catch-up-drift-skip-coalesce
+- scheduler-ticket-model
+aliases:
+- periodic overrun catch up
+- fixed rate catch up
+- scheduler catch up drift skip coalesce
+- skip missed ticks
+- coalesce missed periods
+- periodic task runtime longer than period
+- 주기 작업 오버런
+symptoms:
+- 반복 작업 실행 시간이 주기보다 길어졌을 때 catch-up, drift, skip, coalesce 정책을 구분하지 않고 fixed-rate/fixed-delay 이름만 본다
+- overdue deadline이 생긴 fixed-rate 작업이 끝나자마자 다시 실행되는 현상을 무조건 버그로만 판단한다
+- missed tick을 모두 처리해야 하는지, 건너뛰어야 하는지, 합쳐야 하는지를 업무 의미와 연결하지 않는다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+next_docs:
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- data-structure/slow-periodic-task-primer
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/bounded-queue-policy-primer
+linked_paths:
+- contents/data-structure/fixed-rate-vs-fixed-delay-overrun-primer.md
+- contents/data-structure/periodic-scheduling-drift-vs-backlog-primer.md
+- contents/data-structure/slow-periodic-task-primer.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/bounded-queue-policy-primer.md
+confusable_with:
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- data-structure/slow-periodic-task-primer
+- data-structure/delayqueue-repeating-task-primer
+forbidden_neighbors: []
+expected_queries:
+- 주기 작업이 period보다 오래 걸릴 때 catch-up drift skip coalesce 정책은 어떻게 달라?
+- fixed-rate overrun에서 끝나자마자 다시 실행되는 현상을 어떻게 이해해야 해?
+- missed ticks를 건너뛸지 합칠지 따라잡을지 scheduler policy를 고르는 기준은?
+- periodic task runtime이 period보다 길 때 backlog와 drift를 beginner 기준으로 설명해줘
+- DelayQueue repeating task ticket model로 overrun catch-up을 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 periodic task가 주기보다 오래 걸릴 때 scheduler가 catch-up, drift,
+  skip, coalesce 중 어떤 overrun policy를 택하는지 구분하는 chooser다.
+  fixed-rate overdue deadline debt, fixed-delay drift, missed tick handling을 다룬다.
+---
 # Periodic Overrun Catch-Up Primer
 
 > 한 줄 요약: 반복 작업이 주기보다 오래 걸리면 scheduler는 보통 네 가지 중 하나를 택한다. **원래 박자를 따라잡으려 하거나(catch-up), 점점 늦어지거나(drift), 늦은 회차를 건너뛰거나(skip), 여러 번 밀린 일을 한 번으로 합치기도(coalesce)** 한다.

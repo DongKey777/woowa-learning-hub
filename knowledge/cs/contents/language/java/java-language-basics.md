@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: 자바 언어의 구조와 기본 문법
+concept_id: language/java-language-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-beginner-entry
+- jvm-source-bytecode-flow
+- primitive-reference-first-split
+aliases:
+- java language basics
+- 자바 언어 기본 문법
+- 자바 처음 배우는데 뭐부터
+- JDK JVM 차이 입문
+- java source bytecode JVM flow
+- main 메서드 시작
+- primitive reference beginner
+- 기본형 참조형 차이
+- java array basics
+- 자바 컴파일 에러 입문
+symptoms:
+- Java를 처음 읽을 때 JDK, JVM, class, main, bytecode가 한꺼번에 나와 실행 흐름이 잡히지 않는다
+- 기본형과 참조형 차이를 모른 채 String, 배열, 객체, int를 같은 방식으로 비교하거나 대입한다
+- 배열, 제어문, 지역 변수 초기화 같은 첫 compile error를 개별 암기로 처리해서 다음 문서로 넘어가는 길을 잃는다
+intents:
+- definition
+- troubleshooting
+prerequisites: []
+next_docs:
+- language/java-execution-object-memory-mental-model-primer
+- language/java-types-class-object-oop-basics
+- language/primitive-wrapper-choice-primer
+- language/java-equality-identity-basics
+linked_paths:
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/primitive-wrapper-choice-primer.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-loop-control-scope-follow-up-primer.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+confusable_with:
+- language/java-execution-object-memory-mental-model-primer
+- language/java-types-class-object-oop-basics
+- language/primitive-wrapper-choice-primer
+forbidden_neighbors: []
+expected_queries:
+- 자바를 처음 배울 때 JDK JVM main class bytecode 흐름을 어떤 순서로 잡아야 해?
+- 기본형과 참조형이 왜 다르고 String이나 배열은 어디에 속하는지 초보자 기준으로 설명해줘
+- Java에서 .java 파일이 .class가 되고 JVM에서 실행되는 흐름을 큰 그림으로 보고 싶어
+- 자바 배열과 제어문까지 처음 읽을 때 어떤 문서 순서로 넘어가면 덜 헷갈릴까?
+- int와 Integer 차이를 바로 깊게 파기 전에 Java 타입 큰 그림에서 어디까지 알아야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java를 처음 배우는 학습자의 언어 진입 primer다.
+  JDK, JVM, javac, bytecode, main method, class, primitive type, reference type, array basics, beginner compile error, 다음 Java 객체/equality 문서로 가는 사다리를 한 번에 잡는다.
+---
 # 자바 언어의 구조와 기본 문법
 
 > 한 줄 요약: Java를 처음 읽을 때 필요한 실행 모델, 타입, 배열, 제어문, 그리고 초보자 compile-error 감각을 한 번에 묶는 beginner primer다.

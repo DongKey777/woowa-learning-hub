@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: DataJpaTest Flush Clear Batch Checklist
+concept_id: software-engineering/datajpatest-flush-clear
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- datajpatest
+- flush-clear
+- batch-testing
+aliases:
+- DataJpaTest Flush Clear Batch Checklist
+- DataJpaTest에서 flush clear 왜
+- flush clear batch test
+- same persistence context illusion
+- bulk update stale state
+- flush commit difference
+symptoms:
+- DataJpaTest에서 save/persist만 호출하고 DB 반응과 같은 영속성 컨텍스트 managed state를 구분하지 못해
+- batch insert나 bulk update 테스트가 초록인데도 flush가 없어 SQL 실행 시점/constraint를 당겨보지 못하거나 clear가 없어 stale state 착시를 끊지 못해
+- flush/clear로 commit 이후 effect나 AFTER_COMMIT listener까지 검증할 수 있다고 오해해 commit-visible 테스트 경계를 놓쳐
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- software-engineering/datajpatest-db-difference
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/identity-sequence-batch-verification
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+- software-engineering/batch-result-testing
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/datajpatest-db-difference-checklist.md
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/identity-vs-sequence-batch-verification-example.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/after-commit-listener-rollback-test-beginner-bridge.md
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+confusable_with:
+- software-engineering/datajpatest-db-difference
+- software-engineering/transactional-test-rollback-vs-commit-boundary-card
+- software-engineering/jpa-batch-config-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- DataJpaTest에서 flush와 clear는 각각 SQL을 보내 보기, 같은 persistence context 착시 끊기라는 뜻이야?
+- batch insert 테스트에서 save만 있으면 DB constraint와 실제 SQL 실행 시점 검증이 약한 이유는 뭐야?
+- bulk update 뒤 clear를 하지 않으면 managed entity stale state 때문에 어떤 테스트 착시가 생겨?
+- flush clear를 해도 commit 이후 listener나 다른 transaction visibility는 검증하지 못하는 이유를 알려줘
+- DataJpaTest batch 테스트에서 flush clear 후 재조회와 commit-visible 테스트를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 DataJpaTest에서 batch insert, bulk update 테스트의 flush, clear, same persistence context illusion, commit-visible boundary를 설명하는 beginner primer다.
+---
 # DataJpaTest Flush/Clear Batch Checklist
 
 > 한 줄 요약: batch성 저장이나 bulk update를 `@DataJpaTest`로 볼 때 `flush()`는 "SQL을 실제로 보내 보자", `clear()`는 "방금 메모리에 남은 상태를 내려놓자"에 가깝고, 둘을 빼면 테스트가 배치 동작보다 같은 영속성 컨텍스트만 확인하고 끝나기 쉽다.

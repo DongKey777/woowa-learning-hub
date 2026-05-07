@@ -65,6 +65,14 @@ contextual_chunk_prefix: |
 
 > blackjack 미션의 핵심은 "카드를 한 장 더 뽑을 수 있는가"가 현재 단계에 따라 달라진다는 점이다. 이 질문이 커질수록 `isFinished`, `isBust`, `dealerTurn` 같은 boolean 묶음보다 상태 전이로 모델링하는 편이 읽기 쉽다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`hit`, `stand`, dealer turn 분기가 service if문에 몰려요" | 플레이어 차례, 딜러 차례, 종료 상태를 한 메서드가 모두 판단하는 코드 | 지금 가능한 행동이 현재 상태에 따라 달라진다는 점을 모델링한다 |
+| "`isBust`, `isFinished`, `dealerTurn` boolean 조합을 외워야 해요" | 여러 flag가 동시에 true/false가 되며 유효 조합이 불분명한 구조 | boolean 묶음에 숨은 라운드 단계를 상태 객체로 끌어올린다 |
+| "딜러가 16 이하에서 뽑는 규칙도 상태인가요?" | dealer draw rule과 `PlayerTurn -> DealerTurn` 전이를 같은 패턴으로 처리하려는 설계 | 턴 단계 전이는 State, draw 기준은 policy/strategy로 분리한다 |
+
 ## 미션 시나리오
 
 blackjack 미션을 진행하면 처음에는 `Player`와 `Dealer`가 카드를 들고 있고, 요청마다 `hit` 또는 `stand`를 처리하면 끝나 보인다. 그런데 라운드가 조금만 커져도 분기가 빠르게 늘어난다. 플레이어가 `blackjack`인지, 이미 `bust`인지, 딜러 차례로 넘어갔는지, 게임이 완전히 종료됐는지를 계속 함께 물어야 하기 때문이다.

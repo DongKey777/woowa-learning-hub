@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Audit Logging for Auth / AuthZ Traceability
+concept_id: security/audit-logging-auth-authz-traceability
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- audit log
+- auth log
+- authz traceability
+- actor action resource
+aliases:
+- audit log
+- auth log
+- authz traceability
+- actor action resource
+- denied access
+- security event
+- immutable log
+- forensics
+- principal
+- correlation id
+- compliance
+- security telemetry
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/log-masking-basics.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/secret-scanning-credential-leak-response.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/scim-drift-reconciliation.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Audit Logging for Auth / AuthZ Traceability 핵심 개념을 설명해줘
+- audit log가 왜 필요한지 알려줘
+- Audit Logging for Auth / AuthZ Traceability 실무 설계 포인트는 뭐야?
+- audit log에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Audit Logging for Auth / AuthZ Traceability를 다루는 deep_dive 문서다. auth/authz audit log는 장애 진단 로그가 아니라 "누가 어떤 권한으로 무엇을 시도했는가"를 재구성하는 증거 레이어다. 검색 질의가 audit log, auth log, authz traceability, actor action resource처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Audit Logging for Auth / AuthZ Traceability
 
 > 한 줄 요약: auth/authz audit log는 장애 진단 로그가 아니라 "누가 어떤 권한으로 무엇을 시도했는가"를 재구성하는 증거 레이어다.

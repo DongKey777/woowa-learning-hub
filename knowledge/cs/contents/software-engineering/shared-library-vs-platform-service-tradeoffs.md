@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Shared Library vs Platform Service Trade-offs
+concept_id: software-engineering/shared-library-vs-platform-service
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- platform
+- shared-library
+- coupling
+- reuse
+aliases:
+- shared library vs platform service
+- shared code vs service abstraction
+- platform service tradeoff
+- reuse boundary decision
+- compile time coupling vs deploy coupling
+- 공유 라이브러리 플랫폼 서비스 비교
+symptoms: []
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/platform-paved-road
+- software-engineering/dependency-governance-sbom
+next_docs:
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/shared-module-guardrails
+- software-engineering/service-bootstrap-governance
+linked_paths:
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/dependency-governance-sbom-policy.md
+- contents/software-engineering/service-bootstrap-governance.md
+- contents/software-engineering/build-vs-buy-exit-cost-governance.md
+confusable_with:
+- software-engineering/shared-module-guardrails
+- software-engineering/platform-paved-road
+- software-engineering/platform-product-capability-boundaries
+forbidden_neighbors: []
+expected_queries:
+- shared library와 platform service는 코드 재사용, 배포 결합, 운영 책임 관점에서 어떻게 비교해야 해?
+- 공통 기능이 자주 바뀌면 shared library보다 platform service가 나을 수 있는 이유는?
+- 안정적인 저수준 utility는 왜 platform service보다 shared library가 더 적합할 수 있어?
+- shared library가 공용 도메인으로 번지거나 platform service가 도메인 로직을 먹으면 어떤 경계 붕괴가 생겨?
+- ownership, contract, deprecation policy, migration path를 두지 않으면 library와 service 모두 결합을 키우는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 공통 기능을 shared library로 배포할지 platform service로 운영할지 변화 빈도, deploy coupling, runtime boundary, ownership 기준으로 고르는 advanced chooser이다.
+---
 # Shared Library vs Platform Service Trade-offs
 
 > 한 줄 요약: shared library는 코드 재사용이 쉽고, platform service는 운영과 변경을 중앙화할 수 있지만, 둘 다 경계가 무너지면 결합을 넓히는 방식이 된다.

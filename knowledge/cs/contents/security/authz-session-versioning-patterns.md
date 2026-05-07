@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: AuthZ / Session Versioning Patterns
+concept_id: security/authz-session-versioning-patterns
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- authz session versioning
+- session version pattern
+- authz version pattern
+- claim version
+aliases:
+- authz session versioning
+- session version pattern
+- authz version pattern
+- claim version
+- claim epoch
+- permission version
+- token version
+- token epoch
+- jwt version claim
+- stale claim revoke
+- stale authority revoke
+- role revoked but jwt still works
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/jwt-deep-dive.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+- contents/security/background-job-auth-context-revalidation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- AuthZ / Session Versioning Patterns 핵심 개념을 설명해줘
+- authz session versioning가 왜 필요한지 알려줘
+- AuthZ / Session Versioning Patterns 실무 설계 포인트는 뭐야?
+- authz session versioning에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 AuthZ / Session Versioning Patterns를 다루는 deep_dive 문서다. stale claim revoke를 만료 시간에만 맡기지 말고, `session_version`, `authz_version`, `tenant_version`, `policy_version` 같은 축을 분리해 bump해야 server session, JWT, cache를 함께 정합하게 끊을 수 있다. 검색 질의가 authz session versioning, session version pattern, authz version pattern, claim version처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # AuthZ / Session Versioning Patterns
 
 > 한 줄 요약: stale claim revoke를 만료 시간에만 맡기지 말고, `session_version`, `authz_version`, `tenant_version`, `policy_version` 같은 축을 분리해 bump해야 server session, JWT, cache를 함께 정합하게 끊을 수 있다.

@@ -9,7 +9,8 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/shopping-cart
 review_feedback_tags:
 - builder-overuse
 - telescoping-constructor
@@ -50,7 +51,9 @@ linked_paths:
 confusable_with:
 - design-pattern/constructor-vs-static-factory-vs-factory-pattern
 - design-pattern/record-vs-builder-request-model-chooser
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/design-pattern/builder-vs-fluent-mutation-smell.md
+- contents/design-pattern/immutable-builder-wither-patterns.md
 expected_queries:
 - 필드 많은 객체는 언제 builder로 만들면 돼?
 - 선택값 많은 DTO를 만들 때 builder가 왜 편해?

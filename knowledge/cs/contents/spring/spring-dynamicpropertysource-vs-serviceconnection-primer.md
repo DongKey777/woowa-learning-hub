@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring DynamicPropertySource vs ServiceConnection Primer
+concept_id: spring/dynamicpropertysource-vs-serviceconnection-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- dynamicpropertysource-vs-serviceconnection
+- testcontainers-serviceconnection
+- boot-testcontainers-property
+- wiring
+aliases:
+- DynamicPropertySource vs ServiceConnection
+- Testcontainers ServiceConnection
+- Spring Boot Testcontainers property wiring
+- ConnectionDetails
+- GenericContainer service connection
+- custom app property Testcontainers
+- manual property wiring
+intents:
+- comparison
+- definition
+linked_paths:
+- contents/spring/spring-testcontainers-boundary-strategy.md
+- contents/spring/spring-test-property-override-boundaries-primer.md
+- contents/spring/spring-testing-basics.md
+- contents/spring/spring-boot-autoconfiguration-basics.md
+expected_queries:
+- @DynamicPropertySource와 @ServiceConnection은 Testcontainers에서 어떻게 달라?
+- Spring Boot가 아는 DB나 Redis container는 @ServiceConnection만 쓰면 돼?
+- custom app property에 container URL을 넣어야 하면 DynamicPropertySource가 필요한 이유는?
+- GenericContainer에서는 ServiceConnection name과 manual property wiring 중 무엇을 골라?
+contextual_chunk_prefix: |
+  이 문서는 Testcontainers에서 @ServiceConnection과 @DynamicPropertySource의
+  경계를 beginner 관점에서 비교한다. Boot auto-configuration이 소비하는
+  ConnectionDetails, standard service connection, GenericContainer name hint,
+  custom app property key/value 수동 wiring을 구분한다.
+---
 # Spring `@DynamicPropertySource` vs `@ServiceConnection`: Testcontainers에서 언제 수동 property wiring이 아직 필요한가
 
 > 한 줄 요약: `@ServiceConnection`은 "Spring Boot가 아는 서비스 연결"을 자동으로 붙여 주는 더 짧은 방법이고, `@DynamicPropertySource`는 "내가 직접 어떤 key에 어떤 값을 넣을지"를 정하는 더 범용적인 방법이다.

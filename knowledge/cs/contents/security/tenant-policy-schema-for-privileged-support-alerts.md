@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Tenant Policy Schema for Privileged Support Alerts
+concept_id: security/tenant-policy-schema-for-privileged-support-alerts
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- tenant policy schema for privileged support alerts
+- privileged support alert policy
+- tenant support alert policy
+- support access tenant policy
+aliases:
+- tenant policy schema for privileged support alerts
+- privileged support alert policy
+- tenant support alert policy
+- support access tenant policy
+- support access routing config
+- privileged support change alert
+- security contact opt in
+- tenant admin opt in
+- admin notification policy
+- security contact notification policy
+- managed identity escalation
+- managed identity support alert
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-access-alert-router-primer.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/delivery-surface-policy-for-support-access-alerts.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant Policy Schema for Privileged Support Alerts 핵심 개념을 설명해줘
+- tenant policy schema for privileged support alerts가 왜 필요한지 알려줘
+- Tenant Policy Schema for Privileged Support Alerts 실무 설계 포인트는 뭐야?
+- tenant policy schema for privileged support alerts에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Tenant Policy Schema for Privileged Support Alerts를 다루는 deep_dive 문서다. B2B support AOBO와 break-glass 알림은 audience matrix를 문장으로만 두면 drift가 생기므로, tenant admin / security contact opt-in, managed-identity escalation, compliance-sensitive event retention/export를 하나의 tenant policy schema로 고정해야 routing과 timeline evidence가 재현 가능해진다. 검색 질의가 tenant policy schema for privileged support alerts, privileged support alert policy, tenant support alert policy, support access tenant policy처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Tenant Policy Schema for Privileged Support Alerts
 
 > 한 줄 요약: B2B support AOBO와 break-glass 알림은 audience matrix를 문장으로만 두면 drift가 생기므로, tenant admin / security contact opt-in, managed-identity escalation, compliance-sensitive event retention/export를 하나의 tenant policy schema로 고정해야 routing과 timeline evidence가 재현 가능해진다.

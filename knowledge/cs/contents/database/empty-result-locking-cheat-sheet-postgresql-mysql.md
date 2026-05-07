@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL
+concept_id: database/empty-result-locking-cheat-sheet-postgresql-mysql
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- empty-result-locking
+- for-update-zero-rows
+- absence-check
+- gap-lock
+aliases:
+- empty result locking cheat sheet
+- 0 row for update
+- select for update zero rows
+- absence check for update
+- missing row lock myth
+- postgresql select for update empty result
+- mysql select for update empty result
+- postgres absence check race
+- mysql gap lock zero rows
+- 빈 결과 for update
+symptoms:
+- SELECT FOR UPDATE가 0 rows를 반환해도 WHERE 조건 전체나 absence fact가 잠겼다고 오해한다
+- PostgreSQL empty result는 보통 잠긴 row가 없는데 MySQL REPEATABLE READ gap lock 체감을 그대로 옮긴다
+- exact duplicate나 overlap booking에서 absence check를 row lock으로 해결하려고 하고 UNIQUE, exclusion, slot row, guard row를 놓친다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+- database/unique-vs-locking-read-duplicate-primer
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/mysql-empty-result-locking-reads
+- database/phantom-safe-booking-patterns-primer
+linked_paths:
+- contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/spring/spring-transactional-basics.md
+- contents/system-design/inventory-reservation-system-design.md
+confusable_with:
+- database/exact-key-pre-check-decision-card
+- database/mysql-empty-result-locking-reads
+- database/postgresql-serializable-retry-playbook
+- database/phantom-safe-booking-patterns-primer
+forbidden_neighbors: []
+expected_queries:
+- SELECT FOR UPDATE가 0 rows를 반환하면 PostgreSQL에서는 보통 잠긴 row가 없다는 뜻이야?
+- 0 row FOR UPDATE로 absence check를 잠갔다고 믿으면 exact duplicate insert race가 생기는 이유를 설명해줘
+- MySQL REPEATABLE READ의 gap lock 체감을 PostgreSQL row lock에 옮기면 안 되는 이유가 뭐야?
+- 없으면 insert 문제는 FOR UPDATE보다 UNIQUE constraint나 upsert로 닫아야 하는 기준을 알려줘
+- overlap booking에서 empty result locking 대신 exclusion constraint, slot row, guard row를 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL beginner chooser로,
+  SELECT ... FOR UPDATE는 읽어낸 row lock에는 강하지만 0 row absence check는 PostgreSQL에서 보통 보호하지 못하고,
+  MySQL RR gap lock도 좁은 indexed range 보조일 뿐이므로 UNIQUE/exclusion/slot/guard surface가 필요함을 설명한다.
+---
 # Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL
 
 > 한 줄 요약: `SELECT ... FOR UPDATE`는 이미 찾은 row를 잠그는 데는 강하지만, `0 row`가 나온 absence check는 PostgreSQL에서는 보통 보호하지 못하고, MySQL도 `REPEATABLE READ`의 일부 indexed range에서만 좁게 보조한다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: PostgreSQL HOT Update Beginner Bridge
+concept_id: database/postgresql-hot-update-beginner-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- hot-update
+- fillfactor
+- write-churn
+aliases:
+- postgresql hot update basics
+- hot update what is
+- heap only tuple intro
+- fillfactor and hot update
+- heap page free space
+- write churn postgres
+- why update touches index
+- HOT update 뭐예요
+- PostgreSQL update가 비싸요
+- indexed column hot update
+symptoms:
+- PostgreSQL UPDATE가 새 tuple version을 만들고 index churn까지 번질 수 있다는 점을 모르고 있어
+- fillfactor와 heap page free space가 HOT update 가능성에 왜 연결되는지 이해해야 해
+- 자주 바뀌는 컬럼이 index key에 포함되어 HOT update가 막히는 상황을 구분해야 해
+intents:
+- definition
+- comparison
+prerequisites:
+- database/mysql-postgresql-index-storage-bridge
+- database/postgresql-visibility-map-all-visible-beginner-card
+next_docs:
+- database/hot-update-secondary-index-churn
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/page-split-merge-fill-factor
+linked_paths:
+- contents/database/mysql-postgresql-index-storage-bridge.md
+- contents/database/postgresql-visibility-map-all-visible-beginner-card.md
+- contents/database/hot-update-secondary-index-churn.md
+- contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+- contents/database/page-split-merge-fill-factor.md
+confusable_with:
+- database/hot-update-secondary-index-churn
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/mysql-postgresql-index-storage-bridge
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL HOT update는 무엇이고 왜 heap page free space와 fillfactor가 중요해?
+- UPDATE가 indexed column을 바꾸면 HOT update가 어려워지는 이유를 알려줘
+- heap only tuple이 index churn을 줄인다는 말을 초보자용으로 설명해줘
+- PostgreSQL에서 write-heavy heartbeat table을 볼 때 HOT update 관점으로 무엇을 확인해?
+- fillfactor만 낮추면 HOT update 문제가 모두 해결되는지 tradeoff를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL HOT update, heap-only tuple, fillfactor, heap page free space, indexed column 변경이 write churn과 secondary index churn을 줄이거나 키우는 원리를 잇는 beginner bridge다.
+  HOT update 뭐예요, fillfactor and hot update, PostgreSQL update가 비싸요 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `HOT update`는 뭐예요?
 
 > 한 줄 요약: PostgreSQL의 `HOT update`는 `UPDATE`가 생겨도 새 row 버전을 같은 heap page 안에 붙여 두고 index 재작업을 줄이려는 경로라서, 초급에서는 "heap page 여유 공간이 있으면 write churn이 index까지 덜 번질 수 있다"는 뜻으로 이해하면 된다.

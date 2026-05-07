@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Refresh-Family Rotation Cutover 설계
+concept_id: system-design/refresh-family-rotation-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- refresh family rotation cutover
+- refresh token family migration
+- forced reissue
+- mixed-version auth rollout
+aliases:
+- refresh family rotation cutover
+- refresh token family migration
+- forced reissue
+- mixed-version auth rollout
+- replay containment
+- legacy refresh lineage
+- canonical family graph
+- single-issue single-revoke
+- migration retry vs token theft
+- refresh family alias
+- migration grace window
+- refresh family quarantine
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/canonical-revocation-plane-across-token-generations-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/capability-negotiation-feature-gating-design.md
+- contents/system-design/refresh-reauth-escalation-matrix-design.md
+- contents/system-design/refresh-exchange-idempotency-under-cutover-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Refresh-Family Rotation Cutover 설계 설계 핵심을 설명해줘
+- refresh family rotation cutover가 왜 필요한지 알려줘
+- Refresh-Family Rotation Cutover 설계 실무 트레이드오프는 뭐야?
+- refresh family rotation cutover 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Refresh-Family Rotation Cutover 설계를 다루는 deep_dive 문서다. refresh-family rotation cutover 설계는 mixed-version auth rollout 동안 legacy refresh lineage를 새 family 모델로 수렴시키면서도, forced reissue와 replay containment를 같은 canonical lineage 위에서 처리해 "마이그레이션 중 재시도"와 "실제 탈취 replay"를 구분 가능한 상태로 만드는 운영 설계다. 검색 질의가 refresh family rotation cutover, refresh token family migration, forced reissue, mixed-version auth rollout처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Refresh-Family Rotation Cutover 설계
 
 > 한 줄 요약: refresh-family rotation cutover 설계는 mixed-version auth rollout 동안 legacy refresh lineage를 새 family 모델로 수렴시키면서도, forced reissue와 replay containment를 같은 canonical lineage 위에서 처리해 "마이그레이션 중 재시도"와 "실제 탈취 replay"를 구분 가능한 상태로 만드는 운영 설계다.

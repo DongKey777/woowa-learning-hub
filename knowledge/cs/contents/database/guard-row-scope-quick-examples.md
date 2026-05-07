@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Guard Row Scope Quick Examples
+concept_id: database/guard-row-scope-quick-examples
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- guard-row-scope-examples
+- resource-vs-resource-day-guard
+- pooled-inventory-guard
+aliases:
+- guard row scope quick examples
+- resource guard row
+- resource day guard row
+- pooled inventory guard row
+- room booking guard key
+- room_type_day guard beginner
+- guard key scope primer
+- resource vs resource day
+- pooled inventory booking example
+- guard row scope intro
+symptoms:
+- guard row를 어느 table에 저장하느냐보다 서로 부딪혀야 할 요청이 어떤 key에서 만나야 하는지 헷갈려
+- resource guard, resource+day guard, pooled inventory guard의 차이를 예시로 보고 싶어
+- 예약 domain에서 guard key scope를 너무 넓거나 좁게 잡을까 걱정돼
+intents:
+- definition
+- design
+prerequisites:
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/guard-row-booking-timeline-card
+next_docs:
+- database/guard-row-scope-design-multi-day-bookings
+- database/shared-pool-guard-design-room-type-inventory
+- database/phantom-safe-booking-patterns-primer
+linked_paths:
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/guard-row-booking-timeline-card.md
+confusable_with:
+- database/guard-row-scope-design-multi-day-bookings
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/shared-pool-guard-design-room-type-inventory
+forbidden_neighbors: []
+expected_queries:
+- guard row scope를 resource, resource+day, pooled inventory로 예시 들어 설명해줘
+- 같은 room이라도 날짜가 안 겹치면 resource-day guard row가 왜 더 낫나?
+- pooled inventory guard row는 개별 room assignment가 나중에 붙는 예약에서 언제 써?
+- guard key는 실제 예약 row가 아니라 경쟁 요청이 만나는 대표 key라는 뜻이야?
+- guard row scope를 초보자에게 숙박 예약 예시로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 guard row scope를 resource, resource+day, pooled inventory 세 예시로 설명해 서로 충돌해야 하는 요청이 어떤 대표 key에서 만나는지 잡아 주는 beginner primer다.
+  guard row scope quick examples, resource day guard row, pooled inventory guard row 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Guard Row Scope Quick Examples
 
 > 한 줄 요약: guard row의 핵심은 "예약 row를 어디에 저장하느냐"보다 "서로 부딪혀야 할 요청이 어떤 대표 key에서 만나게 하느냐"이며, 초보자 기준으로는 `resource`, `resource + day`, pooled inventory 세 가지를 먼저 구분하면 된다.

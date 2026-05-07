@@ -29,6 +29,7 @@ prerequisites:
 linked_paths:
 - contents/network/api-gateway-auth-rate-limit-chain.md
 - contents/system-design/rate-limiter-design.md
+- contents/algorithm/rate-limiter-algorithms.md
 forbidden_neighbors:
 - contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
 expected_queries:
@@ -36,6 +37,11 @@ expected_queries:
 - 결제 버튼 두 번 누르면 두 번 결제되는데 어떻게 막아?
 - 동일 사용자 동시 요청을 throttle로 막는 게 맞아?
 - shopping-cart에서 멱등성과 rate limit 중 뭘 먼저 적용해?
+contextual_chunk_prefix: |
+  이 문서는 shopping-cart 미션에서 중복 결제, 장바구니 동시 추가, abusive
+  요청을 rate limit과 idempotency key 중 어떤 도구로 다룰지 나누는
+  mission_bridge다. 결제 더블클릭, 사용자별 throttle, 카트 add API rate,
+  멱등성과 요청 제한 차이를 네트워크/시스템 설계 경계로 연결한다.
 ---
 
 # shopping-cart에서 동일 사용자 동시 추가/결제에 rate limit이 필요한 시점
@@ -45,6 +51,14 @@ expected_queries:
 **난이도: 🟡 Intermediate**
 
 **미션 컨텍스트**: shopping-cart (Woowa 트랙) — 결제/장바구니 동시성 단계
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제 버튼을 두 번 누르면 두 번 결제되는데 rate limit으로 막으면 되나요?" | checkout duplicate submit, timeout retry | 결제 중복은 idempotency key가 먼저이고 rate limit은 abuse 방어임을 나눈다 |
+| "한 사용자가 장바구니 추가 API를 너무 많이 호출해요" | 봇/스크래퍼/과도한 클릭으로 서버와 재고가 흔들리는 장면 | per-user throttle과 traffic shaping 후보를 본다 |
+| "멱등성과 rate limit 중 무엇을 먼저 적용해야 하는지 모르겠어요" | 정상 재시도와 악의적/과도한 요청이 섞인 디버깅 | 같은 의도 1회를 안전하게 재생하는 문제와 트래픽 양을 제한하는 문제를 분리한다 |
 
 관련 문서:
 

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Sweep Line Overlap Counting
+concept_id: algorithm/sweep-line-overlap-counting
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- sweep-line-overlap-counting
+- meeting-rooms-ii-router
+- interval-active-count
+aliases:
+- sweep line overlap counting
+- line sweep overlap count
+- meeting rooms II
+- minimum meeting rooms
+- max concurrency
+- peak overlap
+- active intervals
+- event sorting
+- 회의실 최소 개수
+- 최대 동시성
+symptoms:
+- meeting rooms II처럼 필요한 자원 수를 묻는 문제를 interval을 남길지 고르는 greedy 문제로 오해한다
+- 시작 이벤트와 종료 이벤트의 tie-break를 잘못 둬 반열린 구간에서 active count를 틀린다
+- online calendar booking처럼 계속 들어오는 interval query를 batch sweep으로 매번 다시 계산하려 한다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- algorithm/sort
+- algorithm/interval-greedy-patterns
+next_docs:
+- data-structure/heap-variants
+- data-structure/interval-tree
+- data-structure/disjoint-interval-set
+- algorithm/sliding-window-patterns
+linked_paths:
+- contents/algorithm/interval-greedy-patterns.md
+- contents/algorithm/sort.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/interval-tree.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/sliding-window-patterns.md
+confusable_with:
+- algorithm/interval-greedy-patterns
+- data-structure/heap-variants
+- data-structure/interval-tree
+- data-structure/disjoint-interval-set
+- algorithm/sliding-window-patterns
+forbidden_neighbors: []
+expected_queries:
+- meeting rooms II는 interval을 고르는 문제가 아니라 active count를 세는 sweep line 문제야?
+- 시작과 끝 이벤트를 +1 -1로 정렬해 최대 동시성을 구하는 방법을 설명해줘
+- 반열린 구간에서 end before start tie-break가 중요한 이유가 뭐야?
+- interval greedy와 sweep line overlap counting은 선택 문제와 개수 세기 문제로 어떻게 달라?
+- calendar booking처럼 interval이 계속 들어오면 sweep line 대신 interval tree나 disjoint interval set을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Sweep Line Overlap Counting bridge로, meeting rooms II, maximum
+  concurrency, platform count, capacity over time 같은 문제를 start/end event
+  delta와 active count 누적으로 풀며 interval greedy, heap active ends,
+  dynamic interval tree와의 경계를 잡는다.
+---
 # Sweep Line Overlap Counting
 
 > 한 줄 요약: `meeting rooms II` 류 문제는 interval을 고르는 문제가 아니라, 시작/끝 이벤트를 시간축에 뿌려 최대 동시성을 세는 문제다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Architecture Runway and Refactoring Window
+concept_id: software-engineering/architecture-runway
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- architecture-runway
+- refactoring-window
+- evolutionary-architecture
+aliases:
+- Architecture Runway and Refactoring Window
+- architecture runway
+- refactoring window
+- preparatory design
+- migration window
+- evolutionary architecture refactor budget
+- 리팩터링 창 runway
+symptoms:
+- 미래 변경을 위해 port, adapter, feature flag, contract test를 깔아두고도 실제 migration/refactoring window를 확보하지 않아 추상화가 빚으로 남아
+- 변화 시나리오와 owner 없이 runway를 미리 만들어 overengineering이 되고 삭제/통합 기준도 없어
+- migration window와 runway를 같은 것으로 착각해 준비 없이 전환하거나 준비만 하고 전환을 못 해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/technical-debt-refactoring-timing
+- software-engineering/architectural-debt-interest
+next_docs:
+- software-engineering/brownfield-modularization
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/prototype-spike-productionization
+linked_paths:
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/prototype-spike-productionization-boundaries.md
+- contents/software-engineering/architectural-debt-interest-model.md
+confusable_with:
+- software-engineering/architectural-debt-interest
+- software-engineering/brownfield-modularization
+- software-engineering/strangler-fig-migration-contract-cutover
+forbidden_neighbors: []
+expected_queries:
+- architecture runway와 refactoring window는 각각 준비 구조와 실행 시간이라는 점에서 어떻게 달라?
+- PaymentPort adapter contract test feature flag를 runway로 깔아둘 때 overengineering을 피하는 기준은 뭐야?
+- runway를 만들었지만 실제 전환하지 않으면 왜 architecture debt가 될 수 있어?
+- migration window와 refactor budget을 캘린더와 release cadence에 맞춰 설계하는 방법을 알려줘
+- 미래 변경 가능성이 있을 때 runway를 언제 만들고 언제 삭제하거나 통합해야 해?
+contextual_chunk_prefix: |
+  이 문서는 architecture runway와 refactoring window를 preparatory design, port/adapter/contract test/feature flag, migration window, refactor budget, evolutionary architecture 관점에서 연결하는 advanced playbook이다.
+---
 # Architecture Runway and Refactoring Window
 
 > 한 줄 요약: architecture runway는 나중에 바꾸기 쉽게 미리 깔아두는 구조이고, refactoring window는 그 구조를 실제로 진화시킬 수 있도록 시간을 확보하는 운영 전략이다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Template Method vs Strategy Quick Check Card
+concept_id: language/template-method-vs-strategy-quick-check-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- template-method
+- strategy
+- oop-design
+aliases:
+- Template Method vs Strategy Quick Check Card
+- template method strategy beginner
+- hook vs strategy beginner
+- parent controls flow vs injected strategy
+- 템플릿 메소드 전략 퀵체크
+- 부모가 흐름을 쥔다 전략을 갈아끼운다
+symptoms:
+- template method와 strategy를 패턴 이름으로만 외워 부모가 순서를 고정하는지 호출자가 구현을 갈아끼우는지 핵심 질문을 놓쳐
+- hook로 충분한 선택적 덧붙임과 strategy로 빼야 하는 핵심 규칙 교체를 구분하지 못해
+- 추상 클래스와 인터페이스 큰 그림에서 바로 패턴 이름으로 뛰어들어 inheritance vs composition 선택 기준이 흐려져
+intents:
+- comparison
+- design
+- drill
+prerequisites:
+- language/java-abstract-class-vs-interface-basics
+- language/abstract-class-vs-interface-follow-up-drill
+- language/object-oriented-core-principles
+next_docs:
+- language/template-method-hook-explosion-mini-smell-card
+- design-pattern/template-method-basics
+- design-pattern/strategy-pattern-basics
+linked_paths:
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/abstract-class-vs-interface-follow-up-drill.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/language/java/template-method-hook-explosion-mini-smell-card.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- language/template-method-hook-explosion-mini-smell-card
+- design-pattern/template-method-basics
+- design-pattern/strategy-pattern-basics
+forbidden_neighbors: []
+expected_queries:
+- Template Method와 Strategy는 부모가 순서를 고정하는지 밖에서 구현을 갈아끼우는지로 어떻게 구분해?
+- 순서는 항상 같고 단계만 다르면 템플릿 메소드, 정책 객체를 바꿔 끼우면 전략이라는 기준을 예제로 알려줘
+- hook가 1-2개면 template method로 충분하고 hook가 늘면 strategy를 재검토하는 이유가 뭐야?
+- 결제 방식 카드 간편결제 포인트가 계속 늘면 Template Method보다 Strategy가 나은 이유를 설명해줘
+- 추상 클래스 vs 인터페이스 다음에 Template Method Strategy를 빠르게 선택하는 체크표를 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Template Method와 Strategy를 parent-controlled flow vs externally injected behavior 기준으로 빠르게 고르는 beginner chooser다.
+  template method vs strategy, hook, strategy object, inheritance composition, design pattern 질문이 본 문서에 매핑된다.
+---
 # Template Method vs Strategy Quick Check Card
 
 > 한 줄 요약: 추상 클래스 vs 인터페이스 큰 그림 다음에는 "부모가 순서를 고정하나"와 "밖에서 구현을 갈아끼우나" 두 질문으로 템플릿 메소드와 전략을 4개 짧은 사례에 바로 대입해 보면 된다.

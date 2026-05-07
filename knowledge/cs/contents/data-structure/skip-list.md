@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Skip List
+concept_id: data-structure/skip-list
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- skip-list
+- probabilistic-ordered-index
+- balanced-tree-alternative
+aliases:
+- Skip List
+- skiplist
+- probabilistic ordered index
+- random level promotion
+- balanced BST alternative
+- sorted set data structure
+- Redis sorted set intuition
+symptoms:
+- Skip List를 단순 linked list로만 보고 상위 level shortcut이 평균 O(log n) search를 만드는 원리를 놓친다
+- balanced BST의 rotation 대신 probabilistic level promotion으로 ordered search와 range query를 지원한다는 tradeoff를 설명하지 못한다
+- worst case O(n) 가능성과 평균 O(log n) 실무 선택의 차이를 구분하지 않고 항상 tree보다 나쁘다고 단정한다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/balanced-bst-vs-unbalanced-bst
+next_docs:
+- data-structure/concurrent-skiplist-internals
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/order-statistic-tree
+linked_paths:
+- contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/concurrent-skiplist-internals.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+confusable_with:
+- data-structure/balanced-bst-vs-unbalanced-bst
+- data-structure/concurrent-skiplist-internals
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/order-statistic-tree
+forbidden_neighbors: []
+expected_queries:
+- Skip List는 random level promotion으로 어떻게 평균 O(log n) 탐색을 해?
+- Skip List와 balanced BST는 ordered search와 range query 관점에서 어떻게 달라?
+- Redis sorted set을 이해할 때 Skip List mental model이 왜 나와?
+- Skip List의 worst case O(n) 가능성에도 실무에서 쓰는 이유는?
+- concurrent skip list가 tree rotation보다 동시성 구현에서 단순해지는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Skip List를 sorted linked list 위에 probabilistic level shortcut을 쌓아
+  ordered search, insertion, deletion, range query를 평균 O(log n)으로 처리하는
+  balanced tree alternative로 설명한다.
+---
 # Skip List
 
 > 한 줄 요약: 스킵 리스트는 여러 수준의 연결 리스트를 쌓아 "빠른 탐색"과 "쉬운 구현"을 동시에 노리는 확률적 정렬 자료구조다.

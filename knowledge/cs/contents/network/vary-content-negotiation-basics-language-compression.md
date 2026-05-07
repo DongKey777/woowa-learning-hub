@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Vary and Content Negotiation Basics"
+concept_id: network/vary-content-negotiation-basics-language-compression
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- http-cache
+- vary
+- content-negotiation
+aliases:
+- Vary basics
+- content negotiation basics
+- response variant
+- Accept-Language Vary
+- Accept-Encoding Vary
+- representation selection
+- cache key by representation
+symptoms:
+- 같은 URL에는 항상 하나의 응답만 있다고 생각한다
+- Vary를 client에게 새 요청 방식을 지시하는 header로 오해한다
+- Accept-Language와 Accept-Encoding에 따라 cache key가 나뉘어야 함을 놓친다
+- Content-Type Content-Language Content-Encoding은 선택 결과이고 Vary는 선택 근거라는 점을 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http-caching-conditional-request-basics
+- network/http-semantics-caching-first-principles
+next_docs:
+- network/cache-control-practical
+- network/cdn-cache-key-invalidation
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+linked_paths:
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cache-control-practical.md
+- contents/network/cdn-cache-key-invalidation.md
+- contents/network/compression-cache-vary-accept-encoding-personalization.md
+- contents/network/cache-vary-accept-encoding-edge-case-playbook.md
+confusable_with:
+- network/http-caching-conditional-request-basics
+- network/strong-vs-weak-etag-validator-precision-cache-correctness
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+forbidden_neighbors: []
+expected_queries:
+- "Vary와 content negotiation을 초보자에게 설명해줘"
+- "Accept-Language와 Accept-Encoding이 cache key에 왜 들어가야 해?"
+- "같은 URL에서 language compression response variant가 생기는 이유는?"
+- "Content-Encoding과 Vary Accept-Encoding은 어떻게 역할이 달라?"
+- "Vary를 빼면 한국어 사용자에게 영어 cache가 나갈 수 있는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP content negotiation, response variant, Accept-Language,
+  Accept-Encoding, Content-* 결과 header와 Vary cache key boundary를 설명하는
+  beginner primer다.
+---
 # Vary와 Content Negotiation 기초: 언어, 압축, 응답 variant
 
 > 한 줄 요약: 같은 URL이라도 언어, 압축, 표현 형식이 달라질 수 있다. `Vary`는 서버가 어떤 request 헤더를 보고 응답 variant를 골랐는지 cache에 알려 주는 표지판이다.

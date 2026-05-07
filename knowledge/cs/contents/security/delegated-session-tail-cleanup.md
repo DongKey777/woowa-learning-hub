@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Delegated Session Tail Cleanup
+concept_id: security/delegated-session-tail-cleanup
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- delegated session tail cleanup
+- session tail cleanup
+- session-tail cleanup
+- aobo cleanup tail
+aliases:
+- delegated session tail cleanup
+- session tail cleanup
+- session-tail cleanup
+- aobo cleanup tail
+- break glass cleanup tail
+- delegated access cleanup
+- false closure
+- false done revoke
+- cleanup confirmed criteria
+- downstream session invalidation
+- delegated refresh family cleanup
+- support access tail cleanup
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/aobo-revocation-audit-event-schema.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/device-session-graph-revocation-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/session-revocation-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Delegated Session Tail Cleanup 핵심 개념을 설명해줘
+- delegated session tail cleanup가 왜 필요한지 알려줘
+- Delegated Session Tail Cleanup 실무 설계 포인트는 뭐야?
+- delegated session tail cleanup에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Delegated Session Tail Cleanup를 다루는 deep_dive 문서다. AOBO와 break-glass cleanup은 grant row를 닫는 것으로 끝나지 않고, delegated session graph의 downstream session, refresh family, exchanged token, stale cache가 더 이상 효력을 갖지 않음을 확인한 뒤에만 `cleanup_confirmed`로 닫아야 false closure를 피할 수 있다. 검색 질의가 delegated session tail cleanup, session tail cleanup, session-tail cleanup, aobo cleanup tail처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Delegated Session Tail Cleanup
 
 > 한 줄 요약: AOBO와 break-glass cleanup은 grant row를 닫는 것으로 끝나지 않고, delegated session graph의 downstream session, refresh family, exchanged token, stale cache가 더 이상 효력을 갖지 않음을 확인한 뒤에만 `cleanup_confirmed`로 닫아야 false closure를 피할 수 있다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "GRE, IPsec Tunnel MTU Effects"
+concept_id: network/gre-ipsec-tunnel-mtu-effects
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- tunnel-mtu-blackhole
+- gre-ipsec-overhead
+- pmtud-mss-clamp
+aliases:
+- GRE IPsec tunnel MTU
+- tunnel MTU
+- encapsulation overhead
+- MSS clamp
+- PMTUD blackhole
+- VPN path MTU
+symptoms:
+- GRE나 IPsec 터널을 붙인 뒤 작은 요청은 되는데 큰 응답만 조용히 실패한다
+- 터널 헤더 오버헤드로 실제 MTU가 줄어드는 것을 계산하지 않는다
+- ICMP 차단으로 PMTUD가 깨졌는데 application timeout이나 packet loss로만 본다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/mtu-fragmentation-mss-blackhole
+next_docs:
+- network/packet-loss-jitter-reordering-diagnostics
+- network/nat64-dns64-operational-intuition
+- network/anycast-routing-tradeoffs-edge-failover
+linked_paths:
+- contents/network/mtu-pmtud-icmp-blackhole-path-diagnostics.md
+- contents/network/mtu-fragmentation-mss-blackhole.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/nat64-dns64-operational-intuition.md
+- contents/network/anycast-routing-tradeoffs-edge-failover.md
+confusable_with:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/mtu-fragmentation-mss-blackhole
+- network/packet-loss-jitter-reordering-diagnostics
+- network/nat64-dns64-operational-intuition
+forbidden_neighbors: []
+expected_queries:
+- "GRE와 IPsec 터널을 쓰면 MTU가 왜 줄고 MSS clamp가 왜 필요해?"
+- "VPN 터널 안에서 큰 응답만 실패하면 PMTUD blackhole을 어떻게 의심해?"
+- "encapsulation overhead가 path MTU와 fragmentation에 어떤 영향을 줘?"
+- "ICMP가 막힌 터널 경로에서 blackhole을 tracepath와 MSS로 어떻게 확인해?"
+- "GRE over IPsec 같은 터널 조합에서 MTU를 다시 계산해야 하는 이유를 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 GRE/IPsec tunnel encapsulation overhead, path MTU shrink,
+  PMTUD, ICMP blackhole, MSS clamp, VPN path diagnostics를 운영 장애
+  관점으로 다루는 advanced network playbook이다.
+---
 # GRE, IPsec Tunnel MTU Effects
 
 > 한 줄 요약: GRE와 IPsec 터널은 헤더 오버헤드를 더해 실제 MTU를 줄이므로, PMTUD와 MSS clamp를 같이 보지 않으면 조용한 blackhole이 생긴다.

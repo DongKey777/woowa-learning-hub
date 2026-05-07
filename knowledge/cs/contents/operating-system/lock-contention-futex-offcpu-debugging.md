@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Lock Contention Futex Wait Off CPU Debugging
+concept_id: operating-system/lock-contention-futex-offcpu-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- lock-contention-futex
+- offcpu
+- off-cpu
+- perf-lock-futex
+aliases:
+- lock contention futex off CPU
+- off-CPU debugging
+- perf lock futex wait
+- lock wait p99
+- blocked thread latency
+- futex contention stack
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/futex-mutex-semaphore-spinlock.md
+- contents/operating-system/futex-requeue-priority-inheritance-convoy-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+symptoms:
+- CPU를 많이 쓰지 않는데 thread가 lock wait로 오래 못 움직여 request latency가 커진다.
+- futex wait, off-CPU stack, perf lock 지표를 어떻게 같이 봐야 할지 모른다.
+- lock owner scheduling delay와 actual critical section length가 섞여 보인다.
+expected_queries:
+- lock contention은 CPU busy보다 off-CPU wait로 보일 수 있어?
+- futex wait와 perf lock, off-CPU stack을 함께 보는 디버깅 흐름은?
+- lock owner가 runnable인데 scheduling되지 않아 convoy가 생길 수 있어?
+- p99 latency에서 lock wait와 CPU saturation을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 lock contention을 CPU를 많이 쓰는 문제가 아니라 thread가 얼마나 오래 못 움직였는가의
+  off-CPU wait 문제로 본다. futex, perf lock, off-CPU stack, scheduler wakeup latency를 연결한다.
+---
 # Lock Contention, Futex Wait, Off-CPU Debugging
 
 > 한 줄 요약: 락 경합은 CPU를 많이 쓰는 문제보다 "스레드가 얼마나 오래 못 움직였는가"의 문제로 드러나는 경우가 많고, `futex`, off-CPU stack, `perf lock`을 같이 봐야 정체가 보인다.

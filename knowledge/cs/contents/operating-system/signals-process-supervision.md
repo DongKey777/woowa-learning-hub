@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Signals Process Supervision
+concept_id: operating-system/signals-process-supervision
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- signals-process-supervision
+- sigterm-sigkill-supervision
+- graceful-shutdown-signal
+- zombie-reaping-supervisor
+aliases:
+- signals process supervision
+- SIGTERM SIGKILL supervision
+- graceful shutdown signal
+- zombie reaping supervisor
+- process restart supervision
+- child lifecycle signal
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn.md
+- contents/operating-system/proc-pid-status-signal-fields-debugging-primer.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+- contents/operating-system/session-vs-process-group-primer.md
+- contents/operating-system/pidfd-basics-race-free-process-handles.md
+expected_queries:
+- process supervision에서 signals를 모르면 zombie와 shutdown 문제가 왜 늘어?
+- SIGTERM, SIGKILL, SIGCHLD를 graceful shutdown과 restart supervision에서 어떻게 봐?
+- supervisor는 child process를 어떻게 감시하고 회수해야 해?
+- container PID 1과 signal handling은 process supervision과 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 process가 스스로 잘 죽고 잘 회수되도록 signal handling, SIGTERM/SIGKILL,
+  SIGCHLD reaping, supervisor restart, container PID 1 책임을 연결하는 intermediate primer다.
+---
 # Signals, Process Supervision
 
 > 한 줄 요약: 프로세스는 스스로 잘 죽고 잘 회수돼야 하며, signals와 supervisor를 모르면 운영 중 좀비와 유실이 늘어난다.

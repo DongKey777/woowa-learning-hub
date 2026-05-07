@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Idempotency Key Store, Dedup Window, Replay-Safe Retry 설계
+concept_id: system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- idempotency-key-store-design
+- replay-safe-retry
+- dedup-window-recovery
+aliases:
+- idempotency key store
+- dedup window design
+- replay safe retry
+- request fingerprint
+- response replay
+- processing lease
+- in flight dedup
+- payload hash conflict
+- duplicate suppression window
+symptoms:
+- idempotency key를 단순 key-value cache로 보고 payload fingerprint와 response replay 계약을 빠뜨린다
+- 같은 key 다른 payload를 중복으로 흡수해도 된다고 오해해 conflict 처리를 놓친다
+- 외부 side effect 이후 timeout이 난 요청을 recover-first 없이 재실행하려 한다
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/idempotency-key-and-deduplication
+- network/timeout-retry-backoff-practical
+- system-design/backpressure-and-load-shedding-design
+next_docs:
+- system-design/payment-system-ledger-idempotency-reconciliation-design
+- system-design/webhook-consumer-platform-design
+- database/idempotent-transaction-retry-envelopes
+- security/replay-store-outage-degradation-recovery
+linked_paths:
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/webhook-consumer-platform-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/duplicate-suppression-windows.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/proxy-retry-budget-discipline.md
+confusable_with:
+- database/idempotency-key-and-deduplication
+- database/duplicate-suppression-windows
+- database/idempotent-transaction-retry-envelopes
+- network/timeout-retry-backoff-practical
+- system-design/payment-system-ledger-idempotency-reconciliation-design
+forbidden_neighbors: []
+expected_queries:
+- idempotency key store를 설계할 때 fingerprint와 response replay는 왜 필요해?
+- 같은 idempotency key에 다른 payload가 오면 중복으로 처리해도 돼?
+- timeout 후 재시도할 때 외부 side effect가 이미 발생했는지 모르면 어떻게 복구해?
+- dedup window는 왜 영구 저장이 아니라 기간 정책으로 잡아야 해?
+- processing lease와 in-flight dedup은 중복 worker 실행을 어떻게 줄여?
+contextual_chunk_prefix: |
+  이 문서는 idempotency key store를 단순 캐시가 아니라 request fingerprint,
+  processing lease, response replay, dedup window, recover-first retry로 구성된
+  재시도 안전성 제어 계층으로 설명하는 advanced deep dive다.
+---
 # Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계
 
 > 한 줄 요약: idempotency subsystem은 요청 fingerprint, 처리 lease, 결과 replay cache, dedup window, recovery loop를 결합해 안전한 재시도와 중복 흡수를 제공하는 제어 계층이다.

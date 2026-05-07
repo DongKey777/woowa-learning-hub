@@ -52,9 +52,7 @@ confusable_with:
 - database/shopping-cart-coupon-apply-once-unique-claim-bridge
 - database/shopping-cart-payment-idempotency-stock-bridge
 - database/unique-vs-version-cas-vs-for-update-chooser
-forbidden_neighbors:
-- contents/database/shopping-cart-cart-item-merge-unique-upsert-bridge.md
-- contents/database/shopping-cart-cart-item-quantity-lost-update-version-cas-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - shopping-cart에서 버튼 재클릭 뒤 결과가 꼬일 때 duplicate insert인지 lost update인지 어떻게 먼저 구분해?
 - 장바구니 같은 상품이 두 줄 생기는 문제와 수량이 덮어써지는 문제를 DB 관점에서 어디서 갈라 봐야 해?

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 프록시와 리버스 프록시 기초
+concept_id: network/proxy-reverse-proxy-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- forward-vs-reverse-proxy
+- nginx-before-spring
+- client-ip-forwarded-header
+aliases:
+- proxy basics
+- reverse proxy basics
+- forward proxy basics
+- 프록시 기초
+- 리버스 프록시 기초
+- forward proxy reverse proxy 차이
+- nginx reverse proxy
+- Spring Boot 앞 Nginx
+- API gateway reverse proxy
+- X-Forwarded-For
+symptoms:
+- forward proxy와 reverse proxy를 모두 중간 서버라고만 보고 어느 쪽 앞에 서는지 구분하지 못한다
+- Spring Boot 앞에 Nginx를 두는 이유를 TLS 종료, 정적 파일, 로드밸런싱, 공통 정책으로 설명하지 못한다
+- reverse proxy 뒤에서 client IP가 왜 프록시 IP로 보이고 X-Forwarded-For 신뢰 경계가 왜 필요한지 놓친다
+intents:
+- definition
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/tls-loadbalancing-proxy
+- network/api-gateway-reverse-proxy-operational-points
+- network/proxy-header-normalization-chain-trust-boundary
+- system-design/load-balancer-basics
+linked_paths:
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/http-https-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/proxy-header-normalization-chain-trust-boundary.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/system-design/load-balancer-basics.md
+confusable_with:
+- network/tls-loadbalancing-proxy
+- network/api-gateway-reverse-proxy-operational-points
+- system-design/load-balancer-basics
+forbidden_neighbors: []
+expected_queries:
+- forward proxy와 reverse proxy 차이를 클라이언트 앞과 서버 앞 기준으로 설명해줘
+- Spring Boot 앞에 Nginx를 리버스 프록시로 두는 이유를 TLS 종료와 로드밸런싱 관점으로 알려줘
+- API Gateway는 reverse proxy와 무엇이 같고 인증, rate limit, 라우팅 정책에서 무엇이 더해져?
+- 리버스 프록시를 지나면 클라이언트 IP가 왜 사라지고 X-Forwarded-For를 어떻게 신뢰해야 해?
+- controller 전에 Nginx나 gateway가 요청을 먼저 받는 흐름을 HTTP 요청 파이프라인으로 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 proxy와 reverse proxy를 클라이언트 앞/서버 앞 위치로 구분하는 beginner primer다.
+  forward proxy, reverse proxy, Nginx before Spring Boot, TLS termination, load balancing, API gateway, X-Forwarded-For, client IP trust boundary를 다룬다.
+---
 # 프록시와 리버스 프록시 기초
 
 > 한 줄 요약: 포워드 프록시는 클라이언트 앞에 서서 대신 요청을 보내고, 리버스 프록시는 서버 앞에 서서 요청을 받아 내부 서버에 전달한다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Compare-and-Set and Version Columns
+concept_id: database/compare-and-set-version-columns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- compare-and-set
+- version-column
+- optimistic-lock
+- lost-update
+aliases:
+- compare and set
+- version column
+- optimistic lock
+- conditional update
+- write conflict
+- optimistic lock failure
+- update count 0
+- version mismatch
+- CAS version column
+- 버전 컬럼 낙관적 락
+symptoms:
+- 읽고 계산한 뒤 저장하는 흐름에서 version check 없이 마지막 write가 앞선 변경을 덮어쓴다
+- update count 0이나 optimistic lock failure를 실패로만 보고 최신 값 재조회 후 재계산하는 retry 경계를 잡지 못한다
+- version column을 단순 카운터로만 보고 lost update detection 합의 표식이라는 역할을 놓친다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/lost-update-detection-patterns
+- database/transaction-isolation-locking
+next_docs:
+- database/version-column-retry-walkthrough
+- database/transaction-retry-serialization-failure-patterns
+- database/spring-jpa-locking-example-guide
+linked_paths:
+- contents/database/lost-update-detection-patterns.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/spring-jpa-locking-example-guide.md
+confusable_with:
+- database/compare-and-swap-vs-pessimistic-locks
+- database/lost-update-detection-patterns
+- database/transaction-retry-serialization-failure-patterns
+- database/spring-jpa-locking-example-guide
+forbidden_neighbors: []
+expected_queries:
+- version column은 DB에서 compare-and-set 역할을 해서 내가 읽은 version일 때만 update하는 방식이야?
+- update count 0이 나오면 누군가 먼저 바꾼 optimistic lock conflict로 보고 어떻게 재시도해야 해?
+- CAS와 version column으로 lost update를 막는 SQL where version 조건 예시를 설명해줘
+- CAS 실패를 무조건 retry하기 전에 idempotency와 중복 side effect를 같이 봐야 하는 이유가 뭐야?
+- 낙관적 락은 개념이고 version column compare-and-set은 구현이라는 차이를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Compare-and-Set and Version Columns deep dive로, DB version column을 WHERE version 조건과
+  version=version+1 update count로 활용해 read-modify-write lost update를 저장 시점에 감지하는 optimistic
+  locking/CAS 패턴을 설명한다.
+---
 # Compare-and-Set와 Version Columns
 
 > 한 줄 요약: version column은 DB에서 가장 실용적인 compare-and-set 도구이고, 읽기-수정-쓰기의 마지막 경합을 저장 시점에 잡아준다.

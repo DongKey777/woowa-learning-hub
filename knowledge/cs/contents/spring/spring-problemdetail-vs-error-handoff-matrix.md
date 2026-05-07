@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Spring ProblemDetail vs Error Handoff Matrix
+concept_id: spring/problemdetail-vs-error-handoff-matrix
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- problemdetail-vs-error
+- handoff
+- error-handoff
+- unresolved-mvc-exception
+aliases:
+- ProblemDetail vs /error
+- Spring error handoff
+- unresolved MVC exception
+- error dispatch handoff
+- BasicErrorController fallback
+- response commit breaks error dispatch
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-httpmessagenotwritableexception-failure-taxonomy.md
+- contents/spring/spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-requestbody-responsebodyadvice-pipeline.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+confusable_with:
+- spring/problemdetail-before-after-commit-matrix
+- spring/httpmessagenotwritableexception-failure-taxonomy
+- spring/basicerrorcontroller-errorattributes-whitelabel-boundaries
+- spring/mvc-exception-resolver-chain-contract
+symptoms:
+- ControllerAdvice가 처리하지 못한 예외가 /error로 넘어갈 때와 안 넘어갈 때가 섞인다.
+- BasicErrorController가 기대한 JSON을 만들지 않고 response already committed 로그가 보인다.
+- streaming 응답 첫 바이트 이후 예외가 ProblemDetail이나 /error로 변환되지 않는다.
+expected_queries:
+- Spring ProblemDetail과 /error fallback은 언제 handoff돼?
+- unresolved MVC exception이 BasicErrorController로 넘어가지 않는 이유는?
+- response commit 이후에는 왜 /error dispatch가 끊겨?
+- HandlerExceptionResolver가 최종 응답 ownership을 잡는다는 말이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC 예외가 ProblemDetail, HandlerExceptionResolver, Boot /error,
+  BasicErrorController 중 어디로 handoff되는지 response commit 전후와 resolver ownership으로
+  나누어 진단한다. 첫 바이트 이후에는 오류 응답 계약으로 복구할 수 없다는 점을 강조한다.
+---
 # Spring `ProblemDetail` vs `/error` Handoff Matrix
 
 > 한 줄 요약: unresolved MVC exception이 Boot `/error` fallback으로 넘어가려면 "resolver chain이 최종 응답 ownership을 잡지 못했고, servlet/container가 아직 error dispatch를 걸 수 있으며, response가 미commit 상태"여야 하고, 첫 바이트 이후에는 그 handoff가 끊긴다.

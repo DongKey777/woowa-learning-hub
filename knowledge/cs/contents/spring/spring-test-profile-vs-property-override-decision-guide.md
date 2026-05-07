@@ -29,9 +29,9 @@ intents:
   - troubleshooting
   - design
 prerequisites:
-  - spring/testing-basics
+  - spring/spring-testing-basics
 next_docs:
-  - spring/activeprofiles-vs-test-overrides-primer
+  - spring/spring-activeprofiles-vs-test-overrides-primer
   - spring/test-property-override-boundaries-primer
   - spring/dynamicpropertysource-vs-serviceconnection-primer
 linked_paths:
@@ -41,7 +41,7 @@ linked_paths:
   - contents/spring/spring-property-source-precedence-quick-guide.md
   - contents/spring/spring-testcontainers-boundary-strategy.md
 confusable_with:
-  - spring/activeprofiles-vs-test-overrides-primer
+  - spring/spring-activeprofiles-vs-test-overrides-primer
   - spring/test-property-override-boundaries-primer
   - spring/dynamicpropertysource-vs-serviceconnection-primer
 forbidden_neighbors: []
@@ -59,7 +59,6 @@ contextual_chunk_prefix: |
   한 클래스 로컬 설정인지 공유 설정 묶음인지 같은 자연어 질문을 네 갈래
   결정표로 연결한다.
 ---
-
 # Spring 테스트 설정 입력 결정 가이드: `@ActiveProfiles` vs `properties` vs `@TestPropertySource` vs `@DynamicPropertySource`
 
 **난이도: 🟢 Beginner**

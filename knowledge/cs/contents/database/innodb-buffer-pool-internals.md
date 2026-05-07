@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: InnoDB Buffer Pool Internals
+concept_id: database/innodb-buffer-pool-internals
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- innodb-buffer-pool-internals
+- dirty-page-flush-list
+- buffer-pool-lru-page-cleaner
+aliases:
+- buffer pool
+- InnoDB buffer pool
+- LRU
+- free list
+- flush list
+- dirty page
+- adaptive hash index
+- buffer pool instances
+- page cleaner
+- Innodb_buffer_pool_reads
+symptoms:
+- DB 재시작 직후 같은 쿼리도 느려져 buffer pool warmup과 page miss를 봐야 해
+- dirty page와 flush list가 쌓이며 checkpoint age와 write latency까지 같이 흔들리고 있어
+- 대량 scan이 OLTP hot page를 밀어내는 cache pollution을 의심해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/redo-undo-checkpoint-crash-recovery
+- database/index-and-explain
+next_docs:
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/checkpoint-age-flush-storms
+- database/flush-neighbors-adaptive-flushing-io-capacity
+- database/adaptive-flushing-heuristics-dirty-page-feedback
+linked_paths:
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/index-and-explain.md
+- contents/database/bptree-vs-lsm-tree.md
+- contents/database/buffer-pool-read-ahead-eviction-interaction.md
+- contents/database/checkpoint-age-flush-storms.md
+- contents/database/flush-neighbors-adaptive-flushing-io-capacity.md
+- contents/database/adaptive-flushing-heuristics-dirty-page-feedback.md
+confusable_with:
+- database/checkpoint-age-flush-storms
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/flush-neighbors-adaptive-flushing-io-capacity
+forbidden_neighbors: []
+expected_queries:
+- InnoDB buffer pool은 단순 캐시가 아니라 dirty page와 flush pressure까지 왜 관리해?
+- 재시작 직후 buffer pool이 차가워서 응답 시간이 튀는 현상을 어떻게 설명해?
+- LRU, free list, flush list, page cleaner는 buffer pool 안에서 어떤 역할을 해?
+- dirty page가 쌓이면 읽기 성능뿐 아니라 write latency와 crash recovery 부담도 왜 흔들려?
+- 대량 scan이 OLTP hot page를 밀어내는 cache pollution을 어떻게 의심해?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB buffer pool을 LRU/free list/flush list/dirty page/page cleaner/adaptive hash index 관점에서 읽기 캐시와 쓰기 흡수층으로 설명하는 advanced deep dive다.
+  buffer pool, dirty page, flush list, page cleaner, Innodb_buffer_pool_reads 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # InnoDB Buffer Pool Internals
 
 > 한 줄 요약: 버퍼 풀은 "메모리 캐시"가 아니라, InnoDB가 랜덤 I/O를 줄이고 dirty page를 조절하며 읽기 지연을 안정화하는 핵심 작업 공간이다.

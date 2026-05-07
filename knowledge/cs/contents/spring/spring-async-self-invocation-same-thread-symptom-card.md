@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring @Async Self-Invocation Same Thread Symptom Card
+concept_id: spring/async-self-invocation-same-thread-symptom-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- async-self-invocation
+- same-thread-symptom
+- async-same-thread
+- async-proxy-bypass
+aliases:
+- @Async same thread
+- async self invocation
+- async proxy bypass
+- same thread log async
+- EnableAsync 오해
+- this method async
+- TaskExecutor 설정 오해
+intents:
+- symptom
+- troubleshooting
+symptoms:
+- @Async 메서드 로그가 caller와 같은 스레드에서 찍힌다.
+- executor 설정을 바꿨는데도 async 메서드가 비동기로 실행되지 않는다.
+- 같은 클래스의 this.method 내부 호출에 @Async를 붙였는데 효과가 없다.
+linked_paths:
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- contents/spring/spring-aop-basics.md
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-transactional-async-composition-traps.md
+- contents/operating-system/sync-async-blocking-nonblocking-basics.md
+confusable_with:
+- spring/self-invocation-proxy-misconception
+- spring/self-invocation-proxy-annotation-matrix
+- spring/transactional-async-composition-traps
+expected_queries:
+- @Async를 붙였는데 왜 같은 스레드에서 실행돼?
+- Spring async self invocation은 왜 프록시를 안 타?
+- EnableAsync를 켰는데도 @Async가 안 먹는 이유가 뭐야?
+- @Async 문제를 executor 설정과 proxy bypass 중 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 @Async 메서드가 같은 스레드에서 실행되는 증상을 executor 용량 문제가
+  아니라 Spring AOP proxy bypass와 self-invocation 문제로 먼저 분기한다.
+  this.method(), 같은 클래스 내부 호출, Bean + public + external call 규칙,
+  EnableAsync와 TaskExecutor 오해를 다루는 symptom router다.
+---
 # Spring `@Async` 내부 호출 증상 카드: 같은 스레드 로그를 async 설정 버그로 오해할 때
 
 > 한 줄 요약: `@Async` 메서드 로그가 caller와 같은 스레드에서 찍히면 executor 설정부터 의심하기 전에, 먼저 그 호출이 프록시 정문을 탔는지 확인해야 한다.

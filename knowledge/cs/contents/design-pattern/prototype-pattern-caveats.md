@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Prototype Pattern Caveats
+concept_id: design-pattern/prototype-pattern-caveats
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- prototype-pattern
+- clone-semantics
+- shallow-copy-risk
+aliases:
+- prototype pattern caveats
+- clone semantics
+- shallow copy deep copy
+- copy constructor
+- object snapshot
+- prototype vs builder
+- clone vs copy constructor
+- shared reference copy
+- prototype mutable state
+- 복제 패턴 주의점
+symptoms:
+- Prototype으로 복제한 객체가 List나 child object 같은 mutable reference를 공유해 원본과 복제본이 함께 오염된다
+- Java clone을 쓰면서 shallow/deep copy 책임과 예외, 불변성 보장을 명시하지 않는다
+- 생성이 복잡하다는 이유로 Prototype을 쓰지만 실제로는 Builder나 Wither가 더 명시적인 상황이다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/builder-pattern
+- design-pattern/immutable-builder-wither-patterns
+- design-pattern/factory
+next_docs:
+- design-pattern/builder-vs-fluent-mutation-smell
+- design-pattern/flyweight-cache-state-sharing-tradeoffs
+- design-pattern/anti-pattern
+linked_paths:
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/immutable-builder-wither-patterns.md
+- contents/design-pattern/factory.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/builder-vs-fluent-mutation-smell.md
+- contents/design-pattern/flyweight-cache-state-sharing-tradeoffs.md
+confusable_with:
+- design-pattern/immutable-builder-wither-patterns
+- design-pattern/builder-pattern
+- design-pattern/flyweight-cache-state-sharing-tradeoffs
+- design-pattern/factory-misnaming-checklist
+forbidden_neighbors: []
+expected_queries:
+- Prototype Pattern은 기존 객체를 복제해 새 객체를 만들지만 shallow copy와 shared reference가 위험한 이유가 뭐야?
+- Java clone보다 copy constructor나 static factory가 backend 코드에서 더 명시적인 경우가 많은 이유가 뭐야?
+- mutable child object와 collection field를 가진 prototype은 deep copy 책임을 어떻게 확인해야 해?
+- 불변 객체는 prototype이나 wither와 궁합이 좋은 이유가 뭐야?
+- 생성이 복잡할 때 Prototype, Builder, Wither 중 무엇을 고르는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Prototype Pattern Caveats playbook으로, 기존 객체를 복제해 새 인스턴스를
+  만드는 Prototype에서 shallow copy, deep copy, shared mutable reference, Java clone,
+  copy constructor, immutable object, Builder/Wither 대안의 trade-off를 설명한다.
+---
 # Prototype Pattern Caveats: 복제의 편리함이 만드는 함정
 
 > 한 줄 요약: Prototype 패턴은 객체를 복제해 빠르게 새 인스턴스를 만들게 하지만, 얕은 복사와 상태 공유가 쉽게 사고를 만든다.
@@ -150,4 +217,3 @@ Prototype보다 명시적인 복제가 더 안전한 경우가 많다.
 ## 한 줄 정리
 
 Prototype 패턴은 복제를 쉽게 만들지만, 얕은 복사와 공유 상태 때문에 copy constructor나 Wither가 더 안전할 수 있다.
-

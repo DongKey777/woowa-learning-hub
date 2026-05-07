@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Calendar Queue
+concept_id: data-structure/calendar-queue
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- event-scheduler-queue
+- bucketed-priority-queue
+- timer-structure-selection
+aliases:
+- calendar queue
+- bucketed priority queue
+- future event list
+- adaptive bucket width
+- deadline queue
+- average O1 scheduler
+- event time bucket queue
+symptoms:
+- deadline이 많다는 이유만으로 heap을 쓰지만 분포가 균등한 event-time workload에서 bucketed queue 가능성을 보지 못한다
+- calendar queue를 timing wheel과 같은 tick 구조로만 이해해 priority queue 대체 관점이 흐려진다
+- bucket width가 너무 좁거나 넓어 평균 O(1) 가정이 깨지는 분포 skew와 burst를 놓친다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/heap-variants
+next_docs:
+- data-structure/heap-variants
+- data-structure/hierarchical-timing-wheel
+- data-structure/radix-heap
+- data-structure/timing-wheel-variants-and-selection
+linked_paths:
+- contents/data-structure/heap-variants.md
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/data-structure/radix-heap.md
+- contents/data-structure/timing-wheel-variants-and-selection.md
+- contents/data-structure/work-stealing-deque.md
+confusable_with:
+- data-structure/heap-variants
+- data-structure/hierarchical-timing-wheel
+- data-structure/timing-wheel-variants-and-selection
+- data-structure/radix-heap
+forbidden_neighbors: []
+expected_queries:
+- Calendar Queue는 heap과 timing wheel 사이에서 어떤 deadline workload에 맞아?
+- bucket width가 Calendar Queue 성능을 좌우하는 이유는?
+- deadline 분포가 skew되거나 burst가 있으면 Calendar Queue 평균 O(1)이 왜 깨져?
+- timer queue에서 heap timing wheel calendar queue를 어떻게 비교해?
+- discrete event scheduler에서 Calendar Queue를 쓰는 감각을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 미래 event time을 bucket으로 나누는 Calendar Queue를 heap과
+  timing wheel 사이의 bucketed priority queue로 설명한다. deadline 분포,
+  bucket width, burst, skew, idle gap이 평균 O(1) 가정과 scheduler 선택에
+  미치는 영향을 다룬다.
+---
 # Calendar Queue
 
 > 한 줄 요약: Calendar Queue는 미래 이벤트 시간을 bucket으로 나눠 담는 priority queue 변형으로, deadline 분포가 맞을 때 heap보다 더 싼 평균 이벤트 스케줄링을 노리는 자료구조다.

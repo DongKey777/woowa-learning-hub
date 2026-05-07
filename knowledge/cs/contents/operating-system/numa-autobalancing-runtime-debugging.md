@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: NUMA Auto Balancing Runtime Debugging
+concept_id: operating-system/numa-autobalancing-runtime-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- numa-autobalancing
+- numa-auto-balancing
+- automatic-numa-balancing
+- numa-hint-fault
+aliases:
+- NUMA auto balancing debugging
+- automatic NUMA balancing
+- NUMA hint fault
+- page migration latency
+- remote memory access
+- autonuma runtime
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/memory-management-numa-page-replacement-thrashing.md
+- contents/operating-system/numa-production-debugging.md
+- contents/operating-system/numa-first-touch-remote-memory-locality-debugging.md
+- contents/operating-system/autonuma-vs-manual-locality-tradeoffs.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+symptoms:
+- AutoNUMA가 page migration과 hint fault를 늘려 오히려 latency를 키우는 workload가 있다.
+- remote memory access가 줄어드는지, migration cost가 더 큰지 runtime에서 확인해야 한다.
+- manual locality tuning과 automatic balancing 중 어느 쪽이 맞는지 판단해야 한다.
+expected_queries:
+- NUMA auto balancing은 항상 memory locality를 좋게 만들어?
+- hint fault와 page migration이 latency를 키우는지 어떻게 디버깅해?
+- AutoNUMA와 first-touch cpuset manual locality tuning을 어떻게 비교해?
+- remote memory access와 page migration cost를 운영 지표로 어떻게 봐?
+contextual_chunk_prefix: |
+  이 문서는 NUMA auto balancing이 memory locality를 자동으로 좋게 만들려는 시도지만
+  workload에 따라 hint fault와 page migration 비용이 remote access 절감보다 커져 latency를
+  키울 수 있다는 runtime debugging playbook이다.
+---
 # NUMA Auto Balancing, Runtime Debugging
 
 > 한 줄 요약: NUMA auto balancing은 메모리를 "자동으로 더 좋게" 만들려는 시도지만, 워크로드에 따라 page migration과 hint fault가 오히려 지연을 키울 수 있다.

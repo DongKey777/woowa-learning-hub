@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Platform Control Plane and Delegation Boundaries
+concept_id: software-engineering/platform-control-plane-delegation
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- platform
+- control-plane
+- delegation
+- guardrail
+aliases:
+- Platform Control Plane and Delegation Boundaries
+- platform control plane
+- delegated autonomy platform
+- control plane delegation boundary
+- self-service control guardrail
+- platform authority local autonomy
+symptoms:
+- 플랫폼 control plane이 서비스 생성, 배포 승인, 설정 변경, policy enforcement를 제공하지만 도메인 판단까지 중앙화해 제품 팀이 shadow CI/CD, local config, unofficial registry를 만들어
+- 반대로 delegation이라고 하며 필수 metadata, risk tier approval, override expiry, team-owned metrics 계약 없이 각 팀에 책임을 방치해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/platform-paved-road
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/platform-policy-override-governance
+- software-engineering/configuration-governance
+linked_paths:
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/platform-scorecards.md
+confusable_with:
+- software-engineering/platform-paved-road
+- software-engineering/platform-policy-override-governance
+- software-engineering/platform-product-capability-boundaries
+forbidden_neighbors: []
+expected_queries:
+- platform control plane은 중앙 통제가 아니라 공통 안전장치와 로컬 자율성의 delegation boundary라는 뜻을 설명해줘
+- control plane과 execution plane을 나눠 서비스 생성, deploy gate, config validation, user request 처리를 어떻게 구분해?
+- 플랫폼이 domain decision까지 흡수하면 shadow control plane이 생기는 이유가 뭐야?
+- delegated control plane에서 platform-owned metadata policy rollout guardrail과 domain-owned feature semantics를 어떻게 나눠?
+- control plane 자체의 blast radius, auditability, break-glass, degraded mode를 설계해야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Platform Control Plane and Delegation Boundaries를 다루는 playbook 문서다. Platform Control Plane and Delegation Boundaries, platform control plane, delegated autonomy platform, control plane delegation boundary, self-service control guardrail 같은 lexical 표현과 platform control plane은 중앙 통제가 아니라 공통 안전장치와 로컬 자율성의 delegation boundary라는 뜻을 설명해줘, control plane과 execution plane을 나눠 서비스 생성, deploy gate, config validation, user request 처리를 어떻게 구분해? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Platform Control Plane and Delegation Boundaries
 
 > 한 줄 요약: platform control plane은 팀을 중앙에서 통제하는 장치가 아니라, 배포·정책·서비스 생성·설정 변경 같은 공통 제어 지점을 안전하게 제공하되 도메인 판단은 로컬 팀에 남기는 delegation boundary 설계다.

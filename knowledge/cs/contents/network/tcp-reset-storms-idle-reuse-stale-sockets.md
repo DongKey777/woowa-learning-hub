@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "TCP Reset Storms, Idle Reuse, Stale Sockets"
+concept_id: network/tcp-reset-storms-idle-reuse-stale-sockets
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tcp-reset
+- stale-socket
+- retry-amplification
+aliases:
+- TCP reset storm
+- stale socket
+- idle reuse
+- ECONNRESET storm
+- connection pool eviction
+- connection churn
+- retry amplification
+- keep-alive reuse
+symptoms:
+- reset storm을 단일 서버 오류로 보고 idle reuse와 retry amplification을 놓친다
+- retry를 늘렸더니 reset과 connection churn이 더 커지는 이유를 설명하지 못한다
+- health check는 정상인데 pool 안 stale socket만 깨지는 차이를 구분하지 못한다
+- pool idle eviction, peer timeout 정렬, stale validation 순서를 잡지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/rst-on-idle-keepalive-reuse
+- network/idle-timeout-mismatch-lb-proxy-app
+next_docs:
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/tcp-keepalive-vs-app-heartbeat
+linked_paths:
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/tcp-keepalive-vs-app-heartbeat.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/connection-pool-starvation-stale-idle-reuse-debugging.md
+- contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
+confusable_with:
+- network/rst-on-idle-keepalive-reuse
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+forbidden_neighbors: []
+expected_queries:
+- "TCP reset storm이 idle reuse stale socket 때문에 생기는 패턴은?"
+- "retry를 늘렸더니 ECONNRESET storm이 더 커지는 이유는?"
+- "health check는 정상인데 connection pool stale socket만 깨질 수 있어?"
+- "reset storm을 줄이려면 pool idle eviction과 timeout hierarchy를 어떻게 맞춰?"
+- "keep-alive reuse와 retry amplification이 reset storm을 키우는 과정을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 TCP reset storm, stale idle socket reuse, ECONNRESET,
+  connection pool eviction, keep-alive timeout mismatch와 retry amplification을
+  다루는 advanced playbook이다.
+---
 # TCP Reset Storms, Idle Reuse, Stale Sockets
 
 > 한 줄 요약: reset storm은 죽은 연결을 재사용하거나 idle timeout이 엇갈릴 때 쌓이며, 재시도와 keep-alive가 그 폭풍을 더 키울 수 있다.

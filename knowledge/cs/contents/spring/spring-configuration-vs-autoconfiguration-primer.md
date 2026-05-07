@@ -37,9 +37,9 @@ prerequisites:
   - spring/bean-registration-path-decision-guide
 next_docs:
   - spring/boot-autoconfiguration-basics
-  - spring/spring-boot-autoconfiguration
-  - spring/spring-full-vs-lite-configuration-examples
-  - spring/spring-boot-condition-evaluation-report-first-debug-checklist
+  - spring/boot-autoconfiguration-internals
+  - spring/full-vs-lite-configuration-examples
+  - spring/boot-condition-evaluation-report-first-debug-checklist
 linked_paths:
   - contents/spring/spring-bean-di-basics.md
   - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
@@ -53,7 +53,7 @@ linked_paths:
 confusable_with:
   - spring/boot-autoconfiguration-basics
   - spring/bean-registration-path-decision-guide
-  - spring/spring-full-vs-lite-configuration-examples
+  - spring/full-vs-lite-configuration-examples
 forbidden_neighbors: []
 expected_queries:
   - 'Spring에서 @Configuration이랑 @Bean 차이를 처음엔 어떻게 이해해야 해?'

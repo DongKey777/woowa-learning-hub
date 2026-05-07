@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Token Propagation Through BFF and Gateway
+concept_id: system-design/token-propagation-through-bff-and-gateway
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- token propagation through bff and gateway
+- causal token propagation
+- deep link header propagation causal token
+- gateway bff causal token
+aliases:
+- token propagation through bff and gateway
+- causal token propagation
+- deep link header propagation causal token
+- gateway bff causal token
+- cache acceptance token survives hops
+- notification deep link token lost
+- gateway drops causal header
+- bff loses required watermark
+- internal hop freshness context
+- source read before cache acceptance
+- beginner causal token propagation
+- x causal token header
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/cache-acceptance-rules-for-causal-reads.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/system-design/api-gateway-basics.md
+- contents/system-design/rejected-hit-observability-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Token Propagation Through BFF and Gateway 설계 핵심을 설명해줘
+- token propagation through bff and gateway가 왜 필요한지 알려줘
+- Token Propagation Through BFF and Gateway 실무 트레이드오프는 뭐야?
+- token propagation through bff and gateway 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Token Propagation Through BFF and Gateway를 다루는 deep_dive 문서다. causal token은 알림 payload 안에만 있으면 소용없고, deep link -> gateway -> BFF -> internal service/cache hop까지 같은 의미를 잃지 않고 살아 있어야 cache acceptance rule이 실제 source read 전에 작동한다. 검색 질의가 token propagation through bff and gateway, causal token propagation, deep link header propagation causal token, gateway bff causal token처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Token Propagation Through BFF and Gateway
 
 > 한 줄 요약: causal token은 알림 payload 안에만 있으면 소용없고, deep link -> gateway -> BFF -> internal service/cache hop까지 같은 의미를 잃지 않고 살아 있어야 cache acceptance rule이 실제 source read 전에 작동한다.

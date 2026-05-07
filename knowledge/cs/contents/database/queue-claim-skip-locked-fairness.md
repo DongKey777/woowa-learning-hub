@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Queue Claim with SKIP LOCKED, Fairness, and Starvation Trade-offs
+concept_id: database/queue-claim-skip-locked-fairness
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- queue
+- skip-locked
+- fairness
+- starvation
+aliases:
+- skip locked
+- queue claim
+- work stealing
+- job fairness
+- starvation
+- for update skip locked
+- queue throughput
+- claim ordering
+- SKIP LOCKED FIFO 보장
+- queue starvation
+symptoms:
+- FOR UPDATE SKIP LOCKED로 queue throughput은 올렸지만 오래된 job starvation과 FIFO 공정성 약화를 관찰하지 않고 있어
+- claim index가 나빠 잠긴 row를 건너뛰는 대신 hot prefix scan 비용이 커지고 있어
+- 긴 job에서 claim row 선점과 lease ownership, takeover를 같은 문제로 다루고 있어
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/queue-consumer-transaction-boundaries
+- database/transactional-claim-check-job-leasing
+next_docs:
+- database/transactional-claim-check-job-leasing
+- database/advisory-locks-vs-row-locks
+- database/hot-update-secondary-index-churn
+linked_paths:
+- contents/database/queue-consumer-transaction-boundaries.md
+- contents/database/transactional-claim-check-job-leasing.md
+- contents/database/advisory-locks-vs-row-locks.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/hot-update-secondary-index-churn.md
+confusable_with:
+- database/queue-consumer-transaction-boundaries
+- database/transactional-claim-check-job-leasing
+- database/advisory-locks-vs-row-locks
+forbidden_neighbors: []
+expected_queries:
+- SKIP LOCKED를 쓰면 queue worker throughput은 좋아지지만 FIFO fairness가 깨질 수 있는 이유가 뭐야?
+- FOR UPDATE SKIP LOCKED에서 starvation이 생기는 패턴과 watchdog metric을 알려줘
+- queue claim index가 나쁘면 lock wait 대신 rows scanned per claim 비용이 커지는 이유를 설명해줘
+- 긴 job에서는 claim과 lease ownership을 왜 분리해야 해?
+- SKIP LOCKED 기반 queue에서 strict ordering이 필요하면 어떤 대안을 검토해야 해?
+contextual_chunk_prefix: |
+  이 문서는 DB queue에서 FOR UPDATE SKIP LOCKED로 claim throughput을 높일 때 fairness, starvation, claim index scan cost, lease ownership tradeoff를 다루는 advanced deep dive다.
+  SKIP LOCKED FIFO 보장, queue starvation, for update skip locked 질문이 본 문서에 매핑된다.
+---
 # Queue Claim with `SKIP LOCKED`, Fairness, and Starvation Trade-offs
 
 > 한 줄 요약: `SKIP LOCKED`는 queue claim throughput을 크게 올릴 수 있지만, 공정성과 오래 대기한 작업 보장까지 자동으로 해결해 주지는 않는다.

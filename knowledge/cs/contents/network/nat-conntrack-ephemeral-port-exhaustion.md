@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "NAT, Conntrack, Ephemeral Port Exhaustion"
+concept_id: network/nat-conntrack-ephemeral-port-exhaustion
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- nat-conntrack-exhaustion
+- ephemeral-port-exhaustion
+- outbound-connection-churn
+aliases:
+- NAT gateway
+- conntrack table
+- ephemeral port exhaustion
+- SNAT port exhaustion
+- nf_conntrack table full
+- EADDRNOTAVAIL timeout
+symptoms:
+- NAT gateway 뒤 outbound 연결 폭주가 timeout EADDRNOTAVAIL tail latency로 드러난다
+- retry 폭주가 conntrack entry와 ephemeral port를 더 빨리 소진시키는 흐름을 놓친다
+- TIME_WAIT과 짧은-lived connection churn을 단순 fd 문제로만 본다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-retry-backoff-practical
+next_docs:
+- network/nat-keepalive-tuning-connection-lifetime
+- network/hairpin-nat-loopback-behavior
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+- system-design/rate-limiter-design
+linked_paths:
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/system-design/rate-limiter-design.md
+confusable_with:
+- network/nat-keepalive-tuning-connection-lifetime
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-retry-backoff-practical
+- network/hairpin-nat-loopback-behavior
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+forbidden_neighbors: []
+expected_queries:
+- "NAT gateway 뒤에서 ephemeral port exhaustion과 conntrack table full이 어떻게 timeout으로 보이나?"
+- "SNAT가 source port mapping state를 저장하기 때문에 outbound 연결 폭주가 위험한 이유는?"
+- "EADDRNOTAVAIL ETIMEDOUT nf_conntrack table full 로그를 어떻게 해석해?"
+- "retry storm이 NAT port exhaustion과 tail latency를 증폭하는 흐름을 설명해줘"
+- "TIME_WAIT과 short-lived connection churn이 ephemeral port를 잡아먹는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 NAT/SNAT gateway, conntrack table, ephemeral port range,
+  TIME_WAIT, outbound connection churn, retry storm, EADDRNOTAVAIL/ETIMEDOUT,
+  tail latency를 연결하는 advanced operations playbook이다.
+---
 # NAT, Conntrack, Ephemeral Port Exhaustion
 
 > 한 줄 요약: NAT 뒤에서 outbound 연결이 폭발하면 공인 IP의 포트와 conntrack entry가 먼저 바닥나고, 그 증상이 `timeout`, `EADDRNOTAVAIL`, `tail latency`로 드러난다.

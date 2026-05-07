@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: True Bulk Contracts and Partial Failure Results
+concept_id: software-engineering/true-bulk-contracts-partial-failure-results
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- bulk-contract
+- partial-failure
+- batch
+- idempotency
+aliases:
+- true bulk contracts partial failure results
+- named bulk contract
+- bulk result type
+- partial failure result
+- SettlementChunk BulkSubmitResult ItemFailure
+- true bulk 계약 부분 실패 결과
+symptoms:
+- bulk가 업무 단위인데 List<T>와 successCount, failureCount만 반환해 run, chunk, item, receipt, retry decision이 계약에서 사라져
+- partial failure를 count로만 표현해 어떤 item이 왜 실패했고 retry 가능한지 운영자가 알 수 없어
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/saveall-sendall-port-smells
+next_docs:
+- software-engineering/testing-named-bulk-contracts
+- software-engineering/batch-idempotency-keys
+- software-engineering/batch-partial-failure
+linked_paths:
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/software-engineering/saveall-sendall-port-smells-safer-alternatives.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+confusable_with:
+- software-engineering/saveall-sendall-port-smells
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/testing-named-bulk-contracts
+forbidden_neighbors: []
+expected_queries:
+- bulk가 실제 업무 단위라면 List<T> 대신 SettlementRun, SettlementChunk, ChunkSubmitResult 같은 이름 있는 타입이 필요한 이유는?
+- true bulk contract에서 runId, chunkNo, cutoffTime, schemaVersion, idempotencyKey, item id를 입력 타입에 넣어야 하는 이유는?
+- BulkSubmitResult가 requestedCount, acceptedCount, failedCount뿐 아니라 failures와 retryDecision, receiptId를 가져야 하는 기준은?
+- partial failure를 count로만 반환하면 retry queue와 manual review에서 어떤 정보가 사라져?
+- item 단위 업무와 bulk 단위 업무를 운영자가 말하는 재시도 단위로 구분하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 bulk가 업무 단위가 되는 순간 List<T>와 count 대신 run, file, chunk, item, result에 이름을 붙이고 partial failure를 ItemFailure와 retry decision으로 표현하는 beginner primer이다.
+---
 # True Bulk Contracts and Partial Failure Results
 
 > 한 줄 요약: bulk가 실제 업무 단위라면 `List<T>`와 단순 count로 숨기지 말고, `SettlementFile`, `SettlementChunk`, `BulkSubmitResult`, `ItemFailure`처럼 입력 묶음과 결과 묶음을 이름 있는 타입으로 고정해야 한다.

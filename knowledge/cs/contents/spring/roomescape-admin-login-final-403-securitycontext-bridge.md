@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/roomescape
+- missions/spring-roomescape
 review_feedback_tags:
 - admin-auth-flow
 - securitycontext-restoration
@@ -69,6 +70,14 @@ contextual_chunk_prefix: |
 ## 한 줄 요약
 
 roomescape 관리자 인증 문제는 컨트롤러 메소드 한 줄보다 먼저 `filter chain`에서 갈린다. 로그인 뒤 원래 `/admin/reservations`로 돌아오는 것은 `SavedRequest` 문제이고, 그 뒤에도 `403`이 남거나 다시 anonymous처럼 보이는 것은 `SecurityContext` 복원과 권한 매핑 문제로 읽는 편이 빠르다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "로그인 뒤 원래 예약 페이지로 돌아왔는데 마지막에 403이 떠요" | `/admin/reservations` SavedRequest 복귀 후 권한 검사 실패 | URL 복귀와 final authorization을 다른 단계로 본다 |
+| "로그인은 성공했는데 다음 요청에서 다시 anonymous처럼 보여요" | session cookie 또는 SecurityContext 복원 실패 | 브라우저 쿠키 전송과 서버 세션 복원을 같이 확인한다 |
+| "controller 코드를 봐도 admin 접근 실패 이유가 안 보여요" | filter chain에서 먼저 종료되는 관리자 요청 | controller 전에 Security filter chain 로그와 authority mapping을 본다 |
 
 ## 미션 시나리오
 

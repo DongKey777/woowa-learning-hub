@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: io_uring CQ Overflow Provided Buffers IOWQ Placement
+concept_id: operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- io-uring-cq
+- overflow-provided-buffers
+- iowq-placement
+- overflow
+aliases:
+- io_uring CQ overflow
+- completion fan-out
+- multishot provided buffers
+- IOWQ placement
+- completion backpressure
+- provided buffer ring recovery
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-sq-cq-basics.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-iowq-affinity-max-workers-decision-guide.md
+- contents/operating-system/listener-overload-thresholds-accept-pause-policy.md
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-provided-buffer-group-sharding-size-cpu-numa.md
+symptoms:
+- submit 비용보다 completion fan-out을 소비하지 못해 CQ overflow와 tail latency가 생긴다.
+- multishot receive와 provided buffer ring 회수가 늦어 memory pressure나 ENOBUFS가 난다.
+- IOWQ worker placement가 NUMA/cache locality와 맞지 않아 completion 처리 비용이 커진다.
+expected_queries:
+- io_uring CQ overflow는 submit 문제가 아니라 completion fan-out 문제일 수 있어?
+- multishot, provided buffer ring, IOWQ placement를 한 설계로 묶어야 하는 이유는?
+- completion backpressure를 accept pause policy와 어떻게 연결해?
+- provided buffer ring 회수가 늦으면 tail latency와 memory stability가 어떻게 흔들려?
+contextual_chunk_prefix: |
+  이 문서는 io_uring 운영의 난점이 submit cost보다 completion fan-out을 흡수하는 데 있으며,
+  CQ overflow, multishot completions, provided buffer ring recycle, IOWQ placement,
+  completion backpressure를 하나의 설계로 묶어야 한다는 playbook이다.
+---
 # io_uring CQ Overflow, Multishot, Provided Buffers, IOWQ Placement
 
 > 한 줄 요약: `io_uring` 운영의 진짜 난점은 submit 비용보다 completion fan-out을 어떻게 흡수하느냐에 있고, CQ overflow, multishot, provided buffer ring 회수, IOWQ placement, completion backpressure를 한 설계로 묶어야 tail latency와 메모리 안정성을 같이 지킬 수 있다.

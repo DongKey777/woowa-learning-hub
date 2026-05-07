@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: B-Tree Latch Contention and Hot Pages
+concept_id: database/btree-latch-contention-hot-pages
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- btree-latch-contention
+- hot-page
+- insert-hotspot
+- row-lock-vs-latch
+aliases:
+- b-tree latch contention
+- B-Tree latch contention
+- page latch
+- hot page
+- buffer pool latch
+- leaf page contention
+- insert hotspot
+- row lock vs latch
+- BTree hot page
+- 페이지 latch 경합
+symptoms:
+- row lock 대기는 보이지 않는데 insert TPS가 특정 지점부터 늘지 않고 같은 leaf page가 hot spot이 된다
+- 시간순 PK나 tenant별 최신 데이터가 한쪽 page에 몰려 B-Tree page latch contention이 생긴다
+- row-level lock 문제와 B-Tree 내부 latch/page 구조 보호 경합을 같은 락 문제로 설명한다
+intents:
+- symptom
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/innodb-buffer-pool-internals
+- database/clustered-index-locality
+- database/insert-hotspot-page-contention
+next_docs:
+- database/adaptive-hash-index-tradeoffs
+- database/page-split-merge-fill-factor
+- database/clustered-primary-key-update-cost
+linked_paths:
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/adaptive-hash-index-tradeoffs.md
+- contents/database/insert-hotspot-page-contention.md
+- contents/database/clustered-index-locality.md
+- contents/database/page-split-merge-fill-factor.md
+confusable_with:
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/insert-hotspot-page-contention
+- database/clustered-index-locality
+- database/adaptive-hash-index-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- B-Tree latch contention은 row lock과 다르게 page 구조를 짧게 보호하는 내부 경합이라는 뜻이야?
+- 시간순 primary key insert가 한쪽 leaf page에 몰리면 hot page와 latch contention이 생기는 이유가 뭐야?
+- row lock 대기는 없는데 insert TPS가 안 늘고 page latch가 병목일 때 무엇을 봐야 해?
+- AHI와 hot page latch contention이 섞이면 왜 일부 workload에서 AHI를 끄는 실험을 해볼 수 있어?
+- tenant별 최신 데이터가 같은 clustered index page에 몰릴 때 hotspot을 어떻게 진단해?
+contextual_chunk_prefix: |
+  이 문서는 B-Tree Latch Contention and Hot Pages symptom router로, row lock과 다른 page latch가
+  B-Tree leaf page, insert hotspot, clustered index locality, AHI/buffer pool 경합에서 병목이 되는 증상을 설명한다.
+---
 # B-Tree Latch Contention and Hot Pages
 
 > 한 줄 요약: B-Tree가 느려지는 순간은 키를 못 찾아서가 아니라, 같은 page와 같은 latch를 너무 많은 세션이 두드릴 때다.

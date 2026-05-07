@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > baseball에서 재시작 한 번은 "끝난 게임에서 다음 게임으로 넘어가는 전이" 한 번이어야 한다. 웹 요청이 재전송될 수 있다면 `finished` 여부만 읽고 새 게임을 만드는 대신, 같은 restart intent를 DB가 한 번만 인정하고 나머지는 기존 결과를 다시 읽게 만드는 편이 덜 흔들린다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "재시작 버튼을 두 번 눌렀더니 새 게임이 두 개 생겨요" | 종료된 game에서 restart POST가 retry/double-click으로 두 번 들어오는 흐름 | 같은 restart intent를 idempotency key/unique row로 한 번만 인정한다 |
+| "`finished=true` 확인하면 중복 재시작을 막을 수 있지 않나요?" | 두 요청이 같은 종료 상태를 보고 모두 새 게임을 만드는 코드 | 상태 전이 가능 여부와 재전송 dedup을 분리한다 |
+| "PRG를 넣었는데 restart replay가 또 걱정돼요" | 브라우저 refresh 방어와 저장소 전이 arbitration을 같은 보호로 보는 상황 | PRG는 last request를 GET으로 바꾸고 DB는 transition winner를 정한다 |
+
 ## 미션 시나리오
 
 콘솔 baseball에서는 `3스트라이크` 뒤 사용자가 `1`을 입력하면 그 자리에서 새 게임을 바로 열고 끝난다. 하지만 웹으로 옮기면 `POST /games/{id}/restart`나 `POST /games`가 브라우저 더블클릭, timeout 뒤 재시도, 새로고침 replay로 두 번 들어올 수 있다. 이때 서비스가 "`현재 게임이 종료됐는가`"만 확인하고 곧바로 새 게임 row를 만들면, 두 요청이 같은 종료 상태를 보고 둘 다 통과할 수 있다.

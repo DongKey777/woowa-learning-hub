@@ -1,3 +1,88 @@
+---
+schema_version: 3
+title: Comparable and Comparator Basics
+concept_id: language/java-comparable-comparator-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- comparable-comparator-basics
+- ordering-vs-equality
+- treeset-treemap-duplicate-semantics
+aliases:
+- java comparable comparator basics
+- comparable comparator 차이
+- compareTo comparator difference
+- natural ordering custom comparator
+- TreeSet compareTo 0 duplicate
+- TreeMap comparator key overwrite
+- equals ordering consistency
+- 정렬 기준과 동등성
+- compare 0 equals 불일치
+symptoms:
+- Comparable과 Comparator를 단순 정렬 API로만 보고 자연 정렬과 외부 정렬 기준의 위치 차이를 놓친다
+- compareTo 0이면 equals true라고 단정하거나 반대로 TreeSet TreeMap의 같은 자리 판정을 놓친다
+- HashSet은 equals hashCode를 보고 TreeSet은 comparator 결과 0을 본다는 차이를 이해하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-collections-basics
+next_docs:
+- language/java-comparator-utility-patterns
+- language/equality-vs-ordering-beginner-drill-sheet
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/java-equals-hashcode-comparable-contracts
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/list-sort-vs-collections-sort-mini-bridge.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/nullable-string-comparator-bridge.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/equality-vs-ordering-beginner-drill-sheet.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/priority-update-patterns-treeset-treemap-priorityqueue-bridge.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/collections-performance.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/hashset-vs-treeset-duplicate-semantics
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/java-equals-hashcode-comparable-contracts
+forbidden_neighbors: []
+expected_queries:
+- Comparable과 Comparator는 자연 정렬과 외부 정렬 기준 관점에서 어떻게 달라?
+- compareTo가 0이면 TreeSet에서 왜 하나만 남을 수 있어?
+- HashSet은 equals hashCode를 보고 TreeSet은 comparator를 본다는 차이를 설명해줘
+- list sort와 stream sorted에서 Comparator를 언제 넘겨야 해?
+- equals와 ordering consistency가 깨지면 TreeMap이나 TreeSet에서 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Java Comparable과 Comparator bridge로, natural ordering,
+  custom ordering, equals/hashCode와 compareTo/Comparator의 차이,
+  TreeSet과 TreeMap에서 compare 결과 0이 같은 자리로 취급되는 문제를
+  beginner 관점에서 연결한다.
+---
 # Comparable and Comparator Basics
 
 > 한 줄 요약: Java 입문자가 `Comparable`/`Comparator`를 정렬 도구로만 보지 않고, `TreeSet`/`TreeMap`에서 `equals()`/`hashCode()`와 다른 규칙으로 "같은 자리"를 만들 수 있다는 점까지 한 흐름으로 이해하도록 정리한 beginner companion doc이다.

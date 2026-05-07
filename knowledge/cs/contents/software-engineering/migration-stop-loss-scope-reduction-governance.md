@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Migration Stop-Loss and Scope Reduction Governance
+concept_id: software-engineering/migration-stop-loss-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- migration
+- stop-loss
+- scope-reduction
+- governance
+aliases:
+- Migration Stop-Loss and Scope Reduction Governance
+- migration stop loss
+- modernization stop rule
+- migration scope reduction
+- migration pivot criteria
+- sunk cost trap migration
+symptoms:
+- 이미 투자했으니 끝까지 가야 한다는 sunk-cost 논리로 adoption coverage, repeated exception, carrying cost가 나빠져도 migration scope를 줄이지 못해
+- stop, reduce scope, coexistence, pivot, abandon 기준과 대체 경로가 없어 dual-run이 거의 끝났다 상태로 오래 남아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/migration-carrying-cost-delay
+- software-engineering/migration-wave-governance
+next_docs:
+- software-engineering/decision-revalidation-lifecycle
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/migration-scorecards
+linked_paths:
+- contents/software-engineering/migration-carrying-cost-cost-of-delay.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/migration-funding-model.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/migration-scorecards.md
+confusable_with:
+- software-engineering/migration-wave-governance
+- software-engineering/migration-carrying-cost-delay
+- software-engineering/decision-revalidation-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- migration stop-loss 기준을 adoption coverage, carrying cost, repeated exception, expected benefit으로 어떻게 정해?
+- migration을 중단하는 것과 실패는 어떻게 다르고 partial win을 남기는 scope reduction은 무엇인가?
+- full replacement 대신 critical path replacement나 staged coexistence로 pivot하는 기준을 알려줘
+- sunk-cost trap 때문에 migration이 길어질 때 sponsor, service owner, on-call이 같이 봐야 할 decision right는 뭐야?
+- stop-loss rule과 pivot options를 migration 시작 전에 사전 계약으로 둬야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 migration을 계속할지 줄일지 pivot할지 중단할지 판단하는 stop-loss trigger, scope reduction, partial win, decision right를 다루는 advanced playbook이다.
+---
 # Migration Stop-Loss and Scope Reduction Governance
 
 > 한 줄 요약: migration은 한 번 시작했다고 끝까지 같은 범위로 밀어붙여야 하는 일이 아니라, stop-loss와 scope reduction 기준을 미리 정해 두고 경제성·리스크·채택 속도를 다시 보며 줄이거나 멈추거나 다른 경로로 바꾸는 governance가 필요하다.

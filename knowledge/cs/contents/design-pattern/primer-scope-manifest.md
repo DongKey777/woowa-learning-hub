@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Primer Scope Manifest
+concept_id: design-pattern/primer-scope-manifest
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 20
+mission_ids: []
+review_feedback_tags:
+- primer-scope-manifest
+- corpus-authoring
+- beginner-doc-classification
+- lint-policy
+aliases:
+- primer scope manifest
+- beginner primer manifest
+- primer vs bridge vs checklist
+- beginner lint manifest
+- primer scope marker
+- true beginner primer list
+- beginner entrypoint manifest
+- primer classification manifest
+- 초보자 프라이머 매니페스트
+- primer scope 구분
+symptoms:
+- beginner, primer, basics, checklist가 파일명에 섞여 lint가 진짜 첫 진입 primer를 휴리스틱으로만 판단한다
+- bridge, router, checklist, support-template 문서에 true-beginner-primer 앵커를 강제해 문서 모양이 부자연스럽다
+- 새 beginner 문서를 추가할 때 manifest 분류 없이 이름만 보고 역할을 추측한다
+intents:
+- definition
+- design
+prerequisites:
+- design-pattern/beginner-primer-template
+- design-pattern/object-oriented-design-pattern-basics
+next_docs:
+- design-pattern/beginner-primer-template
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+- design-pattern/object-oriented-design-pattern-basics
+linked_paths:
+- contents/design-pattern/beginner-primer-template.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/request-object-creation-vs-di-container.md
+- contents/design-pattern/request-scope-vs-plain-request-objects.md
+confusable_with:
+- design-pattern/beginner-primer-template
+- design-pattern/design-pattern-index
+- design-pattern/object-oriented-design-pattern-basics
+forbidden_neighbors: []
+expected_queries:
+- Primer Scope Manifest는 true-beginner-primer, beginner-bridge, checklist, support-template을 어떻게 분류해?
+- beginner 문서를 파일명 휴리스틱이 아니라 manifest로 분류해야 하는 이유가 뭐야?
+- primer anchor lint 대상과 제외 대상을 manifest에서 어떻게 나눠?
+- beginner-entrypoint-router와 true-beginner-primer는 첫 진입 문서라는 점에서 어떻게 달라?
+- 새 beginner 문서를 추가할 때 primer scope marker와 manifest 분류를 어떤 순서로 정해?
+contextual_chunk_prefix: |
+  이 문서는 Primer Scope Manifest support document로, beginner 문서를 true-beginner-primer,
+  beginner-entrypoint-router, beginner-bridge, beginner-checklist, support-template으로 분류해
+  filename heuristic 대신 lint policy와 corpus authoring role을 명시하는 기준을 설명한다.
+---
 # Primer Scope Manifest: beginner primer와 bridge/checklist를 이름 대신 분류로 가르기
 
 > 한 줄 요약: beginner 문서가 많아지면 파일명만 보고 primer를 찾기 어렵다. 그래서 lint가 "진짜 첫 진입 primer"만 정확히 집을 수 있도록, 이 manifest에서 문서 역할을 명시적으로 고정한다.

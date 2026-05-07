@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- projection-freshness-slo
+- read-model-freshness
+- objective
+- freshness-sli
 aliases:
 - projection freshness SLO
 - read model freshness objective
@@ -38,7 +43,6 @@ contextual_chunk_prefix: |
   목표, freshness budget, projection lag SLO, error budget burn 같은
   자연어 paraphrase가 본 문서의 핵심 지표 설계에 매핑된다.
 ---
-
 # Projection Freshness SLO Pattern
 
 > 한 줄 요약: read model freshness는 기술 감각이 아니라 운영 SLO로 관리해야 하며, lag SLI, tier별 목표, error budget, budget burn 대응, degrade/rollback 정책이 함께 있어야 projection 운영이 설명 가능해진다.

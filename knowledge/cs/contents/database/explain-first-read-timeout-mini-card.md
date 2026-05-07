@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: EXPLAIN 첫 판독 미니카드
+concept_id: database/explain-first-read-timeout-mini-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- explain-first-read-timeout
+- timeout-plan-vs-lock-route
+- key-rows-filesort-temporary
+aliases:
+- explain first read timeout
+- explain beginner timeout card
+- explain type key rows extra
+- using filesort using temporary
+- timeout explain first check
+- mysql explain slow query beginner
+- 실행계획 첫 판독
+- timeout 앞에서 explain
+symptoms:
+- statement timeout 앞에서 lock wait부터 볼지 SQL plan부터 볼지 모르겠어
+- EXPLAIN에서 type, key, rows, Using filesort, Using temporary 중 무엇을 먼저 읽어야 할지 헷갈려
+- key NULL이나 rows 큰 값을 보고 느린 실행 후보인지 판단하지 못하고 있어
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/index-and-explain
+- database/statement-timeout-vs-lock-timeout-card
+next_docs:
+- database/index-and-explain
+- database/index-condition-pushdown-filesort-temporary-table
+- database/sql-aggregate-groupby-basics
+- database/slow-query-analysis-playbook
+- database/lock-timeout-blocker-first-check
+linked_paths:
+- contents/database/statement-timeout-vs-lock-timeout-card.md
+- contents/database/timeout-tuning-order-checklist-card.md
+- contents/database/index-and-explain.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/sql-aggregate-groupby-basics.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/lock-timeout-blocker-first-check-mini-card.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/statement-timeout-vs-lock-timeout-card
+- database/index-and-explain
+- database/lock-timeout-blocker-first-check
+forbidden_neighbors: []
+expected_queries:
+- timeout 앞에서 EXPLAIN을 처음 볼 때 type, key, rows, Extra를 어떤 순서로 읽어야 해?
+- statement timeout이면 lock wait보다 실행 계획을 먼저 봐야 하는 신호는 뭐야?
+- EXPLAIN에서 key NULL, type ALL, Using filesort가 보이면 초보자는 어떻게 해석해?
+- Using temporary가 보이면 GROUP BY나 DISTINCT 비용을 어떻게 의심해야 해?
+- rows가 작고 정렬 신호도 약하면 lock wait 쪽으로 넘어가도 돼?
+contextual_chunk_prefix: |
+  이 문서는 timeout 앞에서 EXPLAIN의 type, key, rows, Using filesort, Using temporary 다섯 신호로 느린 실행과 lock wait 후보를 분기하는 beginner symptom router다.
+  explain first read timeout, key null, type ALL, using filesort, using temporary, statement timeout plan first 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # EXPLAIN 첫 판독 미니카드
 
 > 한 줄 요약: timeout 앞에서 `EXPLAIN`을 처음 열었다면, 초보자는 먼저 `type`, `key`, `rows`, `Using filesort`, `Using temporary` 다섯 신호만으로 "락 대기보다 느린 실행 쪽인가"를 빠르게 줄이면 된다.

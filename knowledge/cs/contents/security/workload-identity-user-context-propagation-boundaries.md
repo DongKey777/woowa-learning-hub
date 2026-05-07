@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Workload Identity / User Context Propagation Boundaries
+concept_id: security/workload-identity-user-context-propagation-boundaries
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- workload identity
+- user context propagation
+- end-user context
+- service identity
+aliases:
+- workload identity
+- user context propagation
+- end-user context
+- service identity
+- caller identity
+- on-behalf-of
+- actor subject separation
+- delegated user context
+- zero trust service boundary
+- confused deputy
+- support operator
+- Workload Identity / User Context Propagation Boundaries
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/gateway-auth-context-header-trust-boundary.md
+- contents/security/token-exchange-impersonation-risks.md
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/background-job-auth-context-revalidation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Workload Identity / User Context Propagation Boundaries 핵심 개념을 설명해줘
+- workload identity가 왜 필요한지 알려줘
+- Workload Identity / User Context Propagation Boundaries 실무 설계 포인트는 뭐야?
+- workload identity에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Workload Identity / User Context Propagation Boundaries를 다루는 deep_dive 문서다. 서비스 간 신뢰에서 가장 중요한 분리는 "누가 호출한 workload인가"와 "그 요청이 어떤 사용자 맥락을 대리하는가"를 섞지 않는 것이며, 둘을 분리해야 on-behalf-of, audit, downscoping, confused deputy 방어가 가능해진다. 검색 질의가 workload identity, user context propagation, end-user context, service identity처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Workload Identity / User Context Propagation Boundaries
 
 > 한 줄 요약: 서비스 간 신뢰에서 가장 중요한 분리는 "누가 호출한 workload인가"와 "그 요청이 어떤 사용자 맥락을 대리하는가"를 섞지 않는 것이며, 둘을 분리해야 on-behalf-of, audit, downscoping, confused deputy 방어가 가능해진다.

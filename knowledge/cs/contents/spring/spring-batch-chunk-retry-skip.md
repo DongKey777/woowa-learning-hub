@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Batch Chunk Retry Skip
+concept_id: spring/batch-chunk-retry-skip
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- batch-chunk-retry
+- skip
+- batch-chunk
+- retry-skip-policy
+aliases:
+- Spring Batch chunk
+- retry skip policy
+- chunk transaction boundary
+- fault tolerant step
+- ExecutionContext restartability
+- idempotent batch writer
+- batch deadlock retry
+intents:
+- troubleshooting
+- design
+symptoms:
+- 외부 API timeout이나 DB deadlock 때문에 batch item을 다시 시도해야 한다.
+- 특정 오염 레코드는 건너뛰고 전체 Job은 계속 진행해야 한다.
+- 배치 재시작, chunk rollback, retry 때문에 writer가 같은 데이터를 두 번 쓴다.
+linked_paths:
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/transaction-case-studies.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+expected_queries:
+- Spring Batch chunk는 트랜잭션 경계야?
+- retry와 skip은 어떤 실패에 나눠 써야 해?
+- Spring Batch 재시작 가능성을 설계할 때 ExecutionContext가 왜 중요해?
+- batch writer를 멱등하게 만들어야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring Batch Job/Step/Reader/Processor/Writer/Chunk 구조와
+  chunk transaction boundary, retry, skip, restartability, ExecutionContext,
+  idempotent writer 설계를 다룬다. timeout, deadlock, 오염 레코드, 재실행 중
+  중복 쓰기 같은 batch 운영 증상을 분기하는 playbook이다.
+---
 # Spring Batch Chunk Retry Skip
 
 > 한 줄 요약: Spring Batch의 chunk 처리, retry, skip은 "실패를 무시하는 기능"이 아니라, 어디까지 다시 시도하고 어디서 멈출지 정하는 정교한 경계 설계다.

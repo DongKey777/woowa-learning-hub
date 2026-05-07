@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Metadata Lock Outage Triage, Cancel, and Recovery Runbook
+concept_id: database/metadata-lock-outage-triage-cancel-recovery
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 93
+mission_ids: []
+review_feedback_tags:
+- metadata-lock-incident
+- ddl-cutover
+- cancellation-runbook
+- database-recovery
+aliases:
+- metadata lock outage runbook
+- MDL incident triage
+- DDL cancel runbook
+- cutover blocker
+- metadata lock recovery
+- online DDL outage
+- waiting table metadata lock 장애
+- ALTER 대기 장애 대응
+- DDL 취소 기준
+symptoms:
+- DDL 또는 online schema cutover가 metadata lock을 기다리며 앱 p95와 pending queue까지 끌어올리고 있어
+- blocker session을 죽일지 DDL을 취소할지 결정해야 하는 운영 사고가 발생했어
+- cutover 대기를 풀었지만 pending MDL queue drain과 후속 재시도 조건을 확인해야 해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/metadata-lock-ddl-blocking
+- database/online-schema-change-strategies
+next_docs:
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+- database/index-maintenance-window-rollout-playbook
+- database/transaction-timeout-vs-lock-timeout
+linked_paths:
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/index-maintenance-window-rollout-playbook.md
+- contents/database/gh-ost-pt-osc-cutover-precheck-runbook.md
+confusable_with:
+- database/metadata-lock-ddl-blocking
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/transaction-timeout-vs-lock-timeout
+forbidden_neighbors: []
+expected_queries:
+- metadata lock 장애에서 blocker kill과 DDL cancel 중 무엇을 먼저 판단해?
+- online DDL cutover가 pending일 때 앱 영향까지 커지면 어떤 순서로 대응해?
+- Waiting for table metadata lock 사고 후 재시도 전에 어떤 recovery check를 남겨야 해?
+- MDL incident에서 blast radius와 blocker class를 같이 보는 이유를 설명해줘
+- DDL queue가 애플리케이션 요청까지 밀 때 stop loss 기준은 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 metadata lock outage, MDL incident, online DDL cutover blocker를 찾고 cancel 또는 continue를 결정하는 advanced runbook이다.
+  DDL 취소 기준, blocker kill 순서, pending metadata lock queue drain, recovery verification 질문이 본 문서에 매핑된다.
+---
 # Metadata Lock Outage Triage, Cancel, and Recovery Runbook
 
 > 한 줄 요약: metadata lock 장애는 "DDL이 느리다"가 아니라, 어떤 long transaction이 cutover를 가로막아 대기열 전체를 늘리고 있는지 찾고, 언제 취소하고 언제 계속할지 결정하는 운영 문제다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: DISTINCT vs GROUP BY 초보자 비교 카드
+concept_id: database/distinct-vs-group-by-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- distinct-vs-group-by-beginner
+- duplicate-removal-vs-aggregation
+- join-row-explosion-distinct-mask
+aliases:
+- distinct vs group by
+- distinct beginner
+- group by beginner
+- duplicate removal sql
+- group by without aggregate
+- 중복 제거 sql
+- distinct group by 차이
+- group by 언제 써요
+symptoms:
+- 중복 제거만 필요한데 DISTINCT와 GROUP BY 중 무엇을 써야 할지 모르겠어
+- JOIN 뒤 row가 늘어난 문제를 DISTINCT나 GROUP BY로 덮으려 하고 있어
+- GROUP BY가 중복 제거처럼 보일 때 집계 의도와 결과 축을 구분하지 못하고 있어
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/sql-aggregate-groupby-basics
+next_docs:
+- database/join-row-increase-distinct-symptom-card
+- database/result-row-explosion-debugging
+- database/sql-join-basics
+linked_paths:
+- contents/database/sql-aggregate-groupby-basics.md
+- contents/database/join-row-increase-distinct-symptom-card.md
+- contents/database/result-row-explosion-debugging-checklist.md
+- contents/database/sql-join-basics.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/sql-aggregate-groupby-basics
+- database/join-row-increase-distinct-symptom-card
+- database/result-row-explosion-debugging
+forbidden_neighbors: []
+expected_queries:
+- DISTINCT와 GROUP BY는 언제 다르게 써야 해?
+- 집계 없이 중복 제거만 필요하면 DISTINCT가 맞아?
+- GROUP BY도 결과가 한 줄씩 나오는데 DISTINCT와 뭐가 달라?
+- JOIN 후 row가 늘어난 문제를 DISTINCT로 덮으면 왜 위험해?
+- 중복 제거와 그룹별 집계를 초보자 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 DISTINCT의 중복 제거 의도와 GROUP BY의 그룹별 집계 의도를 분리하는 beginner chooser다.
+  distinct vs group by, duplicate removal, group by without aggregate, join row explosion 같은 자연어 비교 질문이 본 문서에 매핑된다.
+---
 # DISTINCT vs GROUP BY 초보자 비교 카드
 
 > 한 줄 요약: 집계 없이 중복 제거만 필요하면 먼저 `DISTINCT`를 고르고, `GROUP BY`는 "그룹별로 계산하거나 요약한다"는 의도가 있을 때 고르면 된다.

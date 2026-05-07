@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: UNIX Domain Socket FD Passing Credentials
+concept_id: operating-system/unix-domain-socket-fd-passing-credentials
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- unix-domain-socket
+- fd-passing-credentials
+- fd-passing
+- scm-rights
+aliases:
+- UNIX domain socket FD passing
+- SCM_RIGHTS
+- peer credentials
+- local control plane IPC
+- supervisor sidecar fd passing
+- credential checked socket
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/security/least-privilege-rbac-basics.md
+expected_queries:
+- UNIX domain socket은 local socket을 넘어서 FD passing과 peer credentials를 지원해?
+- SCM_RIGHTS로 file descriptor를 다른 process에 전달하면 ownership은 어떻게 봐야 해?
+- supervisor, sidecar, local broker에서 UDS control-plane IPC가 특별한 이유는?
+- peer credential 확인과 least privilege runtime을 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 UNIX domain socket을 단순 local socket이 아니라 SCM_RIGHTS file descriptor passing과
+  peer credential check가 가능한 control-plane IPC로 설명한다.
+---
 # UNIX Domain Socket, FD Passing, Credentials
 
 > 한 줄 요약: UNIX domain socket은 단순 로컬 소켓이 아니라, FD 전달과 peer credential 확인까지 가능한 control-plane IPC라서 supervisor, sidecar, local broker 설계에서 특별한 의미를 가진다.

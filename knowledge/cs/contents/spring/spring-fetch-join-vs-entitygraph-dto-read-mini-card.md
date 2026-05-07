@@ -1,8 +1,85 @@
+---
+schema_version: 3
+title: Fetch Join vs EntityGraph Mini Card for DTO Reads
+concept_id: spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- fetch-join-vs-entitygraph
+- dto-read-fetch-plan
+- lazy-loading-n-plus-one
+aliases:
+- fetch join vs entitygraph beginner
+- dto read fetch plan
+- entitygraph 언제 쓰나
+- fetch join 언제 쓰나
+- JPA DTO 조회 연관 로딩
+- repository entitygraph primer
+- fetch plan for DTO response
+- lazy loading dto fetch join entitygraph
+symptoms:
+- fetch join과 EntityGraph를 성능 우열 문제로만 보고 이번 조회의 fetch plan을 어디에 적을지라는 기준을 놓친다
+- DTO 응답에 필요한 연관을 transaction 안에서 준비하지 않아 lazy loading 예외나 N+1로 이어진다
+- OneToMany 컬렉션 pagination 문제를 EntityGraph로 해결할 수 있다고 오해한다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- spring/lazy-loading-dto-mapping-checklist
+- spring/spring-persistence-transaction-web-service-repository-primer
+next_docs:
+- spring/dto-projection-vs-entity-loading-readonly-response-mini-card
+- spring/spring-lazyinitializationexception-debug-sequence
+- database/n-plus-one-query-detection-solutions
+- spring/open-session-in-view-tradeoffs
+linked_paths:
+- contents/spring/spring-dto-projection-vs-entity-loading-readonly-response-mini-card.md
+- contents/spring/spring-lazy-loading-dto-mapping-checklist.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/database/n-plus-one-query-detection-solutions.md
+- contents/spring/spring-lazyinitializationexception-debug-sequence.md
+confusable_with:
+- spring/dto-projection-vs-entity-loading-readonly-response-mini-card
+- spring/lazy-loading-dto-mapping-checklist
+- spring/spring-lazyinitializationexception-debug-sequence
+- database/n-plus-one-query-detection-solutions
+- spring/open-session-in-view-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- DTO 응답에 필요한 연관을 읽을 때 fetch join과 EntityGraph 중 무엇을 골라야 해?
+- 기본 repository 메서드에 연관 하나만 더 읽고 싶으면 EntityGraph가 왜 편해?
+- 커스텀 JPQL 조회에서는 fetch join이 더 자연스러운 이유가 뭐야?
+- OneToMany 컬렉션과 pagination이 있으면 fetch join과 EntityGraph 모두 조심해야 하는 이유가 뭐야?
+- LazyInitializationException을 막으려고 fetch plan을 DTO 변환 전에 어떻게 준비해?
+contextual_chunk_prefix: |
+  이 문서는 DTO read fetch plan chooser로, fetch join은 JPQL에 직접
+  로딩 계획을 적고 EntityGraph는 repository 메서드에 선언적으로 붙이는
+  선택지라는 차이를 설명한다. 목적은 DTO 변환 전에 필요한 lazy 연관을
+  transaction 안에서 준비하는 것이다.
+---
 # Fetch Join vs `@EntityGraph` Mini Card for DTO Reads
 
 > 한 줄 요약: 초급자는 "DTO에 필요한 연관을 이번 조회에서 미리 읽는다"를 먼저 잡고, 쿼리를 직접 설명해야 하면 fetch join, Repository 메서드에 선언적으로 붙이고 싶으면 `@EntityGraph`를 기본값으로 고르면 된다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "DTO 응답에 필요한 연관을 읽을 때 fetch join과 EntityGraph 중 뭘 골라야 하나요?" | roomescape 예약 목록, shopping-cart 주문 조회 | DTO 변환 전에 필요한 lazy 연관을 transaction 안에서 준비한다 |
+| "기본 repository 메서드에 연관 하나만 더 읽고 싶어요" | `findById`, `findAll` 흐름에 단순 fetch plan 추가 | `@EntityGraph`로 선언적 로딩 계획을 붙일 수 있는지 본다 |
+| "OneToMany 컬렉션과 pagination이 같이 있으면 왜 둘 다 조심해야 하나요?" | 주문 목록/예약 목록 page 조회 | 컬렉션 fetch로 row가 부풀고 page boundary가 흔들리는지를 먼저 본다 |
 
 관련 문서:
 

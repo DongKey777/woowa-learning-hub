@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Beginner Triage Quick Check Snippet Pack
+concept_id: operating-system/beginner-triage-quick-check-snippet-pack
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- triage-check-snippet
+- pack
+- os-triage-snippets
+- check-command-pack
+aliases:
+- OS beginner triage snippets
+- quick check command pack
+- symptom to doc triage
+- first observation commands
+- 30 second OS triage
+intents:
+- definition
+- troubleshooting
+- drill
+linked_paths:
+- contents/operating-system/beginner-symptom-to-doc-map.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/memory-management-basics.md
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+expected_queries:
+- 운영체제 증상을 처음 볼 때 30초 안에 어떤 명령으로 triage해?
+- CPU memory IO file descriptor 문제를 quick check하는 snippet을 알려줘
+- 증상에서 primer와 deep dive 문서로 넘어가는 첫 관찰 흐름이 필요해
+- OS beginner triage에서 2~3개 관찰 명령만 먼저 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 OS 초급자가 첫 증상을 보고 30초 안에 2~3개 관찰 명령으로 CPU, memory,
+  I/O, file descriptor, scheduler pressure를 1차 라우팅한 뒤 primer/deep dive로 이동하게
+  돕는 quick-check snippet pack이다.
+---
 # Beginner Triage Quick-Check Snippet Pack
 
 > 한 줄 요약: 첫 증상이 보이면 30초 안에 `2~3개 관찰 명령`으로 1차 라우팅하고, 그다음 primer/deep dive로 이동한다.

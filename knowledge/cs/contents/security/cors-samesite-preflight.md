@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: CORS, SameSite, Preflight
+concept_id: security/cors-samesite-preflight
+canonical: true
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- cors-samesite-preflight
+- browser-security-model
+- credentials-cookie-scope
+aliases:
+- cors samesite preflight
+- CORS SameSite Preflight
+- OPTIONS preflight
+- preflight failure
+- Access-Control-Allow-Origin
+- Access-Control-Allow-Credentials
+- SameSite None Secure
+- fetch credentials include
+- Spring Security OPTIONS
+- CORS 쿠키 안 붙음
+- preflight 401 403
+symptoms:
+- CORS를 열면 쿠키 전송과 CSRF 방어까지 해결된다고 생각해 응답 읽기 제어, 쿠키 전송, 요청 위조 방어를 섞는다
+- preflight가 실패해 실제 요청이 나가지 않았는데 backend API 로직이나 인증 실패로 오진한다
+- credentials include, SameSite, Domain, Path, Secure cookie scope를 한꺼번에 섞어 cross-site 로그인 문제를 디버깅하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- security/cors-basics
+- security/session-cookie-jwt-basics
+next_docs:
+- security/preflight-debug-checklist
+- security/fetch-credentials-vs-cookie-scope
+- security/cookie-scope-mismatch-guide
+- security/xss-csrf-spring-security
+linked_paths:
+- contents/security/cors-basics.md
+- contents/security/preflight-debug-checklist.md
+- contents/security/spring-security-options-primer.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/xss-csrf-spring-security.md
+- contents/network/http-state-session-cache.md
+- contents/network/tls-loadbalancing-proxy.md
+confusable_with:
+- security/cors-basics
+- security/preflight-debug-checklist
+- security/fetch-credentials-vs-cookie-scope
+- security/xss-csrf-spring-security
+forbidden_neighbors: []
+expected_queries:
+- CORS는 응답을 읽을 수 있는가이고 SameSite는 쿠키를 보낼 것인가라는 차이를 설명해줘
+- preflight OPTIONS가 실패하면 실제 POST나 PUT이 서버 로직까지 가지 않는 이유를 알려줘
+- credentials include를 설정해도 cookie Domain Path SameSite Secure scope를 무시하지 못하는 이유가 뭐야?
+- Access-Control-Allow-Origin wildcard와 Allow-Credentials true를 같이 쓰면 왜 credential 요청이 막혀?
+- CORS를 열어도 CSRF가 자동으로 해결되지 않는 이유를 브라우저 보안 모델 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 CORS, SameSite, Preflight를 브라우저 보안 모델의 서로 다른 축으로 분리하는 advanced bridge다.
+  Origin, Access-Control-Allow-Origin, Allow-Credentials, credentials include, SameSite=None Secure, cookie scope, OPTIONS preflight, Spring Security OPTIONS, CSRF와의 경계를 다룬다.
+---
 # CORS, SameSite, Preflight
 
 > 한 줄 요약: 브라우저 보안 모델은 서버 간 호출과 다르다. CORS, SameSite, Preflight는 "누가 요청했는지"와 "쿠키를 같이 보낼지"를 분리해서 제어하는 장치다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Event Envelope Pattern
+concept_id: design-pattern/event-envelope-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- event-envelope
+- event-metadata
+- correlation-causation-id
+aliases:
+- event envelope
+- event envelope pattern
+- event metadata
+- correlation id
+- causation id
+- schema version
+- event contract evolution
+- event dedup key
+- 이벤트 엔벨로프
+- 이벤트 메타데이터
+symptoms:
+- event payload만 저장해 correlationId, causationId, schemaVersion, eventId 같은 운영 메타데이터가 없어 추적과 재처리가 어렵다
+- correlation id와 causation id를 같은 값으로만 보고 전체 흐름 추적과 직접 원인 추적을 구분하지 못한다
+- consumer가 payload 안의 도메인 필드로 dedup이나 version routing을 하게 만들어 계약이 불안정해진다
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/cqrs-command-query-separation-pattern-language
+next_docs:
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/idempotent-consumer-projection-dedup-pattern
+linked_paths:
+- contents/design-pattern/event-sourcing-pattern-language.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+confusable_with:
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/idempotent-consumer-projection-dedup-pattern
+- design-pattern/tolerant-reader-event-contract-pattern
+forbidden_neighbors: []
+expected_queries:
+- Event Envelope는 payload와 metadata를 분리해서 eventId, type, occurredAt, correlationId, causationId, version을 어떻게 담아?
+- correlationId와 causationId는 같은 이벤트 흐름과 직접 원인 추적에서 어떻게 달라?
+- 이벤트 재처리와 중복 제거를 위해 eventId와 schemaVersion을 envelope에 두는 이유가 뭐야?
+- payload only event가 운영 추적과 contract evolution에서 부족한 이유가 뭐야?
+- Event Sourcing이나 Outbox에서 envelope metadata가 왜 초기에 필요해?
+contextual_chunk_prefix: |
+  이 문서는 Event Envelope Pattern primer로, 이벤트 payload와 eventId, eventType,
+  occurredAt, correlationId, causationId, schemaVersion 같은 metadata를 분리해
+  tracing, routing, versioning, dedup, replay를 가능하게 하는 구조를 설명한다.
+---
 # Event Envelope Pattern: 이벤트 본문과 메타데이터를 분리하기
 
 > 한 줄 요약: Event Envelope는 이벤트 payload를 둘러싸는 메타데이터 계층을 두어 추적, 버전 관리, 라우팅을 쉽게 만든다.

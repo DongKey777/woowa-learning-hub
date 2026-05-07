@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: PostgreSQL Plan Node Mini Card
+concept_id: database/postgresql-plan-node-mini-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- postgresql-explain
+- plan-node
+- index-scan
+- seq-scan
+aliases:
+- postgresql plan node basics
+- seq scan vs index scan
+- bitmap heap scan basics
+- index only scan beginner
+- postgresql explain 처음
+- postgres explain 뭐부터 봐요
+- seq scan 뭐예요
+- bitmap heap scan 왜 보여요
+- explain node names basics
+- why seq scan
+symptoms:
+- PostgreSQL plan node 이름을 좋은 plan과 나쁜 plan 순위처럼 외우고 실제 읽는 폭과 heap 접근 차이를 놓치고 있어
+- Seq Scan, Index Scan, Bitmap Heap Scan, Index Only Scan을 처음 보고 어떤 경로를 탄 것인지 분류해야 해
+- Index Only Scan을 heap 접근 0으로 단정하거나 Bitmap Heap Scan을 index를 안 쓴다고 오해하고 있어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+next_docs:
+- database/postgresql-explain-analyze-terms-mini-bridge
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/postgresql-visibility-map-all-visible-beginner-card
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/postgresql-explain-analyze-terms-mini-bridge.md
+- contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md
+- contents/database/postgresql-visibility-map-all-visible-beginner-card.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+confusable_with:
+- database/postgresql-explain-analyze-terms-mini-bridge
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/mysql-explain-type-all-beginner-card
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL Seq Scan, Index Scan, Bitmap Heap Scan, Index Only Scan을 초보자용으로 비교해줘
+- Bitmap Heap Scan은 index를 안 쓰는 plan인지 아니면 후보 위치를 모아서 heap을 읽는지 설명해줘
+- Seq Scan이 항상 나쁜 plan이 아닌 이유를 선택도와 table size 기준으로 알려줘
+- Index Scan과 Index Only Scan의 heap 접근 차이를 어떻게 봐야 해?
+- PostgreSQL EXPLAIN 처음 볼 때 plan node 다음 actual rows와 buffers를 어떻게 이어서 읽어?
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL EXPLAIN의 Seq Scan, Index Scan, Bitmap Heap Scan, Index Only Scan을 읽는 폭과 heap 접근 방식으로 구분하는 beginner primer다.
+  postgres explain 뭐부터 봐요, seq scan 뭐예요, bitmap heap scan 왜 보여요 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `Seq Scan`, `Index Scan`, `Bitmap Heap Scan`, `Index Only Scan` 한 장 카드
 
 > 한 줄 요약: PostgreSQL plan node 네 가지는 "얼마나 넓게 읽는지", "인덱스를 시작점으로만 쓰는지", "heap을 얼마나 다시 읽는지"를 구분하는 초급용 표지판이다.

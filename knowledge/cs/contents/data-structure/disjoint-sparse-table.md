@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Disjoint Sparse Table
+concept_id: data-structure/disjoint-sparse-table
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- static-range-query
+- sparse-table-variant
+- associative-operation-query
+aliases:
+- disjoint sparse table
+- static range query
+- associative operation range query
+- prefix suffix preprocess
+- immutable range query
+- static monoid query
+- O1 range combine
+symptoms:
+- 배열이 immutable이고 구간 질의가 많지만 업데이트가 필요한 Fenwick/Segment Tree와 정적 전처리 구조를 구분하지 못한다
+- 일반 Sparse Table이 idempotent operation에 강한 이유와 Disjoint Sparse Table이 associative operation까지 다루는 차이를 놓친다
+- prefix/suffix disjoint preprocess로 range를 겹치지 않는 두 조각으로 결합한다는 핵심을 이해하지 못한다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/sparse-table
+next_docs:
+- data-structure/sparse-table
+- data-structure/fenwick-tree
+- data-structure/fenwick-vs-segment-tree
+- algorithm/binary-search-patterns
+linked_paths:
+- contents/data-structure/sparse-table.md
+- contents/data-structure/fenwick-tree.md
+- contents/algorithm/binary-search-patterns.md
+confusable_with:
+- data-structure/sparse-table
+- data-structure/fenwick-tree
+- data-structure/fenwick-vs-segment-tree
+forbidden_neighbors: []
+expected_queries:
+- Disjoint Sparse Table은 일반 Sparse Table과 어떤 연산 성질에서 달라?
+- static range query에서 associative operation을 O(1)에 가깝게 처리하는 방법은?
+- 배열 업데이트가 없을 때 Fenwick Segment Tree보다 Sparse Table 계열을 보는 기준은?
+- prefix suffix preprocess로 구간을 disjoint하게 합친다는 뜻을 설명해줘
+- Disjoint Sparse Table을 backend read-only metric snapshot에 쓰는 감각은?
+contextual_chunk_prefix: |
+  이 문서는 immutable array의 static range query를 위한 Disjoint Sparse
+  Table chooser다. 일반 sparse table의 idempotent operation 감각에서
+  associative operation과 prefix/suffix disjoint preprocessing으로 확장하는
+  차이를 설명한다.
+---
 # Disjoint Sparse Table
 
 > 한 줄 요약: Disjoint Sparse Table은 정적 구간 질의를 O(1)에 가깝게 처리하되, 일반 sparse table보다 더 넓은 연산을 다루려는 전처리 구조다.

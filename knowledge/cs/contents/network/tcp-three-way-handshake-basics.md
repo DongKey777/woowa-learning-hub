@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: TCP 3-way handshake 기초
+concept_id: network/tcp-three-way-handshake-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- tcp-connection-handshake
+- syn-synack-ack
+- first-request-latency
+aliases:
+- tcp three way handshake
+- SYN SYN-ACK ACK
+- TCP 연결 맺기
+- 3-way handshake
+- TCP handshake 순서
+- TCP connection establishment
+- handshake latency
+- TCP 세션 수립
+- beginner tcp connection
+- SYN backlog
+symptoms:
+- TCP 연결이 데이터 전송 전에 SYN, SYN-ACK, ACK로 먼저 성립해야 한다는 흐름을 놓친다
+- HTTP나 HTTPS에서 느린 첫 요청이 TCP handshake와 TLS handshake 비용을 포함한다는 점을 구분하지 못한다
+- keep-alive connection reuse가 왜 handshake 비용을 아끼는지 설명하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/tcp-udp-basics
+next_docs:
+- network/keepalive-connection-reuse-basics
+- network/tcp-congestion-control
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/accept-queue-syn-backlog-listen-overflow
+linked_paths:
+- contents/network/tcp-udp-basics.md
+- contents/network/tcp-congestion-control.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/keepalive-connection-reuse-basics.md
+- contents/network/accept-queue-syn-backlog-listen-overflow.md
+- contents/system-design/load-balancer-basics.md
+confusable_with:
+- network/tcp-udp-basics
+- network/keepalive-connection-reuse-basics
+- network/tls-loadbalancing-proxy
+forbidden_neighbors: []
+expected_queries:
+- TCP 3 way handshake에서 SYN, SYN-ACK, ACK가 어떤 순서로 오가고 왜 세 번 필요한지 설명해줘
+- TCP handshake가 끝나기 전에는 왜 HTTP 데이터를 바로 보낼 수 없는지 알고 싶어
+- 첫 API 요청이 느린 이유를 TCP handshake, TLS handshake, keep-alive 재사용 기준으로 나눠줘
+- keep-alive를 쓰면 왜 두 번째 요청부터 TCP handshake 비용을 아낄 수 있어?
+- SYN backlog나 accept queue가 넘치면 handshake 단계에서 어떤 증상이 보일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 TCP 연결 성립을 SYN, SYN-ACK, ACK 세 단계로 설명하는 beginner primer다.
+  connection establishment, sequence/ack number, RTT latency, first request cost, keep-alive reuse, TLS handshake와의 순서, SYN backlog와 accept queue 장애 신호로 연결한다.
+---
 # TCP 3-way handshake 기초
 
 > 한 줄 요약: TCP 연결은 SYN → SYN-ACK → ACK 세 번의 패킷 교환으로 맺어지고, 이 과정이 끝나야 데이터를 주고받을 수 있다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Threshold Override Governance
+concept_id: software-engineering/threshold-override-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- threshold-override
+- governance
+- shadow-process
+- scorecard
+aliases:
+- threshold override governance
+- workflow specific threshold override
+- promotion threshold override approval
+- threshold override expiry
+- threshold override registry
+- threshold override 거버넌스
+symptoms:
+- workflow-specific threshold override를 현장이 힘들다는 이유로 열어 scorecard comparability를 깨고 default rule로 돌아오는 경로가 없어
+- expires_at, renewal_count, fallback_on_expiry, metric owner approval 없이 threshold 완화가 영구 예외가 돼
+- 계측 품질이 약한데 quality cap을 우회하거나 false positive를 숨기기 위해 threshold만 낮춰
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/mirror-lag-sla-calibration
+next_docs:
+- software-engineering/shadow-promotion-snapshot-schema-fields
+- software-engineering/override-burndown-scorecards
+- software-engineering/break-glass-segmentation
+linked_paths:
+- contents/software-engineering/shadow-candidate-promotion-thresholds.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+- contents/software-engineering/shadow-promotion-snapshot-schema-fields.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/emergency-misclassification-signals.md
+confusable_with:
+- software-engineering/platform-policy-override-governance
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/break-glass-segmentation
+forbidden_neighbors: []
+expected_queries:
+- workflow-specific threshold override는 공통 default가 특정 workflow를 구조적으로 잘못 읽을 때만 허용해야 하는 이유는?
+- threshold override approval에서 requester, metric owner, policy owner를 분리해야 하는 이유를 설명해줘
+- override record에 base_rule_ref, changed_threshold_fields, baseline_values, override_values, expires_at, fallback_on_expiry를 왜 남겨야 해?
+- temporary_wave_override와 emergency_provisional_override의 수명과 review cadence는 어떻게 달라야 해?
+- threshold override가 expires_at 이후 자동 default fallback되고 두 번째 renewal부터 forum escalation되어야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 workflow-specific threshold override를 requester, metric owner, policy owner 승인을 거친 time-boxed governance object로 관리하고 expires_at 이후 default로 되돌리는 advanced playbook이다.
+---
 # Threshold Override Governance
 
 > 한 줄 요약: workflow-specific threshold override는 공통 default가 workflow의 위험도나 volume shape를 왜곡할 때만 허용하고, requester/metric owner/policy owner의 승인 분리를 거친 time-boxed 설정으로 다루며, `expires_at`, renewal cap, scorecard review 없이는 지속될 수 없게 해야 한다.

@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Consistent Hashing Ring
+concept_id: data-structure/consistent-hashing-ring
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- consistent-hashing-ring
+- distributed-cache-sharding
+- virtual-node
+aliases:
+- consistent hashing
+- hash ring
+- virtual node
+- vnode
+- shard assignment ring
+- cache cluster sharding
+- first clockwise node
+symptoms:
+- hash(key) % n modulo sharding을 써서 노드 수가 바뀔 때 대부분의 key가 재배치되는 문제를 겪는다
+- consistent hashing ring에서 key가 시계 방향 첫 노드로 배치되는 규칙과 vnode 필요성을 헷갈린다
+- 분산 캐시나 세션 저장소에서 shard skew, failover, replica 정책을 hash ring과 함께 보지 않는다
+intents:
+- definition
+- design
+prerequisites:
+- data-structure/hashmap-internals
+next_docs:
+- data-structure/consistent-hashing-rebalancing-cost-model
+- data-structure/hashmap-internals
+- data-structure/lru-cache-design
+linked_paths:
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/lru-cache-design.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- data-structure/consistent-hashing-rebalancing-cost-model
+- data-structure/hashmap-internals
+- data-structure/lru-cache-design
+forbidden_neighbors: []
+expected_queries:
+- Consistent Hashing Ring은 modulo sharding과 무엇이 달라?
+- hash ring에서 key는 왜 시계 방향 첫 노드에 배치돼?
+- virtual node가 consistent hashing의 부하 분산에 필요한 이유는?
+- 분산 캐시 클러스터에서 노드 추가 삭제 시 key 재배치를 줄이는 방법은?
+- consistent hashing을 쓸 때 shard skew와 failover policy를 어떻게 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Consistent Hashing Ring을 hash(key) modulo n 대신 key와 node를
+  같은 해시 공간에 올리고 시계 방향 첫 node에 배치하는 distributed
+  sharding primer로 설명한다. vnode, cache cluster, shard assignment,
+  failover, replica policy를 함께 다룬다.
+---
 # Consistent Hashing Ring
 
 > 한 줄 요약: Consistent Hashing Ring은 노드 수가 바뀌어도 키 재배치 범위를 최소화하는 분산 배치 방식이다.

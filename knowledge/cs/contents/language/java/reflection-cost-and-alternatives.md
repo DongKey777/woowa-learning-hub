@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Reflection Cost and Alternatives
+concept_id: language/reflection-cost-and-alternatives
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- reflection
+- performance
+- framework
+aliases:
+- Reflection 비용과 대안
+- Java reflection cost
+- MethodHandle vs reflection
+- reflection alternative code generation
+- classpath scanning cost
+- 자바 리플렉션 비용 대안
+symptoms:
+- Reflection을 느리다는 한 단어로만 이해해 접근 검사, Method lookup, boxing, JIT inlining 불리함, late runtime error 비용을 분리하지 못해
+- 런타임 동적성이 필요 없는 경로에서도 reflection invocation을 반복하며 MethodHandle, annotation processing, code generation 대안을 검토하지 않아
+- Spring startup이나 JSON mapping 비용을 모두 비즈니스 로직 탓으로 보고 classpath scanning과 reflection metadata path를 관측하지 않아
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- language/reflection-generics-annotations
+- language/jvm-gc-jmm-overview
+- language/classloader-exception-object-contracts
+next_docs:
+- language/method-inlining-heuristics-deopt-triggers
+- language/java-annotation-processing
+- spring/boot-autoconfiguration-basics
+linked_paths:
+- contents/language/java/reflection-generics-annotations.md
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/classloader-exception-boundaries-object-contracts.md
+- contents/language/java/method-inlining-heuristics-deopt-triggers.md
+- contents/language/java/annotation-processing.md
+- contents/spring/spring-boot-autoconfiguration-basics.md
+confusable_with:
+- language/reflection-generics-annotations
+- language/method-inlining-heuristics-deopt-triggers
+- language/java-annotation-processing
+forbidden_neighbors: []
+expected_queries:
+- Java reflection은 접근 검사 lookup boxing JIT 측면에서 왜 비용이 생겨?
+- MethodHandle은 Reflection보다 어떤 점에서 JIT 친화적이고 언제 대안이 돼?
+- annotation processing이나 code generation은 reflection cost를 어떻게 줄여?
+- Spring startup이나 classpath scanning에서 reflection metadata 비용을 어떻게 의심해?
+- runtime dynamic invocation이 꼭 필요하지 않을 때 Reflection 대신 무엇을 고를 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java Reflection 비용을 access check, lookup, boxing, JIT inlining, runtime error 관점에서 분석하고 MethodHandle, code generation, annotation processing 대안을 고르는 advanced playbook이다.
+  Reflection cost, MethodHandle, annotation processing, code generation, classpath scanning 질문이 본 문서에 매핑된다.
+---
 # Reflection 비용과 대안
 
 > 한 줄 요약: Reflection은 편하지만 비싸고, 런타임 동적성이 꼭 필요하지 않다면 MethodHandle이나 코드 생성이 더 낫다.

@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring @Async Context Propagation and RestClient / HTTP Interface Clients
+concept_id: spring/async-context-propagation-restclient-http-interface-clients
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- async-context-propagation
+- restclient-http-interface
+- clients
+- taskdecorator
+aliases:
+- async context propagation
+- TaskDecorator
+- SecurityContext propagation
+- MDC propagation
+- RequestContextHolder ThreadLocal leak
+- RestClient
+- HTTP interface client
+- @HttpExchange
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+- contents/spring/spring-requestcontextholder-threadlocal-leakage-async-pools.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-transaction-debugging-playbook.md
+expected_queries:
+- @Async에서 SecurityContext나 MDC가 사라지는 이유가 뭐야?
+- TaskDecorator로 어떤 context를 옮겨야 해?
+- RestClient와 HTTP interface client를 async 경계에서 쓸 때 주의할 점은?
+- RequestContextHolder를 async pool로 넘기면 왜 leak 위험이 있어?
+contextual_chunk_prefix: |
+  이 문서는 @Async thread boundary와 RestClient/HTTP interface client 호출 경계를
+  함께 다룬다. SecurityContext, MDC, Locale, RequestContextHolder,
+  TransactionSynchronizationManager가 자동 전파되지 않는 문제, TaskDecorator,
+  retry/fallback 책임 위치, ThreadLocal leakage를 설명하는 advanced deep dive다.
+---
 # Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients
 
 > 한 줄 요약: `@Async`는 스레드 경계를 만들고, RestClient와 HTTP interface client는 호출 경계를 만든다. 둘 다 컨텍스트와 실패 처리를 설계하지 않으면 쉽게 새어 나간다.

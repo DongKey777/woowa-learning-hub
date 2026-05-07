@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: List Integer remove Overload Practice Drill
+concept_id: language/list-integer-remove-overload-practice-drill
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: drill
+level: intermediate
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- list-remove
+- overload
+- collection-lookup
+aliases:
+- List<Integer>.remove overload drill
+- List remove int vs Object practice
+- java list integer remove value vs index
+- remove(1) removes index not value
+- Integer.valueOf remove Object overload
+- 리스트 remove 오버로드 예측 드릴
+symptoms:
+- List<Integer>.remove(1)을 값 1 제거로만 읽어 실제로는 remove(int index)가 선택되는 함정을 놓쳐
+- 값과 index가 우연히 같아 결과가 맞아 보이는 예제 때문에 overload 선택을 검증하지 못해
+- Set.remove나 Map.get 문제까지 List.remove overload 문제처럼 오해해 equality/lookup 축과 섞어
+intents:
+- drill
+- troubleshooting
+- definition
+prerequisites:
+- language/list-indexof-remove-vs-set-remove-symptom-bridge
+- language/java-equality-identity-basics
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+next_docs:
+- language/collections-equality-mutable-state-foundations
+- language/list-remove-during-iteration-index-shift-primer
+- data-structure/map-vs-set-requirement-bridge
+linked_paths:
+- contents/language/java/list-indexof-remove-vs-set-remove-symptom-bridge.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/list-remove-during-iteration-index-shift-primer.md
+confusable_with:
+- language/list-indexof-remove-vs-set-remove-symptom-bridge
+- language/java-equality-identity-basics
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+forbidden_neighbors: []
+expected_queries:
+- List<Integer>.remove(1)은 값 1을 지우는지 index 1을 지우는지 설명해줘
+- remove(int index)와 remove(Object value) overload를 예제로 예측하는 드릴을 해줘
+- Integer.valueOf를 넣으면 List.remove가 왜 값 삭제 overload로 가는지 알려줘
+- List remove 오버로드 문제와 Set Map lookup equality 문제를 어떻게 구분해?
+- 값과 index가 우연히 같아 맞아 보이는 remove 예제를 끊어 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 List<Integer>.remove(int index)와 remove(Object value) overload 선택을 손으로 예측하는 intermediate drill이다.
+  List remove(1), value vs index, Integer.valueOf, remove overload, Set/Map lookup confusion 질문이 본 문서에 매핑된다.
+---
 # `List<Integer>.remove()` 오버로드 예측 드릴
 
 > 한 줄 요약: `List<Integer>`에서 `remove(1)`이 값 `1` 제거인지 index `1` 제거인지 먼저 예측하게 만들어, 뒤에서 `Set`/`Map` lookup 버그를 볼 때 "지금은 overload 문제인가, equality 문제인가"를 분리하도록 돕는 intermediate practice drill이다.

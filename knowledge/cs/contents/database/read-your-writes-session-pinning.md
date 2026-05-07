@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- read-your-writes
+- session-pinning
+- sticky-session
+- recent-write-primary
 aliases:
 - read-your-writes
 - session pinning
@@ -36,7 +41,6 @@ contextual_chunk_prefix: |
   disappeared after refresh 같은 자연어 paraphrase가 본 문서의 핵심
   메커니즘에 매핑된다.
 ---
-
 # Read-Your-Writes와 Session Pinning 전략
 
 > 한 줄 요약: 사용자는 “방금 바꾼 값이 바로 보여야 한다”고 기대하고, 그 기대를 지키려면 읽기 라우팅에 세션 기억이 들어가야 한다.

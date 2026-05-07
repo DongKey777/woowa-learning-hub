@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Ready Queue Starvation Primer
+concept_id: data-structure/ready-queue-starvation-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- ready-queue-starvation
+- priority-queue-fairness
+- scheduler-aging-quota
+aliases:
+- ready queue starvation
+- priority queue fairness
+- low priority task starvation
+- strict priority scheduler starvation
+- aging scheduler
+- due task fairness
+- 기아 현상 준비 큐
+symptoms:
+- priority queue가 가장 급한 일을 빨리 꺼내므로 모든 작업이 언젠가 공정하게 실행된다고 오해한다
+- high priority 작업이 계속 들어와 low priority ready task가 줄에 서 있어도 실행되지 못하는 starvation을 놓친다
+- due-time gate와 ready queue policy를 분리하지 않아 timer 만료와 스케줄러 fairness 문제를 섞는다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/timer-priority-policy-split
+- data-structure/bounded-queue-policy-primer
+- operating-system/cpu-scheduling-basics
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/timer-priority-policy-split.md
+- contents/data-structure/bounded-queue-policy-primer.md
+- contents/operating-system/cpu-scheduling-basics.md
+confusable_with:
+- data-structure/timer-priority-policy-split
+- data-structure/bounded-queue-policy-primer
+- operating-system/cpu-scheduling-basics
+- data-structure/priorityblockingqueue-timer-misuse-primer
+forbidden_neighbors: []
+expected_queries:
+- Ready queue에서 priority queue만 쓰면 낮은 우선순위 작업이 굶을 수 있는 이유는?
+- strict priority scheduler starvation을 beginner 기준으로 설명해줘
+- due task fairness와 deadline ordering은 어떻게 다른 문제야?
+- aging이나 quota fairness가 priority queue starvation을 줄이는 방식은?
+- ready queue에서 높은 우선순위 작업이 계속 오면 낮은 작업은 왜 실행이 안 될 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 priority ready queue가 응답성은 높이지만 fairness를 자동 보장하지
+  않아 low priority task starvation이 생길 수 있다는 symptom router다.
+  due-time gate, ready queue, strict priority, aging, quota, CPU scheduling을
+  분리한다.
+---
 # Ready Queue Starvation Primer
 
 > 한 줄 요약: ready queue를 priority 기준으로만 비우면 "가장 급한 일"은 빨라지지만, 높은 우선순위 작업이 계속 들어올 때 낮은 우선순위 작업은 아주 오래 못 돌거나 아예 굶을 수 있다.

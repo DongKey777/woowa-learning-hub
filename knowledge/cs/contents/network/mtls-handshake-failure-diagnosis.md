@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "mTLS Handshake Failure Diagnosis"
+concept_id: network/mtls-handshake-failure-diagnosis
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- mtls
+- handshake-failure
+- certificate-identity
+aliases:
+- mTLS handshake failure
+- mutual TLS diagnosis
+- client certificate
+- trust store
+- peer identity
+- SAN policy
+- certificate rotation mTLS
+symptoms:
+- mTLS 실패를 인증서 파일 하나의 문제로만 보고 SNI ALPN trust store를 놓친다
+- client certificate가 없거나 SAN/issuer가 policy와 맞지 않는 상황을 구분하지 못한다
+- sidecar proxy가 TLS를 처리할 때 app 로그만 보고 원인을 찾으려 한다
+- 인증서 rotation 후 일부 pod만 새 trust bundle을 못 보는 문제를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/sni-routing-mismatch-hostname-failure
+next_docs:
+- security/service-to-service-auth-mtls-jwt-spiffe
+- network/alpn-negotiation-failure-routing-mismatch
+- network/service-mesh-sidecar-proxy
+- network/certificate-rotation-sni-blast-radius
+linked_paths:
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/network/service-mesh-sidecar-proxy.md
+confusable_with:
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/alpn-negotiation-failure-routing-mismatch
+- network/sni-routing-mismatch-hostname-failure
+- security/service-to-service-auth-mtls-jwt-spiffe
+forbidden_neighbors: []
+expected_queries:
+- "mTLS handshake failure를 어떤 순서로 진단해야 해?"
+- "client certificate trust store SAN SNI ALPN 중 무엇을 먼저 봐?"
+- "service mesh sidecar가 mTLS를 처리하면 app 로그만으로 부족한 이유는?"
+- "certificate rotation 후 일부 pod만 mTLS 실패하는 원인은?"
+- "peer identity policy와 SAN mapping이 맞지 않을 때 어떤 증상이 나와?"
+contextual_chunk_prefix: |
+  이 문서는 mTLS handshake failure에서 client certificate, certificate chain,
+  trust store, SAN/SNI/ALPN, peer identity, sidecar proxy 로그를 함께 보는
+  advanced playbook이다.
+---
 # mTLS Handshake Failure Diagnosis
 
 > 한 줄 요약: mTLS 실패는 인증서만의 문제가 아니라 SNI, ALPN, trust store, 시간, 그리고 peer identity 매칭이 함께 어긋날 때 생긴다.

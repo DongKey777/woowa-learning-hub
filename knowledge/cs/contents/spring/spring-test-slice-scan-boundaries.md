@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring Test Slice Scan Boundaries
+concept_id: spring/test-slice-scan-boundaries
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 75
+review_feedback_tags:
+- test-slice-scan
+- boundaries
+- webmvctest-service-bean
+- not-found
+aliases:
+- WebMvcTest service bean not found
+- DataJpaTest slice boundary
+- SpringBootTest vs slice test
+- test slice scan boundary
+- custom TestConfiguration import
+- repository not found in WebMvcTest
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-test-slice-import-testconfiguration-boundaries.md
+- contents/spring/spring-mockmvc-vs-webtestclient-beginner-bridge.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/spring/spring-mvc-controller-basics.md
+expected_queries:
+- @WebMvcTest에서 service bean not found가 나는 이유는?
+- @DataJpaTest는 같은 package에 있는 service를 자동 scan해?
+- SpringBootTest와 WebMvcTest DataJpaTest slice boundary 차이는 뭐야?
+- custom @Import나 @TestConfiguration은 slice test 경계를 어떻게 바꿔?
+contextual_chunk_prefix: |
+  이 문서는 @SpringBootTest가 실제 application boundary에서 시작하지만 @WebMvcTest와
+  @DataJpaTest는 미리 잘라 둔 slice에서 시작하므로 같은 package라도 service/repository가
+  자동으로 보이지 않는다는 초급 primer다.
+---
 # Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다
 
 > 한 줄 요약: `@SpringBootTest`는 애플리케이션 실제 경계에서 시작하지만, `@WebMvcTest`와 `@DataJpaTest`는 미리 잘라 둔 slice에서 시작하므로 같은 package에 있어도 service/repository가 자동으로 보이지 않으며, custom `@Import`/`@TestConfiguration`은 그 경계를 명시적으로 바꾸는 버튼이다.

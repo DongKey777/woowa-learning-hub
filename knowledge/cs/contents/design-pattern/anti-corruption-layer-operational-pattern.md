@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Anti-Corruption Layer Operational Pattern
+concept_id: design-pattern/anti-corruption-layer-operational-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- anti-corruption-operational-pattern
+- acl-drift-detection
+- translation-quarantine
+aliases:
+- anti corruption operational pattern
+- ACL operational pattern
+- acl drift detection
+- integration contract drift
+- translation quarantine
+- boundary fallback
+- provider model change detection
+- external contract drift
+- 안티 코럽션 운영 패턴
+symptoms:
+- ACL을 adapter와 translator 코드 구조로만 만들고 unknown code, schema mismatch, semantic drift를 관측하지 않는다
+- provider timeout과 malformed payload와 unknown enum을 모두 같은 연동 실패로 보고 retry 정책을 섞는다
+- 외부 계약 drift가 생겼을 때 rollback, degraded flow, quarantine queue 같은 축소 운영 경로가 없다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/anti-corruption-translation-map-pattern
+- design-pattern/tolerant-reader-event-contract-pattern
+next_docs:
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/anti-corruption-rollout-provider-sandbox-pattern
+- design-pattern/facade-anti-corruption-seam
+linked_paths:
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/anti-corruption-translation-map-pattern.md
+- contents/design-pattern/anti-corruption-contract-test-pattern.md
+- contents/design-pattern/anti-corruption-rollout-provider-sandbox-pattern.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/bounded-context-relationship-patterns.md
+confusable_with:
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/anti-corruption-translation-map-pattern
+- design-pattern/tolerant-reader-event-contract-pattern
+forbidden_neighbors: []
+expected_queries:
+- ACL은 번역 코드뿐 아니라 provider drift detection과 quarantine 운영 패턴까지 왜 필요해?
+- provider timeout과 malformed payload와 unknown enum은 retry와 quarantine 관점에서 어떻게 나눠?
+- unknown status code mapping count나 translator fallback rate를 ACL metric으로 봐야 하는 이유가 뭐야?
+- 외부 계약 drift가 발생했을 때 mapping rollback, degraded flow, provider 기능 차단은 어떻게 설계해?
+- Anti-Corruption Layer에서 semantic mismatch를 내부 도메인으로 흘리지 않으려면 어떤 운영 신호가 필요해?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Layer Operational Pattern playbook으로, ACL을
+  단순 translator 코드가 아니라 provider contract drift를 감지하고 unknown code,
+  schema mismatch, semantic anomaly를 metric, quarantine, degrade, rollback path로
+  격리하는 운영 패턴으로 설명한다.
+---
 # Anti-Corruption Layer Operational Pattern
 
 > 한 줄 요약: Anti-Corruption Layer는 번역 코드만 두는 구조가 아니라, 외부 계약 drift를 감지하고 격리하고 롤포워드하는 운영 패턴까지 함께 가져야 실제 경계 보호가 유지된다.

@@ -57,6 +57,9 @@ confusable_with:
 - operating-system/tty-aware-output-capture-patterns
 - operating-system/why-some-prompts-use-dev-tty
 forbidden_neighbors:
+- contents/operating-system/pty-raw-mode-echo-basics.md
+- contents/operating-system/ci-log-merge-behavior-primer.md
+- contents/operating-system/shell-wrapper-boundary-primer.md
 expected_queries:
 - 왜 같은 명령인데 pipe로 받으면 색이 사라지고 PTY를 붙이면 다시 살아나?
 - progress bar나 prompt가 pipe에서는 안 보이는데 pseudo-TTY에서는 보이는 이유가 뭐야?

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: for vs stream 중단 신호 프라이머
+concept_id: language/for-vs-stream-stop-sign-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- stream-overuse
+- loop-readability
+- beginner-java
+aliases:
+- for vs stream stop sign primer
+- Java loop vs stream stop sign
+- stream overuse
+- break stream alternative
+- checked exception stream lambda
+- for문 대신 stream 언제
+- stream보다 for가 안전한 경우
+symptoms:
+- stream이 최신 문법이므로 for를 모두 바꿔야 한다고 생각해 break, 복합 누적, checked exception 번역이 흐려져
+- findFirst나 custom collector로 표현할 수 있다는 이유만으로 beginner 코드의 의도와 디버깅성을 낮춰
+- 합계, 개수, 경고 목록처럼 여러 상태를 함께 쌓는 코드를 억지로 stream pipeline에 넣어 읽기 어렵게 만든다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- language/java-stream-lambda-basics
+next_docs:
+- language/stream-filter-vs-map-decision-mini-card
+- language/collectors-tomap-duplicate-key-primer
+- language/java-exception-handling-basics
+linked_paths:
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/stream-filter-vs-map-decision-mini-card.md
+- contents/language/java/collectors-tomap-duplicate-key-primer.md
+- contents/language/java/java-exception-handling-basics.md
+confusable_with:
+- language/java-stream-lambda-basics
+- language/stream-filter-vs-map-decision-mini-card
+- language/collectors-tomap-duplicate-key-primer
+forbidden_neighbors: []
+expected_queries:
+- Java에서 for와 stream 중 어떤 것을 써야 하는지 break 복합 누적 checked exception 기준으로 알려줘
+- stream으로 바꾸면 안 되거나 for가 더 읽기 쉬운 stop sign은 무엇이야?
+- 중간에 조건 만족하면 break해야 하는 코드를 stream findFirst로 바꿔도 되는지 판단해줘
+- 합계 개수 경고 목록을 한 번에 쌓는 복합 누적은 왜 for가 더 안전할 수 있어?
+- checked exception을 stream lambda 안에서 처리할 때 왜 for가 디버깅에 유리해?
+contextual_chunk_prefix: |
+  이 문서는 Java for loop와 stream 선택을 break/early stop, compound accumulation, checked exception translation, beginner readability 관점으로 설명하는 primer다.
+  for vs stream, stream overuse, break, findFirst, custom collector, checked exception lambda 질문이 본 문서에 매핑된다.
+---
 # `for` vs `stream` 중단 신호 프라이머
 
 > 한 줄 요약: `stream`이 더 짧아 보여도 `break`, 복합 누적, checked exception 번역이 핵심이면 `for`가 더 안전한 시작점이다.

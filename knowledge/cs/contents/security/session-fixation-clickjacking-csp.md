@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Session Fixation Clickjacking CSP
+concept_id: security/session-fixation-clickjacking-csp
+canonical: true
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- login-session-hardening
+- clickjacking-frame-policy
+- csp-defense-in-depth
+aliases:
+- session fixation clickjacking csp
+- 세션 고정 클릭재킹 CSP
+- session id rotate after login
+- frame-ancestors clickjacking
+- X-Frame-Options
+- Content-Security-Policy frame ancestors
+- 로그인 후 세션 재발급
+symptoms:
+- 로그인 성공 뒤 session id가 바뀌지 않아도 괜찮다고 생각하고 있어
+- clickjacking을 XSS나 CSRF와 같은 층위로만 설명해서 frame 정책을 놓치고 있어
+- CSP를 넣으면 XSS가 완전히 해결된다고 오해하고 있어
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- security/authentication-vs-authorization
+- security/xss-csrf-basics
+- security/session-cookie-jwt-basics
+next_docs:
+- security/session-fixation-in-federated-login
+- security/api-security-headers-beyond-csp
+- security/open-redirect-hardening
+- spring/security-architecture
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/xss-csrf-spring-security.md
+- contents/network/http-state-session-cache.md
+- contents/security/session-fixation-in-federated-login.md
+- contents/security/open-redirect-hardening.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/spring/spring-security-architecture.md
+- contents/security/api-security-headers-beyond-csp.md
+confusable_with:
+- security/xss-csrf-basics
+- security/api-security-headers-beyond-csp
+- security/session-fixation-in-federated-login
+forbidden_neighbors: []
+expected_queries:
+- session fixation과 clickjacking과 CSP는 각각 어떤 공격면을 막아?
+- 로그인 성공 후 session id를 왜 rotate 해야 해?
+- clickjacking은 X-Frame-Options와 CSP frame-ancestors로 어떻게 막아?
+- CSP를 넣으면 XSS가 완전히 없어지는 게 아닌 이유는 뭐야?
+- Spring Security에서 session fixation protection과 header policy를 같이 보는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 login hardening bridge로, session fixation은 post-login session id rotation, clickjacking은 frame embedding policy, CSP는 script/resource loading policy라는 서로 다른 방어층을 분리한다.
+  session id rotate, frame-ancestors, X-Frame-Options, CSP unsafe-inline, Spring Security header/session 설정 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Session Fixation, Clickjacking, CSP
 
 > 한 줄 요약: 세션 고정 공격, 클릭재킹, 콘텐츠 보안 정책은 서로 다른 층의 브라우저 공격을 막는다. 하나만 막아서는 충분하지 않다.

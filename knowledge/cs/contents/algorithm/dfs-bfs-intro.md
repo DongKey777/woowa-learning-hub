@@ -9,7 +9,10 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
 review_feedback_tags:
 - dfs-vs-bfs-question-shape
 - connectivity-vs-shortest-path

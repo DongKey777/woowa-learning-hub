@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: JPA Lazy Loading and N+1 Boundary Smells
+concept_id: software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- jpa
+- lazy-loading
+- n-plus-one
+- entity-leakage
+aliases:
+- JPA Lazy Loading and N+1 Boundary Smells
+- lazy loading N+1 boundary smells
+- LazyInitializationException API boundary
+- fetch join vs projection smell
+- entity serialization N plus one
+- JPA 지연 로딩 N+1 경계 냄새
+symptoms:
+- Controller가 Entity를 그대로 JSON 응답으로 반환해 serializer가 LAZY proxy를 건드리며 LazyInitializationException이나 N+1이 발생해
+- 화면별 조회 요구를 domain entity와 fetch join everywhere로 해결하려다 persistence, API, domain boundary가 섞여
+- OSIV가 켜져 있으면 직렬화 중 추가 쿼리가 조용히 나가고 꺼져 있으면 같은 API가 터져
+intents:
+- symptom
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/persistence-model-leakage
+- software-engineering/repository-dao-entity
+next_docs:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/entity-leakage-review-checklist
+linked_paths:
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/entity-leakage-review-checklist.md
+confusable_with:
+- software-engineering/persistence-model-leakage
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/entity-leakage-review-checklist
+forbidden_neighbors: []
+expected_queries:
+- JPA LAZY 자체가 문제가 아니라 Entity가 API boundary 밖으로 새서 N+1이 생기는 이유를 설명해줘
+- Controller에서 Entity를 직접 반환하면 LazyInitializationException과 hidden N+1이 어떻게 발생해?
+- fetch join을 everywhere로 넣는 것보다 response DTO와 query model을 분리해야 하는 이유가 뭐야?
+- OSIV가 켜져 있을 때 직렬화 중 추가 쿼리가 조용히 나가는 문제를 어떻게 진단해?
+- Domain, Persistence, API boundary 관점에서 LAZY loading과 N+1 문제를 나눠 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 JPA LAZY loading, LazyInitializationException, hidden N+1, fetch join 남발을 persistence/API/domain boundary 냄새로 진단하는 beginner symptom router이다.
+---
 # JPA Lazy Loading and N+1 Boundary Smells
 
 > 한 줄 요약: `LAZY` 자체가 문제라기보다, JPA 엔티티를 API와 애플리케이션 경계 밖으로 그대로 흘려보낼 때 직렬화와 화면 요구가 프록시를 건드리며 `LazyInitializationException`, 숨은 N+1, fetch join 남발이 함께 나타난다.

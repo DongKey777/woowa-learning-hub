@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Domain Events, Outbox, Inbox
+concept_id: software-engineering/outbox-inbox-domain-events
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- domain-event
+- outbox
+- inbox
+- eventual-consistency
+aliases:
+- Domain Events Outbox Inbox
+- domain event integration event
+- outbox pattern inbox pattern
+- idempotent consumer
+- exactly once myth outbox inbox
+- 도메인 이벤트 아웃박스 인박스
+symptoms:
+- DB 저장은 성공했지만 broker publish가 실패하거나, 같은 메시지가 redelivery되어 side effect가 두 번 남는 실패 시나리오를 transaction 하나로만 설명하려 해
+- Domain Event와 Integration Event를 구분하지 않고 내부 domain object나 payload를 그대로 외부 소비자 계약으로 노출해 coupling이 커져
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/message-driven-adapter
+next_docs:
+- software-engineering/outbox-message-adapter-test-matrix
+- software-engineering/event-schema-versioning
+- database/transactional-inbox-dedup-design
+linked_paths:
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/outbox-vs-inbox-order-example-primer.md
+- contents/database/transactional-inbox-dedup-design.md
+confusable_with:
+- software-engineering/outbox-vs-inbox-order-example
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/event-schema-versioning
+forbidden_neighbors: []
+expected_queries:
+- Domain Event와 Integration Event는 무엇이 다르고 왜 외부 전송용 이벤트를 따로 봐야 해?
+- Outbox pattern은 DB 저장과 보낼 메시지 기록을 같은 트랜잭션에 묶어 어떤 실패를 막아?
+- Inbox pattern은 redelivery와 duplicate message가 와도 side effect를 한 번처럼 만드는 데 어떻게 쓰여?
+- Outbox와 Inbox가 정확히 한 번 처리를 자동 보장한다는 오해를 바로잡아줘
+- event payload는 왜 작고 안정적이어야 하고 schema version과 correlationId가 필요한가?
+contextual_chunk_prefix: |
+  이 문서는 Domain Event, Integration Event, Outbox, Inbox, idempotent consumer, eventual consistency를 함께 다루는 advanced bridge이다.
+---
 # Domain Events, Outbox, Inbox
 
 **난이도: 🔴 Advanced**

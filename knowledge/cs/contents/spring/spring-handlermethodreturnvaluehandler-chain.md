@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring HandlerMethodReturnValueHandler Chain
+concept_id: spring/handlermethodreturnvaluehandler-chain
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- handlermethodreturnvaluehandler-chain
+- handlermethodreturnvaluehandler
+- mvc-return-value
+- handler
+aliases:
+- HandlerMethodReturnValueHandler
+- Spring MVC return value handler
+- ResponseEntity handler
+- RequestResponseBodyMethodProcessor
+- ResponseBodyEmitterReturnValueHandler
+- StreamingResponseBodyReturnValueHandler
+- response commit timing
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-requestbody-responsebodyadvice-pipeline.md
+- contents/spring/spring-responsebodyadvice-streaming-types.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+expected_queries:
+- Spring MVC 컨트롤러 반환값은 어떤 handler chain이 처리해?
+- ResponseEntity와 @ResponseBody plain object는 내부 경로가 어떻게 달라?
+- HandlerMethodReturnValueHandler가 async나 streaming 반환값을 어떻게 분기해?
+- response commit 이후에는 왜 exception resolver가 응답을 바꾸기 어려워?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC HandlerMethodReturnValueHandler chain이 controller
+  return value를 model/view, body write, async, streaming 경로로 해석하는 방식을
+  설명한다. ResponseEntity, @ResponseBody, ProblemDetail, Callable,
+  DeferredResult, ResponseBodyEmitter, SseEmitter, StreamingResponseBody와
+  response commit timing을 연결하는 deep dive다.
+---
 # Spring `HandlerMethodReturnValueHandler` Chain
 
 > 한 줄 요약: Spring MVC에서 컨트롤러 반환값은 그대로 응답이 되는 것이 아니라 `HandlerMethodReturnValueHandler` 체인이 model/view, body write, async/streaming 중 어느 경로로 보낼지 결정한 결과이므로, body pipeline과 response commit 시점까지 같이 이해해야 disconnect와 에러 계약이 왜 달라지는지 풀린다.

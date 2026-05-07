@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Embedded Login Privacy Primer
+concept_id: security/iframe-login-privacy-controls-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- embedded login privacy primer
+- iframe login privacy primer
+- iframe login still fails after samesite none secure
+- third-party cookie privacy controls beginner
+aliases:
+- embedded login privacy primer
+- iframe login privacy primer
+- iframe login still fails after samesite none secure
+- third-party cookie privacy controls beginner
+- embedded login third-party cookie blocked
+- iframe session blocked by browser privacy
+- samesite none secure but iframe login fails
+- partner portal iframe login privacy controls
+- third-party cookie phaseout beginner
+- browser privacy iframe cookie failure
+- storage access iframe login beginner
+- third-party cookie blocked even with samesite none
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/samesite-login-callback-primer.md
+- contents/security/cookie-rejection-reason-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/embedded-login-csrf-bridge.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Embedded Login Privacy Primer 핵심 개념을 설명해줘
+- embedded login privacy primer가 왜 필요한지 알려줘
+- Embedded Login Privacy Primer 실무 설계 포인트는 뭐야?
+- embedded login privacy primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Embedded Login Privacy Primer를 다루는 primer 문서다. iframe login에서 `SameSite=None; Secure`까지 맞췄는데도 세션이 안 붙으면, 이제 질문은 "cookie 속성이 맞나?"가 아니라 "브라우저가 third-party cookie 자체를 막는 privacy 모드인가?"로 옮겨간다. 검색 질의가 embedded login privacy primer, iframe login privacy primer, iframe login still fails after samesite none secure, third-party cookie privacy controls beginner처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Embedded Login Privacy Primer
 
 > 한 줄 요약: iframe login에서 `SameSite=None; Secure`까지 맞췄는데도 세션이 안 붙으면, 이제 질문은 "cookie 속성이 맞나?"가 아니라 "브라우저가 third-party cookie 자체를 막는 privacy 모드인가?"로 옮겨간다.

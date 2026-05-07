@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Single Counter vs Ledger vs Slot Inventory Oversell Decision Card
+concept_id: database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- oversell
+- inventory-model
+- ledger
+- slot-inventory
+- guard-row
+aliases:
+- single counter vs ledger vs slot inventory
+- oversell decision card
+- inventory model beginner
+- append-only claim row
+- ledger inventory
+- slot inventory
+- counter row oversell
+- reservation ledger
+- 처음 inventory locking
+- 마지막 재고가 두 번 팔려요
+symptoms:
+- 마지막 재고가 두 번 팔린다는 증상만 보고 single counter, append-only ledger, slot inventory를 구분하지 못해
+- guard row 문서로 바로 가기 전에 재고 truth가 한 row 숫자인지, claim 합계인지, slot 집합인지 나눠야 해
+- ledger inventory와 slot inventory를 single counter 확장판처럼 오해하고 있어
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+next_docs:
+- database/single-counter-oversell-first-fix
+- database/shared-pool-guard-design-room-type-inventory
+- database/slot-row-rounding-half-open-dst-junior-checklist
+linked_paths:
+- contents/database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md
+- contents/database/single-counter-oversell-first-fix-card.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/system-design/inventory-reservation-system-design.md
+confusable_with:
+- database/single-counter-oversell-first-fix
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/shared-pool-guard-design-room-type-inventory
+forbidden_neighbors: []
+expected_queries:
+- 마지막 재고가 두 번 팔릴 때 single counter, append-only claim ledger, slot inventory 중 무엇인지 어떻게 나눠?
+- 재고 truth가 한 row 숫자인지 여러 claim 합계인지 slot key 집합인지 먼저 봐야 하는 이유가 뭐야?
+- single counter면 조건부 update부터 보고 ledger inventory면 guard row나 serializable retry를 보는 기준을 설명해줘
+- slot inventory는 row만 많아진 counter가 아니라 discrete key set이라는 뜻이 뭐야?
+- guard row는 언제나 상위 해법이 아니라 inventory model에 따라 필요 여부가 달라진다는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 oversell 증상을 single counter, append-only ledger inventory, slot inventory 세 모델로 먼저 나누는 beginner chooser다.
+  마지막 재고가 두 번 팔려요, inventory model beginner, guard row 전에 뭐 봐요, slot claim 질문이 본 문서에 매핑된다.
+---
 # Single Counter vs Ledger vs Slot Inventory Oversell Decision Card
 
 > 한 줄 요약: `마지막 재고가 두 번 팔려요`가 보이면 먼저 single counter, append-only claim row, slot inventory 중 어느 모델인지 나눠야 guard row와 retry 문서를 덜 헷갈리고 읽을 수 있다.

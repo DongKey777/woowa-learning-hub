@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: proc pid fdinfo Epoll Runtime Debugging
+concept_id: operating-system/proc-pid-fdinfo-epoll-runtime-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- proc-pid-fdinfo
+- epoll
+- epoll-fdinfo
+- fd-metadata
+aliases:
+- /proc pid fdinfo
+- epoll fdinfo debugging
+- fd metadata runtime
+- file offset flags fdinfo
+- epoll watch state
+- low overhead fd debugging
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/io-uring-sqpoll-fdinfo-worker-mode-submit-debugging.md
+symptoms:
+- process가 어떤 fd를 열었는지만이 아니라 offset, flags, epoll watch state를 현장에서 확인해야 한다.
+- epoll 등록 상태와 user-space event loop state가 맞는지 낮은 overhead로 확인하고 싶다.
+- shared offset이나 nonblocking flag가 fdinfo에서 어떻게 보이는지 모른다.
+expected_queries:
+- /proc/<pid>/fdinfo는 file offset, flags, epoll watch state를 어떻게 보여줘?
+- epoll runtime debugging에서 fdinfo를 언제 확인해야 해?
+- fdinfo는 lsof보다 어떤 저비용 현장 메타데이터를 더 제공해?
+- shared open file description이나 nonblocking flag를 fdinfo로 확인할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 /proc/<pid>/fdinfo를 단순 fd 목록이 아니라 file offset, flags, epoll watch state 같은
+  runtime fd metadata를 보여 주는 low-overhead production debugging tool로 설명한다.
+---
 # /proc/<pid>/fdinfo, Epoll Runtime Debugging
 
 > 한 줄 요약: `/proc/<pid>/fdinfo`는 "이 프로세스가 무슨 fd를 열었나"를 넘어서, file offset, flags, epoll watch 상태 같은 런타임 fd 메타데이터를 보여 주는 저비용 현장 디버깅 도구다.

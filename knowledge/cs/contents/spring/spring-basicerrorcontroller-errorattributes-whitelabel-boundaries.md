@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring BasicErrorController, ErrorAttributes, and Whitelabel Error Boundaries
+concept_id: spring/basicerrorcontroller-errorattributes-whitelabel-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- basicerrorcontroller-errorattributes-whitelabel
+- boundaries
+- basicerrorcontroller
+- errorattributes
+aliases:
+- BasicErrorController
+- ErrorAttributes
+- whitelabel error page
+- /error endpoint
+- ErrorMvcAutoConfiguration
+- servlet error dispatch
+- Spring Boot default error response
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-problemdetail-vs-error-handoff-matrix.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-problemdetail-error-response-design.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
+expected_queries:
+- BasicErrorController는 @ControllerAdvice와 어떤 경계가 달라?
+- Spring Boot에서 어떤 오류는 whitelabel page로 떨어지는 이유가 뭐야?
+- ErrorAttributes는 기본 오류 응답에서 무슨 역할을 해?
+- /error fallback path와 ProblemDetail 응답을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot의 /error fallback path, BasicErrorController,
+  ErrorAttributes, Whitelabel error page, ErrorMvcAutoConfiguration,
+  servlet error dispatch를 MVC exception resolver chain과 구분한다.
+  advice를 타지 않는 오류, HTML/JSON content negotiation, Security filter 실패와
+  Boot 기본 error response 경계를 설명한다.
+---
 # Spring `BasicErrorController`, `ErrorAttributes`, and Whitelabel Error Boundaries
 
 > 한 줄 요약: Spring Boot의 기본 오류 응답은 MVC 예외 처리의 바깥에서도 작동하는 fallback 경로이므로, `BasicErrorController`, `ErrorAttributes`, whitelabel error page 경계를 모르면 왜 어떤 요청은 advice를 타고 어떤 요청은 기본 에러로 떨어지는지 헷갈리기 쉽다.

@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring MVC vs WebFlux
+concept_id: spring/webflux-vs-mvc
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- webflux-vs-mvc
+- mvc-vs-webflux
+- servlet-thread-per
+- request
+aliases:
+- Spring MVC vs WebFlux
+- servlet thread per request
+- reactive event loop backpressure
+- WebFlux nonblocking model
+- MVC blocking model
+- boundedElastic blocking bridge
+intents:
+- comparison
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-mvc-sseemitter-vs-webflux-sse-timeout-behavior.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+confusable_with:
+- spring/webclient-vs-resttemplate
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- spring/mvc-sseemitter-vs-webflux-sse-timeout-behavior
+expected_queries:
+- Spring MVC와 WebFlux는 thread model과 backpressure가 어떻게 달라?
+- WebFlux를 쓰면 blocking DB나 external API 호출이 자동으로 빨라져?
+- servlet thread per request와 reactive event loop 모델을 비교해줘
+- SSE streaming에서 MVC SseEmitter와 WebFlux는 timeout 해석이 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC의 servlet thread-per-request model과 WebFlux의 reactive event-loop,
+  non-blocking backpressure model을 비교하는 chooser다. blocking bridge, WebClient,
+  security context propagation, SSE timeout behavior와 연결한다.
+---
 # Spring MVC vs WebFlux
 
 > 한 줄 요약: Spring MVC는 요청마다 스레드를 쓰는 단순한 모델이고, WebFlux는 적은 수의 이벤트 루프 스레드로 많은 연결을 다루기 위해 backpressure까지 포함한 비동기 모델이다.

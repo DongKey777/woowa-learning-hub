@@ -9,6 +9,14 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- sql-relational-modeling
+- sql
+- select
+- join
 aliases:
 - SQL
 - SELECT
@@ -17,6 +25,10 @@ aliases:
 - PK
 - FK
 - 관계형 모델링
+- SELECT 읽는 순서
+- JOIN row 증가
+- PK FK cardinality
+- GROUP BY 왜 쓰는지
 intents:
 - definition
 linked_paths:
@@ -28,8 +40,11 @@ expected_queries:
 - JOIN하면 왜 row가 늘어나?
 - PK랑 FK가 뭐야?
 - GROUP BY는 왜 쓰는 거야?
+contextual_chunk_prefix: |
+  이 문서는 SQL reading과 relational modeling beginner primer로 SELECT, FROM, JOIN,
+  WHERE, GROUP BY, PK, FK, cardinality, normalization을 처음 연결해 읽는 질문에 답한다.
+  JOIN 결과 row가 늘어나는 이유, 1:N 관계, N:M 연결 테이블, GROUP BY로 다시 묶는 이유를 한 흐름으로 설명한다.
 ---
-
 # SQL 읽기와 관계형 모델링 기초 (SQL Reading & Relational Modeling Foundations)
 
 > 한 줄 요약: `SELECT`는 어떤 테이블에서 어떤 행을 읽고 어떻게 묶어서 보여줄지 선언하는 문장이고, PK/FK·cardinality·정규화는 그 문장이 왜 그런 모양이 되는지를 설명하는 모델링 언어다.

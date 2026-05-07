@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Instant DDL vs Inplace vs Copy Algorithms
+concept_id: database/instant-ddl-vs-copy-inplace-algorithms
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- ddl-algorithm-chooser
+- instant-inplace-copy
+- metadata-lock-ddl-cost
+aliases:
+- instant ddl
+- inplace algorithm
+- copy algorithm
+- alter table algorithm
+- metadata lock
+- online ddl
+- rebuild table
+- ddl blocking
+- instant vs inplace vs copy
+- DDL 알고리즘
+symptoms:
+- ALTER TABLE 한 줄이 instant, inplace, copy 중 어떤 알고리즘으로 실행될지 확인하지 않고 있어
+- 컬럼 추가나 인덱스 변경이 instant일 거라고 예상했는데 table rebuild나 metadata lock 문제가 생겼어
+- DDL 문법보다 실제 선택된 알고리즘과 lock/copy/cutover 비용을 기준으로 rollout을 판단해야 해
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- database/metadata-lock-ddl-blocking
+- database/online-schema-change-strategies
+next_docs:
+- database/instant-add-column-metadata-semantics
+- database/index-maintenance-window-rollout-playbook
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+- database/destructive-schema-cleanup-column-retirement
+linked_paths:
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/database/index-maintenance-window-rollout-playbook.md
+- contents/database/clustered-index-locality.md
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/instant-add-column-metadata-semantics.md
+- contents/database/gh-ost-pt-osc-cutover-precheck-runbook.md
+confusable_with:
+- database/instant-add-column-metadata-semantics
+- database/metadata-lock-ddl-blocking
+- database/online-schema-change-strategies
+forbidden_neighbors: []
+expected_queries:
+- Instant DDL, inplace algorithm, copy algorithm은 운영 비용과 lock 위험이 어떻게 달라?
+- ALTER TABLE이 instant일 거라고 생각했는데 copy로 떨어지면 어떤 문제가 생겨?
+- MySQL DDL 알고리즘은 문법보다 실제 선택된 algorithm을 왜 확인해야 해?
+- index add는 instant가 아니라 inplace/copy 비용을 낼 수 있다는 점을 어떻게 봐야 해?
+- DDL cutover에서 metadata lock과 table rebuild를 어떻게 분리해서 판단해?
+contextual_chunk_prefix: |
+  이 문서는 ALTER TABLE이 instant, inplace, copy algorithm 중 무엇으로 실행되는지에 따라 metadata lock, table rebuild, cutover, replica lag 비용이 달라지는 점을 고르는 advanced chooser다.
+  instant ddl, inplace algorithm, copy algorithm, online ddl, metadata lock 같은 자연어 비교 질문이 본 문서에 매핑된다.
+---
 # Instant DDL vs Inplace vs Copy Algorithms
 
 > 한 줄 요약: DDL은 한 줄처럼 보이지만, 실제로는 메타데이터만 바꾸는지, 테이블을 다시 쓰는지에 따라 락과 비용이 완전히 달라진다.

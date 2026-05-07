@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Repository Pattern vs Anti-Pattern
+concept_id: design-pattern/repository-pattern-vs-antipattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- repository-pattern
+- repository-antipattern
+- query-leakage
+aliases:
+- repository pattern
+- repository anti pattern
+- repository antipattern
+- domain collection abstraction
+- generic crud repository smell
+- repository query leakage
+- fat repository
+- DAO vs repository
+- 저장소 패턴
+- 레포지토리 안티패턴
+symptoms:
+- Repository를 모든 SQL과 DTO 조립과 검증과 캐시 정책을 숨기는 data access god class로 만든다
+- 도메인 컬렉션 추상화가 아니라 테이블 중심 DAO처럼 selectAllJoinXAndY 형태의 메서드가 늘어난다
+- 복잡한 읽기 요구를 query service나 read model로 분리하지 않고 aggregate repository에 계속 붙인다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/unit-of-work-pattern
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/aggregate-reference-by-id
+next_docs:
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/aggregate-reference-by-id.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/unit-of-work-pattern
+- design-pattern/query-object-search-criteria-pattern
+forbidden_neighbors: []
+expected_queries:
+- Repository Pattern과 DAO는 도메인 컬렉션 추상화와 데이터 접근 객체 관점에서 어떻게 달라?
+- Repository가 저장, 조회, 검증, DTO 조립, 캐시까지 맡으면 왜 anti-pattern이 돼?
+- findBy 조건이 끝없이 늘어날 때 read model이나 query service로 분리해야 하는 신호는 뭐야?
+- aggregate 저장용 repository와 복잡한 검색용 query repository를 나누는 기준을 설명해줘
+- generic CRUD repository를 도메인 계층에 그대로 노출하면 어떤 책임 누수가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Repository Pattern vs Anti-Pattern chooser로, Repository는 domain
+  collection처럼 aggregate를 조회/저장하는 계약이어야 하며, SQL 조립, DTO 변환,
+  비즈니스 검증, cache policy가 몰리면 fat repository/data access god class가 되는
+  기준을 설명한다.
+---
 # Repository Pattern vs Anti-Pattern
 
 > 한 줄 요약: Repository는 도메인 컬렉션처럼 동작하는 저장소 추상화지만, 모든 데이터 접근을 한 클래스에 몰면 anti-pattern이 된다.

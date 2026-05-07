@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: pidfd Basics Race-Free Process Handles
+concept_id: operating-system/pidfd-basics-race-free-process-handles
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- pidfd-race-free
+- process-handles
+- pidfd
+- race-free-process
+aliases:
+- pidfd basics
+- race-free process handle
+- PID reuse race
+- pidfd signal
+- process exit monitoring
+- stable process reference
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/pid-limit-process-table-exhaustion.md
+- contents/operating-system/pid-namespace-init-semantics.md
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/proc-pid-status-signal-fields-debugging-primer.md
+expected_queries:
+- pidfd는 PID reuse race를 어떻게 피하는 process handle이야?
+- process 종료 감시와 signal 전달을 pidfd로 더 안전하게 하는 이유는?
+- PID 숫자와 pidfd kernel handle은 어떻게 달라?
+- namespace와 PID 재사용 환경에서 process reference를 안정적으로 잡는 법은?
+contextual_chunk_prefix: |
+  이 문서는 pidfd를 PID number reuse 문제를 피하면서 process를 안정적으로 가리키는
+  kernel handle로 설명한다. exit monitoring, signal delivery, namespace, zombie/orphan 관측과 연결된다.
+---
 # pidfd Basics, Race-Free Process Handles
 
 > 한 줄 요약: pidfd는 PID 재사용 문제를 피하면서 프로세스를 안정적으로 가리키는 커널 핸들이라, 종료 감시와 signal 전달을 더 안전하게 만든다.

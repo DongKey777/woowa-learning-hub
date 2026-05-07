@@ -9,8 +9,14 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
-mission_ids: []
-review_feedback_tags: []
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- transaction
+- commit
+- rollback
+- acid
 aliases:
 - transaction
 - commit
@@ -19,7 +25,14 @@ aliases:
 - 트랜잭션
 - 커밋
 - 롤백
-symptoms: []
+- all or nothing
+- 다 되거나 다 취소
+- 여러 SQL 작업을 하나로 묶기
+- SQL 여러 개 같이 성공 같이 실패
+symptoms:
+- 주문 저장과 재고 차감을 같이 성공하거나 같이 실패하게 묶어야 하는 이유가 흐리다
+- '@Transactional이 있으면 동시성 문제도 자동으로 해결된다고 생각한다'
+- commit과 rollback이 언제 결정되는지 service method 경계와 연결하지 못한다
 intents:
 - definition
 prerequisites:
@@ -42,19 +55,28 @@ expected_queries:
 - 트랜잭션이 뭐야?
 - commit이랑 rollback은 뭐야?
 - 주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?
+- 여러 SQL 작업을 하나로 묶어서 다 되거나 다 취소되게 하는 게 뭐야?
 contextual_chunk_prefix: |
   이 문서는 데이터베이스 입문자가 주문 저장과 재고 차감처럼 여러 변경을 왜
   한 묶음으로 commit하거나 rollback해야 하는지 처음 잡는 primer다. 같이
   성공하거나 같이 실패, transaction이 뭐야, commit rollback 차이,
-  @transactional 전에 트랜잭션 그림, 실패 범위 묶기 같은 자연어 질문이 이
-  문서의 기본 경계 감각에 매핑된다.
+  @transactional 전에 트랜잭션 그림, 실패 범위 묶기, 여러 SQL 작업을 하나로
+  묶어서 다 되거나 다 취소되게 하는 원리 같은 자연어 질문이 이 문서의 기본
+  경계 감각에 매핑된다.
 ---
-
 # 트랜잭션 기초 (Transaction Basics)
 
 > 한 줄 요약: 트랜잭션은 "여기까지 같이 성공하거나 같이 실패한다"를 정하는 묶음이다. `deadlock`, `retry`, `savepoint`는 이 primer의 본문보다 다음 관련 문서 가지에 가깝다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 미션 장면 | 이 문서에서 먼저 잡을 질문 |
+|---|---|
+| 주문 저장은 됐는데 재고 차감에서 예외가 난다 | 어디까지 같이 rollback할 것인가 |
+| 예약 생성 중 중복 예외가 난다 | 저장 실패를 같은 transaction outcome으로 묶을 것인가 |
+| `@Transactional`을 붙였는데 동시 수정이 꼬인다 | 실패 범위와 동시성 제어를 분리해 봤는가 |
 
 관련 문서:
 

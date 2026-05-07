@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Proxy Protocol, Client IP, Trust Boundary"
+concept_id: network/proxy-protocol-client-ip-trust-boundary
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- proxy-protocol
+- client-ip
+- trust-boundary
+aliases:
+- PROXY protocol
+- proxy protocol v1
+- proxy protocol v2
+- original source address
+- TLV
+- L4 load balancer client IP
+- client IP preservation
+symptoms:
+- backend 로그에 LB IP만 찍히는데 HTTP header만 찾는다
+- Proxy Protocol 값을 trust boundary 밖 client가 보낸 값처럼 그대로 믿는다
+- backend listener는 Proxy Protocol을 기대하지 않는데 LB가 send-proxy를 켜 protocol mismatch가 난다
+- X-Forwarded-For와 Proxy Protocol을 경쟁 관계로 보고 layer 차이를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/tls-loadbalancing-proxy
+next_docs:
+- network/proxy-header-normalization-chain-trust-boundary
+- network/api-gateway-reverse-proxy-operational-points
+- network/load-balancer-healthcheck-failure-patterns
+- network/service-mesh-sidecar-proxy
+linked_paths:
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/service-mesh-sidecar-proxy.md
+confusable_with:
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/proxy-header-normalization-chain-trust-boundary
+- network/tls-loadbalancing-proxy
+- network/api-gateway-reverse-proxy-operational-points
+forbidden_neighbors: []
+expected_queries:
+- "Proxy Protocol은 X-Forwarded-For와 어떻게 달라?"
+- "L4 load balancer 뒤 backend에서 원래 client IP를 보존하려면 뭘 봐야 해?"
+- "Proxy Protocol v1 v2와 TLV 차이를 설명해줘"
+- "backend listener와 LB send-proxy 설정이 안 맞으면 어떤 증상이 나와?"
+- "Proxy Protocol 값을 어디까지 신뢰해야 하는지 trust boundary를 잡아줘"
+contextual_chunk_prefix: |
+  이 문서는 PROXY protocol v1/v2, original source address, TLV, L4/L7 proxy
+  뒤 client IP preservation, trusted proxy boundary를 다루는 advanced playbook이다.
+---
 # Proxy Protocol, Client IP, Trust Boundary
 
 > 한 줄 요약: Proxy Protocol은 L4/L7 앞단이 원래 client 정보를 백엔드에 전달하는 장치지만, 그 값을 믿을 수 있는 범위는 결국 trust boundary 안으로만 제한해야 한다.

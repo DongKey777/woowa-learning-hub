@@ -1,69 +1,68 @@
 ---
 schema_version: 3
-title: "커넥션 풀 기초 (Connection Pool Basics)"
-concept_id: "database/connection-pool"
+title: 커넥션 풀 기초 (Connection Pool Basics)
+concept_id: database/connection-pool
 canonical: true
-category: "database"
+category: database
 difficulty: beginner
 doc_role: primer
 level: beginner
 language: ko
 source_priority: 92
+review_feedback_tags:
+- connection-pool
+- hikari-connection-pool
+- hikari-cp
+- hikaricp
 aliases:
-  - connection pool
-  - 커넥션 풀
-  - 커넥션 풀이란
-  - connection pool basics
-  - hikari connection pool basics
-  - Hikari connection pool
-  - DB 커넥션 재사용
-  - hikari cp
-  - hikaricp
-  - HikariCP
-  - spring boot default pool
-  - jdbc connection pool
-  - 스프링 커넥션 풀
-  - pool size
-  - maxpoolsize
-  - 커넥션 고갈
-  - connection close returns pool
+- connection pool
+- 커넥션 풀
+- 커넥션 풀이란
+- connection pool basics
+- hikari connection pool basics
+- Hikari connection pool
+- DB 커넥션 재사용
+- hikari cp
+- hikaricp
+- HikariCP
+- spring boot default pool
+- jdbc connection pool
+- 스프링 커넥션 풀
+- pool size
+- maxpoolsize
+- 커넥션 고갈
+- connection close returns pool
 intents:
-  - definition
-  - design
+- definition
+- design
 prerequisites: []
 next_docs:
-  - database/connection-pool-starvation-symptom-router
-  - database/connection-pool-transaction-propagation
-  - database/connection-timeout-vs-lock-timeout
+- database/connection-pool-starvation-symptom-router
+- database/connection-pool-transaction-propagation-bulk-write
+- database/connection-timeout-vs-lock-timeout-card
 linked_paths:
-  - contents/database/connection-pool-starvation-symptom-router.md
-  - contents/database/connection-pool-transaction-propagation-bulk-write.md
-  - contents/database/connection-timeout-vs-lock-timeout-card.md
-  - contents/database/transaction-locking-connection-pool-primer.md
-  - contents/database/jdbc-jpa-mybatis.md
-  - contents/spring/spring-transactional-basics.md
+- contents/database/connection-pool-starvation-symptom-router.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/transaction-locking-connection-pool-primer.md
+- contents/database/jdbc-jpa-mybatis.md
+- contents/spring/spring-transactional-basics.md
 confusable_with:
-  - operating-system/thread-pool
+- operating-system/blocking-io-thread-pool-backpressure-primer
 forbidden_neighbors:
-  - contents/database/hikari-connection-pool-tuning.md
-  - contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
 expected_queries:
-  - Connection pool이 뭐야?
-  - DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야?
-  - HikariCP가 뭐야?
-  - Hikari connection pool 처음 배우는데 어디부터 봐?
-  - Connection is not available가 풀 기초 문제인지부터 알고 싶어
-  - 커넥션 풀이 너무 작으면 어떻게 돼?
-  - 처음 배우는데 커넥션 풀
+- Connection pool이 뭐야?
+- DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야?
+- HikariCP가 뭐야?
+- Hikari connection pool 처음 배우는데 어디부터 봐?
+- Connection is not available가 풀 기초 문제인지부터 알고 싶어
+- 커넥션 풀이 너무 작으면 어떻게 돼?
+- 처음 배우는데 커넥션 풀
 contextual_chunk_prefix: |
-  이 문서는 Spring 또는 JDBC를 처음 배우는 학습자가 "DB 연결을 매 요청마다 새로
-  만드는 게 왜 비효율인가"라는 감각을 잡을 때 참고하는 primer다. 본 문서의 chunk는
-  연결 비용 / 풀 크기 결정 / 풀 고갈 / 반환 흐름 중 일부를 설명한다. tuning 심화는
-  hikari-connection-pool-tuning에서 다루고, "Connection is not available",
-  Hikari connection pool 처음, pool exhausted 같은 증상 원인 분기는
-  connection-pool-starvation-symptom-router에서 다룬다 (본 primer는 큰 그림만).
+  이 문서는 database 카테고리에서 커넥션 풀 기초 (Connection Pool Basics)를 다루는 primer 문서다. connection pool, 커넥션 풀, 커넥션 풀이란, connection pool basics, hikari connection pool basics 같은 lexical 표현과 Connection pool이 뭐야?, DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
 ---
-
 # 커넥션 풀 기초 (Connection Pool Basics)
 
 > 한 줄 요약: 커넥션 풀은 DB 연결을 미리 만들어 재사용하는 캐시이고, 풀 크기가 너무 작으면 대기가, 너무 크면 DB 과부하가 생긴다.

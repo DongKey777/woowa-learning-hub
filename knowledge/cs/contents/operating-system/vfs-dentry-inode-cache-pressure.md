@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: VFS Dentry Inode Cache Pressure
+concept_id: operating-system/vfs-dentry-inode-cache-pressure
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- vfs-dentry-inode
+- cache-pressure
+- metadata-heavy-workload
+- dcache-icache-reclaim
+aliases:
+- VFS dentry inode cache pressure
+- metadata-heavy workload
+- dcache icache reclaim
+- slab pressure filesystem
+- path lookup cache
+- inode dentry memory
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/slab-allocator-kernel-memory-pressure.md
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+- contents/operating-system/overlayfs-copy-up-container-layering-debugging.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+symptoms:
+- metadata-heavy workload에서 dentry/inode cache가 slab pressure와 reclaim cost를 키운다.
+- file content cache가 아니라 path lookup metadata cache가 memory pressure의 숨은 원인이다.
+- OverlayFS나 많은 small files workload에서 inode/dentry cache가 커진다.
+expected_queries:
+- dentry와 inode cache는 path lookup을 빠르게 하지만 slab pressure를 만들 수 있어?
+- metadata-heavy workload에서 VFS cache pressure를 어떻게 진단해?
+- dcache icache growth가 OOM이나 reclaim latency의 hidden cause가 될 수 있어?
+- OverlayFS copy-up과 dentry/inode cache pressure는 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 VFS dentry와 inode cache가 path lookup을 빠르게 하지만 metadata-heavy workload에서는
+  slab memory pressure와 reclaim cost를 동시에 키울 수 있다는 playbook이다.
+---
 # VFS Dentry, Inode Cache Pressure
 
 > 한 줄 요약: dentry와 inode cache는 파일 경로 탐색을 빠르게 하지만, metadata-heavy workload에서는 슬랩 압박과 reclaim 비용을 동시에 키울 수 있다.

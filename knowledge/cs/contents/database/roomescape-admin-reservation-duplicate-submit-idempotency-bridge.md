@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > roomescape에서 예약 생성 한 번은 "같은 의미의 요청 하나"여야 한다. 브라우저나 네트워크가 같은 POST를 다시 보내도 예약을 두 번 만들지 않으려면, controller의 `if`문보다 먼저 같은 request identity를 DB가 한 번만 통과시키는 멱등성 경계가 필요하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 추가 버튼을 두 번 누르면 같은 예약이 두 번 생길까 봐 불안해요" | 같은 생성 POST가 더블클릭이나 timeout retry로 재전송되는 관리자 화면 | 같은 요청 identity를 한 번만 인정하는 idempotency key를 본다 |
+| "PRG를 넣었는데도 중복 제출 방어를 따로 보라는 리뷰가 달렸어요" | redirect는 됐지만 저장 요청 자체의 replay identity가 없는 구조 | 브라우저 새로고침 정리와 저장소 dedup을 다른 층위로 분리한다 |
+| "서로 다른 관리자가 같은 슬롯을 잡는 문제랑 같은 건가요?" | duplicate submit과 slot competition을 같은 unique 제약 하나로 설명하려는 코드 | 같은 요청 재전송과 다른 요청 간 자원 경쟁을 구분한다 |
+
 ## 미션 시나리오
 
 roomescape 관리자 예약 화면은 예약자, 날짜, 시간 슬롯을 고르고 `POST

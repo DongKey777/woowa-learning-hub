@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Spring MVC Async Dispatch with Callable and DeferredResult
+concept_id: spring/mvc-async-deferredresult-callable-dispatch
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- mvc-async-deferredresult
+- callable-dispatch
+- mvc-async
+- callable
+aliases:
+- Spring MVC async
+- Callable
+- DeferredResult
+- WebAsyncTask
+- async dispatch
+- servlet async redispatch
+- WebAsyncManager
+- AsyncRequestTimeoutException
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-async-timeout-disconnect-decision-tree.md
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-request-scope-proxy-pitfalls.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+expected_queries:
+- Spring MVC async는 WebFlux와 어떻게 달라?
+- Callable DeferredResult WebAsyncTask는 결과 완성 책임이 어떻게 달라?
+- MVC async redispatch 때문에 filter나 interceptor가 두 번 보이는 이유는?
+- AsyncRequestTimeoutException과 request scope, SecurityContext 문제는 어디서 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC async가 reactive WebFlux가 아니라 Servlet async와 redispatch
+  모델이라는 점을 deep dive한다. Callable, WebAsyncTask, DeferredResult,
+  ResponseBodyEmitter/SseEmitter, WebAsyncManager, original servlet thread 반환,
+  second dispatch, timeout, filter/interceptor/security/request scope 경계를 설명한다.
+---
 # Spring MVC Async Dispatch with `Callable` / `DeferredResult`
 
 > 한 줄 요약: Spring MVC async는 WebFlux가 아니라 Servlet async + redispatch 모델이므로, 스레드 전환과 두 번째 dispatch를 이해해야 timeout, filter, security 문제가 풀린다.

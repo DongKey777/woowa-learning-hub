@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Builder Pattern
+concept_id: design-pattern/builder-pattern
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- builder-pattern
+- constructor-explosion
+- immutable-object-construction
+aliases:
+- builder pattern
+- 빌더 패턴
+- immutable object builder
+- builder vs constructor
+- builder vs factory
+- builder vs setter
+- lombok builder
+- build method validation
+- 생성자 폭발
+- 단계적 객체 생성
+symptoms:
+- 생성자 인자가 길어져 호출부에서 어떤 값이 어떤 필드인지 읽기 어렵다
+- 필수값과 선택값이 섞인 객체에 setter를 열어 불변성과 검증 위치가 흔들린다
+- Lombok Builder를 붙이면 build 시점 검증까지 자동으로 해결된다고 오해한다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/oop-design-basics
+- design-pattern/builder-pattern-basics
+- design-pattern/factory-deep-dive
+next_docs:
+- design-pattern/record-vs-builder-request-model-chooser
+- design-pattern/builder-vs-fluent-mutation-smell
+- design-pattern/factory-vs-abstract-factory-vs-builder
+linked_paths:
+- contents/design-pattern/builder-pattern-basics.md
+- contents/design-pattern/factory.md
+- contents/design-pattern/record-vs-builder-request-model-chooser.md
+- contents/design-pattern/builder-vs-fluent-mutation-smell.md
+confusable_with:
+- design-pattern/builder-pattern-basics
+- design-pattern/factory-deep-dive
+- design-pattern/record-vs-builder-request-model-chooser
+- design-pattern/builder-vs-fluent-mutation-smell
+forbidden_neighbors: []
+expected_queries:
+- Builder Pattern은 생성자 인자가 많고 선택값이 섞일 때 어떤 문제를 해결해?
+- 생성자나 정적 팩토리 대신 builder를 선택하는 기준은 뭐야?
+- Lombok @Builder를 써도 build 메서드 검증을 따로 생각해야 하는 이유가 뭐야?
+- 불변 객체를 만들 때 builder와 setter 방식은 어떤 차이가 있어?
+- builder와 factory는 객체 조립과 구현 선택 관점에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Builder Pattern chooser로, 생성자 폭발과 필수/선택값 혼재 문제에서
+  builder를 언제 선택할지, constructor, static factory, setter, factory와
+  어떻게 구분할지 설명한다.
+---
 # 빌더 패턴
 
 > 한 줄 요약: 복잡한 객체 생성을 생성자 폭발 없이 단계적으로 조립하는 패턴이다.

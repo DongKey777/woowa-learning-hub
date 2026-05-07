@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring RequestBodyAdvice and ResponseBodyAdvice Pipeline
+concept_id: spring/requestbody-responsebodyadvice-pipeline
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- requestbody-responsebodyadvice-pipeline
+- requestbodyadvice-responsebodyadvice
+- body-advice-pipeline
+- httpmessageconverter-around-advice
+aliases:
+- RequestBodyAdvice ResponseBodyAdvice
+- Spring body advice pipeline
+- HttpMessageConverter around advice
+- beforeBodyRead afterBodyRead beforeBodyWrite
+- ResponseBodyAdvice streaming limitation
+- converter body hook
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-responsebodyadvice-streaming-types.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-httpmessagenotwritableexception-failure-taxonomy.md
+expected_queries:
+- RequestBodyAdvice와 ResponseBodyAdvice는 Spring MVC pipeline 어디서 실행돼?
+- beforeBodyRead afterBodyRead beforeBodyWrite는 어떤 차례로 호출돼?
+- ResponseBodyAdvice가 streaming response나 이미 commit된 응답을 바꿀 수 있어?
+- HttpMessageConverter와 body advice 책임은 어떻게 나뉘어?
+contextual_chunk_prefix: |
+  이 문서는 RequestBodyAdvice와 ResponseBodyAdvice가 handler mapping보다 뒤,
+  argument resolver와 return value handler가 body 경로를 선택한 뒤 converter 주변에서만
+  개입한다는 점을 설명한다. streaming, content negotiation, response commit 한계를 함께 다룬다.
+---
 # Spring `RequestBodyAdvice` and `ResponseBodyAdvice` Pipeline
 
 > 한 줄 요약: `RequestBodyAdvice`와 `ResponseBodyAdvice`는 HTTP body를 읽기 전/후와 쓰기 직전에 개입하는 마지막 훅이지만, 이들은 return value handler가 body 경로를 고른 뒤 converter 주변에서만 힘을 가지므로 response commit과 disconnect 이후까지 복구할 수는 없다.

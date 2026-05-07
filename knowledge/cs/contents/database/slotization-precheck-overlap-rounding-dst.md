@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries
+concept_id: database/slotization-precheck-overlap-rounding-dst
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- slotization
+- precheck
+- overlap
+- rounding
+- dst
+aliases:
+- slotization precheck
+- slotization preflight query
+- interval-to-slot cutover precheck
+- legacy interval overlap query
+- slot rounding collision query
+- rounded slot collapse
+- DST boundary precheck
+- ambiguous local time fold
+- nonexistent local time gap
+- pre-cutover conflict scan
+symptoms:
+- interval to slot cutover 전에 legacy overlap, slot rounding collision, DST fold/gap을 따로 분류해야 해
+- source interval은 합법이지만 floor/ceil slot policy 때문에 서로 다른 예약이 같은 slot으로 collapse돼
+- timezone table이나 zone_name 누락 때문에 slot expansion이 deterministic하지 않아 cutover를 막아야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/slot-row-rounding-half-open-dst-junior-checklist
+- database/slotization-migration-backfill-playbook
+next_docs:
+- database/online-backfill-verification-cutover-gates
+- database/active-predicate-drift-reservation-arbitration
+- database/hold-expiration-predicate-drift
+linked_paths:
+- contents/database/slot-row-rounding-half-open-dst-junior-checklist.md
+- contents/database/slotization-migration-backfill-playbook.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/active-predicate-drift-reservation-arbitration.md
+- contents/database/hold-expiration-predicate-drift.md
+confusable_with:
+- database/slotization-migration-backfill-playbook
+- database/slot-row-rounding-half-open-dst-junior-checklist
+- database/overlap-predicate-index-design-booking-tables
+forbidden_neighbors: []
+expected_queries:
+- slotization cutover 전 precheck에서 legacy overlap, rounding collision, DST boundary를 왜 따로 세야 해?
+- source interval은 안 겹치는데 slot rounding 후 같은 slot으로 collapse되는 경우를 어떻게 찾나?
+- DST fold와 gap, zone_name 누락, local wall-clock 혼재는 slot expansion에서 왜 blocked 상태로 봐야 해?
+- PostgreSQL generate_series와 MySQL slot_calendar로 interval to slot preflight query를 어떻게 구성해?
+- precheck 실패 row를 quarantine하지 않고 cutover하면 어떤 double-booking이나 false conflict가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 slotization precheck를 legacy interval overlap, slot-rounding collision, DST fold/gap, canonical slot policy 기준으로 검증하는 advanced playbook이다.
+  interval-to-slot cutover precheck, rounded slot collapse, ambiguous local time fold, pre-cutover conflict scan 질문이 본 문서에 매핑된다.
+---
 # Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries
 
 > 한 줄 요약: interval -> slot cutover 전 precheck는 "겹치는 row가 있나"만 보는 게 아니라, legacy overlap, slot-rounding collapse, DST fold/gap을 같은 canonical policy로 먼저 드러내는 것이다.

@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Session Pinning vs Version-Gated Strict Reads
+concept_id: design-pattern/session-pinning-vs-version-gated-strict-reads
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- session-pinning
+- version-gated-strict-read
+- cross-screen-read-your-writes
+aliases:
+- session pinning strict read
+- session pinning vs version gated
+- expected version strict read
+- watermark gated strict read
+- cross screen read your writes
+- strict screen routing window
+- actor scoped pinning
+- pinned read chain
+- session strict window
+- consistency token strict screen
+symptoms:
+- 단건 상세 freshness 증거가 필요한 문제를 session pinning으로 과하게 덮어 primary나 old path를 오래 태운다
+- 여러 strict screen이 recent-write window를 공유하는데 화면별 expectedVersion/watermark gate만 따로 두어 detail, list, badge가 서로 다른 read world를 본다
+- session pinning을 latest 보장 증거처럼 설명하지만 실제로는 route non-regression이고 local freshness gate가 따로 필요하다는 점을 놓친다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/read-model-staleness-read-your-writes
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/projection-freshness-slo-pattern
+next_docs:
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/fallback-capacity-and-headroom-contracts
+- database/client-consistency-tokens
+linked_paths:
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/client-consistency-tokens.md
+- contents/database/read-snapshot-pinning.md
+- contents/system-design/session-store-design-at-scale.md
+confusable_with:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/strict-pagination-fallback-contracts
+- database/client-consistency-tokens
+- database/read-your-writes-session-pinning
+forbidden_neighbors: []
+expected_queries:
+- Session pinning과 expectedVersion/watermark gate는 strict read에서 어떤 질문에 답하는지 달라?
+- expectedVersion gate는 단건 aggregate detail에 좋고 watermark gate는 list/search/count에 더 자연스러운 이유가 뭐야?
+- session pinning은 freshness proof가 아니라 recent-write window 동안 route가 뒤로 가지 않게 묶는 routing memory라는 말은 무슨 뜻이야?
+- detail은 최신인데 list와 badge가 옛값을 보는 cross-screen 모순을 줄이려면 session pinning이 필요한 이유가 뭐야?
+- gate로 풀고 pinning으로 묶는 패턴은 strict screen registry와 fallback contract에서 어떻게 동작해?
+contextual_chunk_prefix: |
+  이 문서는 Session Pinning vs Version-Gated Strict Reads chooser로, expectedVersion과
+  watermark gate는 projection freshness를 증명하는 local gate이고, session pinning은 actor의
+  recent-write strict window 동안 여러 strict screen이 같은 read route/world를 보게 하는 routing
+  memory라는 차이를 설명한다.
+---
 # Session Pinning vs Version-Gated Strict Reads
 
 > 한 줄 요약: `expectedVersion`이나 watermark gate는 "이 화면의 projection이 충분히 따라왔는가"를 증명하는 규칙이고, session pinning은 "이 사용자의 짧은 strict window 동안 다음 여러 화면이 뒤로 가지 않게 어느 read world에 묶을 것인가"를 정하는 규칙이다. 화면 하나의 freshness 증명보다 cross-screen routing 일관성이 더 중요할 때 session pinning이 더 적합하다.

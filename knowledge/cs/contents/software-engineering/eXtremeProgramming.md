@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: eXtreme Programming (XP)
+concept_id: software-engineering/extreme-programming
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- agile
+- xp
+- tdd
+- continuous-feedback
+aliases:
+- eXtreme Programming
+- Extreme Programming XP
+- XP agile development
+- pair programming TDD small releases
+- 애자일 XP 개발 프로세스
+- short iteration continuous feedback
+symptoms: []
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites: []
+next_docs:
+- software-engineering/pair-programming-code-review-tradeoffs
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/release-trains-vs-continuous-delivery
+linked_paths:
+- contents/software-engineering/pair-programming-code-review-tradeoffs.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/release-trains-vs-continuous-delivery.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/architectural-fitness-functions.md
+confusable_with:
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/release-trains-vs-continuous-delivery
+- software-engineering/pair-programming-code-review-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- XP가 단순히 테스트를 많이 쓰는 방법이 아니라 피드백 주기를 줄이는 개발 방식인 이유를 설명해줘
+- Extreme Programming에서 TDD, pair programming, small release가 각각 어떤 역할을 해?
+- XP와 Scrum은 무엇이 다르고 언제 XP 실천이 더 중요한지 비교해줘
+- 요구사항이 자주 바뀌는 프로젝트에서 XP가 변경 비용을 낮추는 방식은 뭐야?
+- XP의 simple design이 과잉 추상화를 피하는 원칙과 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 eXtreme Programming을 TDD, pair programming, small releases, customer feedback, simple design이 연결된 agile feedback loop로 설명하는 intermediate primer이다.
+---
 # eXtreme Programming (XP)
 
 > 한 줄 요약: XP는 "테스트를 많이 쓰는 방법"이 아니라, 변경이 잦은 환경에서 피드백 주기와 배포 리스크를 줄이기 위해 개발, 테스트, 고객 피드백, 릴리스를 한 루프로 묶는 방법이다.

@@ -49,11 +49,7 @@ confusable_with:
 - software-engineering/baseball-turn-processing-service-layer-bridge
 - design-pattern/baseball-restart-flow-state-pattern-bridge
 - design-pattern/baseball-strike-ball-judging-policy-object-bridge
-forbidden_neighbors:
-- contents/software-engineering/baseball-guess-value-object-boundary-bridge.md
-- contents/software-engineering/baseball-turn-processing-service-layer-bridge.md
-- contents/design-pattern/baseball-restart-flow-state-pattern-bridge.md
-- contents/design-pattern/baseball-strike-ball-judging-policy-object-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 야구 미션에서 긴 if 문이 생겼을 때 이게 입력 규칙 문제인지 턴 흐름 문제인지 어떻게 구분해?
 - baseball 리뷰에서 값 객체로 빼라, service로 옮겨라, 상태 패턴 보라가 한꺼번에 나오면 무엇부터 판단해야 해?

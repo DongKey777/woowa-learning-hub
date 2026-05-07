@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Spring/JPA Exact-Key Lock Mapping Guide
+concept_id: database/spring-jpa-exact-key-lock-mapping
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- spring
+- jpa
+- pessimistic-lock
+- exact-key
+- mysql
+aliases:
+- Spring JPA exact key lock
+- JPA PESSIMISTIC_WRITE MySQL FOR UPDATE
+- JPA PESSIMISTIC_READ MySQL FOR SHARE
+- exact key probe Spring repository
+- Hibernate FOR SHARE MySQL
+- JPA lock lost index path
+- derived query lock MySQL
+- Spring duplicate check RR next key
+- 왜 JPA 락인데 중복이 생겨요
+- JPA exact key basics
+symptoms:
+- '@Lock(PESSIMISTIC_WRITE)'가 business predicate 전체를 잠근다고 오해하고 있어
+- JPA lock mode, generated SQL clause, InnoDB chosen index path를 분리해서 설명해야 해
+- repository method refactor, lower function, join, order by 때문에 exact-key path가 흔들릴 수 있어
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/hibernate-sql-log-explain-lock-verification-primer
+- database/mysql-rr-exact-key-probe-visual-guide
+next_docs:
+- database/explain-checklist-exact-key-locking-reads
+- database/unique-vs-locking-read-duplicate-primer
+- database/range-locking-limits-jpa
+linked_paths:
+- contents/database/hibernate-sql-log-explain-lock-verification-primer.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/spring-jpa-locking-example-guide.md
+- contents/database/range-locking-limits-jpa.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/range-locking-limits-jpa
+- database/hibernate-sql-log-explain-lock-verification-primer
+- database/unique-vs-locking-read-duplicate-primer
+forbidden_neighbors: []
+expected_queries:
+- Spring JPA @Lock(PESSIMISTIC_WRITE)는 MySQL FOR UPDATE로 내려가지만 왜 predicate 전체 lock은 아니야?
+- JPA lock mode, Hibernate SQL, InnoDB index path를 세 층으로 나눠 설명해줘
+- exact-key duplicate check에서 full unique key equality와 matching index path가 깨지면 왜 중복이 생길 수 있어?
+- PESSIMISTIC_WRITE와 PESSIMISTIC_READ보다 실제 chosen index path가 더 중요하다는 뜻이 뭐야?
+- repository derived query에 lower 함수, join, order by가 붙으면 RR next-key exact-key 가정이 왜 흔들려?
+contextual_chunk_prefix: |
+  이 문서는 Spring/JPA exact-key lock mapping을 LockModeType, FOR UPDATE/FOR SHARE, Hibernate SQL log, InnoDB chosen index path 관점으로 연결하는 beginner bridge다.
+  JPA PESSIMISTIC_WRITE MySQL, exact key probe, 왜 JPA 락인데 중복, lock lost index path 질문이 본 문서에 매핑된다.
+---
 # Spring/JPA Exact-Key Lock Mapping Guide
 
 > 한 줄 요약: Spring/JPA의 `PESSIMISTIC_WRITE`와 `PESSIMISTIC_READ`는 대체로 MySQL `FOR UPDATE`와 `FOR SHARE`로 내려가지만, RR next-key가 exact-key queue처럼 보이는 장면은 **락 모드**보다 **chosen index path**가 유지될 때만 성립한다.

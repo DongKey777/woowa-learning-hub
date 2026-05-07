@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Primary Switch and Write Fencing
+concept_id: database/primary-switch-write-fencing
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- failover
+- write-fencing
+- fencing-epoch
+- primary-switch
+aliases:
+- primary switch
+- write fencing
+- fencing epoch
+- stale primary
+- promotion cutover
+- visibility window
+- commit horizon
+- primary switch write fencing
+- 옛 primary write 차단
+- failover write fence
+symptoms:
+- primary switch 후 read route만 바꾸고 old primary의 stale write를 fencing하지 않아 split brain write corruption 위험이 있어
+- DNS TTL, pool, worker cache 때문에 일부 writer가 옛 endpoint로 write를 보낼 수 있어 epoch 검증이 필요해
+- failover cutover에서 promotion, route switch, write fence, commit horizon verification 순서를 잡아야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/replication-failover-split-brain
+- database/failover-promotion-read-divergence
+next_docs:
+- database/ghost-reads-mixed-routing-write-fence-tokens
+- database/failover-visibility-window-topology-cache-playbook
+- database/commit-horizon-after-failover-verification
+linked_paths:
+- contents/database/replication-failover-split-brain.md
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/ghost-reads-mixed-routing-write-fence-tokens.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/commit-horizon-after-failover-verification.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/replication-failover-split-brain
+- database/ghost-reads-mixed-routing-write-fence-tokens
+- database/commit-horizon-after-failover-verification
+forbidden_neighbors: []
+expected_queries:
+- primary switch에서 read routing보다 write fencing이 더 중요한 이유가 뭐야?
+- failover 후 옛 primary의 늦은 write를 fencing epoch로 어떻게 막아?
+- DNS TTL이나 connection pool에 남은 stale writer를 어떻게 거절해야 해?
+- primary promotion cutover에서 bump epoch, fence old primary, switch write route 순서를 설명해줘
+- commit horizon verification 없이 primary switch를 마치면 어떤 write corruption 위험이 있어?
+contextual_chunk_prefix: |
+  이 문서는 primary switch와 failover cutover에서 old primary stale write를 fencing epoch, write fence token, commit horizon verification으로 막는 intermediate playbook이다.
+  primary switch write fencing, stale primary, 옛 primary write 차단 질문이 본 문서에 매핑된다.
+---
 # Primary Switch와 Write Fencing
 
 > 한 줄 요약: primary가 바뀌는 순간에는 읽기 라우팅보다 write fencing이 더 중요하고, 옛 primary의 늦은 write를 반드시 막아야 한다.

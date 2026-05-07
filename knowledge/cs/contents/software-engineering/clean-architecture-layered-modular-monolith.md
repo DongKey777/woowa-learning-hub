@@ -39,8 +39,8 @@ prerequisites:
 - software-engineering/ports-and-adapters-beginner-primer
 next_docs:
 - software-engineering/modular-monolith-boundary-enforcement
-- software-engineering/ddd-bounded-context-failure-patterns
-- software-engineering/anti-corruption-layer-integration-patterns
+- software-engineering/bounded-context-failure-patterns
+- software-engineering/anti-corruption-layer
 linked_paths:
 - contents/software-engineering/architecture-layering-fundamentals.md
 - contents/software-engineering/ports-and-adapters-beginner-primer.md
@@ -53,6 +53,9 @@ confusable_with:
 - software-engineering/ports-and-adapters-beginner-primer
 - software-engineering/ddd-hexagonal-consistency
 forbidden_neighbors:
+  - contents/software-engineering/modular-monolith-boundary-enforcement.md
+  - contents/software-engineering/ddd-bounded-context-failure-patterns.md
+  - contents/software-engineering/anti-corruption-layer-integration-patterns.md
 expected_queries:
 - 서비스 하나로 시작할 때 layered와 clean 중 어디까지 가져가야 하는지 판단 기준이 뭐야?
 - domain이 JPA나 framework annotation을 직접 알면 왜 clean하지 않다고 말하는 거야?

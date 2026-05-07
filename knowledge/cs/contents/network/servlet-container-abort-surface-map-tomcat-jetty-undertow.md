@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: "Servlet Container Abort Surface Map: Tomcat, Jetty, Undertow"
+concept_id: network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- servlet-container
+- client-abort
+- spring-disconnect
+aliases:
+- servlet container abort surface map
+- Tomcat ClientAbortException
+- Jetty EofException
+- Undertow connection terminated parsing multipart data
+- AsyncRequestNotUsableException
+- request.getParts container difference
+- upload abort before controller
+symptoms:
+- ClientAbortException 하나로 read-side abort와 write-side broken pipe를 구분하지 않는다
+- Tomcat Jetty Undertow의 multipart/read/cleanup surface 차이를 같은 Spring 예외로 뭉갠다
+- controller 진입 전 MultipartException과 commit 후 AsyncRequestNotUsableException을 같은 phase로 본다
+- unread body cleanup 정책이 keep-alive 재사용과 edge 499 표면을 바꾸는 점을 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- network/spring-multipart-exception-translation-matrix
+next_docs:
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- network/proxy-to-container-upload-cleanup-matrix
+- spring/servlet-container-disconnect-exception-mapping
+- spring/multipart-upload-request-pipeline
+linked_paths:
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/webflux-request-body-abort-surface-map.md
+- contents/network/container-specific-disconnect-logging-recipes-spring-boot.md
+- contents/network/spring-mvc-async-onerror-asyncrequestnotusableexception-crosswalk.md
+- contents/network/spring-multipart-exception-translation-matrix.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/spring/spring-multipart-upload-request-pipeline.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+confusable_with:
+- network/spring-multipart-exception-translation-matrix
+- network/proxy-to-container-upload-cleanup-matrix
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+- "Tomcat Jetty Undertow client abort surface를 Spring 예외로 어떻게 번역해?"
+- "ClientAbortException이 read-side인지 write-side인지 어떻게 구분해?"
+- "MultipartException 안쪽 Tomcat ClientAbortException Jetty EofException Undertow IOException을 어떻게 해석해?"
+- "AsyncRequestNotUsableException은 response commit 후 late write와 어떤 관련이 있어?"
+- "servlet container unread body cleanup이 edge 499와 keep-alive 재사용에 미치는 영향은?"
+contextual_chunk_prefix: |
+  이 문서는 Tomcat, Jetty, Undertow servlet container의 client abort,
+  multipart read abort, unread-body cleanup, write-side broken pipe surface를
+  Spring 예외와 연결하는 advanced bridge다.
+---
 # Servlet Container Abort Surface Map: Tomcat, Jetty, Undertow
 
 > 한 줄 요약: request body를 읽는 중 client가 끊기거나 multipart upload가 중간에 깨져도 Tomcat은 `ClientAbortException`과 bounded swallow 쪽으로, Jetty는 `EofException`과 non-persistent cleanup 쪽으로, Undertow는 plain `IOException`과 `Connection terminated parsing multipart data` 및 `endExchange()` drain 쪽으로 갈라진다. Spring에서 controller 전에 보이는 `MultipartException`, `MaxUploadSizeExceededException`, commit 후 보이는 `AsyncRequestNotUsableException`을 정확히 번역하려면 read-side와 write-side를 분리해야 한다.

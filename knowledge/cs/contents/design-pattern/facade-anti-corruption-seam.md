@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Facade as Anti-Corruption Seam
+concept_id: design-pattern/facade-anti-corruption-seam
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- facade
+- anti-corruption-layer
+- boundary-translation
+- legacy-integration
+aliases:
+- facade anti corruption seam
+- anti corruption seam
+- facade as boundary seam
+- concept quarantine
+- legacy concept quarantine
+- external model shielding
+- subsystem orchestration seam
+- provider concept quarantine
+- 외부 용어 격리
+- 퍼사드 경계
+symptoms:
+- 외부 API의 상태 코드, 단계 이름, 예외가 내부 도메인 서비스 곳곳에 그대로 퍼진다
+- 단순 SDK wrapper 문제와 외부 개념을 내부 언어로 격리하는 seam 문제를 구분하지 못한다
+- Facade가 복잡한 호출 순서 단순화와 domain language 보호를 동시에 맡아도 되는지 헷갈린다
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/ports-and-adapters-vs-classic-patterns
+next_docs:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-translation-map-pattern
+- design-pattern/adapter-chaining-smells
+linked_paths:
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/anti-corruption-layer-operational-pattern.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/adapter.md
+- contents/design-pattern/bridge-storage-provider-abstractions.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/strategy-pattern.md
+confusable_with:
+- design-pattern/adapter
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/bridge-storage-provider-abstractions
+- design-pattern/anti-corruption-adapter-layering
+forbidden_neighbors: []
+expected_queries:
+- Facade가 단순 진입점이 아니라 외부 모델을 내부 도메인에서 격리하는 anti-corruption seam이 되는 기준은 뭐야?
+- 외부 PG 용어와 에러 코드를 내부 PaymentResult로 숨기는 건 Adapter보다 Facade seam에 가까워?
+- legacy API 호출 순서가 복잡하고 용어도 다를 때 facade, translator, adapter 책임을 어떻게 나눠?
+- Facade as anti-corruption seam이 너무 커지면 어떤 책임을 port나 translator로 분리해야 해?
+- Bridge, Adapter, Facade seam을 외부 provider 통합에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Facade as Anti-Corruption Seam bridge로, Facade가 subsystem simplification을 넘어
+  external provider term, status, exception, call sequence를 internal domain language로 격리하는
+  boundary seam이 되는 기준과 Adapter, Bridge, ACL layering과의 차이를 설명한다.
+---
 # Facade as Anti-Corruption Seam: 복잡한 외부 세계를 내부로 번지지 않게 막기
 
 > 한 줄 요약: Facade는 단순한 진입점을 제공할 뿐 아니라, 외부 시스템의 개념과 내부 도메인의 경계를 지키는 anti-corruption seam이 될 수 있다.
@@ -73,6 +143,16 @@ Facade 없이 외부 API를 바로 호출하면 다음 문제가 생긴다.
 - 외부 응답 구조가 도메인 곳곳에 새어 나온다
 - 에러 처리 규칙이 흩어진다
 - 외부 용어가 내부 코드에 남는다
+
+### 4. seam이 두꺼워질 때의 분리 신호
+
+Facade seam은 의도적으로 외부 복잡도를 받아내지만, 모든 책임을 품어도 된다는 뜻은 아니다.
+
+- 호출 순서 조율만 남기고 field/status 변환은 translator로 뺀다
+- provider 교체 가능성이 크면 outbound port를 먼저 세운다
+- 실패/재시도/보상 정책이 커지면 process manager나 saga coordinator로 분리한다
+
+즉 Facade는 "외부 세계를 내부에 보이지 않게 하는 입구"이고, 그 안쪽 세부 책임은 다시 작게 나눠야 오래 간다.
 
 ---
 

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Purge Thread Scheduling and Lag Control
+concept_id: database/purge-thread-scheduling-lag-control
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- purge-thread
+- purge-lag
+- mvcc-cleanup
+- undo-debt
+aliases:
+- purge thread scheduling
+- purge lag
+- innodb_purge_threads
+- innodb_max_purge_lag
+- history list length
+- undo debt
+- MVCC cleanup
+- truncate frequency
+- purge lag control
+- purge thread tuning
+symptoms:
+- InnoDB purge thread를 단순 background cleanup으로 보고 history list length, undo debt, foreground DML throttling과의 관계를 놓치고 있어
+- purge lag가 커졌는데 thread 수, batch strategy, long transaction blocker, write churn 중 무엇이 병목인지 구분해야 해
+- innodb_purge_threads, innodb_max_purge_lag, innodb_max_purge_lag_delay를 foreground latency와 cleanup speed tradeoff로 이해해야 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/mvcc-history-list-snapshot-too-old
+- database/redo-undo-checkpoint-crash-recovery
+next_docs:
+- database/purge-backlog-remediation-throttle-playbook
+- database/undo-tablespace-truncation-purge-debt
+- database/change-buffer-purge-history-length
+linked_paths:
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/undo-tablespace-truncation-purge-debt.md
+- contents/database/change-buffer-purge-history-length.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/purge-backlog-remediation-throttle-playbook.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+confusable_with:
+- database/purge-backlog-remediation-throttle-playbook
+- database/mvcc-history-list-snapshot-too-old
+- database/undo-tablespace-truncation-purge-debt
+forbidden_neighbors: []
+expected_queries:
+- InnoDB purge thread scheduling은 history list length와 undo debt에 어떤 영향을 줘?
+- purge lag가 커질 때 innodb_purge_threads를 늘리기 전에 long transaction을 봐야 하는 이유가 뭐야?
+- innodb_max_purge_lag와 innodb_max_purge_lag_delay는 foreground DML을 어떻게 throttle해?
+- purge thread를 무조건 공격적으로 늘리면 foreground I/O와 CPU 경쟁이 생기는 이유를 알려줘
+- MVCC cleanup에서 purge가 막힌 상태와 못 따라가는 상태를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB purge thread scheduling, purge lag control, innodb_purge_threads, innodb_max_purge_lag, history list length를 MVCC cleanup과 foreground throttling 관점으로 다루는 advanced deep dive다.
+  purge lag control, purge thread tuning, history list length 질문이 본 문서에 매핑된다.
+---
 # Purge Thread Scheduling and Lag Control
 
 > 한 줄 요약: purge thread는 "나중에 정리하는 백그라운드 작업"이 아니라, 오래된 버전을 얼마나 빨리 치우느냐를 결정하는 시스템 스케줄러다.

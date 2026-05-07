@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring RequestParam vs PathVariable Beginner Card
+concept_id: spring/requestparam-vs-pathvariable-beginner-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- requestparam-vs-pathvariable
+- query-parameter-vs
+- path-variable
+- url-path-resource
+aliases:
+- RequestParam vs PathVariable
+- Spring query parameter vs path variable
+- URL path resource identity
+- query string filter condition
+- controller mapping beginner
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+expected_queries:
+- Spring에서 @RequestParam과 @PathVariable은 언제 나눠 써?
+- URL path 값과 query string 값은 REST API에서 어떤 의미 차이가 있어?
+- 검색 조건은 path variable보다 request param이 자연스러운 이유는?
+- controller mapping 초급자가 path와 query를 헷갈릴 때 어떻게 설명해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 초급자가 @PathVariable은 URL path의 resource identity,
+  @RequestParam은 query string의 filter, option, paging 조건으로 나누어 이해하도록 돕는
+  beginner card다. MVC controller binding과 validation pipeline으로 이어진다.
+---
 # Spring `@RequestParam` vs `@PathVariable` 초급 비교 카드: query 값과 path 값을 한 장으로 분리하기
 
 > 한 줄 요약: `@PathVariable`은 "어느 자원인가"를 URL 경로에서 집고, `@RequestParam`은 "어떤 조건인가"를 query string에서 읽는다고 나누면 초반 매핑 혼동이 크게 줄어든다.

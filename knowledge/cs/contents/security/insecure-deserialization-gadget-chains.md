@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Insecure Deserialization / Gadget Chains
+concept_id: security/insecure-deserialization-gadget-chains
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- insecure deserialization
+- gadget chain
+- object injection
+- type confusion
+aliases:
+- insecure deserialization
+- gadget chain
+- object injection
+- type confusion
+- polymorphic deserialization
+- Java serialization
+- YAML payload
+- JSON polymorphism
+- whitelist
+- allowlist
+- unsafe parser
+- Insecure Deserialization / Gadget Chains
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/sql-injection-beyond-preparedstatement.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/spring/spring-security-architecture.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/jwt-deep-dive.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Insecure Deserialization / Gadget Chains 핵심 개념을 설명해줘
+- insecure deserialization가 왜 필요한지 알려줘
+- Insecure Deserialization / Gadget Chains 실무 설계 포인트는 뭐야?
+- insecure deserialization에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Insecure Deserialization / Gadget Chains를 다루는 deep_dive 문서다. insecure deserialization은 "데이터를 객체로 복원하는 과정"이 신뢰 경계를 넘는 순간 생긴다. 타입 검증만으로 부족하고, 허용 형식과 gadget 표면까지 같이 줄여야 한다. 검색 질의가 insecure deserialization, gadget chain, object injection, type confusion처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Insecure Deserialization / Gadget Chains
 
 > 한 줄 요약: insecure deserialization은 "데이터를 객체로 복원하는 과정"이 신뢰 경계를 넘는 순간 생긴다. 타입 검증만으로 부족하고, 허용 형식과 gadget 표면까지 같이 줄여야 한다.

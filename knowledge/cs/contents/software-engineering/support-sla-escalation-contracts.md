@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Support SLA and Escalation Contracts
+concept_id: software-engineering/support-sla-escalation-contracts
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- support-sla
+- escalation
+- handoff
+- team-api
+aliases:
+- support SLA escalation contract
+- support boundary contract
+- first response SLA
+- support handoff rule
+- escalation ladder
+- 지원 SLA 에스컬레이션 계약
+symptoms:
+- 지원 요청에 first response만 있고 ownership acceptance, next update, mitigation target, closure expectation clock이 없어 답은 빠르지만 아무도 맡지 않아
+- incident나 migration support에서 escalation path, severity 선언 권한, handoff acceptance가 없어 개인 DM과 silent forwarding으로 흐른다
+- deprecation이나 migration 기간에 temporary support profile, support cut-off, final escalation owner가 없어 consumer가 전환 계획을 믿지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/team-apis-interaction-modes
+- software-engineering/on-call-ownership-boundaries
+next_docs:
+- software-engineering/support-contract-request-type-severity-matrix
+- software-engineering/support-operating-models
+- software-engineering/change-ownership-handoff
+linked_paths:
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/service-criticality-tiering-control-intensity.md
+- contents/software-engineering/support-contract-request-type-severity-matrix.md
+- contents/software-engineering/support-operating-models-self-service-office-hours-oncall.md
+confusable_with:
+- software-engineering/support-contract-request-type-severity-matrix
+- software-engineering/support-operating-models
+- software-engineering/on-call-ownership-boundaries
+forbidden_neighbors: []
+expected_queries:
+- support SLA와 escalation contract를 team API의 일부로 볼 때 어떤 clock과 handoff rule이 필요해?
+- first response, ownership acceptance, next update, mitigation target, closure expectation을 왜 분리해야 해?
+- escalation contract에는 severity 선언 권한, primary path, secondary path, timeout before escalate를 어떻게 적어야 해?
+- support handoff에서 transfer packet, receiving owner acknowledgement, SLA clock reset 여부가 없으면 어떤 ping-pong이 생겨?
+- migration이나 sunset 기간에는 평시 SLA와 다른 temporary support profile을 어떻게 선언해야 해?
+contextual_chunk_prefix: |
+  이 문서는 팀 간 지원을 first response, ownership acceptance, next update, escalation path, handoff acceptance를 가진 team API contract로 설계하는 advanced playbook이다.
+---
 # Support SLA and Escalation Contracts
 
 > 한 줄 요약: 팀 간 지원은 선의에 기대면 오래 못 가므로, 어떤 요청에 얼마나 빨리 반응하고 언제 어떤 경로로 escalation되는지 명시한 support SLA와 escalation contract가 team API의 일부로 필요하다.

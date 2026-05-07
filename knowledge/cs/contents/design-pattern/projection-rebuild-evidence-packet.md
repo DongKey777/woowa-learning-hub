@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Projection Rebuild Evidence Packet
+concept_id: design-pattern/projection-rebuild-evidence-packet
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-evidence-packet
+- cutover-approval-packet
+- rollback-proof
+aliases:
+- projection rebuild evidence packet
+- rebuild readiness packet
+- cutover approval packet
+- projection cutover evidence bundle
+- projection signoff packet
+- replay completeness evidence
+- parity artifact bundle
+- rollback proof packet
+- canonical evidence packet
+- projection approval artifact
+symptoms:
+- projection cutover 승인을 dashboard 캡처와 채팅 메모로만 판단해 watermark, parity window, rollback proof가 서로 다른 시점 기준으로 섞인다
+- parity 수치만 있고 dual-read artifact, mismatch drilldown, rollback rehearsal log가 없어 승인 근거를 재현할 수 없다
+- READY_FOR_CANARY와 READY_FOR_PRIMARY를 같은 green으로 취급해 admission gate와 promotion gate가 흐려진다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+next_docs:
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/projection-rollback-window-exit-criteria
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+linked_paths:
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+- contents/design-pattern/projection-rebuild-poison-event-replay-failure-handling.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/cursor-rollback-packet.md
+confusable_with:
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/projection-rollback-window-exit-criteria
+forbidden_neighbors: []
+expected_queries:
+- Projection Rebuild Evidence Packet은 replay completeness, parity artifacts, rollback proof, explicit verdict를 왜 한 artifact로 묶어?
+- cutover approval에서 dashboard 캡처만으로는 watermark와 evaluation window가 섞이는 문제가 왜 생겨?
+- READY_FOR_CANARY와 READY_FOR_PRIMARY verdict를 분리해야 하는 이유가 뭐야?
+- rollback proof는 old path 존재가 아니라 fresh rehearsal과 measured RTO로 증명해야 하는 이유가 뭐야?
+- paginated projection cutover라면 fingerprint bucket, cursor verdict, continuity outcome artifact가 왜 조건부 필수야?
+contextual_chunk_prefix: |
+  이 문서는 Projection Rebuild Evidence Packet playbook으로, read model rebuild와
+  cutover 승인을 replay completeness, quarantine/retry ledger, dual-read parity, strict path
+  freshness, pagination parity, rollback rehearsal, explicit verdict를 같은 packet_id와 watermark
+  기준으로 묶은 canonical approval artifact로 판단하는 방법을 설명한다.
+---
 # Projection Rebuild Evidence Packet
 
 > 한 줄 요약: projection rebuild readiness와 cutover approval은 dashboard 캡처 몇 장이 아니라, replay completeness, parity artifacts, rollback proof를 같은 시점 기준으로 묶은 versioned evidence packet으로 판단해야 흔들리지 않는다.

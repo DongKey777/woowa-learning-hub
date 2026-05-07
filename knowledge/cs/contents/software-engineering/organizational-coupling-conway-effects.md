@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Organizational Coupling and Conway Effects
+concept_id: software-engineering/organizational-coupling-conway-effects
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- conway-law
+- organization
+- ownership
+- team-topology
+aliases:
+- Organizational Coupling and Conway Effects
+- Conway effect
+- architecture mirrors org
+- team topology boundary alignment
+- organizational coupling
+- 조직 결합 콘웨이 효과
+symptoms:
+- 팀 소통 경로와 승인 경로가 복잡해 한 변경에 여러 팀이 계속 묶이고 서비스/API 경계도 그 구조를 닮아 중복과 책임 전가가 생겨
+- 조직은 바뀌었지만 service ownership, catalog, on-call, API boundary가 갱신되지 않아 stale ownership과 migration 지연이 쌓여
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/service-ownership-catalog-boundaries
+next_docs:
+- software-engineering/team-cognitive-load-boundary-design
+- software-engineering/team-apis-interaction-modes
+- software-engineering/domain-capability-heatmap
+linked_paths:
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/brownfield-strangler-org-model.md
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/team-cognitive-load-boundary-design.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/domain-capability-heatmap.md
+confusable_with:
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/team-cognitive-load-boundary-design
+forbidden_neighbors: []
+expected_queries:
+- Conway effect와 organizational coupling이 서비스 경계, API, ownership, release flow에 어떻게 나타나는지 설명해줘
+- 팀 구조와 도메인 경계가 맞지 않으면 중복 API와 ownership fragmentation이 생기는 이유가 뭐야?
+- capability 기반 팀 구조와 service catalog가 architecture boundary alignment에 왜 중요한지 알려줘
+- 조직 개편 후 stale ownership과 duplicated responsibility를 줄이려면 어떤 문서를 갱신해야 해?
+- Conway's Law를 없애는 것이 아니라 좋은 형태로 유도한다는 의미는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Conway effects를 팀 소통 경로, service boundary, API ownership, on-call, catalog가 서로 닮아가는 organizational coupling 문제로 설명하는 advanced bridge이다.
+---
 # Organizational Coupling and Conway Effects
 
 > 한 줄 요약: organizational coupling은 조직 구조가 소프트웨어 구조에 새겨지는 현상이고, Conway effects는 그 결합이 경계와 API, 운영 책임에까지 번지는 결과다.

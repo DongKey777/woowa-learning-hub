@@ -54,7 +54,9 @@ confusable_with:
 - language/bigdecimal-striptrailingzeros-input-boundary-bridge
 - language/money-value-object-basics
 - software-engineering/lotto-purchase-amount-value-object-bridge
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md
 expected_queries:
 - lotto나 shopping-cart 미션에서 BigDecimal을 Map key로 쓸 때 1.0과 1을 같은 key로 볼지 어떻게 정해야 해?
 - PR에서 BigDecimal key 정책과 정규화 위치를 같이 적으라는 리뷰를 받았는데 왜 중요한지 설명해줘
@@ -76,6 +78,14 @@ contextual_chunk_prefix: |
 
 **난이도: 🟢 Beginner**
 
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`BigDecimal`을 `Map` key로 쓸 때 `1.0`과 `1`을 같은 값으로 봐야 하나요?" | 로또 구매 금액, 장바구니 금액, 블랙잭 점수/금액 key 처리 | 숫자 계산이 아니라 key 동등성 정책을 먼저 문장으로 정한다 |
+| "`HashMap`에서는 못 찾는데 `TreeMap`에서는 찾아요" | `equals`와 `compareTo` 차이가 lookup 결과로 드러난 장면 | hash 기반 동등성과 정렬 기반 비교가 다름을 확인한다 |
+| "`stripTrailingZeros`를 여기저기 붙였더니 더 헷갈려요" | 금액 정규화 위치가 호출자마다 흩어진 코드 | 입력 경계/팩토리 한 곳에서 canonicalization을 결정한다 |
 
 관련 문서:
 

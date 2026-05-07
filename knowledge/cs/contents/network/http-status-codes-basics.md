@@ -1,8 +1,90 @@
+---
+schema_version: 3
+title: HTTP 상태 코드 기초
+concept_id: network/http-status-codes-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- http-status-code-family-basics
+- redirect-cache-auth-status-separation
+- browser-network-trace-reading
+aliases:
+- http status codes basics
+- HTTP 상태 코드 기초
+- 상태 코드 뭐예요
+- http response code beginner
+- 2xx 3xx 4xx 5xx 차이
+- 302 303 304 401 차이
+- 401 403 404 차이
+- 왜 302인데 성공처럼 보여요
+- 왜 새로고침하면 304가 떠요
+- post redirect get status code
+- browser network status code trace
+symptoms:
+- 302, 303, 304, 401을 모두 다시 간다는 뜻으로 읽어서 헷갈려
+- 최종 화면은 200인데 Network 탭 중간에 302가 보여서 성공인지 실패인지 모르겠어
+- 새로고침 뒤 304가 떠서 서버 오류나 인증 실패인지 헷갈려
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/post-redirect-get-prg-beginner-primer
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/browser-302-304-401-reload-decision-table-primer.md
+- contents/security/auth-failure-response-401-403-404.md
+confusable_with:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/http-caching-conditional-request-basics
+- security/auth-failure-response-401-403-404
+- network/browser-302-304-401-reload-decision-table-primer
+forbidden_neighbors: []
+expected_queries:
+- HTTP 상태 코드를 2xx, 3xx, 4xx, 5xx 기준으로 처음부터 설명해줘
+- 왜 POST 다음에 302나 303이 보이는데 최종 화면은 200이야?
+- 304 Not Modified는 실패가 아니라 cache 재검증이라는 뜻이야?
+- 401과 403과 404를 인증, 권한, 존재 기준으로 어떻게 구분해?
+- 브라우저 Network 탭에서 302, 304, 401을 어떤 순서로 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 HTTP status code를 2xx, 3xx, 4xx, 5xx 계열과 browser Network trace에서 URL, method, body, auth 축으로 읽는 beginner primer다.
+  302 redirect, 303 PRG, 304 cache revalidation, 401 unauthorized, 403 forbidden, 404 not found, 500 server error 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HTTP 상태 코드 기초
 
 > 한 줄 요약: HTTP 상태 코드는 서버가 요청을 어떻게 처리했는지 알려 주는 숫자이고, beginner는 먼저 `누가 다음 행동을 해야 하는가`로 읽으면 된다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| HTTP trace 장면 | 먼저 볼 의미 |
+|---|---|
+| POST 뒤 302/303 후 최종 200이 보인다 | redirect/PRG 흐름인가 |
+| 새로고침 뒤 304가 보여 실패처럼 보인다 | cache revalidation인가 |
+| 로그인 안 됨과 권한 없음이 섞인다 | 401과 403을 나눴는가 |
+| duplicate submit인데 400만 내려간다 | conflict/status contract가 필요한가 |
 
 관련 문서:
 

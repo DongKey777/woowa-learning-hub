@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 그리디 알고리즘 입문
+concept_id: algorithm/greedy-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- greedy-choice-property
+- exchange-argument-entry
+- greedy-vs-dp-counterexample
+aliases:
+- greedy intro
+- greedy algorithm basics
+- 그리디 알고리즘 입문
+- 그리디 기초
+- 탐욕 알고리즘 입문
+- 매 단계 최선 선택
+- greedy 언제 쓰나요
+- greedy choice property
+- exchange argument beginner
+- greedy vs dp 입문
+- 거스름돈 그리디
+- 동전 문제 그리디 반례
+symptoms:
+- 지금 당장 좋아 보이는 선택을 반복하면 항상 최적이라고 생각해 반례를 먼저 확인하지 않아
+- greedy choice property나 exchange argument 없이 감으로만 그리디를 적용해 틀리는 경우가 많아
+- 그리디가 안 되면 DP로 가야 하는 신호와 그리디가 맞는 신호를 구분하지 못해
+intents:
+- definition
+- comparison
+prerequisites:
+- algorithm/basic
+next_docs:
+- algorithm/greedy-vs-dp-decision-card
+- algorithm/dp-intro
+- algorithm/greedy
+- data-structure/heap-basics
+linked_paths:
+- contents/algorithm/greedy.md
+- contents/algorithm/greedy-vs-dp-decision-card.md
+- contents/algorithm/dp-intro.md
+- contents/data-structure/heap-basics.md
+confusable_with:
+- algorithm/dp-intro
+- algorithm/greedy-vs-dp-decision-card
+- data-structure/heap-basics
+forbidden_neighbors: []
+expected_queries:
+- 그리디 알고리즘을 매 단계 최선 선택과 전체 최적 보장 조건 기준으로 설명해줘
+- 동전 문제가 항상 그리디로 풀리지 않는 반례를 보여줘
+- greedy choice property와 optimal substructure가 왜 필요한지 beginner 기준으로 알려줘
+- 그리디와 DP를 탐욕 선택, 상태 저장, 반례 신호 기준으로 비교해줘
+- exchange argument는 그리디 선택이 안전하다는 것을 어떻게 보여주는 증명 방식이야?
+contextual_chunk_prefix: |
+  이 문서는 greedy algorithm을 local best choice를 반복하되 greedy choice property와 optimal substructure가 성립할 때만 전체 최적을 보장하는 beginner primer로 설명한다.
+  greedy vs dp, coin change counterexample, activity selection, exchange argument, sort then choose, heap with greedy 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 그리디 알고리즘 입문 (Greedy Algorithm Basics)
 
 > 한 줄 요약: 그리디는 매 단계에서 지금 당장 가장 좋아 보이는 선택을 반복하는 방법이며, 탐욕 선택이 전체 최적을 보장한다는 확신이 있을 때만 써야 한다.

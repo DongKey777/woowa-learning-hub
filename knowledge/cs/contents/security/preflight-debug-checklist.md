@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Preflight Debug Checklist
+concept_id: security/preflight-debug-checklist
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- preflight debug checklist
+- options-only vs actual request
+- options 401 not auth
+- preflight failed actual request not sent
+aliases:
+- preflight debug checklist
+- options-only vs actual request
+- options 401 not auth
+- preflight failed actual request not sent
+- error path cors primer
+- beginner preflight primer
+- browser preflight error
+- 왜 options만 보이나요
+- devtools network 30초 예시
+- preflight 다음 어디로 가나
+- preflight debug checklist basics
+- preflight debug checklist beginner
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/cors-basics.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/error-path-cors-primer.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/cors-samesite-preflight.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/preflight-debug-checklist.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/spring-security-options-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Preflight Debug Checklist 핵심 개념을 설명해줘
+- preflight debug checklist가 왜 필요한지 알려줘
+- Preflight Debug Checklist 실무 설계 포인트는 뭐야?
+- preflight debug checklist에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Preflight Debug Checklist를 다루는 deep_dive 문서다. 브라우저에서 `OPTIONS` preflight가 실패하면 실제 `GET`/`POST`/`PUT` API 호출은 아예 안 나갈 수 있다. junior 디버깅의 첫 갈림길은 "지금 막힌 게 preflight인가, 실제 API auth failure인가"를 먼저 나누는 것이다. 검색 질의가 preflight debug checklist, options-only vs actual request, options 401 not auth, preflight failed actual request not sent처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Preflight Debug Checklist
 
 > 한 줄 요약: 브라우저에서 `OPTIONS` preflight가 실패하면 실제 `GET`/`POST`/`PUT` API 호출은 아예 안 나갈 수 있다. junior 디버깅의 첫 갈림길은 "지금 막힌 게 preflight인가, 실제 API auth failure인가"를 먼저 나누는 것이다.

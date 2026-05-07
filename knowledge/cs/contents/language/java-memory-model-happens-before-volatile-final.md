@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Java Memory Model, Happens-Before, volatile, final
+concept_id: language/java-memory-model-happens-before-volatile-final
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- happens-before-visibility-ordering
+- volatile-not-atomic-increment
+- final-safe-publication
+aliases:
+- java memory model happens before volatile final
+- JMM happens-before
+- volatile visibility ordering
+- final safe publication
+- Java Memory Model 기초
+- happens-before가 뭐예요
+- volatile 최신값 원자성 차이
+- final field semantics
+- safe publication java
+- memory barrier reordering
+- data race visibility
+symptoms:
+- volatile을 붙였는데 count++가 왜 여전히 깨지는지 모르겠어
+- happens-before가 실제 실행 순서와 어떻게 다른지 헷갈려
+- final 필드가 불변성 말고 safe publication과 왜 연결되는지 궁금해
+intents:
+- definition
+- deep_dive
+prerequisites:
+- operating-system/process-thread-basics
+- operating-system/cpu-cache-coherence-memory-barrier
+next_docs:
+- language/varhandle-unsafe-atomics
+- language/jcstress-concurrency-testing
+- operating-system/cpu-cache-coherence-memory-barrier
+- operating-system/false-sharing-cache-line
+linked_paths:
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java/jcstress-concurrency-testing.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/false-sharing-cache-line.md
+- contents/operating-system/process-thread-basics.md
+confusable_with:
+- language/varhandle-unsafe-atomics
+- operating-system/cpu-cache-coherence-memory-barrier
+- operating-system/false-sharing-cache-line
+forbidden_neighbors: []
+expected_queries:
+- Java happens-before가 가시성과 순서를 보장한다는 말이 무슨 뜻이야?
+- volatile은 최신값을 보장하는데 왜 count++ 원자성은 보장하지 못해?
+- final 필드가 safe publication에 도움이 되는 이유를 설명해줘
+- JMM과 CPU cache coherence, memory barrier가 어떻게 연결돼?
+- double checked locking에서 volatile이 왜 필요한지 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Java Memory Model에서 happens-before가 가시성과 관찰 순서를 어떻게 정의하는지, volatile이 visibility와 ordering에는 관여하지만 compound atomicity는 보장하지 않는 이유, final field가 safe publication에 왜 중요한지 설명하는 intermediate primer다.
+  count++ lost update, stop flag volatile, final immutable config, double-checked locking, reordering, memory barrier, CPU cache coherence 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java Memory Model, Happens-Before, `volatile`, `final`
 
 > 한 줄 요약: `happens-before`는 "언제 보이는가"를 정하는 JMM의 핵심 규칙이고, `volatile`은 가시성/순서 보장, `final`은 생성 이후 안전한 게시(safe publication)의 기초가 된다.

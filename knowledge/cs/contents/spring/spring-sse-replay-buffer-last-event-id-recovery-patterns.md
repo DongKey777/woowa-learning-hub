@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring SSE Replay Buffer Last Event ID Recovery Patterns
+concept_id: spring/sse-replay-buffer-last-event-id-recovery-patterns
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- sse-replay-buffer
+- last-event-id
+- recovery
+- eventsource-resume-recovery
+aliases:
+- SSE replay buffer Last-Event-ID
+- EventSource resume recovery
+- replay window multi instance
+- ordering hole fence
+- durable event id contract
+- SSE reconnect data loss
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/spring/spring-sse-disconnect-observability-patterns.md
+- contents/spring/spring-sseemitter-timeout-callback-race-matrix.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/network/sse-last-event-id-replay-window.md
+- contents/language/java/sse-last-event-id-replay-reconnect-ownership.md
+symptoms:
+- Last-Event-ID 헤더는 오지만 서버에 replay 가능한 event window가 없어 손실이 난다.
+- reconnect 중 생성된 이벤트의 ordering hole을 막지 못한다.
+- multi-instance 배포에서 이전 node의 in-memory replay buffer를 찾지 못한다.
+expected_queries:
+- Spring SSE에서 Last-Event-ID만 있으면 끊긴 이벤트를 복구할 수 있어?
+- replay buffer window와 event id 계약은 어떻게 설계해야 해?
+- reconnect 동안 ordering hole을 막는 fence는 왜 필요해?
+- multi-instance SSE에서 replay state를 어디에 둬야 해?
+contextual_chunk_prefix: |
+  이 문서는 SSE 복구가 Last-Event-ID 헤더 하나로 끝나지 않고 replay 가능한 event id,
+  replay window, reconnect fence, ordering hole 방지, multi-instance state placement를 함께
+  설계해야 실제 resume이 된다는 점을 설명한다.
+---
 # Spring SSE Replay Buffer and `Last-Event-ID` Recovery Patterns
 
 > 한 줄 요약: Spring SSE 복구는 `Last-Event-ID` 헤더 하나로 끝나지 않고, replay 가능한 event `id` 계약, reconnect 동안 ordering hole를 막는 fence, multi-instance에서도 살아남는 replay window를 함께 설계해야 실제 손실 없이 resume된다.

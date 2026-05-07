@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring Reactive Blocking Bridge BoundedElastic Block Traps
+concept_id: spring/reactive-blocking-bridge-boundedelastic-block-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- reactive-blocking-boundedelastic
+- block-traps
+- webflux-block-trap
+- boundedelastic-blocking
+aliases:
+- WebFlux block trap
+- boundedElastic blocking bridge
+- reactive blocking boundary
+- event loop blocked
+- WebClient block in MVC
+- Mono block boundedElastic
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+linked_paths:
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-restclient-vs-webclient-lifecycle-boundaries.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+expected_queries:
+- WebFlux에서 block을 호출하면 왜 event loop 문제가 생겨?
+- boundedElastic은 blocking 작업을 어디까지 안전하게 격리해줘?
+- MVC 서비스에서 WebClient.block을 쓰는 것과 reactive pipeline 내부 block은 어떻게 달라?
+- reactive와 blocking 코드를 섞을 때 경계는 어디에 둬야 해?
+contextual_chunk_prefix: |
+  이 문서는 reactive와 blocking 코드를 섞는 bridge를 무조건 금지로 보지 않고,
+  event-loop thread, boundedElastic scheduler, MVC boundary, WebClient timeout과 connection pool
+  경계를 기준으로 block 호출 위치를 판단하는 deep dive다.
+---
 # Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps
 
 > 한 줄 요약: reactive와 blocking을 섞는다고 무조건 잘못은 아니지만, 어디서 `block()`하고 어떤 작업을 `boundedElastic`로 밀어내는지 경계를 명확히 하지 않으면 event-loop를 막거나 reactive 장점 없이 복잡도만 가져오게 된다.

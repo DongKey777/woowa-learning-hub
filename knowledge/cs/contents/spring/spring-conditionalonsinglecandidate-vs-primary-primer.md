@@ -15,9 +15,9 @@ review_feedback_tags:
 - activation-gate-vs-injection-priority
 - datasource-default-candidate
 aliases:
-- '@conditionalonsinglecandidate 뭐예요'
+- conditionalonsinglecandidate basics
 - conditionalonsinglecandidate activation gate
-- conditionalonsinglecandidate 헷갈려요
+- conditionalonsinglecandidate candidate resolution
 - single candidate activation
 - bean two candidates one primary
 - autowire candidate resolvable
@@ -43,7 +43,7 @@ prerequisites:
 - spring/spring-conditionalonmissingbean-vs-primary-primer
 next_docs:
 - spring/primary-qualifier-collection-injection
-- spring/spring-boot-condition-evaluation-report-first-debug-checklist
+- spring/boot-condition-evaluation-report-first-debug-checklist
 - spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer
 linked_paths:
 - contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
@@ -65,6 +65,8 @@ expected_queries:
 - primary가 있으면 auto-configuration activation도 같이 통과한다고 봐도 돼?
 - condition report는 positive인데 실제 주입 bean은 왜 다르지?
 - DataSource 두 개인 환경에서 SingleCandidate를 어떻게 해석해?
+- '@ConditionalOnSingleCandidate가 뭐예요?'
+- ConditionalOnSingleCandidate가 왜 헷갈려요?
 contextual_chunk_prefix: |
   이 문서는 Spring 학습자가 ConditionalOnSingleCandidate를 Primary의 다른
   이름처럼 오해할 때, auto-configuration activation 조건과 실제 주입

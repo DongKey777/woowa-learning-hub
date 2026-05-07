@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Consensus Membership Reconfiguration 설계
+concept_id: system-design/consensus-membership-reconfiguration-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- consensus membership reconfiguration
+- quorum
+- joint consensus
+- raft membership change
+aliases:
+- consensus membership reconfiguration
+- quorum
+- joint consensus
+- raft membership change
+- learner replica
+- majority
+- leader transfer
+- split brain avoidance
+- cluster reconfig
+- voter promotion
+- Consensus Membership Reconfiguration 설계
+- consensus membership reconfiguration design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/distributed-lock-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Consensus Membership Reconfiguration 설계 설계 핵심을 설명해줘
+- consensus membership reconfiguration가 왜 필요한지 알려줘
+- Consensus Membership Reconfiguration 설계 실무 트레이드오프는 뭐야?
+- consensus membership reconfiguration 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Consensus Membership Reconfiguration 설계를 다루는 deep_dive 문서다. consensus membership reconfiguration은 quorum 시스템의 노드 추가·제거·교체를 split brain 없이 안전하게 수행하기 위해, joint consensus와 learner 단계, 승격 조건을 관리하는 상태 변경 절차다. 검색 질의가 consensus membership reconfiguration, quorum, joint consensus, raft membership change처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Consensus Membership Reconfiguration 설계
 
 > 한 줄 요약: consensus membership reconfiguration은 quorum 시스템의 노드 추가·제거·교체를 split brain 없이 안전하게 수행하기 위해, joint consensus와 learner 단계, 승격 조건을 관리하는 상태 변경 절차다.

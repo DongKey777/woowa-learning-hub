@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: IDOR / BOLA Patterns and Fixes
+concept_id: security/idor-bola-patterns-and-fixes
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- idor basics
+- bola basics
+- broken object level authorization
+- object ownership check
+aliases:
+- idor basics
+- bola basics
+- broken object level authorization
+- object ownership check
+- tenant isolation authz
+- same user different tenant
+- 같은 사용자 다른 tenant
+- 왜 403 이 아니라 404
+- 없는 줄 알았는데 남의 리소스
+- scope is not ownership
+- own resource wrong tenant
+- concealment 404
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/concealment-404-entry-cues.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- IDOR / BOLA Patterns and Fixes 핵심 개념을 설명해줘
+- idor basics가 왜 필요한지 알려줘
+- IDOR / BOLA Patterns and Fixes 실무 설계 포인트는 뭐야?
+- idor basics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 IDOR / BOLA Patterns and Fixes를 다루는 deep_dive 문서다. IDOR/BOLA는 "ID를 안다고 다른 사람 데이터까지 접근되는" broken access control이다. 인증이 아니라 객체 수준 인가와 소유권 검증이 핵심이다. 검색 질의가 idor basics, bola basics, broken object level authorization, object ownership check처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # IDOR / BOLA Patterns and Fixes
 
 > 한 줄 요약: IDOR/BOLA는 "ID를 안다고 다른 사람 데이터까지 접근되는" broken access control이다. 인증이 아니라 객체 수준 인가와 소유권 검증이 핵심이다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Brownfield Modularization Strategy
+concept_id: software-engineering/brownfield-modularization
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- brownfield
+- modularization
+- legacy-boundary
+aliases:
+- Brownfield Modularization Strategy
+- incremental modularization
+- legacy boundary carving
+- module extraction strategy
+- brownfield refactor sequencing
+- 운영 중 시스템 모듈화
+symptoms:
+- brownfield 시스템을 관찰 없이 바로 패키지나 서비스로 나누려 해 호출 흐름, 데이터 의존, 순환 참조, 배포 위험을 놓쳐
+- 코드 모듈은 나눴지만 데이터 접근과 repository/port 경계가 그대로 섞여 책임 경계가 약하게 남아
+- 모듈화 자체를 목표로 삼아 변경 충돌 감소, 테스트 단순화, 책임 명확화 같은 실제 payoff를 검증하지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/architecture-runway
+next_docs:
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/service-split-merge-absorb-evolution
+- software-engineering/architectural-debt-interest
+linked_paths:
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/architecture-runway-refactoring-window.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/service-split-merge-absorb-evolution-framework.md
+- contents/software-engineering/architectural-debt-interest-model.md
+confusable_with:
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/service-split-merge-absorb-evolution
+forbidden_neighbors: []
+expected_queries:
+- brownfield modularization은 새 시스템을 만드는 것이 아니라 기존 제약 속에서 경계를 점진적으로 세우는 전략이라는 뜻을 설명해줘
+- legacy system에서 모듈 분리 전에 호출 흐름 데이터 의존 순환 참조를 먼저 관찰해야 하는 이유는 뭐야?
+- 읽기 경로 분리, 공통 계산 분리, 쓰기 캡슐화, contract test 추가 순서로 extraction하는 이유를 알려줘
+- 코드 패키지를 나눴는데 데이터 경계가 섞여 있으면 왜 modularization payoff가 약해져?
+- brownfield modularization과 Strangler Fig migration은 어떤 순서로 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 운영 중인 brownfield legacy system에서 boundary carving, dependency observation, data access encapsulation, incremental extraction을 통해 modularization을 진행하는 advanced playbook이다.
+---
 # Brownfield Modularization Strategy
 
 > 한 줄 요약: brownfield modularization은 새 시스템을 만드는 일이 아니라, 기존 코드와 데이터의 제약을 인정한 채 경계를 점진적으로 세우는 전환 전략이다.

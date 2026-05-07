@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Migration Scorecards
+concept_id: software-engineering/migration-scorecards
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- migration
+- scorecard
+- readiness
+- cutover
+aliases:
+- Migration Scorecards
+- migration readiness scorecard
+- cutover score
+- wave exit criteria metrics
+- shadow diff adoption scorecard
+- migration risk dashboard
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/migration-wave-governance
+- software-engineering/consumer-migration-playbook
+next_docs:
+- software-engineering/migration-stop-loss-governance
+- software-engineering/strangler-verification-shadow-traffic-metrics
+- software-engineering/data-migration-cutover
+linked_paths:
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/strangler-verification-shadow-traffic-metrics.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/brownfield-strangler-org-model.md
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/data-migration-rehearsal-reconciliation-cutover.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+confusable_with:
+- software-engineering/migration-wave-governance
+- software-engineering/consumer-migration-playbook
+- software-engineering/migration-stop-loss-governance
+forbidden_neighbors: []
+expected_queries:
+- migration scorecard는 무엇을 보고 다음 wave나 cutover를 판단하는 운영 도구인지 설명해줘
+- consumer adoption, shadow diff rate, contract coverage, rollback readiness를 scorecard로 어떻게 묶어?
+- migration scorecard와 wave governance, consumer playbook, stop-loss 문서는 각각 어떤 질문에 답해?
+- scorecard 숫자가 나쁠 때 fix and recompare, communication 강화, rollback runbook 보강 같은 행동으로 연결하는 방법은?
+- migration 후반에는 deprecation progress와 retirement readiness를 scorecard에 어떻게 추가해야 해?
+contextual_chunk_prefix: |
+  이 문서는 migration readiness, risk, adoption, shadow diff, rollback readiness를 scorecard로 정량화해 wave exit와 cutover 판단을 돕는 advanced chooser이다.
+---
 # Migration Scorecards
 
 > 한 줄 요약: `이 전환이 지금 얼마나 준비됐는지 어떤 숫자로 보죠?`처럼 상태 판단 기준이 흐릴 때 먼저 보는 문서로, migration scorecard를 준비도와 위험도를 함께 점수화하는 운영 도구로 정리한다.

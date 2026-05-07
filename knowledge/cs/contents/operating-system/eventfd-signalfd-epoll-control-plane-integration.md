@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: eventfd signalfd Epoll Control Plane Integration
+concept_id: operating-system/eventfd-signalfd-epoll-control-plane-integration
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- eventfd-signalfd-epoll
+- control-plane-integration
+- epoll-control-plane
+- cross-thread-wakeup
+aliases:
+- eventfd signalfd epoll
+- epoll control plane
+- cross thread wakeup eventfd
+- signal handling signalfd
+- event loop shutdown reload
+- fd based control flow
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/timerfd-epoll-timer-integration.md
+- contents/operating-system/epoll-kqueue-io-uring.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+expected_queries:
+- eventfd와 signalfd를 epoll event loop에 넣으면 어떤 control plane이 생겨?
+- shutdown reload cross-thread wakeup을 socket I/O와 같은 이벤트 모델로 다루는 법은?
+- signal handler 대신 signalfd를 쓰면 event loop 설계가 어떻게 단순해져?
+- eventfd, pipe, socketpair 중 epoll wakeup에는 무엇을 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 eventfd와 signalfd를 epoll에 등록해 shutdown, reload, cross-thread wakeup 같은
+  control flow를 network socket I/O와 같은 fd/event model로 통합하는 설계를 설명한다.
+---
 # eventfd, signalfd, Epoll Control-Plane Integration
 
 > 한 줄 요약: `eventfd`와 `signalfd`를 `epoll`에 넣으면 shutdown, reload, cross-thread wakeup 같은 제어 흐름을 소켓 I/O와 같은 이벤트 모델로 다룰 수 있어 event loop 운영이 단단해진다.

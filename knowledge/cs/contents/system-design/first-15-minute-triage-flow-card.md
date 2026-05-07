@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: First 15-Minute Triage Flow Card
+concept_id: system-design/first-15-minute-triage-flow-card
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- first 15 minute triage flow card
+- first 15-minute triage flow card
+- starter matrix to dashboard panel
+- fallback reason first dashboard panel
+aliases:
+- first 15 minute triage flow card
+- first 15-minute triage flow card
+- starter matrix to dashboard panel
+- fallback reason first dashboard panel
+- first response dashboard opener
+- rejected hit starter matrix bridge
+- stale dashboard first panel
+- symptom path capacity triage card
+- recent_write first panel
+- min_version first panel
+- replica_lag first panel
+- watermark first panel
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
+- contents/system-design/dashboard-restatement-ux-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- First 15-Minute Triage Flow Card 설계 핵심을 설명해줘
+- first 15 minute triage flow card가 왜 필요한지 알려줘
+- First 15-Minute Triage Flow Card 실무 트레이드오프는 뭐야?
+- first 15 minute triage flow card 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 First 15-Minute Triage Flow Card를 다루는 deep_dive 문서다. `fallback_reason`를 봤을 때 바로 어느 dashboard panel부터 열지와 첫 15분 안에 어떤 한 문장으로 상황을 정리할지를 한 화면으로 묶어 둔 초보자용 연결 카드다. 검색 질의가 first 15 minute triage flow card, first 15-minute triage flow card, starter matrix to dashboard panel, fallback reason first dashboard panel처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # First 15-Minute Triage Flow Card
 
 > 한 줄 요약: `fallback_reason`를 봤을 때 바로 어느 dashboard panel부터 열지와 첫 15분 안에 어떤 한 문장으로 상황을 정리할지를 한 화면으로 묶어 둔 초보자용 연결 카드다.

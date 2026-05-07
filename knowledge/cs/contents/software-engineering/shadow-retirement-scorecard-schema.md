@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Shadow Retirement Scorecard Schema
+concept_id: software-engineering/shadow-retirement-scorecard-schema
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- scorecard-schema
+- verification
+- closeout
+aliases:
+- shadow retirement scorecard schema
+- retirement hard gate schema
+- verification window schema
+- verdict record schema
+- hard_gates canonical contract
+- shadow retirement 스코어카드 스키마
+symptoms:
+- retirement proof를 문서마다 threshold, exit_condition, verdict 같은 다른 key로 적어 verification_pending과 retired 판정이 drift해
+- hard_gates measurement_status가 missing인데 pass 값을 true로 둬 telemetry gap을 retired 판정으로 숨겨
+intents:
+- definition
+- design
+- deep_dive
+prerequisites:
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/shadow-process-catalog-entry-schema
+next_docs:
+- software-engineering/shadow-catalog-reopen-successor-rules
+- software-engineering/shadow-review-outcome-template
+- software-engineering/shadow-lifecycle-scorecard-metrics
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/shadow-review-outcome-template.md
+- contents/software-engineering/shadow-packet-automation-mapping.md
+- contents/software-engineering/shadow-catalog-reopen-and-successor-rules.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+confusable_with:
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/shadow-lifecycle-scorecard-metrics
+- software-engineering/shadow-review-outcome-template
+forbidden_neighbors: []
+expected_queries:
+- shadow_retirement_scorecard는 verification_window, hard_gates, verdict_record를 어떤 canonical field set으로 가져야 해?
+- scorecard record가 dashboard 숫자가 아니라 하나의 catalog_id와 verification window와 verdict를 묶는 closeout snapshot이어야 하는 이유는?
+- hard_gates에서 measurement_status가 complete가 아니면 pass는 null이고 retired verdict를 막아야 하는 이유는?
+- verdict_record에 status, decision_basis, reason_codes, next_lifecycle_state를 남기면 dashboard와 review outcome이 어떻게 같은 사실을 읽어?
+- catalog entry, proof example, lifecycle dashboard, review outcome이 scorecard schema를 서로 다른 projection으로 재사용하는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 shadow retirement proof를 YAML/JSON scorecard record로 고정하기 위해 verification_window, hard_gates, verdict_record canonical field set을 정의하는 advanced primer이다.
+---
 # Shadow Retirement Scorecard Schema
 
 > 한 줄 요약: shadow retirement proof를 문서마다 다른 key로 적기 시작하면 `verification_pending`과 `retired` 판정이 drift하므로, scorecard record는 `verification_window`, `hard_gates`, `verdict_record`를 canonical field set으로 고정해 entry schema, proof example, lifecycle dashboard, review outcome이 같은 사실을 서로 다른 projection으로 읽게 해야 한다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Bridge Pattern: Storage Provider Abstractions
+concept_id: design-pattern/bridge-storage-provider-abstractions
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- bridge-pattern
+- provider-abstraction
+- change-axis-separation
+aliases:
+- bridge pattern
+- 브릿지 패턴
+- provider abstraction
+- storage provider abstraction
+- provider matrix
+- abstraction implementation split
+- independent variation axis
+- implementation matrix explosion
+- storage backend swap
+- bridge vs adapter
+symptoms:
+- 저장 대상 종류와 storage provider 종류가 함께 늘어날 때 S3ImageStorage, LocalDocumentStorage처럼 조합 클래스가 폭발한다
+- Bridge를 Adapter처럼 단순 시그니처 변환 문제에 쓰거나, Adapter를 두 변화 축 분리 문제에 쓰려고 한다
+- provider 축과 abstraction 축이 독립적으로 변한다는 사실보다 상속 계층으로 재사용하려는 욕구가 앞선다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- design-pattern/composition-over-inheritance-practical
+- design-pattern/adapter
+- design-pattern/pattern-selection
+next_docs:
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/anti-corruption-adapter-layering
+linked_paths:
+- contents/design-pattern/adapter.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/adapter
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/composition-over-inheritance-practical
+forbidden_neighbors: []
+expected_queries:
+- Bridge Pattern은 abstraction 축과 implementation provider 축이 둘 다 변할 때 조합 폭발을 어떻게 줄여?
+- S3/GCS/local storage와 image/document service가 함께 늘어날 때 Bridge를 쓰는 이유가 뭐야?
+- Bridge와 Adapter는 독립 확장과 인터페이스 호환성 관점에서 어떻게 달라?
+- provider abstraction을 두면 storage backend를 바꿔도 service API를 유지할 수 있는 이유가 뭐야?
+- 두 변화 축이 없는데 Bridge를 도입하면 왜 추상화 과잉이 돼?
+contextual_chunk_prefix: |
+  이 문서는 Bridge Pattern storage provider abstraction bridge로, 저장 대상이나
+  행동 abstraction 축과 S3/GCS/local 같은 provider implementation 축이 독립적으로 늘어날 때
+  두 축을 분리해 class matrix explosion을 막고, Adapter/Facade/Ports and Adapters와
+  목적을 구분하는 방법을 설명한다.
+---
 # Bridge Pattern: 저장소와 제공자를 분리하는 추상화
 
 > 한 줄 요약: Bridge 패턴은 추상화와 구현을 분리해, 저장소 타입과 provider 종류가 서로 폭발하지 않게 만든다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Map Integer get remove and two-arg remove Bridge
+concept_id: language/map-integer-get-remove-two-arg-remove-bridge
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-remove
+- integer-key
+- conditional-delete
+aliases:
+- Map<Integer,V> get remove two-arg remove bridge
+- map remove key value overload
+- remove(key) returns removed value
+- remove(key,value) conditional delete
+- list remove(1) vs map remove(1)
+- 자바 Map<Integer> remove 의미
+symptoms:
+- Map<Integer,V>.remove(1)을 List.remove(1)처럼 index 삭제로 오해해 Map에는 index 개념이 없다는 점을 놓쳐
+- remove(key)가 성공 여부 boolean을 돌려준다고 생각해 실제 반환값인 삭제된 value/null을 잘못 해석해
+- remove(key,value)를 단순 조회나 value 반환 API로 착각해 현재 value가 기대값일 때만 삭제하는 compare-and-delete 의미를 놓쳐
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/list-integer-remove-overload-practice-drill
+- language/map-put-get-remove-containskey-return-cheat-sheet
+- language/map-get-null-containskey-getordefault-primer
+next_docs:
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- data-structure/map-vs-set-requirement-bridge
+- language/map-integer-containskey-get-getordefault-bridge
+linked_paths:
+- contents/language/java/list-integer-remove-overload-practice-drill.md
+- contents/language/java/map-put-get-remove-containskey-return-cheat-sheet.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-put-putifabsent-computeifabsent-merge-overwrite-bridge.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/language/java/map-integer-containskey-get-getordefault-bridge.md
+confusable_with:
+- language/list-integer-remove-overload-practice-drill
+- language/map-integer-containskey-get-getordefault-bridge
+- language/map-put-get-remove-containskey-return-cheat-sheet
+forbidden_neighbors: []
+expected_queries:
+- Map<Integer,V>에서 get(1)과 remove(1)은 둘 다 key 1 lookup인데 remove 반환값은 어떻게 달라?
+- Map.remove(key)는 boolean이 아니라 삭제된 value를 반환한다는 점을 예제로 설명해줘
+- remove(key,value)는 현재 value가 기대값일 때만 삭제하는 조건부 삭제라는 뜻이야?
+- List.remove(1)과 Map.remove(1)은 숫자 1을 어떻게 다르게 읽어야 해?
+- Map.put remove get containsKey 반환값을 한 장으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Map<Integer,V>에서 get(1), remove(1), remove(1,value), put(1,value)의 key lookup/update 의미와 반환값 차이를 설명하는 intermediate primer다.
+  Map remove key, remove(key,value), conditional delete, Integer key, List remove index confusion 질문이 본 문서에 매핑된다.
+---
 # `Map<Integer, V>`에서 `get(1)`은 쉬운데 `remove(1)`은 왜 다르게 읽을까
 
 > 한 줄 요약: `Map<Integer, V>`에서는 `get(1)`과 `remove(1)` 모두 index가 아니라 key `1` lookup으로 읽는다. 헷갈림은 `List.remove(1)` 같은 overload가 아니라, `remove(key)`가 "삭제된 value 반환"인지 `remove(key, value)`가 "지금 그 value일 때만 삭제"인지에서 갈린다.

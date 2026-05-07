@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Serializable Retry Telemetry for Set Invariants
+concept_id: database/serializable-retry-telemetry-set-invariants
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- serializable
+- retry-telemetry
+- set-invariant
+- sqlstate
+- observability
+aliases:
+- serializable retry telemetry
+- serializable observability
+- retry budget
+- retry exhaustion
+- sqlstate 40001
+- sqlstate 40P01
+- set invariant observability
+- hot aggregate telemetry
+- retry depth histogram
+- invariant safety vs availability
+symptoms:
+- minimum staffing, quota, capacity 같은 set invariant를 SERIALIZABLE로 보호할 때 retry telemetry를 설계해야 해
+- 40001 총합만 보고 정상 경합인지 retry storm인지 구분하지 못하고 있어
+- safety breach와 availability degradation, contention shape를 서로 다른 panel로 나눠야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+- database/transaction-retry-serialization-failure-patterns
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/range-invariant-enforcement-write-skew-phantom
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+confusable_with:
+- database/transaction-retry-serialization-failure-patterns
+- database/postgresql-serializable-retry-playbook
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+forbidden_neighbors: []
+expected_queries:
+- SERIALIZABLE로 quota나 minimum staffing set invariant를 보호할 때 어떤 retry telemetry를 남겨야 해?
+- SQLSTATE 40001이 보인다고 바로 사고가 아니라 안전한 abort일 수도 있다는 말을 어떻게 해석해?
+- retry exhausted와 invariant breach를 같은 알람에 섞지 말고 safety와 availability를 나눠야 하는 이유가 뭐야?
+- 40001, 40P01, 55P03, lock timeout, unique violation을 retry budget에서 어떻게 분류해?
+- top hot key, retry depth histogram, success after retry 지표로 serializable contention을 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 serializable retry telemetry를 SQLSTATE 40001/40P01, retry budget, retry exhaustion, safety vs availability, set invariant observability로 다루는 advanced playbook이다.
+  minimum staffing, quota contention, retry depth histogram, hot aggregate telemetry 질문이 본 문서에 매핑된다.
+---
 # Serializable Retry Telemetry for Set Invariants
 
 > 한 줄 요약: minimum staffing이나 quota를 `SERIALIZABLE`로 보호할 때는 `40001` 자체보다, 어떤 SQLSTATE가 retry budget을 태우는지와 언제 안전한 경합이 운영 사고로 바뀌는지를 따로 관측해야 한다.

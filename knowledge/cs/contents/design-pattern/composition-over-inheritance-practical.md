@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Composition over Inheritance Practical
+concept_id: design-pattern/composition-over-inheritance-practical
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- composition-over-inheritance
+- fragile-base-class
+- lsp-violation
+aliases:
+- composition over inheritance
+- favor composition over inheritance
+- 상속보다 조합
+- fragile base class
+- inheritance rigidity
+- LSP violation
+- behavior injection
+- strategy via composition
+- template method tradeoff
+- penguin bird inheritance smell
+symptoms:
+- 공통 코드 재사용을 이유로 상속 계층을 만들었지만 부모 변경이 자식 전체로 번져 fragile base class 문제가 생긴다
+- is-a 관계처럼 보이지만 Penguin extends Bird처럼 부모 타입 기대를 자식이 깨뜨려 LSP 위반이 된다
+- Strategy와 Template Method 선택에서 조합으로 행동을 갈아끼울지 상속으로 흐름을 고정할지 기준이 없다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/oop-design-basics
+- language/object-oriented-core-principles
+next_docs:
+- design-pattern/template-method-vs-strategy
+- design-pattern/strategy-explosion-smell
+- design-pattern/template-method-basics
+linked_paths:
+- contents/software-engineering/oop-design-basics.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/strategy-explosion-smell.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- design-pattern/template-method-vs-strategy
+- design-pattern/strategy-pattern-basics
+- design-pattern/template-method-basics
+- design-pattern/strategy-explosion-smell
+forbidden_neighbors: []
+expected_queries:
+- 상속보다 조합을 우선하라는 말은 fragile base class와 LSP 위반 관점에서 무슨 뜻이야?
+- 상속은 공통 코드 재사용처럼 보여도 부모 변경이 자식 전체에 번지는 이유가 뭐야?
+- Strategy처럼 조합으로 행동을 주입할지 Template Method처럼 상속으로 흐름을 고정할지 기준은 뭐야?
+- Penguin extends Bird 예시는 왜 is-a처럼 보여도 LSP를 깨는 상속 냄새야?
+- 행동이 독립적으로 바뀌면 상속보다 composition과 strategy를 먼저 보는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Composition over Inheritance Practical bridge로, 상속은 공통 코드
+  재사용 도구가 아니라 부모 변경 전파, fragile base class, LSP violation을 함께 떠안는 선택이며,
+  독립적으로 바뀌는 행동은 composition/strategy로 주입하고 안정된 흐름만 template method 상속으로
+  좁히는 기준을 설명한다.
+---
 # Composition over Inheritance Practical
 
 > 한 줄 요약: 상속은 공통점을 재사용하는 도구가 아니라, 변화 가능성과 결합도를 함께 떠안는 선택이다.

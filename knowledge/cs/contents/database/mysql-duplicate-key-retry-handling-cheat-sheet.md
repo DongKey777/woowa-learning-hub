@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: MySQL Duplicate-Key Retry Handling Cheat Sheet
+concept_id: database/mysql-duplicate-key-retry-handling-cheat-sheet
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- duplicate-key
+- retry-policy
+- service-result-language
+- idempotency
+aliases:
+- mysql duplicate key retry
+- mysql 1062 handling
+- duplicate key already exists
+- duplicate key retry or read
+- same payload replay
+- different payload conflict
+- duplicate key fresh read
+- already exists vs busy
+- duplicate key 뭐예요
+- MySQL 중복키 재시도
+symptoms:
+- MySQL 1062 duplicate key를 lock timeout이나 deadlock처럼 같은 retry bucket에 넣으려 해
+- duplicate key 뒤 winner row를 읽지 않고 INSERT를 계속 재시도하려고 해
+- 같은 idempotency key에서 same payload replay와 different payload conflict를 응답 계약으로 나눠야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/mysql-1062-fresh-read-mini-sequence-diagram
+next_docs:
+- database/insert-if-absent-retry-outcome-guide
+- database/spring-insert-if-absent-sqlstate-cheat-sheet
+- database/primary-read-after-duplicate-checklist
+linked_paths:
+- contents/database/insert-if-absent-log-reading-examples-primer.md
+- contents/database/spring-insert-if-absent-sqlstate-cheat-sheet.md
+- contents/database/mysql-1062-fresh-read-mini-sequence-diagram.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/db-error-signal-beginner-result-language-mini-card.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- database/insert-if-absent-retry-outcome-guide
+- database/postgresql-serializable-retry-playbook
+- database/db-error-signal-beginner-result-language-mini-card
+forbidden_neighbors: []
+expected_queries:
+- MySQL duplicate key 1062는 다시 insert retry하는 신호야 아니면 winner read 신호야?
+- duplicate key와 lock wait timeout, deadlock의 retry 단위를 초보자용으로 비교해줘
+- same idempotency key same payload면 replay이고 different payload면 conflict인 이유를 설명해줘
+- 1062 뒤 winner read가 안 보이면 busy와 stale read를 어떻게 분리해?
+- already exists 버킷과 HTTP 409 conflict를 같은 말로 보면 안 되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 MySQL 1062 duplicate key를 retry-to-win이 아니라 winner fresh read 후 already exists, busy, conflict로 번역하는 beginner playbook이다.
+  duplicate key retry or read, same payload replay, different payload conflict, already exists vs busy 질문이 본 문서에 매핑된다.
+---
 # MySQL Duplicate-Key Retry Handling Cheat Sheet
 
 > 한 줄 요약: MySQL `duplicate key` (`1062`)는 보통 "같은 exact key의 승자가 이미 정해졌다"는 뜻이라서, 같은 `INSERT`를 계속 재시도하기보다 **승자 row를 fresh read로 확인해 `already exists` / `busy` 버킷으로 먼저 맞추고, `already exists` 안에서 idem replay와 `409 conflict`를 가르는 쪽**이 맞다.

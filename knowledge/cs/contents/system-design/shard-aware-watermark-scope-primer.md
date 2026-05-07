@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Shard-Aware Watermark Scope Primer
+concept_id: system-design/shard-aware-watermark-scope-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- shard aware watermark scope primer
+- outbox id not comparable across shards
+- commit lsn not globally comparable
+- per shard watermark beginner
+aliases:
+- shard aware watermark scope primer
+- outbox id not comparable across shards
+- commit lsn not globally comparable
+- per shard watermark beginner
+- watermark scope beginner
+- shard watermark ordering scope
+- outbox id across shards
+- cdc position across shards
+- safe watermark scope choice
+- projection checkpoint per shard
+- shard local ordering
+- watermark scope vs global order
+symptoms: []
+intents:
+- definition
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/outbox-watermark-token-primer.md
+- contents/system-design/projection-applied-watermark-basics.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Shard-Aware Watermark Scope Primer 설계 핵심을 설명해줘
+- shard aware watermark scope primer가 왜 필요한지 알려줘
+- Shard-Aware Watermark Scope Primer 실무 트레이드오프는 뭐야?
+- shard aware watermark scope primer 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Shard-Aware Watermark Scope Primer를 다루는 primer 문서다. shard가 나뉘면 outbox id나 commit position은 더 이상 "전체 시스템 공용 번호표"가 아니므로, beginner 단계에서는 **같은 shard 안에서만 비교되는 watermark scope**를 먼저 고르고 그 scope를 event와 projection 양쪽에 같이 적는 편이 가장 안전하다. 검색 질의가 shard aware watermark scope primer, outbox id not comparable across shards, commit lsn not globally comparable, per shard watermark beginner처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Shard-Aware Watermark Scope Primer
 
 > 한 줄 요약: shard가 나뉘면 outbox id나 commit position은 더 이상 "전체 시스템 공용 번호표"가 아니므로, beginner 단계에서는 **같은 shard 안에서만 비교되는 watermark scope**를 먼저 고르고 그 scope를 event와 projection 양쪽에 같이 적는 편이 가장 안전하다.

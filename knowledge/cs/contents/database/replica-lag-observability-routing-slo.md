@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Replica Lag Observability and Routing SLO
+concept_id: database/replica-lag-observability-routing-slo
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- replica-lag
+- freshness-slo
+- read-routing
+- failover
+- observability
+aliases:
+- replica lag observability
+- routing SLO
+- replication delay
+- freshness SLO
+- apply lag
+- transport lag
+- primary fallback threshold
+- read routing metrics
+- lag metric routing
+- stale replica routing
+symptoms:
+- write 직후 상세 조회가 오래된 replica로 가서 사용자에게 예전 값이 보여
+- lag metric은 있는데 primary fallback threshold나 freshness SLO가 정의되지 않았어
+- failover와 무관하게 특정 replica apply lag가 계속 커지고 라우팅에서 제외해야 할지 판단해야 해
+- cache hit은 최신인데 cache miss 뒤 replica read가 stale하게 보이는 원인을 구분해야 해
+- promotion 직후 stale read인지 steady-state replica lag인지 먼저 라우팅해야 해
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- database/replica-lag-read-after-write-strategies
+- database/replica-read-routing-anomalies
+next_docs:
+- database/replication-lag-forensics-root-cause-playbook
+- database/read-your-writes-session-pinning
+- database/failover-visibility-window-topology-cache-playbook
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/cache-replica-split-read-inconsistency.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/replication-lag-forensics-root-cause-playbook.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+confusable_with:
+- database/replica-read-routing-anomalies
+- database/cache-replica-split-read-inconsistency
+- database/failover-promotion-read-divergence
+forbidden_neighbors: []
+expected_queries:
+- replica lag metric을 freshness SLO와 primary fallback routing으로 어떻게 연결해야 해?
+- write 직후 stale read가 보일 때 steady-state lag인지 failover topology 문제인지 어떻게 구분해?
+- 특정 replica apply lag가 커질 때 읽기 분산 대상에서 빼는 기준을 어떻게 정해?
+- cache miss 뒤에만 옛값이 보이면 replica lag observability 문서에서 무엇을 확인해야 해?
+- lag를 관측만 하고 라우팅 정책에 반영하지 않으면 사용자 경험이 왜 계속 깨져?
+contextual_chunk_prefix: |
+  이 문서는 replica lag observability, routing SLO, freshness SLO, primary fallback threshold를 stale read 증상 라우팅으로 연결하는 advanced symptom router다.
+  replication delay, apply lag, cache miss stale replica, steady-state lag와 failover freshness 구분 질문이 본 문서에 매핑된다.
+---
 # Replica Lag Observability와 Routing SLO
 
 > 한 줄 요약: replica lag는 측정하지 않으면 그냥 “가끔 늦는 것”처럼 보이고, 라우팅 SLO가 없으면 그 늦음을 사용자 경험으로 번역할 수 없다.

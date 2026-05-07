@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring Early Bean References and Circular Proxy Traps
+concept_id: spring/early-bean-reference-circular-proxy-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- early-bean-reference
+- circular-proxy-traps
+- circular-dependency
+- beancurrentlyincreationexception
+aliases:
+- circular dependency
+- early bean reference
+- BeanCurrentlyInCreationException
+- getEarlyBeanReference
+- earlySingletonObjects
+- singletonFactories
+- raw target injection
+- circular proxy trap
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
+- contents/spring/spring-transaction-debugging-playbook.md
+expected_queries:
+- Spring circular dependency에서 early bean reference는 어떤 문제를 만들 수 있어?
+- raw target이 주입되면 @Transactional이나 @Async proxy가 왜 안 먹을 수 있어?
+- BeanCurrentlyInCreationException과 circular proxy trap은 어떻게 달라?
+- singletonObjects earlySingletonObjects singletonFactories는 어떤 역할을 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring circular dependency와 early bean reference가 raw target,
+  반쯤 초기화된 객체, 최종 proxy 불일치를 만들 수 있는 지점을 deep dive한다.
+  singletonObjects, earlySingletonObjects, singletonFactories, getEarlyBeanReference,
+  @Transactional/@Async/@Validated proxy trap과 startup/runtime 이상 동작에 매핑된다.
+---
 # Spring Early Bean References and Circular Proxy Traps
 
 > 한 줄 요약: 순환 의존성과 early bean reference는 단순 startup 에러가 아니라, 프록시가 붙기 전의 raw target이나 반쯤 초기화된 객체가 노출될 수 있는 지점이어서 `@Transactional`, `@Async`, `@Validated` 같은 프록시 기능이 조용히 어긋날 수 있다.

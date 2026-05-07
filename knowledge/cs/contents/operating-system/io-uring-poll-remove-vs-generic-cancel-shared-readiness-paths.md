@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring POLL_REMOVE vs Generic Cancel Shared Readiness Paths
+concept_id: operating-system/io-uring-poll-remove-vs-generic-cancel-shared-readiness-paths
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- io-uring-poll
+- remove-vs-generic
+- cancel-shared-readiness
+- cancel
+aliases:
+- io_uring POLL_REMOVE vs generic cancel
+- one-shot multishot poll removal
+- shared readiness path cancel
+- readiness subscription management
+- owner handoff poll remove
+- descriptor lifecycle cancel
+intents:
+- comparison
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-cancel-scope-fixed-files-mixed-ops.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+confusable_with:
+- operating-system/io-uring-cancel-scope-fixed-files-mixed-ops
+- operating-system/io-uring-multishot-cancel-rearm-drain-shutdown
+- operating-system/epoll-level-edge-oneshot-wakeup-semantics
+expected_queries:
+- io_uring POLL_REMOVE와 generic cancel은 언제 골라야 해?
+- poll watcher를 내리는 작업은 fd teardown이 아니라 readiness subscription 관리라는 뜻은?
+- one-shot or multishot poll arm 하나를 retire할 때 user_data POLL_REMOVE가 기본이야?
+- shared readiness path 전체나 descriptor lifecycle을 끊을 때 generic cancel을 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 io_uring poll watcher 제거를 fd teardown이 아니라 readiness subscription management로
+  설명한다. one-shot/multishot poll arm retire나 owner handoff는 POLL_REMOVE(user_data)를,
+  shared readiness path나 descriptor lifecycle 전체를 끊을 때는 generic cancel을 고려한다.
+---
 # io_uring POLL_REMOVE vs Generic Cancel for One-Shot, Multishot, and Shared Readiness Paths
 
 > 한 줄 요약: `io_uring`에서 poll watcher를 내리는 작업은 보통 fd teardown이 아니라 **readiness subscription 관리**다. 그래서 one-shot/multishot poll arm 하나를 retire하거나 owner handoff를 할 때는 대개 `POLL_REMOVE(user_data)`를 기본값으로 두고, generic cancel은 shared readiness path 전체나 descriptor lifecycle을 함께 끊을 때만 넓게 쓴다.

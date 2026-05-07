@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: io_uring send bundle zerocopy fixed buffer completion accounting
+concept_id: operating-system/io-uring-send-bundle-zerocopy-fixed-buffer-completion-accounting
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-send
+- bundle-zerocopy-fixed
+- buffer-completion-accounting
+- bundle-zerocopy-accounting
+aliases:
+- io_uring send bundle zerocopy accounting
+- IORING_CQE_F_NOTIF
+- send bundle data CQE
+- fixed buffer completion accounting
+- provided buffer send ownership
+- zerocopy notification lifetime
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-cancel-scope-fixed-files-mixed-ops.md
+- contents/operating-system/io-uring-recv-send-zerocopy-teardown-ordering.md
+expected_queries:
+- io_uring send bundle은 SQE 하나 CQE 하나 모델이 아니야?
+- send bundle data CQE의 res와 bid를 어떻게 accounting해?
+- plain provided-buffer send와 zerocopy send의 buffer ownership 반환 시점은 어떻게 달라?
+- IORING_CQE_F_NOTIF notification 전에는 zerocopy buffer를 재사용하면 안 돼?
+contextual_chunk_prefix: |
+  이 문서는 io_uring send bundle을 contiguous provided-buffer batch를 여러 data CQE로 배출할 수
+  있는 send-side multishot에 가깝게 설명한다. plain send bundle의 ownership 반환, zerocopy
+  notification lifetime, fixed buffer slot lifetime을 분리한다.
+---
 # io_uring send bundle, zerocopy notification, fixed-buffer completion accounting
 
 > 한 줄 요약: `io_uring_prep_send_bundle()`은 "SQE 하나 = CQE 하나"가 아니라 **contiguous provided buffer batch를 여러 data CQE로 나눠 배출할 수 있는 send-side multishot**에 가깝다. 각 data CQE의 `res`는 이번 batch에서 account된 바이트 수이고 `flags`의 `bid`는 그 batch의 시작 `bid`다. plain provided-buffer send bundle에서는 해당 batch의 ownership이 **그 CQE 시점에 곧바로 userspace로 돌아오며**, `IORING_CQE_F_MORE`는 "같은 SQE가 다음 bundle batch를 또 시작할 수 있다"는 뜻이지 tail buffer가 아직 kernel-owned라는 뜻이 아니다. 반대로 zerocopy send는 `IORING_CQE_F_NOTIF` notification이 와야 메모리를 재사용할 수 있고, fixed buffer send는 per-I/O 완료와 등록 슬롯 lifetime을 분리해서 봐야 한다.

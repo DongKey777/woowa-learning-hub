@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Remote Bulkhead Metrics Under Virtual Threads
+concept_id: language/remote-bulkhead-metrics-under-virtual-threads
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- virtual-threads
+- bulkhead
+- metrics
+aliases:
+- Remote Bulkhead Metrics Under Virtual Threads
+- virtual thread remote bulkhead
+- per-upstream semaphore sizing
+- permit contention retry storm upstream saturation
+- bulkhead wait ratio saturation ratio
+- Loom outbound HTTP bulkhead metrics
+symptoms:
+- virtual thread가 remote wait를 싸게 만든다는 이유로 upstream concurrency limit과 semaphore bulkhead 설계를 생략해
+- permit wait time과 HTTP upstream latency를 같은 latency metric에 섞어 permit contention인지 upstream saturation인지 구분하지 못해
+- logical request와 retry attempt metrics를 분리하지 않아 retry storm이 bulkhead saturation 안에 숨어 보이지 않아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/structured-fanout-httpclient
+- language/connection-budget-alignment-after-loom
+- language/virtual-thread-framework-integration
+next_docs:
+- language/httpclient-idempotency-keys-safe-http-retries
+- language/jfr-loom-incident-signal-map
+- system-design/backpressure-and-load-shedding-design
+linked_paths:
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/httpclient-idempotency-keys-safe-http-retries.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+- contents/language/java/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+confusable_with:
+- language/connection-budget-alignment-after-loom
+- language/structured-fanout-httpclient
+- language/httpclient-idempotency-keys-safe-http-retries
+forbidden_neighbors: []
+expected_queries:
+- virtual threads 환경에서도 remote bulkhead와 per-upstream semaphore가 필요한 이유가 뭐야?
+- permit wait와 HTTP latency를 분리해서 측정해야 permit contention과 upstream saturation을 구분할 수 있어?
+- logical request와 retry attempt metrics를 분리하지 않으면 retry storm이 어떻게 숨겨져?
+- upstream별 safe in-flight share에서 semaphore permit 수를 역산하는 방법을 알려줘
+- virtual thread outbound HTTP에서 bulkhead wait ratio와 saturation ratio를 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 virtual threads 환경에서 remote upstream bulkhead를 per-upstream semaphore와 permit wait, HTTP latency, retry attempt metrics로 관측하는 advanced playbook이다.
+  virtual thread bulkhead, semaphore permit, retry storm, upstream saturation, remote metrics 질문이 본 문서에 매핑된다.
+---
 # Remote Bulkhead Metrics Under Virtual Threads
 
 > 한 줄 요약: virtual thread는 remote wait를 싸게 만들 뿐 upstream permit을 대신 설계해 주지 않는다. upstream별 semaphore/bulkhead는 safe in-flight share에서 역산하고, permit wait를 HTTP latency와 분리해서 찍어야 permit contention, retry storm, upstream saturation을 구분할 수 있다.

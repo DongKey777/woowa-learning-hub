@@ -68,6 +68,14 @@ contextual_chunk_prefix: |
 
 > 콘솔 baseball의 `Game` 객체 하나를 Spring controller나 service 필드에 그대로 보관하면, 웹에서는 그 객체가 요청과 사용자 사이에 공유될 수 있다. 그래서 게임 진행 상태는 singleton Bean 안의 가변 필드보다 요청 밖 저장소나 명시적 세션 경계로 읽는 편이 안전하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "controller 필드에 `Game`을 두면 같은 사용자의 다음 요청에서 이어지지 않나요?" | singleton controller/service가 현재 게임 객체 하나를 공유하는 구조 | Bean 수명과 게임 한 판의 수명이 다르다는 점을 분리한다 |
+| "다른 탭에서 새 게임을 시작했더니 이전 게임 상태가 섞여요" | 두 요청이 같은 `currentGame` 필드에 읽고 쓰는 테스트 | 사용자별 게임 상태는 field가 아니라 gameId와 저장소로 찾게 만든다 |
+| "콘솔에서는 메모리 객체 하나면 됐는데 웹에서는 왜 안 되죠?" | 콘솔 game loop를 HTTP 요청 여러 개로 옮기는 전환 단계 | 요청은 짧고 게임 상태는 길다는 lifecycle 차이를 먼저 본다 |
+
 ## 미션 시나리오
 
 콘솔 baseball는 프로세스 안에서 한 사람이 게임 하나를 진행하니 `Game` 객체 하나가 자연스럽다. 하지만 웹으로 옮기면 `POST /games`, `POST /games/{id}/guesses`처럼 요청이 잘리고, 같은 서버 인스턴스가 여러 사용자의 요청을 함께 받는다. 이때 학습자가 자주 만드는 실수는 controller나 service에 `currentGame` 같은 필드를 두고, 새 게임 시작과 추측 진행을 그 필드 하나로 이어 붙이는 구조다.

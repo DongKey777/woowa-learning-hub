@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: TreeMap Null Boundary Micro Drill
+concept_id: data-structure/treemap-null-boundary-micro-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- treemap-null-boundary
+- navigablemap-npe
+- reservation-boundary-drill
+aliases:
+- TreeMap null boundary micro drill
+- lowerEntry null
+- floorEntry null
+- ceilingEntry null
+- higherEntry null
+- TreeMap reservation boundary null
+- ordered map NPE beginner
+symptoms:
+- lowerEntry floorEntry는 첫 예약보다 왼쪽에서 null, higherEntry ceilingEntry는 마지막 예약보다 오른쪽에서 null이 될 수 있다는 경계를 놓친다
+- floorEntry나 ceilingEntry를 받은 뒤 null check 없이 getValue를 호출해 예약 경계 NPE를 만든다
+- null을 exact match가 없다는 뜻으로만 읽고 그 방향 후보 자체가 없다는 신호를 구분하지 못한다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/treeset-treemap-null-boundary-quick-reference
+- data-structure/treemap-key-entry-strictness-bridge
+next_docs:
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treeset-treemap-null-boundary-quick-reference
+linked_paths:
+- contents/data-structure/treeset-treemap-null-boundary-quick-reference.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+confusable_with:
+- data-structure/treeset-treemap-null-boundary-quick-reference
+- data-structure/treemap-key-entry-strictness-bridge
+- data-structure/treemap-ceilingkey-higherkey-exact-match-choice-card
+- data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card
+forbidden_neighbors: []
+expected_queries:
+- TreeMap lowerEntry나 floorEntry가 첫 예약보다 왼쪽이면 왜 null이야?
+- 마지막 예약보다 오른쪽에서 higherEntry ceilingEntry가 null인 경계를 연습하고 싶어
+- floorEntry를 받은 뒤 getValue 전에 null check를 해야 하는 이유는?
+- 예약 TreeMap에서 왼쪽 이웃이나 오른쪽 이웃이 없을 수 있는 경우를 예시로 보여줘
+- TreeMap null boundary 때문에 NPE 나는 문제를 micro drill로 풀고 싶어
+contextual_chunk_prefix: |
+  이 문서는 예약 TreeMap에서 lowerEntry/floorEntry가 왼쪽 경계 밖에서 null,
+  higherEntry/ceilingEntry가 오른쪽 경계 밖에서 null이 되는 상황을 연습하는
+  micro drill이다. Entry null check와 getValue NPE 방지를 다룬다.
+---
 # TreeMap Null Boundary Micro Drill
 
 > 한 줄 요약: 예약표를 `TreeMap<start, end>`로 볼 때 `lowerEntry`/`floorEntry`는 첫 예약보다 더 왼쪽이면 `null`, `higherEntry`/`ceilingEntry`는 마지막 예약보다 더 오른쪽이면 `null`이라는 경계 감각만 먼저 붙이면 첫 NPE를 크게 줄일 수 있다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Browser DevTools `Protocol`, `Remote Address`, Connection Reuse 단서 입문"
+concept_id: network/browser-devtools-protocol-column-labels-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- devtools-protocol-column
+- connection-id-reuse
+- h2-h3-observability
+aliases:
+- devtools protocol column
+- remote address connection id
+- h3 same connection
+- connection id reuse
+- protocol vs cache
+- browser network protocol labels
+symptoms:
+- Protocol h2 h3 열만 보고 cache hit나 connection reuse까지 한 번에 단정한다
+- 같은 h3 두 줄에서 Connection ID가 달라진 의미를 놓친다
+- Remote Address 변화와 Connection ID 변화를 같은 강도의 증거로 취급한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/browser-devtools-first-checklist-1minute-card
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http2-http3-connection-reuse-coalescing
+- network/http3-421-observability-primer
+- network/browser-devtools-cache-trace-primer
+linked_paths:
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/security/cors-samesite-preflight.md
+confusable_with:
+- network/browser-devtools-cache-trace-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http2-http3-connection-reuse-coalescing
+- network/http3-421-observability-primer
+forbidden_neighbors: []
+expected_queries:
+- "DevTools Protocol 열의 h2 h3와 Connection ID를 같이 어떻게 읽어?"
+- "같은 h3 두 줄인데 Connection ID가 다르면 새 연결이라고 봐야 해?"
+- "Remote Address와 Connection ID 중 connection reuse 판단에서 무엇이 더 강한 단서야?"
+- "Protocol 열은 cache 여부를 말하는 신호가 아니라는 점을 설명해줘"
+- "421 뒤 200 recovery trace에서 Protocol Remote Address Connection ID를 어떻게 붙여 봐?"
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools Network 탭의 Protocol, Remote Address,
+  Connection ID를 함께 읽어 HTTP version, destination edge, connection
+  reuse, 421 recovery, cache signal을 분리하는 beginner primer다.
+---
 # Browser DevTools `Protocol`, `Remote Address`, Connection Reuse 단서 입문
 
 **난이도: 🟢 Beginner**

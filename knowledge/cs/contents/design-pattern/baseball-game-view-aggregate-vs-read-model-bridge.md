@@ -31,11 +31,11 @@ intents:
 - troubleshooting
 prerequisites:
 - database/baseball-guess-history-current-state-transaction-bridge
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 - spring/baseball-game-id-session-boundary-bridge
 next_docs:
 - design-pattern/repository-boundary-aggregate-vs-read-model
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 - database/baseball-guess-history-current-state-transaction-bridge
 linked_paths:
 - contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
@@ -45,7 +45,7 @@ linked_paths:
 - contents/software-engineering/baseball-turn-result-response-boundary-bridge.md
 confusable_with:
 - design-pattern/repository-boundary-aggregate-vs-read-model
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 - database/baseball-guess-history-current-state-transaction-bridge
 forbidden_neighbors:
 - contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
@@ -65,12 +65,19 @@ contextual_chunk_prefix: |
   model이 필요한지 헷갈림 같은 학습자 표현을 baseball 조회 화면 시나리오와
   연결한다.
 ---
-
 # baseball 게임 화면 조회 ↔ Aggregate 저장과 Read Model 분리 브릿지
 
 ## 한 줄 요약
 
 > baseball 웹 버전에서 `현재 게임 상태 + 최근 추측 목록 + 이번 턴 결과`를 한 화면에 보여주고 싶어도, 그 이유만으로 `GameRepository`가 화면 DTO를 직접 반환할 필요는 없다. 저장 경계는 aggregate에 맞추고, 조회 조합은 read model이나 query 쪽으로 분리하는 편이 리뷰 의도를 더 정확히 따른다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`GameRepository`가 화면 응답 DTO를 바로 만들고 있어요" | 현재 게임 상태, guess history, 표시 메시지를 저장 repository가 한 번에 조립하는 코드 | aggregate 저장 계약과 화면 조회 조합 계약을 분리한다 |
+| "guess history 때문에 entity에 화면용 필드가 붙어요" | 조회 편의를 위해 write model/entity가 화면 shape로 커지는 구조 | 화면 전용 요구는 read model/query service 쪽으로 뺄 수 있는지 본다 |
+| "같은 DB인데 query repository를 따로 둬도 되나요?" | CQRS를 물리 DB 분리로만 이해해 조회 계약 분리를 망설이는 상황 | 저장소 물리 분리보다 command path와 query path 책임 분리를 먼저 본다 |
 
 ## 미션 시나리오
 

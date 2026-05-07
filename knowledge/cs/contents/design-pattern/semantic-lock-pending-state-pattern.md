@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Semantic Lock and Pending State Pattern
+concept_id: design-pattern/semantic-lock-pending-state-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- semantic-lock
+- pending-state-guard
+- workflow-state-gate
+aliases:
+- semantic lock
+- pending state pattern
+- business lock
+- in progress state guard
+- pending approval state
+- long running state gate
+- manual review lock
+- pending payment state
+- workflow state guard
+- business pending state
+symptoms:
+- 외부 응답이나 사람 검토를 기다리는 동안 주문 수정, 취소, 재시도가 동시에 열려 중복 전이가 생긴다
+- PENDING_PAYMENT 같은 상태를 추가했지만 그 상태에서 금지되는 행동, timeout, stale response 처리 규칙이 없다
+- optimistic locking으로 stale write만 막으면 장기 workflow의 행동 제한까지 해결된다고 오해한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/aggregate-version-optimistic-concurrency-pattern
+- design-pattern/process-manager-deadlines-timeouts
+next_docs:
+- design-pattern/human-approval-manual-review-workflow-pattern
+- design-pattern/reservation-hold-expiry-consistency-seam
+- design-pattern/process-manager-state-store-recovery
+linked_paths:
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/reservation-hold-expiry-consistency-seam.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+- contents/design-pattern/human-approval-manual-review-workflow-pattern.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+confusable_with:
+- design-pattern/aggregate-version-optimistic-concurrency-pattern
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/reservation-hold-expiry-consistency-seam
+- design-pattern/human-approval-manual-review-workflow-pattern
+forbidden_neighbors: []
+expected_queries:
+- semantic lock은 DB lock이 아니라 PENDING 상태로 어떤 행동을 막는 패턴이야?
+- PENDING_PAYMENT 상태에서 주소 변경이나 중복 결제 시도를 막아야 하는 이유가 뭐야?
+- optimistic concurrency가 있어도 long-running workflow에서 semantic lock이 필요한 이유가 뭐야?
+- pending state에는 guard, timeout, release, stale response 처리 규칙이 함께 있어야 하는 이유가 뭐야?
+- manual review 중 자동 취소나 자동 환불을 막으려면 UNDER_REVIEW 상태를 어떻게 semantic lock으로 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 Semantic Lock and Pending State Pattern playbook으로, DB lock을 오래 잡을 수 없는
+  long-running workflow에서 PENDING_PAYMENT, UNDER_REVIEW 같은 도메인 상태를 semantic lock으로
+  사용해 특정 행동을 제한하고 timeout, release, stale response guard, optimistic concurrency를
+  함께 설계하는 방법을 설명한다.
+---
 # Semantic Lock and Pending State Pattern
 
 > 한 줄 요약: distributed workflow에서 DB lock을 오래 잡을 수 없다면, `PENDING_*` 같은 의미 있는 중간 상태를 두어 후속 행동을 제한하는 semantic lock 패턴이 충돌과 중복 진행을 줄여 준다.
@@ -32,6 +101,8 @@
 - `FULFILLMENT_LOCKED`
 
 이런 상태는 기술적 lock이 아니라 **도메인 의미를 가진 임시 잠금 상태**다.
+
+따라서 semantic lock을 설계할 때는 상태 이름보다 먼저 "이 상태에서 어떤 command를 거부하고, 어떤 signal이 오면 풀리며, 늦게 온 signal은 어떤 기준으로 무시하는가"를 정해야 한다.
 
 ### Retrieval Anchors
 

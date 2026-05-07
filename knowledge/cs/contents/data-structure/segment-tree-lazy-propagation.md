@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Segment Tree Lazy Propagation
+concept_id: data-structure/segment-tree-lazy-propagation
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- segment-tree-lazy-propagation
+- range-update-range-query
+- lazy-tag-pushdown
+aliases:
+- segment tree lazy propagation
+- lazy segment tree
+- range update range query
+- lazy tag pushdown
+- 구간 갱신 세그먼트 트리
+- range add range sum
+- interval assignment segment tree
+symptoms:
+- range update를 leaf 전체에 즉시 반영하려 해 O(n log n)에 가까운 비용으로 구현한다
+- lazy tag가 부모 집계값과 자식 미반영 값을 동시에 의미한다는 점을 놓쳐 query 전에 pushdown을 빠뜨린다
+- range add와 range assignment를 함께 지원할 때 lazy tag 합성 순서를 정의하지 않아 덮어쓰기 버그를 만든다
+intents:
+- deep_dive
+- design
+prerequisites:
+- data-structure/fenwick-vs-segment-tree
+- data-structure/segment-tree-not-bst-or-heap-bridge
+next_docs:
+- data-structure/fenwick-segment-tree-operations-playbook
+- algorithm/amortized-analysis-pitfalls
+- data-structure/persistent-segment-tree
+linked_paths:
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/segment-tree-not-bst-or-heap-bridge.md
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/fenwick-vs-segment-tree.md
+- contents/data-structure/fenwick-segment-tree-operations-playbook.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+confusable_with:
+- data-structure/fenwick-tree
+- data-structure/fenwick-vs-segment-tree
+- data-structure/persistent-segment-tree
+- data-structure/interval-tree
+forbidden_neighbors: []
+expected_queries:
+- segment tree lazy propagation은 range update를 어떻게 O(log n)으로 미뤄?
+- lazy tag를 query 전에 pushdown하지 않으면 어떤 버그가 생겨?
+- 구간 덧셈과 구간 합을 지원하는 lazy segment tree 구현 원리를 설명해줘
+- range assignment와 range add를 같이 쓰면 lazy tag 합성이 왜 어려워?
+- Fenwick tree로 안 되고 segment tree lazy propagation이 필요한 문제는?
+contextual_chunk_prefix: |
+  이 문서는 segment tree lazy propagation을 range update와 range query를 함께
+  처리하기 위한 deferred pushdown 기법으로 설명한다. lazy tag, range add,
+  range assignment, Fenwick tree와의 경계를 다룬다.
+---
 # Segment Tree Lazy Propagation
 
 > 한 줄 요약: lazy propagation은 구간 갱신이 많은 세그먼트 트리에서 "지금 당장 다 갱신하지 말고 나중에 밀어두는" 최적화다.

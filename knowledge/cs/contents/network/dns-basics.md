@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: DNS 기초
+concept_id: network/dns-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- dns-domain-ip-resolution
+- dns-cache-ttl
+- url-request-flow
+aliases:
+- dns basics
+- DNS 기초
+- DNS 뭐예요
+- domain to IP
+- 도메인 IP 변환
+- DNS resolver
+- DNS cache
+- DNS TTL 기초
+- A record CNAME
+- nslookup 기초
+- URL 입력 DNS
+symptoms:
+- 도메인과 IP 주소가 왜 따로 있는지 몰라 URL 입력 후 첫 네트워크 단계를 설명하지 못한다
+- DNS 변경이 바로 반영된다고 생각해서 TTL과 resolver cache 때문에 이전 IP로 가는 현상을 놓친다
+- A, AAAA, CNAME, HTTPS RR 같은 레코드가 모두 같은 IP 응답이라고 섞어 이해한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/ip-address-port-basics
+next_docs:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/dns-ttl-cache-failure-patterns
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/dns-negative-caching-nxdomain-behavior
+linked_paths:
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/dns-negative-caching-nxdomain-behavior.md
+- contents/network/dns-over-https-operational-tradeoffs.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+forbidden_neighbors: []
+expected_queries:
+- DNS가 도메인을 IP 주소로 바꿔 주는 흐름을 브라우저, OS 캐시, resolver 기준으로 설명해줘
+- DNS TTL 때문에 도메인 변경이 바로 반영되지 않는 이유와 캐시 계층을 알려줘
+- A 레코드와 CNAME은 어떻게 다르고 최종 IP를 얻으려면 어떤 조회가 이어져?
+- URL을 입력하면 DNS 조회 뒤에 TCP나 TLS 연결이 어떻게 이어지는지 큰 그림으로 보고 싶어
+- HTTPS RR과 SVCB는 A 레코드처럼 IP만 주는 것인지 HTTP/3 힌트와 어떻게 다른지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 DNS를 도메인 이름에서 IP 주소로 해석하는 분산 캐시 시스템으로 설명하는 beginner primer다.
+  domain to IP, recursive resolver, root/TLD/authoritative name server, A/AAAA/CNAME, DNS cache, TTL, nslookup, URL 입력 후 HTTP 연결 흐름, HTTPS RR/SVCB 힌트를 다룬다.
+---
 # DNS 기초
 
 > 한 줄 요약: DNS는 사람이 읽는 도메인 이름을 IP 주소로 바꿔주는 분산 시스템이며, 캐시 계층이 있어서 같은 질의를 반복하지 않아도 된다.

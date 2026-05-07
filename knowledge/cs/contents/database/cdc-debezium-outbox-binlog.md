@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: CDC, Debezium, Outbox, Binlog
+concept_id: database/cdc-debezium-outbox-binlog
+canonical: true
+category: database
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- cdc
+- debezium
+- outbox
+- binlog-wal
+aliases:
+- cdc debezium outbox binlog
+- cdc
+- debezium
+- outbox
+- binlog
+- wal connector
+- outbox cdc
+- replay safe consumer
+- event dedup
+- change data capture
+symptoms:
+- DB commit과 broker publish를 따로 처리해 주문은 저장됐지만 이벤트는 발행되지 않는 gap을 만든다
+- CDC를 쓰면 중복이나 재처리 문제가 사라진다고 보고 idempotent consumer와 dedup table을 설계하지 않는다
+- outbox polling, outbox+CDC, direct publish의 정합성/운영 trade-off를 구분하지 못한다
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- database/outbox-saga-eventual-consistency
+- database/mvcc-replication-sharding
+next_docs:
+- database/cdc-backpressure-binlog-retention-replay
+- database/cdc-gap-repair-reconciliation-playbook
+- database/cdc-schema-evolution-compatibility-playbook
+- database/cdc-replay-verification-idempotency-runbook
+linked_paths:
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/cdc-backpressure-binlog-retention-replay.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/cdc-schema-evolution-compatibility-playbook.md
+- contents/database/cdc-replay-verification-idempotency-runbook.md
+- contents/database/incremental-summary-table-refresh-watermark.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+confusable_with:
+- database/outbox-saga-eventual-consistency
+- database/cdc-backpressure-binlog-retention-replay
+- database/cdc-gap-repair-reconciliation-playbook
+- system-design/change-data-capture-outbox-relay-design
+forbidden_neighbors: []
+expected_queries:
+- CDC, Debezium, Outbox, Binlog는 DB 변경 이벤트를 안전하게 전달하기 위해 각각 어떤 역할을 해?
+- 주문 DB commit과 메시지 publish 사이 gap을 outbox와 CDC로 어떻게 줄이는지 설명해줘
+- Outbox polling, Outbox plus CDC, direct publish는 정합성과 운영 복잡도 관점에서 어떻게 달라?
+- Debezium은 binlog나 WAL을 읽지만 idempotent consumer와 event dedup이 여전히 필요한 이유가 뭐야?
+- CDC를 쓰면 schema evolution, replay, lag, backpressure를 같이 설계해야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 CDC, Debezium, Outbox, Binlog bridge로, DB local transaction 안의 outbox event와
+  binlog/WAL 기반 Change Data Capture가 business data commit과 event delivery gap을 줄이는 방법,
+  duplicate/replay/schema/lag 운영 trade-off를 설명한다.
+---
 # CDC, Debezium, Outbox, Binlog
 
 > 한 줄 요약: DB 변경을 이벤트로 안전하게 흘려보내려면 outbox와 CDC를 같은 정합성 문제로 봐야 한다.

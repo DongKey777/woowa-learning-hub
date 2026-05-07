@@ -9,28 +9,62 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- service-layer
+- business-logic
+- application-service
+- controller-repository-business
 aliases:
 - service layer
 - service 계층
 - business logic
 - application service
+- 비즈니스 규칙을 어디에 모아야 해
+- 컨트롤러나 DB 코드에 비즈니스 규칙 두지 않기
+- controller service repository 책임 분리
+- controller repository business rule separation
 intents:
 - definition
+- comparison
+- design
 linked_paths:
 - contents/software-engineering/layered-architecture-basics.md
 - contents/spring/spring-transactional-basics.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+- contents/software-engineering/architecture-layering-fundamentals.md
 expected_queries:
 - Service 계층은 뭐야?
 - 비즈니스 로직은 어디에 둬?
 - controller와 service는 어떻게 나눠?
 - service에서 transaction을 잡는 이유가 뭐야?
+- 비즈니스 규칙은 컨트롤러나 DB 코드에 두지 말고 어디에 모아야 해?
+contextual_chunk_prefix: |
+  이 문서는 service layer라는 단어를 쓰지 않고 "비즈니스 규칙을 controller나
+  repository/DB 코드에 두지 말고 어디에 모아야 하는가"라고 묻는 beginner
+  paraphrase를 service 계층 책임으로 연결한다. Controller는 요청/응답 변환,
+  Repository는 저장/조회, Service는 유스케이스 흐름과 transaction 경계를
+  조립한다는 layered architecture 분기 기준이 핵심이다.
 ---
-
 # Service 계층 기초 (Service Layer Basics)
 
 > 한 줄 요약: Service 계층은 여러 도메인 객체와 저장소를 조합해 하나의 유스케이스를 완성하는 곳이며, 비즈니스 규칙이 Controller나 Repository로 새지 않도록 막는 경계선이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 미션 코드 장면 | 먼저 볼 Service 경계 |
+|---|---|
+| Controller가 검증, 계산, 저장 순서를 모두 처리한다 | 유스케이스 흐름을 Service로 올릴 때인가 |
+| Repository에서 업무 규칙을 판단한다 | 저장/조회와 business rule이 섞였는가 |
+| 여러 저장을 하나의 요청에서 묶어야 한다 | transaction boundary가 Service에 필요한가 |
+| Service 테스트가 너무 많은 외부 객체를 요구한다 | 규칙/협력/트랜잭션을 나눠야 하는가 |
 
 관련 문서:
 

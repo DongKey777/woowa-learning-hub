@@ -52,8 +52,7 @@ confusable_with:
 - algorithm/zero-one-bfs-parent-tie-mini-note
 - algorithm/zero-one-bfs-lexicographic-tie-mini-note
 - algorithm/shortest-path-reconstruction-bridge
-forbidden_neighbors:
-- contents/algorithm/zero-one-bfs-parent-tie-mini-note.md
+forbidden_neighbors: []
 expected_queries:
 - 사전순 최단 경로 문제에서 부모 번호만 비교하면 왜 반례가 생기는지 알고 싶어
 - 전체 경로 lexicographic 비교와 parent tie-break를 구분하는 기준을 설명해줘

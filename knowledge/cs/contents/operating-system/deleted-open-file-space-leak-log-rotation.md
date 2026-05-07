@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Deleted Open File Space Leak Log Rotation
+concept_id: operating-system/deleted-open-file-space-leak-log-rotation
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- deleted-open-file
+- space-leak-log
+- rotation
+- space-leak
+aliases:
+- deleted open file space leak
+- lsof +L1
+- log rotation inode still open
+- unlinked file disk usage
+- tmpfs deleted file leak
+- proc pid fd deleted
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/rename-atomicity-directory-fsync-crash-consistency.md
+- contents/operating-system/tmpfs-shmem-cgroup-memory-accounting.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/sparse-file-fallocate-hole-punching.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+symptoms:
+- 파일을 삭제했는데 df 상 disk usage가 줄지 않는다.
+- log rotation 후 application이 옛 inode를 계속 열고 있어 공간이 회수되지 않는다.
+- tmpfs에서 deleted-but-open file 때문에 memory/cgroup usage가 계속 남는다.
+expected_queries:
+- 삭제한 파일인데 디스크 공간이 바로 돌아오지 않는 이유는?
+- lsof +L1이나 /proc/pid/fd deleted로 log rotation space leak을 어떻게 찾지?
+- unlinked file을 process가 계속 열고 있으면 inode와 공간은 언제 해제돼?
+- tmpfs deleted open file은 disk leak이 아니라 memory accounting 문제로 볼 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 file을 unlink해 directory entry가 사라져도 process가 open file description을
+  계속 잡고 있으면 inode와 disk/tmpfs space가 회수되지 않는 deleted-but-open space leak을
+  log rotation 증상으로 라우팅한다.
+---
 # Deleted-but-Open Files, Log Rotation, Space Leak Debugging
 
 > 한 줄 요약: 파일을 지웠다고 공간이 바로 돌아오는 것은 아니며, 프로세스가 그 inode를 계속 열고 있으면 디렉터리에서는 사라져도 디스크와 tmpfs 메모리는 계속 점유될 수 있다.

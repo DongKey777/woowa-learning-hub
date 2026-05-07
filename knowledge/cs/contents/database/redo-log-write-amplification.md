@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Redo Log Write Amplification
+concept_id: database/redo-log-write-amplification
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- redo-log
+- write-amplification
+- fsync
+- checkpoint
+- durability
+aliases:
+- redo log write amplification
+- WAL write amplification
+- log buffer flush
+- LSN checkpoint pressure
+- commit durability cost
+- sequential log write
+- dirty page checkpoint flush
+- redo capacity tradeoff
+- fsync tail latency
+- write path amplification
+symptoms:
+- 작은 UPDATE가 많은데 디스크 쓰기량과 commit latency가 같이 늘어나는 이유를 설명해야 해
+- redo log가 랜덤 I/O를 줄인다면서 왜 write amplification이 생기는지 묻고 있어
+- redo capacity를 키우면 checkpoint pressure와 recovery time이 어떻게 tradeoff 되는지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/redo-undo-checkpoint-crash-recovery
+- database/group-commit-binlog-fsync-durability
+next_docs:
+- database/checkpoint-age-flush-storms
+- database/doublewrite-buffer-torn-page-protection
+- database/flush-neighbors-adaptive-flushing-io-capacity
+linked_paths:
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/group-commit-binlog-fsync-durability.md
+- contents/database/checkpoint-age-flush-storms.md
+- contents/database/doublewrite-buffer-torn-page-protection.md
+- contents/database/flush-neighbors-adaptive-flushing-io-capacity.md
+confusable_with:
+- database/redo-undo-checkpoint-crash-recovery
+- database/group-commit-binlog-fsync-durability
+- database/checkpoint-age-flush-storms
+forbidden_neighbors: []
+expected_queries:
+- redo log는 순차 write인데 왜 write amplification과 fsync 비용을 만든다고 봐야 해?
+- 작은 UPDATE가 많을 때 redo log, dirty page flush, checkpoint가 어떻게 쓰기 압력을 키워?
+- innodb_redo_log_capacity를 키우면 checkpoint pressure와 crash recovery time이 어떻게 바뀌어?
+- commit latency가 튈 때 log buffer flush와 group commit을 어떤 순서로 의심해야 해?
+- WAL 구조가 랜덤 I/O를 줄이는 대신 어떤 저장 계층에 쓰기를 남기는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 redo log write amplification을 WAL, log buffer, fsync, LSN, checkpoint pressure, commit durability tradeoff로 설명하는 advanced deep dive다.
+  redo capacity, dirty page flush, write path amplification, fsync tail latency 질문이 본 문서에 매핑된다.
+---
 # Redo Log Write Amplification
 
 > 한 줄 요약: redo log는 단순한 장애 복구 파일이 아니라, 모든 변경을 순차 기록으로 바꾸는 대신 쓰기 증폭과 fsync 비용을 함께 감수하는 장치다.

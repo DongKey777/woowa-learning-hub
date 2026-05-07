@@ -35,13 +35,13 @@ intents:
 - comparison
 - design
 prerequisites:
-- spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
-- spring/spring-template-classes-beginner-primer
-- spring/spring-webclient-vs-resttemplate
+- spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
+- spring/template-classes-beginner-primer
+- spring/webclient-vs-resttemplate
 next_docs:
-- spring/spring-reactive-blocking-bridge-boundedelastic-block-traps
-- spring/spring-webclient-connection-pool-timeout-tuning
-- spring/spring-securitycontext-propagation-async-reactive-boundaries
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- spring/webclient-connection-pool-timeout-tuning
+- spring/securitycontext-propagation-async-reactive-boundaries
 linked_paths:
 - contents/spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md
 - contents/spring/spring-template-classes-beginner-primer.md
@@ -56,9 +56,9 @@ linked_paths:
 - contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
 - contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
 confusable_with:
-- spring/spring-webclient-vs-resttemplate
-- spring/spring-reactive-blocking-bridge-boundedelastic-block-traps
-- spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
+- spring/webclient-vs-resttemplate
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
 forbidden_neighbors: []
 expected_queries:
 - Spring에서 외부 HTTP 호출할 때 RestClient와 WebClient를 생명주기 기준으로 어떻게 갈라서 선택해?

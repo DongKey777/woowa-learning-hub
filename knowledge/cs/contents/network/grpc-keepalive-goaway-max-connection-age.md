@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "gRPC Keepalive, GOAWAY, Max Connection Age"
+concept_id: network/grpc-keepalive-goaway-max-connection-age
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- grpc-keepalive-goaway
+- max-connection-age-drain
+- reconnect-storm-prevention
+aliases:
+- gRPC keepalive
+- HTTP/2 PING
+- GOAWAY max connection age
+- keepalive without calls
+- too_many_pings
+- reconnect storm
+symptoms:
+- gRPC keepalive ping을 HTTP keep-alive 연결 재사용과 같은 개념으로 본다
+- keepalive_without_calls를 공격적으로 설정해 too_many_pings나 reconnect storm을 만든다
+- GOAWAY를 정상 drain/rotation 신호가 아니라 무조건 장애로 해석한다
+- max connection age를 jitter 없이 동일하게 적용해 대량 재연결을 유발한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/grpc-deadlines-cancellation-propagation
+- network/connection-keepalive-loadbalancing-circuit-breaker
+next_docs:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/lb-connection-draining-deployment-safe-close
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/grpc-keepalive-vs-http2-ping-vs-tcp-keepalive-beginner-bridge
+linked_paths:
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/lb-connection-draining-deployment-safe-close.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+confusable_with:
+- network/grpc-keepalive-vs-http2-ping-vs-tcp-keepalive-beginner-bridge
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/lb-connection-draining-deployment-safe-close
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+forbidden_neighbors: []
+expected_queries:
+- "gRPC keepalive ping과 GOAWAY와 max connection age를 어떻게 같이 설계해?"
+- "keepalive_without_calls가 너무 짧으면 too_many_pings와 reconnect storm이 왜 생겨?"
+- "GOAWAY는 장애가 아니라 drain 신호일 수 있다는 점을 설명해줘"
+- "LB idle timeout과 gRPC keepalive interval을 어떻게 맞춰야 해?"
+- "max connection age에 jitter가 없으면 왜 모든 클라이언트가 동시에 재연결해?"
+contextual_chunk_prefix: |
+  이 문서는 gRPC keepalive PING, keepalive_without_calls, GOAWAY,
+  max connection age, load balancer idle timeout, drain, reconnect storm을
+  운영 설정 관점으로 다루는 advanced playbook이다.
+---
 # gRPC Keepalive, GOAWAY, Max Connection Age
 
 > 한 줄 요약: gRPC keepalive ping, `GOAWAY`, `max connection age`는 모두 연결 생명주기를 다루지만, load balancer와 drain 정책과 엇갈리면 dead-peer detection이 아니라 reconnect storm을 만든다.

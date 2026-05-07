@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Branch by Abstraction Feature Flag Strangler Fig
+concept_id: software-engineering/migration-pattern-chooser
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- migration-patterns
+- feature-flag
+- strangler-fig
+aliases:
+- Branch by Abstraction Feature Flag Strangler Fig
+- branch by abstraction vs feature flag vs strangler
+- migration pattern chooser
+- rollout vs refactor vs cutover
+- feature flag strangler branch by abstraction
+- 점진 전환 패턴 비교
+symptoms:
+- 코드 내부 구현 교체가 필요한데 feature flag만 붙여 구조 부채를 남기거나, 기능 노출 제어만 필요한데 Strangler 라우팅을 과하게 만들어
+- Branch by Abstraction, Feature Flag, Strangler Fig를 모두 점진 전환이라는 말로 뭉쳐 코드 레벨, 운영 레벨, 시스템 레벨을 구분하지 못해
+- cutover, rollback, contract test 없이 Strangler 전환을 진행해 새 시스템 검증과 legacy fallback 기준이 흐려져
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/strangler-fig-migration-contract-cutover
+next_docs:
+- software-engineering/feature-flag-cleanup-expiration
+- software-engineering/strangler-verification-shadow-traffic-metrics
+- software-engineering/architecture-runway
+linked_paths:
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/feature-flag-cleanup-expiration.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/strangler-verification-shadow-traffic-metrics.md
+confusable_with:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/deployment-rollout-strategy
+forbidden_neighbors: []
+expected_queries:
+- Branch by Abstraction, Feature Flag, Strangler Fig는 각각 코드 내부, 기능 노출, 시스템 전환 중 무엇을 푸는 패턴이야?
+- 결제 PG 교체에서 PaymentPort, feature flag, old/new adapter를 어떤 순서로 조합해?
+- 기능을 사용자에게 늦게 켜는 문제와 레거시 트래픽을 새 서비스로 옮기는 문제는 왜 다른 패턴이 필요해?
+- feature flag만 남발하면 왜 cleanup debt가 생기고 branch by abstraction만으로는 rollout risk가 남아?
+- Strangler Fig migration에서 contract test, shadow compare, rollback path가 필요한 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Branch by Abstraction, Feature Flag, Strangler Fig를 code refactor boundary, feature exposure control, system cutover migration 관점에서 비교하는 advanced chooser다.
+---
 # Branch by Abstraction, Feature Flag, Strangler Fig
 
 > 한 줄 요약: 기존 시스템을 안전하게 바꾸려면 "코드 경로를 숨기는 추상화", "기능 노출을 제어하는 플래그", "레거시 트래픽을 흡수하며 잘라내는 전환"을 구분해서 써야 한다.

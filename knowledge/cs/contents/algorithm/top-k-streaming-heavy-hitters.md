@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Top-k Streaming and Heavy Hitters
+concept_id: algorithm/top-k-streaming-heavy-hitters
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- top-k-streaming
+- heavy-hitters
+- approximate-frequency-sketch
+aliases:
+- top-k streaming
+- heavy hitters
+- frequent items
+- space saving algorithm
+- Misra Gries
+- Count-Min Sketch
+- approximate frequency
+- hot key detection
+- streaming analytics
+- top-k 스트리밍
+symptoms:
+- 스트림 전체를 저장해야 top-k를 알 수 있다고 생각해 memory bound와 approximate tracking을 놓친다
+- reservoir sampling과 heavy hitters를 모두 스트림 샘플링으로만 보고 균등 샘플과 빈도 상위 추적 차이를 구분하지 못한다
+- top-k largest인데 min-heap을 쓰는 이유나 sketch가 과대 추정할 수 있는 성질을 설명하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- data-structure/heap-variants
+- data-structure/count-min-sketch
+next_docs:
+- algorithm/reservoir-sampling
+- data-structure/top-k-heap-direction-patterns
+- data-structure/count-min-sketch
+- data-structure/hyperloglog
+linked_paths:
+- contents/algorithm/reservoir-sampling.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/top-k-heap-direction-patterns.md
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/count-min-sketch.md
+confusable_with:
+- algorithm/reservoir-sampling
+- data-structure/top-k-heap-direction-patterns
+- data-structure/count-min-sketch
+- data-structure/hyperloglog
+forbidden_neighbors: []
+expected_queries:
+- Top-k streaming은 전체 스트림을 저장하지 않고 빈도 상위 항목을 어떻게 추적해?
+- Heavy hitters와 reservoir sampling은 균등 샘플과 빈도 상위 추적 관점에서 어떻게 달라?
+- top-k largest를 유지할 때 왜 k 크기의 min-heap을 쓰는 경우가 많아?
+- Misra-Gries, Space-Saving, Count-Min Sketch는 heavy hitter 근사에서 어떤 역할을 해?
+- hot endpoint나 hot key를 observability에서 찾을 때 heavy hitters가 왜 유용해?
+contextual_chunk_prefix: |
+  이 문서는 Top-k Streaming and Heavy Hitters advanced deep dive로, 무한 또는 큰
+  stream에서 top-k frequent items와 heavy hitter를 small heap, Misra-Gries,
+  Space-Saving, Count-Min Sketch 같은 방식으로 추적하는 패턴을 설명한다.
+---
 # Top-k Streaming and Heavy Hitters
 
 > 한 줄 요약: Top-k streaming과 heavy hitters는 스트림에서 자주 나오는 항목만 작은 메모리로 추적하는 기법이다.

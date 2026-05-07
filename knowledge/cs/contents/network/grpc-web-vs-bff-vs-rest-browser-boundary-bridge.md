@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "브라우저 경계에서 보는 gRPC-Web vs BFF vs REST 브리지"
+concept_id: network/grpc-web-vs-bff-vs-rest-browser-boundary-bridge
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- grpc-web-bff-rest-boundary
+- browser-api-architecture
+- frontend-grpc-decision
+aliases:
+- grpc-web vs bff vs rest
+- browser grpc vs grpc-web
+- frontend grpc or rest
+- browser native grpc limit
+- bff calls grpc backend
+- grpc-web proxy translation
+symptoms:
+- 내부 서비스 간 gRPC가 좋다는 이유로 브라우저도 native gRPC로 직접 붙이면 된다고 생각한다
+- 브라우저에 숨겨야 할 token/internal contract/screen composition을 gRPC-Web 직접 호출로 노출한다
+- REST와 gRPC-Web과 BFF의 책임 차이를 성능 하나로만 비교한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- network/grpc-vs-rest
+- network/rest-websocket-sse-grpc-http2-http3-choice-primer
+next_docs:
+- network/grpc-status-trailers-transport-error-mapping
+- network/browser-devtools-options-preflight-vs-actual-failure-mini-card
+- system-design/browser-bff-session-boundary-primer
+- security/browser-direct-call-vs-server-proxy-decision-tree
+linked_paths:
+- contents/network/rest-websocket-sse-grpc-http2-http3-choice-primer.md
+- contents/network/grpc-vs-rest.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/network/browser-devtools-options-preflight-vs-actual-failure-mini-card.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/security/browser-direct-call-vs-server-proxy-decision-tree.md
+confusable_with:
+- network/grpc-vs-rest
+- system-design/browser-bff-session-boundary-primer
+- security/browser-direct-call-vs-server-proxy-decision-tree
+- network/rest-websocket-sse-grpc-http2-http3-choice-primer
+forbidden_neighbors: []
+expected_queries:
+- "브라우저에서 gRPC-Web BFF REST 중 무엇을 선택해야 하는지 경계 기준으로 설명해줘"
+- "서버끼리는 gRPC가 좋은데 브라우저는 native gRPC를 그대로 못 쓰는 이유는?"
+- "gRPC-Web은 브라우저 직접 호출을 유지하고 BFF는 서버가 대신 호출한다는 차이를 알려줘"
+- "토큰 숨김 화면 조합 세션 번역이 필요하면 gRPC-Web보다 BFF가 나은 이유는?"
+- "프론트 API를 REST로 두는 게 더 안전한 기본값인 조건은 뭐야?"
+contextual_chunk_prefix: |
+  이 문서는 browser boundary에서 gRPC-Web, BFF, REST를 직접 호출,
+  translation proxy, token/internal contract hiding, screen aggregation,
+  browser tooling/CORS/session 기준으로 비교하는 intermediate bridge다.
+---
 # 브라우저 경계에서 보는 gRPC-Web vs BFF vs REST 브리지
 
 > 한 줄 요약: 서버끼리 gRPC가 잘 맞는다고 해서 브라우저도 그대로 native gRPC로 붙는 것은 아니고, 브라우저 클라이언트에서는 `gRPC-Web`, `BFF`, `REST` 중 무엇이 경계에 맞는지 따로 골라야 한다.

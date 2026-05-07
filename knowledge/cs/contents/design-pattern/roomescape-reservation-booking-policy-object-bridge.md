@@ -74,6 +74,14 @@ contextual_chunk_prefix: |
 
 > roomescape에서 `name` 형식 검사는 입력 검증이고, `CANCELED` 이후 전이는 상태 전이이며, "이 날짜와 시간에 지금 예약을 받아도 되는가"는 여러 사실을 모아 판정하는 규칙이다. 이 마지막 질문이 커질수록 `ReservationService`의 긴 `if` 문보다 `BookingPolicy` 같은 Policy Object가 더 잘 맞는다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 가능 여부 `if` 문이 `ReservationService` 안에서 계속 길어져요" | 영업시간, 휴무일, 이미 찬 슬롯, 관리자 예외가 한 메서드에 쌓임 | 유스케이스 순서와 다중 조건 판정 규칙을 분리한다 |
+| "`BookingPolicy` 같은 객체로 규칙을 올리라는 리뷰가 이해가 안 돼요" | 예약 가능 판단을 service private method로만 나눈 상태 | 허용/거절/이유를 이름 있는 policy object로 표현한다 |
+| "validation과 state 말고 policy object가 맞는 장면이 뭔가요?" | request 형식, 예약 상태 전이, 운영 규칙이 섞인 설계 | 요청 값 검증, 상태 전이, 다중 입력 정책 판단을 서로 다른 축으로 본다 |
+
 ## 미션 시나리오
 
 roomescape 예약 생성은 처음엔 단순해 보인다. `ReservationTime`을 찾고, 같은 시간대 예약이 있는지 보고, 없으면 저장하면 끝처럼 느껴진다. 그래서 학습자는 `ReservationService.create()` 안에 `if (closedDay)`, `if (alreadyBooked)`, `if (pastTime)` 같은 분기를 차례로 붙이기 쉽다.

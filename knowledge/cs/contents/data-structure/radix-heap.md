@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Radix Heap
+concept_id: data-structure/radix-heap
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- radix-heap
+- monotone-priority-queue
+- integer-key-bucket-queue
+aliases:
+- Radix Heap
+- monotone priority queue
+- integer priority queue
+- bucketed heap
+- nondecreasing key queue
+- Dijkstra priority queue
+- deadline integer bucket queue
+symptoms:
+- key가 단조 증가하는 priority queue 상황인데도 binary heap의 범용성을 그대로 써서 불필요한 비용을 낸다
+- Radix Heap이 모든 priority queue를 대체하는 것이 아니라 pop key가 nondecreasing이라는 계약에 특화된 구조라는 점을 놓친다
+- lastDeleted와 key XOR의 msb로 bucket을 나누고 redistribution으로 amortized 비용을 감당하는 모델을 이해하지 못한다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/heap-variants
+next_docs:
+- data-structure/calendar-queue
+- data-structure/hierarchical-timing-wheel
+- data-structure/timing-wheel-variants-and-selection
+linked_paths:
+- contents/data-structure/heap-variants.md
+- contents/data-structure/calendar-queue.md
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/data-structure/timing-wheel-variants-and-selection.md
+confusable_with:
+- data-structure/heap-variants
+- data-structure/calendar-queue
+- data-structure/hierarchical-timing-wheel
+- data-structure/timing-wheel-variants-and-selection
+forbidden_neighbors: []
+expected_queries:
+- Radix Heap은 monotone priority queue에서 binary heap보다 왜 유리할 수 있어?
+- pop되는 key가 nondecreasing이라는 계약이 Radix Heap의 핵심이라는 뜻은?
+- lastDeleted와 msb(key XOR lastDeleted)로 bucket을 고르는 방식을 설명해줘
+- Dijkstra의 nonnegative edge에서 Radix Heap을 고려할 수 있는 이유는?
+- Radix Heap과 Calendar Queue Timing Wheel Binary Heap을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Radix Heap을 nondecreasing integer key 계약을 활용하는 monotone
+  priority queue로 설명하는 chooser다. lastDeleted, msb XOR bucket, redistribution,
+  Dijkstra, scheduler deadline queue, binary heap/calendar queue/timing wheel과의
+  차이를 다룬다.
+---
 # Radix Heap
 
 > 한 줄 요약: Radix Heap은 key가 단조 증가하는 priority queue 상황에서 bucket 간격을 비트 길이 기준으로 나눠, 일반 binary heap보다 더 싼 monotone priority queue를 노리는 자료구조다.

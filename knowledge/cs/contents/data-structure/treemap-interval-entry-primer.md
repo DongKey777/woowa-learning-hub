@@ -69,18 +69,27 @@ expected_queries:
 - "roomescape 예약 추가 미션에서 `prev`와 `next` 두 개만 보는 이유를 이해하고 싶어"
 - booking map에서 `floorEntry`와 `ceilingEntry`를 어떤 순서로 읽어야 해?
 contextual_chunk_prefix: |
-  이 문서는 roomescape 예약 추가 로직에서 TreeMap 양옆 이웃만으로
-  overlap을 판단하는 흐름을 처음 연결하는 학습자에게 floorEntry와
-  ceilingEntry가 exact match에서 어디를 가리키는지 Woowa 미션과 연결해
-  잇는 mission_bridge다. 왼쪽 예약 끝 확인, 오른쪽 예약 시작 비교,
-  양옆 예약만 보면 되는 이유, booking map 이웃 조회, exact match 예약
-  판단 같은 자연어 paraphrase가 본 문서의 예약 이웃 검사에 매핑된다.
+  이 문서는 roomescape 예약표에 새 구간을 넣을 때 왼쪽 예약과 오른쪽
+  예약만 보면 되는 이유를 아직 코드로 못 옮기는 학습자에게 floorEntry와
+  ceilingEntry로 overlap을 판단하는 흐름을 Woowa 미션과 연결해 잇는
+  mission_bridge다. 새 예약 앞뒤 이웃 확인, 양옆만 비교해도 되는
+  까닭, 시작 시각이 이미 있을 때 어디를 보나, booking map 충돌 판정,
+  빈 슬롯 대신 겹침 여부 판단 같은 자연어 paraphrase가 본 문서의
+  예약 이웃 검사에 매핑된다.
 ---
 # TreeMap Interval Entry Primer
 
 > 한 줄 요약: 예약표가 이미 겹치지 않게 정리돼 있다면, `floorEntry(start)`와 `ceilingEntry(start)`로 찾은 왼쪽/오른쪽 이웃만 확인해서 새 예약의 overlap 여부를 한 번에 판단할 수 있다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "roomescape 예약 추가에서 양옆 예약만 보면 된다는 말을 코드로 못 옮기겠어요" | 겹치지 않게 유지되는 예약표에 새 구간 삽입 | `floorEntry(start)`와 `ceilingEntry(start)`로 왼쪽/오른쪽 이웃만 확인한다 |
+| "`floorEntry(start)`와 `ceilingEntry(start)`가 exact match에서 헷갈려요" | 시작 시각이 이미 있는 예약 slot 처리 | strict/inclusive neighbor query 결과를 먼저 고정한다 |
+| "예약표를 `TreeMap<start,end>`로 들고 있는데 overlap 식을 못 세우겠어요" | online interval insert 구현 | `prev.end <= start`와 `end <= next.start` 조건을 half-open 경계로 읽는다 |
 
 관련 문서:
 

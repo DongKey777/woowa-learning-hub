@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Row-Ordering and Bitmap Compression Playbook
+concept_id: data-structure/row-ordering-and-bitmap-compression-playbook
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- bitmap-row-ordering
+- compressed-bitmap-locality
+- warehouse-sort-key-design
+aliases:
+- row ordering bitmap compression
+- bitmap compression playbook
+- warehouse bitmap sort key
+- bitmap row clustering
+- Roaring row locality
+- WAH EWAH row ordering
+- segment boundary bitmap compression
+symptoms:
+- bitmap 압축률을 cardinality만으로 판단하고 row ordering, clustering, segment boundary가 만든 run shape를 보지 않는다
+- warehouse sort key가 자주 필터되는 dimension과 무관해 WAH/EWAH clean run과 Roaring chunk locality가 깨지는 문제를 놓친다
+- micro-partition, late-arriving row, compaction 부재가 bitmap run을 잘게 자르는 원인을 codec 문제로만 해석한다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+next_docs:
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+- data-structure/roaring-bitmap-selection-playbook
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+- contents/data-structure/warehouse-sort-key-co-design-for-bitmap-indexes.md
+confusable_with:
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/roaring-bitmap-selection-playbook
+- data-structure/bit-sliced-bitmap-index
+forbidden_neighbors: []
+expected_queries:
+- bitmap 압축률이 cardinality는 같은데 row ordering 때문에 달라지는 이유는?
+- warehouse sort key와 bitmap index compression을 같이 설계할 때 무엇을 봐야 해?
+- WAH EWAH CONCISE의 clean run과 Roaring chunk locality는 row ordering 영향을 어떻게 다르게 받아?
+- micro partition boundary가 bitmap run을 자르는 문제를 어떻게 진단해?
+- late arriving row가 bitmap compression과 Roaring runOptimize 효과를 깨는 과정을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 bitmap compression을 cardinality 문제가 아니라 row ordering, clustering,
+  segment boundary가 만드는 run shape 문제로 설명한다. WAH/EWAH/CONCISE의
+  clean run과 Roaring의 chunk-local container shape를 warehouse sort-key 설계와 연결한다.
+---
 # Row-Ordering and Bitmap Compression Playbook
 
 > 한 줄 요약: bitmap 압축 효율은 cardinality만으로 결정되지 않고, row를 어떤 순서로 배치하고 어느 segment 경계에서 끊는지에 따라 WAH/EWAH/CONCISE의 fill run과 Roaring의 container shape가 크게 달라진다.

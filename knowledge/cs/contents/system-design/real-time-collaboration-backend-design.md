@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Real-time Collaboration Backend 설계
+concept_id: system-design/real-time-collaboration-backend-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- real-time collaboration
+- concurrent editing
+- presence
+- operational transform
+aliases:
+- real-time collaboration
+- concurrent editing
+- presence
+- operational transform
+- crdt
+- cursor sync
+- offline sync
+- conflict resolution
+- awareness
+- document room
+- Real-time Collaboration Backend 설계
+- real time collaboration backend design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/chat-system-design.md
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/distributed-lock-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/multi-region-active-active-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Real-time Collaboration Backend 설계 설계 핵심을 설명해줘
+- real-time collaboration가 왜 필요한지 알려줘
+- Real-time Collaboration Backend 설계 실무 트레이드오프는 뭐야?
+- real-time collaboration 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Real-time Collaboration Backend 설계를 다루는 deep_dive 문서다. 실시간 협업 백엔드는 여러 사용자의 동시 편집, 충돌 해결, presence, 오프라인 복구를 함께 처리하는 동기화 시스템이다. 검색 질의가 real-time collaboration, concurrent editing, presence, operational transform처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Real-time Collaboration Backend 설계
 
 > 한 줄 요약: 실시간 협업 백엔드는 여러 사용자의 동시 편집, 충돌 해결, presence, 오프라인 복구를 함께 처리하는 동기화 시스템이다.

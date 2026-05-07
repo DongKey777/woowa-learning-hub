@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 로깅 전략 기초
+concept_id: software-engineering/logging-strategy-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- logging-level-selection
+- structured-logging
+- exception-log-boundary
+aliases:
+- logging strategy basics
+- 로깅 기초
+- 로그 레벨 설명
+- SLF4J 입문
+- DEBUG INFO WARN ERROR
+- 로그 어디에 찍어요
+- 구조화 로그
+- application log
+- traceId MDC
+- System.out vs logger
+symptoms:
+- System.out.println과 로깅 프레임워크 차이를 모른 채 운영에서 레벨, 포맷, 검색 가능성을 제어하지 못한다
+- INFO, WARN, ERROR를 중요도 기준 없이 섞어 로그 폭탄이나 놓친 장애 신호를 만든다
+- 예외를 catch해 로그만 남기고 실패를 전파하지 않아 호출자가 정상처럼 계속 진행하게 만든다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/exception-handling-basics
+next_docs:
+- software-engineering/cache-message-observability
+- software-engineering/backend-delivery-observability-foundations-primer
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- software-engineering/exception-handling-basics
+linked_paths:
+- contents/software-engineering/exception-handling-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/cache-message-observability.md
+- contents/software-engineering/backend-delivery-observability-foundations-primer.md
+- contents/network/x-request-id-gateway-app-log-trace-beginner-bridge.md
+confusable_with:
+- software-engineering/exception-handling-basics
+- software-engineering/cache-message-observability
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- 로깅에서 TRACE DEBUG INFO WARN ERROR 레벨을 어떤 기준으로 나누고 운영에서는 무엇을 켜야 해?
+- System.out.println 대신 SLF4J와 Logback 같은 로깅 프레임워크를 쓰는 이유를 설명해줘
+- 로그는 어디에 찍어야 하고 루프 내부나 모든 DB 호출에 INFO를 찍으면 왜 문제가 돼?
+- 예외를 catch해서 로그만 찍고 삼키면 예외 처리와 장애 추적에서 어떤 문제가 생겨?
+- traceId나 MDC, 구조화 로그를 쓰면 요청 하나의 흐름을 어떻게 추적할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 애플리케이션 로그를 운영 가능한 관측 신호로 쓰기 위한 beginner primer다.
+  log level, TRACE/DEBUG/INFO/WARN/ERROR, SLF4J, Logback, structured logging, MDC, traceId, exception logging, sensitive data, log volume, service boundary logging을 다룬다.
+---
 # 로깅 전략 기초 (Logging Strategy Basics)
 
 > 한 줄 요약: 로그는 시스템이 무엇을 했는지 기록하는 수단이고, 레벨·구조·위치를 올바르게 설정해야 장애 원인을 빠르게 찾을 수 있다.

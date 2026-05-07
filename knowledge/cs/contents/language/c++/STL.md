@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: C++ STL Basics
+concept_id: language/cpp-stl-basics
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 78
+mission_ids: []
+review_feedback_tags:
+- cpp-stl
+- container-iterator-algorithm
+- beginner-language
+aliases:
+- C++ STL basics
+- Standard Template Library
+- STL 컨테이너 반복자 알고리즘
+- C++ vector set map queue primer
+- STL iterator basics
+- STL functor basics
+- C++ 표준 템플릿 라이브러리
+symptoms:
+- C++ STL을 vector나 queue 같은 개별 라이브러리 이름으로만 외우고 container, iterator, algorithm 역할을 나누지 못해
+- begin end iterator와 pointer 비슷한 접근 모델이 헷갈려
+- STL algorithm과 functor가 컨테이너와 어떻게 조합되는지 큰 그림이 필요해
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/backend-data-structure-starter-pack
+next_docs:
+- language/modern-cpp
+- language/cpp-multithread-programming
+- data-structure/array-vs-linked-list
+- algorithm/sort
+linked_paths:
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/algorithm/sort.md
+- contents/algorithm/sort-intro.md
+- contents/data-structure/array-vs-linked-list.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+confusable_with:
+- data-structure/backend-data-structure-starter-pack
+- language/modern-cpp
+forbidden_neighbors: []
+expected_queries:
+- C++ STL이 container iterator algorithm functor로 나뉜다는 걸 초보자에게 설명해줘
+- vector set map 같은 STL 컨테이너를 어떤 기준으로 구분해야 해?
+- C++ iterator begin end가 포인터와 비슷하다는 말이 무슨 뜻이야?
+- STL algorithm과 functor를 sort transform 예제로 이해하고 싶어
+- C++ Standard Template Library 큰 그림을 자료구조와 연결해서 알려줘
+contextual_chunk_prefix: |
+  이 문서는 C++ STL을 container, iterator, algorithm, functor 관점으로 설명하는 intermediate primer다.
+  Standard Template Library, vector, deque, set, map, iterator begin end, sort transform, functor 같은 질문이 본 문서에 매핑된다.
+---
 # STL
 
 

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Striped Guard Row Budgeting Primer
+concept_id: database/striped-guard-row-budgeting
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- guard-row
+- striping
+- capacity
+- booking
+- contention
+aliases:
+- striped guard row budgeting
+- bucket local budget
+- stable bucket selection
+- stable bucket id
+- release bookkeeping
+- guard row striping basics
+- local bucket budget
+- bucket allocation record
+- room type day bucket budget
+- striped guard release
+symptoms:
+- 단일 guard row hot row를 여러 bucket으로 나눌 때 승인 기준을 global sum으로 다시 봐서 병목을 되살리고 있어
+- acquire와 release가 다른 bucket을 만져 reserved_qty drift가 생길 수 있어
+- cancel, expire, retry가 같은 점유를 두 번 반납하지 않게 bucket_id bookkeeping이 필요해
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- database/guard-row-hot-row-symptoms-primer
+- database/hot-row-contention-counter-sharding
+next_docs:
+- database/striped-guard-row-rebalance
+- database/shared-pool-guard-design-room-type-inventory
+- database/guard-row-scope-design-multi-day-bookings
+linked_paths:
+- contents/database/guard-row-hot-row-symptoms-primer.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+confusable_with:
+- database/striped-guard-row-rebalance
+- database/shared-pool-guard-design-room-type-inventory
+- database/guard-row-hot-row-symptoms-primer
+forbidden_neighbors: []
+expected_queries:
+- striped guard row에서 total capacity가 아니라 bucket local budget으로 승인해야 하는 이유가 뭐야?
+- acquire와 release가 같은 bucket을 만지도록 stable bucket id를 어떻게 저장해야 해?
+- guard row striping을 했는데 매 요청마다 global SUM을 다시 읽으면 왜 hot path 병목이 돌아와?
+- cancel, expire, retry가 같은 reservation을 두 번 release하지 않게 bookkeeping을 어떻게 해야 해?
+- room_type_day inventory를 bucket별 budget으로 나눌 때 초보자가 지킬 규칙을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 striped guard row budgeting을 bucket local budget, stable bucket selection, release bookkeeping으로 설명하는 beginner primer다.
+  guard row striping basics, local bucket budget, stable bucket id, striped guard release 질문이 본 문서에 매핑된다.
+---
 # Striped Guard Row Budgeting Primer
 
 > 한 줄 요약: 단일 guard row를 여러 stripe로 나눌 때 초보자가 먼저 지켜야 할 규칙은 "`총량`이 아니라 `bucket별 예산`으로 승인하고, `같은 claim`은 항상 같은 bucket으로 보내고, `반납`은 원래 bucket에서 한 번만 처리한다"이다.

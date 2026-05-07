@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: PENDING Row Recovery Primer
+concept_id: database/pending-row-recovery-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- idempotency
+- pending-row
+- recovery
+- lease-heartbeat
+aliases:
+- pending row recovery primer
+- pending idempotency row takeover
+- stale processing row recovery
+- lease heartbeat expiry recovery
+- pending 상태가 안 끝나요
+- pending이 계속 남아요
+- processing이랑 pending 차이
+- pending takeover 언제 해요
+- stale row recovery
+- heartbeat랑 lease 차이
+symptoms:
+- idempotency row가 PENDING인데 살아 있는 처리인지 abandoned row인지 구분하지 않고 바로 takeover하려 해
+- heartbeat, lease, owner, fencing token 없이 updated_at이 오래됐다는 이유만으로 recovery를 시작하려 해
+- 저장 상태 PENDING과 client 응답 PROCESSING, recovery takeover 조건을 같은 말로 섞고 있어
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/unique-claim-existing-row-reuse-primer
+- database/idempotency-key-status-contract-examples
+next_docs:
+- database/transaction-heartbeat-long-running-job-locking
+- database/db-lease-fencing-coordination
+- database/idempotent-transaction-retry-envelopes
+linked_paths:
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/transaction-heartbeat-long-running-job-locking.md
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+confusable_with:
+- database/idempotency-key-status-contract-examples
+- database/db-lease-fencing-coordination
+- database/idempotent-transaction-retry-envelopes
+forbidden_neighbors: []
+expected_queries:
+- idempotency PENDING row를 언제 PROCESSING으로 응답하고 언제 recovery takeover해야 해?
+- pending row가 오래됐다고 바로 takeover하면 왜 중복 side effect 위험이 생겨?
+- lease_expires_at, last_heartbeat_at, fencing token으로 stale processing row를 판단하는 기준을 알려줘
+- PENDING 저장 상태와 PROCESSING 응답 표현의 차이를 초보자용으로 설명해줘
+- compare-and-swap takeover 조건 없이 pending row를 덮어쓰면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 idempotency PENDING row를 heartbeat, lease, owner, fencing token으로 liveness 판단하고 compare-and-swap takeover하는 beginner playbook이다.
+  pending 상태가 안 끝나요, processing이랑 pending 차이, pending takeover 언제 질문이 본 문서에 매핑된다.
+---
 # PENDING Row Recovery Primer
 
 > 한 줄 요약: 기존 `PENDING` idempotency row는 "아직 누군가 정상 처리 중인가?"를 먼저 보고, **살아 있음 신호가 남아 있으면 저장소 상태는 `PENDING`으로 두고, 호출자에게는 `PROCESSING`/`in-progress`로 설명**하며, **명시적인 lease/heartbeat 만료와 compare-and-swap takeover 조건이 있을 때만 recovery**해야 한다.

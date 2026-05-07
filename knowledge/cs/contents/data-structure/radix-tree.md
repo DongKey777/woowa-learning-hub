@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Radix Tree Compressed Trie
+concept_id: data-structure/radix-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- radix-tree
+- compressed-trie
+- prefix-routing-index
+aliases:
+- Radix Tree
+- compressed trie
+- path compression trie
+- prefix routing
+- edge label trie
+- sparse trie
+- IP prefix URL router
+symptoms:
+- Trie가 prefix search에는 좋지만 긴 단일 경로와 sparse branching에서 node overhead가 커지는 문제를 놓친다
+- Radix Tree의 핵심이 문자 하나씩 node를 만드는 대신 edge label로 compressed path를 저장하는 것임을 이해하지 못한다
+- prefix search가 필요한지 exact hash lookup이나 ordered range scan이 필요한지 구분하지 않고 HashMap/TreeMap과 비교한다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/trie-prefix-search-autocomplete
+next_docs:
+- data-structure/adaptive-radix-tree
+- data-structure/finite-state-transducer
+- data-structure/hashmap-internals
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+linked_paths:
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/data-structure/adaptive-radix-tree.md
+- contents/data-structure/finite-state-transducer.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/adaptive-radix-tree
+- data-structure/finite-state-transducer
+- data-structure/hashmap-internals
+forbidden_neighbors: []
+expected_queries:
+- Radix Tree는 일반 Trie보다 공통 경로를 어떻게 압축해?
+- compressed trie에서 edge label split과 merge가 필요한 이유는?
+- URL router나 IP prefix matching에 Radix Tree가 맞는 이유는?
+- Radix Tree와 Adaptive Radix Tree와 FST를 어떻게 비교해?
+- prefix search가 필요할 때 HashMap이나 TreeMap 대신 Radix Tree를 보는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 Radix Tree를 Trie의 single-child path를 edge label로 압축해 prefix
+  search를 유지하면서 node overhead를 줄이는 compressed trie primer로
+  설명한다. URL routing, IP prefix, autocomplete, edge split/merge를 다룬다.
+---
 # Radix Tree (Compressed Trie)
 
 > 한 줄 요약: Radix Tree는 Trie의 공통 경로를 압축해서, prefix 검색은 유지하면서 메모리 낭비를 줄인 자료구조다.

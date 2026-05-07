@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/shopping-cart
+- missions/payment
 review_feedback_tags:
 - external-io-in-transaction
 - payment-compensation
@@ -34,8 +35,8 @@ prerequisites:
 - software-engineering/service-layer-basics
 - database/idempotency-key-and-deduplication
 next_docs:
-- spring/spring-service-layer-external-io-after-commit-outbox-primer
-- spring/spring-payment-approval-db-failure-compensation-idempotency-primer
+- spring/service-layer-external-io-after-commit-outbox-primer
+- spring/payment-approval-db-failure-compensation-idempotency-primer
 - database/shopping-cart-payment-idempotency-stock-bridge
 linked_paths:
 - contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
@@ -62,12 +63,19 @@ contextual_chunk_prefix: |
   `AFTER_COMMIT`와 outbox를 언제 나눌지 같은 학습자 표현을
   서비스 계층의 짧은 트랜잭션과 보상 경계 설명으로 연결한다.
 ---
-
 # shopping-cart 결제 승인/주문 확정 ↔ Spring 트랜잭션 경계 브릿지
 
 ## 한 줄 요약
 
 > shopping-cart checkout은 "결제사 승인"과 "우리 주문 commit"이 같은 트랜잭션이 아니라서, 외부 API를 길게 `@Transactional` 안에 묶기보다 짧은 DB 트랜잭션과 보상 경계를 분리해서 설계하는 편이 안전하다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제 API를 `@Transactional` 안에서 호출해도 되는지 헷갈려요" | checkout 서비스가 외부 결제와 주문 저장을 한 메서드에 묶은 장면 | 로컬 DB 트랜잭션과 외부 HTTP 부작용을 같은 원자성으로 보지 않는다 |
+| "결제 성공 뒤 DB 저장이 실패하면 rollback으로 해결되는 거 아닌가요?" | 승인 성공 후 주문 확정 반영 실패 | Spring rollback이 결제사 승인까지 되돌리지 못하므로 보상/재조회 경계를 둔다 |
+| "주문을 먼저 저장할지 승인 후 저장할지 감이 안 와요" | pending 주문, 승인, 확정 상태 전이 설계 | 짧은 write 경계와 승인 결과 반영 경계를 명시한다 |
 
 ## 미션 시나리오
 

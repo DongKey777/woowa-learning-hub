@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Java Timer Clock Choice Primer
+concept_id: data-structure/java-timer-clock-choice-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- java-timer-clock-choice
+- nanotime-vs-currenttimemillis
+- delayqueue-deadline-nanos
+aliases:
+- java timer clock choice
+- nanoTime vs currentTimeMillis
+- DelayQueue deadline nanos
+- wall clock vs monotonic clock Java
+- relative delay Java
+- timer code unit mismatch
+- 자바 nanotime currenttimemillis 차이
+symptoms:
+- 5초 뒤 실행 같은 상대 지연을 currentTimeMillis 기반으로만 계산해 wall clock 변경이나 보정에 흔들리는 모델을 만든다
+- queue 내부 deadline은 nanoTime 기준이고 사용자/로그/API dueAt은 epoch wall clock이라는 경계를 구분하지 못한다
+- Duration, TimeUnit, millis, nanos 변환을 섞어 timer delay 단위 버그를 만든다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge
+next_docs:
+- data-structure/delayqueue-delayed-contract-primer
+- operating-system/monotonic-clock-wall-clock-timeout-deadline
+- language/java-time-instant-localdatetime-boundaries
+linked_paths:
+- contents/data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/operating-system/monotonic-clock-wall-clock-timeout-deadline.md
+- contents/language/java/java-time-instant-localdatetime-boundaries.md
+confusable_with:
+- data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge
+- data-structure/delayqueue-delayed-contract-primer
+- operating-system/monotonic-clock-wall-clock-timeout-deadline
+- language/java-time-instant-localdatetime-boundaries
+forbidden_neighbors: []
+expected_queries:
+- Java timer에서 System.nanoTime과 currentTimeMillis는 언제 각각 써야 해?
+- DelayQueue 내부 deadline은 왜 nanoTime 기반이 더 안전해?
+- 상대 delay와 사용자에게 보여줄 dueAt timestamp는 어떤 시계로 나눠야 해?
+- TimeUnit millis nanos 변환 실수로 timer가 늦거나 빠르게 도는 버그를 어떻게 피해?
+- wall clock과 monotonic clock 차이를 Java timer queue 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java timer queue에서 상대 delay/deadline 계산은 System.nanoTime
+  스톱워치 기준으로, 사용자/로그/저장소의 절대 시각은 currentTimeMillis나
+  Instant 같은 wall clock 기준으로 나누는 beginner chooser다.
+---
 # Java Timer Clock Choice Primer
 
 > 한 줄 요약: Java에서 "`5초 뒤 실행`" 같은 **상대 지연**을 다루는 queue 내부 시계는 보통 `System.nanoTime()`이 더 안전하고, `System.currentTimeMillis()`는 사용자/로그/저장소와 이야기할 때의 **벽시계 시간**에 더 가깝다.

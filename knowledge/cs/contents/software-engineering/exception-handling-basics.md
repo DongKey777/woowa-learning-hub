@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: 예외 처리 기초
+concept_id: software-engineering/exception-handling-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- exception-boundary
+- business-vs-system-exception
+- global-exception-handler
+aliases:
+- exception handling basics
+- 예외 처리 입문
+- checked unchecked exception
+- custom exception
+- 비즈니스 예외
+- 시스템 예외
+- global exception handler
+- 예외 어디서 잡나요
+- try catch 기초
+- 409 vs 422
+- 업무 규칙 위반 상태 코드
+symptoms:
+- try catch를 많이 넣으면 안전하다고 생각해 예외를 삼키거나 계층마다 응답을 제각각 만든다
+- 비즈니스 규칙 위반, 입력 형식 오류, DB/외부 API 시스템 오류를 같은 예외 처리 방식으로 다룬다
+- Service나 Domain에서 던질 예외와 ControllerAdvice 같은 공통 처리 경계를 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+next_docs:
+- software-engineering/api-design-error-handling
+- software-engineering/http-409-vs-422-selection-guide
+- spring/aop-proxy-mechanism
+- software-engineering/logging-strategy-basics
+linked_paths:
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/http-409-vs-422-selection-guide.md
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/logging-strategy-basics.md
+- contents/spring/ioc-di-container.md
+- contents/spring/aop-proxy-mechanism.md
+confusable_with:
+- software-engineering/api-design-error-handling
+- software-engineering/http-409-vs-422-selection-guide
+- software-engineering/logging-strategy-basics
+forbidden_neighbors: []
+expected_queries:
+- 예외 처리는 어디서 던지고 어디서 잡을지 계층별로 정하는 계약이라는 뜻을 설명해줘
+- 비즈니스 예외와 시스템 예외, 입력 형식 예외를 Controller Service Repository 기준으로 어떻게 나눠야 해?
+- @RestControllerAdvice 같은 global exception handler를 쓰면 왜 API 에러 응답 포맷이 일관돼?
+- 예외를 catch해서 로그만 찍고 끝내면 호출자와 트랜잭션 관점에서 어떤 문제가 생겨?
+- 409 Conflict와 422 Unprocessable Content는 업무 규칙 위반 상태 코드에서 어떻게 선택해?
+contextual_chunk_prefix: |
+  이 문서는 예외를 계층 경계와 API 에러 계약으로 다루는 beginner primer다.
+  checked vs unchecked, business exception, system exception, input binding error, Service/Domain throw, Repository translate, global exception handler, 409 vs 422, logging and rollback boundaries를 다룬다.
+---
 # 예외 처리 기초 (Exception Handling Basics)
 
 > 한 줄 요약: 예외는 "어디서 던지고 어디서 잡을지"를 명확히 정해야 하며, 비즈니스 예외와 시스템 예외를 분리하는 것이 첫 번째 기준이다.

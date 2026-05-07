@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "HTTP/2 Multiplexing and HOL Blocking"
+concept_id: network/http2-multiplexing-hol-blocking
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- http2-multiplexing
+- hol-blocking
+- tcp-loss
+aliases:
+- HTTP/2 multiplexing
+- HOL blocking
+- TCP HOL
+- stream multiplexing
+- shared connection packet loss
+- HTTP level HOL vs TCP level HOL
+- gRPC transport H2
+symptoms:
+- HTTP/2 stream이 독립이면 네트워크 손실 영향도 독립이라고 생각한다
+- HTTP/2가 모든 HOL blocking을 없앴다고 설명한다
+- packet loss로 여러 stream p99가 같이 튀는 현상을 앱 코드 문제로만 본다
+- flow control stall과 TCP HOL blocking을 구분하지 못한다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- network/http1-http2-http3-beginner-comparison
+- network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table
+next_docs:
+- network/http2-flow-control-window-update-stalls
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/http3-quic-practical-tradeoffs
+- network/grpc-vs-rest
+linked_paths:
+- contents/network/http-versions-beginner-overview.md
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md
+- contents/network/grpc-vs-rest.md
+- contents/network/tcp-congestion-control.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/http2-max-concurrent-streams-pending-queue-saturation.md
+confusable_with:
+- network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table
+- network/http2-flow-control-window-update-stalls
+- network/http3-quic-practical-tradeoffs
+- network/tcp-congestion-control
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 multiplexing은 어떤 HOL blocking을 줄이고 무엇은 남겨?"
+- "HTTP/2 stream이 독립인데 packet loss가 여러 요청을 같이 늦추는 이유는?"
+- "HTTP/2 HOL blocking과 flow control stall을 어떻게 구분해?"
+- "HTTP/3 QUIC이 HTTP/2 over TCP보다 손실 전파를 줄이는 이유는?"
+- "gRPC가 HTTP/2 위에서 p99 tail latency가 같이 튈 수 있는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2 stream multiplexing, HTTP-level HOL blocking 완화,
+  TCP-level HOL blocking 잔존, packet loss와 gRPC transport 영향을 설명하는
+  advanced deep dive다.
+---
 # HTTP/2 멀티플렉싱과 HOL blocking
 
 > 한 줄 요약: HTTP/2는 애플리케이션 레벨의 순차 병목을 줄이지만, 같은 TCP 연결 위에 올라가는 이상 전송 계층의 HOL blocking은 그대로 남는다.

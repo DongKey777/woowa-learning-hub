@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: PriorityBlockingQueue Timer Misuse Primer
+concept_id: data-structure/priorityblockingqueue-timer-misuse-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- priorityblockingqueue-timer-misuse
+- thread-safe-vs-timer-semantics
+- delay-aware-blocking
+aliases:
+- PriorityBlockingQueue timer misuse
+- PriorityBlockingQueue vs DelayQueue
+- thread safe priority queue timer
+- blocking queue not timer queue
+- future task popped too early
+- delay aware blocking
+- 자바 PriorityBlockingQueue 타이머
+symptoms:
+- PriorityBlockingQueue의 blocking을 head deadline까지 기다리는 timer semantics로 오해해 미래 task가 즉시 take된다
+- thread-safe priority queue와 delay-aware blocking queue의 차이를 구분하지 못한다
+- queue가 비어 있으면 기다리는 계약과 원소는 있지만 아직 만료되지 않았으면 기다리는 계약을 같은 것으로 본다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/java-priorityqueue-pitfalls
+next_docs:
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/timing-wheel-vs-delay-queue
+- data-structure/delayqueue-delayed-contract-primer
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/data-structure/applied-data-structures-overview.md
+confusable_with:
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/delayqueue-delayed-contract-primer
+- data-structure/timing-wheel-vs-delay-queue
+forbidden_neighbors: []
+expected_queries:
+- PriorityBlockingQueue를 timer queue로 쓰면 deadline 전에 task가 바로 꺼내지는 이유는?
+- PriorityBlockingQueue와 DelayQueue는 thread safety와 delay semantics에서 어떻게 달라?
+- BlockingQueue의 blocking은 queue empty일 때 기다린다는 뜻이지 timer까지 기다린다는 뜻이 아니야?
+- future task popped too early 버그를 Java timer queue 기준으로 설명해줘
+- timer workload에는 PriorityBlockingQueue 대신 DelayQueue를 봐야 하는 경우는?
+contextual_chunk_prefix: |
+  이 문서는 PriorityBlockingQueue가 thread-safe priority queue일 뿐 head
+  deadline이 올 때까지 기다리는 timer semantics를 제공하지 않는다는
+  symptom router다. DelayQueue, priority queue ordering, delay-aware blocking,
+  early task pop bug를 분리한다.
+---
 # PriorityBlockingQueue Timer Misuse Primer
 
 > 한 줄 요약: `PriorityBlockingQueue`는 여러 스레드가 안전하게 공유하는 priority queue일 뿐이고, deadline이 오기 전 작업을 막아 두는 timer 계약은 따로 제공하지 않는다.

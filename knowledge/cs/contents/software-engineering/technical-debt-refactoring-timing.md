@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Technical Debt Refactoring Timing
+concept_id: software-engineering/technical-debt-refactoring-timing
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- technical-debt
+- refactoring
+- architecture-debt
+- timing
+aliases:
+- technical debt refactoring timing
+- refactor window
+- architectural debt timing
+- debt interest
+- 기술 부채 리팩터링 타이밍
+- 리팩터링 시점
+symptoms:
+- 같은 기능 변경이 한 파일에서 여러 모듈과 서비스로 퍼지기 시작해 변경 비용이 기하급수로 커져
+- null 방어, if-else 분기, 직접 테이블 접근 같은 같은 구조의 버그가 반복되는데 기능 개발로만 덮어
+- 테스트가 느리고 자주 깨지거나 팀이 구조를 설명하지 못해 새 기능보다 기존 코드 수정 비용이 더 커져
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/solid-failure-patterns
+- software-engineering/clean-architecture-layered-modular-monolith
+next_docs:
+- software-engineering/architectural-debt-interest
+- software-engineering/refactoring-first-failing-test
+- software-engineering/brownfield-modularization
+linked_paths:
+- contents/software-engineering/solid-failure-patterns.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+confusable_with:
+- software-engineering/architectural-debt-interest
+- software-engineering/refactoring-first-failing-test
+- software-engineering/prototype-spike-productionization
+forbidden_neighbors: []
+expected_queries:
+- technical debt refactoring timing은 더러운 코드 감정이 아니라 변경 비용과 장애 위험이 커지는 순간을 어떻게 잡아?
+- 같은 수정이 여러 계층과 서비스로 퍼지기 시작하면 왜 refactor window 신호야?
+- 반복 bug pattern과 느린 테스트는 구조 부채가 이자를 만들고 있다는 어떤 evidence로 볼 수 있어?
+- 안전성 확보, 구조 개선, 모델 재설계를 섞지 않고 리팩터링 범위를 나누는 방법은?
+- 전면 재작성 대신 부분 리팩터링과 첫 failing test로 시작해야 하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Technical Debt Refactoring Timing를 다루는 playbook 문서다. technical debt refactoring timing, refactor window, architectural debt timing, debt interest, 기술 부채 리팩터링 타이밍 같은 lexical 표현과 technical debt refactoring timing은 더러운 코드 감정이 아니라 변경 비용과 장애 위험이 커지는 순간을 어떻게 잡아?, 같은 수정이 여러 계층과 서비스로 퍼지기 시작하면 왜 refactor window 신호야? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Technical Debt Refactoring Timing
 
 > 한 줄 요약: 기술 부채는 "나중에 고치자"가 아니라, 변경 비용과 장애 위험이 지금보다 커지는 순간을 정확히 잡아야 한다.
@@ -153,4 +212,3 @@ public class CardFeePolicy implements FeePolicy {
 ## 한 줄 정리
 
 기술 부채는 감정이 아니라 경제성 문제이고, 리팩터링 시점은 "이 구조를 더 쓰는 비용"이 "고치는 비용"을 넘는 순간이다.
-

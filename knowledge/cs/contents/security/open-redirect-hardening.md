@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Open Redirect Hardening
+concept_id: security/open-redirect-hardening
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- open redirect
+- redirect hardening
+- login redirect hardening
+- post-login redirect
+aliases:
+- open redirect
+- redirect hardening
+- login redirect hardening
+- post-login redirect
+- callback hardening
+- allowlist
+- exact match
+- phishing
+- OAuth redirect_uri
+- token leak
+- navigation abuse
+- URL validation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/session-fixation-in-federated-login.md
+- contents/security/session-fixation-clickjacking-csp.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/cors-samesite-preflight.md
+- contents/security/csp-nonces-vs-hashes-script-policy.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Open Redirect Hardening 핵심 개념을 설명해줘
+- open redirect가 왜 필요한지 알려줘
+- Open Redirect Hardening 실무 설계 포인트는 뭐야?
+- open redirect에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Open Redirect Hardening를 다루는 deep_dive 문서다. open redirect는 단순 UX 버그가 아니라 OAuth, phishing, token leak의 발판이 될 수 있으므로 redirect 대상 allowlist와 exact match가 필요하다. 검색 질의가 open redirect, redirect hardening, login redirect hardening, post-login redirect처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Open Redirect Hardening
 
 > 한 줄 요약: open redirect는 단순 UX 버그가 아니라 OAuth, phishing, token leak의 발판이 될 수 있으므로 redirect 대상 allowlist와 exact match가 필요하다.

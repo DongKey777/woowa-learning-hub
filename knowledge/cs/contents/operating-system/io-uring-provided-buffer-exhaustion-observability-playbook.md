@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring Provided Buffer Exhaustion Observability Playbook
+concept_id: operating-system/io-uring-provided-buffer-exhaustion-observability-playbook
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-provided
+- buffer-exhaustion-observability
+- provided-buffer-exhaustion
+- observability
+aliases:
+- provided buffer exhaustion observability
+- io_uring_buf_ring_available
+- memory.events.local
+- memory pressure ENOBUFS
+- socket queue inflation
+- recycle lag alerting
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-fdinfo-pbuf-status-enobufs-reconciliation-playbook.md
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+symptoms:
+- io_uring_buf_ring_available 단일 값으로 alert를 걸었더니 늦고 noisy하다.
+- recycle lag, socket queue inflation, memory.high reclaim 중 어느 경보인지 분리되지 않는다.
+- -ENOBUFS가 터진 뒤에야 provided buffer exhaustion을 알게 된다.
+expected_queries:
+- provided buffer exhaustion 경보를 io_uring_buf_ring_available 하나에 걸면 왜 늦어?
+- memory.events.local, memory.pressure, ss -m, CQ backlog를 어떻게 같이 봐?
+- recycle lag와 socket queue inflation, memory.high reclaim을 ENOBUFS 전에 구분하는 법은?
+- io_uring provided buffer observability를 어떤 지표 묶음으로 설계해?
+contextual_chunk_prefix: |
+  이 문서는 provided buffer exhaustion을 buf_ring_available 단일 값이 아니라 available count,
+  memory.events.local, memory.pressure, socket queue ss -m, CQ backlog를 함께 보며
+  recycle lag, socket queue inflation, memory.high reclaim을 ENOBUFS 전에 분리하는 playbook이다.
+---
 # io_uring Provided Buffer Exhaustion Observability Playbook
 
 > 한 줄 요약: provided buffer exhaustion 경보를 `io_uring_buf_ring_available()` 단일 값에 걸면 늦고 noisy하다. `io_uring_buf_ring_available`, `memory.events.local`, `memory.pressure`, `ss -m`, CQ backlog를 한 묶음으로 보면 "recycle lag", "socket queue inflation", "memory.high reclaim"을 `-ENOBUFS` 전에 분리해서 경보할 수 있다.

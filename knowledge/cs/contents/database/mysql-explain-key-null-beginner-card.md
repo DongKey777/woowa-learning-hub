@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL EXPLAIN key NULL Beginner Card
+concept_id: database/mysql-explain-key-null-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- mysql-explain
+- index-basics
+- query-tuning
+- beginner-card
+aliases:
+- mysql explain key null
+- explain key null beginner
+- key null what is
+- explain no index chosen
+- possible keys vs key
+- explain 인덱스 안 타요
+- key null 뭐예요
+- 함수 때문에 인덱스 안 타요
+- 타입 변환 때문에 key null
+symptoms:
+- MySQL EXPLAIN에서 key가 NULL로 보여 실제 사용 인덱스가 없는지 헷갈려
+- possible_keys는 있는데 key NULL이라 후보 인덱스와 실제 선택을 구분하지 못하고 있어
+- WHERE 컬럼에 함수나 타입 변환을 써서 인덱스가 있어도 plan에서 선택되지 않아
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/index-basics
+- database/index-and-explain
+next_docs:
+- database/mysql-explain-type-all-beginner-card
+- database/generated-columns-functional-index-migration
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/index-basics.md
+- contents/database/generated-columns-functional-index-migration.md
+- contents/database/query-tuning-checklist.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/database/mysql-explain-type-all-beginner-card.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- database/mysql-explain-type-all-beginner-card
+- database/index-and-explain
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- MySQL EXPLAIN에서 key NULL은 인덱스가 아예 없다는 뜻이야?
+- possible_keys는 있는데 key가 NULL이면 초보자는 어디부터 확인해야 해?
+- WHERE 컬럼에 LOWER 같은 함수를 쓰면 왜 key NULL이 나올 수 있어?
+- type ALL과 key NULL이 같이 보일 때 full scan 원인을 어떻게 줄여 봐?
+- EXPLAIN 처음 볼 때 key, possible_keys, rows를 어떤 순서로 해석해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL EXPLAIN의 key NULL을 실제 사용 인덱스 없음으로 읽고 possible_keys, WHERE shape, 함수, 타입 변환을 점검하는 beginner symptom card다.
+  key null 뭐예요, explain 인덱스 안 타요, possible_keys와 key 차이 질문이 본 문서에 매핑된다.
+---
 # MySQL `EXPLAIN`에서 `key = NULL`이 보여요
 
 > 한 줄 요약: MySQL `EXPLAIN`의 `key = NULL`은 "실제로 탄 인덱스가 없다"는 뜻이고, 초보자는 먼저 `WHERE` 조건 컬럼, 함수 사용, 타입 변환을 점검하면 된다.

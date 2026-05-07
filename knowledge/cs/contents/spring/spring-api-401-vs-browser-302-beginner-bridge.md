@@ -1,8 +1,89 @@
+---
+schema_version: 3
+title: Spring API 401 vs browser 302 beginner bridge
+concept_id: spring/spring-api-401-vs-browser-302-beginner-bridge
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- response-contract-split
+- api-401-vs-login-redirect-302
+- authentication-entrypoint-path-split
+aliases:
+- spring api 401 vs browser 302
+- Spring API는 401 브라우저는 302
+- api가 login html을 받아요
+- api인데 로그인 html 와요
+- fetch 401 대신 302
+- api인데 302 /login 보여요
+- form login api separation spring
+- browser redirect api json
+- AuthenticationEntryPoint beginner
+- response contract split
+- login page redirect vs api error
+symptoms:
+- 같은 인증 실패인데 브라우저 페이지는 302 /login이고 JSON API는 401이어야 한다는 응답 계약 차이를 구분하지 못해
+- API fetch가 401 JSON 대신 login HTML이나 302 redirect를 받아서 Security 설정 문제인지 컨트롤러 문제인지 헷갈려
+- 302/401 인증 실패와 이미 로그인한 뒤의 403 권한 실패를 같은 문제로 읽어 오진해
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- spring/spring-security-basics
+- security/browser-401-vs-302-login-redirect-guide
+next_docs:
+- spring/securityfilterchain-multiple-entrypoints-primer
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/security-exceptiontranslation-entrypoint-accessdeniedhandler
+- spring/security-requestcache-savedrequest-boundaries
+linked_paths:
+- contents/spring/spring-securityfilterchain-multiple-entrypoints-primer.md
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-security-basics.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md
+- contents/spring/spring-admin-session-cookie-flow-primer.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/network/http-state-session-cache.md
+confusable_with:
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/securityfilterchain-multiple-entrypoints-primer
+- spring/security-requestcache-savedrequest-boundaries
+- security/browser-401-vs-302-login-redirect-guide
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 브라우저 페이지는 302 /login이고 API는 401 JSON이어야 하는 이유를 설명해줘
+- fetch가 401 대신 login HTML을 받으면 SecurityFilterChain이나 AuthenticationEntryPoint를 어떻게 의심해야 해?
+- 같은 인증 실패를 page contract와 API contract로 나누는 response-contract-split이 뭐야?
+- 302 /login, 401 Unauthorized, 403 Forbidden을 Spring Security 흐름에서 어떻게 구분해?
+- /admin/**은 form login redirect, /api/**는 JSON 401로 나누려면 다음에 어떤 문서를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Security에서 같은 unauthenticated 상태라도 browser page request는 302 /login redirect 계약이 자연스럽고 JSON API request는 401 JSON 계약이 자연스럽다는 response-contract-split을 설명하는 beginner bridge다.
+  API login HTML, fetch got 302, AuthenticationEntryPoint, SecurityFilterChain split, 401 vs 302 vs 403 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지
 
 > 한 줄 요약: 같은 Spring MVC 앱 안에서도 브라우저 페이지 요청은 로그인 화면으로 보내는 `302 /login` 흐름이 자연스럽고, JSON API 요청은 인증 실패를 `401`로 직접 말하는 흐름이 자연스러워서 둘을 같은 실패로 읽으면 금방 헷갈린다.
 >
 > 문서 역할: 이 문서는 spring/security 입구에서 "`왜 브라우저는 redirect인데 API는 JSON이지?`"를 먼저 분리하는 beginner bridge다. 쿠키/세션 복원이나 final `403`보다 `응답 계약 분리`가 먼저 의심될 때 이 문서가 맞다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "API fetch가 401 JSON 대신 로그인 HTML을 받아요" | shopping-cart 주문 API를 호출했는데 브라우저용 login page가 response body로 오는 상황 | API contract와 browser page contract를 분리한다 |
+| "`/admin`은 302가 맞고 `/api`는 401이 맞나요?" | 관리자 화면과 JSON API를 같은 Security 설정으로 처리하는 코드 | path별 AuthenticationEntryPoint를 다르게 볼 수 있는지 확인한다 |
+| "401, 302, 403이 전부 인증 실패처럼 보여요" | 로그인 전 요청, 로그인 화면 redirect, 로그인 후 권한 부족을 한 문제로 디버깅 | unauthenticated와 access denied를 먼저 나눈다 |
 
 **난이도: 🟢 Beginner**
 

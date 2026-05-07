@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Priority Only Range Search Follow Up
+concept_id: language/priority-only-range-search-follow-up
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- binary-search
+- comparator
+- range-search
+aliases:
+- Priority Only Range Search Follow Up
+- priority only range search comparator prefix
+- Java primary key block binary search
+- comparator prefix range search beginner
+- lower bound upper bound primary comparator key
+- 자바 priority 범위 검색
+symptoms:
+- priority title id 전체 comparator로 정렬된 배열에서 priority만 같은 블록을 찾으려다 exact search와 range search를 섞어
+- 정렬 prefix가 아닌 title만 comparator로 잘라 range search를 시도해 title 값들이 연속 블록이라는 보장이 없다는 점을 놓쳐
+- tie-breaker까지 포함한 probe 하나로 priority 블록 전체를 찾을 수 있다고 생각해 lower/upper boundary 탐색을 빠뜨려
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/binarysearch-nullable-wrapper-sort-keys
+- language/binarysearch-duplicate-boundary-primer
+- language/java-comparator-utility-patterns
+next_docs:
+- language/record-comparator-60-second-mini-drill
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/java-array-sorting-searching-basics
+linked_paths:
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+- contents/language/java/binarysearch-duplicate-boundary-primer.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+confusable_with:
+- language/binarysearch-duplicate-boundary-primer
+- language/java-comparator-utility-patterns
+- language/treeset-treemap-comparator-tie-breaker-basics
+forbidden_neighbors: []
+expected_queries:
+- priority title id로 정렬된 배열에서 priority만 같은 전체 range를 어떻게 찾을 수 있어?
+- range search에서는 전체 comparator가 아니라 prefix comparator로 boundary를 찾는다는 뜻이 뭐야?
+- exact search와 priority-only range search는 comparator 사용이 어떻게 달라?
+- 정렬 key의 prefix가 아닌 title만으로 range search하면 왜 안전하지 않아?
+- priority block의 lower bound upper bound를 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 priority -> title -> id comparator로 정렬된 배열에서 priority prefix만 같은 range block을 찾는 방법을 설명하는 beginner primer다.
+  priority range search, comparator prefix, lower bound, upper bound, binary search block 질문이 본 문서에 매핑된다.
+---
 # Priority-Only Range Search Follow-Up
 
 > 한 줄 요약: 배열이 `priority -> title -> id` 같은 전체 comparator로 정렬되어 있어도, `priority`만 묻는 range search는 **prefix comparator**로 시작 경계와 끝 경계를 읽으면 beginner 단계에서 가장 안전하다.

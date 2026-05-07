@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: OAuth2 vs OIDC Social Login Primer
+concept_id: security/oauth2-oidc-social-login-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- oauth2 oidc social login primer
+- oauth2 vs oidc
+- social login beginner route
+- id token vs access token beginner
+aliases:
+- oauth2 oidc social login primer
+- oauth2 vs oidc
+- social login beginner route
+- id token vs access token beginner
+- callback success but app anonymous social login
+- proxy redirect http social login
+- subdomain social login handoff primer
+- return to security readme
+- 소셜 로그인 붙이려는데 oauth랑 oidc가 헷갈림
+- social login cookie missing beginner
+- local session after social login
+- cli login oauth off-ramp
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-basics.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/oauth-device-code-flow-security.md
+- contents/security/login-callback-artifact-cheat-sheet.md
+- contents/security/social-login-to-local-session-bridge.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/samesite-login-callback-primer.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- OAuth2 vs OIDC Social Login Primer 핵심 개념을 설명해줘
+- oauth2 oidc social login primer가 왜 필요한지 알려줘
+- OAuth2 vs OIDC Social Login Primer 실무 설계 포인트는 뭐야?
+- oauth2 oidc social login primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 OAuth2 vs OIDC Social Login Primer를 다루는 primer 문서다. OAuth2는 "우리 앱이 외부 서비스에 무엇을 해도 되나"를, OIDC는 "지금 로그인한 사용자가 누구인가"를 다룬다. 소셜 로그인은 보통 둘을 함께 쓰지만 질문은 분리해서 보는 편이 이해가 빠르다. 검색 질의가 oauth2 oidc social login primer, oauth2 vs oidc, social login beginner route, id token vs access token beginner처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # OAuth2 vs OIDC Social Login Primer
 
 > 한 줄 요약: OAuth2는 "우리 앱이 외부 서비스에 무엇을 해도 되나"를, OIDC는 "지금 로그인한 사용자가 누구인가"를 다룬다. 소셜 로그인은 보통 둘을 함께 쓰지만 질문은 분리해서 보는 편이 이해가 빠르다.

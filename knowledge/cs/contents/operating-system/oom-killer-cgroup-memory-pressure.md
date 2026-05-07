@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: OOM Killer cgroup Memory Pressure
+concept_id: operating-system/oom-killer-cgroup-memory-pressure
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- oom-killer-cgroup
+- memory-pressure
+- cgroup-oom
+- memory-pressure-oom
+aliases:
+- OOM killer cgroup memory pressure
+- cgroup OOM
+- memory pressure OOM
+- memory limit killed process
+- oom kill diagnostics
+- memory.events oom_kill
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+- contents/operating-system/oom-killer-scoring-victim-selection.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/memory-overcommit-semantics.md
+- contents/operating-system/container-cgroup-namespace.md
+symptoms:
+- 메모리 부족 시 단순히 느려지는 것이 아니라 cgroup이나 system OOM killer가 process를 죽인다.
+- memory.events의 oom_kill, memory.max, PSI pressure를 함께 봐야 한다.
+- host OOM과 cgroup OOM의 blast radius와 victim selection이 다르다.
+expected_queries:
+- Linux OOM killer와 cgroup memory pressure는 어떤 순서로 진단해?
+- memory.max를 넘으면 cgroup 안에서 어떤 process가 죽는지 어떻게 확인해?
+- PSI memory pressure와 memory.events oom_kill을 함께 해석하는 법은?
+- host OOM과 cgroup OOM은 victim selection과 영향 범위가 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 memory shortage가 단순 slowdown이 아니라 Linux OOM killer와 cgroup memory pressure
+  정책에 따라 process termination으로 이어질 수 있음을 설명한다. memory.max, memory.events,
+  PSI, reclaim, victim selection을 함께 본다.
+---
 # OOM Killer, cgroup Memory Pressure
 
 > 한 줄 요약: 메모리가 부족해지면 Linux는 단순히 "느려지는" 게 아니라, cgroup 경계와 시스템 전체 상태를 보고 어떤 프로세스를 죽일지 결정한다.

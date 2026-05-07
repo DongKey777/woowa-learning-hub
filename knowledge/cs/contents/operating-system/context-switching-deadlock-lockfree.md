@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 컨텍스트 스위칭, 데드락, Lock-free
+concept_id: operating-system/context-switching-deadlock-lockfree
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- context-switch-cost-thread-overprovision
+- deadlock-four-conditions
+- cas-lockfree-contention
+aliases:
+- context switching deadlock lockfree
+- context switching basics
+- deadlock basics
+- lock-free basics
+- 컨텍스트 스위칭이란
+- 데드락이란
+- lock free 뭐예요
+- 스레드 늘렸는데 왜 느려져요
+- context switch cost
+- deadlock four conditions
+- starvation livelock difference
+- cas compare and swap basics
+- thread contention basics
+symptoms:
+- 스레드를 늘렸는데 처리량은 안 늘고 p99 latency만 나빠졌어
+- 두 스레드가 서로 lock을 기다리며 멈춘 것 같아
+- lock-free를 쓰면 항상 빠른지 CAS retry가 왜 CPU를 태우는지 궁금해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- operating-system/process-thread-basics
+- operating-system/mutex-deadlock-basics
+next_docs:
+- operating-system/futex-mutex-semaphore-spinlock
+- operating-system/lock-contention-futex-offcpu-debugging
+- operating-system/cpu-cache-coherence-memory-barrier
+- language/varhandle-unsafe-atomics
+- language/java-volatile-counter-atomicity-cause-router
+linked_paths:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/mutex-deadlock-basics.md
+- contents/operating-system/futex-mutex-semaphore-spinlock.md
+- contents/operating-system/lock-contention-futex-offcpu-debugging.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/language/java/java-thread-basics.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java/volatile-counter-atomicity-cause-router.md
+confusable_with:
+- operating-system/mutex-deadlock-basics
+- operating-system/futex-mutex-semaphore-spinlock
+- operating-system/cpu-cache-coherence-memory-barrier
+- language/varhandle-unsafe-atomics
+forbidden_neighbors: []
+expected_queries:
+- context switching 비용 때문에 스레드를 늘릴수록 느려지는 이유가 뭐야?
+- deadlock 네 가지 조건과 lock 순서 통일이 왜 중요한지 설명해줘
+- lock-free와 wait-free 차이를 초보자가 이해할 수 있게 정리해줘
+- CAS retry가 많으면 왜 CPU 100%가 되면서 throughput이 떨어질 수 있어?
+- starvation과 livelock은 deadlock과 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 context switch 비용, deadlock 조건, starvation, livelock, lock-free, wait-free, CAS retry, thread contention을 묶어 스레드를 늘렸는데 느려지거나 락 대기로 멈추는 증상을 설명하는 advanced deep dive다.
+  Tomcat thread pool 과다 설정, jstack deadlock, futex wait, CAS spin, AtomicInteger vs synchronized 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 컨텍스트 스위칭, 데드락, Lock-free
 
 > 한 줄 요약: 동시성 제어의 비용과 위험을 모르면 스레드를 늘릴수록 서버가 느려지는 역설을 설명할 수 없다

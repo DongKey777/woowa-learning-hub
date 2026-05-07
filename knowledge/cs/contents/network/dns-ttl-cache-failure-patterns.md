@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "DNS TTL Cache Failure Patterns"
+concept_id: network/dns-ttl-cache-failure-patterns
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- dns-ttl-cache
+- stale-resolver-propagation
+- blue-green-dns-failover
+aliases:
+- DNS TTL
+- stale resolver
+- cache propagation
+- blue-green DNS
+- authoritative recursive resolver
+- DNS propagation delay
+symptoms:
+- DNS 레코드를 바꿨는데 일부 지역이나 일부 사용자만 오래된 IP를 계속 본다
+- TTL을 짧게 하면 항상 장애 전환이 안전해진다고 단정한다
+- authoritative DNS는 바뀌었지만 browser OS recursive resolver cache가 남은 상태를 구분하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/dns-basics
+- network/dns-split-horizon-behavior
+next_docs:
+- network/dns-negative-caching-nxdomain-behavior
+- network/connection-reuse-vs-service-discovery-churn
+- network/happy-eyeballs-dual-stack-racing
+- network/anycast-routing-tradeoffs-edge-failover
+- network/load-balancer-healthcheck-failure-patterns
+linked_paths:
+- contents/network/dns-split-horizon-behavior.md
+- contents/network/dns-negative-caching-nxdomain-behavior.md
+- contents/network/connection-reuse-vs-service-discovery-churn.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+- contents/network/anycast-routing-tradeoffs-edge-failover.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+confusable_with:
+- network/dns-negative-caching-nxdomain-behavior
+- network/dns-split-horizon-behavior
+- network/connection-reuse-vs-service-discovery-churn
+- network/anycast-routing-tradeoffs-edge-failover
+forbidden_neighbors: []
+expected_queries:
+- "DNS TTL 때문에 LB 전환 후 일부 사용자가 옛 IP를 계속 보는 이유는?"
+- "authoritative는 바뀌었는데 recursive resolver와 browser cache가 stale인 장면을 어떻게 진단해?"
+- "Blue-green DNS 전환 전에 TTL을 낮추는 운영 절차를 설명해줘"
+- "TTL을 너무 짧게 하면 resolver 부하와 p99 latency가 왜 늘 수 있어?"
+- "DNS propagation delay를 캐시 계층별로 나눠 확인하는 법을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 DNS TTL, browser/OS/recursive resolver cache, authoritative
+  zone update, stale resolver, blue-green DNS, failover propagation delay를
+  운영 장애 패턴으로 다루는 advanced DNS playbook이다.
+---
 # DNS TTL Cache Failure Patterns
 
 > 한 줄 요약: DNS TTL은 "얼마나 빨리 바뀌는가"가 아니라, 여러 캐시 계층이 얼마나 오래 서로 다른 현실을 믿는가를 결정한다.

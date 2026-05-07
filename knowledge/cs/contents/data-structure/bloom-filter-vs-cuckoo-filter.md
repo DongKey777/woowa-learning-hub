@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Bloom Filter vs Cuckoo Filter
+concept_id: data-structure/bloom-filter-vs-cuckoo-filter
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- probabilistic-filter-choice
+- false-positive-exact-path
+- deletion-vs-simple-filter
+aliases:
+- bloom filter vs cuckoo filter
+- membership filter comparison
+- false positive filter
+- approximate set filter
+- Bloom Filter Cuckoo Filter 차이
+- 삭제 가능한 membership filter
+- cache admission filter
+symptoms:
+- Bloom Filter나 Cuckoo Filter를 exact set으로 오해해 결제, 권한, 중복 차단의 최종 판단에 바로 쓰려 한다
+- false positive가 허용되는 선필터인지, 반드시 HashSet DB index 같은 exact path가 뒤에 있어야 하는지 구분하지 못한다
+- 삭제, rolling window, 만료 key 관리가 필요한데 Bloom Filter와 Cuckoo Filter 선택 기준이 흐릿하다
+intents:
+- comparison
+- definition
+prerequisites:
+- data-structure/hash-table-basics
+next_docs:
+- data-structure/bloom-filter
+- data-structure/cuckoo-filter
+- data-structure/quotient-filter
+- data-structure/xor-filter
+- data-structure/sketch-filter-selection-playbook
+linked_paths:
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/cuckoo-filter.md
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/hash-table-basics.md
+- contents/data-structure/quotient-filter.md
+- contents/data-structure/xor-filter.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+confusable_with:
+- data-structure/bloom-filter
+- data-structure/cuckoo-filter
+- data-structure/quotient-filter
+- data-structure/xor-filter
+- data-structure/hash-table-basics
+forbidden_neighbors: []
+expected_queries:
+- Bloom Filter와 Cuckoo Filter는 둘 다 exact set 대신 써도 돼?
+- false positive가 있는 membership filter를 backend에서 어디까지 믿어야 해?
+- 삭제가 필요하면 Bloom Filter보다 Cuckoo Filter가 나은 이유를 설명해줘
+- cache admission이나 중복 체크 앞단에서 Bloom Cuckoo를 어떻게 선택해?
+- 결제 권한 중복 차단에서 probabilistic filter만 쓰면 위험한 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Bloom Filter와 Cuckoo Filter를 exact 정답기가 아니라 false
+  positive가 있는 membership 선필터로 비교하는 beginner chooser다. 삭제
+  필요성, rolling window, cache admission, exact fallback, DB unique/index와
+  HashSet 확인 경로를 함께 보게 한다.
+---
 # Bloom Filter vs Cuckoo Filter
 
 > 한 줄 요약: Bloom Filter와 Cuckoo Filter는 둘 다 "없을 가능성"을 빨리 거르는 선필터이고, 정답이 바로 필요한 exact 경로에는 쓰지 않는다.

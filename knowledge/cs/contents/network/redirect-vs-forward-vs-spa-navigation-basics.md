@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Redirect vs Forward vs SPA Router Navigation 입문
+concept_id: network/redirect-vs-forward-vs-spa-navigation-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- browser-navigation-debugging
+- redirect-forward-spa-confusion
+- login-navigation-flow
+aliases:
+- redirect vs forward vs spa navigation
+- redirect forward 차이
+- SPA router navigation
+- 서버 redirect와 forward
+- 화면은 바뀌는데 URL은 그대로
+- API는 200인데 프론트가 이동
+- Location header redirect
+symptoms:
+- 화면 이동을 모두 redirect라고 부르고 있어
+- 주소창은 그대로인데 화면만 바뀌는 이유를 HTTP redirect로 찾고 있어
+- API 응답은 200인데 프론트 라우터가 이동한 장면을 서버 redirect와 섞고 있어
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-status-codes-basics
+next_docs:
+- network/post-redirect-get-prg-beginner-primer
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- network/ssr-view-render-vs-json-api-response-basics
+- security/browser-401-vs-302-login-redirect-guide
+linked_paths:
+- contents/network/http-status-codes-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/post-redirect-get-prg-beginner-primer
+- network/ssr-view-render-vs-json-api-response-basics
+- security/browser-401-vs-302-login-redirect-guide
+forbidden_neighbors: []
+expected_queries:
+- redirect와 forward와 SPA router navigation은 어떻게 구분해?
+- 화면은 바뀌었는데 주소창이 그대로면 redirect가 아닌 이유가 뭐야?
+- API는 200인데 프론트에서 페이지가 바뀌면 서버 redirect야?
+- Location 헤더가 보이면 브라우저가 어떤 새 요청을 만드는 거야?
+- POST 다음 GET까지 보이면 redirect 문서가 아니라 PRG를 봐야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 화면 이동 symptom을 redirect, server forward, SPA router navigation으로 가르는 chooser다.
+  주소창 변화, 3xx Location, 요청 줄 수, API 200 뒤 router.push, 화면만 바뀌고 URL은 그대로 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Redirect vs Forward vs SPA Router Navigation 입문
 
 > 한 줄 요약: 화면이 바뀌어도 이동 주체는 다를 수 있고, redirect는 브라우저의 새 요청, forward는 서버 내부 전달, SPA navigation은 자바스크립트 라우터 이동이다.

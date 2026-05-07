@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Container, Cgroup, Namespace
+concept_id: operating-system/container-cgroup-namespace
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- container-isolation-basics
+- cgroup-namespace-difference
+- container-resource-limit-debugging
+aliases:
+- container cgroup namespace
+- namespace vs cgroup
+- pid namespace
+- mount namespace
+- network namespace
+- cgroup v2 basics
+- container isolation
+- container resource limits
+- 컨테이너는 가벼운 VM인가
+symptoms:
+- 컨테이너를 가벼운 VM으로만 이해해서 같은 커널 공유와 host 자원 한계를 놓친다
+- namespace와 cgroup을 모두 격리라고만 부르며 보이는 세계와 자원 제한의 차이를 구분하지 못한다
+- OOMKilled나 PID 1 signal 문제를 애플리케이션 버그로만 보고 kernel control plane을 확인하지 않는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- operating-system/linux-process-state-zombie-orphan
+- operating-system/syscall-user-kernel-boundary
+next_docs:
+- operating-system/container-pid-1-sigterm-zombie-reaping-basics
+- operating-system/container-fd-pressure-emfile-enfile-bridge
+- operating-system/cgroup-cpu-throttling-quota-runtime-debugging
+- operating-system/overlayfs-copy-up-container-layering-debugging
+linked_paths:
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+- contents/operating-system/container-fd-pressure-emfile-enfile-bridge.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/overlayfs-copy-up-container-layering-debugging.md
+- contents/operating-system/tmpfs-shmem-cgroup-memory-accounting.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/spring/spring-boot-autoconfiguration.md
+confusable_with:
+- operating-system/container-pid-1-sigterm-zombie-reaping-basics
+- operating-system/cgroup-cpu-throttling-quota-runtime-debugging
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+- operating-system/syscall-user-kernel-boundary
+forbidden_neighbors: []
+expected_queries:
+- container는 VM이 아니라 namespace와 cgroup 조합이라는 말을 어떻게 이해해?
+- namespace와 cgroup은 각각 무엇을 격리하고 제한해?
+- 컨테이너에서 OOMKilled가 났는데 host 메모리는 남아 있으면 어디를 봐야 해?
+- PID namespace와 container PID 1 signal 처리는 왜 중요해?
+- 컨테이너 안에서 file descriptor limit 문제를 host와 어떻게 나눠 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 container를 가벼운 VM으로 보는 오해를 풀고, namespace는 보이는
+  세계를 나누며 cgroup은 CPU, memory, pids, I/O 사용량을 제한한다는
+  운영체제 bridge를 제공한다. OOMKilled, PID 1, FD pressure, host shared
+  kernel resource 같은 서버 증상을 OS 개념에 연결한다.
+---
 # container, cgroup, namespace
 
 > 한 줄 요약: 컨테이너는 "가벼운 VM"이 아니라, namespace로 보이는 세계를 나누고 cgroup으로 자원을 제한하는 리눅스 기능의 조합이다.

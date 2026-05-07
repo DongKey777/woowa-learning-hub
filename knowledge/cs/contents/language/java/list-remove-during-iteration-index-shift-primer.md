@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: List Remove During Iteration and Index Shift Primer
+concept_id: language/list-remove-during-iteration-index-shift-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- list-remove
+- iterator
+- concurrent-modification
+aliases:
+- List 순회 중 삭제와 인덱스 밀림
+- list remove during iteration index shift
+- Java Iterator.remove vs removeIf
+- for-each list remove ConcurrentModificationException
+- reverse index removal list
+- 자바 리스트 순회 중 삭제
+symptoms:
+- for-each 안에서 list.remove를 직접 호출해 같은 스레드에서도 ConcurrentModificationException이 날 수 있다는 점을 놓쳐
+- 앞에서부터 index로 삭제하며 뒤 원소가 당겨져 다음 검사 대상을 건너뛰는 index shift 문제를 만든다
+- 조건 삭제인지 인덱스 기반 삭제인지 순회 중 복잡한 로직인지 구분하지 않고 removeIf, 역순 삭제, Iterator.remove 선택을 섞어
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/java-collections-basics
+- language/collection-update-strategy-primer
+- language/list-integer-remove-overload-practice-drill
+next_docs:
+- language/set-remove-during-iteration-safety-primer
+- language/map-remove-during-iteration-safety-primer
+- language/collection-update-strategy-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collection-update-strategy-primer.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/set-remove-during-iteration-safety-primer.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+- contents/language/java/list-integer-remove-overload-practice-drill.md
+confusable_with:
+- language/set-remove-during-iteration-safety-primer
+- language/map-remove-during-iteration-safety-primer
+- language/collection-update-strategy-primer
+forbidden_neighbors: []
+expected_queries:
+- Java List를 순회하면서 삭제할 때 removeIf Iterator.remove 역순 루프 중 무엇을 써야 해?
+- for-each 안에서 list.remove를 하면 왜 ConcurrentModificationException이 날 수 있어?
+- ArrayList에서 앞에서부터 삭제하면 인덱스가 밀려 원소를 건너뛰는 이유를 설명해줘
+- 조건 삭제만 할 때 removeIf가 beginner 기본값인 이유를 알려줘
+- List 순회 중 삭제를 Set Map 순회 중 삭제와 어떻게 구분해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java List 순회 중 삭제에서 ConcurrentModificationException, index shift, Iterator.remove, reverse index removal, removeIf 선택을 라우팅하는 beginner symptom router다.
+  list remove during iteration, index shift, removeIf, Iterator.remove, for-each remove 질문이 본 문서에 매핑된다.
+---
 # List 순회 중 삭제와 인덱스 밀림 프라이머
 
 > 한 줄 요약: `List`를 돌면서 지울 때는 `for-each` 안의 `list.remove(...)`를 피하고, 상황에 따라 `Iterator.remove()`, 역순 인덱스 삭제, `removeIf(...)` 중 하나를 고르면 인덱스 밀림과 순회 예외를 함께 줄일 수 있다.

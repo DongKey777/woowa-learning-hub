@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Multi-Tenant Statistics Skew, Plan Drift, and Query Isolation
+concept_id: database/multi-tenant-stats-skew-plan-isolation
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- multi-tenant
+- optimizer-statistics
+- plan-drift
+- noisy-neighbor
+aliases:
+- multi tenant statistics skew
+- tenant plan drift
+- shared table cardinality
+- tenant histogram skew
+- noisy neighbor query plan
+- tenant-aware query isolation
+- global stats skew
+- 특정 테넌트만 느린 쿼리
+- 큰 tenant가 plan을 흔들어요
+symptoms:
+- shared table에서 큰 tenant의 분포 변화 뒤 작은 tenant 쿼리까지 다른 plan을 타고 있어
+- 같은 endpoint가 특정 tenant tier에서만 느리고 estimated rows와 actual rows가 크게 어긋나
+- tenant-first index가 있는데도 global histogram이나 auto analyze 이후 plan drift가 반복돼
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/multi-tenant-tenant-id-index-topology
+- database/statistics-histograms-cardinality-estimation
+next_docs:
+- database/histogram-drift-auto-analyze-thresholds
+- database/tenant-split-out-routing-cutover
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/multi-tenant-tenant-id-index-topology.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/histogram-drift-auto-analyze-thresholds.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/query-tuning-checklist.md
+- contents/database/optimizer-trace-reading.md
+- contents/database/optimizer-switch-plan-stability-invisible-indexes.md
+- contents/database/tenant-split-out-routing-cutover-playbook.md
+confusable_with:
+- database/statistics-histograms-cardinality-estimation
+- database/histogram-drift-auto-analyze-thresholds
+- database/multi-tenant-tenant-id-index-topology
+forbidden_neighbors: []
+expected_queries:
+- shared table에서 큰 tenant 하나가 작은 tenant 쿼리 plan까지 흔드는 이유를 설명해줘
+- tenant-first index가 있어도 statistics skew 때문에 특정 tenant만 느릴 수 있어?
+- multi tenant slow query를 볼 때 tenant_id, tier, estimated rows를 왜 같이 저장해야 해?
+- global histogram과 tenant별 selectivity 차이가 plan drift를 만드는 과정을 알려줘
+- 언제 tenant-aware query isolation이나 hot tenant split out을 검토해야 해?
+contextual_chunk_prefix: |
+  이 문서는 shared-table 멀티테넌시에서 큰 tenant가 global optimizer statistics, histogram, cardinality estimate를 왜곡해 plan drift를 만드는 advanced deep dive다.
+  tenant statistics skew, 특정 tenant만 느린 쿼리, noisy neighbor query plan, query isolation 질문이 본 문서에 매핑된다.
+---
 # Multi-Tenant Statistics Skew, Plan Drift, and Query Isolation
 
 > 한 줄 요약: shared-table 멀티테넌시에서는 큰 tenant 하나의 데이터 분포가 전체 테이블 통계를 왜곡해, 작은 tenant 쿼리 계획까지 흔들 수 있다.

@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Multiple Transaction Managers and Qualifier Boundaries
+concept_id: spring/multiple-transaction-managers-qualifier-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- multiple-transaction-managers
+- qualifier-boundaries
+- platformtransactionmanager
+- transactionmanager-qualifier
+aliases:
+- multiple transaction managers
+- PlatformTransactionManager
+- transactionManager qualifier
+- @Transactional transactionManager
+- chained transaction
+- mixed persistence
+- local transaction
+- multiple datasource transaction
+intents:
+- troubleshooting
+- design
+symptoms:
+- transaction manager bean이 여러 개인데 @Transactional이 어떤 manager를 쓰는지 불명확하다.
+- JPA repository와 JdbcTemplate이 서로 다른 transaction boundary에서 실행된다.
+- 한 저장소는 commit되고 다른 저장소는 rollback되어 distributed transaction처럼 기대한 흐름이 깨진다.
+linked_paths:
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/spring-delivery-reliability-retryable-resilience4j-outbox-relay.md
+- contents/spring/spring-boot-autoconfiguration.md
+expected_queries:
+- Spring에서 transaction manager가 여러 개면 @Transactional은 무엇을 선택해?
+- @Transactional(transactionManager = ...)는 언제 명시해야 해?
+- JPA와 JDBC가 다른 transaction manager를 쓰면 어떤 문제가 생겨?
+- 다중 DataSource에서 transaction boundary와 qualifier를 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 multiple PlatformTransactionManager 환경에서 @Transactional의
+  transactionManager qualifier, @Primary/default 선택, JPA/JDBC/multiple datasource,
+  local transaction, chained transaction expectation, outbox 대안을 진단하는 playbook이다.
+---
 # Spring Multiple Transaction Managers and Qualifier Boundaries
 
 > 한 줄 요약: transaction manager가 여러 개면 `@Transactional`의 경계는 더 이상 자동이 아니며, qualifier와 proxy boundary를 정확히 맞춰야 한다.

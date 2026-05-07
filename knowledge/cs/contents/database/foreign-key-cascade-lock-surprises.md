@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Foreign Key Cascade Lock Surprises
+concept_id: database/foreign-key-cascade-lock-surprises
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- foreign-key-cascade-lock-amplification
+- parent-delete-child-lock-storm
+- cascade-vs-soft-delete
+aliases:
+- foreign key cascade lock
+- ON DELETE CASCADE lock
+- ON UPDATE CASCADE cost
+- cascade lock amplification
+- parent delete child lock storm
+- child table lock propagation
+- foreign key delete blocking
+- FK cascade 락
+- cascade update cost
+- 부모 삭제 자식 락
+symptoms:
+- 부모 row 하나 삭제했는데 child table 수천 row의 lock과 IO가 같이 터지고 있어
+- ON DELETE CASCADE를 편의 기능으로만 보고 대량 삭제 배치의 lock amplification을 놓치고 있어
+- cascade, soft delete, async cleanup 중 어떤 삭제 전략을 고를지 운영 비용 기준이 필요해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/primary-foreign-key-basics
+- database/transaction-isolation-locking
+next_docs:
+- database/metadata-lock-ddl-blocking
+- database/deadlock-case-study
+- database/soft-delete-uniqueness-indexing-lifecycle
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/primary-foreign-key-basics.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/deadlock-case-study.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+confusable_with:
+- database/primary-foreign-key-basics
+- database/metadata-lock-ddl-blocking
+- database/soft-delete-uniqueness-indexing-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- ON DELETE CASCADE가 부모 row 하나 삭제인데 왜 child table lock storm을 만들 수 있어?
+- foreign key cascade와 soft delete는 대량 삭제 운영에서 어떤 tradeoff가 있어?
+- FK cascade가 lock amplification을 만들 때 어떤 child index와 transaction length를 봐야 해?
+- 부모 키 변경이 ON UPDATE CASCADE로 자식 갱신 폭탄이 되는 이유는 뭐야?
+- cascade delete 배치를 chunking이나 async cleanup으로 바꿔야 하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 foreign key cascade가 parent delete/update를 child table lock, IO, transaction length로 증폭시키는 운영 위험을 설명하는 advanced deep dive다.
+  ON DELETE CASCADE, cascade lock, parent delete child lock storm, soft delete tradeoff 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Foreign Key Cascade Lock Surprises
 
 > 한 줄 요약: ON DELETE/UPDATE CASCADE는 편하지만, 부모 한 줄이 자식 수천 줄의 락과 IO를 함께 끌고 갈 수 있다.

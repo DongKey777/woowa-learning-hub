@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Stream filter vs map Decision Mini Card
+concept_id: language/stream-filter-vs-map-decision-mini-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- stream
+- lambda
+- beginner
+aliases:
+- filter vs map 결정 미니 카드
+- Java stream filter map difference
+- stream filter map beginner
+- filter는 남기기 map은 바꾸기
+- stream 조건 변환 차이
+- 자바 filter map 차이
+symptoms:
+- filter 안에서 값을 변환하려 하거나 map 안에서 boolean을 만들어 List<Boolean> 결과를 얻는 등 predicate와 mapper 역할을 섞어
+- 조건에 맞는 것만 고르고 DTO나 이름으로 바꾸는 pipeline에서 filter와 map 순서를 반대로 써 중간 타입과 결과 개수가 헷갈려
+- Stream API를 for loop보다 짧은 문법으로만 보고 남길지와 바꿀지라는 질문 분리를 하지 못해
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- language/java-stream-lambda-basics
+- language/java-collections-basics
+next_docs:
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- language/stream-groupingby-result-shape-primer
+- spring/mvc-controller-basics
+linked_paths:
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/stream-tolist-vs-collectors-tolist-mutability-bridge.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- language/java-stream-lambda-basics
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- language/stream-groupingby-result-shape-primer
+forbidden_neighbors: []
+expected_queries:
+- Java stream filter와 map은 각각 남길지와 무엇으로 바꿀지를 어떻게 나눠?
+- filter 안에서 값을 바꾸려고 하면 왜 안 되고 boolean predicate를 반환해야 해?
+- map에서 조건 검사를 하면 List<Boolean>이 생길 수 있다는 beginner 함정을 설명해줘
+- 조건에 맞는 것만 골라 DTO나 이름으로 바꾸려면 filter 다음 map 순서로 읽으면 돼?
+- for문을 stream filter map toList로 바꾸는 기본 흐름을 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Java Stream filter와 map을 남길지 결정하는 predicate와 값으로 바꾸는 mapper로 구분하는 beginner primer다.
+  filter vs map, stream predicate, mapper, filter map order, Java Stream beginner 질문이 본 문서에 매핑된다.
+---
 # `filter` vs `map` 결정 미니 카드
 
 > 한 줄 요약: `filter`는 "남길지 버릴지"를 고르고, `map`은 "남긴 값을 무엇으로 바꿀지"를 정한다.

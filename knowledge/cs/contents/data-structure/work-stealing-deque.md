@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Work-Stealing Deque
+concept_id: data-structure/work-stealing-deque
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- work-stealing-deque
+- fork-join-scheduler
+- owner-thief-queue
+aliases:
+- Work-Stealing Deque
+- Chase Lev deque
+- fork join work queue
+- owner push pop steal
+- parallel runtime scheduler
+- steal from head
+- local deque load balancing
+symptoms:
+- 병렬 scheduler에서 중앙 MPMC queue contention만 보고 owner-local deque와 thief steal의 load balancing 패턴을 떠올리지 못한다
+- Work-Stealing Deque를 일반 FIFO queue나 priority queue처럼 이해해 strict ordering이나 deadline ordering을 기대한다
+- Chase-Lev style deque의 마지막 원소 경쟁, memory ordering, resize/ABA 난점을 무시하고 단순 deque처럼 구현하려 한다
+intents:
+- deep_dive
+- design
+prerequisites:
+- data-structure/ring-buffer
+- data-structure/lock-free-mpsc-queue
+next_docs:
+- data-structure/bounded-mpmc-queue
+- data-structure/michael-scott-lock-free-queue
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+linked_paths:
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/data-structure/bounded-mpmc-queue.md
+confusable_with:
+- data-structure/lock-free-mpsc-queue
+- data-structure/bounded-mpmc-queue
+- data-structure/michael-scott-lock-free-queue
+- data-structure/heap-variants
+- data-structure/hierarchical-timing-wheel
+forbidden_neighbors: []
+expected_queries:
+- Work-Stealing Deque는 owner push/pop과 thief steal을 왜 반대쪽 끝에서 나눠?
+- fork-join scheduler에서 중앙 queue보다 worker-local deque가 contention을 줄이는 이유는?
+- Chase-Lev deque에서 마지막 원소 하나를 owner와 thief가 동시에 두고 경쟁하는 문제는?
+- Work-Stealing Deque가 strict FIFO나 priority deadline scheduler로 맞지 않는 이유는?
+- CPU-bound divide-and-conquer workload와 blocking I/O task에서 work stealing 효과가 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Work-Stealing Deque를 병렬 runtime과 fork-join scheduler의 owner-local
+  push/pop, thief steal 구조로 설명한다. 중앙 queue contention, Chase-Lev deque,
+  memory ordering, strict FIFO/priority ordering 부적합성을 다룬다.
+---
 # Work-Stealing Deque
 
 > 한 줄 요약: Work-Stealing Deque는 작업을 만든 owner thread는 한쪽 끝에서 빠르게 push/pop하고, idle worker는 반대쪽 끝에서 steal하도록 설계해 병렬 스케줄러의 load balancing 비용을 낮추는 자료구조다.

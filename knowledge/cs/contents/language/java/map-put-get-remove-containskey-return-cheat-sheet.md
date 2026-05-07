@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Map put get remove containsKey Return Cheat Sheet
+concept_id: language/map-put-get-remove-containskey-return-cheat-sheet
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-api
+- return-value
+- overwrite
+aliases:
+- Map put get remove containsKey return cheat sheet
+- Java Map put return previous value
+- Map remove return deleted value
+- containsKey boolean vs get null
+- putIfAbsent overwrite difference
+- 자바 Map put get remove 반환값
+symptoms:
+- Map.put이 저장한 새 값을 반환한다고 생각해 previous value가 null인지 기존 값인지 해석하지 못해
+- Map.get과 remove가 모두 null을 반환할 수 있는 상황에서 missing key, stored null, deleted value 의미를 섞어
+- put과 putIfAbsent의 overwrite 정책을 Set duplicate semantics와 같은 문제로 오해해 값 교체 여부를 잘못 판단해
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- language/java-collections-basics
+- language/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge
+next_docs:
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- language/map-get-null-containskey-getordefault-primer
+- language/map-remove-during-iteration-safety-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/treemap-put-return-value-overwrite-bridge.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+- contents/language/java/map-put-putifabsent-computeifabsent-merge-overwrite-bridge.md
+confusable_with:
+- language/map-get-null-containskey-getordefault-primer
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- language/map-integer-get-remove-two-arg-remove-bridge
+forbidden_neighbors: []
+expected_queries:
+- Map put get remove containsKey는 각각 어떤 값을 반환하는지 표로 알려줘
+- HashMap put은 새 값이 아니라 이전 값을 반환한다는 뜻을 예제로 설명해줘
+- Map remove가 null을 반환하면 key가 없던 건지 value가 null이던 건지 어떻게 봐?
+- put과 putIfAbsent는 overwrite 정책과 반환값이 어떻게 달라?
+- Set 중복과 Map key overwrite 차이를 beginner 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Map.put, get, remove, containsKey의 반환값 의미를 previous/current/deleted/existence로 분리하는 beginner primer다.
+  Map return value, put previous value, get null, remove deleted value, containsKey 질문이 본 문서에 매핑된다.
+---
 # Map `put()` / `get()` / `remove()` / `containsKey()` 반환값 치트시트
 
 > 한 줄 요약: `Map` 메서드는 "성공/실패"를 말하는 게 아니라 "이전 값", "현재 값", "삭제된 값", "존재 여부"를 각각 다른 방식으로 돌려준다. 초보자는 먼저 "무엇을 확인하려는가"를 정하고 메서드를 고르면 덜 헷갈린다.

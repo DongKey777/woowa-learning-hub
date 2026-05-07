@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Spring Security ExceptionTranslationFilter EntryPoint AccessDeniedHandler
+concept_id: spring/security-exceptiontranslation-entrypoint-accessdeniedhandler
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- security-exceptiontranslation-accessdeniedhandler
+- exceptiontranslationfilter
+- authenticationentrypoint
+- accessdeniedhandler
+aliases:
+- ExceptionTranslationFilter
+- AuthenticationEntryPoint
+- AccessDeniedHandler
+- Spring Security 401 vs 403
+- API 401 JSON browser 302 login
+- access denied entry point
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-api-401-vs-browser-302-beginner-bridge.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+confusable_with:
+- spring/security-architecture
+- spring/spring-security-filter-chain-ordering
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/spring-api-401-vs-browser-302-beginner-bridge
+symptoms:
+- API는 JSON 401을 기대했는데 브라우저 로그인 redirect 302가 나온다.
+- 인증되지 않은 요청과 권한 부족 요청이 모두 403처럼 보인다.
+- ControllerAdvice가 Spring Security 401/403 응답을 바꾸지 못한다.
+expected_queries:
+- Spring Security에서 401과 403은 ExceptionTranslationFilter가 어떻게 결정해?
+- AuthenticationEntryPoint와 AccessDeniedHandler는 언제 호출돼?
+- API 요청은 401 JSON인데 브라우저는 302 login이 되는 이유는?
+- Security 예외는 왜 MVC ControllerAdvice로 잡히지 않아?
+contextual_chunk_prefix: |
+  이 문서는 Spring Security의 401/403 응답이 MVC exception resolver가 아니라 filter chain
+  안의 ExceptionTranslationFilter, AuthenticationEntryPoint, AccessDeniedHandler 계약으로
+  결정된다는 점을 증상별로 라우팅한다.
+---
 # Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`
 
 > 한 줄 요약: Spring Security의 401/403은 MVC 예외 처리가 아니라 filter chain 안의 exception translation 계약이 결정한다.

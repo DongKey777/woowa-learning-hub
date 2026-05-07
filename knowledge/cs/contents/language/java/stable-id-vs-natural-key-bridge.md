@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Stable ID vs Natural Key Bridge
+concept_id: language/stable-id-vs-natural-key-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-key
+- natural-key
+- canonicalization
+aliases:
+- Stable ID vs Natural Key Bridge
+- surrogate id vs business key Java
+- natural key map key beginner
+- immutable surrogate id HashMap
+- business key canonicalization
+- 안정적인 ID vs natural key
+symptoms:
+- 사람이 보기 좋은 이름, 이메일, 제목 같은 display field를 Map key로 쓰며 변경 가능성과 중복 가능성을 lookup 안정성보다 가볍게 봐
+- business key를 쓰면서 유일성, 불변성, case mapping, Unicode normalization 정책을 정하지 않아 같은 대상이 여러 key로 갈라져
+- surrogate ID와 natural key를 취향 문제로 보고 lifecycle이 긴 entity와 표준 코드성 값의 key 안정성 차이를 설명하지 못해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/stable-id-map-key-primer
+- language/collections-equality-mutable-state-foundations
+- language/record-value-object-equality-basics
+next_docs:
+- language/locale-root-case-mapping-unicode-normalization
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+linked_paths:
+- contents/language/java/stable-id-map-key-primer.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+confusable_with:
+- language/stable-id-map-key-primer
+- language/locale-root-case-mapping-unicode-normalization
+- language/record-value-object-equality-basics
+forbidden_neighbors: []
+expected_queries:
+- Map key로 surrogate stable ID와 natural business key 중 무엇을 고르면 좋아?
+- 이메일이나 이름을 Map key로 쓰면 변경과 normalization 때문에 어떤 위험이 있어?
+- ProductCode처럼 business key가 안전하려면 불변성 유일성 정규화 정책이 왜 필요해?
+- display field와 natural key와 surrogate ID를 beginner 기준으로 비교해줘
+- Locale.ROOT case mapping Unicode normalization이 natural key canonicalization에 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 Map key 선택에서 immutable surrogate ID와 natural/business key를 stability, uniqueness, canonicalization 정책으로 비교하는 beginner chooser다.
+  stable ID, natural key, business key, surrogate ID, canonicalization, Map key 질문이 본 문서에 매핑된다.
+---
 # Stable ID vs Natural Key Bridge
 
 > 한 줄 요약: `Map` key는 "사람이 자주 보는 값"보다 "시간이 지나도 같은 대상을 계속 가리키는 값"이 더 안전하며, 초보자 기본값은 보통 immutable surrogate ID이고, business key는 불변성·유일성·정규화 정책이 분명할 때만 안전하다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 수평 확장과 수직 확장 기초
+concept_id: system-design/horizontal-vs-vertical-scaling-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- scale-up-vs-scale-out
+- stateless-before-horizontal-scaling
+- db-bottleneck-after-app-scaleout
+aliases:
+- horizontal vs vertical scaling
+- scale out vs scale up
+- 수평 확장 수직 확장 차이
+- scale out scale up 차이
+- 서버 한 대 키우기 vs 여러 대 늘리기
+- 처음 배우는데 scale out이 뭐예요
+- 로드 밸런서 왜 같이 나와요
+- stateless가 왜 필요해요
+- 서버 확장 방법
+- 트래픽 급증 대응
+- app server scale out db bottleneck
+symptoms:
+- scale up과 scale out 차이가 처음이라 헷갈려
+- 서버를 여러 대로 늘리면 왜 load balancer와 stateless가 같이 필요한지 모르겠어
+- 앱 서버를 늘렸는데 DB가 더 느려지는 이유가 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- system-design/system-design-foundations
+next_docs:
+- system-design/load-balancer-basics
+- system-design/stateless-vs-stateful-basics
+- system-design/database-scaling-primer
+- system-design/back-of-envelope-estimation
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/stateless-vs-stateful-basics.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/operating-system/process-thread-basics.md
+confusable_with:
+- system-design/load-balancer-basics
+- system-design/stateless-vs-stateful-basics
+- system-design/database-scaling-primer
+forbidden_neighbors: []
+expected_queries:
+- scale up과 scale out 차이를 서버 한 대 키우기와 여러 대 늘리기로 설명해줘
+- 수평 확장을 하려면 왜 load balancer와 stateless app이 같이 필요해?
+- 앱 서버를 늘리면 왜 DB connection이 새 병목이 될 수 있어?
+- 트래픽 급증 상황에서 수직 확장과 수평 확장을 어떻게 비교해?
+- scale out이 좋아 보여도 복잡도가 늘어나는 지점이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 scale up은 서버 한 대의 사양을 올리고 scale out은 서버 대수를 늘리는 방식이라는 차이를 잡고, 수평 확장에 load balancer와 stateless app이 왜 필요한지 설명하는 beginner primer다.
+  서버를 여러 대로 늘릴 때 상태를 서버 밖으로 빼야 하는 이유, app tier를 늘리면 DB connection과 query 부하가 새 병목이 되는 이유, traffic spike와 availability를 비교하는 자연어 paraphrase가 본 문서에 매핑된다.
+---
 # 수평 확장과 수직 확장 기초 (Horizontal vs Vertical Scaling Basics)
 
 > 한 줄 요약: 수직 확장은 서버 사양을 올리는 방식이고, 수평 확장은 서버 대수를 늘리는 방식이며, 대규모 시스템에서는 수평 확장이 한계 비용과 가용성 면에서 유리하다.

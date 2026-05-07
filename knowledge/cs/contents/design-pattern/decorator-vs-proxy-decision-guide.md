@@ -46,9 +46,7 @@ confusable_with:
   - design-pattern/decorator-proxy-basics
   - design-pattern/decorator-vs-proxy
   - spring/aop-proxy-mechanism
-forbidden_neighbors:
-  - contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md
-  - contents/spring/aop-proxy-mechanism.md
+forbidden_neighbors: []
 expected_queries:
   - 같은 인터페이스를 감싸는데 어떤 때는 decorator고 어떤 때는 proxy라고 부르는 거야?
   - 로그 추가 래퍼와 권한 체크 래퍼를 구분하는 기준을 한 번에 설명해줘

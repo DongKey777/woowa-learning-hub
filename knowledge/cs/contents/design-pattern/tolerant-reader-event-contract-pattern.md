@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Tolerant Reader for Event Contracts
+concept_id: design-pattern/tolerant-reader-event-contract-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- tolerant-reader
+- event-consumer-compatibility
+- unknown-enum-handling
+aliases:
+- tolerant reader
+- tolerant reader event contract
+- forward compatible consumer
+- unknown enum handling
+- optional field parsing
+- event consumer compatibility
+- contract looseness
+- tolerant event consumer
+- 이벤트 관용적 리더
+- unknown enum 매핑
+symptoms:
+- producer가 optional field를 추가하거나 enum을 확장할 때 consumer가 엄격 파싱 때문에 바로 중단된다
+- tolerant reader를 무검증 parser로 이해해 필수 business field까지 느슨하게 읽고 silent corruption을 만든다
+- unknown enum을 그냥 무시하거나 exception만 던져 관측성, dead-letter, UNKNOWN 매핑 정책이 없다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/event-envelope-pattern
+- design-pattern/anti-corruption-contract-test-pattern
+next_docs:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/event-contract-drift-triage-rebuilds
+- design-pattern/domain-event-translation-pipeline
+linked_paths:
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/anti-corruption-contract-test-pattern.md
+- contents/design-pattern/event-envelope-pattern.md
+- contents/design-pattern/bounded-context-relationship-patterns.md
+confusable_with:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/event-envelope-pattern
+- design-pattern/domain-event-translation-pipeline
+forbidden_neighbors: []
+expected_queries:
+- Tolerant Reader는 event consumer가 optional field 추가와 unknown enum에 덜 깨지게 어떻게 읽어?
+- tolerant reader는 본질 필드는 strict하게 보고 비본질 field만 관용적으로 읽어야 하는 이유가 뭐야?
+- unknown enum을 UNKNOWN으로 매핑할지 dead-letter로 보낼지 어떤 기준으로 정해?
+- upcaster는 legacy replay compatibility이고 tolerant reader는 live consumer robustness라는 차이를 설명해줘
+- consumer가 너무 느슨하면 silent corruption이 생기는 이유와 metrics/log 정책은 어떻게 붙여?
+contextual_chunk_prefix: |
+  이 문서는 Tolerant Reader for Event Contracts playbook으로, event consumer가
+  필수 business field는 엄격하게 검증하되 optional field, future metadata, unknown enum에는
+  UNKNOWN/dead-letter/metrics 정책을 갖고 관용적으로 읽어 producer-consumer 배포 결합을 줄이는
+  방법을 설명한다.
+---
 # Tolerant Reader for Event Contracts
 
 > 한 줄 요약: Tolerant Reader 패턴은 이벤트 소비자가 계약의 비본질적 변화에 깨지지 않도록 optional field, unknown enum, forward-compatible parsing을 허용하는 소비자 측 호환성 전략이다.

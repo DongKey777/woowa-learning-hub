@@ -47,7 +47,9 @@ linked_paths:
 confusable_with:
 - system-design/rejected-hit-observability-primer
 - system-design/badge-freshness-observability-primer
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
 expected_queries:
 - freshness context는 trace에 어떻게 남겨야 해?
 - read.source와 read.reason은 왜 enum으로 고정해?

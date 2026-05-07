@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Fallback Capacity and Headroom Contracts
+concept_id: design-pattern/fallback-capacity-and-headroom-contracts
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- fallback-capacity
+- strict-path-headroom
+- secondary-incident-prevention
+aliases:
+- fallback capacity contract
+- fallback headroom contract
+- strict path headroom
+- write-side fallback capacity
+- old projection fallback capacity
+- fallback burst budget
+- fallback circuit breaker
+- strict fallback saturation policy
+- fallback concurrency budget
+- pinned chain reserve sizing
+symptoms:
+- strict fallback path가 있다며 평균 fallback rate만 보고 reserve를 잡아 incident burst에서 write-side나 old projection이 포화된다
+- fallback route를 열어 둔 뒤 DB connection, search thread pool, command p99, breaker threshold를 별도 guardrail로 보지 않는다
+- page1-only fallback과 pinned-chain continuation reserve를 구분하지 않아 next-page traffic이 fallback source headroom을 잠식한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/projection-freshness-slo-pattern
+- design-pattern/projection-lag-budgeting-pattern
+next_docs:
+- design-pattern/strict-fallback-degraded-ux-contracts
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/canary-promotion-thresholds-projection-cutover
+linked_paths:
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/strict-fallback-degraded-ux-contracts.md
+- contents/design-pattern/pinned-legacy-chain-risk-budget.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/database/replica-lag-observability-routing-slo.md
+confusable_with:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/strict-fallback-degraded-ux-contracts
+forbidden_neighbors: []
+expected_queries:
+- Strict fallback path는 spare capacity가 아니라 reserved headroom contract여야 하는 이유가 뭐야?
+- fallback capacity를 평균 rate가 아니라 peak_strict_rps, activation_ratio, burst_multiplier로 sizing해야 하는 이유가 뭐야?
+- fallback source가 write-side인지 old projection인지에 따라 command p99, replica lag, breaker guardrail이 달라지는 이유가 뭐야?
+- fallback saturation은 freshness SLO의 secondary burn signal이고 breaker-open rate와 함께 봐야 하는 이유가 뭐야?
+- pinned legacy chain은 active chain과 next-page request 때문에 별도 reserve sizing이 필요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Fallback Capacity and Headroom Contracts playbook으로, strict read fallback을
+  임시 우회가 아니라 peak strict RPS, activation ratio, burst multiplier, required concurrency,
+  reserved headroom, circuit breaker, degraded UX, owner를 가진 capacity contract로 설계하는 방법을 설명한다.
+---
 # Fallback Capacity and Headroom Contracts
 
 > 한 줄 요약: strict-path fallback은 단순 우회 경로가 아니라 write-side나 old projection에 미리 예약된 용량 계약이어야 하며, activation ratio, burst multiplier, concurrency, circuit breaker, degraded UX를 함께 고정해야 freshness incident가 overload incident로 번지지 않는다.

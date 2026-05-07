@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Queue Consumer Transaction Boundaries
+concept_id: database/queue-consumer-transaction-boundaries
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- queue-consumer
+- ack-boundary
+- transactional-inbox
+- outbox
+aliases:
+- queue consumer transaction
+- ack boundary
+- commit boundary
+- message processing
+- consumer retry
+- poison message
+- commit then ack
+- ack then commit 위험
+- consumer transaction boundary
+- 메시지 ack DB commit 순서
+symptoms:
+- queue consumer에서 DB commit 전에 ack를 보내 메시지 유실 위험을 만들고 있어
+- ack 전에 죽은 중복 재전달을 transactional inbox나 dedup 없이 처리해 같은 side effect를 반복할 수 있어
+- 외부 API 호출까지 긴 DB transaction 안에 넣어 lock, ack delay, retry 폭주가 커지고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/transaction-boundary-isolation-locking-framework
+- database/exactly-once-myths-db-queue
+next_docs:
+- database/transactional-inbox-dedup-design
+- database/outbox-saga-eventual-consistency
+- database/queue-claim-skip-locked-fairness
+linked_paths:
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/transactional-inbox-dedup-design.md
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/queue-claim-skip-locked-fairness.md
+confusable_with:
+- database/exactly-once-myths-db-queue
+- database/transactional-inbox-dedup-design
+- database/outbox-saga-eventual-consistency
+forbidden_neighbors: []
+expected_queries:
+- queue consumer에서 DB commit과 message ack 순서를 왜 commit then ack로 잡아야 해?
+- ack before commit이 메시지 유실을 만들고 ack after commit이 중복을 만들 수 있는 흐름을 설명해줘
+- consumer transaction 안에 외부 API 호출을 오래 넣으면 어떤 lock과 retry 비용이 생겨?
+- poison message를 무한 retry하지 않고 DLQ와 수동 재처리로 넘기는 기준을 알려줘
+- transactional inbox와 dedup으로 consumer 중복 처리를 어떻게 방어해?
+contextual_chunk_prefix: |
+  이 문서는 queue consumer에서 DB commit과 broker ack boundary를 맞추고 duplicate delivery, message loss, poison message, transactional inbox를 다루는 advanced playbook이다.
+  메시지 ack DB commit 순서, commit then ack, ack then commit 위험 질문이 본 문서에 매핑된다.
+---
 # Queue Consumer Transaction Boundaries
 
 > 한 줄 요약: 소비자 트랜잭션은 메시지 ack와 DB commit의 경계를 잘못 잡는 순간 중복과 유실을 동시에 만든다.

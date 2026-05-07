@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Registry Pattern
+concept_id: design-pattern/registry-pattern
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- registry-pattern
+- lookup-table
+- registry-vs-factory
+aliases:
+- registry pattern basics
+- registry lookup table
+- registry vs factory
+- registry vs service locator
+- registry vs strategy map
+- handler registry beginner
+- key to handler lookup
+- map handler registry
+- registry pattern
+- lookup table design pattern
+symptoms:
+- Map<Key, Handler> 모양만 보고 Factory, Strategy, Registry, Service Locator를 같은 것으로 이해한다
+- 이미 등록된 handler를 key로 찾는 lookup 책임에 Factory 이름을 붙여 creation 책임과 혼동한다
+- registry를 생성자 주입하지 않고 어디서든 전역 lookup으로 꺼내 Service Locator 냄새가 난다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+- design-pattern/strategy-map-vs-registry-primer
+- software-engineering/dependency-injection-basics
+next_docs:
+- design-pattern/registry-vs-factory-injected-handler-maps
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/policy-registry-pattern
+linked_paths:
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/software-engineering/dependency-injection-basics.md
+- contents/design-pattern/factory-misnaming-checklist.md
+confusable_with:
+- design-pattern/factory-misnaming-checklist
+- design-pattern/strategy-map-vs-registry-primer
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/policy-registry-pattern
+forbidden_neighbors: []
+expected_queries:
+- Registry Pattern은 이미 등록된 객체나 handler를 key로 찾아오는 lookup table이라는 게 무슨 뜻이야?
+- Registry는 찾고 Factory는 만들고 Service Locator는 숨긴다는 차이를 초보자 기준으로 설명해줘
+- Map<Key, Strategy>가 registry처럼 보일 수 있지만 strategy selection과 lookup table 책임은 어떻게 달라?
+- registry를 전역 container에서 직접 꺼내 쓰면 service locator smell이 되는 이유가 뭐야?
+- PaymentHandlerRegistry는 새 객체를 만들지 않고 이미 주입된 handler를 찾아 주는 구조야?
+contextual_chunk_prefix: |
+  이 문서는 Registry Pattern primer로, key로 이미 등록된 handler/converter/policy를 찾는
+  lookup table 책임을 Factory의 creation, Selector의 runtime choice, Service Locator의 hidden
+  dependency lookup과 구분하는 방법을 설명한다.
+---
 # Registry Pattern: 객체를 찾는 lookup table
 
 > 한 줄 요약: Registry는 **이미 준비된 객체나 규칙을 key로 찾아오는 lookup table**이고, 새 객체를 만드는 `Factory`나 코드 안에서 몰래 의존성을 꺼내는 service locator와는 질문이 다르다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: CDC Schema Evolution, Event Compatibility, and Expand-Contract Playbook
+concept_id: database/cdc-schema-evolution-compatibility-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cdc-schema-evolution
+- event-compatibility
+- expand-contract
+- schema-migration
+aliases:
+- cdc schema evolution
+- event compatibility
+- expand contract migration
+- backward compatible event
+- forward compatible consumer
+- versioned payload
+- debezium schema change
+- contract-safe rollout
+- CDC schema compatibility
+- expand contract CDC
+symptoms:
+- DB DDL은 성공했지만 old producer, new connector, old consumer가 동시에 살아 있는 기간의 event compatibility를 검증하지 않는다
+- field rename이나 enum 추가를 한 번에 처리해 replay, DLQ 재처리, old consumer forward compatibility가 깨진다
+- schema registry 선언만 믿고 consumer optional/default handling과 old event replay 테스트를 빠뜨린다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/cdc-debezium-outbox-binlog
+- database/schema-migration-partitioning-cdc-cqrs
+- database/online-schema-change-strategies
+next_docs:
+- database/destructive-schema-cleanup-column-retirement
+- database/generated-columns-functional-index-migration
+- system-design/zero-downtime-schema-migration-platform-design
+linked_paths:
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/generated-columns-functional-index-migration.md
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+confusable_with:
+- database/destructive-schema-cleanup-column-retirement
+- database/online-schema-change-strategies
+- database/generated-columns-functional-index-migration
+- design-pattern/event-upcaster-compatibility-patterns
+forbidden_neighbors: []
+expected_queries:
+- CDC schema evolution에서 DDL 성공보다 old producer new connector old consumer compatibility가 중요한 이유가 뭐야?
+- outbox payload에 새 field를 추가할 때 expand-contract 순서와 optional consumer 배포 순서를 알려줘
+- backward compatibility와 forward compatibility를 CDC replay와 staged rollout 관점에서 어떻게 구분해?
+- CDC event field rename은 rename 한 번이 아니라 add dual publish switch remove 절차로 봐야 하는 이유가 뭐야?
+- schema registry가 있어도 old event replay와 consumer default handling 테스트가 필요한 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 CDC Schema Evolution, Event Compatibility, and Expand-Contract Playbook으로,
+  CDC/Outbox/Debezium 환경에서 DDL이 event contract change가 되므로 old/new producer, connector,
+  consumer, replay가 공존하는 기간의 backward/forward compatibility와 expand-contract rollout을 설명한다.
+---
 # CDC Schema Evolution, Event Compatibility, and Expand-Contract Playbook
 
 > 한 줄 요약: CDC schema evolution의 핵심은 컬럼을 추가하는 DDL이 아니라, old producer·new connector·old consumer가 한동안 동시에 살아도 이벤트 계약이 깨지지 않게 만드는 expand-contract 절차다.

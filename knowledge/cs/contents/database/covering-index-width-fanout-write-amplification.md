@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Covering Index Width, Leaf Fanout, and Write Amplification
+concept_id: database/covering-index-width-fanout-write-amplification
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- covering-index-width-cost
+- leaf-fanout-write-amplification
+- secondary-index-maintenance-cost
+aliases:
+- covering index width
+- wide covering index
+- leaf fanout
+- index write amplification
+- index payload cost
+- using index but still slow
+- covering index write penalty
+- 커버링 인덱스 너무 넓음
+- 인덱스 폭과 쓰기 비용
+symptoms:
+- 커버링 인덱스를 넓힌 뒤 read는 조금 나아졌지만 write latency와 page split이 늘었어
+- Using index가 보여도 range scan과 cache miss 때문에 p99가 여전히 나빠
+- 조회 컬럼을 전부 인덱스에 넣어도 되는지 write amplification 관점에서 판단하고 싶어
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/covering-index-vs-index-only-scan
+- database/covering-index-composite-ordering
+next_docs:
+- database/secondary-index-change-propagation
+- database/secondary-index-maintenance-statistics-skew
+- database/page-split-merge-fill-factor
+- database/hot-update-secondary-index-churn
+linked_paths:
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/secondary-index-change-propagation-path.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/hot-update-secondary-index-churn.md
+confusable_with:
+- database/covering-index-composite-ordering
+- database/covering-index-vs-index-only-scan
+- database/secondary-index-maintenance-statistics-skew
+forbidden_neighbors: []
+expected_queries:
+- 커버링 인덱스를 넓히면 왜 leaf fanout과 write amplification 비용이 커져?
+- Using index가 보이는데도 인덱스가 너무 넓어서 느릴 수 있어?
+- SELECT 컬럼을 다 넣은 covering index가 write path에 주는 비용을 설명해줘
+- 커버링 인덱스 추가 후 page split이나 buffer pool miss가 늘면 무엇을 봐야 해?
+- read 최적화를 위해 인덱스를 넓힐 때 어떤 기준으로 멈춰야 해?
+contextual_chunk_prefix: |
+  이 문서는 covering index 폭이 leaf fanout, page split, cache residency, secondary index maintenance, write amplification에 주는 비용을 설명하는 advanced deep dive다.
+  wide covering index, using index but still slow, page split after adding columns, index write amplification 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Covering Index Width, Leaf Fanout, and Write Amplification
 
 > 한 줄 요약: 커버링 인덱스로 heap/table lookup을 줄일 수는 있지만, 인덱스 폭이 커질수록 leaf fanout이 줄고 write path의 split·cache miss·maintenance 비용은 빠르게 커진다.

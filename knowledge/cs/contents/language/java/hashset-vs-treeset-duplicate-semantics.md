@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: HashSet vs TreeSet Duplicate Semantics
+concept_id: language/hashset-vs-treeset-duplicate-semantics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- set-duplicate-semantics
+- equality-ordering
+- comparator-contract
+aliases:
+- HashSet vs TreeSet duplicate semantics
+- HashSet TreeSet 중복 기준
+- HashSet equals hashCode TreeSet compareTo
+- compareTo 0 same element
+- TreeSet size 1 why
+- set duplicate prediction drill
+symptoms:
+- HashSet은 equals/hashCode를, TreeSet은 compareTo/Comparator.compare == 0을 중복 기준으로 쓴다는 차이를 모르고 같은 결과를 기대해
+- hashCode가 같으면 중복이라고 오해하거나 compareTo 0이면 equals도 true여야 한다고 생각해
+- BigDecimal, record comparator, custom comparator에서 equality와 ordering 기준이 어긋나 set 결과가 달라지는 이유를 예측하지 못해
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-comparable-comparator-basics
+next_docs:
+- language/comparator-consistency-with-equals-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/bigdecimal-sorted-collection-bridge
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/comparator-consistency-with-equals-bridge.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/equality-vs-ordering-beginner-drill-sheet.md
+- contents/language/java/collections-performance.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/comparator-consistency-with-equals-bridge
+- language/equality-vs-ordering-beginner-drill-sheet
+- language/bigdecimal-sorted-collection-bridge
+forbidden_neighbors: []
+expected_queries:
+- HashSet과 TreeSet 중복 기준 차이를 equals hashCode와 compareTo 0으로 설명해줘
+- HashSet에는 두 개가 들어가는데 TreeSet은 하나만 남는 이유를 알려줘
+- hashCode가 같으면 HashSet에서 중복 확정인지 아니면 equals까지 봐야 하는지 알려줘
+- TreeSet에서 compareTo 0이면 equals false여도 같은 원소처럼 보일 수 있어?
+- BigDecimal이나 record comparator 예제로 HashSet TreeSet 결과를 예측해줘
+contextual_chunk_prefix: |
+  이 문서는 HashSet과 TreeSet duplicate semantics를 equals/hashCode vs compareTo/Comparator.compare == 0 기준 차이로 설명하는 beginner primer다.
+  HashSet vs TreeSet, duplicate rule, compareTo 0, equals hashCode, set prediction drill, BigDecimal collection 질문이 본 문서에 매핑된다.
+---
 # HashSet vs TreeSet Duplicate Semantics
 
 > 한 줄 요약: Java 입문자가 `HashSet`은 `equals()`/`hashCode()`를, `TreeSet`은 `compareTo()` 또는 `Comparator.compare(...) == 0`을 중복 기준으로 쓴다는 점을 한 화면 비교표와 예측 질문으로 바로 잡도록 만든 beginner primer다.

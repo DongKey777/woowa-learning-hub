@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Persistence Follow-up Question Guide
+concept_id: software-engineering/persistence-follow-up-question-guide
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- persistence
+- repository
+- beginner-guide
+- wayfinding
+aliases:
+- Persistence Follow-up Question Guide
+- persistence beginner guide
+- repository 다음 문서
+- persistence decision table beginner
+- fake mapping leakage chooser
+- 영속성 문서 선택표
+symptoms: []
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/repository-interface-contract
+- software-engineering/repository-dao-entity
+next_docs:
+- software-engineering/repository-fake-design
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/persistence-model-leakage
+linked_paths:
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/software-engineering/repository-naming-smells-primer.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/dao-vs-query-model-entrypoint-primer.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/aggregate-persistence-mapping-pitfalls.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/language/java/record-value-object-equality-basics.md
+confusable_with:
+- software-engineering/repository-interface-contract
+- software-engineering/repository-fake-design
+- software-engineering/persistence-adapter-mapping-checklist
+forbidden_neighbors: []
+expected_queries:
+- Repository Interface Contract Primer 다음에 fake, mapping, leakage 중 어떤 persistence 문서를 읽어야 하는지 고르는 표를 알려줘
+- persistence에서 지금 막힌 질문이 저장 계약인지 이름 냄새인지 읽기 분리인지 JPA 매핑인지 ORM 누수인지 어떻게 구분해?
+- fake repository는 DB 흉내가 아니라 저장 계약 재현이라는 다음 문서는 어디야?
+- service나 API에 Entity가 보이면 Persistence Model Leakage Anti-Patterns로 가야 하는 이유가 뭐야?
+- repository naming smell, DAO vs query model, aggregate mapping, leakage를 초심자 읽기 순서로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 persistence 초심자가 repository, fake, naming smell, DAO/query model, mapping, leakage 중 다음 문서 하나를 고르게 돕는 beginner chooser이다.
+---
 # Persistence Follow-up Question Guide
 
 > 한 줄 요약: 처음 영속성 문서를 읽다가 막히면 용어를 더 외우기보다, "지금 막힌 질문이 저장 계약인지, 이름 냄새인지, 읽기 분리인지, JPA 매핑인지, ORM 누수인지"를 먼저 골라 다음 문서를 정하면 훨씬 빠르다.

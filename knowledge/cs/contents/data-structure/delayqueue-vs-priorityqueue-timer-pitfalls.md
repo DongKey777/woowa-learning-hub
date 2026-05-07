@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: DelayQueue vs PriorityQueue Timer Pitfalls
+concept_id: data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- delayqueue-vs-priorityqueue
+- timer-scheduler-choice
+- expired-head-contract
+aliases:
+- DelayQueue vs PriorityQueue timer
+- Java timer queue
+- plain PriorityQueue timer pitfalls
+- PriorityBlockingQueue timer misuse
+- delayed task blocking queue
+- expired head only
+- earlier deadline wakeup
+symptoms:
+- plain PriorityQueue가 deadline 정렬만 제공한다는 점을 놓치고 wait wakeup과 더 이른 deadline 알림까지 자동으로 된다고 생각한다
+- PriorityBlockingQueue.take가 원소가 있으면 바로 꺼낸다는 점을 놓치고 만료 시점까지 기다리는 timer queue로 오해한다
+- DelayQueue의 expired-head blocking contract와 heap 정렬 자료구조를 같은 역할로 비교한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/delayqueue-delayed-contract-primer
+next_docs:
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/timing-wheel-vs-delay-queue
+linked_paths:
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/concurrent-skiplist-internals.md
+confusable_with:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/delayqueue-delayed-contract-primer
+- data-structure/timing-wheel-vs-delay-queue
+forbidden_neighbors: []
+expected_queries:
+- Timer workload에서 DelayQueue와 PriorityQueue는 무엇이 달라?
+- PriorityQueue는 deadline 정렬만 하고 만료 시점까지 기다리는 계약은 없다는 뜻이야?
+- PriorityBlockingQueue를 timer queue로 쓰면 왜 expired head가 아니라 바로 꺼내질 수 있어?
+- 더 이른 deadline이 들어왔을 때 sleeping scheduler를 깨우는 로직은 누가 맡아?
+- Java timer scheduler를 heap DelayQueue Timing Wheel 중 어떻게 선택해?
+contextual_chunk_prefix: |
+  이 문서는 Java timer workload에서 PriorityQueue는 deadline ordering만
+  제공하고 DelayQueue는 expired head가 될 때까지 blocking하는 계약을
+  제공한다는 chooser다. plain PriorityQueue, PriorityBlockingQueue,
+  DelayQueue, Timing Wheel, cancellation stale entry를 비교한다.
+---
 # DelayQueue vs PriorityQueue Timer Pitfalls
 
 > 한 줄 요약: Java timer workload에서 plain `PriorityQueue`는 "deadline 정렬"만 주고, `DelayQueue`는 "만료될 때까지 기다렸다가 꺼내기" 계약까지 주므로 blocking scheduler를 직접 구현할지 여부가 갈린다.

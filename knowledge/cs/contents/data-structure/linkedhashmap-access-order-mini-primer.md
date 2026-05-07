@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: LinkedHashMap access-order 미니 프라이머
+concept_id: data-structure/linkedhashmap-access-order-mini-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- linkedhashmap-access-order
+- map-iteration-order
+- lru-beginner
+aliases:
+- LinkedHashMap access order
+- insertion order vs access order
+- accessOrder true
+- LinkedHashMap LRU mini example
+- get changes order LinkedHashMap
+- same key reinsert order
+- 최근 접근 순서 map
+symptoms:
+- LinkedHashMap이 항상 insertion order만 유지한다고 생각해 accessOrder=true에서 get이나 existing put이 순서를 바꾸는 동작을 놓친다
+- LRU 예제에서 오래 안 쓴 항목이 앞에 오고 최근 접근 항목이 뒤로 가는 access-order 모델을 이해하지 못한다
+- HashMap LinkedHashMap TreeMap의 iteration order 차이와 cache eviction 예제를 섞어 본다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+next_docs:
+- data-structure/lru-cache-basics
+- data-structure/lru-cache-design
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+linked_paths:
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/lru-cache-basics.md
+- contents/data-structure/lru-cache-design.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+confusable_with:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/lru-cache-basics
+- data-structure/lru-cache-design
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+forbidden_neighbors: []
+expected_queries:
+- LinkedHashMap은 insertion order와 access order가 어떻게 달라?
+- accessOrder=true를 켜면 get이나 기존 key put이 순서를 바꾸는 이유는?
+- LinkedHashMap으로 작은 LRU cache 예제를 읽을 때 무엇을 봐야 해?
+- 읽기만 했는데 map iteration order가 바뀌면 어떤 모드야?
+- HashMap LinkedHashMap TreeMap 반복 순서 차이를 beginner 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 LinkedHashMap의 기본 insertion-order 모드와 accessOrder=true의
+  access-order 모드를 구분하는 beginner primer다. get, existing put, same key
+  update가 순서를 바꾸는지와 LRU cache 예제에서 오래 안 쓴 항목을 찾는
+  감각을 설명한다.
+---
 # LinkedHashMap access-order 미니 프라이머
 
 > 한 줄 요약: `LinkedHashMap`은 기본이 삽입 순서 map이지만, `accessOrder=true`를 켜면 "최근에 만진 항목이 뒤로 가는" 접근 순서 map으로 바뀌고 이 차이가 아주 작은 LRU 예제를 읽는 핵심이다.

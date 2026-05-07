@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: io_uring Provided Buffer Ring Head Resync CQ Overflow Worker Handoff
+concept_id: operating-system/io-uring-provided-buffer-ring-head-resync-cq-overflow-worker-handoff
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-provided
+- buffer-ring-head
+- resync-cq-overflow
+- io-uring-buf
+aliases:
+- io_uring buf ring head resync
+- IORING_REGISTER_PBUF_STATUS head
+- CQ overflow partial drain
+- worker handoff ledger
+- kernel-owned app-owned ready-to-readd
+- cached_head recovery
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-fdinfo-pbuf-status-enobufs-reconciliation-playbook.md
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+symptoms:
+- CQ overflow나 partial drain 뒤 local cached_head와 kernel frontier가 어긋난다.
+- worker handoff 중 outstanding slot 상태를 복원하지 못해 buffer를 중복 recycle하거나 잃는다.
+- io_uring_buf_ring_head 값만 보고 app-owned tail bid ledger를 복원했다고 착각한다.
+expected_queries:
+- io_uring_buf_ring_head로 cached_head를 resync할 때 무엇이 복원되고 무엇은 안 돼?
+- CQ overflow와 partial drain 뒤 provided buffer ledger를 어떻게 다시 세워?
+- kernel-owned app-owned ready-to-readd 상태를 worker handoff 후 어떻게 맞춰?
+- PBUF_STATUS는 kernel frontier만 알려 준다는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 io_uring_buf_ring_head와 PBUF_STATUS가 kernel의 next consume cursor를 알려주지만
+  CQ overflow, partial drains, worker handoff 뒤 outstanding slot 상태까지 복원해 주지는
+  않는다는 점을 설명한다. drained CQE와 worker ledger를 함께 맞춘다.
+---
 # io_uring provided-buffer ring head resync after CQ overflow, partial drains, worker handoff
 
 > 한 줄 요약: `io_uring_buf_ring_head()`는 `IORING_REGISTER_PBUF_STATUS`로 kernel의 "다음 consume cursor"를 다시 읽어 로컬 `cached_head`를 복구하는 control-plane API다. 하지만 이 값은 **kernel frontier만** 알려 주므로, CQ overflow 뒤 backlog, partial drain, CQ-to-worker handoff 이후 outstanding-slot 상태를 복원하려면 drained CQE와 worker ledger를 함께 맞춰서 `kernel-owned`, `app-owned`, `ready-to-readd`를 다시 세워야 한다.

@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: 프로세스와 스레드 기초
+concept_id: operating-system/process-thread-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- process-thread-address-space-boundary
+- thread-shared-heap-stack-separation
+- backend-concurrency-basics
+aliases:
+- process thread basics
+- 프로세스와 스레드 기초
+- 프로세스 스레드 차이
+- process vs thread basics
+- 프로세스란 뭐예요
+- 스레드란 뭐예요
+- 프로세스 스레드 멘탈 모델
+- 스레드는 힙을 공유하나요
+- 프로세스 주소 공간 격리
+- Java thread process difference
+- Tomcat request thread basics
+symptoms:
+- 프로세스와 스레드를 둘 다 실행 단위라고만 외워서 메모리 공유와 격리 차이를 설명하지 못해
+- 스레드를 늘리면 무조건 빨라지는지, 프로세스를 나누면 왜 더 안전한지 헷갈려
+- Java나 Spring 서버의 요청 처리 스레드가 운영체제 스레드와 어떻게 이어지는지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- operating-system/virtual-memory-basics
+next_docs:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/sync-async-blocking-nonblocking-basics
+- operating-system/context-switching-deadlock-lockfree
+- operating-system/io-models-and-event-loop
+linked_paths:
+- contents/operating-system/beginner-symptom-to-doc-map.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/sync-async-blocking-nonblocking-basics.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/process-thread-stack-heap-fd-socket-backend-primer.md
+- contents/language/java/java-thread-basics.md
+- contents/spring/spring-webflux-vs-mvc.md
+confusable_with:
+- operating-system/process-thread-stack-heap-fd-socket-backend-primer
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/sync-async-blocking-nonblocking-basics
+- operating-system/context-switching-deadlock-lockfree
+forbidden_neighbors: []
+expected_queries:
+- 프로세스와 스레드 차이를 메모리 공유와 주소 공간 격리 기준으로 설명해줘
+- 스레드는 같은 프로세스 안에서 heap을 공유하고 stack은 따로 가진다는 뜻이 뭐야?
+- 프로세스를 나누면 장애 격리가 좋아지고 스레드를 쓰면 공유 비용이 줄어드는 이유가 뭐야?
+- 스레드를 많이 만들면 왜 context switch와 stack memory 때문에 느려질 수 있어?
+- Tomcat 요청 처리 스레드와 Java Thread가 운영체제 스레드와 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 process를 독립 address space와 resource boundary로, thread를 같은 process 안에서 heap을 공유하고 stack과 register context를 따로 갖는 execution flow로 설명하는 beginner primer다.
+  process vs thread, memory isolation, shared heap, thread stack, Java Thread, Tomcat request thread, crash isolation, context switch cost 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 프로세스와 스레드 기초
 
 > 한 줄 요약: 프로세스는 독립된 메모리 공간과 자원을 가진 실행 단위이고, 스레드는 같은 프로세스 안에서 메모리를 공유하며 동시에 실행되는 더 가벼운 흐름이다.
@@ -5,6 +77,14 @@
 > 문서 역할: 이 문서는 operating-system 카테고리에서 "`프로세스`와 `스레드`가 뭐예요?", "`둘 차이`가 뭐예요?", "`언제 프로세스를 나누고 언제 스레드를 늘려요?`" 같은 첫 질문을 먼저 받는 beginner primer다. `stack`, `heap`, `virtual memory`, `context switch`까지 한꺼번에 섞이면 [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)로 이어진다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "프로세스와 스레드가 둘 다 실행 단위라는데 차이를 모르겠어요" | Spring 서버 실행 모델, 요청 처리 thread 첫 학습 | 주소 공간 격리와 같은 프로세스 안 heap 공유를 나눠 본다 |
+| "스레드를 늘리면 무조건 빨라지는지 궁금해요" | API latency, worker pool, blocking I/O 디버깅 | context switch, stack memory, 공유 상태 동기화 비용을 같이 본다 |
+| "Tomcat 요청 처리 스레드가 OS 스레드와 어떻게 이어지나요?" | MVC request-per-thread 모델 이해 | Java Thread와 운영체제 스케줄링 단위를 연결한다 |
 
 관련 문서:
 

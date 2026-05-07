@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 완전 탐색 입문
+concept_id: algorithm/brute-force-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- brute-force-basics
+- exhaustive-search-case-count
+- permutation-combination-subset
+aliases:
+- brute force intro
+- brute force basics
+- exhaustive search beginner
+- all cases search
+- complete search
+- nested loop brute force
+- permutation combination subset
+- 완전 탐색 입문
+- 완탐 기초
+symptoms:
+- 완전 탐색은 항상 시간 초과라고 단정하고 입력 크기와 경우의 수 계산을 먼저 하지 않는다
+- 순열 조합 부분집합 중첩 루프의 경우의 수 차이를 구분하지 못한다
+- 완전 탐색으로 작은 입력 정답 검증을 만든 뒤 최적화하는 전략을 쓰지 못한다
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- algorithm/basic
+- algorithm/recursion-intro
+next_docs:
+- algorithm/backtracking-intro
+- algorithm/dp-intro
+- algorithm/problem-signal-to-pattern-router-beginner
+- data-structure/graph-basics
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/data-structure/graph-basics.md
+- contents/algorithm/backtracking-intro.md
+- contents/algorithm/problem-signal-to-pattern-router-beginner.md
+confusable_with:
+- algorithm/backtracking-intro
+- algorithm/dp-intro
+- algorithm/dfs-bfs-intro
+- algorithm/greedy
+- algorithm/problem-signal-to-pattern-router-beginner
+forbidden_neighbors: []
+expected_queries:
+- 완전 탐색은 어떤 입력 크기에서 안전한 출발점이야?
+- 순열 조합 부분집합 중첩 for문의 경우의 수를 어떻게 계산해?
+- 완전 탐색과 백트래킹은 가지치기 유무로 어떻게 달라?
+- brute force를 먼저 구현해서 작은 입력 정답 검증에 쓰는 이유가 뭐야?
+- n이 작을 때 모든 경우를 다 확인하는 방법을 예제로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 brute force beginner primer로, 가능한 모든 경우를 확인하는
+  exhaustive search와 permutation, combination, subset, nested loop의
+  경우의 수 계산을 설명한다. 입력 범위가 작을 때 안전한 출발점이며
+  pruning을 더하면 backtracking으로 이어진다.
+---
 # 완전 탐색 입문 (Brute Force Basics)
 
 > 한 줄 요약: 완전 탐색은 가능한 모든 경우를 직접 확인해 정답을 찾는 방법이며, 입력 범위가 작을 때 가장 안전하고 구현이 단순한 출발점이다.

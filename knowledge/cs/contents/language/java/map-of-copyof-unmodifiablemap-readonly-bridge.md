@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Map.of copyOf unmodifiableMap Read Only Bridge
+concept_id: language/map-of-copyof-unmodifiablemap-readonly-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- collection-immutability
+- defensive-copy
+- map
+aliases:
+- Map.of copyOf unmodifiableMap read only bridge
+- Java read only map snapshot vs view
+- Map.ofEntries vs Map.of
+- Collections.unmodifiableMap wrapper
+- Map.copyOf snapshot
+- 자바 읽기 전용 Map 차이
+symptoms:
+- Collections.unmodifiableMap을 원본과 분리된 immutable snapshot으로 오해해 원본 변경이 view에 비치는 문제를 놓쳐
+- Map.of와 Map.copyOf와 unmodifiableMap을 모두 같은 읽기 전용 API로 묶어 상수 맵, 복사본, wrapper 차이를 설명하지 못해
+- null을 포함한 source map을 Map.of나 Map.copyOf로 옮기며 NullPointerException 원인을 null 정책이 아니라 문법 문제로 오진해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge
+- language/immutable-objects-and-defensive-copying
+next_docs:
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/set-of-copyof-unmodifiableset-readonly-primer
+- language/java-immutable-object-basics
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/list-copyof-listof-unmodifiablelist-beginner-bridge.md
+- contents/language/java/set-of-copyof-unmodifiableset-readonly-primer.md
+- contents/language/java/collection-vs-collections-vs-arrays-utility-mini-bridge.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge.md
+confusable_with:
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/set-of-copyof-unmodifiableset-readonly-primer
+- language/java-immutable-object-basics
+forbidden_neighbors: []
+expected_queries:
+- Map.of와 Map.copyOf와 Collections.unmodifiableMap은 읽기 전용 의미가 어떻게 달라?
+- unmodifiableMap은 원본이 바뀌면 같이 바뀌는 view인지 snapshot인지 알려줘
+- Map.copyOf는 방어적 복사로 언제 쓰고 Map.of는 언제 쓰는 게 좋아?
+- Map.ofEntries는 Map.of와 무엇이 다르고 엔트리가 많을 때 왜 읽기 좋아?
+- Java read only map에서 null key와 null value는 어떤 API가 막아?
+contextual_chunk_prefix: |
+  이 문서는 Map.of, Map.copyOf, Collections.unmodifiableMap을 read-only constant, snapshot, view로 구분하는 beginner chooser다.
+  read-only map, immutable map, unmodifiableMap view, copyOf snapshot, Map.ofEntries 질문이 본 문서에 매핑된다.
+---
 # `Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지
 
 > 한 줄 요약: 초보자 기준으로는 `Map.of(...)`를 "읽기 전용 상수 맵", `Map.copyOf(...)`를 "읽기 전용 복사본", `Collections.unmodifiableMap(...)`를 "원본을 감싼 읽기 전용 창문"으로 구분하면 가장 덜 헷갈린다.

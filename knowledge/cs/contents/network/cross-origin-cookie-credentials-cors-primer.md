@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Cross-Origin Cookie fetch credentials CORS 입문
+concept_id: network/cross-origin-cookie-credentials-cors-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids: []
+review_feedback_tags:
+- cross-origin-cookie-credentials-boundary
+- same-origin-same-site-separation
+- cors-response-read-vs-cookie-send
+aliases:
+- cross-origin cookie credentials cors primer
+- Cross-Origin Cookie fetch credentials CORS 입문
+- fetch credentials include cookie
+- same-origin same-site 차이
+- cross-origin cookie 안 붙음
+- Application Cookies 있는데 Request Cookie 없음
+- credentials include 했는데 cookie 없음
+- CORS credentials cookie
+- Access-Control-Allow-Credentials cookie
+- OPTIONS만 보이고 actual request 없음
+- Postman은 되는데 브라우저 CORS
+symptoms:
+- Application 탭에는 cookie가 있는데 cross-origin fetch의 request Cookie 헤더가 비어 있어
+- credentials include를 넣었는데도 cookie scope, SameSite, CORS 중 어디가 문제인지 모르겠어
+- 서버 로그에는 실제 401이나 403이 있는데 브라우저 콘솔은 CORS 에러만 보여서 원인을 못 찾겠어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- network/cookie-session-jwt-browser-flow-primer
+- security/cors-basics
+next_docs:
+- security/fetch-credentials-vs-cookie-scope
+- security/cookie-scope-mismatch-guide
+- security/preflight-debug-checklist
+- security/error-path-cors-primer
+- network/application-tab-vs-request-cookie-header-mini-card
+linked_paths:
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md
+- contents/network/application-tab-vs-request-cookie-header-mini-card.md
+- contents/network/browser-devtools-error-path-cors-vs-actual-401-403-bridge.md
+- contents/security/cors-basics.md
+- contents/security/preflight-debug-checklist.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/error-path-cors-primer.md
+confusable_with:
+- security/cors-basics
+- security/fetch-credentials-vs-cookie-scope
+- security/cookie-scope-mismatch-guide
+- security/preflight-debug-checklist
+- security/error-path-cors-primer
+forbidden_neighbors: []
+expected_queries:
+- cross-origin fetch에서 credentials include를 넣어도 cookie가 안 붙는 이유를 순서대로 설명해줘
+- same-origin과 same-site 차이가 cookie SameSite와 CORS 판단에 어떻게 다르게 쓰여?
+- Application 탭에는 cookie가 보이는데 Request Cookie 헤더가 비어 있으면 무엇부터 봐야 해?
+- CORS는 cookie 전송 문제인지 브라우저 JS가 응답을 읽는 문제인지 어떻게 구분해?
+- OPTIONS preflight만 있고 actual request가 안 보이면 어떤 문서를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 cross-origin browser fetch에서 cookie 전송은 cookie attribute와 fetch credentials가 결정하고, CORS는 JavaScript response read permission을 결정한다는 경계를 정리하는 beginner troubleshooting primer다.
+  same-origin vs same-site, credentials include, request Cookie header missing, Set-Cookie ignored, Access-Control-Allow-Credentials, OPTIONS preflight, error-path CORS 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Cross-Origin Cookie, `fetch credentials`, CORS 입문
 
 > 한 줄 요약: cookie가 실제 요청에 붙는지는 cookie 속성, `fetch`의 `credentials` 모드, same-site 판단이 함께 결정하고, 브라우저 자바스크립트가 응답을 읽을 수 있는지는 CORS가 결정한다.

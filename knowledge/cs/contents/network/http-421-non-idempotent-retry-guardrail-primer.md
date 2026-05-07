@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "421 Non-Idempotent Retry Guardrail Primer"
+concept_id: network/http-421-non-idempotent-retry-guardrail-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- http-421
+- idempotency
+- retry-guardrail
+aliases:
+- 421 non idempotent retry
+- 421 POST retry
+- 421 free replay not safe
+- Misdirected Request idempotency
+- 421 retry guardrail
+- Idempotency-Key 421
+- wrong connection retry
+symptoms:
+- 421을 받으면 POST나 결제 요청도 공짜로 자동 재전송해도 된다고 생각한다
+- connection retry safety와 business side-effect dedup을 같은 문제로 본다
+- Idempotency-Key 없이 주문/결제/메일 발송 요청을 421 후 재시도한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http-methods-rest-idempotency-basics
+next_docs:
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/timeout-retry-backoff-practical
+- language/httpclient-idempotency-keys-safe-http-retries
+linked_paths:
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/language/java/httpclient-idempotency-keys-safe-http-retries.md
+confusable_with:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http-methods-rest-idempotency-basics
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- "421 Misdirected Request를 받으면 POST도 자동 재시도해도 돼?"
+- "421 retry와 Idempotency-Key가 왜 별개 guardrail인지 설명해줘"
+- "wrong connection recovery가 business side effect 중복을 막아주지 않는 이유는?"
+- "POST 주문 결제 요청에서 421 후 안전하게 재시도하려면 무엇이 필요해?"
+- "421은 connection 복구 신호이지 free replay가 아닌 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP 421 Misdirected Request 이후 retry를 idempotency,
+  side-effect, Idempotency-Key, duplicate order/payment guardrail과 연결하는
+  beginner primer다.
+---
 # 421 Non-Idempotent Retry Guardrail Primer
 
 > 한 줄 요약: `421 Misdirected Request`는 "다른 connection으로 다시 보내 볼 수 있음"을 뜻할 뿐, `POST`나 side-effect 요청을 공짜로 재실행해도 된다는 뜻은 아니다.

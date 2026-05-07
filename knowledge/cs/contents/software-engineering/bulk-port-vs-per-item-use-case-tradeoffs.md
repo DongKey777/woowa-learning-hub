@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Bulk Port vs Per-Item Use Case Tradeoffs
+concept_id: software-engineering/bulk-port-tradeoffs
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- ports-and-adapters
+- bulk-contract
+- per-item-usecase
+aliases:
+- Bulk Port vs Per-Item Use Case Tradeoffs
+- bulk port vs per item use case
+- bulk-oriented outbound port
+- per-item use case with bulk helper port
+- saveAll port smell
+- bulk port 언제
+symptoms:
+- 성능이 걱정된다는 이유만으로 saveAll, sendAll, syncAll 같은 List 기반 bulk port를 application contract로 성급히 노출해
+- hexagonal은 무조건 한 건씩이라고 생각해 candidate 조회나 reference data lookup round trip을 줄일 bulk helper port 기회를 놓쳐
+- strict per-item execution, per-item use case plus bulk helper port, true bulk use case를 구분하지 못해 실패/재시도/감사 단위가 흐려져
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/adapter-bulk-optimization
+next_docs:
+- software-engineering/bulk-helper-vs-query-model
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/testing-named-bulk-contracts
+linked_paths:
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+confusable_with:
+- software-engineering/adapter-bulk-optimization
+- software-engineering/bulk-helper-vs-query-model
+- software-engineering/true-bulk-contracts-partial-failure-results
+forbidden_neighbors: []
+expected_queries:
+- bulk port를 application contract로 올릴지 per-item use case를 유지할지 어떤 기준으로 고르면 돼?
+- 성능 문제는 있지만 업무 의미는 한 건 단위일 때 bulk helper port만 두는 선택지가 왜 안전해?
+- strict per-item execution, per-item use case plus bulk helper port, bulk-oriented outbound port 세 가지를 비교해줘
+- saveAll sendAll 같은 기술 API 이름을 port로 노출하면 왜 도메인 경계가 새어?
+- chunk result partial failure checkpoint가 의미가 되면 true bulk use case로 올려야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 bulk port와 per-item use case tradeoff를 strict per-item execution, bulk helper port, true bulk-oriented outbound port 세 선택지로 비교하는 beginner chooser다.
+---
 # Bulk Port vs Per-Item Use Case Tradeoffs
 
 > 한 줄 요약: 성능이 걱정된다고 곧바로 bulk port를 노출하기보다, 먼저 "애플리케이션이 정말 묶음 단위로 생각해야 하는가"를 보고, 아니라면 per-item 유스케이스를 유지한 채 조회 경로나 adapter 최적화만 묶는 편이 더 안전하다.

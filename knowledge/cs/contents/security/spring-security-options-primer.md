@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring Security OPTIONS Primer
+concept_id: security/spring-security-options-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- spring security options primer
+- spring security preflight options
+- spring security options permitall
+- spring boot cors options 401
+aliases:
+- spring security options primer
+- spring security preflight options
+- spring security options permitall
+- spring boot cors options 401
+- spring security options 403
+- preflight blocked by spring security
+- permit preflight without opening post
+- options request permit actual post authenticated
+- corsutils preflight request
+- requestmatchers options permitall
+- http cors withdefaults
+- corsconfiguration source spring security
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/preflight-debug-checklist.md
+- contents/security/cors-basics.md
+- contents/security/cors-samesite-preflight.md
+- contents/security/error-path-cors-primer.md
+- contents/security/xss-csrf-spring-security.md
+- contents/spring/spring-cors-security-vs-mvc-ownership.md
+- contents/spring/spring-security-filter-chain-ordering.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Spring Security OPTIONS Primer 핵심 개념을 설명해줘
+- spring security options primer가 왜 필요한지 알려줘
+- Spring Security OPTIONS Primer 실무 설계 포인트는 뭐야?
+- spring security options primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Spring Security OPTIONS Primer를 다루는 primer 문서다. Spring Security에서 preflight `OPTIONS`를 통과시키는 목적은 "실제 API 보호를 푼다"가 아니라 "브라우저의 사전 확인만 막지 않는다"에 있다. 검색 질의가 spring security options primer, spring security preflight options, spring security options permitall, spring boot cors options 401처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Spring Security OPTIONS Primer
 
 > 한 줄 요약: Spring Security에서 preflight `OPTIONS`를 통과시키는 목적은 "실제 API 보호를 푼다"가 아니라 "브라우저의 사전 확인만 막지 않는다"에 있다.

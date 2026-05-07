@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "Spring Multipart Exception Translation Matrix"
+concept_id: network/spring-multipart-exception-translation-matrix
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- multipart-upload
+- spring-exception
+- upload-attribution
+aliases:
+- Spring multipart exception translation matrix
+- MultipartException vs MaxUploadSizeExceededException
+- MissingServletRequestPartException
+- Failed to parse multipart servlet request
+- request.getParts exception mapping
+- multipart nested cause matrix
+- max upload size exceeded 413
+symptoms:
+- MultipartException 예외 이름만 보고 network 문제 또는 server bug로 바로 결론낸다
+- nested cause, container vendor, final status owner, multipart phase를 함께 남기지 않는다
+- MaxUploadSizeExceededException 413이 app에서 만들어졌는지 edge/proxy limit인지 구분하지 못한다
+- MissingServletRequestPartException을 container read abort와 같은 bucket으로 본다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/multipart-parsing-vs-auth-reject-boundary
+- network/proxy-to-container-upload-cleanup-matrix
+next_docs:
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- spring/multipart-upload-request-pipeline
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+linked_paths:
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/container-specific-disconnect-logging-recipes-spring-boot.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/spring/spring-multipart-upload-request-pipeline.md
+confusable_with:
+- network/multipart-parsing-vs-auth-reject-boundary
+- network/proxy-to-container-upload-cleanup-matrix
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- spring/multipart-upload-request-pipeline
+forbidden_neighbors: []
+expected_queries:
+- "Spring MultipartException과 MaxUploadSizeExceededException 차이를 어떻게 봐?"
+- "Failed to parse multipart servlet request의 nested cause를 왜 남겨야 해?"
+- "MissingServletRequestPartException은 multipart parser abort와 어떻게 다른 bucket이야?"
+- "multipart upload 413이 app limit인지 proxy limit인지 어떻게 구분해?"
+- "Tomcat ClientAbortException Jetty EofException Undertow multipart IOException을 매트릭스로 정리해줘"
+contextual_chunk_prefix: |
+  이 문서는 Spring multipart upload에서 MultipartException,
+  MaxUploadSizeExceededException, MissingServletRequestPartException, nested
+  container cause, status owner, bytes/cleanup observability를 연결하는 advanced
+  bridge다.
+---
 # Spring Multipart Exception Translation Matrix
 
 > 한 줄 요약: Spring에서 보이는 `MultipartException`, `MaxUploadSizeExceededException`, `MissingServletRequestPartException`는 root cause가 아니라 `request.getParts()`/binding 단계의 번역본이다. 업로드 장애를 빠르게 풀려면 Spring top-level symptom, nested container cause, 최종 status owner, bytes/cleanup observability를 한 매트릭스로 같이 봐야 한다.

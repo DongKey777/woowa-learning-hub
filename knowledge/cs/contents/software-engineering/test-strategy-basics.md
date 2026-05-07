@@ -1,8 +1,97 @@
+---
+schema_version: 3
+title: 테스트 전략 기초
+concept_id: software-engineering/test-strategy-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- first-failing-test-cheapest-layer
+- unit-slice-integration-choice
+- service-test-not-always-springboottest
+aliases:
+- test strategy basics
+- 처음 테스트 뭐부터
+- failing test first
+- first failing test
+- unit test slice test integration test
+- springboottest integration test
+- springboottest e2e difference
+- mockmvc vs testresttemplate
+- webmvctest datajpatest
+- test double basics
+- slice test choice
+- service 테스트는 통합 테스트인가요
+symptoms:
+- 이번 변경의 첫 failing test를 unit, WebMvcTest, DataJpaTest, SpringBootTest 중 어디에 둬야 할지 모르겠어
+- Service 테스트라서 무조건 SpringBootTest를 써야 하는지 헷갈려
+- 규칙 변경, 웹 계약 변경, JPA 변경, 협력 흐름 변경을 테스트 종류로 못 바꾸겠어
+intents:
+- definition
+- design
+prerequisites:
+- software-engineering/service-layer-basics
+- software-engineering/layered-architecture-basics
+next_docs:
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/refactoring-first-failing-test
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/inbound-adapter-test-slices-primer
+- spring/spring-testing-basics
+linked_paths:
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+- contents/software-engineering/controller-contract-vs-service-rule-first-test-mini-card.md
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/stub-vs-spy-first-test-primer.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/component-test-vs-browser-e2e-boundary-card.md
+- contents/spring/spring-testing-basics.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/datajpatest-db-difference-checklist.md
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+confusable_with:
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/fake-vs-mock-first-test-primer
+- spring/spring-testing-basics
+- software-engineering/inbound-adapter-test-slices-primer
+forbidden_neighbors: []
+expected_queries:
+- 처음 테스트를 쓸 때 이번 변경에서 가장 먼저 깨질 하나를 어디에 둬야 해?
+- Service 테스트는 무조건 SpringBootTest인지 규칙만 보면 unit test인지 구분해줘
+- Controller 입력 검증, Service 규칙, JPA 쿼리, 트랜잭션 협력 흐름은 각각 어떤 테스트가 먼저야?
+- WebMvcTest, DataJpaTest, SpringBootTest, unit test 선택 기준을 beginner 기준으로 알려줘
+- 테스트 전략은 많이 쓰는 것이 아니라 가장 싼 곳에 첫 failing test를 두는 것이라는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 테스트 전략을 이번 변경에서 가장 먼저 깨질 failing test 하나를 가장 싼 레이어에 두는 문제로 설명하는 beginner primer다.
+  unit test, slice test, WebMvcTest, DataJpaTest, SpringBootTest, app integration test, Service test는 무조건 통합 테스트인가, 규칙 변경과 웹 계약 변경과 JPA 변경과 협력 흐름 변경 구분 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 테스트 전략 기초 (Test Strategy Basics)
 
 > 한 줄 요약: 테스트 전략 입문은 "이번 변경의 첫 failing test 1개를 가장 싼 곳에 두기"부터 시작한다. `security`, `retry`, 운영 복구는 본문 중심이 아니라 관련 문서 링크로 넘긴다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "이번 변경의 첫 테스트를 unit, WebMvcTest, DataJpaTest, SpringBootTest 중 어디에 둬야 해요?" | 리뷰 반영 후 가장 싼 회귀 테스트를 고르는 단계 | 변경이 규칙, 웹 계약, JPA 동작, 협력 흐름 중 어디인지 먼저 자른다 |
+| "Service 테스트니까 무조건 SpringBootTest인가요?" | 서비스 규칙과 저장소 협력을 같은 테스트로 묶으려는 장면 | Service라는 이름보다 실제 붙인 협력 범위로 테스트 종류를 정한다 |
+| "테스트를 많이 쓰라는 말인지, 실패 하나를 먼저 잡으라는 말인지 모르겠어요" | 미션 리팩토링 전 안전망 만들기 | 첫 failing test 1개를 가장 싼 레이어에 두는 전략으로 좁힌다 |
 
 [30분 후속 분기표로 돌아가기](./common-confusion-wayfinding-notes.md#자주-헷갈리는-3개-케이스)
 

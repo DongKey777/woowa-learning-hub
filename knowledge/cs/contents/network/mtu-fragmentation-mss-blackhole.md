@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "MTU, Fragmentation, MSS, Blackhole"
+concept_id: network/mtu-fragmentation-mss-blackhole
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- mtu
+- fragmentation
+- pmtud-blackhole
+aliases:
+- MTU
+- fragmentation
+- MSS
+- PMTUD
+- MTU blackhole
+- ICMP fragmentation needed
+- MSS clamping
+- tunnel overhead
+symptoms:
+- 특정 큰 요청만 느리거나 멈추는데 서버 CPU와 짧은 API는 정상이다
+- ICMP fragmentation needed가 막혀 PMTUD가 실패하는 blackhole을 놓친다
+- VPN 터널 오버헤드로 실제 path MTU가 줄어드는 문제를 앱 timeout으로 본다
+- fragmentation이 가능하다는 이유로 운영에서 안전하다고 가정한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tcp-congestion-control
+- network/timeout-retry-backoff-practical
+next_docs:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/udp-fragmentation-quic-packetization
+- network/http3-quic-practical-tradeoffs
+- network/tls-record-sizing-flush-streaming-latency
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/mtu-pmtud-icmp-blackhole-path-diagnostics.md
+confusable_with:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/udp-fragmentation-quic-packetization
+- network/packet-loss-jitter-reordering-diagnostics
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "MTU fragmentation MSS blackhole 문제를 어떻게 설명해?"
+- "ICMP fragmentation needed가 막히면 PMTUD가 왜 실패해?"
+- "VPN 터널 뒤에서 큰 요청만 멈추는 MTU blackhole 패턴은?"
+- "MSS clamping이 MTU 문제에서 왜 실무적으로 유용해?"
+- "fragmentation은 가능하지만 운영에서 피하려는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 MTU, MSS, fragmentation, PMTUD, ICMP fragmentation needed,
+  MTU blackhole, tunnel overhead, MSS clamping을 다루는 advanced playbook이다.
+---
 # MTU, Fragmentation, MSS, Blackhole
 
 > 한 줄 요약: MTU 문제는 "패킷이 크다"가 아니라, 경로 중간 장비가 조용히 버려서 연결이 느려지거나 멈추는 운영 문제로 봐야 한다.

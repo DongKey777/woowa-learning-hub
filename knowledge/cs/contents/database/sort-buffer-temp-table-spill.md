@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Sort Buffer, Temporary Table, and Spill Behavior
+concept_id: database/sort-buffer-temp-table-spill
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- sort-buffer
+- temporary-table
+- spill
+- filesort
+- query-tuning
+aliases:
+- sort buffer
+- temporary table
+- spill
+- filesort
+- Using filesort
+- Using temporary
+- sort_merge_passes
+- Created_tmp_disk_tables
+- tmp_table_size
+- disk spill during order by
+symptoms:
+- EXPLAIN Extra에 Using filesort나 Using temporary가 있고 sort/temp spill 때문에 p95가 튀어
+- key는 타는데 ORDER BY나 GROUP BY가 인덱스 순서와 맞지 않아 filesort와 temp table을 써
+- sort_buffer_size나 tmp_table_size를 키우기 전에 row width, concurrency, memory pressure를 봐야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/index-condition-pushdown-filesort-temporary-table
+- database/temp-table-engine-spill-behavior
+next_docs:
+- database/query-tuning-checklist
+- database/slow-query-analysis-playbook
+- database/covering-index-vs-index-only-scan
+linked_paths:
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/temp-table-engine-choice-spill-behavior.md
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/covering-index-vs-index-only-scan.md
+confusable_with:
+- database/temp-table-engine-spill-behavior
+- database/index-condition-pushdown-filesort-temporary-table
+- database/covering-index-vs-index-only-scan
+forbidden_neighbors: []
+expected_queries:
+- Using filesort와 Using temporary가 보일 때 sort buffer와 temp table spill을 어떻게 구분해?
+- key는 사용했는데도 ORDER BY가 느리고 disk spill이 나는 이유를 인덱스 순서와 row width로 설명해줘
+- sort_buffer_size를 키우면 한 쿼리는 좋아져도 동시 커넥션 메모리 압박이 왜 커질 수 있어?
+- Created_tmp_disk_tables와 sort_merge_passes 지표로 ORDER BY GROUP BY spill을 어떻게 관찰해?
+- rows는 작아도 SELECT width가 넓거나 DISTINCT GROUP BY가 있으면 temp table spill이 생기는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 sort buffer, temporary table, filesort, spill behavior를 Using filesort/Using temporary, sort_merge_passes, Created_tmp_disk_tables 관점으로 설명하는 advanced deep dive다.
+  정렬 spill, 임시 테이블 spill, key used but filesort, disk spill during group by 질문이 본 문서에 매핑된다.
+---
 # Sort Buffer, Temporary Table, and Spill Behavior
 
 > 한 줄 요약: 정렬과 집계가 느린 이유는 알고리즘보다 메모리 경계에 먼저 걸리기 때문이고, spill이 시작되면 디스크가 비용을 대신 치른다.

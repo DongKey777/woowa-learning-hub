@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: "Browser DevTools `Request Sent` vs `Waiting` 미니 카드"
+concept_id: network/browser-devtools-request-sent-vs-waiting-mini-card
+canonical: false
+category: network
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- upload-vs-ttfb-separation
+- waiting-is-not-upload
+- waterfall-phase-ownership
+aliases:
+- devtools request sent vs waiting
+- request sent confusion
+- waiting confusion
+- slow upload vs slow response
+- request body send time
+- upload timing beginner
+- waterfall request sent waiting
+- why request sent is long
+- request sent 뭐예요
+- waiting 뭐예요
+- 처음 devtools upload
+- browser network tab upload delay
+- what is request sent
+- what is waiting in devtools
+symptoms:
+- "waterfall에서 `Request Sent`가 길게 보이는데 서버가 느린 건지 업로드가 느린 건지 구분이 안 된다"
+- 파일 업로드 API가 오래 걸릴 때 `Waiting`이 문제인지 request body를 보내는 중인지 헷갈린다
+- "`POST` 요청이 느린데 DevTools timing 칸을 어떻게 읽어야 upload 지연과 응답 시작 지연을 나눌 수 있는지 막힌다"
+intents:
+- drill
+prerequisites:
+- network/devtools-waterfall-primer
+- network/request-timing-decomposition
+next_docs:
+- network/browser-devtools-waiting-vs-content-download-mini-card
+- network/request-pending-forever-symptom-router
+- network/browser-devtools-waterfall-server-log-timing-bridge
+linked_paths:
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/browser-devtools-waterfall-server-log-timing-bridge.md
+- contents/network/browser-devtools-waiting-vs-content-download-mini-card.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/spring/spring-multipart-upload-request-pipeline.md
+confusable_with:
+- network/browser-devtools-waiting-vs-content-download-mini-card
+- network/request-pending-forever-symptom-router
+- network/devtools-waterfall-primer
+forbidden_neighbors:
+- contents/network/browser-devtools-waterfall-primer.md
+expected_queries:
+- "`Request Sent`가 길면 서버가 느린 거야 업로드가 느린 거야?"
+- "waterfall에서 `Waiting`이 길다는 건 정확히 어느 구간이야?"
+- "파일 업로드 API가 느릴 때 `Request Sent`와 `Waiting`을 어떻게 나눠 읽어?"
+- "DevTools timing에서 보내는 시간과 첫 바이트 대기를 구분하는 법을 알려줘"
+- "`POST` 요청이 오래 걸릴 때 TTFB 문제인지 upload 문제인지 어떻게 판단해?"
+contextual_chunk_prefix: |
+  이 문서는 학습자가 DevTools waterfall의 `Request Sent`와 `Waiting`을
+  구분해 업로드 지연과 첫 응답 바이트 대기를 섞지 않도록 돕는 network
+  drill이다. request sent가 길어요, waiting이 오래 걸려요, upload가
+  느린지 서버 응답이 느린지 모르겠어요 같은 자연어 표현이 timing 칸의
+  의미와 다음 관찰 포인트로 바로 연결되도록 설계했다.
+---
 # Browser DevTools `Request Sent` vs `Waiting` 미니 카드
 
 > 한 줄 요약: DevTools waterfall에서 `Request Sent`는 브라우저가 request header/body를 밀어 넣는 시간이고 `Waiting`은 그 뒤 첫 응답 바이트를 기다리는 시간이므로, upload가 느린 장면을 server response 지연으로 읽으면 첫 분기부터 틀어진다.

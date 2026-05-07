@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Browser DevTools 첫 실패 후 두 번째 성공 trace 카드"
+concept_id: network/browser-devtools-first-fail-second-success-keepalive-card
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: symptom_router
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- stale-idle-connection-trace
+- keepalive-timeout-mismatch
+- first-fail-second-success
+aliases:
+- first fail second success
+- stale idle connection trace
+- retry succeeds after idle
+- keepalive timeout mismatch
+- failed then 200 devtools
+- idle first request fails
+symptoms:
+- idle 뒤 같은 URL 첫 요청은 실패하고 바로 두 번째 요청은 성공한다
+- 같은 URL 두 줄을 무조건 프론트 중복 호출 버그로 단정한다
+- 첫 줄 waterfall에 connect ssl이 거의 없고 둘째 줄에서 새 연결 흔적이 보이는 이유를 놓친다
+- keep-alive reuse와 TCP keepalive heartbeat timeout을 같은 개념으로 섞는다
+intents:
+- troubleshooting
+- symptom
+- comparison
+prerequisites:
+- network/devtools-waterfall-primer
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/keepalive-reuse-stale-idle-connection-primer
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/browser-devtools-blocked-canceled-failed-primer
+- spring/webclient-connection-pool-timeout-tuning
+linked_paths:
+- contents/network/keepalive-reuse-stale-idle-connection-primer.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/keepalive-reuse-stale-idle-connection-primer
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/browser-devtools-blocked-canceled-failed-primer
+- spring/webclient-connection-pool-timeout-tuning
+forbidden_neighbors: []
+expected_queries:
+- "idle 뒤 첫 요청은 failed인데 두 번째는 200이면 무엇부터 의심해야 해?"
+- "DevTools에서 같은 URL 두 줄이 보일 때 중복 호출과 stale idle connection을 어떻게 구분해?"
+- "first fail second success trace에서 Connection ID와 Remote Address를 어떻게 읽어?"
+- "keep-alive timeout mismatch가 브라우저 첫 요청 실패로 보이는 흐름을 설명해줘"
+- "첫 줄은 reuse 실패이고 둘째 줄은 new connection 성공인지 waterfall로 확인하는 법을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 idle 이후 같은 URL의 첫 row가 failed/reset 후보이고 바로 다음
+  row가 200/204로 성공하는 DevTools trace를 stale idle connection reuse
+  failure, new connection retry, frontend duplicate call 후보로 나누는
+  intermediate symptom router다.
+---
 # Browser DevTools 첫 실패 후 두 번째 성공 trace 카드
 
 > 한 줄 요약: 한동안 idle이던 뒤 같은 요청이 `처음은 실패`하고 `바로 다음은 성공`하면, DevTools row 두 줄을 나란히 놓고 "stale idle connection 재사용 실패 후 새 연결 성공" 후보를 먼저 읽는 편이 빠르다.

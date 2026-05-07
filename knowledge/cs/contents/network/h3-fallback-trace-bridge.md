@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "H3 Fallback Trace Bridge"
+concept_id: network/h3-fallback-trace-bridge
+canonical: true
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- http3-fallback
+- alt-svc-trace
+- udp-block
+aliases:
+- h3 fallback trace
+- http3 fallback trace
+- discovery evidence
+- H3 to H2 fallback
+- UDP block checklist
+- QUIC blocked H2 fallback
+- Protocol h2 not enough
+symptoms:
+- DevTools Protocol=h2만 보고 UDP 443 차단이라고 단정한다
+- Alt-Svc나 HTTPS RR을 fallback 증거로 오해한다
+- H3 시도 증거와 최종 H2 결과를 분리하지 못한다
+- 421 recovery trace와 QUIC connect fallback을 섞어서 해석한다
+intents:
+- troubleshooting
+- comparison
+- definition
+prerequisites:
+- network/h3-discovery-observability-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+next_docs:
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+- network/http3-421-observability-primer
+- network/quic-version-negotiation-fallback
+- network/stale-https-rr-h3-fallback-primer
+linked_paths:
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/stale-https-rr-h3-fallback-primer.md
+- contents/network/alt-svc-cache-vs-per-origin-421-recovery.md
+- contents/network/http2-http3-downgrade-attribution-alt-svc-udp-block.md
+- contents/network/quic-version-negotiation-fallback.md
+- contents/network/http3-421-observability-primer.md
+confusable_with:
+- network/h3-discovery-observability-primer
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+- network/http3-421-observability-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+forbidden_neighbors: []
+expected_queries:
+- "DevTools Protocol이 h2면 HTTP/3 fallback이라고 바로 말해도 돼?"
+- "Alt-Svc와 HTTPS RR은 discovery evidence지 fallback evidence가 아닌 이유는?"
+- "UDP block으로 H3가 H2 fallback됐는지 어떤 trace를 봐야 해?"
+- "H3 fallback trace에서 discovery evidence attempt evidence final result를 나눠줘"
+- "421 recovery trace와 QUIC connect timeout 후 H2 fallback은 어떻게 구분해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/3 fallback trace에서 Alt-Svc/HTTPS RR discovery evidence,
+  QUIC attempt evidence, final Protocol=h2 결과, UDP block attribution을
+  beginner triage로 연결하는 bridge 문서다.
+---
 # H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기
 
 

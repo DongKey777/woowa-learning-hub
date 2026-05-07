@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "WebSocket Fragmentation, Frame Sizing"
+concept_id: network/websocket-fragmentation-frame-sizing
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- websocket
+- frame-sizing
+- fragmentation
+aliases:
+- WebSocket fragmentation
+- WebSocket frame sizing
+- continuation frame
+- control frame
+- message framing
+- real-time stream chunking
+- WebSocket large frame latency
+symptoms:
+- WebSocket 메시지가 항상 하나의 frame으로 한 번에 전달된다고 생각한다
+- 큰 data frame이 heartbeat/control frame 체감 지연을 만들 수 있음을 놓친다
+- frame을 너무 작게 쪼개 Nagle delayed ACK와 overhead를 키운다
+- MTU, TLS record, proxy buffering과 frame sizing을 따로 보지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/websocket-heartbeat-backpressure-reconnect
+- network/websocket-proxy-buffering-streaming-latency
+next_docs:
+- network/nagle-delayed-ack-small-packet-latency
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/tls-record-sizing-flush-streaming-latency
+- network/packet-loss-jitter-reordering-diagnostics
+linked_paths:
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/nagle-delayed-ack-small-packet-latency.md
+- contents/network/mtu-pmtud-icmp-blackhole-path-diagnostics.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+confusable_with:
+- network/websocket-proxy-buffering-streaming-latency
+- network/nagle-delayed-ack-small-packet-latency
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/tls-record-sizing-flush-streaming-latency
+forbidden_neighbors: []
+expected_queries:
+- "WebSocket fragmentation과 frame sizing이 latency에 어떤 영향을 줘?"
+- "큰 WebSocket data frame이 ping pong 체감 지연을 만들 수 있는 이유는?"
+- "작은 frame을 너무 많이 보내면 Nagle delayed ACK와 어떤 문제가 생겨?"
+- "WebSocket continuation frame과 control frame을 어떻게 이해해야 해?"
+- "frame size를 MTU TLS record proxy buffering과 같이 봐야 하는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 WebSocket message/frame fragmentation, continuation frame,
+  control frame, frame size가 latency, buffering, heartbeat와 MTU/TLS record에
+  미치는 영향을 다루는 advanced playbook이다.
+---
 # WebSocket Fragmentation, Frame Sizing
 
 > 한 줄 요약: WebSocket은 메시지를 여러 frame으로 나눌 수 있지만, frame 크기와 분할 방식이 실시간성, buffering, 그리고 재전송 체감에 직접 영향을 준다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: DelayQueue Repeating Task Primer
+concept_id: data-structure/delayqueue-repeating-task-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- delayqueue-repeating-task
+- fixed-rate-vs-fixed-delay
+- stale-ticket-generation
+aliases:
+- DelayQueue repeating task
+- self-rescheduling DelayQueue
+- fixed rate vs fixed delay DelayQueue
+- periodic re-enqueue
+- stale periodic ticket
+- generation check repeating timer
+- 반복 작업 DelayQueue
+symptoms:
+- DelayQueue 안에 반복 작업 하나가 영원히 살아 있다고 생각해 실제로는 다음 실행 ticket만 들어간다는 모델을 놓친다
+- fixed-rate는 이전 예정 시각 기준, fixed-delay는 실행 종료 시각 기준으로 다음 ticket을 찍는 차이를 헷갈린다
+- cancel이나 reschedule이 들어왔는데 오래된 ticket을 stale로 버리는 최신성 검사를 하지 않는다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/delayqueue-delayed-contract-primer
+next_docs:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/java-timer-clock-choice-primer
+- data-structure/delayqueue-cancel-while-running-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+linked_paths:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/java-timer-clock-choice-primer.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+confusable_with:
+- data-structure/delayqueue-cancel-while-running-primer
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue 반복 작업은 queue 안에 하나가 계속 남는 게 아니라 ticket을 다시 넣는 구조야?
+- fixed-rate와 fixed-delay를 DelayQueue self-rescheduling 기준으로 설명해줘
+- 반복 task에서 stale ticket과 generation check가 필요한 이유는?
+- cancel이나 reschedule이 끼는 DelayQueue periodic job을 안전하게 설계하려면?
+- scheduleAtFixedRate와 scheduleWithFixedDelay mental model을 DelayQueue로 이해하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 DelayQueue 반복 작업을 논리 작업 하나가 queue에 영원히 있는
+  구조가 아니라, 다음 실행 시각 snapshot ticket을 소비하고 새 ticket을
+  re-enqueue하는 self-rescheduling primer로 설명한다. fixed-rate, fixed-delay,
+  stale ticket, generation check를 다룬다.
+---
 # DelayQueue Repeating Task Primer
 
 > 한 줄 요약: `DelayQueue`의 반복 작업은 "영원히 도는 하나의 queue 원소"가 아니라 **실행이 끝날 때마다 다음 deadline ticket을 다시 넣는 흐름**이고, `fixed rate`는 이전 예정 시각 기준, `fixed delay`는 실행 종료 시각 기준으로 다음 ticket을 잡는다. 그래서 cancel/reschedule이 끼면 오래된 ticket을 stale로 버리는 최신성 검사가 필요하다.

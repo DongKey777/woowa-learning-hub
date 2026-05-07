@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Integer Overflow, Exact Arithmetic, and Unit Conversion Pitfalls
+concept_id: language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/lotto
+- missions/payment
+review_feedback_tags:
+- numeric-boundary
+- integer-overflow
+- unit-conversion
+aliases:
+- Java integer overflow exact arithmetic
+- Math.addExact multiplyExact unit conversion
+- integer wraparound pitfall
+- milliseconds nanoseconds overflow
+- long to int toIntExact boundary
+- 자바 정수 오버플로우 단위 변환 함정
+symptoms:
+- int나 long 계산이 범위를 넘으면 Java가 예외를 던진다고 생각해 silent wraparound로 생긴 음수 timeout이나 잘못된 size를 놓쳐
+- seconds to nanos, records times chunk size, money minor unit 곱셈에서 단위 변환 overflow를 validation 이후에야 발견해
+- long 값을 int로 캐스팅하면서 운영 수명 뒤에 ID, count, page size가 잘리는 문제를 추적하지 못해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/biginteger-unsigned-parsing-boundaries
+- language/floating-point-precision-nan-infinity-serialization-pitfalls
+next_docs:
+- language/saturating-arithmetic-clamping-domain-contracts
+- language/value-object-invariants-canonicalization-boundary-design
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+linked_paths:
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+- contents/language/java/biginteger-unsigned-parsing-boundaries.md
+- contents/language/java/parser-overflow-boundaries-parseint-parselong-tointexact.md
+- contents/language/java/saturating-arithmetic-clamping-domain-contracts.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/java-time-instant-localdatetime-boundaries.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/saturating-arithmetic-clamping-domain-contracts
+- language/biginteger-unsigned-parsing-boundaries
+forbidden_neighbors: []
+expected_queries:
+- Java int overflow가 예외 없이 음수로 바뀌는 이유와 방지법을 설명해줘
+- Math.addExact와 multiplyExact는 어떤 boundary 계산에서 써야 해?
+- milliseconds를 nanoseconds로 바꿀 때 integer overflow가 왜 위험한지 예제로 보여줘
+- long 값을 int로 캐스팅하지 말고 toIntExact를 써야 하는 상황을 알려줘
+- 돈 minor unit이나 retry backoff 계산에서 overflow를 value object로 막는 방법이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java integer overflow, silent wraparound, Math.*Exact, unit conversion boundary를 backend correctness 문제로 다루는 advanced playbook이다.
+  int overflow, long to int cast, addExact, multiplyExact, timeout 단위 변환, money minor unit overflow 질문이 본 문서에 매핑된다.
+---
 # Integer Overflow, Exact Arithmetic, and Unit Conversion Pitfalls
 
 > 한 줄 요약: Java 정수 연산은 기본적으로 silent wraparound다. counter, timeout, money minor unit, epoch conversion, batch size 계산에서 overflow를 놓치면 예외가 아니라 조용한 음수값과 잘못된 비교가 생긴다.

@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Page Cache Active Inactive Reclaim Hot Page Debugging
+concept_id: operating-system/page-cache-active-inactive-reclaim-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- page-cache-active
+- inactive-reclaim
+- hot-page
+- workingset-refault
+aliases:
+- page cache active inactive reclaim
+- hot page debugging
+- workingset refault
+- inactive reclaim
+- page cache reclaim debugging
+- hot file page eviction
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/workingset-refault-page-cache-reclaim-debugging.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/posix-fadvise-madvise-page-cache-hints.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/readahead-tuning-page-cache.md
+- contents/operating-system/memory-reclaim-cgroup-v2-proactive-reclaim.md
+symptoms:
+- page cache가 부족한 것처럼 보이지만 실제로는 hot file page가 active list에 남지 못한다.
+- inactive reclaim과 refault가 반복되어 disk I/O와 p99 latency가 증가한다.
+- posix_fadvise나 readahead tuning을 쓰기 전에 hot/cold page classification을 확인해야 한다.
+expected_queries:
+- page cache active/inactive reclaim에서 hot page가 밀려나면 어떤 증상이 생겨?
+- workingset refault로 page cache thrash를 어떻게 확인해?
+- cache size 부족이 아니라 active list promotion 실패로 볼 수 있어?
+- posix_fadvise, readahead, direct I/O를 고르기 전에 어떤 reclaim signal을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 page cache 장애를 단순 cache size 부족이 아니라 hot file page가 active list에
+  남지 못하고 inactive reclaim으로 밀려나는 구조의 문제로 본다. workingset refault,
+  reclaim, readahead, fadvise와 연결한다.
+---
 # Page Cache Active/Inactive Reclaim, Hot-Page Debugging
 
 > 한 줄 요약: page cache 장애는 단순히 캐시 크기가 부족한 문제가 아니라, hot file page가 active 쪽에 남지 못하고 inactive reclaim으로 계속 밀려나는 구조의 문제로 보는 편이 정확하다.

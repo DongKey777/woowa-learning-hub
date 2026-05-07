@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Biased Locking Removal and Lock States
+concept_id: language/java-biased-locking-removal-lock-states
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- java-locking
+- synchronized-performance
+- jvm-version-change
+aliases:
+- biased locking removal
+- JEP 374 biased locking
+- Java lock states
+- mark word object header
+- inflated monitor
+- thin lock lightweight lock
+- synchronized fast path
+symptoms:
+- JDK 15 이후 biased locking 기본 비활성화와 JDK 18 제거를 모른 채 예전 synchronized 성능 가정을 그대로 적용해
+- synchronized가 항상 무겁거나 항상 공짜라고 단순화하고 uncontended fast path와 monitor inflation을 구분하지 못해
+- JDK 업그레이드 후 lock microbenchmark 차이를 JVM 락 상태 변화와 연결해야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-memory-model-happens-before-volatile-final
+- language/varhandle-unsafe-atomics
+next_docs:
+- language/jfr-jmc-performance-playbook
+- language/jit-warmup-deoptimization
+- language/escape-analysis-scalar-replacement
+- operating-system/cpu-cache-coherence-memory-barrier
+linked_paths:
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+confusable_with:
+- language/java-memory-model-happens-before-volatile-final
+- language/varhandle-unsafe-atomics
+- operating-system/cpu-cache-coherence-memory-barrier
+forbidden_neighbors: []
+expected_queries:
+- biased locking이 JDK 15와 JDK 18에서 어떻게 바뀌었는지 설명해줘
+- synchronized는 biased locking 제거 이후에도 왜 항상 느리다고 말할 수 없어?
+- Java lock state에서 thin lock과 inflated monitor를 어떻게 이해해야 해?
+- JDK 업그레이드 후 lock benchmark가 달라졌을 때 무엇을 확인해야 해?
+- mark word object header monitor inflation을 synchronized 성능 관점으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 HotSpot biased locking removal과 synchronized lock states를 JEP 374, JDK 15, JDK 18, mark word, lightweight lock, inflated monitor 관점으로 설명하는 advanced deep dive다.
+  biased locking, synchronized performance, monitor inflation, uncontended fast path, lock state 질문이 본 문서에 매핑된다.
+---
 # Biased Locking Removal and Lock States
 
 > 한 줄 요약: biased locking은 JDK 15에서 기본 비활성화되고 JDK 18에서 관련 코드가 제거되었으며, 지금의 `synchronized`는 "bias"보다 "uncontended fast path vs inflated monitor" 관점으로 읽는 편이 맞다.

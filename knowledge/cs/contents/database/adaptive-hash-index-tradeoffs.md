@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Adaptive Hash Index Trade-offs
+concept_id: database/adaptive-hash-index-tradeoffs
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- adaptive-hash-index
+- innodb-internals
+- point-lookup
+- latch-contention
+aliases:
+- adaptive hash index
+- AHI
+- innodb_adaptive_hash_index
+- innodb adaptive hash index
+- hash lookup acceleration
+- latch contention AHI
+- buffer pool point lookup
+- adaptive hash index tradeoffs
+- InnoDB AHI
+- 반복 point lookup
+symptoms:
+- AHI를 사용자가 만드는 hash index처럼 오해해 schema/index 설계 대체물로 본다
+- 반복 point lookup에는 도움이 되지만 쓰기-heavy나 scan-heavy workload에서 유지 비용과 latch contention이 커진다
+- 재시작 직후와 warm-up 이후 성능 차이를 buffer pool과 AHI hot set 변화로 설명하지 못한다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/innodb-buffer-pool-internals
+- database/index-and-explain
+next_docs:
+- database/btree-latch-contention-hot-pages
+- database/slow-query-analysis-playbook
+- database/covering-index-vs-index-only-scan
+linked_paths:
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/index-and-explain.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/btree-latch-contention-hot-pages.md
+confusable_with:
+- database/index-basics
+- database/covering-index-vs-index-only-scan
+- database/btree-latch-contention-hot-pages
+- database/innodb-buffer-pool-internals
+forbidden_neighbors: []
+expected_queries:
+- InnoDB Adaptive Hash Index는 사용자가 만드는 해시 인덱스가 아니라 내부 point lookup 가속 장치야?
+- AHI가 반복 key lookup에는 좋지만 write-heavy나 scan-heavy workload에서 경합을 키울 수 있는 이유가 뭐야?
+- innodb_adaptive_hash_index를 끄거나 켜는 실험은 언제 진단용으로만 써야 해?
+- AHI와 buffer pool warm-up 때문에 재시작 직후와 평시 성능이 달라지는 이유를 설명해줘
+- AHI는 인덱스 설계를 대체하지 않고 잘 설계된 B+Tree path를 보조한다는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Adaptive Hash Index Trade-offs deep dive로, InnoDB AHI가 반복 point lookup의
+  B+Tree traversal을 내부적으로 가속할 수 있지만 buffer pool hot set, write/scan workload, latch contention에 따라
+  성능이 불안정해질 수 있음을 설명한다.
+---
 # Adaptive Hash Index Trade-offs
 
 > 한 줄 요약: AHI는 반복 조회를 빠르게 만들 수 있지만, 경합과 예측 불가능성을 함께 사오는 내부 가속 장치다.

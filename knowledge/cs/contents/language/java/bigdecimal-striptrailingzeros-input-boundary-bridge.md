@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: BigDecimal stripTrailingZeros Input Boundary Bridge
+concept_id: language/bigdecimal-striptrailingzeros-input-boundary-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-canonicalization
+- input-boundary
+- key-policy
+aliases:
+- BigDecimal stripTrailingZeros input boundary
+- BigDecimal normalization beginner
+- BigDecimal canonicalization policy
+- BigDecimal normalize at input
+- 자바 BigDecimal 정규화
+- BigDecimal 1.0 1.00 normalization
+symptoms:
+- stripTrailingZeros를 값 보정이나 출력 포맷 도구로 오해하고 입력 경계 canonicalization 정책으로 보지 못해
+- HashMap key에서 1, 1.0, 1.00을 같은 값으로 볼지 결정하지 않은 채 raw BigDecimal을 그대로 저장해 lookup 혼동이 생겨
+- setScale 자릿수 검증과 stripTrailingZeros 같은 값 정규화를 같은 처리로 섞어 구현해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/bigdecimal-construction-policy-beginner-bridge
+next_docs:
+- language/bigdecimal-setscale-unnecessary-validation-primer
+- language/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge
+- language/bigdecimal-key-policy-30-second-checklist
+linked_paths:
+- contents/language/java/bigdecimal-construction-policy-beginner-bridge.md
+- contents/language/java/bigdecimal-setscale-unnecessary-validation-primer.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md
+confusable_with:
+- language/bigdecimal-setscale-unnecessary-validation-primer
+- language/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge
+- language/bigdecimal-sorted-collection-bridge
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal stripTrailingZeros는 값을 고치는 게 아니라 입력 경계 정규화라는 뜻이야?
+- 1.0 1.00 1을 같은 HashMap key로 보고 싶을 때 BigDecimal을 어디서 normalize해야 해?
+- BigDecimal stripTrailingZeros와 setScale UNNECESSARY 차이를 초보자에게 설명해줘
+- API 입력 경계에서 BigDecimal canonicalization을 한 번만 하는 예시를 보여줘
+- stripTrailingZeros 후 toString 출력이 달라지는 문제와 내부 key 정책을 분리해줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal stripTrailingZeros를 input boundary canonicalization, key normalization, setScale validation과의 차이로 설명하는 beginner primer다.
+  BigDecimal normalization, 1.0 vs 1.00, HashMap key, stripTrailingZeros vs setScale, value object canonicalization 질문이 본 문서에 매핑된다.
+---
 # BigDecimal `stripTrailingZeros()` 입력 경계 브리지
 
 > 한 줄 요약: `stripTrailingZeros()`는 "숫자 값 보정" 도구가 아니라 "입력 경계에서 같은 값을 같은 표현으로 맞출지"를 선택할 때 쓰는 정규화 도구다.

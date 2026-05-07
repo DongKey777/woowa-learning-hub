@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Break-Glass Path Segmentation
+concept_id: software-engineering/break-glass-segmentation
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- break-glass
+- shadow-process
+- scorecard
+aliases:
+- Break-Glass Path Segmentation
+- emergency workflow scorecard
+- manual path ratio denominator
+- break glass denominator exclusion
+- emergency override visibility
+- shadow retirement denominator split
+symptoms:
+- authorized break-glass와 manual shadow path를 같은 denominator에 넣어 manual_path_ratio와 replacement_adoption_rate 해석을 왜곡해
+- break-glass를 normal ratio에서 빼기만 하고 별도 usage, audit coverage, reentry lag panel에 보이지 않게 만들어 운영 압력을 숨겨
+- emergency_ref, approved_break_glass_by, scope, reentry_expectation 없이 routine override를 break_glass_authorized로 잘못 분류해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/golden-path-escape-hatch-policy
+next_docs:
+- software-engineering/break-glass-reentry
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/shadow-retirement-scorecard-schema
+linked_paths:
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/platform-scorecards.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/break-glass-reentry-governance.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/shadow-retirement-scorecard-schema.md
+confusable_with:
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/break-glass-reentry
+- software-engineering/shadow-retirement-proof-metrics
+forbidden_neighbors: []
+expected_queries:
+- break-glass path를 manual_path_ratio normal denominator에서 빼되 별도 visibility panel로 보여야 하는 이유가 뭐야?
+- normal_official, manual_shadow, break_glass_authorized, break_glass_drill, recovery_backfill segment를 어떻게 나눠?
+- authorized break-glass를 인정하려면 emergency_ref approved_by scope reentry_expectation 중 어떤 근거가 필요해?
+- shadow retirement proof에서 break-glass를 replacement_adoption_rate와 audit_log_coverage denominator에서 어떻게 분리해?
+- routine override를 break-glass로 잘못 분류하면 scorecard 해석이 어떻게 깨져?
+contextual_chunk_prefix: |
+  이 문서는 break-glass emergency path를 normal manual_path_ratio denominator와 분리하면서도 break_glass usage, audit coverage, reentry lag visibility를 보존하는 advanced playbook이다.
+---
 # Break-Glass Path Segmentation
 
 > 한 줄 요약: emergency와 official break-glass workflow는 scorecard에서 숨기지 말아야 하지만, shadow retirement proof의 normal-path denominator에 섞으면 `manual_path_ratio`, `replacement_adoption_rate`, `audit_log_coverage` 해석이 깨지므로 별도 segment와 visibility panel로 분리해야 한다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Template Method vs Filter Interceptor Chain
+concept_id: design-pattern/template-method-vs-filter-interceptor-chain
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- template-method-filter-chain
+- onceperrequestfilter
+- chain-of-responsibility
+aliases:
+- spring filter vs handlerinterceptor
+- onceperrequestfilter template method
+- filter vs onceperrequestfilter
+- filter chain vs template method
+- handlerinterceptor chain of responsibility
+- onceperrequestfilter is a filter base class
+- dofilterinternal shouldnotfilter
+- prehandle short circuit
+- template method vs filter interceptor chain
+- filter interceptor onceperrequestfilter comparison
+symptoms:
+- Filter, HandlerInterceptor, OncePerRequestFilter를 모두 같은 레벨로 보고 chain participant와 template wrapper를 구분하지 못한다
+- OncePerRequestFilter가 filter chain의 한 노드이면서 내부 구현은 Template Method라는 두 층의 패턴을 섞어 이해한다
+- preHandle false, chain.doFilter 생략 같은 short-circuit를 template method hook으로 오해한다
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- design-pattern/template-method-basics
+- design-pattern/chain-of-responsibility-filters-interceptors
+- spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+next_docs:
+- design-pattern/template-method-framework-lifecycle-examples
+- spring/onceperrequestfilter-async-error-dispatch-traps
+- design-pattern/template-method
+linked_paths:
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method.md
+- contents/design-pattern/chain-of-responsibility-filters-interceptors.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+- contents/design-pattern/pipeline-vs-chain-of-responsibility.md
+- contents/design-pattern/pattern-selection.md
+confusable_with:
+- design-pattern/template-method-framework-lifecycle-examples
+- design-pattern/chain-of-responsibility-filters-interceptors
+- spring/onceperrequestfilter-async-error-dispatch-traps
+- design-pattern/pipeline-vs-chain-of-responsibility
+forbidden_neighbors: []
+expected_queries:
+- Filter와 HandlerInterceptor는 chain participant이고 OncePerRequestFilter는 filter 구현을 돕는 template method wrapper라는 차이가 뭐야?
+- OncePerRequestFilter는 바깥에서는 filter chain의 한 노드지만 안쪽에서는 doFilter skeleton과 doFilterInternal hook을 가진다는 말은 무슨 뜻이야?
+- Filter의 chain.doFilter 호출 여부와 HandlerInterceptor의 preHandle false는 책임 연쇄 short circuit로 봐야 하는 이유가 뭐야?
+- OncePerRequestFilter의 shouldNotFilter와 doFilterInternal은 Template Method 확장 지점이야?
+- Spring 요청 흐름에서 filter chain, interceptor chain, template method를 한 그림으로 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Template Method vs Filter Interceptor Chain bridge로, Spring 요청 경로에서
+  Filter와 HandlerInterceptor는 책임 연쇄의 chain participant이고, OncePerRequestFilter는
+  Filter 한 노드 내부의 doFilter skeleton과 doFilterInternal hook을 제공하는 Template Method
+  base class라는 두 층을 분리해 설명한다.
+---
 # Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄
 
 > 한 줄 요약: `Filter`와 `HandlerInterceptor`는 요청을 다음 단계로 넘길지 말지 결정하는 **책임 연쇄** 쪽이고, `OncePerRequestFilter`는 그 안에서 필터 구현 순서를 고정하는 **템플릿 메소드** 래퍼다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Change Ownership Handoff Boundaries
+concept_id: software-engineering/change-ownership-handoff
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- ownership
+- handoff
+- support-boundary
+aliases:
+- Change Ownership Handoff Boundaries
+- ownership handoff
+- responsibility transfer
+- support handoff
+- warm transfer
+- service stewardship handoff
+symptoms:
+- 코드 소유만 넘기고 배포, 운영, 온콜, business-hours support, 고객 커뮤니케이션, escalation decision 권한은 모호하게 남겨
+- 문서 링크만 전달하는 cold transfer로 handoff를 끝내 old support lane과 new owner가 동시에 살아 split-brain ownership이 생겨
+- handoff exit criteria를 승인 체크로만 보고 새 owner가 실제 support 요청이나 drill을 처리했다는 운영 증거 없이 종료해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/support-sla-escalation-contracts
+next_docs:
+- software-engineering/on-call-ownership-boundaries
+- software-engineering/incident-feedback-policy-ownership-closure
+- software-engineering/service-portfolio-lifecycle-governance
+linked_paths:
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/support-operating-models-self-service-office-hours-oncall.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+confusable_with:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/on-call-ownership-boundaries
+- software-engineering/support-sla-escalation-contracts
+forbidden_neighbors: []
+expected_queries:
+- change ownership handoff에서 코드 소유, 배포 소유, 운영 소유, 온콜 소유, support 소유를 왜 따로 봐야 해?
+- handoff를 문서 링크 전달이 아니라 warm transfer로 하려면 어떤 packet과 transition period가 필요해?
+- old support lane retire와 new lane publish를 하지 않으면 어떤 split-brain ownership이 생겨?
+- handoff exit criteria는 새 owner가 support 요청이나 drill을 처리한 운영 증거로 어떻게 닫아야 해?
+- escalation SLA clock이 팀 transfer마다 reset되지 않게 handoff boundary를 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 change ownership handoff를 code, deploy, operations, on-call, business-hours support, customer communication, escalation decision 책임의 warm transfer로 설계하는 advanced playbook이다.
+---
 # Change Ownership Handoff Boundaries
 
 > 한 줄 요약: change ownership handoff는 업무를 넘기는 것이 아니라, 설계·운영·support·온콜 책임을 어떤 경계에서 누구에게 넘길지 명확히 정하는 절차다.

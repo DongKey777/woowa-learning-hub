@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring Test Context Cache Split Triage Guide
+concept_id: spring/test-context-cache-split-triage-guide
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- test-context-cache
+- split-triage
+- split
+- mockbean-context-cache
+aliases:
+- Spring test context cache split
+- @MockBean context cache
+- @DirtiesContext slow tests
+- property override cache key
+- test slice drift
+- Spring tests slow context reload
+intents:
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-test-property-override-boundaries-primer.md
+- contents/spring/spring-test-slice-import-testconfiguration-boundaries.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+symptoms:
+- Spring 테스트가 느린데 같은 ApplicationContext가 계속 새로 뜨는 것 같다.
+- @MockBean, property override, @DirtiesContext 때문에 cache key가 갈라진다.
+- slice test마다 import와 custom config가 달라 context reuse가 안 된다.
+confusable_with:
+- spring/test-slices-context-caching
+- spring/test-property-override-boundaries-primer
+- spring/test-slice-import-testconfiguration-boundaries
+- spring/test-slice-scan-boundaries
+expected_queries:
+- Spring test context cache split 때문에 테스트가 느릴 때 무엇부터 봐야 해?
+- @MockBean이나 @DirtiesContext가 context cache reuse를 깨는 이유는?
+- test property override가 cache key를 갈라서 context를 다시 띄울 수 있어?
+- slice drift가 느린 테스트의 원인인지 어떻게 triage해?
+contextual_chunk_prefix: |
+  이 문서는 느린 Spring 테스트를 테스트 로직 무게보다 먼저 ApplicationContext cache split으로
+  진단한다. @MockBean, property override, @DirtiesContext, slice drift 네 축으로 분해한다.
+---
 # Spring Test Context Cache Split Triage Guide: `@MockBean`, property override, `@DirtiesContext`, slice drift
 
 > 한 줄 요약: Spring 테스트가 느릴 때는 "테스트 로직이 무겁다"보다 먼저 "거의 같은 컨텍스트를 여러 벌 다시 띄우고 있나"를 보고, 특히 `@MockBean`, property override, `@DirtiesContext`, slice drift 네 축부터 분리하면 원인이 빨리 보인다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "HTTP/3, QUIC Practical Trade-offs"
+concept_id: network/http3-quic-practical-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- http3-quic-tradeoff
+- udp-operability-observability
+- quic-performance-conditions
+aliases:
+- HTTP/3 QUIC
+- QUIC practical tradeoffs
+- UDP HTTP3 operations
+- connection migration
+- qpack path validation
+- HTTP3 always faster myth
+symptoms:
+- HTTP/3가 항상 HTTP/2보다 빠르다고 단정한다
+- UDP 차단, middlebox, packet capture/tracing 난이도를 운영 비용으로 보지 않는다
+- HTTP/3 이득을 packet loss, mobile network, connection migration 조건과 연결하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- network/http1-http2-http3-beginner-comparison
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+next_docs:
+- network/quic-connection-migration-path-change
+- network/udp-fragmentation-quic-packetization
+- network/packet-loss-jitter-reordering-diagnostics
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+linked_paths:
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/quic-connection-migration-path-change.md
+- contents/network/udp-fragmentation-quic-packetization.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/ecn-congestion-signal-tail-latency.md
+- contents/network/bbr-vs-cubic-congestion-intuition.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/http2-http3-downgrade-attribution-alt-svc-udp-block.md
+- contents/network/h2c-cleartext-upgrade-prior-knowledge-routing.md
+confusable_with:
+- network/http1-http2-http3-beginner-comparison
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+- network/packet-loss-jitter-reordering-diagnostics
+- network/udp-fragmentation-quic-packetization
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/3 QUIC은 언제 이득이 크고 언제 운영 비용이 더 커?"
+- "HTTP/3가 항상 더 빠르지 않은 이유를 UDP 차단과 observability 비용으로 설명해줘"
+- "TCP HOL blocking과 QUIC stream 독립 전송의 trade-off를 알려줘"
+- "모바일 네트워크에서 connection migration과 path validation이 왜 중요해?"
+- "HTTP/3 운영에서 packet loss ECN BBR 0-RTT replay risk를 어떻게 같이 봐?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/3 over QUIC의 TCP HOL blocking 완화, UDP operability,
+  connection migration, packet loss, QPACK, 0-RTT, observability 비용과
+  performance trade-off를 다루는 advanced deep dive다.
+---
 # HTTP/3, QUIC Practical Trade-offs
 
 > 한 줄 요약: HTTP/3는 TCP HOL blocking과 연결 지연이 실제 병목일 때 강력하지만, UDP 위 운영과 관측 비용을 같이 감수해야 한다.

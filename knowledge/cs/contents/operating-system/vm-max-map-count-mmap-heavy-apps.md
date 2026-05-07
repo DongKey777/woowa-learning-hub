@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: vm.max_map_count mmap-heavy Apps
+concept_id: operating-system/vm-max-map-count-mmap-heavy-apps
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- vm-max-map
+- count-mmap-heavy
+- apps
+- count
+aliases:
+- vm.max_map_count
+- mmap-heavy apps
+- VMA count limit
+- too many mappings
+- mmap allocation failure
+- virtual memory areas
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/page-table-overhead-memory-footprint.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/memory-overcommit-semantics.md
+- contents/operating-system/tlb-page-table-walk-bridge.md
+symptoms:
+- mmap-heavy application이 memory가 남아 있는데도 VMA count limit 때문에 mapping 실패를 겪는다.
+- vm.max_map_count를 올렸지만 page table overhead와 fault cost도 함께 증가한다.
+- 많은 작은 mappings 때문에 address space metadata 비용이 커진다.
+expected_queries:
+- vm.max_map_count는 mmap 기반 app의 VMA 수 상한이야?
+- memory가 남아도 너무 많은 mapping 때문에 mmap이 실패할 수 있어?
+- vm.max_map_count를 올릴 때 page table overhead와 fault cost도 봐야 해?
+- mmap-heavy workload에서 VMA count와 memory footprint를 어떻게 진단해?
+contextual_chunk_prefix: |
+  이 문서는 vm.max_map_count를 mmap-heavy application이 가질 수 있는 virtual memory area count
+  상한으로 설명한다. limit이 낮으면 large mapping workload가 먼저 실패하고, 높이면 metadata와
+  page table overhead도 함께 고려해야 한다.
+---
 # vm.max_map_count, mmap-heavy Apps
 
 > 한 줄 요약: `vm.max_map_count`는 mmap 기반 앱이 가질 수 있는 VMA 수의 상한이며, 너무 낮으면 대규모 매핑이 먼저 실패한다.

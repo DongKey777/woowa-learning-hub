@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: schedstat proc sched Runtime Debugging
+concept_id: operating-system/schedstat-proc-sched-runtime-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- schedstat-proc-sched
+- schedstat-proc-pid
+- sched
+- scheduler
+aliases:
+- schedstat proc pid sched
+- scheduler runtime debugging
+- per task scheduler stats
+- runqlat follow up
+- CPU scheduling delay attribution
+- scheduler queueing diagnostics
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/cpu-migration-load-balancing-locality-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+symptoms:
+- runqlat으로 tail은 보였지만 어떤 task와 CPU에서 scheduler delay가 누적되는지 더 좁혀야 한다.
+- /proc/<pid>/sched와 /proc/schedstat 해석을 섞어 per-task와 per-CPU 관점을 구분하지 못한다.
+- CPU 쏠림과 wakeup latency를 연결해야 한다.
+expected_queries:
+- runqlat 다음에 schedstat와 /proc/<pid>/sched로 무엇을 더 확인해?
+- scheduler delay가 어떤 task와 CPU에서 누적되는지 어떻게 좁혀?
+- /proc/pid/sched와 /proc/schedstat는 어떤 관측창이 달라?
+- CPU migration이나 load balancing 문제를 scheduler stats로 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 runqlat이 wakeup-to-run latency distribution을 보여준 뒤, schedstat와
+  /proc/<pid>/sched가 그 지연이 어떤 task와 CPU에서 누적되는지 좁혀 주는 runtime debugging
+  관측창이라는 점을 설명한다.
+---
 # schedstat, /proc/<pid>/sched, Runtime Debugging
 
 > 한 줄 요약: `runqlat`가 지연 분포를 보여 준다면, `schedstat`와 `/proc/<pid>/sched`는 그 지연이 어떤 태스크와 어떤 CPU에서 누적되고 있는지 더 가까이에서 보여 주는 관측창이다.

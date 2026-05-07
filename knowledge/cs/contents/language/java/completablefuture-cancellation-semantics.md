@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: CompletableFuture Cancellation Semantics
+concept_id: language/completablefuture-cancellation-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- completablefuture
+- cancellation
+- cooperative-cancellation
+aliases:
+- CompletableFuture cancellation semantics
+- CompletableFuture cancel
+- CancellationException exceptional completion
+- mayInterruptIfRunning CompletableFuture
+- completeExceptionally cancellation
+- CompletableFuture timeout cancellation
+symptoms:
+- CompletableFuture.cancel(true)가 실행 중인 작업을 interrupt로 반드시 멈춘다고 기대해 백그라운드 작업 잔류를 놓쳐
+- cancellation을 exceptional completion으로 읽지 않아 downstream stage의 CompletionException/CancellationException 흐름을 해석하지 못해
+- timeout과 명시적 cancel을 같은 것으로 취급해 retry cleanup propagation 설계가 어긋나
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/completablefuture-execution-model-common-pool-pitfalls
+next_docs:
+- language/thread-interruption-cooperative-cancellation-playbook
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/executor-sizing-queue-rejection-policy
+linked_paths:
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+- contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md
+- contents/language/java/forkjoinpool-work-stealing.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/thread-interruption-cooperative-cancellation-playbook
+- language/executor-sizing-queue-rejection-policy
+forbidden_neighbors: []
+expected_queries:
+- CompletableFuture cancel이 실제 실행 중 작업을 멈추는 게 아니라 exceptional completion에 가깝다는 뜻이야?
+- CompletableFuture.cancel(true)의 mayInterruptIfRunning을 왜 낮은 기대치로 봐야 해?
+- CancellationException과 CompletionException이 downstream stage에서 어떻게 보이는지 설명해줘
+- timeout과 cancellation propagation을 CompletableFuture에서 어떻게 나눠 설계해야 해?
+- 사용자 요청이 취소됐는데 supplyAsync 작업이 계속 도는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 CompletableFuture cancellation을 cancel, CancellationException, exceptional completion, mayInterruptIfRunning, cooperative cancellation, timeout propagation 관점으로 설명하는 advanced deep dive다.
+  CompletableFuture cancel, cancellation propagation, completeExceptionally, timeout vs cancel, interrupt semantics 질문이 본 문서에 매핑된다.
+---
 # CompletableFuture Cancellation Semantics
 
 > 한 줄 요약: `CompletableFuture.cancel()`은 작업 중단 신호라기보다 exceptional completion에 가깝고, 실제 computation을 멈추는 보장은 없으므로 cancellation propagation과 timeout 전략을 따로 설계해야 한다.

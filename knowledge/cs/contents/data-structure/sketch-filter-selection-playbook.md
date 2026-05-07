@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Sketch and Filter Selection Playbook
+concept_id: data-structure/sketch-filter-selection-playbook
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- approximate-membership-filter
+- sketch-selection
+- bloom-cuckoo-xor-quotient
+aliases:
+- sketch filter selection
+- Bloom vs Cuckoo vs Xor vs Quotient
+- approximate membership filter chooser
+- membership filter playbook
+- filter vs exact set
+- deletion needed filter
+- 정답 경로와 선필터 구분
+symptoms:
+- Bloom, Cuckoo, Xor, Quotient를 exact answer path처럼 사용해 mightContain true를 확정 답으로 처리한다
+- 삭제가 필요한 workload에서 Bloom Filter를 기본값으로 고르고 tombstone, rebuild, Cuckoo 선택지를 검토하지 않는다
+- membership, frequency, cardinality, quantile 질문을 모두 sketch라는 이름으로 묶어 Count-Min, HyperLogLog, DDSketch와 혼동한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/hashmap-internals
+next_docs:
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/count-min-vs-hyperloglog
+- data-structure/roaring-bitmap-selection-playbook
+linked_paths:
+- contents/data-structure/bloom-filter-vs-cuckoo-filter.md
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/cuckoo-filter.md
+- contents/data-structure/xor-filter.md
+- contents/data-structure/quotient-filter.md
+- contents/data-structure/count-min-sketch.md
+- contents/data-structure/hyperloglog.md
+- contents/data-structure/ddsketch.md
+- contents/data-structure/kll-sketch.md
+- contents/algorithm/reservoir-sampling.md
+confusable_with:
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/count-min-sketch
+- data-structure/hyperloglog
+- data-structure/roaring-bitmap-selection-playbook
+- data-structure/quotient-filter
+forbidden_neighbors: []
+expected_queries:
+- Bloom Cuckoo Xor Quotient filter를 어떤 기준으로 골라야 해?
+- approximate membership filter와 exact set lookup은 어떻게 역할을 나눠야 해?
+- 삭제가 필요한 membership workload에서는 왜 Cuckoo Filter를 먼저 봐?
+- membership sketch와 HyperLogLog Count-Min DDSketch는 질문이 어떻게 달라?
+- 정적 집합에서 메모리 우선이면 Bloom보다 Xor Filter를 검토하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 approximate membership filter 선택을 exact answer 필요 여부, 삭제 필요 여부,
+  메모리 우선 여부로 나누는 beginner chooser다. Bloom, Cuckoo, Xor, Quotient를
+  Count-Min, HyperLogLog, DDSketch 같은 다른 sketch 질문과 구분한다.
+---
 # Sketch and Filter Selection Playbook
 
 > 한 줄 요약: Bloom, Cuckoo, Xor, Quotient는 모두 "정답기"가 아니라 membership 선필터이고, 초보자는 `정답 필요 여부 -> 삭제 필요 여부 -> 메모리 우선 여부` 3축만 먼저 보면 된다.

@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Abuse Throttling / Runtime Signals
+concept_id: security/abuse-throttling-runtime-signals
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- abuse throttling
+- runtime throttling signals
+- login abuse defense
+- credential stuffing signals
+aliases:
+- abuse throttling
+- runtime throttling signals
+- login abuse defense
+- credential stuffing signals
+- step-up throttling
+- cooldown policy
+- friction ladder
+- risk-based throttling
+- 429 runtime control
+- abuse signal pipeline
+- Abuse Throttling / Runtime Signals
+- abuse throttling runtime signals
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/rate-limiting-vs-brute-force-defense.md
+- contents/security/anti-automation-device-fingerprint-caveats.md
+- contents/security/mfa-step-up-auth-design.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/auth-observability-sli-slo-alerting.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Abuse Throttling / Runtime Signals 핵심 개념을 설명해줘
+- abuse throttling가 왜 필요한지 알려줘
+- Abuse Throttling / Runtime Signals 실무 설계 포인트는 뭐야?
+- abuse throttling에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Abuse Throttling / Runtime Signals를 다루는 deep_dive 문서다. abuse throttling은 단순 429 정책이 아니라, 어떤 신호로 공격을 판단하고 어떤 단계의 마찰(step-up, cooldown, CAPTCHA, hard block)을 적용할지 정하는 런타임 제어 시스템이다. 검색 질의가 abuse throttling, runtime throttling signals, login abuse defense, credential stuffing signals처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Abuse Throttling / Runtime Signals
 
 > 한 줄 요약: abuse throttling은 단순 429 정책이 아니라, 어떤 신호로 공격을 판단하고 어떤 단계의 마찰(step-up, cooldown, CAPTCHA, hard block)을 적용할지 정하는 런타임 제어 시스템이다.

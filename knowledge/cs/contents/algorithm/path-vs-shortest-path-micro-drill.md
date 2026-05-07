@@ -45,7 +45,9 @@ linked_paths:
 confusable_with:
 - algorithm/bfs-vs-dijkstra-shortest-path-mini-card
 - data-structure/connectivity-question-router
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
 expected_queries:
 - 경로 하나만 찾는 문제와 최단 경로 문제를 처음 읽을 때 어떻게 구분해?
 - DFS로 아무 경로를 찾는 문제와 BFS로 최단 경로를 구하는 문제를 한 번에 정리해줘

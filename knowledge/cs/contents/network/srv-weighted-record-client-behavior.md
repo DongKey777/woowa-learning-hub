@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "SRV, Weighted Record Client Behavior"
+concept_id: network/srv-weighted-record-client-behavior
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- dns-srv
+- client-selection
+- load-balancing
+aliases:
+- SRV record
+- weighted SRV record
+- DNS SRV priority weight
+- client-side load balancing
+- service discovery SRV
+- SRV client behavior
+- endpoint selection
+symptoms:
+- SRV weight가 DNS server에서 traffic을 정확히 비율대로 분배한다고 오해한다
+- client resolver/library가 priority와 weight를 구현하지 않아 기대와 다른 분산이 나온다
+- TTL cache와 connection reuse 때문에 SRV weight 변경이 즉시 반영되지 않는 점을 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/dns-cdn-websocket-http2-http3
+- network/dns-ttl-cache-failure-patterns
+next_docs:
+- network/connection-reuse-vs-service-discovery-churn
+- network/dns-split-horizon-behavior
+- network/load-balancer-healthcheck-failure-patterns
+- network/happy-eyeballs-dual-stack-racing
+linked_paths:
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/connection-reuse-vs-service-discovery-churn.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/connection-reuse-vs-service-discovery-churn
+- network/load-balancer-healthcheck-failure-patterns
+- network/happy-eyeballs-dual-stack-racing
+forbidden_neighbors: []
+expected_queries:
+- "SRV record priority weight는 client가 어떻게 해석해야 해?"
+- "SRV weight를 바꿨는데 traffic 비율이 바로 안 바뀌는 이유는?"
+- "DNS SRV는 load balancer처럼 서버가 직접 분산해 주는 거야?"
+- "client library가 SRV weight를 구현하지 않으면 어떤 문제가 생겨?"
+- "TTL cache와 connection reuse가 SRV service discovery에 미치는 영향은?"
+contextual_chunk_prefix: |
+  이 문서는 DNS SRV record의 priority/weight, client-side endpoint selection,
+  resolver/library 구현 차이, TTL cache와 connection reuse 영향을 다루는
+  advanced playbook이다.
+---
 # SRV, Weighted Record Client Behavior
 
 > 한 줄 요약: SRV와 가중치 기반 레코드는 클라이언트가 얼마나 똑똑하게 해석하느냐에 따라 분산이 달라지므로, 서버보다 클라이언트 행동을 먼저 봐야 한다.

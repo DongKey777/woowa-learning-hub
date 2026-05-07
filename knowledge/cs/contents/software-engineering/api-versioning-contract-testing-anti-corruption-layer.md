@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: API Versioning Contract Testing Anti-Corruption Layer
+concept_id: software-engineering/api-versioning-contracts-acl
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 90
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- api-versioning
+- contract-testing
+- anti-corruption-layer
+aliases:
+- API Versioning Contract Testing Anti-Corruption Layer
+- API versioning contract testing ACL
+- backward compatibility API versioning
+- URI versioning media type versioning
+- contract testing ACL basics
+- API 버전 관리 계약 테스트 ACL
+symptoms:
+- API 버전 관리를 URL v1 형식 문제로만 보고 backward compatibility, consumer migration, contract gate 정책을 함께 보지 않아
+- 새 필드 추가, 필드 삭제, enum 의미 변경의 호환성 차이를 구분하지 못해 기존 consumer가 오해하는 변경을 안전하다고 판단해
+- contract testing과 Anti-Corruption Layer를 각각 테스트/DTO 변환으로만 보고 외부 계약 진화와 내부 도메인 보호를 연결하지 못해
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/software-engineering-index
+- spring/request-pipeline-bean-container
+next_docs:
+- software-engineering/api-contract-testing
+- software-engineering/api-lifecycle-stage
+- software-engineering/anti-corruption-layer
+linked_paths:
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- software-engineering/api-contract-testing
+- software-engineering/anti-corruption-layer
+- software-engineering/backward-compatibility-gates
+forbidden_neighbors: []
+expected_queries:
+- API versioning, contract testing, anti-corruption layer를 외부 계약 진화 전략으로 한 번에 설명해줘
+- API 변경에서 새 필드 추가와 필드 삭제, enum 의미 변경은 왜 호환성 위험이 달라?
+- Consumer-driven contract testing은 versioning만으로 부족한 소비자 호환성을 어떻게 보완해?
+- ACL은 외부 API 계약 변화가 내부 도메인을 오염시키는 것을 어떻게 막아?
+- API v1 v2를 나누기 전에 backward compatible change와 migration playbook을 어떻게 검토해야 해?
+contextual_chunk_prefix: |
+  이 문서는 API versioning, backward compatibility, contract testing, Anti-Corruption Layer를 외부와 연결된 시스템의 진화 전략으로 묶는 intermediate bridge다.
+---
 # API Versioning, Contract Testing, Anti-Corruption Layer
 
 

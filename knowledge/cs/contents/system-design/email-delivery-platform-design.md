@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Email Delivery Platform 설계
+concept_id: system-design/email-delivery-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- email delivery platform
+- smtp
+- esp
+- bounce
+aliases:
+- email delivery platform
+- smtp
+- esp
+- bounce
+- complaint
+- suppression list
+- retry
+- queue
+- domain reputation
+- warmup
+- unsubscribe
+- Email Delivery Platform 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/notification-system-design.md
+- contents/system-design/job-queue-design.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/system-design/webhook-delivery-platform-design.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/audit-log-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Email Delivery Platform 설계 설계 핵심을 설명해줘
+- email delivery platform가 왜 필요한지 알려줘
+- Email Delivery Platform 설계 실무 트레이드오프는 뭐야?
+- email delivery platform 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Email Delivery Platform 설계를 다루는 deep_dive 문서다. 이메일 전송 플랫폼은 SMTP/ESP 연동, 큐 기반 재시도, 평판 관리, 발송 최적화를 함께 다루는 대규모 메시지 배달 시스템이다. 검색 질의가 email delivery platform, smtp, esp, bounce처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Email Delivery Platform 설계
 
 > 한 줄 요약: 이메일 전송 플랫폼은 SMTP/ESP 연동, 큐 기반 재시도, 평판 관리, 발송 최적화를 함께 다루는 대규모 메시지 배달 시스템이다.

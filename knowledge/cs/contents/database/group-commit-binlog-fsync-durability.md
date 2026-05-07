@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Group Commit, Binlog, Fsync Durability
+concept_id: database/group-commit-binlog-fsync-durability
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- mysql-group-commit
+- binlog-redo-fsync-durability
+- commit-latency-tail
+aliases:
+- group commit
+- binlog fsync durability
+- sync_binlog
+- innodb_flush_log_at_trx_commit
+- binlog_order_commits
+- commit latency
+- MySQL 2PC
+- binary log durability
+- fsync p99
+- group commit durability
+symptoms:
+- 쿼리는 빠른데 commit p95/p99만 튀어 fsync와 group commit path를 봐야 해
+- sync_binlog나 innodb_flush_log_at_trx_commit 값을 성능 튜닝으로만 보고 장애 시 유실 허용치를 놓치고 있어
+- redo log와 binlog durability 수준이 어긋나 replica나 crash recovery 상태를 다시 검증해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/redo-undo-checkpoint-crash-recovery
+- database/replica-lag-read-after-write-strategies
+next_docs:
+- database/doublewrite-buffer-torn-page-protection
+- database/checkpoint-age-flush-storms
+- database/cdc-debezium-outbox-binlog
+linked_paths:
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/doublewrite-buffer-torn-page-protection.md
+- contents/database/checkpoint-age-flush-storms.md
+confusable_with:
+- database/redo-undo-checkpoint-crash-recovery
+- database/doublewrite-buffer-torn-page-protection
+- database/cdc-debezium-outbox-binlog
+forbidden_neighbors: []
+expected_queries:
+- MySQL group commit은 binlog와 redo log fsync 비용을 어떻게 묶어 commit latency를 줄여?
+- sync_binlog와 innodb_flush_log_at_trx_commit은 성능보다 어떤 durability tradeoff를 정하는 값이야?
+- 쿼리는 빠른데 commit p99가 튀면 fsync와 group commit을 어떻게 의심해?
+- redo log와 binlog durability가 어긋나면 crash recovery와 replica 상태에 어떤 문제가 생겨?
+- 작은 write를 너무 자주 commit하면 group commit과 fsync 관점에서 왜 불리해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL commit path에서 group commit, binlog, redo log, fsync, sync_binlog, innodb_flush_log_at_trx_commit이 latency와 durability를 어떻게 맞교환하는지 설명하는 advanced deep dive다.
+  group commit, binlog, fsync, sync_binlog, commit latency 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Group Commit, Binlog, Fsync Durability
 
 > 한 줄 요약: 커밋이 느린 이유는 쿼리 자체보다 로그를 언제 누구와 같이 디스크에 확정하느냐에 달려 있다.

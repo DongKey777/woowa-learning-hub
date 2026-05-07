@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Consumer Exception Registry Templates
+concept_id: software-engineering/consumer-exception-registry
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- consumer-exception
+- registry-template
+- deprecation-waiver
+aliases:
+- Consumer Exception Registry Templates
+- consumer exception registry
+- exception registry template
+- lagging consumer registry
+- waiver template
+- allowlist template
+- deprecation exemption registry
+symptoms:
+- lagging consumer, compatibility waiver, allowlist, deprecation exemption을 티켓/DM/스프레드시트에 흩어 두어 owner, expiry, exit condition이 추적되지 않아
+- registry row, waiver request form, review packet, tombstone guidance가 서로 다른 필드명과 기준을 써 state machine과 automation이 연결되지 않아
+- core fields와 type-specific fields를 나누지 않아 compatibility waiver, deprecation exemption, rollout exception을 같은 수준으로만 관리해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/compatibility-waiver-governance
+- software-engineering/consumer-migration-playbook
+next_docs:
+- software-engineering/consumer-exception-state-machine
+- software-engineering/consumer-exception-registry-quality
+- software-engineering/support-sla-escalation-contracts
+linked_paths:
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/consumer-exception-operating-model.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/support-contract-request-type-severity-matrix.md
+- contents/software-engineering/consumer-exception-state-machine-review-cadence.md
+- contents/software-engineering/consumer-exception-registry-quality-automation.md
+confusable_with:
+- software-engineering/compatibility-waiver-governance
+- software-engineering/consumer-exception-state-machine
+- software-engineering/consumer-exception-registry-quality
+forbidden_neighbors: []
+expected_queries:
+- consumer exception registry template에는 consumer id, exception type, contract, owner, expires_at, exit condition, support contact가 왜 필요해?
+- compatibility waiver, deprecation exemption, rollout exception은 core fields와 type-specific fields를 어떻게 나눠?
+- registry row, waiver request form, review packet, tombstone guidance에 같은 필드를 반복 노출해야 하는 이유는 뭐야?
+- allowlist-only tombstone 단계에서 어떤 consumer가 왜 남아 있는지 registry template로 어떻게 설명해?
+- consumer exception registry가 예외를 정당화하는 문서가 아니라 종료 가능한 운영 기록이어야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 lagging consumer, compatibility waiver, allowlist, deprecation exemption을 표준화된 consumer exception registry schema와 template로 관리하는 advanced playbook이다.
+---
 # Consumer Exception Registry Templates
 
 > 한 줄 요약: lagging consumer, compatibility waiver, allowlist, deprecation exemption을 구두나 티켓에 흩어 두지 않으려면, consumer exception registry에 최소 필드와 상태와 종료 조건을 표준 템플릿으로 정리해야 한다.

@@ -30,13 +30,13 @@ intents:
 - comparison
 - design
 prerequisites:
-- software-engineering/adr-decision-records-at-scale
-- software-engineering/architectural-governance-operating-model
-- software-engineering/decision-revalidation-supersession-lifecycle
+- software-engineering/adr-decision-records
+- software-engineering/architectural-governance
+- software-engineering/decision-revalidation-lifecycle
 next_docs:
-- software-engineering/policy-as-code-architecture-linting
-- software-engineering/change-ownership-handoff-boundaries
-- software-engineering/incident-review-learning-loop-architecture
+- software-engineering/policy-as-code
+- software-engineering/change-ownership-handoff
+- software-engineering/incident-review-learning-loop
 linked_paths:
 - contents/software-engineering/adr-decision-records-at-scale.md
 - contents/software-engineering/architectural-governance-operating-model.md
@@ -45,10 +45,10 @@ linked_paths:
 - contents/software-engineering/incident-review-learning-loop-architecture.md
 - contents/software-engineering/decision-revalidation-supersession-lifecycle.md
 confusable_with:
-- software-engineering/adr-decision-records-at-scale
-- software-engineering/decision-revalidation-supersession-lifecycle
-- software-engineering/architectural-governance-operating-model
-forbidden_neighbors:
+- software-engineering/adr-decision-records
+- software-engineering/decision-revalidation-lifecycle
+- software-engineering/architectural-governance
+forbidden_neighbors: []
 expected_queries:
 - 팀 설계 변경안을 먼저 토론할지 바로 결정 기록으로 남길지 고르는 기준이 뭐야?
 - RFC 문서와 ADR 문서를 둘 다 쓰는 흐름을 한 번에 이해하고 싶어

@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: io_uring SQ CQ Basics
+concept_id: operating-system/io-uring-sq-cq-basics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- io-uring-sq
+- submission-queue-completion
+- queue
+- async-io-syscall
+aliases:
+- io_uring SQ CQ basics
+- submission queue completion queue
+- async IO syscall reduction
+- SQE CQE model
+- ring based IO
+- context switch reduction
+intents:
+- definition
+- deep_dive
+linked_paths:
+- contents/operating-system/epoll-kqueue-io-uring.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+expected_queries:
+- io_uring SQ와 CQ는 submission과 completion을 어떻게 분리해?
+- SQE CQE model이 syscall과 context switch 비용을 줄이는 방식은?
+- epoll과 io_uring의 기본 mental model 차이는 뭐야?
+- io_uring basics에서 operational hazards로 넘어가기 전 무엇을 알아야 해?
+contextual_chunk_prefix: |
+  이 문서는 io_uring의 기본 구조를 submission queue와 completion queue로 I/O 제출과 결과 확인을
+  분리해 syscall/context switch 비용을 줄이는 asynchronous ring model로 설명한다.
+---
 # io_uring SQ, CQ Basics
 
 > 한 줄 요약: io_uring은 submission queue와 completion queue로 I/O 제출과 결과 확인을 분리해 syscall과 context switch 비용을 줄이는 비동기 모델이다.

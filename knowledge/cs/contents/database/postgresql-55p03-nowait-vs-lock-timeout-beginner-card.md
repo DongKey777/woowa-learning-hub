@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: PostgreSQL 55P03 NOWAIT vs Lock Timeout Beginner Card
+concept_id: database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- nowait
+- lock-timeout
+- sqlstate-55p03
+aliases:
+- postgresql 55p03 nowait vs lock_timeout
+- 55P03 beginner split card
+- postgres lock_not_available nowait
+- postgres lock_timeout vs nowait
+- nowait fail fast
+- lock timeout waits first
+- 55P03 헷갈려요
+- 55P03 왜 바로 실패해요
+- postgresql 55P03 not always long blocker
+- nowait vs lock timeout difference
+symptoms:
+- PostgreSQL 55P03를 보면 항상 오래 기다린 blocker가 있었다고 단정하고 NOWAIT fail-fast 경로를 놓치고 있어
+- FOR UPDATE NOWAIT와 SET LOCAL lock_timeout의 시간축 차이를 구분하지 않고 같은 retry 정책으로 묶고 있어
+- Spring CannotAcquireLockException 표면만 보고 root SQLSTATE와 실제 SQL 힌트를 확인하지 않아 55P03 원인을 과대해석해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/nowait-vs-short-lock-timeout-busy-guide
+- database/timeout-errorcode-mapping-mini-card
+next_docs:
+- database/lock-timeout-blocker-first-check
+- database/spring-jpa-postgresql-55p03-retry-policy-bridge
+- database/statement-timeout-vs-lock-timeout-card
+linked_paths:
+- contents/database/lock-timeout-blocker-first-check-mini-card.md
+- contents/database/nowait-vs-short-lock-timeout-busy-guide.md
+- contents/database/spring-jpa-postgresql-55p03-retry-policy-bridge.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/statement-timeout-vs-lock-timeout-card.md
+- contents/database/spring-cannotacquirelockexception-root-sql-code-card.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/nowait-vs-short-lock-timeout-busy-guide
+- database/lock-timeout-blocker-first-check
+- database/statement-timeout-vs-lock-timeout-card
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL 55P03는 항상 오래 기다린 lock timeout인지 NOWAIT 즉시 실패도 포함하는지 설명해줘
+- FOR UPDATE NOWAIT와 lock_timeout이 같은 55P03로 보일 때 어떻게 나눠 읽어?
+- NOWAIT 실패를 long blocker로 과대해석하면 왜 안 돼?
+- 55P03를 busy로 볼지 retryable로 볼지 시간축과 경로 정책 기준으로 알려줘
+- Spring CannotAcquireLockException에서 root SQLSTATE 55P03와 실제 SQL NOWAIT 여부를 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL SQLSTATE 55P03을 NOWAIT fail-fast와 lock_timeout wait budget failure로 나눠 blocker 과대해석을 막는 beginner symptom router다.
+  55P03 헷갈려요, NOWAIT 왜 바로 실패, lock_timeout waits first 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `55P03`에서 `NOWAIT`와 `lock_timeout`을 어떻게 나눠 읽을까?
 
 > 한 줄 요약: PostgreSQL `55P03`는 초보자에게 "락을 못 얻었다"는 공통 신호이지만, `NOWAIT`는 **바로 포기한 fail-fast**, `lock_timeout`은 **조금 기다리다 예산을 다 쓴 대기 실패**로 나눠 읽어야 한다.

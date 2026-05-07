@@ -16,21 +16,18 @@ review_feedback_tags:
 - after-commit-test-boundary
 - commit-visible-verification
 aliases:
-- flush vs commit beginner
-- flush is not commit
-- after_commit listener not called
-- outbox commit visible test
-- transactional test rollback vs commit
-- spring test rollback commit boundary
-- testtransaction.end 뭐예요
-- '@commit 테스트 언제 써요'
-- 처음 flush commit 헷갈려요
-- 왜 flush 했는데 after commit 안 돌아요
-- what is commit path test
-- outbox 왜 commit 뒤에 봐요
-- slice test vs app integration test transaction
-- rollback test app integration test
-- datajpatest commit visible
+- flush vs commit
+- flush commit boundary
+- transactional test rollback boundary
+- commit visible test
+- after_commit verification
+- outbox commit visibility
+- testtransaction vs commit
+- spring transactional test commit path
+- rollback vs commit test
+- datajpatest commit visibility
+- transaction commit boundary
+- commit path verification
 symptoms:
 - flush까지 했는데 AFTER_COMMIT 리스너가 안 돌아서 왜 그런지 모르겠어요
 - rollback 테스트는 초록인데 커밋 뒤에 남아야 하는 데이터 검증이 불안해요
@@ -41,7 +38,7 @@ intents:
 prerequisites:
 - software-engineering/test-strategy-basics
 - software-engineering/inbound-adapter-test-slices-primer
-- software-engineering/datajpatest-flush-clear-batch-checklist
+- software-engineering/datajpatest-flush-clear
 next_docs:
 - software-engineering/after-commit-listener-rollback-test-beginner-bridge
 - software-engineering/testtransaction-vs-commit-choice-mini-card
@@ -60,7 +57,7 @@ linked_paths:
 confusable_with:
 - software-engineering/after-commit-listener-rollback-test-beginner-bridge
 - software-engineering/testtransaction-vs-commit-choice-mini-card
-- software-engineering/datajpatest-flush-clear-batch-checklist
+- software-engineering/datajpatest-flush-clear
 forbidden_neighbors:
 expected_queries:
 - flush를 했는데도 다른 트랜잭션에서 안 보이는 이유를 초심자 기준으로 설명해 줄래?

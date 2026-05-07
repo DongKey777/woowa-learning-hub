@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: JPA Dirty Checking, @Version, and Cascade Trade-offs
+concept_id: spring/jpa-dirty-checking-version-strategy
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- jpa-dirty-checking
+- version-strategy
+- version-optimistic-locking
+- cascade-persist-merge
+aliases:
+- JPA dirty checking
+- 영속성 컨텍스트 변경 감지
+- @Version optimistic locking
+- cascade persist merge remove
+- orphanRemoval
+- detached entity merge overwrite
+- flush snapshot comparison
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+- contents/spring/transactional-deep-dive.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/compare-and-set-version-columns.md
+expected_queries:
+- JPA dirty checking은 언제 UPDATE를 만들어?
+- @Version 없이 dirty checking만 쓰면 동시 수정이 안전해?
+- cascade와 orphanRemoval을 같이 쓰면 어떤 문제가 생겨?
+- detached entity를 merge하면 왜 overwrite 위험이 있어?
+contextual_chunk_prefix: |
+  이 문서는 JPA dirty checking, 영속성 컨텍스트 snapshot 비교, flush 시점,
+  @Version optimistic locking, cascade와 orphanRemoval의 trade-off를 다룬다.
+  save 호출 여부보다 managed/detached 상태, version column, aggregate 단위 변경,
+  중복 INSERT와 silent overwrite를 구분하는 advanced Spring/JPA deep dive다.
+---
 # JPA Dirty Checking, `@Version`, and Cascade Trade-offs
 
 > 한 줄 요약: JPA의 dirty checking은 "save를 안 해도 반영된다"는 편리함이 아니라, 영속성 컨텍스트가 들고 있는 스냅샷과 현재 상태를 commit 시점에 비교해 UPDATE를 만드는 설계이고, `@Version`과 cascade를 함께 이해하지 못하면 silent overwrite와 이중 flush가 바로 따라붙는다.

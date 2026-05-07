@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Architecture Council and Domain Stewardship Cadence
+concept_id: software-engineering/architecture-council-cadence
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- architecture-council
+- domain-stewardship
+- escalation
+aliases:
+- Architecture Council and Domain Stewardship Cadence
+- architecture council cadence
+- domain stewardship forum
+- federated governance cadence
+- decision traffic routing
+- architecture escalation forum
+symptoms:
+- architecture council 하나에 모든 local boundary, exception, cross-domain, standard 안건을 올려 중앙 forum이 병목이 돼
+- domain stewardship forum을 두었지만 escalation 조건이 없어 cross-domain impact나 repeated exception이 늦게 올라와
+- 과거 ADR, 예외 만료, incident-linked revalidation을 agenda에 넣지 않아 forum이 신규 승인 회의로만 굴러가
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/architectural-governance
+- software-engineering/rfc-vs-adr-decision-flow
+next_docs:
+- software-engineering/shadow-forum-escalation-rules
+- software-engineering/team-apis-interaction-modes
+- software-engineering/platform-product-capability-boundaries
+linked_paths:
+- contents/software-engineering/architectural-governance-operating-model.md
+- contents/software-engineering/architecture-review-anti-patterns.md
+- contents/software-engineering/rfc-vs-adr-decision-flow.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/shadow-forum-escalation-rules.md
+confusable_with:
+- software-engineering/architectural-governance
+- software-engineering/shadow-forum-escalation-rules
+- software-engineering/team-apis-interaction-modes
+forbidden_neighbors: []
+expected_queries:
+- architecture council과 domain stewardship forum은 어떤 안건을 각각 봐야 해?
+- federated governance에서 cross-domain impact나 repeated exception은 언제 중앙 council로 escalation해야 해?
+- governance cadence를 weekly domain stewardship biweekly council monthly portfolio review로 나누는 기준이 뭐야?
+- architecture forum agenda에 신규 RFC뿐 아니라 예외 만료와 decision revalidation을 넣어야 하는 이유는 뭐야?
+- governance cadence 품질을 forum lead time, escalation rate, stale exception count로 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 architecture council과 domain stewardship forum의 cadence, scope, escalation rule, decision backlog, exception expiry, revalidation loop를 설계하는 advanced governance playbook이다.
+---
 # Architecture Council and Domain Stewardship Cadence
 
 > 한 줄 요약: governance operating model이 문서로만 남지 않으려면, 중앙 architecture council과 도메인 stewardship forum이 어떤 cadence로 어떤 결정을 보고, 언제 escalation하는지까지 운영 리듬으로 설계해야 한다.

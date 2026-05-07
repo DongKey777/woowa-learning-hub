@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: PID 1 SIGTERM and Container Reaping Basics
+concept_id: operating-system/container-pid-1-sigterm-zombie-reaping-basics
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- container-pid-1
+- sigterm-zombie-reaping
+- sigterm
+- zombie-reaping-in
+aliases:
+- container PID 1 SIGTERM
+- zombie reaping in container
+- PID 1 signal handling
+- waitpid SIGCHLD container
+- orphan process reaping
+- container stop signal
+intents:
+- definition
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/sigchld-ignore-vs-waitpid-bridge.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/pid-namespace-init-semantics.md
+- contents/operating-system/container-cgroup-namespace.md
+expected_queries:
+- 컨테이너에서 PID 1은 SIGTERM과 zombie reaping을 왜 직접 처리해야 해?
+- Docker stop signal이 PID 1로 들어오면 child process는 어떻게 정리돼?
+- waitpid, SIGCHLD, zombie orphan 개념이 container init과 어떻게 연결돼?
+- PID 1이 signal handler와 reaper 역할을 안 하면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 container 안에서도 fork, waitpid, SIGCHLD, zombie/orphan 규칙은 그대로지만
+  stop signal이 먼저 PID 1로 들어오기 때문에 PID 1이 shutdown signal handling과 child reaping
+  책임을 함께 져야 한다는 bridge다.
+---
 # PID 1, SIGTERM, and Container Reaping Basics
 
 > 한 줄 요약: 컨테이너 안에서도 `fork()`/`waitpid()` 규칙은 그대로지만, stop signal이 먼저 PID 1로 들어오기 때문에 PID 1은 종료 신호 처리와 자식 회수 책임을 함께 져야 한다.

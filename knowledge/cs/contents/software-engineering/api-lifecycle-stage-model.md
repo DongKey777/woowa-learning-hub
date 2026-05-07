@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: API Lifecycle Stage Model
+concept_id: software-engineering/api-lifecycle-stage
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- api-lifecycle
+- deprecation
+- contract-governance
+aliases:
+- API Lifecycle Stage Model
+- API draft active deprecated sunset retired
+- API stage model
+- API support policy lifecycle
+- contract governance lifecycle
+- API 종료 단계 모델
+symptoms:
+- API 버전 번호만 관리하고 draft, active, deprecated, sunset, retired 같은 지원 상태를 분리하지 않아
+- deprecated API에 신규 consumer가 붙거나 retired 전환 기준 없이 호출이 남아 있는 상태로 종료해
+- stage 변경이 contract registry, communication, test gate, replacement API 정보와 연결되지 않아 운영 정책이 문서에만 남아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/service-deprecation-sunset-lifecycle
+next_docs:
+- software-engineering/deprecation-communication-playbook
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/consumer-migration-playbook
+linked_paths:
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/deprecation-communication-playbook.md
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/tombstone-response-template-and-consumer-guidance.md
+confusable_with:
+- software-engineering/service-deprecation-sunset-lifecycle
+- software-engineering/backward-compatibility-gates
+- software-engineering/contract-registry-governance
+forbidden_neighbors: []
+expected_queries:
+- API version과 lifecycle stage는 왜 다른 축이고 draft active deprecated sunset retired를 어떻게 나눠?
+- 같은 v1 API라도 active와 deprecated stage가 다르면 신규 consumer와 support policy가 어떻게 달라져?
+- API를 deprecated에서 sunset retired로 넘길 때 replacement API consumer migration call volume 조건을 어떻게 둬?
+- contract registry와 test gate가 API lifecycle stage 변경과 같이 움직여야 하는 이유가 뭐야?
+- retired API에 tombstone response와 consumer guidance를 남기는 운영 모델을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 API lifecycle stage model을 version과 support stage를 분리해 draft, active, deprecated, sunset, retired, replacement API, contract registry, test gate와 연결하는 advanced playbook이다.
+---
 # API Lifecycle Stage Model
 
 > 한 줄 요약: API는 생성과 버전만 관리하면 끝나는 것이 아니라, draft부터 retired까지 어떤 단계에 있는지 명확히 정의해야 소비자와 운영이 같은 언어로 움직인다.

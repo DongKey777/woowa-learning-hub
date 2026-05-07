@@ -31,7 +31,7 @@ intents:
 - troubleshooting
 prerequisites:
 - database/transaction-basics
-- database/sql-reading-relational-modeling-primer
+- database/sql-relational-modeling-basics
 - spring/baseball-mvc-controller-binding-bridge
 next_docs:
 - database/transaction-basics
@@ -63,12 +63,19 @@ contextual_chunk_prefix: |
   묶으라는 리뷰가 무슨 뜻인가 같은 학습자 표현을 baseball 저장 모델과
   현재 상태 truth 설명으로 연결한다.
 ---
-
 # baseball 추측 기록/현재 게임 상태 ↔ DB 트랜잭션 브릿지
 
 ## 한 줄 요약
 
 > baseball 추측 한 번은 "guess_history 한 줄 추가"만이 아니라 "현재 게임 상태가 어떻게 바뀌었는가"까지 함께 확정되는 write다. 그래서 이력 append와 `games` 현재 상태 update를 같은 트랜잭션으로 읽는 편이 리뷰와 운영 둘 다 덜 흔들린다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "3스트라이크 이력은 저장됐는데 games.finished는 false예요" | guess_history append와 games current state update가 분리된 코드 | 한 guess 요청이 남기는 history와 current truth를 같은 transaction으로 묶는다 |
+| "guess_history만 쌓으면 현재 상태를 매번 계산해도 되나요?" | read마다 이력 전체로 finished/last_result를 재구성하려는 beginner 설계 | audit history와 API가 믿는 current snapshot 역할을 먼저 구분한다 |
+| "insert와 update가 여러 개라 어디까지 rollback돼야 하나요?" | 한 추측 처리에서 history, last_result, finished가 함께 바뀌는 write | 같은 유스케이스 write 단위를 commit/rollback 경계로 잡는다 |
 
 ## 미션 시나리오
 

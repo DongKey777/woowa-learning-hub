@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Password Reset, Magic Link, Public Origin Guide
+concept_id: security/password-reset-magic-link-public-origin-guide
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- password reset link wrong host
+- magic link wrong host
+- password reset host injection
+- magic link host injection
+aliases:
+- password reset link wrong host
+- magic link wrong host
+- password reset host injection
+- magic link host injection
+- public origin guide
+- configured public origin vs request host
+- reset link behind proxy
+- email link internal hostname
+- x-forwarded-host reset link
+- host header injection email workflow
+- raw host vs public base url
+- reset link localhost production
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/forwarded-header-trust-boundary-primer.md
+- contents/security/password-reset-threat-modeling.md
+- contents/security/email-magic-link-threat-model.md
+- contents/security/open-redirect-hardening.md
+- contents/security/oauth2-authorization-code-grant.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Password Reset, Magic Link, Public Origin Guide 핵심 개념을 설명해줘
+- password reset link wrong host가 왜 필요한지 알려줘
+- Password Reset, Magic Link, Public Origin Guide 실무 설계 포인트는 뭐야?
+- password reset link wrong host에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Password Reset, Magic Link, Public Origin Guide를 다루는 deep_dive 문서다. password reset이나 magic link URL은 들어온 요청의 raw `Host`를 그대로 믿기보다, 서비스가 미리 알고 있는 public origin을 기준으로 만들어야 내부 host 노출과 host injection을 줄일 수 있다. 검색 질의가 password reset link wrong host, magic link wrong host, password reset host injection, magic link host injection처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Password Reset, Magic Link, Public Origin Guide
 
 > 한 줄 요약: password reset이나 magic link URL은 들어온 요청의 raw `Host`를 그대로 믿기보다, 서비스가 미리 알고 있는 public origin을 기준으로 만들어야 내부 host 노출과 host injection을 줄일 수 있다.

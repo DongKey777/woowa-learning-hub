@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java Agent and Instrumentation Basics
+concept_id: language/java-agent-instrumentation-basics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- java-agent
+- instrumentation
+- jvm-diagnostics
+aliases:
+- Java agent instrumentation basics
+- javaagent premain agentmain
+- ClassFileTransformer bytecode transformation
+- Java instrumentation API retransform redefine
+- APM tracing agent JVM cost
+- 자바 에이전트 계측 기초
+symptoms:
+- javaagent를 단순 로깅 라이브러리처럼 이해해 class loading, transformer, safepoint 비용이 생기는 이유를 설명하지 못해
+- premain과 agentmain의 차이를 몰라 startup instrumentation과 runtime attach의 권한/안정성 경계를 혼동해
+- bytecode transformation이 전부 안전하게 재정의 가능하다고 생각해 loaded class, final 제약, classloader 경계를 놓쳐
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/class-initialization-ordering
+- language/classloader-delegation-edge-cases
+- language/safepoint-stop-the-world-diagnostics
+next_docs:
+- language/jfr-jmc-performance-playbook
+- language/classloader-memory-leak-playbook
+- language/hidden-classes-lambdametafactory-basics
+linked_paths:
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/class-initialization-ordering.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/language/java/hidden-classes-lambdametafactory-basics.md
+confusable_with:
+- language/jfr-jmc-performance-playbook
+- language/safepoint-stop-the-world-diagnostics
+- language/classloader-memory-leak-playbook
+forbidden_neighbors: []
+expected_queries:
+- Java agent의 premain과 agentmain 차이를 instrumentation 관점에서 설명해줘
+- ClassFileTransformer가 bytecode를 바꾸면 JVM 성능과 class loading에 어떤 영향이 있어?
+- APM tracing agent를 붙인 뒤 startup이나 latency가 느려지는 원인을 어떻게 봐야 해?
+- retransform redefine attach API가 운영에서 위험할 수 있는 이유가 뭐야?
+- javaagent와 JFR 같은 built-in tooling을 언제 구분해서 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java agent, Instrumentation API, premain, agentmain, ClassFileTransformer를 JVM diagnostics와 runtime cost 관점에서 설명하는 advanced deep dive다.
+  javaagent, bytecode transformation, APM tracing agent, runtime attach, class loading overhead 질문이 본 문서에 매핑된다.
+---
 # Java Agent and Instrumentation Basics
 
 > 한 줄 요약: Java agent는 class loading 시점에 bytecode를 바꾸거나 관측을 넣는 도구이고, instrumentation은 강력하지만 초기화 순서, 성능, 호환성, safepoint 비용까지 같이 봐야 한다.

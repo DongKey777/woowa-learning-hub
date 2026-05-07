@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: AOBO Revocation Audit Event Schema
+concept_id: security/aobo-revocation-audit-event-schema
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- aobo revocation audit event schema
+- break glass revocation audit schema
+- delegated access revoke audit
+- support access revoke event schema
+aliases:
+- aobo revocation audit event schema
+- break glass revocation audit schema
+- delegated access revoke audit
+- support access revoke event schema
+- acting on behalf revoke trace
+- preview confirm timeline join key
+- preview id graph snapshot id revocation request id
+- access group id grant id correlation
+- break glass revoke correlation id
+- delegated access revocation timeline
+- support access revoke evidence ref
+- operator revoke audit lineage
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/revocation-impact-preview-data-contract.md
+- contents/security/revocation-preview-drift-response-contract.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/delegated-session-tail-cleanup.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- AOBO Revocation Audit Event Schema 핵심 개념을 설명해줘
+- aobo revocation audit event schema가 왜 필요한지 알려줘
+- AOBO Revocation Audit Event Schema 실무 설계 포인트는 뭐야?
+- aobo revocation audit event schema에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 AOBO Revocation Audit Event Schema를 다루는 deep_dive 문서다. AOBO와 break-glass revoke는 preview, confirm, propagation status, security timeline이 서로 다른 surface에 보이더라도 `case_ref`, `access_group_id`, `preview_id`, `graph_snapshot_id`, `revocation_request_id`를 공유하는 correlation spine 위에서 같은 사건으로 재구성돼야 한다. 검색 질의가 aobo revocation audit event schema, break glass revocation audit schema, delegated access revoke audit, support access revoke event schema처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # AOBO Revocation Audit Event Schema
 
 > 한 줄 요약: AOBO와 break-glass revoke는 preview, confirm, propagation status, security timeline이 서로 다른 surface에 보이더라도 `case_ref`, `access_group_id`, `preview_id`, `graph_snapshot_id`, `revocation_request_id`를 공유하는 correlation spine 위에서 같은 사건으로 재구성돼야 한다.

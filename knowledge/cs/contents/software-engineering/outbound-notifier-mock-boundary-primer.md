@@ -44,8 +44,8 @@ prerequisites:
 - software-engineering/stub-vs-spy-first-test-primer
 next_docs:
 - software-engineering/outbox-inbox-domain-events
-- software-engineering/repository-fake-design-guide
-- spring/spring-service-layer-external-io-after-commit-outbox-primer
+- software-engineering/repository-fake-design
+- spring/service-layer-external-io-after-commit-outbox-primer
 linked_paths:
 - contents/software-engineering/fake-vs-mock-first-test-primer.md
 - contents/software-engineering/stub-vs-spy-first-test-primer.md
@@ -58,9 +58,7 @@ confusable_with:
 - software-engineering/stub-vs-spy-first-test-primer
 - software-engineering/outbox-inbox-domain-events
 - design-pattern/observer-pubsub-application-events
-forbidden_neighbors:
-- contents/software-engineering/fake-vs-mock-first-test-primer.md
-- contents/software-engineering/outbox-inbox-domain-events.md
+forbidden_neighbors: []
 expected_queries:
 - 주문 성공 시 알림을 보냈는지 확인하는 테스트는 왜 fake보다 mock이나 spy가 더 잘 맞아?
 - event publisher 경계에서 호출 자체가 답이라는 말이 무슨 뜻인지 beginner 예시로 설명해줘
@@ -75,7 +73,6 @@ contextual_chunk_prefix: |
   test와 outbox 기반 후속 검증 사이 경계를 어떻게 잡는지 같은 질문을
   입문용 테스트 경계 기준으로 정리한다.
 ---
-
 # Outbound Notifier Mock Boundary Primer
 
 > 한 줄 요약: `알림을 보냈다`, `이벤트를 발행했다`처럼 outbound notifier의 핵심 질문이 호출 자체일 때는, repository fake처럼 상태를 재현하기보다 mock/spy로 상호작용 경계를 먼저 잠그는 편이 초심자에게 더 안전하다.

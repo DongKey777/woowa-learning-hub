@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring scanBasePackages vs Import vs AutoConfiguration Selection
+concept_id: spring/scanbasepackages-vs-import-autoconfiguration-selection
+canonical: true
+category: spring
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- scanbasepackages-vs-import
+- autoconfiguration-selection
+- vs-auto-configuration
+- shared-module-bean
+aliases:
+- scanBasePackages vs @Import vs auto-configuration
+- shared module bean registration
+- component scan boundary
+- Spring Boot auto configuration selection
+- explicit configuration import
+intents:
+- comparison
+- design
+linked_paths:
+- contents/spring/spring-bean-registration-path-decision-guide.md
+- contents/spring/spring-scanbasepackages-import-autoconfiguration-decision-guide.md
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+confusable_with:
+- spring/bean-registration-path-decision-guide
+- spring/scanbasepackages-import-autoconfiguration-decision-guide
+- spring/spring-configuration-vs-autoconfiguration-primer
+expected_queries:
+- Spring에서 scanBasePackages @Import auto-configuration 중 무엇을 골라야 해?
+- shared module bean registration은 component scan보다 auto-configuration이 나아?
+- 작은 설정을 명시적으로 가져올 때 @Import가 맞는 경우는?
+- 여러 애플리케이션에 배포되는 모듈은 Boot auto-configuration으로 빼야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring shared module의 bean registration 방식을 scanBasePackages, @Import,
+  Boot auto-configuration으로 나누는 chooser다. 같은 앱이 함께 소유하는 코드, 작은 명시적 설정,
+  여러 앱에 배포되는 재사용 모듈이라는 ownership 기준으로 선택한다.
+---
 # Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준
 
 > 한 줄 요약: 같은 애플리케이션이 함께 소유하는 코드라면 component scan 범위를 넓히거나 package root를 정리하고, 가져올 설정이 작고 명시적이어야 한다면 `@Import`, 여러 애플리케이션에 배포되는 shared module이라면 Boot auto-configuration을 우선 본다.

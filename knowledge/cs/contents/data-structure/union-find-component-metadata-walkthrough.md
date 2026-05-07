@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Union-Find Component Metadata Walkthrough
+concept_id: data-structure/union-find-component-metadata-walkthrough
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- union-find-metadata
+- component-size-count
+- dsu-beginner-walkthrough
+aliases:
+- union find component metadata
+- DSU component size
+- DSU component count
+- connected components count
+- size[find(x)]
+- friend relation group count
+- network group count
+symptoms:
+- union 호출 횟수만 보고 componentCount를 줄여 already-same-root redundant union에서도 count를 감소시킨다
+- componentSize(x)를 size[x]로 바로 읽어 x가 root가 아닐 때 잘못된 크기를 반환한다
+- same component yes/no와 그룹 크기, 전체 그룹 수 질의를 같은 union-find metadata 문제로 연결하지 못한다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/union-find-standalone-beginner-primer
+- data-structure/connectivity-question-router
+next_docs:
+- data-structure/union-find-deep-dive
+- algorithm/union-find-amortized-proof-intuition
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+linked_paths:
+- contents/data-structure/union-find-standalone-beginner-primer.md
+- contents/data-structure/connectivity-question-router.md
+- contents/data-structure/union-find-deep-dive.md
+- contents/data-structure/basic.md
+- contents/algorithm/graph.md
+- contents/algorithm/minimum-spanning-tree-prim-vs-kruskal.md
+- contents/algorithm/union-find-amortized-proof-intuition.md
+confusable_with:
+- data-structure/connectivity-question-router
+- data-structure/union-find-standalone-beginner-primer
+- data-structure/union-find-deep-dive
+- algorithm/minimum-spanning-tree-prim-vs-kruskal
+forbidden_neighbors: []
+expected_queries:
+- Union-Find에서 component size는 왜 size[x]가 아니라 size[find(x)]로 읽어야 해?
+- union을 호출했는데 이미 같은 루트면 component count가 줄면 안 되는 이유는?
+- DSU에 componentSize와 componentCount metadata를 붙이는 구현 walkthrough가 필요해
+- 친구 관계 그룹 수와 특정 사람이 속한 그룹 크기를 union-find로 계속 추적하는 법은?
+- repeated union trace에서 merged 여부에 따라 size와 components가 어떻게 바뀌는지 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Union-Find에 component size와 component count metadata를 붙이는
+  beginner walkthrough다. size[find(x)], components-- 조건, redundant union,
+  friend/network group count trace를 연습한다.
+---
 # Union-Find Component Metadata Walkthrough
 
 > 한 줄 요약: union-find에 `component size`와 `component count` 메타데이터를 함께 두면, repeated union 중에도 "지금 이 그룹이 몇 명인지"와 "전체 그룹이 몇 개 남았는지"를 바로 답할 수 있다.

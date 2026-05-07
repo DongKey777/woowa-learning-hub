@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: ConcurrentSkipListMap, ConcurrentLinkedQueue, and CopyOnWriteArraySet Trade-offs
+concept_id: language/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- java-concurrent-collections
+- workload-fit
+- iteration-semantics
+aliases:
+- ConcurrentSkipListMap ConcurrentLinkedQueue CopyOnWriteArraySet tradeoffs
+- Java concurrent collection tradeoffs
+- ConcurrentLinkedQueue unbounded growth
+- CopyOnWriteArraySet snapshot iteration
+- ConcurrentSkipListMap range query
+- weakly consistent iteration
+symptoms:
+- concurrent collection이면 모두 thread-safe 대체재라고 보고 sorted range lookup, unbounded FIFO, copy-on-write membership 요구를 구분하지 못해
+- ConcurrentLinkedQueue에 bounded backpressure가 없어서 consumer 지연을 memory growth와 latency debt로 숨기는 문제를 놓쳐
+- CopyOnWriteArraySet을 write-heavy membership set에 써서 write amplification과 snapshot staleness를 만든다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-concurrency-utilities
+- language/collections-performance
+next_docs:
+- language/blockingqueue-transferqueue-concurrentskiplistset-semantics
+- language/copyonwritearraylist-snapshot-iteration-write-amplification
+- language/concurrenthashmap-compound-actions-hot-key-contention
+linked_paths:
+- contents/language/java/collections-performance.md
+- contents/language/java/blockingqueue-transferqueue-concurrentskiplistset-semantics.md
+- contents/language/java/copyonwritearraylist-snapshot-iteration-write-amplification.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+confusable_with:
+- language/blockingqueue-transferqueue-concurrentskiplistset-semantics
+- language/copyonwritearraylist-snapshot-iteration-write-amplification
+- language/concurrenthashmap-compound-actions-hot-key-contention
+forbidden_neighbors: []
+expected_queries:
+- ConcurrentSkipListMap ConcurrentLinkedQueue CopyOnWriteArraySet을 workload 기준으로 비교해줘
+- ConcurrentLinkedQueue가 thread-safe해도 bounded backpressure가 없어서 위험한 이유가 뭐야?
+- CopyOnWriteArraySet은 listener registry에는 맞지만 churn이 큰 membership set에는 왜 부적합해?
+- ConcurrentSkipListMap은 ConcurrentHashMap에 정렬을 더한 대체재인지 range lookup 전용인지 알려줘
+- weakly consistent iteration과 snapshot iteration, current-state exactness를 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 ConcurrentSkipListMap, ConcurrentLinkedQueue, CopyOnWriteArraySet을 sorted range lookup, unbounded FIFO, snapshot/read-mostly membership, weakly consistent iteration 관점으로 비교하는 advanced deep dive다.
+  Java concurrent collection tradeoff, ConcurrentLinkedQueue backpressure, CopyOnWriteArraySet, ConcurrentSkipListMap range query 질문이 본 문서에 매핑된다.
+---
 # `ConcurrentSkipListMap`, `ConcurrentLinkedQueue`, and `CopyOnWriteArraySet` Trade-offs
 
 > 한 줄 요약: concurrent collection이라고 해서 용도가 비슷한 것은 아니다. 정렬된 concurrent map, lock-free FIFO queue, read-mostly snapshot set는 각자 전혀 다른 비용 모델을 가지며, 이를 혼동하면 stale iteration, ordering 오해, unbounded growth가 생긴다.

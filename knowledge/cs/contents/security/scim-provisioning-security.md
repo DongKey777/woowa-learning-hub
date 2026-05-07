@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: SCIM Provisioning Security
+concept_id: security/scim-provisioning-security
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- SCIM
+- provisioning
+- deprovisioning
+- identity sync
+aliases:
+- SCIM
+- provisioning
+- deprovisioning
+- identity sync
+- groups
+- entitlements
+- lifecycle management
+- IdP
+- JIT provisioning
+- SCIM token
+- user lifecycle
+- deprovision session revoke
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/idor-bola-patterns-and-fixes.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SCIM Provisioning Security 핵심 개념을 설명해줘
+- SCIM가 왜 필요한지 알려줘
+- SCIM Provisioning Security 실무 설계 포인트는 뭐야?
+- SCIM에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SCIM Provisioning Security를 다루는 deep_dive 문서다. SCIM은 계정과 그룹을 자동으로 동기화하는 표준이지만, provisioning 권한이 넓으면 대량 계정 생성과 권한 오염으로 바로 이어질 수 있다. 검색 질의가 SCIM, provisioning, deprovisioning, identity sync처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SCIM Provisioning Security
 
 > 한 줄 요약: SCIM은 계정과 그룹을 자동으로 동기화하는 표준이지만, provisioning 권한이 넓으면 대량 계정 생성과 권한 오염으로 바로 이어질 수 있다.

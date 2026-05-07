@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: G1 GC vs ZGC
+concept_id: language/g1-vs-zgc
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- gc-choice
+- tail-latency
+- jvm-operations
+aliases:
+- G1 GC vs ZGC
+- Java GC choice
+- low latency GC
+- tail latency GC pause
+- STW pause
+- ZGC short pause
+- G1 pause target
+symptoms:
+- G1과 ZGC를 무엇이 최고인지로만 비교하고 throughput, tail latency, heap size, live set tradeoff를 보지 않아
+- GC pause가 실제 p99 latency 병목인지 확인하지 않고 collector만 바꿔 문제를 해결하려 해
+- allocation rate, object lifetime, live set size를 줄이지 않은 채 GC 이름만 바꾸면 된다고 생각해
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- language/jvm-gc-jmm-overview
+next_docs:
+- language/gc-root-retention-analysis
+- language/jfr-jmc-performance-playbook
+- language/oom-heap-dump-playbook
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/language/java/gc-root-retention-analysis.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+confusable_with:
+- language/gc-root-retention-analysis
+- language/jvm-gc-jmm-overview
+- language/jfr-jmc-performance-playbook
+forbidden_neighbors: []
+expected_queries:
+- G1과 ZGC를 Java 서버에서 tail latency와 throughput 기준으로 비교해줘
+- G1은 균형 잡힌 기본 선택이고 ZGC는 짧은 STW pause를 우선한다는 뜻이야?
+- GC pause가 p99 latency를 해치는지 확인한 뒤 ZGC를 검토하는 순서를 알려줘
+- GC를 바꾸기 전에 allocation rate와 live set size를 먼저 봐야 하는 이유가 뭐야?
+- 큰 heap 서비스에서 G1 pause target과 ZGC low latency tradeoff를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java G1 GC와 ZGC를 pause time, tail latency, throughput, heap size, allocation rate, live set, GC tuning decision 관점으로 비교하는 advanced deep dive다.
+  G1 vs ZGC, low latency GC, STW pause, p99 latency, allocation rate, live set 질문이 본 문서에 매핑된다.
+---
 # G1 GC vs ZGC
 
 > 한 줄 요약: G1은 균형 잡힌 기본 선택이고, ZGC는 짧은 멈춤 시간을 우선할 때 고려하는 저지연 GC다.

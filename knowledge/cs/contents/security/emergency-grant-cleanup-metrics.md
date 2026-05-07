@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Emergency Grant Cleanup Metrics
+concept_id: security/emergency-grant-cleanup-metrics
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- emergency grant cleanup metrics
+- leftover AOBO grant
+- leftover break glass grant
+- support access cleanup alert
+aliases:
+- emergency grant cleanup metrics
+- leftover AOBO grant
+- leftover break glass grant
+- support access cleanup alert
+- break glass cleanup alert
+- expired but active grant
+- emergency access expiry enforcement
+- delegated access sweeper
+- grant cleanup SLA
+- post incident grant review
+- operator safety metrics
+- approval orphan detection
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/incident-close-break-glass-gate.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/revocation-impact-preview-data-contract.md
+- contents/security/delegated-session-tail-cleanup.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Emergency Grant Cleanup Metrics 핵심 개념을 설명해줘
+- emergency grant cleanup metrics가 왜 필요한지 알려줘
+- Emergency Grant Cleanup Metrics 실무 설계 포인트는 뭐야?
+- emergency grant cleanup metrics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Emergency Grant Cleanup Metrics를 다루는 deep_dive 문서다. AOBO와 break-glass grant는 발급 순간보다 "언제 어떻게 완전히 끝났는가"가 더 중요하며, leftover active grant alerting, hard expiry enforcement, post-incident review가 없으면 emergency access는 조용한 상시 권한으로 변한다. 검색 질의가 emergency grant cleanup metrics, leftover AOBO grant, leftover break glass grant, support access cleanup alert처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Emergency Grant Cleanup Metrics
 
 > 한 줄 요약: AOBO와 break-glass grant는 발급 순간보다 "언제 어떻게 완전히 끝났는가"가 더 중요하며, leftover active grant alerting, hard expiry enforcement, post-incident review가 없으면 emergency access는 조용한 상시 권한으로 변한다.

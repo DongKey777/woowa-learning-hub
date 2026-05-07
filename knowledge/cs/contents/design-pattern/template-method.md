@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 템플릿 메소드 패턴
+concept_id: design-pattern/template-method
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- template-method-deep-dive
+- fixed-workflow-boundary
+- template-vs-strategy-next-step
+aliases:
+- template method deep dive
+- template method after basics
+- 기초 다음 템플릿 메소드
+- 부모가 흐름을 쥔다
+- 필수 빈칸 vs 선택 빈칸
+- hook method deep dive
+- abstract step deep dive
+- template method vs strategy quick check
+- 템플릿 메소드 선택 기준
+- fixed workflow inheritance
+- final template method
+- template method deep dive after framework examples
+symptoms:
+- 기초는 알겠는데 왜 final template method와 순서 통제가 중요한지 더 보고 싶어
+- hook를 어디까지 열고 언제 strategy로 넘겨야 하는지 다음 단계 기준이 필요해
+- 프레임워크 예시를 본 뒤 일반 설계 원리로 다시 정리하고 싶어
+intents:
+- deep_dive
+- design
+prerequisites:
+- design-pattern/template-method-basics
+- design-pattern/template-method-framework-lifecycle-examples
+- design-pattern/template-method-vs-strategy
+next_docs:
+- design-pattern/template-hook-smells
+- design-pattern/template-method-vs-filter-interceptor-chain
+- design-pattern/pattern-selection
+linked_paths:
+- contents/design-pattern/template-method-basics.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/design-pattern/template-method-vs-filter-interceptor-chain.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/pattern-selection.md
+confusable_with:
+- design-pattern/template-method-vs-strategy
+- design-pattern/composition-over-inheritance-basics
+forbidden_neighbors: []
+expected_queries:
+- template method를 기초 다음 단계로 더 깊게 보고 싶어요
+- final template method가 왜 중요한가요
+- 순서를 보호하는 상속 구조와 strategy 분리 기준을 같이 보고 싶어요
+- framework 예시를 보고 나서 template method 설계 원리를 정리하고 싶어요
+- hook를 많이 열면 어떤 문제가 생기나요 전 단계 설명이 필요해요
+contextual_chunk_prefix: |
+  이 문서는 template method primer와 framework example 문서 다음 단계의 deep_dive다.
+  순서 통제, final template method, 필수 단계와 hook의 설계 경계,
+  strategy로 분리해야 하는 순간을 한 단계 더 구조적으로 설명해서
+  beginner가 shallow primer에서 설계 판단 기준으로 넘어가게 만든다.
+---
 # 템플릿 메소드 패턴
 
 > 한 줄 요약: 공통 알고리즘의 순서는 상위 클래스가 고정하고, 바뀌는 단계만 하위 클래스가 구현하는 패턴이다.

@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: 시스템 설계 면접 프레임워크
+concept_id: system-design/system-design-framework
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- requirements-before-design
+- capacity-estimation-tradeoff
+- failure-mode-first-design
+aliases:
+- system design interview framework
+- 시스템 설계 면접 프레임워크
+- system design requirements capacity tradeoffs
+- capacity estimation bottleneck failure modes
+- high level design data model bottleneck review
+- 설계 면접 요구사항 정리
+- 시스템 설계 트레이드오프 설명
+- control plane data plane 면접
+- hot key consistency rollback design interview
+- system design 답변 순서
+symptoms:
+- 시스템 설계 면접에서 요구사항부터 어떻게 잡아야 할지 모르겠어
+- capacity estimation 숫자를 왜 계산하는지 감이 안 와
+- 설계 선택의 tradeoff를 어떻게 말해야 하는지 막혀
+intents:
+- design
+- deep_dive
+prerequisites:
+- system-design/system-design-foundations
+- system-design/back-of-envelope-estimation
+next_docs:
+- system-design/back-of-envelope-estimation
+- system-design/request-path-failure-modes-primer
+- system-design/control-plane-data-plane-separation-design
+- system-design/feature-flag-control-plane-design
+- system-design/rate-limit-config-service-design
+- system-design/multi-region-active-active-design
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/rate-limit-config-service-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/database/index-and-explain.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- system-design/system-design-foundations
+- system-design/back-of-envelope-estimation
+- system-design/control-plane-data-plane-separation-design
+forbidden_neighbors: []
+expected_queries:
+- 시스템 설계 면접에서 요구사항, 숫자 추정, 병목 검토 순서를 어떻게 잡아?
+- capacity estimation을 대충이라도 왜 해야 하는지 예시로 설명해줘
+- high level design을 그리고 나서 bottleneck과 failure mode를 어떻게 점검해?
+- cache queue replica 같은 선택지의 tradeoff를 면접에서 어떻게 말하지?
+- system design 답변이 기능 나열처럼 보이지 않게 만드는 프레임워크가 필요해
+contextual_chunk_prefix: |
+  이 문서는 system design interview에서 모호한 요구사항을 명확히 하고 capacity estimation, high-level design, data model, bottleneck review, reliability, security, tradeoff 설명 순서로 답변을 구성하는 advanced playbook이다.
+  요구사항을 먼저 고정하는 이유, QPS와 저장량을 추정하는 목적, hot key와 DB 병목을 어떻게 찾는지, cache queue replica sync async SQL NoSQL 중 왜 특정 선택을 했는지 설명하는 자연어 paraphrase가 본 문서에 매핑된다.
+---
 # 시스템 설계 면접 프레임워크
 
 > 한 줄 요약: 모호한 요구사항을 숫자와 트레이드오프로 구체화해, 설계 선택의 이유를 설명하는 방법을 정리한다.

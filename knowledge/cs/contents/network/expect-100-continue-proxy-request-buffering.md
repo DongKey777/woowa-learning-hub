@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: "Expect 100-continue, Proxy Request Buffering"
+concept_id: network/expect-100-continue-proxy-request-buffering
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- expect-100-continue
+- proxy-request-buffering
+- large-upload-early-reject
+aliases:
+- Expect 100-continue
+- proxy request buffering
+- 417 Expectation Failed
+- large upload early reject
+- auth before body
+- continue timeout
+symptoms:
+- 큰 업로드에서 Expect 100-continue가 있어도 proxy buffering 때문에 early reject 이득이 사라진다
+- 417 Expectation Failed를 app validation 실패와 protocol expectation 처리 실패로 구분하지 못한다
+- 인증/권한 거절을 body upload 전에 끝내려는데 gateway와 origin의 buffering 정책이 충돌한다
+- unread request body drain 없이 early reject를 해서 keep-alive reuse가 깨진다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/api-gateway-reverse-proxy-operational-points
+- network/gateway-buffering-vs-spring-early-reject
+next_docs:
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/proxy-to-container-upload-cleanup-matrix
+- network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+linked_paths:
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/http2-upload-early-reject-rst-stream-flow-control-cleanup.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+confusable_with:
+- network/gateway-buffering-vs-spring-early-reject
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/proxy-to-container-upload-cleanup-matrix
+- network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+- "Expect 100-continue는 큰 request body를 보내기 전에 어떻게 early reject를 가능하게 해?"
+- "Proxy request buffering이 켜져 있으면 100 Continue의 이점이 왜 사라질 수 있어?"
+- "417 Expectation Failed와 auth before body reject를 어떻게 구분해?"
+- "대용량 업로드에서 gateway가 401 413 429를 body 전에 거절하려면 무엇을 맞춰야 해?"
+- "early reject 뒤 unread request body를 drain하지 않으면 keep-alive 재사용이 왜 깨져?"
+contextual_chunk_prefix: |
+  이 문서는 Expect: 100-continue, proxy_request_buffering, large upload,
+  early auth/quota/size reject, 417, continue timeout, unread body drain,
+  keep-alive reuse를 다루는 advanced upload/proxy playbook이다.
+---
 # Expect 100-continue, Proxy Request Buffering
 
 > 한 줄 요약: `Expect: 100-continue`는 큰 요청 본문을 보내기 전에 앞단이 먼저 승인할 기회를 주지만, proxy request buffering과 gateway 체인이 이를 삼키면 early reject 대신 업로드 지연과 417 혼선만 남는다.

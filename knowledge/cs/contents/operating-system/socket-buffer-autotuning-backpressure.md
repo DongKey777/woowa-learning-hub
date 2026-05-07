@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Socket Buffer Autotuning Backpressure
+concept_id: operating-system/socket-buffer-autotuning-backpressure
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- socket-buffer-autotuning
+- backpressure
+- tcp-receive-send
+- buffer-backpressure
+aliases:
+- socket buffer autotuning
+- TCP receive send buffer backpressure
+- ss -m socket memory
+- network backpressure
+- kernel socket buffer
+- bufferbloat latency
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/ephemeral-ports-time-wait-reuse-recovery.md
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+symptoms:
+- socket buffer가 커져 throughput은 유지되지만 latency와 memory usage가 커진다.
+- send/receive buffer가 network speed mismatch를 흡수하면서 application backpressure가 늦게 전달된다.
+- ss -m에서 socket memory growth를 보고 buffer autotuning과 pressure를 해석해야 한다.
+expected_queries:
+- socket buffer는 단순 저장 공간이 아니라 backpressure를 전달하는 장치야?
+- TCP send/receive buffer autotuning은 throughput과 latency에 어떤 tradeoff가 있어?
+- ss -m으로 socket memory와 backpressure를 어떻게 확인해?
+- buffer가 너무 크면 network latency와 memory pressure가 커질 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 socket buffer를 단순 저장 공간이 아니라 kernel이 network speed mismatch를 흡수하며
+  backpressure를 전달하는 buffer로 설명한다. autotuning, latency, memory pressure, ss -m을 함께 본다.
+---
 # Socket Buffer Autotuning, Backpressure
 
 > 한 줄 요약: socket buffer는 단순 저장 공간이 아니라, 커널이 네트워크 속도 차를 흡수하면서 backpressure를 전달하는 핵심 완충 장치다.

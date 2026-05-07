@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Browser Asset `404` vs API `404` Mix-up Mini Card"
+concept_id: network/browser-asset-404-vs-api-404-mixup-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/backend
+review_feedback_tags:
+- browser-devtools-404-triage
+- api-prefix-routing
+- static-asset-false-alarm
+aliases:
+- browser asset 404
+- api 404 mixup
+- favicon 404 false alarm
+- missing api prefix 404
+- no static resource 404
+- browser initiator 404 check
+symptoms:
+- DevTools에 404가 보이자마자 도메인 리소스 없음으로 단정한다
+- favicon.ico나 assets 요청 실패를 API 실패와 섞어서 읽는다
+- /api prefix 누락이나 SPA fallback 누락을 서비스 조회 실패로 오해한다
+- ProblemDetail 모양만 보고 controller까지 도달한 도메인 404라고 확정한다
+intents:
+- troubleshooting
+- symptom
+- comparison
+prerequisites:
+- network/http-status-codes-basics
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/browser-devtools-response-body-ownership-checklist
+- network/ssr-view-render-vs-json-api-response-basics
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- spring/problemdetail-error-response-design
+linked_paths:
+- contents/network/spring-404-problemdetail-framework-vs-domain-bridge.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/spring/spring-problemdetail-error-response-design.md
+confusable_with:
+- network/browser-devtools-response-body-ownership-checklist
+- network/ssr-view-render-vs-json-api-response-basics
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- spring/problemdetail-error-response-design
+forbidden_neighbors: []
+expected_queries:
+- "브라우저 Network 탭에서 favicon.ico 404가 보이는데 API 오류인지 어떻게 구분해?"
+- "404가 떴을 때 /api prefix 누락인지 도메인 not found인지 먼저 무엇을 봐?"
+- "Spring ProblemDetail 404가 controller까지 간 응답인지 static resource 실패인지 헷갈려"
+- "DevTools Initiator와 Accept 헤더로 asset 404와 API 404를 나누는 법을 알려줘"
+- "SPA 경로 새로고침 404와 API 리소스 없음 404를 어떻게 분리해?"
+contextual_chunk_prefix: |
+  이 문서는 브라우저 DevTools에서 404를 볼 때 favicon, static asset,
+  missing api prefix, SPA fallback 같은 asset/path false alarm과 실제 API
+  domain 404를 URL, Initiator, Accept, response body owner 순서로 나누는
+  beginner symptom router다.
+---
 # Browser Asset `404` vs API `404` Mix-up Mini Card
 
 > 한 줄 요약: `404`를 보자마자 도메인 오류로 읽지 말고 먼저 `URL`과 `Initiator`를 보면, `favicon.ico`, 빠진 `/api` prefix, 잘못된 프런트 경로처럼 "비즈니스와 무관한 false alarm `404`"를 30초 안에 걸러낼 수 있다.

@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring @Configuration proxyBeanMethods and BeanPostProcessor Chain
+concept_id: spring/configuration-proxybeanmethods-beanpostprocessor-chain
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- configuration-proxybeanmethods-beanpostprocessor
+- chain
+- configuration-proxybeanmethods
+- cglib-configuration-class
+aliases:
+- @Configuration proxyBeanMethods
+- CGLIB configuration class
+- full configuration lite configuration
+- inter-bean reference
+- BeanPostProcessor chain
+- singleton semantics
+- proxyBeanMethods false
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-full-vs-lite-configuration-examples.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/spring/spring-cache-abstraction-traps.md
+- contents/spring/ioc-di-container.md
+expected_queries:
+- @Configuration proxyBeanMethods는 왜 기본 true야?
+- proxyBeanMethods=false를 쓰면 @Bean 메서드 내부 호출이 어떻게 달라져?
+- full configuration과 lite configuration 차이를 예시로 설명해줘.
+- BeanPostProcessor chain은 @Configuration proxy와 어떤 순서로 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 @Configuration, @Bean, proxyBeanMethods, CGLIB configuration class,
+  inter-bean method call, singleton semantics, full/lite configuration,
+  BeanPostProcessor chain을 연결한다. 설정 클래스 내부 foo() 호출이 컨테이너를
+  거치는지, Boot auto-configuration이 왜 proxyBeanMethods=false를 쓰는지 설명한다.
+---
 # Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain
 
 > 한 줄 요약: `@Configuration`의 프록시와 `BeanPostProcessor` 체인은 Bean 생성의 "언제"와 "어떻게 감쌀 것인가"를 결정하는 Spring의 핵심 확장 지점이다.

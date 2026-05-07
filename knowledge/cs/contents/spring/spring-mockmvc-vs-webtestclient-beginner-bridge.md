@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring MockMvc vs WebTestClient Beginner Bridge
+concept_id: spring/mockmvc-vs-webtestclient-beginner-bridge
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- mockmvc-vs-webtestclient
+- mockmvc
+- webtestclient
+- servlet-stack-test
+aliases:
+- MockMvc vs WebTestClient
+- Spring MockMvc beginner
+- Spring WebTestClient beginner
+- servlet stack test
+- WebFlux test
+- MVC controller test
+- reactive test client
+intents:
+- comparison
+- definition
+linked_paths:
+- contents/spring/spring-testing-basics.md
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-jsontest-restclienttest-slice-boundaries.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+confusable_with:
+- spring/spring-testing-basics
+- spring/webflux-vs-mvc
+- spring/webclient-vs-resttemplate
+- software-engineering/testing-strategy-and-test-doubles
+expected_queries:
+- MockMvc와 WebTestClient는 Spring 테스트에서 어떻게 달라?
+- Spring MVC controller test는 MockMvc를 먼저 떠올리면 돼?
+- WebFlux endpoint는 왜 WebTestClient가 자연스러워?
+- 실제 서버를 띄운 HTTP 호출은 E2E와 app integration test 중 무엇에 가까워?
+contextual_chunk_prefix: |
+  이 문서는 MockMvc와 WebTestClient를 서버 stack 기준으로 구분하는 beginner bridge다.
+  MockMvc는 servlet Spring MVC controller를 mock servlet 환경에서 검증하는 도구이고,
+  WebTestClient는 WebFlux/reactive endpoint 또는 실제 서버 호출에 쓰는
+  client-shaped test API라는 차이를 설명한다.
+---
 # Spring beginner bridge: `MockMvc`와 `WebTestClient`를 언제 구분해서 부르나
 
 > 한 줄 요약: `MockMvc`는 servlet stack의 Spring MVC를 서버 쪽에서 검증하는 도구이고, `WebTestClient`는 reactive/WebFlux 쪽에서 많이 쓰는 클라이언트 모양 API라서, 초심자는 먼저 "`지금 내가 테스트하는 서버 stack이 무엇인가`"를 기준으로 둘을 나누면 덜 헷갈린다.

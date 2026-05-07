@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Language Category Navigator
+concept_id: language/category-navigator
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-beginner-route
+- equality-collections-route
+- language-category-navigation
+aliases:
+- language category navigator
+- language readme
+- java beginner route
+- java 처음 어디부터
+- language category index
+- java equality collections route
+- java spring database handoff
+- 자바 초보 학습 순서
+- language 빠른 탐색
+symptoms:
+- Java 초보 질문이 객체 생성, equality, collections, Optional 중 어디에 속하는지 먼저 분기하지 못해
+- save, Repository, Transactional, SQL 같은 단어가 섞여 language, spring, database 사이 이동 경로가 필요해
+- HashSet size, Map get null, Optional null 질문이 각각 따로 보이지만 같은 입구에서 정리돼야 해
+intents:
+- definition
+- troubleshooting
+- mission_bridge
+prerequisites: []
+next_docs:
+- language/java-execution-object-memory-mental-model-primer
+- language/java-equality-identity-basics
+- language/java-collections-basics
+- language/optional-collections-domain-null-handling-bridge
+- spring/request-pipeline-bean-container
+- database/sql-relational-modeling-basics
+linked_paths:
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/database/sql-reading-relational-modeling-primer.md
+confusable_with:
+- spring/request-pipeline-bean-container
+- database/sql-relational-modeling-basics
+- data-structure/backend-data-structure-starter-pack
+forbidden_neighbors: []
+expected_queries:
+- Java를 처음 배우는데 new 객체 equals collections Optional 중 어디부터 읽어야 해?
+- HashSet은 왜 하나로 보이고 HashMap get은 왜 null인지 빠르게 갈라줘
+- 자바 질문을 읽다가 save Repository Transactional SQL로 넓어질 때 어느 카테고리로 가야 해?
+- List Set Map Optional enum null 질문을 초보자 순서로 정리해줘
+- language README에서 Java beginner 문서와 Spring Database handoff 경로를 찾아줘
+contextual_chunk_prefix: |
+  이 문서는 language 카테고리의 Java beginner route와 C++/coroutine deep-dive route를 연결하는 navigator primer다.
+  new 객체 생성, class object instance, == equals hashCode, List Set Map, Optional null enum, Spring Database handoff, language README 빠른 탐색 질문이 본 문서에 매핑된다.
+---
 # Language
 
 **난이도: 🔴 Advanced**

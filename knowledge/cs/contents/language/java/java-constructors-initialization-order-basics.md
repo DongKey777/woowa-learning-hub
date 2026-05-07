@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java Constructors and Initialization Order Basics
+concept_id: language/java-constructors-initialization-order-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/racingcar
+review_feedback_tags:
+- constructor
+- initialization-order
+- oop-basics
+aliases:
+- Java 생성자와 초기화 순서 입문
+- java constructor chaining basics
+- this super constructor call order
+- static instance initializer order
+- parent child constructor order
+- 자바 this super 생성자 순서
+symptoms:
+- 생성자 첫 줄에 this나 super가 왜 와야 하는지 몰라 같은 클래스 생성자 연결과 부모 생성자 호출을 섞어
+- field initializer, instance block, constructor body 실행 순서를 추적하지 못해 객체 초기 상태를 잘못 읽어
+- static 초기화와 instance 초기화가 언제 몇 번 실행되는지 구분하지 못해 클래스 로딩과 객체 생성 시점을 혼동해
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-methods-constructors-practice-primer
+- language/java-execution-object-memory-mental-model-primer
+next_docs:
+- language/class-initialization-ordering
+- language/immutable-objects-and-defensive-copying
+- software-engineering/dependency-injection-basics
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/class-initialization-ordering.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/software-engineering/dependency-injection-basics.md
+confusable_with:
+- language/java-methods-constructors-practice-primer
+- language/class-initialization-ordering
+- language/java-execution-object-memory-mental-model-primer
+forbidden_neighbors: []
+expected_queries:
+- Java 생성자에서 this와 super 호출 순서를 beginner 관점으로 설명해줘
+- field initializer와 instance initialization block과 constructor body는 어떤 순서로 실행돼?
+- 부모 자식 클래스 생성자 실행 순서를 예제로 보여줘
+- static 초기화 블록과 instance 초기화 블록은 언제 몇 번 실행돼?
+- 생성자의 첫 줄에 this나 super만 올 수 있는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java constructor chaining, this(), super(), field initializer, static/instance initialization block 순서를 beginner 관점에서 설명하는 primer다.
+  생성자 순서, this super, parent child constructor, initialization order, static block 질문이 본 문서에 매핑된다.
+---
 # Java 생성자와 초기화 순서 입문
 
 > 한 줄 요약: Java 입문자가 `this()`/`super()` constructor chaining, field 초기화 순서, `static` vs instance 초기화 블록을 한 흐름으로 연결해서 이해하도록 돕는 beginner primer다.

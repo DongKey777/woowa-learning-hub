@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: AuthZ Negative Cache Failure Case Study
+concept_id: security/authz-negative-cache-failure-case-study
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- authz negative cache
+- stale deny case study
+- concealment cache bug
+- tenant negative cache
+aliases:
+- authz negative cache
+- stale deny case study
+- concealment cache bug
+- tenant negative cache
+- 404 negative cache
+- ownership cache miss
+- authz failure case study
+- stale deny
+- grant but still denied
+- tenant-specific 403
+- only one tenant 403
+- inconsistent 401 404
+symptoms:
+- AuthZ Negative Cache Failure Case Study 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authorization-caching-staleness.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/authorization-graph-caching.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- AuthZ Negative Cache Failure Case Study 장애가 나면 복구 순서는?
+- authz negative cache 운영 대응 체크리스트가 뭐야?
+- AuthZ Negative Cache Failure Case Study에서 blast radius를 어떻게 줄여?
+- authz negative cache 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 AuthZ Negative Cache Failure Case Study를 다루는 playbook 문서다. 인가 negative cache는 miss 비용을 줄이지만, concealment policy와 tenant/ownership 경계가 섞이면 stale deny가 보안 이슈와 운영 이슈를 동시에 만들 수 있다. 검색 질의가 authz negative cache, stale deny case study, concealment cache bug, tenant negative cache처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # AuthZ Negative Cache Failure Case Study
 
 > 한 줄 요약: 인가 negative cache는 miss 비용을 줄이지만, concealment policy와 tenant/ownership 경계가 섞이면 stale deny가 보안 이슈와 운영 이슈를 동시에 만들 수 있다.

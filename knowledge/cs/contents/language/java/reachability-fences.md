@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Reachability Fences
+concept_id: language/reachability-fences
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- gc
+- native-resource
+- reachability
+aliases:
+- Reachability Fences
+- Reference.reachabilityFence
+- Java premature reclamation JIT liveness
+- strong reachability post-use fence
+- off-heap resource lifetime fence
+- 자바 reachabilityFence
+symptoms:
+- native handle이나 off-heap resource wrapper가 코드상으로는 아직 필요해 보이는데 JIT liveness 판단상 너무 일찍 죽을 수 있는 문제를 놓쳐
+- reachabilityFence를 cleanup 도구나 memory visibility fence로 오해해 close, Cleaner, try-with-resources와 역할을 섞어
+- finalizer나 Cleaner에 기대며 객체 lifetime과 resource lifetime을 명시적으로 관리하지 않아 premature cleanup 재현이 어려운 버그를 만든다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/cleaner-vs-finalize-deprecation
+- language/phantom-weak-soft-references
+- language/direct-buffer-offheap-memory-troubleshooting
+next_docs:
+- language/panama-foreign-memory-api-basics
+- language/jni-native-call-overhead
+- language/try-with-resources-suppressed-exceptions
+linked_paths:
+- contents/language/java/cleaner-vs-finalize-deprecation.md
+- contents/language/java/phantom-weak-soft-references.md
+- contents/language/java/jni-native-call-overhead.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+confusable_with:
+- language/phantom-weak-soft-references
+- language/cleaner-vs-finalize-deprecation
+- language/memory-barriers-varhandle-fences
+forbidden_neighbors: []
+expected_queries:
+- Reference.reachabilityFence는 객체가 메서드 끝까지 strongly reachable하도록 왜 보장해?
+- reachabilityFence는 Cleaner나 finalize 대체재가 아니라 liveness 보장 장치라는 뜻이 뭐야?
+- native handle wrapper나 off-heap resource에서 premature reclamation을 막기 위해 fence를 어디에 둬야 해?
+- reachability fence와 memory barrier VarHandle fence는 어떤 문제가 달라?
+- 자원 해제는 explicit close가 우선이고 reachabilityFence는 보조 안전장치라는 점을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Reference.reachabilityFence를 JIT liveness, premature reclamation, native/off-heap resource wrapper lifetime 관점에서 설명하는 advanced deep dive다.
+  reachabilityFence, strong reachability, premature reclamation, Cleaner, native resource 질문이 본 문서에 매핑된다.
+---
 # Reachability Fences
 
 > 한 줄 요약: `Reference.reachabilityFence()`는 JIT가 객체를 너무 일찍 죽은 것으로 오해해 cleanup보다 먼저 회수하는 일을 막기 위한 최종 가시성 보장 장치다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Rate Limiting 기초
+concept_id: system-design/rate-limiting-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- rate-limit-429-retry-after
+- token-bucket-vs-fixed-window
+- fair-resource-protection
+aliases:
+- rate limiting basics
+- rate limiter beginner
+- what is rate limiting
+- rate limit 처음 배우는데
+- rate limiter 뭐예요
+- 왜 429가 와요
+- 정상 사용자도 왜 막히나요
+- throttling 기초
+- token bucket 개념
+- fixed window rate limit
+- api 호출 제한
+- api gateway rate limit 기초
+symptoms:
+- 정상 사용자도 왜 429 rate limit에 걸리는지 모르겠어
+- Fixed Window와 Token Bucket 차이가 처음이라 헷갈려
+- Retry-After가 왔을 때 바로 재시도하면 왜 안 되는지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- system-design/system-design-foundations
+next_docs:
+- system-design/rate-limiter-design
+- system-design/api-gateway-basics
+- system-design/retry-amplification-and-backpressure-primer
+- network/timeout-retry-backoff-practical
+linked_paths:
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/api-gateway-basics.md
+- contents/system-design/system-design-foundations.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- system-design/rate-limiter-design
+- system-design/api-gateway-basics
+- system-design/retry-amplification-and-backpressure-primer
+forbidden_neighbors: []
+expected_queries:
+- rate limiting이 뭐고 왜 정상 사용자 요청도 429로 막힐 수 있어?
+- Fixed Window, Sliding Window, Token Bucket, Leaky Bucket 차이를 입문용으로 설명해줘
+- 429 Retry-After를 받으면 client는 어떻게 기다렸다 재시도해야 해?
+- 사용자별, IP별, API Key별 rate limit을 언제 나눠 적용해?
+- API Gateway에서 rate limit을 두는 이유와 서비스 내부 제한의 차이는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 rate limiting을 단위 시간당 요청 수를 제한해 서비스 과부하, 남용, 비용 폭증을 막는 기본 기법으로 설명하는 beginner primer다.
+  429 Retry-After, fixed window, sliding window, token bucket, leaky bucket, 사용자별 제한, IP별 제한, API key별 제한, throttling과 retry backoff를 묻는 자연어 질문이 본 문서에 매핑된다.
+---
 # Rate Limiting 기초 (Rate Limiting Basics)
 
 > 한 줄 요약: Rate Limiting은 단위 시간당 요청 수를 제한해 서비스를 과부하와 남용으로부터 보호하는 기법이다.

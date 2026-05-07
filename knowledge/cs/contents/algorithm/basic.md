@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 알고리즘 기본
+concept_id: algorithm/basic
+canonical: false
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- algorithm-basics-survey
+- brute-force-before-optimization
+- bfs-unweighted-shortest-path-handoff
+aliases:
+- algorithm basics
+- algorithm primer
+- 알고리즘 기본
+- 알고리즘 기초 전체
+- time complexity space complexity
+- brute force basics
+- dfs bfs basics
+- bfs shortest path
+- unweighted shortest path
+- minimum move count
+- maze shortest path
+- backtracking basics
+- divide and conquer
+- greedy overview
+- dynamic programming overview
+symptoms:
+- 알고리즘의 큰 목차를 한 번에 보고 시간복잡도, DFS/BFS, 그리디, DP 관계를 잡고 싶어
+- BFS가 무가중치 최단 경로에서 왜 시작점인지 헷갈려
+- 완전탐색에서 시작해서 시간복잡도 때문에 최적화한다는 흐름이 아직 안 잡혀
+intents:
+- deep_dive
+- definition
+prerequisites:
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/amortized-analysis-pitfalls
+- algorithm/binary-search-patterns
+- algorithm/graph
+- algorithm/dijkstra-bellman-ford-floyd-warshall
+- algorithm/backend-algorithm-starter-pack
+linked_paths:
+- contents/algorithm/time-complexity-intro.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/graph.md
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+confusable_with:
+- algorithm/backend-algorithm-starter-pack
+- algorithm/dfs-bfs-intro
+- algorithm/graph
+- algorithm/time-complexity-intro
+forbidden_neighbors: []
+expected_queries:
+- 알고리즘 기본 목차를 시간복잡도, DFS BFS, 백트래킹, 그리디, DP 순서로 보고 싶어
+- 완전탐색에서 시작해서 왜 복잡도를 줄이는 알고리즘을 찾아야 하는지 설명해줘
+- BFS가 무가중치 최단 경로와 최소 이동 횟수에서 왜 맞는지 알려줘
+- DFS와 BFS 이후 weighted shortest path는 어느 문서로 넘어가야 해?
+- 알고리즘 큰 그림을 본 뒤 backend algorithm starter와 어떻게 이어 읽으면 돼?
+contextual_chunk_prefix: |
+  이 문서는 알고리즘 기본 주제를 시간복잡도와 공간복잡도, brute force, DFS, BFS, backtracking, divide and conquer, greedy, dynamic programming으로 훑는 broad deep dive다.
+  알고리즘 큰 목차, 완전탐색에서 최적화로 가는 이유, BFS unweighted shortest path, 최소 이동 횟수, greedy와 DP 관계 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 알고리즘 기본
 
 **난이도: 🔴 Advanced**

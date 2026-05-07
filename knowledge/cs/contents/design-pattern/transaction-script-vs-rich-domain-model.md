@@ -1,8 +1,78 @@
+---
+schema_version: 3
+title: Transaction Script vs Rich Domain Model
+concept_id: design-pattern/transaction-script-vs-rich-domain-model
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- transaction-script
+- rich-domain-model
+- anemic-domain-model
+- domain-invariant
+aliases:
+- transaction script vs rich domain model
+- transaction script
+- rich domain model
+- anemic domain model
+- service layer orchestration
+- behavior rich aggregate
+- domain complexity threshold
+- command model vs patch model
+- 절차형 서비스와 풍부한 도메인 모델
+- 빈약한 도메인 모델
+symptoms:
+- 단순 CRUD까지 억지로 rich domain model로 만들거나, 복잡한 상태 전이를 service if문으로만 처리한다
+- 같은 상태 검증과 불변식이 여러 service method에 반복되어 진짜 규칙 소유자가 흐려진다
+- application service, aggregate, policy, repository, adapter 책임을 한 계층에 몰아넣는다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/invariant-preserving-command-model
+- design-pattern/domain-service-vs-pattern-abuse
+next_docs:
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/layered-validation-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/invariant-preserving-command-model.md
+- contents/design-pattern/domain-service-vs-pattern-abuse.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/layered-validation-pattern.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+confusable_with:
+- design-pattern/domain-service-vs-pattern-abuse
+- design-pattern/invariant-preserving-command-model
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/layered-validation-pattern
+forbidden_neighbors: []
+expected_queries:
+- Transaction Script와 Rich Domain Model은 CRUD, 상태 전이, 불변식 복잡도 기준으로 언제 갈라져?
+- 서비스 메서드에 같은 검증 if문이 반복되면 rich domain model로 옮겨야 하는 신호야?
+- 주문 취소 환불 정산처럼 상태 전이가 많은 도메인에서 transaction script가 위험해지는 이유가 뭐야?
+- Rich Domain Model을 써도 application service와 repository가 사라지지 않는 이유가 뭐야?
+- Anemic Domain Model 냄새와 단순 transaction script 스타일을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Transaction Script vs Rich Domain Model chooser로, CRUD 중심의 procedural service
+  flow와 state transition, invariant, aggregate behavior를 모델 안에 가두는 rich domain model을
+  domain complexity threshold 기준으로 선택하는 방법을 설명한다.
+---
 # Transaction Script vs Rich Domain Model
 
 > 한 줄 요약: Transaction Script는 유스케이스 흐름을 절차적으로 조립하는 데 강하고, Rich Domain Model은 복잡한 상태 전이와 불변식을 모델 안에 가둬 둘 때 강하다.
 
-**난이도: 🔴 Expert**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Aggregate Boundary vs Transaction Boundary](./aggregate-boundary-vs-transaction-boundary.md)

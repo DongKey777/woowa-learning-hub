@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Roaring runOptimize Timing Guide
+concept_id: data-structure/roaring-run-optimize-timing-guide
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-runoptimize-timing
+- cold-path-compression
+- repair-vs-runoptimize
+aliases:
+- Roaring runOptimize timing
+- when to call runOptimize
+- bulk built bitmap runOptimize
+- query result runOptimize
+- repairAfterLazy vs runOptimize
+- cold path runOptimize
+- stable bitmap compression
+symptoms:
+- runOptimize를 correctness 복구로 오해해 repairAfterLazy와 같은 경계로 본다
+- hot mutable bitmap에서 매번 runOptimize를 호출해 곧 깨질 run shape를 계속 재평가한다
+- bulk build, compaction, cold tier sealing, reusable query result handoff처럼 shape가 굳은 시점을 놓친다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/roaring-lazy-union-and-repair-costs
+next_docs:
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/roaring-production-profiling-checklist
+- data-structure/bitmap-locality-remediation
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-bitmap-wide-lazy-union-pipeline.md
+- contents/data-structure/roaring-lazy-union-and-repair-costs.md
+- contents/data-structure/roaring-andnot-result-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/bitmap-locality-remediation-playbook.md
+confusable_with:
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-container-transition-heuristics
+- data-structure/bitmap-locality-remediation
+forbidden_neighbors: []
+expected_queries:
+- Roaring runOptimize는 correctness repair가 아니라 compression finalize pass라는 뜻은?
+- repairAfterLazy와 runOptimize는 언제 역할이 달라져?
+- bulk build나 compact 직후 runOptimize를 호출하는 것이 좋은 이유는?
+- hot mutable bitmap에서 runOptimize를 자주 호출하면 왜 비용 회수가 어렵나?
+- cached query result handoff 전에 runOptimize를 걸지 판단하는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 Roaring runOptimize를 correctness repair가 아니라 shape가 굳은
+  bitmap을 cold path에서 run container로 재평가하는 compression finalize pass로
+  설명한다. repairAfterLazy와 runOptimize 역할, bulk build, compact, cache publish
+  타이밍을 다룬다.
+---
 # Roaring runOptimize Timing Guide
 
 > 한 줄 요약: `runOptimize()`는 correctness 복구가 아니라 **shape가 굳은 bitmap을 cold path에서 run container로 다시 압축하는 finalize pass**에 가깝고, bulk build/compact 직후나 재사용할 query result handoff에서 가장 값이 크다.

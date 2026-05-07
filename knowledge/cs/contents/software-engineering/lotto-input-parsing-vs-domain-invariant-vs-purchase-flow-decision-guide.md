@@ -48,10 +48,7 @@ confusable_with:
 - software-engineering/lotto-inputview-domain-conversion-boundary-bridge
 - software-engineering/lotto-domain-invariant-bridge
 - software-engineering/lotto-purchase-flow-service-layer-bridge
-forbidden_neighbors:
-- contents/software-engineering/lotto-inputview-domain-conversion-boundary-bridge.md
-- contents/software-engineering/lotto-domain-invariant-bridge.md
-- contents/software-engineering/lotto-purchase-flow-service-layer-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 로또 미션에서 문자열 split은 밖에서 하고 6개 중복 검사는 Lotto가 하라는 말이 정확히 어떻게 다른 거야?
 - InputView가 숫자 리스트를 만들고 service가 여러 장을 구매시키는 흐름에서 각 단계 책임을 어떻게 나눠?

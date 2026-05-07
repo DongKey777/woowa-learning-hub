@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Session Fixation in Federated Login
+concept_id: security/session-fixation-in-federated-login
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session fixation
+- federated login
+- login CSRF
+- session regeneration
+aliases:
+- session fixation
+- federated login
+- login CSRF
+- session regeneration
+- callback
+- IdP
+- state
+- nonce
+- session fixation attack
+- authenticated session
+- Spring Security
+- browser session coherence
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/open-redirect-hardening.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/session-fixation-clickjacking-csp.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Fixation in Federated Login 핵심 개념을 설명해줘
+- session fixation가 왜 필요한지 알려줘
+- Session Fixation in Federated Login 실무 설계 포인트는 뭐야?
+- session fixation에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Session Fixation in Federated Login를 다루는 deep_dive 문서다. federated login은 외부 IdP를 쓰더라도 세션 고정 공격이 사라지지 않는다. callback 이후 세션 재발급과 state 연동을 제대로 해야 login CSRF와 fixation을 같이 막을 수 있다. 검색 질의가 session fixation, federated login, login CSRF, session regeneration처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Session Fixation in Federated Login
 
 > 한 줄 요약: federated login은 외부 IdP를 쓰더라도 세션 고정 공격이 사라지지 않는다. callback 이후 세션 재발급과 state 연동을 제대로 해야 login CSRF와 fixation을 같이 막을 수 있다.

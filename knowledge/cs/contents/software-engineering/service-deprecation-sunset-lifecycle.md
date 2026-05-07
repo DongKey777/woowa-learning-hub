@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Service Deprecation and Sunset Lifecycle
+concept_id: software-engineering/service-deprecation-sunset-lifecycle
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- deprecation
+- sunset
+- service-lifecycle
+- consumer-migration
+aliases:
+- service deprecation sunset lifecycle
+- service sunset governance
+- tombstone lifecycle
+- replacement service migration
+- deprecation extension governance
+- 서비스 종료 수명주기
+symptoms:
+- service deprecation을 코드 삭제로만 처리해 남은 consumer, batch job, event topic, dashboard, alert rule을 관측하지 못해
+- deprecation notice, migration window, tombstone, hard delete 조건 없이 endpoint를 제거해 소비자 충격이 발생해
+- sunset extension과 allowlist가 공식 exception backlog가 아니라 DM이나 개인 시트로 관리돼 retire/absorb 판단이 흐려져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/service-ownership-catalog-boundaries
+next_docs:
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/compatibility-waiver-governance
+- software-engineering/service-portfolio-lifecycle-governance
+linked_paths:
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/consumer-exception-operating-model.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+confusable_with:
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/consumer-exception-model
+- software-engineering/service-portfolio-lifecycle-governance
+forbidden_neighbors: []
+expected_queries:
+- service deprecation을 단순 삭제가 아니라 consumer migration과 관측 가능한 sunset lifecycle로 설계하려면 어떻게 해야 해?
+- deprecation notice, 신규 사용 차단, tombstone, hard delete를 어떤 순서로 진행해야 안전해?
+- endpoint를 내리기 전에 마지막 호출 시각, consumer 식별, dashboard migration을 왜 확인해야 해?
+- sunset extension request를 consumer exception backlog와 연결해 retire 또는 absorb 판단하는 기준을 설명해줘
+- API는 지웠지만 batch job과 event consumer가 남아 있을 때 service sunset에서 무엇을 더 점검해야 해?
+contextual_chunk_prefix: |
+  이 문서는 서비스 deprecation을 공지, consumer migration, tombstone, 관측 유지, hard delete 조건으로 관리하는 advanced sunset lifecycle playbook이다.
+---
 # Service Deprecation and Sunset Lifecycle
 
 > 한 줄 요약: 서비스 deprecation은 오래된 API를 지우는 일이 아니라, 대체 경로와 관측 가능성을 유지한 채 소비자를 안전하게 이동시키는 수명 종료 관리다.

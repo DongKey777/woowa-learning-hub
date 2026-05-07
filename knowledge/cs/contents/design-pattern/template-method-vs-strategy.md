@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: ko
 source_priority: 88
+review_feedback_tags:
+- template-method-vs
+- strategy
+- template-method
+- hook-vs-strategy
 aliases:
 - template method vs strategy
 - template method
@@ -45,7 +50,6 @@ contextual_chunk_prefix: |
   주도권이 어디 있나, hook vs strategy, 상속 vs 구성 같은 자연어
   paraphrase가 본 문서의 두 분기에 매핑된다.
 ---
-
 # 템플릿 메소드 vs 전략
 
 > 한 줄 요약: 템플릿 메소드는 **부모가 흐름을 쥐고**, 전략은 **호출자가 전략을 고른다**. 즉 템플릿 메소드는 고정된 흐름 안의 필수 단계/선택적 hook을 상속으로 열고, 전략은 바뀌는 규칙 전체를 조합으로 갈아낀다.

@@ -9,6 +9,10 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+review_feedback_tags:
+- dependency-injection
+- constructor-injection
+- software-engineering
 aliases:
 - DI
 - Dependency Injection
@@ -19,6 +23,8 @@ intents:
 linked_paths:
 - contents/spring/spring-ioc-di-basics.md
 - contents/spring/ioc-di-container.md
+- contents/software-engineering/solid-principles-basics.md
+- contents/software-engineering/service-layer-basics.md
 expected_queries:
 - DI가 뭐야?
 - 왜 new 대신 주입받아?
@@ -32,7 +38,6 @@ contextual_chunk_prefix: |
   교체, 객체를 직접 만들지 않고 외부에서 받기 같은 자연어 paraphrase가 본
   문서의 큰 그림에 매핑된다.
 ---
-
 # 의존성 주입(DI) 기초 (Dependency Injection Basics)
 
 > 한 줄 요약: 의존성 주입은 객체가 필요한 협력 객체를 스스로 생성하지 않고 외부에서 받는 설계 방식이며, 테스트와 교체를 쉽게 만든다.

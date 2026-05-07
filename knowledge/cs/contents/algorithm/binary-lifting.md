@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Binary Lifting
+concept_id: algorithm/binary-lifting
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- binary-lifting
+- lca-kth-ancestor
+- tree-query-jump-table
+aliases:
+- binary lifting
+- ancestor query
+- LCA binary lifting
+- kth ancestor
+- jump table
+- sparse table style DP
+- tree path query
+- doubling technique
+- 트리 조상 질의
+symptoms:
+- 트리에서 k번째 조상을 한 칸씩 올라가며 매 질의 O(k)로 처리하려 한다
+- binary lifting이 일반 그래프에도 바로 적용된다고 오해해 부모가 하나로 정해지는 tree 전제를 놓친다
+- LCA에서 depth 맞추기와 큰 점프부터 같이 올리기 흐름을 구분하지 못한다
+intents:
+- deep_dive
+- definition
+- design
+prerequisites:
+- data-structure/tree-basics
+- algorithm/graph
+next_docs:
+- algorithm/binary-lifting-vs-hld
+- algorithm/rerooting-dp
+- data-structure/union-find-deep-dive
+linked_paths:
+- contents/algorithm/graph.md
+- contents/algorithm/topological-sort-patterns.md
+- contents/data-structure/union-find-deep-dive.md
+- contents/algorithm/rerooting-dp.md
+- contents/data-structure/tree-basics.md
+confusable_with:
+- algorithm/binary-lifting-vs-hld
+- algorithm/rerooting-dp
+- data-structure/union-find-deep-dive
+- data-structure/tree-basics
+forbidden_neighbors: []
+expected_queries:
+- Binary Lifting은 2^k 조상 jump table로 kth ancestor를 어떻게 빠르게 찾아?
+- LCA를 binary lifting으로 구할 때 depth를 맞춘 뒤 큰 점프부터 올리는 이유가 뭐야?
+- 트리가 아니라 일반 그래프에는 binary lifting을 그대로 쓰면 안 되는 이유가 뭐야?
+- 조직도나 카테고리 트리에서 상위 계층을 자주 묻는 질의를 어떻게 O(log n)으로 줄여?
+- up[k][v] 테이블은 up[k-1][up[k-1][v]]로 왜 채울 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Binary Lifting deep dive로, 트리에서 각 노드의 2^k번째 조상을
+  jump table에 저장해 kth ancestor, LCA, path query를 O(log n)에 처리하는
+  doubling technique을 설명한다.
+---
 # Binary Lifting
 
 > 한 줄 요약: Binary Lifting은 부모를 2^k 단위로 미리 점프해, 조상 조회와 경로 계산을 O(log n)으로 줄이는 테크닉이다.

@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: io_uring Provided Buffers Fixed Buffers Memory Pressure
+concept_id: operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- io-uring-provided
+- buffers-fixed-buffers
+- memory-pressure
+- receive-side-admission
+aliases:
+- io_uring provided buffers fixed buffers
+- receive-side admission control
+- fixed buffer pinning memory pressure
+- low-water resume-water
+- ENOBUFS reclaim stall OOM
+- cgroup memory cap io_uring
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-provided-buffer-group-sharding-size-cpu-numa.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-send-bundle-zerocopy-fixed-buffer-completion-accounting.md
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+symptoms:
+- sustained recv load에서 provided buffer pool이 부족해 -ENOBUFS, reclaim stall, OOM이 이어진다.
+- fixed buffer pinning과 cgroup memory limit을 계산하지 않아 memory pressure가 누적된다.
+- low-water와 resume-water 없이 receive admission을 열어 buffer exhaustion을 뒤늦게 본다.
+expected_queries:
+- io_uring provided buffer ring은 allocator 최적화가 아니라 receive-side admission control이야?
+- fixed buffer pinning과 cgroup memory cap을 함께 계산해야 하는 이유는?
+- low-water resume-water 없이 운영하면 ENOBUFS reclaim stall OOM이 이어질 수 있어?
+- multishot recv와 provided buffer pool sizing을 어떻게 잡아야 해?
+contextual_chunk_prefix: |
+  이 문서는 sustained receive load에서 provided buffer ring이 단순 allocator 최적화가 아니라
+  receive-side admission control이라는 점을 설명한다. fixed buffer pinning, cgroup memory cap,
+  low-water/resume-water 없이 운영하면 ENOBUFS, reclaim stall, OOM이 이어진다.
+---
 # io_uring Provided Buffer Rings, Fixed Buffers, Memory Pressure
 
 > 한 줄 요약: sustained receive load에서 `io_uring` provided buffer ring은 단순한 allocator 최적화가 아니라 **receive-side admission control**이다. multishot recv는 이 풀에서만 버퍼를 가져가므로, fixed buffer pinning과 cgroup 메모리 상한을 같이 계산한 low-water / resume-water 없이 운영하면 `-ENOBUFS`, reclaim stall, OOM이 한 줄로 이어진다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Browser Cache Toggles vs Alt-Svc DNS Cache Primer"
+concept_id: network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- browser-cache-experiment-baseline
+- alt-svc-cache-vs-http-cache
+- h3-discovery-cold-start
+aliases:
+- disable cache vs fresh profile
+- browser cache toggles
+- alt-svc cache vs dns cache
+- h3 discovery cache experiment
+- fresh profile h3 cache
+- close connection h3 test
+symptoms:
+- DevTools Disable cache를 켜면 Alt-Svc cache와 DNS cache도 같이 지워진다고 오해한다
+- 새 브라우저 profile과 Disable cache ON 실험을 같은 cold start로 취급한다
+- 기존 live connection을 닫지 않아도 H3 discovery가 다시 일어난다고 단정한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/browser-devtools-cache-trace-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+next_docs:
+- network/browser-devtools-disable-cache-on-off-experiment-card
+- network/browser-devtools-reload-hard-reload-disable-cache-primer
+- network/alt-svc-cache-lifecycle-basics
+- network/h3-discovery-observability-primer
+- network/https-rr-resolver-drift-primer
+linked_paths:
+- contents/network/browser-devtools-disable-cache-on-off-experiment-card.md
+- contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/https-rr-resolver-drift-primer.md
+- contents/network/browser-netlog-h3-alt-svc-https-rr-appendix.md
+confusable_with:
+- network/browser-devtools-cache-trace-primer
+- network/browser-devtools-disable-cache-on-off-experiment-card
+- network/alt-svc-cache-lifecycle-basics
+- network/h3-discovery-observability-primer
+- network/https-rr-resolver-drift-primer
+forbidden_neighbors: []
+expected_queries:
+- "DevTools Disable cache와 새 profile은 H3 관찰에서 무엇이 달라?"
+- "Alt-Svc cache와 DNS cache와 HTTP response cache 차이를 처음부터 설명해줘"
+- "Disable cache를 켰는데 왜 브라우저가 여전히 h2나 h3 연결을 재사용해?"
+- "H3 실험에서 기존 connection을 닫아야 하는 경우와 fresh profile을 써야 하는 경우를 구분해줘"
+- "브라우저 cache를 비운다는 말이 body cache인지 discovery cache인지 어떻게 나눠?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools Disable cache, hard reload, fresh profile, live connection
+  close가 HTTP response cache, Alt-Svc discovery cache, DNS HTTPS RR, 기존
+  H2/H3 connection에 서로 다르게 작용한다는 점을 정리하는 beginner primer다.
+---
 # Browser Cache Toggles vs Alt-Svc DNS Cache Primer
 
 

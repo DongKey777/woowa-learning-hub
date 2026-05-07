@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Optional Boolean Double Absence Follow Up Card
+concept_id: language/optional-boolean-double-absence-follow-up-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional
+- boolean
+- domain-state
+aliases:
+- Optional Boolean Double Absence Follow Up Card
+- Optional<Boolean> double absence
+- Optional boolean enum state type
+- tri state boolean optional
+- boolean null optional difference
+- Optional<Boolean> 왜 어색할까
+symptoms:
+- Optional<Boolean>에서 Optional.empty와 Boolean false의 의미를 섞어 미응답, 거절, 변경 없음 같은 상태를 코드 밖 주석에 의존해 해석해
+- 단순 yes/no인지 상태 이름이 세 개 이상 필요한지 구분하지 못해 boolean, Boolean, Optional<Boolean>, enum 선택을 혼동해
+- PATCH field absence, user unanswered, explicit false를 같은 Optional<Boolean> 한 칸에 넣어 API 의미가 흐려져
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-optional-basics
+- language/boolean-wrapper-null-condition-primer
+- language/optional-collections-domain-null-handling-bridge
+next_docs:
+- language/domain-state-type-primer-enum-record-value-object
+- language/java-enum-basics
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+linked_paths:
+- contents/language/java/java-optional-basics.md
+- contents/language/java/boolean-wrapper-null-condition-primer.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/java-enum-basics.md
+- contents/language/java/domain-state-type-primer-enum-record-value-object.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- language/boolean-wrapper-null-condition-primer
+- language/optional-collections-domain-null-handling-bridge
+- language/domain-state-type-primer-enum-record-value-object
+forbidden_neighbors: []
+expected_queries:
+- Optional<Boolean>가 왜 absence와 boolean state를 두 겹으로 만들어 헷갈릴 수 있어?
+- 미응답 동의 거절처럼 세 상태가 있으면 Optional<Boolean>보다 enum이 나은 이유가 뭐야?
+- PATCH에서 필드 미전달과 명시적 false를 Optional<Boolean>로 표현하면 어떤 문제가 생겨?
+- boolean Boolean Optional<Boolean> enum 중 상태 표현을 어떻게 고르면 좋아?
+- Optional<Boolean>를 보면 없음이 하나인지 상태 이름이 필요한지 먼저 자르는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Optional<Boolean>의 double absence와 tri-state ambiguity를 boolean, Boolean, enum, domain state type 선택으로 분리하는 beginner chooser다.
+  Optional Boolean, double absence, tri-state, enum state, PATCH field absence 질문이 본 문서에 매핑된다.
+---
 # `Optional<Boolean>`가 왜 자주 어색할까 follow-up card
 
 > 한 줄 요약: `Optional<Boolean>`는 바깥 `Optional`의 "없음"과 안쪽 `Boolean`이 끌고 오는 상태 해석이 겹치기 쉬워서, absence만 말하는지 아니면 상태 이름까지 필요한지 먼저 자른 뒤 `enum`이나 상태 타입으로 올리는 편이 초보자에게 더 읽기 쉽다.

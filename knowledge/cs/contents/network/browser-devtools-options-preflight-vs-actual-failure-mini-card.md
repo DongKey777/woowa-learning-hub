@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: "Browser DevTools `OPTIONS` Preflight vs Actual Request Failure 미니 카드"
+concept_id: network/browser-devtools-options-preflight-vs-actual-failure-mini-card
+canonical: false
+category: network
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- preflight-before-auth
+- actual-request-presence
+- cors-vs-auth-surface
+aliases:
+- devtools options preflight vs actual request
+- options only vs actual request
+- preflight blocked beginner
+- options 401 not auth
+- actual post 401 auth failure
+- devtools cors preflight card
+- 왜 options만 보여요
+- actual request 안 보여요
+- beginner devtools preflight
+- preflight vs actual failure
+- cors options first check
+- what is preflight in devtools
+symptoms:
+- "Network 탭에 `OPTIONS`만 보이고 실제 `GET`이나 `POST`는 안 보여서 요청이 출발도 못 한 건지 모르겠다"
+- "`OPTIONS 401`만 보고 인증 실패로 이해했는데 실제 요청이 아예 안 나간 건 아닌지 헷갈린다"
+- 콘솔에는 CORS 에러가 뜨는데 actual request row가 있는지 없는지부터 어떻게 읽어야 할지 막힌다
+intents:
+- drill
+prerequisites:
+- network/cross-origin-cookie-credentials-cors-primer
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/browser-devtools-error-path-cors-vs-actual-401-403-bridge
+- security/preflight-debug-checklist
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+linked_paths:
+- contents/network/browser-devtools-blocked-mixed-content-vs-cors-mini-card.md
+- contents/network/browser-devtools-error-path-cors-vs-actual-401-403-bridge.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/security/preflight-debug-checklist.md
+- contents/security/auth-failure-response-401-403-404.md
+confusable_with:
+- network/browser-devtools-blocked-mixed-content-vs-cors-mini-card
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- security/preflight-debug-checklist
+forbidden_neighbors:
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+expected_queries:
+- "preflight만 401이고 post는 아예 안 보일 때 어디서 끊긴 거야?"
+- "Network 탭에 options만 있고 실제 요청이 없으면 무엇부터 확인해?"
+- "CORS 에러가 뜨는데 actual api row가 안 찍히면 preflight 문제로 봐도 돼?"
+- "options는 실패했는데 get/post가 안 나가는 상황을 devtools에서 어떻게 읽어?"
+- "preflight 차단이랑 실제 인증 실패를 한 화면에서 구분하는 법이 뭐야?"
+contextual_chunk_prefix: |
+  이 문서는 학습자가 DevTools에서 `OPTIONS` preflight와 actual
+  `GET`/`POST`를 구분하지 못해 CORS 차단과 실제 인증 실패를 섞을 때
+  빠르게 분기하도록 돕는 network drill이다. options만 보임, actual
+  request가 안 보임, preflight 401인지 auth 401인지 헷갈림, 콘솔은
+  CORS인데 실제 row가 있나 같은 자연어 표현이 먼저 볼 증거 순서에
+  매핑되도록 설계했다.
+---
 # Browser DevTools `OPTIONS` Preflight vs Actual Request Failure 미니 카드
 
 > 한 줄 요약: DevTools에서 `OPTIONS`가 실패했다고 해서 곧바로 "API 요청이 실패했다"로 읽으면 자주 틀리고, 먼저 `actual GET/POST가 실제로 보이는지`부터 가르면 preflight 차단과 실제 인증/권한 실패를 분리할 수 있다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Set.of copyOf unmodifiableSet Read Only Primer
+concept_id: language/set-of-copyof-unmodifiableset-readonly-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- collection-immutability
+- set
+- defensive-copy
+aliases:
+- Set.of copyOf unmodifiableSet read only primer
+- Java read only Set snapshot vs view
+- Set.of duplicate exception
+- Set.copyOf snapshot beginner
+- Collections.unmodifiableSet view
+- 자바 읽기 전용 Set 차이
+symptoms:
+- Collections.unmodifiableSet을 원본과 분리된 immutable snapshot으로 오해해 원본 변경이 view에 비치는 문제를 놓쳐
+- Set.of와 Set.copyOf와 unmodifiableSet을 모두 같은 읽기 전용 API로 묶어 상수 집합, snapshot, view 차이를 설명하지 못해
+- Set.of의 duplicate exception과 Set.copyOf가 중복을 하나로 정리하는 동작을 섞어 factory 선택을 잘못해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/java-immutable-object-basics
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+next_docs:
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+- language/linkedhashset-order-dedup-mini-bridge
+- language/immutable-objects-and-defensive-copying
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/language/java/list-copyof-listof-unmodifiablelist-beginner-bridge.md
+- contents/language/java/map-of-copyof-unmodifiablemap-readonly-bridge.md
+- contents/language/java/linkedhashset-order-dedup-mini-bridge.md
+confusable_with:
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+- language/linkedhashset-order-dedup-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- Set.of Set.copyOf Collections.unmodifiableSet은 read-only set 의미가 어떻게 달라?
+- unmodifiableSet은 원본이 바뀌면 같이 바뀌는 view인지 snapshot인지 알려줘
+- Set.of는 중복 원소가 있으면 예외가 나고 Set.copyOf는 중복을 하나로 보는 차이를 설명해줘
+- 외부 컬렉션을 읽기 전용 Set으로 방어적 복사하려면 Set.copyOf가 왜 적합해?
+- List.copyOf Map.copyOf와 Set.copyOf read-only API를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Set.of, Set.copyOf, Collections.unmodifiableSet을 read-only constant, snapshot, view와 duplicate handling 차이로 구분하는 beginner chooser다.
+  Set.of, Set.copyOf, unmodifiableSet, read-only set, duplicate exception 질문이 본 문서에 매핑된다.
+---
 # `Set.of(...)` vs `Set.copyOf(...)` vs `Collections.unmodifiableSet(...)` 미니 프라이머
 
 > 한 줄 요약: 초보자 기준으로는 `Set.of(...)`를 "처음부터 읽기 전용으로 만든 상수 집합", `Set.copyOf(...)`를 "그 순간 따로 떠 놓은 읽기 전용 복사본", `Collections.unmodifiableSet(...)`를 "원본을 비추는 읽기 전용 창문"으로 기억하면 가장 덜 헷갈린다.

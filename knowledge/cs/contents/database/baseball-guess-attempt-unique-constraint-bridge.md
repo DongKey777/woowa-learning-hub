@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > baseball 추측 한 번은 "이번 게임의 몇 번째 시도인가"까지 포함한 사건이다. 그래서 `guess_history`를 쌓을 때는 `SELECT max(attempt_no) + 1` 같은 읽기 기반 계산보다 `(game_id, attempt_no)` 또는 요청 키를 DB가 직접 한 번만 인정하게 만드는 편이 덜 흔들린다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`max(attempt_no)+1`로 시도 번호를 만들었더니 중복돼요" | 두 guess POST가 같은 최대 시도 번호를 읽고 같은 다음 번호를 저장하는 race | attempt identity는 DB unique 제약으로 충돌시키는 편이 안전하다 |
+| "같은 추측 재전송과 진짜 다음 추측을 어떻게 구분해요?" | double submit과 user next turn이 모두 guess_history insert로 보이는 구조 | request id/idempotency key와 attempt_no의 역할을 나눈다 |
+| "duplicate key가 나면 무조건 실패 응답인가요?" | 이미 저장된 같은 action winner를 다시 읽어 설명할 수 있는 상황 | duplicate key 뒤 fresh read로 replay, busy, conflict를 분류한다 |
+
 ## 미션 시나리오
 
 콘솔 baseball에서는 한 사람 입력만 순서대로 들어오니 같은 턴이 두 번 기록될 일이 거의 없다. 하지만 웹으로 옮기면 `POST /games/{id}/guesses`가 새로고침, 더블 클릭, timeout 뒤 재전송으로 두 번 들어올 수 있다. 이때 서비스가 "`현재 최대 시도 횟수`를 읽고 `+1`"로 새 row를 만들면, 두 요청이 같은 `attempt_no = 4`를 잡거나 반대로 같은 의미의 추측이 4번과 5번으로 연달아 저장될 수 있다.

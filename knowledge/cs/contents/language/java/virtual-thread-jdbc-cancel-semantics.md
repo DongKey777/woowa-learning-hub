@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Virtual Thread JDBC Cancel Semantics
+concept_id: language/virtual-thread-jdbc-cancel-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 95
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- virtual-thread
+- jdbc-timeout
+- cancellation
+aliases:
+- Virtual-Thread JDBC Cancel Semantics
+- virtual thread JDBC cancel
+- Spring MVC JDBC query cancel
+- interrupt vs Statement.cancel
+- statement timeout network timeout
+- request timeout orphan query
+- JDBC 취소 semantics
+symptoms:
+- virtual thread request가 interrupt되면 이미 실행 중인 JDBC query도 자동으로 멈춘다고 가정해
+- servlet timeout, statement timeout, Statement.cancel, network timeout을 하나의 timeout으로 뭉개서 orphan query를 놓쳐
+- request abort나 streaming download abort 뒤 DB cursor와 statement cleanup을 별도 증거 없이 완료됐다고 판단해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/virtual-threads-project-loom
+- language/virtual-thread-framework-integration
+- language/thread-interruption-cooperative-cancellation-playbook
+next_docs:
+- language/jdbc-db-side-cancel-confirmation-playbook
+- language/jdbc-network-timeout-driver-socket-timeout-pool-eviction
+- language/jdbc-cursor-cleanup-download-abort
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/jdbc-db-side-cancel-confirmation-playbook.md
+- contents/language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md
+- contents/language/java/jdbc-cursor-cleanup-download-abort.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+confusable_with:
+- language/jdbc-observability-under-virtual-threads
+- language/jdbc-db-side-cancel-confirmation-playbook
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+forbidden_neighbors: []
+expected_queries:
+- virtual thread에서 request timeout이나 interrupt가 JDBC query cancel을 자동으로 보장하지 않는 이유가 뭐야?
+- Statement.setQueryTimeout, Statement.cancel, Connection.setNetworkTimeout 차이를 Spring MVC 경계에서 설명해줘
+- client disconnect 뒤 DB query가 계속 도는 orphan query를 줄이려면 어떤 cancel ladder가 필요해?
+- Spring transaction timeout이 JDBC statement timeout으로 이어지는지 어디까지 믿어도 돼?
+- JDBC cancel이 실제 DB에서 먹혔는지 PostgreSQL MySQL SQL Server별로 어떤 증거를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 virtual thread와 Spring MVC 환경에서 JDBC query cancellation을 interrupt, statement timeout, Statement.cancel, network timeout, connection abort 계층으로 나누는 advanced playbook이다.
+  request timeout, client disconnect, orphan query, JDBC cancel, Statement.cancel, SQLTimeoutException 질문이 본 문서에 매핑된다.
+---
 # Virtual-Thread JDBC Cancel Semantics
 
 > 한 줄 요약: Spring MVC 요청이 virtual thread 위에서 돈다고 해서 JDBC query cancel이 자동으로 맞물리지는 않는다. `interrupt`는 애플리케이션 취소 의도, statement timeout은 JDBC deadline, driver-specific `cancel()`은 실제 DB 중단 시도이며, 필요하면 `setNetworkTimeout`이나 connection abort까지 계층적으로 설계해야 orphan query를 줄일 수 있다.

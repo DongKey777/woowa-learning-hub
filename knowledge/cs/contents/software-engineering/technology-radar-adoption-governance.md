@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Technology Radar and Adoption Governance
+concept_id: software-engineering/technology-radar-adoption-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- technology-radar
+- adoption-governance
+- stack-standard
+- deprecation
+aliases:
+- technology radar adoption governance
+- tech radar lifecycle
+- assess trial adopt hold retire
+- stack governance
+- framework approval
+- 기술 레이더 채택 거버넌스
+symptoms:
+- technology radar를 좋은 기술 목록처럼만 운영하고 assess, trial, adopt, hold, retire 상태 전이와 owner가 없어 채택/퇴출이 실행되지 않아
+- 새 기술 도입에 문제 정의, 운영 책임, paved road 반영, 실패 시 철수 경로가 없어 trial이 영구 예외가 돼
+- hold나 retire만 선언하고 영향 서비스, 대체 기술, migration funding, sunset date가 없어 낡은 기술이 계속 남아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/platform-paved-road
+- software-engineering/adr-decision-records
+next_docs:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/dependency-update-blast-radius
+- software-engineering/service-bootstrap-governance
+linked_paths:
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/service-bootstrap-governance.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/dependency-update-blast-radius-management.md
+confusable_with:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/platform-paved-road
+- software-engineering/dependency-update-blast-radius
+forbidden_neighbors: []
+expected_queries:
+- technology radar는 기술 추천 목록이 아니라 assess, trial, adopt, hold, retire lifecycle이라는 뜻을 설명해줘
+- trial에서 adopt로 올릴 때 운영 지표, reference service, owner, migration path가 필요한 이유는?
+- adopt 기술에 escape hatch를 허용하되 ADR과 기간을 붙여 예외를 학습하는 방법은?
+- hold나 retire 기술을 실제로 퇴출하려면 영향 서비스, replacement, funding, sunset date를 어떻게 연결해야 해?
+- technology radar가 service template, dependency policy, architecture review, bootstrap defaults에 연결되어야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 technology radar를 assess, trial, adopt, hold, retire 상태와 owner, exit criteria, migration path가 있는 adoption governance playbook으로 다룬다.
+---
 # Technology Radar and Adoption Governance
 
 > 한 줄 요약: technology radar는 기술 선택을 유행이나 개인 취향으로 결정하지 않고, assess-trial-adopt-hold-retire 같은 상태와 책임을 붙여 조직의 채택과 퇴출을 관리하는 운영 장치다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "REST, WebSocket, SSE, gRPC, HTTP/2, HTTP/3 Choice Primer"
+concept_id: network/rest-websocket-sse-grpc-http2-http3-choice-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- protocol-choice
+- realtime-choice
+- beginner-network
+aliases:
+- REST WebSocket SSE gRPC HTTP2 HTTP3 choice
+- REST vs WebSocket vs SSE
+- gRPC vs REST beginner
+- transport choice primer
+- HTTP/2 vs HTTP/3 beginner
+- 언제 WebSocket 써요
+- SSE 뭐예요
+symptoms:
+- REST, WebSocket, SSE, gRPC, HTTP/2, HTTP/3를 모두 같은 층의 선택지로 본다
+- 대화 방식과 전송 길을 분리하지 못하고 HTTP/2를 REST의 대안처럼 설명한다
+- 실시간 기능이면 무조건 WebSocket을 고르고 단방향 알림 SSE를 놓친다
+intents:
+- comparison
+- design
+- definition
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/http-methods-rest-idempotency-basics
+- network/websocket-basics
+- network/sse-websocket-polling
+- network/grpc-vs-rest
+linked_paths:
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/websocket-basics.md
+- contents/network/sse-websocket-polling.md
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- network/sse-websocket-polling
+- network/grpc-vs-rest
+- network/http1-http2-http3-beginner-comparison
+- network/websocket-basics
+forbidden_neighbors: []
+expected_queries:
+- "REST WebSocket SSE gRPC HTTP/2 HTTP/3 중 무엇을 써야 해?"
+- "대화 방식과 전송 길을 나눠서 protocol choice를 설명해줘"
+- "실시간 알림은 SSE와 WebSocket 중 언제 고르면 돼?"
+- "gRPC와 REST는 어떻게 다르고 HTTP/2 HTTP/3와는 층이 어떻게 달라?"
+- "HTTP/2와 HTTP/3는 REST의 대안이 아니라 아래 transport인 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 network 카테고리에서 REST, WebSocket, SSE, gRPC, HTTP/2, HTTP/3 Choice Primer를 다루는 chooser 문서다. REST WebSocket SSE gRPC HTTP2 HTTP3 choice, REST vs WebSocket vs SSE, gRPC vs REST beginner, transport choice primer, HTTP/2 vs HTTP/3 beginner 같은 lexical 표현과 REST WebSocket SSE gRPC HTTP/2 HTTP/3 ì¤ ë¬´ìì ì¨ì¼ í´?, ëí ë°©ìê³¼ ì ì¡ ê¸¸ì ëë ì protocol choiceë¥¼ ì¤ëª
+  í´ì¤ 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # REST, WebSocket, SSE, gRPC, HTTP/2, HTTP/3 선택 입문
 
 > 한 줄 요약: REST, WebSocket, SSE, gRPC는 "어떤 대화 방식을 원하나"에 가깝고, HTTP/2, HTTP/3는 "그 대화를 어떤 길 위로 보내나"에 가깝다. 초보자는 이 두 축을 먼저 분리하면 선택이 훨씬 쉬워진다.

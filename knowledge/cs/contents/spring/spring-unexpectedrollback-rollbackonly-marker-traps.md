@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Spring UnexpectedRollbackException RollbackOnly Marker Traps
+concept_id: spring/unexpectedrollback-rollbackonly-marker-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- unexpectedrollback-rollbackonly-marker
+- traps
+- unexpectedrollbackexception-rollback-only
+- marker
+aliases:
+- UnexpectedRollbackException rollback-only marker
+- transaction marked rollback-only
+- catch and continue transaction
+- rollback-only trap
+- inner exception outer commit
+- hidden rollback signal
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-unexpectedrollbackexception-mini-debugging-card.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-transactiontemplate-programmatic-transaction-boundaries.md
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+confusable_with:
+- spring/unexpectedrollbackexception-mini-debugging-card
+- spring/transaction-propagation-required-requires-new-rollbackonly-primer
+- spring/transaction-propagation-nested-requires-new-case-studies
+symptoms:
+- 안쪽 예외를 catch했는데 바깥 method 마지막 commit에서 UnexpectedRollbackException이 난다.
+- 마지막 repository save가 문제처럼 보이지만 실제로는 이전 단계에서 rollback-only가 찍혔다.
+- REQUIRED propagation 안에서 실패를 삼키고 계속 진행해도 transaction은 이미 실패 예정이다.
+expected_queries:
+- UnexpectedRollbackException은 왜 갑자기 마지막에 터져?
+- transaction marked rollback-only가 찍히면 catch-and-continue가 왜 위험해?
+- 내부 예외를 잡았는데 outer commit이 실패하는 원인을 설명해줘
+- REQUIRES_NEW나 TransactionTemplate으로 rollback-only trap을 피하는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 UnexpectedRollbackException을 갑작스러운 예외가 아니라 이미 rollback-only marker가
+  찍힌 transaction을 outer boundary에서 commit하려 했다는 delayed signal로 설명한다.
+  catch-and-continue, REQUIRED propagation, TransactionTemplate 대안을 라우팅한다.
+---
 # Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps
 
 > 한 줄 요약: `UnexpectedRollbackException`은 예외를 "갑자기" 던지는 것이 아니라, 이미 rollback-only가 찍힌 트랜잭션을 바깥에서 커밋하려 했다는 사실을 뒤늦게 알려 주는 신호다.

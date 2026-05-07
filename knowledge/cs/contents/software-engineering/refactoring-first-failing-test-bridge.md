@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Refactoring and First Failing Test Bridge
+concept_id: software-engineering/refactoring-first-failing-test
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- refactoring
+- failing-test
+- code-review
+- test-strategy
+aliases:
+- Refactoring and First Failing Test Bridge
+- refactoring first failing test
+- first failing test bridge
+- 리팩토링 첫 테스트
+- 메서드가 너무 길어요 테스트 뭐부터
+- 가독성 피드백 다음 행동
+symptoms:
+- 메서드가 너무 길어요, 이름이 안 읽혀요, Controller가 너무 많은 걸 알아요 같은 리뷰를 받고 메서드 추출, 책임 이동, 이름 변경을 한 번에 하려 해
+- 리팩토링을 시작하기 전에 무엇이 깨지면 안 되는지 테스트 질문 1개를 고르지 않아 구조 변경과 동작 변경이 섞여
+intents:
+- troubleshooting
+- drill
+- definition
+prerequisites:
+- software-engineering/refactoring-basics
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/service-refactor-first-test-examples
+- software-engineering/refactor-commit-split
+- spring/spring-testing-basics
+linked_paths:
+- contents/software-engineering/refactoring-basics.md
+- contents/software-engineering/service-refactor-first-test-examples-pack.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/spring/spring-testing-basics.md
+- contents/software-engineering/refactor-commit-split-primer.md
+confusable_with:
+- software-engineering/refactor-commit-split
+- software-engineering/service-refactor-first-test-examples
+- software-engineering/test-strategy-basics
+forbidden_neighbors: []
+expected_queries:
+- 리팩토링 리뷰를 받았을 때 어떤 first failing test를 먼저 골라야 하는지 알려줘
+- 메서드가 너무 길어요라는 피드백을 규칙 질문 1개와 가장 싼 테스트로 바꾸는 방법은?
+- refactoring 전에 동작을 보호할 failing test를 먼저 만들고 구조 1단계만 바꾸는 이유가 뭐야?
+- Controller가 너무 많은 걸 안다는 리뷰면 WebMvcTest와 unit test 중 무엇을 먼저 골라야 해?
+- 리팩토링과 버그 수정 또는 기능 변경을 테스트와 커밋에서 분리해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Refactoring and First Failing Test Bridge를 다루는 bridge 문서다. Refactoring and First Failing Test Bridge, refactoring first failing test, first failing test bridge, 리팩토링 첫 테스트, 메서드가 너무 길어요 테스트 뭐부터 같은 lexical 표현과 리팩토링 리뷰를 받았을 때 어떤 first failing test를 먼저 골라야 하는지 알려줘, 메서드가 너무 길어요라는 피드백을 규칙 질문 1개와 가장 싼 테스트로 바꾸는 방법은? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # 리팩토링과 첫 failing test 연결 브리지
 
 > 한 줄 요약: `메서드가 너무 길어요`, `이름이 안 읽혀요` 같은 가독성 피드백을 들었을 때는 구조를 크게 바꾸기 전에 "지금 가장 먼저 깨져야 하는 규칙 1개"를 골라 첫 failing test로 잠그면 초심자도 더 안전하게 움직일 수 있다.

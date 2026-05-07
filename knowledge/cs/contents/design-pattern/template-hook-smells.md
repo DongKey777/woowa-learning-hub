@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: Template Hook Smells: 템플릿 메소드가 과해졌다는 신호
+title: 'Template Hook Smells: 템플릿 메소드가 과해졌다는 신호'
 concept_id: design-pattern/template-hook-smells
 canonical: false
 category: design-pattern

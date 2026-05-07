@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Spring Starter Dependency Map Primer
+concept_id: spring/starter-dependency-map-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- starter-dependency-map
+- boot-starter-dependency
+- map
+- starter-auto-configuration
+aliases:
+- Spring Boot starter dependency map
+- starter auto-configuration module SDK driver
+- starter dependency ownership
+- runtime implementation missing
+- auto configuration module vs starter
+intents:
+- definition
+- design
+linked_paths:
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-starter-condition-report-starter-drill.md
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-scanbasepackages-vs-import-autoconfiguration-selection.md
+expected_queries:
+- Spring Boot starter와 auto-configuration module, SDK driver는 각각 누가 소유해?
+- starter dependency 하나만 넣으면 구현 라이브러리까지 항상 들어와?
+- auto-configuration module과 runtime driver가 분리되어 있을 때 bean missing은 어떻게 생겨?
+- starter dependency map을 초급자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 starter를 소비자 앱이 잡는 entry dependency, auto-configuration module을 조건부
+  bean registration 규칙, SDK/driver를 실제 runtime implementation으로 나누어 설명한다.
+  선언 책임과 누락 증상을 dependency map으로 읽게 한다.
+---
 # Spring Starter Dependency Map 입문: starter, auto-configuration module, SDK/driver는 누가 소유하나
 
 > 한 줄 요약: starter는 소비자 앱이 잡는 "입구 dependency"이고, auto-configuration module은 조건부 bean 등록 규칙이며, SDK/driver는 실제 구현 클래스를 제공하는 런타임 부품이다. 셋이 한 덩어리처럼 보이지만 선언 책임과 누락 증상은 다르다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Bit-Sliced Bitmap Sort-Key Sensitivity
+concept_id: data-structure/bit-sliced-bitmap-sort-key-sensitivity
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- bsi-sort-key-locality
+- bitmap-prefix-locality
+- warehouse-row-ordering
+aliases:
+- bit sliced bitmap sort key
+- BSI sort key sensitivity
+- bit slice prefix locality
+- upper slice run length
+- segment boundary bitmap
+- numeric prefix clustering
+- bitmap sort order sensitivity
+symptoms:
+- 숫자 컬럼을 정렬하면 모든 bit slice가 똑같이 압축될 것이라고 오해한다
+- 평균 bitmap compression만 보고 upper slice locality와 lower slice noise 차이를 놓친다
+- segment boundary나 late-arriving rows가 slice run을 끊는 영향을 query 성능과 연결하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/bit-sliced-bitmap-index
+- data-structure/row-ordering-and-bitmap-compression-playbook
+next_docs:
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/late-arriving-rows-and-bitmap-maintenance
+linked_paths:
+- contents/data-structure/bit-sliced-bitmap-index.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/warehouse-sort-key-co-design-for-bitmap-indexes.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/late-arriving-rows-and-bitmap-maintenance.md
+confusable_with:
+- data-structure/bit-sliced-bitmap-index
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/warehouse-sort-key-co-design-for-bitmap-indexes
+- data-structure/roaring-run-formation-and-row-ordering
+forbidden_neighbors: []
+expected_queries:
+- Bit-Sliced Bitmap에서 sort key가 slice별 compression에 다르게 작용하는 이유는?
+- 숫자 컬럼 정렬이 상위 bit slice와 하위 bit slice에 왜 다르게 보이나?
+- BSI compression을 평균값만 보면 안 되고 prefix locality를 봐야 하는 이유를 알려줘
+- segment boundary가 bit slice run을 끊으면 range predicate 성능에 어떤 영향이 있어?
+- warehouse sort key를 BSI와 같이 설계할 때 무엇을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Bit-Sliced Bitmap Index의 압축 효율이 숫자 정렬 여부 하나가
+  아니라 bit position별 prefix locality와 segment boundary에 좌우된다는
+  점을 다룬다. upper slice run length, lower slice noise, warehouse sort
+  key, late-arriving rows, row ordering을 함께 판단한다.
+---
 # Bit-Sliced Bitmap Sort-Key Sensitivity
 
 > 한 줄 요약: Bit-Sliced Bitmap Index의 압축 효율은 "숫자 컬럼을 정렬했는가" 하나로 설명되지 않고, 각 bit slice가 어떤 prefix locality를 얻는지, 그 locality가 segment boundary를 넘어 유지되는지에 따라 다르게 갈린다.

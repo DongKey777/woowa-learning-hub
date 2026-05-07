@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Ordered Map Null Safe Practice Drill
+concept_id: language/ordered-map-null-safe-practice-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- navigablemap
+- null-handling
+aliases:
+- Ordered Map Null Safe Practice Drill
+- TreeMap null safe drill
+- NavigableMap boundary null practice
+- floorEntry ceilingEntry null when
+- lowerEntry higherEntry null boundary
+- 자바 TreeMap null 경계 드릴
+symptoms:
+- floorEntry ceilingEntry lowerEntry higherEntry가 null을 반환할 때 null key 때문이라고 오해하고 boundary 밖 이웃 없음이라는 의미를 놓쳐
+- first key보다 왼쪽이나 last key보다 오른쪽을 조회할 때 null이 되는 케이스를 손으로 예측하지 못해
+- lower와 floor, higher와 ceiling의 exact match 포함 여부를 섞어 ordered map lookup 결과를 한 칸씩 틀려
+intents:
+- drill
+- troubleshooting
+- definition
+prerequisites:
+- language/treemap-null-key-vs-nullable-field-primer
+- language/navigablemap-navigableset-mental-model
+- language/lower-vs-floor-exact-match-mini-drill
+next_docs:
+- language/ceiling-vs-higher-exact-match-mini-drill
+- language/submap-boundaries-primer
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/language/java/treemap-null-key-vs-nullable-field-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/lower-vs-floor-exact-match-mini-drill.md
+- contents/language/java/ceiling-vs-higher-exact-match-mini-drill.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/submap-boundaries-primer.md
+confusable_with:
+- language/treemap-null-key-vs-nullable-field-primer
+- language/lower-vs-floor-exact-match-mini-drill
+- language/ceiling-vs-higher-exact-match-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- TreeMap floorEntry ceilingEntry lowerEntry higherEntry가 언제 null이 되는지 드릴로 연습하고 싶어
+- NavigableMap에서 반환 null은 null key가 아니라 boundary 밖 이웃 없음이라는 뜻이야?
+- floor와 lower, ceiling과 higher는 exact match 포함 여부가 어떻게 달라?
+- 빈 TreeMap에서 ceilingEntry를 호출하면 왜 null이 나오는지 설명해줘
+- ordered map lookup에서 왼쪽 경계와 오른쪽 경계를 나눠 예측하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap/NavigableMap의 floorEntry, ceilingEntry, lowerEntry, higherEntry가 boundary 때문에 null을 반환하는 경우를 예측하는 beginner drill이다.
+  Ordered map null, TreeMap floorEntry, ceilingEntry, lowerEntry, higherEntry, boundary null 질문이 본 문서에 매핑된다.
+---
 # Ordered Map Null-Safe Practice Drill
 
 > 한 줄 요약: `TreeMap`/`NavigableMap`에서 `floorEntry`/`ceilingEntry`/`lowerEntry`/`higherEntry`가 언제 `null`이 되고 언제 non-null이 되는지, 왼쪽 경계와 오른쪽 경계를 분리해서 먼저 손으로 예측해 보는 초급 연습 카드다.

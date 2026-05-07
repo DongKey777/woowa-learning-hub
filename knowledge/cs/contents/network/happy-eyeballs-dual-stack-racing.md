@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Happy Eyeballs, Dual-Stack Racing"
+concept_id: network/happy-eyeballs-dual-stack-racing
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- dual-stack
+- connect-latency
+- ipv6-fallback
+aliases:
+- Happy Eyeballs
+- dual-stack racing
+- IPv6 fallback
+- connection racing
+- RFC 8305
+- address selection
+- v4 v6 preference
+symptoms:
+- AAAA와 A가 모두 있는데 특정 네트워크에서 첫 연결만 느리다
+- IPv6 경로 문제를 DNS 장애나 origin 앱 지연으로 오해한다
+- connect latency와 first byte latency를 구분하지 못한다
+- 주소 후보를 순차로 오래 기다려 사용자 체감 연결이 늦어진다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/dns-cdn-websocket-http2-http3
+- network/request-timing-decomposition
+next_docs:
+- network/dns-ttl-cache-failure-patterns
+- network/syn-retransmission-handshake-timeout
+- network/http3-quic-practical-tradeoffs
+- network/timeout-types-connect-read-write
+linked_paths:
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/syn-retransmission-handshake-timeout.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/syn-retransmission-handshake-timeout
+- network/request-timing-decomposition
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "Happy Eyeballs가 IPv6 IPv4 dual-stack 연결 지연을 줄이는 방식은?"
+- "AAAA 레코드가 있는데 특정 회사망에서만 connect latency가 느린 이유는?"
+- "IPv6 fallback과 DNS TTL cache failure를 어떻게 구분해?"
+- "dual-stack racing은 정확한 최적보다 체감 연결 시간을 왜 우선해?"
+- "Happy Eyeballs가 없으면 한 주소 후보를 오래 기다리는 문제가 왜 생겨?"
+contextual_chunk_prefix: |
+  이 문서는 Happy Eyeballs, IPv4/IPv6 dual-stack racing, address selection,
+  connect latency, IPv6 fallback, DNS와 path 품질 차이를 다루는 advanced
+  playbook이다.
+---
 # Happy Eyeballs, Dual-Stack Racing
 
 > 한 줄 요약: Happy Eyeballs는 IPv6와 IPv4를 순차적으로 시험해 느린 첫 연결을 피하는 전략이고, 핵심은 "정확한 최적"보다 "빠른 체감"이다.

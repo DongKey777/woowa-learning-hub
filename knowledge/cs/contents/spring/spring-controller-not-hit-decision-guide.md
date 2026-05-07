@@ -1,8 +1,86 @@
+---
+schema_version: 3
+title: Spring 컨트롤러 로그가 안 찍힐 때 첫 분기 결정 가이드
+concept_id: spring/spring-controller-not-hit-decision-guide
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- controller-not-hit-router
+- pre-controller-error-classification
+- body-security-mapping-split
+aliases:
+- spring controller not hit guide
+- controller log not printed
+- breakpoint not hit spring
+- request ends before controller
+- pre controller 400 415 302 403 404 405
+- 컨트롤러 로그 안 찍혀요
+- 브레이크포인트 안 걸려요
+- controller 전에 끝나요
+symptoms:
+- 컨트롤러 첫 줄 로그가 안 찍히는데도 서비스 로직이나 도메인 규칙부터 디버깅한다
+- 400, 415, 302, 403, 404, 405를 상태코드별 앞단 종료 위치로 분기하지 못한다
+- security filter chain, message converter, handler mapping 실패를 모두 interceptor 문제로 단정한다
+intents:
+- troubleshooting
+- comparison
+- symptom
+prerequisites:
+- spring/spring-mvc-request-lifecycle-basics
+- network/http-request-response-headers-basics
+next_docs:
+- spring/controller-not-hit-cause-router
+- spring/requestbody-400-before-controller-primer
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/admin-302-login-vs-403-beginner-bridge
+linked_paths:
+- contents/spring/spring-controller-not-hit-cause-router.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-404-405-vs-bean-wiring-confusion-card.md
+- contents/network/http-request-response-headers-basics.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- spring/controller-not-hit-cause-router
+- spring/requestbody-400-before-controller-primer
+- spring/requestbody-415-unsupported-media-type-primer
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/http-404-405-vs-bean-wiring-confusion-card
+forbidden_neighbors: []
+expected_queries:
+- 컨트롤러 로그가 안 찍힐 때 400 415 302 403 404 405 중 무엇부터 봐야 해?
+- Spring에서 breakpoint가 안 걸리면 request body 변환 실패인지 security인지 mapping인지 어떻게 나눠?
+- RequestBody 400이 controller 전에 끝나는지 확인하려면 어떤 문구를 봐야 해?
+- 브라우저가 login으로 redirect되면 controller가 아니라 security부터 봐야 하는 이유가 뭐야?
+- 404와 405가 보이면 bean wiring이 아니라 request mapping을 먼저 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring controller not hit chooser로, controller 로그나
+  breakpoint가 안 걸릴 때 400/415 body contract, 302/403 security,
+  404/405 mapping 실패를 먼저 분기한다.
+---
 # Spring 컨트롤러 로그가 안 찍힐 때 첫 분기 결정 가이드
 
 > 한 줄 요약: 컨트롤러가 안 탄다면 먼저 `400/415` 바인딩 축인지, `302/403` 보안 축인지, `404/405` 매핑 축인지부터 자르면 다음 문서가 빨라진다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "컨트롤러 첫 줄 로그가 안 찍히는데 어디서 끝나는지 모르겠어요" | API 디버깅에서 breakpoint가 안 걸리는 장면 | controller 전 400/415, security 302/403, mapping 404/405를 먼저 나눈다 |
+| "JSON POST인데 400, 415, 302가 번갈아 보여요" | 요청 body, media type, 로그인 세션 문제가 섞인 테스트 | body 계약, media type 계약, security 선차단을 분리한다 |
+| "서비스 로직 문제인 줄 알았는데 controller까지 못 들어와요" | 방탈출/쇼핑카트 요청 실패 첫 triage | 상태 코드와 응답 body 첫 줄로 다음 문서를 고른다 |
 
 이 문서는 "브레이크포인트가 안 걸려요", "컨트롤러 첫 줄 로그가 안 찍혀요", "JSON 요청인데 바로 에러가 나요"처럼 **서비스 로직 전에 요청이 끝나는 장면**을 처음 분기하는 chooser다. 핵심은 에러를 한 덩어리로 보지 않고, 요청이 어느 앞단에서 종료됐는지 먼저 가르는 것이다.
 

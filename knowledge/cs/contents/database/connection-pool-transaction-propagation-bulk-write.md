@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Connection Pool, Transaction Propagation, Bulk Write
+concept_id: database/connection-pool-transaction-propagation-bulk-write
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- connection-pool-starvation
+- transaction-boundary-propagation
+- bulk-write-operational-risk
+aliases:
+- connection pool transaction propagation bulk write
+- connection pool starvation
+- transaction boundary
+- transaction propagation
+- bulk write strategy
+- external call in transaction
+- long transaction
+- connection held too long
+- requires_new pool starvation
+- 커넥션 풀 고갈
+- 트랜잭션 경계와 전파
+symptoms:
+- DB 쿼리 하나는 빠른데 connection pool 대기 때문에 API latency가 길어지고 있어
+- 외부 API 호출이나 파일 작업을 트랜잭션 안에 넣어 커넥션을 오래 점유하고 있어
+- REQUIRES_NEW, retry, bulk write가 겹치며 pool starvation이나 긴 lock 범위를 만들고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/transaction-isolation-locking
+- database/jdbc-jpa-mybatis
+next_docs:
+- database/hikari-connection-pool-tuning
+- database/query-tuning-checklist
+- database/spring-retry-proxy-boundary-pitfalls
+- database/jdbc-code-patterns
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/jdbc-jpa-mybatis.md
+- contents/database/jdbc-code-patterns.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/database/query-tuning-checklist.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/query-tuning-checklist
+- database/hikari-connection-pool-tuning
+- database/transaction-isolation-locking
+forbidden_neighbors: []
+expected_queries:
+- DB가 느린 게 아니라 connection pool을 오래 잡고 있는 문제인지 어떻게 구분해?
+- 트랜잭션 안에서 외부 API 호출을 하면 connection pool과 lock 범위에 어떤 문제가 생겨?
+- Spring REQUIRED와 REQUIRES_NEW propagation이 pool starvation을 만들 수 있는 이유는 뭐야?
+- bulk write는 batch size와 commit chunk를 어떤 기준으로 나눠야 해?
+- getConnection부터 close까지 JDBC lifecycle 기준으로 커넥션 점유 시간을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 느린 쿼리 하나가 아니라 connection pool 점유 시간, transaction boundary, propagation, bulk write batch strategy가 만드는 운영 병목을 점검하는 advanced playbook이다.
+  connection pool starvation, external call in transaction, REQUIRES_NEW, bulk write, transaction boundary 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Connection Pool, Transaction Propagation, Bulk Write
 
 **난이도: 🔴 Advanced**

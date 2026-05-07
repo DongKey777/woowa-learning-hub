@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge"
+concept_id: network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- h3-discovery
+- alt-svc-https-rr
+- coalescing-guardrail
+aliases:
+- Alt-Svc vs HTTPS RR
+- HTTPS RR SVCB H3 discovery
+- first request H3
+- first request H2 next H3
+- discovery before coalescing
+- DNS H3 hint
+- Alt-Svc timeline
+symptoms:
+- 첫 요청이 h2이고 다음 새 연결이 h3인 Alt-Svc 흐름과 첫 요청부터 h3일 수 있는 HTTPS RR 흐름을 구분하지 못한다
+- H3 endpoint를 어디서 배웠는지 discovery 질문과 이미 열린 connection을 다른 origin에 같이 써도 되는지 coalescing 질문을 섞는다
+- 421을 보면 H3 discovery 자체가 틀렸다고 단정하고 wrong connection reuse guardrail 가능성을 놓친다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-header-reading-micro-note
+next_docs:
+- network/alt-svc-vs-https-rr-freshness-bridge
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/http2-http3-connection-reuse-coalescing
+linked_paths:
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/alt-svc-vs-https-rr-freshness-bridge.md
+- contents/network/stale-https-rr-h3-fallback-primer.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/security/https-tls-beginner.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-vs-https-rr-freshness-bridge
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/http2-http3-connection-reuse-coalescing
+- network/stale-https-rr-h3-fallback-primer
+forbidden_neighbors: []
+expected_queries:
+- Alt-Svc와 HTTPS RR은 브라우저가 H3 endpoint를 배우는 시점이 어떻게 달라?
+- 첫 요청은 h2이고 다음은 h3면 Alt-Svc이고 첫 요청부터 h3면 HTTPS RR 가능성을 보는 이유는?
+- H3 discovery와 connection coalescing reuse guardrail은 어떤 단계가 달라?
+- Alt-Svc나 HTTPS RR로 H3 후보를 알아도 다른 origin에 같은 connection을 바로 써도 되는 건 아니지?
+- 421이 discovery 실패가 아니라 wrong shared H3 reuse 교정일 수 있는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 H3 endpoint discovery를 Alt-Svc HTTP response hint와 DNS HTTPS RR/SVCB hint로
+  나누고, discovery가 connection coalescing guardrail 통과와는 별도 단계임을 설명한다.
+  first request H3/H2 차이와 421 recovery를 beginner bridge로 연결한다.
+---
 # Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge
 
 > 브라우저가 H3 endpoint를 언제 HTTP 응답의 `Alt-Svc`로 배우고, 언제 DNS의 HTTPS RR/SVCB로 먼저 아는지, 그리고 이 discovery가 왜 coalescing 판단의 입력일 뿐인지 이어 주는 beginner bridge

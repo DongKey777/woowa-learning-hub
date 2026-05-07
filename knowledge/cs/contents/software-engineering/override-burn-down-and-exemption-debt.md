@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Override Burn-Down and Exemption Debt
+concept_id: software-engineering/override-burndown-exemption-debt
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- override
+- exemption
+- waiver
+- governance-debt
+aliases:
+- Override Burn-Down and Exemption Debt
+- override burn down
+- exemption debt
+- waiver debt
+- exception backlog
+- override aging burn-down
+symptoms:
+- 만료일 없는 override, 반복 owner의 예외, permanent exemption, migration 끝났는데도 남은 waiver가 registry 없이 흩어져 있어
+- override count만 줄이고 왜 생겼는지, 왜 오래 남는지, 어떤 policy나 platform UX를 바꿔야 다시 안 생기는지 보지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/platform-policy-override-governance
+- software-engineering/consumer-exception-state-machine
+next_docs:
+- software-engineering/override-burndown-scorecards
+- software-engineering/migration-stop-loss-governance
+- software-engineering/architecture-exception-process
+linked_paths:
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+- contents/software-engineering/architecture-exception-process.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/consumer-exception-state-machine-review-cadence.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/platform-policy-override-governance
+- software-engineering/consumer-exception-model
+- software-engineering/migration-stop-loss-governance
+forbidden_neighbors: []
+expected_queries:
+- override와 exemption을 age, scope, repeated owner, exit condition 기준으로 burn-down debt로 관리하는 방법은?
+- compatibility waiver, policy override, migration exemption은 닫는 전략이 어떻게 달라?
+- repeated override owner가 개인 문제가 아니라 policy, runway, ownership boundary, platform UX 문제일 수 있는 이유가 뭐야?
+- override registry에는 owner, created_at, expires_at, compensating control, exit condition을 왜 남겨야 해?
+- override burn-down은 count 줄이기가 아니라 governance health improvement라는 의미를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 override와 exemption을 age, repeated owner, scope, exit condition이 있는 governance debt로 보고 registry와 burn-down cadence로 회수하는 advanced playbook이다.
+---
 # Override Burn-Down and Exemption Debt
 
 > 한 줄 요약: override와 exemption은 필요하지만 쌓여 두면 policy와 migration과 deprecation을 모두 느리게 만들기 때문에, age, scope, repeated owner, exit condition을 기준으로 burn-down 대상 부채로 관리해야 한다.

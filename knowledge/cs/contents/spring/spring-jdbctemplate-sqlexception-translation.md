@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring JdbcTemplate and SQLException Translation
+concept_id: spring/jdbctemplate-sqlexception-translation
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- jdbctemplate-sqlexception-translation
+- jdbctemplate
+- sqlexception-translation
+- dataaccessexception
+aliases:
+- JdbcTemplate
+- SQLException translation
+- DataAccessException
+- SQLExceptionTranslator
+- RowMapper
+- ResultSetExtractor
+- queryForObject
+- deadlock exception translation
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-template-classes-beginner-primer.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md
+- contents/spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md
+- contents/database/deadlock-case-study.md
+expected_queries:
+- JdbcTemplate의 SQLException translation은 왜 중요해?
+- SQLExceptionTranslator와 DataAccessException 계층은 어떤 역할을 해?
+- RowMapper와 ResultSetExtractor는 어떻게 구분해?
+- DB deadlock이나 duplicate key를 Spring 예외 계층으로 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 JdbcTemplate의 SQL 실행 편의뿐 아니라 SQLExceptionTranslator가
+  vendor-specific SQLException을 DataAccessException hierarchy로 바꾸는 가치를
+  설명한다. RowMapper, ResultSetExtractor, queryForObject, deadlock,
+  duplicate key, retry/error mapping 경계에 매핑되는 advanced deep dive다.
+---
 # Spring `JdbcTemplate` and `SQLException` Translation
 
 > 한 줄 요약: Spring JDBC의 핵심 가치는 SQL 실행 편의보다, 벤더별 `SQLException`을 `DataAccessException` 계층으로 번역해 재시도와 에러 매핑 경계를 안정화하는 데 있다.

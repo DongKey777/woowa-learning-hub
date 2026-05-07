@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Monotonic Write Guarantees
+concept_id: database/monotonic-write-guarantees
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- monotonic-write
+- write-ordering
+- sequence-gate
+- session-consistency
+aliases:
+- monotonic write
+- monotonic writes
+- write ordering
+- session write order
+- sequence gate
+- fencing epoch
+- retry reorders writes
+- 늦은 요청이 최신 값을 덮어요
+- 쓰기 순서가 뒤집혀요
+symptoms:
+- 같은 세션에서 뒤에 보낸 변경이 먼저 반영되고 늦은 retry가 최신 값을 덮어쓰고 있어
+- 상태 전이 API에서 PENDING APPROVED REJECTED 같은 write order가 뒤집혀 비즈니스 흐름이 깨져
+- profile이나 setting update가 거의 동시에 들어올 때 오래된 요청이 최신 변경을 원복해
+intents:
+- deep_dive
+- design
+prerequisites:
+- database/monotonic-reads-session-guarantees
+- database/read-your-writes-session-pinning
+next_docs:
+- database/client-consistency-tokens
+- database/causal-consistency-intuition
+- database/compare-and-set-version-columns
+linked_paths:
+- contents/database/monotonic-reads-session-guarantees.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/client-consistency-tokens.md
+- contents/database/causal-consistency-intuition.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/application-level-fencing-token-propagation.md
+confusable_with:
+- database/read-your-writes-session-pinning
+- database/compare-and-set-version-columns
+- database/application-level-fencing-token-propagation
+forbidden_neighbors: []
+expected_queries:
+- monotonic write는 read-your-writes와 무엇이 다르고 어떤 API에 필요해?
+- timeout retry가 늦게 도착해서 최신 변경을 덮는 문제를 sequence gate로 막는 법을 알려줘
+- 상태 전이 API에서 write ordering을 지키려면 어떤 token이나 fencing이 필요해?
+- 같은 사용자 세션의 profile update 순서가 뒤집히는 현상을 어떻게 설계로 막아?
+- monotonic write 보장이 필요한 경로와 필요 없는 경로를 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 monotonic write, session write order, sequence gate, fencing epoch으로 같은 세션의 쓰기 순서가 뒤집히지 않게 하는 advanced deep dive다.
+  늦은 retry가 최신 값을 덮음, write ordering 역전, 상태 전이 순서 보장 질문이 본 문서에 매핑된다.
+---
 # Monotonic Write Guarantees
 
 > 한 줄 요약: monotonic write는 같은 세션의 쓰기가 순서대로 반영된다는 약속이고, 라우팅이 뒤집히면 이 약속이 쉽게 깨진다.

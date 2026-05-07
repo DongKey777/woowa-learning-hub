@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: TreeMap Null Key vs Nullable Field Primer
+concept_id: language/treemap-null-key-vs-nullable-field-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- null-handling
+- comparator
+aliases:
+- TreeMap Null Key vs Nullable Field Primer
+- Java TreeMap null key nullable field
+- TreeMap rejects null key but nullable field okay
+- comparator nullsLast TreeMap key object
+- boundary null vs null key TreeMap
+- 자바 TreeMap null key nullable field
+symptoms:
+- TreeMap에 null key를 넣는 문제와 key 객체 내부 nullable field를 comparator가 처리하는 문제를 같은 null 문제로 섞어
+- floorEntry나 ceilingEntry가 null을 반환하는 boundary result를 null key 허용 정책과 혼동해
+- nullable wrapper field를 comparingInt처럼 unboxing하는 unsafe comparator로 TreeMap key 정렬을 하다가 NPE를 만든다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/hashmap-vs-treemap-beginner-selection-bridge
+- language/nullable-wrapper-comparator-bridge
+- language/java-comparator-utility-patterns
+next_docs:
+- language/ordered-map-null-safe-practice-drill
+- language/comparator-null-reversal-primer
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/language/java/hashmap-vs-treemap-beginner-selection-bridge.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/comparator-null-reversal-primer.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- language/ordered-map-null-safe-practice-drill
+- language/nullable-wrapper-comparator-bridge
+- language/comparator-null-reversal-primer
+forbidden_neighbors: []
+expected_queries:
+- TreeMap은 null key를 보통 막지만 key 객체 안 nullable field는 comparator로 정렬할 수 있다는 뜻이 뭐야?
+- TreeMap null key와 nullable field와 floorEntry 반환 null은 각각 어떻게 달라?
+- Comparator.nullsLast로 Student.rank null을 처리하면 TreeMap key 객체는 non-null이라 가능한 이유를 설명해줘
+- comparingInt로 nullable Integer field를 unboxing하면 TreeMap comparator에서 왜 NPE가 날 수 있어?
+- HashMap null key와 TreeMap null key 정책 차이를 beginner 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap의 null key, key object 내부 nullable field, ordered lookup boundary null을 분리해 comparator null handling을 설명하는 beginner primer다.
+  TreeMap null key, nullable field, Comparator.nullsLast, boundary null, ordered map 질문이 본 문서에 매핑된다.
+---
 # TreeMap Null Key vs Nullable Field Primer
 
 > 한 줄 요약: `TreeMap`은 key 자체를 정렬해야 하므로 보통 `null` key를 바로 받아들이지 않지만, key 객체가 non-null이고 comparator가 내부 nullable field를 안전하게 처리하면 `null` field가 있어도 정렬할 수 있다.

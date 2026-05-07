@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: SOLID Failure Patterns
+concept_id: software-engineering/solid-failure-patterns
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- solid
+- design-principles
+- responsibility
+- abstraction
+aliases:
+- SOLID failure patterns
+- SOLID violation patterns
+- single responsibility violation
+- liskov violation
+- dependency inversion failure
+- SOLID 위반 패턴
+symptoms:
+- 하나의 service가 주문 생성, 할인 계산, 메일 발송, 감사 로그처럼 서로 다른 변경 이유를 모두 떠안아 SRP와 DIP가 함께 무너져
+- 확장 가능성이 확인되지 않았는데 인터페이스, 팩토리, 전략 패턴을 먼저 만들거나 반대로 반복 if-else 수정으로 OCP를 깨
+- 상속 관계가 UnsupportedOperationException 같은 예외를 만들고 부모 타입의 전제와 반환 의미를 자식이 바꿔 LSP를 위반해
+- fat interface가 구현체에 쓰지 않는 메서드를 강제하거나 의미 없는 인터페이스 남발이 mocking boilerplate만 늘려
+intents:
+- symptom
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/clean-architecture-layered-modular-monolith
+- software-engineering/service-layer-basics
+next_docs:
+- software-engineering/repository-dao-entity
+- software-engineering/api-design-error-handling
+- software-engineering/refactoring-first-failing-test
+linked_paths:
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+confusable_with:
+- software-engineering/clean-architecture-layered-modular-monolith
+- software-engineering/service-contract-smell-cards
+- design-pattern/strategy-pattern
+forbidden_neighbors: []
+expected_queries:
+- SOLID를 암기용 원칙이 아니라 SRP, OCP, LSP, ISP, DIP 실패 패턴 진단 도구로 설명해줘
+- OrderService가 주문, 할인, 메일, 감사 로그를 모두 맡으면 SRP와 DIP가 어떻게 깨져?
+- OCP는 무조건 추상화가 아니라 반복 변경 지점을 추상화한다는 뜻을 예시로 알려줘
+- LSP 위반은 부모 타입을 기대한 코드가 자식 타입에서 깨지는 어떤 신호로 볼 수 있어?
+- ISP와 DIP를 과하게 적용하면 인터페이스와 mocking boilerplate가 늘어나는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 SOLID Failure Patterns를 다루는 symptom_router 문서다. SOLID failure patterns, SOLID violation patterns, single responsibility violation, liskov violation, dependency inversion failure 같은 lexical 표현과 SOLID를 암기용 원칙이 아니라 SRP, OCP, LSP, ISP, DIP 실패 패턴 진단 도구로 설명해줘, OrderService가 주문, 할인, 메일, 감사 로그를 모두 맡으면 SRP와 DIP가 어떻게 깨져? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # SOLID Failure Patterns
 
 > 한 줄 요약: SOLID는 암기용 구호가 아니라, 설계가 깨지는 패턴을 빨리 알아차리기 위한 실패 진단 도구다.

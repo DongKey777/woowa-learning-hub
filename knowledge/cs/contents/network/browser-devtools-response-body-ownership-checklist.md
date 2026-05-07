@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Browser DevTools Response Body Ownership 체크리스트
+concept_id: network/browser-devtools-response-body-ownership-checklist
+canonical: false
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- browser-devtools-response
+- body-ownership
+- response-body-owner
+- devtools-response-preview
+aliases:
+- response body owner
+- DevTools response preview owner
+- html vs json response body
+- gateway html vs login html
+- CDN html vs app json
+- 응답 본문 누가 만든 거야
+- 왜 HTML이 와요
+- API 응답 owner 분기
+intents:
+- troubleshooting
+- comparison
+- definition
+linked_paths:
+- contents/network/gateway-json-vs-app-json-tiny-card.md
+- contents/network/gateway-default-html-first-line-card.md
+- contents/network/cdn-error-html-vs-app-json-decision-card.md
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/gateway-json-vs-app-json-tiny-card
+- network/gateway-default-html-first-line-card
+- network/cdn-error-html-vs-app-json-decision-card
+forbidden_neighbors: []
+expected_queries:
+- DevTools Response 탭에 HTML이 보이는데 이게 app 응답인지 gateway 응답인지 어떻게 구분해?
+- API 호출했는데 login HTML이 내려온 건지 CDN 에러 페이지인지 모르겠어
+- response body가 JSON이어도 gateway가 만든 응답일 수 있어?
+- 502 HTML과 app error JSON을 처음에 어떤 순서로 나눠 봐야 해?
+- 브라우저 preview 첫 줄만 보고 응답 owner를 빠르게 가르는 체크리스트가 필요해
+contextual_chunk_prefix: |
+  이 문서는 DevTools Response/Preview 탭의 body가 app JSON, gateway JSON,
+  login HTML, CDN HTML, gateway default HTML 중 무엇인지 처음 가르는
+  chooser다. API 호출했는데 HTML이 옴, JSON인데 gateway 말투 같음,
+  302 login redirect 뒤 200 HTML, 502/504 default HTML, response body
+  owner를 모르겠다는 beginner troubleshooting query를 status, content-type,
+  preview 첫 줄, Server/Via header 확인 순서로 연결한다.
+---
 # Browser DevTools Response Body Ownership 체크리스트
 
 > 한 줄 요약: DevTools에서 body가 보일 때는 먼저 `Status`, `Content-Type`, response preview 3칸으로 "app JSON인지, gateway JSON인지, login HTML인지, CDN 에러 HTML인지, gateway 기본 페이지인지"를 가르면 HTML-only 추정 실수를 크게 줄일 수 있다.
@@ -19,7 +74,7 @@
 - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: devtools response body ownership, gateway json vs app json, proxy json error devtools, login html instead of json, fetch got login html 200, gateway default page devtools, response preview checklist, api response body beginner, why html instead of json, application/json but not app, gateway problem+json vs app error contract, 헷갈리는 login html, final url vs original url devtools, gateway html vs login html, app html vs login html
+retrieval-anchor-keywords: response body owner, devtools response preview owner, html vs json response body, gateway html vs login html, cdn html vs app json, response body 누구 응답, 왜 html 이 와요, problem+json owner, 처음 devtools body 헷갈려요, response preview first check, api response owner basics, login html redirect body
 
 ## 핵심 개념
 

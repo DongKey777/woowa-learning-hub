@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Enum equality quick bridge
+concept_id: language/enum-equality-quick-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- enum-equality
+- null-safe-comparison
+- beginner-java
+aliases:
+- enum equality bridge
+- Java enum == vs equals
+- enum comparison idiom
+- enum singleton basics
+- enum null safe comparison
+- 자바 enum 비교
+symptoms:
+- enum이 참조형이므로 무조건 equals를 써야 한다고 생각해 == 비교 관용과 null-safe 장점을 놓쳐
+- enum 상수는 각 값당 하나의 singleton 인스턴스처럼 고정된다는 실행 모델을 이해하지 못해
+- 외부 문자열과 enum 상수 비교를 같은 문제로 섞어 String rawStatus와 OrderStatus enum의 경계를 흐려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-enum-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/enum-string-boundary-bridge
+- language/enum-to-state-transition-beginner-bridge
+- language/java-optional-basics
+linked_paths:
+- contents/language/java/java-enum-basics.md
+- contents/language/java/enum-string-boundary-bridge.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/enum-to-state-transition-beginner-bridge.md
+- contents/language/java/java-optional-basics.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- language/enum-string-boundary-bridge
+- language/java-equality-identity-basics
+- language/java-enum-basics
+forbidden_neighbors: []
+expected_queries:
+- Java enum은 ==와 equals 중 무엇으로 비교하는 게 관용적인지 알려줘
+- enum 상수가 singleton처럼 고정되어 있어서 == 비교가 값 비교처럼 동작한다는 뜻이야?
+- enum 비교에서 status == OrderStatus.PAID가 null-safe한 이유를 설명해줘
+- String은 equals를 쓰고 enum은 ==를 쓰는 beginner 규칙을 알려줘
+- enum 상수 비교와 외부 문자열 payload 비교를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Java enum equality를 singleton-like enum constant, == vs equals, null-safe comparison, String payload boundary와 구분해서 설명하는 beginner primer다.
+  enum == vs equals, enum comparison, enum null safe, enum singleton, enum string boundary 질문이 본 문서에 매핑된다.
+---
 # Enum equality quick bridge
 
 > 한 줄 요약: Java `enum` 상수는 각 값이 하나뿐인 singleton처럼 만들어지기 때문에 `==`와 `equals()`가 둘 다 맞고, 초급 코드에서는 null-safe 비교 의도까지 잘 드러나는 `==`를 관용적으로 쓴다.

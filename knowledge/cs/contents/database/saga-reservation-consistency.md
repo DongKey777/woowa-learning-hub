@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Saga Reservation Consistency and State Transitions
+concept_id: database/saga-reservation-consistency
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- saga
+- reservation
+- hold-confirm
+- ttl
+- idempotency
+aliases:
+- saga reservation
+- inventory hold
+- seat booking hold
+- reservation ttl
+- HOLD CONFIRM CANCEL
+- temporary ownership
+- reservation compensation
+- expired reservation
+- duplicate reservation retry
+- 예약 상태 전이
+symptoms:
+- 좌석이나 재고를 HOLD한 뒤 결제 실패, confirm 지연, TTL 만료를 어떻게 처리할지 설계해야 해
+- 예약이 풀리지 않아 자원이 유령처럼 사라지는 문제를 조사해야 해
+- 재시도 때문에 reservation row가 두 번 생성되거나 중복 해제되는 문제를 막아야 해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/outbox-saga-eventual-consistency
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/active-hold-table-split-pattern
+- database/hold-expiration-predicate-drift
+- database/saga-pivot-transaction-design
+linked_paths:
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/transaction-case-studies.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/saga-pivot-transaction-design.md
+confusable_with:
+- database/active-hold-table-split-pattern
+- database/hold-expiration-predicate-drift
+- database/saga-pivot-transaction-design
+forbidden_neighbors: []
+expected_queries:
+- Saga에서 예약 HOLD, CONFIRM, CANCEL, EXPIRED 상태 전이를 어떻게 설계해야 해?
+- 좌석 예약 후 결제 실패나 TTL 만료가 오면 reservation을 어떤 순서로 풀어야 해?
+- 예약은 확정이 아니라 temporary ownership이라는 말을 코드 설계로 어떻게 옮겨?
+- 중복 재시도 때문에 reservation row가 두 번 생기는 것을 idempotency key로 어떻게 막아?
+- expired된 예약에 늦은 confirm이 도착하면 거절할지 재검증할지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 Saga reservation consistency, inventory hold, seat booking hold, HOLD/CONFIRM/CANCEL/EXPIRED 전이를 TTL과 idempotency로 설계하는 advanced playbook이다.
+  예약 상태 전이, 유령 hold, duplicate reservation retry, late confirm 질문이 본 문서에 매핑된다.
+---
 # Saga Reservation Consistency와 예약 상태 전이
 
 > 한 줄 요약: 예약은 확정이 아니라 홀드이며, Saga에서는 그 홀드를 언제 잡고 언제 풀지까지 정합성의 일부다.

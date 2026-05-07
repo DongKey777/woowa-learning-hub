@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Refactor Commit Split Primer
+concept_id: software-engineering/refactor-commit-split
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- refactoring
+- git
+- commit
+- tdd
+aliases:
+- Refactor Commit Split Primer
+- refactor commit split
+- test refactor behavior change commit
+- 리팩토링 커밋 분리
+- 커밋 쪼개기 처음
+- red green refactor commit
+symptoms: []
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- software-engineering/refactoring-basics
+- software-engineering/tdd-basics
+next_docs:
+- software-engineering/refactoring-first-failing-test
+- software-engineering/commit-message-basics
+- software-engineering/git-workflow-basics
+linked_paths:
+- contents/software-engineering/refactoring-basics.md
+- contents/software-engineering/tdd-basics.md
+- contents/software-engineering/commit-message-basics.md
+- contents/software-engineering/git-workflow-basics.md
+- contents/spring/spring-testing-basics.md
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+confusable_with:
+- software-engineering/refactoring-first-failing-test
+- software-engineering/commit-message-basics
+- software-engineering/tdd-basics
+forbidden_neighbors: []
+expected_queries:
+- 테스트 추가, 리팩토링, 동작 변경을 커밋으로 분리해야 리뷰와 rollback이 쉬워지는 이유를 알려줘
+- refactor commit과 feat fix commit을 어떻게 나눠야 하는지 초심자 예시가 필요해
+- 현재 동작 고정 테스트와 구조 정리와 새 요구사항 변경을 한 커밋에 섞으면 왜 위험해?
+- test -> refactor -> feat 순서로 주문 생성 코드를 커밋 분리하는 예시를 보여줘
+- 커밋 분리는 일을 잘게 쪼개는 기술이 아니라 리뷰 질문을 분리하는 기술이라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Refactor Commit Split Primer를 다루는 primer 문서다. Refactor Commit Split Primer, refactor commit split, test refactor behavior change commit, 리팩토링 커밋 분리, 커밋 쪼개기 처음 같은 lexical 표현과 테스트 추가, 리팩토링, 동작 변경을 커밋으로 분리해야 리뷰와 rollback이 쉬워지는 이유를 알려줘, refactor commit과 feat fix commit을 어떻게 나눠야 하는지 초심자 예시가 필요해 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # 리팩토링 커밋 분리 프라이머 (Refactor Commit Split Primer)
 
 > 한 줄 요약: `테스트 추가 -> 구조 정리 -> 동작 변경`을 커밋으로 분리하면 리뷰어는 무엇이 바뀌었는지 빨리 읽을 수 있고, 문제 생길 때도 더 안전하게 되돌릴 수 있다.

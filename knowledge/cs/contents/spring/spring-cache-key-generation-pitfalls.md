@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Cache Key Generation Pitfalls
+concept_id: spring/cache-key-generation-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- cache-key-generation
+- pitfalls
+- keygenerator
+- cache-key-collision
+aliases:
+- Spring cache key generation
+- KeyGenerator
+- cache key collision
+- cache poisoning
+- tenant-aware cache key
+- locale-aware cache key
+- cache invalidation
+intents:
+- troubleshooting
+- design
+symptoms:
+- cache hit은 되는데 사용자, 권한, tenant, locale이 다른 응답이 섞인다.
+- @Cacheable key가 id만 포함해서 page, sort, filter, version 차이를 구분하지 못한다.
+- self-invocation이나 잘못된 invalidation 때문에 cache가 갱신되지 않은 값처럼 보인다.
+linked_paths:
+- contents/spring/spring-cache-abstraction-traps.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-test-slices-context-caching.md
+expected_queries:
+- Spring Cache key에는 어떤 값을 반드시 포함해야 해?
+- tenant나 locale을 cache key에서 빼면 왜 데이터 오염이 생겨?
+- @Cacheable key collision과 cache poisoning을 어떻게 구분해?
+- Spring Cache에서 custom KeyGenerator는 언제 필요해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Cache의 @Cacheable key 설계, KeyGenerator, tenant/locale/auth
+  role/page/sort/filter/version 누락, cache poisoning, key collision,
+  self-invocation과 invalidation 함정을 다룬다. 저장소 장애보다 key identity
+  계약이 먼저 깨지는 문제를 진단하는 playbook이다.
+---
 # Spring Cache Key Generation Pitfalls
 
 > 한 줄 요약: 캐시의 실패는 저장소보다 key 설계에서 먼저 시작되며, key가 불완전하면 캐시 히트가 아니라 데이터 오염이 된다.

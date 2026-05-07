@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Virtual Thread Framework Integration Spring JDBC HttpClient
+concept_id: language/virtual-thread-framework-integration
+canonical: true
+category: language
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 95
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- virtual-thread
+- spring-integration
+- jdbc-httpclient
+aliases:
+- Virtual Thread Framework Integration Spring JDBC HttpClient
+- virtual thread Spring JDBC HttpClient
+- Spring virtual thread framework boundary
+- Loom Spring transaction JDBC HttpClient
+- virtual thread request transaction context propagation
+- Spring에서 virtual thread 적용
+symptoms:
+- virtual thread를 켜면 Spring transaction, JDBC pool, outbound HttpClient, MDC context propagation이 모두 자동으로 정리된다고 생각해
+- caller가 이미 virtual thread인데도 이유 없이 sendAsync와 CompletableFuture hop을 추가해 timeout, cancellation, context 복원을 어렵게 만들어
+- transaction 안에서 외부 HTTP 대기나 retry를 수행해 virtual thread와 무관하게 connection hold time이 늘어나는 문제를 놓쳐
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- language/virtual-threads-project-loom
+- language/virtual-thread-migration-pinning
+- spring/transactional-basics
+next_docs:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/structured-fanout-httpclient
+- language/connection-budget-alignment-after-loom
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-thread-mvc-async-executor-boundaries.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/httpclient-idempotency-keys-safe-http-retries.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/structured-concurrency-scopedvalue.md
+- contents/language/java/inheritablethreadlocal-vs-scopedvalue-context-propagation.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/io-nio-serialization.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-transactional-async-composition-traps.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- language/virtual-thread-migration-pinning
+- language/jdbc-observability-under-virtual-threads
+- spring/transactional-async-composition-traps
+forbidden_neighbors: []
+expected_queries:
+- Spring 애플리케이션에 virtual thread를 붙일 때 요청 thread, transaction, JDBC, HttpClient 경계를 어떻게 나눠 봐?
+- caller가 virtual thread면 HttpClient send와 sendAsync 중 무엇을 먼저 검토해야 해?
+- virtual thread에서도 transaction 안 외부 HTTP 호출이 왜 connection hold time 문제를 만들 수 있어?
+- MDC SecurityContext RequestContextHolder TransactionSynchronizationManager는 virtual thread와 executor hop에서 어떻게 다르게 봐야 해?
+- Spring virtual thread integration에서 datasource pool, remote concurrency, timeout budget을 어떻게 정렬해?
+contextual_chunk_prefix: |
+  이 문서는 Java virtual thread를 Spring MVC, TransactionSynchronizationManager, JDBC connection pool, outbound HttpClient, context propagation, timeout/cancel budget과 연결해 해석하는 advanced bridge다.
+  Spring virtual thread, JDBC pool, HttpClient sendAsync, transaction hold time, MDC context propagation 질문이 본 문서에 매핑된다.
+---
 # Virtual Thread Framework Integration: Spring, JDBC, and `HttpClient`
 
 > 한 줄 요약: virtual thread를 Spring 애플리케이션에 붙일 때 핵심은 "blocking 코드를 그대로 둘 수 있다"가 아니라 요청 스레드, `@Transactional`/JDBC, outbound `HttpClient`, context propagation이 어디서 끊기고 어디서 계속 이어지는지 경계를 다시 그리는 것이다.

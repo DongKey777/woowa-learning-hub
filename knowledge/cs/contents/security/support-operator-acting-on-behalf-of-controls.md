@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Support Operator / Acting-on-Behalf-Of Controls
+concept_id: security/support-operator-acting-on-behalf-of-controls
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- support impersonation
+- acting on behalf of
+- operator controls
+- customer support access
+aliases:
+- support impersonation
+- acting on behalf of
+- operator controls
+- customer support access
+- assisted support session
+- delegated operator action
+- actor subject audit
+- step-up operator action
+- support admin governance
+- operator tooling semantics
+- session inventory support access
+- delegated access timeline
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/workload-identity-user-context-propagation-boundaries.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Support Operator / Acting-on-Behalf-Of Controls 핵심 개념을 설명해줘
+- support impersonation가 왜 필요한지 알려줘
+- Support Operator / Acting-on-Behalf-Of Controls 실무 설계 포인트는 뭐야?
+- support impersonation에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Support Operator / Acting-on-Behalf-Of Controls를 다루는 deep_dive 문서다. 고객 지원이나 운영 도구에서 acting-on-behalf-of를 허용할 때는 단순 impersonation이 아니라 operator identity, subject identity, step-up, scope, recording을 함께 묶어야 안전하게 운영할 수 있다. 검색 질의가 support impersonation, acting on behalf of, operator controls, customer support access처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Support Operator / Acting-on-Behalf-Of Controls
 
 > 한 줄 요약: 고객 지원이나 운영 도구에서 acting-on-behalf-of를 허용할 때는 단순 impersonation이 아니라 operator identity, subject identity, step-up, scope, recording을 함께 묶어야 안전하게 운영할 수 있다.

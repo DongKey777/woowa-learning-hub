@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: cgroup CPU Throttling Quota Runtime Debugging
+concept_id: operating-system/cgroup-cpu-throttling-quota-runtime-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- cgroup-cpu-throttling
+- quota
+- cpu-quota
+- cpu-max-throttled
+aliases:
+- cgroup CPU throttling
+- CPU quota runtime debugging
+- cpu.max throttled
+- container CPU throttling
+- cfs quota throttling
+- load average cgroup throttling
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/cfs-bandwidth-burst-behavior.md
+symptoms:
+- host에는 CPU가 남아 보이는데 container 안 process는 quota 때문에 뛰지 못한다.
+- load average는 높은데 실제 CPU saturation인지 cgroup throttling인지 분리되지 않는다.
+- p99 latency가 quota period마다 튀고 cpu.stat throttled counter가 증가한다.
+expected_queries:
+- cgroup CPU throttling은 host CPU가 남아 보여도 왜 발생해?
+- cpu.max와 cpu.stat으로 quota runtime throttling을 어떻게 디버깅해?
+- load average가 높을 때 CPU saturation과 cgroup throttling을 어떻게 구분해?
+- container p99 latency가 CFS quota period마다 튀는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 host CPU가 남아 보여도 cgroup quota에 막힌 process는 실제로 run하고 싶어도
+  못 뛰는 상태가 된다는 점을 설명한다. cpu.max, cpu.stat, nr_throttled, PSI,
+  run queue와 load average를 함께 본다.
+---
 # cgroup CPU Throttling, Quota, Runtime Debugging
 
 > 한 줄 요약: CPU가 남아 보여도 cgroup quota가 막히면 프로세스는 실제로는 "뛰고 싶어도 못 뛰는" 상태가 된다.

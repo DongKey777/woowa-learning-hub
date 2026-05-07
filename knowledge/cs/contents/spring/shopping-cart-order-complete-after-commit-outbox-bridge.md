@@ -34,8 +34,8 @@ prerequisites:
 - spring/shopping-cart-payment-transaction-boundary-bridge
 - software-engineering/service-layer-basics
 next_docs:
-- spring/spring-service-layer-external-io-after-commit-outbox-primer
-- spring/spring-eventlistener-transaction-phase-outbox
+- spring/service-layer-external-io-after-commit-outbox-primer
+- spring/eventlistener-transaction-phase-outbox
 - database/shopping-cart-payment-idempotency-stock-bridge
 linked_paths:
 - contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
@@ -61,12 +61,19 @@ contextual_chunk_prefix: |
   충분한가", "브로커 전송은 언제 outbox까지 가야 하나"라고 묻는 장면을
   트랜잭션 이후 부작용의 신뢰도 경계로 매핑한다.
 ---
-
 # shopping-cart 주문 완료 후속 작업 ↔ AFTER_COMMIT vs Outbox 브릿지
 
 ## 한 줄 요약
 
 > shopping-cart checkout 뒤에 붙는 작업이 "주문이 커밋된 뒤 한 번 반응하면 충분한가" 아니면 "다른 시스템에 반드시 전달돼야 하는가"에 따라 `@TransactionalEventListener(AFTER_COMMIT)`와 outbox가 갈린다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "주문은 저장됐는데 알림이나 후속 작업은 어디서 실행해야 하나요?" | checkout commit 뒤 메일/슬랙/분석 이벤트 처리 | 커밋 전 핵심 작업과 커밋 후 반응을 분리한다 |
+| "장바구니 비우기나 메일 발송을 service 메서드 안에서 같이 해도 되나요?" | 주문 확정, 장바구니 정리, 외부 알림이 한 메서드에 섞임 | 로컬 DB 정리와 외부 부작용의 실패 허용도를 나눈다 |
+| "`AFTER_COMMIT`이면 충분한지 outbox까지 가야 하는지 모르겠어요" | 주문 완료 이벤트 전달 보장 설계 | 한 번 반응하면 되는 일과 반드시 전달돼야 하는 사실을 구분한다 |
 
 ## 미션 시나리오
 

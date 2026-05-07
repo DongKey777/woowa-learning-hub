@@ -9,12 +9,23 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- transactional
+- transaction
+- transactional-proxy
+- spring
 aliases:
 - Transactional
 - '@Transactional'
 - Spring transaction
 - 트랜잭션 어노테이션
 - transactional proxy
+- Spring 트랜잭션 기초
+- Transactional 안 먹는 이유
+- 트랜잭션 프록시 우회
 intents:
 - definition
 linked_paths:
@@ -28,11 +39,23 @@ expected_queries:
 - Spring에서 transaction이 뭐야?
 - 왜 Transactional이 안 먹어?
 - self invocation이면 왜 트랜잭션이 안 걸려?
+contextual_chunk_prefix: |
+  이 문서는 Spring beginner가 @Transactional, Spring transaction,
+  transactional proxy, begin/commit/rollback, self invocation, 내부 호출,
+  private method, 직접 new, service public method 경계를 처음 묻는 질문에 답하는 primer다.
+  핵심 라우팅은 옵션 조정 전에 Bean + public + external call로 프록시를 통과했는지 확인하는 것이다.
 ---
-
 # @Transactional 기초: 트랜잭션 어노테이션이 하는 일
 
 > 한 줄 요약: `@Transactional`은 메서드 실행을 하나의 트랜잭션으로 묶어 주는 어노테이션이고, 실제 동작은 Spring이 생성한 프록시가 메서드 호출 전후로 begin/commit/rollback을 대신 처리하는 것이다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`@Transactional` 붙였는데 rollback이 안 돼요" | roomescape 예약 생성 중 좌석 저장과 예약 저장이 함께 실패해야 하는 service | 옵션보다 먼저 Spring bean의 public 진입점이 프록시를 통과했는지 본다 |
+| "private 메서드에 붙였는데 왜 안 먹죠?" | 같은 service 안에서 `this.saveReservation()`처럼 내부 호출로 분리한 코드 | self-invocation은 transaction proxy를 우회한다는 사실을 잡는다 |
+| "HTTP 요청 하나가 트랜잭션 하나인가요?" | controller가 여러 service를 호출하면서 어디가 commit 경계인지 헷갈리는 상황 | 요청 경계와 use case transaction 경계는 같은 말이 아님을 분리한다 |
 
 **난이도: 🟢 Beginner**
 

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Per-Key Queue vs Direct API Primer
+concept_id: system-design/per-key-queue-vs-direct-api-primer
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 76
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- per-key queue vs direct api
+- direct api vs queue beginner
+- per-aggregate queue beginner
+- same key ordering beginner
+aliases:
+- per-key queue vs direct api
+- direct api vs queue beginner
+- per-aggregate queue beginner
+- same key ordering beginner
+- sync api vs async queue
+- immediate response vs accepted response
+- 언제 api로 바로 처리하고 언제 queue로 보내요
+- 처음 배우는데 queue를 왜 써요
+- 처음 시스템 설계 배우는데 동기 api 비동기 queue 차이
+- 왜 어떤 요청은 바로 처리하고 어떤 요청은 큐로 보내요
+- 주문 취소 api queue 뭐가 맞나요
+- 같은 account 요청 순서 왜 queue로 묶어요
+symptoms:
+- 주문 취소나 결제 후속 작업을 API 안에서 바로 끝낼지 queue로 넘길지 판단하지 못한다
+- 같은 orderId의 후속 작업 순서를 보장해야 하는데 queue key를 어떻게 잡을지 모른다
+- queue를 쓰면 순서와 재시도가 자동으로 해결된다고 생각한다
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/monotonic-writes-ordering-primer.md
+- contents/system-design/write-order-vs-precondition-primer.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/design-pattern/command-pattern-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Per-Key Queue vs Direct API Primer 차이를 실무 기준으로 설명해줘
+- per-key queue vs direct api를 언제 선택해야 해?
+- Per-Key Queue vs Direct API Primer 설계 판단 기준이 뭐야?
+- per-key queue vs direct api에서 자주 헷갈리는 경계는?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Per-Key Queue vs Direct API Primer를 다루는 bridge 문서다. 같은 aggregate의 순서를 꼭 지켜야 할 때도, 먼저 물어볼 질문은 항상 같다. "사용자가 지금 결과를 바로 알아야 하나?" 그렇다면 동기 API 계약에서 순서를 다루고, "잠깐 늦어도 되지만 한 줄 처리와 재시도가 더 중요하나?"라면 per-key queue 쪽이 더 잘 맞는다. 검색 질의가 per-key queue vs direct api, direct api vs queue beginner, per-aggregate queue beginner, same key ordering beginner처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Per-Key Queue vs Direct API Primer
 
 > 한 줄 요약: 같은 aggregate의 순서를 꼭 지켜야 할 때도, 먼저 물어볼 질문은 항상 같다. "사용자가 지금 결과를 바로 알아야 하나?" 그렇다면 동기 API 계약에서 순서를 다루고, "잠깐 늦어도 되지만 한 줄 처리와 재시도가 더 중요하나?"라면 per-key queue 쪽이 더 잘 맞는다.
@@ -5,6 +64,14 @@
 > 이 문서는 `왜 어떤 요청은 바로 처리하고 어떤 요청은 큐로 보내요?`, `처음 배우는데 api랑 queue를 언제 갈라요?` 같은 첫 질문이 심화 문서보다 먼저 이 primer에 닿게 하려는 entrypoint다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| checkout/payment 장면 | 이 문서에서 먼저 잡을 질문 |
+|---|---|
+| 주문 취소 결과를 사용자에게 즉시 알려야 한다 | direct API 계약이 먼저인가 |
+| 결제 후 알림/정산 이벤트를 나중에 처리해도 된다 | queue handoff가 자연스러운가 |
+| 같은 order의 이벤트 순서가 뒤집히면 안 된다 | per-key ordering이 필요한가 |
 
 관련 문서:
 

@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Runtime Shell Option Matrix
+concept_id: operating-system/runtime-shell-option-matrix
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- shell-option
+- python-shell-true
+- processbuilder-shell
+- node-child-process
+aliases:
+- runtime shell option matrix
+- Python shell=True
+- Java ProcessBuilder shell
+- Node child_process exec spawn shell
+- parent app vs parent shell app
+- shell wrapper boundary
+intents:
+- comparison
+- definition
+linked_paths:
+- contents/operating-system/shell-wrapper-boundary-primer.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/shell-redirection-order-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+confusable_with:
+- operating-system/shell-wrapper-boundary-primer
+- operating-system/popen-runtime-wrapper-mapping
+- operating-system/process-spawn-api-comparison
+expected_queries:
+- Python shell=True, Java ProcessBuilder, Node child_process 옵션을 OS 관점에서 어떻게 비교해?
+- parent -> app과 parent -> shell -> app의 차이는 무엇이야?
+- shell을 한 겹 끼우면 quoting, redirection, signal, child process가 어떻게 달라져?
+- runtime별 shell option 이름이 달라도 같은 mental model로 묶어줘
+contextual_chunk_prefix: |
+  이 문서는 Python shell=True, Java ProcessBuilder, Node child_process 옵션을 runtime-specific
+  개념이 아니라 parent가 app을 직접 띄우는지 shell을 한 겹 끼워 띄우는지의 OS mental model로
+  비교한다.
+---
 # Runtime Shell Option Matrix
 
 > 한 줄 요약: Python `shell=True`, Java `ProcessBuilder`, Node `child_process`의 옵션 이름은 달라도 운영체제 관점에서는 결국 `parent -> app`로 직접 띄우는지, `parent -> shell -> app`으로 shell을 한 겹 더 끼우는지의 차이다.

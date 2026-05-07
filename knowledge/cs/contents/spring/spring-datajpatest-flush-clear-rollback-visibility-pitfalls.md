@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring DataJpaTest Flush Clear Rollback Visibility Pitfalls
+concept_id: spring/datajpatest-flush-clear-rollback-visibility-pitfalls
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- datajpatest-flush-clear
+- rollback-visibility-pitfalls
+- datajpatest-mental-model
+- rollback
+aliases:
+- DataJpaTest mental model
+- DataJpaTest flush clear rollback
+- save and find illusion
+- persistence context test trap
+- TestEntityManager
+- transactional test rollback
+- flush commit difference test
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-datajpatest-bulk-update-stale-state-mini-guide.md
+- contents/spring/spring-after-commit-rollback-slice-test-mini-card.md
+- contents/spring/spring-transactional-test-rollback-misconceptions.md
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+expected_queries:
+- @DataJpaTest에서 flush clear rollback은 각각 무엇을 검증해?
+- save 후 findById를 했다고 DB 검증까지 끝난 게 아닌 이유는?
+- transactional test rollback과 commit-visible behavior를 어떻게 구분해?
+- TestEntityManager clear를 언제 써야 최신 DB 상태를 볼 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 @DataJpaTest를 rollback이 붙은 작은 transaction 실험실로 설명한다.
+  save-and-find illusion, flush와 SQL 시점, clear와 persistence context,
+  rollback 기본값, commit 이후 동작 미검증, bulk update stale state를 beginner
+  mental model로 연결한다.
+---
 # Spring `@DataJpaTest` Mental-Model Bridge: 런타임 트랜잭션 감각을 테스트에 그대로 옮기기
 
 > 한 줄 요약: 런타임에서 "지금 메모리 상태를 보는가, DB에 실제 반영된 상태를 보는가"를 구분하듯, `@DataJpaTest`에서도 `flush`, `clear`, rollback 경계를 구분해야 save-and-find 착시에 덜 속는다.

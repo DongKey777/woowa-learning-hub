@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring MVC SseEmitter vs WebFlux SSE Timeout Behavior
+concept_id: spring/mvc-sseemitter-vs-webflux-sse-timeout-behavior
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- mvc-sseemitter-vs
+- webflux-sse-timeout
+- behavior
+- sseemitter-vs-webflux
+aliases:
+- SseEmitter vs WebFlux SSE
+- MVC SSE timeout behavior
+- reactive SSE cancellation
+- servlet async SSE timeout
+- Last-Event-ID replay buffer
+- proxy idle timeout heartbeat
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/spring/spring-sse-disconnect-observability-patterns.md
+- contents/spring/spring-sse-replay-buffer-last-event-id-recovery-patterns.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+expected_queries:
+- Spring MVC SseEmitter와 WebFlux SSE timeout 동작은 어떻게 달라?
+- SSE heartbeat와 proxy idle timeout은 어디서 맞춰야 해?
+- WebFlux SSE에서 cancellation과 backpressure는 MVC SseEmitter와 뭐가 달라?
+- Last-Event-ID replay buffer는 SSE 재연결에서 왜 필요해?
+contextual_chunk_prefix: |
+  이 문서는 같은 text/event-stream wire format을 쓰더라도 Spring MVC SseEmitter는
+  Servlet async request lifetime과 blocking write에 묶이고, WebFlux SSE는 reactive
+  publisher lifetime, cancellation, backpressure에 묶인다는 차이를 비교한다.
+---
 # Spring MVC `SseEmitter` vs WebFlux SSE Timeout Behavior
 
 > 한 줄 요약: 둘 다 같은 SSE wire format을 쓰지만, Spring MVC `SseEmitter`는 Servlet async request lifetime과 blocking write 위에서, WebFlux SSE는 reactive publisher lifetime과 cancellation/backpressure 위에서 동작하므로 timeout과 disconnect를 읽는 기준이 달라진다.

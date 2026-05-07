@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Browser Storage Threat Model for Tokens
+concept_id: security/browser-storage-threat-model-for-tokens
+canonical: true
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- browser-token-storage-threat-model
+- xss-vs-csrf-storage-choice
+- refresh-token-boundary
+aliases:
+- browser storage threat model for tokens
+- token storage threat model
+- localStorage vs cookie token
+- HttpOnly cookie vs localStorage
+- refresh token cookie
+- access token memory only
+- browser token storage
+- xss token theft
+- csrf automatic cookie send
+- 토큰 어디에 저장
+- localStorage에 JWT 저장 위험
+symptoms:
+- JWT나 access token을 localStorage, sessionStorage, cookie 중 어디에 저장해야 하는지 공격면 기준으로 못 고르겠어
+- HttpOnly cookie는 XSS에 강하지만 CSRF를 다시 봐야 한다는 말이 헷갈려
+- refresh token과 access token을 같은 저장소에 두면 피해 범위가 왜 커지는지 모르겠어
+intents:
+- design
+- comparison
+prerequisites:
+- network/cookie-session-jwt-browser-flow-primer
+- security/xss-csrf-basics
+next_docs:
+- security/signed-cookies-server-sessions-jwt-tradeoffs
+- security/csrf-in-spa-bff-architecture
+- security/oauth-client-authentication-private-key-jwt-mtls
+- system-design/browser-bff-session-boundary-primer
+linked_paths:
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/xss-csrf-basics.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/jwt-deep-dive.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/oauth-client-authentication-private-key-jwt-mtls.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/spring/spring-oauth2-jwt-integration.md
+confusable_with:
+- security/signed-cookies-server-sessions-jwt-tradeoffs
+- security/csrf-in-spa-bff-architecture
+- system-design/browser-bff-session-boundary-primer
+- security/xss-csrf-basics
+forbidden_neighbors: []
+expected_queries:
+- JWT를 localStorage에 저장하는 것이 XSS 관점에서 왜 위험한지 설명해줘
+- HttpOnly cookie에 token을 넣으면 XSS와 CSRF 공격면이 어떻게 달라져?
+- access token은 memory-only, refresh token은 HttpOnly cookie로 나누는 이유가 뭐야?
+- sessionStorage와 IndexedDB가 token 저장에 안전한 중간지대가 아닌 이유는 뭐야?
+- 브라우저 token storage는 편의성이 아니라 threat model 선택이라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 browser token storage를 localStorage, sessionStorage, IndexedDB, HttpOnly cookie, memory-only로 비교하며 XSS token theft와 CSRF automatic cookie send 사이의 threat model tradeoff를 다루는 advanced deep dive다.
+  JWT localStorage risk, HttpOnly cookie CSRF, refresh token storage, access token memory only, token handler pattern, BFF session translation 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Browser Storage Threat Model for Tokens
 
 > 한 줄 요약: token storage는 편의성 문제가 아니라 공격면 선택 문제다. localStorage, sessionStorage, IndexedDB, cookie는 각각 XSS와 CSRF에 다른 모양으로 노출된다.

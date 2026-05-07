@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Cancelled Task Cleanup purge vs removeOnCancelPolicy
+concept_id: data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- scheduled-task-cancel-cleanup
+- purge-vs-removeoncancelpolicy
+- delayed-queue-retention
+aliases:
+- purge vs removeOnCancelPolicy
+- ScheduledThreadPoolExecutor purge
+- cancelled task cleanup
+- cancelled task retention
+- scheduled future cancel queue size
+- delayed work queue cancelled entry
+- 취소 task queue cleanup
+symptoms:
+- ScheduledFuture cancel을 호출했는데 queue size가 줄지 않아 취소 실패인지 cleanup 지연인지 헷갈린다
+- cancel correctness와 cancelled entry retention cleanup을 같은 문제로 본다
+- removeOnCancelPolicy는 cancel hot path 비용, purge는 queue scan 비용을 낸다는 trade-off를 놓친다
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- data-structure/scheduledfuture-cancel-stale-entries
+next_docs:
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+linked_paths:
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+confusable_with:
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+forbidden_neighbors: []
+expected_queries:
+- ScheduledFuture cancel 후 queue size가 줄지 않는 건 왜 그래?
+- purge와 removeOnCancelPolicy 차이를 beginner 기준으로 설명해줘
+- cancelled task cleanup은 cancel correctness와 어떻게 다른 문제야?
+- removeOnCancelPolicy true를 켜면 cancel hot path에 어떤 비용이 생겨?
+- ScheduledThreadPoolExecutor에서 취소된 task retention을 어떻게 줄여?
+contextual_chunk_prefix: |
+  이 문서는 ScheduledThreadPoolExecutor 계열에서 cancel은 실행 금지 상태
+  변경이고 queue cleanup은 별도 정책이라는 점을 설명하는 chooser다.
+  removeOnCancelPolicy는 취소 시 즉시 제거, purge는 나중에 batch scan cleanup
+  이라는 비용 지점을 분리한다.
+---
 # Cancelled Task Cleanup: `purge()` vs `removeOnCancelPolicy`
 
 > 한 줄 요약: `cancel()`은 "이 작업을 더 이상 실행하지 말라"는 상태 변경이고, 취소된 task를 queue에서 언제 치울지는 `removeOnCancelPolicy(true)` 같은 즉시 정리 정책이나 `purge()` 같은 나중 정리 호출로 따로 결정된다.

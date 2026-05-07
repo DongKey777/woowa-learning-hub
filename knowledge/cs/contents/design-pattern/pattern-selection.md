@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Practical Pattern Selection Guide
+concept_id: design-pattern/pattern-selection
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- pattern-selection
+- change-axis
+- boundary-first-design
+aliases:
+- pattern selection guide
+- design pattern decision guide
+- pattern choosing checklist
+- change axis pattern
+- what changes most pattern
+- backend pattern map
+- adapter vs ports and adapters
+- 디자인 패턴 선택 기준
+- 어떤 패턴을 골라야 하나요
+- 패턴 이름보다 바뀌는 것
+symptoms:
+- 패턴 이름을 맞히는 데 집중해 실제로 자주 바뀌는 축이 생성, 행동, 구조, 흐름, 경계 중 무엇인지 보지 못한다
+- classic GoF Adapter와 Ports and Adapters 같은 아키텍처 경계를 같은 adapter라는 이름으로 섞는다
+- 패턴을 적용했는데 생성 위치, 정책 선택, 외부 모델 번역, replay 경로를 디버깅하기 더 어려워진다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- software-engineering/oop-design-basics
+next_docs:
+- design-pattern/adapter
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/command-pattern-undo-queue
+linked_paths:
+- contents/software-engineering/oop-design-basics.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/adapter.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/composition-over-inheritance-practical.md
+- contents/design-pattern/command-pattern-undo-queue.md
+- contents/design-pattern/repository-pattern-vs-antipattern.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+confusable_with:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/adapter
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/anti-pattern
+forbidden_neighbors: []
+expected_queries:
+- 디자인 패턴 선택은 유명한 이름이 아니라 무엇이 바뀌는지로 어떻게 분류해?
+- 생성 축, 행동 축, 구조 축, 흐름 축, 경계 저장소 축 중 어떤 패턴을 골라야 하는지 가이드해줘
+- classic Adapter와 Ports and Adapters는 패턴 이름은 비슷하지만 문제 축이 어떻게 달라?
+- 패턴을 골랐는데 디버깅이 어려워지는 신호는 무엇이고 어떻게 다시 경계를 잘라야 해?
+- Strategy, State, Specification, Policy Object, Command는 행동 축에서 어떤 기준으로 나뉘어?
+contextual_chunk_prefix: |
+  이 문서는 Practical Pattern Selection Guide chooser로, 디자인 패턴 선택을
+  유명한 이름 맞히기가 아니라 생성, 행동, 구조, 흐름, 경계/저장소 중 무엇이 가장 자주
+  바뀌는지와 어디서 boundary를 잘라야 하는지로 분류하도록 돕는다.
+---
 # 실전 패턴 선택 가이드
 
 > 작성자 : [정희재](https://github.com/Hee-Jae)

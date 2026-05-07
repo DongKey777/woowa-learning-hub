@@ -76,14 +76,12 @@ expected_queries:
 - cache 앞단과 replica 뒤단을 같은 consistency 계약으로 묶는 방법이 궁금해
 - hit reject, source fallback, refill 허용을 한 그림으로 이해하고 싶어
 contextual_chunk_prefix: |
-  이 문서는 학습자가 cache hit 판정, replica fallback, refill write-back을
-  따로 보지 않고 하나의 freshness context로 연결해 cache 앞단과 복제
-  읽기 뒤단을 잇는 beginner bridge다. 히트했는데도 왜 오래된 응답을
-  거절하는지, 미스 뒤 어느 읽기 원본으로 내려가는지, 다시 채우기 전에
-  왜 최신성 기준을 다시 확인하는지, 방금 본 값보다 뒤처진 결과를 왜
-  버리는지, fallback 이유와 no-fill 판단을 한 흐름으로 이해하고 싶다
-  같은 자연어 paraphrase가 본 문서의 recent-write, min-version,
-  causal token 연결에 매핑된다.
+  이 문서는 학습자가 cache 앞단 판정과 replica 뒤단 선택을 따로 외우지
+  않고 하나의 freshness context로 이어 보게 만드는 bridge다.
+  히트여도 왜 오래된 응답을 거절하는지, 미스 뒤 어느 read source로
+  내려가는지, refill 전에 최신성 기준을 왜 다시 보는지, 방금 본 값보다
+  뒤처진 결과를 왜 버리는지 같은 자연어 paraphrase가 본 문서의
+  recent-write, min-version, causal token 연결에 매핑된다.
 ---
 # Mixed Cache+Replica Freshness Bridge
 

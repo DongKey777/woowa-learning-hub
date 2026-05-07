@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Memory Barriers and VarHandle Fences
+concept_id: language/memory-barriers-varhandle-fences
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jmm
+- varhandle
+- memory-ordering
+aliases:
+- Memory Barriers and VarHandle Fences
+- Java VarHandle acquire release full fence
+- memory barrier fence JMM ordering
+- volatile fence relationship
+- publication ordering Java
+- 자바 메모리 배리어 VarHandle fence
+symptoms:
+- volatile과 synchronized를 단순 원자성 도구로만 이해해 happens-before와 memory ordering 경계를 설명하지 못해
+- acquire release fullFence를 모두 같은 강한 barrier로 취급해 필요한 ordering보다 과한 fence를 선택해
+- lock-free publication 코드에서 데이터 write와 ready flag write의 visibility 순서를 보장하지 못해 간헐적인 stale read를 만든다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-memory-model-happens-before-volatile-final
+- language/varhandle-unsafe-atomics
+- operating-system/cpu-cache-coherence-memory-barrier
+next_docs:
+- language/volatile-long-double-atomicity-memory-visibility
+- language/java-aba-problem
+- language/locksupport-park-unpark-permit-semantics
+linked_paths:
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java/volatile-long-double-atomicity-memory-visibility.md
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+confusable_with:
+- language/java-memory-model-happens-before-volatile-final
+- language/varhandle-unsafe-atomics
+- operating-system/cpu-cache-coherence-memory-barrier
+forbidden_neighbors: []
+expected_queries:
+- Java memory barrier와 VarHandle fence는 happens-before와 어떤 관계가 있어?
+- acquire fence release fence fullFence는 각각 어떤 ordering을 보장하는지 설명해줘
+- volatile read write는 내부적으로 memory barrier와 어떻게 연결돼?
+- lock-free publication에서 data와 ready flag 순서를 보장하려면 어떤 fence나 access mode를 봐야 해?
+- full fence를 남용하면 왜 성능과 병렬성에 비용이 생기는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java memory barrier, VarHandle fence, acquire/release/full fence, volatile ordering을 연결해 설명하는 advanced deep dive다.
+  memory barrier, VarHandle fence, acquire release, fullFence, publication ordering 질문이 본 문서에 매핑된다.
+---
 # Memory Barriers and VarHandle Fences
 
 > 한 줄 요약: memory barrier는 CPU/JIT가 읽기·쓰기 순서를 바꾸지 못하게 하는 경계이고, `VarHandle` fence 메서드는 그 의도를 Java 코드에서 더 분명하게 드러내는 도구다.

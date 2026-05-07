@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+review_feedback_tags:
+- latency-bandwidth-throughput
+- latency
+- bandwidth
+- throughput
 aliases:
 - latency
 - bandwidth
@@ -17,15 +22,34 @@ aliases:
 - 지연
 - 대역폭
 - 처리량
+- latency bandwidth throughput 차이
+- bandwidth를 늘리면 빨라지나
+- RTT와 throughput 관계
 intents:
 - definition
+linked_paths:
+- contents/network/tcp-udp-basics.md
+- contents/network/osi-7-layer-basics.md
+- contents/network/bbr-vs-cubic-congestion-intuition.md
+- contents/network/tcp-zero-window-persist-probe-receiver-backpressure.md
+- contents/system-design/load-balancer-basics.md
+confusable_with:
+- network/bbr-vs-cubic-congestion-intuition
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- system-design/load-balancer-basics
+forbidden_neighbors: []
 expected_queries:
 - latency가 뭐야?
 - 대역폭이랑 처리량은 뭐가 달라?
 - RTT가 뭐야?
 - bandwidth를 늘리면 항상 빨라져?
+contextual_chunk_prefix: |
+  이 문서는 network performance beginner primer로 latency, bandwidth,
+  throughput, RTT, 처리량, 대역폭, 지연 시간의 차이를 처음 구분한다.
+  bandwidth를 늘려도 체감이 그대로인 이유, RTT가 큰 해외 서버, 실제 처리량이
+  이론 대역폭보다 낮은 이유를 congestion, receive window, application queue로
+  깊게 들어가기 전 입구에서 설명한다.
 ---
-
 # 지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)
 
 > 한 줄 요약: 지연(latency)은 얼마나 빠른가, 대역폭(bandwidth)은 얼마나 넓은 파이프인가, 처리량(throughput)은 실제로 얼마나 통과됐는가를 각각 측정한다.

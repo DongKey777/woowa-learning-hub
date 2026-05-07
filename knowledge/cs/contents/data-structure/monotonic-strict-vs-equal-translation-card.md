@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Monotonic Strict-vs-Equal Translation Card
+concept_id: data-structure/monotonic-strict-vs-equal-translation-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-strict-equal-translation
+- phrase-to-pop-condition
+- leftmost-rightmost-tie-break
+aliases:
+- monotonic strict vs equal translation card
+- first greater pop condition
+- greater or equal pop condition
+- leftmost max monotonic deque
+- rightmost min monotonic deque
+- problem phrase to operator monotonic
+- 단조 문장 연산자 번역
+symptoms:
+- first greater와 first greater or equal처럼 한 단어 차이가 stack pop 조건을 바꾸는 것을 놓친다
+- leftmost max/min과 rightmost max/min이 deque tie-break와 pop 조건을 직접 바꾼다는 점을 문제 문장에 연결하지 못한다
+- monotonic 문제에서 equal을 답으로 인정하는지, 동점이면 왼쪽/오른쪽 중 누가 대표인지 먼저 적지 않는다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-operator-boundary-cheat-sheet
+next_docs:
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/monotonic-stack-walkthrough
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-queue-and-stack
+linked_paths:
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-queue-and-stack.md
+confusable_with:
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/monotonic-stack-walkthrough
+- data-structure/monotonic-deque-walkthrough
+forbidden_neighbors: []
+expected_queries:
+- Monotonic 문제 문장 first greater greater or equal leftmost max를 pop 조건으로 바로 번역하고 싶어
+- strict와 or equal 표현이 stack에서 어떤 while 조건 차이를 만들지 알려줘
+- leftmost max rightmost min은 deque에서 중복값을 어떻게 남기는 기준이야?
+- equal을 답으로 인정하는지부터 적으면 pop 조건이 어떻게 정해져?
+- 단조 strict vs equal translation card로 빠르게 확인하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 monotonic 문제 문장 속 strict, or equal, first greater, first
+  smaller, leftmost/rightmost max/min 표현을 pop condition으로 바로 번역하는
+  chooser다. stack answer eligibility와 deque tie-break를 함께 다룬다.
+---
 # Monotonic Strict-vs-Equal Translation Card
 
 > 한 줄 요약: monotonic 문제에서 문장 속 `first greater`, `greater or equal`, `leftmost max`, `rightmost min`은 거의 바로 pop 조건으로 번역된다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Session Store / Claim-Version Cutover 설계
+concept_id: system-design/session-store-claim-version-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session store migration
+- claim version cutover
+- claim schema rollout
+- auth claim migration
+aliases:
+- session store migration
+- claim version cutover
+- claim schema rollout
+- auth claim migration
+- session authority transfer
+- claim translation bridge
+- token validator overlap
+- revocation propagation
+- revoke before epoch
+- refresh family revoke
+- logout tail
+- regional revoke lag recovery
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/edge-verifier-claim-skew-fallback-design.md
+- contents/system-design/verifier-overlap-hard-reject-retirement-gates-design.md
+- contents/system-design/refresh-family-rotation-cutover-design.md
+- contents/system-design/canonical-revocation-plane-across-token-generations-design.md
+- contents/system-design/refresh-reauth-escalation-matrix-design.md
+- contents/system-design/revocation-bus-regional-lag-recovery-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Store / Claim-Version Cutover 설계 설계 핵심을 설명해줘
+- session store migration가 왜 필요한지 알려줘
+- Session Store / Claim-Version Cutover 설계 실무 트레이드오프는 뭐야?
+- session store migration 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Session Store / Claim-Version Cutover 설계를 다루는 deep_dive 문서다. session store migration과 claim schema/version rollout 설계는 세션 authority 이전, claim semantic 전환, revoke propagation, cleanup 시계를 하나의 cutover matrix로 묶어 old store는 내려갔는데 old claim이 남거나 new claim은 발급됐는데 revoke tail이 따라오지 않는 반쪽 전환을 막는 운영 설계다. 검색 질의가 session store migration, claim version cutover, claim schema rollout, auth claim migration처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Session Store / Claim-Version Cutover 설계
 
 > 한 줄 요약: session store migration과 claim schema/version rollout 설계는 세션 authority 이전, claim semantic 전환, revoke propagation, cleanup 시계를 하나의 cutover matrix로 묶어 old store는 내려갔는데 old claim이 남거나 new claim은 발급됐는데 revoke tail이 따라오지 않는 반쪽 전환을 막는 운영 설계다.

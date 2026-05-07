@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Hierarchical Timing Wheel
+concept_id: data-structure/hierarchical-timing-wheel
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- timing-wheel
+- timeout-management
+- delayed-task-scheduler
+aliases:
+- hierarchical timing wheel
+- timing wheel
+- hashed wheel timer
+- timer wheel
+- deadline bucket scheduler
+- timeout wheel
+- bucket rotation timer
+symptoms:
+- 수십만 timeout이나 delayed task를 heap으로 모두 관리하면서 add cancel expired scan 비용이 커지는 신호를 놓친다
+- Timing Wheel이 deadline 전체 정렬을 포기하고 tick bucket 근사 정렬을 받아들이는 구조라는 점을 이해하지 못한다
+- 단일 wheel의 slot round 한계와 계층형 wheel의 cascade 이유를 구분하지 못한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/ring-buffer
+- data-structure/heap-variants
+next_docs:
+- data-structure/timing-wheel-variants-and-selection
+- data-structure/timing-wheel-vs-delay-queue
+- data-structure/calendar-queue
+- system-design/distributed-scheduler-design
+linked_paths:
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/calendar-queue.md
+- contents/data-structure/timing-wheel-variants-and-selection.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/system-design/distributed-scheduler-design.md
+confusable_with:
+- data-structure/heap-variants
+- data-structure/calendar-queue
+- data-structure/timing-wheel-vs-delay-queue
+- data-structure/timing-wheel-variants-and-selection
+forbidden_neighbors: []
+expected_queries:
+- Hierarchical Timing Wheel은 대량 timeout을 heap보다 어떻게 싸게 관리해?
+- timing wheel에서 slot과 round와 cascade는 각각 무엇을 의미해?
+- deadline을 정확히 정렬하지 않고 tick bucket으로 묶는 trade-off는?
+- DelayQueue나 heap timer와 Timing Wheel을 어떤 workload에서 비교해야 해?
+- hashed wheel timer가 retry scheduler나 idle connection timeout에 맞는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 대량 timeout과 delayed task를 exact deadline ordering heap 대신
+  tick bucket과 circular wheel로 관리하는 Hierarchical Timing Wheel chooser다.
+  slot, round, cascade, bucket granularity, DelayQueue/heap/calendar queue와의
+  선택 기준을 다룬다.
+---
 # Hierarchical Timing Wheel
 
 > 한 줄 요약: Hierarchical Timing Wheel은 미래 시점을 원형 버킷에 나눠 담아, 대량 timeout과 delayed task를 heap보다 더 싸게 관리하려는 스케줄링용 자료구조다.

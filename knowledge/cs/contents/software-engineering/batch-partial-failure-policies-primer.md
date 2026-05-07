@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Batch Partial Failure Policies Primer
+concept_id: software-engineering/batch-partial-failure
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-recovery
+- partial-failure
+- retry-queue
+aliases:
+- Batch Partial Failure Policies Primer
+- batch partial failure policy
+- chunk summary retry queue checkpoint
+- per-item retry vs checkpoint resume
+- batch checkpoint resume beginner
+- 배치 일부 실패 정책
+symptoms:
+- batch 실패를 실패 item id만 모아 다시 돌리면 끝이라고 보고 run progress, failure classification, safe resume 지점을 남기지 않아
+- chunk summary, retry queue, checkpoint를 모두 비슷한 실패 기록으로 보아 각각의 운영 질문을 분리하지 못해
+- 실패 item을 main run에서 분리해야 하는지, same run을 checkpoint부터 이어야 하는지 구분하지 않아 재실행이 위험해져
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/batch-job-scope
+- software-engineering/bulk-port-tradeoffs
+next_docs:
+- software-engineering/batch-result-modeling
+- software-engineering/batch-result-testing
+- software-engineering/batch-recovery-runbook
+linked_paths:
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/software-engineering/saveall-sendall-port-smells-safer-alternatives.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- software-engineering/batch-result-modeling
+- software-engineering/batch-recovery-runbook
+- software-engineering/batch-idempotency-keys
+forbidden_neighbors: []
+expected_queries:
+- batch partial failure에서 pure per-item retry, chunk summary, retry queue, checkpoint를 어떻게 구분해?
+- batch가 실패했을 때 어디까지 끝났는지와 무엇을 다시 돌릴지 설명하려면 어떤 결과가 필요해?
+- 실패 item만 다시 돌리면 충분한 경우와 retry queue로 main run 밖에 빼야 하는 경우를 비교해줘
+- checkpoint는 실패 item 재시도와 다른 문제를 푼다는 말이 무슨 뜻이야?
+- batch 일부 실패 정책을 beginner 테스트와 runbook으로 이어 가려면 어떤 문서를 보면 돼?
+contextual_chunk_prefix: |
+  이 문서는 batch partial failure policy를 pure per-item retry, chunk summary, retry queue, checkpoint resume로 나눠 run 의미와 운영 설명을 세우는 beginner primer다.
+---
 # Batch Partial Failure Policies Primer
 
 > 한 줄 요약: batch가 "실패한 item만 다시 돌리면 끝"을 넘는 순간, chunk summary, retry queue, checkpoint를 따로 설계해야 run 의미와 운영 설명이 맞아진다.

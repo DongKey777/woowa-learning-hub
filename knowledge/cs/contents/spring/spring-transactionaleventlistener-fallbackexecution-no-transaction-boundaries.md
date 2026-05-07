@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring TransactionalEventListener FallbackExecution No Transaction Boundaries
+concept_id: spring/transactionaleventlistener-fallbackexecution-no-transaction-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transactionaleventlistener-fallbackexecution-no
+- transaction-boundaries
+- transactionaleventlistener-fallbackexecution
+- transactional-event-listener
+aliases:
+- TransactionalEventListener fallbackExecution
+- transactional event listener no transaction
+- event ignored without transaction
+- AFTER_COMMIT outside transaction
+- fallback execution mixed semantics
+- event phase boundary
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-eventlistener-ordering-async-traps.md
+- contents/spring/spring-transactional-async-composition-traps.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/spring-applicationeventmulticaster-internals.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+confusable_with:
+- spring/eventlistener-transaction-phase-outbox
+- spring/eventlistener-ordering-async-traps
+- spring/transactional-async-composition-traps
+- spring/transaction-synchronization-aftercommit-pitfalls
+symptoms:
+- @TransactionalEventListener가 트랜잭션 없이 발행된 이벤트를 처리하지 않는다.
+- fallbackExecution을 켰더니 같은 listener가 transaction phase와 즉시 실행 의미를 동시에 갖는다.
+- AFTER_COMMIT 리스너라고 믿었는데 no transaction path에서는 commit 이후 보장이 없다.
+expected_queries:
+- @TransactionalEventListener는 transaction이 없으면 이벤트를 무시해?
+- fallbackExecution=true를 켜면 어떤 semantic이 섞여 위험해?
+- AFTER_COMMIT listener가 no transaction event에서는 어떤 의미가 돼?
+- TransactionalEventListener와 EventListener, outbox를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 @TransactionalEventListener가 active transaction이 있을 때만 phase 의미를 갖고,
+  transaction 없이 발행된 event는 기본적으로 무시된다는 경계를 설명한다. fallbackExecution을
+  켜면 같은 listener가 phase-based execution과 immediate execution을 함께 갖게 되는 pitfall을 다룬다.
+---
 # Spring `@TransactionalEventListener` Outside Transactions and `fallbackExecution`
 
 > 한 줄 요약: `@TransactionalEventListener`는 트랜잭션이 있을 때만 phase 의미를 가지며, 트랜잭션 없이 발행된 이벤트는 기본적으로 무시되므로 `fallbackExecution`을 켜는 순간 같은 리스너가 서로 다른 의미로 실행될 수 있다.

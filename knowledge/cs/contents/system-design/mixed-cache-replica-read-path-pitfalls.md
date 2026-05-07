@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Mixed Cache+Replica Read Path Pitfalls
+concept_id: system-design/mixed-cache-replica-read-path-pitfalls
+canonical: false
+category: system-design
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- mixed cache replica read path
+- mixed cache+replica read path pitfalls
+- dual stale sources
+- dual stale source
+aliases:
+- mixed cache replica read path
+- mixed cache+replica read path pitfalls
+- dual stale sources
+- dual stale source
+- cache miss stale replica
+- stale refill from replica
+- cache and replica both stale
+- cache hit newer than miss
+- invalidation exposes stale replica
+- mixed read path source selection
+- source selection rules
+- freshness routing rules
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Mixed Cache+Replica Read Path Pitfalls 설계 핵심을 설명해줘
+- mixed cache replica read path가 왜 필요한지 알려줘
+- Mixed Cache+Replica Read Path Pitfalls 실무 트레이드오프는 뭐야?
+- mixed cache replica read path 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Mixed Cache+Replica Read Path Pitfalls를 다루는 deep_dive 문서다. cache hit path와 replica miss path가 각각 다른 stale window를 가지면 `cache miss == fresh read`가 깨지므로, source-selection 규칙과 by-source observability를 같이 설계해야 한다. 검색 질의가 mixed cache replica read path, mixed cache+replica read path pitfalls, dual stale sources, dual stale source처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Mixed Cache+Replica Read Path Pitfalls
 
 > 한 줄 요약: cache hit path와 replica miss path가 각각 다른 stale window를 가지면 `cache miss == fresh read`가 깨지므로, source-selection 규칙과 by-source observability를 같이 설계해야 한다.

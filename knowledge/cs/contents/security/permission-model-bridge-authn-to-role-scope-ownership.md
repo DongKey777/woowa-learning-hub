@@ -1,8 +1,74 @@
+---
+schema_version: 3
+title: 'Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기'
+concept_id: security/permission-model-bridge-authn-to-role-scope-ownership
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- permission model bridge
+- authn to authz bridge
+- authz 4-step gate
+- role scope ownership primer bridge
+aliases:
+- permission model bridge
+- authn to authz bridge
+- authz 4-step gate
+- role scope ownership primer bridge
+- 로그인 됐는데 왜 403
+- 유효한 토큰인데 403
+- scope 있는데 왜 거부
+- 남의 주문 조회
+- 내 것만 되는데 남의 것은 안 됨
+- ownership gate
+- response code handoff
+- permission model bridge authn to role scope ownership basics
+symptoms:
+- 인증은 성공했는데 role, scope, ownership 중 어느 축 때문에 403인지 분리하지 못한다
+- 남의 주문/예약 조회를 단순 로그인 여부만으로 허용해 resource-level authz를 놓친다
+- API scope가 있으면 모든 객체 접근이 허용된다고 생각해 ownership/context gate를 생략한다
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/oauth-scope-vs-api-audience-vs-application-permission.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/auth-failure-response-401-403-404.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 'Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기 핵심 개념을 설명해줘'
+- permission model bridge가 왜 필요한지 알려줘
+- 'Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기 실무 설계 포인트는 뭐야?'
+- permission model bridge에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기를 다루는 deep_dive 문서다. 인증(authn)으로 `누구인지`를 확인한 뒤, 실제 허용 판단은 `role/permission`, `scope`, `ownership` 세 축을 함께 통과해야 한다. 그래서 `유효한 토큰인데 403`, `scope 있는데 왜 거부` 같은 질문을 한 장에서 바로 다음 primer로 넘길 수 있다. 검색 질의가 permission model bridge, authn to authz bridge, authz 4-step gate, role scope ownership primer bridge처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기
 
 > 한 줄 요약: 인증(authn)으로 `누구인지`를 확인한 뒤, 실제 허용 판단은 `role/permission`, `scope`, `ownership` 세 축을 함께 통과해야 한다. 그래서 `유효한 토큰인데 403`, `scope 있는데 왜 거부` 같은 질문을 한 장에서 바로 다음 primer로 넘길 수 있다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 로그인 이후 장면 | 다음 gate |
+|---|---|
+| principal은 복원됐다 | role/permission을 볼 차례인가 |
+| token scope는 충분하다 | resource ownership도 확인했는가 |
+| 주문/예약이 남의 객체다 | 403 또는 404 concealment 정책인가 |
+| 권한 변경 뒤 판단이 다르다 | session/cache freshness 문제인가 |
 
 관련 문서:
 

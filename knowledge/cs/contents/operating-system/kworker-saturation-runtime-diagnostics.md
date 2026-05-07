@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Kworker Saturation Runtime Diagnostics
+concept_id: operating-system/kworker-saturation-runtime-diagnostics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- kworker-saturation-diagnostics
+- kworker-saturation
+- kernel-worker-backlog
+- workqueue-diagnostics
+aliases:
+- kworker saturation
+- kernel worker backlog
+- workqueue diagnostics
+- deferred work saturation
+- softirq follow-up work
+- kworker p99 latency
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/workqueues-kthreads-debugging.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+symptoms:
+- user CPU가 아니라 kworker backlog가 밀려 deferred work 처리 지연이 latency로 보인다.
+- softirq 후속 처리와 workqueue scheduling이 섞여 병목 위치가 불명확하다.
+- 특정 kworker thread가 CPU/NUMA placement나 affinity 때문에 밀린다.
+expected_queries:
+- kworker saturation은 user CPU 사용률이 아니라 kernel worker backlog를 봐야 해?
+- workqueue와 softirq 후속 처리가 p99 latency를 만드는지 어떻게 진단해?
+- kworker가 무엇을 처리 중인지 eBPF perf로 어떻게 좁혀?
+- kworker CPU affinity나 locality가 deferred work latency에 영향을 줄 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 kworker saturation을 user-space CPU 문제보다 kernel deferred work backlog와
+  softirq follow-up 처리 지연으로 본다. workqueue, kthread, affinity, tracing으로
+  runtime diagnosis를 구성한다.
+---
 # Kworker Saturation, Runtime Diagnostics
 
 > 한 줄 요약: kworker saturation은 커널의 deferred work가 밀리는 상태라서, 유저 CPU가 아니라 커널 worker backlog와 softirq 후속 처리를 봐야 한다.

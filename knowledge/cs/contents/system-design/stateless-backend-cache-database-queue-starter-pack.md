@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩
+concept_id: system-design/stateless-backend-cache-database-queue-starter-pack
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- system-design-beginner-entry
+- cache-db-queue-router
+- stateless-backend-scale-basics
+aliases:
+- stateless backend starter pack
+- backend cache database queue basics
+- load balancer app database cache queue
+- source of truth vs cache
+- queue handoff vs data structure queue
+- controller service repository 다음 설계
+- 백엔드 박스 역할 구분
+- 서버 여러 대와 캐시 큐 DB
+symptoms:
+- controller service repository는 읽히는데 cache queue load balancer가 왜 붙는지 모르겠다
+- cache를 정답 저장소로 보고 database와 같은 역할이라고 오해한다
+- 자료구조 queue와 후처리 message queue를 섞어서 system design 질문을 BFS로 라우팅한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- software-engineering/woowacourse-backend-mission-prerequisite-primer
+- system-design/system-design-foundations
+next_docs:
+- system-design/queue-vs-cache-vs-db-decision-drill
+- system-design/consistency-idempotency-async-workflow-foundations
+- system-design/request-path-failure-modes-primer
+- system-design/database-scaling-primer
+linked_paths:
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+- contents/system-design/system-design-foundations.md
+- contents/system-design/queue-vs-cache-vs-db-decision-drill.md
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/horizontal-vs-vertical-scaling-basics.md
+- contents/system-design/stateless-vs-stateful-basics.md
+- contents/system-design/caching-basics.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/design-pattern/command-pattern-basics.md
+confusable_with:
+- system-design/queue-vs-cache-vs-db-decision-drill
+- system-design/caching-basics
+- system-design/message-queue-basics
+- system-design/database-scaling-primer
+- design-pattern/command-pattern-basics
+forbidden_neighbors: []
+expected_queries:
+- controller service repository 다음에 cache queue load balancer는 왜 붙어?
+- backend에서 database cache queue가 각각 어떤 역할을 맡는지 초보자용으로 설명해줘
+- cache는 정답 저장소가 아니라 복사본이라는 말을 system design 관점에서 어떻게 이해해?
+- queue가 나오면 알고리즘 BFS queue와 message queue를 어떻게 구분해야 해?
+- stateless app을 여러 대 두면 session과 database는 어디에 둬야 해?
+contextual_chunk_prefix: |
+  이 문서는 백엔드 입문자가 controller-service-repository 다음에 load balancer,
+  stateless app, database, cache, queue가 왜 등장하는지 처음 연결하는
+  system-design primer다. cache는 source of truth가 아니라 복사본이고,
+  queue는 BFS 자료구조가 아니라 느린 후처리 handoff라는 오해를 바로잡는다.
+---
 # Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩
 
 > 한 줄 요약: 로드 밸런서가 stateless app 여러 대에 요청을 나누고, database는 정답을 보관하고, cache는 반복 읽기를 덜어 주고, queue는 느린 후처리를 뒤로 미루는 구조로 보면 백엔드 scale basics가 한 그림에 잡힌다.

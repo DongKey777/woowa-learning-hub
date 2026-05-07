@@ -59,6 +59,8 @@ confusable_with:
 - system-design/mixed-cache-replica-freshness-bridge
 - system-design/cache-acceptance-rules-for-causal-reads
 forbidden_neighbors:
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
 expected_queries:
 - recent-write 힌트를 cache hit, miss, refill 전부에 어떻게 이어 붙여?
 - min-version이 있으면 cache entry를 버리는 기준을 어디에 둬야 해?
@@ -67,13 +69,12 @@ expected_queries:
 - 저장 직후 상세 조회에서 hit reject, primary fallback, no-fill이 왜 한 세트야?
 - cache freshness 정책과 read routing 정책을 하나로 봐야 하는 이유가 뭐야?
 contextual_chunk_prefix: |
-  이 문서는 학습자가 recent-write와 min-version을 read routing 앞단 옵션이
-  아니라 cache hit accept, miss fallback, refill write-back까지 이어지는
-  하나의 session policy로 이해하게 돕는 beginner bridge다. 저장 직후
-  cache hit를 왜 버릴 수 있는지, cache miss가 왜 fresh read와 같지
-  않은지, replica 결과를 언제 no-fill 해야 하는지, hit reject와 primary
-  fallback을 왜 같은 기준선으로 설명해야 하는지 같은 자연어 질문이 본
-  문서의 연결 고리에 매핑된다.
+  이 문서는 학습자가 recent-write와 min-version을 요청 입구 옵션이 아니라
+  cache hit 판정, miss 뒤 source 선택, refill no-fill까지 이어지는 하나의
+  session policy로 연결하게 돕는 bridge다. 방금 저장했는데 히트 값을 왜
+  버리는지, 캐시를 못 찾았는데도 왜 바로 안전하지 않은지, replica 결과를
+  다시 채워도 되는지, primary 우회와 no-fill을 왜 같은 기준으로 묶는지
+  같은 자연어 질문이 본 문서의 연결선에 매핑된다.
 ---
 # Cache Hit/Miss Session Policy Bridge
 

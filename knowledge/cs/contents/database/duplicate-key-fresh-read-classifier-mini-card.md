@@ -9,7 +9,10 @@ doc_role: drill
 level: beginner
 language: mixed
 source_priority: 75
-mission_ids: []
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+- missions/lotto
 review_feedback_tags:
 - idempotency-replay-contract
 - duplicate-key-reclassification

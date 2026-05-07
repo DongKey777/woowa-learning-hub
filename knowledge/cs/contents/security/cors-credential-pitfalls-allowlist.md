@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: CORS Credential Pitfalls / Allowlist Design
+concept_id: security/cors-credential-pitfalls-allowlist
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- CORS
+- credentials
+- allowlist
+- Access-Control-Allow-Credentials
+aliases:
+- CORS
+- credentials
+- allowlist
+- Access-Control-Allow-Credentials
+- Access-Control-Allow-Origin
+- preflight
+- origin
+- wildcard
+- cookie
+- browser security
+- cross-origin
+- credentials include vs Access-Control-Allow-Credentials
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/cors-basics.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cors-samesite-preflight.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- CORS Credential Pitfalls / Allowlist Design 핵심 개념을 설명해줘
+- CORS가 왜 필요한지 알려줘
+- CORS Credential Pitfalls / Allowlist Design 실무 설계 포인트는 뭐야?
+- CORS에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 CORS Credential Pitfalls / Allowlist Design를 다루는 deep_dive 문서다. CORS는 응답 읽기 규칙이고, credential 설정은 쿠키와 인증 헤더 전송을 바꾼다. 허용 origin, credential, preflight를 따로 설계하지 않으면 브라우저 보안이 쉽게 흔들린다. 검색 질의가 CORS, credentials, allowlist, Access-Control-Allow-Credentials처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # CORS Credential Pitfalls / Allowlist Design
 
 > 한 줄 요약: CORS는 응답 읽기 규칙이고, credential 설정은 쿠키와 인증 헤더 전송을 바꾼다. 허용 origin, credential, preflight를 따로 설계하지 않으면 브라우저 보안이 쉽게 흔들린다.

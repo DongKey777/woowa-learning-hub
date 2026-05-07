@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "HTTP/2 Upload Early Reject, RST_STREAM, Flow-Control Cleanup"
+concept_id: network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- http2-upload-early-reject
+- rst-stream-flow-control
+- h2-unread-body-cleanup
+aliases:
+- http2 upload reject
+- h2 upload early reject
+- RST_STREAM NO_ERROR upload
+- discard DATA after reset
+- connection flow control after reset
+- h2 unread body cleanup
+symptoms:
+- HTTP/2 upload early reject를 HTTP/1.1 leftover bytes 문제와 같은 방식으로만 본다
+- final response만 보내면 client가 남은 DATA를 멈춘다고 생각하고 RST_STREAM 신호를 놓친다
+- reset 후 in-flight DATA discard와 connection-level flow control credit accounting을 무시한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/http2-flow-control-window-update-stalls
+next_docs:
+- network/expect-100-continue-proxy-request-buffering
+- network/gateway-buffering-vs-spring-early-reject
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+linked_paths:
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/sse-failure-attribution-http1-http2.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+confusable_with:
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/http2-flow-control-window-update-stalls
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/gateway-buffering-vs-spring-early-reject
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 큰 업로드를 early reject할 때 RST_STREAM과 flow-control cleanup을 어떻게 설계해?"
+- "H2에서는 unread body가 다음 요청 byte stream을 오염시키는 것보다 무엇이 더 중요해?"
+- "final response를 보낸 뒤에도 request DATA가 계속 오면 RST_STREAM이 필요한 이유는?"
+- "RST_STREAM NO_ERROR upload reject와 CANCEL REFUSED_STREAM 의미 차이를 설명해줘"
+- "reset 후 discard DATA가 connection-level window credit에 미치는 영향을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2 upload early reject에서 final response before request end,
+  RST_STREAM(NO_ERROR), in-flight DATA discard, connection-level flow control
+  credit cleanup, stream reset attribution을 다루는 advanced playbook이다.
+---
 # HTTP/2 Upload Early Reject, RST_STREAM, Flow-Control Cleanup
 
 > 한 줄 요약: HTTP/2에서 큰 업로드를 early reject할 때 핵심은 HTTP/1.1처럼 leftover body가 다음 요청을 오염시키는가가 아니라, **어느 시점에 `RST_STREAM`으로 업로드 중단을 알리고, reset 이후에도 connection-level flow control과 discard cleanup을 어떻게 유지하는가**다.

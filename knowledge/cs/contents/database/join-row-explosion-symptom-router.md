@@ -37,7 +37,7 @@ prerequisites:
 - database/database-first-step-bridge
 next_docs:
 - database/sql-join-basics
-- database/result-row-explosion-debugging-checklist
+- database/result-row-explosion-debugging
 - database/distinct-vs-group-by-beginner-card
 linked_paths:
 - contents/database/sql-join-basics.md
@@ -49,7 +49,7 @@ linked_paths:
 confusable_with:
 - database/sql-join-basics
 - database/distinct-vs-group-by-beginner-card
-- database/result-row-explosion-debugging-checklist
+- database/result-row-explosion-debugging
 forbidden_neighbors:
 expected_queries:
 - JOIN 뒤에 결과가 갑자기 많아졌을 때 어디부터 의심해야 해?
@@ -65,7 +65,6 @@ contextual_chunk_prefix: |
   붙여야 하나, group by로 줄였는데 설명이 안 됨 같은 자연어 표현이 이 문서의
   원인 분기에 매핑된다.
 ---
-
 # JOIN 결과 row 폭증 원인 라우터
 
 ## 한 줄 요약

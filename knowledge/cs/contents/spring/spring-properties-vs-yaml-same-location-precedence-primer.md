@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Spring Same Location Properties vs YAML Precedence Primer
+concept_id: spring/properties-vs-yaml-same-location-precedence-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- properties-vs-yaml
+- same-location-precedence
+- application-properties-vs
+- application-yml
+aliases:
+- application.properties vs application.yml
+- same location config precedence
+- properties file wins YAML
+- Spring Boot config file merge
+- YAML properties duplicate key
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-external-config-file-precedence-primer.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-multidocument-yaml-on-profile-primer.md
+- contents/spring/spring-config-additional-location-primer.md
+- contents/spring/spring-configurationproperties-binding-internals.md
+expected_queries:
+- 같은 위치에 application.properties와 application.yml이 있으면 어느 값이 우선이야?
+- Spring Boot 설정 파일은 properties와 YAML을 merge해?
+- application.yml 값이 있는데 properties 값이 먹는 이유는?
+- 같은 key가 properties와 yaml에 중복되면 어떻게 판정해?
+contextual_chunk_prefix: |
+  이 문서는 같은 config location에 application.properties와 application.yml 또는
+  application.yaml이 함께 있을 때 duplicate key precedence를 초급자용 예제로 정리한다.
+  파일 전체 교체가 아니라 property key별 override 관점으로 설명한다.
+---
 # Spring Same-Location `.properties` vs YAML Precedence Primer
 
 > 한 줄 요약: 같은 위치에 `application.properties`와 `application.yml`(또는 `application.yaml`)이 함께 있으면 Spring Boot는 둘 다 후보로 보되, **같은 key가 겹칠 때는 `.properties` 쪽 값을 우선**한다.

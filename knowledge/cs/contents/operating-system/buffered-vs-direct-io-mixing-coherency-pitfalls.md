@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Buffered vs Direct IO Mixing Coherency Pitfalls
+concept_id: operating-system/buffered-vs-direct-io-mixing-coherency-pitfalls
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- buffered-vs-direct
+- io-mixing-coherency
+- pitfalls
+- io-mixing
+aliases:
+- buffered vs direct IO mixing
+- O_DIRECT page cache coherency
+- direct IO invalidation
+- page cache direct IO pitfall
+- mixing buffered direct same file
+- file coherency contract
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/direct-io-alignment-checklist.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+- contents/operating-system/posix-fadvise-madvise-page-cache-hints.md
+symptoms:
+- O_DIRECT를 켰는데 같은 file 영역을 buffered I/O로도 만져 latency와 coherency가 흔들린다.
+- direct I/O가 page cache를 우회한다고 믿었지만 invalidation과 alignment 비용을 놓쳤다.
+- mmap/read와 direct write를 섞은 뒤 읽은 데이터 freshness가 헷갈린다.
+expected_queries:
+- O_DIRECT와 buffered I/O를 같은 파일에서 섞으면 왜 위험해?
+- direct I/O는 page cache coherency와 invalidation을 어떻게 직접 관리하게 해?
+- buffered vs direct I/O mixing이 성능 튜닝이 아니라 계약인 이유는?
+- page cache, mmap, direct I/O를 섞을 때 어떤 pitfall을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 O_DIRECT와 buffered/page-cache I/O를 같은 file이나 같은 range에서 섞는 것이
+  단순 성능 튜닝이 아니라 coherency, invalidation, alignment, freshness 계약을 직접
+  관리하는 선택이라는 점을 설명한다.
+---
 # Buffered vs Direct I/O Mixing, Coherency Pitfalls
 
 > 한 줄 요약: `O_DIRECT`와 buffered/page-cache I/O를 같은 파일·같은 영역에서 섞는 것은 성능 튜닝이 아니라 coherency와 invalidation 계약을 직접 관리하는 선택이어서, 잘못 섞으면 기대보다 느리고 더 헷갈린다.

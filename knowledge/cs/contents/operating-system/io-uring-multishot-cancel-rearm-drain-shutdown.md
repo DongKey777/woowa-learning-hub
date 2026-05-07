@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring Multishot Cancel Rearm Drain Shutdown
+concept_id: operating-system/io-uring-multishot-cancel-rearm-drain-shutdown
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- io-uring-multishot
+- cancel-rearm-drain
+- shutdown
+- ioring-cqe-f
+aliases:
+- io_uring multishot cancel rearm drain shutdown
+- IORING_CQE_F_MORE terminal CQE
+- multishot accept recv subscription
+- cancel CQE drain
+- rearm close after final CQE
+- multishot lifecycle
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-cancel-scope-fixed-files-mixed-ops.md
+- contents/operating-system/io-uring-recv-send-zerocopy-teardown-ordering.md
+symptoms:
+- cancel CQE 하나만 보고 multishot request가 끝났다고 판단해 rearm이나 close를 너무 빨리 한다.
+- IORING_CQE_F_MORE가 꺼진 마지막 CQE를 drain하기 전 resource를 회수한다.
+- 과부하나 shutdown 시점에 accept/recv subscription ownership이 흐려진다.
+expected_queries:
+- io_uring multishot accept recv는 왜 오래 살아 있는 subscription으로 봐야 해?
+- cancel 후 IORING_CQE_F_MORE가 꺼진 마지막 CQE까지 drain해야 하는 이유는?
+- multishot request를 rearm하거나 close하기 전 어떤 completion을 확인해야 해?
+- shutdown에서 cancel, drain, rearm, close 순서를 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 io_uring multishot accept/recv를 SQE 하나가 아니라 오래 살아 있는 subscription으로
+  보고, cancel CQE만으로 끝내지 않고 IORING_CQE_F_MORE가 꺼진 final CQE까지 drain한 뒤
+  rearm/close해야 한다는 lifecycle playbook이다.
+---
 # io_uring Multishot Cancel, Rearm, Drain, Shutdown
 
 > 한 줄 요약: `io_uring` multishot accept/recv는 "SQE 하나"가 아니라 오래 살아 있는 subscription이므로, 과부하나 종료 시점에는 cancel CQE만 보고 끝내지 말고 `IORING_CQE_F_MORE`가 꺼진 **마지막 CQE**까지 drain한 뒤에만 rearm/close 해야 한다.

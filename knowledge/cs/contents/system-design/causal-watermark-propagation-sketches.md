@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Causal Watermark Propagation Sketches
+concept_id: system-design/causal-watermark-propagation-sketches
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- causal watermark propagation sketches
+- causal token watermark propagation
+- required watermark propagation sketch
+- observed watermark propagation beginner
+aliases:
+- causal watermark propagation sketches
+- causal token watermark propagation
+- required watermark propagation sketch
+- observed watermark propagation beginner
+- notification after read watermark carry
+- event driven read watermark carry
+- gateway app database watermark pseudo code
+- gateway app db causal token pseudo code
+- notification required watermark session context
+- event signal causal token app flow
+- successful causal read observed watermark
+- watermark handoff after notification click
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/token-propagation-through-bff-and-gateway.md
+- contents/system-design/notification-read-to-min-version-bridge.md
+- contents/system-design/projection-applied-watermark-basics.md
+- contents/system-design/watermark-metadata-persistence-basics.md
+- contents/system-design/cache-acceptance-rules-for-causal-reads.md
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Causal Watermark Propagation Sketches 설계 핵심을 설명해줘
+- causal watermark propagation sketches가 왜 필요한지 알려줘
+- Causal Watermark Propagation Sketches 실무 트레이드오프는 뭐야?
+- causal watermark propagation sketches 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Causal Watermark Propagation Sketches를 다루는 deep_dive 문서다. notification이나 event signal이 `required_watermark`를 들고 들어오면, gateway는 그 기준선을 복원하고, app은 후속 read policy로 번역하고, database/repository는 실제 비교를 집행한 뒤, 성공 응답의 `observed_watermark`를 다시 다음 요청용 힌트로 올려 보내야 한다. 검색 질의가 causal watermark propagation sketches, causal token watermark propagation, required watermark propagation sketch, observed watermark propagation beginner처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Causal Watermark Propagation Sketches
 
 > 한 줄 요약: notification이나 event signal이 `required_watermark`를 들고 들어오면, gateway는 그 기준선을 복원하고, app은 후속 read policy로 번역하고, database/repository는 실제 비교를 집행한 뒤, 성공 응답의 `observed_watermark`를 다시 다음 요청용 힌트로 올려 보내야 한다.

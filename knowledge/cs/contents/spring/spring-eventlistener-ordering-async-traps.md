@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Spring @EventListener Ordering and Async Traps
+concept_id: spring/eventlistener-ordering-async-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- eventlistener-ordering-async
+- traps
+- eventlistener-ordering
+- async-event-listener
+aliases:
+- @EventListener ordering
+- async event listener
+- @Order event listener
+- transactional event listener
+- event publication
+- listener idempotency
+- ApplicationEventPublisher
+intents:
+- troubleshooting
+- design
+symptoms:
+- 이벤트 리스너가 기대한 순서보다 먼저 실행되거나 늦게 실행된다.
+- @Async를 붙인 event listener의 실패가 publish 경로에서 보이지 않는다.
+- 트랜잭션 commit 전에 이벤트가 외부 I/O를 실행해서 유실이나 불일치처럼 보인다.
+linked_paths:
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-transactional-async-composition-traps.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-delivery-reliability-retryable-resilience4j-outbox-relay.md
+- contents/spring/spring-applicationeventmulticaster-internals.md
+expected_queries:
+- @EventListener는 기본적으로 동기 실행이야?
+- @Order와 @Async를 이벤트 리스너에 같이 쓰면 어떤 함정이 있어?
+- 이벤트 리스너가 commit 전에 실행되는 문제는 어떻게 막아?
+- Spring event listener 실패를 안정적으로 관측하려면 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 Spring @EventListener의 동기/비동기 실행, @Order, transaction phase,
+  @Async, ApplicationEventPublisher, listener failure visibility, idempotency를
+  함께 다룬다. 이벤트가 먼저 가거나 유실처럼 보이는 증상을 outbox와
+  @TransactionalEventListener 경계로 분리하는 playbook이다.
+---
 # Spring `@EventListener` Ordering and Async Traps
 
 > 한 줄 요약: `@EventListener`는 순서와 비동기 실행을 쉽게 조합할 수 있지만, 트랜잭션 경계와 실행 순서를 같이 설계하지 않으면 이벤트가 먼저 가거나 유실처럼 보일 수 있다.

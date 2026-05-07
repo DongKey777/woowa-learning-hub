@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: DDL Metadata Version Visibility
+concept_id: database/ddl-metadata-version-visibility
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- ddl-metadata-version-visibility
+- metadata-lock-session-definition
+- instant-ddl-cutover-visibility
+aliases:
+- ddl metadata version visibility
+- metadata version visibility
+- table definition cache
+- schema version visibility
+- instant ddl metadata
+- metadata lock session visibility
+- DDL metadata version
+- 세션별 테이블 정의
+- DDL 이후 일부 요청 실패
+symptoms:
+- DDL은 끝났는데 일부 오래 산 세션이 옛 테이블 정의를 보는 것 같아
+- instant ADD COLUMN 이후 새 컬럼을 보는 시점과 애플리케이션 배포 시점이 어긋나고 있어
+- metadata lock은 풀렸지만 session별 metadata version visibility가 전환됐는지 확인해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/metadata-lock-ddl-blocking
+- database/instant-add-column-metadata-semantics
+next_docs:
+- database/instant-ddl-vs-copy-inplace-algorithms
+- database/destructive-schema-cleanup-column-retirement
+- database/generated-columns-functional-index-migration
+linked_paths:
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/instant-add-column-metadata-semantics.md
+- contents/database/instant-ddl-vs-copy-inplace-algorithms.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/database/generated-columns-functional-index-migration.md
+confusable_with:
+- database/metadata-lock-ddl-blocking
+- database/instant-add-column-metadata-semantics
+- database/instant-ddl-vs-copy-inplace-algorithms
+forbidden_neighbors: []
+expected_queries:
+- DDL metadata version visibility는 세션별 테이블 정의 전환을 어떻게 설명해?
+- instant ADD COLUMN이 끝났는데 일부 요청만 새 컬럼 때문에 실패하면 무엇을 봐야 해?
+- metadata lock과 metadata version visibility는 어떤 층위가 달라?
+- DDL cutover 후 오래 산 세션이 old schema를 보는 문제를 어떻게 줄여?
+- schema version visibility를 코드 배포와 같이 관리해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 DDL 이후 metadata lock, table definition cache, session별 schema version visibility, instant DDL cutover가 어떻게 보이는지 설명하는 advanced deep dive다.
+  DDL metadata version, table definition cache, instant ADD COLUMN visibility, metadata lock session visibility 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # DDL Metadata Version Visibility
 
 > 한 줄 요약: DDL은 메타데이터를 바꾸는 순간에 끝나는 게 아니라, 세션마다 다른 버전의 테이블 정의가 언제 보이느냐까지 관리해야 안전하다.

@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: '비밀번호 저장: bcrypt / scrypt / argon2'
+concept_id: security/password-storage-bcrypt-scrypt-argon2
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- password storage deep dive
+- bcrypt scrypt argon2
+- password hashing advanced
+- password hashing beginner handoff
+aliases:
+- password storage deep dive
+- bcrypt scrypt argon2
+- password hashing advanced
+- password hashing beginner handoff
+- password primer return path
+- return to security README
+- '비밀번호 저장: bcrypt / scrypt / argon2'
+- password storage bcrypt scrypt argon2
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/jwt-deep-dive.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/https-hsts-mitm.md
+- contents/security/password-hashing-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- '비밀번호 저장: bcrypt / scrypt / argon2 핵심 개념을 설명해줘'
+- password storage deep dive가 왜 필요한지 알려줘
+- '비밀번호 저장: bcrypt / scrypt / argon2 실무 설계 포인트는 뭐야?'
+- password storage deep dive에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 비밀번호 저장: bcrypt / scrypt / argon2를 다루는 deep_dive 문서다. 비밀번호는 암호화해서 되돌리는 것이 아니라, 느린 해시로 저장하고 비교해야 한다. 저장 방식이 약하면 DB 유출 한 번으로 계정이 연쇄로 털린다. 검색 질의가 password storage deep dive, bcrypt scrypt argon2, password hashing advanced, password hashing beginner handoff처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # 비밀번호 저장: bcrypt / scrypt / argon2
 
 > 한 줄 요약: 비밀번호는 암호화해서 되돌리는 것이 아니라, 느린 해시로 저장하고 비교해야 한다. 저장 방식이 약하면 DB 유출 한 번으로 계정이 연쇄로 털린다.

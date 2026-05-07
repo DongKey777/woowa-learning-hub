@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Common-Confusion Wayfinding Notes
+concept_id: software-engineering/common-confusion-wayfinding
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+review_feedback_tags:
+- beginner-wayfinding
+- review-vocabulary
+- test-strategy
+aliases:
+- Common-Confusion Wayfinding Notes
+- beginner wayfinding
+- 메서드가 너무 길어요 어디부터
+- Controller가 너무 많은 걸 알아요
+- 테스트 전략 vs hexagonal seams
+- 초심자 문서 길잡이
+symptoms:
+- 메서드가 길다, Controller가 많은 것을 안다, 서버 전체 테스트부터 돌린다 같은 리뷰 문장을 읽기/계층/테스트/영속성/유스케이스 중 어디로 라우팅할지 헷갈려
+- batch, JPA, hexagonal, test 문서를 한 번에 넘나들며 지금 결정해야 할 질문의 칸을 고르지 못해
+- 테스트 종류 선택과 seam 분리를 동시에 처리하려 해 unit, slice, app integration, E2E의 첫 테스트 선택이 과하게 커져
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- software-engineering/software-engineering-index
+- language/java-types-class-object-oop-basics
+next_docs:
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+linked_paths:
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
+- contents/software-engineering/browser-e2e-cost-vs-signal-checklist.md
+- contents/software-engineering/component-test-vs-browser-e2e-boundary-card.md
+- contents/language/java/java-types-class-object-oop-basics.md
+confusable_with:
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+- software-engineering/test-strategy-basics
+- software-engineering/hexagonal-testing-seams-primer
+forbidden_neighbors: []
+expected_queries:
+- 메서드가 너무 길어요 Controller가 너무 많은 걸 알아요 서버 전체 테스트부터 돌리죠 같은 리뷰 문장을 어디로 라우팅해?
+- software engineering 초심자가 유스케이스 저장 구현 테스트 계층 경계 중 지금 막힌 칸을 어떻게 고르면 돼?
+- 테스트 전략 기초와 Hexagonal Testing Seams Primer는 첫 테스트 선택과 seam 분리에서 어떻게 달라?
+- batch라는 단어가 나오면 saveAll port부터 설계하지 말고 Batch Job Scope와 JPA Batch Config를 어떤 순서로 봐야 해?
+- unit slice app integration E2E 테스트 사다리에서 가장 싼 첫 테스트를 고르는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 beginner가 리뷰 문장과 혼동 상황을 readable code, layering, test strategy, persistence adapter, use case boundary로 라우팅하는 software engineering wayfinding primer다.
+---
 # Common-Confusion Wayfinding Notes
 
 > 한 줄 요약: `메서드가 너무 길어요`, `Controller가 너무 많은 걸 알아요`, `왜 서버 전체 테스트부터 돌리죠?` 같은 리뷰 문장이 섞여 들릴 때는 `읽기 / 계층 / 테스트 / 영속성 / 유스케이스`를 먼저 가르고 첫 문서를 고르면 오독이 크게 줄어든다.

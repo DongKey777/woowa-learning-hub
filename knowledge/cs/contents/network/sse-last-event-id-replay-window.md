@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "SSE Last-Event-ID Replay Window"
+concept_id: network/sse-last-event-id-replay-window
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- sse
+- replay-window
+- duplicate-suppression
+aliases:
+- SSE Last-Event-ID
+- SSE replay window
+- SSE reconnect replay
+- partial SSE delivery
+- duplicate suppression
+- SSE gap recovery
+- at-least-once stream
+- EventSource reconnect
+symptoms:
+- Last-Event-ID를 서버가 마지막으로 write 시도한 이벤트 id로 오해한다
+- replay window miss를 조용히 latest tail로 바꿔 이벤트 gap을 숨긴다
+- reconnect race와 duplicate overlap을 고려하지 않아 같은 이벤트를 두 번 적용한다
+- stable event id, replay cursor, idempotent apply 규칙을 함께 설계하지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/sse-websocket-polling
+- network/sse-webflux-streaming-cancel-after-first-byte
+next_docs:
+- network/sse-failure-attribution-http1-http2
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/websocket-heartbeat-backpressure-reconnect
+linked_paths:
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/network/sse-websocket-polling.md
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/http-methods-rest-idempotency.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+confusable_with:
+- network/sse-webflux-streaming-cancel-after-first-byte
+- network/sse-failure-attribution-http1-http2
+- network/websocket-heartbeat-backpressure-reconnect
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+forbidden_neighbors: []
+expected_queries:
+- "SSE Last-Event-ID와 replay window를 어떻게 설계해야 해?"
+- "partial flush failure 뒤 Last-Event-ID는 마지막 write 시도 id와 왜 다를 수 있어?"
+- "SSE reconnect에서 duplicate suppression과 gap recovery가 필요한 이유는?"
+- "replay window miss를 latest tail로 조용히 바꾸면 왜 위험해?"
+- "EventSource reconnect를 at-least-once delivery처럼 봐야 하는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 SSE reconnect의 Last-Event-ID, stable event id, replay window,
+  duplicate suppression, gap recovery, idempotent apply를 다루는 advanced
+  playbook이다.
+---
 # SSE Last-Event-ID Replay Window
 
 > 한 줄 요약: SSE reconnect는 "다시 붙는다"가 아니라 "마지막으로 완전히 반영된 이벤트 이후를 복구한다"는 뜻이다. 그래서 `Last-Event-ID`, replay window, duplicate suppression, gap recovery 규칙을 같이 설계해야 partial delivery 뒤에도 상태를 복원할 수 있다.

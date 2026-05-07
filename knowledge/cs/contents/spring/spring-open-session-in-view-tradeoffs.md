@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Open Session In View Trade-offs
+concept_id: spring/open-session-in-view-tradeoffs
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- open-session-in
+- view-tradeoffs
+- view
+- osiv-tradeoffs
+aliases:
+- Open Session In View
+- OSIV tradeoffs
+- lazy loading outside transaction
+- persistence context web request boundary
+- N plus one with OSIV
+- JSON serialization lazy loading
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-lazy-loading-dto-mapping-checklist.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-cache-abstraction-traps.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+symptoms:
+- controller나 JSON serialization 단계에서 lazy loading SQL이 뒤늦게 실행된다.
+- 트랜잭션은 끝난 것 같은데 DB connection 점유 시간이 길게 보인다.
+- OSIV를 끄면 LazyInitializationException이 터지고 켜면 N+1이 숨는다.
+expected_queries:
+- Spring OSIV를 켜면 왜 lazy loading은 편하지만 운영 위험이 커져?
+- Open Session In View와 transaction boundary는 어떻게 달라?
+- OSIV를 끈 뒤 LazyInitializationException을 DTO fetch plan으로 고치는 방법은?
+- JSON serialization 중 lazy loading SQL이 나가는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Open Session In View가 웹 요청 전체에 persistence context를 열어 lazy loading을
+  편하게 하지만, transaction boundary와 response serialization boundary를 섞어 connection
+  점유, N+1 은폐, LazyInitializationException 설계를 어렵게 만드는 trade-off를 다룬다.
+---
 # Spring Open Session In View Trade-offs
 
 > 한 줄 요약: OSIV는 지연 로딩을 편하게 해주지만, 조회 경계와 웹 응답 경계를 섞어 트랜잭션과 커넥션 점유 시간을 늘릴 수 있다.

@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: posix_fadvise madvise Page Cache Hints
+concept_id: operating-system/posix-fadvise-madvise-page-cache-hints
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- posix-fadvise-madvise
+- page-cache-hints
+- readahead-cache-pollution
+- streaming-scan-fadvise
+aliases:
+- posix_fadvise madvise
+- page cache hints
+- readahead cache pollution
+- streaming scan fadvise
+- mmap madvise
+- access pattern hint
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/readahead-tuning-page-cache.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+- contents/operating-system/mmap-shared-truncate-sigbus-coherency-pitfalls.md
+confusable_with:
+- operating-system/page-cache-thrash-vs-direct-io
+- operating-system/readahead-tuning-page-cache
+- operating-system/mmap-vs-read-page-cache-behavior
+expected_queries:
+- posix_fadvise와 madvise는 page cache를 완전히 제어하는 스위치야?
+- streaming scan cache pollution을 줄이기 위해 어떤 fadvise hint를 써?
+- mmap path와 read path에서 madvise fadvise 힌트는 어떻게 달라?
+- direct I/O로 가기 전에 page cache hint와 readahead를 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 posix_fadvise와 madvise를 page cache와 readahead를 완전히 지배하는 스위치가 아니라
+  streaming scan cache pollution을 줄이고 mmap/read access pattern을 kernel에 전달하는 hint layer로
+  설명한다.
+---
 # posix_fadvise, madvise, Page Cache Hints
 
 > 한 줄 요약: `posix_fadvise()`와 `madvise()`는 page cache와 readahead를 완전히 지배하는 스위치가 아니라, streaming scan의 cache pollution을 줄이고 mmap/read 경로의 접근 의도를 커널에 전달하는 힌트 계층이다.

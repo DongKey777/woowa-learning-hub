@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Serialization Compatibility and serialVersionUID
+concept_id: language/serialization-compatibility-serial-version-uid
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- serialization
+- compatibility
+- serialversionuid
+aliases:
+- Serialization Compatibility and serialVersionUID
+- Java native serialization serialVersionUID
+- Serializable ObjectInputStream compatibility
+- readObject writeObject readResolve writeReplace
+- serialPersistentFields transient invariant
+- 자바 serialVersionUID 호환성
+symptoms:
+- serialVersionUID를 명시하지 않아 작은 필드나 class 구조 변경이 저장 데이터 역직렬화 호환성을 예측하기 어렵게 만들어
+- Java native serialization을 단순 DTO 복사처럼 이해해 readObject writeObject readResolve writeReplace transient invariant 복구 경로를 놓쳐
+- 장기 저장 포맷으로 native serialization을 쓰면서 schema evolution, null vs missing, classloader memory leak 위험을 함께 검토하지 않아
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/io-nio-serialization
+- language/serialization-proxy-pattern-invariant-preservation
+- language/value-object-invariants-canonicalization-boundary-design
+next_docs:
+- language/serialpersistentfields-readobjectnodata-evolution-escape-hatches
+- language/record-serialization-evolution
+- language/json-null-missing-unknown-field-schema-evolution
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/serialization-proxy-pattern-invariant-preservation.md
+- contents/language/java/serialpersistentfields-readobjectnodata-evolution-escape-hatches.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/string-intern-pool-pitfalls.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+confusable_with:
+- language/serialization-proxy-pattern-invariant-preservation
+- language/serialpersistentfields-readobjectnodata-evolution-escape-hatches
+- language/record-serialization-evolution
+forbidden_neighbors: []
+expected_queries:
+- Java native serialization에서 serialVersionUID는 역직렬화 compatibility를 어떻게 판단해?
+- serialVersionUID를 자동 생성에 맡기면 작은 리팩터링도 저장 데이터 호환성을 깨뜨릴 수 있어?
+- readObject writeObject readResolve writeReplace transient는 serialization contract에서 어떤 역할을 해?
+- native serialization을 장기 저장 포맷으로 쓰면 schema evolution과 value object invariant를 어떻게 봐야 해?
+- serialPersistentFields와 serialization proxy는 serialVersionUID 문제와 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 Java native serialization compatibility와 serialVersionUID, readObject/writeObject hooks, transient invariant, schema evolution risk를 점검하는 advanced playbook이다.
+  serialVersionUID, Serializable, ObjectInputStream, compatibility, readObject, serialization evolution 질문이 본 문서에 매핑된다.
+---
 # Serialization Compatibility and `serialVersionUID`
 
 > 한 줄 요약: Java native serialization은 클래스 구조와 직렬화 계약이 강하게 묶이므로, `serialVersionUID`를 이해하지 못하면 작은 필드 변경도 역직렬화 호환성을 깨뜨릴 수 있다.

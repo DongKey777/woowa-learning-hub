@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Rollout Approval Workflow
+concept_id: software-engineering/rollout-approval-workflow
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- rollout
+- approval
+- release-governance
+- readiness
+aliases:
+- release approval workflow
+- rollout approval gate
+- canary approval checklist
+- launch risk review
+- rollout governance workflow
+- 배포 승인 운영 흐름
+symptoms:
+- rollout approval을 한 사람의 승인으로만 처리해서 risk tier, rollback, observability, owner readiness가 따로 검토되지 않아
+- canary gate와 full rollout approval 기준이 분리되어 있지 않아 작은 변경과 고위험 변경이 같은 절차를 타
+- 긴급 배포 경로가 일반 approval workflow와 섞여 사후 리뷰와 예외 기록이 남지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/production-readiness-review
+next_docs:
+- software-engineering/rollout-guardrail-profiles
+- software-engineering/release-policy-error-budget
+- software-engineering/policy-as-code
+linked_paths:
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/rollout-guardrail-profiles-auto-pause-resume.md
+- contents/software-engineering/migration-scorecards.md
+confusable_with:
+- software-engineering/release-policy-error-budget
+- software-engineering/rollout-guardrail-profiles
+- software-engineering/production-readiness-review
+forbidden_neighbors: []
+expected_queries:
+- rollout approval workflow는 단순 승인 절차가 아니라 어떤 risk gate를 함께 봐야 해?
+- canary 승인과 full rollout 승인을 단계형으로 나누려면 어떤 checklist가 필요해?
+- 긴급 배포는 approval workflow에서 어떻게 분리하고 사후 리뷰를 남겨야 해?
+- low-risk 변경은 자동 승인하고 high-risk 변경은 수동 승인하는 hybrid workflow를 설계해줘
+- release approval을 scorecard와 PRR, rollback evidence에 연결하는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 rollout approval을 risk tier, observability, rollback, ownership, communication을 함께 확인하는 advanced release governance playbook으로 설명한다.
+---
 # Rollout Approval Workflow
 
 > 한 줄 요약: rollout approval workflow는 배포를 승인하는 절차가 아니라, 위험, 관측성, rollback, ownership, communication을 함께 검토해 언제 풀지 결정하는 운영 흐름이다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path"
+concept_id: network/cookie-attribute-matrix-samesite-httponly-secure-domain-path
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- cookie-attribute-matrix
+- samesite-csrf
+- cookie-scope-debugging
+aliases:
+- cookie attribute matrix
+- samesite httponly secure
+- domain path cookie scope
+- host-only cookie
+- samesite lax strict none
+- httponly csrf xss
+symptoms:
+- HttpOnly면 CSRF도 막힌다고 생각한다
+- Secure 속성을 cookie가 안전하다는 포괄 보안 보증으로 오해한다
+- Domain과 Path를 JS 격리나 강한 보안 경계처럼 읽는다
+- SameSite 판단에서 same-origin과 same-site를 섞는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/cookie-session-jwt-browser-flow-primer
+- network/cross-origin-cookie-credentials-cors-primer
+next_docs:
+- security/cookie-scope-mismatch-guide
+- security/csrf-in-spa-bff-architecture
+- security/cors-samesite-preflight
+- network/application-tab-vs-request-cookie-header-mini-card
+linked_paths:
+- contents/network/http-state-session-cache.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/cors-samesite-preflight.md
+confusable_with:
+- network/cross-origin-cookie-credentials-cors-primer
+- network/application-tab-vs-request-cookie-header-mini-card
+- security/cookie-scope-mismatch-guide
+- security/csrf-in-spa-bff-architecture
+- security/cors-samesite-preflight
+forbidden_neighbors: []
+expected_queries:
+- "SameSite HttpOnly Secure Domain Path cookie 속성을 한 표로 비교해줘"
+- "HttpOnly cookie는 CSRF를 막는지 XSS와 어떻게 다른지 설명해줘"
+- "Domain=example.com과 host-only cookie는 subdomain 전송 범위가 어떻게 달라?"
+- "Path=/api가 보안 경계가 아닌 이유와 request 전송 범위를 구분해줘"
+- "SameSite=Lax Strict None이 cross-site 요청에서 cookie 전송을 어떻게 바꿔?"
+contextual_chunk_prefix: |
+  이 문서는 Cookie SameSite, HttpOnly, Secure, Domain, Path 속성을
+  browser automatic sending, JS read access, HTTPS-only transport,
+  host/path scope, CSRF boundary 관점으로 비교하는 intermediate primer다.
+---
 # Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path
 
 > 한 줄 요약: `SameSite`, `HttpOnly`, `Secure`, `Domain`, `Path`는 모두 "브라우저가 이 cookie를 언제 저장하고, 언제 보내고, JS가 읽을 수 있는가"를 바꾸는 장치이고, CSRF와 직접 연결되는 축은 주로 `SameSite`다.

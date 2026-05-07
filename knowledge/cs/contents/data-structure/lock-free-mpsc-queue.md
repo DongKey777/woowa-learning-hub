@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Lock-Free MPSC Queue
+concept_id: data-structure/lock-free-mpsc-queue
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- lock-free-mpsc-queue
+- actor-mailbox-queue
+- producer-consumer-concurrency
+aliases:
+- Lock-Free MPSC Queue
+- multiple producer single consumer
+- MPSC linked queue
+- actor mailbox queue
+- event ingestion queue
+- atomic exchange queue
+- producer consumer queue
+symptoms:
+- 여러 producer와 단일 consumer만 필요한데 MPMC queue를 써서 dequeue 경합과 구현 복잡도를 불필요하게 키운다
+- linked-node MPSC의 atomic exchange와 prev.next publish gap을 이해하지 못해 순간적으로 비어 보이는 race를 놓친다
+- linked MPSC와 bounded ring MPSC의 unbounded mailbox vs fixed capacity backpressure 차이를 구분하지 못한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/ring-buffer
+- data-structure/lock-free-spsc-ring-buffer
+next_docs:
+- data-structure/michael-scott-lock-free-queue
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+- data-structure/work-stealing-deque
+- data-structure/hierarchical-timing-wheel
+linked_paths:
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+- contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md
+- contents/data-structure/work-stealing-deque.md
+- contents/data-structure/hierarchical-timing-wheel.md
+confusable_with:
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/michael-scott-lock-free-queue
+- data-structure/bounded-mpmc-queue
+- data-structure/work-stealing-deque
+forbidden_neighbors: []
+expected_queries:
+- Lock-Free MPSC Queue는 actor mailbox나 event ingestion에서 왜 MPMC보다 가벼울 수 있어?
+- multiple producer single consumer 제약이 dequeue contention을 줄이는 이유는?
+- linked-node MPSC에서 atomic exchange와 prev.next publish gap은 무엇을 조심해야 해?
+- bounded ring MPSC와 linked unbounded MPSC를 어떻게 비교해?
+- producer는 여러 명이고 consumer는 하나인 queue를 고를 때 무엇을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 여러 producer와 단일 consumer만 필요한 actor mailbox, event
+  ingestion, timer handoff 경로에서 MPMC보다 가벼운 Lock-Free MPSC Queue를
+  고르는 chooser다. linked-node atomic exchange, publish gap, ring-based
+  bounded MPSC와 backpressure를 다룬다.
+---
 # Lock-Free MPSC Queue
 
 > 한 줄 요약: Lock-Free MPSC Queue는 여러 producer가 동시에 enqueue하고 단일 consumer가 dequeue하는 경로를 분리해, 중앙 락 없이 이벤트 수집과 mailbox 처리 비용을 낮추는 동시성 친화 큐 구조다.

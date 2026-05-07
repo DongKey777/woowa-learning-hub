@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "WebSocket Heartbeat, Backpressure, Reconnect"
+concept_id: network/websocket-heartbeat-backpressure-reconnect
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- websocket
+- heartbeat
+- backpressure
+aliases:
+- WebSocket heartbeat
+- WebSocket backpressure
+- reconnect policy
+- slow consumer
+- ping pong
+- resume token
+- send queue
+- mobile reconnect
+symptoms:
+- WebSocket 연결만 열어 두면 운영에서 자동으로 안정적이라고 생각한다
+- heartbeat가 없어 NAT timeout이나 mobile network change로 죽은 연결을 늦게 감지한다
+- 느린 소비자 send queue가 쌓여 서버 메모리와 tail latency가 오른다
+- reconnect에서 last seen message id나 resume token 없이 중복/누락을 만든다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/sse-websocket-polling
+- network/timeout-types-connect-read-write
+next_docs:
+- network/websocket-proxy-buffering-streaming-latency
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/upstream-queueing-connection-pool-wait-tail-latency
+- network/sse-last-event-id-replay-window
+linked_paths:
+- contents/network/sse-websocket-polling.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/tcp-zero-window-persist-probe-receiver-backpressure.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+confusable_with:
+- network/sse-websocket-polling
+- network/websocket-proxy-buffering-streaming-latency
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/upstream-queueing-connection-pool-wait-tail-latency
+forbidden_neighbors: []
+expected_queries:
+- "WebSocket heartbeat backpressure reconnect를 어떻게 설계해야 해?"
+- "느린 WebSocket consumer 때문에 서버 send queue가 쌓일 때 어떻게 대응해?"
+- "모바일 네트워크에서 WebSocket reconnect가 반복될 때 heartbeat interval을 어떻게 봐?"
+- "resume token과 last seen message id가 재연결 중복/누락을 줄이는 이유는?"
+- "WebSocket 운영에서 ping pong만으로 충분하지 않은 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 WebSocket long-lived connection의 heartbeat, ping/pong,
+  slow consumer backpressure, per-connection send queue, reconnect, resume token,
+  message id 중복/누락 복구를 다루는 advanced playbook이다.
+---
 # WebSocket Heartbeat, Backpressure, Reconnect
 
 > 한 줄 요약: WebSocket은 연결을 오래 유지하는 기술이므로, heartbeat와 backpressure, reconnect 정책이 없으면 운영에서 쉽게 무너진다.

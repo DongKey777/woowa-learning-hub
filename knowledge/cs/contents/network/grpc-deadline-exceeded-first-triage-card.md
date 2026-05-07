@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "gRPC `DEADLINE_EXCEEDED`가 뜰 때 첫 분류 카드"
+concept_id: network/grpc-deadline-exceeded-first-triage-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- grpc-deadline-exceeded-triage
+- flow-control-vs-backpressure-vs-loss
+- beginner-grpc-timeout
+aliases:
+- grpc deadline exceeded triage
+- grpc timeout first check
+- grpc flow control stall
+- grpc app backpressure
+- grpc network loss
+- grpc deadline beginner
+symptoms:
+- DEADLINE_EXCEEDED를 무조건 서버가 느린 것으로만 해석한다
+- flow control stall, app backpressure, network loss를 모두 timeout 한 단어로 묶는다
+- retry하면 풀린다고 보고 backpressure 상황에서 retry storm을 키운다
+- headers를 받았으니 body trailers 지연은 서버 처리가 끝난 것이라고 오해한다
+intents:
+- troubleshooting
+- symptom
+- comparison
+prerequisites:
+- network/grpc-vs-rest
+- network/grpc-deadlines-cancellation-propagation
+next_docs:
+- network/http2-flow-control-window-update-stalls
+- network/grpc-status-trailers-transport-error-mapping
+- network/packet-loss-jitter-reordering-diagnostics
+- system-design/request-deadline-timeout-budget-primer
+linked_paths:
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/queue-saturation-attribution-metrics-runbook.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+confusable_with:
+- network/grpc-deadlines-cancellation-propagation
+- network/grpc-status-trailers-transport-error-mapping
+- network/http2-flow-control-window-update-stalls
+- network/packet-loss-jitter-reordering-diagnostics
+- system-design/request-deadline-timeout-budget-primer
+forbidden_neighbors: []
+expected_queries:
+- "gRPC DEADLINE_EXCEEDED가 뜨면 flow control stall app backpressure network loss 중 무엇부터 봐?"
+- "grpc deadline exceeded가 서버가 느린 것만 뜻하지 않는 이유를 설명해줘"
+- "HTTP/2 WINDOW_UPDATE 지연과 gRPC deadline exceeded를 어떻게 연결해?"
+- "queue pool wait가 먼저 튀는 app backpressure와 packet loss를 구분하는 법은?"
+- "DEADLINE_EXCEEDED와 CANCELLED 차이를 초급 기준으로 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 gRPC DEADLINE_EXCEEDED를 flow control stall, app backpressure,
+  network loss 세 갈래로 처음 분류하고 HTTP/2 WINDOW_UPDATE, trailers,
+  queue saturation, packet loss 신호로 라우팅하는 beginner symptom router다.
+---
 # gRPC `DEADLINE_EXCEEDED`가 뜰 때 첫 분류 카드
 
 > 한 줄 요약: "`gRPC deadline exceeded`가 왜 나요?"라는 질문에는 먼저 "못 보낸 쪽인가, 못 처리한 쪽인가, 중간에서 잃어버린 쪽인가"를 나눠 답해야 다음 확인이 빨라진다.

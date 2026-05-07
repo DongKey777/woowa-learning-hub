@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring Streaming Client Parsing Matrix
+concept_id: spring/streaming-client-parsing-matrix
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- streaming-client-parsing
+- fetch-byte-stream
+- eventsource-sse
+- cli-line-reader
+aliases:
+- streaming client parsing matrix
+- fetch byte stream EventSource SSE
+- CLI line reader NDJSON
+- streaming flush vs parser framing
+- NDJSON plain text SSE parsing
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-responsebodyemitter-media-type-boundaries.md
+- contents/spring/spring-mvc-flux-json-vs-ndjson-sse-adaptation.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-sse-buffering-compression-checklist.md
+- contents/spring/spring-sse-replay-buffer-last-event-id-recovery-patterns.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+expected_queries:
+- Spring streaming endpoint에서 fetch EventSource CLI line reader는 각각 어떤 framing을 기대해?
+- 서버 flush 횟수와 클라이언트 parser가 읽는 메시지 경계는 왜 달라?
+- NDJSON plain text SSE는 서로 대체 가능한 streaming format이야?
+- 브라우저 fetch와 EventSource가 같은 스트리밍 응답을 다르게 읽는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Spring streaming endpoint contract를 서버 flush 횟수가 아니라 client parser framing에
+  맞춰 설계해야 한다는 점을 설명한다. fetch byte stream, EventSource SSE event block,
+  CLI line reader newline-delimited protocol을 matrix로 비교한다.
+---
 # Spring Streaming Client Parsing Matrix: `fetch`, `EventSource`, CLI Line Readers
 
 > 한 줄 요약: Spring streaming endpoint 계약은 서버의 `flush()` 횟수보다 클라이언트 parser가 이해하는 framing에 맞춰야 하며, browser `fetch`는 byte stream, `EventSource`는 SSE event block, CLI line reader는 newline-delimited line을 전제로 하므로 NDJSON, plain text, SSE를 서로 대체 가능하다고 보면 바로 어긋난다.

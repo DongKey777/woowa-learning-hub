@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Dependency Update Strategy and Blast Radius Management
+concept_id: software-engineering/dependency-update-blast-radius
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- dependency-update
+- blast-radius
+- rollout
+- rollback
+aliases:
+- Dependency Update Strategy and Blast Radius Management
+- dependency update blast radius
+- transitive dependency upgrade risk
+- lockfile update strategy
+- dependency canary rollout
+- 라이브러리 업데이트 장애 반경 관리
+symptoms:
+- patch, minor, major, transitive dependency 업데이트를 한 PR에 몰아 넣어 어떤 변경이 장애를 만들었는지 추적하지 못해
+- lockfile과 canary, smoke test, rollback plan 없이 런타임 핵심 의존성을 전체 서비스에 한 번에 올려
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/dependency-governance-sbom
+- software-engineering/deployment-rollout-strategy
+next_docs:
+- software-engineering/kill-switch-fast-fail
+- software-engineering/feature-flag-dependency-management
+- software-engineering/technical-debt-refactoring-timing
+linked_paths:
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/dependency-governance-sbom-policy.md
+confusable_with:
+- software-engineering/dependency-governance-sbom
+- software-engineering/deployment-rollout-strategy
+- software-engineering/feature-flag-dependency-management
+forbidden_neighbors: []
+expected_queries:
+- 의존성 업데이트를 patch, minor, major, transitive 위험별로 나눠 blast radius를 줄이는 전략을 알려줘
+- 라이브러리 major upgrade를 한 번에 올리지 않고 작은 서비스와 canary로 검증하려면 어떻게 해?
+- lockfile과 dependency tree가 의존성 업데이트 장애 분석에 왜 중요한지 설명해줘
+- 보안 패치가 급하지만 회귀 위험도 클 때 어떤 순서로 검증하고 배포해야 해?
+- transitive dependency가 조용히 바뀌는 문제를 CI와 release gate에서 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 dependency update를 patch/minor/major/transitive 위험별로 나누고 lockfile, smoke test, canary, rollback으로 blast radius를 관리하는 advanced playbook이다.
+---
 # Dependency Update Strategy and Blast Radius Management
 
 > 한 줄 요약: 의존성 업데이트는 "최신 버전으로 올리기"가 아니라, 어떤 변경을 어떤 범위로 먼저 검증해서 장애 반경을 줄일지 정하는 운영 전략이다.

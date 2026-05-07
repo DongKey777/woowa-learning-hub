@@ -1,8 +1,88 @@
+---
+schema_version: 3
+title: 읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문
+concept_id: software-engineering/readable-code-layering-test-feedback-loop-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- readable-code-layering
+- controller-service-responsibility
+- first-test-feedback-loop
+aliases:
+- readable code primer
+- layering testing loop
+- 읽기 좋은 코드 입문
+- controller service repository responsibility
+- 테스트 피드백 루프
+- refactor with tests loop
+- 메서드가 너무 길어요
+- Controller가 너무 많은 걸 알아요
+- Service 테스트가 통합테스트인가요
+- 우테코 코드 리뷰 가독성
+symptoms:
+- 메서드가 길다, Controller가 많이 안다, 테스트가 무겁다는 리뷰를 서로 다른 문제가 아니라 책임 분리와 피드백 루프 문제로 연결하지 못한다
+- 구조를 바꾸기 전에 어떤 규칙 하나를 가장 싼 테스트로 먼저 잠가야 하는지 고르지 못한다
+- Controller, Service, Domain, Repository 책임을 입력 해석, 규칙 실행, 저장/응답 조립으로 나눠 읽지 못한다
+intents:
+- mission_bridge
+- troubleshooting
+prerequisites:
+- software-engineering/clean-code-basics
+- software-engineering/layered-architecture-basics
+next_docs:
+- software-engineering/clean-code-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+- software-engineering/refactoring-basics
+linked_paths:
+- contents/software-engineering/clean-code-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/refactoring-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/code-review-basics.md
+- contents/spring/spring-bean-di-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- software-engineering/clean-code-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/test-strategy-basics
+forbidden_neighbors: []
+expected_queries:
+- 메서드가 너무 길고 Controller가 많은 걸 안다는 리뷰를 읽기, 레이어, 테스트 문제로 어떻게 나눠야 해?
+- Controller Service Domain Repository 책임을 입력 해석, 규칙 실행, 저장 응답 기준으로 구분해줘
+- 구조를 바꾸기 전에 가장 싼 테스트 하나로 규칙을 먼저 잠그는 피드백 루프를 설명해줘
+- Service 테스트가 항상 통합 테스트인지 아니면 fake나 mock을 쓰는 단위 테스트도 가능한지 알려줘
+- 우테코 코드 리뷰에서 가독성 피드백을 받았을 때 첫 10분에 무엇을 표시하고 무엇을 테스트해야 해?
+contextual_chunk_prefix: |
+  이 문서는 우테코 미션 리뷰에서 읽기 좋은 코드, 레이어 분리, 첫 테스트 선택을 한 번에 라우팅하는 mission bridge다.
+  Controller/Service/Domain/Repository 책임, readable method, layering, unit vs integration test, refactor with tests, review feedback action을 다룬다.
+---
 # 읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문
 
 > 한 줄 요약: "메서드가 안 읽힌다", "Controller가 너무 많은 걸 안다", "테스트가 너무 무겁다"는 결국 같은 질문이다. 바꾸려는 이유 1개를 고르고, 그 이유를 가장 싼 테스트 1개로 먼저 잠근다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "메서드가 너무 길다는 리뷰와 Controller가 많이 안다는 리뷰가 같은 문제인지 모르겠어요" | 우테코 미션 가독성/레이어 리뷰 첫 반응 | 읽기 문제, 레이어 문제, 테스트 범위 문제를 한 루프로 연결한다 |
+| "리팩토링하고 싶은데 어떤 테스트를 먼저 잠가야 할지 모르겠어요" | 구조 변경 전 회귀 안전망 만들기 | 바꾸려는 이유 1개를 가장 싼 failing test 1개로 고정한다 |
+| "Service 테스트가 통합 테스트인지 단위 테스트인지 헷갈려요" | 규칙 검증과 저장소 협력이 섞인 테스트 리뷰 | Service라는 이름보다 실제 붙인 협력 범위를 기준으로 판단한다 |
 
 관련 문서:
 

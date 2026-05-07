@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Annotation Processing
+concept_id: language/java-annotation-processing
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- annotation-processing
+- compile-time-code-generation
+- java-build-pipeline
+aliases:
+- Java annotation processing
+- annotation processor
+- AbstractProcessor
+- javac round processing
+- compile time code generation
+- Filer RoundEnvironment
+- 어노테이션 처리
+symptoms:
+- annotation processing을 runtime reflection처럼 이해해서 compile-time code generation과 검증 역할을 구분하지 못해
+- Processor, RoundEnvironment, Filer가 javac round에서 어떻게 협력하는지 큰 그림이 필요해
+- Lombok, MapStruct, Dagger 같은 도구가 빌드 시점에 무엇을 생성하거나 검증하는지 설명해야 해
+intents:
+- definition
+- deep_dive
+prerequisites:
+- language/java-language-basics
+next_docs:
+- spring/bean-definition-registry-postprocessor-import-registrar
+- language/reflection-generics-annotations
+- language/reflection-cost-and-alternatives
+- spring/bean-lifecycle-basics
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md
+- contents/language/java/reflection-generics-annotations.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/spring/spring-bean-lifecycle-basics.md
+confusable_with:
+- language/reflection-generics-annotations
+- language/reflection-cost-and-alternatives
+- spring/bean-lifecycle-basics
+forbidden_neighbors: []
+expected_queries:
+- Java annotation processing이 runtime reflection과 어떻게 다른지 설명해줘
+- AbstractProcessor RoundEnvironment Filer가 javac compile round에서 하는 일을 알려줘
+- Lombok MapStruct 같은 annotation processor가 빌드 시점에 코드를 생성하는 흐름이 궁금해
+- annotation processing으로 컴파일 타임 검증을 하는 장단점을 알려줘
+- 어노테이션 처리기를 만들 때 deterministic output과 에러 메시지가 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 Java annotation processing을 javac compile round, AbstractProcessor, RoundEnvironment, Filer, source generation, compile-time validation 관점으로 설명하는 intermediate primer다.
+  annotation processor, Lombok, MapStruct, Dagger, runtime reflection difference, build pipeline 질문이 본 문서에 매핑된다.
+---
 # Annotation Processing
 
 

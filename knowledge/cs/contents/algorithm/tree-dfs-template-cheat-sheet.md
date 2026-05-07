@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Tree DFS Template Cheat Sheet
+concept_id: algorithm/tree-dfs-template-cheat-sheet
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- tree-dfs-template
+- traversal-order-confusion
+- recursion-stack-simulation
+aliases:
+- tree dfs template cheat sheet
+- tree traversal template
+- preorder inorder postorder
+- iterative tree dfs
+- recursive tree dfs
+- visited flag postorder
+- binary tree dfs template
+- 트리 DFS 템플릿
+- 전위 중위 후위 순회
+- 반복 트리 순회
+- 재귀 순회 템플릿
+symptoms:
+- preorder, inorder, postorder에서 visit 위치만 바꾸면 된다는 감각이 없어 순회 순서를 매번 섞는다
+- 반복 DFS에서 스택 push 순서를 잘못 잡아 left/right 방문 순서가 뒤집힌다
+- postorder 반복 구현을 preorder처럼 한 번 꺼내고 바로 visit해서 부모를 자식보다 먼저 처리한다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/tree-basics
+- algorithm/recursion-intro
+- algorithm/dfs-bfs-intro
+next_docs:
+- data-structure/binary-tree-traversal-routing-guide
+- algorithm/level-order-pattern-extensions
+- algorithm/rerooting-dp
+- algorithm/topological-dp
+linked_paths:
+- contents/data-structure/binary-tree-traversal-routing-guide.md
+- contents/data-structure/tree-basics.md
+- contents/algorithm/recursion-intro.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/level-order-pattern-extensions.md
+- contents/algorithm/rerooting-dp.md
+- contents/algorithm/topological-dp.md
+confusable_with:
+- data-structure/binary-tree-traversal-routing-guide
+- algorithm/dfs-bfs-intro
+- algorithm/level-order-pattern-extensions
+forbidden_neighbors: []
+expected_queries:
+- 트리 DFS에서 preorder inorder postorder는 visit 위치만 어떻게 바뀌는지 템플릿으로 보고 싶어
+- 반복 preorder 순회에서 왜 right를 먼저 push하고 left를 나중에 push해야 하는지 설명해줘
+- iterative inorder가 왼쪽 끝까지 내려간 뒤 pop하는 구조인 이유를 스택 관점으로 알려줘
+- postorder 반복 구현에서 visited flag를 쓰면 부모를 자식 뒤에 방문할 수 있는 이유가 궁금해
+- 재귀 트리 순회와 스택 기반 반복 순회를 같은 흐름으로 비교해서 외우고 싶어
+contextual_chunk_prefix: |
+  이 문서는 트리 DFS 순회 구현을 빠르게 고정하는 playbook이다.
+  preorder, inorder, postorder의 visit 위치, recursive traversal, iterative stack simulation, push order, visited flag postorder, null base case, traversal bug symptom을 템플릿 중심으로 연결한다.
+---
 # Tree DFS Template Cheat Sheet
 
 > 한 줄 요약: 트리 DFS 템플릿은 "현재 노드를 언제 기록하느냐"와 "스택에 무엇을 다시 넣느냐"만 정확히 고정하면 덜 헷갈린다.

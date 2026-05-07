@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "TLS Record Sizing, Flush, Streaming Latency"
+concept_id: network/tls-record-sizing-flush-streaming-latency
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tls-record
+- streaming-latency
+- flush
+aliases:
+- TLS record size
+- TLS flush latency
+- record coalescing
+- small writes
+- streaming latency
+- first byte delay
+- SSL buffer
+- chunk cadence
+symptoms:
+- app write 단위와 TLS record 단위가 같다고 생각한다
+- 서버가 flush했다고 client가 바로 받았다고 단정한다
+- SSE/WebSocket/gRPC streaming chunk cadence 악화를 app handler 지연으로만 본다
+- proxy TLS termination hop마다 write/flush 정책이 달라질 수 있음을 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/websocket-proxy-buffering-streaming-latency
+- network/nagle-delayed-ack-small-packet-latency
+next_docs:
+- network/http-response-compression-buffering-streaming-tradeoffs
+- network/tls-close-notify-fin-rst-truncation
+- network/request-timing-decomposition
+- network/websocket-fragmentation-frame-sizing
+linked_paths:
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/websocket-fragmentation-frame-sizing.md
+- contents/network/nagle-delayed-ack-small-packet-latency.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/tls-close-notify-fin-rst-truncation.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+confusable_with:
+- network/websocket-proxy-buffering-streaming-latency
+- network/http-response-compression-buffering-streaming-tradeoffs
+- network/nagle-delayed-ack-small-packet-latency
+- network/websocket-fragmentation-frame-sizing
+forbidden_neighbors: []
+expected_queries:
+- "TLS record sizing과 flush가 streaming latency에 미치는 영향은?"
+- "app은 write했는데 client chunk cadence가 늦게 보이는 이유는?"
+- "작은 write가 항상 low latency가 아닌 이유를 TLS record 관점에서 설명해줘"
+- "proxy TLS termination hop이 여러 개면 first byte와 chunk cadence가 왜 흔들려?"
+- "SSE WebSocket gRPC streaming에서 TLS record coalescing을 어떻게 의심해?"
+contextual_chunk_prefix: |
+  이 문서는 TLS record size, small writes, flush timing, record coalescing,
+  proxy TLS termination hop이 first byte와 streaming chunk cadence에 미치는 영향을
+  다루는 advanced playbook이다.
+---
 # TLS Record Sizing, Flush, Streaming Latency
 
 > 한 줄 요약: TLS는 바이트를 그대로 흘려보내는 투명한 래퍼가 아니다. write 크기, flush 타이밍, record coalescing에 따라 first byte와 chunk cadence가 달라져 streaming latency가 크게 흔들릴 수 있다.

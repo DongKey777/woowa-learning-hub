@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Softirq Hardirq Latency Server Debugging
+concept_id: operating-system/softirq-hardirq-latency-server-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- softirq-hardirq-latency
+- server
+- interrupt-latency-server
+- ksoftirqd-network-latency
+aliases:
+- softirq hardirq latency
+- interrupt latency server debugging
+- ksoftirqd network latency
+- IRQ CPU time
+- network storage interrupt bottleneck
+- irq affinity latency
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/epoll-kqueue-io-uring.md
+- contents/operating-system/interrupt-basics.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/kworker-saturation-runtime-diagnostics.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+symptoms:
+- network나 storage가 느려 보이지만 실제 병목은 hardirq/softirq CPU time에 숨어 있다.
+- ksoftirqd가 밀리며 packet processing latency가 application p99로 보인다.
+- IRQ affinity가 특정 core에 몰려 hot core와 latency spike를 만든다.
+expected_queries:
+- hardirq와 softirq가 CPU를 언제 얼마나 쓰는지가 server latency에 왜 중요해?
+- ksoftirqd saturation과 network packet processing latency를 어떻게 디버깅해?
+- IRQ affinity와 softirq backlog가 p99를 키울 수 있어?
+- storage/network latency가 실제로는 interrupt processing bottleneck인지 확인하려면?
+contextual_chunk_prefix: |
+  이 문서는 network와 storage가 느려 보일 때 실제 bottleneck이 hardirq와 softirq가 어느 CPU에서
+  얼마나 오래 실행되는가에 숨어 있을 수 있다는 server debugging playbook이다.
+---
 # Softirq, Hardirq, Latency Server Debugging
 
 > 한 줄 요약: 네트워크와 저장장치가 느려 보일 때, 실제 병목은 hardirq와 softirq가 CPU를 언제, 얼마나 오래 쓰느냐에 숨어 있는 경우가 많다.

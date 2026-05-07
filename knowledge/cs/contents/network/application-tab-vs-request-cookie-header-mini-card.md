@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Application Tab vs Request Cookie Header Mini Card
+concept_id: network/application-tab-vs-request-cookie-header-mini-card
+canonical: false
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- cookie-stored-vs-sent
+- devtools-cookie-debug
+- request-cookie-header-empty
+aliases:
+- Application tab cookie but no request cookie
+- cookie stored but not sent
+- request Cookie header empty
+- DevTools Application cookies vs Network Cookie
+- credentials include missing cookie
+- cookie scope mismatch
+- stored vs sent cookie
+symptoms:
+- Application 탭에 cookie가 보이면 이번 요청에도 자동으로 Cookie header가 붙었다고 결론 낸다
+- 저장 성공과 전송 성공을 구분하지 않아 Domain, Path, SameSite, Secure, fetch credentials 누락을 놓친다
+- request Cookie header가 이미 있는데도 계속 SameSite나 credentials만 의심하고 서버 세션 복원 문제로 넘어가지 않는다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- network/cookie-session-jwt-browser-flow-primer
+- network/browser-devtools-application-storage-1minute-card
+next_docs:
+- network/cookie-attribute-matrix-samesite-httponly-secure-domain-path
+- security/fetch-credentials-vs-cookie-scope
+- security/cookie-scope-mismatch-guide
+linked_paths:
+- contents/network/browser-devtools-application-storage-1minute-card.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cookie-scope-mismatch-guide.md
+confusable_with:
+- network/browser-devtools-application-storage-1minute-card
+- network/cookie-session-jwt-browser-flow-primer
+- network/cookie-attribute-matrix-samesite-httponly-secure-domain-path
+- security/fetch-credentials-vs-cookie-scope
+- security/cookie-scope-mismatch-guide
+forbidden_neighbors: []
+expected_queries:
+- Application 탭에는 cookie가 보이는데 Network request Cookie header가 비어 있는 이유는?
+- cookie 저장 성공과 이번 요청 전송 성공을 DevTools에서 어떻게 따로 확인해?
+- fetch credentials include가 빠지면 Application에 저장된 cookie도 cross-origin 요청에 안 붙어?
+- Domain Path SameSite Secure 때문에 cookie stored but not sent가 되는 예시를 보여줘
+- Request Cookie header가 이미 있으면 이제 서버 세션 복원 쪽을 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 DevTools Application Cookies와 Network Request Cookie header를 저장 확인과
+  전송 확인으로 분리하는 symptom router다. Domain, Path, SameSite, Secure, fetch credentials,
+  cookie scope mismatch를 beginner debugging 순서로 다룬다.
+---
 # Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드
 
 > 한 줄 요약: `Application > Cookies`는 "브라우저에 저장됐는가"를 보여 주고, request `Cookie` 헤더는 "이번 요청에 실제로 전송됐는가"를 보여 줘서, 같은 cookie라도 저장 성공과 전송 성공은 따로 확인해야 한다.

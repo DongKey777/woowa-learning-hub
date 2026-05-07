@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: 'Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기'
+concept_id: design-pattern/bean-name-vs-domain-key-lookup
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- bean-name-domain-key
+- handler-map-boundary
+- container-name-leak
+aliases:
+- bean name vs domain key lookup
+- spring bean name handler map
+- map<string handler> bean name
+- autowired map bean names
+- spring injected map domain key registry
+- domain key registry
+- handler supports domain key
+- bean name leak
+- container naming leak
+- component name lookup smell
+- applicationcontext getbean handler smell
+- qualifier vs domain key
+- why bean name lookup is wrong
+- handler map 뭐예요
+- 처음 배우는데 채널 분기 큰 그림
+intents:
+- comparison
+- design
+symptoms:
+- Map<String, Bean>을 받았는데 이 key를 요청 값에 그대로 써도 되는지 헷갈려요
+- 주문 상태나 결제 수단을 bean 이름 문자열 규칙으로 붙이고 있어요
+- bean 이름만 바꿨는데 비즈니스 분기가 깨져서 왜 그런지 모르겠어요
+prerequisites:
+- design-pattern/registry-vs-factory-injected-handler-maps
+- software-engineering/dependency-injection-basics
+next_docs:
+- design-pattern/injected-registry-vs-service-locator-checklist
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+- design-pattern/handler-registry-test-shape-supports-without-spring
+linked_paths:
+- contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/handler-registry-test-shape-supports-without-spring.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+- contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/registry-vs-factory-injected-handler-maps
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+forbidden_neighbors: []
+expected_queries:
+- Map<String, Handler>의 key를 요청 값이랑 바로 연결해도 돼?
+- bean name이랑 domain key는 어떻게 다르고 왜 분리해야 해?
+- PaymentMethod를 bean 이름 문자열 규칙으로 바꾸는 코드가 왜 위험해?
+- 스프링이 주입한 map을 domain registry로 한 번 감싸는 이유가 뭐야?
+- bean 이름 바꿨더니 분기가 깨지는 구조를 어떻게 고쳐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring이 모아 준 `Map<String, Handler>`를 볼 때 컨테이너 식별자인
+  bean name과 애플리케이션이 이해하는 domain key를 분리하도록 연결한다.
+  외부 입력을 bean 이름에 그대로 붙이기, 결제 수단 enum을 문자열 규칙으로
+  조합하기, bean rename이 비즈니스 분기를 깨뜨림, domain key registry로
+  한 번 감싸기 같은 자연어 paraphrase가 본 문서의 경계와 예시에 매핑된다.
+---
 # Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기
 
 > 한 줄 요약: Spring이 주입한 `Map<String, Handler>`의 key는 보통 bean name이다. 주문 상태, 결제 수단, 이벤트 타입처럼 애플리케이션이 이해하는 key로 분기한다면 bean name map을 그대로 쓰지 말고 domain-key registry로 한 번 감싸자.

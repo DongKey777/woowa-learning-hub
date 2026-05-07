@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 동기 비동기와 블로킹 논블로킹 기초
+concept_id: operating-system/sync-async-blocking-nonblocking-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- sync-async-vs-blocking-nonblocking
+- future-get-blocking-boundary
+- event-loop-thread-pool-routing
+aliases:
+- sync async blocking nonblocking basics
+- 동기 비동기 블로킹 논블로킹 차이
+- 동기 비동기 차이
+- 블로킹 논블로킹 차이
+- sync async beginner
+- blocking nonblocking beginner
+- Future get blocking
+- 비동기면 무조건 논블로킹인가요
+- async callback event loop basics
+- Spring MVC WebFlux 실행 모델 차이
+symptoms:
+- 동기와 블로킹, 비동기와 논블로킹을 같은 뜻으로 외워서 Future get 같은 장면을 설명하지 못해
+- 비동기 API를 호출했는데 마지막에 get이나 join으로 기다리면 왜 다시 block되는지 헷갈려
+- Spring MVC, WebFlux, event loop, thread pool 설명이 한 문장처럼 섞여 보여
+intents:
+- definition
+- comparison
+prerequisites:
+- operating-system/process-thread-basics
+next_docs:
+- operating-system/blocking-io-thread-pool-backpressure-primer
+- operating-system/io-models-and-event-loop
+- operating-system/context-switching-deadlock-lockfree
+- spring/webflux-vs-mvc
+linked_paths:
+- contents/operating-system/process-thread-stack-heap-fd-socket-backend-primer.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/blocking-io-thread-pool-backpressure-primer.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/network/tcp-udp-basics.md
+- contents/spring/spring-webflux-vs-mvc.md
+confusable_with:
+- operating-system/io-models-and-event-loop
+- operating-system/blocking-io-thread-pool-backpressure-primer
+- operating-system/context-switching-deadlock-lockfree
+- spring/webflux-vs-mvc
+forbidden_neighbors: []
+expected_queries:
+- 동기 비동기와 블로킹 논블로킹 차이를 두 축으로 설명해줘
+- 비동기 API를 써도 Future get을 호출하면 왜 그 지점은 blocking이야?
+- 논블로킹 호출만 반복하면 왜 busy wait가 되고 event loop나 readiness가 필요한 거야?
+- Spring MVC thread-per-request와 WebFlux event loop를 sync async blocking 관점으로 비교해줘
+- 비동기 코드는 항상 빠른 게 아니라 I/O 대기 구조를 바꾸는 것이라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 sync async는 결과를 누가 챙기느냐의 축이고 blocking non-blocking은 호출 중 thread가 멈추느냐의 축이라는 점을 분리하는 beginner primer다.
+  future.get blocking, async callback, nonblocking polling, event loop, thread pool saturation, Spring MVC vs WebFlux 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 동기/비동기와 블로킹/논블로킹 기초
 
 > 한 줄 요약: 동기/비동기는 결과를 누가 기다리느냐의 문제이고, 블로킹/논블로킹은 호출하는 동안 스레드가 멈추느냐의 문제라 두 축은 독립적이다.
@@ -5,6 +74,14 @@
 > 문서 역할: 이 문서는 operating-system `primer`에서 I/O, thread pool, event loop 문서로 넘어가기 전에 "무엇을 구분해야 하는지"를 먼저 잡는 beginner primer다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "비동기면 무조건 논블로킹이라고 생각했는데 `Future.get()`에서 멈춰요" | 결제 승인, 알림 발송, 외부 API 호출을 비동기로 바꾼 뒤 대기하는 코드 | 결과 흐름(sync/async)과 스레드 멈춤(blocking/non-blocking)을 다른 축으로 본다 |
+| "checkout timeout을 비동기로 만들면 무조건 빨라지는지 모르겠어요" | 장바구니 결제 후속 작업 분리 | I/O 대기 구조를 바꾸는 것과 전체 작업량이 줄어드는 것을 구분한다 |
+| "Spring MVC, WebFlux, event loop, thread pool이 한 문장처럼 섞여요" | 백엔드 실행 모델 비교 | request thread, event loop, callback, blocking wait를 단계별로 자른다 |
 
 관련 문서:
 

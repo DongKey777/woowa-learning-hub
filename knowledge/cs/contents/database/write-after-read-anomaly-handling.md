@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Write-After-Read Anomaly Handling
+concept_id: database/write-after-read-anomaly-handling
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- stale-read
+- write-after-read
+- consistency
+- version-check
+- conditional-update
+aliases:
+- write-after-read
+- stale read
+- read validate write
+- read dependency
+- recheck before write
+- stale read before write
+- write after stale replica read
+- conditional update after read
+- read dependency version token
+- 최신 row 재검증
+symptoms:
+- replica나 cache에서 읽은 stale 값으로 business decision을 하고 write해 잘못된 상태 변경이 생길 수 있어
+- read-after-write가 아니라 read 값을 근거로 write할 때 write 직전 재검증이 필요해
+- retry 시 같은 결정을 그대로 다시 쓰지 말고 fresh read부터 다시 해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/replica-read-routing-anomalies
+- database/cache-replica-split-read-inconsistency
+next_docs:
+- database/transaction-retry-serialization-failure-patterns
+- database/version-column-retry-walkthrough
+- database/compare-and-set-version-columns
+linked_paths:
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/cache-replica-split-read-inconsistency.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/compare-and-set-version-columns.md
+confusable_with:
+- database/replica-read-routing-anomalies
+- database/monotonic-reads-session-guarantees
+- database/version-column-retry-walkthrough
+forbidden_neighbors: []
+expected_queries:
+- write-after-read anomaly는 stale read를 근거로 write할 때 어떤 문제가 생기는 거야?
+- cache나 replica에서 읽은 값으로 승인 결정을 내리기 전에 write 직전 recheck가 필요한 이유는?
+- read dependency version token을 저장하고 conditional update로 검증하는 패턴을 설명해줘
+- write 실패 뒤 같은 결정을 다시 쓰면 안 되고 fresh read부터 다시 해야 하는 이유가 뭐야?
+- read-after-write와 write-after-read consistency 문제는 방향이 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 write-after-read anomaly를 stale read, read dependency, recheck before write, conditional update, version token 관점으로 다루는 advanced playbook이다.
+  stale read before write, write after stale replica read, read validate write 질문이 본 문서에 매핑된다.
+---
 # Write-After-Read Anomaly Handling
 
 > 한 줄 요약: read를 근거로 write할 때는, 그 read가 이미 stale일 수 있다는 사실을 전제로 다시 검증해야 한다.

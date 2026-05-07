@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Revocation Preview Drift Response Contract
+concept_id: security/revocation-preview-drift-response-contract
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- preview drift response contract
+- revocation confirm response
+- graph snapshot drift
+- graph_snapshot_id drift
+aliases:
+- preview drift response contract
+- revocation confirm response
+- graph snapshot drift
+- graph_snapshot_id drift
+- preview expired
+- forced re-confirmation
+- reconfirm required
+- replacement preview
+- stale preview response
+- confirm-time schema
+- operator revoke reconfirm
+- session graph drift
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/revocation-impact-preview-data-contract.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/device-session-graph-revocation-design.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Revocation Preview Drift Response Contract 핵심 개념을 설명해줘
+- preview drift response contract가 왜 필요한지 알려줘
+- Revocation Preview Drift Response Contract 실무 설계 포인트는 뭐야?
+- preview drift response contract에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Revocation Preview Drift Response Contract를 다루는 deep_dive 문서다. revocation confirm API는 stale preview를 단순 오류로 끝내면 안 되고, `graph_snapshot_id` drift, preview 만료, 강제 재확인을 구분한 구조화 응답과 replacement preview를 내려 operator가 같은 흐름 안에서 안전하게 다시 확인할 수 있어야 한다. 검색 질의가 preview drift response contract, revocation confirm response, graph snapshot drift, graph_snapshot_id drift처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Revocation Preview Drift Response Contract
 
 > 한 줄 요약: revocation confirm API는 stale preview를 단순 오류로 끝내면 안 되고, `graph_snapshot_id` drift, preview 만료, 강제 재확인을 구분한 구조화 응답과 replacement preview를 내려 operator가 같은 흐름 안에서 안전하게 다시 확인할 수 있어야 한다.

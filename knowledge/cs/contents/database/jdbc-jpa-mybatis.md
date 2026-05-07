@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: JDBC, JPA, MyBatis
+concept_id: database/jdbc-jpa-mybatis
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- jdbc-jpa-mybatis-runtime
+- persistence-context-flush
+- orm-vs-sql-mapper
+aliases:
+- jdbc vs jpa vs mybatis
+- orm vs sql mapper
+- hibernate vs jpa
+- entity manager
+- persistence context
+- dirty checking
+- flush timing
+- OSIV
+- transaction propagation
+- JDBC JPA MyBatis 차이
+symptoms:
+- JDBC, JPA, MyBatis 이름은 구분하지만 실제 SQL 실행 시점, flush, dirty checking, OSIV가 헷갈려
+- save 후 예상하지 않은 UPDATE SQL이 나가거나 lazy loading이 controller에서 터지는 이유를 알고 싶어
+- 접근 기술 선택 문제가 아니라 connection 점유 시간, long transaction, pool exhausted로 이어지는 런타임 경계를 봐야 해
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/jdbc-jpa-mybatis-basics
+- database/transaction-basics
+next_docs:
+- database/jdbc-code-patterns
+- spring/persistence-context-flush-clear-detach-boundaries
+- spring/open-session-in-view-tradeoffs
+- database/connection-pool-transaction-propagation-bulk-write
+linked_paths:
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/jdbc-code-patterns.md
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/query-tuning-checklist.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/jdbc-jpa-mybatis-basics
+- database/jdbc-code-patterns
+- database/connection-pool-transaction-propagation-bulk-write
+forbidden_neighbors: []
+expected_queries:
+- JDBC, JPA, MyBatis는 SQL 위치와 런타임 동작이 어떻게 달라?
+- JPA save 후 왜 예상하지 않은 시점에 UPDATE SQL이 flush로 나갈 수 있어?
+- persistence context, dirty checking, EntityManager, OSIV를 JDBC/MyBatis와 비교해서 설명해줘
+- ORM 자체보다 long transaction과 connection pool exhaustion이 문제인 경우를 어떻게 구분해?
+- SQL mapper와 ORM 선택 기준을 초보자 다음 단계 수준으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 JDBC/JPA/MyBatis 이름 구분 이후 persistence context, dirty checking, flush timing, OSIV, transaction boundary, connection pool 점유 시간까지 비교하는 advanced chooser다.
+  jdbc vs jpa vs mybatis, ORM vs SQL mapper, flush timing, persistence context 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # JDBC, JPA, MyBatis
 
 > 한 줄 요약: 이 문서는 beginner primer 다음 단계에서 "SQL 위치 구분" 위에 `flush`, 영속성 컨텍스트, OSIV, pool 점유 시간 같은 심화 개념을 얹는 follow-up이다.

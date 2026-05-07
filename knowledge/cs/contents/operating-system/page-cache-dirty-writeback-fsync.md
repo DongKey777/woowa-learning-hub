@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Page Cache Dirty Writeback fsync
+concept_id: operating-system/page-cache-dirty-writeback-fsync
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+review_feedback_tags:
+- page-cache-dirty
+- writeback-fsync
+- dirty-page-writeback
+- fsync-durability
+aliases:
+- page cache dirty writeback fsync
+- dirty page writeback
+- fsync durability
+- buffered write durability
+- writeback policy
+- page cache persistence
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/dirty-page-ratios-writeback-tuning.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/fsync-batching-semantics.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+- contents/operating-system/rename-atomicity-directory-fsync-crash-consistency.md
+expected_queries:
+- buffered write는 page cache에 보인 순간 디스크에 안전하게 저장된 거야?
+- dirty page writeback과 fsync는 durability에서 어떤 역할을 해?
+- page cache, dirty writeback, fsync를 하나의 저장 경로로 설명해줘
+- fsync tail latency와 dirty throttling은 page cache writeback에서 어떻게 생겨?
+contextual_chunk_prefix: |
+  이 문서는 disk write가 application에 보였다고 끝난 것이 아니라 page cache dirty state,
+  background writeback, fsync durability boundary를 거쳐야 안전해진다는 canonical deep dive다.
+---
 # Page Cache, Dirty Writeback, fsync
 
 > 한 줄 요약: 디스크 쓰기는 보이는 순간 끝난 게 아니라, page cache와 writeback 정책을 거쳐야 진짜 안전해진다.

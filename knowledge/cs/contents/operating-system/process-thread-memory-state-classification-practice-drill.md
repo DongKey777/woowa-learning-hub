@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Process, Thread, Stack, Heap, Virtual Memory, Runnable, Blocked 분류 연습
+concept_id: operating-system/process-thread-memory-state-classification-practice-drill
+canonical: false
+category: operating-system
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- process-vs-state-axis-confusion
+- stack-heap-runtime-scene-classification
+- runnable-vs-blocked-first-cut
+aliases:
+- process thread memory state drill
+- process thread stack heap classification
+- runnable blocked classification practice
+- virtual memory beginner drill
+- process vs thread practice drill
+- stack vs heap practice drill
+- process thread memory state 분류 연습
+- runnable blocked 구분 연습
+- 운영체제 용어 축 분리 연습
+- thread state classification beginner
+symptoms:
+- process, thread, stack, heap, runnable이 한 문장에 같이 나오면 무엇을 분류해야 하는지 모르겠어요
+- worker thread가 blocked라는 설명을 들을 때 주체와 상태가 왜 다른 축인지 자꾸 섞여요
+- stack, heap, virtual memory를 한 장면에서 다시 분류하는 손연습이 필요해요
+intents:
+- drill
+- comparison
+prerequisites:
+- operating-system/process-thread-basics
+- operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+next_docs:
+- operating-system/memory-management-basics
+- operating-system/linux-process-state-zombie-orphan
+- operating-system/process-thread-stack-heap-fd-socket-backend-primer
+linked_paths:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/memory-management-basics.md
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/process-thread-stack-heap-fd-socket-backend-primer.md
+- contents/language/java/java-thread-basics.md
+confusable_with:
+- operating-system/process-thread-virtual-memory-context-switch-scheduler-basics
+- operating-system/memory-management-basics
+- operating-system/linux-process-state-zombie-orphan
+forbidden_neighbors: []
+expected_queries:
+- process, thread, stack, heap, runnable, blocked를 한 번에 분류해 보는 운영체제 연습 문제가 필요해
+- worker thread가 blocked라는 표현을 축별로 다시 자르는 드릴이 있어?
+- stack과 heap, virtual memory를 같은 장면에서 헷갈리지 않게 손으로 점검하고 싶어
+- process vs thread와 runnable vs blocked를 함께 섞어서 묻는 초급 연습 문서를 찾고 있어
+- 운영체제 입문 용어를 무엇인가와 어떤 상태인가로 나눠 보는 self-check가 필요해
+contextual_chunk_prefix: |
+  이 문서는 운영체제 입문 학습자가 process와 thread 같은 실행 주체 축,
+  stack과 heap 같은 메모리 축, runnable과 blocked 같은 상태 축을 한 장면에서
+  다시 분리해 보는 drill이다. worker thread가 blocked인 장면, 지역 변수와
+  공유 객체 구분, virtual memory를 다른 축으로 떼어 읽기, 무엇을 가리키는
+  말인지와 지금 어떤 상태인지 나누기 같은 자연어 paraphrase가 본 문서의
+  분류 연습에 매핑된다.
+---
 # Process, Thread, Stack, Heap, Virtual Memory, Runnable, Blocked 분류 연습
 
 > 한 줄 요약: process/thread/memory/state 용어가 한꺼번에 섞일 때, "무엇을 가리키는 말인가"와 "지금 어떤 상태인가"를 분리해서 짧은 예시로 분류해 보는 practice drill이다.

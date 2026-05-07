@@ -60,7 +60,10 @@ confusable_with:
 - data-structure/connectivity-question-router
 - algorithm/bfs-vs-dijkstra-shortest-path-mini-card
 - algorithm/minimum-spanning-tree-prim-vs-kruskal
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/dijkstra-bellman-ford-floyd-warshall.md
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/network-flow-intuition.md
 expected_queries:
 - 그래프 문제를 보면 shortest path, mst, flow를 어떤 기준으로 먼저 나눠야 해?
 - 최소 몇 번과 최소 비용을 그래프 문제에서 어떻게 구분해?

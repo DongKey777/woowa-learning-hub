@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Mission Review Vocabulary Primer
+concept_id: software-engineering/mission-review-vocabulary-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- mission-review-vocabulary
+- responsibility-boundary-glossary
+- dto-entity-service-transaction-validation
+aliases:
+- mission review vocabulary primer
+- PR review glossary beginner
+- domain rule DTO entity repository service validation transaction
+- 리뷰 용어 입문
+- 코드리뷰 용어 정리
+- 우테코 리뷰 용어
+- domain rule 뭐예요
+- service repository 차이
+- transaction 경계 입문
+symptoms:
+- 리뷰 용어를 사전식 정의로만 읽고 실제 코드 위치와 책임 경계로 번역하지 못한다
+- DTO Entity Service Repository Validation Transaction 코멘트를 각각 별개로 외워 수정 순서가 흐려진다
+- domain rule이 controller나 repository에 새어 있다는 말을 어떤 코드 이동으로 받아야 할지 모른다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- software-engineering/woowacourse-backend-mission-prerequisite-primer
+next_docs:
+- software-engineering/refactoring-feedback-phrase-router
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+- software-engineering/dto-vo-entity-basics
+linked_paths:
+- contents/software-engineering/refactoring-feedback-phrase-router.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/repository-dao-entity.md
+confusable_with:
+- software-engineering/refactoring-feedback-phrase-router
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+- software-engineering/dto-vo-entity-basics
+- software-engineering/repository-dao-entity
+forbidden_neighbors: []
+expected_queries:
+- PR 리뷰에서 domain rule DTO entity repository service validation transaction은 어떤 책임 경계를 말해?
+- 리뷰 용어를 코드 위치로 번역하려면 Controller Service Repository 중 어디를 봐야 해?
+- domain rule이 controller에 새어 있다는 코멘트는 어떤 수정 방향을 뜻해?
+- DTO와 Entity 경계가 모호하다는 리뷰를 초보자가 어떻게 해석해야 해?
+- transaction 범위와 validation 위치를 리뷰 피드백에서 어떻게 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 mission review vocabulary beginner primer로, domain rule, DTO,
+  entity, repository, service, validation, transaction 같은 PR 리뷰 용어를
+  코드 책임 위치와 수정 방향으로 번역한다.
+---
 # Mission Review Vocabulary Primer
 
 > 한 줄 요약: PR 리뷰에서 자주 나오는 `domain rule`, `DTO`, `entity`, `repository`, `service`, `validation`, `transaction`은 "코드를 어디에 두고 무엇을 지킬지"를 말하는 단어이며, 용어 뜻보다 책임 경계를 먼저 잡으면 훨씬 덜 헷갈린다.
@@ -17,6 +88,14 @@
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 retrieval-anchor-keywords: mission review vocabulary primer, pr review glossary beginner, domain rule dto entity repository service validation transaction, 리뷰 용어 입문, 코드리뷰 용어 정리, 우테코 리뷰 용어, domain rule 뭐예요, service repository 차이, transaction 경계 입문, validation 위치, dto entity 구분 초심자, mission review vocabulary primer basics, mission review vocabulary primer beginner, mission review vocabulary primer intro, software engineering basics
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "리뷰에서 도메인 규칙이 새어 있다고 하는데 무슨 뜻이에요?" | controller나 DTO 검증에 비즈니스 규칙이 섞인 코드 | 리뷰 용어를 사전식 뜻이 아니라 책임 위치 신호로 번역한다 |
+| "DTO, entity, repository, service가 다 비슷하게 보여요" | roomescape, shopping-cart, lotto에서 값 이동과 저장 책임이 한 클래스에 몰린 구조 | 각 단어가 어느 계층 경계를 가리키는지 먼저 나눈다 |
+| "transaction 경계를 보라는 리뷰가 왜 validation 얘기랑 같이 나와요?" | 저장 전 검증, 저장 후 후속 처리, 실패 rollback이 한 흐름에 섞인 유스케이스 | 입력 검증, 도메인 규칙, 저장 원자성을 다른 축으로 읽는다 |
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

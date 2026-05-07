@@ -37,7 +37,7 @@ prerequisites:
 - software-engineering/code-review-basics
 - software-engineering/testing-strategy-and-test-doubles
 next_docs:
-- software-engineering/change-ownership-handoff-boundaries
+- software-engineering/change-ownership-handoff
 - software-engineering/production-readiness-review
 - software-engineering/architectural-fitness-functions
 linked_paths:
@@ -49,7 +49,7 @@ linked_paths:
 - contents/software-engineering/lead-time-change-failure-recovery-loop.md
 confusable_with:
 - software-engineering/code-review-basics
-- software-engineering/change-ownership-handoff-boundaries
+- software-engineering/change-ownership-handoff
 - software-engineering/testing-strategy-and-test-doubles
 forbidden_neighbors:
 expected_queries:

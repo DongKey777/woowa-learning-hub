@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Composite Query Rule Trees
+concept_id: design-pattern/composite-query-rule-trees
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- composite-pattern
+- query-tree
+- rule-tree
+- recursive-composition
+aliases:
+- composite query rule trees
+- composite pattern query tree
+- composite pattern rule tree
+- recursive rule tree
+- logical operator tree
+- and or tree
+- query condition tree
+- composite rule model
+- 쿼리 트리
+- 규칙 트리
+symptoms:
+- AND/OR/NOT 조건이 중첩되면서 if문이나 query builder 호출이 깊어져 읽기 어렵다
+- Specification, Composite, Interpreter를 모두 조건 조합 패턴으로만 보고 구조 재귀와 의미 조합을 구분하지 못한다
+- leaf와 group이 다른 호출 계약을 가져 재귀 순회와 검증 코드가 계속 분기된다
+intents:
+- design
+- comparison
+- deep_dive
+prerequisites:
+- design-pattern/specification-pattern
+- design-pattern/interpreter-pattern-rules
+next_docs:
+- design-pattern/dsl-object-model-pattern
+- design-pattern/visitor-pattern-tradeoffs
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/interpreter-pattern-rules.md
+- contents/design-pattern/visitor-pattern-tradeoffs.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/dsl-object-model-pattern.md
+confusable_with:
+- design-pattern/specification-pattern
+- design-pattern/interpreter-pattern-rules
+- design-pattern/dsl-object-model-pattern
+- design-pattern/visitor-pattern-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- Composite 패턴으로 AND OR NOT 쿼리 트리와 규칙 트리를 재귀적으로 표현하는 기준은 뭐야?
+- Specification과 Composite는 조건 의미 조합과 트리 구조 표현 관점에서 어떻게 달라?
+- 검색 필터나 승인 규칙이 중첩될 때 leaf와 group을 같은 인터페이스로 두는 장점은 뭐야?
+- Composite rule tree가 지나치게 일반화되어 의미가 흐려지는 신호는 뭐야?
+- Interpreter와 Composite를 작은 규칙 DSL에서 함께 쓰는 경우를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Composite Query Rule Trees bridge로, query condition과 policy rule을 leaf/group이
+  같은 interface를 갖는 recursive tree로 표현해 AND/OR/NOT nested condition을 다루는 방법과
+  Specification, Interpreter, DSL Object Model과의 차이를 설명한다.
+---
 # Composite Pattern: 쿼리 트리와 규칙 트리를 조립하는 방법
 
 > 한 줄 요약: Composite 패턴은 부분과 전체를 같은 인터페이스로 다뤄, 쿼리 트리와 규칙 트리를 재귀적으로 조합하게 만든다.
@@ -63,6 +129,16 @@ Composite는 구조를 통일하지만, 실제로는 조립이 어려워질 수 
 - leaf와 composite의 책임이 섞인다
 - 지나치게 일반화되면 규칙 의미가 흐려진다
 - 재귀 순회가 복잡해질 수 있다
+
+### 4. tree를 저장한다면 version도 같이 본다
+
+규칙 트리를 DB나 JSON으로 저장하기 시작하면 단순 객체 패턴을 넘어 contract가 된다.
+
+- leaf type 이름을 바꿔도 과거 규칙을 읽을 수 있는가?
+- 새 operator를 추가해도 예전 evaluator가 안전하게 실패하는가?
+- tree validation error를 운영자가 이해할 수 있는가?
+
+저장/편집/버전 호환이 핵심이면 Composite에서 멈추지 말고 DSL Object Model이나 Interpreter로 이어서 봐야 한다.
 
 ---
 
@@ -166,4 +242,3 @@ Composite는 조건 자체보다 **조립 방식**을 통일한다.
 ## 한 줄 정리
 
 Composite 패턴은 쿼리 트리와 규칙 트리를 재귀적으로 조립하게 해 주지만, 의미가 흐려지면 Specification이나 Interpreter가 더 낫다.
-

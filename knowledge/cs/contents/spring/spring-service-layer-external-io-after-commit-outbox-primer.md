@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Spring Service Layer External IO After Commit Outbox Primer
+concept_id: spring/service-layer-external-io-after-commit-outbox-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 79
+review_feedback_tags:
+- service-layer-external
+- io-after-commit
+- outbox
+- external-io-outside
+aliases:
+- external IO outside transaction
+- after commit vs outbox
+- service layer side effect boundary
+- payment API inside transaction
+- transactional event listener outbox
+- local DB change vs external delivery
+intents:
+- comparison
+- design
+- mission_bridge
+linked_paths:
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- contents/spring/spring-payment-approval-db-failure-compensation-idempotency-primer.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+mission_ids:
+- missions/shopping-cart
+confusable_with:
+- spring/payment-approval-db-failure-compensation-idempotency-primer
+- spring/service-layer-transaction-boundary-patterns
+- spring/eventlistener-transaction-phase-outbox
+expected_queries:
+- 외부 API 호출을 @Transactional 안에 넣어도 돼?
+- 커밋 후 후속 작업은 AFTER_COMMIT 이벤트와 outbox 중 무엇을 골라야 해?
+- 로컬 DB 변경, 커밋 후 side effect, 외부 전달 보장은 어떻게 나눠 봐야 해?
+- 결제 승인이나 알림 발송을 transaction propagation으로 해결하려는 게 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 초급자가 외부 I/O를 transaction propagation 옵션으로 풀지 않고,
+  local DB change, after-commit side effect, guaranteed external delivery를 다른 경계로
+  분리하도록 돕는 chooser다. AFTER_COMMIT, outbox, payment compensation과 연결한다.
+---
 # Spring Service-Layer Primer: 외부 I/O는 트랜잭션 밖으로, 후속 부작용은 `AFTER_COMMIT` vs Outbox로 나누기
 
 > 한 줄 요약: 초급자는 "외부 API를 트랜잭션 안에 넣을까?"를 propagation 옵션으로 풀기보다, **로컬 DB 변경**, **커밋 후 후속 처리**, **유실되면 안 되는 외부 전달**을 서로 다른 경계로 나눠서 보는 편이 훨씬 덜 헷갈린다.

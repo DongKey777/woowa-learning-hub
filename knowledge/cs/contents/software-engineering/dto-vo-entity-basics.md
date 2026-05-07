@@ -1,8 +1,88 @@
+---
+schema_version: 3
+title: DTO VO Entity 기초
+concept_id: software-engineering/dto-vo-entity-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- dto-vo-entity-boundary
+- service-signature-leak
+- request-command-domain-persistence-flow
+aliases:
+- dto vo entity basics
+- DTO VO Entity 기초
+- dto vo entity 차이
+- dto entity 차이
+- dto vs vo
+- entity를 응답으로 내보내도 되나요
+- request dto service command entity 흐름
+- jpa entity vs domain entity
+- service 시그니처 leak
+- 구조는 맞는데 계약이 샌다
+- record는 vo에 왜 맞나요
+symptoms:
+- DTO, VO, Entity를 모두 데이터 객체로만 보고 전달 계약, 값 의미, 식별자 추적 차이를 구분하지 못해
+- Request DTO나 ResponseEntity, Pageable 같은 바깥 타입이 Service 시그니처까지 들어와 계약이 새고 있어
+- JPA Entity를 API 응답으로 그대로 내보내거나 도메인 규칙 객체로 겸용해 저장 구조와 외부 계약이 묶이고 있어
+intents:
+- definition
+- comparison
+prerequisites:
+- software-engineering/layered-architecture-basics
+next_docs:
+- software-engineering/repository-dao-entity
+- software-engineering/service-contract-smell-cards
+- software-engineering/persistence-model-leakage
+- software-engineering/module-api-dto-patterns
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-contract-smell-cards.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/module-api-dto-patterns.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- software-engineering/repository-dao-entity
+- software-engineering/service-contract-smell-cards
+- software-engineering/persistence-model-leakage
+- language/record-value-object-equality-basics
+forbidden_neighbors: []
+expected_queries:
+- DTO, VO, Entity 차이를 전달 계약, 값 의미, 식별자 추적 기준으로 설명해줘
+- Request DTO를 Service나 Repository까지 그대로 넘기면 왜 계약이 새는 거야?
+- JPA Entity를 응답 DTO로 그대로 반환하면 API 계약과 DB 구조가 어떻게 묶여?
+- request DTO에서 command, domain, persistence entity, response DTO로 나누는 흐름을 알려줘
+- VO는 왜 불변이고 equals가 값 기준이어야 하는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 DTO를 transfer contract, VO를 immutable value semantics, Entity를 identity-based tracked object로 나누고 request DTO -> command -> domain -> persistence entity -> response DTO 흐름을 설명하는 beginner primer다.
+  dto vs entity, service signature leak, request dto to repository smell, JPA entity response leak, value object equality, command dto 같은 자연어 리뷰 질문이 본 문서에 매핑된다.
+---
 # DTO, VO, Entity 기초 (DTO, VO, Entity Basics)
 
 > 한 줄 요약: DTO는 데이터 전달 포맷, VO는 값 동등성을 가진 도메인 개념, Entity는 식별자로 추적하는 저장 단위이며, 셋을 뒤섞으면 변경 비용이 빠르게 커진다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "DTO, VO, Entity가 전부 데이터 객체처럼 보여요" | controller request, domain value, DB entity가 한 타입으로 합쳐진 코드 | 전달 계약, 값 의미, 식별자 추적을 다른 질문으로 본다 |
+| "Request DTO를 Service나 Repository까지 그대로 넘기면 왜 계약이 새나요?" | HTTP JSON 모양이 service signature에 들어간 장면 | 외부 입력 계약을 service command/domain 경계로 변환한다 |
+| "JPA Entity를 응답으로 그대로 내보내면 뭐가 문제인가요?" | API response가 persistence field와 직접 묶인 구현 | DB 구조 변경이 API 계약으로 번지는 비용을 확인한다 |
 
 관련 문서:
 

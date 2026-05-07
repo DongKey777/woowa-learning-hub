@@ -61,7 +61,11 @@ expected_queries:
 - 최단 경로 문제를 처음 볼 때 BFS 다익스트라 0-1 BFS를 나누는 기준이 뭐야
 - 간선 수를 줄이는 문제와 총 비용을 줄이는 문제를 한 장으로 비교해서 알고 싶어
 contextual_chunk_prefix: |
-  이 문서는 shortest path를 처음 분기하는 학습자가 간선 수 최소와 비용 합 최소를 헷갈릴 때 BFS, 0-1 BFS, Dijkstra를 확인 질문으로 굳히는 drill이다. 이동 횟수 최소, 비용 shortest 구분, 공짜 이동과 유료 이동, 어떤 최단 문제부터 골라야 해, 무게가 같나 다르나 같은 자연어 paraphrase가 본 문서의 첫 선택 기준에 매핑된다.
+  이 문서는 shortest path를 처음 읽는 학습자가 이동 횟수 최소와 비용 합
+  최소를 섞을 때 BFS, 0-1 BFS, Dijkstra를 확인 질문으로 굳히는
+  drill이다. 몇 번 움직였는지가 짧은 건가, 공짜 이동과 유료 이동이
+  섞였나, 간선 수를 줄이라는 말인가, 시간과 요금 합을 줄이라는 말인가
+  같은 자연어 paraphrase가 본 문서의 첫 분기 기준에 매핑된다.
 ---
 # BFS vs Dijkstra shortest path beginner split card
 

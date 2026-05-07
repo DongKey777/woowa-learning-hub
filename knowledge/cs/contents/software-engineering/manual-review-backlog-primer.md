@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Manual Review Backlog Primer
+concept_id: software-engineering/manual-review-backlog-primer
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- manual-review
+- backlog
+- retry
+- ownership
+aliases:
+- Manual Review Backlog Primer
+- manual-review bucket beginner
+- manual review backlog fields
+- retryable vs manual review backlog
+- ownerTeam manual review item
+- 수동 검토 백로그 기초
+symptoms:
+- manual-review bucket을 자동 재시도 못 한 실패 보관함처럼 쌓아 두고 itemId, reasonCode, sourceRef, ownerTeam, dueAt이 없어 사람이 다음 판단을 못 해
+- retryable과 manual-review와 permanent를 섞어서 시스템이 다시 할 일과 사람이 판단할 일을 같은 queue에 넣어
+intents:
+- definition
+- troubleshooting
+- design
+prerequisites:
+- software-engineering/retry-reason-taxonomy
+- software-engineering/retry-queue-assertions
+next_docs:
+- software-engineering/batch-recovery-runbook
+- software-engineering/change-ownership-handoff
+- system-design/job-queue-design
+linked_paths:
+- contents/software-engineering/retry-reason-taxonomy-primer.md
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/system-design/job-queue-design.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+confusable_with:
+- software-engineering/retry-reason-taxonomy
+- software-engineering/retry-queue-assertions
+- software-engineering/batch-recovery-runbook
+forbidden_neighbors: []
+expected_queries:
+- manual-review backlog item에는 itemId, reasonCode, sourceRef, ownerTeam, dueAt 같은 최소 필드가 왜 필요해?
+- retryable queue와 manual-review backlog는 다음 행동 주체가 어떻게 다른지 초심자에게 설명해줘
+- manual-review bucket을 실패 보관함이 아니라 작업 카드로 봐야 하는 이유가 뭐야?
+- owner를 개인 이름보다 팀이나 역할 경계로 두는 것이 왜 안전한지 알려줘
+- manual-review item을 closed할 때 수정 후 재처리, 정책상 종료, 중복 병합 같은 결정을 남겨야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 manual-review bucket을 실패 로그가 아니라 itemId, reasonCode, sourceRef, ownerTeam, dueAt을 가진 beginner-safe 운영 backlog로 다루는 playbook이다.
+---
 # Manual Review Backlog Primer
 
 > 한 줄 요약: 분류가 끝난 뒤 `manual-review` bucket은 "실패를 쌓아 두는 통"이 아니라, 사람이 다음 판단을 이어 가기 위해 최소 필드와 owner를 분명히 남기는 작업 backlog다.

@@ -9,6 +9,11 @@ doc_role: playbook
 level: advanced
 language: ko
 source_priority: 78
+review_feedback_tags:
+- transaction-studies
+- transaction-boundary
+- idempotency-key
+- inventory-race
 aliases:
 - transaction boundary
 - idempotency key
@@ -22,6 +27,13 @@ symptoms:
 - 중복 결제 요청이 두 번 처리됐어요
 - 재고가 1개 남는데 두 요청이 동시에 성공해버렸어요
 - 포인트는 차감됐는데 주문 생성이 실패해서 데이터가 꼬였어요
+linked_paths:
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/deadlock-case-study.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
 expected_queries:
 - 중복 결제는 트랜잭션만으로 막을 수 있어?
 - 재고 차감은 어떤 트랜잭션 경계로 묶어야 해?
@@ -34,7 +46,6 @@ contextual_chunk_prefix: |
   깨짐, 동시 재고 차감 충돌, 중복 결제 두 번 처리, 데이터 꼬임, 정합성
   시나리오 같은 자연어 paraphrase가 본 문서의 사례별 처방에 매핑된다.
 ---
-
 # 트랜잭션 실전 시나리오
 
 **난이도: 🔴 Advanced**

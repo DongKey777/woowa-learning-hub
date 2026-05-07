@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring Transactional Deep Dive
+concept_id: spring/transactional-deep-dive
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 94
+review_feedback_tags:
+- transactional
+- transaction-proxy
+- propagation-rollback-readonly
+- isolation
+aliases:
+- @Transactional deep dive
+- Spring transaction proxy
+- propagation rollback readOnly isolation
+- transaction boundary design
+- PlatformTransactionManager
+- transactional proxy mechanism
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-transaction-propagation-mandatory-supports-not-supported-boundaries.md
+- contents/spring/spring-transactiontemplate-programmatic-transaction-boundaries.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-transaction-isolation-readonly-pitfalls.md
+- contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md
+expected_queries:
+- Spring @Transactional은 proxy 기반으로 어떻게 동작해?
+- propagation rollback rule readOnly isolation을 한 번에 deep dive해줘
+- PlatformTransactionManager와 transaction interceptor는 어떤 역할이야?
+- transaction boundary를 service layer에서 설계할 때 무엇을 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring @Transactional의 canonical deep dive다. proxy 기반 동작,
+  PlatformTransactionManager, propagation, rollback rule, readOnly, isolation, service-layer
+  boundary, self-invocation, rollback-only trap을 함께 설명한다.
+---
 # @Transactional 깊이 파기
 
 > 한 줄 요약: Spring 트랜잭션은 프록시 기반으로 동작하므로, 전파 규칙과 롤백 규칙, `readOnly`, 격리수준, 경계 설계를 같이 봐야 제대로 쓸 수 있다.

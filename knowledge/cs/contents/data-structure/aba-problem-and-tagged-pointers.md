@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: ABA Problem and Tagged Pointers
+concept_id: data-structure/aba-problem-tagged-pointers
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- lock-free-cas-correctness
+- aba-versioned-pointer
+- concurrent-queue-memory-safety
+aliases:
+- ABA problem
+- tagged pointer
+- versioned pointer
+- stamped reference
+- CAS ABA bug
+- sequence number as tag
+- lock-free pointer reuse
+- ring buffer generation counter
+symptoms:
+- CAS가 같은 포인터 값을 다시 보고 성공했지만 그 사이에 node가 제거됐다가 재사용됐을 가능성이 있다
+- bounded ring buffer에서 raw index만 비교해 wrap-around 이후 같은 slot을 이전 세대와 구분하지 못한다
+- tagged pointer를 memory reclamation 자체로 오해해 hazard pointer나 epoch 기반 회수와 역할이 섞인다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/bounded-mpmc-queue
+- operating-system/atomic-vs-lock
+next_docs:
+- data-structure/bounded-mpmc-queue
+- data-structure/michael-scott-lock-free-queue
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+- data-structure/reclamation-cost-tradeoffs
+linked_paths:
+- contents/data-structure/bounded-mpmc-queue.md
+- contents/data-structure/sequencer-based-ring-buffer-coordination.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+- contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md
+- contents/data-structure/reclamation-cost-tradeoffs.md
+confusable_with:
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+- data-structure/reclamation-cost-tradeoffs
+- data-structure/bounded-mpmc-queue
+- data-structure/michael-scott-lock-free-queue
+forbidden_neighbors: []
+expected_queries:
+- ABA 문제는 CAS에서 왜 생기고 tagged pointer는 무엇을 막아?
+- lock-free queue에서 pointer 값이 다시 같아지는 게 왜 위험한지 설명해줘
+- ring buffer의 sequence number가 ABA 문제와 어떤 관련이 있어?
+- tagged pointer와 hazard pointer는 각각 무엇을 해결하는지 비교해줘
+- CAS 성공이 항상 안전하지 않은 예시를 lock-free 자료구조 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 lock-free 자료구조에서 CAS가 값 동일성만 보고 중간 변화를
+  놓치는 ABA 문제를 다룬다. tagged pointer, versioned pointer, stamped
+  reference, slot sequence, generation counter가 세대 정보를 붙여 재사용
+  착시를 줄이는 역할과, memory reclamation 기법과의 경계를 설명한다.
+---
 # ABA Problem and Tagged Pointers
 
 > 한 줄 요약: ABA 문제는 lock-free CAS가 "값이 다시 같아졌으니 안전하다"고 오판하는 상황이며, tagged pointer나 sequence number는 세대 정보를 붙여 이런 재사용 착시를 줄이는 대표 기법이다.

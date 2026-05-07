@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Service Maturity Model
+concept_id: software-engineering/service-maturity-model
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- service-governance
+- maturity
+- observability
+- lifecycle
+aliases:
+- service maturity model
+- operational maturity model
+- ownership observability contract maturity
+- service lifecycle maturity
+- deprecation readiness model
+- 서비스 성숙도 모델
+symptoms: []
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/service-portfolio-lifecycle-governance
+next_docs:
+- software-engineering/service-criticality-tiering
+- software-engineering/service-bootstrap-governance
+- software-engineering/policy-as-code
+linked_paths:
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/technology-radar-adoption-governance.md
+- contents/software-engineering/lead-time-change-failure-recovery-loop.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+confusable_with:
+- software-engineering/service-criticality-tiering
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/service-bootstrap-governance
+forbidden_neighbors: []
+expected_queries:
+- service maturity model은 ownership, observability, contracts, rollout, deprecation readiness를 어떤 단계로 평가해?
+- 기능이 많은 서비스와 운영 성숙도가 높은 서비스가 왜 같은 말이 아닌지 설명해줘
+- level 0부터 level 4까지 서비스 성숙도 단계를 두면 개선 우선순위를 어떻게 정할 수 있어?
+- 모든 서비스가 같은 maturity level을 가져야 하는지 criticality와 exposure 기준으로 비교해줘
+- maturity scorecard를 architecture review, fitness function, release gate에 연결하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 서비스를 기능 수가 아니라 ownership, observability, contract, rollout, deprecation readiness 기준으로 단계 평가하는 advanced chooser이다.
+---
 # Service Maturity Model
 
 > 한 줄 요약: service maturity model은 서비스를 만들어진 상태로 보지 않고, ownership, observability, contracts, rollout, deprecation readiness를 기준으로 성장 단계별로 보는 틀이다.

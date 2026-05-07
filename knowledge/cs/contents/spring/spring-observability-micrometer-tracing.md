@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Observability with Micrometer Tracing
+concept_id: spring/observability-micrometer-tracing
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- observability-micrometer-tracing
+- observability
+- micrometer-tracing
+- observation-api
+aliases:
+- Spring observability
+- Micrometer tracing
+- Observation API
+- trace log metric correlation
+- MDC trace context
+- tag cardinality
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-async-mvc-streaming-observability-playbook.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/software-engineering/cache-message-observability.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/spring/spring-micrometer-tag-cardinality-pitfalls.md
+symptoms:
+- 로그에는 에러가 있는데 어느 HTTP 요청과 연결되는지 찾기 어렵다.
+- p99 latency가 튀지만 DB, 외부 API, servlet write 중 어느 구간인지 분리되지 않는다.
+- 사용자 id나 path variable을 tag로 넣어 metrics cardinality가 폭증한다.
+expected_queries:
+- Spring에서 Micrometer tracing으로 metric trace log를 어떻게 연결해?
+- Observation API와 MDC trace context는 어떻게 다른 역할이야?
+- p99 latency 장애를 trace와 metric으로 어디서부터 봐야 해?
+- Micrometer tag cardinality가 높은 값 때문에 문제가 생기는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Spring 관측성을 로그 추가가 아니라 metrics, traces, logs를 같은 사건으로
+  연결하는 운영 playbook으로 설명한다. Micrometer, Observation API, tracing context,
+  MDC, tag cardinality, timeout/retry 관찰 지점을 다룬다.
+---
 # Spring Observability with Micrometer Tracing
 
 > 한 줄 요약: 관측성은 로그 몇 개 더 찍는 일이 아니라, 메트릭, 트레이스, 로그를 같은 사건으로 묶어 장애를 빨리 찾는 설계다.

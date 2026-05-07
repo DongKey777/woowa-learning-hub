@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Rename Atomicity Directory fsync Crash Consistency
+concept_id: operating-system/rename-atomicity-directory-fsync-crash-consistency
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- rename-atomicity-directory
+- fsync-crash-consistency
+- fsync
+- crash-safe-publish
+aliases:
+- rename atomicity directory fsync
+- crash safe publish
+- file fsync parent directory fsync
+- atomic file replace
+- durability rename
+- crash consistency
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/fsync-batching-semantics.md
+- contents/operating-system/mmap-msync-hole-punching-file-replace-update-patterns.md
+- contents/operating-system/sparse-file-fallocate-hole-punching.md
+- contents/operating-system/deleted-open-file-space-leak-log-rotation.md
+symptoms:
+- rename은 atomic하게 보이지만 crash 후 새 이름이 durable하게 남는지 확신이 없다.
+- file fsync와 parent directory fsync를 같은 durability 단계로 착각한다.
+- atomic replace pattern을 쓰면서 crash consistency와 visibility를 분리하지 못한다.
+expected_queries:
+- rename은 atomic하지만 crash-safe publish까지 자동 보장하지 않는 이유는?
+- file fsync와 parent directory fsync는 durability에서 어떤 역할이 달라?
+- atomic file replace pattern을 crash consistency 관점에서 설명해줘
+- fsync batching과 rename durability를 함께 설계해야 하는 상황은?
+contextual_chunk_prefix: |
+  이 문서는 rename이 name swap을 atomic하게 보이게 할 수 있지만 crash-safe publish까지 자동으로
+  보장하지는 않으므로 file fsync와 parent directory fsync를 분리해 설계해야 한다는 playbook이다.
+---
 # Rename Atomicity, Directory fsync, Crash Consistency
 
 > 한 줄 요약: `rename()`은 이름 교체를 atomic하게 보이게 할 수 있지만, crash-safe publish까지 자동으로 보장하지는 않으므로 file `fsync()`와 parent directory `fsync()`를 분리해서 설계해야 한다.

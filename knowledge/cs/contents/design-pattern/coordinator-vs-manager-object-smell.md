@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Coordinator vs Manager Object Smell
+concept_id: design-pattern/coordinator-vs-manager-object-smell
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- coordinator
+- manager-object-smell
+- god-service
+- responsibility-naming
+aliases:
+- coordinator vs manager object smell
+- manager object smell
+- manager class smell
+- god service manager
+- vague naming smell
+- orchestrator responsibility
+- workflow manager smell
+- manager 객체 냄새
+- 매니저 클래스 냄새
+symptoms:
+- OrderManager, UserManager, DataManager 같은 이름 아래 validation, persistence, notification, policy가 모두 모인다
+- 유스케이스 흐름 조율인지 도메인 규칙인지 외부 호출인지 이름만 봐서는 책임이 드러나지 않는다
+- Coordinator라는 이름을 붙였지만 실패 처리, 상태 소유, 정책 판단까지 계속 흡수해 god service가 된다
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/orchestration-vs-choreography-pattern-language
+- design-pattern/command-handler-pattern
+next_docs:
+- design-pattern/god-object-spaghetti-golden-hammer
+- design-pattern/domain-service-vs-pattern-abuse
+- software-engineering/service-layer-basics
+linked_paths:
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/orchestration-vs-choreography-pattern-language.md
+- contents/design-pattern/command-handler-pattern.md
+- contents/design-pattern/god-object-spaghetti-golden-hammer.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/domain-service-vs-pattern-abuse.md
+- contents/software-engineering/service-layer-basics.md
+confusable_with:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/orchestration-vs-choreography-pattern-language
+- design-pattern/god-object-spaghetti-golden-hammer
+- design-pattern/domain-service-vs-pattern-abuse
+forbidden_neighbors: []
+expected_queries:
+- OrderManager 같은 이름이 validation save notification calculate를 모두 품으면 왜 manager object smell이야?
+- Coordinator는 유스케이스 흐름 조율이고 Manager는 책임이 흐린 이름이라는 차이를 어떻게 봐야 해?
+- PlaceOrderCoordinator가 커지기 시작하면 policy, notifier, command handler로 어떤 책임을 분리해야 해?
+- Manager 이름만 UseCase로 바꾸면 해결되지 않는 이유와 구조 분리 기준은 뭐야?
+- god service와 manager object smell을 코드 리뷰에서 어떻게 찾아?
+contextual_chunk_prefix: |
+  이 문서는 Coordinator vs Manager Object Smell symptom router로, 명확한 use case flow를
+  조율하는 coordinator와 validation, persistence, notification, policy를 모두 흡수하는
+  vague Manager/god service smell을 구분하고 책임 분리 방향을 설명한다.
+---
 # Coordinator vs Manager Object Smell
 
 > 한 줄 요약: Coordinator는 명확한 유스케이스 흐름을 조율하지만, Manager는 책임이 뭉개질 때 붙는 이름이 되기 쉽다.
@@ -151,4 +219,3 @@ public class OrderNotifier { }
 ## 한 줄 정리
 
 Coordinator는 명확한 흐름 조율자이고, Manager는 책임이 뭉개질 때 붙는 냄새 이름이 되기 쉽다.
-

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Reclamation Cost Trade-offs
+concept_id: data-structure/reclamation-cost-tradeoffs
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- reclamation-cost
+- lock-free-memory-management
+- retire-list-scan
+aliases:
+- reclamation cost tradeoffs
+- hazard pointer cost
+- epoch reclamation cost
+- retire list growth
+- stalled thread memory retention
+- reclamation latency
+- lock-free reclamation overhead
+symptoms:
+- lock-free 알고리즘의 CAS 횟수만 보고 retire queue, scan, stalled thread, delayed free 비용을 성능 모델에서 빼먹는다
+- Hazard Pointer는 fast path publish/scan 비용, EBR은 stalled thread와 retire list growth 비용이 크다는 trade-off를 구분하지 못한다
+- correctness는 안전하지만 reclamation delay 때문에 RSS 증가, allocator pressure, fragmentation 같은 운영 문제가 생기는 모드를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+next_docs:
+- data-structure/michael-scott-lock-free-queue
+- data-structure/aba-problem-tagged-pointers
+- data-structure/concurrent-skiplist-internals
+linked_paths:
+- contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+- contents/data-structure/aba-problem-and-tagged-pointers.md
+- contents/data-structure/concurrent-skiplist-internals.md
+confusable_with:
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+- data-structure/aba-problem-tagged-pointers
+- data-structure/michael-scott-lock-free-queue
+- data-structure/concurrent-skiplist-internals
+forbidden_neighbors: []
+expected_queries:
+- Lock-free 구조에서 reclamation cost가 CAS 알고리즘보다 더 크게 보일 수 있는 이유는?
+- Hazard Pointer와 EBR의 비용을 publish scan stalled thread retire list로 비교해줘
+- retire list growth와 delayed free가 운영 장애처럼 보이는 경우는?
+- safe reclamation을 correctness addon이 아니라 총비용 모델로 봐야 하는 이유는?
+- lock-free queue skip list에서 memory reclamation overhead를 어떻게 관측해?
+contextual_chunk_prefix: |
+  이 문서는 lock-free 자료구조의 safe reclamation을 correctness뿐 아니라
+  performance cost model로 다루는 playbook이다. Hazard Pointer publish/scan,
+  EBR stalled thread, retire list growth, delayed free, RSS/allocator pressure를
+  설명한다.
+---
 # Reclamation Cost Trade-offs
 
 > 한 줄 요약: lock-free 구조의 실전 비용은 CAS 알고리즘 자체보다 retire queue, scan, stalled thread, 메모리 회수 지연 같은 reclamation 비용에서 크게 갈린다.

@@ -9,12 +9,20 @@ doc_role: deep_dive
 level: intermediate
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- ioc-container-internals
+- ioc-container
+- applicationcontext
+- beanfactory
 aliases:
 - IoC container
 - ApplicationContext
 - BeanFactory
 - BeanDefinition
 - Spring 컨테이너
+- ApplicationContext vs BeanFactory
+- Spring 컨테이너 내부 동작
+- DI 후보 선택
 intents:
 - deep_dive
 linked_paths:
@@ -26,8 +34,12 @@ expected_queries:
 - BeanFactory랑 ApplicationContext 차이가 뭐야?
 - Spring 컨테이너 안에서는 DI가 어떻게 일어나?
 - BeanDefinition이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring IoC container internals, ApplicationContext, BeanFactory,
+  BeanDefinition, bean lifecycle, 후보 선택, autowire candidate, scope, circular dependency처럼
+  DI 기초 이후 컨테이너 내부 순서와 확장 지점을 묻는 intermediate deep_dive다.
+  단순히 왜 new 대신 DI를 쓰는지보다 컨테이너가 정의를 모으고 인스턴스를 만들고 후처리하는 과정을 다룬다.
 ---
-
 # IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)
 
 

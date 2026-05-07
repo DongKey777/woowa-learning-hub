@@ -1,8 +1,98 @@
+---
+schema_version: 3
+title: HTTP 요청-응답 기본 흐름
+concept_id: network/http-request-response-basics-url-dns-tcp-tls-keepalive
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- browser-to-server-first-ladder
+- url-dns-tcp-tls-http-flow
+- cookie-session-keepalive-boundary
+aliases:
+- HTTP 요청 응답 기본 흐름
+- browser request lifecycle basics
+- browser to server basics
+- url dns tcp tls http flow
+- url 입력 후 무슨 일이
+- 브라우저 요청 응답 처음
+- dns lookup basics
+- tcp tls handshake basics
+- http request response basics
+- cookie session basics
+- reverse proxy basics
+- keep-alive basics
+- browser to spring to database beginner ladder
+symptoms:
+- URL을 입력하면 DNS, TCP, TLS, HTTP 요청이 어떤 순서로 이어지는지 모르겠어
+- DevTools에서 302, 304, 401, Set-Cookie, Location이 한 번에 보여서 흐름이 안 잡혀
+- HTTP 요청이 Spring controller와 database까지 어떻게 이어지는지 큰 그림이 필요해
+intents:
+- definition
+- troubleshooting
+prerequisites: []
+next_docs:
+- network/http-https-basics
+- network/http-status-codes-basics
+- network/http-request-response-headers-basics
+- network/http-methods-rest-idempotency-basics
+- spring/request-pipeline-bean-container
+- database/database-first-step-bridge
+linked_paths:
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/dns-basics.md
+- contents/network/http-https-basics.md
+- contents/network/http-status-codes-basics.md
+- contents/network/http-request-response-headers-basics.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/proxy-reverse-proxy-basics.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/database/database-first-step-bridge.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- network/http-https-basics
+- network/http-status-codes-basics
+- network/http-request-response-headers-basics
+- network/cookie-session-jwt-browser-flow-primer
+forbidden_neighbors: []
+expected_queries:
+- 브라우저에서 URL을 입력하면 DNS, TCP, TLS, HTTP 요청 응답이 어떤 순서로 일어나?
+- HTTP request와 response에서 method, path, header, status, Set-Cookie를 어떻게 읽어?
+- 302 redirect, 304 cache, 401 auth failure가 한 trace에 섞이면 무엇부터 봐야 해?
+- Cookie 전송과 Set-Cookie 저장과 keep-alive 연결 재사용은 어떻게 달라?
+- HTTP 요청이 Spring controller service repository database로 이어지는 beginner route를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 브라우저가 URL을 해석하고 DNS 조회, TCP 연결, TLS handshake, HTTP request/response, status code, header, cookie 저장과 전송, redirect, keep-alive 재사용으로 이어지는 전체 흐름을 설명하는 beginner network primer다.
+  URL 입력 후 무슨 일이 일어나는지, DevTools waterfall, request/response header, Set-Cookie, Location, 302, 304, 401, browser to Spring to database 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive
 
 > 한 줄 요약: 브라우저는 URL을 해석하고 DNS로 주소를 찾고 TCP/TLS로 통신 길을 만든 뒤 HTTP 요청을 보내며, 응답의 상태 코드와 `Set-Cookie`를 보고 redirect, 쿠키 저장, 연결 재사용 같은 다음 행동을 결정한다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "브라우저에서 보낸 요청이 controller까지 어떻게 가는지 모르겠어요" | 방탈출/장바구니 API 첫 요청 흐름 읽기 | URL 해석, DNS, TCP/TLS, HTTP 요청, Spring 진입을 한 줄로 연결한다 |
+| "Network 탭에 302, 304, 401, Set-Cookie가 같이 보여요" | 로그인, 예약 조회, 새로고침 디버깅 | redirect, cache 재검증, 인증 실패, cookie 저장을 서로 다른 질문으로 자른다 |
+| "HTTP를 모른 채 Spring 문서부터 보니 controller가 왜 호출되는지 안 보여요" | 백엔드 미션 첫 온보딩 | browser -> server -> controller -> database 사다리의 맨 앞을 고정한다 |
 
 관련 문서:
 

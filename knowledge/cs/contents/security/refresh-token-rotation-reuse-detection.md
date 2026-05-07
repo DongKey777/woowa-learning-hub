@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Refresh Token Rotation / Reuse Detection
+concept_id: security/refresh-token-rotation-reuse-detection
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- refresh token
+- rotation
+- reuse detection
+- token family
+aliases:
+- refresh token
+- rotation
+- reuse detection
+- token family
+- jti
+- revocation
+- sliding session
+- replay
+- bearer credential
+- refresh compromise
+- session hijack
+- misuse detection
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwt-deep-dive.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/authentication-vs-authorization.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Refresh Token Rotation / Reuse Detection 핵심 개념을 설명해줘
+- refresh token가 왜 필요한지 알려줘
+- Refresh Token Rotation / Reuse Detection 실무 설계 포인트는 뭐야?
+- refresh token에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Refresh Token Rotation / Reuse Detection를 다루는 deep_dive 문서다. refresh token은 긴 수명의 bearer credential이므로, 회전만이 아니라 재사용 탐지와 가족 단위 폐기까지 같이 설계해야 안전하게 운영할 수 있다. 검색 질의가 refresh token, rotation, reuse detection, token family처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Refresh Token Rotation / Reuse Detection
 
 > 한 줄 요약: refresh token은 긴 수명의 bearer credential이므로, 회전만이 아니라 재사용 탐지와 가족 단위 폐기까지 같이 설계해야 안전하게 운영할 수 있다.

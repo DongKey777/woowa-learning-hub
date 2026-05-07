@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Streaming Response Abort Surfaces Servlet Virtual Threads
+concept_id: language/streaming-response-abort-surfaces-servlet-virtual-threads
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- streaming
+- servlet-async
+- cancellation
+aliases:
+- Streaming Response Abort Surfaces Servlet Virtual Threads
+- StreamingResponseBody disconnect broken pipe
+- SseEmitter disconnect abort surface
+- AsyncRequestNotUsableException streaming
+- virtual thread streaming cancellation gap
+- streaming orphan work cleanup
+symptoms:
+- StreamingResponseBody나 SseEmitter에서 client disconnect가 controller return 시점에 즉시 보인다고 생각해 다음 write flush send 전까지 producer가 계속 도는 gap을 놓쳐
+- virtual thread를 쓰면 streaming writer와 downstream I/O가 자동으로 cancel될 것이라고 기대해 JDBC cursor, remote download, scheduler cleanup을 연결하지 않아
+- response committed 이후 broken pipe를 application error response로 재작성하려고 하거나 late write failure를 새 장애로 반복 로깅해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/mvc-async-executor-boundaries
+- language/servlet-asynclistener-cleanup-patterns
+next_docs:
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+- language/jdbc-cursor-cleanup-download-abort
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+linked_paths:
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/virtual-thread-mvc-async-executor-boundaries.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/streamingresponsebody-sseemitter-terminal-cleanup-matrix.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/jdbc-cursor-cleanup-download-abort.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/servlet-asynclistener-cleanup-patterns
+forbidden_neighbors: []
+expected_queries:
+- StreamingResponseBody와 SseEmitter에서 client disconnect는 어떤 abort surface에서 처음 보이나?
+- streaming response broken pipe는 다음 write flush send에서 늦게 보일 수 있다는 뜻을 설명해줘
+- virtual thread streaming writer를 써도 producer와 JDBC cursor downstream I/O가 자동 취소되지 않는 이유가 뭐야?
+- response committed 이후에는 상태 코드나 JSON error를 재작성하지 못하고 cleanup과 late write suppression이 핵심이야?
+- StreamingResponseBody disconnect와 SseEmitter disconnect cleanup ownership을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 StreamingResponseBody와 SseEmitter의 disconnect/abort surface를 next write/flush/send, async callback, container exception, virtual-thread cancellation gap 관점에서 진단하는 advanced playbook이다.
+  streaming response abort, StreamingResponseBody, SseEmitter, broken pipe, AsyncRequestNotUsableException 질문이 본 문서에 매핑된다.
+---
 # Streaming Response Abort Surfaces: `StreamingResponseBody`, SSE, and Virtual-Thread Cancellation Gaps
 
 > 한 줄 요약: `StreamingResponseBody`와 SSE는 abort가 controller return 시점이 아니라 다음 `write`/`flush`, emitter callback, container-specific disconnect 예외에서 늦게 surface되며, virtual thread를 써도 그 신호가 producer나 downstream I/O 취소로 자동 번역되지는 않는다.

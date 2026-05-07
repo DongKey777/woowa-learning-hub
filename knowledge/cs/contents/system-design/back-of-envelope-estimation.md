@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Back-of-Envelope 추정법
+concept_id: system-design/back-of-envelope-estimation
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- capacity-estimation-before-component-choice
+- unit-sanity-check
+- qps-hotset-headroom-routing
+aliases:
+- back-of-envelope estimation
+- capacity estimation basics
+- beginner capacity estimation
+- dau qps storage bandwidth estimate
+- order of magnitude estimate
+- peak qps headroom hotset
+- system design 숫자 추정
+- 대략적인 QPS 계산
+- 저장량 대역폭 추정
+- 설계 면접 숫자 감각
+- unit sanity check
+- 피크 트래픽 계산
+symptoms:
+- 시스템 설계에서 DAU를 QPS로 바꾸는 계산이 헷갈려
+- 숫자 추정을 왜 하는지 모르겠고 그냥 컴포넌트부터 고르게 돼
+- 저장량과 대역폭과 hotset을 어떤 단위로 계산해야 할지 막혀
+intents:
+- definition
+- design
+prerequisites:
+- system-design/system-design-foundations
+next_docs:
+- system-design/system-design-framework
+- system-design/caching-vs-read-replica-primer
+- system-design/job-queue-design
+- system-design/database-scaling-primer
+- system-design/retry-amplification-and-backpressure-primer
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/system-design-foundations.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/cache-control-practical.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+confusable_with:
+- system-design/system-design-framework
+- system-design/database-scaling-primer
+- system-design/caching-vs-read-replica-primer
+forbidden_neighbors: []
+expected_queries:
+- DAU와 하루 요청 수를 QPS로 바꾸는 back-of-envelope 계산을 알려줘
+- system design 면접에서 숫자 추정을 왜 먼저 하는지 설명해줘
+- peak QPS, bandwidth, storage, hotset을 어떤 순서로 계산해야 해?
+- capacity estimation에서 단위 실수를 어떻게 줄일 수 있어?
+- QPS 계산 후 cache, replica, queue 중 무엇을 볼지 어떻게 정해?
+contextual_chunk_prefix: |
+  이 문서는 system design에서 DAU, 요청 수, peak QPS, 응답 크기, 저장량, bandwidth, hotset, headroom을 빠르게 추정해 병목 후보와 다음 설계 질문을 좁히는 beginner primer다.
+  숫자를 정확히 맞히는 일이 아니라 단위 sanity check와 order-of-magnitude 계산으로 cache, replica, queue, index, sharding 같은 선택지를 고르는 자연어 paraphrase가 본 문서에 매핑된다.
+---
 # Back-of-Envelope 추정법
 
 > 한 줄 요약: 시스템 설계 면접에서 숫자를 "맞히는" 것이 아니라, 가정과 계산으로 병목과 우선순위를 빠르게 좁히는 방법이다.

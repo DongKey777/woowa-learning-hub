@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Pricing / Plan Management System 설계
+concept_id: system-design/pricing-plan-management-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- pricing
+- plan management
+- tier
+- grandfathering
+aliases:
+- pricing
+- plan management
+- tier
+- grandfathering
+- upgrade downgrade
+- plan catalog
+- price book
+- effective date
+- billing integration
+- entitlements
+- offers
+- Pricing / Plan Management System 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/billing-usage-metering-system-design.md
+- contents/system-design/entitlement-quota-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Pricing / Plan Management System 설계 설계 핵심을 설명해줘
+- pricing가 왜 필요한지 알려줘
+- Pricing / Plan Management System 설계 실무 트레이드오프는 뭐야?
+- pricing 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Pricing / Plan Management System 설계를 다루는 deep_dive 문서다. pricing and plan management system은 상품 플랜, 가격 정책, 변경 이력, grandfathering, 과금 연동을 중앙에서 관리하는 상업 정책 시스템이다. 검색 질의가 pricing, plan management, tier, grandfathering처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Pricing / Plan Management System 설계
 
 > 한 줄 요약: pricing and plan management system은 상품 플랜, 가격 정책, 변경 이력, grandfathering, 과금 연동을 중앙에서 관리하는 상업 정책 시스템이다.

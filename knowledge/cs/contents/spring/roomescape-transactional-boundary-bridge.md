@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/roomescape
+- missions/spring-roomescape
 review_feedback_tags:
 - transactional-boundary
 - service-vs-repository-tx
@@ -21,6 +22,9 @@ aliases:
 - 룸이스케이프 예약 트랜잭션
 - 예약 삭제 트랜잭션 경계
 - ReservationService @Transactional 어디
+- roomescape create delete transaction boundary
+- repository에 Transactional 붙여도 되나
+- 한 줄 INSERT 트랜잭션 필요
 intents:
 - mission_bridge
 - design
@@ -29,13 +33,22 @@ prerequisites:
 linked_paths:
 - contents/spring/spring-transactional-basics.md
 - contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
 forbidden_neighbors:
 - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+confusable_with:
+- spring/transactional-basics
+- spring/service-layer-transaction-boundary-patterns
+- spring/self-invocation-proxy-misconception
 expected_queries:
 - 룸이스케이프 ReservationService에 @Transactional 붙여야 해?
 - 예약 한 줄짜리 INSERT만 있는데 트랜잭션 필요해?
 - create랑 delete 메소드 어디에 트랜잭션을 그어야 해?
 - repository에 @Transactional을 붙이면 안 되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 roomescape 예약 생성/삭제 미션에서 @Transactional boundary를 어디에 둘지 묻는 mission_bridge다.
+  ReservationService.create/delete 같은 비즈니스 의미 단위를 트랜잭션 경계로 보고,
+  repository 메서드별 트랜잭션, 한 줄 INSERT/DELETE, 여러 저장소 원자성 문제를 beginner 수준에서 분기한다.
 ---
 
 # roomescape 예약 생성/삭제에서 @Transactional 경계 결정
@@ -45,6 +58,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: spring-roomescape-admin (Woowa Spring 트랙) — 4단계 이후
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "ReservationService에 `@Transactional`을 붙여야 하나요?" | 예약 생성/삭제 service 경계 설계 | repository 한 줄 호출보다 비즈니스 의미 단위에 경계를 둔다 |
+| "INSERT 한 줄뿐인데 트랜잭션이 필요한지 모르겠어요" | 예약 생성이 단순 저장처럼 보이는 단계 | 지금은 한 줄이어도 service 유스케이스가 원자성의 후보임을 본다 |
+| "repository에 `@Transactional`을 붙이면 왜 의미 단위가 깨지나요?" | 저장소 메서드별 tx로 분산된 코드 | 조회, 검증, 저장이 함께 성공해야 하는 service 흐름을 기준으로 잡는다 |
 
 관련 문서:
 

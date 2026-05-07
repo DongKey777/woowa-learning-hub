@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Shadow Candidate Promotion Thresholds
+concept_id: software-engineering/shadow-candidate-promotion-thresholds
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- promotion-threshold
+- governance
+- manual-path
+aliases:
+- shadow catalog intake threshold
+- shadow candidate promotion rule
+- manual path bundle promotion
+- shadow intake watchlist
+- shadow fast track threshold
+- shadow 후보 승격 기준
+symptoms:
+- 반복 manual-path bundle을 raw event count만 보고 catalog에 올려 noise가 쌓이거나 anecdote로만 방치해
+- observe, watchlist, promote, fast_track tier와 confidence rule이 없어 intake 판단이 forum마다 달라져
+- synthetic request key나 unresolved source ref 같은 data quality 문제가 있는데도 high confidence로 승격해 review 가능한 증거가 부족해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/manual-path-ratio-instrumentation
+- software-engineering/shadow-process-detection-signals
+next_docs:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-promotion-snapshot-schema-fields
+linked_paths:
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-promotion-snapshot-schema-fields.md
+- contents/software-engineering/threshold-override-governance.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/manual-path-ratio-instrumentation
+forbidden_neighbors: []
+expected_queries:
+- repeated manual path bundle을 shadow catalog로 승격할 때 observe, watchlist, promote, fast_track 기준을 어떻게 잡아?
+- shadow candidate promotion은 raw event count가 아니라 manual_request_count, distinct_days, signal families, mirror breach를 왜 같이 봐야 해?
+- promotion confidence를 recurrence, evidence, traceability 세 축으로 나누고 data quality가 상한을 거는 이유는?
+- authoritative off-plane state나 incident-linked bundle은 왜 반복 수가 작아도 fast_track할 수 있어?
+- shadow catalog entry에 promotion snapshot field를 남겨야 다음 review에서 false positive를 회고할 수 있는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 반복 manual-path bundle을 observe, watchlist, promote, fast_track tier와 confidence rule로 shadow catalog intake에 넘기는 advanced promotion threshold playbook이다.
+---
 # Shadow Candidate Promotion Thresholds
 
 > 한 줄 요약: 반복된 manual-path bundle을 shadow catalog intake로 올릴 때는 단순 event count가 아니라 request 반복성, signal 다양성, mirror breach, off-plane authoritative state를 함께 보고 `observe -> watchlist -> promote -> fast_track` tier와 confidence rule로 승격 강도를 고정해야 한다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: TreeMap, HashMap, LinkedHashMap 비교
+concept_id: data-structure/treemap-vs-hashmap-vs-linkedhashmap
+canonical: true
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- hashmap-treemap-linkedhashmap-choice
+- navigablemap-null-boundary
+- linkedhashmap-lru-access-order
+aliases:
+- TreeMap vs HashMap vs LinkedHashMap
+- sorted map vs hash map
+- LinkedHashMap LRU cache
+- floorKey ceilingKey subMap
+- lower floor ceiling higher difference
+- TreeMap null return
+- NavigableMap null boundary
+- insertion order map
+- access order map
+- red black tree map
+- HashMap vs TreeMap performance
+- LinkedHashMap removeEldestEntry
+symptoms:
+- 단순 조회는 HashMap, 정렬과 범위 조회는 TreeMap, LRU는 LinkedHashMap이라는 기준이 헷갈려
+- TreeMap ceilingKey나 floorKey가 null을 반환해서 NPE가 나는 이유를 모르겠어
+- PriorityQueue와 TreeMap 중 가장 작은 값 하나와 기준값 주변 탐색을 어떻게 나눌지 궁금해
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/hash-table-basics
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+next_docs:
+- data-structure/hashmap-internals
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/treemap-neighbor-query-micro-drill
+- language/java-equals-hashcode-comparable-contracts
+linked_paths:
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-ceilingkey-higherkey-exact-match-choice-card.md
+- contents/language/java/collections-performance.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/hashmap-internals
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- HashMap, TreeMap, LinkedHashMap을 조회 속도, 정렬, 순서, LRU 기준으로 비교해줘
+- TreeMap floorKey, ceilingKey, lowerKey, higherKey가 null을 반환하는 경계 조건을 알려줘
+- 기준값 바로 앞뒤를 찾는 문제는 TreeMap이고 가장 작은 값 하나는 PriorityQueue인 이유가 뭐야?
+- LinkedHashMap access order로 LRU cache를 만드는 원리를 설명해줘
+- TreeMap에서 compareTo가 0이면 key가 덮어써지는 문제와 equals 계약을 같이 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 HashMap은 빠른 exact lookup, TreeMap은 sorted key와 range/neighbor query, LinkedHashMap은 insertion/access order와 LRU cache에 맞는 선택지로 비교하는 advanced chooser다.
+  floorKey ceilingKey lowerKey higherKey null boundary, subMap, HashMap vs TreeMap performance, LinkedHashMap access order, PriorityQueue와 TreeMap 차이 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # TreeMap, HashMap, LinkedHashMap 비교
 
 > 한 줄 요약: `HashMap`은 빠른 조회, `TreeMap`은 정렬과 범위 질의, `LinkedHashMap`은 순서와 LRU 캐시를 위해 선택한다.

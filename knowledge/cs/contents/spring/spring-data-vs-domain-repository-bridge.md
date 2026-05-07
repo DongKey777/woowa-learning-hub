@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Data Repository vs Domain Repository Bridge
+concept_id: spring/data-vs-domain-repository-bridge
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- data-vs-domain
+- repository
+- data-repository-vs
+- domain-repository
+aliases:
+- Spring Data repository vs domain repository
+- JpaRepository vs domain repository
+- domain repository contract
+- framework repository vs domain contract
+- persistence adapter repository
+- hexagonal repository Spring
+- Repository가 두 개
+intents:
+- definition
+- design
+linked_paths:
+- contents/spring/spring-data-jpa-basics.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+confusable_with:
+- spring/spring-data-jpa-basics
+- software-engineering/repository-dao-entity
+- software-engineering/repository-interface-contract
+- spring/service-layer-transaction-boundary-patterns
+expected_queries:
+- JpaRepository와 도메인 Repository는 뭐가 달라?
+- Spring Data repository를 서비스가 바로 의존해도 돼?
+- 도메인 repository contract와 persistence adapter를 왜 나눠?
+- Repository라는 이름이 두 번 나올 때 어떻게 이해해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Data JpaRepository와 애플리케이션 도메인 repository contract를
+  구분하는 beginner bridge다. 서비스가 의존하는 업무 계약과 프레임워크 CRUD
+  인터페이스, persistence adapter, hexagonal/clean architecture repository 경계를
+  큰 그림으로 연결한다.
+---
 # Spring Data Repository vs Domain Repository Bridge
 
 > 한 줄 요약: `JpaRepository`는 Spring Data가 DB 접근을 쉽게 하려고 주는 프레임워크 인터페이스이고, 도메인 repository는 우리 애플리케이션이 "무엇을 저장하고 찾는지"를 말하는 계약이다.

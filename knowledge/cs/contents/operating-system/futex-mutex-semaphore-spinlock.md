@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Futex Mutex Semaphore Spinlock
+concept_id: operating-system/futex-mutex-semaphore-spinlock
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- lock-contention-runtime-cost
+- mutex-semaphore-spinlock-choice
+- futex-user-kernel-boundary
+aliases:
+- futex mutex semaphore spinlock
+- futex wait wake
+- mutex vs semaphore
+- spinlock busy wait
+- sleeping lock vs spinning lock
+- lock contention
+- critical section wait strategy
+- Java synchronized futex
+symptoms:
+- mutex, semaphore, spinlock을 모두 같은 락으로 이해하고 있어
+- spinlock이 CPU를 태우는 이유와 sleep 기반 lock이 context switch를 만드는 이유를 섞고 있어
+- futex가 항상 커널 락이 아니라 user-space fast path와 kernel sleep/wake의 조합이라는 점을 놓치고 있어
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- operating-system/mutex-deadlock-basics
+- operating-system/context-switching-deadlock-lockfree
+- operating-system/cpu-cache-coherence-memory-barrier
+next_docs:
+- operating-system/lock-contention-futex-offcpu-debugging
+- operating-system/futex-requeue-priority-inheritance-convoy-debugging
+- operating-system/semaphore-monitor-basics
+- language/java-thread-basics
+linked_paths:
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/lock-contention-futex-offcpu-debugging.md
+- contents/operating-system/futex-requeue-priority-inheritance-convoy-debugging.md
+confusable_with:
+- operating-system/mutex-deadlock-basics
+- operating-system/semaphore-monitor-basics
+- operating-system/context-switching-deadlock-lockfree
+- language/java-thread-basics
+forbidden_neighbors: []
+expected_queries:
+- mutex와 semaphore와 spinlock은 기다리는 방식이 어떻게 달라?
+- futex는 user space fast path와 kernel sleep wake를 어떻게 조합해?
+- spinlock은 왜 짧은 임계 구간에서는 빠르지만 오래 잡히면 CPU를 낭비해?
+- Java synchronized나 ReentrantLock의 락 경합을 OS futex 관점으로 어떻게 볼 수 있어?
+- DB connection pool 동시성 제한은 mutex보다 semaphore 감각이 맞는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 lock primitive bridge로, mutex, semaphore, spinlock, futex를 waiting strategy 관점에서 비교한다.
+  mutex vs semaphore, spinlock busy wait, futex wait wake, lock contention, Java synchronized 대기 비용 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Futex, Mutex, Semaphore, Spinlock
 
 > 한 줄 요약: 락은 모두 기다림을 다르게 처리한다. 짧게 끝나면 spin, 오래 기다리면 sleep이 기본 감각이다.

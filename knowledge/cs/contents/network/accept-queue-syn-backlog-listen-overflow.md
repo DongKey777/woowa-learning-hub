@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Accept Queue, SYN Backlog, Listen Overflow
+concept_id: network/accept-queue-syn-backlog-listen-overflow
+canonical: false
+category: network
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- tcp-backlog
+- accept-queue-overflow
+- connection-storm
+aliases:
+- accept queue
+- SYN backlog
+- listen overflow
+- somaxconn
+- tcp_max_syn_backlog
+- tcp_abort_on_overflow
+- connection storm backlog
+symptoms:
+- connect timeout이나 SYN retransmission을 네트워크 경로 문제로만 보고 SYN backlog와 accept queue saturation을 분리하지 못한다
+- CPU가 낮고 health check가 통과하므로 신규 연결 수용도 정상이라고 결론 내린다
+- listen backlog 값만 키우면 끝난다고 생각해 somaxconn, tcp_max_syn_backlog, accept loop 처리 속도, LB 신규 연결 burst를 같이 보지 않는다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/timeout-types-connect-read-write
+next_docs:
+- network/syn-retransmission-handshake-timeout
+- network/load-balancer-healthcheck-failure-patterns
+- network/nat-conntrack-ephemeral-port-exhaustion
+linked_paths:
+- contents/network/syn-retransmission-handshake-timeout.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/nat-conntrack-ephemeral-port-exhaustion.md
+- contents/network/timeout-types-connect-read-write.md
+confusable_with:
+- network/syn-retransmission-handshake-timeout
+- network/load-balancer-healthcheck-failure-patterns
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/timeout-types-connect-read-write
+forbidden_neighbors: []
+expected_queries:
+- CPU는 낮은데 connect timeout과 SYN retransmission이 늘면 accept queue와 SYN backlog를 어떻게 봐?
+- SYN backlog와 accept queue는 TCP handshake 단계에서 각각 무엇을 의미해?
+- listen overflow에서 somaxconn tcp_max_syn_backlog tcp_abort_on_overflow를 같이 봐야 하는 이유는?
+- LB health check는 정상인데 사용자 신규 연결만 간헐적으로 timeout 나는 원인은?
+- keep-alive를 끄자 신규 handshake가 늘어 backlog pressure가 커지는 과정을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 TCP connection storm에서 SYN backlog와 accept queue를 분리해 connect timeout,
+  SYN retransmission, listen overflow, intermittent RST를 진단하는 symptom router다.
+  somaxconn, tcp_max_syn_backlog, accept loop, LB burst와 keep-alive 정책을 함께 본다.
+---
 # Accept Queue, SYN Backlog, Listen Overflow
 
 > 한 줄 요약: 연결 폭주 때 `SYN backlog`와 `accept queue`를 구분하지 못하면 CPU는 멀쩡한데도 `connect timeout`, `SYN retransmission`, 간헐적 `RST`를 설명하지 못한다.

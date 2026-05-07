@@ -9,7 +9,9 @@ doc_role: drill
 level: beginner
 language: mixed
 source_priority: 75
-mission_ids: []
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
 review_feedback_tags:
 - exception-root-cause-mapping
 - timeout-bucket-split
@@ -38,7 +40,7 @@ intents:
 - drill
 prerequisites:
 - database/transaction-timeout-vs-lock-timeout
-- database/connection-pool-basics
+- database/connection-pool
 next_docs:
 - database/timeout-log-timeline-first-failure-checklist-card
 - database/slow-query-analysis-playbook
@@ -56,7 +58,9 @@ confusable_with:
 - database/connection-timeout-vs-lock-timeout-card
 - database/statement-timeout-vs-lock-timeout-card
 - database/duplicate-key-vs-serialization-failure-mini-card
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/postgresql-serializable-retry-playbook.md
 expected_queries:
 - CannotAcquireLockException이면 바로 retry해야 해?
 - timeout 로그가 pool 문제인지 lock timeout인지 빨리 구분하는 법 알려줘

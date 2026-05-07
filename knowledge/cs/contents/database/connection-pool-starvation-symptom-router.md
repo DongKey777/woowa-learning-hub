@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: 'Connection pool 고갈 — 누수 / 긴 트랜잭션 / N+1 / 풀 사이즈 어디에 원인이 있나'
+title: Connection pool 고갈 — 누수 / 긴 트랜잭션 / N+1 / 풀 사이즈 어디에 원인이 있나
 concept_id: database/connection-pool-starvation-symptom-router
 canonical: false
 category: database
@@ -9,38 +9,42 @@ doc_role: symptom_router
 level: intermediate
 language: ko
 source_priority: 80
+review_feedback_tags:
+- connection-pool-starvation
+- symptom
+- hikaricp-timeout
+- db-connection-leak
 aliases:
 - connection pool 고갈
 - HikariCP timeout
 - DB connection leak
 - 커넥션 풀 부족
 - pool exhausted symptom
+symptoms:
+- 'HikariPool: Connection is not available, request timed out after 30000ms 에러가 반복된다'
+- 평소엔 멀쩡하다가 트래픽이 늘면 응답 시간이 급격히 늘어난다
+- CPU/DB 부하는 낮은데 API 응답이 느려지고 timeout이 발생한다
 intents:
 - symptom
 - troubleshooting
-symptoms:
-- 'HikariPool: Connection is not available, request timed out after 30000ms 에러가 반복된다'
-- '평소엔 멀쩡하다가 트래픽이 늘면 응답 시간이 급격히 늘어난다'
-- 'CPU/DB 부하는 낮은데 API 응답이 느려지고 timeout이 발생한다'
 linked_paths:
 - contents/database/connection-pool-basics.md
 - contents/database/hikari-connection-pool-tuning.md
 - contents/database/transaction-locking-connection-pool-primer.md
 forbidden_neighbors:
 - contents/database/pool-timeout-term-matching-card.md
+confusable_with:
+- database/connection-pool
+- database/hikari-connection-pool-tuning
+- database/transaction-locking-connection-pool-primer
 expected_queries:
 - HikariCP timed out 에러가 나는데 원인을 어떻게 찾아?
 - connection pool이 고갈되는 진짜 원인을 어떻게 진단해?
 - 커넥션 풀 사이즈를 늘리면 해결되는 거야?
 - pool exhausted가 떴는데 어디부터 봐야 해?
 contextual_chunk_prefix: |
-  이 문서는 CPU도 DB도 한가한데 API 응답만 느리고 가끔 timeout이 나는
-  학습자 증상을 connection pool 고갈 / leak / 긴 트랜잭션 / N+1 / 풀 사이즈
-  네 갈래로 가르는 symptom_router다. 부하 낮은데 응답 느림, pool exhausted,
-  HikariCP timed out, 커넥션 누수, leak, idle 트래픽에 응답 지연, 파이프
-  부족 같은 자연어 표현이 본 문서의 진단 분기에 매핑된다.
+  이 문서는 database 카테고리에서 Connection pool 고갈 — 누수 / 긴 트랜잭션 / N+1 / 풀 사이즈 어디에 원인이 있나를 다루는 symptom_router 문서다. connection pool 고갈, HikariCP timeout, DB connection leak, 커넥션 풀 부족, pool exhausted symptom 같은 lexical 표현과 HikariCP timed out 에러가 나는데 원인을 어떻게 찾아?, connection pool이 고갈되는 진짜 원인을 어떻게 진단해? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
 ---
-
 # Connection pool 고갈 — 누수 / 긴 트랜잭션 / N+1 / 풀 사이즈 어디에 원인이 있나
 
 > 한 줄 요약: *"Connection is not available"* 메시지는 *원인이 아니라 증상*이다. 풀 사이즈 자체보다 *커넥션이 너무 오래 잡혀 있다는 사실*이 먼저고, 그 이유는 (1) leak 미반환, (2) 트랜잭션이 외부 호출로 길어짐, (3) N+1로 한 요청이 100개를 빌림, (4) 진짜로 풀이 작음 — 순서대로 진단한다.

@@ -31,11 +31,11 @@ intents:
 - troubleshooting
 prerequisites:
 - database/unique-vs-locking-read-duplicate-primer
-- database/read-before-write-race-timeline-mysql-postgresql
+- database/read-before-write-race
 - database/do-nothing-vs-do-update-outcome-primer-postgresql-mysql
 next_docs:
 - database/unique-vs-locking-read-duplicate-primer
-- database/read-before-write-race-timeline-mysql-postgresql
+- database/read-before-write-race
 - database/do-nothing-vs-do-update-outcome-primer-postgresql-mysql
 linked_paths:
 - contents/database/unique-vs-locking-read-duplicate-primer.md
@@ -67,12 +67,19 @@ contextual_chunk_prefix: |
   같은 질문을 할 때 cart item의 논리적 identity와 write-time arbitration으로
   매핑한다.
 ---
-
 # shopping-cart 같은 상품 중복 담기 ↔ UNIQUE 제약과 UPSERT 브릿지
 
 ## 한 줄 요약
 
 shopping-cart에서 같은 상품을 장바구니에 다시 담을 때 핵심은 "이미 있는 cart item을 어떻게 식별하고 한 row로 수렴시키나"다. 이 장면은 `existsBy` 선조회보다 `(cart_id, product_id, option_id)` 같은 논리 키에 `UNIQUE`를 두고, loser를 `upsert`나 merge 분기로 흡수하는 문제로 읽는 편이 맞다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "같은 상품을 두 번 담았더니 장바구니 row가 두 줄 생겨요" | add-to-cart 연속 클릭/동시 요청 | cart item의 논리적 identity를 `UNIQUE(cart_id, product_id, option_id)`로 닫는다 |
+| "`existsBy`로 확인하고 저장했는데도 중복 row가 생겨요" | `SELECT 후 INSERT` race | 조회 결과보다 write-time arbitration이 최종 진실임을 본다 |
+| "같은 상품은 수량만 늘리고 싶은데 duplicate key를 어떻게 처리하나요?" | duplicate insert loser 처리 | duplicate를 실패로만 보지 말고 upsert/merge 결과로 번역한다 |
 
 ## 미션 시나리오
 

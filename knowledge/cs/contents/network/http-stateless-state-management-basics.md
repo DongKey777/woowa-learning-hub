@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "HTTP Statelessness and State Management Basics"
+concept_id: network/http-stateless-state-management-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- http-stateless
+- cookie-session-jwt
+- login-state
+aliases:
+- HTTP stateless
+- stateless HTTP
+- HTTP 상태 유지
+- 쿠키 세션 JWT 차이
+- 로그인 상태 유지
+- stateless vs stateful
+- session id cookie
+symptoms:
+- HTTP가 무상태라서 로그인 상태를 유지할 수 없다고 생각한다
+- 쿠키, 세션, JWT를 모두 같은 저장 방식으로 뭉갠다
+- 서버 세션 방식과 JWT 방식의 상태 저장 위치와 무효화 trade-off를 구분하지 못한다
+- 브라우저가 매 요청마다 어떤 증거를 실어 보내는지 놓친다
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/http-state-session-cache
+- network/cookie-session-jwt-browser-flow-primer
+- security/session-cookie-jwt-basics
+- spring/mvc-request-lifecycle
+linked_paths:
+- contents/network/http-state-session-cache.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- network/http-state-session-cache
+- network/cookie-session-jwt-browser-flow-primer
+- security/session-cookie-jwt-basics
+forbidden_neighbors: []
+expected_queries:
+- "HTTP가 stateless라는 뜻과 로그인 상태 유지 방식을 설명해줘"
+- "쿠키 세션 JWT는 브라우저와 서버가 각각 무엇을 기억해?"
+- "HTTP 무상태성이 수평 확장에 왜 유리해?"
+- "세션 방식과 JWT 방식의 trade-off는 무엇이야?"
+- "서버가 이전 요청을 기억하지 않는데 /me 요청에서 사용자를 어떻게 복원해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP stateless 특성, 로그인 상태 유지, cookie/session/JWT,
+  session store, Authorization header, 요청마다 상태를 복원하는 방식을
+  설명하는 beginner primer다.
+---
 # HTTP 무상태성과 상태 유지 전략 입문
 
 > 한 줄 요약: HTTP는 기본적으로 각 요청을 독립적으로 처리하는 무상태 프로토콜이며, 로그인 상태처럼 서버가 사용자를 기억해야 할 때는 쿠키·세션·토큰으로 상태를 별도로 관리한다.

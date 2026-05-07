@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Testcontainers Boundary Strategy
+concept_id: spring/testcontainers-boundary-strategy
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- testcontainers-boundary-strategy
+- testcontainers-boundary
+- real-dependency-vs
+- mock-slice
+aliases:
+- Spring Testcontainers boundary
+- real dependency vs mock slice
+- @ServiceConnection DynamicPropertySource
+- container test slow
+- integration test boundary
+- test pyramid container strategy
+intents:
+- design
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-test-property-override-boundaries-primer.md
+- contents/spring/spring-dynamicpropertysource-vs-serviceconnection-primer.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-test-context-cache-split-triage-guide.md
+symptoms:
+- 모든 테스트에 Testcontainers를 붙였더니 정확도는 올랐지만 suite가 너무 느려졌다.
+- 어떤 의존성은 실제 컨테이너로 올리고 어떤 의존성은 mock으로 남길지 기준이 없다.
+- DynamicPropertySource와 ServiceConnection wiring을 테스트마다 다르게 써 cache가 갈라진다.
+expected_queries:
+- Spring Testcontainers는 어느 테스트 경계까지 적용하는 게 좋아?
+- 실제 DB container와 slice/mock을 어떻게 나눠야 테스트가 느려지지 않아?
+- @ServiceConnection과 @DynamicPropertySource는 Testcontainers에서 언제 골라야 해?
+- 컨테이너 테스트가 context cache split을 만들 때 어떻게 줄여?
+contextual_chunk_prefix: |
+  이 문서는 Testcontainers를 실제와 비슷한 테스트 도구로 쓰되 모든 경계를 container로 올리면
+  suite가 느려진다는 trade-off를 다룬다. slice/mock, integration boundary,
+  DynamicPropertySource, ServiceConnection, context cache 전략을 함께 설명한다.
+---
 # Spring Testcontainers Boundary Strategy
 
 > 한 줄 요약: Testcontainers는 "실제와 비슷한 테스트"를 쉽게 만들지만, 어떤 경계까지 컨테이너로 올리고 어떤 부분은 slice/mock으로 남길지 결정해야 테스트가 느려지지 않는다.

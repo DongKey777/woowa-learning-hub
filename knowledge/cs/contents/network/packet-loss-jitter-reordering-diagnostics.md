@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Packet Loss, Jitter, Reordering Diagnostics"
+concept_id: network/packet-loss-jitter-reordering-diagnostics
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- packet-loss
+- jitter
+- diagnostics
+aliases:
+- packet loss
+- jitter
+- packet reordering
+- retransmission diagnostics
+- tail latency network
+- loss jitter reordering
+- network instability diagnosis
+symptoms:
+- latency p99 급등을 app code나 DB 문제로만 본다
+- packet loss, jitter, reordering을 같은 네트워크 느림으로 뭉개고 증상 차이를 보지 않는다
+- TCP retransmission과 QUIC packet loss recovery의 표면 차이를 놓친다
+- 특정 ASN, region, mobile network에서만 생기는 손실 패턴을 집계하지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tcp-congestion-control
+- network/request-timing-decomposition
+next_docs:
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/http2-multiplexing-hol-blocking
+- network/http3-quic-practical-tradeoffs
+- network/udp-fragmentation-quic-packetization
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/mtu-pmtud-icmp-blackhole-path-diagnostics.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http3-quic-practical-tradeoffs.md
+confusable_with:
+- network/tcp-congestion-control
+- network/mtu-pmtud-icmp-blackhole-path-diagnostics
+- network/syn-retransmission-handshake-timeout
+- network/http2-multiplexing-hol-blocking
+forbidden_neighbors: []
+expected_queries:
+- "packet loss jitter reordering을 어떻게 구분해서 진단해?"
+- "p99 tail latency가 네트워크 손실 때문에 튀는지 어떻게 확인해?"
+- "TCP retransmission과 QUIC loss recovery는 관측 표면이 어떻게 달라?"
+- "특정 region이나 mobile network에서만 packet loss가 보이면 무엇을 봐야 해?"
+- "jitter와 reordering이 streaming이나 gRPC에 미치는 영향을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 packet loss, jitter, packet reordering, retransmission,
+  region/ASN/mobile path별 network instability와 tail latency diagnostics를
+  다루는 advanced playbook이다.
+---
 # Packet Loss, Jitter, Reordering Diagnostics
 
 > 한 줄 요약: 패킷 손실, 지터, 재정렬은 같은 "느림"으로 보이지만 원인이 달라서, 재전송과 지연 분포를 같이 봐야 한다.

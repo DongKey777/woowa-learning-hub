@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: DSU Rollback
+concept_id: algorithm/dsu-rollback
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- dsu-rollback
+- offline-dynamic-connectivity
+- union-find-undo
+aliases:
+- dsu rollback
+- rollback union find
+- union find undo
+- offline dynamic connectivity
+- connected components with deletions
+- edge deletion connectivity
+- reversible dsu
+- 유니온 파인드 롤백
+- 되돌리기 유니온 파인드
+symptoms:
+- 간선 삭제가 섞인 동적 연결성 문제를 일반 Union-Find로만 풀려고 한다
+- rollback을 쉽게 하려면 path compression을 제한하고 parent/size 변경을 기록해야 한다는 점을 놓친다
+- 완전 online dynamic graph와 offline interval 처리 가능한 dynamic connectivity를 구분하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- data-structure/union-find-deep-dive
+- algorithm/union-find-amortized-proof-intuition
+next_docs:
+- data-structure/deletion-aware-connectivity-bridge
+- algorithm/mo-algorithm-basics
+- algorithm/segment-tree-offline-dynamic-connectivity
+linked_paths:
+- contents/algorithm/union-find-amortized-proof-intuition.md
+- contents/data-structure/union-find-deep-dive.md
+- contents/data-structure/deletion-aware-connectivity-bridge.md
+- contents/algorithm/mo-algorithm-basics.md
+confusable_with:
+- data-structure/union-find-deep-dive
+- data-structure/deletion-aware-connectivity-bridge
+- algorithm/mo-algorithm-basics
+- algorithm/union-find-amortized-proof-intuition
+forbidden_neighbors: []
+expected_queries:
+- DSU Rollback은 union-find 변경을 기록했다가 어떻게 되돌려?
+- 간선 삭제가 있는 dynamic connectivity를 offline으로 풀 때 rollback DSU가 왜 필요해?
+- path compression을 쓰면 rollback이 어려워지는 이유가 뭐야?
+- parent와 size 변경 로그를 stack에 저장해 snapshot으로 돌아가는 흐름을 설명해줘
+- 일반 Union-Find와 DSU rollback은 edge deletion 처리에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 DSU Rollback advanced deep dive로, Union-Find의 parent/size 변경을
+  stack에 기록해 rollback 가능한 DSU를 만들고 offline dynamic connectivity,
+  edge deletion, temporal query를 처리하는 기법을 설명한다.
+---
 # DSU Rollback
 
 > 한 줄 요약: DSU Rollback은 Union-Find의 변경을 기록해 되돌릴 수 있게 만들어 오프라인 동적 연결성 문제에 쓰는 기법이다.

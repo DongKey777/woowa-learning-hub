@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Configuration Governance and Runtime Safety
+concept_id: software-engineering/configuration-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- configuration-governance
+- runtime-safety
+- config-rollout
+aliases:
+- Configuration Governance and Runtime Safety
+- config governance
+- config as code runtime safety
+- configuration rollout
+- config blast radius
+- dynamic config validation
+symptoms:
+- config 변경을 코드 배포보다 가볍게 보고 timeout, retry, rate limit, endpoint, feature exposure 변경에 review와 staged rollout을 붙이지 않아
+- config schema, type/range validation, deprecated key guard 없이 런타임 key-value를 사실상 검증 없는 코드처럼 운영해
+- emergency override와 dynamic config 변경에 reason, actor, scope, before/after, expiry audit trail을 남기지 않아 drift가 추적되지 않아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/kill-switch-fast-fail
+- software-engineering/release-policy-error-budget
+- software-engineering/policy-as-code-rollout-stages
+linked_paths:
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/policy-as-code-rollout-adoption-stages.md
+confusable_with:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/kill-switch-fast-fail
+- software-engineering/release-policy-error-budget
+forbidden_neighbors: []
+expected_queries:
+- configuration governance는 config를 운영 변경으로 취급해 review validation staged rollout을 붙인다는 뜻이 뭐야?
+- timeout retry rate limit endpoint 같은 behavioral config는 왜 코드 배포만큼 큰 blast radius를 만들 수 있어?
+- config schema와 min max type validation이 없으면 dynamic config가 왜 검증 없는 런타임 코드가 돼?
+- config rollout도 environment service user traffic percentage 기준으로 canary해야 하는 이유를 설명해줘
+- emergency config override에 actor reason scope before after expiry audit trail을 남기는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 configuration governance를 runtime control plane safety로 보고 config schema validation, risk tier, staged rollout, rollback, emergency override audit trail을 설계하는 advanced playbook이다.
+---
 # Configuration Governance and Runtime Safety
 
 > 한 줄 요약: 설정 변경은 코드 배포보다 가볍게 보이기 쉽지만, 실제로는 더 넓은 blast radius를 만들 수 있으므로 configuration governance는 config를 운영 변경으로 취급하고 검증과 점진 배포를 붙이는 방식이다.

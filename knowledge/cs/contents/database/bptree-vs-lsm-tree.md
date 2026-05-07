@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: B+Tree vs LSM-Tree
+concept_id: database/bptree-vs-lsm-tree
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- btree-vs-lsm
+- storage-engine
+- read-write-amplification
+- compaction
+aliases:
+- b+tree vs lsm tree
+- btree vs lsm
+- b tree vs lsm
+- b+ tree
+- lsm tree
+- lsm-tree
+- write optimized storage engine
+- compaction sstable memtable
+- read amplification write amplification
+- 범위 조회 인덱스
+symptoms:
+- 인덱스는 전부 B-Tree라고 생각해 write-heavy storage engine의 compaction/read amplification 비용을 놓친다
+- LSM이 쓰기에 강하다는 말만 보고 range scan, compaction, space amplification 운영 비용을 보지 않는다
+- OLTP point/range lookup과 event/log write burst를 같은 storage trade-off로 판단한다
+intents:
+- comparison
+- deep_dive
+- design
+prerequisites:
+- database/index-and-explain
+- database/clustered-index-locality
+next_docs:
+- database/btree-latch-contention-hot-pages
+- data-structure/lsm-friendly-index-structures
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/clustered-index-locality.md
+- contents/database/btree-latch-contention-hot-pages.md
+- contents/database/mvcc-replication-sharding.md
+- contents/data-structure/lsm-friendly-index-structures.md
+- contents/database/query-tuning-checklist.md
+confusable_with:
+- database/index-basics
+- database/clustered-index-locality
+- database/btree-latch-contention-hot-pages
+- data-structure/lsm-friendly-index-structures
+forbidden_neighbors: []
+expected_queries:
+- B+Tree와 LSM-Tree는 read, range scan, write throughput, compaction 비용 기준으로 어떻게 달라?
+- LSM Tree가 쓰기에 강하지만 read amplification과 compaction p99를 관리해야 하는 이유가 뭐야?
+- OLTP 주문 테이블처럼 범위 조회가 많으면 B+Tree가 운영하기 쉬운 이유를 설명해줘
+- RocksDB LevelDB 같은 LSM 계열에서 memtable SSTable flush compaction이 어떤 trade-off를 만드는지 알려줘
+- B-Tree index basics에서 storage engine trade-off로 넘어갈 때 어떤 문서를 보면 돼?
+contextual_chunk_prefix: |
+  이 문서는 B+Tree vs LSM-Tree chooser로, B+Tree의 point lookup/range scan locality와
+  LSM-Tree의 write buffering, memtable/SSTable flush, compaction, read/write/space amplification을 비교해
+  workload별 storage engine trade-off를 설명한다.
+---
 # B+Tree vs LSM-Tree
 
 > 한 줄 요약: B+Tree는 읽기와 범위 조회에 강한 범용 인덱스이고, LSM-Tree는 쓰기 처리량을 높이는 대신 컴팩션과 읽기 증폭 비용을 함께 관리해야 하는 구조다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Write Skew Detection and Compensation Patterns
+concept_id: database/write-skew-detection-compensation-patterns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- write-skew
+- compensation
+- invariant
+- reconciliation
+- saga
+aliases:
+- write skew detection
+- write skew compensation
+- invariant check
+- post-commit validation
+- saga repair
+- phantom anomaly
+- range invariant
+- set invariant enforcement
+- idempotent compensation
+- invariant repair task
+symptoms:
+- write skew가 row-level conflict 없이 성공해 집합 불변식이 깨진 뒤 감지와 보상이 필요해
+- 당직자 최소 1명, quota, capacity 같은 invariant를 사전 제약만으로 모두 막기 어려워
+- post-commit validation, reconciliation batch, idempotent compensation task를 설계해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/write-skew-phantom-read-case-studies
+- database/range-invariant-enforcement-write-skew-phantom
+next_docs:
+- database/outbox-saga-eventual-consistency
+- database/transaction-boundary-isolation-locking-framework
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+linked_paths:
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+confusable_with:
+- database/write-skew-phantom-read-case-studies
+- database/range-invariant-enforcement-write-skew-phantom
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+forbidden_neighbors: []
+expected_queries:
+- write skew는 충돌 없이 성공해서 더 위험하다는데 감지와 compensation을 어떻게 설계해?
+- minimum staffing이나 quota invariant가 깨진 뒤 post-commit validation과 repair task를 어떻게 둬?
+- 보상은 원상복구가 아니라 규칙을 다시 만족시키는 조정이라는 뜻을 예시로 설명해줘
+- 분산 워크플로우에서 모든 불변식을 사전 차단으로 막기 어려울 때 reconciliation batch를 어디에 둬?
+- write skew detection은 guard row, serializable retry, compensation pattern과 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 write skew detection과 compensation patterns를 post-commit validation, invariant scan, saga repair, idempotent compensation으로 설명하는 advanced playbook이다.
+  set invariant enforcement, invariant repair task, write skew compensation 질문이 본 문서에 매핑된다.
+---
 # Write Skew Detection과 Compensation Patterns
 
 > 한 줄 요약: write skew는 “충돌이 없어서” 더 위험하고, 막는 것만큼 나중에 감지해서 보상하는 설계가 중요하다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: BFF Boundaries and Client-Specific Aggregation
+concept_id: software-engineering/bff-boundaries
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- bff
+- api-boundary
+- client-aggregation
+aliases:
+- BFF Boundaries and Client-Specific Aggregation
+- Backend for Frontend boundary
+- client-specific aggregation
+- screen-level composition
+- API gateway vs BFF
+- mobile payload shaping
+symptoms:
+- BFF를 API Gateway처럼 공통 진입점으로만 보거나, 반대로 도메인 정책까지 BFF에 넣어 원 서비스 경계를 흐려
+- 모바일, 웹, 관리자, 파트너 클라이언트의 payload shape, latency, auth, audit 요구가 다른데 하나의 공용 DTO로 억지로 묶어
+- BFF와 ACL의 차이를 구분하지 못해 클라이언트 경험 최적화와 외부 모델 도메인 오염 방지를 한 계층에 섞어
+intents:
+- design
+- comparison
+- deep_dive
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/anti-corruption-layer
+next_docs:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/schema-contract-evolution-cross-service
+- network/grpc-vs-rest
+linked_paths:
+- contents/network/grpc-vs-rest.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+confusable_with:
+- software-engineering/anti-corruption-layer
+- software-engineering/query-model-separation-read-heavy
+- network/grpc-vs-rest
+forbidden_neighbors: []
+expected_queries:
+- BFF는 API Gateway와 어떻게 다르고 client-specific aggregation은 어디까지 책임져야 해?
+- 모바일, 웹, 관리자 화면의 payload shape와 latency 요구가 다를 때 BFF 경계를 어떻게 나눠?
+- BFF에 도메인 할인 정책이나 결제 가능 여부 판단을 넣으면 왜 boundary smell이야?
+- BFF와 Anti-Corruption Layer는 모두 번역을 하지만 중심 질문이 어떻게 달라?
+- 공용 API 하나로 모든 클라이언트를 맞추는 것과 BFF를 분리하는 것의 tradeoff를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Backend for Frontend를 API gateway가 아니라 client-specific aggregation, screen-level composition, payload shaping, auth context, error translation을 담당하는 전용 적응층으로 설명하는 advanced deep dive다.
+---
 # BFF Boundaries and Client-Specific Aggregation
 
 > 한 줄 요약: BFF는 API를 한 번 더 감싸는 층이 아니라, 각 클라이언트의 화면, latency, auth, payload shape에 맞게 경계를 재배치하는 전용 적응층이다.

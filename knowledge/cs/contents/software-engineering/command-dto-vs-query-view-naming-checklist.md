@@ -42,8 +42,8 @@ prerequisites:
 - software-engineering/service-contract-smell-cards
 next_docs:
 - software-engineering/module-api-dto-patterns
-- software-engineering/helper-snapshot-bloat-vs-response-dto-separation
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/helper-snapshot-response-dto-separation
+- software-engineering/query-model-separation-read-heavy
 linked_paths:
 - contents/software-engineering/module-api-dto-patterns.md
 - contents/software-engineering/helper-snapshot-bloat-vs-response-dto-separation.md
@@ -51,8 +51,8 @@ linked_paths:
 - contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
 confusable_with:
 - software-engineering/module-api-dto-patterns
-- software-engineering/helper-snapshot-bloat-vs-response-dto-separation
-- spring/spring-controller-entity-return-vs-dto-return-primer
+- software-engineering/helper-snapshot-response-dto-separation
+- spring/controller-entity-return-vs-dto-return-primer
 forbidden_neighbors:
 - contents/software-engineering/dto-vo-entity-basics.md
 expected_queries:

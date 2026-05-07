@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: '리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant'
+concept_id: security/resource-level-authz-decision-practice
+canonical: false
+category: security
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- resource-level authz practice
+- role scope ownership tenant decision
+- object-level authorization exercise
+- ownership tenant check order
+aliases:
+- resource-level authz practice
+- role scope ownership tenant decision
+- object-level authorization exercise
+- ownership tenant check order
+- same user different tenant
+- scope 있는데 왜 403
+- role 있는데 왜 거부
+- why 403 after login
+- 처음 resource authz decision
+- authz decision table
+- what is resource-level authorization
+- resource authorization practice
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/permission-checks-rest-flows-primer.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/spring/spring-security-architecture.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- '리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant 핵심 개념을 설명해줘'
+- resource-level authz practice가 왜 필요한지 알려줘
+- '리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant 실무 설계 포인트는 뭐야?'
+- resource-level authz practice에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant를 다루는 deep_dive 문서다. `role`, `scope`, `ownership`, `tenant`를 용어로만 외우지 않고, 실제 요청 하나를 `어느 체크가 action gate이고 어느 체크가 resource gate인지`로 잘라 보는 intermediate bridge다. 검색 질의가 resource-level authz practice, role scope ownership tenant decision, object-level authorization exercise, ownership tenant check order처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # 리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant
 
 > 한 줄 요약: `role`, `scope`, `ownership`, `tenant`를 용어로만 외우지 않고, 실제 요청 하나를 `어느 체크가 action gate이고 어느 체크가 resource gate인지`로 잘라 보는 intermediate bridge다.

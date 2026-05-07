@@ -68,6 +68,14 @@ contextual_chunk_prefix: |
 
 > roomescape 예약 생성에서 `요청 해석 -> 예약 가능 여부 확인 -> 엔티티 조립 -> 저장`은 한 번의 유스케이스 흐름이라 Service가 모으는 편이 자연스럽다. Controller는 HTTP 입구를, Repository는 저장 세부를 맡고, 그 사이 순서는 `ReservationService`가 소유한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "컨트롤러에 예약 생성 로직이 너무 많다고 리뷰를 받았어요" | `ReservationController`가 time 조회, 중복 확인, 저장까지 수행 | HTTP 입구와 유스케이스 순서 조립을 분리한다 |
+| "`ReservationService`가 너무 얇아서 뭘 넣어야 할지 모르겠어요" | service가 단순 위임처럼 보이는 초반 단계 | 코드 길이보다 예약 생성 순서가 한곳에 모이는지를 본다 |
+| "예약 생성 순서를 controller에서 짜면 왜 안 되나요?" | controller가 business flow를 소유한 구조 | 웹 진입점이 바뀌어도 같은 유스케이스를 재사용할 수 있게 service에 둔다 |
+
 ## 미션 시나리오
 
 roomescape 초반 단계에서는 `ReservationController` 안에서 `request.date()`와 `request.timeId()`를 꺼내고, `ReservationTime`을 조회한 뒤, `Reservation`을 만들고, 마지막에 저장까지 한 번에 적기 쉽다. 학습자 입장에서는 파일 수가 적어서 이 편이 더 단순해 보인다.

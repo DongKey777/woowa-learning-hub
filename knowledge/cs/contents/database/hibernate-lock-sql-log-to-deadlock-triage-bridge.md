@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Hibernate Lock SQL Log to Deadlock Triage Bridge
+concept_id: database/hibernate-lock-sql-log-to-deadlock-triage-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- hibernate-lock-sql-deadlock-triage
+- victim-sql-to-blocker-query
+- spring-jpa-lock-wait-investigation
+aliases:
+- hibernate deadlock triage bridge
+- hibernate lock sql log blocker query
+- mysql deadlock blocker query beginner
+- spring jpa lock wait investigation
+- hibernate for update log to innodb status
+- deadlock victim sql to blocker sql
+- spring cannotacquirelockexception blocker query
+- Hibernate 락 SQL 로그
+- 데드락 blocker 쿼리 찾기
+- for update 로그 deadlock 추적
+symptoms:
+- Hibernate SQL 로그에는 피해자 SQL만 보이고 실제 blocker나 deadlock 상대를 찾지 못하고 있어
+- Spring CannotAcquireLockException을 1205 lock wait timeout과 1213 deadlock으로 나누지 않고 있어
+- 애플리케이션 로그의 테이블, key, 시각을 DB lock/deadlock 관찰 화면과 이어 붙여야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/hibernate-sql-log-explain-lock-verification-primer
+- database/deadlock-vs-lock-wait-timeout-primer
+next_docs:
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/deadlock-case-study
+linked_paths:
+- contents/database/hibernate-sql-log-explain-lock-verification-primer.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/deadlock-case-study.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/spring-jpa-locking-example-guide.md
+confusable_with:
+- database/hibernate-sql-log-explain-lock-verification-primer
+- database/deadlock-vs-lock-wait-timeout-primer
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+forbidden_neighbors: []
+expected_queries:
+- Hibernate FOR UPDATE 로그에서 MySQL deadlock blocker query를 어떻게 찾아?
+- Spring CannotAcquireLockException이 1205인지 1213인지 보고 triage 흐름을 어떻게 나눠?
+- deadlock victim SQL과 DB InnoDB status를 같은 테이블, key, 시각으로 이어 붙이는 방법을 알려줘
+- Hibernate lock SQL 로그만 보고 deadlock 원인을 바로 결론내리면 안 되는 이유는 뭐야?
+- lock wait timeout이면 현재 blocker를 보고 deadlock이면 최근 deadlock 기록을 보는 차이를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Hibernate locking SQL 로그와 MySQL lock/deadlock 관찰을 같은 테이블, key, 시각으로 이어 붙여 blocker 또는 victim을 찾는 beginner playbook이다.
+  hibernate lock sql log, deadlock blocker query, CannotAcquireLockException, MySQL 1205 1213 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Hibernate Lock SQL Log to Deadlock Triage Bridge
 
 > 한 줄 요약: Hibernate lock SQL 로그는 "피해자 SQL"을 보여 주고, MySQL lock/deadlock 관찰은 "누가 막았는지"를 보여 준다. 초급자는 두 화면을 한 번에 보려 하지 말고 **같은 테이블·같은 key·같은 시각**으로 이어 붙이면 된다.

@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: blk-mq cgroup IO Writeback Timeline Debugging
+concept_id: operating-system/blk-mq-cgroup-io-writeback-timeline-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- blk-mq-cgroup
+- io-writeback-timeline
+- page-cache-writeback
+- dirty-flush-storage
+aliases:
+- blk-mq cgroup IO writeback timeline
+- page cache writeback debugging
+- dirty flush storage latency
+- cgroup IO controller debugging
+- disk busy timeline
+- submit to flush storage path
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+- contents/operating-system/cgroup-io-controller-basics.md
+- contents/operating-system/direct-io-alignment-checklist.md
+- contents/operating-system/buffered-vs-direct-io-mixing-coherency-pitfalls.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+symptoms:
+- 디스크가 바쁘다는 지표만 보이고 submit, queue, writeback 중 병목 위치가 안 갈린다.
+- cgroup IO limit과 page cache dirty writeback이 서로 다른 시점에 latency를 만든다.
+- fsync tail latency가 blk-mq queue와 dirty flush timeline 중 어디서 생겼는지 모른다.
+expected_queries:
+- blk-mq cgroup IO writeback을 submit부터 dirty flush까지 timeline으로 디버깅해줘
+- 디스크가 바쁠 때 block queue, cgroup IO, page cache writeback 중 어디를 봐야 해?
+- dirty throttling과 fsync tail latency가 storage path에서 어떻게 연결돼?
+- cgroup IO controller가 page cache writeback latency에 어떤 영향을 줘?
+contextual_chunk_prefix: |
+  이 문서는 storage 장애를 디스크가 바쁘다는 한 지표로 보지 않고 blk-mq submit/dispatch,
+  cgroup I/O control, page cache dirty writeback, fsync tail latency가 서로 다른 시점에
+  영향을 주는 timeline으로 디버깅한다.
+---
 # blk-mq, cgroup IO, Writeback Timeline Debugging
 
 > 한 줄 요약: storage 장애는 블록 계층, cgroup IO 제어, page cache writeback이 서로 다른 시점에 영향을 주기 때문에, "디스크가 바쁘다"보다 submit부터 dirty flush까지의 타임라인으로 읽는 편이 정확하다.

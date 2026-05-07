@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Hikari/JPA/MySQL 예외 3버킷 미니 매핑표
+concept_id: database/hikari-jpa-mysql-three-bucket-mini-mapping
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- hikari-jpa-mysql-three-bucket
+- busy-retryable-already-exists
+- mysql-1205-1213-1062-mapping
+aliases:
+- hikari jpa mysql three bucket mapping
+- busy retryable already exists hikari jpa mysql
+- connection is not available cannotacquirelockexception duplicate key
+- mysql 1205 1213 1062 spring jpa
+- beginner db exception translator
+- hikari timeout busy
+- cannotacquirelockexception retryable or busy
+- DataIntegrityViolationException 1062
+- Hikari JPA MySQL 예외 매핑표
+- busy retryable already exists
+symptoms:
+- Hikari timeout, CannotAcquireLockException, DuplicateKeyException을 모두 같은 DB 장애로 보고 있어
+- MySQL 1205, 1213, 1062을 busy, retryable, already exists로 번역하지 못하고 있어
+- DataIntegrityViolationException 안쪽의 1062, 1452, 1048을 모두 already exists로 오분류하고 있어
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/lock-duplicate-three-bucket-mini-bridge
+next_docs:
+- database/connection-timeout-vs-lock-timeout-card
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/db-signal-service-result-http-bridge
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/spring-jpa-sqlstate-23p01-bridge.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/db-signal-service-result-http-bridge.md
+confusable_with:
+- database/three-bucket-terms-common
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/connection-timeout-vs-lock-timeout-card
+forbidden_neighbors: []
+expected_queries:
+- Hikari timeout, MySQL 1205, 1213, 1062을 busy retryable already exists로 어떻게 매핑해?
+- CannotAcquireLockException은 항상 retryable이 아니라 MySQL errno에 따라 어떻게 나눠?
+- DataIntegrityViolationException에서 1062는 already exists지만 1452와 1048은 왜 다른 문제야?
+- Hikari Connection is not available은 deadlock이 아니라 pool busy로 먼저 봐야 하는 이유는 뭐야?
+- Spring/JPA/MySQL 예외를 초보자용 3버킷으로 번역하는 표를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Hikari, Spring/JPA, MySQL 예외 표면을 busy, retryable, already exists 세 버킷으로 번역하는 beginner chooser다.
+  Hikari timeout, CannotAcquireLockException, MySQL 1205 1213 1062, DataIntegrityViolationException 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Hikari/JPA/MySQL 예외 3버킷 미니 매핑표
 
 > 한 줄 요약: 초보자는 예외 클래스 이름을 길게 외우기보다, Hikari/JPA/MySQL에서 보이는 대표 메시지를 먼저 `busy` / `retryable` / `already exists`로 번역하면 대응이 훨씬 덜 흔들린다.

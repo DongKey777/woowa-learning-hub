@@ -18,21 +18,18 @@ review_feedback_tags:
 - consumes-mismatch
 - accept-vs-content-type
 aliases:
-- json인데 415 unsupported media type가 떠요
-- 'content-type: application/json 안 붙였는데 415예요'
-- content-type 때문에 막힌 것 같아요
-- json인데 415 unsupported media type
-- content-type application/json 안 붙였는데 415
-- '@requestbody 415 unsupported media type'
-- 컨트롤러 전에 415 spring
-- requestbody 400 vs 415 first split
-- json parse error가 보여요
+- requestbody 415 unsupported media type
+- spring 415 unsupported media type
+- content-type mismatch
+- json content-type missing
 - consumes application/json mismatch
-- content-type application/json 왜
+- requestbody media type contract
+- requestbody 400 vs 415 split
 - accept vs content-type spring
-- requestbody media type 처음
-- postman 415 spring beginner
-- 왜 415가 나와요
+- postman browser content-type mismatch
+- controller before binding 415
+- spring media type negotiation
+- requestbody content-type contract
 symptoms:
 - JSON인데 415가 떠
 - Content-Type 헤더를 뭘 줘야 할지 모르겠어

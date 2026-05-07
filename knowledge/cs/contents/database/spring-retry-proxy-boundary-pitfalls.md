@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Spring Retry Proxy Boundary Pitfalls
+concept_id: database/spring-retry-proxy-boundary-pitfalls
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- spring
+- retry
+- proxy
+- transactional
+- requires-new
+aliases:
+- Spring retry proxy boundary
+- @Retryable @Transactional same method
+- self-invocation retry ignored
+- self invocation transactional ignored
+- same bean call no proxy
+- AOP proxy retry boundary
+- REQUIRES_NEW retry pitfall
+- UnexpectedRollbackException retry
+- rollback-only retry Spring
+- retry advice transaction advice order
+symptoms:
+- '@Retryable'이 붙어 있는데 같은 bean 내부 호출이라 proxy를 타지 않아 retry가 동작하지 않아
+- retry 로그는 찍히지만 바깥 transaction이 rollback-only가 되어 UnexpectedRollbackException이 나
+- REQUIRES_NEW를 잘못 써서 inner commit이 outer rollback과 분리되거나 connection pool이 고갈돼
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/transaction-boundary-external-io-checklist
+- database/spring-retry-envelope-placement-primer
+next_docs:
+- database/transaction-retry-serialization-failure-patterns
+- database/idempotent-transaction-retry-envelopes
+- spring/service-layer-transaction-boundary-patterns
+linked_paths:
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md
+- contents/database/spring-retry-envelope-placement-primer.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/spring-jpa-locking-example-guide.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+confusable_with:
+- database/spring-retry-envelope-placement-primer
+- database/transaction-retry-serialization-failure-patterns
+- database/connection-pool-transaction-propagation-bulk-write
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 @Retryable이 안 먹는 이유가 self-invocation과 proxy boundary 때문인지 어떻게 확인해?
+- @Retryable과 @Transactional이 같은 method에 있을 때 언제 괜찮고 언제 self-invocation이나 outer transaction 때문에 깨져?
+- REQUIRES_NEW를 retry에 쓰면 왜 atomic unit이 분리되고 connection pool exhaustion이 생길 수 있어?
+- retry 로그는 3번 찍히는데 UnexpectedRollbackException이 나는 rollback-only retry Spring 문제를 설명해줘
+- retry facade와 transactional service를 별도 bean으로 나눠 proxy를 통과하게 만드는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring retry proxy boundary pitfalls를 @Retryable, @Transactional, self-invocation, REQUIRES_NEW, rollback-only transaction 관점으로 다루는 advanced playbook이다.
+  self-invocation retry ignored, same bean call no proxy, UnexpectedRollbackException retry, REQUIRES_NEW retry pitfall 질문이 본 문서에 매핑된다.
+---
 # Spring Retry Proxy Boundary Pitfalls
 
 > 한 줄 요약: Spring에서 transaction retry는 예외 이름보다 `@Retryable`, `@Transactional`, `REQUIRES_NEW`가 어느 proxy 경계를 통과하느냐가 더 중요하다.

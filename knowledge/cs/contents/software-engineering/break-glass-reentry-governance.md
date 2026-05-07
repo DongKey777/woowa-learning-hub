@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Break-Glass Reentry Governance
+concept_id: software-engineering/break-glass-reentry
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- break-glass
+- reentry-governance
+- emergency-override
+aliases:
+- Break-Glass Reentry Governance
+- break glass reentry governance
+- emergency mode exit governance
+- reentry SLO
+- break glass closeout audit
+- emergency fallback timebox
+symptoms:
+- authorized break-glass를 켠 기록만 남기고 normal path로 언제 누가 복귀시킬지 reentry contract를 남기지 않아
+- activation owner와 reentry owner handoff가 분리되지 않아 on-call shift가 끝난 뒤 emergency mode가 semi-permanent override로 굳어
+- break-glass audit log가 authorized_by activated_by만 있고 expected_reentry_at, accepted_at, reentered_at, verification_ref 같은 closeout 증거가 비어
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/break-glass-segmentation
+- software-engineering/change-ownership-handoff
+next_docs:
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/incident-feedback-policy-ownership-closure
+- software-engineering/support-sla-escalation-contracts
+linked_paths:
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/shadow-process-detection-signals.md
+confusable_with:
+- software-engineering/break-glass-segmentation
+- software-engineering/change-ownership-handoff
+- software-engineering/incident-feedback-policy-ownership-closure
+forbidden_neighbors: []
+expected_queries:
+- break-glass는 승인보다 normal path로 복귀하는 reentry contract가 더 중요하다는 뜻이 뭐야?
+- restore clock과 reentry clock을 분리하지 않으면 emergency mode가 어떻게 semi-permanent override가 돼?
+- reentry_owner, expected_reentry_at, accepted_at, reentered_at, verification_ref 같은 audit field가 왜 필요해?
+- activation owner와 reentry owner handoff packet에는 어떤 정보가 들어가야 해?
+- reentry_slo_class same_shift next_window multi_day_recovery는 어떤 break-glass에 각각 맞아?
+contextual_chunk_prefix: |
+  이 문서는 authorized break-glass 이후 normal path로 복귀시키는 reentry governance를 reentry SLO, owner handoff, closeout audit evidence, overdue escalation 관점에서 다루는 advanced playbook이다.
+---
 # Break-Glass Reentry Governance
 
 > 한 줄 요약: authorized break-glass는 승인 순간보다 **정상 경로로 복귀하는 reentry contract**가 더 중요하며, `reentry_slo`, ownership handoff, closeout audit fields가 없으면 emergency mode는 쉽게 semi-permanent override로 굳는다.

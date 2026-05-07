@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Event Contract Drift Triage for Rebuilds
+concept_id: design-pattern/event-contract-drift-triage-rebuilds
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- event-contract-drift
+- rebuild-triage
+- replay-resume-gate
+aliases:
+- event contract drift triage
+- legacy event schema drift
+- upcaster coverage gap
+- semantic incompatibility replay
+- replay resume gate
+- projection rebuild event drift
+- backfill schema triage
+- poison event schema drift
+- accepted skip signoff
+- 이벤트 계약 drift 분류
+symptoms:
+- projection rebuild 중 deserialize failed를 한 덩어리로 보고 schema drift, upcaster gap, semantic incompatibility를 구분하지 않는다
+- parser green만 보고 replay를 재개해 semantic incompatibility가 projection corruption으로 이어진다
+- accepted skip을 drift class 분류와 owner signoff 없이 replay 편의용으로 사용한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/tolerant-reader-event-contract-pattern
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+next_docs:
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/projection-replay-observability-alerting-pattern
+linked_paths:
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/projection-rebuild-poison-event-replay-failure-handling.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/projection-rebuild-evidence-packet.md
+- contents/design-pattern/projection-replay-observability-alerting-pattern.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/snapshot-versioning-compatibility-pattern.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/event-envelope-pattern.md
+confusable_with:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/tolerant-reader-event-contract-pattern
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+forbidden_neighbors: []
+expected_queries:
+- Event rebuild 중 deserialize 실패를 schema drift, upcaster gap, semantic incompatibility로 어떻게 분류해?
+- parser green이어도 semantic green이 아닐 수 있어서 replay resume gate를 막아야 하는 이유가 뭐야?
+- upcaster coverage gap은 legacy data corruption이 아니라 support matrix와 routing path 누락일 수 있다는 뜻이 뭐야?
+- semantic incompatibility가 있으면 compatibility enum, side lookup, 새 projection contract 중 무엇을 선택해?
+- accepted skip은 drift class가 아니라 semantic debt signoff라는 점을 어떻게 운영 packet에 남겨?
+contextual_chunk_prefix: |
+  이 문서는 Event Contract Drift Triage for Rebuilds playbook으로, projection rebuild와
+  historical replay 중 legacy event 실패를 schema drift, upcaster gap, semantic incompatibility로
+  분류하고, class별 fixture replay, support matrix, policy approval, last verified watermark 기반
+  resume gate를 요구하는 방법을 설명한다.
+---
 # Event Contract Drift Triage for Rebuilds
 
 > 한 줄 요약: rebuild 중 legacy event가 깨질 때는 "deserialize 실패"를 한 덩어리로 보지 말고 schema drift, upcaster gap, semantic incompatibility를 먼저 갈라야 올바른 fix와 replay resume gate를 고를 수 있다.

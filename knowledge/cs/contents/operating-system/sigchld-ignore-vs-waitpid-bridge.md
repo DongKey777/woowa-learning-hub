@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: SIGCHLD Ignore vs waitpid Bridge
+concept_id: operating-system/sigchld-ignore-vs-waitpid-bridge
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- sigchld-ignore-vs
+- waitpid
+- sa-nocldwait
+- zombie-child-reaping
+aliases:
+- SIGCHLD ignore vs waitpid
+- SA_NOCLDWAIT
+- zombie child reaping
+- default SIGCHLD behavior
+- waitpid exit status
+- child process cleanup
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn.md
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+- contents/operating-system/signals-process-supervision.md
+expected_queries:
+- SIGCHLD 기본 동작이 ignore라는데 왜 zombie가 생겨?
+- SIG_IGN이나 SA_NOCLDWAIT를 명시하면 waitpid로 회수할 종료 상태가 남지 않아?
+- child 종료 후 zombie를 없애려면 waitpid가 왜 필요해?
+- default SIGCHLD, SIG_IGN, SA_NOCLDWAIT 차이를 초급자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 SIGCHLD default가 child exit status를 자동 회수한다는 뜻이 아니며, waitpid로 회수해야
+  zombie가 사라진다는 점을 설명한다. SIG_IGN과 SA_NOCLDWAIT는 종료 상태를 남기지 않는 쪽으로
+  별도 해석한다.
+---
 # SIGCHLD Ignore vs `waitpid()` Bridge
 
 > 한 줄 요약: `SIGCHLD`의 기본 상태는 "자식 종료를 자동 회수한다"가 아니고, 자식을 직접 `waitpid()`로 회수해야 zombie가 사라진다. 반대로 `SIG_IGN`이나 `SA_NOCLDWAIT`를 명시하면 "나중에 `waitpid()`로 회수할 종료 상태" 자체를 남기지 않는 쪽으로 읽는 편이 beginner에게 안전하다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Failover Visibility Window, Topology Cache, and Freshness Playbook
+concept_id: database/failover-visibility-window-topology-cache-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- failover-visibility-window
+- topology-cache-invalidation
+- freshness-fence-after-promotion
+aliases:
+- failover visibility window
+- topology cache invalidation
+- stale endpoint read
+- promotion visibility
+- freshness fence
+- failover read consistency
+- topology version mismatch
+- failover cache bust
+- old dns after promotion
+- visibility window
+symptoms:
+- failover 완료 후에도 topology cache, DNS TTL, connection pool 때문에 옛 DB나 cache를 읽는 요청이 남아 있어
+- promotion 이후 일정 시간 primary pinning이나 freshness fence를 둬야 하는지 판단해야 해
+- stale read forensic에서 요청이 본 topology version, endpoint, cache hit 여부를 추적해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/failover-promotion-read-divergence
+- database/primary-switch-write-fencing
+next_docs:
+- database/commit-horizon-after-failover-verification
+- database/read-repair-reconciliation-after-failover
+- database/read-after-write-routing-decision-guide
+linked_paths:
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/primary-switch-write-fencing.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/commit-horizon-after-failover-verification.md
+- contents/database/read-repair-reconciliation-after-failover.md
+- contents/database/read-after-write-routing-decision-guide.md
+- contents/database/read-your-writes-session-pinning.md
+confusable_with:
+- database/failover-promotion-read-divergence
+- database/replica-lag-observability-routing-slo
+- database/commit-horizon-after-failover-verification
+forbidden_neighbors: []
+expected_queries:
+- failover visibility window를 줄이려면 topology cache invalidation과 primary pinning을 어떤 순서로 해야 해?
+- failover 후 some pods old some new 상태에서 stale endpoint read를 어떻게 forensic해?
+- promotion 이후 freshness fence나 consistency token을 잠깐 강하게 거는 이유는 뭐야?
+- DB failover event와 cache invalidation event가 분리되면 어떤 stale read가 생겨?
+- failover stale read가 replication lag인지 topology version mismatch인지 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 failover 뒤 topology cache, DNS TTL, connection pool, cache invalidation, freshness fence가 어긋나는 visibility window를 줄이는 advanced playbook이다.
+  failover visibility window, topology cache invalidation, stale endpoint read, freshness fence 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Failover Visibility Window, Topology Cache, and Freshness Playbook
 
 > 한 줄 요약: failover 후 사용자가 겪는 "어떤 화면은 새 값, 어떤 화면은 옛 값" 문제는 복제 자체보다 topology cache, read routing, freshness fence가 한동안 제각각 움직이는 visibility window에서 생긴다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Factory Misnaming Checklist
+concept_id: design-pattern/factory-misnaming-checklist
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- factory-misnaming
+- selector-registry-resolver
+- naming-review
+aliases:
+- factory misnaming checklist
+- create free factory
+- factory without create
+- factory naming smell checklist
+- code review factory name
+- selector vs factory review checklist
+- registry vs factory review checklist
+- resolver vs factory review checklist
+- 생성 없는 factory
+- factory 이름 오해
+symptoms:
+- Factory라는 이름을 붙였지만 실제 public 책임은 새 객체 생성이 아니라 이미 등록된 구현 lookup이다
+- 런타임에 후보를 고른다는 이유만으로 Selector, Registry, Resolver 책임까지 모두 Factory라고 부른다
+- create 책임과 select/get/resolve 책임이 한 클래스에 섞여 code review에서 이름만으로 기대가 어긋난다
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- design-pattern/factory
+- design-pattern/strategy-pattern
+- design-pattern/registry-pattern
+next_docs:
+- design-pattern/router-dispatcher-handlermapping-vs-selector-factory
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+- design-pattern/policy-registry-pattern
+linked_paths:
+- contents/design-pattern/factory.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+- contents/design-pattern/factory-basics.md
+- contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+- contents/design-pattern/router-dispatcher-handlermapping-vs-selector-factory.md
+- contents/design-pattern/registry-pattern.md
+confusable_with:
+- design-pattern/router-dispatcher-handlermapping-vs-selector-factory
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+- design-pattern/registry-pattern
+- design-pattern/strategy-pattern
+forbidden_neighbors: []
+expected_queries:
+- create 없는 Factory 이름은 왜 Selector, Registry, Resolver 중 하나로 바꾸는 게 더 정확할 수 있어?
+- Map에서 이미 주입된 PaymentPolicy를 꺼내는 클래스는 Factory보다 Registry나 Selector에 가까운 이유가 뭐야?
+- 런타임 선택이 있다고 해서 항상 Factory가 아닌 이유를 code review checklist로 설명해줘
+- Factory, Selector, Registry, Resolver는 만들기, 고르기, 찾기, 해석하기 관점에서 어떻게 달라?
+- public method가 새 객체를 생성하는지 이미 있는 객체를 반환하는지 Factory naming에서 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 Factory Misnaming Checklist playbook으로, Factory라는 이름이 새 객체 생성 책임을
+  약속한다는 전제에서 create가 없는 lookup/selection/resolution 클래스를 Selector, Registry,
+  Resolver로 가르는 code review 질문을 제공한다.
+---
 # Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기
 
 > 한 줄 요약: `Factory`라는 이름은 "새로 만들어 준다"는 약속이다. 그런데 코드가 이미 있는 객체를 고르거나 찾거나 해석만 한다면, 이름이 책임을 과장하고 있을 가능성이 크다.

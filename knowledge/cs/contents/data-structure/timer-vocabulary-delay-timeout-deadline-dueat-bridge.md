@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt"
+concept_id: data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timer-vocabulary
+- delay-timeout-deadline-dueat
+- scheduler-terminology
+aliases:
+- delay vs timeout vs deadline vs dueAt
+- timer vocabulary bridge
+- scheduler terminology beginner
+- timeout deadline dueAt vocabulary
+- deadlineNanos dueAtEpochMillis
+- schedule delay vs timeout
+- absolute time vs relative delay
+symptoms:
+- delay를 상대 간격이 아니라 business priority나 absolute time으로 읽어 scheduler API 의미를 섞는다
+- dueAt 같은 외부 absolute time과 deadlineNanos 같은 내부 monotonic queue key를 같은 저장값으로 다뤄 clock 문제를 만든다
+- timeout을 단순 숫자로만 보고 실패 정책, cancel branch, timer ticket이 결합된 개념이라는 점을 놓친다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+next_docs:
+- data-structure/java-timer-clock-choice-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/slow-periodic-task-primer
+linked_paths:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/java-timer-clock-choice-primer.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/slow-periodic-task-primer.md
+confusable_with:
+- data-structure/java-timer-clock-choice-primer
+- data-structure/delayqueue-delayed-contract-primer
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+forbidden_neighbors: []
+expected_queries:
+- timer scheduler에서 delay timeout deadline dueAt은 각각 어떻게 달라?
+- dueAt absolute time과 deadlineNanos monotonic queue key를 왜 분리해야 해?
+- timeout은 숫자 설정이 아니라 실패 정책이라는 말을 예시로 설명해줘
+- schedule delay를 내부 deadline으로 바꾸는 흐름을 초보자에게 알려줘
+- request timeout ticket에서 delay dueAt deadline timeout이 한 요청 안에서 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 timer/scheduler 용어를 delay, deadline, dueAt, timeout으로 분리하는
+  beginner bridge다. relative delay, internal monotonic deadline, external absolute
+  dueAt, failure policy timeout을 ScheduledExecutorService와 DelayQueue 흐름에 연결한다.
+---
 # Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt
 
 > 한 줄 요약: timer/scheduler 문맥에서는 `delay`를 "지금부터 얼마나 뒤", `deadline`을 "내부 queue가 비교하는 실행 가능 시각", `dueAt`을 "바깥 세계와 공유하는 절대 시각", `timeout`을 "그 시각까지 안 끝나면 실패로 취급하는 규칙"으로 나누면 초반 혼선이 크게 줄어든다.

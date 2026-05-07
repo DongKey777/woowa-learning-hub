@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Strategy Pattern
+concept_id: design-pattern/strategy-pattern
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- strategy-pattern
+- runtime-algorithm-selection
+- caller-chooses-strategy
+aliases:
+- strategy pattern
+- runtime algorithm selection
+- caller chooses strategy
+- replace if else with strategy
+- strategy vs template method
+- strategy vs state
+- when to use strategy
+- when not to use strategy
+- if else 줄일 때 전략 패턴
+- 전략 패턴 언제 써요
+symptoms:
+- if-else를 줄인다는 이유만으로 모든 작은 조건을 strategy class로 분리해 클래스 수와 선택 로직이 과하게 늘어난다
+- Context가 직접 어떤 Strategy를 쓸지 판단해 선택 책임을 호출자, 설정, DI로 분리하지 못한다
+- Strategy, State, Policy Object, Template Method의 질문 차이를 구분하지 못해 실행 방법, 현재 단계, 판정 규칙을 섞는다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/composition-over-inheritance-practical
+- language/object-oriented-core-principles
+next_docs:
+- design-pattern/strategy-vs-function-chooser
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/template-method-vs-strategy
+linked_paths:
+- contents/software-engineering/oop-design-basics.md
+- contents/design-pattern/factory.md
+- contents/design-pattern/strategy-vs-function-chooser.md
+- contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/design-pattern/strategy-explosion-smell.md
+confusable_with:
+- design-pattern/strategy-vs-function-chooser
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/template-method-vs-strategy
+- design-pattern/policy-object-pattern
+forbidden_neighbors: []
+expected_queries:
+- Strategy Pattern은 같은 역할의 여러 구현 중 호출자나 설정이 런타임에 하나를 골라 Context가 실행을 위임하는 패턴이야?
+- Context가 어떤 strategy를 쓸지 직접 판단하지 않고 caller, config, DI가 선택해야 하는 이유가 뭐야?
+- if else를 줄일 때 strategy가 좋은 경우와 lambda나 단순 함수로 충분한 경우를 어떻게 구분해?
+- Strategy와 Template Method는 조합으로 실행 방법을 바꾸는지 상속으로 흐름 골격을 고정하는지 어떻게 달라?
+- Strategy, State, Policy Object는 실행 방법, 현재 단계, 판정 규칙이라는 질문이 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Strategy Pattern primer로, 같은 목적을 수행하는 여러 알고리즘/정책 구현을
+  Strategy 인터페이스로 분리하고 Context는 선택된 구현에 실행을 위임하며, 선택 책임은 caller,
+  config, DI가 맡는 구조와 과사용 경계를 설명한다.
+---
 # 전략 패턴이란 무엇인가: 런타임에 구현을 바꾸는 방법
 
 > 한 줄 요약: 전략 패턴은 같은 역할의 여러 구현 중 무엇을 쓸지 **호출자나 설정이 런타임에 고르고**, `Context`는 고른 구현에 실행을 위임하는 패턴이다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Gap Lock과 Next-Key Lock
+concept_id: database/gap-lock-next-key-lock
+canonical: true
+category: database
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- gap-lock-next-key-lock
+- innodb-phantom-prevention
+- select-for-update-insert-blocked
+aliases:
+- gap lock
+- next-key lock
+- innodb gap locking
+- phantom read prevention
+- select for update insert blocked
+- range lock
+- insert intention wait
+- record lock vs gap lock
+- Gap Lock과 Next-Key Lock
+- 범위 잠금
+symptoms:
+- SELECT FOR UPDATE를 걸었는데 없는 row나 범위 안 insert가 왜 막히는지 설명하지 못하고 있어
+- MySQL REPEATABLE READ에서 phantom을 줄이려고 record뿐 아니라 gap까지 잠그는 이유가 헷갈려
+- 같은 SQL이라도 index path에 따라 lock footprint가 달라지는 것을 놓치고 있어
+intents:
+- definition
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/index-and-explain
+next_docs:
+- database/gap-lock-starvation-and-fairness
+- database/mysql-empty-result-locking-reads
+- database/mysql-explain-range-locking-primer
+- database/mysql-repeatable-read-safe-range-checklist
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/index-and-explain.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/gap-lock-starvation-and-fairness.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/mysql-explain-range-locking-primer.md
+- contents/database/mysql-repeatable-read-safe-range-checklist.md
+confusable_with:
+- database/mysql-empty-result-locking-reads
+- database/gap-lock-starvation-and-fairness
+- database/mysql-explain-range-locking-primer
+forbidden_neighbors: []
+expected_queries:
+- MySQL InnoDB gap lock과 next-key lock은 record lock과 어떻게 달라?
+- SELECT FOR UPDATE 범위 조회 뒤 다른 insert가 막히는 이유를 설명해줘
+- Repeatable Read에서 phantom read를 줄이려고 gap까지 잠그는 원리는 뭐야?
+- index path가 달라지면 next-key lock 범위도 달라지는 이유는 뭐야?
+- gap lock, next-key lock, insert intention wait를 초보자에게 어떻게 연결해서 설명해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL InnoDB의 gap lock, next-key lock, record lock, insert intention wait가 range locking과 phantom prevention에 어떻게 쓰이는지 설명하는 advanced primer다.
+  gap lock, next-key lock, SELECT FOR UPDATE insert blocked, range lock 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Gap Lock과 Next-Key Lock
 
 **난이도: 🔴 Advanced**

@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Delegated Admin / Tenant RBAC
+concept_id: security/delegated-admin-tenant-rbac
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- delegated admin
+- tenant RBAC
+- scoped admin
+- tenant admin
+aliases:
+- delegated admin
+- tenant RBAC
+- scoped admin
+- tenant admin
+- sub-admin
+- cross-tenant
+- least privilege
+- admin delegation
+- role hierarchy
+- tenant isolation
+- acting on behalf of
+- support impersonation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Delegated Admin / Tenant RBAC 핵심 개념을 설명해줘
+- delegated admin가 왜 필요한지 알려줘
+- Delegated Admin / Tenant RBAC 실무 설계 포인트는 뭐야?
+- delegated admin에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Delegated Admin / Tenant RBAC를 다루는 deep_dive 문서다. delegated admin은 "권한을 준다"가 아니라 "어떤 tenant와 어떤 범위까지 대신 관리할 수 있는가"를 명시하는 문제다. 검색 질의가 delegated admin, tenant RBAC, scoped admin, tenant admin처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Delegated Admin / Tenant RBAC
 
 > 한 줄 요약: delegated admin은 "권한을 준다"가 아니라 "어떤 tenant와 어떤 범위까지 대신 관리할 수 있는가"를 명시하는 문제다.

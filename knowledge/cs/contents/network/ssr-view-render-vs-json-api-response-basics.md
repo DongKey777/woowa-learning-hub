@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "SSR View Render vs JSON API Response Basics"
+concept_id: network/ssr-view-render-vs-json-api-response-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- ssr-vs-api
+- response-contract
+- login-html
+aliases:
+- SSR vs JSON API
+- HTML response vs JSON response
+- fetch 200 but no navigation
+- API가 HTML로 와요
+- final HTML 200 not API success
+- page request vs API request
+- login HTML instead of JSON
+symptoms:
+- fetch가 200을 받으면 브라우저가 자동으로 페이지 이동한다고 생각한다
+- HTML 200과 JSON API 200을 같은 성공 의미로 읽는다
+- hidden login redirect 뒤 받은 final HTML 200을 원래 API 성공으로 오해한다
+- Content-Type, Accept header, Initiator, response body owner를 확인하지 않는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-status-codes-basics
+next_docs:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/browser-devtools-response-body-ownership-checklist
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- spring/spring-api-401-vs-browser-302-beginner-bridge
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/http-status-codes-basics.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/api-gateway-auth-failure-surface-map.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/spring/spring-api-401-vs-browser-302-beginner-bridge.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- network/browser-devtools-response-body-ownership-checklist
+- network/api-gateway-auth-failure-surface-map
+- spring/spring-api-401-vs-browser-302-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- "SSR HTML 응답과 JSON API 응답은 성공 의미가 어떻게 달라?"
+- "fetch 200인데 왜 화면이 자동 이동하지 않아?"
+- "API를 호출했는데 HTML login page가 오면 어떻게 해석해야 해?"
+- "final HTML 200이 원래 API 성공이 아닌 이유를 설명해줘"
+- "Content-Type text/html과 application/json을 DevTools에서 어떻게 구분해?"
+contextual_chunk_prefix: |
+  이 문서는 SSR page request와 JSON API request의 독자, Content-Type,
+  navigation, fetch handling, hidden login HTML 200 오해를 설명하는 beginner
+  bridge다.
+---
 # SSR 뷰 렌더링 vs JSON API 응답 입문
 
 > 한 줄 요약: 브라우저가 페이지 자체를 열려고 보낸 요청은 보통 HTML 응답과 화면 이동으로 이어지고, 프론트엔드 코드가 데이터를 받으려고 보낸 요청은 보통 JSON 응답과 후속 처리 로직으로 이어지므로, 둘을 같은 "성공"으로 읽으면 navigation과 API handling을 쉽게 섞게 된다.

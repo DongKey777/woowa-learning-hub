@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Record Comparator 60 Second Mini Drill
+concept_id: language/record-comparator-60-second-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- record
+- comparator
+- equality-ordering
+aliases:
+- Record Comparator 60 second mini drill
+- record equals comparator mismatch practice
+- Java record TreeSet TreeMap surprise
+- record name only comparator worksheet
+- HashSet TreeSet TreeMap record prediction
+- 자바 record comparator 연습
+symptoms:
+- record의 자동 equals는 모든 component를 보는데 TreeSet TreeMap comparator는 name만 보도록 만들어 중복 기준이 갈리는 점을 놓쳐
+- HashSet은 equals/hashCode 기준이고 TreeSet TreeMap은 compare==0 기준이라는 차이를 record 예제로 예측하지 못해
+- comparator tie-breaker를 빼면 같은 name을 같은 자리로 collapse하고 thenComparingLong id를 넣으면 분리된다는 감각이 없어
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/record-value-object-equality-basics
+- language/equality-vs-ordering-beginner-drill-sheet
+- language/hashset-vs-treeset-duplicate-semantics
+next_docs:
+- language/treemap-record-containskey-get-name-comparator-drill
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/java-comparable-comparator-basics
+linked_paths:
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/equality-vs-ordering-beginner-drill-sheet.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/treemap-record-containskey-get-name-comparator-drill.md
+- contents/language/java/java-comparable-comparator-basics.md
+confusable_with:
+- language/equality-vs-ordering-beginner-drill-sheet
+- language/hashset-vs-treeset-duplicate-semantics
+- language/treemap-record-containskey-get-name-comparator-drill
+forbidden_neighbors: []
+expected_queries:
+- record 자동 equals와 name-only Comparator가 다를 때 HashSet TreeSet TreeMap 결과를 예측하는 드릴을 해보고 싶어
+- record Student id name에서 HashSet은 둘 다 남고 TreeSet은 하나로 합쳐질 수 있는 이유가 뭐야?
+- TreeMap comparator가 name만 보면 new Student(99, Mina)로 get이 되는 이유를 설명해줘
+- comparator에 thenComparingLong id tie-breaker를 넣으면 collapse가 separation으로 바뀌는 이유가 뭐야?
+- equality와 ordering 기준이 다르면 sorted collection에서 어떤 surprise가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 record 자동 equals/hashCode와 name-only Comparator가 다른 기준을 쓸 때 HashSet, TreeSet, TreeMap 결과를 예측하는 beginner drill이다.
+  record comparator, equality vs ordering, TreeSet duplicate, TreeMap get, thenComparing tie-breaker 질문이 본 문서에 매핑된다.
+---
 # Record-Comparator 60초 미니 드릴
 
 > 한 줄 요약: `record`의 자동 `equals()`와 name-only `Comparator`가 서로 다른 기준을 쓰면, 같은 두 객체를 넣어도 `HashSet`/`TreeSet`/`TreeMap` 결과가 갈릴 수 있다.

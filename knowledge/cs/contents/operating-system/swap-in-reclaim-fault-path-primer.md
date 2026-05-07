@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Swap-In Reclaim Major Fault Path Primer
+concept_id: operating-system/swap-in-reclaim-fault-path-primer
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- swap-in-reclaim
+- fault-path
+- major-fault
+- major-fault-path
+aliases:
+- swap-in reclaim major fault
+- major fault path
+- page-cache refault
+- memory pressure scenario
+- swap fault latency
+- reclaim left hole
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/vm-swappiness-reclaim-behavior.md
+- contents/operating-system/workingset-refault-page-cache-reclaim-debugging.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+expected_queries:
+- major fault는 단순히 disk에서 읽었다는 뜻이 아니라 reclaim 뒤 swap-in이나 refault 경로야?
+- swap-in, reclaim, page-cache refault를 memory pressure scenario로 설명해줘
+- major fault latency를 kswapd direct reclaim PSI와 어떻게 연결해?
+- swap fault와 page cache refault는 runtime에서 어떻게 다르게 보이나?
+contextual_chunk_prefix: |
+  이 문서는 major fault를 단순 disk read가 아니라 이전 reclaim이 만든 빈자리를 swap-in이나
+  page-cache refault가 메우는 순간으로 설명한다. runtime memory pressure scenario를 이해하는
+  intermediate primer다.
+---
 # Swap-In, Reclaim, and Major Fault Path Primer
 
 > 한 줄 요약: major fault는 단순한 "디스크에서 읽었다"가 아니라, 조금 전 reclaim이 남긴 빈자리를 swap-in이나 page-cache refault가 메우는 순간으로 읽어야 runtime memory pressure 시나리오가 보인다.

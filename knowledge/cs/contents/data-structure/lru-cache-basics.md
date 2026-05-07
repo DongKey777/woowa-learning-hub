@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: LRU 캐시 설계 입문
+concept_id: data-structure/lru-cache-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- lru-cache-basics
+- cache-eviction-policy
+- hashmap-doubly-linked-list
+aliases:
+- lru cache basics
+- least recently used
+- cache eviction basics
+- hashmap linked list lru
+- linkedhashmap access order
+- cache hit miss
+- 캐시 교체 정책 입문
+- LRU는 삽입 순서인가
+symptoms:
+- LRU가 삽입 순서로 오래된 항목을 버린다고 오해해 get 접근 순서 갱신을 놓친다
+- HashMap만으로 O(1) LRU가 된다고 생각하고 순서 유지 구조를 빼먹는다
+- 캐시 hit miss와 eviction 정책을 Spring cache나 DB source of truth와 섞어 설명한다
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- data-structure/hash-table-basics
+- data-structure/linked-list-basics
+next_docs:
+- data-structure/lru-cache-design
+- data-structure/linkedhashmap-access-order-mini-primer
+- system-design/caching-basics
+- software-engineering/cache-message-observability
+linked_paths:
+- contents/data-structure/lru-cache-design.md
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/data-structure/linked-list-basics.md
+- contents/data-structure/hash-table-basics.md
+- contents/algorithm/time-complexity-intro.md
+- contents/software-engineering/cache-message-observability.md
+confusable_with:
+- data-structure/lru-cache-design
+- data-structure/linkedhashmap-access-order-mini-primer
+- system-design/caching-basics
+- system-design/cache-invalidation-patterns-primer
+forbidden_neighbors: []
+expected_queries:
+- LRU 캐시는 왜 HashMap과 양방향 연결 리스트를 같이 써야 해?
+- LRU는 삽입 순서가 아니라 접근 순서라는 말이 무슨 뜻이야?
+- get을 호출하면 LRU 순서가 왜 바뀌어야 해?
+- Java LinkedHashMap accessOrder 옵션으로 LRU를 어떻게 만들 수 있어?
+- cache hit miss와 eviction 정책을 입문자 관점에서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 LRU cache beginner primer로, least recently used eviction은
+  삽입 순서가 아니라 마지막 접근 순서 기준이며 HashMap과 doubly linked
+  list 또는 LinkedHashMap access-order가 필요한 이유를 설명한다.
+---
 # LRU 캐시 설계 입문 (LRU Cache Basics)
 
 > 한 줄 요약: LRU 캐시는 가장 오래 사용하지 않은 항목을 먼저 버리는 정책으로, 해시맵과 양방향 연결 리스트를 조합하면 O(1)으로 구현할 수 있다.

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 쿼리 튜닝 체크리스트
+concept_id: database/query-tuning-checklist
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- query-tuning-verification-order
+- sargable-predicate-check
+- app-vs-db-bottleneck-split
+aliases:
+- query tuning checklist
+- explain triage
+- explain analyze
+- type all
+- key null
+- rows estimate wrong
+- using filesort
+- using temporary
+- index not used
+- order by limit slow
+- sargable predicate
+- app vs db bottleneck
+- 실행 계획 체크리스트
+- 쿼리 튜닝 순서
+symptoms:
+- 느린 쿼리를 감으로 고치고 있는데 어떤 순서로 검증해야 할지 모르겠어
+- type ALL, key NULL, Using filesort, rows 추정 이상 중 무엇을 먼저 볼지 헷갈려
+- DB query time은 짧은데 API latency가 긴 경우 connection pool 문제인지 궁금해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/index-and-explain
+next_docs:
+- database/slow-query-analysis-playbook
+- database/generated-columns-functional-index-migration
+- database/covering-index-composite-ordering
+- database/statistics-histograms-cardinality-estimation
+- database/connection-pool-transaction-propagation-bulk-write
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/generated-columns-functional-index-migration.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+confusable_with:
+- database/index-and-explain
+- database/slow-query-analysis-playbook
+- database/connection-pool-transaction-propagation-bulk-write
+forbidden_neighbors: []
+expected_queries:
+- 쿼리가 느릴 때 인덱스부터 만들지 말고 어떤 순서로 확인해야 해?
+- type ALL, key NULL, rows estimate wrong, Using filesort를 보고 다음 조치를 고르는 체크리스트가 필요해
+- sargable predicate가 아니라서 인덱스를 못 타는 경우를 어떻게 찾아?
+- DB 쿼리는 빠른데 API latency가 길면 connection pool과 transaction boundary를 어떻게 봐?
+- 배치 insert/update는 성능이 좋아도 lock과 rollback 범위가 왜 위험할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 느린 쿼리를 감으로 고치지 않고 EXPLAIN, EXPLAIN ANALYZE, predicate sargability, index, sorting, cardinality, connection pool, transaction boundary, batch size 순서로 검증하는 advanced playbook이다.
+  key null, type all, using filesort, using temporary, rows estimate wrong, app latency vs DB time mismatch, connection pool starvation 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # 쿼리 튜닝 체크리스트
 
 **난이도: 🔴 Advanced**

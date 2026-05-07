@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: DelayQueue Remove Cost Primer
+concept_id: data-structure/delayqueue-remove-cost-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- heap-arbitrary-remove
+- timer-cancel-cost
+- delayqueue-remove-cost
+aliases:
+- DelayQueue remove cost
+- heap arbitrary remove
+- timer queue cancel remove cost
+- removeOnCancelPolicy linear remove
+- heap middle delete timer
+- DelayQueue cancel by handle
+- poll take vs remove cost
+symptoms:
+- heap에서 poll이나 take가 빠르니 queue 중간의 timer remove도 같은 비용일 것이라고 생각한다
+- cancel마다 arbitrary remove를 강제해 hot path latency와 lock contention이 커지는 이유를 설명하지 못한다
+- 정확한 취소를 위해 handle, equals, lazy cancel, stale skip을 비용과 의미 기준으로 나눠 보지 않는다
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- data-structure/heap-basics
+- data-structure/java-priorityqueue-pitfalls
+next_docs:
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+- data-structure/delayqueue-queue-size-vs-live-timers-primer
+linked_paths:
+- contents/data-structure/heap-basics.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+confusable_with:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue에서 take와 poll은 빠른데 remove(ticket)는 왜 비쌀 수 있어?
+- heap-backed timer queue에서 arbitrary remove가 O(n) 탐색을 가질 수 있는 이유는?
+- timer cancel hot path에서 lazy cancel과 stale skip을 쓰는 trade-off는?
+- removeOnCancelPolicy를 켜면 queue size는 줄지만 cancel 비용이 늘 수 있어?
+- DelayQueue remove cost와 handle equality cancel 기준을 함께 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 heap-backed DelayQueue에서 head removal은 heap root 작업이지만
+  arbitrary remove는 대상 entry를 찾는 선형 탐색과 heap 복구가 필요할 수
+  있다는 primer다. timer cancel cost, handle vs equality, lazy cancel,
+  stale skip, removeOnCancelPolicy trade-off를 다룬다.
+---
 # DelayQueue Remove Cost Primer
 
 > 한 줄 요약: heap-backed timer queue에서 head를 꺼내는 일과 queue 중간의 timer를 `remove`하는 일은 같은 비용 모양이 아니며, 정확한 취소를 하려면 `handle`과 `equals()` 기준을 따로 생각해야 한다.

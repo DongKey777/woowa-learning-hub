@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Map Value Shape Drill
+concept_id: language/map-value-shape-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-design
+- value-object
+- collection-selection
+aliases:
+- Map Value Shape Drill
+- Java Map value type practice
+- Map single value list aggregate object
+- Map K V beginner worksheet
+- 자바 Map value 타입 고르기
+- Map 값 모양 드릴
+symptoms:
+- key는 정했지만 value를 단일값, List, 작은 record 중 무엇으로 둘지 몰라 요구 문장을 타입으로 번역하지 못해
+- 한 key 아래 값이 여러 개인데 단일값 Map으로 덮어쓰기를 반복하거나 반대로 값 하나에 불필요한 List를 붙여 모델을 복잡하게 만들어
+- 함께 움직이는 필드 묶음을 여러 Map으로 흩어 저장해 key 동기화와 누락 위험을 키워
+intents:
+- drill
+- design
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/list-set-map-requirement-to-type-drill
+- language/map-get-null-containskey-getordefault-primer
+next_docs:
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- language/record-value-object-equality-basics
+- software-engineering/dto-vo-entity-basics
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/list-set-map-requirement-to-type-drill.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/map-put-putifabsent-computeifabsent-merge-overwrite-bridge.md
+confusable_with:
+- language/list-set-map-requirement-to-type-drill
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- language/record-value-object-equality-basics
+forbidden_neighbors: []
+expected_queries:
+- Map의 value 타입을 단일값 List record 중 무엇으로 고를지 드릴로 연습하고 싶어
+- 한 key에 값이 여러 개 붙으면 Map<K List<V>>를 쓰는 게 맞는지 알려줘
+- 가격 재고 상태처럼 여러 필드가 함께 움직이면 Map value를 record로 만드는 게 좋은 이유가 뭐야?
+- Map value를 Integer String Boolean 같은 단일값으로 충분히 둘 수 있는 요구 신호는 뭐야?
+- 여러 개의 Map을 나눠 쓰는 대신 value object를 쓰는 기준을 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Map<K,V>에서 V의 shape를 single value, List, aggregate record로 고르는 beginner drill이다.
+  Map value type, Map<K List<V>>, value object, record, requirement-to-type 질문이 본 문서에 매핑된다.
+---
 # Map Value-Shape Drill
 
 > 한 줄 요약: `Map<K, V>`를 볼 때 "key는 정했는데 value를 무엇으로 둘지" 막히는 초보자를 위해, 요구 문장을 `단일값`/`리스트`/`집계객체`로 번역하는 후속 미니 드릴이다.

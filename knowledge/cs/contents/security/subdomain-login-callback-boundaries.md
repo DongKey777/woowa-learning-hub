@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Subdomain Login Callback Boundaries
+concept_id: security/subdomain-login-callback-boundaries
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- subdomain login callback boundaries
+- callback succeeded but app anonymous
+- auth.example.com cookie not sent to app.example.com
+- one-time handoff app-local session
+aliases:
+- subdomain login callback boundaries
+- callback succeeded but app anonymous
+- auth.example.com cookie not sent to app.example.com
+- one-time handoff app-local session
+- shared parent-domain session
+- callback 302 but first app request anonymous
+- app_session after callback
+- cookie scope mismatch beginner
+- return to chooser from callback boundaries
+- return to security readme from subdomain callback
+- 처음 배우는데 callback 뒤에 왜 다시 로그인하나요
+- callback handoff basics
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/callback-cookie-name-splitter.md
+- contents/security/duplicate-cookie-name-shadowing.md
+- contents/security/session-fixation-in-federated-login.md
+- contents/security/open-redirect-hardening.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Subdomain Login Callback Boundaries 핵심 개념을 설명해줘
+- subdomain login callback boundaries가 왜 필요한지 알려줘
+- Subdomain Login Callback Boundaries 실무 설계 포인트는 뭐야?
+- subdomain login callback boundaries에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Subdomain Login Callback Boundaries를 다루는 deep_dive 문서다. `auth.example.com/callback`이 성공해도 `app.example.com`이 자동으로 로그인되는 것은 아니다. 먼저 callback에서 필요한 cookie가 돌아왔는지, app이 읽을 최종 session이 생겼는지, 서버가 session handoff를 끝냈는지를 세 칸으로 나눠 봐야 한다. 검색 질의가 subdomain login callback boundaries, callback succeeded but app anonymous, auth.example.com cookie not sent to app.example.com, one-time handoff app-local session처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Subdomain Login Callback Boundaries
 
 > 한 줄 요약: `auth.example.com/callback`이 성공해도 `app.example.com`이 자동으로 로그인되는 것은 아니다. 먼저 callback에서 필요한 cookie가 돌아왔는지, app이 읽을 최종 session이 생겼는지, 서버가 session handoff를 끝냈는지를 세 칸으로 나눠 봐야 한다.

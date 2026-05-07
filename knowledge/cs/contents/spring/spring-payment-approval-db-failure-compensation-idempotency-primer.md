@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring Payment Approval DB Failure Compensation Idempotency Primer
+concept_id: spring/payment-approval-db-failure-compensation-idempotency-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- payment-approval-db
+- failure-compensation-idempotency
+- failure
+- external-approval-compensation
+aliases:
+- payment approval DB failure
+- external approval compensation
+- payment idempotency key
+- rollback cannot cancel external payment
+- after commit outbox payment
+- 결제 승인 DB 실패 보상 멱등성
+intents:
+- mission_bridge
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+confusable_with:
+- spring/service-layer-external-io-after-commit-outbox-primer
+- database/idempotency-key-status-contract-examples
+- database/idempotency-key-and-deduplication
+- database/outbox-saga-eventual-consistency
+expected_queries:
+- 외부 결제 승인 성공 후 DB 저장이 실패하면 rollback으로 해결돼?
+- 결제 승인과 주문 저장을 같은 트랜잭션처럼 보면 왜 위험해?
+- paymentAttemptKey와 idempotency key는 어디에 저장해야 해?
+- 승인 성공 뒤 DB 실패 보상 취소 경로를 초급자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 외부 결제 승인 성공과 내부 DB commit이 원자적이지 않다는 점을 초급자에게
+  bridge한다. rollback이 외부 승인을 취소하지 못하므로 보상 취소, 멱등성 키, outbox,
+  재시도 상태 계약으로 실패 경계를 닫는 방법을 설명한다.
+---
 # Spring Beginner Bridge: 외부 승인 성공 뒤 DB 저장이 실패하면 rollback보다 보상 + 멱등성으로 닫기
 
 > 한 줄 요약: 결제사 승인 성공과 우리 DB commit은 같은 트랜잭션이 아니므로, "외부 승인 성공 -> 이후 DB 실패"는 rollback으로 끝나는 문제가 아니라 **보상 취소 경로**와 **재시도 멱등성**을 같이 설계해야 닫힌다.

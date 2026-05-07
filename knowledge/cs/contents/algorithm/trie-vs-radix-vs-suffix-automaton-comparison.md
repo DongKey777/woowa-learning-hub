@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Trie vs Radix vs Suffix Automaton
+concept_id: algorithm/trie-vs-radix-vs-suffix-automaton-comparison
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- trie-radix-suffix-automaton
+- prefix-vs-substring
+- compressed-string-index
+aliases:
+- trie vs radix vs suffix automaton
+- prefix vs substring
+- compressed string index
+- trie radix suffix automaton comparison
+- autocomplete trie
+- radix tree compressed trie
+- suffix automaton substring
+- 문자열 구조 비교
+symptoms:
+- prefix search 문제와 substring analysis 문제를 모두 trie 계열이라고만 보고 구조 선택을 못 한다
+- 긴 sparse prefix key를 일반 trie로만 저장해 radix tree의 edge compression 장점을 놓친다
+- substring 문제에 trie를 쓰거나 prefix 문제에 suffix automaton을 써서 과한 구조를 선택한다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- algorithm/string
+- data-structure/trie-prefix-search-autocomplete
+next_docs:
+- data-structure/radix-tree
+- algorithm/suffix-automaton
+- algorithm/aho-corasick
+linked_paths:
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/data-structure/radix-tree.md
+- contents/algorithm/suffix-automaton.md
+- contents/algorithm/string.md
+confusable_with:
+- data-structure/trie-prefix-search-autocomplete
+- data-structure/radix-tree
+- algorithm/suffix-automaton
+- algorithm/aho-corasick
+forbidden_neighbors: []
+expected_queries:
+- Trie와 Radix Tree와 Suffix Automaton은 prefix와 substring 질문에서 어떻게 달라?
+- 자동완성처럼 prefix search면 Trie가 자연스러운 이유가 뭐야?
+- 긴 URL path나 sparse key에서는 Radix Tree가 compressed trie로 왜 유리해?
+- distinct substring이나 반복 substring 분석에는 Suffix Automaton이 왜 더 맞아?
+- prefix 문제에 suffix automaton을 쓰면 과하고 substring 문제에 trie를 쓰면 부족한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Trie, Radix Tree, Suffix Automaton comparison bridge로, prefix
+  search, compressed prefix path, substring automaton이라는 서로 다른 문자열
+  질문에 맞춰 자료구조를 선택하도록 돕는다.
+---
 # Trie vs Radix vs Suffix Automaton
 
 > 한 줄 요약: Trie, Radix Tree, Suffix Automaton은 모두 문자열 구조를 압축하지만, prefix, compressed prefix, substring이라는 서로 다른 질문에 맞춘다.

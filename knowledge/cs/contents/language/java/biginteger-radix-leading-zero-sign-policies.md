@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: BigInteger Parser Radix, Leading Zero, Sign, and Boundary Contracts
+concept_id: language/biginteger-radix-leading-zero-sign-policies
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- numeric-boundary
+- parser-contract
+- canonicalization
+aliases:
+- BigInteger parser contract
+- BigInteger radix policy
+- BigInteger leading zero sign policy
+- BigInteger String radix
+- decimal string contract
+- numeric canonicalization
+- BigInteger 파싱 계약
+symptoms:
+- BigInteger가 큰 수를 읽어 주면 radix prefix sign leading zero 정책도 자동으로 정해진다고 오해해
+- 원문 문자열과 canonical string이 달라지는 상황을 signature, cache key, audit log 경계에서 분리하지 못해
+- primitive overflow를 BigInteger로 피했지만 domain max, transport max, exact conversion 경계 검증을 놓쳐
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/biginteger-unsigned-parsing-boundaries
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+next_docs:
+- language/biginteger-unsigned-parsing-boundaries
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+- language/value-object-invariants-canonicalization-boundary-design
+linked_paths:
+- contents/language/java/biginteger-unsigned-parsing-boundaries.md
+- contents/language/java/parser-overflow-boundaries-parseint-parselong-tointexact.md
+- contents/language/java/integer-overflow-exact-arithmetic-unit-conversion-pitfalls.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+confusable_with:
+- language/biginteger-unsigned-parsing-boundaries
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- BigInteger parser에서 radix prefix leading zero sign 정책을 어떻게 계약으로 잠가야 해?
+- new BigInteger raw radix가 0x prefix를 자동 처리하지 않는 이유를 설명해줘
+- BigInteger로 primitive overflow를 피해도 domain max와 transport boundary를 다시 검증해야 하는 이유가 뭐야?
+- BigInteger 입력에서 +000 -0 leading zero를 canonical string으로 어떻게 처리해야 해?
+- 큰 정수 payload를 signature cache key audit log에 쓸 때 raw input과 canonical value를 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 BigInteger parser contract를 radix, prefix, sign, leading zero, digit alphabet, canonical string, domain max, exact conversion boundary로 설명하는 advanced deep dive다.
+  BigInteger radix policy, 0x prefix, leading zero, minus zero, numeric canonicalization, parser boundary 질문이 본 문서에 매핑된다.
+---
 # `BigInteger` Parser Radix, Leading Zero, Sign, and Boundary Contracts
 
 > 한 줄 요약: `BigInteger`는 parse 시점의 primitive overflow ceiling은 없애 주지만, radix/prefix, sign, leading zero, digit alphabet, domain max를 대신 정해 주지 않는다. parser contract를 안 잠그면 같은 값이 다른 문자열로 들어오고, exact conversion과 transport boundary에서 다시 깨진다.

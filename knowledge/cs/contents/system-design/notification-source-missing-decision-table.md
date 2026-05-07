@@ -43,7 +43,7 @@ prerequisites:
 next_docs:
 - system-design/notification-causal-token-walkthrough
 - system-design/trace-attribute-freshness-read-source-bridge
-- software-engineering/tombstone-response-template-and-consumer-guidance
+- software-engineering/tombstone-response-template-consumer-guidance
 linked_paths:
 - contents/system-design/causal-consistency-notification-primer.md
 - contents/system-design/notification-causal-token-walkthrough.md
@@ -53,8 +53,10 @@ linked_paths:
 confusable_with:
 - system-design/notification-badge-vs-source-freshness-primer
 - system-design/causal-consistency-notification-primer
-- software-engineering/tombstone-response-template-and-consumer-guidance
+- software-engineering/tombstone-response-template-consumer-guidance
 forbidden_neighbors:
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/trace-attribute-freshness-read-source-bridge.md
 expected_queries:
 - 알림 클릭했더니 상세 화면이 비어 있는데 어디부터 봐야 해?
 - notification click 후 404가 stale인지 권한 문제인지 구분하는 법

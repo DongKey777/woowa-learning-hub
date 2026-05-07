@@ -29,13 +29,23 @@ prerequisites:
 linked_paths:
 - contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
 - contents/language/java/java-instance-static-factory-methods-primer.md
+- contents/design-pattern/factory-misnaming-checklist.md
 forbidden_neighbors:
 - contents/design-pattern/factory-misnaming-checklist.md
+confusable_with:
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- language/java-instance-static-factory-methods-primer
+- design-pattern/factory-misnaming-checklist
 expected_queries:
 - 로또에서 Lotto.from(numbers)랑 new Lotto(numbers) 차이가 뭐야?
 - 정적 팩토리 메소드 이름은 어떻게 짓는 거야?
 - Lotto.auto()는 왜 생성자 대신 정적 메소드로 만들어?
 - 미션에서 자동 생성과 수동 입력을 분리할 때 어떻게 표현해?
+contextual_chunk_prefix: |
+  이 문서는 lotto 미션에서 Lotto.from, Lotto.auto 같은 정적 팩토리 메소드가
+  생성자보다 의도를 잘 드러내는 이유를 설명하는 mission_bridge다. 로또
+  정적 팩토리, 생성자 대신 from/of/auto 이름, 자동 생성과 수동 입력 분리
+  같은 질의를 생성 책임과 의도 드러내기 관점으로 연결한다.
 ---
 
 # lotto 미션 Lotto.from / Lotto.auto 정적 팩토리 메소드의 의도
@@ -45,6 +55,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: lotto (Woowa Java 트랙) — 도메인 객체 생성 시점
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`new Lotto(numbers)` 대신 `Lotto.from(numbers)`를 쓰라는 리뷰가 왜 나오죠?" | 주어진 번호로 만드는 경로와 자동 생성 경로가 생성자 이름 하나로 섞인 코드 | 생성 의도를 메서드 이름으로 드러내는 정적 팩토리의 역할을 본다 |
+| "`Lotto.auto()`는 Factory 패턴인가요?" | 정적 팩토리 메소드와 별도 Factory 객체/패턴을 같은 말로 쓰는 상황 | 생성자 대체 관용구와 GoF Factory 패턴을 분리해서 읽는다 |
+| "검증은 생성자에서 해도 되는데 from을 왜 두나요?" | 여러 생성 경로가 같은 불변식 검증을 공유해야 하는 도메인 객체 | public 생성자를 줄이고 의도별 생성 경로를 하나의 검증 문으로 모은다 |
 
 관련 문서:
 

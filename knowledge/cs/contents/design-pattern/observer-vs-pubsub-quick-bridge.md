@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 옵저버 vs Pub-Sub Quick Bridge
+concept_id: design-pattern/observer-vs-pubsub-quick-bridge
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- observer-pubsub-beginner
+- same-process-vs-broker
+- event-pattern-bridge
+aliases:
+- observer vs pubsub quick bridge
+- observer vs pub-sub beginner
+- same process notification vs broker async propagation
+- observer same process fan-out
+- pubsub broker topic queue beginner
+- spring application event vs kafka beginner
+- observer not async
+- pubsub not same as observer
+- 옵저버 pubsub 차이
+- 같은 프로세스 알림 vs 브로커 비동기 전파
+symptoms:
+- event라는 단어가 나오면 같은 프로세스 listener 호출과 Kafka/RabbitMQ 같은 broker 전달을 같은 것으로 이해한다
+- Observer를 쓰면 자동으로 비동기나 장애 격리가 생긴다고 오해한다
+- Pub/Sub라고 하면 무조건 다른 서버여야 한다고 생각해 bus, topic, broker 역할을 구분하지 못한다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- data-structure/queue-basics
+next_docs:
+- design-pattern/observer
+- design-pattern/observer-pubsub-application-events
+- design-pattern/domain-events-vs-integration-events
+linked_paths:
+- contents/design-pattern/observer.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/mediator-vs-observer-vs-pubsub.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/observer
+- design-pattern/observer-pubsub-application-events
+- design-pattern/mediator-vs-observer-vs-pubsub
+- system-design/message-queue-basics
+forbidden_neighbors: []
+expected_queries:
+- 옵저버와 Pub/Sub 차이를 처음 배우는 사람 기준으로 same process fan out과 broker 전달로 설명해줘
+- Spring ApplicationEvent는 Kafka와 어떻게 다르고 왜 observer에 더 가까워?
+- observer라고 해서 자동으로 비동기나 실패 격리가 생기지 않는 이유가 뭐야?
+- Pub/Sub에서 broker나 bus가 중간 전달 책임을 가진다는 말은 무슨 뜻이야?
+- 주문 완료 알림을 observer로 둘지 broker pubsub로 둘지 어떤 질문으로 고르면 돼?
+contextual_chunk_prefix: |
+  이 문서는 옵저버 vs Pub/Sub quick bridge로, 초보자가 event라는 단어 때문에 섞기 쉬운
+  same-process observer fan-out과 broker/topic/bus 기반 pubsub async propagation을
+  실행 시점, 실패 경계, 중간 전달자 기준으로 빠르게 구분한다.
+---
 # 옵저버 vs Pub-Sub: 처음 읽을 때 바로 잡는 짧은 다리
 
 > 한 줄 요약: 옵저버는 보통 **같은 프로세스 안에서 바로 알리는 구조**이고, Pub-Sub는 **브로커나 bus를 사이에 두고 나중에 퍼뜨리는 구조**로 먼저 이해하면 첫 혼동을 크게 줄일 수 있다.
@@ -12,7 +78,6 @@
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
 
 > 관련 문서:
-> - [옵저버 패턴 기초](./observer-basics.md)
 > - [옵저버 (Observer)](./observer.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [Mediator vs Observer vs Pub/Sub](./mediator-vs-observer-vs-pubsub.md)

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Comparator in TreeSet and TreeMap
+concept_id: language/treeset-treemap-comparator-tie-breaker-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator
+- treeset
+- treemap
+aliases:
+- Comparator in TreeSet and TreeMap
+- TreeSet TreeMap comparator tie breaker basics
+- compare zero same element same key
+- TreeMap comparator duplicate key
+- TreeSet comparator duplicate element
+- 자바 TreeSet TreeMap comparator
+symptoms:
+- comparator를 단순 정렬 규칙으로만 이해해 TreeSet과 TreeMap에서는 compare==0이 같은 원소 자리나 같은 key 자리까지 결정한다는 점을 놓쳐
+- thenComparing tie-breaker를 보기 좋은 정렬용으로만 생각해 distinctness를 보존하거나 collapse하는 역할을 설명하지 못해
+- business key comparator에서 id tie-breaker를 붙일지 말지 결정하지 않아 서로 다른 entity가 같은 sorted collection slot으로 합쳐져
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-collections-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/record-comparator-60-second-mini-drill
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/treemap-null-key-vs-nullable-field-primer.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/bigdecimal-comparator-tie-breaker-mini-drill.md
+- contents/language/java/record-comparator-60-second-mini-drill.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/hashset-vs-treeset-duplicate-semantics
+- language/record-comparator-60-second-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- TreeSet과 TreeMap에서 Comparator compare==0은 왜 같은 원소나 같은 key 자리로 취급돼?
+- thenComparing tie-breaker는 보기 좋은 정렬뿐 아니라 distinctness를 바꿀 수 있다는 뜻이 뭐야?
+- TreeSet은 compare==0이면 add가 무시되고 TreeMap은 put이 기존 값을 덮어쓸 수 있어?
+- List.sort에서 compare==0과 TreeSet TreeMap에서 compare==0 의미가 어떻게 달라?
+- business key comparator에서 id tie-breaker를 붙일지 말지 어떻게 결정해?
+contextual_chunk_prefix: |
+  이 문서는 TreeSet/TreeMap에서 Comparator가 sort order뿐 아니라 compare==0 same element/key slot과 tie-breaker distinctness까지 결정한다는 점을 설명하는 beginner primer다.
+  TreeSet comparator, TreeMap comparator, compare zero, tie-breaker, sorted collection duplicate 질문이 본 문서에 매핑된다.
+---
 # Comparator in TreeSet and TreeMap
 
 > 한 줄 요약: Java 입문자가 `TreeSet`/`TreeMap`에서는 comparator가 단순 정렬 규칙이 아니라 "무엇을 같은 원소/같은 key로 볼지"까지 정한다는 점을 `compare == 0`, tie-breaker, concrete example로 이해하도록 만든 beginner primer다.

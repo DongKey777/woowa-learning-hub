@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Consumer Exception State Machine and Review Cadence
+concept_id: software-engineering/consumer-exception-state-machine
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- consumer-exception
+- state-machine
+- review-cadence
+aliases:
+- Consumer Exception State Machine and Review Cadence
+- consumer exception state machine
+- exception lifecycle
+- exception review cadence
+- expiring consumer
+- blocked exception
+- waiver review cadence
+symptoms:
+- exception registry에 row는 있지만 proposed, approved, active, expiring, blocked, closed 상태 전이와 entry/exit 기준이 없어 예외가 움직이지 않아
+- expiring 상태를 별도 queue로 보지 않아 만료 직전에야 연장 요청이 나오고 repeated extension이 active에 묻혀
+- closed 조건을 티켓 종료로만 보고 replacement path verified, old path usage 0, allowlist removed, support contract ended 증거 없이 닫아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/consumer-exception-registry
+- software-engineering/compatibility-waiver-governance
+next_docs:
+- software-engineering/consumer-exception-registry-quality
+- software-engineering/migration-wave-governance
+- software-engineering/support-sla-escalation-contracts
+linked_paths:
+- contents/software-engineering/consumer-exception-registry-templates.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/consumer-exception-registry-quality-automation.md
+- contents/software-engineering/consumer-exception-operating-model.md
+confusable_with:
+- software-engineering/consumer-exception-registry
+- software-engineering/consumer-exception-registry-quality
+- software-engineering/consumer-exception-model
+forbidden_neighbors: []
+expected_queries:
+- consumer exception state machine에서 proposed, approved, active, expiring, blocked, closed는 어떤 entry exit 기준을 가져야 해?
+- proposed 요청을 바로 active로 열면 왜 승인 없는 exception 더미가 생겨?
+- expiring 상태를 weekly escalation review에서 우선 처리해야 하는 이유가 뭐야?
+- blocked exception은 단순 지연이 아니라 migration ownership policy problem의 신호라는 말을 설명해줘
+- closed state는 old path usage 0, replacement verified, allowlist removed 같은 verified closure로 닫아야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 consumer exception registry를 proposed, approved, active, expiring, blocked, closed 상태와 differentiated review cadence로 움직이게 만드는 advanced playbook이다.
+---
 # Consumer Exception State Machine and Review Cadence
 
 > 한 줄 요약: consumer exception registry가 살아 있으려면 proposed, active, expiring, blocked, closed 같은 상태 전이와 review cadence가 명확해야 하며, 예외를 기록하는 것보다 상태를 움직이게 만드는 운영 리듬이 더 중요하다.

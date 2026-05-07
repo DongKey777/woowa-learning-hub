@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Record BigDecimal Component FAQ
+concept_id: language/record-bigdecimal-component-faq
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/lotto
+- missions/payment
+review_feedback_tags:
+- record
+- bigdecimal
+- equality
+aliases:
+- Record BigDecimal Component FAQ
+- record component BigDecimal equality
+- BigDecimal scale equality record
+- record BigDecimal 1.0 1.00
+- record BigDecimal canonicalization
+- 자바 record BigDecimal component
+symptoms:
+- record가 value object처럼 보이니 BigDecimal 1.0과 1.00도 같은 값으로 처리될 것이라고 기대해 scale equality를 놓쳐
+- HashSet에서는 record BigDecimal component의 equals/hashCode 기준으로 둘 다 남고 TreeSet comparator에서는 하나로 합쳐질 수 있는 차이를 설명하지 못해
+- Money나 Price record에서 BigDecimal canonicalization을 생성 경계가 아니라 사용 지점마다 흩어 적용해 컬렉션 동작이 일관되지 않아
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/record-value-object-equality-basics
+- language/bigdecimal-sorted-collection-bridge
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+next_docs:
+- language/money-equality-policy-mini-drill
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/value-object-invariants-canonicalization-boundary-design
+linked_paths:
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-striptrailingzeros-input-boundary-bridge.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/money-value-object-basics.md
+confusable_with:
+- language/bigdecimal-sorted-collection-bridge
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/money-equality-policy-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- record component로 BigDecimal을 쓰면 1.0과 1.00 equality가 어떻게 동작해?
+- record 자동 equals는 BigDecimal scale 차이까지 그대로 포함한다는 뜻을 설명해줘
+- HashSet Price와 TreeSet Price에서 BigDecimal comparator 때문에 결과가 갈리는 이유가 뭐야?
+- Money record에서 BigDecimal stripTrailingZeros를 생성 시 한 번만 적용하는 이유가 뭐야?
+- record가 value object처럼 보여도 component equality policy를 따로 정해야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 record component로 BigDecimal을 쓸 때 scale-sensitive equals/hashCode와 sorted comparator 기준이 달라지는 함정을 설명하는 beginner primer다.
+  record BigDecimal, BigDecimal scale, 1.0 1.00, canonicalization, Money value object 질문이 본 문서에 매핑된다.
+---
 # Record component로 `BigDecimal`을 써도 되나요?
 
 > 한 줄 요약: 써도 되지만 `record`가 `BigDecimal`의 scale 차이까지 그대로 equality에 넣으므로, `1.0` vs `1.00`을 같은 값으로 볼지 먼저 정하고 생성 시 한 번만 canonicalization해야 컬렉션 동작이 덜 헷갈린다.

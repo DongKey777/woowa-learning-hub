@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+review_feedback_tags:
+- devtools-waterfall
+- waterfall
+- waiting
+- ttfb
 aliases:
 - DevTools waterfall
 - waterfall
@@ -18,6 +23,15 @@ aliases:
 - 네트워크 탭
 intents:
 - definition
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/keepalive-connection-reuse-basics.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/browser-devtools-request-sent-vs-waiting-mini-card.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/spring/spring-mvc-request-lifecycle.md
 expected_queries:
 - DevTools waterfall이 뭐야?
 - waiting이 길면 서버가 느린 거야?
@@ -31,7 +45,6 @@ contextual_chunk_prefix: |
   법, network 탭 timing, waterfall 시간표 같은 자연어 paraphrase가 본
   문서의 칸별 의미에 매핑된다.
 ---
-
 # Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기
 
 > 한 줄 요약: 브라우저 Network 탭 waterfall은 "요청 전체 시간" 한 덩어리가 아니라 `dns -> connect -> ssl -> request sent -> waiting -> content download`로 잘라 읽는 시간표이며, 각 칸이 답하는 질문을 먼저 분리해야 병목을 잘못 찍지 않는다.

@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Security LogoutHandler LogoutSuccessHandler Boundaries
+concept_id: spring/security-logout-handler-success-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- security-logout-handler
+- success-boundaries
+- logouthandler-logoutsuccesshandler
+- security-logout-boundary
+aliases:
+- LogoutHandler LogoutSuccessHandler
+- Spring Security logout boundary
+- local session logout
+- cookie deletion logout
+- BFF token cache revoke
+- federated logout OIDC
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/security/logout-scope-primer.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+symptoms:
+- logout success redirect는 됐는데 BFF token cache나 refresh token이 남아 있다.
+- cookie를 삭제했지만 다른 노드의 session 또는 federated provider logout이 끝나지 않았다.
+- LogoutHandler에서 response를 이미 쓰고 LogoutSuccessHandler와 충돌한다.
+expected_queries:
+- Spring Security LogoutHandler와 LogoutSuccessHandler 책임은 어떻게 나뉘어?
+- local session logout과 BFF token cache revoke는 같은 logout으로 보면 안 돼?
+- cookie 삭제만으로 분산 session이나 OIDC logout까지 보장돼?
+- logout success redirect와 API JSON logout 응답은 어디서 갈라야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Security logout chain을 현재 요청의 local session과 response 흐름 정리로
+  한정해 설명한다. cookie deletion, BFF token cache revoke, distributed session revoke,
+  OIDC federated logout은 별도 scope로 설계해야 한다.
+---
 # Spring Security `LogoutHandler` / `LogoutSuccessHandler` Boundaries
 
 > 한 줄 요약: Spring Security의 logout 체인은 현재 요청에서 local session과 응답 흐름을 정리하는 경계일 뿐이며, cookie 삭제나 logout success redirect만으로 BFF token cache 정리, distributed revoke, federated logout 완료까지 보장되지는 않는다.

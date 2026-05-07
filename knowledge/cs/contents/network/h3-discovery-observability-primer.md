@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기"
+concept_id: network/h3-discovery-observability-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- h3-discovery-observability
+- alt-svc-vs-https-rr
+- devtools-dig-curl-trace
+aliases:
+- H3 discovery observability
+- Alt-Svc vs HTTPS RR
+- DevTools h3 discovery
+- dig HTTPS RR h3
+- first request h2 next h3
+- https rr no h3
+symptoms:
+- Protocol=h3 결과만 보고 Alt-Svc 기반인지 HTTPS RR 기반인지 구분하지 않는다
+- 첫 요청 h2 다음 새 연결 h3를 cache나 fallback 장애로 오해한다
+- HTTPS RR이 없는데 h3가 붙는 장면에서 browser Alt-Svc cache 가능성을 놓친다
+- discovery와 coalescing permission/421 recovery를 같은 단계로 읽는다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/browser-devtools-protocol-column-labels-primer
+next_docs:
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/h3-fallback-trace-bridge
+- network/https-rr-resolver-drift-primer
+- network/browser-netlog-h3-alt-svc-https-rr-appendix
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+linked_paths:
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/h3-fallback-trace-bridge.md
+- contents/network/https-rr-resolver-drift-primer.md
+- contents/network/browser-netlog-h3-alt-svc-https-rr-appendix.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/software-engineering/backend-delivery-observability-foundations-primer.md
+confusable_with:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/browser-devtools-cache-trace-primer
+- network/h3-fallback-trace-bridge
+- network/https-rr-resolver-drift-primer
+- network/browser-netlog-h3-alt-svc-https-rr-appendix
+forbidden_neighbors: []
+expected_queries:
+- "H3 discovery에서 Alt-Svc와 HTTPS RR을 DevTools dig curl로 어떻게 구분해?"
+- "첫 요청은 h2인데 다음 새 연결이 h3로 보이는 이유를 설명해줘"
+- "HTTPS RR이 없는데 브라우저가 h3를 쓰면 Alt-Svc cache를 의심해야 해?"
+- "Protocol=h3와 memory cache 304는 서로 다른 질문이라는 점을 알려줘"
+- "H3 discovery와 421 coalescing permission은 어떤 단계 차이가 있어?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/3 discovery observability를 DevTools Protocol,
+  response Alt-Svc, DNS HTTPS RR/SVCB, curl trace, browser Alt-Svc cache,
+  discovery vs permission 구분으로 설명하는 beginner primer다.
+---
 # H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기
 
 > 한 줄 요약: `Protocol`은 결과 칸, `Alt-Svc`는 HTTP 응답 칸, HTTPS RR은 DNS 답변 칸으로 나눠 보면 H3 discovery를 초급자도 더 빨리 읽을 수 있다.

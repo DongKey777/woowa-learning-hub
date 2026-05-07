@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: ALB, ELB Retry Amplification, Proxy Chain
+concept_id: network/alb-elb-retry-amplification-proxy-chain
+canonical: false
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- retry-amplification
+- proxy-chain
+- load-balancer-retry
+aliases:
+- ALB ELB retry amplification
+- proxy chain retry
+- load balancer retry storm
+- upstream retry amplification
+- request duplication
+- tail latency retry
+- circuit breaker backoff
+symptoms:
+- client, gateway, LB, app retry가 각각 한 번씩만 돈다고 보고 전체 요청 수 증폭과 tail latency 붕괴를 계산하지 않는다
+- retry를 늘리면 transient failure가 모두 좋아진다고 생각해 backoff, jitter, circuit breaker, load shedding 없이 겹쳐 둔다
+- idempotent하지 않은 작업에 LB/app retry가 겹쳐 같은 요청이 두 번 처리되는 부작용을 놓친다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- network/timeout-retry-backoff-practical
+- network/api-gateway-reverse-proxy-operational-points
+next_docs:
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/tcp-reset-storms-idle-reuse-stale-sockets
+linked_paths:
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/tcp-reset-storms-idle-reuse-stale-sockets.md
+- contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
+confusable_with:
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/timeout-retry-backoff-practical
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/api-gateway-reverse-proxy-operational-points
+forbidden_neighbors: []
+expected_queries:
+- ALB ELB gateway app retry가 겹치면 retry amplification이 어떻게 생겨?
+- proxy chain에서 작은 5xx나 timeout이 request duplication과 tail latency 붕괴로 커지는 이유는?
+- retry backoff jitter circuit breaker load shedding을 같이 써야 하는 이유는?
+- LB retry와 app retry의 경계를 idempotency 관점에서 어떻게 정해야 해?
+- retry storm을 막으려면 어느 계층에서 몇 번만 재시도하도록 제한해야 해?
+contextual_chunk_prefix: |
+  이 문서는 ALB/ELB와 proxy chain에서 client, gateway, load balancer, app retry가
+  겹쳐 retry amplification과 request duplication, tail latency collapse를 만드는
+  과정을 설명한다. backoff, jitter, circuit breaker, idempotency, load shedding을 함께 다룬다.
+---
 # ALB, ELB Retry Amplification, Proxy Chain
 
 > 한 줄 요약: L4/L7 프록시와 로드밸런서에 retry가 여러 겹 쌓이면, 작은 실패가 트래픽 폭증과 tail latency 붕괴로 커질 수 있다.

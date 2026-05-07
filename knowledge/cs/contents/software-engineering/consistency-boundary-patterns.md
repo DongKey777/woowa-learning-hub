@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Consistency Boundary Patterns
+concept_id: software-engineering/consistency-boundary
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- consistency-boundary
+- outbox-inbox
+- saga
+aliases:
+- Consistency Boundary Patterns
+- consistency boundary
+- transactional boundary eventual consistency
+- strong consistency vs eventual consistency
+- outbox inbox saga
+- 정합성 경계 패턴
+symptoms:
+- 모든 변경을 한 트랜잭션에 넣으려 해 시스템 경계와 분산 비용이 커지거나, 반대로 eventual consistency를 나중에 맞추면 된다는 말로 안전 조건을 생략해
+- 즉시 일관성이 필요한 잔액 차감, 재고 예약, 상태 전이와 알림/정산/외부 동기화 같은 비동기 처리 가능 경계를 구분하지 못해
+- outbox/inbox, idempotency, saga compensation 없이 boundary 밖 이벤트와 재시도, 중복, 순서 역전을 처리하려 해
+intents:
+- design
+- comparison
+- deep_dive
+prerequisites:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/outbox-inbox-domain-events
+next_docs:
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/saga-compensation-failure-handling
+- database/transaction-basics
+linked_paths:
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/saga-compensation-failure-handling.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/database/transaction-basics.md
+confusable_with:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/saga-compensation-failure-handling
+forbidden_neighbors: []
+expected_queries:
+- consistency boundary는 어디까지 strong consistency로 묶고 어디부터 eventual consistency로 흘릴지 정하는 패턴이라는 뜻이 뭐야?
+- 주문 생성, 결제 승인, 재고 반영, 알림 발송에서 어떤 것은 한 트랜잭션이고 어떤 것은 outbox saga로 빼야 해?
+- eventual consistency는 늦어도 되는 것이 아니라 늦어도 안전해야 한다는 말의 조건은 뭐야?
+- outbox/inbox와 idempotency는 consistency boundary 밖 메시징 중복과 유실 위험을 어떻게 줄여?
+- saga compensation은 여러 서비스 workflow에서 어떤 failure handling을 책임져?
+contextual_chunk_prefix: |
+  이 문서는 strong consistency, eventual consistency, outbox/inbox, idempotency, saga compensation을 통해 transaction boundary와 async boundary를 설계하는 advanced deep dive다.
+---
 # Consistency Boundary Patterns
 
 > 한 줄 요약: consistency boundary는 모든 것을 한 트랜잭션에 넣지 않기 위해, 어디까지를 즉시 일관성으로 묶고 어디부터는 결국 일관성으로 흘릴지 패턴으로 정리하는 일이다.

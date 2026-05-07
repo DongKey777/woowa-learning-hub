@@ -1,8 +1,78 @@
+---
+schema_version: 3
+title: SQL Log vs Hibernate Statistics Verification Boundaries
+concept_id: software-engineering/sql-log-vs-hibernate-statistics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- jpa
+- hibernate-statistics
+- sql-log
+- testing
+aliases:
+- SQL log vs Hibernate statistics
+- sql 로그 vs statistics
+- hibernate statistics beginner
+- batch verification signals
+- datasource proxy vs hibernate statistics
+- SQL 로그와 Hibernate 통계 차이
+symptoms:
+- SQL 로그 한 줄 수만 보고 batch나 N+1 여부를 단정한다
+- Hibernate statistics 숫자만 보고 실제 어떤 SQL이 나갔는지 확인하지 않는다
+- 테스트 assertion에는 어떤 신호를 남겨야 하는지 판단하지 못한다
+intents:
+- comparison
+- troubleshooting
+- drill
+prerequisites:
+- spring/spring-data-jpa-basics
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/identity-sequence-batch-verification
+- software-engineering/datasource-proxy-vs-statistics
+linked_paths:
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/identity-vs-sequence-batch-verification-example.md
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+- contents/software-engineering/datasource-proxy-vs-hibernate-statistics-query-count-batch-primer.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/backend-delivery-observability-foundations-primer.md
+confusable_with:
+- software-engineering/datasource-proxy-vs-statistics
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/datajpatest-flush-clear
+forbidden_neighbors: []
+expected_queries:
+- SQL 로그와 Hibernate statistics는 각각 어떤 질문에 답하고 언제 같이 봐야 해?
+- N+1 의심이나 flush 시점 확인은 왜 SQL log가 먼저 강한 신호야?
+- batch insert 검증과 prepareStatementCount 회귀 테스트에는 왜 Hibernate statistics가 더 안정적일 수 있어?
+- insert 로그가 100줄 보인다고 batch가 안 된 것으로 단정하면 왜 오해일 수 있어?
+- 로그로 장면을 보고 statistics로 숫자를 요약한 뒤 테스트에는 어떤 assertion을 남기면 좋아?
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 SQL Log vs Hibernate Statistics Verification Boundaries를 다루는 chooser 문서다. SQL log vs Hibernate statistics, sql 로그 vs statistics, hibernate statistics beginner, batch verification signals, datasource proxy vs hibernate statistics 같은 lexical 표현과 SQL 로그와 Hibernate statistics는 각각 어떤 질문에 답하고 언제 같이 봐야 해?, N+1 의심이나 flush 시점 확인은 왜 SQL log가 먼저 강한 신호야? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # SQL Log vs Hibernate Statistics Verification Boundaries
 
 > 한 줄 요약: SQL 로그는 "무슨 문장이 실제로 나갔나"를 보여 주고, Hibernate statistics는 "그 실행이 몇 번 일어났나"를 숫자로 요약해 준다. 둘 중 하나만 보면 초심자는 저장 성공, batch 적용, 쿼리 개수 문제를 서로 같은 말로 착각하기 쉽다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| JPA 확인 장면 | 먼저 볼 신호 |
+|---|---|
+| N+1이 의심된다 | 실제 SQL log와 호출 위치 |
+| batch insert가 적용됐는지 본다 | statistics count와 JDBC batching 설정 |
+| 테스트에 회귀 방지를 남긴다 | 안정적인 query count/statement count |
 
 
 관련 문서:

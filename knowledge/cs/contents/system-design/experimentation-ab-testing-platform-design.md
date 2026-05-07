@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Experimentation / A/B Testing Platform 설계
+concept_id: system-design/experimentation-ab-testing-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- experimentation platform
+- A/B testing
+- bucketing
+- randomization
+aliases:
+- experimentation platform
+- A/B testing
+- bucketing
+- randomization
+- guardrail metrics
+- experiment assignment
+- statistical power
+- holdout
+- feature rollout
+- analysis pipeline
+- Experimentation / A/B Testing Platform 설계
+- experimentation ab testing platform design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/recommendation-feed-ranking-architecture.md
+- contents/system-design/search-system-design.md
+- contents/system-design/audit-log-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Experimentation / A/B Testing Platform 설계 설계 핵심을 설명해줘
+- experimentation platform가 왜 필요한지 알려줘
+- Experimentation / A/B Testing Platform 설계 실무 트레이드오프는 뭐야?
+- experimentation platform 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Experimentation / A/B Testing Platform 설계를 다루는 deep_dive 문서다. 실험 플랫폼은 사용자 배정을 안정적으로 관리하고, 지표 수집과 분석을 통해 제품 변경의 효과를 검증하는 의사결정 시스템이다. 검색 질의가 experimentation platform, A/B testing, bucketing, randomization처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Experimentation / A/B Testing Platform 설계
 
 > 한 줄 요약: 실험 플랫폼은 사용자 배정을 안정적으로 관리하고, 지표 수집과 분석을 통해 제품 변경의 효과를 검증하는 의사결정 시스템이다.

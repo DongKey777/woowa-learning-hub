@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: One-Time Token Consumption Race / Burn-After-Read
+concept_id: security/one-time-token-consumption-race-burn-after-read
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- one-time token
+- burn after read
+- consume token once
+- token consumption race
+aliases:
+- one-time token
+- burn after read
+- consume token once
+- token consumption race
+- magic link race
+- password reset replay
+- email verification token
+- invite token
+- approval link replay
+- single-use token semantics
+- One-Time Token Consumption Race / Burn-After-Read
+- one time token consumption race burn after read
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/email-magic-link-threat-model.md
+- contents/security/password-reset-threat-modeling.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- One-Time Token Consumption Race / Burn-After-Read 핵심 개념을 설명해줘
+- one-time token가 왜 필요한지 알려줘
+- One-Time Token Consumption Race / Burn-After-Read 실무 설계 포인트는 뭐야?
+- one-time token에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 One-Time Token Consumption Race / Burn-After-Read를 다루는 deep_dive 문서다. magic link, password reset, email verification, invite, approval link 같은 일회성 토큰은 "한 번만 쓴다"는 말보다, 동시에 두 번 눌렸을 때 누가 이기고 언제 소모 처리할지 정하는 burn-after-read semantics가 더 중요하다. 검색 질의가 one-time token, burn after read, consume token once, token consumption race처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # One-Time Token Consumption Race / Burn-After-Read
 
 > 한 줄 요약: magic link, password reset, email verification, invite, approval link 같은 일회성 토큰은 "한 번만 쓴다"는 말보다, 동시에 두 번 눌렸을 때 누가 이기고 언제 소모 처리할지 정하는 burn-after-read semantics가 더 중요하다.

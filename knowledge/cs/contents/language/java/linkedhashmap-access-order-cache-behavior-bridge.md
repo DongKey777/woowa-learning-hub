@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: LinkedHashMap Access-Order Cache Behavior Bridge
+concept_id: language/linkedhashmap-access-order-cache-behavior-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- linkedhashmap
+- lru-cache
+- map-order
+aliases:
+- LinkedHashMap access-order cache bridge
+- LinkedHashMap LRU eviction beginner
+- accessOrder true removeEldestEntry
+- get changes eviction order LinkedHashMap
+- 조회만 했는데 캐시 순서가 바뀜
+- 왜 캐시에서 B가 지워지지
+symptoms:
+- LinkedHashMap accessOrder=true에서 get 호출이 최근 접근으로 기록되어 eviction 후보를 바꾼다는 점을 놓쳐
+- removeEldestEntry만 override하면 LRU가 된다고 생각하고 accessOrder=true 설정을 확인하지 않아 insertion-order eviction을 만든다
+- 캐시에서 제거된 key를 보고 순서 버그라고 판단하지만 실제로는 get 이후 eldest가 바뀐 LRU 동작임을 설명하지 못해
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- data-structure/linkedhashmap-access-order-mini-primer
+- data-structure/lru-cache-basics
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+next_docs:
+- language/linkedhashmap-get-put-existing-key-access-order-mini-drill
+- language/linkedhashmap-access-order-vs-treemap-navigable-mini-drill
+- data-structure/lru-cache-basics
+linked_paths:
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/data-structure/lru-cache-basics.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/language/java/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md
+- contents/language/java/linkedhashmap-get-put-existing-key-access-order-mini-drill.md
+- contents/language/java/linkedhashmap-access-order-vs-treemap-navigable-mini-drill.md
+confusable_with:
+- data-structure/linkedhashmap-access-order-mini-primer
+- data-structure/lru-cache-basics
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+forbidden_neighbors: []
+expected_queries:
+- LinkedHashMap accessOrder=true에서 get을 했는데 왜 eviction 대상이 바뀌어?
+- removeEldestEntry와 accessOrder=true를 같이 써야 LRU처럼 동작하는 이유를 설명해줘
+- LinkedHashMap으로 용량 2 LRU 캐시를 만들 때 A를 get하면 왜 B가 지워져?
+- insertion-order와 access-order는 캐시 제거 후보를 어떻게 다르게 정해?
+- LinkedHashMap 캐시에서 조회만 했는데 순서가 바뀌는 현상을 beginner 예제로 보여줘
+contextual_chunk_prefix: |
+  이 문서는 LinkedHashMap accessOrder=true가 get/put을 최근 접근으로 기록하고 removeEldestEntry eviction 후보를 LRU처럼 바꾸는 흐름을 설명하는 beginner bridge다.
+  LinkedHashMap access-order, LRU cache, removeEldestEntry, get changes order, eviction target 질문이 본 문서에 매핑된다.
+---
 # LinkedHashMap access-order에서 cache/LRU로 넘어가는 브리지
 
 > 한 줄 요약: `LinkedHashMap`의 access-order 자체는 자료구조 프라이머에서 먼저 잡고, 이 문서는 그 다음 단계인 "`get()` 한 번 했는데 왜 캐시에서 `B`가 지워지지?" 같은 eviction 증상을 LRU 관점으로 번역하는 데 집중한다.

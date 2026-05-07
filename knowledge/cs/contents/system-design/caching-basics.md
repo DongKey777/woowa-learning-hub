@@ -1,8 +1,89 @@
+---
+schema_version: 3
+title: 캐시 기초
+concept_id: system-design/caching-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- cache-is-fast-copy-not-source-of-truth
+- stale-read-invalidation-basics
+- cache-hit-miss-ttl
+aliases:
+- caching basics
+- 캐시 기초
+- 캐시 입문
+- cache 뭐예요
+- 왜 cache 쓰나요
+- cache hit miss 기초
+- ttl 캐시
+- 캐시 무효화 입문
+- source of truth vs cache copy
+- stale read beginner
+- 왜 수정했는데 예전 값이 보여요
+- 캐시가 정답 저장소인가요
+symptoms:
+- 방금 수정했는데 예전 값이 보여서 cache 문제인지 궁금해
+- DB가 느릴 때 cache를 붙이면 되는지 판단이 안 돼
+- cache hit miss, TTL, invalidation을 처음 배우는데 용어가 섞여
+intents:
+- definition
+- comparison
+prerequisites:
+- system-design/system-design-foundations
+- system-design/stateless-backend-cache-database-queue-starter-pack
+next_docs:
+- system-design/cache-invalidation-patterns-primer
+- system-design/caching-vs-read-replica-primer
+- system-design/read-after-write-consistency-basics
+- system-design/queue-vs-cache-vs-db-decision-drill
+- system-design/cdn-basics
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/queue-vs-cache-vs-db-decision-drill.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/cdn-basics.md
+- contents/database/index-basics.md
+confusable_with:
+- system-design/cache-invalidation-patterns-primer
+- system-design/caching-vs-read-replica-primer
+- system-design/read-after-write-consistency-basics
+- system-design/queue-vs-cache-vs-db-decision-drill
+forbidden_neighbors: []
+expected_queries:
+- cache가 정답 저장소가 아니라 빠른 복사본이라는 뜻을 예시로 설명해줘
+- 왜 방금 바꾼 값이 cache 때문에 예전 값으로 보일 수 있어?
+- cache hit, cache miss, TTL, eviction을 처음 배우는 사람 기준으로 정리해줘
+- DB가 느릴 때 cache를 붙여도 되는 상황과 안 되는 상황을 구분해줘
+- 상품 상세 조회와 결제 잔액 조회는 왜 cache 판단이 달라?
+contextual_chunk_prefix: |
+  이 문서는 cache를 원본 앞에 두는 빠른 복사본으로 보고 cache hit, cache miss, TTL, eviction, stale read, invalidation을 처음 잡는 beginner primer다.
+  DB source of truth와 cache copy의 차이, 방금 수정했는데 예전 값이 보이는 이유, 반복 조회와 최신성 요구의 tradeoff, cache와 queue와 read replica를 구분하는 자연어 paraphrase가 본 문서에 매핑된다.
+---
 # 캐시 기초 (Caching Basics)
 
 > 한 줄 요약: 캐시는 "원본 앞에 두는 빠른 복사본"으로, 왜 응답이 빨라지는지와 왜 `방금 바꿨는데 예전 값이 보여요?`가 같이 나오는지를 처음 배우는 문서다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "방금 수정했는데 예전 값이 보여요. 캐시 때문인가요?" | 상품 상세, 공지, 장바구니 조회 최신성 디버깅 | cache가 정답 저장소가 아니라 빠른 복사본임을 먼저 고정한다 |
+| "DB가 느리면 cache를 붙이면 되는지 모르겠어요" | 반복 조회가 많은 API 성능 개선 판단 | 같은 값을 많이 읽는지, stale을 허용할 수 있는지 나눈다 |
+| "TTL, hit, miss, invalidation이 한꺼번에 섞여요" | cache 입문과 read consistency가 동시에 등장한 리뷰 | cache hit/miss와 무효화, 최신성 요구를 별도 질문으로 분리한다 |
 
 관련 문서:
 

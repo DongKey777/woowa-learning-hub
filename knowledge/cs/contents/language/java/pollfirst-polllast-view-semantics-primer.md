@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: PollFirst PollLast View Semantics Primer
+concept_id: language/pollfirst-polllast-view-semantics-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- navigableset
+- treemap
+- live-view
+aliases:
+- pollFirst pollLast view semantics primer
+- descendingSet pollFirst pollLast semantics
+- original vs descending view pollFirst
+- pollFirst current view order
+- live view mutation TreeSet
+- 자바 descendingSet pollFirst pollLast
+symptoms:
+- pollFirst와 pollLast가 숫자상 최소 최대를 고정적으로 제거한다고 외워 descending view에서 반대쪽 끝이 제거되는 상황을 예측하지 못해
+- descendingSet이나 descendingMap을 복사본으로 생각해 view에서 poll한 mutation이 원본에도 반영되는 점을 놓쳐
+- first last와 pollFirst pollLast의 조회 vs 제거 차이를 구분하지 못해 ordered collection 상태 변화가 예상과 달라져
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/pollfirst-polllast-vs-first-last-beginner-bridge
+- language/descending-view-mental-model
+- language/navigablemap-navigableset-mental-model
+next_docs:
+- language/treemap-range-view-live-window-primer
+- language/submap-boundaries-primer
+- language/navigable-range-api-mini-drill
+linked_paths:
+- contents/language/java/pollfirst-polllast-vs-first-last-beginner-bridge.md
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/treemap-range-view-live-window-primer.md
+confusable_with:
+- language/pollfirst-polllast-vs-first-last-beginner-bridge
+- language/descending-view-mental-model
+- language/treemap-range-view-live-window-primer
+forbidden_neighbors: []
+expected_queries:
+- descendingSet에서 pollFirst를 호출하면 원본 TreeSet의 가장 큰 값이 제거되는 이유가 뭐야?
+- pollFirst와 pollLast는 현재 view의 앞뒤 기준이라는 뜻을 예제로 설명해줘
+- descendingSet은 복사본이 아니라 live view라서 제거가 원본에 반영돼?
+- first last와 pollFirst pollLast는 조회와 제거 관점에서 어떻게 달라?
+- 원본 TreeSet과 descending view에서 pollFirst pollLast 결과를 표로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 NavigableSet/NavigableMap의 pollFirst, pollLast가 current view order의 양 끝을 제거하고 descending live view에서는 원본 반대쪽이 제거되는 의미를 설명하는 beginner primer다.
+  pollFirst, pollLast, descendingSet, descendingMap, live view, current view order 질문이 본 문서에 매핑된다.
+---
 # `pollFirst()` / `pollLast()` on Original vs Descending View Primer
 
 > 한 줄 요약: `pollFirst()` / `pollLast()`는 **현재 보고 있는 순서의 양 끝**에서 값을 꺼내며, `descendingSet()` / `descendingMap()` view에서 호출하면 원본의 반대쪽 끝이 제거된다.

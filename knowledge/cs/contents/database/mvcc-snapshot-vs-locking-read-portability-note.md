@@ -9,6 +9,11 @@ doc_role: bridge
 level: advanced
 language: mixed
 source_priority: 85
+review_feedback_tags:
+- mvcc-snapshot-vs
+- locking-read-portability
+- locking-read
+- plain-select-vs
 aliases:
   - MVCC snapshot vs locking read
   - plain SELECT vs FOR UPDATE
@@ -20,11 +25,11 @@ intents:
   - comparison
   - design
 prerequisites:
-  - database/mvcc
-  - database/lock
-  - database/transaction-isolation
+  - database/mvcc-read-view-consistent-read-internals
+  - database/lock-basics
+  - database/transaction-isolation-basics
 next_docs:
-  - database/mvcc-read-view-consistent-read
+  - database/mvcc-read-view-consistent-read-internals
 linked_paths:
   - contents/database/mvcc-read-view-consistent-read-internals.md
   - contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
@@ -32,8 +37,8 @@ linked_paths:
   - contents/database/gap-lock-next-key-lock.md
   - contents/database/mysql-empty-result-locking-reads.md
 confusable_with:
-  - database/mvcc
-  - database/lock
+  - database/mvcc-read-view-consistent-read-internals
+  - database/lock-basics
 forbidden_neighbors:
   - contents/spring/spring-transactional-basics.md
 expected_queries:
@@ -47,7 +52,6 @@ contextual_chunk_prefix: |
   본 문서의 chunk는 PostgreSQL과 MySQL의 plain SELECT(스냅샷) vs locking read
   (현재 row 재확인)가 어떻게 달라지는지를 한 단면씩 설명한다.
 ---
-
 # MVCC Snapshot vs Locking Read Portability Note
 
 > 한 줄 요약: plain `SELECT`가 보는 MVCC snapshot과 `SELECT ... FOR UPDATE` / `FOR SHARE` / `UPDATE` / `DELETE`가 실제로 잠그고 바꾸는 row 기준은 PostgreSQL과 MySQL에서 같지 않다. 그래서 "조회에서 안 보였으니 DML도 못 건드린다" 같은 추론은 엔진을 바꾸는 순간 쉽게 깨진다.

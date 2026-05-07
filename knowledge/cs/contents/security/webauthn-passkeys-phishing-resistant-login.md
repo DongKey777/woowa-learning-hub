@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: WebAuthn / Passkeys / Phishing-Resistant Login
+concept_id: security/webauthn-passkeys-phishing-resistant-login
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- WebAuthn
+- passkey
+- phishing-resistant login
+- public key credential
+aliases:
+- WebAuthn
+- passkey
+- phishing-resistant login
+- public key credential
+- authenticator
+- origin binding
+- RP ID
+- attestation
+- assertion
+- user verification
+- discoverable credential
+- WebAuthn / Passkeys / Phishing-Resistant Login
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/password-storage-bcrypt-scrypt-argon2.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/jwt-deep-dive.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- WebAuthn / Passkeys / Phishing-Resistant Login 핵심 개념을 설명해줘
+- WebAuthn가 왜 필요한지 알려줘
+- WebAuthn / Passkeys / Phishing-Resistant Login 실무 설계 포인트는 뭐야?
+- WebAuthn에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 WebAuthn / Passkeys / Phishing-Resistant Login를 다루는 deep_dive 문서다. passkey는 "비밀번호를 대신하는 로그인 수단"이 아니라, origin에 묶인 공개키 인증으로 피싱과 재사용 공격을 구조적으로 줄이는 방법이다. 검색 질의가 WebAuthn, passkey, phishing-resistant login, public key credential처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # WebAuthn / Passkeys / Phishing-Resistant Login
 
 > 한 줄 요약: passkey는 "비밀번호를 대신하는 로그인 수단"이 아니라, origin에 묶인 공개키 인증으로 피싱과 재사용 공격을 구조적으로 줄이는 방법이다.

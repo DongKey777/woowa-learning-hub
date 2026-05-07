@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: HTTPS / HSTS / MITM
+concept_id: security/https-hsts-mitm
+canonical: false
+category: security
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- https
+- hsts
+- mitm
+- certificate validation
+aliases:
+- https
+- hsts
+- mitm
+- certificate validation
+- tls termination
+- downgrade attack
+- mixed content
+- secure cookie
+- x-forwarded-proto
+- certificate pinning
+- trust store
+- browser hardening
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/cors-credential-pitfalls-allowlist.md
+- contents/security/csp-nonces-vs-hashes-script-policy.md
+- contents/security/csp-report-only-rollout-violation-feedback.md
+- contents/security/open-redirect-hardening.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/oauth2-authorization-code-grant.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- HTTPS / HSTS / MITM 핵심 개념을 설명해줘
+- https가 왜 필요한지 알려줘
+- HTTPS / HSTS / MITM 실무 설계 포인트는 뭐야?
+- https에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 HTTPS / HSTS / MITM를 다루는 deep_dive 문서다. HTTPS는 전송 구간의 기밀성과 무결성을 지키지만, 인증서 검증이 깨지면 MITM은 여전히 가능하다. HSTS는 다운그레이드와 습관적 HTTP 접속을 줄이는 방어선이다. 검색 질의가 https, hsts, mitm, certificate validation처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # HTTPS / HSTS / MITM
 
 > 한 줄 요약: HTTPS는 전송 구간의 기밀성과 무결성을 지키지만, 인증서 검증이 깨지면 MITM은 여전히 가능하다. HSTS는 다운그레이드와 습관적 HTTP 접속을 줄이는 방어선이다.

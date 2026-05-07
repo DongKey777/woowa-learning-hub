@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: JDBC Cursor Cleanup on Download Abort
+concept_id: language/jdbc-cursor-cleanup-download-abort
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- jdbc-streaming
+- download-abort
+- cursor-cleanup
+aliases:
+- JDBC Cursor Cleanup on Download Abort
+- servlet download abort JDBC cursor cleanup
+- StreamingResponseBody JDBC fetchSize cancel
+- large CSV export query cancel
+- broken pipe Statement.cancel ResultSet close
+- JDBC 다운로드 중단 cursor 정리
+symptoms:
+- fetchSize를 설정하면 client abort 때 ResultSet과 server-side cursor가 자동으로 안전하게 정리된다고 기대해
+- StreamingResponseBody callback 밖에서 ResultSet을 열어 두어 try-with-resources 수명과 실제 writer lifetime이 어긋나
+- broken pipe나 async timeout을 JDBC Statement.cancel, ResultSet.close, connection close로 번역하지 못해 orphan query나 connection hold를 만든다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/virtual-thread-jdbc-cancel-semantics
+- language/spring-jdbc-timeout-propagation-boundaries
+next_docs:
+- language/jdbc-db-side-cancel-confirmation-playbook
+- language/jdbc-network-timeout-driver-socket-timeout-pool-eviction
+- language/jdbc-observability-under-virtual-threads
+linked_paths:
+- contents/language/java/streaming-response-abort-surfaces-servlet-virtual-threads.md
+- contents/language/java/streamingresponsebody-sseemitter-terminal-cleanup-matrix.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/spring-jdbc-timeout-propagation-boundaries.md
+- contents/language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/jdbc-db-side-cancel-confirmation-playbook.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+confusable_with:
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/virtual-thread-jdbc-cancel-semantics
+- language/jdbc-db-side-cancel-confirmation-playbook
+forbidden_neighbors: []
+expected_queries:
+- 대용량 CSV 다운로드 중 client가 끊겼을 때 JDBC cursor와 Statement를 어떻게 정리해야 해?
+- fetchSize를 줬는데도 download abort 후 DB query가 남을 수 있는 이유가 뭐야?
+- StreamingResponseBody에서 ResultSet lifetime을 writer callback 안에 묶어야 하는 이유를 설명해줘
+- broken pipe를 보면 Statement.cancel과 ResultSet.close를 어떤 순서로 호출해야 해?
+- servlet timeout과 JDBC cursor cleanup을 하나의 cancelOnce로 묶는 설계를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 servlet streaming download abort를 JDBC ResultSet/cursor/Statement cancel/close 수명으로 번역하는 advanced playbook이다.
+  JDBC cursor cleanup, fetchSize streaming, broken pipe, Statement.cancel, StreamingResponseBody, large export 질문이 본 문서에 매핑된다.
+---
 # JDBC Cursor Cleanup on Download Abort
 
 > 한 줄 요약: 대용량 servlet 다운로드에서 `fetchSize`는 메모리 압력을 줄이는 힌트일 뿐이고, 실제 안전성은 "현재 `ResultSet`/cursor/`Statement`가 streaming writer와 같은 수명 안에 묶여 있는가", "client abort나 timeout을 `Statement.cancel()`과 resource close로 바로 번역하는가"에 달려 있다.

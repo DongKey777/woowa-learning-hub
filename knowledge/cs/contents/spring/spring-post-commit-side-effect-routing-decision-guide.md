@@ -38,7 +38,7 @@ prerequisites:
 next_docs:
   - spring/shopping-cart-order-complete-after-commit-outbox-bridge
   - spring/shopping-cart-order-complete-follow-up-missing-cause-router
-  - spring/spring-service-layer-external-io-after-commit-outbox-primer
+  - spring/service-layer-external-io-after-commit-outbox-primer
 linked_paths:
   - contents/spring/shopping-cart-order-complete-after-commit-outbox-bridge.md
   - contents/spring/shopping-cart-order-complete-follow-up-missing-cause-router.md
@@ -66,12 +66,19 @@ contextual_chunk_prefix: |
   `@TransactionalEventListener(AFTER_COMMIT)`, outbox 세 갈래 결정으로
   연결한다.
 ---
-
 # Spring 커밋 후 후속 작업 경계 결정 가이드: `@EventListener` vs `@TransactionalEventListener(AFTER_COMMIT)` vs Outbox
 
 ## 한 줄 요약
 
 > 같은 프로세스 안 즉시 반응이면 `@EventListener`, 커밋된 사실에만 반응하면 `@TransactionalEventListener(AFTER_COMMIT)`, 다른 시스템 전달 보장이 필요하면 outbox부터 고른다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "주문 저장 뒤 메일 발송을 어디에 붙여야 해요?" | shopping-cart checkout commit 뒤 알림, 캐시 정리, 외부 전송이 따라붙는 흐름 | 즉시 반응, 커밋 후 반응, 전달 보장 요구를 먼저 나눈다 |
+| "`@EventListener`면 commit 뒤에 도는 거 아닌가요?" | 주문 저장이 rollback돼도 listener가 먼저 실행될 수 있는 구조 | ordinary listener와 `AFTER_COMMIT` phase를 구분한다 |
+| "브로커 전송이 유실되면 안 되면 outbox인가요?" | payment/order integration event를 다른 시스템에 반드시 전달해야 하는 상황 | 커밋 후 실행과 durable delivery guarantee는 다른 축으로 본다 |
 
 ## 결정 매트릭스
 

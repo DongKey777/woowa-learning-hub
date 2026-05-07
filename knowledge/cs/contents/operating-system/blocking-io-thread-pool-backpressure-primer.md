@@ -44,7 +44,7 @@ prerequisites:
 next_docs:
 - operating-system/io-models-and-event-loop
 - operating-system/run-queue-load-average-cpu-saturation
-- spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics
+- spring/taskexecutor-taskscheduler-overload-rejection-semantics
 linked_paths:
 - contents/operating-system/sync-async-blocking-nonblocking-basics.md
 - contents/operating-system/process-thread-basics.md
@@ -71,7 +71,6 @@ contextual_chunk_prefix: |
   timeout 관계, reject와 fail-fast를 언제 건강한 신호로 읽는지 같은 자연어
   질문이 본 문서의 관찰 축에 매핑된다.
 ---
-
 # Blocking I/O, 스레드 풀, 백프레셔 입문
 
 > 한 줄 요약: 요청 처리 스레드가 blocking I/O에 묶이면 thread pool은 일을 "빨리" 하는 도구가 아니라 동시에 기다릴 수 있는 수를 제한하는 문이 되고, queue가 차기 시작하면 그때부터는 성능 문제가 아니라 backpressure 설계 문제로 읽어야 한다.

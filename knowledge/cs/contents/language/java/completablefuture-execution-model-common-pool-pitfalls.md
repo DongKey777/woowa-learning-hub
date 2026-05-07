@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: CompletableFuture Execution Model and Common Pool Pitfalls
+concept_id: language/completablefuture-execution-model-common-pool-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- completablefuture-commonpool-blocking
+- async-stage-executor-boundary
+- future-chain-exception-timeout
+aliases:
+- CompletableFuture common pool pitfalls
+- CompletableFuture execution model
+- supplyAsync default executor
+- thenApply vs thenApplyAsync
+- commonPool blocking starvation
+- CompletableFuture thread hopping
+- allOf join timeout
+- Java async executor
+symptoms:
+- CompletableFuture를 쓰면 자동으로 병렬성과 안정성이 생긴다고 생각하고 executor 경계를 명시하지 않고 있어
+- commonPool에서 blocking I/O를 돌려 starvation이 생기는 위험을 놓치고 있어
+- thenApply, thenApplyAsync, thenCompose, allOf가 어느 thread에서 실행되는지 구분하지 못하고 있어
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/java-concurrency-utilities
+- language/executor-sizing-queue-rejection-policy
+- language/forkjoinpool-work-stealing
+next_docs:
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards
+- language/threadlocal-leaks-context-propagation
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/forkjoinpool-work-stealing.md
+- contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md
+- contents/language/java/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+confusable_with:
+- language/executor-sizing-queue-rejection-policy
+- language/forkjoinpool-work-stealing
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+forbidden_neighbors: []
+expected_queries:
+- CompletableFuture에서 executor를 명시하지 않으면 commonPool을 써서 어떤 문제가 생겨?
+- thenApply와 thenApplyAsync는 실행 thread와 executor 관점에서 어떻게 달라?
+- commonPool에서 blocking DB나 HTTP 호출을 돌리면 starvation이 생기는 이유는 뭐야?
+- allOf는 완료 합류만 해주고 결과와 예외 수집은 직접 해야 하는 이유가 뭐야?
+- CompletableFuture chain에서 ThreadLocal context가 사라지는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 CompletableFuture execution model playbook으로, supplyAsync/runAsync default executor, commonPool, thenApply vs thenApplyAsync, blocking stage isolation, allOf/join/exception handling, thread hopping context loss를 다룬다.
+  CompletableFuture commonPool, async stage executor, blocking starvation, allOf join, thenCompose, ThreadLocal context 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # CompletableFuture Execution Model and Common Pool Pitfalls
 
 > 한 줄 요약: `CompletableFuture`는 조합 API처럼 보이지만 실제로는 어떤 executor에서 어떤 단계가 실행되는지까지 이해해야 하며, default `commonPool`에 기대면 blocking과 starvation 문제가 쉽게 생긴다.

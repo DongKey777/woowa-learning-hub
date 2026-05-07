@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Application-Level Fencing Token Propagation
+concept_id: database/application-level-fencing-token-propagation
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- fencing-token
+- stale-writer
+- token-propagation
+- write-guard
+aliases:
+- application level fencing token propagation
+- fencing token propagation
+- epoch propagation
+- write guard
+- stale writer
+- token forwarding
+- end to end fencing
+- application fencing token
+- fencing token 전파
+- stale write 방지
+symptoms:
+- lease token은 DB에 저장했지만 API, command, message, child job으로 전달하지 않아 stale writer가 write path를 통과한다
+- retry나 queue 재처리 중 fencing token이 누락되어 오래된 작업이 최신 상태를 덮어쓴다
+- gateway에서만 token을 확인하고 내부 service/repository write guard는 token을 검증하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/db-lease-fencing-coordination
+- database/ghost-reads-mixed-routing-write-fence-tokens
+next_docs:
+- database/stale-lease-renewal-failure-fencing
+- database/db-lease-fencing-coordination
+- database/compare-and-set-version-columns
+linked_paths:
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/ghost-reads-mixed-routing-write-fence-tokens.md
+- contents/database/stale-lease-renewal-failure-fencing.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/db-lease-fencing-coordination
+- database/stale-lease-renewal-failure-fencing
+- database/compare-and-set-version-columns
+- database/application-level-fencing-token-propagation
+forbidden_neighbors: []
+expected_queries:
+- fencing token을 DB에만 저장하면 부족하고 API command message child job까지 전파해야 하는 이유가 뭐야?
+- 오래된 worker가 retry나 queue 재처리로 다시 write할 때 fencing token propagation으로 어떻게 막아?
+- application-level fencing에서 token을 header, payload, metadata, batch context에 실어야 하는 기준을 알려줘
+- DB lease는 얻었는데 하위 서비스에 fencing token을 넘기지 않으면 stale write가 생기는 예시를 설명해줘
+- fencing token을 로그에 남기면 어떤 epoch의 write가 stale이었는지 추적하기 쉬운 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Application-Level Fencing Token Propagation playbook으로, DB lease/fencing token을
+  발급하는 것만으로는 부족하며 API header, command payload, message metadata, child job context,
+  retry boundary까지 token을 전달하고 write guard가 검증해야 stale writer를 막을 수 있음을 설명한다.
+---
 # Application-Level Fencing Token Propagation
 
 > 한 줄 요약: fencing token은 DB에만 저장하면 반쪽짜리고, 모든 write 경로와 재시도 경계에 같이 실어 보내야 효과가 있다.

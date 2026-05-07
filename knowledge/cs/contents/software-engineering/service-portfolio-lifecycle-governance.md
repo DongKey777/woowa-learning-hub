@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Service Portfolio Lifecycle Governance
+concept_id: software-engineering/service-portfolio-lifecycle-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- service-governance
+- lifecycle
+- portfolio
+- ownership
+aliases:
+- service portfolio lifecycle governance
+- service lifecycle governance
+- orphan service review
+- endless pilot cleanup
+- temporary service portfolio
+- 서비스 포트폴리오 수명주기 거버넌스
+symptoms:
+- pilot나 temporary service가 expiry, graduation criteria, sunset review 없이 영구 운영 표면으로 남아
+- owner가 사라진 orphan service와 delayed sunset 후보가 개별 서비스 문서 뒤에 숨어 portfolio level에서 보이지 않아
+- active와 critical service를 같은 관리 수준으로 다뤄 readiness 투자와 on-call 비용이 실제 위험과 맞지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/service-maturity-model
+next_docs:
+- software-engineering/service-criticality-tiering
+- software-engineering/service-deprecation-sunset-lifecycle
+- software-engineering/service-split-merge-absorb-evolution
+linked_paths:
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/api-lifecycle-stage-model.md
+- contents/software-engineering/prototype-spike-productionization-boundaries.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/service-split-merge-absorb-evolution-framework.md
+- contents/software-engineering/service-criticality-tiering-control-intensity.md
+confusable_with:
+- software-engineering/service-maturity-model
+- software-engineering/service-criticality-tiering
+- software-engineering/service-deprecation-sunset-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- service portfolio lifecycle governance로 endless pilot, orphan service, delayed sunset을 어떻게 줄일 수 있어?
+- temporary service에 expiry와 graduation criteria를 붙이지 않으면 왜 silently permanent가 돼?
+- active와 critical service를 portfolio review에서 어떻게 구분하고 control intensity를 다르게 적용해?
+- owner가 사라진 internal tool이나 sunset 후보를 portfolio table에서 어떤 metadata로 찾아야 해?
+- service portfolio review가 기술 재고 조사가 아니라 조직 책임 표면 정리인 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 서비스 집합을 stage, ownership, criticality, expiry, sunset target 기준으로 주기적으로 검토해 endless pilot과 orphan service를 줄이는 advanced lifecycle governance playbook이다.
+---
 # Service Portfolio Lifecycle Governance
 
 > 한 줄 요약: 서비스 lifecycle을 개별 서비스 단위로만 보면 orphan service, endless pilot, delayed sunset이 쌓이므로, portfolio 관점에서 incubating, active, critical, sunset, temporary 상태를 리뷰하고 정리하는 governance가 필요하다.

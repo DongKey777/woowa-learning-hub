@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Index Maintenance Window, Rollout, and Fallback Playbook
+concept_id: database/index-maintenance-window-rollout-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- index-maintenance-window
+- online-index-rollout-guardrail
+- index-build-fallback
+aliases:
+- index maintenance window
+- online index build
+- index rollout playbook
+- ddl throttle
+- replica lag guardrail
+- index cutover
+- index fallback
+- CREATE INDEX 운영
+- index build guardrail
+- index rollout
+symptoms:
+- 운영 인덱스 작업을 CREATE INDEX 한 줄로 보고 replica lag, lock wait, write latency guardrail을 정하지 않았어
+- index build 중 p95/p99, lag, lock wait가 임계치를 넘으면 언제 abort할지 기준이 없어
+- 새 인덱스가 만들어진 뒤 실제 plan verification과 fallback 노출 제어가 필요해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/online-schema-change-strategies
+- database/metadata-lock-ddl-blocking
+next_docs:
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+- database/secondary-index-maintenance-statistics-skew
+- database/replication-lag-forensics-root-cause-playbook
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/online-schema-change-strategies.md
+- contents/database/instant-ddl-vs-copy-inplace-algorithms.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/replication-lag-forensics-root-cause-playbook.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/gh-ost-pt-osc-cutover-precheck-runbook.md
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/query-tuning-checklist.md
+confusable_with:
+- database/online-schema-change-strategies
+- database/metadata-lock-ddl-blocking
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+forbidden_neighbors: []
+expected_queries:
+- 운영 index build 전 maintenance window guardrail로 replica lag, p99, lock wait abort 기준을 어떻게 정해?
+- CREATE INDEX는 끝났는데 optimizer가 실제로 새 인덱스를 쓰는지 plan verification을 어떻게 해?
+- online index rollout 중 lag threshold를 넘으면 계속 진행할지 abort할지 어떤 기준이 필요해?
+- 새 인덱스 fallback은 DROP INDEX뿐 아니라 invisible index나 query path rollback도 가능한가?
+- index maintenance window는 시간대가 아니라 운영 계약이라는 말을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 운영 인덱스 build/rollout을 replica lag, lock wait, write latency, throttle, abort criteria, plan verification, fallback까지 포함한 maintenance window로 관리하는 advanced playbook이다.
+  index maintenance window, online index build, replica lag guardrail, index fallback 같은 자연어 운영 질문이 본 문서에 매핑된다.
+---
 # Index Maintenance Window, Rollout, and Fallback Playbook
 
 > 한 줄 요약: 운영 인덱스 작업의 핵심은 `CREATE INDEX` 자체보다, 언제 시작하고 얼마나 throttle하며 lag·lock·write cost를 넘기면 중단할지 정한 maintenance window 설계다.

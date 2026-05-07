@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Spring Legacy Configuration Bean Self-Call Detection Card
+concept_id: spring/legacy-configuration-bean-self-call-detection-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- legacy-configuration-bean
+- self-call-detection
+- configuration-bean-self
+- invocation
+aliases:
+- configuration bean self invocation
+- proxyBeanMethods false self call
+- @Bean direct call
+- Spring bean self call checklist
+- self invocation detection
+- legacy configuration review
+- method parameter injection
+intents:
+- drill
+- troubleshooting
+linked_paths:
+- contents/spring/spring-full-vs-lite-configuration-examples.md
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-self-call-verification-test-mini-guide.md
+- contents/database/transaction-basics.md
+confusable_with:
+- spring/full-vs-lite-configuration-examples
+- spring/spring-configuration-vs-autoconfiguration-primer
+- spring/self-call-verification-test-mini-guide
+expected_queries:
+- @Configuration에서 @Bean 메서드가 다른 @Bean 메서드를 직접 호출하는 후보를 어떻게 찾아?
+- proxyBeanMethods=false에서 bean self-invocation이 왜 위험해?
+- rg로 legacy configuration self-call 후보를 빠르게 좁히는 방법은?
+- @Bean self-call을 method parameter injection으로 바꿔야 하는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 legacy @Configuration 클래스에서 @Bean self-invocation 후보를
+  rg로 찾고 리뷰하는 detection drill이다. proxyBeanMethods=false, direct @Bean
+  method call, Kotlin fun, method parameter injection, assertSame/assertNotSame
+  검증 테스트로 위험한 컨테이너 우회 호출을 좁힌다.
+---
 # Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검
 
 > 한 줄 요약: `@Configuration`에서 `@Bean` 메서드가 다른 `@Bean` 메서드를 직접 호출하면, 특히 `proxyBeanMethods = false`일 때 컨테이너가 관리하지 않는 객체가 섞일 수 있다. 이 카드는 self-invocation(내부 호출) 후보를 `rg`로 빠르게 좁히고 리뷰에서 바로 확인할 체크를 제공한다.

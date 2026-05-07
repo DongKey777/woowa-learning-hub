@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Command Pattern, Undo, Queue
+concept_id: design-pattern/command-pattern-undo-queue
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- command-pattern
+- command-vs-event
+- queue-layer-confusion
+aliases:
+- command pattern
+- command queue
+- undo redo command
+- queued work item
+- command vs event
+- command pattern basics
+- command queue vs message queue
+- retryable job command
+- text editor undo
+- request as object
+symptoms:
+- queue라는 단어만 보고 BFS queue, command queue, message broker queue를 같은 층위로 섞는다
+- 실행 요청을 객체로 남기지 않아 undo, redo, retry, delayed execution을 각 기능마다 따로 구현한다
+- command와 event를 구분하지 못해 무엇을 실행하라는 요청과 이미 일어난 사실을 같은 메시지로 다룬다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- language/object-oriented-core-principles
+- data-structure/queue-basics
+- system-design/message-queue-basics
+next_docs:
+- design-pattern/command-handler-pattern
+- design-pattern/command-bus-pattern
+- design-pattern/invariant-preserving-command-model
+linked_paths:
+- contents/software-engineering/oop-design-basics.md
+- contents/system-design/message-queue-basics.md
+- contents/design-pattern/command-handler-pattern.md
+- contents/design-pattern/command-bus-pattern.md
+- contents/design-pattern/invariant-preserving-command-model.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/anti-pattern.md
+- contents/data-structure/queue-basics.md
+confusable_with:
+- design-pattern/command-handler-pattern
+- design-pattern/command-bus-pattern
+- system-design/message-queue-basics
+- design-pattern/observer-pubsub-application-events
+forbidden_neighbors: []
+expected_queries:
+- Command Pattern은 요청을 객체로 만들어 undo, queue, retry를 어떻게 다루게 해?
+- command queue와 message queue, BFS queue는 모두 queue라는 이름이지만 층위가 어떻게 달라?
+- Command는 무엇을 실행하라는 요청이고 Event는 무엇이 일어났다는 사실이라는 차이가 뭐야?
+- undo redo를 구현할 때 Command 객체에 execute와 undo를 함께 두면 어떤 장점이 있어?
+- 주문 승인이나 결제 취소 작업을 나중에 실행하거나 재시도하려면 command로 모델링하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Command Pattern, Undo, Queue primer로, 실행 요청을 객체로 캡슐화해
+  delayed execution, command queue, retry, undo/redo를 같은 모델로 다루는 방법과
+  BFS queue, command queue, message broker queue의 층위 차이를 설명한다.
+---
 # Command Pattern Undo Queue
 
 > 한 줄 요약: Command 패턴은 요청을 객체로 캡슐화해서 실행, 큐잉, 재시도, undo까지 같은 모델로 다루게 한다.
@@ -28,6 +98,8 @@ retrieval-anchor-keywords: command pattern, command queue, undo redo command, qu
 ## 처음 헷갈리는 `queue` 세 갈래
 
 `queue`라는 단어가 보여도 같은 층위는 아니다. 초심자는 먼저 "무엇을 줄 세우는가"를 자르면 덜 헷갈린다.
+
+Command에서 줄 세우는 것은 보통 "실행할 요청 객체"다. 메시지 브로커를 쓰는지는 별도 선택이고, Command 객체는 브로커 없이도 undo history, in-memory queue, scheduler 안에서 의미가 있다.
 
 | 지금 보이는 문장 | 실제 중심 질문 | 여기서 먼저 볼 문서 | safe next step |
 |---|---|---|---|

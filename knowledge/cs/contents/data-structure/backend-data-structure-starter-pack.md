@@ -1,8 +1,87 @@
+---
+schema_version: 3
+title: Backend Data-Structure Starter Pack
+concept_id: data-structure/backend-data-structure-starter-pack
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- data-structure-by-repeated-question
+- map-set-queue-priorityqueue-trie-first-split
+- queue-bfs-service-handoff-disambiguation
+aliases:
+- backend data structure starter pack
+- backend junior data structure
+- map set queue primer
+- 자료구조 기초
+- 자료구조 뭐부터
+- 처음 배우는데 자료구조 뭐부터
+- map set queue 뭐예요
+- queue는 왜 bfs에도 나오나요
+- queue가 왜 service 코드에도 나오나요
+- lookup dedupe FIFO top-k prefix search
+- trie hashmap exact lookup prefix search
+symptoms:
+- 처음 자료구조라 map, set, queue, priority queue를 어떤 기준으로 고르는지 모르겠어
+- queue가 BFS에서도 나오고 service handoff에서도 나와서 헷갈려
+- 백엔드 미션에서 자료구조 선택과 Service 책임 위치가 같이 막혀
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-collections-basics
+next_docs:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/queue-basics
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- algorithm/backend-algorithm-starter-pack
+- software-engineering/service-layer-basics
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+- contents/data-structure/basic.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/queue-basics.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/software-engineering/service-layer-basics.md
+confusable_with:
+- data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer
+- algorithm/backend-algorithm-starter-pack
+- software-engineering/service-layer-basics
+forbidden_neighbors: []
+expected_queries:
+- 백엔드에서 자료구조를 무엇을 저장하나가 아니라 어떤 질문을 반복하나로 고르는 법을 알려줘
+- lookup, dedupe, FIFO, top-k, prefix search는 각각 어떤 자료구조로 시작해?
+- queue가 BFS 도구인지 worker handoff인지 어떻게 구분해?
+- Java Collection 이름은 아는데 service 코드에서 Map이나 Queue를 왜 쓰는지 모르겠어
+- 처음 자료구조 공부할 때 Map, Set, Queue, PriorityQueue, Trie 순서를 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 백엔드 학습자가 자료구조를 저장 형태가 아니라 반복 질문 기준으로 고르게 돕는 beginner starter pack이다.
+  key lookup은 map, membership과 dedupe는 set, FIFO handoff는 queue, earliest-first와 top-k는 priority queue, prefix search는 trie로 분기하고, BFS queue와 service worker queue를 구분하는 자연어 질문이 본 문서에 매핑된다.
+---
 # Backend Data-Structure Starter Pack
 
 > 한 줄 요약: 백엔드에서 자료구조는 "무엇을 저장하나"보다 "무슨 질문을 반복하나"로 고른다. `lookup`은 `map`, `dedupe`는 `set`, `FIFO handoff`는 `queue`, `top-k/earliest-first`는 `priority queue`, `prefix search`는 `trie`가 기본 출발점이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Map, Set, Queue를 이름으로는 아는데 언제 골라야 할지 모르겠어요" | 중복 제거, 빠른 조회, 순서 처리 요구사항 구현 | 저장 모양보다 반복 질문을 기준으로 첫 자료구조를 고른다 |
+| "queue가 BFS에도 나오고 service 코드에도 나와서 헷갈려요" | 최단 거리 문제와 작업 처리 흐름을 같은 단어로 보는 장면 | 이동 횟수 계산인지, 받은 순서 처리인지 먼저 자른다 |
+| "자료구조를 고르다 보니 Service 책임까지 같이 흐려져요" | 장바구니/백엔드 미션에서 구조 선택과 레이어 위치가 섞임 | 구조 선택은 자료구조 문서로, 규칙 위치는 Service 문서로 넘긴다 |
 
 관련 문서:
 

@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > lotto에서 `InputView`나 controller는 "문자열을 읽어 형식을 맞추는 일"까지 맡고, `Lotto`나 `WinningNumbers` 생성은 도메인 규칙을 아는 쪽으로 넘기는 편이 경계가 덜 섞인다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`InputView`가 split한 뒤 바로 `Lotto.from`을 호출해도 되나요?" | 입력 형식 파싱과 도메인 객체 생성이 view/controller에 같이 들어간 코드 | 바깥 표현 해석과 도메인 불변식 검증을 분리한다 |
+| "controller에서 문자열을 파싱하다 보니 예외가 다 섞여요" | 숫자 변환 실패, 길이 오류, 중복 번호가 같은 catch/응답으로 묶이는 구조 | 형식 오류와 도메인 규칙 오류의 책임 주인을 나눈다 |
+| "view가 도메인을 안다는 리뷰가 무슨 뜻이죠?" | 입력 계층이 `WinningNumbers`, `Lotto`, `PurchaseAmount` 규칙까지 직접 알고 있는 설계 | 입력 계층은 raw value/DTO를 만들고 도메인 팩토리 호출은 안쪽 경계로 모은다 |
+
 ## 미션 시나리오
 
 lotto 미션에서는 보통 `"1,2,3,4,5,6"` 같은 입력을 받아 쉼표로 나누고 숫자로 바꾼다. 처음 구현에서는 `InputView`가 `List<Integer>`를 만들고 바로 `Lotto.from(numbers)`까지 호출하기 쉽다. 콘솔 과제라 클래스 수를 줄이고 싶을 때 특히 그렇게 간다.

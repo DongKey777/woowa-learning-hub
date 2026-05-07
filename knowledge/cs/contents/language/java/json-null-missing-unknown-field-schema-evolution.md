@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: JSON null, Missing Field, Unknown Property, and Schema Evolution
+concept_id: language/json-null-missing-unknown-field-schema-evolution
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- json-schema-evolution
+- patch-semantics
+- dto-boundary
+aliases:
+- JSON null missing unknown field schema evolution
+- JSON null vs missing field
+- Java DTO PATCH tri-state semantics
+- unknown property forward compatibility
+- record deserialization compatibility
+- JSON null 누락 unknown field 진화
+symptoms:
+- PATCH DTO에서 missing field와 explicit null을 모두 Java null로 받아 값 삭제와 값 유지 의미를 구분하지 못해
+- unknown property를 public write API와 event replay consumer에서 같은 정책으로 처리해 rolling deploy나 forward compatibility를 깨뜨려
+- record DTO에 새 필수 component를 추가하면서 old payload defaulting과 replay compatibility 전략을 정하지 않아 역직렬화가 깨져
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/io-nio-serialization
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/record-serialization-evolution
+next_docs:
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+- design-pattern/event-upcaster-compatibility-patterns
+- system-design/historical-backfill-replay-platform-design
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+- contents/language/java/java-time-instant-localdatetime-boundaries.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/language/java/optional-vs-fieldpatch-patch-tri-state-bridge.md
+confusable_with:
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/empty-string-blank-null-missing-payload-semantics
+- language/record-serialization-evolution
+forbidden_neighbors: []
+expected_queries:
+- JSON null과 missing field는 PATCH semantics에서 왜 다르게 처리해야 해?
+- Java DTO에서 missing explicit null present value를 tri-state로 표현하는 방법을 설명해줘
+- unknown property를 strict fail ignore preserve 중 언제 선택해야 하는지 알려줘
+- record DTO에 새 필수 필드를 추가하면 schema evolution에서 어떤 호환성 문제가 생겨?
+- 이벤트 replay와 rolling deploy에서 JSON defaulting 시점을 어떻게 정해야 해?
+contextual_chunk_prefix: |
+  이 문서는 JSON null, missing field, unknown property, DTO/record defaulting을 PATCH semantics와 schema evolution 관점에서 다루는 advanced playbook이다.
+  JSON null vs missing, unknown property, tri-state patch, record deserialization, forward compatibility 질문이 본 문서에 매핑된다.
+---
 # JSON `null`, Missing Field, Unknown Property, and Schema Evolution
 
 > 한 줄 요약: JSON 경계에서 `null`, 필드 누락, 모르는 새 필드는 서로 다른 의미를 가진다. Java DTO/record가 이 차이를 뭉개면 PATCH semantics, 기본값 적용, backward/forward compatibility, 이벤트 재처리가 조용히 깨진다.

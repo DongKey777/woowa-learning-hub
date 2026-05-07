@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Architectural Governance Operating Model
+concept_id: software-engineering/architectural-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- architectural-governance
+- decision-rights
+- operating-model
+aliases:
+- Architectural Governance Operating Model
+- architecture governance operating model
+- federated governance
+- architecture stewardship
+- decision rights review portfolio
+- 아키텍처 거버넌스 운영 모델
+symptoms:
+- architectural governance를 중앙 리뷰 회의 하나로만 설계해 standards, decisions, controls, learning 흐름이 한 곳에 몰려 병목이 생겨
+- 모든 결정을 중앙 승인으로 끌어올리거나 반대로 domain-local 판단을 아무 escalation rule 없이 방치해 기준 편차가 커져
+- incident, repeated exception, policy bypass가 decision revalidation과 standards update로 돌아오지 않아 구조적 학습 loop가 닫히지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/rfc-vs-adr-decision-flow
+- software-engineering/architecture-review-anti-patterns
+next_docs:
+- software-engineering/architecture-council-cadence
+- software-engineering/architecture-exception-process
+- software-engineering/policy-as-code
+linked_paths:
+- contents/software-engineering/architecture-review-anti-patterns.md
+- contents/software-engineering/rfc-vs-adr-decision-flow.md
+- contents/software-engineering/architecture-exception-process.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+confusable_with:
+- software-engineering/architecture-council-cadence
+- software-engineering/architecture-exception-process
+- software-engineering/rfc-vs-adr-decision-flow
+forbidden_neighbors: []
+expected_queries:
+- architectural governance를 standards decisions controls learning 네 층으로 나누는 이유가 뭐야?
+- 중앙 architecture review와 federated domain stewardship 사이에서 decision rights를 어떻게 나눠?
+- governance operating model에서 repeated exception과 incident를 decision revalidation으로 연결하는 흐름을 설명해줘
+- architecture steward는 승인자가 아니라 어떤 흐름을 연결하는 역할이야?
+- governance 성공을 통제량이 아니라 drift 회수 속도와 policy update latency로 보는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 architectural governance를 단일 리뷰 회의가 아니라 standards, decisions, controls, learning, decision rights, federated stewardship으로 나누는 advanced operating model playbook이다.
+---
 # Architectural Governance Operating Model
 
 > 한 줄 요약: architectural governance는 리뷰 회의 하나가 아니라, standards, decision flow, exception, portfolio review, and feedback loop를 역할별로 나눠 운영하는 operating model이어야 지속 가능하다.

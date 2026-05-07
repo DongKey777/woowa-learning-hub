@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "Forwarded, X-Forwarded-For, X-Real-IP와 Trust Boundary"
+concept_id: network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- forwarded-header-trust-boundary
+- trusted-proxy-chain
+- client-ip-spoofing
+aliases:
+- Forwarded header trust boundary
+- X-Forwarded-For spoofing
+- X-Real-IP
+- trusted proxy chain
+- proxy_add_x_forwarded_for
+- real_ip_header
+symptoms:
+- X-Forwarded-For 왼쪽 첫 값을 무조건 client IP로 믿어 spoofing을 허용한다
+- CDN WAF LB Reverse Proxy 중 어디까지 trusted proxy인지 정의하지 않는다
+- IP 기반 rate limit auth audit log geo policy가 untrusted forwarded header에 오염된다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/api-gateway-reverse-proxy-operational-points
+- network/tls-loadbalancing-proxy
+next_docs:
+- network/api-gateway-auth-rate-limit-chain
+- network/load-balancer-healthcheck-failure-patterns
+- network/connection-keepalive-loadbalancing-circuit-breaker
+linked_paths:
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+confusable_with:
+- network/api-gateway-reverse-proxy-operational-points
+- network/tls-loadbalancing-proxy
+- network/api-gateway-auth-rate-limit-chain
+- network/load-balancer-healthcheck-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- "X-Forwarded-For와 X-Real-IP는 어디까지 trusted proxy로 믿어야 해?"
+- "Forwarded header를 그대로 믿으면 IP spoofing과 rate limit 우회가 왜 생겨?"
+- "프록시 체인에서 오른쪽부터 trusted proxy를 제거해 client IP를 찾는 방법을 설명해줘"
+- "CDN WAF LB Reverse Proxy App 구조에서 Forwarded trust boundary를 어떻게 설계해?"
+- "X-Forwarded-Proto Host For가 audit log와 auth policy를 오염시키는 장면을 막으려면?"
+contextual_chunk_prefix: |
+  이 문서는 Forwarded, X-Forwarded-For, X-Forwarded-Proto,
+  X-Forwarded-Host, X-Real-IP를 trusted proxy chain과 trust boundary 기준으로
+  해석하고 spoofing/rate-limit/audit-log 오염을 막는 intermediate playbook이다.
+---
 # Forwarded, X-Forwarded-For, X-Real-IP와 Trust Boundary
 
 > 한 줄 요약: 프록시 체인에서 "누가 요청했는가"를 추적하려면 헤더를 읽는 것보다, 어디까지를 신뢰할지 먼저 정해야 한다.

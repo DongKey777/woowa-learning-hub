@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Java 실행 모델과 객체 메모리 mental model 입문
+concept_id: language/java-execution-object-memory-mental-model-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-object-aliasing
+- source-bytecode-jvm
+- static-instance-boundary
+aliases:
+- java execution model basics
+- 자바 실행 모델 입문
+- java source to bytecode
+- class object instance difference
+- 클래스 객체 인스턴스 차이
+- new 하면 뭐가 생기지
+- java reference variable basics
+- static instance basics
+- 자바 참조 공유 기초
+- 객체 메모리 mental model
+symptoms:
+- Student student 선언만으로 객체가 생긴다고 생각해서 new와 참조 변수 선언을 구분하지 못한다
+- a = b 이후 한쪽을 바꾸면 다른 쪽도 바뀌는 이유를 객체 별칭과 참조 공유로 설명하지 못한다
+- static과 instance를 같은 저장 위치로 보거나 main 실행 흐름과 JVM 실행 흐름을 섞는다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- language/java-language-basics
+next_docs:
+- language/java-types-class-object-oop-basics
+- language/java-equality-identity-basics
+- language/java-parameter-passing-pass-by-value-side-effects-primer
+- language/stack-vs-heap-escape-intuition
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-parameter-passing-pass-by-value-side-effects-primer.md
+- contents/language/java/stack-vs-heap-escape-intuition.md
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/operating-system/virtual-memory-basics.md
+confusable_with:
+- language/java-types-class-object-oop-basics
+- language/java-equality-identity-basics
+- language/java-parameter-passing-pass-by-value-side-effects-primer
+forbidden_neighbors: []
+expected_queries:
+- Student student라고 선언만 하면 객체가 생기는지 new가 실제로 무엇을 만드는지 설명해줘
+- 자바에서 a = b를 했을 때 객체 복사인지 같은 객체를 같이 보는 별칭인지 어떻게 구분해?
+- .java에서 .class로 컴파일되고 JVM main이 실행되는 흐름을 객체 생성과 연결해서 알려줘
+- static 필드와 instance 필드가 왜 다르게 공유되는지 초보자 mental model로 보고 싶어
+- stack heap을 정확한 JVM 내부 구조까지 파기 전에 지역 변수와 객체 참조를 어떻게 나눠 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java 실행 흐름과 객체 생성/참조 공유를 연결하는 beginner primer다.
+  .java to .class to JVM, main method, class/object/instance, new, reference variable, aliasing, static vs instance, stack/heap intuition, equality 문서로 넘어가기 전 mental model을 다룬다.
+---
 # Java 실행 모델과 객체 메모리 mental model 입문
 
 > 한 줄 요약: Java 초보자가 `.java -> .class -> JVM`, class/object/instance, `static`/instance, reference 공유까지만 한 장의 흐름으로 연결하고 JVM 내부 세부는 관련 문서로 넘기게 돕는 primer다.

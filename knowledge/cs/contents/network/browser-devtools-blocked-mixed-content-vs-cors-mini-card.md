@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드"
+concept_id: network/browser-devtools-blocked-mixed-content-vs-cors-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- mixed-content-vs-cors
+- browser-policy-block
+- preflight-actual-disambiguation
+aliases:
+- blocked mixed content vs cors
+- mixed content blocked
+- cors blocked policy
+- browser blocked console clue
+- https page http resource
+- preflight blocked clue
+symptoms:
+- DevTools blocked를 전부 CORS로 읽고 mixed content나 extension block을 놓친다
+- HTTPS 페이지에서 HTTP API를 부르는 문제를 서버 장애나 CORS 설정 문제로 오해한다
+- CORS 콘솔 에러가 보이면 actual request가 서버까지 가지 않았다고 단정한다
+- OPTIONS preflight 실패와 actual request 실패를 같은 장면으로 묶는다
+intents:
+- troubleshooting
+- symptom
+- comparison
+prerequisites:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/http-https-basics
+next_docs:
+- network/browser-devtools-options-preflight-vs-actual-failure-mini-card
+- network/cross-origin-cookie-credentials-cors-primer
+- security/cors-samesite-preflight
+- security/preflight-debug-checklist
+linked_paths:
+- contents/network/browser-devtools-blocked-canceled-failed-primer.md
+- contents/network/browser-devtools-options-preflight-vs-actual-failure-mini-card.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/network/http-https-basics.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/security/cors-samesite-preflight.md
+confusable_with:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/browser-devtools-options-preflight-vs-actual-failure-mini-card
+- network/cross-origin-cookie-credentials-cors-primer
+- network/http-https-basics
+- security/cors-samesite-preflight
+forbidden_neighbors: []
+expected_queries:
+- "DevTools blocked가 mixed content인지 CORS인지 콘솔 문구로 어떻게 구분해?"
+- "HTTPS 페이지에서 HTTP API를 호출하면 왜 브라우저가 막아?"
+- "CORS blocked가 보이면 actual request가 서버까지 안 갔다고 봐도 돼?"
+- "OPTIONS preflight blocked와 actual request failure를 Network 탭에서 나누는 법을 알려줘"
+- "blocked by CORS policy와 Mixed Content 문구를 초급 기준으로 비교해줘"
+contextual_chunk_prefix: |
+  이 문서는 DevTools (blocked) row를 Console message 기준으로 mixed content,
+  CORS response read policy, preflight failure, extension block으로 나누고
+  HTTPS page -> HTTP resource와 cross-origin response read 문제를 분리하는
+  beginner symptom router다.
+---
 # Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드
 
 > 한 줄 요약: DevTools `Status`가 `(blocked)`일 때 초급자는 먼저 "브라우저가 왜 막았나"를 콘솔 문구로 나눠 읽어야 하고, mixed content는 `HTTPS 페이지 -> HTTP 자원` 차단, CORS는 `cross-origin 응답 읽기 정책` 차단으로 분리하면 첫 오해가 크게 줄어든다.

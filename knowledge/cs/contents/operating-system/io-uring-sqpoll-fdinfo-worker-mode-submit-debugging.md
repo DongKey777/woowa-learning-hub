@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: io_uring SQPOLL fdinfo Worker Mode Submit Debugging
+concept_id: operating-system/io-uring-sqpoll-fdinfo-worker-mode-submit-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- io-uring-sqpoll
+- fdinfo-worker-mode
+- submit
+- fdinfo
+aliases:
+- io_uring SQPOLL fdinfo
+- SqTail SqHead submit stall
+- io_uring-sq kernel thread
+- iou-wrk not submit side
+- worker mode submit debugging
+- SQPOLL ring debugging
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md
+- contents/operating-system/io-uring-iowq-affinity-max-workers-decision-guide.md
+- contents/operating-system/io-uring-sq-cq-basics.md
+- contents/operating-system/proc-pid-fdinfo-epoll-runtime-debugging.md
+symptoms:
+- SqTail - SqHead가 큰데 일반 ring과 SQPOLL ring의 submit-side owner를 혼동한다.
+- iou-wrk saturation을 submit stall 원인으로 먼저 의심하지만 실제로는 async offload 뒤 신호다.
+- fdinfo에서 SQPOLL kernel thread가 SqHead를 밀지 못하는지 확인해야 한다.
+expected_queries:
+- io_uring SQPOLL에서 SqTail - SqHead가 크면 submit bottleneck은 누구 책임이야?
+- 일반 ring과 SQPOLL ring에서 SqHead를 미는 주체가 어떻게 달라?
+- iou-wrk는 submit side stall의 1차 주인이 아니라는 말은 무슨 뜻이야?
+- fdinfo matrix로 worker-mode submit side를 어떻게 디버깅해?
+contextual_chunk_prefix: |
+  이 문서는 SqTail - SqHead가 크다고 모두 같은 submit bottleneck이 아니며 일반 ring에서는
+  submitter task가, SQPOLL ring에서는 io_uring-sq kernel thread가 SqHead를 민다는 점을
+  fdinfo 기반으로 진단한다.
+---
 # io_uring SQPOLL fdinfo Matrix and Worker-Mode Submit-Side Debugging
 
 > 한 줄 요약: `SqTail - SqHead`가 크다고 해서 같은 submit 병목은 아니다. 일반 ring에서는 submitter 태스크가 `SqHead`를 밀고, `SQPOLL` ring에서는 `io_uring-sq` 커널 스레드가 민다. `iou-wrk`는 그 뒤 async offload 신호일 뿐 submit-side stall의 1차 주인은 아니다.

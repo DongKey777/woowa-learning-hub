@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Cgroup Swap Controller Basics
+concept_id: operating-system/cgroup-swap-controller-basics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- cgroup-swap-controller
+- memory-swap-max
+- swap-accounting
+- cgroup-memory-pressure
+aliases:
+- cgroup swap controller
+- memory.swap.max
+- swap accounting
+- cgroup memory pressure
+- swap limit OOM latency
+- swap current
+intents:
+- definition
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/vm-swappiness-reclaim-behavior.md
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/swap-in-reclaim-fault-path-primer.md
+expected_queries:
+- cgroup swap controller는 memory.swap.max로 무엇을 제한해?
+- swap limit을 너무 빡빡하게 잡으면 OOM이나 latency spike가 앞당겨질 수 있어?
+- cgroup별 swap accounting과 memory pressure를 어떻게 봐야 해?
+- swappiness, reclaim, cgroup memory.high memory.max와 swap controller는 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 cgroup swap controller가 swap usage를 workload별로 제한해 memory pressure를
+  분리하지만 너무 빡빡한 limit은 OOM이나 latency spike를 앞당길 수 있다는 점을 설명한다.
+---
 # Cgroup Swap Controller, Basics
 
 > 한 줄 요약: cgroup swap controller는 swap 사용량을 워크로드별로 제한해 메모리 압박을 분리하지만, 너무 빡빡하면 OOM이나 latency spike를 앞당길 수 있다.

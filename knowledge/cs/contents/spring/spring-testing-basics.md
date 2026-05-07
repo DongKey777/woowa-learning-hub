@@ -1,8 +1,94 @@
+---
+schema_version: 3
+title: Spring 테스트 기초
+concept_id: spring/spring-testing-basics
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- spring-test-slice-choice
+- springboottest-vs-webmvctest-datajpatest
+- service-bean-not-found-slice-boundary
+aliases:
+- spring testing basics
+- Spring 테스트 기초
+- spring test beginner
+- springboottest basics
+- webmvctest basics
+- datajpatest basics
+- slice test basics
+- spring test too slow
+- service bean not found test
+- mockmvc basics
+- mockbean basics
+- spring test 뭐부터
+- SpringBootTest부터 슬라이스 테스트까지
+symptoms:
+- Spring 테스트에서 WebMvcTest, DataJpaTest, SpringBootTest 중 무엇을 켜야 할지 모르겠어
+- WebMvcTest인데 service bean not found가 나와서 slice 경계가 헷갈려
+- 테스트가 느려졌는데 context caching 문제인지 전체 컨텍스트를 너무 많이 켠 건지 궁금해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/test-strategy-basics
+- spring/request-pipeline-bean-container
+next_docs:
+- spring/test-slice-scan-boundaries
+- spring/test-slices-context-caching
+- spring/spring-activeprofiles-vs-test-overrides-primer
+- spring/transactional-basics
+- software-engineering/testing-strategy-and-test-doubles
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-activeprofiles-vs-test-overrides-primer.md
+- contents/spring/spring-transactional-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/spring/spring-jsontest-restclienttest-slice-boundaries.md
+- contents/spring/spring-testcontainers-boundary-strategy.md
+confusable_with:
+- software-engineering/test-strategy-basics
+- software-engineering/testing-strategy-and-test-doubles
+- spring/test-slice-scan-boundaries
+- spring/transactional-basics
+forbidden_neighbors: []
+expected_queries:
+- Spring 테스트에서 WebMvcTest, DataJpaTest, SpringBootTest는 각각 어디까지 컨텍스트를 켜?
+- WebMvcTest인데 service bean not found가 나는 게 component scan 문제인지 slice 경계인지 알려줘
+- controller JSON 응답, repository 매핑, service 계산, 전체 wiring은 각각 어떤 테스트가 먼저야?
+- SpringBootTest가 E2E와 같은 말인지 아닌지 beginner 기준으로 설명해줘
+- 테스트가 느려졌을 때 context caching과 slice 선택을 어떻게 의심해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 테스트를 애플리케이션 컨텍스트를 어디까지 켤지 고르는 문제로 설명하고, @SpringBootTest, @WebMvcTest, @DataJpaTest, 순수 unit test의 범위와 slice boundary를 beginner에게 연결하는 primer다.
+  service bean not found in WebMvcTest, MockMvc, MockBean, DataJpaTest, SpringBootTest not E2E, context caching, transactional test 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Spring 테스트 기초: @SpringBootTest부터 슬라이스 테스트까지
 
 > 한 줄 요약: Spring 테스트는 "애플리케이션을 어디까지 켤지"를 고르는 문제라서, 처음에는 `@SpringBootTest` 하나로 밀기보다 `@WebMvcTest`, `@DataJpaTest` 같은 슬라이스를 먼저 구분하면 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "WebMvcTest, DataJpaTest, SpringBootTest 중 무엇을 켜야 할지 모르겠어요" | controller JSON, repository mapping, 전체 wiring 테스트 선택 | 검증 대상과 Spring context 범위를 함께 고른다 |
+| "`WebMvcTest`인데 service bean not found가 나요" | MVC slice에서 Service까지 실제 Bean으로 기대한 테스트 | slice가 무엇을 scan하고 무엇을 mock/stub해야 하는지 본다 |
+| "테스트가 느려졌는데 전체 컨텍스트를 너무 많이 켠 건지 궁금해요" | `@SpringBootTest` 남용, context cache 깨짐 | test slice 선택과 context caching 경계를 확인한다 |
 
 관련 문서:
 

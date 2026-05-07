@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Fraud / Risk Scoring Pipeline 설계
+concept_id: system-design/fraud-risk-scoring-pipeline-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- fraud detection
+- risk scoring
+- feature pipeline
+- anomaly detection
+aliases:
+- fraud detection
+- risk scoring
+- feature pipeline
+- anomaly detection
+- chargeback
+- rule engine
+- model scoring
+- alert queue
+- graph features
+- real-time decisioning
+- Fraud / Risk Scoring Pipeline 설계
+- fraud risk scoring pipeline design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/billing-usage-metering-system-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/rate-limiter-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Fraud / Risk Scoring Pipeline 설계 설계 핵심을 설명해줘
+- fraud detection가 왜 필요한지 알려줘
+- Fraud / Risk Scoring Pipeline 설계 실무 트레이드오프는 뭐야?
+- fraud detection 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Fraud / Risk Scoring Pipeline 설계를 다루는 deep_dive 문서다. fraud and risk scoring pipeline은 거래와 행동 신호를 실시간으로 평가해 사기와 이상행동을 탐지하고 차단하는 의사결정 시스템이다. 검색 질의가 fraud detection, risk scoring, feature pipeline, anomaly detection처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Fraud / Risk Scoring Pipeline 설계
 
 > 한 줄 요약: fraud and risk scoring pipeline은 거래와 행동 신호를 실시간으로 평가해 사기와 이상행동을 탐지하고 차단하는 의사결정 시스템이다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Batch Result Testing Checklist
+concept_id: software-engineering/batch-result-testing
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-testing
+- result-modeling
+- recovery-test
+aliases:
+- Batch Result Testing Checklist
+- run summary test checklist
+- chunk result test checklist
+- retry candidate test checklist
+- checkpoint invariant test
+- batch recovery test matrix
+- 배치 결과 테스트 체크리스트
+symptoms:
+- Batch 결과 테스트가 count 하나만 맞추고 RunSummary, ChunkResult, RetryCandidate, Checkpoint가 각각 다음 행동을 설명하는지 검증하지 않아
+- 실패 item은 있는데 retryable/manual-review/terminal 분류나 next action이 빠진 회귀를 놓쳐
+- checkpoint와 새 run 정보를 섞어 stale checkpoint나 다른 snapshot으로 resume하는 위험을 테스트하지 않아
+intents:
+- troubleshooting
+- design
+- drill
+prerequisites:
+- software-engineering/batch-result-modeling
+- software-engineering/batch-result-fixtures
+next_docs:
+- software-engineering/retry-queue-assertions
+- software-engineering/batch-idempotency-keys
+- software-engineering/hexagonal-testing-seams-primer
+linked_paths:
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-result-fixture-design-primer.md
+- contents/software-engineering/runsummary-fixture-naming-mini-primer.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+confusable_with:
+- software-engineering/batch-result-modeling
+- software-engineering/batch-result-fixtures
+- software-engineering/retry-queue-assertions
+forbidden_neighbors: []
+expected_queries:
+- batch 결과 테스트에서 RunSummary ChunkResult RetryCandidate Checkpoint를 각각 어떤 checklist로 검증해야 해?
+- failedCount만 맞는 테스트가 retry candidate와 manual review next action 회귀를 놓치는 이유가 뭐야?
+- duplicate run start, chunk timeout retry, item dedup recovery, stale checkpoint resume을 어떻게 batch recovery test matrix로 잡아?
+- RunSummary status assertion은 enum 이름보다 completed partial follow-up already-started 의미를 왜 먼저 봐야 해?
+- Checkpoint가 같은 snapshot과 같은 run을 가리키는지 테스트해야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 batch result testing을 RunSummary, ChunkResult, RetryCandidate, Checkpoint별 checklist와 recovery test matrix로 나눠 검증하는 beginner playbook이다.
+---
 # Batch Result Testing Checklist
 
 > 한 줄 요약: batch 결과 테스트는 "실행 전체 영수증", "chunk 하나의 영수증", "나중에 다시 볼 후보", "이어 달릴 책갈피"가 서로 섞이지 않는지만 먼저 고정해도 초심자 회귀를 많이 줄일 수 있다.

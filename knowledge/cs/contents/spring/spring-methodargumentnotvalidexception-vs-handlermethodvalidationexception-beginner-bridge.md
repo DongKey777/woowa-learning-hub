@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring MethodArgumentNotValidException vs HandlerMethodValidationException Beginner Bridge
+concept_id: spring/methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- methodargumentnotvalidexception-vs-handlermethodvalidationexcept
+- methodargumentnotvalidexception
+- handlermethodvalidationexception
+- valid-request-body
+aliases:
+- MethodArgumentNotValidException
+- HandlerMethodValidationException
+- @Valid request body validation
+- method validation 400
+- request parameter validation
+- PathVariable validation
+- BindingResult validation
+intents:
+- comparison
+- troubleshooting
+linked_paths:
+- contents/spring/spring-valid-400-vs-message-conversion-400-primer.md
+- contents/spring/spring-bindingresult-local-validation-400-primer.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-method-validation-proxy-pitfalls.md
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- spring/valid-400-vs-message-conversion-400-primer
+- spring/spring-bindingresult-local-validation-400-primer
+- spring/method-validation-proxy-pitfalls
+expected_queries:
+- MethodArgumentNotValidException과 HandlerMethodValidationException은 어떤 validation 400이 달라?
+- @Valid @RequestBody DTO 검증 실패와 @RequestParam 제약 실패는 어떻게 구분해?
+- BindingResult를 붙이면 validation exception 흐름이 어떻게 바뀌어?
+- Spring validation 400 응답을 ProblemDetail로 통일하려면 어떤 예외를 처리해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring validation 400을 MethodArgumentNotValidException과
+  HandlerMethodValidationException으로 나누는 beginner bridge다. @Valid @RequestBody
+  DTO field validation, @RequestParam/@PathVariable method validation,
+  BindingResult local handling, @ExceptionHandler/ProblemDetail error contract를 비교한다.
+---
 # Spring `MethodArgumentNotValidException` vs `HandlerMethodValidationException` 초급 브리지: `@Valid` request body와 method validation `400`를 한 표로 잇기
 
 > 한 줄 요약: `MethodArgumentNotValidException`은 보통 "`@Valid`로 request body DTO를 만든 뒤 그 DTO 안 필드 검증이 실패했다"는 뜻이고, `HandlerMethodValidationException`은 보통 "`메서드 파라미터나 반환값 자체에 붙인 제약이 실패했다"는 뜻이라서, 같은 `400`이어도 무엇을 검증했는지부터 갈라서 읽어야 한다.

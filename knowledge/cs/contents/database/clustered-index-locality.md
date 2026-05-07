@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Clustered Index Locality
+concept_id: database/clustered-index-locality
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- clustered-index
+- primary-key-locality
+- secondary-index-lookup
+- page-split
+aliases:
+- clustered index
+- clustered index locality
+- primary key locality
+- leaf page locality
+- page split locality
+- secondary index lookup
+- physical clustering
+- random I/O
+- clustered PK locality
+- 클러스터드 인덱스 locality
+symptoms:
+- InnoDB primary key를 단순 식별자로만 보고 테이블 물리 배치와 range scan locality를 결정한다는 점을 놓친다
+- UUID 같은 random PK로 page split과 locality 저하가 생기는데 secondary index 문제로만 진단한다
+- secondary index는 있어도 본문 row 접근이 흩어져 buffer pool miss와 random I/O가 남는다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/covering-index-composite-ordering
+next_docs:
+- database/clustered-primary-key-update-cost
+- database/btree-latch-contention-hot-pages
+- database/page-split-merge-fill-factor
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/clustered-primary-key-update-cost.md
+- contents/database/page-split-merge-fill-factor.md
+confusable_with:
+- database/index-basics
+- database/covering-index-vs-index-only-scan
+- database/clustered-primary-key-update-cost
+- database/btree-latch-contention-hot-pages
+forbidden_neighbors: []
+expected_queries:
+- InnoDB clustered index는 primary key 순서가 테이블 물리 locality를 결정한다는 뜻이야?
+- UUID random PK를 쓰면 page split, buffer pool miss, range scan locality가 왜 나빠질 수 있어?
+- secondary index lookup 후 primary key로 본문 row를 찾는 비용이 clustered locality에 따라 달라지는 이유가 뭐야?
+- monotonic PK는 locality에는 좋지만 hot page를 만들 수 있다는 trade-off를 설명해줘
+- clustered index를 단순 PK가 아니라 physical layout decision으로 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Clustered Index Locality deep dive로, InnoDB primary key가 clustered index leaf에 row를 배치해
+  physical locality, page split, range scan, secondary index back-to-primary lookup, random I/O 비용을 결정한다는
+  기준을 설명한다.
+---
 # Clustered Index Locality
 
 > 한 줄 요약: clustered index는 PK 순서로 데이터가 물리적으로 가까워지게 만들어, point lookup과 범위 조회의 locality를 결정한다.

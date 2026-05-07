@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Lead Time, Change Failure, and Recovery Loop
+concept_id: software-engineering/lead-time-change-failure-recovery
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- engineering-metrics
+- dora
+- lead-time
+- recovery
+aliases:
+- Lead Time Change Failure Recovery Loop
+- DORA metrics learning loop
+- deployment frequency change failure recovery
+- engineering flow metrics
+- MTTR lead time bottleneck
+- 리드타임 변경 실패 복구 루프
+symptoms:
+- lead time, deployment frequency, change failure rate, recovery time을 팀 랭킹표처럼 써서 metric gaming과 숨은 freeze를 만들고 있어
+- 전사 평균만 보고 서비스, 변경 유형, 승인 대기, batch size, recovery 준비도 차이를 보지 못해 개선 행동이 안 나와
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/incident-review-learning-loop
+next_docs:
+- software-engineering/release-policy-error-budget
+- software-engineering/trunk-based-development-vs-feature-branch-tradeoffs
+- software-engineering/production-readiness-review
+linked_paths:
+- contents/software-engineering/trunk-based-development-vs-feature-branch-tradeoffs.md
+- contents/software-engineering/pair-programming-code-review-tradeoffs.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+confusable_with:
+- software-engineering/release-policy-error-budget
+- software-engineering/incident-review-learning-loop
+- software-engineering/trunk-based-development-vs-feature-branch-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- lead time, deployment frequency, change failure rate, recovery time을 DORA 지표로 함께 읽어야 하는 이유가 뭐야?
+- lead time이 길 때 코딩 속도보다 승인 병목, QA 대기, batch size를 먼저 봐야 하는 이유를 설명해줘
+- change failure rate와 recovery time이 rollout, rollback, kill switch, observability 설계의 결과인 이유는 뭐야?
+- engineering metrics를 평가표로 쓰면 metric gaming이 생기는 사례를 알려줘
+- 서비스별 변경 유형별로 지표를 쪼개 개선 루프로 연결하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 lead time, deployment frequency, change failure rate, recovery time을 팀 평가가 아니라 delivery flow와 운영 회복력 개선 루프로 읽는 advanced bridge이다.
+---
 # Lead Time, Change Failure, and Recovery Loop
 
 > 한 줄 요약: lead time, change failure rate, recovery 같은 엔지니어링 지표는 팀 랭킹표가 아니라 배치 크기와 승인 병목, 사고 복구 체계가 어디서 흐름을 막는지 보여 주는 피드백 루프다.

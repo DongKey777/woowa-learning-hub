@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Real MySQL 8.0 Reference
+concept_id: database/real-mysql-8-reference
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- mysql-reference
+- innodb-internals
+- optimizer
+- explain
+- operations
+aliases:
+- Real MySQL 8.0
+- MySQL 8.0 reference
+- InnoDB internals reference
+- MySQL architecture handbook
+- transaction locking reference
+- optimizer explain reference
+- buffer pool undo redo log
+- metadata lock reference
+- histogram cost model
+- MySQL operations handbook
+symptoms:
+- MySQL 내부 동작을 어느 장에서 찾아야 하는지 빠르게 연결해야 해
+- InnoDB buffer pool, undo, redo, MVCC, metadata lock, optimizer, EXPLAIN 참고 문서를 찾고 있어
+- SQL 문법보다 MySQL 서버 운영과 실행 계획 해석 중심의 레퍼런스를 원해
+intents:
+- deep_dive
+- definition
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/index-and-explain
+next_docs:
+- database/innodb-buffer-pool-internals
+- database/redo-undo-checkpoint-crash-recovery
+- database/optimizer-trace-reading
+- database/histogram-drift-auto-analyze-thresholds
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/index-and-explain.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/optimizer-trace-reading.md
+- contents/database/histogram-drift-auto-analyze-thresholds.md
+confusable_with:
+- database/index-and-explain
+- database/optimizer-trace-reading
+- database/innodb-buffer-pool-internals
+forbidden_neighbors: []
+expected_queries:
+- Real MySQL 8.0에서 InnoDB 아키텍처와 버퍼 풀은 어느 장을 먼저 봐야 해?
+- MySQL 트랜잭션 잠금, metadata lock, gap lock을 공부할 때 이 레퍼런스를 어떻게 써야 해?
+- optimizer와 EXPLAIN 실행 계획을 볼 때 Real MySQL 어느 장이 연결돼?
+- MySQL 운영 설정, SET PERSIST, 계정 권한, 압축 암호화는 어떤 장에서 찾아야 해?
+- 이 저장소 DB 문서와 Real MySQL 8.0 레퍼런스를 같이 읽는 순서를 추천해줘
+contextual_chunk_prefix: |
+  이 문서는 Real MySQL 8.0 자료를 InnoDB internals, transaction locking, index, optimizer, EXPLAIN, operations reference로 연결하는 advanced reference guide다.
+  MySQL 8.0 레퍼런스, Real MySQL 장별 안내, buffer pool/redo/optimizer/metadata lock 질문이 본 문서에 매핑된다.
+---
 # Real MySQL 8.0 Reference
 
 **난이도: 🔴 Advanced**

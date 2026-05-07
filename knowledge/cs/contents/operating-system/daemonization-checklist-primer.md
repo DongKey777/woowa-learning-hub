@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Daemonization Checklist Primer
+concept_id: operating-system/daemonization-checklist-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- daemonization
+- setsid-stdio-redirection
+- umask-chdir-daemon
+- background-process-supervisor
+aliases:
+- daemonization checklist
+- setsid stdio redirection
+- umask chdir daemon
+- background process supervisor
+- session detach
+- daemon process shape
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/session-vs-process-group-primer.md
+- contents/operating-system/shell-job-control-command-bridge.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/signals-process-supervision.md
+expected_queries:
+- daemonization에서 setsid 다음에 stdio redirect, umask, chdir을 왜 해?
+- background process를 오래 돌리는 기본 checklist를 알려줘
+- modern supervisor가 있으면 daemonize 과정을 직접 안 해도 돼?
+- session과 controlling terminal에서 떨어지는 과정이 무엇이야?
+contextual_chunk_prefix: |
+  이 문서는 setsid가 terminal/session에서 떨어지는 첫 단계일 뿐이고, long-running background
+  process의 기본 shape를 만들려면 stdio redirection, umask, chdir, signal handling 같은
+  정리가 필요하다는 beginner checklist다.
+---
 # Daemonization Checklist Primer
 
 > 한 줄 요약: `setsid()`는 terminal/session에서 떨어뜨리는 1단계일 뿐이고, 그 다음에는 보통 stdio redirection, `umask`, `chdir`까지 정리해야 "background로 오래 도는 프로세스"의 기본 shape가 완성된다. 다만 modern deployment에서는 이 일의 상당 부분을 supervisor가 대신한다.

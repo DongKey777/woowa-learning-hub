@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Monotonic Queue and Stack
+concept_id: data-structure/monotonic-queue-and-stack
+canonical: true
+category: data-structure
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- monotonic-queue-stack-primer
+- window-expiration-vs-answer-finalization
+- amortized-one-pass-candidate-pruning
+aliases:
+- monotonic queue and stack
+- monotonic deque
+- monotonic stack
+- 단조 큐 스택 입문
+- 단조 덱 스택 비교
+- sliding window maximum monotonic deque
+- next greater element monotonic stack
+- histogram largest rectangle stack
+- window answer read
+- index answer finalize
+- amortized O n monotonic
+- 단조 구조 멘탈 모델
+symptoms:
+- sliding window maximum, next greater element, histogram을 모두 단조 구조라고만 보고 deque와 stack 선택 기준을 구분하지 못해
+- while pop이 여러 번 보이면 O(n^2)처럼 느껴져 각 원소가 한 번 들어오고 한 번 나간다는 상각 감각이 약해
+- window 만료 처리가 필요한 문제와 pop 순간 각 index 답이 확정되는 문제를 같은 구현으로 풀려고 해
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/deque-basics
+- data-structure/stack-basics
+next_docs:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-structure-router-quiz
+linked_paths:
+- contents/data-structure/deque-vs-stack-signal-card.md
+- contents/data-structure/deque-router-example-pack.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+confusable_with:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+- data-structure/deque-vs-stack-signal-card
+- algorithm/sliding-window-patterns
+forbidden_neighbors: []
+expected_queries:
+- monotonic deque와 monotonic stack을 window 만료와 답 확정 기준으로 비교해줘
+- sliding window maximum은 왜 deque가 필요하고 next greater element는 왜 stack이 맞아?
+- 단조 구조에서 while pop이 있어도 전체 O(n)인 이유를 상각 관점으로 설명해줘
+- window answer read와 index answer finalize 차이를 beginner 기준으로 알려줘
+- monotonic queue stack을 배우고 다음에 어떤 walkthrough로 가야 하는지 분기해줘
+contextual_chunk_prefix: |
+  이 문서는 monotonic deque와 monotonic stack을 좋은 후보만 남기는 candidate pruning 구조로 소개하고, sliding window extrema의 window expiration과 next greater/histogram의 answer finalization을 구분하는 intermediate primer다.
+  monotonic queue, monotonic stack, sliding window maximum, next greater element, histogram largest rectangle, amortized O(n), deque vs stack 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Monotonic Queue and Stack
 
 > 한 줄 요약: 단조 스택/큐는 "현재까지 본 값 중 의미 없는 값을 버리는" 방식으로 최적 후보를 빠르게 유지하는 자료구조다.

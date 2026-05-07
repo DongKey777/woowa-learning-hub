@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: FD, Socket, Pipe, Open File Description 분류 연습
+concept_id: operating-system/fd-socket-pipe-open-file-description-classification-practice-drill
+canonical: false
+category: operating-system
+difficulty: intermediate
+doc_role: drill
+level: intermediate
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- fd-vs-resource-kind-boundary
+- dup-shared-open-file-description
+- pipe-socket-scene-classification
+aliases:
+- fd socket pipe open file description drill
+- fd vs socket practice drill
+- pipe vs socket classification practice
+- open file description classification
+- dup shared offset practice
+- socket도 fd인가요 연습
+- pipe도 fd인가요 연습
+- fd socket pipe 분류 연습
+- open file description 뭐가 공유돼
+- fork dup fd semantics drill
+symptoms:
+- fd 번호와 socket 자원 종류를 같은 말처럼 읽어서 장면 해석이 꼬여요
+- dup나 fork 뒤에 무엇이 공유되는지 설명은 들었는데 open file description 축이 아직 안 잡혀요
+- pipe, socket, fd를 한 문장 안에서 다시 분류해 보는 연습이 필요해요
+intents:
+- drill
+- comparison
+prerequisites:
+- operating-system/file-descriptor-basics
+- operating-system/process-lifecycle-and-ipc-basics
+next_docs:
+- operating-system/open-file-description-dup-fork-shared-offsets
+- operating-system/subprocess-fd-hygiene-basics
+- operating-system/pipe-socketpair-eventfd-memfd-ipc-selection
+linked_paths:
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/network/tcp-udp-basics.md
+confusable_with:
+- operating-system/file-descriptor-basics
+- operating-system/open-file-description-dup-fork-shared-offsets
+- operating-system/process-lifecycle-and-ipc-basics
+forbidden_neighbors: []
+expected_queries:
+- fd, socket, pipe, open file description을 한 장면에서 다시 자르는 운영체제 연습 문제가 필요해
+- socket도 fd인가요와 pipe도 fd인가요를 같이 정리하는 분류 드릴이 있어?
+- dup 뒤 shared offset이 왜 생기는지 설명 전에 분류 연습부터 하고 싶어
+- fork와 dup 예시를 보고 번호, 자원 종류, 커널 열린 상태를 구분하는 self-check가 필요해
+- file descriptor와 open file description을 같은 개념으로 읽지 않게 손으로 판별해 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 file descriptor 번호, socket이나 pipe 같은 자원 종류, open file
+  description이라는 커널 열린 상태 축을 backend 장면으로 다시 나눠 보는
+  drill이다. socket도 fd인가, pipe도 fd인가, dup 뒤에 왜 offset이 같이
+  움직이나, fork 뒤 nonblocking 변경이 왜 같이 보이나, EOF가 안 오는 장면을
+  어느 축으로 읽어야 하나 같은 자연어 paraphrase가 본 문서의 분류 연습에
+  매핑된다.
+---
 # FD, Socket, Pipe, Open File Description 분류 연습
 
 > 한 줄 요약: backend 예시를 볼 때 `fd는 번호`, `socket/pipe는 자원 종류`, `open file description은 커널이 들고 있는 열린 상태`라는 세 축으로 다시 분류해 보는 practice drill이다.

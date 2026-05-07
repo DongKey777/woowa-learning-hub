@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Workingset Refault Page Cache Reclaim Debugging
+concept_id: operating-system/workingset-refault-page-cache-reclaim-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- workingset-refault-page
+- cache-reclaim
+- workingset-refault
+- page-cache-refault
+aliases:
+- workingset refault
+- page cache refault
+- hot page reclaimed
+- refault distance
+- cache thrash debugging
+- page cache reclaim signal
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/memory-reclaim-cgroup-v2-proactive-reclaim.md
+- contents/operating-system/readahead-tuning-page-cache.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+symptoms:
+- memory pressure에서 많이 reclaimed 된 것보다 hot page를 곧바로 다시 읽는 refault가 문제다.
+- page cache가 부족한지 access pattern이 cache와 맞지 않는지 구분해야 한다.
+- workingset refault가 증가하며 disk I/O와 p99 latency가 함께 오른다.
+expected_queries:
+- workingset refault는 방금 지운 hot page를 곧바로 다시 읽고 있다는 신호야?
+- page cache reclaim debugging에서 refault를 왜 중요하게 봐?
+- cache thrash와 direct I/O 선택 전 workingset refault를 어떻게 확인해?
+- memory.reclaim 후 refault가 늘면 workload impact를 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 memory pressure에서 중요한 질문이 얼마나 많이 지웠는가보다 방금 지운 hot page를
+  곧바로 다시 읽고 있느냐라고 보고, workingset refault를 page cache reclaim 품질 signal로 설명한다.
+---
 # Workingset Refault, Page Cache Reclaim, Runtime Debugging
 
 > 한 줄 요약: 메모리 압박에서 진짜 중요한 질문은 "얼마나 많이 지웠는가"보다 "방금 지운 hot page를 곧바로 다시 읽고 있나"이며, workingset refault는 그 힌트를 준다.

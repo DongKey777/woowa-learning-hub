@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Java 상속과 오버라이딩 기초
+concept_id: language/java-inheritance-overriding-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- inheritance-overriding-dynamic-dispatch
+- override-vs-overload-separation
+- inheritance-to-composition-handoff
+aliases:
+- java inheritance overriding basics
+- Java 상속과 오버라이딩 기초
+- 상속 기초
+- overriding overloading 차이
+- @Override 왜 붙이나요
+- dynamic dispatch basics
+- extends super beginner
+- 상속 언제 쓰나요
+- 상속보다 조합 언제
+- abstract class interface next step
+- template method strategy handoff
+symptoms:
+- extends가 부모 코드를 복사하는 것인지 타입 관계를 만드는 것인지 헷갈려
+- overriding과 overloading을 이름이 같은 메서드로만 외워서 parameter와 선택 시점을 구분하지 못해
+- 변수 타입은 부모인데 실제 객체가 자식이면 왜 자식 메서드가 실행되는지 dynamic dispatch가 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-methods-constructors-practice-primer
+next_docs:
+- language/java-overloading-vs-overriding-beginner-primer
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/composition-over-inheritance-basics
+- design-pattern/template-method-basics
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-overloading-vs-overriding-beginner-primer.md
+- contents/language/java/java-constructors-initialization-order-basics.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method-vs-strategy.md
+confusable_with:
+- language/java-overloading-vs-overriding-beginner-primer
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/composition-over-inheritance-basics
+- design-pattern/template-method-basics
+forbidden_neighbors: []
+expected_queries:
+- Java 상속과 overriding을 extends, super, @Override 기준으로 처음부터 설명해줘
+- overriding과 overloading 차이를 parameter 목록과 runtime dispatch 기준으로 비교해줘
+- 부모 타입 변수에 자식 객체를 넣었는데 왜 자식 메서드가 실행되는지 알려줘
+- @Override를 붙이면 어떤 실수를 컴파일러가 잡아주는 거야?
+- 상속을 배운 뒤 추상 클래스, 인터페이스, 조합 중 무엇을 다음에 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java inheritance를 is-a type relation으로 보고 overriding, overloading, @Override, dynamic dispatch를 작은 class 예제로 연결하는 beginner primer다.
+  extends, super constructor, override vs overload, runtime method dispatch, abstract class vs interface, composition over inheritance 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java 상속과 오버라이딩 기초
 
 > 한 줄 요약: `extends`, method overriding vs overloading, `@Override`, dynamic dispatch를 작은 클래스 예제로 묶어 처음 배우는 사람이 "상속을 언제 쓰는지" 큰 그림부터 "실제 메서드가 왜 이렇게 선택되는지" 기초까지 한 번에 연결하도록 돕는 primer다.

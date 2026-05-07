@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring Transactional Self Invocation Test Bridge Primer
+concept_id: spring/transactional-self-invocation-test-bridge-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 75
+review_feedback_tags:
+- transactional-self-invocation
+- test
+- transaction-behavior-verification
+- self-call-identity
+aliases:
+- @Transactional self invocation test
+- transaction behavior verification
+- self call identity vs behavior
+- rollback behavior test
+- proxy advice test bridge
+intents:
+- drill
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-testing-basics.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+- contents/spring/spring-self-call-verification-test-mini-guide.md
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+expected_queries:
+- @Transactional self invocation은 assertSame이 아니라 어떤 behavior test로 검증해?
+- @Bean self-call identity 테스트와 transaction self invocation 테스트는 무엇이 달라?
+- rollback이나 commit behavior로 proxy advice 적용 여부를 확인하고 싶어
+- Spring transactional self invocation test를 초급자에게 bridge해줘
+contextual_chunk_prefix: |
+  이 문서는 @Bean self-call은 identity를 확인하지만 @Transactional self-invocation은
+  transaction behavior, rollback, commit, proxy advice 적용 여부를 검증해야 한다는 차이를
+  초급자에게 연결하는 test bridge다.
+---
 # Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가
 
 > 한 줄 요약: `@Bean` self-call은 "같은 객체인가?"를 identity로 확인하지만, `@Transactional` self-invocation은 "트랜잭션 동작이 실제로 걸렸는가?"를 behavior로 확인해야 한다.

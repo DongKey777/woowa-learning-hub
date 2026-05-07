@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Batch Fixture Builder vs Factory Smells
+concept_id: software-engineering/batch-fixture-builder
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-testing
+- fixture-design
+- readable-tests
+aliases:
+- Batch Fixture Builder vs Factory Smells
+- batch test data builder decision
+- fixture factory smell beginner
+- named fixture vs builder
+- batch helper smell
+- test fixture builder 언제
+symptoms:
+- batch fixture를 재사용하려다 createDefault, caseA, fixture1 같은 opaque factory가 되어 테스트 장면 의미를 숨겨
+- 값이 많다는 이유만으로 builder부터 만들고, 실제로는 named fixture 하나로 충분한 beginner batch test를 복잡하게 만들어
+- 같은 장면의 변형이 반복되는 경우와 서로 다른 도메인 장면을 하나의 generic factory로 뭉치는 smell을 구분하지 못해
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- software-engineering/batch-result-fixtures
+- software-engineering/readable-code-layering-test-feedback-loop-primer
+next_docs:
+- software-engineering/batch-result-testing
+- software-engineering/runsummary-fixture-naming
+- software-engineering/testing-named-bulk-contracts
+linked_paths:
+- contents/software-engineering/batch-result-fixture-design-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/refactoring-basics.md
+- contents/software-engineering/runsummary-fixture-naming-mini-primer.md
+confusable_with:
+- software-engineering/batch-result-fixtures
+- software-engineering/runsummary-fixture-naming
+- software-engineering/testing-named-bulk-contracts
+forbidden_neighbors: []
+expected_queries:
+- batch 테스트 fixture는 언제 named fixture로 두고 언제 builder를 얇게 올려야 해?
+- createDefaultBatchResult나 caseA 같은 fixture factory smell이 테스트 의미를 숨기는 이유가 뭐야?
+- product sync chunk timeout 실패 같은 장면 이름을 fixture에 남기는 게 왜 beginner 테스트에 좋아?
+- 같은 장면에서 3개 이상 속성만 반복 변경될 때 builder가 정당화되는 기준을 알려줘
+- batch fixture helper가 너무 커졌을 때 run chunk retry checkpoint로 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 batch 테스트 fixture에서 named fixture, thin builder, opaque factory smell을 구분해 readable test setup을 유지하는 beginner bridge다.
+---
 # Batch Fixture Builder vs Factory Smells
 
 > 한 줄 요약: batch 테스트에서 fixture helper는 먼저 작은 이름 있는 장면으로 유지하고, 같은 장면을 여러 축으로 반복 바꿔야 할 때만 얇은 builder를 올리면 초심자도 읽기 쉬움과 수정 편의성을 같이 지킬 수 있다.

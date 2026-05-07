@@ -1,6 +1,91 @@
+---
+schema_version: 3
+title: 인덱스와 실행 계획
+concept_id: database/index-and-explain
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- explain-first-read-order
+- key-rows-extra-type
+- explain-analyze-validation
+aliases:
+- index and explain
+- explain basics
+- explain analyze beginner
+- explain vs explain analyze
+- explain plan first read
+- explain 해석 순서
+- explain 처음인데 뭐부터 봐요
+- key null 뭐예요
+- using filesort 왜 보여요
+- using temporary beginner
+- rows가 너무 커 보여요
+- type all explain
+symptoms:
+- EXPLAIN 표에서 key, rows, Extra, type 중 무엇부터 봐야 할지 모르겠어
+- key가 NULL이고 Using filesort가 보이는데 인덱스 문제인지 정렬 문제인지 헷갈려
+- EXPLAIN과 EXPLAIN ANALYZE를 언제 다르게 써야 하는지 궁금해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/index-basics
+next_docs:
+- database/query-tuning-checklist
+- database/covering-index-composite-ordering
+- database/index-condition-pushdown-filesort-temporary-table
+- database/statistics-histograms-cardinality-estimation
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/index-basics.md
+- contents/database/explain-first-read-timeout-mini-card.md
+- contents/database/postgresql-explain-analyze-terms-mini-bridge.md
+- contents/database/postgresql-plan-node-mini-card.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/generated-columns-functional-index-migration.md
+- contents/database/query-tuning-checklist.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/sql-joins-and-query-order.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/index-basics
+- database/query-tuning-checklist
+- database/covering-index-composite-ordering
+- database/statistics-histograms-cardinality-estimation
+forbidden_neighbors: []
+expected_queries:
+- EXPLAIN 처음인데 key, rows, Extra, type을 어떤 순서로 봐야 해?
+- EXPLAIN에서 key NULL이면 인덱스가 없다는 뜻인지 조건식이 안 맞는 뜻인지 알고 싶어
+- Using filesort와 Using temporary가 보이면 어떤 문서로 이어 가야 해?
+- EXPLAIN과 EXPLAIN ANALYZE 차이를 초보자 기준으로 설명해줘
+- PostgreSQL plan node와 MySQL Extra를 처음 읽을 때 어떻게 대응해서 보면 돼?
+contextual_chunk_prefix: |
+  이 문서는 EXPLAIN을 DB가 쿼리를 어떤 경로로 읽으려는지 보여 주는 계획으로 보고, key, rows, Extra, type을 읽는 순서와 EXPLAIN ANALYZE로 실제 실행을 검증하는 감각을 잡는 beginner primer다.
+  key null, type all, using filesort, using temporary, rows estimate, index scan, full scan, explain analyze actual rows 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # 인덱스와 실행 계획
 
 > 한 줄 요약: `EXPLAIN`은 "DB가 이 조회를 어떤 길로 읽으려는지 적어 둔 경로 메모"이고, `EXPLAIN ANALYZE`는 그 메모가 실제 실행과 얼마나 맞았는지 확인하는 2차 검증이다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 목록 API가 느린데 EXPLAIN에서 뭘 먼저 봐야 해요?" | roomescape admin list가 date, theme, time 조건과 join으로 느려지는 조회 | key, rows, type/Extra를 순서대로 읽어 접근 경로를 본다 |
+| "`key = NULL`이면 인덱스가 없다는 뜻인가요?" | shopping-cart 주문 목록 조건은 있는데 chosen index가 없는 실행 계획 | 인덱스 부재인지 조건식/컬럼 순서가 안 맞는지 나눈다 |
+| "`Using filesort`가 보이면 무조건 장애인가요?" | 정렬/페이지네이션이 붙은 목록 조회에서 Extra에 filesort가 표시되는 상황 | 정렬 요구, index ordering, 실제 rows 규모를 함께 본다 |
 
 **난이도: 🟢 Beginner**
 

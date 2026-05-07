@@ -10,7 +10,11 @@ level: beginner
 language: ko
 source_priority: 90
 mission_ids: []
-review_feedback_tags: []
+review_feedback_tags:
+- transaction-isolation
+- isolation-level
+- read-committed
+- repeatable-read
 aliases:
 - isolation level
 - Read Committed
@@ -49,7 +53,6 @@ contextual_chunk_prefix: |
   read / phantom read 갈래 같은 자연어 paraphrase가 본 문서의 격리 수준
   네 단계에 매핑된다.
 ---
-
 # 트랜잭션 격리 수준 기초 (Transaction Isolation Level Basics)
 
 > 한 줄 요약: 격리 수준은 "같은 row나 범위를 다시 읽을 때 왜 값이 달라지지?"를 설명하는 동시성 가시성 규칙이다.

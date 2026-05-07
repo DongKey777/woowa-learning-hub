@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Java PriorityQueue Pitfalls
+concept_id: data-structure/java-priorityqueue-pitfalls
+canonical: true
+category: data-structure
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- java-priorityqueue-comparator-direction
+- priorityqueue-stale-entry
+- heap-not-sorted-list
+aliases:
+- Java PriorityQueue pitfalls
+- PriorityQueue not sorted
+- PriorityQueue stale entry
+- PriorityQueue tie breaker
+- Java min heap max heap
+- decrease key 없음
+- duplicate priority order
+- PriorityQueue 삽입 순서 보장
+symptoms:
+- Java PriorityQueue 기본이 min-heap이라는 점을 놓쳐 comparator 방향을 반대로 잡고 있어
+- 같은 priority에서 삽입 순서가 자동 보장된다고 기대하고 있어
+- Dijkstra나 Prim에서 decrease-key 대신 stale entry를 버리는 패턴을 이해하지 못하고 있어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/heap-basics
+next_docs:
+- data-structure/top-k-heap-direction-patterns
+- data-structure/mutable-priority-stale-ticket-pattern
+- algorithm/sparse-graph-shortest-paths
+- language/treeset-treemap-comparator-tie-breaker-basics
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/top-k-heap-direction-patterns.md
+- contents/data-structure/mutable-priority-stale-ticket-pattern.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+confusable_with:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/top-k-heap-direction-patterns
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+forbidden_neighbors: []
+expected_queries:
+- Java PriorityQueue에서 min-heap과 max-heap comparator 방향을 어떻게 잡아?
+- PriorityQueue는 같은 priority에서 삽입 순서를 보장하지 않는 이유가 뭐야?
+- PriorityQueue iterator나 toString 결과가 정렬되어 있지 않은 이유는 뭐야?
+- Dijkstra에서 decrease-key가 없을 때 stale entry를 어떻게 버려?
+- heap에 넣은 객체의 priority 필드를 바꾸면 왜 자동으로 재정렬되지 않아?
+contextual_chunk_prefix: |
+  이 문서는 Java PriorityQueue pitfalls playbook으로, min-heap default, comparator direction, tie-breaker sequence, heap is not sorted iteration, no decrease-key, stale entry skip을 다룬다.
+  PriorityQueue 동점 처리, 삽입 순서 보장, stale entry, max heap comparator, Dijkstra duplicate push 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java PriorityQueue Pitfalls
 
 > 한 줄 요약: Java `PriorityQueue`는 "정렬된 리스트"가 아니라 "루트만 빠른 min-heap"이므로 comparator 방향, tie-breaker, stale entry 처리 방식을 따로 챙겨야 한다.

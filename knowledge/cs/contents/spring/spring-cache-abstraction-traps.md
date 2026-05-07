@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring Cache Abstraction Traps
+concept_id: spring/cache-abstraction-traps
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- cache-abstraction-traps
+- cache-abstraction
+- cacheable-trap
+- self-invocation-cacheable
+aliases:
+- Spring Cache abstraction
+- @Cacheable trap
+- self invocation cacheable
+- cache stale data
+- @CacheEvict
+- @CachePut
+- CacheManager boundary
+- transaction boundary with cache
+intents:
+- troubleshooting
+- design
+symptoms:
+- @Cacheable을 붙였는데 같은 클래스 내부 호출이라 cache가 적용되지 않는다.
+- cache key나 invalidation이 잘못되어 stale data 또는 다른 사용자 데이터가 보인다.
+- 트랜잭션 commit 전후와 cache update/evict 시점이 어긋나 정합성이 흔들린다.
+linked_paths:
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/network/cache-control-practical.md
+- contents/system-design/distributed-cache-design.md
+expected_queries:
+- Spring @Cacheable이 self-invocation에서 왜 안 먹어?
+- Spring Cache key와 invalidation에서 어떤 함정이 있어?
+- @CacheEvict와 transaction boundary가 어긋나면 어떤 문제가 생겨?
+- CacheManager를 붙였는데 stale data가 보일 때 어디부터 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Cache abstraction의 @Cacheable, @CachePut, @CacheEvict,
+  CacheManager, AOP proxy, self-invocation, cache key design, TTL, invalidation,
+  transaction boundary 함정을 다룬다. 캐시를 붙이는 법보다 캐시를 붙였을 때
+  어디가 틀어지는지 진단하는 playbook이다.
+---
 # Spring Cache 추상화 함정
 
 > 한 줄 요약: `@Cacheable`은 캐시를 쉽게 붙여주지만, 정책과 경계까지 자동으로 해결해주지는 않는다.

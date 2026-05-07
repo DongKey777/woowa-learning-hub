@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Flyweight Cache State Sharing Tradeoffs
+concept_id: design-pattern/flyweight-cache-state-sharing-tradeoffs
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- flyweight-pattern
+- shared-state-boundary
+- cache-vs-flyweight
+aliases:
+- flyweight pattern
+- shared intrinsic state
+- extrinsic state
+- memory optimization
+- object pooling tradeoff
+- flyweight vs cache
+- shared mutable state
+- state sharing boundary
+- intrinsic extrinsic state
+- flyweight cache tradeoff
+symptoms:
+- Flyweight처럼 공유한 객체에 호출마다 달라지는 외부 상태를 넣어 shared mutable bug가 발생한다
+- 캐시와 Flyweight를 같은 것으로 보고 eviction, freshness 목적과 memory sharing 목적을 구분하지 않는다
+- 대량 객체의 공통 상태를 공유한다면서 mutable field가 섞여 테스트와 동시성이 불안정해진다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/singleton
+- design-pattern/registry-pattern
+- design-pattern/prototype-pattern-caveats
+next_docs:
+- design-pattern/immutable-builder-wither-patterns
+- design-pattern/anti-pattern
+- data-structure/hashmap-internals
+linked_paths:
+- contents/design-pattern/singleton.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/prototype-pattern-caveats.md
+- contents/design-pattern/anti-pattern.md
+- contents/data-structure/hashmap-internals.md
+confusable_with:
+- design-pattern/singleton
+- design-pattern/registry-pattern
+- design-pattern/prototype-pattern-caveats
+- system-design/caching-basics
+forbidden_neighbors: []
+expected_queries:
+- Flyweight는 내부 상태를 공유하고 외부 상태를 호출 시점에 넘기는 패턴이라는 게 무슨 뜻이야?
+- Flyweight와 cache는 객체 재사용은 비슷하지만 목적과 일관성 문제가 어떻게 달라?
+- shared mutable state가 Flyweight를 메모리 최적화가 아니라 공유 버그로 바꾸는 이유가 뭐야?
+- 대량 value object나 code table 객체에서 intrinsic state와 extrinsic state를 어떻게 분리해?
+- object pooling과 Flyweight를 혼동하면 어떤 tradeoff를 놓치게 돼?
+contextual_chunk_prefix: |
+  이 문서는 Flyweight Cache State Sharing Tradeoffs chooser로, 대량 객체의 공통 intrinsic
+  state를 공유해 메모리를 줄이는 Flyweight와 조회 비용/freshness를 다루는 cache를 구분하고,
+  extrinsic state와 mutable shared state를 분리하지 못할 때 생기는 버그를 설명한다.
+---
 # Flyweight: 캐시와 상태 공유의 경계
 
 > 한 줄 요약: Flyweight 패턴은 공유 가능한 내부 상태를 재사용해 메모리를 줄이지만, 외부 상태와 섞이면 캐시처럼 보이는 공유 버그가 생긴다.
@@ -145,4 +211,3 @@ public class TextToken {
 ## 한 줄 정리
 
 Flyweight는 대량 객체의 공통 상태를 공유해 메모리를 아끼지만, 외부 상태 분리가 안 되면 공유 버그로 바뀐다.
-

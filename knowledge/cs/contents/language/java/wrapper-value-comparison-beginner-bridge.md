@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Wrapper Value Comparison Beginner Bridge
+concept_id: language/wrapper-value-comparison
+canonical: true
+category: language
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- primitive-wrapper
+- equality
+- null-handling
+aliases:
+- Wrapper 값 비교 입문 브리지
+- Integer Long Boolean 비교
+- wrapper equals Objects.equals
+- Integer == equals 차이
+- Boolean.TRUE.equals flag
+- 자바 wrapper 값 비교
+symptoms:
+- Integer, Long, Boolean wrapper를 primitive처럼 보고 값 비교에 무심코 ==를 사용해 cache나 identity 함정에 걸려
+- wrapper가 null일 수 있는데 left.equals(right)를 호출해 NullPointerException 가능성을 만들거나 Boolean 조건문에서 null unboxing을 놓쳐
+- int Integer 타입 선택 질문과 Integer 값 비교 질문을 섞어 primitive-wrapper choice 문서와 equality 문서 사이에서 길을 잃어
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-language-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/java-autoboxing-integercache-null-unboxing-pitfalls
+- language/primitive-wrapper-choice-primer
+- language/boolean-wrapper-null-condition-primer
+linked_paths:
+- contents/language/java/primitive-wrapper-choice-primer.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/boolean-wrapper-null-condition-primer.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- language/primitive-wrapper-choice-primer
+- language/java-autoboxing-integercache-null-unboxing-pitfalls
+- language/boolean-wrapper-null-condition-primer
+forbidden_neighbors: []
+expected_queries:
+- Integer Long Boolean wrapper 값 비교는 왜 ==보다 equals나 Objects.equals를 써야 해?
+- Integer 비교가 127까지는 맞고 128부터 이상해 보이는 이유를 beginner 기준으로 알려줘
+- Boolean flag가 null일 수 있을 때 if flag 대신 Boolean.TRUE.equals(flag)를 쓰는 이유가 뭐야?
+- int Integer 차이 질문과 Integer 값 비교 질문은 어떻게 구분해서 공부해야 해?
+- wrapper가 null일 수 있는 값 비교에서 Objects.equals가 안전한 이유를 예시로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Integer, Long, Boolean 같은 Java wrapper 값 비교를 == identity, equals value comparison, Objects.equals null safety, Boolean.TRUE.equals 패턴으로 연결하는 beginner bridge다.
+  Integer 비교, Long 비교, Boolean null, wrapper equals, Objects.equals 질문이 본 문서에 매핑된다.
+---
 # Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)
 
 > 한 줄 요약: `Integer`, `Long`, `Boolean`은 숫자나 불린처럼 보여도 객체이므로 `==`를 기본값으로 두지 말고, 값 비교라면 `equals()`나 `Objects.equals(...)`를 먼저 떠올리는 편이 안전하다.

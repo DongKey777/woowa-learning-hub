@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: vmstat Counters Runtime Pressure
+concept_id: operating-system/vmstat-counters-runtime-pressure
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- vmstat-counters-pressure
+- vmstat-r-b
+- si-so-cs
+- us-sy-wa
+aliases:
+- vmstat counters runtime pressure
+- vmstat r b si so cs us sy wa
+- CPU run queue swap IO context switch
+- runtime pressure summary
+- vmstat beginner to advanced
+- system pressure counters
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+symptoms:
+- vmstat 숫자는 보이지만 r, b, si, so, cs, us, sy, wa 중 어떤 조합이 신호인지 모른다.
+- CPU, run queue, swap, I/O, context switch pressure를 빠르게 요약해야 한다.
+- load average나 PSI를 보기 전에 1차 pressure snapshot이 필요하다.
+expected_queries:
+- vmstat counters로 CPU, run queue, swap, I/O, context switch pressure를 어떻게 빠르게 읽어?
+- vmstat r b si so cs us sy wa는 각각 어떤 runtime pressure 신호야?
+- load average와 PSI 보기 전에 vmstat로 어떤 noise와 signal을 가를 수 있어?
+- dirty writeback이나 reclaim stall이 vmstat에 어떻게 보일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 vmstat를 CPU, run queue, swap, I/O, context switch를 한 번에 보는 빠른 pressure summary로
+  설명한다. counter 의미를 알아야 noise가 아닌 signal을 읽을 수 있다.
+---
 # vmstat Counters, Runtime Pressure
 
 > 한 줄 요약: `vmstat`는 CPU, run queue, swap, I/O, context switch를 한 번에 보는 가장 빠른 압력 요약이며, 숫자의 의미를 알아야 노이즈가 아닌 신호를 읽을 수 있다.

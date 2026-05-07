@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Subdomain Logout Cookie Cleanup Primer
+concept_id: security/subdomain-logout-cookie-cleanup-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- subdomain logout cookie cleanup primer
+- parent-domain cookie logout cleanup
+- shared cookie to app-local session logout
+- auth.example.com logout app.example.com still logged in
+aliases:
+- subdomain logout cookie cleanup primer
+- parent-domain cookie logout cleanup
+- shared cookie to app-local session logout
+- auth.example.com logout app.example.com still logged in
+- subdomain logout stale cookie
+- logout tombstone cleanup beginner
+- app-local session handoff logout
+- shared session retirement logout
+- logout old domain example.com cookie
+- host-only session plus shared cookie cleanup
+- logout after cookie scope migration
+- subdomain cookie tombstone primer
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/subdomain-login-callback-boundaries.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/cookie-scope-migration-cleanup.md
+- contents/security/host-cookie-migration-primer.md
+- contents/security/oauth-login-state-cookie-cleanup.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Subdomain Logout Cookie Cleanup Primer 핵심 개념을 설명해줘
+- subdomain logout cookie cleanup primer가 왜 필요한지 알려줘
+- Subdomain Logout Cookie Cleanup Primer 실무 설계 포인트는 뭐야?
+- subdomain logout cookie cleanup primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Subdomain Logout Cookie Cleanup Primer를 다루는 primer 문서다. `Domain=example.com` shared cookie 구조에서 app-local session handoff 구조로 옮길 때 logout은 "지금 app session 삭제"만으로 끝나지 않는다. **현재 host의 새 session 종료 + 옛 parent-domain cookie tombstone + 서버 쪽 old session 무효화**를 같이 봐야 stale login tail을 줄일 수 있다. 검색 질의가 subdomain logout cookie cleanup primer, parent-domain cookie logout cleanup, shared cookie to app-local session logout, auth.example.com logout app.example.com still logged in처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Subdomain Logout Cookie Cleanup Primer
 
 > 한 줄 요약: `Domain=example.com` shared cookie 구조에서 app-local session handoff 구조로 옮길 때 logout은 "지금 app session 삭제"만으로 끝나지 않는다. **현재 host의 새 session 종료 + 옛 parent-domain cookie tombstone + 서버 쪽 old session 무효화**를 같이 봐야 stale login tail을 줄일 수 있다.

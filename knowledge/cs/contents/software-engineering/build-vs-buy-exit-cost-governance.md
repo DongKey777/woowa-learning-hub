@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Build vs Buy Exit Cost Integration Governance
+concept_id: software-engineering/build-vs-buy-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- build-vs-buy
+- vendor-lock-in
+- integration-governance
+aliases:
+- Build vs Buy Exit Cost Integration Governance
+- build vs buy
+- exit cost governance
+- vendor lock-in decision
+- managed service adoption
+- buy decision integration review
+symptoms:
+- build vs buy를 초기 구현 비용 비교로만 보고 운영 책임, 데이터 소유권, 보안/규제, exit cost를 함께 계산하지 않아
+- 외부 솔루션 SDK와 proprietary API를 내부 도메인 전역에 퍼뜨려 나중에 교체 비용과 vendor lock-in을 키워
+- 핵심 도메인 정책을 솔루션 설정값이나 workflow DSL 안에 묻어 domain decision ownership을 외부화해
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/dependency-governance-sbom
+- software-engineering/architecture-review-anti-patterns
+next_docs:
+- software-engineering/shared-library-vs-platform-service
+- software-engineering/platform-paved-road
+- software-engineering/migration-funding-model
+linked_paths:
+- contents/software-engineering/shared-library-vs-platform-service-tradeoffs.md
+- contents/software-engineering/dependency-governance-sbom-policy.md
+- contents/software-engineering/architecture-review-anti-patterns.md
+- contents/software-engineering/migration-funding-model.md
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+confusable_with:
+- software-engineering/shared-library-vs-platform-service
+- software-engineering/dependency-governance-sbom
+- software-engineering/platform-paved-road
+forbidden_neighbors: []
+expected_queries:
+- build vs buy 판단에서 초기 개발 비용보다 integration cost, operational responsibility, exit cost를 같이 봐야 하는 이유가 뭐야?
+- 외부 SaaS나 managed service를 도입할 때 data portability와 offboarding plan을 왜 초기 decision record에 넣어야 해?
+- vendor SDK를 내부 코드 곳곳에 퍼뜨리지 않고 ACL 뒤에 두면 exit cost가 어떻게 줄어?
+- buy 결정에서도 결제 승인 정책, 회원 상태 전이 같은 domain decision을 외부화하면 왜 위험해?
+- build buy hybrid 선택을 domain differentiation, integration surface, lock-in 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 build vs buy 결정을 initial implementation cost가 아니라 integration governance, vendor lock-in, data portability, operating responsibility, exit cost까지 포함해 비교하는 advanced chooser다.
+---
 # Build vs Buy, Exit Cost, Integration Governance
 
 > 한 줄 요약: build vs buy 판단은 구현 비용 비교가 아니라, 통합 복잡도와 운영 책임, 그리고 언젠가 떠나야 할 때의 exit cost까지 같이 보는 의사결정이다.

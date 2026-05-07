@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Policy as Code and Architecture Linting
+concept_id: software-engineering/policy-as-code
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- policy-as-code
+- architecture-linting
+- ci-gate
+- governance
+aliases:
+- Policy as Code and Architecture Linting
+- architecture linting
+- policy as code
+- architecture CI gate
+- dependency rule enforcement
+- 아키텍처 린팅 정책 코드화
+symptoms:
+- 아키텍처 규칙이 문서와 리뷰 기억에만 남아 다른 모듈 internal import, deprecated API 신규 사용, BFF write logic 같은 위반이 PR에서 반복돼
+- policy exception과 override가 구두로만 허용되어 누가 왜 언제까지 예외인지 추적되지 않아 guardrail이 무너져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/architectural-fitness-functions
+- software-engineering/modular-monolith-boundary-enforcement
+next_docs:
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/policy-as-code-adoption-order
+- software-engineering/override-burndown-exemption-debt
+linked_paths:
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/architectural-governance-operating-model.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/policy-as-code-rollout-adoption-stages.md
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+confusable_with:
+- software-engineering/architectural-fitness-functions
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/platform-policy-override-governance
+forbidden_neighbors: []
+expected_queries:
+- policy as code와 architecture linting은 아키텍처 규칙을 PR과 CI에서 어떻게 강제해?
+- no-internal-module-import, deprecated API block, BFF read-only 같은 rule을 architecture lint로 만들려면 어떻게 해?
+- fast lint, deep lint, scheduled lint를 나눠 속도와 커버리지를 같이 잡는 방법은?
+- policy exception에는 reason, approver, review date, compensating control을 왜 남겨야 해?
+- architecture linting이 style check보다 구조 검증에 가깝다는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 architecture rule을 사람이 기억하는 문서가 아니라 PR/CI에서 실행되는 policy-as-code와 architecture linting guardrail로 만드는 advanced playbook이다.
+---
 # Policy as Code and Architecture Linting
 
 > 한 줄 요약: policy as code는 아키텍처 규칙을 사람의 기억이 아니라 기계가 검증하는 규정으로 바꾸고, architecture linting은 그 규정을 PR과 CI에서 강제하는 방식이다.

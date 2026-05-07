@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Consumer Exception Registry Quality and Automation
+concept_id: software-engineering/consumer-exception-registry-quality
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- consumer-exception
+- registry-quality
+- automation
+aliases:
+- Consumer Exception Registry Quality and Automation
+- exception registry quality
+- registry automation
+- stale exception owner
+- missing expiry
+- invalid state transition
+- registry lint
+symptoms:
+- consumer exception registry가 입력 폼으로만 남아 stale owner, missing expiry, broken support link, invalid state transition을 자동 검출하지 못해
+- closed state인데 old path traffic이 남거나 active인데 replacement path가 없는 외부 signal mismatch를 registry alone으로는 잡지 못해
+- automation이 문제 있음 경고만 만들고 expiring exception queue, invalid transition queue, broken support queue처럼 owner가 처리할 review queue로 연결되지 않아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/consumer-exception-registry
+- software-engineering/consumer-exception-state-machine
+next_docs:
+- software-engineering/ownership-metadata-quality
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/override-burndown-scorecards
+linked_paths:
+- contents/software-engineering/consumer-exception-registry-templates.md
+- contents/software-engineering/consumer-exception-state-machine-review-cadence.md
+- contents/software-engineering/ownership-metadata-quality.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/consumer-exception-operating-model.md
+confusable_with:
+- software-engineering/consumer-exception-registry
+- software-engineering/consumer-exception-state-machine
+- software-engineering/ownership-metadata-quality
+forbidden_neighbors: []
+expected_queries:
+- consumer exception registry quality automation은 stale owner, missing expiry, invalid state transition을 어떻게 자동으로 잡아?
+- closed exception인데 old path traffic이 있으면 registry state quality가 왜 깨진 거야?
+- write-time, drift-time, closure-time registry quality gate를 어떻게 나눠야 해?
+- daily stale exception report나 expiring exception queue처럼 누가 무엇을 고칠지 보이는 review queue를 만드는 이유는 뭐야?
+- missing expiry ratio, stale owner ratio, closed-with-traffic count를 portfolio metric으로 봐야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 consumer exception registry를 stale owner, missing expiry, broken support link, invalid state transition, closed-but-traffic-present 같은 quality signal로 자동 검증하는 advanced playbook이다.
+---
 # Consumer Exception Registry Quality and Automation
 
 > 한 줄 요약: consumer exception registry가 신뢰를 얻으려면 단순 입력 폼을 넘어서 stale owner, missing expiry, broken support link, invalid state transition 같은 품질 문제를 자동으로 검출하고 review queue로 보내는 자동화가 필요하다.

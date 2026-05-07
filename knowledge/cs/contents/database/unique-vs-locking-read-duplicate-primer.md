@@ -1,3 +1,82 @@
+---
+schema_version: 3
+title: UNIQUE vs Locking-Read Duplicate Primer
+concept_id: database/unique-vs-locking-read-duplicate-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- unique-constraint
+- locking-read
+- duplicate-key
+- insert-if-absent
+- beginner
+aliases:
+- unique vs locking read
+- unique constraint vs select for update
+- duplicate key beginner
+- duplicate key vs lock timeout
+- select for update duplicate key
+- insert if absent basics
+- already exists busy retryable mapping
+- duplicate fresh read conflict mapping
+- exact duplicate primer
+- UNIQUE랑 FOR UPDATE 차이
+symptoms:
+- duplicate key, lock timeout, deadlock을 모두 같은 장애처럼 보고 있어
+- SELECT FOR UPDATE를 넣었는데도 duplicate key가 나는 이유를 이해하지 못해
+- exact duplicate의 최종 승자는 UNIQUE가 정하고 locking read는 queueing 보조라는 첫 그림이 필요해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- database/three-bucket-terms-common
+- database/exact-key-pre-check-decision-card
+next_docs:
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/unique-claim-existing-row-reuse-primer
+- database/upsert-contention-unique-index-locking
+linked_paths:
+- contents/database/exact-key-pre-check-decision-card.md
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/for-share-vs-for-update-duplicate-check-note.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/mysql-rc-duplicate-check-pitfall-note.md
+- contents/database/read-before-write-race-timeline-mysql-postgresql.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/upsert-contention-unique-index-locking
+- database/unique-claim-existing-row-reuse-primer
+forbidden_neighbors: []
+expected_queries:
+- UNIQUE와 SELECT FOR UPDATE locking read는 duplicate insert 방지에서 역할이 어떻게 달라?
+- select for update를 넣었는데 왜 duplicate key가 여전히 날 수 있어?
+- exact duplicate correctness는 UNIQUE가 맡고 locking read는 앞단 queue 보조라는 뜻을 초보자에게 설명해줘
+- duplicate key는 already exists, lock timeout은 busy, deadlock은 retryable로 번역하는 이유가 뭐야?
+- 0 row FOR UPDATE가 absence를 항상 예약하지 못하고 write 시점 UNIQUE가 최종 승자를 정하는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 exact duplicate에서 UNIQUE constraint와 locking read pre-probe의 역할을 beginner primer로 설명한다.
+  duplicate key, select for update duplicate, already exists busy retryable, UNIQUE vs FOR UPDATE 질문이 본 문서에 매핑된다.
+---
 # UNIQUE vs Locking-Read Duplicate Primer
 
 > 한 줄 요약: exact duplicate에서는 `UNIQUE`가 진짜 승자를 정하는 hard gate이고, locking read pre-probe는 경우에 따라 앞단 queue를 조금 만들어 줄 뿐이다. 그래서 애플리케이션은 `connection timeout`/`duplicate key`/`deadlock`을 `busy`/`already exists`/`retryable`로 먼저 고정 번역해야 한다.

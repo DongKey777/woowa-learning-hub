@@ -88,6 +88,14 @@ contextual_chunk_prefix: |
 
 retrieval-anchor-keywords: language-java-00277, request dto value object boundary, dto raw string vs value object, request dto to value object primer, dto에서 값객체 언제, service 전에 값객체로 바꾸기, raw string domain beginner, email value object boundary, validated input before service logic, dto string 그대로 넘겨도 되나요, 처음 dto 값객체 헷갈려, what is request dto boundary, value object basics, equals hashcode set key beginner
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "DTO에서 받은 문자열을 service 끝까지 넘겨도 되나요?" | baseball guess, lotto 번호, roomescape 예약자 이름이 raw string으로 계속 이동하는 코드 | 밖에서 온 입력과 안쪽에서 믿고 쓰는 값 객체를 분리한다 |
+| "trim이나 소문자화는 controller에서 하면 되나요?" | 이메일, 닉네임, 코드값 정규화가 여러 계층에 흩어진 구현 | 정규화와 불변식이 중요한 값은 작은 value object 경계로 묶는다 |
+| "값 객체를 만들면 테스트가 왜 더 쉬워지죠?" | 중복 판단, Map/Set key, 도메인 규칙 검증이 문자열 비교로 반복되는 미션 | 같은 값 판단과 유효성 보장을 타입 안으로 모아 재사용한다 |
+
 ## 핵심 개념
 
 처음에는 이렇게 나눠 기억하면 된다.

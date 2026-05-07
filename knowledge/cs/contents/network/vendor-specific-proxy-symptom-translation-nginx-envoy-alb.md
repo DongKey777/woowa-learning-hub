@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: "Vendor-Specific Proxy Symptom Translation: Nginx, Envoy, ALB"
+concept_id: network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- proxy-vendor
+- symptom-translation
+- incident-attribution
+aliases:
+- Nginx symptom translation
+- Envoy symptom translation
+- ALB symptom translation
+- proxy symptom mapping
+- Envoy response_code_details
+- ALB 460
+- Nginx 499
+- response flags
+symptoms:
+- Nginx 499를 app이 반환한 status로 해석한다
+- Envoy local reply 503을 upstream app capacity issue로만 본다
+- ALB 502를 app HTTP handler bug로 단정하고 target connection/protocol issue를 놓친다
+- vendor별 access log/error log/response flag 필드 없이 HTTP status 숫자만 본다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/service-mesh-local-reply-timeout-reset-attribution
+next_docs:
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/gateway-buffering-vs-spring-early-reject
+- network/load-balancer-healthcheck-failure-patterns
+linked_paths:
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/service-mesh-local-reply-timeout-reset-attribution.md
+- contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md
+- contents/network/mesh-adaptive-concurrency-local-reply-metrics-tuning.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/connection-draining-vs-fin-rst-graceful-close.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+confusable_with:
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/load-balancer-healthcheck-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- "Nginx Envoy ALB는 같은 upstream 문제를 어떻게 다르게 로그로 보여줘?"
+- "Nginx 499 Envoy response flags ALB target_status_code를 generic category로 번역해줘"
+- "Envoy local reply 503과 upstream app 503을 어떻게 구분해?"
+- "ALB 502가 app handler bug가 아니라 target connection error일 수 있는 이유는?"
+- "vendor-specific proxy symptom translation table이 incident blame에 왜 필요해?"
+contextual_chunk_prefix: |
+  이 문서는 Nginx, Envoy, ALB의 499/502/503/504, response flags,
+  response_code_details, ALB target fields를 generic proxy attribution으로 번역하는
+  advanced playbook이다.
+---
 # Vendor-Specific Proxy Symptom Translation: Nginx, Envoy, ALB
 
 > 한 줄 요약: 같은 upstream 문제도 Nginx, Envoy, ALB는 서로 다른 코드와 로그 표면으로 보여 준다. 증상을 vendor별 표현으로 번역하지 못하면 팀 간 blame이 어긋난다.

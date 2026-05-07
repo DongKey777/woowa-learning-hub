@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Alt-Svc ma, Cache Scope, 421 Reuse Primer
+concept_id: network/alt-svc-ma-cache-scope-421-reuse-primer
+canonical: false
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- alt-svc-ma
+- cache-scope
+- misdirected-request-421
+aliases:
+- Alt-Svc ma meaning
+- Alt-Svc cache scope
+- Alt-Svc origin scope
+- Alt-Svc max age
+- 421 misdirected request Alt-Svc
+- H3 alternative service reuse
+- Alt-Svc 421 reuse
+symptoms:
+- ma를 connection lifetime으로 해석해 Alt-Svc hint TTL과 connection reuse 수명을 섞는다
+- www가 배운 Alt-Svc cache entry를 api, static, admin origin이 자동 공유한다고 생각한다
+- 421을 app 권한/리소스 오류처럼 읽고 connection reuse 문맥의 교정 신호라는 점을 놓친다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-header-reading-micro-note
+next_docs:
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/alt-svc-cache-vs-per-origin-421-recovery
+linked_paths:
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/alt-svc-cache-vs-per-origin-421-recovery.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/security/https-tls-beginner.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-cache-vs-per-origin-421-recovery
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/http-421-troubleshooting-trace-examples
+forbidden_neighbors: []
+expected_queries:
+- Alt-Svc ma는 connection lifetime이 아니라 H3 hint TTL이라는 걸 설명해줘
+- Alt-Svc cache scope는 어느 origin의 메모인지 어떻게 판단해?
+- www가 배운 Alt-Svc를 api도 자동으로 같은 H3 connection에 써도 돼?
+- 421은 403 404 같은 app 오류가 아니라 wrong connection reuse 교정이라는 말이 무슨 뜻이야?
+- Alt-Svc ma scope 421 reuse를 초보자 기준으로 한 번에 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Alt-Svc의 ma, cache scope, 421 reuse correction을 beginner primer로 설명한다.
+  ma는 hint TTL, cache scope는 origin별 메모, 421은 wrong shared connection reuse를
+  끊는 교정 신호라는 점을 HTTP/3 coalescing과 연결한다.
+---
 # Alt-Svc `ma`, Cache Scope, 421 Reuse Primer
 
 > 한 줄 요약: `Alt-Svc`의 `ma`는 "이 H3 힌트를 얼마나 기억할까"를 뜻하고, cache scope는 "어느 origin의 메모인가"를 뜻하며, `421`은 "그 메모가 있어도 이 connection reuse는 틀렸다"는 교정 신호다.

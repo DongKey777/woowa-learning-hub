@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Savepoint and Partial Rollback
+concept_id: database/savepoint-partial-rollback
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- savepoint
+- partial-rollback
+- nested-transaction
+- transaction-retry
+- compensation
+aliases:
+- savepoint
+- partial rollback
+- nested transaction
+- rollback to savepoint
+- retry substep
+- compensating step
+- savepoint checkpoint
+- DB partial rollback
+- savepoint vs nested transaction
+- 부분 롤백
+symptoms:
+- 긴 트랜잭션에서 일부 단계만 실패했을 때 전체 rollback 대신 중간 지점으로 되돌리고 싶어
+- savepoint와 nested transaction이 같은 것인지 헷갈리고 있어
+- 외부 API 호출까지 savepoint로 되돌릴 수 있다고 오해하고 있어
+intents:
+- definition
+- deep_dive
+- comparison
+prerequisites:
+- database/transaction-isolation-locking
+- database/transaction-retry-serialization-failure-patterns
+next_docs:
+- database/savepoint-lock-retention-edge-cases
+- database/savepoint-lock-retention-incidents
+- database/transaction-boundary-external-io-checklist
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/transaction-case-studies.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/savepoint-lock-retention-edge-cases.md
+- contents/database/savepoint-lock-retention-incident-scenarios.md
+confusable_with:
+- database/savepoint-lock-retention-edge-cases
+- database/transaction-retry-serialization-failure-patterns
+- database/outbox-saga-eventual-consistency
+forbidden_neighbors: []
+expected_queries:
+- savepoint는 nested transaction과 뭐가 다르고 partial rollback을 어떻게 구현해?
+- 긴 업무 흐름에서 일부 DB 작업만 되돌리고 다음 단계를 계속하려면 savepoint를 언제 써?
+- rollback to savepoint가 외부 API 호출이나 이미 보낸 메시지도 되돌려 주는지 설명해줘
+- savepoint는 실패를 숨기는 기능이 아니라 실패를 국소화하는 기능이라는 말이 무슨 뜻이야?
+- savepoint를 쓰면 전체 rollback보다 항상 좋은지 tradeoff를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 savepoint, partial rollback, rollback to savepoint, nested transaction 오해를 DB 내부 체크포인트와 외부 부작용 경계로 설명하는 advanced deep dive다.
+  부분 롤백, retry substep, compensating step, savepoint vs nested transaction 질문이 본 문서에 매핑된다.
+---
 # Savepoint와 Partial Rollback
 
 > 한 줄 요약: savepoint는 트랜잭션 전체를 포기하지 않고, 실패한 중간 지점만 되감아 다시 시도하게 해 준다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 분산 캐시 설계
+concept_id: system-design/distributed-cache-design
+canonical: true
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- distributed-cache-consistency
+- hot-key-cache-stampede
+- cache-capacity-failure-planning
+aliases:
+- distributed cache design
+- 분산 캐시 설계
+- cache-aside write-through write-behind
+- hot key cache
+- TTL jitter single-flight
+- consistent hashing cache
+- cache rebalancing
+- local cache vs distributed cache
+symptoms:
+- 분산 캐시를 단일 메모리 캐시를 여러 대로 늘린 것 정도로 이해하고 있어
+- cache-aside, write-through, write-behind를 쓰기/읽기 책임 기준으로 구분하지 못하고 있어
+- hot key, stampede, rebalancing, eviction이 DB 보호와 어떻게 연결되는지 헷갈려
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- system-design/cache-invalidation-patterns-primer
+- system-design/back-of-envelope-estimation
+- system-design/caching-vs-read-replica-primer
+next_docs:
+- system-design/cache-admission-policy-design
+- system-design/shard-rebalancing-partition-relocation-design
+- system-design/cell-based-architecture-blast-radius-isolation-design
+- system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design
+linked_paths:
+- contents/system-design/cache-invalidation-patterns-primer.md
+- contents/system-design/system-design-framework.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/rate-limiter-design.md
+- contents/database/index-and-explain.md
+- contents/database/mvcc-replication-sharding.md
+- contents/network/cache-control-practical.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/cell-based-architecture-blast-radius-isolation-design.md
+- contents/system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design.md
+confusable_with:
+- system-design/cache-invalidation-patterns-primer
+- system-design/caching-vs-read-replica-primer
+- system-design/cdn-basics
+- database/mvcc-replication-sharding
+forbidden_neighbors: []
+expected_queries:
+- 분산 캐시는 local cache나 CDN cache와 무엇이 달라?
+- cache-aside, write-through, write-behind는 어떤 읽기 쓰기 tradeoff가 있어?
+- hot key와 cache stampede는 분산 캐시 설계에서 어떻게 막아?
+- consistent hashing만으로 cache rebalancing 문제가 끝나지 않는 이유는 뭐야?
+- 캐시 장애가 DB 장애로 번지지 않게 어떤 보호 장치를 둬야 해?
+contextual_chunk_prefix: |
+  이 문서는 distributed cache design deep dive로, shared cache cluster, cache-aside/write-through/write-behind, consistent hashing, hot key, stampede, eviction, fallback, cache miss metrics를 다룬다.
+  분산 캐시 설계, local cache vs distributed cache, cache stampede, TTL jitter, single-flight, cache rebalancing 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 분산 캐시 설계
 
 > 한 줄 요약: 단일 메모리 캐시를 넘어, 여러 노드에 캐시를 나누고 일관성과 성능을 동시에 관리하는 설계다.

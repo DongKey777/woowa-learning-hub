@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Sliding Window Patterns
+concept_id: algorithm/sliding-window-patterns
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- sliding-window-vs-two-pointer
+- contiguous-range-invariant
+- monotonic-deque-handoff
+aliases:
+- sliding window patterns
+- fixed window
+- variable window
+- contiguous subarray scan
+- contiguous substring window
+- rolling window
+- window sum
+- window frequency
+- minimum window substring
+- sliding window maximum routing
+- 슬라이딩 윈도우 패턴
+- 연속 구간 유지
+- 부분 문자열 윈도우
+symptoms:
+- subarray와 subsequence를 구분하지 못해서 연속 구간 문제에 LIS나 DP를 먼저 붙인다
+- two pointer와 sliding window를 같은 말로 외워서 pair sum 문제와 window frequency 문제를 섞어 푼다
+- 창의 max나 min을 합처럼 갱신하려다가 monotonic deque가 필요한 상황을 놓친다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- algorithm/two-pointer-intro
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/two-pointer
+- data-structure/monotonic-queue-and-stack
+- data-structure/monotonic-deque-vs-heap-for-window-extrema
+- algorithm/binary-search-patterns
+linked_paths:
+- contents/algorithm/two-pointer-intro.md
+- contents/algorithm/two-pointer.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/longest-increasing-subsequence-patterns.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-deque-vs-heap-for-window-extrema.md
+confusable_with:
+- algorithm/two-pointer
+- algorithm/binary-search-patterns
+- algorithm/longest-increasing-subsequence-patterns
+- algorithm/interval-greedy-patterns
+forbidden_neighbors: []
+expected_queries:
+- sliding window를 쓸 수 있는 문제인지 subarray와 subsequence 신호로 구분하는 법을 알려줘
+- two pointer와 sliding window가 같은 것처럼 보이는데 pair 관계 문제와 연속 구간 문제를 어떻게 나눠야 해?
+- 길이 k 구간의 합은 그냥 누적값으로 되는데 최대값 문제는 왜 monotonic deque가 필요한지 설명해줘
+- minimum window substring 같은 가변 윈도우에서 left와 right를 언제 움직이는지 기준을 잡고 싶어
+- meeting room이나 예약 충돌 문제를 sliding window로 보면 안 되는 이유를 interval 문제와 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 배열과 문자열의 연속 인덱스 구간을 유지하는 sliding window bridge다.
+  fixed window, variable window, sum/count/frequency 상태, monotonic deque가 필요한 window extrema, two pointer와 LIS, binary search, interval/sweep line 문제와의 경계를 문제 신호로 구분한다.
+---
 # Sliding Window Patterns
 
 > 한 줄 요약: sliding window는 배열/문자열의 연속 인덱스 구간을 유지하면서 조건을 만족하는 답을 찾는 대표 패턴이다.

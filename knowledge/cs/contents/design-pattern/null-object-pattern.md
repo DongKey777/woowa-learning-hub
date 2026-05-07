@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Null Object Pattern
+concept_id: design-pattern/null-object-pattern
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- null-object
+- optional-vs-null-object
+- noop-collaborator
+aliases:
+- null object pattern
+- noop implementation
+- default behavior
+- sentinel object
+- avoid null checks
+- no-op notifier
+- optional vs null object
+- null object vs optional
+- null 대신 객체
+- 기본 동작 객체
+symptoms:
+- 선택적 collaborator마다 if null check가 흩어져 호출부 흐름이 지저분해진다
+- Optional은 반환값 부재 표현이고 Null Object는 행동을 가진 기본 구현이라는 차이를 구분하지 못한다
+- 없음이 도메인적으로 중요한 상태인데 NoOp 구현으로 누락을 조용히 숨긴다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/composition-over-inheritance-basics
+- language/java-optional-basics
+next_docs:
+- design-pattern/strategy-pattern
+- design-pattern/pattern-selection
+- language/optional-collections-domain-null-handling-bridge
+linked_paths:
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/pattern-selection.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- language/java-optional-basics
+- language/optional-collections-domain-null-handling-bridge
+- design-pattern/strategy-pattern
+- design-pattern/policy-object-pattern
+forbidden_neighbors: []
+expected_queries:
+- Null Object Pattern은 null check를 없애기 위해 아무 일도 하지 않는 객체를 넣는 패턴이야?
+- Optional과 Null Object는 값의 부재 표현과 행동을 가진 기본 collaborator라는 점에서 어떻게 달라?
+- NoOpNotifier나 NoDiscountPolicy처럼 기본 동작이 자연스러울 때 Null Object가 잘 맞는 이유가 뭐야?
+- 없음 자체가 도메인적으로 중요한 상태라면 Null Object가 누락을 숨겨 위험한 이유가 뭐야?
+- 반환값은 Optional, 협력 객체는 Null Object가 자주 맞는다는 기준을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Null Object Pattern primer로, null check를 호출부에 흩뿌리는 대신 NoOpNotifier,
+  NoDiscountPolicy 같은 기본 행동 객체를 주입해 동일 인터페이스 호출을 유지하는 방법과,
+  Optional과의 차이, 누락을 숨기는 위험을 설명한다.
+---
 # Null Object Pattern: null 대신 아무 일도 하지 않는 객체를 넣기
 
 > 한 줄 요약: Null Object 패턴은 null 체크를 흩뿌리는 대신, 기본 동작을 가진 빈 구현체를 넣어 호출부를 단순화한다.

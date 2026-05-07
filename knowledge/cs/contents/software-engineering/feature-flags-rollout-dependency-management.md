@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Feature Flags, Rollout, Dependency Management
+concept_id: software-engineering/feature-flag-dependency-management
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- feature-flag
+- rollout
+- dependency-management
+- progressive-delivery
+aliases:
+- Feature Flags Rollout Dependency Management
+- feature flags rollout dependency
+- gradual rollout and dependency management
+- rollout strategy with flags
+- flag dependency graph
+- 피처 플래그 롤아웃 의존성 관리
+symptoms:
+- 코드 배포와 기능 활성화를 분리하지 않아 새 기능을 전체 사용자에게 한 번에 노출하고 장애 반경이 커져
+- flag dependency와 dependency version 충돌을 보지 않아 rollout 중 일부 사용자나 모듈에서만 장애가 발생해
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/dependency-update-blast-radius
+next_docs:
+- software-engineering/feature-flag-cleanup-expiration
+- software-engineering/kill-switch-fast-fail
+- software-engineering/dependency-governance-sbom
+linked_paths:
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/feature-flag-cleanup-expiration.md
+- contents/software-engineering/dependency-update-blast-radius-management.md
+- contents/software-engineering/dependency-governance-sbom-policy.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+confusable_with:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/feature-flag-cleanup-expiration
+- software-engineering/dependency-update-blast-radius
+forbidden_neighbors: []
+expected_queries:
+- feature flag로 deploy와 release를 분리하고 gradual rollout을 안전하게 하는 방법을 알려줘
+- rollout strategy에서 에러율, 응답 시간, 비즈니스 지표를 보고 확대 여부를 판단하는 기준은 뭐야?
+- flag dependency graph가 꼬이면 일부 사용자에게만 장애가 나는 이유를 설명해줘
+- dependency management가 단순 버전 관리가 아니라 시스템 복잡도 통제인 이유가 뭐야?
+- 피처 플래그와 kill switch, canary rollout, dependency update를 함께 설계하려면 어떻게 해야 해?
+contextual_chunk_prefix: |
+  이 문서는 feature flags, gradual rollout, dependency management를 연결해 deploy와 release를 분리하고 변경 blast radius를 줄이는 intermediate bridge이다.
+---
 # Feature Flags, Rollout, Dependency Management
 
 

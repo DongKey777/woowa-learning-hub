@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: vm.swappiness Reclaim Behavior
+concept_id: operating-system/vm-swappiness-reclaim-behavior
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- vm-swappiness-reclaim
+- behavior
+- anonymous-memory-vs
+- page-cache-reclaim
+aliases:
+- vm.swappiness reclaim behavior
+- anonymous memory vs page cache reclaim
+- swap preference hint
+- reclaim tuning
+- swap pressure
+- page cache pressure
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/cgroup-swap-controller-basics.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/swap-in-reclaim-fault-path-primer.md
+- contents/operating-system/page-cache-active-inactive-reclaim-debugging.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+expected_queries:
+- vm.swappiness는 swap을 얼마나 좋아하느냐의 단순 숫자가 아니야?
+- reclaim이 anonymous memory와 page cache 사이에서 pressure를 어떻게 나누는지 설명해줘
+- swappiness를 낮추거나 높이면 swap-in fault와 page cache reclaim이 어떻게 달라져?
+- cgroup swap controller와 system swappiness는 어떻게 같이 봐?
+contextual_chunk_prefix: |
+  이 문서는 operating-system 카테고리에서 vm.swappiness Reclaim Behavior를 다루는 deep_dive 문서다. vm.swappiness reclaim behavior, anonymous memory vs page cache reclaim, swap preference hint, reclaim tuning, swap pressure 같은 lexical 표현과 vm.swappiness는 swap을 얼마나 좋아하느냐의 단순 숫자가 아니야?, reclaim이 anonymous memory와 page cache 사이에서 pressure를 어떻게 나누는지 설명해줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # vm.swappiness, Reclaim Behavior
 
 > 한 줄 요약: swappiness는 스왑을 얼마나 좋아하느냐의 단순한 숫자가 아니라, reclaim이 anonymous memory와 page cache 사이에서 어떻게 압박을 나눌지에 대한 힌트다.

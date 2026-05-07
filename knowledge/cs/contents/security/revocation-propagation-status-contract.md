@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Revocation Propagation Status Contract
+concept_id: security/revocation-propagation-status-contract
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- revocation propagation status contract
+- revocation status payload
+- revoke status api
+- operator revocation status
+aliases:
+- revocation propagation status contract
+- revocation status payload
+- revoke status api
+- operator revocation status
+- revocation request status endpoint
+- requested in progress fully blocked confirmed
+- execution requested vs requested
+- revoke polling contract
+- propagation state machine
+- fully blocked confirmed meaning
+- block confirmation evidence
+- last accepted after revoke
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/revocation-impact-preview-data-contract.md
+- contents/security/revocation-preview-drift-response-contract.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/aobo-revocation-audit-event-schema.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Revocation Propagation Status Contract 핵심 개념을 설명해줘
+- revocation propagation status contract가 왜 필요한지 알려줘
+- Revocation Propagation Status Contract 실무 설계 포인트는 뭐야?
+- revocation propagation status contract에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Revocation Propagation Status Contract를 다루는 deep_dive 문서다. operator-triggered revocation은 confirm이 수락됐다는 사실과 실제 차단이 확인됐다는 사실을 분리해야 하며, backend status payload는 `requested`, `in_progress`, `fully_blocked_confirmed`를 서로 다른 보장으로 내려야 한다. 검색 질의가 revocation propagation status contract, revocation status payload, revoke status api, operator revocation status처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Revocation Propagation Status Contract
 
 > 한 줄 요약: operator-triggered revocation은 confirm이 수락됐다는 사실과 실제 차단이 확인됐다는 사실을 분리해야 하며, backend status payload는 `requested`, `in_progress`, `fully_blocked_confirmed`를 서로 다른 보장으로 내려야 한다.

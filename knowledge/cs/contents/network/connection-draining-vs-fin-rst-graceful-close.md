@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Connection Draining vs FIN, RST, Graceful Close"
+concept_id: network/connection-draining-vs-fin-rst-graceful-close
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- connection-draining
+- fin-rst-graceful-close
+- deployment-safe-shutdown
+aliases:
+- connection draining
+- FIN RST graceful close
+- deregistration delay
+- half-close socket lifecycle
+- close_notify shutdown
+- deployment safe close
+symptoms:
+- 배포 중 reset이 생겼는데 readiness false와 draining window 없이 server shutdown만 본다
+- FIN EOF 정상 종료와 RST 강제 종료를 모두 같은 connection closed로 처리한다
+- TLS close_notify와 TCP FIN/RST, proxy close 변환을 구분하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/fin-rst-half-close-eof-semantics
+- network/lb-connection-draining-deployment-safe-close
+next_docs:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/load-balancer-healthcheck-failure-patterns
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/connection-keepalive-loadbalancing-circuit-breaker
+linked_paths:
+- contents/network/lb-connection-draining-deployment-safe-close.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+confusable_with:
+- network/fin-rst-half-close-eof-semantics
+- network/lb-connection-draining-deployment-safe-close
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/connection-keepalive-loadbalancing-circuit-breaker
+forbidden_neighbors: []
+expected_queries:
+- "connection draining과 FIN RST graceful close는 각각 어떤 층의 개념이야?"
+- "배포 중 reset을 줄이려면 readiness false와 deregistration delay를 어떻게 맞춰?"
+- "FIN EOF 정상 종료와 RST 강제 종료를 tcpdump와 로그에서 어떻게 구분해?"
+- "TLS close_notify와 TCP socket close는 왜 1:1로 안 보일 수 있어?"
+- "keep-alive가 길 때 draining window와 pool lifetime을 어떻게 조정해?"
+contextual_chunk_prefix: |
+  이 문서는 connection draining, deregistration delay, graceful shutdown,
+  FIN, RST, half-close, TLS close_notify를 배포 중 연결 종료와 reset
+  최소화 관점으로 연결하는 advanced operations playbook이다.
+---
 # Connection Draining vs FIN, RST, Graceful Close
 
 > 한 줄 요약: connection draining은 앱과 LB가 기존 연결을 마무리하게 해주는 운영 절차이고, FIN/RST는 그 절차가 실제 소켓에서 어떻게 보이는지다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Monotonic Structure Router Quiz
+concept_id: data-structure/monotonic-structure-router-quiz
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 89
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-router-quiz
+- deque-stack-neither
+- beginner-classification-drill
+aliases:
+- monotonic structure router quiz
+- deque stack neither quiz
+- monotonic beginner quiz
+- signal to structure table
+- sliding window deque quiz
+- next greater stack quiz
+- 단조 구조 라우터 퀴즈
+symptoms:
+- 문제 문장에서 deque, stack, neither를 고르기 전에 코드부터 써서 sliding window, next greater, interval overlap을 섞는다
+- window 만료가 있으면 deque, pop 순간 index 답 확정이면 stack, 둘 다 아니면 다른 구조라는 10초 분기를 못 한다
+- greater와 greater or equal처럼 strict/or-equal 차이를 구조 선택 뒤에 바로 확인하지 않아 duplicate 문제에서 틀린다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-queue-and-stack
+next_docs:
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/deque-router-example-pack
+- algorithm/sliding-window-patterns
+linked_paths:
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/deque-router-example-pack.md
+- contents/algorithm/sliding-window-patterns.md
+confusable_with:
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+- data-structure/deque-vs-stack-signal-card
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- algorithm/sliding-window-patterns
+forbidden_neighbors: []
+expected_queries:
+- 문제 문장을 보고 monotonic deque stack neither를 10초 안에 고르는 퀴즈를 풀고 싶어
+- sliding window면 deque next greater면 stack interval overlap이면 neither인지 연습하고 싶어
+- 단조 구조에서 greater와 greater or equal 차이까지 같이 확인하는 라우터가 필요해
+- monotonic structure beginner quiz로 오답 셀프 체크하는 방법은?
+- window 만료와 pop 순간 답 확정을 구분하는 퀴즈를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 monotonic structure 입문자가 문제 문장에서 deque, stack, neither를
+  빠르게 고르는 drill이다. sliding window expiration, index answer
+  finalization, interval overlap/map/freq neither route, greater vs greater or
+  equal operator를 함께 점검한다.
+---
 # Monotonic Structure Router Quiz
 
 > 한 줄 요약: 문제 문장을 보고 `deque / stack / neither`를 10초 안에 고르고, `greater`와 `greater or equal`도 함께 구분하는 초급 6문항 퀴즈.

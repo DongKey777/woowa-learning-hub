@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Dual-Read Pagination Parity Sample Packet Schema
+concept_id: design-pattern/dual-read-pagination-parity-sample-packet-schema
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- dual-read-pagination-packet
+- canary-evidence-schema
+- cursor-continuity-outcome
+aliases:
+- dual read pagination parity packet
+- pagination parity sample packet
+- canonical compare packet
+- fingerprint bucket
+- query fingerprint coverage
+- page size bucket
+- cursor verdict pair
+- continuity outcome
+- page chain parity metrics
+- pagination observability schema
+symptoms:
+- normalization, cursor, canary 문서가 각자 다른 sample field와 metric 이름을 써 mismatch 원인을 한 packet으로 설명하지 못한다
+- page1과 page2 관측을 별도 로그로 남겨 continuity outcome과 duplicate/gap 판정이 나중에 재조립된다
+- REISSUE를 PASS와 섞어 세거나 UNKNOWN compare를 버려 pagination canary가 false green이 된다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- design-pattern/search-normalization-query-pattern
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/cursor-pagination-parity-read-model-migration
+next_docs:
+- design-pattern/projection-canary-cohort-selection
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/strict-pagination-fallback-contracts
+linked_paths:
+- contents/design-pattern/search-normalization-query-pattern.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/normalization-version-rollout-playbook.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/projection-canary-cohort-selection.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- design-pattern/cursor-pagination-parity-read-model-migration
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/projection-canary-cohort-selection
+- design-pattern/strict-pagination-fallback-contracts
+forbidden_neighbors: []
+expected_queries:
+- Dual-read pagination parity sample packet에는 fingerprint bucket, cursor verdict pair, continuity outcome이 왜 함께 있어야 해?
+- page1과 page2를 따로 로그로 남기면 duplicate/gap과 restart expected 해석이 흔들리는 이유가 뭐야?
+- continuity_outcome에서 PASS, RESTART_EXPECTED, VERDICT_DRIFT, ORDER_DRIFT, DUPLICATE_OR_GAP, UNKNOWN을 분리해야 하는 이유가 뭐야?
+- fingerprint_bucket은 raw query hash가 아니라 normalization version, query fingerprint, sort family, page size bucket을 함께 담아야 하는 이유가 뭐야?
+- canary, cutover, rollback 문서가 같은 packet schema를 쓰면 운영 mismatch 해석이 어떻게 좋아져?
+contextual_chunk_prefix: |
+  이 문서는 Dual-Read Pagination Parity Sample Packet Schema playbook으로, pagination
+  dual-read compare의 한 sample을 endpoint, compare mode, chain route, normalized query
+  fingerprint bucket, cursor verdict pair, page1/page2 parity, duplicate/gap, continuity
+  outcome으로 묶어 canary, cutover, rollback이 같은 증거 언어를 쓰게 하는 방법을 설명한다.
+---
 # Dual-Read Pagination Parity Sample Packet Schema
 
 > 한 줄 요약: dual-read pagination check는 normalized query bucket, baseline/candidate cursor verdict, `page1 -> page2` continuity outcome을 한 packet으로 남겨야 canary, cutover, rollback이 같은 증거 언어를 쓴다.
@@ -34,6 +105,8 @@ pagination cutover 문서는 보통 각자 필요한 샘플 필드만 적는다.
 1. 이 sample은 어떤 **fingerprint bucket**에 속하는가
 2. baseline/candidate가 어떤 **cursor verdict**를 냈는가
 3. `page1 -> page2` chain은 어떤 **continuity outcome**으로 끝났는가
+
+packet이 이 세 축을 한 번에 담아야 `rows are same`, `restart is expected`, `cursor policy drift`, `continuity broken`을 서로 다른 사건으로 셀 수 있다.
 
 ### Retrieval Anchors
 

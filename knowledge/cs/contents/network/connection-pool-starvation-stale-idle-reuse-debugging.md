@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Connection Pool Starvation, Stale Idle Reuse, Debugging"
+concept_id: network/connection-pool-starvation-stale-idle-reuse-debugging
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- connection-pool-starvation
+- stale-idle-socket
+- pool-debugging-tail-latency
+aliases:
+- connection pool starvation
+- stale idle socket
+- borrow validation
+- pending acquire
+- maxConnections pool
+- long-lived stream pool
+symptoms:
+- active connection 수만 보고 usable connection 부족이나 dead idle socket 비율을 놓친다
+- long-lived stream과 짧은 unary request를 같은 pool에 섞어 pending queue가 커진다
+- idle timeout mismatch로 stale socket 첫 요청 실패가 반복되는데 pool size만 늘린다
+- HTTP/2 stream slot saturation을 socket pool 여유로 가려서 못 본다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/upstream-queueing-connection-pool-wait-tail-latency
+- network/http-keepalive-timeout-mismatch-deeper-cases
+next_docs:
+- network/tcp-reset-storms-idle-reuse-stale-sockets
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- spring/webclient-connection-pool-timeout-tuning
+linked_paths:
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/http-keepalive-timeout-mismatch-deeper-cases.md
+- contents/network/tcp-reset-storms-idle-reuse-stale-sockets.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/http2-max-concurrent-streams-pending-queue-saturation.md
+confusable_with:
+- network/upstream-queueing-connection-pool-wait-tail-latency
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/tcp-reset-storms-idle-reuse-stale-sockets
+- network/http2-max-concurrent-streams-pending-queue-saturation
+forbidden_neighbors: []
+expected_queries:
+- "Connection pool starvation은 maxConnections 부족 말고 어떤 원인이 있어?"
+- "idle처럼 보이는 stale socket 때문에 첫 요청 reset과 pending acquire가 늘어나는 흐름을 설명해줘"
+- "long-lived stream이 짧은 API request pool을 굶기는 장면을 어떻게 진단해?"
+- "HTTP/2에서는 socket pool보다 MAX_CONCURRENT_STREAMS가 먼저 막힐 수 있어?"
+- "borrow validation과 idle eviction이 pool starvation 완화에 어떤 trade-off가 있어?"
+contextual_chunk_prefix: |
+  이 문서는 connection pool starvation을 maxConnections exhaustion뿐 아니라
+  stale idle socket, borrow validation, idle timeout mismatch, long-lived stream,
+  H2 stream slot saturation, pending acquire 관점으로 진단하는 advanced playbook이다.
+---
 # Connection Pool Starvation, Stale Idle Reuse, Debugging
 
 > 한 줄 요약: connection pool starvation은 단순히 `maxConnections`가 작아서만 생기지 않는다. long-lived stream, stale idle socket, borrow 검증 부재, idle timeout mismatch가 겹치면 pool은 비어 보이지 않는데도 새 요청이 굶는다.

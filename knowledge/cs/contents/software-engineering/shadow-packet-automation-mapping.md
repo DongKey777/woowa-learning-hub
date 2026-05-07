@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Shadow Packet Automation Mapping
+concept_id: software-engineering/shadow-packet-automation-mapping
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- packet-automation
+- projection
+- governance
+aliases:
+- shadow packet automation mapping
+- catalog entry to packet row projection
+- review packet field fallback
+- lifecycle state packet section routing
+- shadow review row builder
+- shadow packet 자동화 매핑
+symptoms:
+- shadow catalog entry를 review packet row로 만들 때 lifecycle_state별 section routing과 field fallback 규칙이 없어 사람이 매번 해석해
+- required field가 비었는데 degraded row와 blocked row를 구분하지 않아 forum packet이 겉보기만 풍부해져
+- review outcome delta를 적용하지 않고 이전 prose 회의록을 다시 추론해 다음 packet state가 흔들려
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-review-packet-template
+next_docs:
+- software-engineering/shadow-review-outcome-template
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-retirement-proof-metrics
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-review-outcome-template.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-forum-escalation-rules.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+confusable_with:
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-review-outcome-template
+- software-engineering/shadow-process-catalog-entry-schema
+forbidden_neighbors: []
+expected_queries:
+- shadow catalog entry를 review packet row로 자동 생성할 때 lifecycle_state별 section routing은 어떻게 고정해?
+- packet row field마다 primary source, fallback chain, missing behavior를 함께 정의해야 하는 이유는?
+- projection_status를 ready, degraded, blocked로 나누면 forum row 품질을 어떻게 구분할 수 있어?
+- current_path, signal_evidence, verification을 한 줄 summary로 문자열화할 때 어떤 규칙이 필요해?
+- shadow review outcome의 field_updates를 적용해 다음 packet generator가 prose를 다시 추론하지 않게 하는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 shadow catalog entry를 forum review packet row로 자동 투영할 때 lifecycle-state section routing, field fallback, projection_status quality gate를 고정하는 advanced playbook이다.
+---
 # Shadow Packet Automation Mapping
 
 > 한 줄 요약: shadow catalog entry를 review packet row로 자동 생성하려면, lifecycle-state별 section routing과 field별 required/optional fallback 규칙을 고정해 사람이 packet을 다시 손으로 해석하지 않게 해야 한다.

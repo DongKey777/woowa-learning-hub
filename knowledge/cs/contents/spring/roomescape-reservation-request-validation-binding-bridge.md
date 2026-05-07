@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/roomescape
+- missions/spring-roomescape
 review_feedback_tags:
 - request-binding
 - bean-validation
@@ -67,6 +68,14 @@ contextual_chunk_prefix: |
 ## 한 줄 요약
 
 > roomescape 예약 생성 API에서 Spring MVC는 요청 JSON을 DTO로 바인딩하고 `@Valid`로 입구 규칙을 먼저 거른다. 그 뒤에야 service가 "이미 같은 슬롯이 찼는가" 같은 저장 상태 규칙을 판단한다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 생성에서 `@Valid`를 어디에 붙여야 할지 모르겠어요" | DTO 형식 검증과 service 규칙 검증이 섞인 controller | 요청 본문만으로 알 수 있는 규칙은 request DTO에 둔다 |
+| "API가 controller에 오기 전에 400으로 떨어져요" | JSON parse, 필드명, 타입 변환 실패 | service보다 Spring MVC binding/message conversion 단계를 먼저 본다 |
+| "중복 예약도 DTO 검증에 넣고 싶어요" | repository 조회가 필요한 상태 규칙 | 입력 형식 오류와 business conflict를 분리한다 |
 
 ## 미션 시나리오
 

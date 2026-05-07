@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Object Metadata Service 설계
+concept_id: system-design/object-metadata-service-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- object metadata service
+- bucket
+- object key
+- versioning
+aliases:
+- object metadata service
+- bucket
+- object key
+- versioning
+- checksum
+- lifecycle
+- multipart upload
+- presigned url
+- replication
+- metadata partition
+- Object Metadata Service 설계
+- object metadata service design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/file-storage-presigned-url-cdn-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/search-system-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Object Metadata Service 설계 설계 핵심을 설명해줘
+- object metadata service가 왜 필요한지 알려줘
+- Object Metadata Service 설계 실무 트레이드오프는 뭐야?
+- object metadata service 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Object Metadata Service 설계를 다루는 deep_dive 문서다. object metadata service는 대용량 파일의 위치, 버전, 권한, 무결성 정보를 중앙에서 관리하는 스토리지 제어 평면이다. 검색 질의가 object metadata service, bucket, object key, versioning처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Object Metadata Service 설계
 
 > 한 줄 요약: object metadata service는 대용량 파일의 위치, 버전, 권한, 무결성 정보를 중앙에서 관리하는 스토리지 제어 평면이다.

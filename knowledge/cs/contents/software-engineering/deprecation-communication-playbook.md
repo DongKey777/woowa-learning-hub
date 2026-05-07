@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Deprecation Communication Playbook
+concept_id: software-engineering/deprecation-communication-playbook
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- deprecation
+- sunset
+- consumer-communication
+- migration
+aliases:
+- Deprecation Communication Playbook
+- deprecation communication plan
+- sunset notice playbook
+- consumer migration announcement
+- deprecated API communication
+- 종료 공지 마이그레이션 안내
+symptoms:
+- deprecated API나 topic 종료 공지가 단발성 메시지로 끝나 소비자가 언제 무엇을 바꿔야 하는지 놓쳐
+- support, owner, consumer, on-call, product team이 서로 다른 종료 일정과 replacement path를 알고 있어 migration 혼란이 생겨
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-deprecation-sunset-lifecycle
+- software-engineering/consumer-migration-playbook
+next_docs:
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/tombstone-response-template-consumer-guidance
+- software-engineering/consumer-exception-model
+linked_paths:
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/rfc-vs-adr-decision-flow.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/tombstone-response-template-and-consumer-guidance.md
+confusable_with:
+- software-engineering/service-deprecation-sunset-lifecycle
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/consumer-migration-playbook
+forbidden_neighbors: []
+expected_queries:
+- deprecated API 종료 공지를 소비자에게 언제 어떤 채널로 보내야 하는지 playbook으로 정리해줘
+- deprecation communication이 단순 공지가 아니라 consumer action을 유도해야 하는 이유가 뭐야?
+- sunset notice에 deadline, replacement, support channel, impacted consumer를 어떻게 담아야 해?
+- reminder, final warning, sunset day, post-sunset support cadence를 어떻게 설계해?
+- 종료 공지와 실제 enforcement guardrail을 왜 분리해서 운영해야 해?
+contextual_chunk_prefix: |
+  이 문서는 deprecation과 sunset을 소비자가 행동 가능한 일정, replacement, support channel, reminder cadence로 전달하는 advanced communication playbook이다.
+---
 # Deprecation Communication Playbook
 
 > 한 줄 요약: deprecation communication은 기능을 지우겠다는 공지가 아니라, 소비자가 언제 무엇을 바꿔야 하는지 혼란 없이 이해하도록 돕는 운영 커뮤니케이션이다.

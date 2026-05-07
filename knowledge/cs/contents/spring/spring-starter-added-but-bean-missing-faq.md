@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring Starter Added But Bean Missing FAQ
+concept_id: spring/starter-added-but-bean-missing-faq
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- starter-added-but
+- bean-missing-faq
+- bean-missing
+- boot-starter-bean
+aliases:
+- starter added but bean missing
+- Spring Boot starter bean not created
+- auto configuration negative match
+- ConditionalOnClass property existing bean
+- component scan boundary starter
+- bean missing after dependency added
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-starter-condition-report-starter-drill.md
+- contents/spring/spring-starter-dependency-map-primer.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+- contents/spring/spring-scanbasepackages-vs-import-autoconfiguration-selection.md
+symptoms:
+- starter dependency를 추가했는데 기대한 bean이 ApplicationContext에 없다.
+- Condition Evaluation Report에서 negative match가 나왔지만 원인을 읽기 어렵다.
+- classpath, property, existing bean, scan boundary 중 무엇이 막았는지 구분이 안 된다.
+confusable_with:
+- spring/starter-condition-report-starter-drill
+- spring/starter-dependency-map-primer
+- spring/boot-condition-evaluation-report-debugging
+- spring/boot-autoconfiguration-basics
+expected_queries:
+- Spring Boot starter를 넣었는데 왜 bean이 안 떠?
+- dependency 추가만으로 auto-configuration bean이 생성되지 않는 이유는?
+- Condition Evaluation Report에서 negative match를 어떻게 읽어야 해?
+- starter bean missing 문제를 classpath property override scan boundary로 나눠줘
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot starter를 추가했다는 사실이 auto-configuration 후보를 classpath에
+  올렸다는 뜻일 뿐 실제 bean 생성은 ConditionalOnClass, property, existing bean,
+  scan/import boundary가 모두 맞아야 한다는 점을 FAQ로 라우팅한다.
+---
 # Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary
 
 > 한 줄 요약: starter를 추가했다는 사실은 "자동 구성 후보를 classpath에 올렸다"는 뜻일 뿐이고, 실제 bean 생성은 classpath 조건, property, 기존 bean 존재, scan/import 경계가 모두 맞아야 일어난다.

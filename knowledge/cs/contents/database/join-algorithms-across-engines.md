@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Join Algorithms Across Engines
+concept_id: database/join-algorithms-across-engines
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- join-algorithms-across-engines
+- nested-loop-hash-merge
+- explain-join-cost-model
+aliases:
+- nested loop join
+- hash join
+- merge join
+- sort merge join
+- join algorithm
+- engine differences
+- EXPLAIN ANALYZE join algorithm
+- sorted inputs
+- MySQL PostgreSQL join algorithm
+- 조인 알고리즘
+symptoms:
+- MySQL에서는 nested loop가 자연스럽고 PostgreSQL에서는 hash/merge join이 보이는 차이를 설명해야 해
+- nested loop, hash join, merge join이 각각 인덱스, 메모리, 정렬 비용과 어떻게 연결되는지 헷갈려
+- join plan 변경이 메모리, spill, cardinality estimate와 같이 움직이는지 봐야 해
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- database/sql-join-basics
+- database/sql-joins-and-query-order
+next_docs:
+- database/hash-join-materialization-join-buffer
+- database/semijoin-loosescan-firstmatch-duplicateweedout
+- database/statistics-histograms-cardinality-estimation
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/hash-join-materialization-join-buffer.md
+- contents/database/semijoin-loosescan-firstmatch-duplicateweedout.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/sql-join-basics.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/query-tuning-checklist.md
+- contents/database/index-and-explain.md
+confusable_with:
+- database/hash-join-materialization-join-buffer
+- database/sql-joins-and-query-order
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- nested loop join, hash join, merge join은 비용 모델이 어떻게 달라?
+- MySQL과 PostgreSQL이 같은 SQL에서 다른 join algorithm을 고르는 이유는 뭐야?
+- hash join은 반복 index lookup을 줄이는 대신 메모리와 spill 비용을 왜 봐야 해?
+- merge join은 sorted input이 있을 때 왜 자연스러운 선택이야?
+- EXPLAIN ANALYZE에서 join algorithm 변화를 cardinality estimate와 어떻게 같이 읽어?
+contextual_chunk_prefix: |
+  이 문서는 nested loop, hash join, merge join을 인덱스 친화형, 동등 조인/메모리 친화형, 정렬 친화형 비용 모델로 비교하는 advanced deep dive다.
+  nested loop join, hash join, merge join, join algorithm, engine differences 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Join Algorithms Across Engines: Nested Loop, Hash, and Merge
 
 > 한 줄 요약: 조인은 하나의 정답이 아니라, nested loop는 인덱스 친화형이고 hash는 동등 조인 친화형이며 merge는 정렬 친화형이라는 서로 다른 비용 모델의 선택이다.

@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Monotonic Clock Wall Clock Timeout Deadline
+concept_id: operating-system/monotonic-clock-wall-clock-timeout-deadline
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- monotonic-clock-wall
+- clock-timeout-deadline
+- clock
+- timeout-vs-deadline
+aliases:
+- monotonic clock wall clock
+- timeout vs deadline
+- CLOCK_MONOTONIC
+- time measurement vs display
+- clock jump timeout bug
+- deadline propagation
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/clocksource-timer-resolution-jitter.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/operating-system/scheduler-classes-nice-rt-tradeoffs.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+expected_queries:
+- timeout과 deadline은 무엇이 다르고 monotonic clock은 왜 써야 해?
+- wall clock을 latency 측정에 쓰면 clock jump 때문에 어떤 문제가 생겨?
+- CLOCK_MONOTONIC과 wall clock을 시스템 설계에서 어떻게 나눠 써?
+- timeout budget propagation과 deadline 측정을 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 시간 표시와 시간 측정을 먼저 나눈다. timeout은 얼마나 기다릴까이고 deadline은
+  언제까지 끝나야 하나이며, 실전 latency/timeout 측정은 CLOCK_MONOTONIC 같은 monotonic clock을
+  쓰고 wall clock은 표시와 외부 연동에 조심해서 사용한다.
+---
 # Monotonic Clock, Wall Clock, Timeout and Deadline
 
 > 한 줄 요약: 타임아웃은 "얼마나 기다릴까"이고, 데드라인은 "언제까지 끝나야 하나"이며, 실전 시스템은 `CLOCK_MONOTONIC`으로 측정하고 wall clock은 표시와 외부 연동에만 조심해서 써야 한다.

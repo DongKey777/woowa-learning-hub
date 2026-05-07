@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: MAP_SHARED vs MAP_PRIVATE Write Semantics
+concept_id: operating-system/mmap-map-shared-vs-map-private-write-semantics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- mmap-map-shared
+- vs-map-private
+- write-semantics
+- map-shared-vs
+aliases:
+- MAP_SHARED vs MAP_PRIVATE
+- mmap write semantics
+- file-backed mmap COW
+- shared mapping dirty page cache
+- private mapping anonymous COW
+- mmap peer visibility
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-shared-truncate-sigbus-coherency-pitfalls.md
+confusable_with:
+- operating-system/mmap-vs-read-page-cache-behavior
+- operating-system/mmap-shared-truncate-sigbus-coherency-pitfalls
+- operating-system/fork-exec-copy-on-write-behavior
+expected_queries:
+- MAP_SHARED와 MAP_PRIVATE write는 page cache와 COW에서 어떻게 달라?
+- file-backed mmap에서 MAP_PRIVATE write는 왜 anonymous COW page로 갈라져?
+- MAP_SHARED write는 peer visibility와 writeback에 어떤 기대를 만들어?
+- mmap write semantics를 RSS, page fault, dirty writeback 관점에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 file-backed mmap에서 MAP_SHARED write는 page cache를 dirty하게 만들고,
+  MAP_PRIVATE write는 그 순간 anonymous COW page로 갈라져 writeback, RSS, peer visibility
+  기대가 완전히 달라진다는 점을 비교한다.
+---
 # MAP_SHARED vs MAP_PRIVATE Write Semantics
 
 > 한 줄 요약: file-backed `mmap()`에서 `MAP_SHARED` write는 page cache를 더럽히고, `MAP_PRIVATE` write는 그 순간부터 익명 COW 페이지로 갈라지므로 writeback, RSS, peer visibility 기대치가 완전히 달라진다.

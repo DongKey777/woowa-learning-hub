@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Session vs Process Group Primer
+concept_id: operating-system/session-vs-process-group-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- session-vs-process
+- group
+- controlling-terminal
+- setsid-setpgid
+aliases:
+- session vs process group
+- controlling terminal
+- setsid setpgid
+- shell job control
+- terminal signal job group
+- foreground process group
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/operating-system/posix-spawn-attributes-primer.md
+- contents/operating-system/shell-job-control-command-bridge.md
+- contents/operating-system/daemonization-checklist-primer.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/pty-raw-mode-echo-basics.md
+expected_queries:
+- session과 process group, controlling terminal은 어떻게 달라?
+- terminal signal을 같이 받는 job 묶음은 process group이야?
+- setsid와 setpgid는 무엇을 떼거나 묶는 system call이야?
+- shell job control에서 foreground process group은 어떤 의미야?
+contextual_chunk_prefix: |
+  이 문서는 process group을 terminal signal을 함께 받을 job 묶음으로, session을 그런 process group을
+  담는 더 큰 runtime/terminal boundary로, controlling terminal을 session에 붙은 keyboard/screen
+  entrance로 설명한다.
+---
 # Session vs Process Group Primer
 
 > 한 줄 요약: process group은 terminal signal을 같이 받을 "job 묶음"이고, session은 그런 process group들을 담는 더 큰 terminal/runtime 경계이며, controlling terminal은 그 session에 붙은 키보드/화면 입구다.

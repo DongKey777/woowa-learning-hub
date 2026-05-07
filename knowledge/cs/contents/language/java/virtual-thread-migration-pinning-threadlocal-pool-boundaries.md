@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Virtual Thread Migration Pinning ThreadLocal Pool Boundaries
+concept_id: language/virtual-thread-migration-pinning
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- virtual-thread
+- pinning
+- context-propagation
+aliases:
+- Virtual Thread Migration Pinning ThreadLocal Pool Boundaries
+- Loom migration checklist
+- virtual thread pinning ThreadLocal pool
+- carrier thread pinning migration
+- MDC ThreadLocal virtual thread migration
+- virtual thread 전환 체크리스트
+symptoms:
+- virtual thread 도입을 executor 교체로만 보고 pinning, ThreadLocal, MDC, downstream pool, timeout 경계를 함께 보지 않아
+- DB connection pool이나 HTTP client max connection이 그대로인데 thread만 늘려 병목 위치가 pool wait로 이동한 것을 놓쳐
+- synchronized I/O, native/JNI, ThreadLocal cleanup 문제를 JFR pinning과 context propagation 증거 없이 추정해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/virtual-threads-project-loom
+- language/threadlocal-leaks-context-propagation
+- language/jfr-loom-incident-signal-map
+next_docs:
+- language/virtual-thread-framework-integration
+- language/jdbc-observability-under-virtual-threads
+- language/connection-budget-alignment-after-loom
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/inheritablethreadlocal-vs-scopedvalue-context-propagation.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+confusable_with:
+- language/virtual-threads-project-loom
+- language/virtual-thread-framework-integration
+- language/jdbc-observability-under-virtual-threads
+forbidden_neighbors: []
+expected_queries:
+- virtual thread migration에서 pinning ThreadLocal MDC datasource pool을 어떤 순서로 점검해야 해?
+- Loom으로 executor만 바꾸면 왜 DB connection pool이나 HTTP client pool 병목이 그대로 남아?
+- synchronized 안에서 blocking I/O를 하면 virtual thread pinning이 왜 문제가 돼?
+- virtual thread 전환 후 ThreadLocal과 InheritableThreadLocal context propagation은 어떻게 다시 설계해야 해?
+- JFR에서 VirtualThreadPinned Thread Park Socket Read를 보고 migration 위험을 어떻게 좁혀?
+contextual_chunk_prefix: |
+  이 문서는 Java virtual thread migration을 executor 교체가 아니라 pinning, ThreadLocal/MDC context, downstream pool, timeout/cancel boundary, JFR 관측을 함께 재설계하는 advanced playbook으로 다룬다.
+  Loom migration, carrier pinning, ThreadLocal, MDC, connection pool bottleneck, JFR VirtualThreadPinned 질문이 본 문서에 매핑된다.
+---
 # Virtual Thread Migration: Pinning, `ThreadLocal`, and Pool Boundary Strategy
 
 > 한 줄 요약: virtual thread 전환은 executor 교체 작업이 아니라 runtime contract 재설계다. pinning, `ThreadLocal` 의존, JDBC/HTTP pool, MDC/context propagation, synchronized I/O를 함께 보지 않으면 "스레드는 가벼워졌는데 시스템은 그대로 답답한" 상태가 남는다.

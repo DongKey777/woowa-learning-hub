@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Decorator and Proxy Basics
+concept_id: design-pattern/decorator-proxy-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- decorator-proxy-basics
+- wrapper-pattern-intuition
+- spring-aop-proxy
+aliases:
+- decorator proxy basics
+- decorator pattern basics
+- proxy pattern basics
+- decorator vs proxy beginner
+- wrapper pattern
+- 기능 추가 래퍼
+- 접근 제어 대리자
+- 데코레이터 패턴
+- 프록시 패턴
+- Spring AOP proxy
+symptoms:
+- 객체를 감싸는 wrapper 구조만 보고 decorator와 proxy를 같은 패턴이라고 생각한다
+- 캐시나 로깅을 붙인 코드가 기능 추가인지 접근 제어인지 구분하지 못한다
+- Spring AOP와 @Transactional을 단순 decorator 체인으로 이해해 self-invocation 같은 프록시 함정을 놓친다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- software-engineering/oop-design-basics
+- design-pattern/adapter-basics
+- spring/aop-proxy-mechanism
+next_docs:
+- design-pattern/decorator-vs-proxy
+- design-pattern/decorator-vs-proxy-decision-guide
+- design-pattern/retry-policy-vs-decorator-chain
+linked_paths:
+- contents/design-pattern/decorator-vs-proxy.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/adapter-basics.md
+- contents/spring/aop-proxy-mechanism.md
+confusable_with:
+- design-pattern/decorator-vs-proxy-decision-guide
+- design-pattern/facade-vs-adapter-vs-proxy-decision-guide
+- design-pattern/adapter-basics
+- spring/aop-proxy-mechanism
+forbidden_neighbors: []
+expected_queries:
+- Decorator와 Proxy는 둘 다 wrapper인데 기능 추가와 접근 제어 기준으로 어떻게 구분해?
+- Spring @Transactional은 왜 decorator보다 proxy에 더 가까워?
+- 로깅 래퍼와 캐시 프록시는 목적이 어떻게 달라?
+- decorator proxy adapter를 처음 배울 때 10초 기준으로 어떻게 라우팅해?
+- wrapper를 만들었을 때 같은 인터페이스를 구현한다는 사실만으로 패턴을 판단하면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 Decorator and Proxy Basics primer로, 두 패턴이 모두 wrapper 구조를
+  갖지만 Decorator는 기능 추가, Proxy는 접근 제어라는 의도 차이로 구분하며
+  Spring AOP proxy와 Adapter 혼동까지 함께 설명한다.
+---
 # 데코레이터와 프록시 기초 (Decorator and Proxy Basics)
 
 > 한 줄 요약: 데코레이터는 원본 객체에 기능을 덧씌우는 래퍼이고, 프록시는 접근 자체를 제어하는 대리자인데, 겉모양이 비슷해서 헷갈리기 쉽다.

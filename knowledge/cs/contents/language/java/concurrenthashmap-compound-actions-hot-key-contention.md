@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: ConcurrentHashMap Compound Actions and Hot-Key Contention
+concept_id: language/concurrenthashmap-compound-actions-hot-key-contention
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- concurrenthashmap-compound-action
+- computeifabsent-hot-key-contention
+- weakly-consistent-iteration
+aliases:
+- ConcurrentHashMap compound actions
+- ConcurrentHashMap hot key contention
+- computeIfAbsent pitfall
+- check then act race
+- weakly consistent iterator
+- LongAdder counter
+- single flight cache
+- Java concurrent map race
+symptoms:
+- ConcurrentHashMap을 쓰면 get 후 put 같은 복합 동작도 자동으로 원자적이라고 생각하고 있어
+- computeIfAbsent 안에서 느린 DB나 HTTP 호출을 해서 hot key 요청이 직렬화되는 문제를 놓치고 있어
+- map은 thread-safe인데 value 객체나 iteration snapshot도 안전하다고 오해하고 있어
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- language/java-concurrency-utilities
+- language/java-collections-basics
+- data-structure/hash-table-basics
+next_docs:
+- language/collections-performance
+- language/copyonwritearraylist-snapshot-iteration-write-amplification
+- language/completablefuture-execution-model-common-pool-pitfalls
+- system-design/cache-invalidation-patterns-primer
+linked_paths:
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/collections-performance.md
+- contents/language/java/copyonwritearraylist-snapshot-iteration-write-amplification.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+confusable_with:
+- language/collections-performance
+- language/copyonwritearraylist-snapshot-iteration-write-amplification
+- system-design/cache-invalidation-patterns-primer
+forbidden_neighbors: []
+expected_queries:
+- ConcurrentHashMap에서 get 후 put check-then-act race가 왜 생겨?
+- computeIfAbsent 안에 느린 외부 호출을 넣으면 hot key에서 어떤 병목이 생겨?
+- ConcurrentHashMap value가 ArrayList면 map만 thread-safe여도 안전하지 않은 이유는 뭐야?
+- weakly consistent iterator는 정확한 snapshot과 무엇이 달라?
+- high contention counter에서 AtomicLong 대신 LongAdder를 쓰는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 ConcurrentHashMap advanced deep dive로, individual operation safety와 compound action atomicity, computeIfAbsent mapping function, hot-key contention, mutable value safety, weakly consistent iteration, LongAdder counter를 분리한다.
+  ConcurrentHashMap race, check then act, computeIfAbsent hot key, cache stampede, weakly consistent iterator 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # `ConcurrentHashMap` Compound Actions and Hot-Key Contention
 
 > 한 줄 요약: `ConcurrentHashMap`은 개별 연산을 thread-safe하게 만들어주지만, check-then-act race, 긴 `computeIfAbsent()` 로더, hot-key contention, weakly consistent iteration까지 자동으로 해결해주지는 않는다.

@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Scheduler Classes nice RT Trade-offs
+concept_id: operating-system/scheduler-classes-nice-rt-tradeoffs
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- scheduler-classes-nice
+- rt-tradeoffs
+- cfs-nice-priority
+- real-time-scheduler
+aliases:
+- scheduler classes nice RT
+- CFS nice priority
+- real-time scheduler tradeoff
+- SCHED_FIFO SCHED_RR
+- scheduler priority class
+- RT starvation risk
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/clocksource-timer-resolution-jitter.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+expected_queries:
+- Linux scheduler는 하나가 아니라 여러 class의 합이라는 말은 무슨 뜻이야?
+- nice는 CFS 안에서만 의미가 크고 RT는 완전히 다른 우선순위 세계야?
+- SCHED_FIFO나 RT priority를 잘못 쓰면 starvation 위험이 생겨?
+- scheduler class와 wakeup latency, CPU fairness를 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 Linux scheduler를 하나의 정책이 아니라 CFS, RT 같은 scheduler class의 조합으로
+  설명한다. nice는 CFS 내부 weight에 가깝고 RT class는 다른 priority world와 starvation risk를 만든다.
+---
 # Scheduler Classes, nice, RT Trade-offs
 
 > 한 줄 요약: Linux 스케줄러는 하나가 아니라 여러 클래스의 합이며, nice는 CFS 안에서만 의미가 크고 RT는 완전히 다른 우선순위 세계를 만든다.

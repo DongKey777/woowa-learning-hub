@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Nullable Wrapper Comparator Bridge
+concept_id: language/nullable-wrapper-comparator-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator
+- wrapper
+- null-handling
+aliases:
+- Nullable Wrapper Comparator Bridge
+- Java Integer Long Double null comparator
+- comparingInt nullable wrapper pitfall
+- Comparator nullsFirst nullsLast wrapper
+- nullable numeric field sorting
+- 자바 wrapper comparator null 처리
+symptoms:
+- Integer Long Double wrapper 필드가 null일 수 있는데 comparingInt나 thenComparingInt 습관을 그대로 써 null unboxing 실패를 만든다
+- nullable wrapper comparator에서 null placement와 value direction을 분리하지 못해 nullsLast, reverseOrder, reversed scope를 혼동해
+- TreeSet이나 TreeMap comparator가 null wrapper 값을 모두 같은 자리로 볼 수 있다는 sorted collection 중복 판단 차이를 놓쳐
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-comparator-utility-patterns
+- language/java-autoboxing-integercache-null-unboxing-pitfalls
+next_docs:
+- language/nullable-number-mixed-direction-bridge
+- language/comparator-null-reversal-primer
+- language/treemap-null-key-vs-nullable-field-primer
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/comparator-null-reversal-primer.md
+- contents/language/java/treemap-null-key-vs-nullable-field-primer.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+confusable_with:
+- language/nullable-number-mixed-direction-bridge
+- language/comparator-null-reversal-primer
+- language/treemap-null-key-vs-nullable-field-primer
+forbidden_neighbors: []
+expected_queries:
+- nullable Integer Long Double 필드는 comparingInt 대신 어떤 Comparator 패턴을 써야 해?
+- wrapper 숫자 필드에서 nullsFirst nullsLast를 먼저 정해야 하는 이유가 뭐야?
+- nullable wrapper comparator를 TreeSet이나 TreeMap에 쓰면 null끼리 같은 자리로 보일 수 있어?
+- comparingInt가 primitive에는 편하지만 Integer null에는 위험한 이유를 설명해줘
+- nullable wrapper field를 내림차순으로 정렬하면서 null은 뒤에 두는 comparator를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 nullable Integer, Long, Double wrapper 필드 정렬에서 primitive comparator shortcut 대신 null-aware Comparator를 고르는 beginner chooser다.
+  nullable wrapper comparator, comparingInt pitfall, nullsFirst, nullsLast, TreeSet TreeMap comparator 질문이 본 문서에 매핑된다.
+---
 # Nullable Wrapper Comparator Bridge
 
 > 한 줄 요약: `Integer`/`Long`/`Double` wrapper 필드는 primitive tie-breaker 습관을 그대로 가져가기보다, "숫자 비교"보다 먼저 "`null`이 올 수 있는가, 오면 앞에 둘까 뒤에 둘까"를 정하게 만든다. 그래서 초보자 기본 선택지는 `comparingInt`/`Long`/`Double`보다 `Comparator.comparing(..., Comparator.nullsFirst(...))` 또는 `Comparator.comparing(..., Comparator.nullsLast(...))` 쪽이 된다.

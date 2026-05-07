@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Java 동시성 유틸리티
+concept_id: language/java-concurrency-utilities
+canonical: true
+category: language
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- executor-service-basics
+- async-shutdown-cancellation
+- concurrent-collection-selection
+aliases:
+- Java concurrency utilities
+- ExecutorService
+- thread pool
+- Callable Future
+- CompletableFuture overview
+- ConcurrentHashMap
+- BlockingQueue
+- wait notify Condition
+- Java 동시성 유틸리티
+- 스레드 풀
+- 비동기 작업 조합
+- worker shutdown
+symptoms:
+- new Thread를 직접 만들지 ExecutorService로 task 제출과 thread 관리를 분리해야 하는 이유를 설명하지 못한다
+- Future, CompletableFuture, interrupt, shutdownNow가 모두 취소처럼 보여 실제 worker가 멈추는 조건을 놓친다
+- ConcurrentHashMap 같은 concurrent collection의 개별 연산 안전성과 복합 동작 안전성을 섞어 본다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/jvm-gc-jmm-overview
+- language/java-thread-basics
+next_docs:
+- language/executor-sizing-queue-rejection-policy
+- language/completablefuture-execution-model-common-pool-pitfalls
+- language/thread-interruption-cooperative-cancellation-playbook
+- language/concurrenthashmap-compound-actions-hot-key-contention
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/inheritablethreadlocal-vs-scopedvalue-context-propagation.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+- contents/language/java/blockingqueue-transferqueue-concurrentskiplistset-semantics.md
+- contents/language/java/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md
+- contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/virtual-threads-project-loom.md
+confusable_with:
+- language/executor-sizing-queue-rejection-policy
+- language/completablefuture-execution-model-common-pool-pitfalls
+- language/thread-interruption-cooperative-cancellation-playbook
+forbidden_neighbors: []
+expected_queries:
+- Java에서 new Thread 대신 ExecutorService와 thread pool을 쓰는 이유를 task 제출과 자원 제어 기준으로 설명해줘
+- Runnable Callable Future CompletableFuture 차이를 결과 반환과 비동기 조합 관점으로 비교해줘
+- shutdownNow나 Future cancel true가 왜 worker를 강제로 죽이는 보장이 아닌지 interrupt discipline과 연결해줘
+- ConcurrentHashMap은 thread safe라는데 compute 같은 복합 동작과 hot key contention은 왜 따로 봐야 해?
+- BlockingQueue, Semaphore, CountDownLatch 같은 동시성 유틸리티를 어떤 coordination 문제에 붙여야 하는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java 동시성 유틸리티를 Executor, thread pool, Future, CompletableFuture, concurrent collections, coordination primitive로 라우팅하는 advanced bridge다.
+  ExecutorService, Callable, Future, CompletableFuture, cancellation, interrupt, shutdown, ConcurrentHashMap, BlockingQueue, Semaphore, CountDownLatch, virtual thread와의 연결을 다룬다.
+---
 # Java 동시성 유틸리티
 
 **난이도: 🔴 Advanced**

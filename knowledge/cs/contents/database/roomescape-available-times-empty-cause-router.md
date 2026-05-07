@@ -31,7 +31,7 @@ intents:
 - troubleshooting
 - mission_bridge
 prerequisites:
-- database/sql-reading-relational-modeling-primer
+- database/sql-relational-modeling-basics
 - database/transaction-basics
 next_docs:
 - database/roomescape-available-times-active-predicate-antijoin-bridge
@@ -50,8 +50,7 @@ confusable_with:
 - database/roomescape-available-times-active-predicate-antijoin-bridge
 - database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
 - database/roomescape-reservation-concurrency-bridge
-forbidden_neighbors:
-- contents/database/roomescape-reservation-concurrency-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - roomescape 예약 가능 시간 API가 갑자기 빈 배열만 주면 어디부터 의심해야 해?
 - 취소된 예약을 빼고 조회한다는데도 가능한 시간이 다 사라지는 이유가 뭐야?
@@ -66,7 +65,6 @@ contextual_chunk_prefix: |
   따로 논다, 가능한 줄 알았는데 생성이 실패함 같은 자연어 paraphrase가 active
   predicate와 arbitration drift 원인에 매핑된다.
 ---
-
 # roomescape 예약 가능 시간이 안 보여요 원인 라우터
 
 ## 한 줄 요약

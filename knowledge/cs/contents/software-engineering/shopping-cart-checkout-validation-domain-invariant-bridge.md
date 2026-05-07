@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart checkout에서 `400`은 보통 요청 자체가 입구를 통과하지 못한 경우이고, `409`는 요청 형식은 맞지만 현재 재고, 쿠폰, 주문 상태와 충돌한 경우다. 그래서 DTO validator는 문 앞 검사, checkout service와 domain rule은 상태 충돌 판정을 맡는 편이 경계가 선명하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`paymentMethod` 빈값과 품절을 왜 같은 검증으로 다루면 안 되나요?" | checkout request validation과 재고 상태 충돌이 섞인 코드 | 요청 한 장으로 알 수 있는 오류와 저장 상태를 봐야 하는 충돌을 분리한다 |
+| "shopping-cart에서 400이랑 409를 어디서 나눠야 할지 모르겠어요" | 주문 생성 실패 응답 계약 설계 | input validation failure와 business conflict를 다른 status 의미로 본다 |
+| "쿠폰 이미 사용됨을 DTO validator에서 막아도 되나요?" | coupon claim 상태 조회가 필요한 검증 | DTO validator보다 service/domain rule과 DB 보호선으로 올린다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 주문 생성이나 결제 승인 요청을 붙이면 학습자는 자주

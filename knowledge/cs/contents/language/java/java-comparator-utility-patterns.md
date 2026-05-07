@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Comparator Utility Patterns
+concept_id: language/java-comparator-utility-patterns
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator
+- sorting
+- null-handling
+aliases:
+- Java Comparator Utility Patterns
+- Comparator comparing thenComparing reversed nullsLast
+- comparator utility builder mental model
+- comparingInt thenComparingInt primitive shortcut
+- 자바 Comparator 정렬 기준 조립
+- 정렬 기준 여러 개 붙이기 comparator
+symptoms:
+- Comparator.comparing은 알지만 2차 정렬 기준을 thenComparing으로 붙이는 흐름을 손으로 만들지 못해
+- reversed를 comparator 전체에 붙일지 특정 기준에만 붙일지 헷갈려 mixed direction 정렬을 잘못 작성해
+- nullable field 정렬에서 nullsFirst/nullsLast와 primitive comparing shortcut을 섞어 NullPointerException을 만든다
+intents:
+- comparison
+- definition
+- drill
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-collections-basics
+- language/java-stream-lambda-basics
+next_docs:
+- language/comparator-reversed-scope-primer
+- language/comparator-null-reversal-primer
+- language/list-sort-vs-stream-sorted-comparator-bridge
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/arrays-sort-comparator-reuse-bridge.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/comparator-null-reversal-primer.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/nullable-string-comparator-bridge.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+confusable_with:
+- language/java-comparable-comparator-basics
+- language/comparator-reversed-scope-primer
+- language/comparator-null-reversal-primer
+forbidden_neighbors: []
+expected_queries:
+- Java Comparator.comparing과 thenComparing으로 다중 정렬 기준을 만드는 법을 알려줘
+- comparingInt thenComparingInt 같은 primitive comparator shortcut은 언제 쓰는 게 좋아?
+- Comparator.reversed를 어디에 붙이느냐에 따라 정렬 방향이 어떻게 달라져?
+- null이 섞인 필드를 정렬할 때 nullsFirst nullsLast를 어떻게 조합해?
+- 학년은 내림차순 이름은 오름차순으로 정렬하는 Comparator chain 예제를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Java Comparator.comparing, thenComparing, primitive shortcut, reversed, nullsFirst/nullsLast를 정렬 규칙 조립 도구로 설명하는 beginner chooser다.
+  Comparator chain, multi-key sort, comparingInt, reversed placement, nullable field sorting 질문이 본 문서에 매핑된다.
+---
 # Comparator Utility Patterns
 
 > 한 줄 요약: Java 입문자가 `Comparator.comparing`, `thenComparing`, primitive tie-breaker shortcut, `reversed`, `nullsFirst`, `nullsLast`를 "정렬 규칙을 조립하는 도구"로 이해하고 바로 손으로 연습할 수 있게 만든 practice-oriented companion doc이다.

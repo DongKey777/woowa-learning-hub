@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Partial Success Fan In Patterns
+concept_id: language/partial-success-fan-in-patterns
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- structured-concurrency
+- fanout
+- degradation
+aliases:
+- Partial Success Fan-in Patterns
+- structured concurrency partial success
+- request scoped fan-out fan-in
+- degradation tier aggregate error report
+- required optional fallbackable downstream slot
+- partial success degraded response
+symptoms:
+- 여러 downstream 병렬 호출 중 일부 실패를 null이나 빈 리스트로 숨겨 원래 데이터 없음과 장애로 인한 omission을 구분하지 못해
+- required, optional, fallbackable slot policy를 정하지 않고 fan-in DTO shape부터 만들어 degraded response 의미가 흐려져
+- request scope가 끝난 뒤에도 child task retry나 background work가 살아 있는 orphan work를 structured fan-out 내부에 섞어
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/structured-fanout-httpclient
+- language/structured-concurrency-scopedvalue
+- language/thread-interruption-cooperative-cancellation-playbook
+next_docs:
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/completablefuture-cancellation-semantics
+- language/connection-budget-alignment-after-loom
+linked_paths:
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/structured-concurrency-scopedvalue.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+confusable_with:
+- language/structured-fanout-httpclient
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/connection-budget-alignment-after-loom
+forbidden_neighbors: []
+expected_queries:
+- partial success fan-in에서 required optional fallbackable downstream slot을 어떻게 모델링해야 해?
+- fan-out 일부 실패를 null이나 빈 리스트로 숨기면 degraded response 의미가 왜 사라져?
+- structured concurrency request scope 안에서 partial success와 aggregate error report를 어떻게 설계해?
+- fallback cache stale payload를 정상 성공처럼 숨기지 않고 degradation tier로 표현하는 방법을 알려줘
+- request 종료 뒤에도 살아야 하는 재시도 작업은 fan-in이 아니라 queue outbox로 분리해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 structured fan-out 결과를 required, optional, fallbackable slot outcome으로 fan-in하여 partial success와 degraded response를 설명 가능하게 만드는 advanced playbook이다.
+  partial success, fan-in, structured concurrency, degradation tier, aggregate error report 질문이 본 문서에 매핑된다.
+---
 # Partial Success Fan-in Patterns
 
 > 한 줄 요약: partial success fan-in은 structured fan-out을 request scope에 묶은 채, 각 downstream slot을 required/optional/fallbackable 계약으로 모델링하고, degradation tier와 aggregate error report를 분리해 설명 가능한 degraded response를 만드는 패턴이다.

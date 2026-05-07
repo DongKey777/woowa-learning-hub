@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Projection Replay Observability and Alerting Pattern
+concept_id: design-pattern/projection-replay-observability-alerting-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-replay-observability
+- verified-watermark-drift
+- replay-alerting
+aliases:
+- projection replay observability
+- replay alerting pattern
+- replay dashboard
+- replay gap count
+- quarantine growth alert
+- verified watermark drift
+- last verified watermark drift
+- attempted vs verified watermark
+- retry budget burn
+- replay false green
+symptoms:
+- projection replay dashboard가 progress percent만 보여 gap, quarantine, verified drift, retry storm이 false green 뒤에 숨는다
+- attempted watermark가 target에 도달했다는 이유로 last verified watermark 정체와 partial apply 위험을 놓친다
+- quarantine count만 보고 critical event share, ownerless quarantine, accepted skip 남용 여부를 보지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+next_docs:
+- design-pattern/projection-lag-budgeting-pattern
+- design-pattern/projection-freshness-slo-pattern
+- design-pattern/canary-promotion-thresholds-projection-cutover
+linked_paths:
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/projection-rebuild-evidence-packet.md
+- contents/design-pattern/projection-rebuild-poison-event-replay-failure-handling.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+confusable_with:
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/projection-rebuild-poison-event-replay-failure-handling
+- design-pattern/projection-lag-budgeting-pattern
+- design-pattern/projection-freshness-slo-pattern
+forbidden_neighbors: []
+expected_queries:
+- Projection replay dashboard는 progress percent보다 replay gap, quarantine growth, verified watermark drift, retry budget burn을 왜 함께 봐야 해?
+- attempted watermark와 last verified watermark를 분리하지 않으면 partial apply와 false green이 생기는 이유가 뭐야?
+- quarantine alert는 count뿐 아니라 growth rate, critical event share, ownerless count를 왜 봐야 해?
+- retry count가 많다는 것보다 retry budget burn 대비 verified progress가 없는 것이 더 위험한 이유가 뭐야?
+- replay alert severity는 history backfill, tail catch-up, canary, rollback window 단계별로 왜 다르게 해석해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Projection Replay Observability and Alerting Pattern playbook으로,
+  progress percent 대신 replay gap, quarantine growth and criticality, last verified
+  watermark drift, attempted-vs-verified divergence, retry budget burn and repeated fingerprint를
+  dashboard와 alert contract로 묶어 projection cutover false green을 막는 방법을 설명한다.
+---
 # Projection Replay Observability and Alerting Pattern
 
 > 한 줄 요약: projection replay/rebuild는 진행률 퍼센트보다 replay gap, quarantine 성장, last verified watermark drift, retry budget burn을 한 dashboard와 alert 계약으로 묶어야 false green 없이 cutover sign-off를 지킬 수 있다.

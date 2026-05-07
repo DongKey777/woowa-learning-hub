@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Saga / Coordinator Pattern Language
+concept_id: design-pattern/saga-coordinator-pattern-language
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- saga-coordinator
+- distributed-workflow
+- compensation
+aliases:
+- saga coordinator
+- saga pattern
+- distributed workflow compensation
+- local transaction
+- distributed transaction boundary
+- cross aggregate workflow
+- orchestration vs choreography
+- process manager
+- workflow owner
+- 보상 트랜잭션
+symptoms:
+- 여러 서비스에 걸친 주문 결제 재고 배송 흐름을 하나의 전역 DB transaction처럼 rollback하려고 한다
+- 이미 commit된 local transaction을 되돌리는 비즈니스 보상을 DB rollback과 같은 것으로 설명한다
+- Saga Coordinator에 모든 단계, 정책, 재시도, 보상을 몰아넣어 또 다른 God Object가 된다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/unit-of-work-pattern
+- design-pattern/domain-events-vs-integration-events
+next_docs:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/orchestration-vs-choreography-failure-handling
+- design-pattern/compensation-vs-reconciliation-pattern
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/orchestration-vs-choreography-failure-handling.md
+- contents/design-pattern/compensation-vs-reconciliation-pattern.md
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+confusable_with:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/orchestration-vs-choreography-pattern-language
+- design-pattern/compensation-vs-reconciliation-pattern
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+forbidden_neighbors: []
+expected_queries:
+- Saga Coordinator는 여러 local transaction을 전역 transaction 대신 단계 실행과 compensation으로 어떻게 조율해?
+- Saga의 보상 작업은 이미 commit된 일을 비즈니스적으로 상쇄하는 것이지 DB rollback이 아닌 이유가 뭐야?
+- 주문 결제 재고 배송처럼 단계 순서와 실패 보상이 중요한 플로우에는 왜 coordinator가 유리해?
+- Saga와 choreography는 failure visibility와 tracing 관점에서 어떻게 달라?
+- Coordinator가 비대해지면 state machine이나 process manager로 나눠야 하는 신호는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Saga / Coordinator Pattern Language deep dive로, 한 DB transaction으로
+  묶을 수 없는 주문, 결제, 재고, 배송 같은 distributed workflow를 local transaction,
+  step execution, compensation command, outbox/event, workflow owner로 조율하는 패턴을 설명한다.
+---
 # Saga / Coordinator: 분산 워크플로를 설계하는 패턴 언어
 
 > 한 줄 요약: Saga와 Coordinator는 여러 서비스에 걸친 비즈니스 흐름을 전역 트랜잭션 대신 단계적 보상과 상태 관리로 다루는 패턴 언어다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: PostgreSQL Index Only Scan Heap Fetches Beginner Card
+concept_id: database/postgresql-index-only-scan-heap-fetches-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- postgresql-explain
+- index-only-scan
+- heap-fetches
+- visibility-map
+aliases:
+- postgresql index only scan heap fetches
+- why heap fetches remain
+- heap fetches beginner
+- index only scan basics
+- mvcc visibility basics
+- visibility map what is
+- why index only scan still reads heap
+- heap fetches 뭐예요
+- Index Only Scan인데 heap을 읽어요
+- vacuum after explain got faster
+symptoms:
+- PostgreSQL Index Only Scan이면 heap 접근이 반드시 0이어야 한다고 생각하고 Heap Fetches를 plan 실패로 해석하고 있어
+- visibility map과 all-visible 상태가 부족해 MVCC visibility 확인을 heap에서 다시 하는 상황을 이해해야 해
+- VACUUM/autovacuum 이후 Heap Fetches가 줄고 plan latency가 달라지는 이유를 index shape가 아니라 visibility로 봐야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/postgresql-visibility-map-all-visible-beginner-card
+- database/mysql-postgresql-index-storage-bridge
+next_docs:
+- database/postgresql-buffers-hit-read-dirtied-written-mini-card
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/covering-index-vs-index-only-scan
+linked_paths:
+- contents/database/postgresql-visibility-map-all-visible-beginner-card.md
+- contents/database/mysql-postgresql-index-storage-bridge.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+- contents/database/postgresql-explain-analyze-terms-mini-bridge.md
+- contents/database/postgresql-buffers-hit-read-dirtied-written-mini-card.md
+confusable_with:
+- database/postgresql-visibility-map-all-visible-beginner-card
+- database/postgresql-buffers-hit-read-dirtied-written-mini-card
+- database/covering-index-vs-index-only-scan
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL Index Only Scan인데 Heap Fetches가 남는 이유가 visibility map 때문인지 설명해줘
+- heap fetches가 있으면 index only scan이 실패한 것인지 아니면 MVCC 확인이 남은 것인지 알려줘
+- VACUUM 이후 heap fetches가 줄어드는 이유를 all-visible page와 연결해줘
+- covering index와 PostgreSQL Index Only Scan은 왜 같은 말이 아니야?
+- Heap Fetches가 늘었는데 buffers나 latency가 항상 같이 늘지 않는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL Index Only Scan에서 Heap Fetches가 남는 이유를 visibility map, all-visible page, MVCC visibility recheck, VACUUM/autovacuum 관점으로 설명하는 beginner symptom router다.
+  Index Only Scan인데 heap을 읽어요, Heap Fetches 뭐예요, why heap fetches remain 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?
 
 > 한 줄 요약: PostgreSQL에서 `Index Only Scan`인데도 `Heap Fetches`가 남는 건 이상 동작이 아니라, visibility map이 "이 page는 모두 보여도 된다"를 아직 보증하지 못하면 heap에서 MVCC visibility를 다시 확인하기 때문이다.

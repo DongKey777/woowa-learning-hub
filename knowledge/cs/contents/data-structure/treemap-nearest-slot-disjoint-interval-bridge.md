@@ -53,9 +53,7 @@ confusable_with:
 - data-structure/treemap-gap-detection-mini-drill
 - data-structure/disjoint-interval-set
 - data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge
-forbidden_neighbors:
-- contents/data-structure/priorityqueue-poll-vs-treemap-ceiling-floor-schedule-bridge.md
-- contents/algorithm/interval-greedy-patterns.md
+forbidden_neighbors: []
 expected_queries:
 - nearest free slot을 찾을 때 막히면 왜 next end로 바로 넘어가도 되는지 설명해줘
 - 예약표가 안 겹친다는 전제가 gap 점프 규칙과 어떻게 연결돼?

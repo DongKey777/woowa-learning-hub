@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: NUMA Production Debugging
+concept_id: operating-system/numa-production-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- numa-production
+- remote-memory-latency
+- cpu-available-memory
+- remote
+aliases:
+- NUMA production debugging
+- remote memory latency
+- CPU available memory remote
+- numastat production
+- memory locality p99
+- NUMA backend latency
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/numa-first-touch-remote-memory-locality-debugging.md
+- contents/operating-system/numa-autobalancing-runtime-debugging.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/autonuma-vs-manual-locality-tradeoffs.md
+symptoms:
+- CPU 사용률은 낮아 보이는데 remote memory access 때문에 backend p99가 흔들린다.
+- NUMA node별 memory placement와 worker CPU placement가 맞지 않는다.
+- AutoNUMA migration cost와 manual locality tuning 중 어느 쪽을 볼지 판단해야 한다.
+expected_queries:
+- NUMA production debugging에서 CPU가 남아도 서버가 느린 이유는 remote memory 때문일 수 있어?
+- numastat과 CPU affinity로 memory locality 문제를 어떻게 좁혀?
+- remote memory latency와 backend p99를 연결해 설명해줘
+- NUMA first-touch, AutoNUMA, cpuset을 운영에서 어떤 순서로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 NUMA 환경에서 CPU가 남아 보여도 memory가 remote node에 있거나 migration/locality가
+  맞지 않아 backend p99가 느려질 수 있다는 production debugging playbook이다.
+---
 # NUMA Production Debugging
 
 > 한 줄 요약: NUMA 환경에서는 CPU가 남아 보여도 메모리 원격 접근 때문에 서버가 느려질 수 있다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: TreeMap ceilingKey vs higherKey Exact-Match Choice Card
+concept_id: data-structure/treemap-ceilingkey-higherkey-exact-match-choice-card
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- treemap-exact-match
+- ceilingkey-higherkey
+- inclusive-vs-strict
+aliases:
+- TreeMap ceilingKey vs higherKey
+- ceilingKey higherKey exact match
+- 같거나 다음 vs strictly 다음
+- ordered map strictly next
+- NavigableMap ceiling higher
+- exact match inclusive strict
+- 다음 key TreeMap
+symptoms:
+- ceilingKey를 단순히 다음 key로 외워 exact match가 있을 때 같은 key를 반환하는 inclusive 규칙을 놓친다
+- higherKey와 ceilingKey가 key가 없을 때 같은 결과가 나올 수 있어 둘을 같은 메서드처럼 사용한다
+- Entry 계열로 넘어갈 때도 strictness는 higher vs ceiling에서 결정되고 Entry는 반환 shape만 바꾼다는 점을 잊는다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/treemap-key-entry-strictness-bridge
+next_docs:
+- data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card
+- data-structure/treemap-neighbor-query-micro-drill
+- data-structure/treeset-exact-match-drill
+linked_paths:
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/treemap-key-entry-strictness-bridge
+- data-structure/treeset-exact-match-drill
+- data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card
+- data-structure/treemap-null-boundary-micro-drill
+forbidden_neighbors: []
+expected_queries:
+- TreeMap ceilingKey와 higherKey는 exact match가 있을 때 어떻게 달라?
+- 같거나 다음 key가 필요하면 ceilingKey이고 strictly 다음 key면 higherKey라는 걸 예시로 보여줘
+- key가 없으면 ceilingKey와 higherKey가 같은 오른쪽 후보를 줄 수 있는 이유는?
+- ceilingEntry와 higherEntry로 바뀌어도 inclusive strict 규칙은 그대로야?
+- 예약 시작 시간이 이미 존재할 때 다음 후보를 포함할지 건너뛸지 어떻게 고르지?
+contextual_chunk_prefix: |
+  이 문서는 TreeMap ceilingKey와 higherKey를 exact match 포함 여부로 구분하는
+  beginner/intermediate bridge다. ceiling은 같거나 다음, higher는 strictly 다음이며
+  Entry 계열에서도 strictness 규칙은 유지된다고 설명한다.
+---
 # TreeMap `ceilingKey` vs `higherKey` Exact-Match Choice Card
 
 > 한 줄 요약: `ceilingKey(x)`는 `x`와 같아도 멈추고, `higherKey(x)`는 `x`를 건너뛴 다음 key로 가므로 초보자는 먼저 `같거나 다음`과 `strictly 다음`을 분리해야 `Entry`/`Value` 단계에서도 덜 헷갈린다.

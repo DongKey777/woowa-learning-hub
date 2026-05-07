@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Token Exchange / Impersonation Risks
+concept_id: security/token-exchange-impersonation-risks
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- token exchange
+- impersonation
+- subject token
+- actor token
+aliases:
+- token exchange
+- impersonation
+- subject token
+- actor token
+- audience
+- scope downscoping
+- delegated authority
+- OBO
+- confused deputy
+- JWT exchange
+- service token
+- user context propagation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/jwt-deep-dive.md
+- contents/security/workload-identity-user-context-propagation-boundaries.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Token Exchange / Impersonation Risks 핵심 개념을 설명해줘
+- token exchange가 왜 필요한지 알려줘
+- Token Exchange / Impersonation Risks 실무 설계 포인트는 뭐야?
+- token exchange에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Token Exchange / Impersonation Risks를 다루는 deep_dive 문서다. token exchange는 한 주체의 토큰을 다른 audience나 subject용 토큰으로 바꾸는 강력한 기능이지만, impersonation과 confused deputy를 막지 않으면 권한 상승 통로가 된다. 검색 질의가 token exchange, impersonation, subject token, actor token처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Token Exchange / Impersonation Risks
 
 > 한 줄 요약: token exchange는 한 주체의 토큰을 다른 audience나 subject용 토큰으로 바꾸는 강력한 기능이지만, impersonation과 confused deputy를 막지 않으면 권한 상승 통로가 된다.

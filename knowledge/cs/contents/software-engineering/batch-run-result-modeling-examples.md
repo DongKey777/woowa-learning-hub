@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Batch Run Result Modeling Examples
+concept_id: software-engineering/batch-result-modeling
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-result-model
+- partial-failure
+- recovery
+aliases:
+- Batch Run Result Modeling Examples
+- RunSummary ChunkResult RetryCandidate Checkpoint
+- batch result type basics
+- batch status model beginner
+- chunk retry checkpoint intro
+- 배치 결과 모델링 처음
+symptoms:
+- batch 결과를 successCount failureCount 같은 숫자 두 개로만 반환해 retry backlog, manual review, terminal failure, checkpoint 의미를 설명하지 못해
+- RunSummary와 ChunkResult, RetryCandidate, Checkpoint 역할을 한 DTO에 뭉쳐 운영자와 테스트가 다음 행동을 고를 수 없어
+- failedItems와 retryCandidateCount가 항상 같아야 한다고 오해해 terminal failure와 manual review를 retry backlog에 섞어
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/batch-partial-failure
+- software-engineering/batch-job-scope
+next_docs:
+- software-engineering/batch-result-testing
+- software-engineering/batch-result-fixtures
+- software-engineering/batch-idempotency-keys
+linked_paths:
+- contents/software-engineering/batch-result-fixture-design-primer.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- software-engineering/batch-partial-failure
+- software-engineering/batch-result-testing
+- software-engineering/batch-result-fixtures
+forbidden_neighbors: []
+expected_queries:
+- batch 결과 모델을 RunSummary ChunkResult RetryCandidate Checkpoint로 나누는 beginner 예시를 보여줘
+- successCount failureCount만으로는 batch recovery와 partial failure next action을 설명하기 어려운 이유가 뭐야?
+- retryable failure, manual review, terminal failure를 RunSummary와 ChunkResult에 어떻게 분리해 남겨?
+- failedItems와 retryCandidateCount가 같을 필요가 없는 이유를 batch 결과 모델로 설명해줘
+- checkpoint는 같은 run을 어디서 resume할지 알려 주는 책갈피라는 뜻을 예시로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 batch run result modeling을 RunSummary, ChunkResult, RetryCandidate, Checkpoint로 나눠 partial failure, retry backlog, manual review, terminal failure, checkpoint resume을 설명하는 beginner primer다.
+---
 # Batch Run Result Modeling Examples
 
 > 한 줄 요약: 배치 결과 모델은 "이번 실행 영수증", "이번 chunk 영수증", "나중에 다시 볼 후보", "이어 달릴 책갈피"를 각각 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint`로 나누면 초심자도 실패 정책을 설명하기 쉬워진다.

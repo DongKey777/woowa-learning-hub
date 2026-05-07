@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "Access Log Correlation Recipes: Tomcat, Jetty, Undertow"
+concept_id: network/access-log-correlation-recipes-tomcat-jetty-undertow
+canonical: false
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- access-log-correlation
+- servlet-container-disconnect
+- tomcat-jetty-undertow
+aliases:
+- access log correlation recipe
+- Tomcat Jetty Undertow access log
+- bytes sent duration disconnect bucket
+- Tomcat accesslog X F
+- Jetty CustomRequestLog
+- Undertow access log response time
+- client abort access log
+symptoms:
+- disconnect incident에서 status만 보고 bytes_sent, duration, connection completion, disconnect bucket을 정규화하지 않는다
+- Tomcat/Jetty의 connection completion field와 Undertow의 built-in disconnect field 부족을 같은 access log 신뢰도로 취급한다
+- bytes_sent=0을 곧바로 abort로 확정하고 204, 304, HEAD, tiny error page 같은 정상 zero-byte shape를 제외하지 않는다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+next_docs:
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/container-specific-disconnect-logging-recipes-spring-boot.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+confusable_with:
+- network/container-specific-disconnect-logging-recipes-spring-boot
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors: []
+expected_queries:
+- Tomcat Jetty Undertow access log에서 client disconnect를 status bytes duration disconnect bucket으로 어떻게 정규화해?
+- Tomcat %X %F와 Jetty %O %X로 partial response abort를 어떻게 판독해?
+- Undertow는 built-in disconnect field가 약한데 access log와 보조 breadcrumb를 어떻게 join해?
+- bytes_sent가 0이면 무조건 client abort라고 보면 안 되는 이유는?
+- access log에서 499 broken pipe cancellation을 container별로 상관분석하는 recipe가 필요해
+contextual_chunk_prefix: |
+  이 문서는 Tomcat, Jetty, Undertow access log를 status, bytes_sent, duration,
+  disconnect bucket으로 정규화해 client disconnect와 partial response를 상관분석하는
+  playbook이다. Tomcat/Jetty %X와 Undertow 보조 breadcrumb 필요성을 비교한다.
+---
 # Access Log Correlation Recipes: Tomcat, Jetty, Undertow
 
 > 한 줄 요약: Tomcat과 Jetty는 access log 자체에 `bytes-sent`, `duration`, `connection completion` 축이 거의 다 들어오지만, Undertow는 built-in disconnect field가 약하다. 그래서 세 container를 한 dashboard로 묶으려면 `status + bytes_sent + duration + disconnect_bucket` 정규화와 Undertow용 보조 breadcrumb가 핵심이다.

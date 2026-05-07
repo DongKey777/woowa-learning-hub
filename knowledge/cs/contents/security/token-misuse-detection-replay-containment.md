@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Token Misuse Detection / Replay Containment
+concept_id: security/token-misuse-detection-replay-containment
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- token misuse detection
+- token theft
+- replay containment
+- stolen bearer token
+aliases:
+- token misuse detection
+- token theft
+- replay containment
+- stolen bearer token
+- session hijack detection
+- refresh token reuse
+- impossible travel
+- device binding mismatch
+- token anomaly detection
+- jti replay
+- auth anomaly signals
+- session quarantine
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwt-deep-dive.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/dpop-token-binding-basics.md
+- contents/security/device-binding-caveats.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/replay-store-outage-degradation-recovery.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Token Misuse Detection / Replay Containment 핵심 개념을 설명해줘
+- token misuse detection가 왜 필요한지 알려줘
+- Token Misuse Detection / Replay Containment 실무 설계 포인트는 뭐야?
+- token misuse detection에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Token Misuse Detection / Replay Containment를 다루는 deep_dive 문서다. 토큰 탈취 사고는 서명 검증 실패보다 "정상처럼 보이는 남용 패턴"으로 드러나는 경우가 많아서, refresh reuse, device/context drift, geo/ASN anomaly, binding mismatch를 묶어 token misuse를 탐지하고 단계별로 격리해야 한다. 검색 질의가 token misuse detection, token theft, replay containment, stolen bearer token처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Token Misuse Detection / Replay Containment
 
 > 한 줄 요약: 토큰 탈취 사고는 서명 검증 실패보다 "정상처럼 보이는 남용 패턴"으로 드러나는 경우가 많아서, refresh reuse, device/context drift, geo/ASN anomaly, binding mismatch를 묶어 token misuse를 탐지하고 단계별로 격리해야 한다.

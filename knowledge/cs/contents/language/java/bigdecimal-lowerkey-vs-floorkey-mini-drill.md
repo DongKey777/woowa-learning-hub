@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: BigDecimal lowerKey vs floorKey Mini Drill
+concept_id: language/bigdecimal-lowerkey-vs-floorkey-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-navigablemap
+- floor-lower-boundary
+- ordered-map
+aliases:
+- BigDecimal lowerKey floorKey drill
+- BigDecimal floorKey lowerKey exact match
+- BigDecimal NavigableMap strict inclusive lookup
+- TreeMap BigDecimal lowerKey null floorKey same slot
+- 자바 BigDecimal lowerKey floorKey 차이
+- NavigableMap boundary null
+symptoms:
+- floorKey는 exact match 자리를 포함하고 lowerKey는 제외한다는 inclusive vs strict 차이를 BigDecimal scale 차이와 같이 놓쳐
+- lowerKey가 null을 반환할 때 null key 저장으로 오해하고 boundary result로 읽지 못해
+- query key의 문자열 모양이 아니라 map 안의 저장된 key 표현이 반환된다는 점이 헷갈려
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/lower-vs-floor-exact-match-mini-drill
+- language/bigdecimal-navigablemap-lookup-bridge
+next_docs:
+- language/bigdecimal-navigablemap-lookup-bridge
+- language/ordered-map-null-safe-practice-drill
+- language/ceiling-vs-higher-exact-match-mini-drill
+linked_paths:
+- contents/language/java/lower-vs-floor-exact-match-mini-drill.md
+- contents/language/java/bigdecimal-navigablemap-lookup-bridge.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+confusable_with:
+- language/lower-vs-floor-exact-match-mini-drill
+- language/bigdecimal-navigablemap-lookup-bridge
+- language/ceiling-vs-higher-exact-match-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal TreeMap에서 floorKey와 lowerKey가 1.0 1.00 exact match에서 왜 다르게 나와?
+- lowerKey(new BigDecimal(\"1\"))가 null이면 null key가 저장된 뜻인지 boundary result인지 알려줘
+- BigDecimal lowerKey floorKey 차이를 strict inclusive lookup으로 설명해줘
+- TreeMap에 1.0을 넣고 1이나 1.00으로 floorKey lowerKey를 호출하면 뭐가 나와?
+- NavigableMap에서 반환되는 key가 query key 모양이 아니라 저장된 key인 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal TreeMap lowerKey vs floorKey를 exact match, compareTo == 0, strict vs inclusive boundary result 관점으로 손예측하는 beginner drill이다.
+  BigDecimal lowerKey floorKey, NavigableMap, boundary null, 1.0 vs 1.00, ordered map lookup 질문이 본 문서에 매핑된다.
+---
 # BigDecimal `lowerKey` vs `floorKey` Mini Drill
 
 > 한 줄 요약: `TreeMap<BigDecimal, V>`에서 `BigDecimal("1.0")`를 넣어 둔 뒤 `BigDecimal("1")`나 `BigDecimal("1.00")`로 물으면, `floorKey`는 같은 숫자 자리에 멈추지만 `lowerKey`는 그 자리를 포함하지 않는다.

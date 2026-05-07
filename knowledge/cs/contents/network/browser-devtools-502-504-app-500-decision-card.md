@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: "Browser DevTools `502` vs `504` vs App `500` 분기 카드"
+concept_id: network/browser-devtools-502-504-app-500-decision-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- gateway-error-triage
+- devtools-status-waiting-headers
+- app-vs-proxy-error-owner
+aliases:
+- 502 vs 504 vs 500
+- gateway error decision card
+- bad gateway vs gateway timeout
+- app 500 vs proxy 502
+- server via x request id 504
+- devtools gateway error triage
+symptoms:
+- 502나 504를 보고 controller가 직접 해당 status를 반환했다고 단정한다
+- 504에서 waterfall waiting과 timeout budget을 보지 않고 app 예외만 찾는다
+- JSON body라는 이유만으로 gateway local reply 가능성을 배제한다
+- Server, Via, X-Request-Id header를 보지 않아 응답 owner를 놓친다
+intents:
+- troubleshooting
+- symptom
+- comparison
+prerequisites:
+- network/http-status-codes-basics
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/browser-devtools-gateway-error-header-clue-card
+- network/gateway-default-html-first-line-card
+- network/gateway-json-vs-app-json-tiny-card
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+linked_paths:
+- contents/network/http-status-codes-basics.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/gateway-default-html-first-line-card.md
+- contents/network/gateway-json-vs-app-json-tiny-card.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/browser-devtools-waiting-vs-content-download-mini-card.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- network/gateway-default-html-first-line-card
+- network/gateway-json-vs-app-json-tiny-card
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- spring/spring-mvc-request-lifecycle-basics
+forbidden_neighbors: []
+expected_queries:
+- "DevTools에서 502와 504와 app 500을 처음에 어떤 순서로 구분해?"
+- "504 Gateway Timeout이면 app이 느린 건지 proxy가 기다리다 끊은 건지 어떻게 봐?"
+- "502 Bad Gateway 응답이 JSON인데 gateway 응답인지 app 응답인지 구분해줘"
+- "Server Via X-Request-Id header로 gateway 오류 owner를 어떻게 판별해?"
+- "브라우저 Network 탭에서 500이 아니라 502가 보일 때 로그는 어디부터 봐야 해?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools에서 502, 504, app 500을 Status, waterfall waiting,
+  Server/Via/X-Request-Id, body tone 순서로 나누고 proxy local reply,
+  upstream timeout, origin application exception 후보를 분리하는 beginner
+  gateway error symptom router다.
+---
 # Browser DevTools `502` vs `504` vs App `500` 분기 카드
 
 > 한 줄 요약: `502`/`504`를 볼 때는 `Status` -> waterfall `waiting` -> `Server`/`Via`/`X-Request-Id` 순서로 1분 안에 읽으면 "연결/응답 이상인지, upstream 대기 timeout인지, app까지 들어간 요청인지"를 섞지 않고 가를 수 있다.

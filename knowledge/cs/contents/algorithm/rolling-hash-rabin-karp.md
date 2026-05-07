@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Rolling Hash / Rabin-Karp
+concept_id: algorithm/rolling-hash-rabin-karp
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- rolling-hash-rabin-karp
+- substring-hash-collision
+- fingerprint-filtering
+aliases:
+- rolling hash rabin karp
+- rolling hash
+- rabin karp
+- substring hash
+- polynomial hash
+- hash collision
+- double hash
+- string fingerprint
+- 라빈 카프
+- 구간 문자열 해시
+symptoms:
+- Rolling Hash를 문자열 equality 확정 수단으로 보고 collision 가능성과 최종 문자열 확인 필요성을 놓친다
+- Rabin-Karp가 해시로 후보를 걸러내는 방식이지 해시가 곧 정답이라는 뜻은 아님을 구분하지 못한다
+- collision이 치명적인 보안 정산 경로에 rolling hash를 단독 판정으로 쓰려 한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- algorithm/string
+next_docs:
+- algorithm/kmp-vs-z-algorithm
+- algorithm/aho-corasick
+- algorithm/suffix-array-lcp
+linked_paths:
+- contents/algorithm/string.md
+- contents/algorithm/kmp-vs-z-algorithm.md
+- contents/algorithm/suffix-array-lcp.md
+confusable_with:
+- algorithm/kmp-vs-z-algorithm
+- algorithm/aho-corasick
+- algorithm/suffix-array-lcp
+- algorithm/string
+forbidden_neighbors: []
+expected_queries:
+- Rolling Hash는 문자열 구간 해시를 한 칸씩 어떻게 갱신해?
+- Rabin-Karp는 패턴 후보를 hash로 먼저 거르고 언제 실제 문자열 비교를 해?
+- hash collision이 있으면 double hash나 최종 비교가 왜 필요해?
+- KMP나 Z처럼 정확한 매칭과 rolling hash 후보 필터링은 어떤 차이가 있어?
+- 로그 조각이나 문서 chunk fingerprint에 rolling hash를 어떻게 활용할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 rolling hash와 Rabin-Karp bridge로, substring hash, polynomial
+  hash, collision, double hash, fingerprint filtering을 설명한다. hash match는
+  후보 신호이며 최종 equality가 필요한 경우 실제 문자열 확인이 필요하다.
+---
 # Rolling Hash / Rabin-Karp
 
 > 한 줄 요약: Rolling Hash는 문자열 구간 해시를 한 칸씩 밀어 갱신하고, Rabin-Karp는 그 해시로 패턴 후보를 빠르게 걸러낸다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Mutable Priority Stale Ticket Pattern
+concept_id: data-structure/mutable-priority-stale-ticket-pattern
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- mutable-priority-stale-ticket
+- priorityqueue-update-pattern
+- scheduler-versioned-ticket
+aliases:
+- mutable priority stale ticket pattern
+- PriorityQueue stale ticket
+- priority change after enqueue
+- Java PriorityQueue priority update
+- immutable ticket priority queue
+- versioned ticket heap
+- 우선순위 변경 stale ticket
+symptoms:
+- Java PriorityQueue 안에 이미 들어간 객체의 priority 필드를 바꾸면 heap이 자동으로 재정렬된다고 생각한다
+- priority 변경이 잦은 scheduler에서 remove 후 reinsert 비용과 exact handle 문제를 고려하지 않고 mutable key를 직접 수정한다
+- taskId to latest version map과 immutable ticket으로 stale ticket을 skip하는 패턴을 적용하지 못한다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+next_docs:
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/priorityblockingqueue-timer-misuse-primer
+linked_paths:
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+confusable_with:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+- data-structure/priorityblockingqueue-timer-misuse-primer
+forbidden_neighbors: []
+expected_queries:
+- Java PriorityQueue 안 객체의 priority를 바꾸면 왜 heap이 자동 재정렬되지 않아?
+- 우선순위가 바뀌는 task scheduler에서 stale ticket pattern을 어떻게 써?
+- taskId latest version map으로 오래된 heap ticket을 skip하는 방법은?
+- priority 변경이 자주 일어날 때 remove reinsert와 duplicate push stale skip을 어떻게 비교해?
+- mutable heap key bug를 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java PriorityQueue에 들어간 object의 priority를 제자리에서 바꾸지
+  않고 immutable ticket을 새로 넣고 old ticket은 latest version map으로 stale
+  skip하는 playbook이다. mutable heap key bug, reschedule, task reprioritization,
+  remove/reinsert 비용을 다룬다.
+---
 # Mutable Priority Stale Ticket Pattern
 
 > 한 줄 요약: heap 안에 들어간 항목의 priority를 제자리에서 바꾸지 말고, 새 priority로 새 ticket을 넣은 뒤 예전 ticket은 `stale`로 버리는 쪽이 Java `PriorityQueue`에서 가장 안전한 기본 패턴이다.

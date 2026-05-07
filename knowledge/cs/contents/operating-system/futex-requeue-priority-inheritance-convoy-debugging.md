@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Futex Requeue Priority Inheritance Convoy Debugging
+concept_id: operating-system/futex-requeue-priority-inheritance-convoy-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- futex-requeue-priority
+- inheritance-convoy
+- inheritance
+- pi-futex
+aliases:
+- futex requeue priority inheritance
+- PI futex
+- futex convoy debugging
+- condition variable requeue
+- lock owner preemption
+- priority inversion futex
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/lock-contention-futex-offcpu-debugging.md
+- contents/operating-system/futex-mutex-semaphore-spinlock.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+symptoms:
+- FUTEX_WAIT 횟수만 봐서는 짧은 lock처럼 보이지만 condvar requeue와 owner scheduling 지연이 convoy를 만든다.
+- priority inheritance가 필요한 lock owner preemption이나 priority inversion이 의심된다.
+- off-CPU profile에서 lock wait와 scheduler wakeup latency가 섞여 보인다.
+expected_queries:
+- futex requeue와 priority inheritance가 lock convoy debugging에서 왜 중요해?
+- condition variable futex requeue는 단순 FUTEX_WAIT 카운트만으로 안 보일 수 있어?
+- priority inversion과 PI futex를 production tracing으로 어떻게 확인해?
+- lock owner preemption과 scheduler wakeup latency가 futex convoy를 만들 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 futex contention을 FUTEX_WAIT 횟수만으로 보지 않고 condvar requeue,
+  priority inheritance, lock owner scheduling delay, off-CPU wait가 섞인 convoy로 디버깅한다.
+---
 # Futex Requeue, Priority Inheritance, Convoy Debugging
 
 > 한 줄 요약: futex 경합은 단순 `FUTEX_WAIT` 횟수만으로 끝나지 않고, condvar requeue, priority inheritance, lock owner scheduling 지연이 섞이면 "락이 길다"보다 훨씬 더 교묘한 convoy를 만든다.

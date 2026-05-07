@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: OIDC, ID Token, UserInfo
+concept_id: security/oidc-id-token-userinfo-boundaries
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- OIDC
+- OpenID Connect
+- ID token
+- UserInfo endpoint
+aliases:
+- OIDC
+- OpenID Connect
+- ID token
+- UserInfo endpoint
+- id token vs access token
+- id token vs userinfo
+- nonce validation
+- claim normalization
+- external identity mapping
+- issuer audience nonce
+- authentication vs authorization boundary
+- external IdP trust boundary
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/oauth2-basics.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/jwt-deep-dive.md
+- contents/security/authentication-vs-authorization.md
+- contents/spring/spring-security-architecture.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- OIDC, ID Token, UserInfo 핵심 개념을 설명해줘
+- OIDC가 왜 필요한지 알려줘
+- OIDC, ID Token, UserInfo 실무 설계 포인트는 뭐야?
+- OIDC에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 OIDC, ID Token, UserInfo를 다루는 deep_dive 문서다. OIDC는 OAuth2 위에 "누구인지"를 표준화한 계층이다. ID Token과 UserInfo는 같은 사용자 정보를 다루지만 신뢰 경계가 다르다. 검색 질의가 OIDC, OpenID Connect, ID token, UserInfo endpoint처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # OIDC, ID Token, UserInfo
 
 > 한 줄 요약: OIDC는 OAuth2 위에 "누구인지"를 표준화한 계층이다. ID Token과 UserInfo는 같은 사용자 정보를 다루지만 신뢰 경계가 다르다.

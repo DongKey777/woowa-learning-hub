@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Case Management System 설계
+concept_id: system-design/case-management-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- case management system
+- triage
+- assignment
+- SLA
+aliases:
+- case management system
+- triage
+- assignment
+- SLA
+- notes
+- attachments
+- status workflow
+- escalation
+- approval
+- customer support case
+- Case Management System 설계
+- case management system design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/workflow-orchestration-saga-design.md
+- contents/system-design/fraud-case-management-workflow-design.md
+- contents/system-design/moderation-queue-system-design.md
+- contents/system-design/tenant-billing-dispute-workflow-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/job-queue-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Case Management System 설계 설계 핵심을 설명해줘
+- case management system가 왜 필요한지 알려줘
+- Case Management System 설계 실무 트레이드오프는 뭐야?
+- case management system 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Case Management System 설계를 다루는 deep_dive 문서다. case management system은 문제, 신고, 요청, 이슈를 케이스로 표준화해 할당, 추적, 승인, 해결을 운영하는 워크플로우 플랫폼이다. 검색 질의가 case management system, triage, assignment, SLA처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Case Management System 설계
 
 > 한 줄 요약: case management system은 문제, 신고, 요청, 이슈를 케이스로 표준화해 할당, 추적, 승인, 해결을 운영하는 워크플로우 플랫폼이다.

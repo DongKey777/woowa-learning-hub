@@ -58,12 +58,12 @@ expected_queries:
 - supportsRetry를 둘지 marker interface를 둘지 판단 기준이 필요해
 - marker interface 남용과 capability method 남용을 같이 비교해줘
 contextual_chunk_prefix: |
-  이 문서는 학습자가 marker interface와 supportsX 같은 capability
-  method를 둘 다 기능 표시처럼 읽을 때, 타입 분류 표지와 런타임 지원
-  여부 질문을 구분하게 돕는 bridge다. Serializable 같은 빈 인터페이스는
-  왜 존재하나, supportsRetry는 무엇을 묻는가, 타입에 배지를 붙일지 지금
-  가능한지를 물을지 헷갈린다 같은 자연어 paraphrase가 본 문서의 판단
-  축에 매핑된다.
+  이 문서는 Java 학습자가 marker interface와 supportsX류 capability method를
+  둘 다 기능 표시처럼 볼 때, 타입 자체에 붙는 분류 표지와 실행 시점에 묻는
+  지원 여부를 구분하도록 두 개념을 잇는 bridge다. Serializable 같은 빈
+  인터페이스는 왜 남아 있나, 지금 이 객체가 재시도를 지원하는지 어디서 묻나,
+  타입 배지로 굳힐지 런타임 질문으로 둘지 헷갈린다 같은 자연어 paraphrase가
+  본 문서의 판단 축에 매핑된다.
 ---
 # Marker Interface vs Capability Method 브리지
 

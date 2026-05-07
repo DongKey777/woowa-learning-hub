@@ -9,7 +9,10 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
 review_feedback_tags:
 - local-queue-vs-worker-handoff
 - blockingqueue-when-multithreaded
@@ -42,7 +45,7 @@ prerequisites:
 next_docs:
 - data-structure/priorityblockingqueue-timer-misuse-primer
 - language/blockingqueue-transferqueue-concurrentskiplistset-semantics
-- software-engineering/message-driven-adapter-example
+- software-engineering/message-driven-adapter
 linked_paths:
 - contents/data-structure/queue-basics.md
 - contents/data-structure/arraydeque-vs-linkedlist-queue-choice-card.md
@@ -91,6 +94,14 @@ contextual_chunk_prefix: |
 - [data-structure 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: arraydeque vs blockingqueue, java fifo service handoff, arraydeque local queue, blockingqueue producer consumer, blockingqueue beginner, when to use blockingqueue, arraydeque service code beginner, queue handoff between threads, java worker queue basics, arraydeque vs blockingqueue primer, 멀티스레드 큐 뭐 써요, blockingqueue가 뭐예요, queue가 보이는데 운영 문서로 가야 하나요, worker queue 다음 단계, message consumer 전 safe route
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Queue를 쓰면 worker에게 작업을 넘긴 구조라고 봐도 되나요?" | 한 요청 안에서 임시 FIFO로 쓰는 코드와 백그라운드 worker handoff가 같은 이름으로 보이는 상황 | 같은 스레드 로컬 FIFO인지, 다른 스레드와 작업을 주고받는 계약인지 먼저 가른다 |
+| "결제 후 알림을 큐에 넣으려는데 ArrayDeque로도 충분한가요?" | shopping-cart/payment에서 주문 완료 후 비동기 후속 작업을 떠올리는 설계 | producer/consumer, blocking, bounded capacity가 필요하면 BlockingQueue 질문으로 전환한다 |
+| "비어 있으면 기다린다는 말이 timer랑 헷갈려요" | worker가 일이 없을 때 대기하는 코드와 예약 시각까지 기다리는 코드를 혼동 | handoff queue의 blocking은 작업 도착 대기이고 스케줄링 지연과 다르다 |
 
 ## 핵심 개념
 

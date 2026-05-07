@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Specification Combinator Libraries
+concept_id: design-pattern/specification-combinator-libraries
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- specification-combinator
+- condition-algebra
+- predicate-library
+aliases:
+- specification combinator
+- predicate library
+- condition algebra
+- boolean combinators
+- query predicate composition
+- anyOf allOf
+- specification and or not
+- rule combinator library
+- 조건 조합 라이브러리
+- predicate composition helper
+symptoms:
+- 같은 AND OR NOT 조건 조합을 여러 service와 policy에서 반복해 규칙 이름과 평가 방식이 drift된다
+- condition tree가 깊게 중첩되어 flatten, short circuit, empty set semantics가 매번 다르게 구현된다
+- boolean combinator로 충분한데 DSL Object Model을 너무 일찍 도입해 규칙 표현이 과해진다
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- design-pattern/specification-pattern
+- design-pattern/composite-query-rule-trees
+- design-pattern/dsl-object-model-pattern
+next_docs:
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/dsl-object-model-pattern
+- design-pattern/composite-query-rule-trees
+linked_paths:
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/composite-query-rule-trees.md
+- contents/design-pattern/dsl-object-model-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/query-object-search-criteria-pattern.md
+confusable_with:
+- design-pattern/specification-pattern
+- design-pattern/dsl-object-model-pattern
+- design-pattern/composite-query-rule-trees
+- design-pattern/policy-object-pattern
+forbidden_neighbors: []
+expected_queries:
+- Specification combinator library는 and, or, not, anyOf, allOf 같은 조건 조합을 표준화하는 도구야?
+- 같은 boolean logic 조합이 여러 곳에 반복될 때 Specs helper나 combinator library로 빼면 어떤 장점이 있어?
+- condition tree가 깊어질 때 flatten과 short circuit semantics를 library가 고정해야 하는 이유가 뭐야?
+- Combinator library와 DSL Object Model은 조합 API와 규칙 객체 모델 관점에서 어떻게 달라?
+- Specification combinator가 너무 많아지면 추상화 폭발이 되므로 어떤 연산만 남겨야 해?
+contextual_chunk_prefix: |
+  이 문서는 Specification Combinator Libraries playbook으로, Specification 조건 객체를
+  AND/OR/NOT/anyOf/allOf 같은 boolean combinator API로 표준화해 rule composition을 재사용하고,
+  flatten, short-circuit, empty set semantics를 일관되게 유지하는 방법을 설명한다.
+---
 # Specification Combinator Libraries: 조건식을 조립하는 작은 도구 상자
 
 > 한 줄 요약: Specification combinator library는 and, or, not 같은 조합 연산을 제공해 조건식을 재사용 가능한 라이브러리로 만든다.
@@ -24,6 +90,8 @@ Specification 패턴이 조건 객체의 개념이라면, combinator library는 
 - `anyOf`
 
 조건이 많아질수록 라이브러리의 가치가 커진다.
+
+다만 combinator의 목적은 모든 조건을 추상화하는 것이 아니라, 여러 곳에서 반복되는 조합 규칙을 같은 의미로 평가하게 만드는 것이다.
 
 ### Retrieval Anchors
 
@@ -142,4 +210,3 @@ Combinator library는 조건식 조합을 표준 API처럼 만들어준다.
 ## 한 줄 정리
 
 Specification combinator library는 조건 조합을 재사용 가능한 도구로 만들어 backend 규칙을 단순화한다.
-

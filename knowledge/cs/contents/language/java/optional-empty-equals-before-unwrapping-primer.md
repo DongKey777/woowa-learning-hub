@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Optional Empty Equals Before Unwrapping Primer
+concept_id: language/optional-empty-equals-before-unwrapping-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional
+- equality
+- null-safety
+aliases:
+- Optional empty equals before unwrapping primer
+- Optional.equals before get
+- Optional.empty comparison beginner
+- Optional get 없이 비교
+- Optional isEmpty equals difference
+- 자바 Optional empty 비교
+symptoms:
+- Optional 값을 비교하기 전에 get으로 바로 꺼내 NoSuchElementException을 만들거나 empty 상태를 null처럼 해석해
+- Optional.empty와 Optional.of(value)의 equality 규칙을 모르고 상자끼리 비교할 수 있는 상황에서도 불필요하게 값을 unwrap해
+- isEmpty, isPresent, equals(Optional.empty()), filter(...).isPresent()가 각각 어떤 의도를 드러내는지 구분하지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-optional-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/optional-collections-domain-null-handling-bridge
+- language/optional-field-parameter-antipattern-card
+- language/map-get-null-containskey-getordefault-primer
+linked_paths:
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/enum-equality-quick-bridge.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+confusable_with:
+- language/java-optional-basics
+- language/optional-collections-domain-null-handling-bridge
+- language/java-equality-identity-basics
+forbidden_neighbors: []
+expected_queries:
+- Optional.empty를 비교할 때 get으로 꺼내기 전에 equals나 isEmpty를 어떻게 써야 해?
+- Optional.equals는 둘 다 empty이거나 같은 값을 감싸면 true라는 규칙을 설명해줘
+- Optional.get으로 비교하려다 NoSuchElementException이 나는 beginner 함정을 알려줘
+- Optional.of(target)과 equals로 특정 값인지 확인하는 방식은 언제 읽기 좋아?
+- Optional.empty는 null이 아니라 비어 있는 상태를 가진 객체라는 뜻을 예제로 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Optional.empty와 Optional.equals를 값 unwrap 전에 읽어 NoSuchElementException과 null 혼동을 피하는 beginner primer다.
+  Optional empty, Optional equals, isEmpty, get 없이 비교, NoSuchElementException 질문이 본 문서에 매핑된다.
+---
 # `Optional.empty()` 비교와 값 꺼내기 전 equality 판단 프라이머
 
 > 한 줄 요약: `Optional`은 값을 바로 꺼내서 비교하기보다, 먼저 "비어 있는가", "같은 값을 감싼 `Optional`인가"를 분리해서 읽어야 초보자가 `get()` 예외와 불필요한 null 감각을 함께 피할 수 있다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: 백엔드 주니어를 위한 웹 보안 스타터 팩
+concept_id: security/web-security-starter-pack-backend-juniors
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- web security starter pack
+- backend junior web security
+- beginner web security route
+- spring security before deep dive
+aliases:
+- web security starter pack
+- backend junior web security
+- beginner web security route
+- spring security before deep dive
+- https password hashing xss csrf cors secrets primer
+- 웹 보안 스타터 팩
+- 백엔드 주니어 보안 입문
+- 스프링 시큐리티 전에 뭐부터
+- https 비밀번호 해시 csrf xss cors 시크릿
+- secret config handling beginner
+- woowacourse backend security starter
+- security primer bundle
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/security-basics-what-and-why.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/https-tls-beginner.md
+- contents/security/password-hashing-basics.md
+- contents/security/xss-csrf-basics.md
+- contents/security/cors-basics.md
+- contents/security/secrets-management-basics.md
+- contents/network/http-https-basics.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/auth-failure-response-401-403-404.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 백엔드 주니어를 위한 웹 보안 스타터 팩 핵심 개념을 설명해줘
+- web security starter pack가 왜 필요한지 알려줘
+- 백엔드 주니어를 위한 웹 보안 스타터 팩 실무 설계 포인트는 뭐야?
+- web security starter pack에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 백엔드 주니어를 위한 웹 보안 스타터 팩를 다루는 deep_dive 문서다. Spring Security 설정으로 바로 들어가기 전에, 웹 보안은 "전송 구간, 비밀번호 저장, 브라우저 실행, 브라우저 자동 전송, 출처 간 읽기, 시크릿 주입" 여섯 질문으로 먼저 나누면 덜 헷갈린다. 검색 질의가 web security starter pack, backend junior web security, beginner web security route, spring security before deep dive처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # 백엔드 주니어를 위한 웹 보안 스타터 팩
 
 > 한 줄 요약: Spring Security 설정으로 바로 들어가기 전에, 웹 보안은 "전송 구간, 비밀번호 저장, 브라우저 실행, 브라우저 자동 전송, 출처 간 읽기, 시크릿 주입" 여섯 질문으로 먼저 나누면 덜 헷갈린다.

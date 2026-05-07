@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Platform Scorecards
+concept_id: software-engineering/platform-scorecards
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- platform
+- scorecard
+- governance
+- break-glass
+aliases:
+- Platform Scorecards
+- platform adoption scorecard
+- normal path health panel
+- break-glass visibility panel
+- governance spillover panel
+- platform health scorecard
+symptoms:
+- platform success를 adoption rate 하나로만 보아 normal path health, break-glass visibility, governance spillover가 서로 다른 문제라는 점을 구분하지 못해
+- manual_path_ratio, break_glass_request_count, override aging, shadow_candidate_count를 같은 분모에 섞어 incident pressure와 shadow leakage가 왜곡돼
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/platform-paved-road
+- software-engineering/manual-path-ratio-instrumentation
+next_docs:
+- software-engineering/override-burndown-scorecards
+- software-engineering/break-glass-reentry
+- software-engineering/platform-control-plane-delegation
+linked_paths:
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/service-template-tradeoffs.md
+- contents/software-engineering/service-bootstrap-governance.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/ownership-metadata-quality.md
+- contents/software-engineering/platform-control-plane-delegation-boundaries.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/break-glass-reentry-governance.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/platform-paved-road
+- software-engineering/override-burndown-scorecards
+- software-engineering/manual-path-ratio-instrumentation
+forbidden_neighbors: []
+expected_queries:
+- platform scorecard를 normal path health, break-glass visibility, governance spillover 세 panel로 나눠야 하는 이유가 뭐야?
+- paved_road_adoption_rate와 manual_path_ratio를 normal path health panel에서 함께 보는 방법을 알려줘
+- break_glass_request_count와 median_reentry_lag_hours는 incident pressure와 reentry discipline을 어떻게 보여줘?
+- override aging, repeated policy override, shadow_candidate_count는 governance spillover panel에서 어떤 action으로 연결돼?
+- platform scorecard에서 normal eligible request와 authorized break-glass event 분모를 섞으면 왜 해석이 깨져?
+contextual_chunk_prefix: |
+  이 문서는 platform scorecard를 adoption 하나가 아니라 normal_path_health, break_glass_visibility, governance_spillover panel로 나누어 운영 action owner를 분리하는 advanced playbook이다.
+---
 # Platform Scorecards
 
 > 한 줄 요약: platform scorecards는 플랫폼 채택률만 보는 표가 아니라, **normal-path health, break-glass visibility, governance spillover**를 나란히 보여 주며 어떤 개선이 제품 문제인지, 비상 운영 문제인지, 정책 debt 문제인지 구분하게 만드는 운영 패널이다.

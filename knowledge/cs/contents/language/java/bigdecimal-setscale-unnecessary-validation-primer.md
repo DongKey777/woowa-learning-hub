@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: BigDecimal setScale UNNECESSARY Validation Primer
+concept_id: language/bigdecimal-setscale-unnecessary-validation-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-scale-policy
+- input-validation
+- rounding-boundary
+aliases:
+- BigDecimal setScale UNNECESSARY
+- BigDecimal scale validation
+- RoundingMode.UNNECESSARY validation
+- BigDecimal reject extra decimals
+- 자바 BigDecimal 소수 자릿수 검증
+- BigDecimal setScale 검증
+symptoms:
+- setScale을 반올림 도구로만 보고 RoundingMode.UNNECESSARY가 입력 자릿수 계약 검증이라는 점을 놓쳐
+- 소수 둘째 자리까지만 허용해야 하는 API에서 조용히 HALF_UP으로 보정해 계약 위반을 숨길 수 있어
+- stripTrailingZeros 정규화와 setScale 자릿수 검증을 같은 문제로 섞어 판단해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/bigdecimal-construction-policy-beginner-bridge
+next_docs:
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+- language/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+linked_paths:
+- contents/language/java/bigdecimal-construction-policy-beginner-bridge.md
+- contents/language/java/bigdecimal-striptrailingzeros-input-boundary-bridge.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+- contents/language/java/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge.md
+- contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+confusable_with:
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+- language/bigdecimal-construction-policy-beginner-bridge
+- language/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal setScale 2 UNNECESSARY는 반올림이 아니라 입력 검증이라는 뜻이야?
+- 소수 둘째 자리까지만 허용할 때 RoundingMode.UNNECESSARY를 어떻게 써야 해?
+- BigDecimal setScale과 stripTrailingZeros는 각각 언제 쓰는지 비교해줘
+- 12.345를 조용히 반올림하지 않고 거부하려면 BigDecimal에서 무엇을 써야 해?
+- BigDecimal scale contract와 rounding policy를 초보자 기준으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal setScale(..., RoundingMode.UNNECESSARY)를 반올림 없는 scale contract validation으로 설명하는 beginner primer다.
+  BigDecimal scale validation, reject extra decimals, setScale vs stripTrailingZeros, HALF_UP vs UNNECESSARY 질문이 본 문서에 매핑된다.
+---
 # BigDecimal `setScale()` 검증 입문: `RoundingMode.UNNECESSARY`를 입력 정책으로 보기
 
 > 한 줄 요약: `setScale(..., RoundingMode.UNNECESSARY)`는 "예쁘게 반올림하는 트릭"보다 먼저 "이 입력은 반올림 없이 우리 자릿수 계약으로 표현 가능해야 한다"를 코드로 선언하는 검증 도구다.

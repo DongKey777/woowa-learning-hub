@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Recommendation / Feed Ranking Architecture
+concept_id: system-design/recommendation-feed-ranking-architecture
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- recommendation system
+- feed ranking
+- candidate generation
+- feature store
+aliases:
+- recommendation system
+- feed ranking
+- candidate generation
+- feature store
+- model serving
+- exploration exploitation
+- freshness
+- personalization
+- ranking pipeline
+- online inference
+- A/B testing
+- Recommendation / Feed Ranking Architecture
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/newsfeed-system-design.md
+- contents/system-design/search-system-design.md
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Recommendation / Feed Ranking Architecture 설계 핵심을 설명해줘
+- recommendation system가 왜 필요한지 알려줘
+- Recommendation / Feed Ranking Architecture 실무 트레이드오프는 뭐야?
+- recommendation system 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Recommendation / Feed Ranking Architecture를 다루는 deep_dive 문서다. 추천과 피드 랭킹은 후보 생성, 특징 추출, 점수화, 실험, 서빙 캐시를 함께 설계하는 실시간 의사결정 시스템이다. 검색 질의가 recommendation system, feed ranking, candidate generation, feature store처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Recommendation / Feed Ranking Architecture
 
 > 한 줄 요약: 추천과 피드 랭킹은 후보 생성, 특징 추출, 점수화, 실험, 서빙 캐시를 함께 설계하는 실시간 의사결정 시스템이다.

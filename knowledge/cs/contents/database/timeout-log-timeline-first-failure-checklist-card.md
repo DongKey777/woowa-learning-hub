@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Timeout 로그 타임라인 체크리스트 카드
+concept_id: database/timeout-log-timeline-first-failure-checklist-card
+canonical: false
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- timeout-timeline
+- first-failure-order
+- pool-lock-statement-split
+aliases:
+- timeout log timeline checklist
+- first failure timeout timeline
+- connection timeout lock timeout order
+- statement timeout timeline card
+- 무엇이 먼저 터졌는지
+- 타임아웃 로그 시간순 판별
+- 어떤 timeout이 먼저였는지
+symptoms:
+- connection timeout, lock wait timeout, statement timeout이 한 로그에 같이 보여 무엇이 원인인지 모르겠다
+- "`threads awaiting connection`과 `Lock wait timeout exceeded`가 같이 찍혀서 pool 문제인지 DB lock 문제인지 헷갈린다"
+- timeout 값을 올리기 전에 어느 줄이 먼저 막혔는지 시간순으로 정리하고 싶다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- database/connection-timeout-vs-lock-timeout-card
+next_docs:
+- database/connection-timeout-vs-lock-timeout-card
+- database/pool-metrics-lock-wait-timeout-mini-bridge
+- database/pool-timeout-term-matching-card
+- database/timeout-tuning-order-checklist
+- database/lock-timeout-blocker-first-check
+linked_paths:
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/pool-timeout-term-matching-card.md
+- contents/database/timeout-tuning-order-checklist-card.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/lock-timeout-blocker-first-check-mini-card.md
+confusable_with:
+- database/connection-timeout-vs-lock-timeout-card
+- database/pool-metrics-lock-wait-timeout-mini-bridge
+- database/timeout-tuning-order-checklist
+forbidden_neighbors: []
+expected_queries:
+- timeout 로그가 여러 개일 때 무엇이 먼저 터졌는지 어떻게 시간순으로 봐?
+- connection timeout과 lock wait timeout과 statement timeout이 같이 보이면 어디부터 봐야 해?
+- threads awaiting connection이 먼저인지 Lock wait timeout exceeded가 먼저인지 판단하는 체크리스트가 필요해
+- timeout 값을 올리기 전에 로그 타임라인으로 원인을 좁히는 beginner 문서를 찾고 있어
+- pool timeout, lock timeout, query timeout을 한 사건에서 순서대로 분리하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 timeout incident에서 connection timeout, lock wait timeout,
+  statement timeout, threads awaiting connection, Lock wait timeout exceeded가
+  한 로그에 섞여 보일 때 어느 신호가 먼저 막혔는지 시간순으로 가르는
+  beginner symptom_router다. timeout 이름보다 first failure timeline을 우선한다.
+---
 # Timeout 로그 타임라인 체크리스트 카드
 
 > 한 줄 요약: timeout 사건에서는 "무슨 에러가 있었나"보다 먼저 **어느 줄이 먼저 막혔는지**를 시간순으로 나눠 봐야 한다.

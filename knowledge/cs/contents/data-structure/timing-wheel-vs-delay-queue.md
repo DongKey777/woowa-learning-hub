@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Timing Wheel vs Delay Queue
+concept_id: data-structure/timing-wheel-vs-delay-queue
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- timing-wheel-vs-delayqueue
+- timer-churn-vs-precision
+- ordered-scheduler-index
+aliases:
+- timing wheel vs delay queue
+- hashed wheel timer vs DelayQueue
+- heap timer queue
+- delayed task scheduler comparison
+- timeout churn timer precision
+- DelayQueue vs concurrent skip list
+- scheduler data structure tradeoff
+symptoms:
+- Timing Wheel과 DelayQueue를 둘 다 delayed task queue로만 보고 bucket churn 최적화와 exact earliest deadline blocking model을 구분하지 않는다
+- ordered workload를 earliest-only, coarse expiry batch, range/neighbor scan, monotone dequeue로 나누지 않아 자료구조 선택이 흔들린다
+- cancellation-heavy timeout에서 heap stale entry 비용과 timing wheel tombstone/cascade 비용을 각각 비교하지 않는다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/hierarchical-timing-wheel
+next_docs:
+- data-structure/timing-wheel-variants-and-selection
+- data-structure/calendar-queue
+- data-structure/concurrent-skiplist-internals
+linked_paths:
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/data-structure/timing-wheel-variants-and-selection.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/calendar-queue.md
+- contents/data-structure/radix-heap.md
+- contents/data-structure/concurrent-skiplist-internals.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+confusable_with:
+- data-structure/timing-wheel-variants-and-selection
+- data-structure/hierarchical-timing-wheel
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/concurrent-skiplist-internals
+- data-structure/calendar-queue
+forbidden_neighbors: []
+expected_queries:
+- Timing Wheel과 DelayQueue는 timer churn과 precision 관점에서 어떻게 달라?
+- cancellation-heavy timeout workload에서는 timing wheel과 heap-based DelayQueue 중 무엇이 유리해?
+- ordered scheduler workload를 earliest-only coarse expiry range scan monotone dequeue로 나누는 이유는?
+- DelayQueue는 blocking consumer 모델에 맞고 timing wheel은 event loop tick에 맞는다는 말이 무슨 뜻이야?
+- ConcurrentSkipList는 DelayQueue 대체재가 아니라 ordered scheduler index인 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Timing Wheel과 DelayQueue를 timer churn, deadline precision, blocking model,
+  cancellation cost로 비교하는 chooser다. ordered workload를 earliest-only, coarse expiry
+  batch, range/neighbor scan, monotone dequeue로 나누어 Concurrent Skip List와도 구분한다.
+---
 # Timing Wheel vs Delay Queue
 
 > 한 줄 요약: Timing Wheel은 대량 timer churn을 bucket으로 싸게 처리하려는 구조이고, Delay Queue는 heap 기반 정밀 deadline 처리를 단순한 blocking 모델로 제공하는 구조다.

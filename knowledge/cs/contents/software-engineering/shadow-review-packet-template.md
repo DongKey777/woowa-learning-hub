@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Shadow Review Packet Template
+concept_id: software-engineering/shadow-review-packet-template
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- review-packet
+- governance
+- decision-contract
+aliases:
+- shadow review packet template
+- shadow review packet minimum fields
+- shadow catalog forum agenda
+- review packet projection
+- decision ready packet
+- shadow review 패킷 템플릿
+symptoms:
+- shadow catalog entry를 forum마다 다른 필드와 자유 서술로 읽어 decision, execution-risk, verification 질문이 매번 흔들려
+- packet에 decision_question이 없어 회의가 상태 보고로 끝나고 target_decision, owner, due date가 남지 않아
+- temporary_hold와 blocked를 구분하는 hold_reason, expires_at, blocked_since, escalation_forum이 없어 control state가 섞여
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-catalog-lifecycle-states
+next_docs:
+- software-engineering/shadow-packet-automation-mapping
+- software-engineering/shadow-review-outcome-template
+- software-engineering/shadow-promotion-snapshot-schema-fields
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-promotion-snapshot-schema-fields.md
+- contents/software-engineering/shadow-packet-automation-mapping.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-review-outcome-template.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+confusable_with:
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-packet-automation-mapping
+- software-engineering/shadow-review-outcome-template
+forbidden_neighbors: []
+expected_queries:
+- shadow review packet은 catalog entry 전체 복사본이 아니라 forum decision에 필요한 최소 projection이어야 하는 이유는?
+- packet 최소 필드로 catalog_id, lifecycle_state, signal_summary, promotion snapshot, blockers, verification_metric, decision_question을 왜 넣어야 해?
+- shadow review agenda를 intake, decision-needed, execution-risk, verification-closeout으로 나누면 어떤 질문이 고정돼?
+- temporary_hold와 blocked가 섞이지 않게 packet에 hold_reason, expires_at, blocked_from_state, escalation_forum을 어떻게 노출해?
+- review packet output까지 outcome template로 표준화해야 state machine과 다음 packet이 끊기지 않는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 shadow catalog entry를 forum decision에 필요한 최소 projection으로 압축하고 intake, decision-needed, execution-risk, verification agenda를 고정하는 advanced playbook이다.
+---
 # Shadow Review Packet Template
 
 > 한 줄 요약: shadow catalog entry를 forum마다 다른 감으로 읽지 않으려면, review packet은 entry schema의 전체 복사본이 아니라 decision에 필요한 최소 projection이어야 하고, agenda도 `decision / execution-risk / verification` 구간으로 고정해야 한다.

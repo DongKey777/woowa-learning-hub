@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Virtual Thread MVC Async Executor Boundaries
+concept_id: language/mvc-async-executor-boundaries
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 93
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- spring-mvc-async
+- virtual-thread
+- streaming
+aliases:
+- Virtual-Thread MVC Async Executor Boundaries
+- Spring MVC virtual thread async executor
+- Callable StreamingResponseBody executor
+- SseEmitter send thread
+- spring.threads.virtual.enabled MVC async
+- MVC async executor boundary
+symptoms:
+- spring.threads.virtual.enabled를 켜면 Callable, StreamingResponseBody, SseEmitter producer까지 모두 같은 virtual thread에서 돈다고 생각해
+- AsyncSupportConfigurer task executor가 direct SseEmitter send thread까지 바꾼다고 오해해 producer executor ownership을 놓쳐
+- StreamingResponseBody와 ResponseBodyEmitter, reactive-to-emitter 경계를 같은 thread model로 관측해 timeout과 cancellation 원인을 섞어
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/virtual-threads-project-loom
+- language/virtual-thread-framework-integration
+- spring/mvc-async-deferredresult-callable-dispatch
+next_docs:
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/streaming-response-abort-surfaces-servlet-virtual-threads.md
+- contents/language/java/streamingresponsebody-sseemitter-terminal-cleanup-matrix.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+confusable_with:
+- spring/mvc-async-deferredresult-callable-dispatch
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+forbidden_neighbors: []
+expected_queries:
+- spring.threads.virtual.enabled를 켜면 Spring MVC Callable과 StreamingResponseBody는 어떤 executor를 타?
+- SseEmitter send는 MVC async executor가 아니라 producer thread에서 돈다는 말이 무슨 뜻이야?
+- AsyncSupportConfigurer setTaskExecutor가 Callable StreamingResponseBody reactive streaming에 미치는 범위를 설명해줘
+- direct ResponseBodyEmitter와 Flux ServerSentEvent SSE는 executor ownership이 어떻게 달라?
+- Spring Boot virtual thread 설정과 custom MVC async executor가 같이 있을 때 thread boundary를 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC와 Java virtual thread 환경에서 request-entry thread, MVC async executor, direct emitter producer thread를 분리해 설명하는 advanced deep dive다.
+  spring.threads.virtual.enabled, Callable, StreamingResponseBody, SseEmitter, AsyncSupportConfigurer, producer thread 질문이 본 문서에 매핑된다.
+---
 # Virtual-Thread MVC Async Executor Boundaries
 
 > 한 줄 요약: `spring.threads.virtual.enabled`는 Spring Boot의 기본 request-entry thread와 `applicationTaskExecutor`를 virtual-thread 쪽으로 기울일 수 있지만, MVC async 경계는 여전히 따로 존재한다. `Callable`과 `StreamingResponseBody`는 MVC async executor를 타고, 직접 만든 `ResponseBodyEmitter`/`SseEmitter` workload는 `send()`를 호출한 producer thread를 탄다.

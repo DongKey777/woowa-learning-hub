@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: OWASP Top 10 기초
+concept_id: security/owasp-top10-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- owasp-top10-basics
+- broken-access-control
+- injection-xss-csrf-entrypoint
+aliases:
+- OWASP Top 10 basics
+- OWASP가 뭔가요
+- web security top vulnerabilities
+- broken access control
+- injection attack beginner
+- security misconfiguration
+- 웹 보안 취약점 목록
+- 보안 취약점 입문
+- OWASP 개요
+symptoms:
+- Spring Security를 쓰면 Broken Access Control까지 자동으로 모두 해결된다고 오해한다
+- OWASP Top 10을 암기 목록으로만 보고 실제 코드 리뷰 체크 질문으로 바꾸지 못한다
+- SQL injection, XSS, CSRF, password storage, security misconfiguration의 첫 학습 경로를 못 고른다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- security/security-basics-what-and-why
+next_docs:
+- security/sql-injection-basics
+- security/xss-csrf-basics
+- security/input-validation-basics
+- security/authentication-authorization-session-foundations
+linked_paths:
+- contents/security/sql-injection-basics.md
+- contents/security/xss-csrf-basics.md
+- contents/security/input-validation-basics.md
+- contents/network/http-methods-rest-idempotency.md
+- contents/security/security-basics-what-and-why.md
+confusable_with:
+- security/sql-injection-basics
+- security/xss-csrf-basics
+- security/input-validation-basics
+- security/authentication-authorization-session-foundations
+- security/api-security-headers-beyond-csp
+forbidden_neighbors: []
+expected_queries:
+- OWASP Top 10은 웹 보안 공부에서 어떤 출발점이야?
+- Broken Access Control은 Spring Security를 쓰면 자동으로 막히는 문제야?
+- Injection, XSS, CSRF, Security Misconfiguration을 초보자 기준으로 어떻게 구분해?
+- 웹 보안 취약점을 처음 볼 때 어떤 항목부터 코드 리뷰 체크리스트로 바꿔야 해?
+- OWASP Top 10에 없는 취약점은 무시해도 되는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 OWASP Top 10 beginner primer로, Broken Access Control,
+  Cryptographic Failures, Injection, Insecure Design, Security Misconfiguration,
+  Vulnerable Components, Auth and Session Failures 같은 웹 취약점 목록을
+  코드 리뷰 첫 질문으로 바꾸는 entrypoint다.
+---
 # OWASP Top 10 기초: 웹 보안 취약점 열 가지
 
 > 한 줄 요약: OWASP Top 10은 웹 애플리케이션에서 가장 자주 발생하는 보안 취약점 열 가지로, 신입 개발자가 코드를 짤 때 먼저 피해야 할 위험 목록이다.

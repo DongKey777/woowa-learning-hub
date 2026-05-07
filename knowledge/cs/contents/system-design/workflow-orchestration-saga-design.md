@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Workflow Orchestration + Saga 설계
+concept_id: system-design/workflow-orchestration-saga-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- workflow orchestration
+- saga
+- compensation
+- state machine
+aliases:
+- workflow orchestration
+- saga
+- compensation
+- state machine
+- approval workflow
+- human in the loop
+- repair campaign
+- long running operation
+- orchestration engine
+- timeout policy
+- Workflow Orchestration + Saga 설계
+- workflow orchestration saga design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/database/transaction-case-studies.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Workflow Orchestration + Saga 설계 설계 핵심을 설명해줘
+- workflow orchestration가 왜 필요한지 알려줘
+- Workflow Orchestration + Saga 설계 실무 트레이드오프는 뭐야?
+- workflow orchestration 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Workflow Orchestration + Saga 설계를 다루는 deep_dive 문서다. 여러 서비스가 관여하는 업무 흐름은 하나의 트랜잭션으로 묶지 말고, orchestration과 compensation으로 상태 전이를 관리해야 한다. 검색 질의가 workflow orchestration, saga, compensation, state machine처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Workflow Orchestration + Saga 설계
 
 > 한 줄 요약: 여러 서비스가 관여하는 업무 흐름은 하나의 트랜잭션으로 묶지 말고, orchestration과 compensation으로 상태 전이를 관리해야 한다.

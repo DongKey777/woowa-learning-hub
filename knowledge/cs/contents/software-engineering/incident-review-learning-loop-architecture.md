@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Incident Review and Learning Loop Architecture
+concept_id: software-engineering/incident-review-learning-loop
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- incident-review
+- postmortem
+- learning-loop
+- recovery
+aliases:
+- Incident Review and Learning Loop Architecture
+- blameless postmortem learning loop
+- incident action item hygiene
+- detection recovery prevention loop
+- operational feedback loop
+- 인시던트 리뷰 학습 루프
+symptoms:
+- postmortem은 작성하지만 모니터링, alert threshold, rollback rule, kill switch, runbook, test case로 돌아가지 않아 같은 장애가 반복돼
+- action item이 조심하자 같은 추상 문구로 끝나 owner, due date, verification, metric이 없어 실제 학습 루프가 닫히지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/feature-flag-dependency-management
+next_docs:
+- software-engineering/incident-feedback-policy-ownership-closure
+- software-engineering/lead-time-change-failure-recovery
+- software-engineering/configuration-governance
+linked_paths:
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/strangler-verification-shadow-traffic-metrics.md
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/lead-time-change-failure-recovery-loop.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+confusable_with:
+- software-engineering/incident-feedback-policy-ownership-closure
+- software-engineering/lead-time-change-failure-recovery
+- software-engineering/kill-switch-fast-fail
+forbidden_neighbors: []
+expected_queries:
+- incident review가 누가 잘못했는지 찾는 회의가 아니라 learning loop가 되어야 하는 이유를 설명해줘
+- postmortem action item을 코드, 테스트, 알림, runbook, rollback gate로 연결하려면 어떻게 해야 해?
+- timeline reconstruction과 system cause 분석이 blameless review에서 왜 중요한가?
+- 사고 리뷰 결과가 canary 기준, rollback 조건, kill switch scope로 반영되는 예시를 알려줘
+- incident review의 학습 효과를 detection time, recovery time, recurrence rate로 어떻게 측정해?
+contextual_chunk_prefix: |
+  이 문서는 incident review를 timeline, system cause, action item verification, monitoring/runbook/rollback 개선으로 연결하는 advanced learning loop playbook이다.
+---
 # Incident Review and Learning Loop Architecture
 
 > 한 줄 요약: 인시던트 리뷰는 사고를 평가하는 회의가 아니라, 탐지부터 복구, 재발 방지까지 학습이 코드와 운영 절차로 돌아가게 만드는 시스템이다.

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: CompletableFuture.delayedExecutor, Scheduler Hop, and Timer-Thread Hazards
+concept_id: language/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- completablefuture
+- scheduler-hop
+- executor-rejection
+aliases:
+- CompletableFuture delayedExecutor scheduler hop
+- CompletableFutureDelayScheduler
+- delayedExecutor timer thread hazard
+- delayed task submission
+- CallerRunsPolicy timer hijack
+- retry backoff scheduler
+symptoms:
+- delayedExecutor를 sleep처럼 보고 delay 만료 뒤 base executor에 다시 제출되는 2단계 orchestration 경계를 놓쳐
+- CallerRunsPolicy나 same-thread executor와 섞여 CompletableFutureDelayScheduler가 user code를 직접 실행할 수 있는 위험을 모른다
+- delayed submit 시점의 executor rejection이나 context propagation 경계가 호출 시점과 다르다는 점을 설계에 반영하지 않아
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/completablefuture-execution-model-common-pool-pitfalls
+next_docs:
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/completablefuture-cancellation-semantics
+- language/executor-sizing-queue-rejection-policy
+linked_paths:
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+- contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+- language/executor-sizing-queue-rejection-policy
+- language/threadlocal-leaks-context-propagation
+forbidden_neighbors: []
+expected_queries:
+- CompletableFuture.delayedExecutor는 sleep이 아니라 timer scheduler가 base executor에 제출하는 구조라는 뜻이야?
+- CompletableFutureDelayScheduler가 CallerRunsPolicy 때문에 user code를 실행할 수 있는 위험을 설명해줘
+- delayedExecutor에서 delay는 executor 생성 시점이 아니라 execute 호출 시점부터 시작되는지 알려줘
+- delayed submit 시점 executor rejection은 왜 호출 시점과 다르게 나타나?
+- retry backoff를 CompletableFuture.delayedExecutor로 만들 때 context propagation과 timer thread를 어떻게 조심해?
+contextual_chunk_prefix: |
+  이 문서는 CompletableFuture.delayedExecutor를 timer scheduler, base executor submission, scheduler hop, CompletableFutureDelayScheduler, CallerRunsPolicy timer-thread hazard 관점으로 설명하는 advanced deep dive다.
+  delayedExecutor, timer thread, scheduler hop, retry backoff, executor rejection, context propagation 질문이 본 문서에 매핑된다.
+---
 # `CompletableFuture.delayedExecutor`, Scheduler Hop, and Timer-Thread Hazards
 
 > 한 줄 요약: `CompletableFuture.delayedExecutor()`는 "잠깐 기다렸다가 같은 흐름을 이어가는 API"가 아니라, 숨겨진 timer scheduler가 나중에 base executor로 작업 제출을 시도하는 2단계 orchestration 도구다. 이 경계를 놓치면 retry/backoff, timeout, context propagation, rejection, timer-thread hijack을 잘못 설계하게 된다.

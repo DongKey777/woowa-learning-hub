@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring Property Source Precedence Quick Guide
+concept_id: spring/property-source-precedence-quick-guide
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- property-source-precedence
+- environment-property-override
+- order
+- command-line-vs
+aliases:
+- Spring property source precedence
+- Environment property override order
+- command line vs env var vs profile
+- test property precedence
+- why configuration value not applied
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-external-config-file-precedence-primer.md
+- contents/spring/spring-properties-vs-yaml-same-location-precedence-primer.md
+- contents/spring/spring-multidocument-yaml-on-profile-primer.md
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-dynamicpropertysource-vs-serviceconnection-primer.md
+- contents/spring/spring-configurationproperties-binding-internals.md
+expected_queries:
+- Spring Boot에서 같은 설정 key가 여러 곳에 있으면 무엇이 우선이야?
+- application.yml profile env var command line test property 우선순위를 빠르게 알려줘
+- 환경 변수로 넣은 값이 application.yml 값보다 우선 적용되는 이유는?
+- 테스트에서 DynamicPropertySource 값이 설정 파일을 덮는지 확인하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot Environment에서 같은 key를 가진 여러 PropertySource 중 더 높은
+  우선순위의 값 하나가 선택되는 원리를 빠르게 판별하는 primer다. profile file, env var,
+  command-line, test property, DynamicPropertySource 경계를 함께 설명한다.
+---
 # Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property
 
 > 한 줄 요약: 같은 key가 여러 곳에 있으면 Spring Boot `Environment`에서는 더 높은 `PropertySource`의 값 하나만 보인다. beginner 기준으로는 **test property > command-line > env var > profile 파일 > 기본 `application.yml`** 순서부터 잡으면 대부분의 "왜 이 설정이 먹지?"를 빠르게 가를 수 있다.

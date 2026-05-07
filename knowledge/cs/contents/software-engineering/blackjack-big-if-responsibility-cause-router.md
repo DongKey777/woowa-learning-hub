@@ -47,11 +47,7 @@ confusable_with:
 - software-engineering/blackjack-ace-rule-vs-turn-state-vs-result-policy-decision-guide
 - design-pattern/blackjack-turn-flow-state-pattern-bridge
 - design-pattern/blackjack-winner-decision-policy-object-bridge
-forbidden_neighbors:
-- contents/design-pattern/blackjack-action-input-command-bridge.md
-- contents/software-engineering/blackjack-ace-scoring-domain-invariant-bridge.md
-- contents/design-pattern/blackjack-turn-flow-state-pattern-bridge.md
-- contents/design-pattern/blackjack-winner-decision-policy-object-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 블랙잭 미션 코드가 긴 if 문 하나인데 어떤 줄은 커맨드고 어떤 줄은 상태인지 어떻게 가려?
 - 플레이어 입력 처리와 딜러 승패 비교가 한 메서드에 있을 때 먼저 어디부터 쪼개야 해?

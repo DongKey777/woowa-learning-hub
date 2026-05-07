@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Dedicated Cell Drain and Retirement 설계
+concept_id: system-design/dedicated-cell-drain-retirement-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- dedicated cell drain and retirement
+- shared cell exit proof
+- shared cell retirement
+- post migration drain
+aliases:
+- dedicated cell drain and retirement
+- shared cell exit proof
+- shared cell retirement
+- post migration drain
+- dedicated cell cleanup gate
+- legacy principal retirement
+- rollback closure after tenant split out
+- old cell hit after cutover
+- legacy principal last seen
+- shared cell donor tombstone
+- dedicated cell point of no return
+- replay backlog closure
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/tenant-split-out-service-identity-rollout-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/bridge-retirement-evidence-packet-design.md
+- contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/write-freeze-rollback-window-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Dedicated Cell Drain and Retirement 설계 설계 핵심을 설명해줘
+- dedicated cell drain and retirement가 왜 필요한지 알려줘
+- Dedicated Cell Drain and Retirement 설계 실무 트레이드오프는 뭐야?
+- dedicated cell drain and retirement 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Dedicated Cell Drain and Retirement 설계를 다루는 deep_dive 문서다. dedicated cell drain and retirement 설계는 tenant가 shared cell에서 dedicated cell로 완전히 이동한 뒤 residual route hit, legacy principal, rollback handle, donor cleanup을 순서 있게 닫아 post-migration drain과 cleanup point-of-no-return을 안전하게 통과하는 운영 설계다. 검색 질의가 dedicated cell drain and retirement, shared cell exit proof, shared cell retirement, post migration drain처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Dedicated Cell Drain and Retirement 설계
 
 > 한 줄 요약: dedicated cell drain and retirement 설계는 tenant가 shared cell에서 dedicated cell로 완전히 이동한 뒤 residual route hit, legacy principal, rollback handle, donor cleanup을 순서 있게 닫아 post-migration drain과 cleanup point-of-no-return을 안전하게 통과하는 운영 설계다.

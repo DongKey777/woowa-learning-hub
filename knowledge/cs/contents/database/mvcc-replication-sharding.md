@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: MVCC, Replication, Sharding
+concept_id: database/mvcc-replication-sharding
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- mvcc-vs-replication-boundary
+- replica-lag-read-after-write
+- partitioning-vs-sharding
+aliases:
+- MVCC replication sharding
+- multi-version concurrency control
+- read replica
+- replication lag
+- sharding
+- shard key
+- horizontal partitioning
+- repeatable read snapshot
+- undo log version chain
+- read after write
+- primary replica failover
+- partitioning vs sharding
+- hot shard
+- shard hotspot
+- 방금 쓴 데이터 안 보임
+- snapshot isolation
+symptoms:
+- MVCC와 replication과 sharding이 모두 DB 확장 용어처럼 보여서 구분이 안 돼
+- 방금 쓴 데이터가 read replica에서 안 보이는 이유와 MVCC snapshot이 헷갈려
+- partitioning과 sharding 중 무엇이 같은 노드 최적화이고 무엇이 여러 DB 분산인지 모르겠어
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- database/transaction-basics
+- system-design/database-scaling-primer
+next_docs:
+- database/transaction-isolation-locking
+- database/replica-lag-read-after-write-strategies
+- database/read-your-writes-session-pinning
+- database/replication-failover-split-brain
+- database/multi-tenant-tenant-id-index-topology
+- system-design/shard-key-selection-basics
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/multi-tenant-tenant-id-index-topology.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/shard-key-selection-basics.md
+confusable_with:
+- database/transaction-isolation-locking
+- database/replica-lag-read-after-write-strategies
+- database/read-your-writes-session-pinning
+- system-design/database-scaling-primer
+forbidden_neighbors: []
+expected_queries:
+- MVCC, replication, sharding을 동시성과 확장 관점에서 비교해줘
+- MVCC snapshot과 replica lag가 각각 왜 방금 쓴 값이 안 보이는 증상을 만들 수 있어?
+- partitioning과 sharding은 어디서 갈리고 shard key는 왜 어려워?
+- read replica를 붙이면 읽기 확장은 되지만 read-after-write는 왜 별도 설계가 필요해?
+- hot shard와 resharding 비용을 보기 전에 어떤 질문을 던져야 해?
+contextual_chunk_prefix: |
+  이 문서는 MVCC는 한 DB 노드 안에서 snapshot과 version chain으로 읽기와 쓰기를 공존시키는 동시성 기법이고, replication은 같은 데이터를 복제해 read scaling과 failover를 돕지만 replica lag를 만들며, sharding은 데이터를 여러 DB로 나눠 storage/write 한계를 다루는 확장 기법이라는 차이를 설명하는 advanced deep dive다.
+  방금 쓴 데이터가 안 보임, read replica lag, snapshot isolation, partitioning vs sharding, shard key, hot shard, primary replica failover 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # MVCC, Replication, Sharding
 
 **난이도: 🔴 Advanced**

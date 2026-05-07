@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Anti-Corruption Translation Map Pattern
+concept_id: design-pattern/anti-corruption-translation-map-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- translation-map
+- external-code-mapping
+- domain-enum-protection
+aliases:
+- anti corruption translation map
+- translation map
+- external code mapping
+- status code translation
+- domain enum mapping
+- unknown code mapping
+- provider status mapping
+- published language mapping
+- 외부 코드값 매핑
+- 도메인 enum 번역
+symptoms:
+- provider status code를 내부 domain enum처럼 그대로 노출해 외부 용어가 모델에 침투한다
+- 외부 코드값 번역 switch가 여러 adapter와 service에 흩어져 drift 대응 위치가 불명확하다
+- unknown external code를 조용히 기본값으로 바꿔 silent degradation을 만든다
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/adapter
+next_docs:
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/facade-anti-corruption-seam
+- design-pattern/bounded-context-relationship-patterns
+linked_paths:
+- contents/design-pattern/bounded-context-relationship-patterns.md
+- contents/design-pattern/anti-corruption-layer-operational-pattern.md
+- contents/design-pattern/anti-corruption-contract-test-pattern.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/adapter.md
+confusable_with:
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/adapter
+- design-pattern/facade-anti-corruption-seam
+forbidden_neighbors: []
+expected_queries:
+- Translation Map은 외부 provider code를 내부 domain enum으로 어떻게 안전하게 번역해?
+- 외부 status code를 내부 모델에서 그대로 쓰면 anti-corruption boundary가 왜 깨져?
+- inline switch 대신 dedicated translation map이나 translator를 두는 기준은 뭐야?
+- unknown external code는 UNKNOWN, quarantine, exception 중 어떤 정책으로 처리해야 해?
+- payment provider별 AUTH_OK, CAPTURED 같은 상태값을 내부 payment language로 매핑하려면 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Translation Map Pattern playbook으로, provider의
+  status code와 error code를 내부 domain enum과 language로 명시적으로 매핑하고
+  unknown code를 관측 가능한 정책으로 처리해 외부 모델 오염을 막는 방법을 설명한다.
+---
 # Anti-Corruption Translation Map Pattern: 외부 코드값을 도메인 언어로 매핑하기
 
 > 한 줄 요약: Translation Map은 외부 시스템의 코드와 상태값을 내부 도메인 언어로 고정 매핑해 모델 오염을 막는다.

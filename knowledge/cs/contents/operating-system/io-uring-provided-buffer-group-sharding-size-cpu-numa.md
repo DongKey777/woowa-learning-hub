@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: io_uring Provided Buffer Group Sharding Size CPU NUMA
+concept_id: operating-system/io-uring-provided-buffer-group-sharding-size-cpu-numa
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- io-uring-provided
+- buffer-group-sharding
+- size-cpu-numa
+- provided-buffer-group
+aliases:
+- provided buffer group sharding
+- bgid receive side admission control
+- size class CPU shard NUMA node
+- shared group churn
+- low-water refill first-touch
+- io_uring buffer group locality
+intents:
+- comparison
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-iowq-affinity-max-workers-decision-guide.md
+- contents/operating-system/numa-first-touch-remote-memory-locality-debugging.md
+confusable_with:
+- operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure
+- operating-system/io-uring-provided-buffer-exhaustion-observability-playbook
+- operating-system/io-uring-iowq-affinity-max-workers-decision-guide
+expected_queries:
+- io_uring provided buffer bgid를 size class CPU shard NUMA node로 나눠야 하는 이유는?
+- 하나의 buffer group이 shared refill domain이 되면 ENOBUFS가 왜 churn으로 나타나?
+- low-water refill first-touch를 buffer group sharding과 어떻게 설계해?
+- provided buffer group은 단순 ID가 아니라 receive-side admission control이라는 뜻은?
+contextual_chunk_prefix: |
+  이 문서는 provided buffer bgid를 단순 ID가 아니라 receive-side admission control과 locality
+  boundary로 본다. payload size class, CPU shard, NUMA node 기준으로 group을 나누어
+  shared group churn과 ENOBUFS를 줄이는 chooser다.
+---
 # io_uring Provided Buffer Group Sharding by Payload Size, CPU Shard, NUMA Node
 
 > 한 줄 요약: provided buffer `bgid`는 단순 ID가 아니라 receive-side admission control과 locality 경계다. 하나의 group이 서로 다른 payload class, 여러 core, 여러 NUMA node의 shared refill domain이 되면 `-ENOBUFS`가 총량 부족보다 `shared group churn`으로 나타나기 쉬우므로, 이때는 size class / CPU shard / NUMA node 기준으로 group을 쪼개 low-water, refill, first-touch를 분리하는 편이 안정적이다.

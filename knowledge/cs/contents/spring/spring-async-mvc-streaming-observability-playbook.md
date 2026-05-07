@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Spring Async MVC Streaming Observability Playbook
+concept_id: spring/async-mvc-streaming-observability-playbook
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- async-mvc-streaming
+- observability
+- streamingresponsebody-metrics
+- responsebodyemitter-metrics
+aliases:
+- async MVC streaming observability
+- StreamingResponseBody metrics
+- ResponseBodyEmitter metrics
+- SseEmitter metrics
+- first byte latency
+- last successful flush
+- AsyncRequestNotUsableException attribution
+- client abort ratio
+intents:
+- troubleshooting
+- design
+symptoms:
+- streaming endpoint에서 http.server.requests만 보고 timeout, disconnect, app error가 섞여 보인다.
+- first byte 이후 실패라서 ProblemDetail 응답으로 바뀌지 않고 partial response나 broken pipe로 남는다.
+- SSE reconnect noise와 실제 proxy idle timeout 또는 flush cadence 문제를 구분하기 어렵다.
+linked_paths:
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-partial-response-access-log-interpretation.md
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/spring/spring-sse-disconnect-observability-patterns.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+expected_queries:
+- Spring MVC streaming endpoint는 어떤 메트릭을 남겨야 해?
+- SseEmitter disconnect와 timeout을 observability에서 어떻게 구분해?
+- AsyncRequestNotUsableException이 root cause인지 후행 신호인지 어떻게 판단해?
+- first byte latency와 last successful flush를 따로 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring Async MVC streaming endpoint의 관측 playbook이다.
+  StreamingResponseBody, ResponseBodyEmitter, SseEmitter, first successful flush,
+  last_successful_flush, completion_cause, AsyncRequestNotUsableException,
+  broken pipe, client abort, proxy idle timeout, Micrometer low-cardinality tag를
+  분리해 alert noise와 실제 성능 문제를 구분한다.
+---
 # Spring Async MVC Streaming Observability Playbook
 
 > 한 줄 요약: async MVC streaming 관측은 "요청 하나가 몇 ms 걸렸는가"보다 먼저 first-byte latency, 마지막 성공 flush, completion cause, `AsyncRequestNotUsableException`의 원인 귀속을 분리해야 alert noise와 실제 성능 문제를 구분할 수 있다.

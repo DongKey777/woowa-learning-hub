@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Checkpoint Age and Flush Storms
+concept_id: database/checkpoint-age-flush-storms
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- checkpoint-age
+- flush-storm
+- dirty-page
+- redo-log
+aliases:
+- checkpoint age
+- flush storm
+- checkpoint age flush storms
+- dirty page flush storm
+- LSN checkpoint
+- page cleaner
+- redo log capacity
+- latency spike flush
+- checkpoint 압박
+- flush storm p99
+symptoms:
+- 배치나 backfill 후 쿼리 계획은 괜찮은데 commit path와 API p95/p99가 갑자기 튄다
+- checkpoint age가 커지고 dirty page flush가 몰려 foreground IO와 경쟁한다
+- redo log capacity와 innodb_io_capacity를 따로 봐 flush pressure와 recovery time trade-off를 놓친다
+intents:
+- symptom
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/redo-undo-checkpoint-crash-recovery
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/adaptive-flushing-heuristics-dirty-page-feedback
+- database/flush-neighbors-adaptive-flushing-io-capacity
+- database/doublewrite-buffer-torn-page-protection
+linked_paths:
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/doublewrite-buffer-torn-page-protection.md
+- contents/database/adaptive-flushing-heuristics-dirty-page-feedback.md
+- contents/database/flush-neighbors-adaptive-flushing-io-capacity.md
+confusable_with:
+- database/adaptive-flushing-heuristics-dirty-page-feedback
+- database/flush-neighbors-adaptive-flushing-io-capacity
+- database/redo-log-write-amplification
+- database/buffer-pool-read-ahead-eviction-interaction
+forbidden_neighbors: []
+expected_queries:
+- checkpoint age가 커지면 InnoDB가 강제 flush storm으로 p95 p99를 터뜨리는 이유가 뭐야?
+- Log sequence number와 Last checkpoint at 차이를 보고 flush pressure를 어떻게 읽어?
+- 쿼리는 빠른데 commit만 느려지는 현상을 dirty page와 redo log checkpoint pressure로 설명해줘
+- innodb_io_capacity와 redo log capacity를 같이 봐야 flush storm을 줄일 수 있는 이유가 뭐야?
+- 배치 update 후 API latency spike가 flush storm인지 확인하는 첫 관찰 포인트는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Checkpoint Age and Flush Storms symptom router로, redo LSN과 last checkpoint 사이의
+  checkpoint age가 커져 dirty pages를 강제 flush하면서 foreground IO, commit latency, recovery pressure,
+  p95/p99 spike를 만드는 현상을 설명한다.
+---
 # Checkpoint Age and Flush Storms
 
 > 한 줄 요약: checkpoint age가 커지면 InnoDB는 더 이상 천천히 flush하지 못하고, 갑작스러운 flush storm으로 지연을 터뜨린다.

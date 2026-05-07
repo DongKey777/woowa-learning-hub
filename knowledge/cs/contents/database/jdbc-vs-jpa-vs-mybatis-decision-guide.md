@@ -53,9 +53,9 @@ linked_paths:
 - contents/spring/spring-data-jpa-basics.md
 - contents/software-engineering/repository-dao-entity.md
 confusable_with:
-- database/jdbc
-- database/jpa
-- database/mybatis
+- database/jdbc-jpa-mybatis-basics
+- database/jdbc-jpa-mybatis-basics
+- database/jdbc-jpa-mybatis-basics
 forbidden_neighbors:
 - contents/database/database-first-step-bridge.md
 expected_queries:
@@ -72,12 +72,19 @@ contextual_chunk_prefix: |
   CRUD, 복잡한 조회 튜닝, 보일러플레이트 감수 여부 같은 질문이 결정
   매트릭스와 흔한 오선택 섹션으로 바로 연결되도록 설계됐다.
 ---
-
 # JDBC vs JPA vs MyBatis 결정 가이드
 
 ## 한 줄 요약
 
 > SQL을 어디서 직접 통제할지와 반복 코드를 어느 정도 감수할지 먼저 정하면, `JDBC`, `JPA`, `MyBatis` 선택이 훨씬 덜 헷갈린다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`save`는 보이는데 SQL 위치와 수정 지점이 헷갈려요" | JpaRepository, Mapper, JdbcTemplate 코드 독해 | SQL을 직접 보는 기술인지 ORM이 뒤에서 만드는 기술인지 구분한다 |
+| "CRUD 위주 서비스인데 JDBC부터 직접 짜야 하나요?" | roomescape/shopping-cart persistence 기술 선택 | 반복 코드 비용과 CRUD 생산성의 tradeoff를 본다 |
+| "복잡한 조회가 많은데 JPA와 MyBatis 중 어디에 둘지 모르겠어요" | 관리자 목록/주문 조회 튜닝 | 객체 중심 CRUD와 명시 SQL 조회 제어를 다른 축으로 둔다 |
 
 ## 결정 매트릭스
 

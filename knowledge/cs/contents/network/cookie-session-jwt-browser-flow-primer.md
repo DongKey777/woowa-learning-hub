@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Cookie Session JWT 브라우저 흐름 입문
+concept_id: network/cookie-session-jwt-browser-flow-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 94
+mission_ids: []
+review_feedback_tags:
+- cookie-session-jwt-layer-separation
+- set-cookie-cookie-request-flow
+- browser-auth-debugging-route
+aliases:
+- cookie session jwt browser flow
+- Cookie Session JWT 브라우저 흐름 입문
+- cookie session jwt 차이
+- 쿠키 세션 jwt 뭐예요
+- Set-Cookie랑 Cookie 차이
+- JSESSIONID 브라우저 흐름
+- 로그인 유지 원리
+- Authorization 헤더랑 쿠키 차이
+- cookie 있는데 왜 다시 로그인
+- session cookie vs jwt
+- 브라우저가 쿠키를 왜 자동으로 보내요
+symptoms:
+- cookie, session, JWT를 같은 층위의 인증 방식으로 섞어서 이해하고 있어
+- Set-Cookie는 받았는데 다음 요청 Cookie 헤더가 비어 있어 어디부터 봐야 할지 모르겠어
+- 로그인은 된 것 같은데 JSESSIONID나 JWT 검증 뒤에 다시 401, 302, 403이 나와 헷갈려
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-request-response-headers-basics
+next_docs:
+- security/session-cookie-jwt-basics
+- security/authentication-authorization-session-foundations
+- network/cookie-attribute-matrix-samesite-httponly-secure-domain-path
+- network/cross-origin-cookie-credentials-cors-primer
+- system-design/browser-bff-session-boundary-primer
+linked_paths:
+- contents/network/http-state-session-cache.md
+- contents/network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/authentication-authorization-session-foundations.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+confusable_with:
+- security/session-cookie-jwt-basics
+- network/cross-origin-cookie-credentials-cors-primer
+- security/cookie-scope-mismatch-guide
+- system-design/browser-bff-session-boundary-primer
+forbidden_neighbors: []
+expected_queries:
+- cookie, session, JWT 차이를 브라우저 저장, 요청 전송, 서버 검증 기준으로 설명해줘
+- Set-Cookie는 왔는데 다음 요청의 Cookie 헤더가 없는 이유를 어떻게 확인해?
+- JSESSIONID 세션 인증은 서버가 무엇을 저장하고 브라우저는 무엇을 보내?
+- JWT를 Authorization 헤더에 넣는 방식과 cookie에 넣는 방식은 뭐가 달라?
+- 로그인 유지가 cookie 저장인지 session 복원인지 token 검증인지 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 browser login flow에서 cookie는 저장과 전송 수단, session은 server-side state 복원 방식, JWT는 token format과 validation 방식이라는 층위를 분리하는 beginner primer다.
+  Set-Cookie vs Cookie, JSESSIONID, session store, Authorization Bearer JWT, JWT in cookie, cookie present but login lost 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Cookie / Session / JWT 브라우저 흐름 입문
 
 > 한 줄 요약: 브라우저는 응답의 `Set-Cookie`를 보고 쿠키를 저장하고, 조건이 맞는 다음 HTTP 요청에 `Cookie` 헤더로 자동 전송한다. 세션 인증은 그 쿠키 안의 session id로 서버 상태를 찾고, JWT 인증은 토큰을 `Authorization` 헤더나 cookie에 실어 검증한다.

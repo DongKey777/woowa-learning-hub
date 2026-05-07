@@ -1,8 +1,81 @@
+---
+schema_version: 3
+title: Webhook and Broker Boundary Primer
+concept_id: software-engineering/webhook-broker-boundary-primer
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- webhook
+- message-broker
+- inbound-adapter
+- idempotency
+aliases:
+- webhook vs broker consumer
+- webhook inbound adapter
+- broker consumer boundary
+- HTTP callback vs queue consumer
+- ack retry idempotency boundary
+- webhook broker 경계
+symptoms:
+- webhook endpoint와 broker consumer를 둘 다 같은 controller처럼 처리한다
+- HTTP 2xx와 broker ack/offset commit이 각각 어떤 성공 신호인지 구분하지 못한다
+- retry owner와 idempotency key 출처를 외부 provider와 broker에서 다르게 잡아야 함을 놓친다
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/message-driven-adapter
+- software-engineering/ports-and-adapters-beginner-primer
+next_docs:
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/inbound-adapter-testing-matrix
+linked_paths:
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/system-design/message-queue-basics.md
+confusable_with:
+- software-engineering/message-driven-adapter
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/outbox-inbox-domain-events
+forbidden_neighbors: []
+expected_queries:
+- webhook endpoint와 broker consumer는 둘 다 inbound adapter지만 retry owner와 acknowledgment semantics가 어떻게 달라?
+- webhook에서 HTTP 2xx는 provider retry 중단 신호라 durable handoff 전에 보내면 왜 위험해?
+- broker consumer에서 ack나 offset commit은 DB commit과 dedup 기록 이후로 맞춰야 하는 이유는?
+- webhook dedup key와 broker consumer dedup key는 source와 stable external id를 어떻게 조합해야 해?
+- webhook와 queue consumer가 같은 use case command를 열 수 있지만 운영 의미는 어떻게 달라지는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 webhook endpoint와 broker consumer를 모두 외부 이벤트를 유스케이스로 들이는 inbound adapter로 보되 HTTP status와 ack/offset, retry owner, idempotency key 경계를 비교하는 intermediate chooser이다.
+---
 # Webhook and Broker Boundary Primer
 
 > 한 줄 요약: webhook endpoint와 broker consumer는 둘 다 외부 이벤트를 유스케이스로 들이는 inbound adapter지만, retry 주도권, idempotency key, acknowledgment 의미가 다르다.
 
 **난이도: 🟡 Intermediate**
+
+## 미션 진입 증상
+
+| inbound 장면 | 먼저 볼 경계 |
+|---|---|
+| webhook에 `200 OK`를 보낸다 | provider retry를 멈춰도 안전한가 |
+| broker offset을 commit한다 | DB commit과 dedup 기록이 끝났는가 |
+| 같은 event가 다시 온다 | stable external id로 dedup 가능한가 |
 
 
 관련 문서:

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: JCStress Concurrency Testing
+concept_id: language/jcstress-concurrency-testing
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- concurrency-testing
+- jmm
+- race-condition
+aliases:
+- JCStress Concurrency Testing
+- OpenJDK jcstress concurrency harness
+- JMM outcome testing
+- acceptable interesting forbidden outcome
+- Java race condition stress test
+- 자바 동시성 JCStress 테스트
+symptoms:
+- 일반 JUnit을 여러 번 돌리면 publication, visibility, ordering 문제가 충분히 검증된다고 생각해 동시성 outcome 모델을 놓쳐
+- JCStress를 통과/실패 하나만 보는 테스트로 이해해 acceptable, interesting, forbidden 결과 집합을 해석하지 못해
+- volatile, synchronized, AtomicInteger, VarHandle 변경이 JMM 아래 어떤 결과를 허용하는지 실험 설계로 표현하지 못해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/jvm-gc-jmm-overview
+- language/java-concurrency-utilities
+- language/varhandle-unsafe-atomics
+next_docs:
+- language/memory-barriers-varhandle-fences
+- language/locksupport-park-unpark-permit-semantics
+- language/jmh-benchmarking-pitfalls
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/varhandle-unsafe-atomics.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/memory-barriers-varhandle-fences.md
+- contents/language/java/locksupport-park-unpark-permit-semantics.md
+confusable_with:
+- language/java-concurrency-utilities
+- language/varhandle-unsafe-atomics
+- language/jmh-benchmarking-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- JCStress는 일반 JUnit 동시성 테스트와 무엇이 다르고 어떤 결과를 보여줘?
+- acceptable interesting forbidden outcome을 JMM 테스트에서 어떻게 해석해야 해?
+- volatile publication이나 lost update를 JCStress로 검증하는 기본 구조를 설명해줘
+- AtomicInteger와 int++ 차이를 동시성 outcome으로 보여주려면 어떻게 테스트해?
+- Java lock-free 코드가 JMM에서 금지된 결과를 내는지 확인하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JCStress를 JMM outcome testing, actor/arbiter, acceptable/forbidden 결과 해석 관점에서 설명하는 advanced deep dive다.
+  JCStress, concurrency testing, race condition, volatile publication, lost update, JMM outcome 질문이 본 문서에 매핑된다.
+---
 # JCStress Concurrency Testing
 
 > 한 줄 요약: JCStress는 "동시성 버그가 있는지"를 묻는 테스트가 아니라, **JMM과 실제 스케줄링 아래에서 가능한 결과를 열거**하는 테스트 도구다.

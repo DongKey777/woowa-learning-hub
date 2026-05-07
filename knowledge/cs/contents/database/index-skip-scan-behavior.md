@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Index Skip Scan Behavior
+concept_id: database/index-skip-scan-behavior
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- index-skip-scan
+- low-cardinality-prefix
+- composite-index-loose-prefix
+aliases:
+- skip scan
+- index skip scan
+- Using index for skip scan
+- composite index skip scan
+- low cardinality prefix
+- optimizer_switch skip_scan
+- loose prefix
+- range access skip scan
+- 복합 인덱스 skip scan
+- 선행 컬럼 없는 인덱스
+symptoms:
+- 복합 인덱스 선행 컬럼 조건이 없는데도 low cardinality prefix 덕분에 skip scan이 선택될 수 있는지 궁금해
+- Using index for skip scan이 보이면 왼쪽 접두어 규칙을 무시해도 된다고 오해하고 있어
+- 데이터 분포나 통계가 바뀌어 skip scan 계획이 갑자기 느려졌는지 확인해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/covering-index-composite-ordering
+- database/index-and-explain
+next_docs:
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/statistics-histograms-cardinality-estimation
+- database/mysql-optimizer-hints-index-merge
+linked_paths:
+- contents/database/covering-index-composite-ordering.md
+- contents/database/optimizer-switch-plan-stability-invisible-indexes.md
+- contents/database/index-and-explain.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+confusable_with:
+- database/covering-index-composite-ordering
+- database/statistics-histograms-cardinality-estimation
+- database/optimizer-switch-plan-stability-invisible-indexes
+forbidden_neighbors: []
+expected_queries:
+- index skip scan은 복합 인덱스 선행 컬럼 조건이 없어도 어떻게 뒤쪽 컬럼을 활용해?
+- Using index for skip scan이 보이면 왼쪽 접두어 규칙이 중요하지 않다는 뜻이야?
+- low cardinality prefix에서 skip scan이 유리하고 high cardinality에서는 비싸지는 이유는 뭐야?
+- skip_scan optimizer_switch를 on/off 해서 실행 계획을 비교할 때 무엇을 봐야 해?
+- 데이터 분포 변화와 통계 오류 때문에 skip scan plan drift가 생기면 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 복합 인덱스의 선행 컬럼 조건이 없어도 low-cardinality prefix를 순회해 뒤쪽 컬럼을 활용하는 index skip scan 동작을 설명하는 advanced deep dive다.
+  skip scan, Using index for skip scan, low cardinality prefix, composite index 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Index Skip Scan Behavior
 
 > 한 줄 요약: index skip scan은 복합 인덱스의 선행 컬럼이 없어도, 낮은 카디널리티라면 그 값을 건너뛰며 뒤쪽 컬럼을 활용하는 우회로다.

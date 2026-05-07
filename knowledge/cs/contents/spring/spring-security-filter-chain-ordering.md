@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- security-filter-chain
+- ordering
+- security-filter-order
+- addfilterbefore
 aliases:
 - Spring Security filter chain ordering
 - security filter order
@@ -38,7 +43,6 @@ contextual_chunk_prefix: |
   addFilterBefore vs addFilterAfter, filter ordering 같은 자연어 paraphrase가
   본 문서의 ordering 규칙에 매핑된다.
 ---
-
 # Spring Security Filter Chain Ordering
 
 > 한 줄 요약: Spring Security는 여러 필터가 순서대로 쌓인 체인이므로, 어떤 필터가 먼저 실행되는지를 모르면 인증 실패와 권한 실패를 구분하기 어렵다.

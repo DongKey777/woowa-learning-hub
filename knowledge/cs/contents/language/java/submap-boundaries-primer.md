@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: SubMap HeadMap TailMap Boundaries Primer
+concept_id: language/submap-boundaries-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- range-view
+- boundary
+aliases:
+- subSet headSet tailSet subMap headMap tailMap Boundary Primer
+- TreeMap subMap inclusive exclusive
+- TreeSet subset headset tailset beginner
+- ordered map range view boundaries
+- headMap tailMap subMap beginner
+- 자바 subMap 경계
+symptoms:
+- headSet headMap은 끝 경계 기본 제외, tailSet tailMap은 시작 경계 기본 포함, subSet subMap은 시작 포함 끝 제외라는 기본 경계를 섞어
+- LinkedHashMap의 insertion order와 TreeMap의 sorted range view를 모두 순서 있는 map으로 묶어 subMap 가능성을 잘못 기대해
+- range API 결과를 복사본으로 생각해 live view mutation과 원본 반영 가능성을 고려하지 않아
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/navigable-range-api-mini-drill
+- language/navigablemap-navigableset-mental-model
+next_docs:
+- language/descending-view-mental-model
+- language/treemap-range-view-live-window-primer
+- language/bigdecimal-navigablemap-lookup-bridge
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/navigable-range-api-mini-drill.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/bigdecimal-navigablemap-lookup-bridge.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+confusable_with:
+- language/navigable-range-api-mini-drill
+- language/descending-view-mental-model
+- language/ordered-map-null-safe-practice-drill
+forbidden_neighbors: []
+expected_queries:
+- TreeSet subSet headSet tailSet과 TreeMap subMap headMap tailMap의 inclusive exclusive 기본 경계는 어떻게 읽어?
+- headMap은 끝 경계를 제외하고 tailMap은 시작 경계를 포함하는 이유를 beginner 기준으로 설명해줘
+- LinkedHashMap은 insertion order가 있지만 subMap 같은 sorted range API가 왜 없는지 알려줘
+- subMap 결과는 복사본이 아니라 live range view일 수 있다는 뜻이 뭐야?
+- Navigable range API에서 빈 range view와 floorEntry null 반환은 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 TreeSet/TreeMap range API인 subSet/headSet/tailSet, subMap/headMap/tailMap의 inclusive/exclusive boundary와 live range view를 설명하는 beginner primer다.
+  subMap, headMap, tailMap, subSet, range view, inclusive exclusive 질문이 본 문서에 매핑된다.
+---
 # `subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer
 
 > 한 줄 요약: `TreeSet`/`TreeMap`의 range API는 "정렬된 줄에서 어디부터 어디까지 볼지"를 고르는 창이고, 초급자는 inclusive vs exclusive 경계만 먼저 고정하면 된다.

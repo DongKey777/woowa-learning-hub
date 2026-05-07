@@ -37,11 +37,11 @@ symptoms:
 intents:
 - comparison
 prerequisites:
-- spring/spring-mvc-controller-basics
+- spring/mvc-controller-basics
 next_docs:
 - spring/spring-mvc-request-lifecycle-basics
-- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
-- spring/spring-request-pipeline-bean-container-foundations-primer
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
+- spring/request-pipeline-bean-container
 linked_paths:
 - contents/spring/spring-mvc-controller-basics.md
 - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
@@ -51,7 +51,7 @@ linked_paths:
 - contents/network/http-methods-rest-idempotency-basics.md
 confusable_with:
 - spring/spring-mvc-request-lifecycle-basics
-- spring/spring-mvc-controller-basics
+- spring/mvc-controller-basics
 - spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge
 forbidden_neighbors: []
 expected_queries:

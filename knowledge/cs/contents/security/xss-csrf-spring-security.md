@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: XSS / CSRF / Spring Security
+concept_id: security/xss-csrf-spring-security
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- xss csrf spring security
+- spring security csrf
+- spring security xss headers
+- csrf filter spring security
+aliases:
+- xss csrf spring security
+- spring security csrf
+- spring security xss headers
+- csrf filter spring security
+- xss csrf 차이 spring
+- beginner return to xss csrf primer
+- security readme xss csrf follow-up
+- csrf token spring filter
+- csp header spring security
+- return to security readme
+- spring security csrf가 뭐예요
+- 처음 배우는데 spring security csrf
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/xss-csrf-basics.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/https-hsts-mitm.md
+- contents/spring/spring-security-architecture.md
+- contents/network/http-state-session-cache.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- XSS / CSRF / Spring Security 핵심 개념을 설명해줘
+- xss csrf spring security가 왜 필요한지 알려줘
+- XSS / CSRF / Spring Security 실무 설계 포인트는 뭐야?
+- xss csrf spring security에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 XSS / CSRF / Spring Security를 다루는 deep_dive 문서다. XSS는 브라우저에서 우리 코드가 실행되는 문제이고, CSRF는 사용자의 인증 상태를 악용해 요청이 보내지는 문제다. 둘은 원인도 방어도 다르다. 검색 질의가 xss csrf spring security, spring security csrf, spring security xss headers, csrf filter spring security처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # XSS / CSRF / Spring Security
 
 > 한 줄 요약: XSS는 브라우저에서 우리 코드가 실행되는 문제이고, CSRF는 사용자의 인증 상태를 악용해 요청이 보내지는 문제다. 둘은 원인도 방어도 다르다.

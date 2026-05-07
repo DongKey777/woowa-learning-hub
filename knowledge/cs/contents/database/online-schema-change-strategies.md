@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Online Schema Change Strategies
+concept_id: database/online-schema-change-strategies
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- online-schema-change
+- gh-ost
+- pt-online-schema-change
+- metadata-lock
+aliases:
+- online schema change
+- gh-ost
+- pt-online-schema-change
+- metadata lock cutover
+- shadow table migration
+- chunk copy schema change
+- generated column rollout
+- online DDL strategy
+- 운영 중 스키마 변경
+- 대형 테이블 ALTER TABLE 위험
+symptoms:
+- 대형 OLTP 테이블에 ALTER TABLE 한 줄로 schema change를 적용하려 해 metadata lock, replication lag, cutover 위험이 커져
+- gh-ost와 pt-online-schema-change 중 어떤 방식이 원본 table write와 binlog, trigger 부담에 맞는지 골라야 해
+- shadow table, chunk copy, sync, validation, cutover 절차를 운영 기준으로 설계해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/transaction-isolation-locking
+- database/index-and-explain
+next_docs:
+- database/online-backfill-consistency
+- database/online-backfill-verification-cutover-gates
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+linked_paths:
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/online-backfill-consistency.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/generated-columns-functional-index-migration.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/database/index-maintenance-window-rollout-playbook.md
+- contents/database/gh-ost-pt-osc-cutover-precheck-runbook.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- database/metadata-lock-ddl-blocking
+- database/online-backfill-consistency
+- database/gh-ost-pt-osc-cutover-precheck-runbook
+forbidden_neighbors: []
+expected_queries:
+- 운영 중 대형 테이블에 ALTER TABLE을 그냥 실행하면 왜 위험해?
+- gh-ost와 pt-online-schema-change의 차이를 trigger, binlog, cutover 관점에서 비교해줘
+- online schema change를 shadow table, chunk copy, sync, validation, cutover 단계로 설계해줘
+- schema change 중 metadata lock과 replication lag를 어떤 precheck로 줄여야 해?
+- generated column이나 index rollout을 zero downtime으로 가져가는 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 운영 중 대형 테이블 schema change를 ALTER TABLE 한 줄이 아니라 metadata lock, chunk copy, shadow table, gh-ost, pt-osc, cutover gate로 관리하는 advanced playbook이다.
+  online schema change, gh-ost, pt-online-schema-change, 대형 테이블 ALTER 위험 질문이 본 문서에 매핑된다.
+---
 # 온라인 스키마 변경 전략
 
 > 한 줄 요약: 운영 중인 큰 테이블의 구조를 바꿀 때는 `ALTER TABLE` 한 줄보다, 락과 복제 지연을 통제하는 절차가 더 중요하다.

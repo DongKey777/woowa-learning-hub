@@ -85,6 +85,14 @@ contextual_chunk_prefix: |
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 "같은 타입 후보가 여러 개"와 "같은 bean 이름이 겹침"을 초보자 눈높이로 먼저 분리해 주는 **beginner bridge primer**를 담당한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`@Primary` 붙였는데 bean 이름 충돌이 안 풀려요" | lotto number generator bean을 테스트용으로 바꾸다 같은 이름 bean registration이 충돌하는 상황 | 후보 선택 문제와 bean definition 등록 충돌을 분리한다 |
+| "`NoUniqueBeanDefinitionException`이랑 override 예외가 같은 건가요?" | 같은 타입 두 후보와 같은 이름 두 definition 로그를 한 축으로 읽는 디버깅 | found 2 candidates는 injection-time, override exception은 registration-time 문제다 |
+| "테스트 stub bean을 넣으려면 `@Primary`면 충분한가요?" | shopping-cart payment client fake를 test config로 교체하려는 코드 | 기본 후보 지정과 테스트 bean replacement/override 경계를 따로 본다 |
+
 **난이도: 🟢 Beginner**
 
 

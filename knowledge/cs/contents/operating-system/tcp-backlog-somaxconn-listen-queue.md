@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: TCP Backlog somaxconn Listen Queue
+concept_id: operating-system/tcp-backlog-somaxconn-listen-queue
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- tcp-backlog-somaxconn
+- listen-queue
+- accept-queue-saturation
+- syn-backlog
+aliases:
+- TCP backlog somaxconn listen queue
+- accept queue saturation
+- SYN backlog
+- listen queue overflow
+- accept rate bottleneck
+- server cannot accept connections
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/reuseport-shard-watermark-tuning.md
+- contents/operating-system/tcp-abort-on-overflow-fast-fail-policy.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/ephemeral-ports-time-wait-reuse-recovery.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+symptoms:
+- network bandwidth보다 backlog, listen queue, accept rate에서 connection failure가 먼저 터진다.
+- somaxconn이나 application backlog 값을 올렸지만 worker accept throughput이 따라오지 않는다.
+- SYN backlog와 accept queue overflow를 구분해야 한다.
+expected_queries:
+- TCP backlog, somaxconn, listen queue는 서버가 connection을 못 받는 문제에서 어떻게 봐?
+- accept queue saturation과 network bandwidth 문제를 어떻게 구분해?
+- backlog를 늘리면 항상 connection failure가 해결돼?
+- SYN backlog와 accept queue, accept rate bottleneck을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 server가 connection을 못 받는 문제가 network bandwidth보다 backlog, listen queue,
+  accept rate, worker scheduling에서 먼저 터질 수 있음을 설명하는 TCP accept path playbook이다.
+---
 # TCP Backlog, somaxconn, Listen Queue
 
 > 한 줄 요약: 서버가 연결을 못 받는 문제는 네트워크 대역폭보다 backlog, listen queue, accept 속도에서 먼저 터지는 경우가 많다.

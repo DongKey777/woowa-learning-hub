@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring Multi-Document application.yml and on-profile Primer
+concept_id: spring/multidocument-yaml-on-profile-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- multidocument-yaml-on
+- profile
+- multi-document-application
+- yml
+aliases:
+- multi-document application.yml
+- spring.config.activate.on-profile
+- YAML document separator
+- inactive YAML document ignored
+- later document overrides earlier
+- application.yml profile document
+- on-profile does not activate profile
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-external-config-file-precedence-primer.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-config-additional-location-primer.md
+- contents/spring/spring-activeprofiles-vs-test-overrides-primer.md
+expected_queries:
+- application.yml에서 ---로 나눈 multi-document YAML은 어떻게 merge돼?
+- spring.config.activate.on-profile은 profile을 켜는 설정이야?
+- 같은 파일 안에서 아래쪽 document가 위쪽 값을 덮는 기준은 뭐야?
+- prod profile 문서가 안 먹을 때 active profile과 on-profile을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot application.yml의 multi-document YAML과
+  spring.config.activate.on-profile을 beginner 관점에서 설명한다. --- 문서 분리,
+  active profile 조건, 위에서 아래 merge order, later document override,
+  inactive document ignored, on-profile은 profile activation이 아니라 inclusion
+  condition이라는 점을 다룬다.
+---
 # Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer
 
 > 한 줄 요약: 한 파일 안 `---`로 나눈 여러 YAML 문서는 **위에서 아래로 차례대로 읽히고**, 그중 `spring.config.activate.on-profile` 조건에 맞는 문서만 최종 merge에 참여한다.

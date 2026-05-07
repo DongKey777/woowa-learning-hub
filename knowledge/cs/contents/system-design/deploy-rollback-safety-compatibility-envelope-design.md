@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Deploy Rollback Safety / Compatibility Envelope 설계
+concept_id: system-design/deploy-rollback-safety-compatibility-envelope-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- deploy rollback safety
+- compatibility envelope
+- backward compatibility
+- forward compatibility
+aliases:
+- deploy rollback safety
+- compatibility envelope
+- backward compatibility
+- forward compatibility
+- rollback boundary
+- release freeze
+- config compatibility
+- artifact rollback
+- safe deploy
+- rollback matrix
+- point of no return
+- protocol version skew
+symptoms:
+- Deploy Rollback Safety / Compatibility Envelope 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+- contents/system-design/config-rollback-safety-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/write-freeze-rollback-window-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Deploy Rollback Safety / Compatibility Envelope 설계 장애 대응 순서를 알려줘
+- deploy rollback safety 복구 설계 체크리스트가 뭐야?
+- Deploy Rollback Safety / Compatibility Envelope 설계에서 blast radius를 어떻게 제한해?
+- deploy rollback safety 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Deploy Rollback Safety / Compatibility Envelope 설계를 다루는 playbook 문서다. deploy rollback safety와 compatibility envelope 설계는 코드, 스키마, config, traffic policy가 서로 어느 범위까지 호환되는지 명시해, 배포 후 이상 시 빠르게 되돌릴 수 있는 안전한 변경 경계를 만드는 운영 설계다. 검색 질의가 deploy rollback safety, compatibility envelope, backward compatibility, forward compatibility처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Deploy Rollback Safety / Compatibility Envelope 설계
 
 > 한 줄 요약: deploy rollback safety와 compatibility envelope 설계는 코드, 스키마, config, traffic policy가 서로 어느 범위까지 호환되는지 명시해, 배포 후 이상 시 빠르게 되돌릴 수 있는 안전한 변경 경계를 만드는 운영 설계다.

@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Micrometer Tag Cardinality Pitfalls
+concept_id: spring/micrometer-tag-cardinality-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- micrometer-tag-cardinality
+- pitfalls
+- high-cardinality
+- low-cardinality
+aliases:
+- Micrometer tag cardinality
+- high cardinality
+- low cardinality
+- meter explosion
+- metric label
+- observability cost
+- timer tags
+- route template tags
+intents:
+- troubleshooting
+- design
+symptoms:
+- user id, order id, request UUID, full URL query string을 metric tag로 넣어 시계열이 폭발한다.
+- endpoint path value를 route template이 아니라 raw URL로 기록해 dashboard가 쪼개진다.
+- exception tag를 너무 세밀하게 나눠 metric 집계와 alert가 불안정해진다.
+linked_paths:
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-actuator-exposure-security.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+expected_queries:
+- Micrometer tag cardinality가 높으면 왜 metric cost가 폭발해?
+- route template과 raw URL을 metric tag에서 어떻게 구분해야 해?
+- user id나 request id를 metric tag에 넣으면 왜 위험해?
+- trace와 metric은 high-cardinality 데이터를 어떻게 다르게 다뤄야 해?
+contextual_chunk_prefix: |
+  이 문서는 Micrometer metrics tag cardinality 함정을 다룬다. low cardinality
+  tag와 high cardinality tag, user id/order id/request UUID/full URL query string,
+  route template, exception tag, meter explosion, storage/query/dashboard cost,
+  trace와 metric의 역할 분리를 설명하는 observability playbook이다.
+---
 # Spring Micrometer Tag Cardinality Pitfalls
 
 > 한 줄 요약: Micrometer 태그는 관측성을 풍부하게 하지만, cardinality가 높은 값을 넣으면 메트릭이 폭발해 오히려 시스템을 흐리게 만든다.

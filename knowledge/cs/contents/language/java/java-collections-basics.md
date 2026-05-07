@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Java 컬렉션 프레임워크 입문
+concept_id: language/java-collections-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- list-set-map-requirement-translation
+- collection-empty-vs-optional-boundary
+- map-null-containskey-equality-basics
+aliases:
+- java collections basics
+- Java 컬렉션 프레임워크 입문
+- list set map 입문
+- 컬렉션 선택 기준
+- java list 언제 쓰나
+- java set 중복 제거
+- java map key value
+- ArrayList HashSet HashMap 첫 선택
+- Optional List 빈 컬렉션 차이
+- HashMap get null 왜
+- queue가 service 코드에도 나오고 bfs에도 나와요
+symptoms:
+- List, Set, Map을 구현체 이름으로만 외워서 순서, 중복, key 조회 요구로 번역하지 못해
+- 여러 건의 0개는 빈 리스트이고 단건의 없음은 Optional이라는 경계를 자꾸 섞어
+- HashMap get이 null일 때 key 없음과 value null을 containsKey로 나눠야 하는 이유가 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-equality-identity-basics
+next_docs:
+- language/list-set-map-requirement-to-type-drill
+- language/list-contains-vs-set-contains-symptom-card
+- language/java-optional-basics
+- language/map-get-null-containskey-getordefault-primer
+- data-structure/backend-data-structure-starter-pack
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/list-set-map-requirement-to-type-drill.md
+- contents/language/java/optional-list-empty-collection-symptom-card.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/list-contains-vs-set-contains-symptom-card.md
+- contents/language/java/linkedhashset-order-dedup-mini-bridge.md
+- contents/language/java/arrays-aslist-fixed-size-list-checklist.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+confusable_with:
+- language/java-optional-basics
+- language/map-get-null-containskey-getordefault-primer
+- data-structure/backend-data-structure-starter-pack
+- language/java-equality-identity-basics
+forbidden_neighbors: []
+expected_queries:
+- Java List Set Map 차이를 순서, 중복, key 조회 기준으로 설명해줘
+- ArrayList, HashSet, HashMap을 처음 선택할 때 어떤 요구사항을 봐야 해?
+- 여러 건이 없으면 빈 리스트이고 한 건이 없으면 Optional이라는 차이를 알려줘
+- HashMap get이 null일 때 key가 없는지 value가 null인지 어떻게 구분해?
+- Set 중복 제거와 Map key 조회가 equals hashCode와 연결되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java Collections Framework를 List, Set, Map 요구사항 번역으로 설명하고 ArrayList, HashSet, HashMap 첫 선택과 empty collection, Optional, Map null semantics를 연결하는 beginner primer다.
+  list set map 차이, collection 선택, empty list vs Optional, HashMap get null, Set duplicate equals hashCode, backend data structure starter 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java 컬렉션 프레임워크 입문
 
 > 한 줄 요약: 컬렉션을 고를 때는 구현체 이름부터 외우기보다 `순서가 필요한가?`, `중복을 허용할까?`, `키-값 조회가 필요한가?` 세 질문으로 시작하면 된다.

@@ -72,6 +72,14 @@ contextual_chunk_prefix: |
 
 shopping-cart에서 같은 cart item 수량을 두 요청이 거의 동시에 바꿀 때 핵심은 "중복 생성"이 아니라 이미 있는 row를 서로 덮어쓰는 lost update다. 이 장면은 `UNIQUE`보다 `version` column 기반 CAS나 충돌 재시도 규약으로 읽는 편이 맞다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "장바구니 수량을 동시에 바꾸면 마지막 저장만 남아요" | 두 탭에서 같은 cart item 수량을 수정 | existing row lost update로 보고 version/CAS를 검토한다 |
+| "수량 증가와 삭제가 동시에 오면 결과가 이상하게 섞여요" | 증가 버튼, 삭제 버튼, 빠른 연속 요청 race | update winner와 conflict 응답/재시도 규약을 정한다 |
+| "수량 수정은 `UNIQUE`보다 version column이 맞다는 말이 헷갈려요" | 중복 insert와 기존 row 갱신 충돌이 섞인 이해 | cart item identity 보호와 quantity update 충돌 감지를 분리한다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 장바구니 수량 수정 API를 붙이면 학습자는 자주 `cartItem.getQuantity()`를 읽고 `+1`이나 `0`을 계산한 뒤 다시 저장한다. 문제는 같은 사용자가 두 탭을 열어 두었거나, 수량 증가 버튼을 빠르게 연속 클릭하면 두 요청이 같은 이전 값을 보고 각자 저장할 수 있다는 점이다.

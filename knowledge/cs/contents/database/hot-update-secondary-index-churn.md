@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Hot Updates, Secondary Index Churn, and Write-Path Contention
+concept_id: database/hot-update-secondary-index-churn
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- hot-update-secondary-index-churn
+- volatile-index-write-path
+- latch-contention-vs-row-lock
+aliases:
+- hot update
+- secondary index churn
+- index leaf contention
+- write path contention
+- update-heavy secondary index
+- status update hotspot
+- latch contention
+- queue table index
+- volatile column index
+- hot secondary index
+symptoms:
+- status, updated_at, retry_count처럼 자주 바뀌는 컬럼을 secondary index에 넣은 뒤 write path가 느려졌어
+- row lock보다 index leaf churn과 latch contention이 먼저 병목인지 구분해야 해
+- queue나 lease 테이블에서 claim용 index와 volatile metadata index를 분리할지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/secondary-index-change-propagation
+- database/insert-hotspot-page-contention
+next_docs:
+- database/covering-index-width-fanout-write-amplification
+- database/secondary-index-maintenance-statistics-skew
+- database/page-split-merge-fill-factor
+- database/queue-claim-skip-locked-fairness
+linked_paths:
+- contents/database/secondary-index-change-propagation-path.md
+- contents/database/insert-hotspot-page-contention.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/queue-claim-skip-locked-fairness.md
+confusable_with:
+- database/insert-hotspot-page-contention
+- database/covering-index-width-fanout-write-amplification
+- database/hot-row-contention-counter-sharding
+forbidden_neighbors: []
+expected_queries:
+- status 같은 volatile column을 secondary index에 넣으면 왜 index leaf churn과 latch contention이 생겨?
+- hot update workload에서 row lock contention과 secondary index churn을 어떻게 구분해?
+- queue table에서 status available_at index가 READY range를 뜨겁게 만드는 이유는 뭐야?
+- CAS나 optimistic lock은 row 승패를 줄여도 secondary index churn을 해결하지 못하는 이유는 뭐야?
+- write-heavy table에서 volatile metadata를 별도 table로 분리해야 하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 자주 바뀌는 컬럼이 secondary index에 포함될 때 index entry delete/insert churn, hot leaf page, latch contention이 write path 병목을 만드는 원리를 설명하는 advanced deep dive다.
+  hot update, secondary index churn, status update hotspot, latch contention 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Hot Updates, Secondary Index Churn, and Write-Path Contention
 
 > 한 줄 요약: 자주 바뀌는 컬럼을 secondary index에 얹으면 row lock보다 먼저 index leaf churn과 latch contention이 병목이 될 수 있다.

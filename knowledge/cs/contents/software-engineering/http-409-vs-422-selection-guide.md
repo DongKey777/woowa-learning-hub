@@ -90,6 +90,14 @@ contextual_chunk_prefix: |
 
 retrieval-anchor-keywords: 409 vs 422, http 409 conflict, http 422 unprocessable content, business rule violation status code, beginner status code guide, 업무 규칙 위반 상태 코드, 409 422 차이, conflict vs unprocessable content, duplicate reservation 409, invalid state transition 409, domain validation 422, semantic validation error, 상태 충돌 vs 의미 오류, 초심자 decision table, beginner error handling primer
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "중복 예약은 409예요, 422예요?" | roomescape에서 이미 찬 슬롯에 같은 예약 생성을 시도하는 API | 같은 요청 내용이 서버 상태만 바뀌면 성공할 수 있는지 본다 |
+| "형식은 맞는데 쿠폰 적용 규칙에 걸리면 뭐로 내려야 하죠?" | shopping-cart에서 이미 사용한 쿠폰, 종료된 주문 상태, 잘못된 기간 조건이 섞인 오류 응답 | current state conflict와 요청 내용 자체의 semantic error를 가른다 |
+| "상태 코드보다 error code를 먼저 정하라는 리뷰가 왜 나오죠?" | 400/409/422가 모두 같은 예외 메시지로 내려가는 API contract | HTTP status는 큰 분류이고, 실제 복구 행동은 error code로 더 구체화한다 |
+
 ## 먼저 잡는 한 줄 멘탈 모델
 
 - `409 Conflict`: **요청 뜻은 이해했지만, 서버의 현재 상태와 충돌한다.**

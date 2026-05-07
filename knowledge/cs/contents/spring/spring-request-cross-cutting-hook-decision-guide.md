@@ -31,12 +31,12 @@ intents:
 - design
 - troubleshooting
 prerequisites:
-- spring/spring-mvc-controller-basics
-- spring/spring-security-architecture
+- spring/mvc-controller-basics
+- spring/security-architecture
 next_docs:
 - spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
-- spring/spring-onceperrequestfilter-vs-filter-beginner-primer
-- spring/spring-mvc-exception-resolver-chain-contract
+- spring/onceperrequestfilter-vs-filter-beginner-primer
+- spring/mvc-exception-resolver-chain-contract
 linked_paths:
 - contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md
 - contents/spring/spring-onceperrequestfilter-vs-filter-beginner-primer.md
@@ -62,7 +62,6 @@ contextual_chunk_prefix: |
   주인이지, 예외 응답 JSON은 누가 통일하지, 컨트롤러 전 처리와 실패 응답
   번역이 왜 같은 축이 아닌지 같은 질문을 책임 경계 기준으로 분리한다.
 ---
-
 # Spring 요청 공통 처리 위치 결정 가이드
 
 ## 한 줄 요약

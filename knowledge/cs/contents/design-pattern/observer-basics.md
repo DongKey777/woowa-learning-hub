@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 옵저버 패턴 기초
+concept_id: design-pattern/observer-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- observer-subscribe-notify
+- observer-vs-command-pubsub
+- listener-lifecycle-hygiene
+aliases:
+- observer pattern basics
+- 옵저버 패턴 기초
+- subject observer
+- subscribe notify pattern
+- event listener beginner
+- observer vs command
+- observer vs pubsub
+- Spring EventListener observer
+symptoms:
+- Observer를 무조건 비동기 이벤트나 Pub/Sub 브로커와 같은 말로 이해하고 있어
+- Subject가 Observer 구현체를 직접 알아도 된다고 생각해서 결합도가 다시 올라가고 있어
+- subscribe만 하고 unsubscribe/lifecycle 관리를 놓쳐 중복 알림이나 listener leak이 생기고 있어
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- software-engineering/oop-design-basics
+- design-pattern/command-pattern-basics
+next_docs:
+- design-pattern/observer-vs-command-beginner-bridge
+- design-pattern/observer-vs-pubsub-quick-bridge
+- design-pattern/observer-lifecycle-hygiene
+- design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing
+linked_paths:
+- contents/design-pattern/observer-vs-command-beginner-bridge.md
+- contents/design-pattern/observer-vs-pubsub-quick-bridge.md
+- contents/design-pattern/observer.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/observer-lifecycle-hygiene.md
+- contents/design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing.md
+- contents/spring/spring-aop-basics.md
+confusable_with:
+- design-pattern/observer-vs-command-beginner-bridge
+- design-pattern/observer-vs-pubsub-quick-bridge
+- design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing
+forbidden_neighbors: []
+expected_queries:
+- 옵저버 패턴은 Subject 상태 변화를 여러 Observer에게 어떻게 알리는 구조야?
+- Observer와 direct call, Command, Pub-Sub은 어떤 기준으로 구분해?
+- Observer가 기본적으로 비동기가 아니라 같은 프로세스 동기 호출일 수 있는 이유는 뭐야?
+- listener를 unsubscribe하지 않으면 중복 알림이나 메모리 누수가 생기는 이유는 뭐야?
+- Spring EventListener와 Observer pattern은 어떤 관계야?
+contextual_chunk_prefix: |
+  이 문서는 Observer beginner primer로, Subject, Observer, subscribe/unsubscribe, notify, same-process listener, direct call vs Command vs Pub/Sub 분기를 설명한다.
+  옵저버 패턴, event listener, subscribe notify, observer vs command, observer vs pubsub, Spring EventListener 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 옵저버 패턴 기초 (Observer Pattern Basics)
 
 > 한 줄 요약: 옵저버 패턴은 상태 변화를 관찰자(Observer)에게 자동으로 알려줘서, 이벤트를 발생시키는 쪽과 반응하는 쪽의 결합을 끊어준다.

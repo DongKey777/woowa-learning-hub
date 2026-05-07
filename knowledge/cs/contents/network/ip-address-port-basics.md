@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "IP Address and Port Basics"
+concept_id: network/ip-address-port-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- network-basics
+- ip-port-socket
+- beginner-network
+aliases:
+- IP address basics
+- port basics
+- IP와 포트 차이
+- socket endpoint
+- well-known port
+- localhost 127.0.0.1
+- 8080 port
+symptoms:
+- IP 주소와 포트를 모두 물리적 통로처럼 이해한다
+- 같은 서버 포트에 여러 클라이언트가 동시에 붙는 이유를 설명하지 못한다
+- localhost, 127.0.0.1, 서버 포트, 클라이언트 임시 포트를 섞는다
+- HTTP 기본 포트 80과 HTTPS 기본 포트 443 생략 규칙을 모른다
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites: []
+next_docs:
+- network/osi-7-layer-basics
+- network/dns-basics
+- network/ipv4-vs-ipv6-operational-tradeoffs
+- system-design/load-balancer-basics
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/osi-7-layer-basics.md
+- contents/network/dns-basics.md
+- contents/system-design/load-balancer-basics.md
+confusable_with:
+- network/dns-basics
+- network/osi-7-layer-basics
+- network/ipv4-vs-ipv6-operational-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "IP 주소와 포트의 차이를 초보자에게 설명해줘"
+- "소켓이 IP와 포트 조합이라는 말이 무슨 뜻이야?"
+- "같은 서버 443 포트에 여러 클라이언트가 동시에 연결되는 이유는?"
+- "localhost 127.0.0.1과 8080 포트를 어떻게 이해하면 돼?"
+- "well-known port와 dynamic port 차이는 뭐야?"
+contextual_chunk_prefix: |
+  이 문서는 IP address, port number, socket endpoint, localhost,
+  well-known/registered/dynamic port, 서버 포트와 클라이언트 임시 포트를
+  설명하는 beginner primer다.
+---
 # IP 주소와 포트 기초
 
 > 한 줄 요약: IP 주소는 인터넷에서 컴퓨터를 찾는 주소이고, 포트는 그 컴퓨터 안에서 어느 프로세스와 통신할지를 구분하는 번호다.

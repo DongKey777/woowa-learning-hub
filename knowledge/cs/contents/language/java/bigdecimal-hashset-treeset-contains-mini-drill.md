@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: BigDecimal HashSet vs TreeSet Contains Mini Drill
+concept_id: language/bigdecimal-hashset-treeset-contains-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-contains
+- hashset-treeset
+- equality-vs-ordering
+aliases:
+- BigDecimal HashSet TreeSet contains drill
+- BigDecimal set lookup compareTo equals mismatch
+- BigDecimal HashSet contains false TreeSet contains true
+- 자바 BigDecimal contains 연습
+- HashSet TreeSet BigDecimal 조회 기준
+symptoms:
+- Set이면 HashSet과 TreeSet의 contains 기준도 같을 거라고 생각해 BigDecimal 조회 결과 차이를 예상하지 못해
+- TreeSet contains 성공을 Java가 숫자를 알아서 맞춘 결과로 오해하고 compareTo == 0 기준을 놓쳐
+- HashSet contains 실패를 reference 비교 문제로 착각하고 equals/hashCode와 scale 차이를 확인하지 않아
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/bigdecimal-sorted-collection-bridge
+next_docs:
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/hashset-vs-treeset-duplicate-semantics
+linked_paths:
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+confusable_with:
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- language/hashset-vs-treeset-duplicate-semantics
+- language/bigdecimal-sorted-collection-bridge
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal 1.0을 HashSet에 넣고 1로 contains하면 왜 false인데 TreeSet은 true가 될 수 있어?
+- HashSet contains와 TreeSet contains가 BigDecimal에서 다른 기준을 쓰는 이유를 알려줘
+- BigDecimal HashSet TreeSet contains 결과를 실행 전에 예측하는 드릴을 풀고 싶어
+- BigDecimal equals와 compareTo 차이가 Set 조회에 어떻게 나타나?
+- TreeSet contains는 compareTo 0을 같은 원소로 보는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal contains lookup을 HashSet equals/hashCode와 TreeSet compareTo == 0 기준으로 비교하는 beginner drill이다.
+  BigDecimal HashSet contains false, TreeSet contains true, 1.0 vs 1.00, equals compareTo lookup 질문이 본 문서에 매핑된다.
+---
 # BigDecimal 조회 전용 미니 드릴: `contains` in `HashSet` vs `TreeSet`
 
 > 한 줄 요약: `BigDecimal("1.0")`를 넣어 두고 `BigDecimal("1")`로 `contains`를 하면, `HashSet`은 못 찾을 수 있고 `TreeSet`은 찾을 수 있다.

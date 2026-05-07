@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "h2c Operational Traps: Proxy Chain, Dev/Prod Drift"
+concept_id: network/h2c-operational-traps-proxy-chain-dev-prod
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- h2c-operational-traps
+- dev-prod-protocol-drift
+- proxy-chain-h2c
+aliases:
+- h2c operational traps
+- cleartext h2 drift
+- dev prod protocol mismatch
+- prior knowledge trap
+- ingress h2c
+- grpc cleartext mismatch
+symptoms:
+- 로컬 gRPC는 되는데 prod ingress나 mesh 뒤에서만 h2c가 UNAVAILABLE/reset으로 깨진다
+- TLS 종단 전에는 h2가 정상인데 cleartext hop 이후 protocol drift를 놓친다
+- Upgrade h2c header 보존 여부와 prior knowledge preface 지원 여부를 hop-by-hop으로 확인하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/h2c-cleartext-upgrade-prior-knowledge-routing
+- network/grpc-vs-rest
+next_docs:
+- network/service-mesh-sidecar-proxy
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/alpn-negotiation-failure-routing-mismatch
+linked_paths:
+- contents/network/h2c-cleartext-upgrade-prior-knowledge-routing.md
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/service-mesh-local-reply-timeout-reset-attribution.md
+- contents/network/grpc-vs-rest.md
+confusable_with:
+- network/h2c-cleartext-upgrade-prior-knowledge-routing
+- network/alpn-negotiation-failure-routing-mismatch
+- network/service-mesh-sidecar-proxy
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/grpc-vs-rest
+forbidden_neighbors: []
+expected_queries:
+- "h2c가 dev에서는 되는데 prod ingress 뒤에서만 깨지는 이유를 proxy chain 기준으로 설명해줘"
+- "Upgrade h2c와 prior knowledge가 dev prod drift를 만드는 대표 함정은 뭐야?"
+- "mesh sidecar가 cleartext HTTP/2를 막거나 HTTP/1.1로 바꾸면 gRPC가 어떻게 실패해?"
+- "h2c 운영 체크리스트를 hop-by-hop entry mode 기준으로 정리해줘"
+- "local grpc client와 ingress h2c 기대치가 달라 UNAVAILABLE이 나는 장면을 진단해줘"
+contextual_chunk_prefix: |
+  이 문서는 h2c cleartext HTTP/2가 dev proxy, ingress, mesh sidecar,
+  local grpc client 사이에서 Upgrade h2c/prior knowledge 기대치가 달라져
+  dev-prod drift와 gRPC reset을 만드는 함정을 다루는 advanced playbook이다.
+---
 # h2c Operational Traps: Proxy Chain, Dev/Prod Drift
 
 > 한 줄 요약: h2c 장애는 대부분 "HTTP/2를 지원한다"는 믿음에서 시작된다. 실제로는 dev proxy, ingress, mesh sidecar, local grpc client가 cleartext 진입 방식을 다르게 기대하면서 환경별로만 깨지는 함정이 많다.

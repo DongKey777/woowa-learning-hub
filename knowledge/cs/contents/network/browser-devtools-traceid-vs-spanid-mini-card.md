@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: "Browser DevTools `traceId` vs `spanId` 초급 미니 카드"
+concept_id: network/browser-devtools-traceid-vs-spanid-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- tracing-id-basics
+- traceid-vs-spanid
+- observability-beginner
+aliases:
+- traceid vs spanid
+- devtools traceid spanid
+- trace id span id difference
+- tracing screen first search
+- log trace id first
+- beginner observability ids
+symptoms:
+- spanId를 먼저 검색해서 요청 전체 흐름을 찾지 못한다
+- traceparent 안의 traceId와 spanId 구간을 같은 의미로 읽는다
+- gateway log와 app log의 spanId가 다른 것을 tracing 단절로 오해한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-traceparent-vs-tracestate-mini-card
+next_docs:
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- spring/observability-micrometer-tracing
+- system-design/distributed-tracing-pipeline-design
+linked_paths:
+- contents/network/browser-devtools-traceparent-vs-tracestate-mini-card.md
+- contents/network/x-request-id-gateway-app-log-trace-beginner-bridge.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/spring/spring-observability-micrometer-tracing.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+confusable_with:
+- network/browser-devtools-traceparent-vs-tracestate-mini-card
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- spring/observability-micrometer-tracing
+- system-design/distributed-tracing-pipeline-design
+forbidden_neighbors: []
+expected_queries:
+- "traceId와 spanId 차이를 DevTools 옆 tracing 화면 기준으로 설명해줘"
+- "왜 spanId보다 traceId를 먼저 검색하는 게 안전해?"
+- "traceparent 헤더에서 traceId와 spanId 후보를 어떻게 나눠 읽어?"
+- "같은 요청인데 gateway spanId와 app spanId가 다른 이유가 뭐야?"
+- "초급자가 tracing UI에서 요청 전체 흐름을 찾을 때 어떤 ID를 먼저 써야 해?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools, logs, tracing UI에서 traceId는 요청 흐름 전체를
+  묶는 키이고 spanId는 그 안의 한 작업 조각이라는 차이를 설명하며,
+  beginner가 traceId부터 검색하게 하는 observability primer다.
+---
 # Browser DevTools `traceId` vs `spanId` 초급 미니 카드
 
 > 한 줄 요약: DevTools 옆에서 로그나 tracing 화면을 같이 볼 때 `traceId`는 "같은 요청 흐름 전체를 다시 찾는 키"이고, `spanId`는 "그 흐름 안의 한 작업 조각"이라서 초급자는 보통 `traceId`부터 검색하는 편이 안전하다.

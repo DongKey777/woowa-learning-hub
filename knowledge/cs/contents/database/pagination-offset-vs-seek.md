@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Pagination Offset vs Seek
+concept_id: database/pagination-offset-vs-seek
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- pagination
+- keyset-pagination
+- index-design
+- query-tuning
+aliases:
+- pagination
+- offset pagination
+- seek pagination
+- keyset pagination
+- cursor pagination
+- LIMIT OFFSET
+- deep pagination
+- 스크롤 페이지네이션
+- offset vs seek
+- 커서 페이지네이션
+symptoms:
+- LIMIT OFFSET 페이지가 뒤로 갈수록 버리는 row가 늘어 느려지고 있어
+- infinite scroll이나 feed 조회에 임의 page jump용 offset을 그대로 쓰고 있어
+- seek pagination을 쓰려면 stable sort key, cursor token, composite index를 어떻게 설계할지 골라야 해
+intents:
+- comparison
+- design
+prerequisites:
+- database/index-and-explain
+- database/sql-joins-and-query-order
+next_docs:
+- database/covering-index-composite-ordering
+- database/query-tuning-checklist
+- system-design/recommendation-feed-ranking-architecture
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/sql-joins-and-query-order.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/database/covering-index-composite-ordering.md
+confusable_with:
+- database/covering-index-composite-ordering
+- database/index-and-explain
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- offset pagination과 seek pagination을 성능과 UX tradeoff 기준으로 비교해줘
+- LIMIT OFFSET이 깊은 페이지에서 느려지는 이유를 DB가 버리는 row 비용으로 설명해줘
+- keyset pagination을 쓰려면 created_at, id 같은 composite cursor를 어떻게 설계해?
+- 관리 화면 page jump와 infinite scroll에서 각각 어떤 pagination 방식을 선택해야 해?
+- cursor pagination에서 stable ordering과 index가 왜 같이 필요해?
+contextual_chunk_prefix: |
+  이 문서는 offset pagination, seek pagination, keyset pagination, cursor pagination을 deep pagination 비용과 UX tradeoff 기준으로 고르는 intermediate chooser다.
+  LIMIT OFFSET 느림, 커서 페이지네이션, offset vs seek 질문이 본 문서에 매핑된다.
+---
 # Pagination: Offset vs Seek
 
 > 한 줄 요약: 페이지네이션은 UI 문제처럼 보이지만, 대용량 DB에서는 정렬과 인덱스 접근 비용을 바꾸는 쿼리 설계 문제다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Search Indexing Pipeline 설계
+concept_id: system-design/search-indexing-pipeline-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- search indexing pipeline
+- ingest
+- normalization
+- tokenization
+aliases:
+- search indexing pipeline
+- ingest
+- normalization
+- tokenization
+- inverted index
+- refresh latency
+- reindex
+- schema evolution
+- backfill
+- dead letter queue
+- freshness
+- alias cutover
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/search-system-design.md
+- contents/system-design/search-hit-overlay-pattern.md
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Search Indexing Pipeline 설계 설계 핵심을 설명해줘
+- search indexing pipeline가 왜 필요한지 알려줘
+- Search Indexing Pipeline 설계 실무 트레이드오프는 뭐야?
+- search indexing pipeline 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Search Indexing Pipeline 설계를 다루는 deep_dive 문서다. 검색 인덱싱 파이프라인은 원본 데이터를 정규화하고 토큰화해 검색 엔진에 반영하는 지속적 데이터 처리 시스템이다. 검색 질의가 search indexing pipeline, ingest, normalization, tokenization처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Search Indexing Pipeline 설계
 
 > 한 줄 요약: 검색 인덱싱 파이프라인은 원본 데이터를 정규화하고 토큰화해 검색 엔진에 반영하는 지속적 데이터 처리 시스템이다.

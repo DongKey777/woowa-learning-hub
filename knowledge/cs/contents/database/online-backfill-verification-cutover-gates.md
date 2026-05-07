@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Online Backfill Verification, Drift Checks, and Cutover Gates
+concept_id: database/online-backfill-verification-cutover-gates
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- online-backfill
+- cutover-gate
+- shadow-read
+- checksum-validation
+aliases:
+- backfill verification
+- cutover gate
+- checksum validation
+- sample diff
+- late write verification
+- shadow read compare
+- migration acceptance criteria
+- online backfill shadow compare
+- cutover 승인 기준
+- backfill 검증 gate
+symptoms:
+- backfill copy 완료만 보고 cutover하려 하지만 row count, checksum, sample diff, late write gate가 부족해
+- count는 맞는데 파생 컬럼, tombstone, recent write, tenant bucket mismatch가 남아 있어
+- data shadow compare와 auth shadow evaluation을 같은 검증으로 착각하고 authority transfer divergence를 놓칠 수 있어
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/online-backfill-consistency
+- database/online-schema-change-strategies
+next_docs:
+- database/cdc-gap-repair-reconciliation-playbook
+- database/summary-drift-detection-bounded-rebuild
+- system-design/database-security-identity-bridge-cutover-design
+linked_paths:
+- contents/database/online-backfill-consistency.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+confusable_with:
+- database/online-backfill-consistency
+- database/cdc-gap-repair-reconciliation-playbook
+- database/destructive-schema-cleanup-column-retirement
+forbidden_neighbors: []
+expected_queries:
+- online backfill cutover 전에 row count 말고 어떤 verification gate가 필요해?
+- bucket checksum, sample diff, late write verification을 어떤 순서로 봐야 해?
+- shadow read compare가 cutover 승인 기준으로 강한 이유를 설명해줘
+- count는 같은데 관리자 화면만 다르면 어떤 backfill drift를 의심해야 해?
+- auth나 identity cutover에서는 data shadow compare와 auth shadow evaluation을 왜 따로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 online backfill 완료 후 row count, bucket checksum, sample diff, late write horizon, shadow read compare로 cutover를 승인하는 advanced playbook이다.
+  backfill verification, cutover gate, shadow read compare, migration acceptance criteria 질문이 본 문서에 매핑된다.
+---
 # Online Backfill Verification, Drift Checks, and Cutover Gates
 
 > 한 줄 요약: online backfill의 진짜 마지막 단계는 copy 완료가 아니라, row count·checksum·sample diff·late write 검증을 통과하고도 cutover해도 된다는 증거를 모으는 것이다.

@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: CSP Nonces / Hashes / Script Policy
+concept_id: security/csp-nonces-vs-hashes-script-policy
+canonical: false
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- CSP
+- nonce
+- hash
+- script-src
+aliases:
+- CSP
+- nonce
+- hash
+- script-src
+- strict-dynamic
+- unsafe-inline
+- unsafe-eval
+- XSS mitigation
+- script policy
+- inline script
+- browser policy
+- CSP Nonces / Hashes / Script Policy
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/session-fixation-clickjacking-csp.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/https-hsts-mitm.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- CSP Nonces / Hashes / Script Policy 차이를 실무 기준으로 설명해줘
+- CSP를 언제 선택해야 해?
+- CSP Nonces / Hashes / Script Policy를 헷갈리지 않게 비교해줘
+- CSP 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 CSP Nonces / Hashes / Script Policy를 다루는 bridge 문서다. CSP는 XSS를 완전히 막는 장치가 아니라, 브라우저가 허용할 스크립트 실행 경로를 제한하는 정책이다. nonce와 hash는 각각 다른 운영 모델을 가진다. 검색 질의가 CSP, nonce, hash, script-src처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # CSP Nonces / Hashes / Script Policy
 
 > 한 줄 요약: CSP는 XSS를 완전히 막는 장치가 아니라, 브라우저가 허용할 스크립트 실행 경로를 제한하는 정책이다. nonce와 hash는 각각 다른 운영 모델을 가진다.

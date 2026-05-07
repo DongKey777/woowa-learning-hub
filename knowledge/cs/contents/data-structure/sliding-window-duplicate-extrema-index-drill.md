@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Sliding Window Duplicate Extrema Index Drill
+concept_id: data-structure/sliding-window-duplicate-extrema-index-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-deque-duplicates
+- sliding-window-tie-break
+- extrema-index-drill
+aliases:
+- sliding window duplicate extrema index drill
+- sliding window max duplicate index
+- sliding window min duplicate index
+- monotonic deque tie break
+- leftmost max index
+- rightmost max index
+- duplicate extrema representative index
+symptoms:
+- sliding window maximum에서 값만 맞는 pop 조건과 leftmost/rightmost index tie-break까지 맞는 pop 조건을 구분하지 못한다
+- max deque의 less-than vs less-or-equal, min deque의 greater-than vs greater-or-equal 차이를 duplicate 대표 index와 연결하지 못한다
+- index를 저장하지 않고 value만 저장해 window expiration과 duplicate tie-break를 동시에 처리하지 못한다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-duplicate-rule-micro-drill
+next_docs:
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-deque-vs-heap-for-window-extrema
+- algorithm/sliding-window-patterns
+linked_paths:
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/monotonic-deque-vs-heap-for-window-extrema.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/algorithm/sliding-window-patterns.md
+confusable_with:
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+- data-structure/monotonic-deque-vs-heap-for-window-extrema
+forbidden_neighbors: []
+expected_queries:
+- sliding window max에서 중복 최대값의 왼쪽 index를 남기려면 pop 조건을 어떻게 써?
+- monotonic deque에서 같은 값도 pop할지 말지는 duplicate tie-break와 어떻게 연결돼?
+- sliding window min에서 greater와 greater-or-equal pop 조건이 대표 index를 어떻게 바꿔?
+- 값만 맞는 sliding window maximum 구현과 index까지 맞는 구현은 왜 달라?
+- monotonic deque duplicate extrema index tie-break drill을 풀고 싶어
+contextual_chunk_prefix: |
+  이 문서는 sliding-window max/min에서 duplicate extrema가 있을 때 leftmost 또는
+  rightmost representative index를 어떻게 남기는지 연습하는 drill이다. max deque의
+  < / <=, min deque의 > / >= pop 조건과 index expiration을 함께 다룬다.
+---
 # Sliding Window Duplicate Extrema Index Drill
 
 > 한 줄 요약: sliding-window max/min에서 duplicate가 나오면 값은 같아도 `대표 index`는 달라질 수 있으므로, 먼저 `왼쪽 tie-break`인지 `오른쪽 tie-break`인지부터 정한다.

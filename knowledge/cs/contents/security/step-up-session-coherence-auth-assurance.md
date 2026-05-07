@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Step-Up Session Coherence / Auth Assurance
+concept_id: security/step-up-session-coherence-auth-assurance
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- step-up session
+- auth assurance
+- reauthentication
+- elevated session
+aliases:
+- step-up session
+- auth assurance
+- reauthentication
+- elevated session
+- auth_time
+- acr
+- amr
+- session age
+- step-up TTL
+- sensitive action reauth
+- assurance level
+- session coherence
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/mfa-step-up-auth-design.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/password-reset-threat-modeling.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/system-design/session-store-design-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Step-Up Session Coherence / Auth Assurance 핵심 개념을 설명해줘
+- step-up session가 왜 필요한지 알려줘
+- Step-Up Session Coherence / Auth Assurance 실무 설계 포인트는 뭐야?
+- step-up session에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Step-Up Session Coherence / Auth Assurance를 다루는 deep_dive 문서다. step-up auth의 핵심은 MFA를 한 번 더 붙이는 것이 아니라, 기본 세션과 상승된 보증 수준 세션을 구분하고 `auth_time`, assurance level, 만료, revoke 범위를 일관되게 운영하는 것이다. 검색 질의가 step-up session, auth assurance, reauthentication, elevated session처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Step-Up Session Coherence / Auth Assurance
 
 > 한 줄 요약: step-up auth의 핵심은 MFA를 한 번 더 붙이는 것이 아니라, 기본 세션과 상승된 보증 수준 세션을 구분하고 `auth_time`, assurance level, 만료, revoke 범위를 일관되게 운영하는 것이다.

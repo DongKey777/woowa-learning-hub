@@ -68,6 +68,14 @@ contextual_chunk_prefix: |
 
 lotto의 `WinningStatistics`가 메모리에서는 "등수별 개수 + 수익률"이라면, DB에서는 여러 `ticket` row를 `GROUP BY rank`로 묶어 같은 의미를 다시 읽는 장면에 가깝다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`Map<Rank,Integer>`로 보던 통계를 DB에서는 어떻게 읽어요?" | 메모리 `WinningStatistics`를 저장 후 재조회 통계 화면으로 옮기는 상황 | 상세 ticket row를 등수별 그룹으로 묶는 aggregate query로 본다 |
+| "ticket row는 많은데 왜 GROUP BY가 필요하죠?" | 로또 티켓 한 장씩 저장된 테이블에서 등수별 개수를 보여주는 화면 | 상세 row 조회와 요약 집계를 다른 read model로 나눈다 |
+| "`WHERE`랑 `HAVING`이 통계 쿼리에서 헷갈려요" | 구매 범위 필터와 집계 후 count 조건을 같은 clause에 넣으려는 SQL | 집계 전 행 필터는 WHERE, 집계 후 그룹 필터는 HAVING으로 가른다 |
+
 ## 미션 시나리오
 
 콘솔 lotto에서는 추첨이 끝난 뒤 메모리 안 `Map<Rank, Integer>`나 `WinningStatistics` 객체를 바로 만들면 된다. 그런데 구매 내역과 당첨 결과를 DB에 남기고 다시 조회하려고 하면 질문이 달라진다. 이제는 개별 티켓 row가 많이 쌓여 있고, 화면은 "3등 1개, 4등 2개, 총 수익률 ..."처럼 요약값을 원한다.

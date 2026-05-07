@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Class Data Sharing and AppCDS
+concept_id: language/class-data-sharing-appcds
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- appcds
+- jvm-startup
+- class-loading
+aliases:
+- Class Data Sharing
+- AppCDS
+- Java CDS
+- shared archive
+- JVM class loading startup
+- class metadata archive
+- AppCDS startup time
+symptoms:
+- CDS/AppCDS를 JVM 성능 마법처럼 보고 class loading 비용을 archive로 선불 처리하는 도구라는 범위를 놓쳐
+- archive 생성과 class set 변경이 배포 프로세스에 연결된다는 운영 비용을 계산하지 않아
+- startup 개선과 JIT warmup, allocation path, downstream IO 병목을 같은 성능 문제로 섞어
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- language/classloader-delegation-edge-cases
+next_docs:
+- language/cds-startup-profiling
+- language/jit-warmup-deoptimization
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/java-agent-instrumentation-basics.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/cds-startup-profiling.md
+confusable_with:
+- language/cds-startup-profiling
+- language/jit-warmup-deoptimization
+- language/classloader-memory-leak-playbook
+forbidden_neighbors: []
+expected_queries:
+- Java CDS와 AppCDS 차이를 application class archive 관점으로 설명해줘
+- AppCDS가 startup time과 memory footprint를 줄이는 이유가 뭐야?
+- AppCDS archive는 class set이 바뀌면 왜 다시 만들어야 해?
+- CDS는 JIT warmup이나 첫 요청 latency까지 해결하는지 구분해줘
+- JVM class loading 비용을 shared archive로 줄이는 흐름을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JVM Class Data Sharing과 AppCDS를 shared archive, class metadata, application class loading, startup time, footprint, archive generation 관점으로 설명하는 advanced deep dive다.
+  CDS, AppCDS, class data sharing, shared archive, startup optimization, class loading cost 질문이 본 문서에 매핑된다.
+---
 # Class Data Sharing and AppCDS
 
 > 한 줄 요약: CDS/AppCDS는 미리 공유 아카이브를 만들어 class metadata와 일부 로딩 비용을 줄여 startup과 footprint를 개선하는 JVM 기능이다.

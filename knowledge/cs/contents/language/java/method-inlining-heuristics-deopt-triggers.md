@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Method Inlining Heuristics and Deoptimization Triggers
+concept_id: language/method-inlining-heuristics-deopt-triggers
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jit
+- inlining
+- deoptimization
+aliases:
+- Method Inlining Heuristics and Deoptimization Triggers
+- HotSpot method inlining call profile
+- Java uncommon trap deoptimization trigger
+- monomorphic polymorphic megamorphic call site
+- code cache pressure inlining
+- 자바 메서드 인라이닝 deopt
+symptoms:
+- 작은 메서드는 항상 inline되고 큰 메서드는 항상 inline되지 않는다고 단순화해 hotness, call profile, inline budget을 놓쳐
+- interface 호출이 느리다는 식으로만 해석해 monomorphic, polymorphic, megamorphic call site에 따른 JIT 판단 차이를 설명하지 못해
+- 배포 후 latency spike를 GC로만 보고 class loading, branch profile 변화, uncommon trap, deoptimization 신호를 확인하지 않아
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/jit-warmup-deoptimization
+- language/code-cache-jit-profiling
+- language/escape-analysis-scalar-replacement
+next_docs:
+- language/jfr-event-interpretation
+- language/jmh-benchmarking-pitfalls
+- language/reflection-cost-and-alternatives
+linked_paths:
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/lock-coarsening-elimination.md
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/code-cache-jit-profiling.md
+confusable_with:
+- language/jit-warmup-deoptimization
+- language/code-cache-jit-profiling
+- language/jmh-benchmarking-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- HotSpot method inlining은 method size hotness call profile을 어떻게 보고 결정해?
+- monomorphic polymorphic megamorphic call site가 inlining과 deoptimization에 어떤 영향을 줘?
+- uncommon trap과 deoptimization은 어떤 JIT 가정이 깨질 때 발생하는지 설명해줘
+- code cache pressure가 너무 aggressive한 inlining과 어떤 tradeoff를 만드는지 알려줘
+- 배포 후 Java latency spike가 JIT inlining 가정 변화 때문인지 어떤 신호로 볼 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 HotSpot method inlining heuristics와 uncommon trap, deoptimization trigger를 call profile과 code cache 관점에서 설명하는 advanced deep dive다.
+  method inlining, polymorphic call site, uncommon trap, deoptimization, code cache pressure 질문이 본 문서에 매핑된다.
+---
 # Method Inlining Heuristics and Deoptimization Triggers
 
 > 한 줄 요약: HotSpot inlining은 call profile, method size, hotness, polymorphism, code cache pressure를 보고 결정되고, 그 가정이 깨지면 uncommon trap과 deoptimization이 이어질 수 있다.

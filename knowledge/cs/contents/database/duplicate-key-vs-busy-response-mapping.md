@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Duplicate Key vs Busy Response Mapping
+concept_id: database/duplicate-key-vs-busy-response-mapping
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- duplicate-key-response
+- busy-response
+- retryable-response
+- http-mapping
+aliases:
+- duplicate key vs busy response mapping
+- duplicate key http response
+- lock timeout http response
+- deadlock http response
+- serialization failure http response
+- service layer outcome mapping
+- already exists busy retryable http choice
+- duplicate key conflict or success
+- busy 429 503 choice
+- duplicate key 409 아니에요
+symptoms:
+- duplicate key와 busy를 모두 conflict로 보고 HTTP 409로 뭉개 서비스 의미를 잃는다
+- lock timeout이나 pool wait를 already exists처럼 사용자에게 말해 winner가 있는지 없는지 혼동시킨다
+- deadlock과 40001을 클라이언트 재시도 책임으로 넘기고 서버 내부 bounded retry 기회를 놓친다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/insert-if-absent-retry-outcome-guide
+next_docs:
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/busy-fail-fast-vs-one-short-retry-card
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+linked_paths:
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/busy-fail-fast-vs-one-short-retry-card.md
+confusable_with:
+- database/db-signal-service-result-http-bridge
+- database/db-error-signal-beginner-result-language-mini-card
+- database/busy-fail-fast-vs-one-short-retry-card
+- database/insert-if-absent-retry-outcome-guide
+forbidden_neighbors: []
+expected_queries:
+- duplicate key와 busy를 service label로 먼저 나눈 뒤 HTTP 200 201 409 429 503을 고르는 기준은 뭐야?
+- DuplicateKeyException은 같은 idempotent 요청이면 200 201 replay가 될 수 있고 다른 payload면 409인 이유를 알려줘
+- lock timeout은 already exists가 아니라 busy라서 503 또는 429로 매핑하는 기준을 설명해줘
+- deadlock과 PostgreSQL 40001은 HTTP 전에 서버 내부 bounded retry를 먼저 하는 이유가 뭐야?
+- PROCESSING winner row를 fresh read했을 때 202 Accepted로 표현할 수 있는 경우를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Duplicate Key vs Busy Response Mapping beginner chooser로, duplicate key는 already exists,
+  lock timeout/pool wait는 busy, deadlock/40001은 retryable로 service outcome을 나눈 뒤
+  idempotent replay, conflict, 429/503, internal retry HTTP response를 선택하는 기준을 설명한다.
+---
 # Duplicate Key vs Busy Response Mapping
 
 > 한 줄 요약: 초보자는 DB 예외를 바로 HTTP로 번역하지 말고, 먼저 `already exists` / `busy` / `retryable` 서비스 라벨로 바꾼 뒤 그다음 `200`/`202`/`409`/`429`/`503` 같은 응답 선택으로 내려가면 덜 흔들린다.

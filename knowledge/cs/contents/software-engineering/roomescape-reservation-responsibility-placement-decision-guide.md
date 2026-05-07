@@ -49,11 +49,7 @@ confusable_with:
 - software-engineering/roomescape-validation-vs-domain-rule-bridge
 - software-engineering/roomescape-dao-vs-repository-bridge
 - spring/roomescape-transactional-boundary-bridge
-forbidden_neighbors:
-- contents/software-engineering/roomescape-reservation-flow-service-layer-bridge.md
-- contents/software-engineering/roomescape-validation-vs-domain-rule-bridge.md
-- contents/software-engineering/roomescape-dao-vs-repository-bridge.md
-- contents/spring/roomescape-transactional-boundary-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - roomescape 예약 생성에서 이름 형식 검사, 중복 확인, SQL 저장을 각각 어느 계층에 두는 게 맞아?
 - ReservationController가 DTO를 받고 바로 repository를 부르면 왜 책임이 섞였다고 말해?

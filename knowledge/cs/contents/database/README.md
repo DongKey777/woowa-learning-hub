@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Database Category Index
+concept_id: database/database-index
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- database-index
+- beginner-database-route
+- transaction-jdbc-index-route
+- spring-database-handoff
+aliases:
+- database readme
+- database navigator
+- database category index
+- database beginner route
+- database basics
+- db 처음 어디부터
+- database 처음 뭐부터
+- transactional save entity 헷갈려요
+- explain 처음 뭐부터
+- DB 입문 길찾기
+symptoms:
+- controller service repository save 흐름을 보고 transaction, SQL 위치, entity 저장 모양, index 문제를 한꺼번에 섞는다
+- deadlock, failover, CDC 같은 운영 단어가 보였다고 database deep dive로 바로 내려간다
+- @Transactional, Repository, Entity를 한 덩어리로 읽어 commit rollback 경계와 SQL 실행 위치를 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- database/database-first-step-bridge
+- spring/request-pipeline-bean-container
+next_docs:
+- database/transaction-basics
+- database/jdbc-jpa-mybatis-basics
+- database/index-basics
+- database/sql-relational-modeling-basics
+- database/index-and-explain
+linked_paths:
+- contents/database/database-first-step-bridge.md
+- contents/database/transaction-basics.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/index-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/index-and-explain.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- database/transaction-basics
+- database/jdbc-jpa-mybatis-basics
+- database/index-basics
+- spring/request-pipeline-bean-container
+forbidden_neighbors: []
+expected_queries:
+- DB를 처음 볼 때 transaction basics, JDBC JPA MyBatis basics, index basics를 어떤 순서로 읽으면 좋아?
+- controller service repository save 화면에서 @Transactional, Repository, Entity, SQL 위치를 어떻게 나눠 읽어?
+- save는 보이는데 SQL이 안 보이고 rollback 범위도 헷갈릴 때 database README에서 어디로 가야 해?
+- WHERE 조건 하나인데 느리거나 EXPLAIN key NULL rows 큼이 보이면 어떤 database primer부터 보면 돼?
+- deadlock failover CDC 같은 단어는 입문 README에서 바로 깊게 파지 않고 어떤 follow-up으로 넘겨야 해?
+contextual_chunk_prefix: |
+  이 문서는 Database Category Index primer로, beginner가 Spring -> Database handoff에서
+  @Transactional commit/rollback boundary, JDBC/JPA/MyBatis SQL location, entity/table 저장 모양,
+  index/EXPLAIN 조회 경로를 한 칸씩 분리해 읽도록 돕는 category navigator다.
+---
 # Database (데이터베이스)
 
 > 한 줄 요약: 이 README는 database를 처음 읽는 사람을 위한 `category navigator`다. 처음에는 `트랜잭션 기초 -> JDBC · JPA · MyBatis 기초 -> 인덱스 기초`까지만 잡고, `deadlock`·`failover`·`cdc`는 증상이 생겼을 때만 관련 문서로 내려간다.

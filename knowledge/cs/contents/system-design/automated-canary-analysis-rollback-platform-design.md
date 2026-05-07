@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Automated Canary Analysis / Rollback Platform 설계
+concept_id: system-design/automated-canary-analysis-rollback-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- automated canary analysis
+- rollback platform
+- guardrail metrics
+- error budget burn
+aliases:
+- automated canary analysis
+- rollback platform
+- guardrail metrics
+- error budget burn
+- canary score
+- promotion gate
+- rollback trigger
+- release health
+- progressive delivery
+- deployment analysis
+- resilience validation
+- rollback safety
+symptoms:
+- Automated Canary Analysis / Rollback Platform 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Automated Canary Analysis / Rollback Platform 설계 장애 대응 순서를 알려줘
+- automated canary analysis 복구 설계 체크리스트가 뭐야?
+- Automated Canary Analysis / Rollback Platform 설계에서 blast radius를 어떻게 제한해?
+- automated canary analysis 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Automated Canary Analysis / Rollback Platform 설계를 다루는 playbook 문서다. automated canary analysis와 rollback 플랫폼은 새 버전의 오류율, 지연, 자원 포화, 비즈니스 가드레일을 자동 평가해 승격 여부를 결정하고, 이상 징후 시 빠르게 되돌리는 운영 제어 시스템이다. 검색 질의가 automated canary analysis, rollback platform, guardrail metrics, error budget burn처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Automated Canary Analysis / Rollback Platform 설계
 
 > 한 줄 요약: automated canary analysis와 rollback 플랫폼은 새 버전의 오류율, 지연, 자원 포화, 비즈니스 가드레일을 자동 평가해 승격 여부를 결정하고, 이상 징후 시 빠르게 되돌리는 운영 제어 시스템이다.

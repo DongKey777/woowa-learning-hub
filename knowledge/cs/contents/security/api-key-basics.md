@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: API 키 기초
+concept_id: security/api-key-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- api-key-basics
+- secret-key-storage
+- browser-direct-call-risk
+aliases:
+- api key basics
+- API 키 기초
+- api key vs oauth
+- api key 노출 위험
+- 환경변수에 api key 보관
+- secret key vs publishable key
+- 브라우저에 API key 넣기
+- 서버 프록시 API 키
+- API 인증 기초
+symptoms:
+- API key를 사용자 로그인 토큰처럼 이해해 앱 서비스 식별과 사용자 위임 권한을 구분하지 못한다
+- secret server key를 브라우저 JavaScript에 넣어도 CORS나 도메인 제한으로 충분히 숨겨진다고 오해한다
+- test key나 sandbox key는 공개되어도 괜찮다고 생각해 rotation과 revoke 기준을 놓친다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- security/security-basics-what-and-why
+next_docs:
+- security/api-key-vs-oauth-vs-client-credentials-primer
+- security/browser-direct-call-vs-server-proxy-decision-tree
+- security/secret-management-rotation-leak-patterns
+- security/oauth2-basics
+linked_paths:
+- contents/security/api-key-vs-oauth-vs-client-credentials-primer.md
+- contents/security/browser-direct-call-vs-server-proxy-decision-tree.md
+- contents/security/log-masking-basics.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/oauth2-basics.md
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+- contents/security/webhook-sender-hardening.md
+- contents/security/api-security-headers-beyond-csp.md
+- contents/network/http-https-basics.md
+confusable_with:
+- security/api-key-vs-oauth-vs-client-credentials-primer
+- security/browser-direct-call-vs-server-proxy-decision-tree
+- security/oauth2-basics
+- security/secrets-management-basics
+- security/secret-management-rotation-leak-patterns
+forbidden_neighbors: []
+expected_queries:
+- API key는 사용자 로그인 토큰이 아니라 앱이나 서비스 신분증이라는 뜻이야?
+- secret API key를 브라우저 JavaScript에 넣으면 왜 결국 노출돼?
+- API key와 OAuth와 client credentials는 어떤 상황에서 다르게 써?
+- publishable key와 secret key는 브라우저 포함 가능 여부가 어떻게 달라?
+- GitHub나 로그에 API key가 노출되면 왜 즉시 revoke하고 재발급해야 해?
+contextual_chunk_prefix: |
+  이 문서는 API key beginner primer로, API 키를 앱/서비스 자격 증명으로
+  보고 사용자 세션이나 OAuth delegated token과 구분한다. secret key는
+  브라우저에 넣지 않고 서버 환경변수나 secret manager에 보관하며, 노출 시
+  revoke와 rotation이 필요하다.
+---
 # API 키 기초
 
 > 한 줄 요약: API 키는 "누가 이 요청을 보냈는가"를 식별하는 토큰이고, 노출되면 즉시 재발급이 필요하므로 코드에 하드코딩하지 않고 환경 변수나 시크릿 관리 도구에 보관해야 한다.

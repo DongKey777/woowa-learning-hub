@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: DelayQueue Handle Vs Equality Cancel Guide
+concept_id: data-structure/delayqueue-handle-vs-equality-cancel-guide
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- timer-cancel-handle-vs-equals
+- stale-ticket-generation
+- heap-remove-semantics
+aliases:
+- DelayQueue handle vs equals cancel
+- exact handle removal
+- equality based timer cancel
+- stale ticket equals confusion
+- generation timer cancel
+- reschedule remove wrong entry
+- delayed task cancel handle
+symptoms:
+- 같은 logical task와 같은 예약 entry를 구분하지 못해 reschedule 후 equals 기반 remove가 오래된 ticket이나 다른 ticket을 지운다
+- 방금 schedule한 그 예약 한 건만 취소해야 하는데 taskId equality로 queue 안의 아무 entry를 찾으려 한다
+- lazy cancel과 generation registry가 필요한 상황에서 heap 내부 객체 비교만으로 policy를 표현하려 한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+next_docs:
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/delayqueue-queue-size-vs-live-timers-primer
+- data-structure/delayqueue-delayed-contract-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+linked_paths:
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/delayqueue-queue-size-vs-live-timers-primer.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+confusable_with:
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/delayqueue-queue-size-vs-live-timers-primer
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue timer cancel에서 exact handle과 equals 기반 제거는 어떻게 달라?
+- 같은 taskId를 여러 번 예약하면 equals remove가 잘못된 ticket을 지울 수 있는 이유는?
+- reschedule과 stale ticket이 섞일 때 generation으로 cancel을 안전하게 만드는 방법은?
+- heap-backed timer queue에서 handle cancel과 lazy cancel을 어떻게 고르면 돼?
+- logical task와 scheduled entry를 구분해야 하는 이유를 예시로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 heap-backed timer queue에서 exact handle cancel은 특정 예약
+  entry 하나를 겨냥하고, equals 기반 cancel은 queue 안의 같아 보이는 entry를
+  찾는 방식이라 reschedule, duplicate logical task, stale ticket, generation
+  guard 상황에서 의미가 달라진다는 chooser다.
+---
 # DelayQueue Handle Vs Equality Cancel Guide
 
 > 한 줄 요약: heap-backed timer queue에서 exact handle 취소는 "그때 넣은 바로 그 예약 하나"를 겨냥하고, `equals()` 기반 취소는 "지금 queue 안에서 같다고 보이는 아무 예약 하나"를 찾으려 하므로, reschedule과 stale ticket이 섞이면 의미도 결과도 달라진다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Optimizer Trace Reading
+concept_id: database/optimizer-trace-reading
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- optimizer-trace
+- explain
+- cost-model
+- plan-regression
+aliases:
+- optimizer trace
+- trace reading
+- explain why this plan
+- why optimizer chose this plan
+- why full scan chosen
+- why key null
+- rows estimate wrong
+- considered execution plans
+- 실행 계획 왜 이렇게 골랐나
+- EXPLAIN 결과는 아는데 이유를 모르겠음
+symptoms:
+- EXPLAIN에서 type, key, rows, Extra는 보이지만 optimizer가 왜 그 plan을 골랐는지 설명하지 못하고 있어
+- rows estimate와 actual rows가 크게 다르거나 ANALYZE 이후 plan이 바뀌어 cost model과 cardinality 추정을 따라가야 해
+- key NULL, filesort, temporary, index_merge 탈락 이유를 optimizer trace로 확인해야 해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/index-and-explain
+- database/query-tuning-checklist
+next_docs:
+- database/statistics-histograms-cardinality-estimation
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/mysql-optimizer-hints-index-merge
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/optimizer-switch-plan-stability-invisible-indexes.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/index-skip-scan-behavior.md
+confusable_with:
+- database/index-and-explain
+- database/statistics-histograms-cardinality-estimation
+- database/mysql-optimizer-hints-index-merge
+forbidden_neighbors: []
+expected_queries:
+- MySQL EXPLAIN 결과는 알겠는데 optimizer가 왜 이 plan을 골랐는지 어떻게 봐?
+- optimizer trace에서 considered_execution_plans와 chosen plan reason을 어떤 순서로 읽어?
+- key NULL이나 type ALL이 나온 이유를 optimizer trace로 어떻게 추적해?
+- rows estimate가 실제와 다를 때 trace와 statistics를 어떻게 연결해서 봐?
+- filesort나 temporary path가 선택된 이유를 cost model 관점에서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL optimizer trace를 EXPLAIN 이후 considered plans, chosen plan, cost model, range analysis, rejected reason을 읽는 advanced deep dive로 다룬다.
+  EXPLAIN 결과는 아는데 이유를 모르겠음, why key null, rows estimate wrong, optimizer decision 질문이 본 문서에 매핑된다.
+---
 # Optimizer Trace Reading
 
 > 한 줄 요약: optimizer trace는 "왜 이 실행 계획을 골랐는가"를 보여주는 내부 메모라서, EXPLAIN보다 한 단계 더 깊게 비용 모델을 읽을 수 있게 해 준다.

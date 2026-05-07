@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: JWKS Rotation Cutover Failure / Recovery
+concept_id: security/jwks-rotation-cutover-failure-recovery
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- JWKS rotation failure
+- JWKS cutover failure
+- kid miss after rotation
+- old key removal failure
+aliases:
+- JWKS rotation failure
+- JWKS cutover failure
+- kid miss after rotation
+- old key removal failure
+- signer cutover rollback
+- verifier cache skew
+- dual-publish window
+- key overlap failure
+- JWKS recovery
+- compromised kid recovery
+- old key republish safety
+- JWKS Rotation Cutover Failure / Recovery
+symptoms:
+- JWKS Rotation Cutover Failure / Recovery 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwk-rotation-cache-invalidation-kid-rollover.md
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/key-rotation-runbook.md
+- contents/security/signing-key-compromise-recovery-playbook.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- JWKS Rotation Cutover Failure / Recovery 장애가 나면 복구 순서는?
+- JWKS rotation failure 운영 대응 체크리스트가 뭐야?
+- JWKS Rotation Cutover Failure / Recovery에서 blast radius를 어떻게 줄여?
+- JWKS rotation failure 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 JWKS Rotation Cutover Failure / Recovery를 다루는 playbook 문서다. JWKS rotation 실패는 단순 `kid` miss가 아니라 signer cutover, verifier cache age, old key removal timing, region skew가 엇갈리는 운영 사고이며, 새 키 추가와 old key 제거를 별도 단계로 분리한 recovery runbook이 필요하다. 검색 질의가 JWKS rotation failure, JWKS cutover failure, kid miss after rotation, old key removal failure처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # JWKS Rotation Cutover Failure / Recovery
 
 > 한 줄 요약: JWKS rotation 실패는 단순 `kid` miss가 아니라 signer cutover, verifier cache age, old key removal timing, region skew가 엇갈리는 운영 사고이며, 새 키 추가와 old key 제거를 별도 단계로 분리한 recovery runbook이 필요하다.

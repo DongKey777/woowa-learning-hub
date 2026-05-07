@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: TLAB and PLAB Allocation Intuition
+concept_id: language/tlab-plab-allocation-intuition
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jvm-memory
+- allocation
+- gc
+aliases:
+- TLAB and PLAB Allocation Intuition
+- Thread Local Allocation Buffer
+- Promotion Local Allocation Buffer
+- HotSpot allocation fast path refill
+- GC evacuation survivor copy PLAB
+- 자바 TLAB PLAB allocation
+symptoms:
+- 객체 할당이 빠르다는 말을 TLAB bump-pointer fast path만 보고 이해해 refill, object size distribution, GC survivor evacuation cost를 놓쳐
+- 작은 객체가 많아도 생성 자체보다 GC pressure와 object lifetime이 중요할 수 있다는 점을 보지 않고 object pooling부터 시도해
+- thread count 증가가 thread별 TLAB와 stack, GC copy buffer footprint에 영향을 줄 수 있다는 메모리 감각을 놓쳐
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/escape-analysis-scalar-replacement
+- language/object-pooling-myths-modern-jvm
+- language/jfr-event-interpretation
+next_docs:
+- language/object-layout-jol-intuition
+- language/compressed-oops-class-pointers
+- language/jmh-benchmarking-pitfalls
+linked_paths:
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/object-pooling-myths-modern-jvm.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/compressed-oops-class-pointers.md
+confusable_with:
+- language/object-pooling-myths-modern-jvm
+- language/object-layout-jol-intuition
+- language/escape-analysis-scalar-replacement
+forbidden_neighbors: []
+expected_queries:
+- TLAB는 thread별 빠른 allocation buffer이고 PLAB는 GC evacuation promotion copy buffer라는 뜻을 설명해줘
+- Java에서 작은 객체 allocation이 빠른 이유와 TLAB refill 비용을 함께 봐야 하는 이유가 뭐야?
+- allocation은 빠른데 GC pressure와 survivor promotion 때문에 pause가 길어질 수 있어?
+- thread 수가 늘면 TLAB stack PLAB 같은 per-thread memory footprint가 왜 달라져?
+- object pooling보다 TLAB escape analysis GC lifetime을 먼저 봐야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HotSpot TLAB와 PLAB를 allocation fast path, refill, Eden, survivor evacuation, promotion copy, GC pressure 관점에서 설명하는 advanced deep dive다.
+  TLAB, PLAB, allocation fast path, refill, GC evacuation, object pooling 질문이 본 문서에 매핑된다.
+---
 # TLAB and PLAB Allocation Intuition
 
 > 한 줄 요약: TLAB는 thread별 빠른 allocation 통로이고 PLAB는 GC copy/evacuation 경로의 per-thread buffer라서, "할당이 빠르다"는 말은 결국 buffer refill과 GC survivor 이동 비용까지 포함해 읽어야 한다.

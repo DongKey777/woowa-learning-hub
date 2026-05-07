@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Concealment `404` Entry Cues
+concept_id: security/concealment-404-entry-cues
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- concealment 404 primer
+- hidden 404 beginner
+- 404 missing vs hidden
+- concealment vs missing
+aliases:
+- concealment 404 primer
+- hidden 404 beginner
+- 404 missing vs hidden
+- concealment vs missing
+- tenant concealment
+- user owned 404
+- shared resource 403
+- stale deny 404
+- grant after 404
+- other tenant 404
+- idor 404 bridge
+- ownership concealment
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Concealment `404` Entry Cues 핵심 개념을 설명해줘
+- concealment 404 primer가 왜 필요한지 알려줘
+- Concealment `404` Entry Cues 실무 설계 포인트는 뭐야?
+- concealment 404 primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Concealment `404` Entry Cues를 다루는 deep_dive 문서다. `404`를 봤을 때 초보자는 먼저 `진짜 없음`, `존재를 숨기는 concealment`, `권한 변경 직후 남은 stale deny` 세 갈래를 분리해야 "`없는 줄 알았는데 남의 리소스였다`" 같은 첫 반응을 안전하게 다음 문서로 연결할 수 있다. 검색 질의가 concealment 404 primer, hidden 404 beginner, 404 missing vs hidden, concealment vs missing처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Concealment `404` Entry Cues
 
 > 한 줄 요약: `404`를 봤을 때 초보자는 먼저 `진짜 없음`, `존재를 숨기는 concealment`, `권한 변경 직후 남은 stale deny` 세 갈래를 분리해야 "`없는 줄 알았는데 남의 리소스였다`" 같은 첫 반응을 안전하게 다음 문서로 연결할 수 있다.

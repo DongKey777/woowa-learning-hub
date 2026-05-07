@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Adaptive Flushing Heuristics and Dirty Page Feedback
+concept_id: database/adaptive-flushing-heuristics-dirty-page-feedback
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- adaptive-flushing
+- dirty-page
+- checkpoint-age
+- flush-control
+aliases:
+- adaptive flushing heuristics
+- dirty page feedback
+- flush rate control
+- checkpoint age feedback
+- innodb_io_capacity
+- page cleaner
+- writeback feedback loop
+- adaptive flushing dirty page
+- dirty page flush control
+- 더티 페이지 flush 제어
+symptoms:
+- batch나 backfill 이후 dirty page가 빠르게 늘고 조금 뒤 API latency가 튄다
+- innodb_io_capacity만 올렸는데도 checkpoint age와 redo 압박이 함께 흔들린다
+- flush storm을 단일 쿼리 문제로 보고 dirty page feedback loop를 보지 않는다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/checkpoint-age-flush-storms
+- database/innodb-buffer-pool-internals
+- database/redo-log-write-amplification
+next_docs:
+- database/flush-neighbors-adaptive-flushing-io-capacity
+- database/checkpoint-age-flush-storms
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/checkpoint-age-flush-storms.md
+- contents/database/flush-neighbors-adaptive-flushing-io-capacity.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/redo-log-write-amplification.md
+confusable_with:
+- database/checkpoint-age-flush-storms
+- database/flush-neighbors-adaptive-flushing-io-capacity
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/redo-log-write-amplification
+forbidden_neighbors: []
+expected_queries:
+- adaptive flushing은 dirty page 증가와 redo 압박을 보고 flush rate를 조절하는 feedback loop야?
+- batch update 후 조금 있다가 latency가 튀는 현상을 dirty page feedback과 checkpoint age로 설명해줘
+- innodb_io_capacity를 올렸는데도 flush storm이 남으면 무엇을 같이 봐야 해?
+- dirty page 비율뿐 아니라 증가 속도를 봐야 adaptive flushing이 늦게 반응하지 않는 이유가 뭐야?
+- page cleaner와 adaptive flushing heuristic이 foreground IO와 경쟁하는 trade-off를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Adaptive Flushing Heuristics and Dirty Page Feedback deep dive로, InnoDB가 dirty page
+  growth, redo generation, checkpoint age pressure를 관측해 page cleaner flush rate를 조절하는 feedback loop와
+  flush storm 예방 trade-off를 설명한다.
+---
 # Adaptive Flushing Heuristics and Dirty Page Feedback
 
 > 한 줄 요약: adaptive flushing은 dirty page가 얼마나 빨리 늘고 있는지를 보고 flush 속도를 조절하는 feedback loop다.

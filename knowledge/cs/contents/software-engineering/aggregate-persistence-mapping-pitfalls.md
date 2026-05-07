@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Aggregate Persistence Mapping Pitfalls
+concept_id: software-engineering/aggregate-persistence-mapping
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/payment
+- missions/roomescape
+review_feedback_tags:
+- aggregate
+- jpa-mapping
+- persistence-boundary
+aliases:
+- Aggregate Persistence Mapping Pitfalls
+- aggregate JPA mapping pitfalls
+- CascadeType.ALL aggregate smell
+- orphanRemoval confusion
+- bidirectional association beginner
+- aggregate root mapping
+- JPA aggregate 헷갈려요
+symptoms:
+- aggregate boundary를 도메인 규칙 경계가 아니라 mappedBy, owning side, cascade, orphanRemoval 같은 JPA 매핑 옵션으로 정의해
+- CascadeType.ALL을 aggregate 저장 규칙으로 오해해 공유 참조까지 cascade remove 위험에 노출해
+- orphanRemoval이나 양방향 helper를 비즈니스 삭제/추가 API처럼 공개해 도메인 모델이 ORM 사용 설명서처럼 변해
+intents:
+- design
+- troubleshooting
+- comparison
+prerequisites:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/repository-dao-entity
+next_docs:
+- software-engineering/entity-leakage-review-checklist
+- software-engineering/domain-invariants-as-contracts
+- spring/spring-data-jpa-basics
+linked_paths:
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/entity-leakage-review-checklist.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/spring/jpa-dirty-checking-version-strategy.md
+confusable_with:
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/repository-dao-entity
+- spring/spring-data-jpa-basics
+forbidden_neighbors: []
+expected_queries:
+- aggregate root와 JPA cascade orphanRemoval 양방향 연관관계는 왜 같은 개념이 아니야?
+- CascadeType.ALL을 붙이면 aggregate 저장이 끝난다는 생각이 위험한 이유를 알려줘
+- orphanRemoval을 비즈니스 삭제 규칙으로 착각하면 어떤 도메인 API 냄새가 생겨?
+- owning side mappedBy 같은 JPA 용어와 aggregate boundary를 beginner 기준으로 분리해줘
+- persistence adapter가 domain aggregate를 JPA entity로 mapping할 때 어떤 누수를 조심해야 해?
+contextual_chunk_prefix: |
+  이 문서는 aggregate boundary와 JPA persistence mapping을 분리해, cascade, orphanRemoval, bidirectional association, owning side가 도메인 규칙이 아니라 adapter 구현 선택임을 설명하는 beginner bridge다.
+---
 # Aggregate Persistence Mapping Pitfalls
 
 > 한 줄 요약: 양방향 연관관계, `cascade`, `orphanRemoval`은 aggregate 자체를 정의하는 규칙이 아니라 JPA 매핑을 돕는 옵션인데, 초심자는 이를 도메인 진실로 오해해 aggregate 설계가 ORM 사용 설명서처럼 변하기 쉽다.

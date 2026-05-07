@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart에서 어려운 지점은 상태 이름을 늘리는 것보다 "지금 이 주문이 무엇을 할 수 있는가"가 단계마다 달라진다는 점이다. 이 질문이 커질수록 `OrderStatus` enum과 서비스 `switch` 문보다 상태 전이로 모델링하는 편이 읽기 쉽다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "주문 상태가 늘수록 service `switch` 문이 계속 커져요" | `PENDING`, `PAID`, `CANCELED`, `REFUNDED` 분기가 흩어진 코드 | 상태 이름보다 상태별 허용 행동을 모델링한다 |
+| "`PAID` 주문이 다시 결제되거나 `CANCELLED`가 뒤늦게 확정돼요" | webhook 재수신, timeout race, 잘못된 상태 전이 | aggregate가 허용되지 않은 전이를 막는 위치를 정한다 |
+| "pending/paid/canceled/refunded 전이를 어디서 막아야 하나요?" | checkout 이후 상태 규칙이 service에 퍼지는 단계 | Service orchestration과 Order 상태 전이 책임을 분리한다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 checkout을 붙인 뒤에는 대개 `PENDING`, `PAID`, `CANCELED`, `REFUNDED` 같은 주문 상태가 생긴다. 처음에는 서비스 메서드에서 `if (status == PENDING)`처럼 막아도 충분해 보이지만, 결제 승인 성공 뒤 확정, 사용자의 취소 요청, 보상 환불, 중복 콜백 무시 같은 장면이 쌓이면 분기가 금방 길어진다.

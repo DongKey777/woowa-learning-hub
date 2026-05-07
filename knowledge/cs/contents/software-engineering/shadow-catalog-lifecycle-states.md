@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Shadow Catalog Lifecycle States
+concept_id: software-engineering/shadow-catalog-lifecycle-states
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- lifecycle-state
+- governance
+- retirement
+aliases:
+- shadow catalog state machine
+- shadow process lifecycle states
+- detected cataloged decision pending
+- temporary hold blocked verification pending
+- shadow entry state transition
+- shadow catalog 생명주기 상태
+symptoms:
+- shadow catalog entry가 detected나 decision만 남기고 cataloged, decision_pending, execution state, verification_pending, retired 흐름을 추적하지 않아
+- temporary_hold와 blocked를 같은 멈춤 상태로 취급해 의도된 지연과 owner 없는 구조 blockage가 섞여
+- verification_pending 없이 바로 retired로 닫아 공식 path 사용과 manual path 감소 증빙을 확인하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/shadow-process-catalog-entry-schema
+next_docs:
+- software-engineering/shadow-catalog-review-cadence-profiles
+- software-engineering/shadow-lifecycle-scorecard-metrics
+- software-engineering/shadow-catalog-reopen-successor-rules
+linked_paths:
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/shadow-catalog-reopen-and-successor-rules.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+confusable_with:
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-catalog-review-cadence-profiles
+- software-engineering/shadow-retirement-proof-metrics
+forbidden_neighbors: []
+expected_queries:
+- shadow catalog entry의 lifecycle_state를 detected, cataloged, decision_pending, in_progress, verification_pending, retired로 나누는 이유는?
+- temporary_hold와 blocked는 둘 다 멈춤처럼 보이는데 required field와 운영 의미가 어떻게 달라?
+- retire, absorb, officialize 같은 decision track과 blocked, temporary_hold 같은 control state를 섞으면 왜 위험해?
+- verification_pending 없이 shadow entry를 retired로 닫으면 manual path recurrence를 놓치는 이유를 설명해줘
+- retired 뒤 recurrence가 보이면 reopen이나 successor entry로 상태 전이를 남겨야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 shadow catalog entry를 detected부터 retired까지 움직이는 lifecycle state machine으로 관리하고 temporary_hold, blocked, verification_pending을 별도 control state로 분리하는 advanced playbook이다.
+---
 # Shadow Catalog Lifecycle States
 
 > 한 줄 요약: shadow catalog entry는 `detected`에서 끝나지 않고 `cataloged -> decision_pending -> execution path -> verification_pending -> retired`로 움직여야 하며, `temporary_hold`와 `blocked`는 outcome이 아니라 별도 제어 상태로 관리해야 한다.

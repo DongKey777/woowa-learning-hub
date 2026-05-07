@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "h2c, Cleartext Upgrade, Prior Knowledge, Routing"
+concept_id: network/h2c-cleartext-upgrade-prior-knowledge-routing
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- h2c-cleartext-http2
+- prior-knowledge-upgrade
+- grpc-proxy-routing
+aliases:
+- h2c
+- cleartext HTTP/2
+- Upgrade h2c
+- prior knowledge HTTP2
+- grpc cleartext
+- protocol preface routing
+symptoms:
+- HTTP/2 지원이라고 보고 h2와 h2c 진입 방식을 구분하지 않는다
+- public TLS h2는 되는데 internal cleartext gRPC만 깨지는 이유를 놓친다
+- Upgrade h2c와 prior knowledge를 proxy chain이 같은 방식으로 처리한다고 생각한다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- network/http1-http2-http3-beginner-comparison
+- network/alpn-negotiation-failure-routing-mismatch
+next_docs:
+- network/h2c-operational-traps-proxy-chain-dev-prod
+- network/grpc-vs-rest
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/api-gateway-reverse-proxy-operational-points
+linked_paths:
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/grpc-vs-rest.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/network/h2c-operational-traps-proxy-chain-dev-prod.md
+confusable_with:
+- network/h2c-operational-traps-proxy-chain-dev-prod
+- network/alpn-negotiation-failure-routing-mismatch
+- network/grpc-vs-rest
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+forbidden_neighbors: []
+expected_queries:
+- "h2와 h2c는 같은 HTTP/2인데 진입 방식이 어떻게 달라?"
+- "Upgrade h2c와 prior knowledge가 proxy routing에서 다르게 깨지는 이유를 설명해줘"
+- "public HTTPS h2는 되는데 internal cleartext gRPC만 안 되면 무엇을 의심해?"
+- "HTTP/2 protocol preface를 모르는 proxy가 있으면 어떤 오류가 나?"
+- "h2c를 운영에서 deliberate choice로 봐야 하는 이유가 뭐야?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2 over TLS h2와 cleartext h2c를 구분하고, Upgrade: h2c,
+  prior knowledge, protocol preface, internal mesh/gRPC/proxy routing mismatch를
+  설명하는 advanced HTTP/2 deep dive다.
+---
 # h2c, Cleartext Upgrade, Prior Knowledge, Routing
 
 > 한 줄 요약: HTTP/2는 TLS 위의 `h2`만 있는 것이 아니다. cleartext 환경에서는 `Upgrade: h2c`와 prior knowledge가 섞이는데, proxy와 routing이 이를 기대하지 않으면 "왜 h2만 안 되지?" 같은 미묘한 장애가 생긴다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "gRPC Status, Trailers, Transport Error Mapping"
+concept_id: network/grpc-status-trailers-transport-error-mapping
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- grpc-status-trailers
+- transport-error-mapping
+- proxy-reset-attribution
+aliases:
+- grpc status trailers
+- grpc-status grpc-message
+- trailers-only response
+- UNAVAILABLE mapping
+- transport error grpc
+- proxy reset grpc
+symptoms:
+- UNAVAILABLE CANCELLED DEADLINE_EXCEEDED를 앱이 직접 반환한 status로만 해석한다
+- trailers를 실제로 받았는지, grpc-status가 trailer로 왔는지 관측하지 않는다
+- HTTP/2 RST_STREAM GOAWAY transport close와 application grpc-status를 같은 층으로 본다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/grpc-vs-rest
+- network/grpc-deadlines-cancellation-propagation
+next_docs:
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/grpc-keepalive-goaway-max-connection-age
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/grpc-vs-rest.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/network/grpc-keepalive-goaway-max-connection-age.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+confusable_with:
+- network/grpc-deadlines-cancellation-propagation
+- network/grpc-deadline-exceeded-first-triage-card
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+- "gRPC grpc-status trailer와 transport error mapping을 어떻게 구분해?"
+- "UNAVAILABLE이 app status인지 proxy reset인지 transport close인지 판단하는 법은?"
+- "trailers-only response는 body 없이도 정상적인 gRPC status 전달일 수 있어?"
+- "DEADLINE_EXCEEDED CANCELLED를 caller deadline, proxy timeout, server policy로 나눠줘"
+- "gRPC observability에서 trailer 수신 여부를 왜 반드시 남겨야 해?"
+contextual_chunk_prefix: |
+  이 문서는 gRPC application grpc-status/grpc-message trailers,
+  trailers-only response, HTTP/2 RST_STREAM/GOAWAY, TCP/TLS/proxy transport
+  close가 client status로 mapping되는 과정을 다루는 advanced playbook이다.
+---
 # gRPC Status, Trailers, Transport Error Mapping
 
 > 한 줄 요약: gRPC 실패는 항상 애플리케이션이 status code를 반환한 결과가 아니다. trailers로 온 gRPC status, proxy가 끊으며 생긴 transport error, HTTP/2 reset이 서로 다른 층인데, 클라이언트 라이브러리는 종종 이를 몇 개 코드로 뭉개서 보여 준다.

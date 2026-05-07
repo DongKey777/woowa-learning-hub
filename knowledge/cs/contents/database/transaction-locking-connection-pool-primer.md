@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Transaction, Locking, and Connection Pool Primer
+concept_id: database/transaction-locking-connection-pool-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- transaction
+- locking
+- connection-pool
+- beginner
+- spring
+aliases:
+- transaction locking connection pool primer
+- transaction boundary beginner
+- isolation locking uniqueness beginner
+- connection pool before JDBC JPA
+- request to DB flow
+- long transaction connection pool exhaustion
+- lock wait to pool timeout bridge
+- external API inside transaction pool timeout
+- HikariCP active pending connection
+- 트랜잭션 락 커넥션 풀 첫 그림
+symptoms:
+- transaction boundary, isolation level, lock, UNIQUE, connection pool이 서로 다른 역할이라는 첫 그림이 필요해
+- lock wait가 길어지면 connection pool timeout처럼 번지는 이유를 초보자에게 설명해야 해
+- JDBC, JPA, MyBatis, Spring 아래에서도 커넥션 하나 위에서 transaction이 열리고 닫힌다는 흐름을 잡아야 해
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- database/transaction-basics
+- database/connection-pool
+next_docs:
+- database/transaction-boundary-external-io-checklist
+- database/unique-vs-locking-read-duplicate-primer
+- database/jdbc-jpa-mybatis-basics
+linked_paths:
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-basics.md
+- contents/database/lock-basics.md
+- contents/database/connection-pool-basics.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/deadlock-case-study.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/transaction-boundary-external-io-checklist
+- database/connection-pool-transaction-propagation-bulk-write
+- database/unique-vs-locking-read-duplicate-primer
+forbidden_neighbors: []
+expected_queries:
+- 트랜잭션, 락, UNIQUE, 커넥션 풀은 각각 어떤 역할을 하는지 초보자용 첫 그림으로 설명해줘
+- 요청 하나가 커넥션 풀에서 연결을 빌리고 transaction을 열고 commit 후 반환하는 흐름을 알려줘
+- lock wait가 길어지면 왜 active connection이 고정되고 pool timeout으로 번질 수 있어?
+- isolation level은 읽기 시야이고 transaction boundary는 실패 단위라는 차이를 설명해줘
+- JDBC JPA MyBatis Spring을 써도 밑에서는 connection 하나 위에서 transaction이 열린다는 뜻이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 transaction, lock, UNIQUE, isolation, connection pool을 요청 하나의 DB 흐름으로 설명하는 beginner primer다.
+  트랜잭션 락 커넥션 풀 첫 그림, lock wait to pool timeout, HikariCP active/pending 질문이 본 문서에 매핑된다.
+---
 # 트랜잭션, 락, 커넥션 풀 첫 그림
 
 > 한 줄 요약: 요청 하나는 보통 커넥션 풀에서 연결 하나를 빌려 트랜잭션을 열고, 필요한 격리 수준과 락/제약을 거쳐 `commit`한 뒤 연결을 반환한다.

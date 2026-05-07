@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Robin Hood Hashing
+concept_id: data-structure/robin-hood-hashing
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- robin-hood-hashing
+- open-addressing-probe-distance
+- hash-table-tail-latency
+aliases:
+- Robin Hood Hashing
+- open addressing
+- probe distance
+- displacement hashing
+- backward shift deletion
+- cache-friendly hash table
+- tail latency lookup
+symptoms:
+- open addressing hash table에서 평균 probe count만 보고 긴 probe chain이 만든 lookup tail latency를 놓친다
+- Robin Hood Hashing이 probe distance가 더 큰 key에게 우선권을 주어 variance를 줄이는 전략이라는 점을 이해하지 못한다
+- deletion을 tombstone으로만 처리해 cluster 품질이 나빠지는 문제와 backward shift deletion 필요성을 고려하지 않는다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/hashmap-internals
+- data-structure/cache-aware-data-structure-layouts
+next_docs:
+- data-structure/cuckoo-hashing
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+linked_paths:
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/cuckoo-hashing.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- data-structure/hashmap-internals
+- data-structure/cuckoo-hashing
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+forbidden_neighbors: []
+expected_queries:
+- Robin Hood Hashing은 probe distance variance를 줄여 lookup tail latency를 어떻게 낮춰?
+- open addressing에서 displacement가 큰 key에게 우선권을 주는 삽입 규칙은?
+- backward shift deletion이 Robin Hood Hashing에서 중요한 이유는?
+- linear probing, Robin Hood, Cuckoo Hashing, chaining을 cache locality와 tail latency로 비교해줘
+- read-heavy hash table에서 load factor와 probe chain을 어떻게 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Robin Hood Hashing을 open addressing hash table에서 probe distance
+  variance를 줄여 lookup tail latency를 낮추는 collision strategy로 설명한다.
+  displacement, linear probing, backward shift deletion, cuckoo hashing과 비교한다.
+---
 # Robin Hood Hashing
 
 > 한 줄 요약: Robin Hood Hashing은 probe sequence 길이를 평탄화해 open addressing 해시 테이블의 tail latency를 줄이려는 충돌 해결 전략이다.

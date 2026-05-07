@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "HTTP/2 ORIGIN Frame and 421 Primer"
+concept_id: network/http2-origin-frame-421-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- http2-origin-frame
+- http-421
+- connection-coalescing
+aliases:
+- HTTP/2 ORIGIN frame
+- Origin Set
+- 421 Misdirected Request
+- cross-origin connection reuse
+- wrong connection retry
+- coalescing beginner
+- h3 no origin frame
+symptoms:
+- 421을 403/404 같은 권한/존재 문제로만 해석한다
+- ORIGIN frame이 certificate 검증을 대신한다고 오해한다
+- cross-origin coalescing에서 미리 좁히는 ORIGIN과 사후 거절 421을 구분하지 못한다
+- HTTP/3에도 같은 ORIGIN frame guardrail이 있다고 생각한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http2-http3-connection-reuse-coalescing
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/wildcard-cert-routing-boundary-primer
+- network/http-421-troubleshooting-trace-examples
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/http2-http3-421-retry-after-wrong-coalescing
+linked_paths:
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/wildcard-cert-routing-boundary-primer.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+confusable_with:
+- network/http2-http3-connection-reuse-coalescing
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/http-421-troubleshooting-trace-examples
+- network/http-421-non-idempotent-retry-guardrail-primer
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 ORIGIN frame과 421 Misdirected Request를 초보자에게 설명해줘"
+- "ORIGIN frame은 connection coalescing 범위를 어떻게 좁혀?"
+- "421은 서버 고장이나 권한 문제가 아니라 wrong connection 신호일 수 있는 이유는?"
+- "HTTP/2 ORIGIN frame과 HTTP/3 reuse guardrail 차이는?"
+- "잘못 coalescing된 요청을 브라우저가 다른 connection으로 retry하는 흐름은?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2 ORIGIN frame, Origin Set, 421 Misdirected Request,
+  cross-origin connection coalescing의 미리 좁히기와 사후 recovery를 설명하는
+  beginner primer다.
+---
 # HTTP/2 ORIGIN Frame와 421 입문
 
 > 한 줄 요약: `ORIGIN`은 "이 HTTP/2 connection을 어디까지 같이 써도 되는지"를 미리 좁히고, `421`은 잘못 탄 요청을 다른 connection으로 돌려보내는 신호다.

@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Audit Evidence Vault 설계
+concept_id: system-design/audit-evidence-vault-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- audit evidence vault
+- evidence chain
+- WORM storage
+- legal hold
+aliases:
+- audit evidence vault
+- evidence chain
+- WORM storage
+- legal hold
+- tamper evidence
+- retention
+- chain of custody
+- encrypted archive
+- incident evidence
+- compliance vault
+- Audit Evidence Vault 설계
+- audit evidence vault design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/audit-log-pipeline-design.md
+- contents/security/envelope-encryption-kms-basics.md
+- contents/system-design/secrets-distribution-system-design.md
+- contents/system-design/fraud-case-management-workflow-design.md
+- contents/system-design/tenant-billing-dispute-workflow-design.md
+- contents/security/session-revocation-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Audit Evidence Vault 설계 설계 핵심을 설명해줘
+- audit evidence vault가 왜 필요한지 알려줘
+- Audit Evidence Vault 설계 실무 트레이드오프는 뭐야?
+- audit evidence vault 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Audit Evidence Vault 설계를 다루는 deep_dive 문서다. audit evidence vault는 조사, 규제, 분쟁 대응에 필요한 증거를 변조 방지와 장기 보관 규칙 아래 안전하게 저장하는 증거 저장소다. 검색 질의가 audit evidence vault, evidence chain, WORM storage, legal hold처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Audit Evidence Vault 설계
 
 > 한 줄 요약: audit evidence vault는 조사, 규제, 분쟁 대응에 필요한 증거를 변조 방지와 장기 보관 규칙 아래 안전하게 저장하는 증거 저장소다.

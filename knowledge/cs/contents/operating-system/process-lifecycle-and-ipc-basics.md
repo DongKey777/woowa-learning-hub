@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Process Lifecycle and IPC Basics
+concept_id: operating-system/process-lifecycle-and-ipc-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- process-lifecycle-and
+- ipc
+- process-lifecycle-ipc
+- fork-exec-waitpid
+aliases:
+- process lifecycle IPC basics
+- fork exec waitpid
+- process creation execution termination
+- IPC selection basics
+- pipe socketpair shared memory
+- beginner process model
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+expected_queries:
+- process는 fork exec waitpid로 어떤 lifecycle을 거쳐?
+- IPC는 무엇을 얼마나 주고받는지에 따라 어떻게 골라?
+- process creation execution termination 흐름을 초급자에게 설명해줘
+- pipe socketpair eventfd memfd shared memory 선택 전 어떤 mental model이 필요해?
+contextual_chunk_prefix: |
+  이 문서는 process가 fork로 갈라지고 exec로 새 program으로 갈아타며 waitpid로 회수되는 lifecycle과,
+  IPC를 data shape와 ownership에 따라 고르는 기본 감각을 연결하는 beginner bridge다.
+---
 # Process Lifecycle and IPC Basics
 
 > 한 줄 요약: 프로세스는 `fork()`로 갈라지고, `exec()`로 새 프로그램으로 갈아타고, `waitpid()`로 회수되며, IPC는 "무엇을 얼마나 주고받는가"에 따라 고른다.

@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: System Design Foundations
+concept_id: system-design/system-design-foundations
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 95
+mission_ids: []
+review_feedback_tags:
+- backend-box-mental-model
+- scale-basics-entrypoint
+- cache-db-queue-role-split
+aliases:
+- system design foundations
+- system design basics
+- 처음 system design
+- system design 뭐부터
+- why many boxes backend
+- backend architecture basics
+- load balancer stateless app cache database queue
+- backend box mental model
+- scale basics entrypoint
+- source of truth queue worker
+- controller service repository 다음 system design
+- cache database queue 입문
+symptoms:
+- system design에서 load balancer cache database queue가 왜 같이 나오는지 모르겠어
+- controller service repository 다음에 백엔드 아키텍처를 어떻게 봐야 할지 막혀
+- cache와 queue와 database가 각각 어떤 병목을 줄이는지 감이 안 와
+intents:
+- definition
+- design
+prerequisites: []
+next_docs:
+- system-design/stateless-backend-cache-database-queue-starter-pack
+- system-design/horizontal-vs-vertical-scaling-basics
+- system-design/load-balancer-basics
+- system-design/caching-basics
+- system-design/message-queue-basics
+- system-design/database-scaling-primer
+- system-design/consistency-idempotency-async-workflow-foundations
+- system-design/request-path-failure-modes-primer
+linked_paths:
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/horizontal-vs-vertical-scaling-basics.md
+- contents/system-design/load-balancer-basics.md
+- contents/system-design/caching-basics.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/stateless-sessions-primer.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/database/index-and-explain.md
+confusable_with:
+- system-design/stateless-backend-cache-database-queue-starter-pack
+- system-design/horizontal-vs-vertical-scaling-basics
+- system-design/load-balancer-basics
+- system-design/message-queue-basics
+forbidden_neighbors: []
+expected_queries:
+- 시스템 설계 처음인데 load balancer cache database queue를 어떻게 한 그림으로 봐?
+- 백엔드 아키텍처에서 박스가 왜 이렇게 많은지 beginner 기준으로 설명해줘
+- stateless app, cache, DB, queue가 각각 어떤 병목을 줄이는지 알고 싶어
+- system design 입문에서 무엇부터 읽어야 하는지 로드맵이 필요해
+- source of truth와 queue worker를 처음에 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 system design을 처음 접하는 학습자가 load balancer, stateless app, cache, database, queue를 각각 어떤 병목을 줄이는 박스로 봐야 하는지 잡는 entrypoint primer다.
+  controller-service-repository 다음에 백엔드 아키텍처를 어떻게 확장해서 읽는지, source of truth와 cache 복사본, queue worker 후처리, scale-out과 stateless app이 왜 연결되는지 같은 자연어 paraphrase가 본 문서의 핵심 경로에 매핑된다.
+---
 # System Design Foundations
 
 > 한 줄 요약: load balancer, stateless app, cache, database, queue를 "어떤 병목을 줄이는 박스인가" 기준으로 묶고, 초심자가 다음에 읽을 scale basics와 consistency bridge까지 연결하는 입문 문서다.

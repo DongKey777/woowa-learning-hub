@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Transaction Boundary, Isolation, and Locking Decision Framework
+concept_id: database/transaction-boundary-isolation-locking-framework
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- transaction-boundary
+- isolation-level
+- locking
+- consistency
+- decision-framework
+aliases:
+- transaction boundary
+- isolation level selection
+- locking strategy
+- optimistic lock
+- pessimistic lock
+- serializable
+- invariant protection
+- select for update
+- contention control
+- backend consistency framework
+symptoms:
+- transaction boundary, isolation level, locking strategy를 한 번에 섞어서 판단하고 있어
+- 같이 commit/rollback해야 할 상태 변화와 외부 side effect를 구분해야 해
+- constraint, atomic SQL, optimistic lock, pessimistic lock, advisory lock, serializable 중 무엇을 고를지 결정해야 해
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- database/transaction-isolation-locking
+- database/transaction-boundary-external-io-checklist
+next_docs:
+- database/queue-consumer-transaction-boundaries
+- database/compare-and-swap-vs-pessimistic-locks
+- database/advisory-locks-vs-row-locks
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/queue-consumer-transaction-boundaries.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/advisory-locks-vs-row-locks.md
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+confusable_with:
+- database/transaction-boundary-external-io-checklist
+- database/compare-and-swap-vs-pessimistic-locks
+- database/advisory-locks-vs-row-locks
+- database/transaction-isolation-locking
+forbidden_neighbors: []
+expected_queries:
+- 트랜잭션 경계, 격리수준, 락 전략을 어떤 순서로 결정해야 해?
+- 함께 실패해야 하는 상태 변화만 transaction boundary에 넣는다는 기준을 예시로 설명해줘
+- READ COMMITTED, REPEATABLE READ, SERIALIZABLE은 막아야 할 anomaly 기준으로 어떻게 고르나?
+- optimistic lock, pessimistic lock, constraint, atomic SQL, advisory lock은 경합 패턴에 따라 어떻게 선택해?
+- 외부 API 호출이 있으면 isolation이나 lock choice보다 boundary choice를 먼저 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 transaction boundary, isolation level, locking strategy를 invariant, anomaly, contention/retry cost 기준으로 고르는 advanced chooser다.
+  optimistic vs pessimistic lock, serializable, select for update, advisory lock, boundary decision framework 질문이 본 문서에 매핑된다.
+---
 # Transaction Boundary, Isolation, and Locking Decision Framework
 
 > 한 줄 요약: 트랜잭션 경계는 "함께 실패해야 하는 상태 변화"로 정하고, 격리수준은 "막아야 할 이상 현상"으로 정하고, 락 전략은 "충돌 비용을 대기와 재시도 중 어디에 둘지"로 고른다.

@@ -9,7 +9,12 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
 review_feedback_tags:
 - mixed-responsibility
 - open-closed-branch-growth
@@ -66,6 +71,14 @@ contextual_chunk_prefix: |
 # SOLID 원칙 기초 (SOLID Principles Basics)
 
 > 한 줄 요약: SOLID는 코드가 커져도 바꾸기 쉽게 만들기 위한 다섯 가지 설계 지침이고, 각 글자가 "왜 이 구조가 필요한가"에 대한 독립적 답을 준다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "서비스가 검증, 저장, 알림을 다 해도 되나요?" | shopping-cart checkout service가 주문 검증, 결제, 저장, 알림까지 한 클래스에서 처리하는 구조 | SRP를 "메서드 수"가 아니라 변경 이유 분리로 본다 |
+| "if 분기가 늘어나면 무조건 Strategy인가요?" | lotto 생성 방식이나 결제 수단이 추가될 때 기존 service 분기가 계속 커지는 코드 | OCP 위반 신호와 과한 패턴 적용을 함께 본다 |
+| "DIP랑 DI가 같은 말인가요?" | service가 `new JdbcRepository()`를 직접 만들지 않고 interface에 의존하게 바꾸는 과정 | 설계 원칙인 DIP와 구현 기법인 DI를 분리한다 |
 
 **난이도: 🟢 Beginner**
 

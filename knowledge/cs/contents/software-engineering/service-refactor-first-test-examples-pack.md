@@ -1,8 +1,77 @@
+---
+schema_version: 3
+title: Service Refactor First-Test Examples Pack
+concept_id: software-engineering/service-refactor-first-test-examples
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- refactoring
+- service-test
+- test-double
+- first-failing-test
+aliases:
+- service refactor first test
+- service refactor examples pack
+- cheapest first failing test
+- fake mock spy service refactor
+- service 리팩터링 첫 테스트 예시
+- 첫 failing test 선택표
+symptoms:
+- service 리팩터링을 시작할 때 어떤 테스트를 먼저 실패시킬지 고르지 못한다
+- 규칙 추출, 계산 분리, 협력 순서 변경을 같은 테스트 전략으로 처리한다
+- fake, stub, spy, mock 중 무엇이 가장 싼 보호막인지 판단이 느리다
+intents:
+- comparison
+- design
+- drill
+prerequisites:
+- software-engineering/refactoring-first-failing-test
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/testing-strategy-and-test-doubles
+- spring/spring-testing-basics
+linked_paths:
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/refactoring-first-failing-test
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/test-strategy-basics
+forbidden_neighbors: []
+expected_queries:
+- service refactor에서 규칙 추출, 계산 분리, 협력 순서 재배치마다 첫 failing test를 어떻게 고르면 돼?
+- 중복 검사 규칙을 helper로 뺄 때 fake repository와 unit test가 먼저 맞는 이유를 알려줘
+- 할인 계산기를 service 밖으로 분리할 때 stub과 값 결과 테스트를 먼저 고르는 기준은?
+- 저장 승인 알림 순서를 바꿀 때 rollback 위험이면 왜 integration test가 더 싼 첫 테스트일 수 있어?
+- service 리팩터링에서 fake, stub, spy, mock을 질문 종류에 따라 고르는 예시를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 service refactor 장면을 규칙 추출, 계산 분리, 협력/트랜잭션 재배치로 나눠 가장 싼 first failing test와 test double을 고르게 하는 intermediate chooser이다.
+---
 # Service Refactor First-Test Examples Pack
 
 > 한 줄 요약: service 리팩터링에서 "`무엇을 먼저 보호할까?`"가 막히면, 변경을 `규칙 추출`, `계산 분리`, `협력/트랜잭션 재배치`로 나누고 각 장면마다 가장 싼 첫 failing test와 test double 1개를 같이 고르면 시작 비용이 크게 줄어든다.
 
 **난이도: 🟡 Intermediate**
+
+## 미션 진입 증상
+
+| service refactor 장면 | 먼저 볼 테스트 |
+|---|---|
+| 순수 계산 규칙을 뽑는다 | 값 결과 단위 테스트 |
+| repository 협력을 감싼다 | fake repository 기반 service test |
+| 알림/결제 호출 순서를 바꾼다 | spy 또는 integration boundary test |
 
 관련 문서:
 

@@ -21,6 +21,11 @@ aliases:
 - Lotto 클래스 불변식
 - 입력 검증 vs 도메인 검증
 - 로또 6개 중복 1-45 보장
+- lotto Money 값 객체
+- 로또 Money 클래스 분리 이유
+- 값 객체 도메인 불변식
+- value object invariant
+- purchase amount money object
 intents:
 - mission_bridge
 - design
@@ -29,13 +34,26 @@ prerequisites:
 linked_paths:
 - contents/software-engineering/domain-invariants-as-contracts.md
 - contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+- contents/language/java/money-value-object-basics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
 forbidden_neighbors:
 - contents/software-engineering/order-validation-annotation-vs-domain-rule-card.md
+confusable_with:
+- software-engineering/domain-invariants-as-contracts
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+- language/value-object-invariants-canonicalization-boundary-design
 expected_queries:
 - 로또 번호 6개 중복없음을 컨트롤러에서 검사할까 도메인에서 검사할까?
 - Lotto 생성자에서 던지는 게 맞아 정적 팩토리에서 던지는 게 맞아?
 - 입력 파싱 검증이랑 도메인 불변식이 어떻게 달라?
 - 1-45 범위는 어디에서 보장해야 해?
+- lotto 미션에서 Money 같은 값 객체를 왜 별도 클래스로 만들어?
+contextual_chunk_prefix: |
+  이 문서는 lotto 미션에서 Lotto 번호 6개/중복 없음/1-45 범위뿐 아니라 Money 같은
+  값 객체를 별도 클래스로 두는 이유를 domain invariant 관점으로 연결한다. 원시
+  int나 long으로 금액을 흘리면 0 이하 금액, 티켓 가격 단위 불일치, 라운딩/표시
+  규칙이 서비스와 컨트롤러에 퍼지므로, value object가 생성 시점에 계약을 잠그는
+  boundary라는 점이 핵심이다.
 ---
 
 # lotto 번호 6개·중복없음·1-45 도메인 불변식을 어디에서 보장하나
@@ -45,6 +63,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: lotto (Woowa Java 트랙)
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "번호 6개, 중복 없음, 1-45 검증을 controller에서 하면 끝 아닌가요?" | controller가 모든 번호 규칙을 검사하고 `new Lotto`를 그대로 호출하는 코드 | `Lotto` 타입이 존재하는 동안 항상 지켜야 하는 불변식은 도메인이 보장한다 |
+| "자동 생성기나 테스트 코드에서는 검증을 또 해야 하나요?" | 입력 경로 외 다른 생성 경로가 `Lotto`를 만들 수 있는 구조 | 생성자/정적 팩토리 한곳에서 모든 진입 경로를 닫는다 |
+| "Money 같은 값 객체도 같은 이유로 만드는 건가요?" | 구매 금액의 양수/1000원 단위/장수 계산 규칙이 여러 계층에 퍼진 코드 | 원시값이 도메인 의미를 가지면 생성 시점에 계약을 잠그는 타입으로 올린다 |
 
 관련 문서:
 
@@ -60,6 +86,8 @@ expected_queries:
 3. 각 번호가 *1-45 범위*
 
 이 세 조건을 *불변식 (invariant)*이라 부른다. *Lotto 인스턴스가 존재하는 한* 이들은 깨지지 않아야 한다.
+
+`Money`도 같은 이유로 값 객체 후보가 된다. lotto 구매 금액을 `int amount`로 계속 넘기면 "0보다 커야 한다", "1000원 단위여야 한다", "구매 수량으로 바꿀 때 나머지가 없어야 한다" 같은 규칙이 컨트롤러, 서비스, 테스트마다 흩어진다. `Money.from(amount)`가 이 계약을 한 번 잠그면 서비스는 `money.ticketCount(PRICE)`처럼 유스케이스를 조립하고, 금액 자체의 유효성은 값 객체 안에 남는다.
 
 학습자가 자주 작성하는 코드:
 

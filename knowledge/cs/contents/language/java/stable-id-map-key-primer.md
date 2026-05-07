@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Stable ID as Map Key Primer
+concept_id: language/stable-id-map-key-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-key
+- entity
+- equality
+aliases:
+- Stable ID as Map Key Primer
+- immutable id mutable entity map key
+- Java Map key stable id beginner
+- entity as value id as key
+- mutable domain object lookup safe pattern
+- 안정적인 ID를 Map key로 쓰기
+symptoms:
+- 상태가 바뀌는 entity 전체를 Map key로 두고 equals hashCode 참여 필드가 변경되어 containsKey get remove가 실패해
+- key는 조회 기준이고 value는 변경되는 내용물이라는 역할 분리를 하지 못해 mutable domain object를 서랍 이름으로 사용해
+- DTO VO Entity 차이를 배운 뒤에도 entity lifecycle과 map lookup identity를 분리하지 못해 stable id key 패턴을 떠올리지 못해
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/dto-vo-entity-basics
+- language/java-collections-basics
+- language/collections-equality-mutable-state-foundations
+next_docs:
+- language/stable-id-vs-natural-key-bridge
+- language/hashmap-treemap-mutable-key-lookup-primer
+- language/map-value-shape-drill
+linked_paths:
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/stable-id-vs-natural-key-bridge.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/map-value-shape-drill.md
+confusable_with:
+- language/stable-id-vs-natural-key-bridge
+- language/hashmap-treemap-mutable-key-lookup-primer
+- language/mutable-hash-keys-hashset-hashmap-bridge
+forbidden_neighbors: []
+expected_queries:
+- mutable entity를 Map key로 직접 쓰는 대신 stable ID를 key로 두는 이유가 뭐야?
+- 회원 객체 전체를 HashMap key로 쓰다가 이름 변경 후 containsKey가 false가 되는 이유를 설명해줘
+- Map key는 서랍 이름이고 value는 바뀌는 내용물이라는 beginner mental model을 알려줘
+- Map<MemberId Member> 구조가 mutable domain object lookup에 왜 더 안전해?
+- DTO VO Entity와 Map key 설계를 stable id 관점으로 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 mutable domain entity를 Map key로 쓰는 대신 stable immutable ID를 key로 두고 entity를 value로 두는 beginner primer다.
+  stable id map key, mutable entity key, HashMap lookup failure, DTO VO Entity, Map key design 질문이 본 문서에 매핑된다.
+---
 # Stable ID as Map Key Primer
 
 > 한 줄 요약: 상태가 바뀌는 도메인 객체를 `Map` key로 직접 쓰기보다, 변하지 않는 ID를 key로 두고 객체는 value로 두면 조회 규칙과 도메인 변경을 더 안전하게 분리할 수 있다.

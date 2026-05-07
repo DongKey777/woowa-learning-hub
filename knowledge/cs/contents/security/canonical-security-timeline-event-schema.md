@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Canonical Security Timeline Event Schema
+concept_id: security/canonical-security-timeline-event-schema
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- canonical security timeline event schema
+- support access event schema
+- security timeline schema
+- support timeline contract
+aliases:
+- canonical security timeline event schema
+- support access event schema
+- security timeline schema
+- support timeline contract
+- access group id
+- case ref
+- case reference
+- support case reference
+- break glass timeline schema
+- support access lifecycle event
+- timeline status transition
+- timeline retention class
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/audience-matrix-for-support-access-events.md
+- contents/security/tenant-policy-schema-for-privileged-support-alerts.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/aobo-revocation-audit-event-schema.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Canonical Security Timeline Event Schema 핵심 개념을 설명해줘
+- canonical security timeline event schema가 왜 필요한지 알려줘
+- Canonical Security Timeline Event Schema 실무 설계 포인트는 뭐야?
+- canonical security timeline event schema에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Canonical Security Timeline Event Schema를 다루는 deep_dive 문서다. support AOBO와 break-glass 보안 타임라인은 surface마다 제각각 payload를 만들면 안 되며, `case_ref`, `access_group_id`, append-only status transition, `retention_class`를 공유하는 canonical event schema 위에서 customer/admin/security projection이 갈라져야 한다. 검색 질의가 canonical security timeline event schema, support access event schema, security timeline schema, support timeline contract처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Canonical Security Timeline Event Schema
 
 > 한 줄 요약: support AOBO와 break-glass 보안 타임라인은 surface마다 제각각 payload를 만들면 안 되며, `case_ref`, `access_group_id`, append-only status transition, `retention_class`를 공유하는 canonical event schema 위에서 customer/admin/security projection이 갈라져야 한다.

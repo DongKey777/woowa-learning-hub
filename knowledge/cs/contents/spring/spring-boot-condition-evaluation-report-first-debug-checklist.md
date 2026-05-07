@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring Boot Condition Evaluation Report First Debug Checklist
+concept_id: spring/boot-condition-evaluation-report-first-debug-checklist
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- boot-condition-evaluation
+- report-first-debug
+- conditionevaluationreport-first-debug
+- debug-condition-report
+aliases:
+- ConditionEvaluationReport first debug
+- --debug condition report
+- actuator conditions endpoint
+- ConditionalOnMissingBean miss
+- existing bean found
+- Boot default bean skipped
+- auto-configuration report beginner
+intents:
+- troubleshooting
+- symptom
+symptoms:
+- 스타터를 넣었는데 기대한 Spring Boot 기본 Bean이 생성되지 않는다.
+- 내가 @Bean을 하나 추가한 뒤 Boot auto-configuration 기본 Bean이 사라진다.
+- local, test, CI, profile마다 condition report 결과가 달라진다.
+linked_paths:
+- contents/spring/spring-configuration-vs-autoconfiguration-primer.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-starter-condition-report-starter-drill.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md
+- contents/spring/spring-conditionalonsinglecandidate-vs-primary-primer.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-actuator-exposure-security.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
+expected_queries:
+- Spring Boot 기본 bean이 안 뜰 때 ConditionEvaluationReport를 어떻게 먼저 봐?
+- --debug와 actuator conditions endpoint는 언제 각각 써?
+- ConditionalOnMissingBean 때문에 auto-configuration이 물러난 걸 어떻게 확인해?
+- starter를 추가했는데 bean이 안 생길 때 첫 디버그 순서는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 ConditionEvaluationReport를 처음 보는 학습자를 위한 first-debug
+  checklist다. --debug, debug=true, /actuator/conditions, positive/negative match,
+  @ConditionalOnMissingBean, existing bean found, user bean wins 신호를 통해
+  Boot default bean이 왜 생기거나 빠졌는지 추측 대신 증거로 확인한다.
+---
 # Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`
 
 > 한 줄 요약: Spring Boot 기본 Bean이 안 뜨거나 갑자기 빠졌다면, 먼저 `--debug`나 Actuator `conditions`로 조건 평가를 보고 `@ConditionalOnMissingBean`에 막힌 것인지부터 확인하면 된다.

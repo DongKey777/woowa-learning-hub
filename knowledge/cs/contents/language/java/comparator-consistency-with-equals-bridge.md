@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Comparator Consistency With equals Bridge
+concept_id: language/comparator-consistency-with-equals-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator-contract
+- tree-collection
+- equality-ordering
+aliases:
+- Comparator consistency with equals
+- compare zero equals mismatch
+- TreeSet comparator zero
+- TreeMap comparator key equality
+- HashSet vs TreeSet equality
+- 자바 comparator equals 일관성
+symptoms:
+- compare(...) == 0을 단순 정렬 동점으로만 보고 TreeSet/TreeMap에서 같은 원소나 key 자리로 취급된다는 점을 놓쳐
+- record equals는 false인데 comparator가 이름만 봐서 0을 반환하면 sorted collection 결과가 hash collection과 달라지는 이유를 설명하지 못해
+- comparator tie-breaker를 충분히 붙이지 않아 다른 객체가 TreeSet에서 하나로 합쳐지거나 TreeMap value가 덮어써져
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/collections-equality-mutable-state-foundations
+next_docs:
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/hashset-vs-treeset-duplicate-semantics
+- language/record-value-object-equality-basics
+linked_paths:
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+confusable_with:
+- language/hashset-vs-treeset-duplicate-semantics
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/record-value-object-equality-basics
+forbidden_neighbors: []
+expected_queries:
+- Comparator compare zero와 equals false가 TreeSet TreeMap에서 어떤 문제를 만드는지 설명해줘
+- HashSet은 두 개가 들어가는데 TreeSet은 하나만 남는 comparator mismatch 예제를 보여줘
+- TreeMap에서 comparator가 이름만 보면 다른 id 학생 value가 덮어써지는 이유가 뭐야?
+- Comparator tie breaker를 언제 붙여 equals와 더 일관되게 만들어야 해?
+- compareTo 또는 comparator consistency with equals를 초보자 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Comparator consistency with equals를 HashSet equals/hashCode와 TreeSet/TreeMap compare == 0 기준 차이로 설명하는 beginner primer다.
+  compare zero equals mismatch, TreeSet duplicate, TreeMap overwrite, record comparator mismatch, comparator tie-breaker 질문이 본 문서에 매핑된다.
+---
 # Comparator Consistency With `equals()` Bridge
 
 > 한 줄 요약: `HashSet`은 `equals()`/`hashCode()`를, `TreeSet`/`TreeMap`은 `compare(...) == 0`을 더 직접적으로 보므로, comparator가 `equals()`와 어긋나면 같은 `record` 예제도 컬렉션마다 다르게 보일 수 있다.

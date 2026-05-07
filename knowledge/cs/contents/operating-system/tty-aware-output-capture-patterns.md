@@ -57,6 +57,9 @@ confusable_with:
 - operating-system/stdio-buffering-after-redirect
 - operating-system/subprocess-pipe-backpressure-primer
 forbidden_neighbors:
+- contents/operating-system/ci-log-merge-behavior-primer.md
+- contents/operating-system/pty-raw-mode-echo-basics.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
 expected_queries:
 - subprocess 출력 캡처를 설계할 때 pipe 두 개, merge, PTY 중 뭐부터 골라야 해?
 - stdout stderr를 분리할지 합칠지 터미널 재생을 할지 초보자 기준으로 정리해줘

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Monotonic Stack Walkthrough
+concept_id: data-structure/monotonic-stack-walkthrough
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- monotonic-stack-answer-finalization
+- next-greater-operator-boundary
+- histogram-width-pop-trace
+aliases:
+- monotonic stack walkthrough
+- monotonic stack trace
+- next greater element walkthrough
+- 오큰수 추적
+- 단조 스택 입문
+- 단조 스택 while 조건
+- previous smaller next greater template
+- histogram largest rectangle walkthrough
+- stack unresolved index
+- pop 순간 답 확정
+- strict greater or equal monotonic
+symptoms:
+- monotonic stack에 값을 넣는지 index를 넣는지 헷갈려서 next greater answer를 적는 순간을 놓쳐
+- strict greater와 greater or equal에서 같은 값을 pop할지 남길지 자꾸 틀려
+- histogram largest rectangle에서 pop된 막대의 높이와 왼쪽, 오른쪽 경계로 width를 계산하는 흐름이 헷갈려
+intents:
+- troubleshooting
+- drill
+prerequisites:
+- data-structure/monotonic-queue-and-stack
+- data-structure/stack-basics
+next_docs:
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+- data-structure/monotonic-duplicate-rule-micro-drill
+- algorithm/amortized-analysis-pitfalls
+linked_paths:
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/data-structure/stack-basics.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+confusable_with:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+forbidden_neighbors: []
+expected_queries:
+- next greater element를 monotonic stack으로 index와 answer 배열을 추적하며 설명해줘
+- monotonic stack에서 pop되는 순간 답이 확정된다는 뜻을 예제로 보여줘
+- next greater와 next greater or equal에서 while 조건이 어떻게 달라지는지 알려줘
+- histogram largest rectangle에서 pop된 막대의 width를 left smaller와 right smaller로 계산하는 과정을 설명해줘
+- monotonic stack에서 value보다 index를 저장하는 편이 안전한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 monotonic stack을 아직 답이 확정되지 않은 index 보관함으로 보고, next greater element와 histogram largest rectangle을 손으로 추적하는 beginner drill이다.
+  next greater trace, stack stores index, pop answer finalization, strict vs or equal operator, histogram width formula, previous smaller next smaller template 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Monotonic Stack Walkthrough
 
 > 한 줄 요약: monotonic stack은 "아직 답이 확정되지 않은 index"를 쌓아 두었다가, 더 큰 값이나 더 낮은 막대가 나타나는 순간 pop하며 답을 확정하는 구조다.

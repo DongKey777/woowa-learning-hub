@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Fixed Rate vs Fixed Delay Overrun Primer
+concept_id: data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- fixed-rate-vs-fixed-delay
+- periodic-overrun
+- timer-queue-mental-model
+aliases:
+- fixed rate vs fixed delay overrun
+- scheduleAtFixedRate vs scheduleWithFixedDelay
+- periodic task runtime longer than interval
+- fixed rate catch up
+- fixed delay breathing room
+- overdue deadline debt
+- 주기보다 실행 시간이 긴 작업
+symptoms:
+- fixed-rate 작업이 실행 시간 초과 후 끝나자마자 다시 실행되는 것을 버그로만 보고 overdue deadline catch-up 모델을 이해하지 못한다
+- fixed-delay가 항상 실행 종료 후 delay만큼 쉰다는 점과 fixed-rate가 원래 박자 deadline을 따라간다는 점을 섞는다
+- slow periodic task에서 catch-up, drift, backlog, skip/coalesce 정책을 먼저 분리하지 않는다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/delayqueue-repeating-task-primer
+next_docs:
+- data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router
+- data-structure/periodic-overrun-catch-up-primer
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- data-structure/slow-periodic-task-primer
+linked_paths:
+- contents/data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/periodic-task-cancellation-bridge.md
+- contents/data-structure/slow-periodic-task-primer.md
+- contents/data-structure/periodic-scheduling-drift-vs-backlog-primer.md
+- contents/data-structure/periodic-overrun-catch-up-primer.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+confusable_with:
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/periodic-overrun-catch-up-primer
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- data-structure/slow-periodic-task-primer
+forbidden_neighbors: []
+expected_queries:
+- scheduleAtFixedRate와 scheduleWithFixedDelay는 작업 실행 시간이 interval보다 길 때 어떻게 달라?
+- fixed-rate가 overrun 뒤에 바로 다시 실행될 수 있는 이유를 timer queue ticket으로 설명해줘
+- fixed-delay는 왜 항상 실행 종료 후 delay만큼 쉬는지 beginner 기준으로 알려줘
+- periodic task overrun에서 catch-up drift backlog를 어떻게 나눠야 해?
+- 주기보다 실행 시간이 긴 작업에서 fixed-rate와 fixed-delay 중 무엇을 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 fixed-rate와 fixed-delay periodic scheduling을 DelayQueue ticket
+  mental model로 설명하는 chooser다. fixed-rate는 원래 박자 deadline을
+  따라 overdue catch-up이 생길 수 있고, fixed-delay는 실행 종료 후 쉬는
+  간격을 보장한다는 overrun 차이를 다룬다.
+---
 # Fixed Rate vs Fixed Delay Overrun Primer
 
 > 한 줄 요약: 같은 timer queue mental model로 보면 `scheduleAtFixedRate`는 overrun 뒤에도 원래 박자 deadline을 따라가려 해서 **끝나자마자 다시 실행될 수 있고**, `scheduleWithFixedDelay`는 방금 끝난 시각에서 다시 ticket을 찍어서 **항상 delay만큼 쉰다**.

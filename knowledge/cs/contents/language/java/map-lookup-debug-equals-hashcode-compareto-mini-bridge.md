@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Map Lookup Debug equals hashCode compareTo Mini Bridge
+concept_id: language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-lookup-debug
+- equals-hashcode
+- comparator
+aliases:
+- Map lookup debug equals hashCode compareTo
+- containsKey false get null debug flow
+- HashMap get null equals hashCode checklist
+- TreeMap containsKey false compareTo checklist
+- mutable key lookup miss
+- 자바 Map 조회 디버깅 순서
+symptoms:
+- containsKey false와 get null을 보고 key가 없다고만 결론 내리고 HashMap/TreeMap lookup 기준이 어긋난 가능성을 놓쳐
+- TreeMap에서 equals hashCode만 확인하고 실제 lookup 규칙인 compareTo/Comparator를 보지 않아 조회 실패 원인을 못 찾아
+- put 이후 key의 equals/hashCode/compareTo 기준 필드를 바꿔 같은 객체 reference인데도 lookup path가 달라지는 문제를 놓쳐
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/map-get-null-containskey-getordefault-primer
+- language/hashmap-treemap-mutable-key-lookup-primer
+- language/java-equality-identity-basics
+next_docs:
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/treemap-record-containskey-get-name-comparator-drill
+linked_paths:
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treemap-record-containskey-get-name-comparator-drill.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+confusable_with:
+- language/hashmap-treemap-mutable-key-lookup-primer
+- language/java-equality-identity-basics
+- language/treeset-treemap-natural-ordering-compareto-bridge
+forbidden_neighbors: []
+expected_queries:
+- Map containsKey false get null이 나오면 HashMap과 TreeMap에서 무엇부터 디버깅해야 해?
+- HashMap lookup miss는 equals hashCode와 mutable key를 어떤 순서로 확인해?
+- TreeMap lookup miss는 equals가 아니라 compareTo Comparator를 먼저 봐야 하는 이유가 뭐야?
+- 같은 key 객체 reference인데 put 이후 필드를 바꾸면 왜 Map에서 못 찾을 수 있어?
+- map 출력에는 key가 보이는데 get이 null일 때 lookup 기준 어긋남을 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 Map lookup miss를 HashMap/LinkedHashMap의 equals/hashCode route와 TreeMap의 compareTo/Comparator route로 분기하는 beginner symptom router다.
+  containsKey false, get null, mutable key, equals hashCode, compareTo Comparator 질문이 본 문서에 매핑된다.
+---
 # Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서
 
 > 한 줄 요약: "분명 넣은 key 같은데 왜 못 찾지?"가 나오면, 먼저 `HashMap` 계열인지 `TreeMap` 계열인지 자르고, `HashMap`이면 `equals()`/`hashCode()`, `TreeMap`이면 `compareTo()`/`Comparator`를 확인하는 순서가 초급 디버깅의 가장 안전한 시작점이다.

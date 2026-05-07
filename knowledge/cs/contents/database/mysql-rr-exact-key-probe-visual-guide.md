@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: MySQL RR Exact-Key Probe Visual Guide
+concept_id: database/mysql-rr-exact-key-probe-visual-guide
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- exact-key-probe
+- repeatable-read
+- duplicate-check
+- unique-backstop
+aliases:
+- mysql rr exact key probe
+- mysql repeatable read duplicate check
+- exact key for update beginner
+- exact key for share beginner
+- duplicate insert race mysql
+- mysql unique key vs next key
+- 0 row for share exact key
+- 왜 RR에서만 막혀요
+- mysql duplicate check basics
+- 같은 key slot queue
+symptoms:
+- MySQL REPEATABLE READ에서 exact-key locking read가 같은 key insert를 잠깐 줄 세우는 감각을 그림으로 이해하고 싶어
+- 0 row FOR SHARE나 FOR UPDATE가 UNIQUE backstop 없이 duplicate correctness를 보장한다고 오해하고 있어
+- RC 전환, 함수 조건, optimizer path 변화 뒤 RR exact-key queue 직관이 깨지는 이유를 설명해야 해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/exact-key-pre-check-decision-card
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+next_docs:
+- database/mysql-rr-exact-key-probe-assumptions-checklist
+- database/mysql-rc-duplicate-check-pitfall-note
+- database/unique-vs-locking-read-duplicate-primer
+linked_paths:
+- contents/database/exact-key-pre-check-decision-card.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/for-share-vs-for-update-duplicate-check-note.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/mysql-rr-exact-key-probe-assumptions-checklist.md
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/mysql-repeatable-read-safe-range-checklist.md
+- contents/database/range-locking-limits-jpa.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/mysql-rr-exact-key-probe-assumptions-checklist
+- database/mysql-rc-duplicate-check-pitfall-note
+- database/unique-vs-locking-read-duplicate-primer
+forbidden_neighbors: []
+expected_queries:
+- MySQL RR exact-key probe가 같은 key insert를 잠깐 줄 세우는 이유를 그림처럼 설명해줘
+- 0 row FOR SHARE exact key에서 next-key lock과 UNIQUE backstop을 어떻게 구분해?
+- READ COMMITTED로 내리면 RR duplicate check 직관이 왜 깨지는지 알려줘
+- chosen index path가 바뀌면 same key slot queue가 왜 달라져?
+- MySQL duplicate check에서 FOR SHARE와 FOR UPDATE보다 matching unique index가 중요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 MySQL REPEATABLE READ exact-key locking read가 같은 ordered key slot insert를 잠깐 queue할 수 있지만 duplicate correctness는 UNIQUE가 맡는다는 beginner visual primer다.
+  왜 RR에서만 막혀요, 0 row FOR SHARE exact key, same key slot queue 질문이 본 문서에 매핑된다.
+---
 # MySQL RR exact-key probe visual guide
 
 > 한 줄 요약: InnoDB `REPEATABLE READ`의 exact-key locking read는 같은 key insert를 잠깐 줄 세우는 데 도움이 될 수 있지만, 그 직관은 matching index path와 같은 isolation이 유지될 때만 맞고, 실제 정합성 backstop은 여전히 `UNIQUE`다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Connection Keep-Alive, Load Balancing, Circuit Breaker"
+concept_id: network/connection-keepalive-loadbalancing-circuit-breaker
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- keepalive-loadbalancing-circuitbreaker
+- stale-socket-retry-amplification
+- upstream-health-traffic-shaping
+aliases:
+- connection keep-alive
+- load balancing circuit breaker
+- keepalive timeout load balancing
+- stale socket unhealthy upstream
+- connection draining retry amplification
+- connection pool load balancing
+symptoms:
+- keep-alive 연결 재사용 때문에 실제 요청 분산과 connection 분산이 달라지는 점을 놓친다
+- long-lived connection이 least-connections load balancing을 왜곡하는 장면을 단순 알고리즘 문제로 본다
+- stale socket과 retry amplification을 circuit breaker/health check 없이 pool size로만 해결하려 한다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+next_docs:
+- network/grpc-keepalive-goaway-max-connection-age
+- network/proxy-retry-budget-discipline
+- network/connection-draining-vs-fin-rst-graceful-close
+- spring/webclient-connection-pool-timeout-tuning
+linked_paths:
+- contents/network/http-keepalive-timeout-mismatch-deeper-cases.md
+- contents/network/grpc-keepalive-goaway-max-connection-age.md
+- contents/network/accept-queue-syn-backlog-listen-overflow.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/proxy-retry-budget-discipline.md
+- contents/spring/spring-restclient-vs-webclient-lifecycle-boundaries.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/proxy-retry-budget-discipline
+- network/connection-draining-vs-fin-rst-graceful-close
+- network/grpc-keepalive-goaway-max-connection-age
+forbidden_neighbors: []
+expected_queries:
+- "Keep-Alive와 load balancing과 circuit breaker는 장애에서 어떻게 서로 엮여?"
+- "Connection reuse 때문에 로드밸런싱이 실제 요청 분산과 달라지는 이유를 설명해줘"
+- "stale socket과 unhealthy upstream을 circuit breaker와 health check로 어떻게 줄여?"
+- "retry amplification이 keep-alive pool과 load balancer에서 커지는 흐름을 알려줘"
+- "HTTP keep-alive와 TCP keepalive를 load balancing 관점에서 구분해줘"
+contextual_chunk_prefix: |
+  이 문서는 connection keep-alive, load balancing, health check,
+  connection draining, circuit breaker, stale socket, retry amplification이
+  실제 장애에서 서로 영향을 주는 방식을 설명하는 advanced deep dive다.
+---
 # Connection Keep-Alive, Load Balancing, Circuit Breaker
 
 **난이도: 🔴 Advanced**

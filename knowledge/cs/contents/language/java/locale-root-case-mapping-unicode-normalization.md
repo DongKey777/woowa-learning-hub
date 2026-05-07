@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Locale.ROOT Case Mapping and Unicode Normalization Pitfalls
+concept_id: language/locale-root-case-mapping-unicode-normalization
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- string-normalization
+- locale
+- unicode
+aliases:
+- Locale.ROOT case mapping Unicode normalization
+- Turkish I toLowerCase pitfall
+- Unicode NFC NFD normalization Java
+- identifier canonicalization Java
+- string equality visually same different code point
+- 자바 문자열 정규화 Locale.ROOT
+symptoms:
+- toLowerCase()를 locale 없이 호출해 운영 서버 default locale 차이로 protocol key, cache key, signature input이 달라지는 문제를 만든다
+- 화면상 같은 문자열이 NFC/NFD code point sequence 차이로 equals false나 unique index 중복을 일으키는 상황을 놓쳐
+- 모든 문자열을 normalize/lower-case하면 된다고 생각해 password, opaque token, signature payload처럼 바꾸면 안 되는 경계를 손상해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/string-intern-pool-pitfalls
+- language/java-equality-identity-basics
+- language/charset-utf8-bom-malformed-input-decoder-policy
+next_docs:
+- language/empty-string-blank-null-missing-payload-semantics
+- language/record-serialization-evolution
+- language/json-null-missing-unknown-field-schema-evolution
+linked_paths:
+- contents/language/java/string-intern-pool-pitfalls.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+- contents/language/java/charset-utf8-bom-malformed-input-decoder-policy.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+confusable_with:
+- language/charset-utf8-bom-malformed-input-decoder-policy
+- language/empty-string-blank-null-missing-payload-semantics
+- language/string-intern-pool-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- Java에서 toLowerCase에 Locale.ROOT를 붙여야 하는 이유와 Turkish I 함정을 설명해줘
+- 사람이 보기엔 같은 문자열인데 equals가 false인 Unicode normalization 문제를 예제로 보여줘
+- NFC와 NFD normalization을 사용자명 dedup이나 검색 key에 어떻게 적용해야 해?
+- signature payload나 token은 왜 함부로 normalize lower-case 하면 안 돼?
+- display value와 canonical key를 분리 저장하는 문자열 canonicalization 설계를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java 문자열 canonicalization에서 Locale.ROOT case mapping, Unicode NFC/NFD normalization, original display value와 canonical key 분리를 다루는 advanced playbook이다.
+  Locale.ROOT, Turkish I, Unicode normalization, String equals false, identifier canonicalization 질문이 본 문서에 매핑된다.
+---
 # `Locale.ROOT`, Case Mapping, and Unicode Normalization Pitfalls
 
 > 한 줄 요약: 문자열은 사람 눈에 같아 보여도 code point가 다를 수 있고, `toLowerCase()`는 locale에 따라 달라질 수 있다. 식별자, 사용자명, 검색 키, 서명 대상 문자열을 다룰 때 normalization과 case policy를 명시하지 않으면 조용한 중복과 검증 실패가 생긴다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Reservoir Sampling
+concept_id: algorithm/reservoir-sampling
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- reservoir-sampling
+- streaming-uniform-sample
+- online-random-sampling
+aliases:
+- reservoir sampling
+- streaming sample
+- uniform stream sampling
+- unknown length sampling
+- online sampling
+- random sample from stream
+- log sampling reservoir
+- unbiased sample
+- 스트림 균등 샘플링
+- 저수지 샘플링
+symptoms:
+- 전체 길이를 모르는 스트림에서 균등 표본이 필요한데 모든 데이터를 저장하려고 한다
+- reservoir sampling과 heavy hitters를 섞어 자주 나오는 값을 찾는 알고리즘이라고 오해한다
+- k개 샘플에서 i번째 원소를 k/i 확률로 후보로 삼는 이유를 직관적으로 설명하지 못한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/randomized-vs-deterministic-quickselect
+- algorithm/top-k-streaming-heavy-hitters
+- algorithm/amortized-analysis-pitfalls
+next_docs:
+- algorithm/minhash-lsh-intuition
+- data-structure/hyperloglog
+- data-structure/bloom-filter
+linked_paths:
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+- contents/algorithm/randomized-vs-deterministic-quickselect.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+- contents/data-structure/heap-variants.md
+confusable_with:
+- algorithm/top-k-streaming-heavy-hitters
+- algorithm/randomized-vs-deterministic-quickselect
+- data-structure/hyperloglog
+- algorithm/minhash-lsh-intuition
+forbidden_neighbors: []
+expected_queries:
+- Reservoir Sampling은 전체 길이를 모르는 스트림에서 균등 샘플을 어떻게 유지해?
+- i번째 원소를 k/i 확률로 reservoir 후보에 넣으면 왜 모든 원소 확률이 같아져?
+- 로그 샘플링에서 전체 저장 없이 대표 샘플을 남기려면 어떤 알고리즘을 써?
+- reservoir sampling과 heavy hitters는 대표 샘플과 빈도 추적 관점에서 어떻게 달라?
+- 스트림에서 k개 unbiased sample을 한 번의 pass로 뽑는 방법을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Reservoir Sampling deep dive로, 전체 길이를 모르는 stream에서
+  k개 uniform sample을 유지하기 위해 i번째 원소를 k/i 확률로 후보에 넣고
+  기존 reservoir 항목을 무작위 교체하는 온라인 샘플링 기법을 설명한다.
+---
 # Reservoir Sampling
 
 > 한 줄 요약: Reservoir Sampling은 전체 크기를 모르는 스트림에서 모든 원소가 같은 확률로 뽑히도록 표본을 유지하는 기법이다.

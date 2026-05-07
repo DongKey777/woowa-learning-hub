@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: DAO vs Query Model Entrypoint
+concept_id: software-engineering/dao-vs-query-model
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- dao
+- query-model
+- read-model
+aliases:
+- DAO vs Query Model Entrypoint
+- dao vs query model
+- query repository 언제
+- DAO로 충분한 경우
+- read model beginner
+- query service meaning beginner
+symptoms:
+- 단건 id lookup과 관리자 목록/검색/대시보드 read model을 모두 조회라는 이유로 DAO 하나에 넣어 findForAdminList, findForDashboard가 계속 늘어나
+- query repository를 만들면 곧바로 다른 DB나 복잡한 CQRS가 필요하다고 오해해 같은 DB projection 분리라는 중간 선택을 놓쳐
+- DAO, repository, entity, query model 용어가 한 덩어리로 보여 command/write 경로와 read-heavy 화면 경계를 나누지 못해
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- software-engineering/repository-dao-entity
+- software-engineering/query-model-separation-read-heavy
+next_docs:
+- software-engineering/same-db-query-repository-vs-separate-read-store
+- software-engineering/persistence-model-leakage
+- spring/data-vs-domain-repository-bridge
+linked_paths:
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/same-db-query-repository-vs-separate-read-store.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/spring/spring-data-vs-domain-repository-bridge.md
+confusable_with:
+- software-engineering/repository-dao-entity
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/same-db-query-repository-vs-separate-read-store
+forbidden_neighbors: []
+expected_queries:
+- DAO와 dedicated query repository read model은 모두 조회인데 어떤 기준으로 나눠야 해?
+- 단건 조회 저장 수정은 DAO로 충분하고 목록 검색 대시보드는 query model이 더 안전한 이유를 설명해줘
+- query model을 만들면 반드시 별도 read DB가 필요한지, 같은 DB projection으로 시작해도 되는지 알려줘
+- findForAdminList findForDashboard 같은 DAO 메서드가 늘어날 때 어떤 smell로 봐야 해?
+- Spring Data repository와 domain repository, DAO, query repository 용어가 헷갈릴 때 어디서 시작하면 돼?
+contextual_chunk_prefix: |
+  이 문서는 DAO와 query repository/read model을 table row read/write vs list/search/dashboard read responsibility 기준으로 구분하는 beginner chooser다.
+---
 # DAO vs Query Model Entrypoint
 
 > 한 줄 요약: 처음 배우는데 헷갈리면 이렇게 보면 된다. "정해진 테이블 데이터를 읽고 쓰는 일"이면 DAO로 충분하고, "목록·검색·대시보드처럼 읽기 화면 자체가 별도 책임"이면 dedicated query repository/read model이 더 안전하다.

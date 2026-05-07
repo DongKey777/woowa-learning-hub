@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: 뮤텍스와 교착상태 기초
+concept_id: operating-system/mutex-deadlock-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- mutex-critical-section-race-condition
+- deadlock-four-conditions
+- lock-ordering-discipline
+aliases:
+- mutex deadlock basics
+- 뮤텍스와 교착상태 기초
+- 뮤텍스란
+- 교착상태란
+- deadlock beginner
+- mutex beginner
+- critical section race condition
+- 임계구역 경쟁조건
+- deadlock four conditions
+- Java synchronized deadlock
+- lock ordering
+symptoms:
+- race condition과 deadlock을 둘 다 멀티스레드 문제라고만 알고 결과 꼬임과 진행 멈춤을 구분하지 못해
+- synchronized나 mutex를 쓰면 항상 안전하다고 생각하지만 lock 순서가 꼬이면 왜 deadlock이 나는지 헷갈려
+- 계좌 이체처럼 두 자원을 동시에 잠그는 코드에서 전역 잠금 순서가 왜 필요한지 궁금해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/process-thread-basics
+next_docs:
+- operating-system/futex-mutex-semaphore-spinlock
+- operating-system/context-switching-deadlock-lockfree
+- operating-system/lock-contention-futex-offcpu-debugging
+linked_paths:
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/futex-mutex-semaphore-spinlock.md
+- contents/operating-system/lock-contention-futex-offcpu-debugging.md
+- contents/operating-system/futex-requeue-priority-inheritance-convoy-debugging.md
+- contents/language/java/java-thread-basics.md
+confusable_with:
+- operating-system/context-switching-deadlock-lockfree
+- operating-system/futex-mutex-semaphore-spinlock
+- operating-system/lock-contention-futex-offcpu-debugging
+forbidden_neighbors: []
+expected_queries:
+- mutex와 critical section이 race condition을 어떻게 막는지 초급자 기준으로 설명해줘
+- deadlock의 네 가지 조건과 circular wait를 깨는 lock ordering 방법을 알려줘
+- race condition은 결과가 틀리는 문제이고 deadlock은 진행이 멈추는 문제라는 차이를 설명해줘
+- Java synchronized로도 lock 순서가 다르면 왜 교착상태가 생길 수 있어?
+- mutex와 semaphore의 소유권 차이를 beginner 관점으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 mutex를 critical section에 한 thread만 들어가게 하는 mutual exclusion 도구로 설명하고, deadlock을 mutual exclusion, hold and wait, no preemption, circular wait 조건과 lock ordering으로 다루는 beginner primer다.
+  race condition, critical section, Java synchronized, lock ordering, deadlock four conditions, mutex vs semaphore 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 뮤텍스와 교착상태 기초
 
 > 한 줄 요약: 뮤텍스는 공유 자원을 한 번에 하나의 스레드만 사용하도록 잠그는 장치이고, 교착상태는 서로 다른 자원을 쥐고 상대방의 자원을 기다릴 때 발생한다.

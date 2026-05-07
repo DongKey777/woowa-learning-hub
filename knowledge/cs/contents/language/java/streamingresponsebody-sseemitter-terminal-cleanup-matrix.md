@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: StreamingResponseBody SseEmitter Terminal Cleanup Matrix
+concept_id: language/streamingresponsebody-sseemitter-terminal-cleanup-matrix
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- streaming
+- cleanup
+- sse
+aliases:
+- StreamingResponseBody and SseEmitter Terminal Cleanup Matrix
+- streaming terminal cleanup matrix
+- post commit streaming error cleanup
+- producer cancellation after broken pipe
+- late write suppression
+- SseEmitter onCompletion cleanup
+symptoms:
+- 첫 바이트 이후 StreamingResponseBody나 SseEmitter 실패를 아직 error response로 바꿀 수 있는 application failure로 취급해 response rewrite를 시도해
+- timeout disconnect normal complete late write failure별 cleanup 코드를 따로 두어 producer stop, resource release, closed flag suppression이 중복되거나 누락돼
+- writer IOException이나 emitter onCompletion이 DB query, HTTP download, scheduler, subscription cancel까지 자동으로 처리한다고 추정해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/servlet-asynclistener-cleanup-patterns
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+next_docs:
+- language/sse-last-event-id-replay-reconnect-ownership
+- spring/servlet-container-disconnect-exception-mapping
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+linked_paths:
+- contents/language/java/streaming-response-abort-surfaces-servlet-virtual-threads.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+- language/sse-last-event-id-replay-reconnect-ownership
+- language/servlet-asynclistener-cleanup-patterns
+forbidden_neighbors: []
+expected_queries:
+- StreamingResponseBody와 SseEmitter terminal cleanup은 stop producer release resources suppress late write 순서로 왜 묶어야 해?
+- 첫 바이트 이후 broken pipe가 나면 response rewrite가 아니라 transport phase terminal signal로 봐야 하는 이유가 뭐야?
+- StreamingResponseBody는 write flush IOException이고 SseEmitter는 send heartbeat onCompletion이 주요 abort surface라는 차이를 알려줘
+- late write failure를 새 장애로 보지 않고 closed flag로 suppression하는 패턴을 설명해줘
+- streaming response cleanup matrix에서 timeout disconnect normal complete를 같은 idempotent cleanup contract로 묶는 방법이 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 StreamingResponseBody와 SseEmitter post-commit terminal signal을 stop producer, release resources, suppress late write cleanup contract로 묶는 advanced playbook이다.
+  StreamingResponseBody cleanup, SseEmitter cleanup, broken pipe, late write suppression, terminal cleanup matrix 질문이 본 문서에 매핑된다.
+---
 # `StreamingResponseBody` and `SseEmitter` Terminal Cleanup Matrix
 
 > 한 줄 요약: `StreamingResponseBody`와 `SseEmitter`는 첫 바이트 이후 failure를 "응답 생성 실패"가 아니라 transport-phase terminal signal로 다뤄야 하며, portable한 설계는 signal 관측 지점보다 `stop producer -> release resources -> suppress late write` 순서를 같은 cleanup contract로 묶는 데 있다.

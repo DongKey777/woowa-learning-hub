@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Interval Tree
+concept_id: data-structure/interval-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- interval-tree
+- online-overlap-query
+- reservation-conflict-detection
+aliases:
+- interval tree
+- interval search tree
+- overlap query
+- dynamic interval query
+- calendar booking overlap
+- interval stabbing query
+- reservation conflict check
+symptoms:
+- 예약 API처럼 interval insert와 overlap query가 계속 섞이는 online workload를 매번 전체 sort나 sweep으로 처리하려 한다
+- Disjoint Interval Set이 canonical merge를 유지하는 구조이고 Interval Tree는 겹치는 구간을 찾는 구조라는 차이를 놓친다
+- interval greedy, sweep line overlap counting, segment tree 집계 문제를 모두 interval tree로 해결하려 한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/disjoint-interval-set
+next_docs:
+- algorithm/sweep-line-overlap-counting
+- algorithm/interval-greedy-patterns
+- data-structure/segment-tree-lazy-propagation
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+linked_paths:
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- data-structure/disjoint-interval-set
+- algorithm/sweep-line-overlap-counting
+- algorithm/interval-greedy-patterns
+- data-structure/segment-tree-lazy-propagation
+forbidden_neighbors: []
+expected_queries:
+- Interval Tree는 새 예약이 들어올 때마다 overlap query를 빠르게 찾는 데 언제 필요해?
+- Disjoint Interval Set과 Interval Tree는 merge 유지와 overlap search 기준으로 어떻게 달라?
+- interval greedy나 sweep line으로 풀 문제와 dynamic interval tree 문제를 구분해줘
+- calendar booking conflict check에서 interval tree가 맞는 workload는?
+- interval stabbing query와 online insert overlap query를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Interval Tree를 online interval insert와 overlap query가 섞이는
+  reservation/calendar booking workload를 위한 chooser로 설명한다. Disjoint
+  Interval Set, Sweep Line, Interval Greedy, Segment Tree와 문제 목적을 분리한다.
+---
 # Interval Tree
 
 > 한 줄 요약: Interval Tree는 구간이 서로 겹치는지 빠르게 찾기 위해, 중앙 기준으로 구간을 분할해 저장하는 자료구조다.

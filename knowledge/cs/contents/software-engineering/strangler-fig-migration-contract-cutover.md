@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Strangler Fig Migration, Contract, Cutover
+concept_id: software-engineering/strangler-fig-migration-contract-cutover
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- migration
+- strangler-fig
+- cutover
+- contract-testing
+aliases:
+- strangler fig migration
+- strangler cutover contract
+- legacy migration cutover
+- shadow traffic migration
+- dual write migration risk
+- Strangler Fig 전환
+symptoms:
+- 레거시를 한 번에 교체하려 해 라우팅, 계약 테스트, shadow traffic, rollback 경로 없이 big-bang cutover 위험을 만든다
+- dual write를 단순히 두 DB에 같이 쓰는 것으로 처리해 outbox, CDC, 보상, 재처리 없이 정합성 빚을 쌓아
+- cutover를 트래픽 100% 전환 스위치로만 보고 데이터 쓰기, 읽기, 배치, 캐시, rollback 경로 상태 전이를 설계하지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/monolith-to-msa-failure-patterns
+- software-engineering/api-contract-testing
+next_docs:
+- software-engineering/strangler-verification-shadow-traffic-metrics
+- software-engineering/migration-wave-governance
+- system-design/workflow-orchestration-saga-design
+linked_paths:
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/system-design/workflow-orchestration-saga-design.md
+confusable_with:
+- software-engineering/monolith-to-msa-failure-patterns
+- software-engineering/deployment-rollout-strategy
+- software-engineering/data-migration-cutover
+forbidden_neighbors: []
+expected_queries:
+- Strangler Fig migration은 레거시를 한 번에 대체하지 않고 router와 fallback으로 어떻게 점진 전환해?
+- cutover를 트래픽 스위치가 아니라 읽기, 쓰기, 배치, 캐시, rollback 상태 전이로 봐야 하는 이유는?
+- dual write 대신 outbox와 CDC로 전환하면 어떤 정합성 위험을 줄일 수 있어?
+- shadow traffic과 contract testing을 이용해 새 경로가 legacy consumer 의미를 유지하는지 어떻게 검증해?
+- strangler migration에서 rollback은 코드 rollback보다 경로 rollback이라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 legacy system을 router, contract test, shadow traffic, outbox/CDC, canary cutover, rollback path로 감싸 점진 전환하는 advanced migration playbook이다.
+---
 # Strangler Fig Migration, Contract, Cutover
 
 > 한 줄 요약: 레거시를 한 번에 갈아엎지 말고, 기존 시스템을 감싸듯이 점진적으로 잘라내면서 계약과 롤백 경로를 유지해야 안전하게 전환할 수 있다.

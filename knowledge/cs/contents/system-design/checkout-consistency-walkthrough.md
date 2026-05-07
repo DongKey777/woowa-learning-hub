@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Checkout Consistency Walkthrough
+concept_id: system-design/checkout-consistency-walkthrough
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- checkout consistency walkthrough
+- checkout consistency beginner
+- cart version check checkout
+- cart version mismatch checkout
+aliases:
+- checkout consistency walkthrough
+- checkout consistency beginner
+- cart version check checkout
+- cart version mismatch checkout
+- idempotency key checkout
+- duplicate checkout retry
+- read after write order confirmation
+- checkout stale confirmation
+- order placed but not visible
+- cart version if-match checkout
+- expected version cart checkout
+- checkout duplicate submit
+symptoms:
+- checkout 요청이 timeout 뒤 재시도되어 주문이나 결제가 두 번 생길까 봐 불안하다
+- cart version, idempotency key, read-after-write 확인을 각각 따로만 이해하고 한 흐름으로 연결하지 못한다
+- 주문 생성은 성공했는데 확인 화면이나 목록에서 방금 주문이 보이지 않는다
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/writes-follow-reads-primer.md
+- contents/system-design/write-order-vs-precondition-primer.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/conditional-write-status-code-bridge.md
+- contents/database/compare-and-set-version-columns.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Checkout Consistency Walkthrough 설계 핵심을 설명해줘
+- checkout consistency walkthrough가 왜 필요한지 알려줘
+- Checkout Consistency Walkthrough 실무 트레이드오프는 뭐야?
+- checkout consistency walkthrough 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Checkout Consistency Walkthrough를 다루는 deep_dive 문서다. checkout에서는 `cart version check`, `idempotency key`, `read-after-write confirmation`이 각각 다른 사고를 막고, 셋을 한 흐름으로 이어야 "중복 결제도 없고 방금 주문도 바로 보이는" 경험을 만들 수 있다. 검색 질의가 checkout consistency walkthrough, checkout consistency beginner, cart version check checkout, cart version mismatch checkout처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Checkout Consistency Walkthrough
 
 > 한 줄 요약: checkout에서는 `cart version check`, `idempotency key`, `read-after-write confirmation`이 각각 다른 사고를 막고, 셋을 한 흐름으로 이어야 "중복 결제도 없고 방금 주문도 바로 보이는" 경험을 만들 수 있다.
@@ -5,6 +66,14 @@
 retrieval-anchor-keywords: checkout consistency walkthrough, checkout consistency beginner, cart version check checkout, cart version mismatch checkout, idempotency key checkout, duplicate checkout retry, read after write order confirmation, checkout stale confirmation, order placed but not visible, cart version if-match checkout, expected version cart checkout, checkout duplicate submit, checkout timeout retry safe, checkout confirmation primary fallback, beginner checkout flow consistency
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| shopping-cart 장면 | 이 문서에서 먼저 잡을 질문 |
+|---|---|
+| checkout 버튼을 두 번 눌렀다 | 같은 attempt를 replay-safe하게 흡수하는가 |
+| cart를 본 뒤 상품/수량이 바뀌었다 | checkout precondition이 있는가 |
+| 주문 완료 직후 확인 화면이 비어 있다 | read-after-write 경로가 보장되는가 |
 
 관련 문서:
 

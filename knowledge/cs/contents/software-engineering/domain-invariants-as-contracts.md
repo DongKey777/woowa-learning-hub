@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Domain Invariants as Contracts
+concept_id: software-engineering/domain-invariants-as-contracts
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- domain-invariant
+- contract-testing
+- semantic-contract
+- validation
+aliases:
+- Domain Invariants as Contracts
+- domain invariant contract
+- business rule semantic contract
+- invariant breach detection
+- schema validation vs invariant
+- 상태 불변식 계약 테스트
+symptoms:
+- schema는 맞고 필드도 존재하지만 상태 전이, 금액 범위, null 의미 같은 비즈니스 invariant가 깨져 downstream 장애가 나
+- 내부 validation으로만 지키던 domain rule이 API 응답, 이벤트, replay, backfill 경계를 넘어가며 consumer contract를 깨뜨려
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/bounded-context-failure-patterns
+- software-engineering/api-contract-testing
+next_docs:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/event-schema-versioning
+- software-engineering/contract-drift-governance
+linked_paths:
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/domain-capability-heatmap.md
+confusable_with:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/api-contract-testing
+- software-engineering/event-schema-versioning
+forbidden_neighbors: []
+expected_queries:
+- domain invariant를 단순 validation이 아니라 consumer contract로 다뤄야 하는 이유가 뭐야?
+- schema validation은 통과하지만 business invariant가 깨지는 사례를 설명해줘
+- 주문 상태 전이나 금액 음수 금지 같은 invariant를 contract test로 외부화하려면 어떻게 해?
+- replay나 backfill 과정에서 과거 이벤트가 현재 invariant를 깨뜨릴 때 어떻게 대응해?
+- API contract와 event schema에 semantic invariant를 함께 반영하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 domain invariant를 내부 validation을 넘어 API response, event schema, replay, contract test까지 이어지는 semantic contract로 다루는 advanced bridge이다.
+---
 # Domain Invariants as Contracts
 
 > 한 줄 요약: domain invariant는 내부 규칙처럼 보이지만, 실제로는 서비스와 소비자 사이에서 절대 깨지면 안 되는 계약 조건으로 다뤄야 한다.

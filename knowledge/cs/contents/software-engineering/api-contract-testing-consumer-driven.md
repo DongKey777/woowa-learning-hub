@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: API Contract Testing Consumer Driven
+concept_id: software-engineering/api-contract-testing
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- contract-testing
+- consumer-driven-contract
+- api-compatibility
+aliases:
+- API Contract Testing Consumer Driven
+- consumer-driven contract testing
+- Pact contract test
+- Spring Cloud Contract
+- provider verification
+- consumer expectation test
+- 컨슈머 주도 계약 테스트
+symptoms:
+- provider 내부 테스트가 통과했으니 실제 consumer가 기대하는 필드와 enum 의미도 안전하다고 가정해
+- API 응답 스냅샷이나 통합 테스트만으로 소비자 호환성 깨짐을 배포 전 잡을 수 있다고 생각해
+- 계약 파일이 늘어나도 owner, broker, verification scope, breaking change policy 없이 운영해 유지비가 폭증해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/backward-compatibility-gates
+next_docs:
+- software-engineering/contract-registry-governance
+- software-engineering/consumer-exception-model
+- software-engineering/compatibility-waiver-governance
+linked_paths:
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/contract-registry-governance.md
+- contents/software-engineering/consumer-exception-operating-model.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/repository-dao-entity.md
+confusable_with:
+- software-engineering/backward-compatibility-gates
+- software-engineering/contract-registry-governance
+- software-engineering/api-lifecycle-stage
+forbidden_neighbors: []
+expected_queries:
+- consumer-driven contract testing은 provider test나 integration test와 무엇이 달라?
+- Pact나 Spring Cloud Contract는 소비자가 기대하는 필드와 provider verification을 어떻게 연결해?
+- API enum 삭제나 의미 변경 같은 breaking change를 계약 테스트로 어떻게 먼저 잡아?
+- 계약 테스트가 너무 많아질 때 contract broker owner verification scope를 어떻게 관리해야 해?
+- API versioning과 backward compatibility gate, consumer contract test를 함께 운영하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 consumer-driven API contract testing을 consumer expectations, Pact/Spring Cloud Contract, provider verification, contract broker, backward compatibility gate 관점에서 설명하는 advanced deep dive다.
+---
 # API Contract Testing, Consumer-Driven
 
 > 한 줄 요약: 계약 테스트는 "응답이 나온다"가 아니라, 소비자와 제공자 사이의 깨지기 쉬운 약속을 자동으로 지키게 하는 장치다.

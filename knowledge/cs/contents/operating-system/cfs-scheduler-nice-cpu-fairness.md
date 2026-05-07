@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: CFS Scheduler nice CPU Fairness
+concept_id: operating-system/cfs-scheduler-nice-cpu-fairness
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- scheduler-runqueue-tail-latency
+- cgroup-cpu-throttling-confusion
+- batch-api-cpu-fairness
+aliases:
+- CFS scheduler nice CPU fairness
+- Completely Fair Scheduler
+- CFS vruntime
+- nice weight CPU share
+- run queue scheduling delay
+- scheduler fairness
+- CPU tail latency
+- cgroup CPU throttling
+symptoms:
+- CPU 사용률만 보고 있는데 API p95가 배치 작업 뒤 튀는 이유를 못 찾고 있어
+- nice 값을 절대 우선순위처럼 이해해서 cgroup quota나 run queue를 놓치고 있어
+- 컨테이너에서는 CPU가 남아 보이는데 throttling 때문에 요청이 밀리는 장면을 scheduler 문제와 섞고 있어
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- operating-system/cpu-scheduling-basics
+- operating-system/process-thread-basics
+- operating-system/context-switching-deadlock-lockfree
+next_docs:
+- operating-system/scheduler-wakeup-latency-runqlat-debugging
+- operating-system/schedstat-proc-sched-runtime-debugging
+- operating-system/cgroup-cpu-throttling-quota-runtime-debugging
+- operating-system/scheduler-fairness-page-cache
+linked_paths:
+- contents/operating-system/scheduler-fairness-page-cache.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/schedstat-proc-sched-runtime-debugging.md
+confusable_with:
+- operating-system/cpu-scheduling-basics
+- operating-system/cgroup-cpu-throttling-quota-runtime-debugging
+- operating-system/context-switching-deadlock-lockfree
+forbidden_neighbors: []
+expected_queries:
+- CFS는 vruntime과 nice weight로 CPU fairness를 어떻게 맞춰?
+- nice 값을 올렸는데도 API latency가 줄지 않는 이유는 뭐야?
+- CPU 사용률은 낮은데 run queue가 길면 어떤 scheduler 문제를 의심해야 해?
+- 컨테이너에서 CPU quota throttling과 CFS scheduling delay를 어떻게 구분해?
+- 배치 작업 때문에 API p95가 튈 때 scheduler 관점에서 무엇을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Linux CFS scheduler deep dive로, vruntime, nice weight, run queue, CPU fairness, wakeup latency, cgroup CPU throttling을 tail latency 관점에서 설명한다.
+  nice 값, CPU fairness, run queue, batch 때문에 API p95 증가, CPU는 남는데 컨테이너 throttling 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # CFS Scheduler, nice, CPU Fairness
 
 > 한 줄 요약: CFS는 CPU 시간을 "같이 나누는 것"이 아니라, `vruntime` 기준으로 상대적 공정성을 맞춰서 여러 워크로드의 체감 편차를 줄인다.

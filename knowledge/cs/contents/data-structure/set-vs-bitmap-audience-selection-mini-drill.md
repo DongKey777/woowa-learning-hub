@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Set vs Bitmap Audience Selection Mini Drill
+concept_id: data-structure/set-vs-bitmap-audience-selection-mini-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- audience-selection-structure-choice
+- membership-vs-set-algebra
+- dense-id-checklist
+aliases:
+- set vs bitmap audience selection drill
+- audience segment set or bitmap
+- dense integer id drill
+- membership only vs set algebra
+- bitmap beginner practice
+- set beginner practice
+- 대상자 선택 뭐 써요
+- audience selection 처음
+- bitmap set 헷갈림
+- set or bitmap when to use
+- segment intersection basics
+- what is bitmap drill
+- beginner membership drill
+- sparse id set bitset roaring
+- set bitset roaring 뭐 써요
+symptoms:
+- 대상자 선택 문제를 보면 무조건 bitmap을 떠올려서 과한 선택을 하게 돼
+- contains 몇 번이면 되는지 집합 전체 연산인지 문제를 잘 못 자르겠어
+- 정수 id는 맞는데 sparse한 상황에서 Set과 bitset 중 무엇을 먼저 볼지 모르겠어
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+next_docs:
+- data-structure/bitset-vs-roaring-bitmap-handoff
+- data-structure/roaring-bitmap-selection-playbook
+linked_paths:
+- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+- contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md
+- contents/language/java/list-contains-vs-set-contains-symptom-card.md
+confusable_with:
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+- data-structure/bitset-vs-roaring-bitmap-handoff
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+forbidden_neighbors: []
+expected_queries:
+- audience selection 문제를 보면 Set과 bitmap 중 무엇부터 고를지 연습하고 싶어
+- 세그먼트 교집합 문제를 beginner 기준으로 분류하는 드릴
+- 대상자 명단 한 번 확인할 때도 bitset을 써야 하는지 판단 연습
+- dense id와 sparse id 상황을 같이 비교해 보는 자료구조 선택 문제
+- membership 위주 문제와 set algebra 문제를 빠르게 구분하는 체크 문제
+- 쿠폰 대상자 계산에서 Set으로 충분한지 확인하는 미니 연습
+contextual_chunk_prefix: |
+  이 문서는 audience selection에서 Set vs bitmap을 고르는 beginner mini drill이다.
+  쿠폰 대상자, 알림 대상자, 세그먼트 intersection, dense id, sparse id,
+  membership only vs repeated set algebra를 손으로 분류하며 과한 bitmap 최적화를 막는다.
+---
 # Set vs Bitmap Audience Selection Mini Drill
 
 > 한 줄 요약: audience selection 문제를 볼 때는 "단건 membership만 확인하나"면 `Set`, "`0..n` 정수 id 집합을 여러 조건으로 계속 겹치나"면 `bitmap/bitset`으로 먼저 자르면 beginner도 과한 최적화를 덜 한다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Keep-Alive Reuse, Stale Idle Connection Primer"
+concept_id: network/keepalive-reuse-stale-idle-connection-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- keep-alive
+- stale-idle-connection
+- first-request-after-idle
+aliases:
+- keep-alive first request after idle
+- stale idle connection
+- keepalive reuse failure
+- idle 뒤 첫 요청 실패
+- broken pipe after idle
+- connection reset after idle
+- stale socket beginner
+symptoms:
+- 한참 쉬었다가 보낸 첫 요청만 connection reset이나 broken pipe로 실패한다
+- 바로 재시도하면 새 연결로 성공해서 서버가 잠깐 이상했다고 오해한다
+- keep-alive를 켰으니 idle 뒤에도 연결이 반드시 살아 있다고 믿는다
+- TCP keepalive와 HTTP keep-alive를 같은 기능으로 본다
+intents:
+- symptom
+- troubleshooting
+- definition
+prerequisites:
+- network/keepalive-connection-reuse-basics
+- network/browser-devtools-first-fail-second-success-keepalive-card
+next_docs:
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- spring/webclient-connection-pool-timeout-tuning
+linked_paths:
+- contents/network/keepalive-connection-reuse-basics.md
+- contents/network/browser-devtools-first-fail-second-success-keepalive-card.md
+- contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/rst-on-idle-keepalive-reuse.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/keepalive-connection-reuse-basics
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/rst-on-idle-keepalive-reuse
+forbidden_neighbors: []
+expected_queries:
+- "keep-alive를 켰는데 idle 뒤 첫 요청만 실패하는 이유가 뭐야?"
+- "stale idle connection과 connection reset after idle을 초보자에게 설명해줘"
+- "왜 첫 요청은 깨지고 바로 재시도하면 성공해?"
+- "HTTP keep-alive와 TCP keepalive가 이 문제에서 어떻게 달라?"
+- "idle timeout mismatch 때문에 stale socket을 재사용하는 패턴을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 HTTP keep-alive connection reuse에서 idle timeout으로 죽은
+  stale idle connection을 첫 요청에 재사용해 reset/broken pipe가 나는
+  beginner symptom router다.
+---
 # Keep-Alive 켰는데 왜 idle 뒤 첫 요청만 실패할까? (Stale Idle Connection Primer)
 
 > 한 줄 요약: keep-alive는 연결 재사용 기능이지만, idle 동안 중간 장비가 먼저 연결을 닫으면 클라이언트는 "살아 있다고 믿은 연결"을 다시 써서 첫 요청만 실패할 수 있다.

@@ -34,7 +34,7 @@ aliases:
 - spring bean naming qualifier rename pitfalls primer beginner
 symptoms:
 - 클래스 이름이나 `@Bean` 메서드 이름을 바꿨더니 주입이 갑자기 깨졌어요
-- `@Qualifier` 문자열이 어디서 온 이름인지 몰라서 rename이 무서워요
+- "`@Qualifier` 문자열이 어디서 온 이름인지 몰라서 rename이 무서워요"
 - bean 이름, alias, qualifier 값이 같은 건지 다른 건지 헷갈려요
 intents:
 - definition
@@ -59,8 +59,8 @@ forbidden_neighbors:
 - contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
 expected_queries:
 - 클래스 이름 바꿨더니 왜 예전 qualifier 문자열이 계속 문제를 일으켜?
-- `@Component` 기본 bean 이름이 실제로 어떻게 정해지는지 처음부터 알고 싶어
-- `@Bean` 메서드명을 바꾸면 주입 지점까지 왜 같이 깨질 수 있어?
+- "`@Component` 기본 bean 이름이 실제로 어떻게 정해지는지 처음부터 알고 싶어"
+- "`@Bean` 메서드명을 바꾸면 주입 지점까지 왜 같이 깨질 수 있어?"
 - bean 이름이랑 qualifier 값이 같은 규칙으로 이어지는지 헷갈릴 때 어디서 정리해?
 - 문자열 기반 주입이 rename에 약한 이유를 스프링 기준으로 설명해줘
 - alias를 붙이면 rename 충격을 줄일 수 있는지 감이 안 와
@@ -76,6 +76,14 @@ contextual_chunk_prefix: |
 > 한 줄 요약: `@Qualifier("name")`가 안전한지 보려면 먼저 그 문자열이 bean 이름인지, alias인지, 별도 qualifier 값인지부터 구분해야 한다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 component bean 이름, `@Bean` 메서드 이름, 문자열 qualifier가 서로 어떻게 연결되는지와 rename 때 어디서 깨지는지를 beginner 기준으로 묶어 주는 **bean naming primer**를 담당한다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "클래스 이름을 바꿨더니 qualifier가 깨졌어요" | `ManualLottoGenerator` rename 뒤 `@Qualifier("manualLottoGenerator")` 문자열이 남은 코드 | component 기본 bean name과 qualifier 문자열의 연결을 확인한다 |
+| "`@Bean` 메서드명을 바꾸면 왜 주입도 흔들리죠?" | test config나 payment client config에서 method name이 bean name으로 쓰이는 상황 | 등록 이름과 주입 지점 문자열 계약을 함께 추적한다 |
+| "alias를 붙이면 rename 충격을 줄일 수 있나요?" | 기존 bean name을 유지해야 하는 주입 지점이 많은 코드 | alias, bean name, qualifier value가 같은 축인지 먼저 구분한다 |
 
 **난이도: 🟢 Beginner**
 

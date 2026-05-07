@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring Boot Properties vs Customizer vs Bean Replacement Primer
+concept_id: spring/boot-properties-vs-customizer-vs-bean-replacement-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- boot-properties-vs
+- customizer-vs-bean
+- replacement
+- boot-customization-ladder
+aliases:
+- Boot customization ladder
+- properties vs customizer vs bean replacement
+- application.yml vs customizer
+- ObjectMapper customizer
+- RestClientCustomizer
+- top-level bean replacement
+- ConditionalOnMissingBean back-off
+intents:
+- definition
+- design
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-boot-customizer-vs-top-level-bean-replacement-primer.md
+- contents/spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md
+- contents/spring/spring-mvc-customizer-ladder-webmvcconfigurer-primer.md
+- contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-value-vs-configurationproperties-env-guide.md
+expected_queries:
+- Spring Boot 설정은 properties customizer bean replacement 중 무엇을 먼저 봐야 해?
+- ObjectMapper를 바꿀 때 customizer와 bean 교체는 어떻게 골라?
+- Boot 기본 bean을 갈아끼우기 전에 properties를 먼저 봐야 하는 이유가 뭐야?
+- customizer bean은 top-level bean replacement와 뭐가 달라?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot customization ladder를 beginner 관점에서 설명한다.
+  application.yml properties knob, customizer bean, WebMvcConfigurer,
+  RestClientCustomizer, ObjectMapper customizer, top-level bean replacement,
+  @ConditionalOnMissingBean back-off를 단계적으로 선택하는 primer다.
+---
 # Spring Boot 설정 3단계 입문: properties -> customizer -> bean replacement
 
 > 한 줄 요약: Boot 설정을 바꿀 때는 먼저 `application.yml` 같은 **properties knob**를 찾고, 그다음 **customizer bean**으로 덧칠하고, 마지막에만 **top-level bean 교체**로 올라가면 된다.

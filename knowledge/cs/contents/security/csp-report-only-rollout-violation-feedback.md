@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: CSP Report-Only Rollout / Violation Feedback
+concept_id: security/csp-report-only-rollout-violation-feedback
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- CSP report-only
+- Content-Security-Policy-Report-Only
+- violation report
+- rollout
+aliases:
+- CSP report-only
+- Content-Security-Policy-Report-Only
+- violation report
+- rollout
+- script-src
+- frame-ancestors
+- strict CSP
+- browser telemetry
+- policy hardening
+- CSP Report-Only Rollout / Violation Feedback
+- csp report only rollout violation feedback
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/csp-nonces-vs-hashes-script-policy.md
+- contents/security/session-fixation-clickjacking-csp.md
+- contents/security/xss-csrf-spring-security.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/https-hsts-mitm.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- CSP Report-Only Rollout / Violation Feedback 핵심 개념을 설명해줘
+- CSP report-only가 왜 필요한지 알려줘
+- CSP Report-Only Rollout / Violation Feedback 실무 설계 포인트는 뭐야?
+- CSP report-only에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 CSP Report-Only Rollout / Violation Feedback를 다루는 deep_dive 문서다. CSP는 처음부터 강제하면 깨질 수 있으므로, report-only로 위반을 관찰하고 점진적으로 정책을 강화하는 rollout이 실무적이다. 검색 질의가 CSP report-only, Content-Security-Policy-Report-Only, violation report, rollout처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # CSP Report-Only Rollout / Violation Feedback
 
 > 한 줄 요약: CSP는 처음부터 강제하면 깨질 수 있으므로, report-only로 위반을 관찰하고 점진적으로 정책을 강화하는 rollout이 실무적이다.

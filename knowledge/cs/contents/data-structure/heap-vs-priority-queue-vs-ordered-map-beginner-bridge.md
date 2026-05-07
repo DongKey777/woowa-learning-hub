@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Heap vs Priority Queue vs Ordered Map Beginner Bridge
+concept_id: data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- heap-priorityqueue-orderedmap-confusion
+- top1-vs-neighbor-range-choice
+- java-collection-selection
+aliases:
+- heap vs priority queue vs ordered map
+- heap vs TreeMap
+- priority queue vs ordered map
+- top 1 vs range query
+- floor ceiling vs heap
+- heap is implementation priority queue is behavior
+- ordered map beginner
+- 힙 우선순위 큐 트리맵 차이
+symptoms:
+- heap, priority queue, TreeMap을 모두 정렬 자료구조로 묶어서 쓰고 있어
+- top 1 반복 추출 문제와 기준값 주변 neighbor/range 질의를 구분하지 못하고 있어
+- PriorityQueue가 FIFO queue처럼 같은 우선순위 삽입 순서를 보장한다고 기대하고 있어
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/heap-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/top-k-heap-direction-patterns
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/treemap-neighbor-query-micro-drill
+linked_paths:
+- contents/data-structure/heap-basics.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/top-k-heap-direction-patterns.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer
+- data-structure/java-priorityqueue-pitfalls
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+forbidden_neighbors: []
+expected_queries:
+- heap과 priority queue와 ordered map은 각각 어떤 질문을 풀 때 써?
+- 지금 top 1 하나를 반복해서 꺼내는 문제면 PriorityQueue가 맞아?
+- 기준값 바로 이전이나 다음 값, 구간 전체가 필요하면 왜 heap보다 TreeMap이 자연스러워?
+- PriorityQueue는 같은 우선순위에서 삽입 순서를 자동으로 지켜?
+- heap은 정렬된 리스트가 아닌데 왜 가장 작은 값 하나는 빠르게 알 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 heap, priority queue, ordered map을 top-1 extraction vs neighbor/range query 축으로 가르는 beginner bridge다.
+  heap vs PriorityQueue, TreeMap vs heap, top 1 자료구조, floor ceiling, range query, priority queue stable order 오해 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Heap vs Priority Queue vs Ordered Map Beginner Bridge
 
 > 한 줄 요약: `priority queue`는 "지금 가장 중요한 것 1개"를 뽑는 규칙이고, `heap`은 그 규칙을 빠르게 구현하는 대표 구조이며, `TreeMap` 같은 ordered map은 `floor/ceiling/range`처럼 기준값 주변을 찾는 데 맞다.

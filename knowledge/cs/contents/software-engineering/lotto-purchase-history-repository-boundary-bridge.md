@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > lotto에서 저장소가 다뤄야 하는 기본 단위는 종종 `Lotto` 한 장이 아니라 "한 번의 구매"다. DB에서는 `purchase`와 `ticket`이 나뉘어도, repository 계약은 금액과 티켓 묶음이 함께 움직이는 구매 단위를 돌려주는 편이 service 책임이 덜 새어난다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "repository가 `List<Lotto>`만 돌려줘서 service가 구매 1회를 다시 조립해요" | purchase row와 ticket row를 따로 읽고 service가 금액/장수/티켓을 합치는 코드 | 저장소 반환 단위가 도메인 구매 단위를 표현하는지 본다 |
+| "DB는 purchase와 ticket으로 나뉘는데 도메인도 그대로 나눠야 하나요?" | 정규화된 row 모델을 service API shape으로 그대로 노출하는 구조 | DB 저장 구조와 repository contract의 반환 shape를 분리한다 |
+| "PurchaseRepository 이름을 두라는 리뷰가 단순 CRUD 분리인가요?" | 티켓 한 장 CRUD 중심으로 구매 내역 유스케이스를 처리하는 설계 | 유스케이스가 신뢰할 aggregate-like 구매 단위를 저장소 계약으로 드러낸다 |
+
 ## 미션 시나리오
 
 lotto를 콘솔 과제에서 조금만 확장하면 "구매 내역 저장"과 "지난 구매 다시 보기" 요구가 붙는다. 이때 학습자는 보통 `purchase` row와 `ticket` row를 저장한 뒤, 조회에서는 `List<Lotto>`만 받아 오거나 `purchase`와 `ticket`을 따로 읽어 service에서 다시 합친다.

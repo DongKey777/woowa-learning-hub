@@ -49,11 +49,7 @@ confusable_with:
 - design-pattern/shopping-cart-coupon-promotion-policy-object-bridge
 - design-pattern/shopping-cart-order-status-state-pattern-bridge
 - design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge
-forbidden_neighbors:
-- contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md
-- contents/design-pattern/shopping-cart-coupon-promotion-policy-object-bridge.md
-- contents/design-pattern/shopping-cart-order-status-state-pattern-bridge.md
-- contents/design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - shopping-cart checkout에서 결제수단 선택, 할인 규칙, 주문 상태, 만료 처리 중 무엇이 어떤 패턴으로 가야 하는지 한 번에 구분하는 기준이 뭐야?
 - 장바구니 미션 리뷰에서 분기 축이 섞였다는 말을 들었을 때 어떤 결정표로 나눠 보면 돼?

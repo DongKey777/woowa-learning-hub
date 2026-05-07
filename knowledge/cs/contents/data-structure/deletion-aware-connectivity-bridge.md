@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Deletion-Aware Connectivity Bridge
+concept_id: data-structure/deletion-aware-connectivity-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- union-find-deletion-limit
+- connectivity-with-deletion
+- dsu-rollback-bridge
+aliases:
+- deletion aware connectivity
+- edge deletion connectivity
+- union find deletion limit
+- connectivity after edge removal
+- DSU rollback intro
+- offline dynamic connectivity
+- 간선 삭제 연결성
+symptoms:
+- 연결 여부라는 말만 보고 간선 추가만 있는 문제와 간선 삭제가 있는 문제를 모두 plain union-find로 풀려 한다
+- 간선을 지운 뒤 아직 우회 경로가 남아 있는지 plain DSU가 기억하지 않는다는 한계를 놓친다
+- 삭제/복구 질의가 미리 주어진 offline dynamic connectivity와 bridge/articulation point 질문을 구분하지 못한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/union-find-standalone-beginner-primer
+next_docs:
+- data-structure/union-find-deep-dive
+- algorithm/dsu-rollback
+- algorithm/bridges-and-articulation-points
+- data-structure/connectivity-question-router
+linked_paths:
+- contents/data-structure/union-find-standalone-beginner-primer.md
+- contents/data-structure/union-find-deep-dive.md
+- contents/algorithm/dsu-rollback.md
+- contents/algorithm/bridges-and-articulation-points.md
+confusable_with:
+- data-structure/union-find-standalone-beginner-primer
+- algorithm/dsu-rollback
+- algorithm/bridges-and-articulation-points
+- data-structure/connectivity-question-router
+forbidden_neighbors: []
+expected_queries:
+- Union-Find는 왜 간선 삭제가 있는 connectivity 문제를 바로 처리하지 못해?
+- edge deletion 후 still connected인지 묻는 문제에서 plain DSU 한계는?
+- DSU rollback은 어떤 삭제 복구 질의에서 다음 선택지가 돼?
+- 간선 하나를 지우면 그래프가 갈라지는지 묻는 bridge 문제와 connectivity deletion을 구분해줘
+- union-find는 합치기에 강하고 삭제에는 약하다는 뜻을 beginner 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 plain union-find가 간선 추가만 계속되는 connectivity에는 강하지만
+  edge deletion 이후 우회 경로나 split 여부는 직접 기억하지 않는다는
+  beginner chooser다. DSU rollback, offline dynamic connectivity, bridge와
+  articulation point로 넘어가는 신호를 정리한다.
+---
 # Deletion-Aware Connectivity Bridge
 
 > 한 줄 요약: union-find는 `합치기만 계속되는 연결 여부`에는 강하지만, 간선을 지운 뒤에도 아직 이어져 있는지를 바로 판정하거나 쪼개는 일은 못해서 삭제가 보이면 DSU rollback 같은 다음 도구로 넘어가야 한다.

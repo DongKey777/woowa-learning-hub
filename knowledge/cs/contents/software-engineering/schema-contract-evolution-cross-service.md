@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Schema Contract Evolution Across Services
+concept_id: software-engineering/schema-contract-evolution-cross-service
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- schema-evolution
+- contract-testing
+- compatibility
+- event-schema
+aliases:
+- schema evolution across services
+- contract compatibility
+- expand and contract schema
+- backward forward compatible schema
+- event schema evolution
+- 서비스 간 스키마 계약 진화
+symptoms:
+- 필드 rename이나 enum 의미 변경을 단순 스키마 수정으로 처리해 느린 소비자와 replay/backfill 경로가 깨져
+- 새 필드 추가, 병행 지원, 읽기 전환, 옛 필드 제거 순서 없이 producer와 consumer를 동시에 바꾸려 해
+- DB schema, API response, event payload의 compatibility 방향을 구분하지 않아 rollback과 재처리 가능성이 떨어져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/api-contract-testing
+next_docs:
+- software-engineering/contract-drift-governance
+- software-engineering/backward-compatibility-gates
+- software-engineering/event-schema-versioning
+linked_paths:
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+confusable_with:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/event-schema-versioning
+- software-engineering/contract-drift-governance
+forbidden_neighbors: []
+expected_queries:
+- 서비스 간 schema evolution에서 backward compatible과 forward compatible은 어떤 방향의 호환성을 말해?
+- enum 값 추가나 status 의미 변경이 필드 추가보다 더 위험할 수 있는 이유를 설명해줘
+- expand and contract로 DB 컬럼 rename이나 API field migration을 안전하게 진행하는 순서를 알려줘
+- 이벤트 payload에 optional field를 추가할 때 replay와 old consumer compatibility를 어떻게 봐야 해?
+- producer와 consumer가 다른 속도로 배포될 때 contract test와 rollout 순서를 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 DB, API, event schema가 생산자와 소비자 사이에서 안전하게 진화하도록 compatibility 방향과 expand-and-contract 절차를 설계하는 advanced playbook이다.
+---
 # Schema Contract Evolution Across Services
 
 > 한 줄 요약: 스키마 진화는 필드를 추가하는 문제가 아니라, 생산자와 소비자가 서로 다른 속도로 바뀌어도 계약이 무너지지 않게 만드는 문제다.

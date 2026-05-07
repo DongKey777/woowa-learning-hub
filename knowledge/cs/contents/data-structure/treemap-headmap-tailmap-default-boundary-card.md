@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: TreeMap headMap/tailMap Default Boundary Card
+concept_id: data-structure/treemap-headmap-tailmap-default-boundary-card
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- treemap-range-boundary
+- headmap-tailmap-default
+- half-open-range
+aliases:
+- TreeMap headMap tailMap default
+- headMap excludes end
+- tailMap includes start
+- TreeMap range default asymmetry
+- half open ordered map range
+- headMap tailMap inclusive exclusive
+- TreeMap boundary card
+symptoms:
+- headMap(toKey)를 toKey까지 포함하는 range로 읽어 exact match boundary에서 한 칸 더 포함한다
+- tailMap(fromKey)를 fromKey 뒤쪽만 보는 range로 읽어 시작 key를 빠뜨린다
+- headMap, tailMap, subMap 기본형을 half-open range 계열로 연결하지 못하고 각각 따로 외운다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/treeset-range-view-mini-drill
+next_docs:
+- data-structure/treemap-submap-schedule-window-mini-drill
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/data-structure/treemap-submap-schedule-window-mini-drill.md
+- contents/data-structure/treeset-range-view-mini-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/navigable-range-api-mini-drill.md
+confusable_with:
+- data-structure/treemap-submap-schedule-window-mini-drill
+- data-structure/treeset-range-view-mini-drill
+- data-structure/treemap-key-entry-strictness-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeMap headMap(toKey)은 왜 기본으로 toKey를 제외하고 tailMap(fromKey)은 fromKey를 포함해?
+- headMap tailMap 기본 포함 규칙을 half-open range로 설명해줘
+- headMap(12:00)과 tailMap(12:00)은 12:00 exact match를 각각 포함해?
+- TreeMap range view에서 끝 제외 시작 포함 기본값을 어떻게 외우면 덜 헷갈려?
+- headMap(toKey, true)와 tailMap(fromKey, false)는 언제 써?
+contextual_chunk_prefix: |
+  이 문서는 Java TreeMap의 headMap(toKey)와 tailMap(fromKey) 기본 boundary를
+  half-open range로 설명한다. headMap은 end-exclusive, tailMap은 start-inclusive이며
+  subMap(from, to)의 [from, to) 감각과 연결한다.
+---
 # TreeMap `headMap`/`tailMap` 기본 포함 규칙 비교 카드
 
 > 한 줄 요약: Java `TreeMap` 기본형에서 `headMap(toKey)`는 끝 경계를 기본으로 제외하고, `tailMap(fromKey)`는 시작 경계를 기본으로 포함하므로 둘을 대칭으로 외우기보다 `(-inf, to)`와 `[from, +inf)` 한 쌍으로 붙여 기억하는 편이 안전하다.

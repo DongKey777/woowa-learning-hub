@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Monolith to MSA Failure Patterns
+concept_id: software-engineering/monolith-to-msa-failure-patterns
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- msa
+- migration
+- distributed-system
+- service-boundary
+aliases:
+- Monolith to MSA Failure Patterns
+- monolith to MSA migration failure
+- shared database anti pattern
+- distributed monolith failure
+- synchronous call chain amplification
+- 모놀리스 MSA 전환 실패 패턴
+symptoms:
+- 서비스 이름과 배포 단위는 나눴지만 DB를 공유하거나 서로의 테이블을 직접 참조해 장애와 릴리스 결합이 그대로 남아
+- 모놀리스의 함수 호출을 긴 동기 RPC 체인으로 바꿔 latency, timeout, retry, failure propagation이 증폭돼
+- Outbox, Inbox, Saga, tracing, ownership 없이 API만 먼저 나눠 정합성, 재처리, 디버깅, 장애 대응이 깨져
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/modular-monolith-boundary-enforcement
+next_docs:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/service-split-merge-absorb-evolution
+- software-engineering/strangler-fig-migration-contract-cutover
+linked_paths:
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/service-split-merge-absorb-evolution-framework.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/system-design/system-design-framework.md
+confusable_with:
+- software-engineering/clean-architecture-layered-modular-monolith
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/service-split-merge-absorb-evolution
+forbidden_neighbors: []
+expected_queries:
+- 모놀리스에서 MSA로 옮길 때 DB 공유, 동기 호출 체인, 정합성 문제가 어떻게 실패 패턴으로 나타나?
+- 서비스 이름만 나누고 같은 테이블을 직접 참조하면 왜 distributed monolith가 되는지 설명해줘
+- MSA 전환에서 outbox, inbox, saga, eventual consistency를 늦게 고민하면 어떤 장애가 생겨?
+- 모듈러 모놀리스로 먼저 경계를 연습해야 하는 이유와 MSA로 바로 가면 위험한 신호를 알려줘
+- 서비스 분리 후 correlation id, tracing, ownership, on-call이 없으면 디버깅이 왜 어려워져?
+contextual_chunk_prefix: |
+  이 문서는 monolith to MSA migration에서 shared database, synchronous call chain, distributed transaction, observability, ownership 실패를 진단하는 advanced symptom router이다.
+---
 # Monolith to MSA Failure Patterns
 
 > 한 줄 요약: 모놀리스를 MSA로 옮기는 건 배포 단위를 쪼개는 일이 아니라, 실패와 정합성의 책임을 재배치하는 일이다.

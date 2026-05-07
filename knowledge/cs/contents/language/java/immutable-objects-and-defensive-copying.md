@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Immutable Objects and Defensive Copying
+concept_id: language/immutable-objects-and-defensive-copying
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/racingcar
+review_feedback_tags:
+- immutability
+- defensive-copy
+- value-object
+aliases:
+- 불변 객체와 방어적 복사
+- immutable object defensive copy
+- shallow copy deep copy defensive copy
+- unmodifiableList defensive copy difference
+- record shallow immutability mutable component
+- 자바 방어적 복사 얕은 복사 깊은 복사
+symptoms:
+- new ArrayList로 컬렉션만 복사하면 내부 가변 요소까지 보호된다고 생각해 외부 변경 누수를 놓쳐
+- Collections.unmodifiableList를 방어적 복사와 같은 것으로 이해해 원본 리스트 변경과 가변 요소 변경 가능성을 구분하지 못해
+- record나 final 필드만 쓰면 객체 전체가 깊게 불변이라고 오해해 component mutation 위험을 설명하지 못해
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- language/java-array-copy-clone-basics
+- language/record-value-object-equality-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/value-object-invariants-canonicalization-boundary-design
+- language/collections-equality-mutable-state-foundations
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+linked_paths:
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+confusable_with:
+- language/java-array-copy-clone-basics
+- language/record-value-object-equality-basics
+- language/collections-equality-mutable-state-foundations
+forbidden_neighbors: []
+expected_queries:
+- 불변 객체와 방어적 복사의 차이를 얕은 복사 깊은 복사와 함께 설명해줘
+- Collections.unmodifiableList는 왜 방어적 복사와 다르고 어떤 경우 위험해?
+- record를 쓰면 내부 컬렉션까지 자동으로 불변이 되는지 알려줘
+- List를 getter로 노출할 때 내부 상태가 바깥에서 바뀌지 않게 하려면 어떻게 해야 해?
+- 가변 요소를 가진 컬렉션에서 defensive copy와 value object 설계를 어떻게 선택해?
+contextual_chunk_prefix: |
+  이 문서는 Java 불변 객체, defensive copy, shallow copy, deep copy, unmodifiableList 차이를 value object 설계와 연결하는 intermediate primer다.
+  방어적 복사, 얕은 복사 깊은 복사, record shallow immutability, 가변 요소 누수, unmodifiableList 질문이 본 문서에 매핑된다.
+---
 # 불변 객체와 방어적 복사
 
 **난이도: 🔴 Advanced**

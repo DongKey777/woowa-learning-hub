@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/roomescape
+- missions/spring-roomescape
 review_feedback_tags:
 - reservation-list-fetch-plan
 - n-plus-one
@@ -35,7 +36,7 @@ prerequisites:
 next_docs:
 - database/n-plus-one-query-detection-solutions
 - spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 linked_paths:
 - contents/database/n-plus-one-query-detection-solutions.md
 - contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
@@ -45,7 +46,7 @@ linked_paths:
 confusable_with:
 - database/n-plus-one-query-detection-solutions
 - spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
-- software-engineering/query-model-separation-read-heavy-apis
+- software-engineering/query-model-separation-read-heavy
 forbidden_neighbors: []
 expected_queries:
 - roomescape 관리자 예약 목록에서 member 이름만 붙였는데 왜 쿼리가 여러 번 나가?
@@ -61,12 +62,19 @@ contextual_chunk_prefix: |
   하는지, projection으로 분리해야 하는지, 목록 API에서 엔티티를 그대로 끌고
   가도 되는지 같은 자연어 질문이 이 문서의 검색 표면이다.
 ---
-
 # roomescape 관리자 예약 목록 조회 ↔ fetch plan과 N+1 브릿지
 
 ## 한 줄 요약
 
 roomescape 관리자 예약 목록은 "예약 한 건 저장"보다 "여러 연관 값을 한 번에 읽기"가 더 중요한 장면이다. 그래서 이 화면에서 받는 `N+1`, `fetch join + pagination`, `projection으로 빼라`는 리뷰는 모두 fetch plan을 목록 유스케이스에 맞게 드러내라는 말에 가깝다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 목록 API만 호출했는데 SQL이 예상보다 많이 찍혀요" | 관리자 목록 DTO에서 member/theme/time을 순회 접근 | N+1과 lazy loading이 DTO 변환 시점에 터지는지 본다 |
+| "fetch join을 붙였더니 pagination이 이상해졌어요" | 목록 조회에 컬렉션 연관까지 한 번에 끌어온 장면 | 쿼리 수만 보지 말고 row duplication과 page 경계를 같이 본다 |
+| "목록 조회는 projection으로 빼라는 리뷰가 무슨 뜻인가요?" | 관리자 목록 응답 컬럼이 계속 늘어나는 단계 | write entity 복원보다 read use case에 맞는 query model을 고려한다 |
 
 ## 미션 시나리오
 

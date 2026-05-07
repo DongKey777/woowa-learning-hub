@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Java Array Common Confusion Checklist
+concept_id: language/java-array-common-confusion-checklist
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- array-debugging
+- equality
+- aliasing
+aliases:
+- Java 배열 입문 공통 confusion 체크리스트
+- java array beginner symptom router
+- array same value same reference confusion
+- 배열 출력 비교 복사 정렬 분기
+- 배열 값은 같은데 false
+- 배열 한쪽 바꾸면 같이 바뀜
+symptoms:
+- 배열 출력이 이상한 문제와 값 비교가 false인 문제와 alias로 같이 바뀌는 문제를 모두 같은 원인으로 섞어 읽어
+- Arrays.sort가 새 배열을 반환한다고 생각해 원본 순서가 바뀐 뒤에야 in-place sort라는 사실을 알아차려
+- i <= arr.length처럼 마지막 유효 인덱스와 length 개수를 혼동해 배열 순회에서 off-by-one 예외를 만든다
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/java-loop-control-scope-follow-up-primer
+- language/java-arrays-method-choice-30-second-card
+- language/java-array-debug-printing-basics
+next_docs:
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+- language/java-array-sorting-searching-basics
+linked_paths:
+- contents/language/java/java-loop-control-scope-follow-up-primer.md
+- contents/language/java/java-arrays-method-choice-30-second-card.md
+- contents/language/java/java-2d-array-traversal-primer.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/primitive-descending-array-sort-bridge.md
+- contents/data-structure/array-vs-linked-list.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+confusable_with:
+- language/java-array-debug-printing-basics
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+forbidden_neighbors: []
+expected_queries:
+- Java 배열에서 출력 비교 복사 정렬 문제를 증상별로 어디서부터 봐야 해?
+- 배열 값은 같은데 ==나 array.equals가 false일 때 어떤 문서로 가야 해?
+- 배열 한쪽을 바꾸면 다른 쪽도 같이 바뀌는 증상은 equality가 아니라 왜 alias 문제야?
+- Arrays.sort가 원본 배열을 바꾸는지 초보자용으로 설명해줘
+- i <= arr.length 때문에 ArrayIndexOutOfBoundsException이 나는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java array beginner confusion을 출력, equality, alias/copy, in-place sort, off-by-one 증상으로 라우팅하는 symptom router다.
+  배열 출력 이상, 값은 같은데 false, 배열 같이 바뀜, Arrays.sort 원본 변경, i <= arr.length 질문이 본 문서에 매핑된다.
+---
 # Java 배열 입문 공통 confusion 체크리스트
 
 > 한 줄 요약: 배열에서 막힐 때는 먼저 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가를 같은 문장으로 자르고, 그다음에야 정렬/반복문 분기로 내려가면 `==`, alias, `Arrays.sort()` 함정을 훨씬 빨리 피할 수 있다.

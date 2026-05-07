@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Roaring Set-Op Result Heuristics
+concept_id: data-structure/roaring-set-op-result-heuristics
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roaring-set-op-heuristics
+- container-result-path
+- lazy-cardinality-repair
+aliases:
+- Roaring set op result
+- Roaring AND OR XOR result container
+- repairAfterLazy
+- lazy cardinality repair
+- runcontainer toEfficientContainer
+- output container heuristic
+- query result churn
+symptoms:
+- Roaring AND OR XOR 결과가 항상 array bitmap run 중 전역 최저가를 찾아 고른다고 오해한다
+- OR는 lazy bitmap/run과 repairAfterLazy 경로가 많고 AND는 exact cardinality 경로가 많다는 연산별 차이를 놓친다
+- bitmap-native set-op이 non-full run까지 항상 최적화하지 않으며 runOptimize나 run-native path가 별도로 필요하다는 점을 모른다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/roaring-container-transition-heuristics
+next_docs:
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-andnot-result-heuristics
+- data-structure/roaring-run-optimize-timing-guide
+- data-structure/roaring-run-churn-observability-guide
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-bitmap-wide-lazy-union-pipeline.md
+- contents/data-structure/roaring-andnot-result-heuristics.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/roaring-andnot-result-heuristics
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-container-transition-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring AND OR XOR 결과 container는 어떤 heuristic으로 array bitmap run 중 선택돼?
+- OR에서 lazy bitmap과 repairAfterLazy가 자주 보이고 AND에서 exact cardinality path가 많은 이유는?
+- bitmap-native set op가 non-full run을 바로 만들지 않을 수 있다는 뜻은?
+- Roaring set operation result를 container-level path로 분석하는 방법은?
+- ANDNOT difference heuristic은 왜 별도 문서로 봐야 할 만큼 다른가?
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap의 AND/OR/XOR set operation result container 선택을
+  설명하는 playbook이다. exact cardinality, lazy bitmap, repairAfterLazy,
+  toEfficientContainer, array/bitmap/run result path, runOptimize boundary를 다룬다.
+---
 # Roaring Set-Op Result Heuristics
 
 > 한 줄 요약: Roaring의 `AND/OR/XOR`는 "항상 세 container 중 최저가를 전역 탐색"하지 않고, 연산 경로별로 `array`, `bitmap`, `run` 중 하나를 먼저 가정한 뒤 필요할 때만 `repairAfterLazy()`나 `toEfficientContainer()`로 결과 표현을 고친다.

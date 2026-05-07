@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Batch Job Scope In Hexagonal Architecture
+concept_id: software-engineering/batch-job-scope
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 92
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- hexagonal-architecture
+- batch-application-service
+- scheduler-boundary
+aliases:
+- Batch Job Scope In Hexagonal Architecture
+- scheduled job loop existing use case
+- batch-oriented application service
+- scheduler adapter vs application service
+- batch window checkpoint resume
+- batch run application capability
+symptoms:
+- scheduled job라는 이유만으로 application service를 새로 만들거나, 반대로 batch window/checkpoint/partial failure 의미가 있는데도 adapter for-loop 안에 숨겨
+- job adapter, per-item use case, batch-oriented application service의 책임을 섞어 @Scheduled 메서드가 window 계산과 chunk loop, checkpoint 저장까지 떠안아
+- batch run 자체의 입력 계약과 실패 의미가 생겼는데도 단건 use case 반복으로만 처리해 run summary와 recovery 설명이 비어
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/ddd-hexagonal-consistency
+next_docs:
+- software-engineering/batch-partial-failure
+- software-engineering/bulk-port-tradeoffs
+- system-design/job-queue-design
+linked_paths:
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- software-engineering/batch-partial-failure
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/message-driven-adapter
+forbidden_neighbors: []
+expected_queries:
+- scheduled job가 기존 use case를 loop해도 되는 경우와 batch-oriented application service가 필요한 경우를 구분해줘
+- batch window, snapshot, checkpoint, partial failure policy가 application semantics가 되는 순간은 언제야?
+- @Scheduled job adapter 안에 chunk loop와 checkpoint 저장이 길어지면 왜 hexagonal boundary smell이야?
+- batch run 자체가 비즈니스 의미를 가지면 RunSummary와 dedicated service를 왜 둬야 해?
+- batch job scope와 bulk port, per-item use case tradeoff를 같이 판단하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 hexagonal architecture에서 scheduled job adapter, existing per-item use case loop, dedicated batch-oriented application service를 batch window, checkpoint, chunk, partial failure policy 기준으로 고르는 chooser다.
+---
 # Batch Job Scope In Hexagonal Architecture
 
 > 한 줄 요약: scheduled job가 기존 유스케이스를 반복 호출하는 thin inbound adapter로 끝나도 되는 경우는 "한 건 처리 의미"가 그대로 재사용될 때고, batch window, checkpoint, chunk, partial failure policy 자체가 application 의미가 되면 dedicated batch-oriented application service를 따로 둬야 한다.

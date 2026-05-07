@@ -1,8 +1,77 @@
+---
+schema_version: 3
+title: Same-DB Query Repository Vs Separate Read Store
+concept_id: software-engineering/same-db-query-repository-vs-separate-read-store
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- query-model
+- read-store
+- cqrs-lite
+- persistence-boundary
+aliases:
+- same DB query repository vs separate read store
+- query repository first
+- CQRS lite escalation ladder
+- same database read model
+- separate read store criteria
+- 같은 DB 조회 저장소와 별도 read store
+symptoms:
+- 관리자 검색 쿼리가 길어졌다는 이유만으로 별도 read store로 바로 넘어가려 한다
+- query repository, projection, separate read store의 운영 비용 차이를 설명하지 못한다
+- 읽기 모델 지연과 재빌드 책임을 고려하지 않고 CQRS라는 이름만 붙인다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/repository-dao-entity
+next_docs:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/event-sourcing-cqrs
+- spring/testcontainers-boundary-strategy
+linked_paths:
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md
+- contents/software-engineering/helper-snapshot-bloat-vs-response-dto-separation.md
+- contents/software-engineering/datajpatest-db-difference-checklist.md
+- contents/software-engineering/event-sourcing-cqrs-adoption-criteria.md
+- contents/spring/spring-testcontainers-boundary-strategy.md
+confusable_with:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/event-sourcing-cqrs
+- software-engineering/bulk-helper-vs-query-model
+forbidden_neighbors: []
+expected_queries:
+- 같은 DB query repository에서 멈춰도 되는 경우와 separate read store로 넘어가야 하는 신호를 비교해줘
+- CQRS lite에서 query repository, same DB projection, 별도 read store의 escalation ladder를 설명해줘
+- JPQL이 길어졌다는 이유만으로 native query나 read DB 분리로 점프하면 왜 위험해?
+- separate read store를 도입하면 lag, rebuild, dual schema 운영 책임이 왜 생겨?
+- 관리자 주문 검색이 커질 때 같은 DB projection과 검색 전용 read store 중 무엇을 먼저 선택해야 해?
+contextual_chunk_prefix: |
+  이 문서는 같은 DB query repository, 같은 DB projection/view, separate read store를 단계적으로 비교해 초심자가 read model 분리를 과하게 점프하지 않도록 돕는 chooser이다.
+---
 # Same-DB Query Repository Vs Separate Read Store
 
 > 한 줄 요약: 초심자는 보통 `같은 DB 위 query repository`에서 멈추는 편이 안전하다. 별도 read store는 "쿼리가 좀 길다"가 아니라, 읽기 부하·저장 형식·운영 격리·지연 허용이 함께 분명할 때만 올라가는 다음 단계다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| backend 장면 | 먼저 볼 질문 |
+|---|---|
+| 관리자 주문 검색 JPQL이 길어졌다 | 같은 DB query repository로 충분한가 |
+| 조회 부하가 쓰기 모델을 흔든다 | projection/read model이 필요한가 |
+| 별도 검색 저장소를 붙이고 싶다 | lag, rebuild, dual schema를 감당할 수 있는가 |
 
 <details>
 <summary>Table of Contents</summary>

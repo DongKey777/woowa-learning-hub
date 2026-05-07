@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Monotonic Deque vs Heap for Window Extrema
+concept_id: data-structure/monotonic-deque-vs-heap-for-window-extrema
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-deque-vs-heap
+- sliding-window-extrema
+- lazy-deletion-stale-entry
+aliases:
+- monotonic deque vs heap
+- sliding window maximum heap
+- heap lazy deletion window extrema
+- fixed window extrema deque
+- stale heap entry sliding window
+- deque heap chooser
+- 단조 덱 vs 힙
+symptoms:
+- 고정 길이 sliding window max/min 하나를 구하는데 PriorityQueue lazy deletion으로 먼저 가서 stale cleanup과 duplicate tracking 부담을 키운다
+- monotonic deque는 FIFO window expiry와 dominated candidate 제거로 O(n)에 끝난다는 특화성을 놓친다
+- median, top-k, arbitrary delete처럼 extrema 하나보다 풍부한 order statistic이 필요한 경우에도 monotonic deque를 쓰려 한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/heap-variants
+next_docs:
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/java-priorityqueue-pitfalls
+- algorithm/sliding-window-patterns
+linked_paths:
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+confusable_with:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/heap-variants
+- data-structure/java-priorityqueue-pitfalls
+- algorithm/sliding-window-patterns
+forbidden_neighbors: []
+expected_queries:
+- Sliding window maximum은 monotonic deque와 heap lazy deletion 중 무엇이 기본값이야?
+- 고정 길이 window extrema에서 deque가 O(n)으로 끝나는 이유는?
+- heap으로 sliding window max를 풀 때 stale entry와 duplicate를 index로 추적해야 하는 이유는?
+- median이나 top-k가 필요하면 monotonic deque가 맞지 않는 이유는?
+- 단조 덱과 우선순위 큐를 window max/min 문제에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 고정 길이 sliding-window max/min 하나를 구할 때 monotonic deque가
+  기본이고 heap + lazy deletion은 덜 특화된 대안이라는 chooser다. FIFO
+  expiry, stale heap entry, duplicate tracking, richer order statistic 경계를
+  다룬다.
+---
 # Monotonic Deque vs Heap for Window Extrema
 
 > 한 줄 요약: 고정 길이 sliding-window 최대/최소는 보통 monotonic deque가 기본값이고, heap + lazy deletion은 더 일반적인 우선순위 큐 패턴을 재사용해야 할 때 쓰는 차선책이다.

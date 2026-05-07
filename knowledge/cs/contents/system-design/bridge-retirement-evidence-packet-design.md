@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Bridge Retirement Evidence Packet
+concept_id: system-design/bridge-retirement-evidence-packet-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- bridge retirement evidence packet
+- retirement approval packet
+- database repair signals
+- security tail signals
+aliases:
+- bridge retirement evidence packet
+- retirement approval packet
+- database repair signals
+- security tail signals
+- verification evidence handoff
+- shadow exit signal
+- parity exit signal
+- read parity exit
+- decision parity exit
+- joint bridge retirement
+- repair before cleanup
+- cutover cleanup evidence
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/dedicated-cell-drain-retirement-design.md
+- contents/system-design/adapter-retirement-compatibility-bridge-decommission-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md
+- contents/system-design/cleanup-point-of-no-return-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Bridge Retirement Evidence Packet 차이를 실무 기준으로 설명해줘
+- bridge retirement evidence packet를 언제 선택해야 해?
+- Bridge Retirement Evidence Packet 설계 판단 기준이 뭐야?
+- bridge retirement evidence packet에서 자주 헷갈리는 경계는?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Bridge Retirement Evidence Packet를 다루는 bridge 문서다. bridge retirement evidence packet은 database repair closure와 security tail closure를 한 장의 승인 패킷으로 묶어, replay backlog는 0인데 revoke tail이나 legacy trust가 남아 있는 반쪽 cleanup을 막는 운영 템플릿이다. 검색 질의가 bridge retirement evidence packet, retirement approval packet, database repair signals, security tail signals처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Bridge Retirement Evidence Packet
 
 > 한 줄 요약: bridge retirement evidence packet은 database repair closure와 security tail closure를 한 장의 승인 패킷으로 묶어, replay backlog는 0인데 revoke tail이나 legacy trust가 남아 있는 반쪽 cleanup을 막는 운영 템플릿이다.

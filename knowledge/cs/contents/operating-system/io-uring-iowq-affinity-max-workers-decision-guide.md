@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring IOWQ Affinity Max Workers Decision Guide
+concept_id: operating-system/io-uring-iowq-affinity-max-workers-decision-guide
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- io-uring-iowq
+- affinity-max-workers
+- iou-wrk-cpu
+- numa-placement
+aliases:
+- io_uring IOWQ affinity max workers
+- iou-wrk CPU NUMA placement
+- IOWQ saturation
+- io_uring max-workers tuning
+- worker ceiling vs placement
+- IOWQ cpuset affinity
+intents:
+- comparison
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/cpuset-isolation-noisy-neighbors.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+confusable_with:
+- operating-system/io-uring-completion-observability-playbook
+- operating-system/cpuset-isolation-noisy-neighbors
+- operating-system/cpu-affinity-irq-affinity-core-locality
+expected_queries:
+- io_uring IOWQ가 포화됐을 때 affinity와 max-workers 중 무엇을 먼저 조정해?
+- iou-wrk가 CPU/NUMA placement 때문에 밀리는지 worker ceiling 때문인지 어떻게 나눠?
+- IOWQ worker를 cpuset이나 affinity로 배치할 때 어떤 tradeoff가 있어?
+- io_uring max-workers tuning은 completion backlog와 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 IOWQ saturation 확인 뒤 원인을 CPU/NUMA placement 문제와 worker ceiling 문제로
+  나누는 chooser다. placement 문제면 affinity/cpuset을, ceiling 문제면 max-workers를
+  건드리는 판단 흐름을 제공한다.
+---
 # io_uring IOWQ Affinity and Max-Workers Tuning Decision Guide
 
 > 한 줄 요약: `IOWQ` 포화가 확인된 뒤에는 먼저 `iou-wrk`가 CPU/NUMA placement 때문에 밀리는지, worker ceiling 때문에 밀리는지 나눠야 하고, 전자면 affinity/cpuset을, 후자면 `max-workers`를 건드려야 한다.

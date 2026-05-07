@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: t-Digest
+concept_id: data-structure/t-digest
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- quantile-sketch
+- tail-percentile
+- tdigest-centroid
+aliases:
+- t-Digest
+- TDigest
+- tail percentile sketch
+- quantile sketch
+- centroid sketch
+- p99 telemetry
+- mergeable percentile summary
+symptoms:
+- 평균이나 p50 중심 요약으로 p99 p999 tail latency 변화를 설명하려 해 tail percentile 전용 sketch 필요성을 놓친다
+- t-Digest, KLL, DDSketch를 모두 quantile sketch로만 묶고 rank error, relative value error, tail resolution 차이를 구분하지 못한다
+- merge 가능하다는 이유만으로 입력 순서와 merge 전략이 결과 안정성에 미치는 영향을 검토하지 않는다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/hdr-histogram
+- data-structure/ddsketch
+next_docs:
+- data-structure/kll-sketch
+- data-structure/sketch-filter-selection-playbook
+- data-structure/approximate-counting-rate-limiting-observability
+linked_paths:
+- contents/data-structure/hdr-histogram.md
+- contents/data-structure/ddsketch.md
+- contents/data-structure/kll-sketch.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+confusable_with:
+- data-structure/ddsketch
+- data-structure/kll-sketch
+- data-structure/hdr-histogram
+- data-structure/space-saving-heavy-hitters
+forbidden_neighbors: []
+expected_queries:
+- t-Digest는 p99 같은 tail percentile을 왜 더 잘 보존하려고 해?
+- t-Digest KLL DDSketch HDR Histogram은 latency quantile 관점에서 어떻게 골라?
+- t-Digest centroid와 compression parameter가 tail accuracy에 미치는 영향은?
+- 분산 telemetry에서 t-Digest를 merge할 때 입력 순서와 merge strategy를 왜 봐야 해?
+- p99 latency 관측에 평균이나 histogram 대신 t-Digest를 검토하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 t-Digest를 centroid 압축으로 tail percentile 주변 해상도를 더 남기는
+  quantile sketch로 설명한다. p99/p999 telemetry, KLL, DDSketch, HDR Histogram과의
+  선택 기준을 함께 다룬다.
+---
 # t-Digest
 
 > 한 줄 요약: t-Digest는 tail percentile 근처에서 더 세밀한 해상도를 남기도록 centroid를 압축하는 quantile sketch로, p99 같은 극단 분위수 관측에 특히 강하다.

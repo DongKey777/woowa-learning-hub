@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: popen and Runtime Wrapper Mapping
+concept_id: operating-system/popen-runtime-wrapper-mapping
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- popen-wrapper-mapping
+- popen-subprocess-popen
+- mapping
+- wrapper-pipe-fd
+aliases:
+- popen subprocess Popen mapping
+- runtime wrapper pipe fd
+- stdin stdout stderr PIPE
+- close_fds pass_fds
+- dup2 child redirect
+- subprocess FD hygiene
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/posix-spawn-file-actions-primer.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/process-spawn-api-comparison.md
+expected_queries:
+- popen이나 Python subprocess.Popen은 OS level에서 pipe dup2 close CLOEXEC를 어떻게 감싼 거야?
+- stdin=PIPE stdout=PIPE close_fds pass_fds 옵션을 file descriptor mental model로 설명해줘
+- runtime wrapper는 새로운 OS 개념이 아니라 어떤 작업의 포장인가?
+- child stdin stdout stderr redirect를 posix_spawn file actions와 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 popen()과 Python subprocess.Popen 같은 runtime wrapper를 새로운 OS 개념이 아니라
+  pipe 생성, child stdin/stdout/stderr fd 연결, close_fds/pass_fds, CLOEXEC 처리를 option 이름으로
+  감싼 것으로 설명한다.
+---
 # popen and Runtime Wrapper Mapping
 
 > 한 줄 요약: `popen()`이나 Python `subprocess.Popen()` 같은 런타임 wrapper는 새로운 OS 개념이 아니라, pipe를 만들고 child의 `stdin/stdout/stderr` fd에 붙인 뒤 어떤 fd를 상속할지 정하는 작업을 옵션 이름으로 감싼 것이다.

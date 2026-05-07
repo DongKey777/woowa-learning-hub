@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "HTTP Keep-Alive Timeout Mismatch, Deeper Cases"
+concept_id: network/http-keepalive-timeout-mismatch-deeper-cases
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- keep-alive-timeout
+- stale-socket
+- connection-pool
+aliases:
+- HTTP keep-alive timeout mismatch
+- stale socket reuse
+- validation on borrow
+- origin keepalive timeout
+- proxy upstream keepalive
+- first request after idle reset
+symptoms:
+- idle 뒤 첫 요청만 ECONNRESET이나 broken pipe로 실패한다
+- proxy upstream/downstream timeout 변경 뒤 간헐 reset이 늘어난다
+- connection pool은 큰데 stale socket 재사용과 retry가 섞인다
+- keep-alive를 길게 잡으면 항상 좋다고 오해한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/keepalive-connection-reuse-basics
+- network/idle-timeout-mismatch-lb-proxy-app
+next_docs:
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/lb-connection-draining-deployment-safe-close
+- spring/webclient-connection-pool-timeout-tuning
+linked_paths:
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/tcp-keepalive-vs-app-heartbeat.md
+- contents/network/lb-connection-draining-deployment-safe-close.md
+- contents/network/tcp-reset-storms-idle-reuse-stale-sockets.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/connection-pool-starvation-stale-idle-reuse-debugging.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/tcp-keepalive-vs-app-heartbeat
+- network/tcp-reset-storms-idle-reuse-stale-sockets
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+forbidden_neighbors: []
+expected_queries:
+- "HTTP keep-alive timeout mismatch 때문에 idle 뒤 첫 요청만 실패하는 이유는?"
+- "client pool proxy LB origin keepalive timeout을 어떤 순서로 맞춰야 해?"
+- "validation on borrow가 stale socket 문제를 줄이는 이유는?"
+- "keep-alive를 길게 잡았는데 reset이 늘어나는 패턴을 설명해줘"
+- "proxy upstream timeout과 app origin keepalive timeout 차이를 어떻게 디버깅해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP keep-alive timeout mismatch, proxy/LB/origin/client pool의
+  stale socket reuse, validation on borrow, idle 뒤 첫 요청 reset을 다루는
+  advanced playbook이다.
+---
 # HTTP Keep-Alive Timeout Mismatch, Deeper Cases
 
 > 한 줄 요약: HTTP keep-alive timeout은 클라이언트, 프록시, LB, origin이 서로 다르게 잡으면 재사용 시점에만 고장 나는 소켓을 만든다.

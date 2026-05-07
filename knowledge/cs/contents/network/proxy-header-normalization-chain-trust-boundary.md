@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Proxy Header Normalization Chain, Trust Boundary"
+concept_id: network/proxy-header-normalization-chain-trust-boundary
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- proxy-headers
+- trust-boundary
+- header-normalization
+aliases:
+- proxy header normalization
+- proxy chain trust boundary
+- X-Forwarded-For normalization
+- Forwarded header rewriting
+- header sanitization
+- ingress chain canonicalization
+- X-Forwarded-Proto secure cookie
+symptoms:
+- 외부 client가 넣은 X-Forwarded-For를 trusted proxy 값처럼 읽는다
+- proxy hop마다 header append/rewrite 규칙이 달라 client IP와 proto가 흔들린다
+- X-Forwarded-Proto가 틀려 secure cookie나 redirect URL이 깨진다
+- CDN WAF LB proxy app chain에서 어디서 신뢰 경계를 초기화해야 하는지 모른다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/api-gateway-reverse-proxy-operational-points
+next_docs:
+- network/proxy-protocol-client-ip-trust-boundary
+- network/tls-loadbalancing-proxy
+- network/alb-elb-retry-amplification-proxy-chain
+- network/http-proxy-auth-407-explicit-proxy
+linked_paths:
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/proxy-protocol-client-ip-trust-boundary.md
+- contents/network/alb-elb-retry-amplification-proxy-chain.md
+confusable_with:
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/proxy-protocol-client-ip-trust-boundary
+- network/tls-loadbalancing-proxy
+- network/api-gateway-reverse-proxy-operational-points
+forbidden_neighbors: []
+expected_queries:
+- "proxy chain에서 X-Forwarded-For를 어떻게 normalize해야 안전해?"
+- "trust boundary 밖에서 들어온 Forwarded header를 왜 제거하거나 재작성해야 해?"
+- "X-Forwarded-Proto가 틀려 secure cookie가 깨지는 원인을 설명해줘"
+- "CDN WAF LB proxy app에서 client IP header 신뢰 경계를 어떻게 잡아?"
+- "Forwarded와 X-Forwarded-*를 함께 쓸 때 canonical form이 필요한 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 proxy chain에서 Forwarded, X-Forwarded-For, X-Forwarded-Proto,
+  X-Real-IP header normalization, sanitization, canonicalization, trust boundary를
+  다루는 advanced playbook이다.
+---
 # Proxy Header Normalization Chain, Trust Boundary
 
 > 한 줄 요약: 프록시 헤더는 누적만 해서는 안 되고, 각 홉에서 정규화와 재작성 규칙을 지켜야 신뢰 경계가 흐트러지지 않는다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: JFR Loom Incident Signal Map
+concept_id: language/jfr-loom-incident-signal-map
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- jfr
+- virtual-thread
+- incident-triage
+aliases:
+- JFR Loom Incident Signal Map
+- jdk.ThreadPark VirtualThreadPinned SocketRead JavaMonitorEnter
+- virtual thread JFR diagnostics
+- Loom troubleshooting event combination
+- ThreadPark getConnection Hikari pending
+- JFR 가상 스레드 장애 신호 지도
+symptoms:
+- ThreadPark가 많다는 사실만 보고 virtual thread 문제라고 결론 내리며 pool wait, join wait, backpressure wait를 구분하지 못해
+- VirtualThreadPinned 이벤트 몇 건만 보고 root cause로 단정해 duration, stack concentration, carrier saturation을 확인하지 않아
+- SocketRead를 모두 네트워크 장애로만 해석해 JDBC DB lock wait나 downstream ownership 증거를 붙이지 못해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/jfr-event-interpretation
+- language/virtual-threads-project-loom
+- language/thread-dump-state-interpretation
+next_docs:
+- language/jdbc-observability-under-virtual-threads
+- language/virtual-thread-migration-pinning
+- language/locksupport-park-unpark-permit-semantics
+linked_paths:
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/virtual-thread-vs-reactive-db-observability.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java/locksupport-park-unpark-permit-semantics.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+confusable_with:
+- language/jdbc-observability-under-virtual-threads
+- language/jfr-event-interpretation
+- language/virtual-thread-migration-pinning
+forbidden_neighbors: []
+expected_queries:
+- JFR에서 virtual thread 장애를 ThreadPark VirtualThreadPinned SocketRead JavaMonitorEnter 조합으로 어떻게 해석해?
+- ThreadPark가 getConnection stack에 몰리고 Hikari pending이 오르면 어떤 incident fingerprint야?
+- VirtualThreadPinned와 SocketRead가 같이 보이면 synchronized 안 blocking I/O를 왜 의심해야 해?
+- SocketRead가 JDBC stack에서 길 때 네트워크 문제와 DB lock wait를 어떻게 구분해?
+- JavaMonitorEnter와 DB lock wait를 JFR과 thread dump에서 분리하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JFR Loom incident를 ThreadPark, VirtualThreadPinned, SocketRead/SocketWrite, JavaMonitorEnter 이벤트 조합으로 해석하는 advanced playbook이다.
+  JFR virtual thread diagnostics, ThreadPark, VirtualThreadPinned, SocketRead, JavaMonitorEnter, Loom incident 질문이 본 문서에 매핑된다.
+---
 # JFR Loom Incident Signal Map
 
 > 한 줄 요약: virtual thread 장애는 `Thread Park` 하나만 보고 해석하면 자주 틀린다. `jdk.ThreadPark`, `jdk.VirtualThreadPinned`, `jdk.SocketRead`/`jdk.SocketWrite`, `jdk.JavaMonitorEnter`를 같은 시간창에서 묶어 읽어야 pool wait, downstream stall, synchronized + I/O pinning, application lock convoy를 분리할 수 있다.

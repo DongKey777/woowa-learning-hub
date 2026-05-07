@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Browser DevTools 새로고침 분기표: normal reload, hard reload, empty cache and hard reload"
+concept_id: network/browser-devtools-reload-hard-reload-disable-cache-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- browser-reload-cache-mode
+- hard-reload-vs-disable-cache
+- service-worker-cache-storage-separation
+aliases:
+- normal reload hard reload
+- empty cache and hard reload
+- disable cache reload effect
+- browser refresh vs hard refresh
+- chrome hard reload cache
+- reload cache experiment
+symptoms:
+- hard reload 결과를 평소 사용자 normal reload cache 동작으로 설명한다
+- empty cache and hard reload가 cookie나 server session까지 지운다고 오해한다
+- Disable cache ON과 Service Worker 등록 상태나 Cache Storage 삭제를 같은 효과로 묶는다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-cache-trace-primer
+- network/http-caching-conditional-request-basics
+next_docs:
+- network/browser-devtools-disable-cache-on-off-experiment-card
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+- network/service-worker-vs-http-cache-devtools-primer
+- network/browser-devtools-application-storage-1minute-card
+- network/http-state-session-cache
+linked_paths:
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/browser-devtools-disable-cache-on-off-experiment-card.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/http-state-session-cache.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/network/browser-devtools-application-storage-1minute-card.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- network/browser-devtools-disable-cache-on-off-experiment-card
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+- network/service-worker-vs-http-cache-devtools-primer
+- network/http-state-session-cache
+- network/browser-devtools-application-storage-1minute-card
+forbidden_neighbors: []
+expected_queries:
+- "normal reload hard reload empty cache and hard reload 차이를 cache 관찰 기준으로 설명해줘"
+- "Hard reload에서 200이 보이면 평소 사용자도 항상 새 body를 받는다는 뜻이야?"
+- "Disable cache ON이 Service Worker나 Cache Storage까지 지우는지 구분해줘"
+- "empty cache and hard reload가 로그인 cookie와 server session을 지우는지 알려줘"
+- "새로고침 모드와 Cache-Control ETag 304 판독을 어떤 순서로 연결해?"
+contextual_chunk_prefix: |
+  이 문서는 normal reload, hard reload, empty cache and hard reload,
+  DevTools Disable cache ON을 HTTP cache 관찰 조건으로 분리하고 cookie,
+  session, Service Worker, Cache Storage와 섞지 않게 하는 beginner primer다.
+---
 # Browser DevTools 새로고침 분기표: normal reload, hard reload, empty cache and hard reload
 
 > 한 줄 요약: 같은 URL도 `normal reload`, `hard reload`, `empty cache and hard reload`, `Disable cache` ON 여부에 따라 cache 신호가 달라지므로, 먼저 "사용자 기본선인지 실험 스위치 영향인지"를 분리해서 본다.

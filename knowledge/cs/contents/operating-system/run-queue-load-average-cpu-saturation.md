@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Run Queue Load Average CPU Saturation
+concept_id: operating-system/run-queue-load-average-cpu-saturation
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- run-queue-load
+- average-cpu-saturation
+- runnable-tasks-backlog
+- cpu-saturation-diagnostics
+aliases:
+- run queue load average CPU saturation
+- runnable tasks backlog
+- CPU saturation diagnostics
+- load average interpretation
+- scheduler contention
+- vmstat r
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/cgroup-cpu-throttling-quota-runtime-debugging.md
+expected_queries:
+- run queue, load average, CPU saturation을 어떻게 구분해?
+- CPU가 바쁜지 runnable task가 쌓였는지 thread가 blocked인지 어떻게 봐?
+- vmstat r과 load average로 scheduler contention을 해석하는 법은?
+- cgroup throttling과 I/O wait 때문에 load average가 높은 경우를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 CPU가 바쁜지, runnable task가 run queue에 쌓였는지, thread가 I/O나 lock에서
+  blocked인지 구분해야 latency 원인을 정확히 잡을 수 있다는 scheduler deep dive다.
+---
 # Run Queue, Load Average, CPU Saturation
 
 > 한 줄 요약: CPU가 바쁜지, 스레드가 막혔는지, 아니면 runnable 태스크가 쌓였는지를 구분해야 지연의 원인을 정확히 잡을 수 있다.

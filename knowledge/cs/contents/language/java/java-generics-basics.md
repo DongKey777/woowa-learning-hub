@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Java 제네릭 입문
+concept_id: language/java-generics-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-generics-basics
+- type-safety-compile-time
+- wildcard-invariance-beginner
+aliases:
+- java generics basics
+- Java 제네릭 입문
+- type parameter java
+- generic class generic method
+- List String vs List Object
+- wildcard basics
+- bounded type parameter
+- unchecked cast warning
+- 제네릭 왜 쓰나요
+symptoms:
+- List<String>이 List<Object>의 하위 타입이라고 생각해 generic invariance를 놓친다
+- 제네릭을 런타임 타입 보장 기능으로 오해하고 type erasure와 unchecked warning을 이해하지 못한다
+- wildcard를 아무 타입이나 넣을 수 있는 문법으로 보고 읽기 전용처럼 받는 상황을 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-types-class-object-oop-basics
+- language/java-collections-basics
+next_docs:
+- language/generic-type-erasure-workarounds
+- language/java-collections-basics
+- language/java-optional-basics
+- spring/ioc-container-internals
+linked_paths:
+- contents/language/java/generic-type-erasure-workarounds.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/spring/ioc-di-container.md
+confusable_with:
+- language/generic-type-erasure-workarounds
+- language/java-collections-basics
+- language/java-optional-basics
+- spring/ioc-container-internals
+forbidden_neighbors: []
+expected_queries:
+- Java 제네릭은 왜 캐스팅 없이 타입 안전성을 보장해?
+- List<String>은 왜 List<Object>로 넘길 수 없어?
+- List<?>는 어떤 타입이든 넣을 수 있다는 뜻이 아니라 왜 읽기 중심으로 봐야 해?
+- generic class와 generic method는 타입 파라미터를 어디에 붙이는 차이야?
+- unchecked cast warning과 type erasure는 제네릭에서 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 Java generics beginner primer로, 타입 파라미터, generic class,
+  generic method, List<String> vs List<Object>, wildcard, bounded type,
+  unchecked cast warning을 컴파일 타임 타입 안전성 관점에서 설명한다.
+---
 # Java 제네릭 입문
 
 > 한 줄 요약: 제네릭은 클래스나 메서드가 다룰 타입을 컴파일 시점에 지정해서, 캐스팅 없이 타입 안전성을 보장하는 기능이다.

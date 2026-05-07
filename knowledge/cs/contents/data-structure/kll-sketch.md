@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: KLL Sketch
+concept_id: data-structure/kll-sketch
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- kll-sketch
+- quantile-rank-error
+- mergeable-percentile-summary
+aliases:
+- KLL Sketch
+- quantile sketch
+- rank error sketch
+- approximate percentile
+- compact quantile summary
+- streaming quantile
+- approximate median
+symptoms:
+- percentile을 계산하려면 모든 raw sample을 저장하고 정렬해야 한다고 생각해 streaming quantile summary를 고려하지 않는다
+- KLL의 보장이 value error보다 rank error에 가깝다는 점을 DDSketch의 relative value error와 섞는다
+- distributed telemetry에서 instance별 sketch를 merge해 p50 p95 p99를 재계산하는 구조를 놓친다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/sketch-filter-selection-playbook
+next_docs:
+- data-structure/hdr-histogram
+- data-structure/ddsketch
+- data-structure/t-digest
+- data-structure/approximate-counting-rate-limiting-observability
+linked_paths:
+- contents/data-structure/hdr-histogram.md
+- contents/data-structure/ddsketch.md
+- contents/data-structure/t-digest.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+confusable_with:
+- data-structure/ddsketch
+- data-structure/hdr-histogram
+- data-structure/t-digest
+- data-structure/hyperloglog
+forbidden_neighbors: []
+expected_queries:
+- KLL Sketch는 rank error 기반 quantile approximation을 어떻게 해?
+- DDSketch의 relative value error와 KLL의 rank error는 어떻게 달라?
+- streaming percentile을 raw sample 없이 merge-friendly하게 계산하는 방법은?
+- KLL compaction은 level buffer에서 어떤 정보를 버리고 어떤 순서 정보를 남겨?
+- latency p95 p99와 median approximation에서 KLL HDR DDSketch t-Digest를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 KLL Sketch를 streaming quantile을 위한 rank-error 기반
+  merge-friendly summary로 설명한다. level buffer compaction, approximate
+  percentile, distributed merge, DDSketch/HDR Histogram/t-Digest와의 error
+  model 차이를 다룬다.
+---
 # KLL Sketch
 
 > 한 줄 요약: KLL Sketch는 적은 메모리로 quantile을 근사하기 위해 표본을 계층적으로 압축하는 merge-friendly 구조로, percentile telemetry와 분포 비교에 잘 맞는 rank-error 기반 요약 자료구조다.

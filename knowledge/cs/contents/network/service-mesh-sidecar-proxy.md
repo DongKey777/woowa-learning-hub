@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Service Mesh, Sidecar Proxy"
+concept_id: network/service-mesh-sidecar-proxy
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- service-mesh
+- sidecar-proxy
+- platform-networking
+aliases:
+- service mesh
+- sidecar proxy
+- Envoy sidecar
+- mTLS mesh
+- traffic policy
+- mesh observability
+- service-to-service proxy
+symptoms:
+- sidecar를 app 내부 코드처럼 보고 local reply, timeout, retry 정책을 app 책임으로 오해한다
+- mTLS, retry, circuit breaking, telemetry가 sidecar에서 처리되는 계층을 구분하지 못한다
+- service mesh가 항상 성능과 안정성을 높인다고 보고 latency/operational overhead를 무시한다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- network/api-gateway-reverse-proxy-operational-points
+- network/proxy-local-reply-vs-upstream-error-attribution
+next_docs:
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+- network/mtls-handshake-failure-diagnosis
+- security/service-to-service-auth-mtls-jwt-spiffe
+linked_paths:
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/service-mesh-local-reply-timeout-reset-attribution.md
+- contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md
+- contents/spring/spring-security-architecture.md
+confusable_with:
+- network/api-gateway-reverse-proxy-operational-points
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+- network/mtls-handshake-failure-diagnosis
+forbidden_neighbors: []
+expected_queries:
+- "service mesh와 sidecar proxy는 무엇을 대신 처리해?"
+- "Envoy sidecar local reply가 app 응답처럼 보일 수 있는 이유는?"
+- "service mesh mTLS retry circuit breaker observability의 장단점은?"
+- "sidecar proxy가 들어오면 timeout attribution이 왜 어려워져?"
+- "service mesh는 API gateway나 reverse proxy와 어떻게 달라?"
+contextual_chunk_prefix: |
+  이 문서는 service mesh와 sidecar proxy가 service-to-service traffic,
+  mTLS, retry, circuit breaking, telemetry, local reply를 처리하는 방식을 다루는
+  advanced deep dive다.
+---
 # Service Mesh, Sidecar Proxy
 
 > 한 줄 요약: 서비스 메시는 각 서비스 옆에 프록시를 붙여서, 통신 정책과 관측성을 애플리케이션 밖으로 분리하는 방식이다.

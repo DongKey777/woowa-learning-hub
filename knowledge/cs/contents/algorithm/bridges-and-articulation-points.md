@@ -48,7 +48,9 @@ linked_paths:
 confusable_with:
 - algorithm/scc-tarjan-kosaraju
 - algorithm/union-find-amortized-proof-intuition
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/scc-tarjan-kosaraju.md
+- contents/algorithm/graph.md
 expected_queries:
 - 그래프에서 간선 하나 끊으면 연결이 깨지는지 찾는 알고리즘을 low-link 관점으로 설명해줘
 - articulation point와 bridge를 DFS 트리에서 어떻게 판정하는지 정리해줘

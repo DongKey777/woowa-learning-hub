@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Claim Freshness After Permission Changes
+concept_id: security/claim-freshness-after-permission-changes
+canonical: false
+category: security
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- claim freshness after permission changes
+- permission change propagation
+- role change jwt session cache revocation
+- permission changed but jwt still old
+aliases:
+- claim freshness after permission changes
+- permission change propagation
+- role change jwt session cache revocation
+- permission changed but jwt still old
+- role revoked but old authorities remain
+- old authorities remain stale
+- stale authorities after role change
+- stale authority propagation
+- permission revoke propagation
+- role grant propagation
+- authz freshness propagation
+- jwt session cache revoke timeline
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/jwt-claims-roles-authorities-permissions-mapping.md
+- contents/security/authz-session-versioning-patterns.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Claim Freshness After Permission Changes 핵심 개념을 설명해줘
+- claim freshness after permission changes가 왜 필요한지 알려줘
+- Claim Freshness After Permission Changes 실무 설계 포인트는 뭐야?
+- claim freshness after permission changes에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Claim Freshness After Permission Changes를 다루는 deep_dive 문서다. role, permission, tenant membership이 바뀌면 source of truth만 바뀌는 것이 아니라 JWT claim, server session principal, authorization cache, revoke plane이 각자 수렴해야 하므로 old authority는 여러 층에서 따로 stale하게 남을 수 있다. 검색 질의가 claim freshness after permission changes, permission change propagation, role change jwt session cache revocation, permission changed but jwt still old처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Claim Freshness After Permission Changes
 
 > 한 줄 요약: role, permission, tenant membership이 바뀌면 source of truth만 바뀌는 것이 아니라 JWT claim, server session principal, authorization cache, revoke plane이 각자 수렴해야 하므로 old authority는 여러 층에서 따로 stale하게 남을 수 있다.

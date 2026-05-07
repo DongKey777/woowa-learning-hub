@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: TLS, 로드밸런싱, 프록시
+concept_id: network/tls-loadbalancing-proxy
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- tls-termination-routing
+- proxy-timeout-retry-buffering
+- lb-draining-connection-reuse
+aliases:
+- TLS load balancing proxy
+- TLS handshake reverse proxy
+- TLS termination
+- load balancing proxy
+- SNI ALPN routing
+- certificate chain proxy
+- backend routing
+- proxy timeout
+- connection reuse draining
+- client IP trust boundary
+- TLS 로드밸런싱 프록시
+symptoms:
+- TLS, LB, proxy를 각각 따로 설정하면 된다고 생각해 인증서, 라우팅, timeout, 연결 재사용이 한 요청 경로에서 같이 깨지는 현상을 놓친다
+- SNI, SAN, Host, ALPN이 서로 다른 방향을 가리킬 때 인증서 문제인지 라우팅 문제인지 분리하지 못한다
+- keep-alive와 draining 없이 배포 중 stale backend 연결이나 502/504가 튀는 이유를 설명하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/proxy-reverse-proxy-basics
+- system-design/load-balancer-basics
+next_docs:
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/certificate-rotation-sni-blast-radius
+- network/alpn-negotiation-failure-routing-mismatch
+- network/lb-connection-draining-deployment-safe-close
+linked_paths:
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/certificate-rotation-sni-blast-radius.md
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+- contents/network/proxy-header-normalization-chain-trust-boundary.md
+- contents/network/http-proxy-connect-tunnels.md
+- contents/network/lb-connection-draining-deployment-safe-close.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/mtls-handshake-failure-diagnosis.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+- contents/network/tls-close-notify-fin-rst-truncation.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+confusable_with:
+- network/proxy-reverse-proxy-basics
+- system-design/load-balancer-basics
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+forbidden_neighbors: []
+expected_queries:
+- TLS termination, load balancing, reverse proxy가 한 요청 경로에서 어떻게 같이 동작하고 어디서 장애가 엮이는지 설명해줘
+- SNI, SAN, Host, ALPN이 어긋나면 인증서 오류와 backend routing 오류를 어떻게 나눠야 해?
+- 배포 중 502 504가 튈 때 connection draining과 keep-alive stale backend 재사용을 어떻게 의심해야 해?
+- 프록시 timeout, retry, buffering이 upstream app timeout보다 먼저 개입하면 어떤 증상이 보일 수 있어?
+- reverse proxy 뒤 client IP와 X-Forwarded-For는 어떤 trusted proxy chain 기준으로 해석해야 해?
+contextual_chunk_prefix: |
+  이 문서는 TLS, load balancing, reverse proxy를 하나의 request path로 보는 advanced bridge다.
+  TLS termination, certificate chain, SNI, SAN, Host, ALPN, backend routing, connection reuse, draining, proxy timeout, buffering, retry, client IP trust boundary를 다룬다.
+---
 # TLS, 로드밸런싱, 프록시
 
 > 한 줄 요약: TLS, 로드밸런싱, 프록시는 각각 따로 배워도 되지만, 실제 장애는 인증서, 라우팅, 연결 재사용, timeout이 엉켜서 난다.

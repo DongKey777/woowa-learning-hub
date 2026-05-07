@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Java Arrays Method Choice 30 Second Card
+concept_id: language/java-arrays-method-choice-30-second-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 95
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- arrays-utility
+- method-choice
+- beginner-routing
+aliases:
+- Java Arrays 메서드 선택 30초 카드
+- java arrays method chooser beginner
+- Arrays.toString equals copyOf sort binarySearch 선택
+- 배열 출력 비교 복사 정렬 검색 선택표
+- java array which Arrays method
+- 배열 뭐 써야 하지
+symptoms:
+- Arrays 메서드를 이름으로만 외워 출력, 비교, 복사, 정렬, 검색 중 지금 문제에 맞는 도구를 고르지 못해
+- binarySearch를 정렬 전 배열에 써도 결과가 의미 있다고 생각해 precondition을 놓쳐
+- sort가 원본을 바꾸는 API라는 점을 모르고 원본 보존 없이 호출한다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- language/java-array-common-confusion-checklist
+- language/java-array-debug-printing-basics
+- language/java-array-equality-basics
+next_docs:
+- language/java-array-copy-clone-basics
+- language/java-array-sorting-searching-basics
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+linked_paths:
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/java-2d-array-deeptostring-deepequals-shallow-copy-bridge.md
+confusable_with:
+- language/java-array-debug-printing-basics
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+forbidden_neighbors: []
+expected_queries:
+- Java Arrays.toString equals deepEquals copyOf sort binarySearch를 증상별로 어떻게 고르면 돼?
+- 배열 출력 비교 복사 정렬 검색 중 어떤 Arrays 메서드를 써야 하는지 표로 알려줘
+- Arrays.binarySearch는 왜 정렬된 배열에서만 써야 해?
+- Arrays.sort가 원본 배열을 바꾸는지와 원본 보존 방법을 설명해줘
+- 2차원 배열 값 비교에는 Arrays.equals가 아니라 왜 deepEquals가 필요해?
+contextual_chunk_prefix: |
+  이 문서는 Java Arrays utility method를 출력, equality, copy, sort, binarySearch 증상별로 고르는 beginner chooser다.
+  Arrays.toString, Arrays.equals, deepEquals, copyOf, sort, binarySearch, 배열 메서드 선택 질문이 본 문서에 매핑된다.
+---
 # Java `Arrays` 메서드 선택 30초 카드
 
 > 한 줄 요약: 배열에서 막혔을 때는 "`[I@...`처럼 출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`인가", "한쪽을 바꾸면 다른 쪽도 같이 바뀌는가", "정렬 뒤 원본이 바뀌었는가"를 먼저 나누면 `Arrays.toString()`, `Arrays.equals()`, `Arrays.copyOf()`, `Arrays.sort()`, `Arrays.binarySearch()`를 훨씬 빨리 고를 수 있다.

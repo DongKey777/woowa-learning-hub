@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Idle Timeout Mismatch: LB, Proxy, App"
+concept_id: network/idle-timeout-mismatch-lb-proxy-app
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- idle-timeout
+- stale-socket
+- lb-proxy-app
+aliases:
+- idle timeout mismatch
+- LB proxy app idle timeout
+- keep-alive timeout hierarchy
+- stale socket reuse
+- reconnect storm
+- heartbeat interval
+- connection draining timeout
+symptoms:
+- client, proxy, LB, app server의 idle timeout이 달라 stale socket reuse가 생긴다
+- idle 뒤 첫 요청만 ECONNRESET, 502, 504로 실패하고 retry는 성공한다
+- WebSocket이나 SSE가 heartbeat 없이 중간 LB에서 간헐적으로 끊긴다
+- 배포와 scale-in 시 기존 연결을 정리하지 못해 timeout 문제가 장애처럼 보인다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-types-connect-read-write
+next_docs:
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/lb-connection-draining-deployment-safe-close
+- network/websocket-heartbeat-backpressure-reconnect
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+linked_paths:
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/sse-websocket-polling.md
+- contents/network/http-keepalive-timeout-mismatch-deeper-cases.md
+- contents/network/lb-connection-draining-deployment-safe-close.md
+confusable_with:
+- network/http-keepalive-timeout-mismatch-deeper-cases
+- network/tcp-keepalive-vs-app-heartbeat
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/lb-connection-draining-deployment-safe-close
+forbidden_neighbors: []
+expected_queries:
+- "LB proxy app idle timeout mismatch를 어떻게 디버깅해?"
+- "idle 뒤 첫 요청만 reset되고 retry는 성공하는 이유는?"
+- "client pool proxy upstream LB app keepalive timeout hierarchy를 어떻게 잡아?"
+- "WebSocket SSE heartbeat와 idle timeout은 어떻게 맞춰야 해?"
+- "배포 때 connection draining이 idle timeout mismatch를 줄이는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 LB, reverse proxy, app server, client pool 사이의 idle timeout
+  mismatch, stale socket reuse, heartbeat, connection draining hierarchy를
+  다루는 advanced playbook이다.
+---
 # Idle Timeout 불일치: LB, Proxy, App
 
 > 한 줄 요약: 같은 연결을 여러 홉이 공유하는데 idle timeout이 서로 다르면, 한쪽은 살아 있다고 믿는 소켓을 다른 쪽은 이미 죽였을 수 있다.

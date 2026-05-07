@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Batch Result Fixture Design Primer
+concept_id: software-engineering/batch-result-fixtures
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 89
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-testing
+- fixture-design
+- readable-tests
+aliases:
+- Batch Result Fixture Design Primer
+- batch result fixture
+- run summary fixture
+- chunk result fixture
+- retry candidate fixture
+- checkpoint fixture
+- 배치 결과 테스트 fixture
+symptoms:
+- batch 테스트 fixture가 run, chunk, retry, checkpoint 의미를 모두 숨기는 giant helper가 되어 테스트에서 다음 행동을 읽을 수 없어
+- fixture를 전혀 두지 않아 runId, chunkNo, itemId, reasonCode, checkpoint setup이 반복돼 테스트 의도가 묻혀
+- product sync 2번째 chunk 실패 같은 도메인 장면 이름을 남기지 않고 caseA, defaultResult 같은 이름으로 의미를 잃어
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/batch-result-modeling
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/batch-fixture-builder
+- software-engineering/runsummary-fixture-naming
+- software-engineering/batch-result-testing
+linked_paths:
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/runsummary-fixture-naming-mini-primer.md
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/batch-fixture-builder-vs-factory-smells.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+confusable_with:
+- software-engineering/batch-fixture-builder
+- software-engineering/batch-result-modeling
+- software-engineering/batch-result-testing
+forbidden_neighbors: []
+expected_queries:
+- batch 결과 fixture를 RunSummary ChunkResult RetryCandidate Checkpoint 네 조각으로 나누는 이유가 뭐야?
+- batch 테스트 fixture 이름에 product sync 2번째 chunk timeout 같은 도메인 의미를 남겨야 하는 이유를 알려줘
+- createFailureCaseA 같은 흐린 fixture보다 partnerTimeoutRetryCandidate item491이 읽기 쉬운 이유는 뭐야?
+- batch result fixture를 작게 재사용하면서도 테스트 장면을 숨기지 않는 방법을 알려줘
+- run fixture chunk fixture retry fixture checkpoint fixture는 각각 어떤 테스트 질문에 대응해?
+contextual_chunk_prefix: |
+  이 문서는 batch result test fixture를 RunSummary, ChunkResult, RetryCandidate, Checkpoint 조각으로 나누고 domain scene 이름을 보존하는 beginner primer다.
+---
 # Batch Result Fixture Design Primer
 
 > 한 줄 요약: batch 결과 fixture는 `run`, `chunk`, `retry`, `checkpoint`를 작게 나누어 재사용하되, `상품 동기화 2번째 chunk 실패` 같은 도메인 뜻이 이름에 그대로 남아 있어야 초심자 테스트가 덜 흐려진다.

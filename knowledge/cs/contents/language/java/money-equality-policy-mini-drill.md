@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Money Equality Policy Mini Drill
+concept_id: language/money-equality-policy-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/lotto
+- missions/payment
+review_feedback_tags:
+- value-object
+- bigdecimal
+- equality
+aliases:
+- Money Equality Policy Mini Drill
+- Money value object equality policy
+- currency amount canonicalization
+- BigDecimal Money HashSet HashMap key
+- stripTrailingZeros money equality
+- 자바 Money 값 객체 동등성
+symptoms:
+- BigDecimal을 raw key로 쓰며 10.0과 10.00의 scale 차이가 HashSet이나 HashMap key 동작에 영향을 주는 점을 놓쳐
+- 금액만 같으면 같은 돈이라고 생각해 currency까지 포함한 Money equality policy를 설계하지 못해
+- value object 안에서 canonicalization을 하지 않아 같은 도메인 금액이 Set과 Map에서 서로 다른 key처럼 흩어져
+intents:
+- drill
+- design
+- comparison
+prerequisites:
+- language/money-value-object-basics
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/record-value-object-equality-basics
+next_docs:
+- language/value-object-invariants-canonicalization-boundary-design
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- language/record-bigdecimal-component-faq
+linked_paths:
+- contents/language/java/money-value-object-basics.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- language/record-value-object-equality-basics
+forbidden_neighbors: []
+expected_queries:
+- Money value object에서 currency와 amount equality policy를 어떻게 잡아야 해?
+- BigDecimal 10.0과 10.00을 Money로 감싸면 HashSet과 HashMap key가 어떻게 달라져?
+- stripTrailingZeros를 Money 생성자에서 쓰는 이유와 scale 함정을 설명해줘
+- USD 10과 KRW 10은 금액 숫자가 같아도 왜 다른 Money로 봐야 해?
+- raw BigDecimal key 대신 Money value object를 쓰는 장점을 드릴로 연습하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Money value object의 equality policy를 currency와 normalized BigDecimal amount로 잡는 beginner drill이다.
+  Money equality, BigDecimal scale, currency amount, HashSet HashMap key, canonicalization 질문이 본 문서에 매핑된다.
+---
 # Money Equality Policy Mini Drill
 
 > 한 줄 요약: raw `BigDecimal` key는 scale 차이 때문에 `10.0`과 `10.00`을 다르게 볼 수 있지만, `Money` value object는 "통화 + 정규화된 금액" 정책으로 set/map 동작을 더 도메인답게 고정할 수 있다.

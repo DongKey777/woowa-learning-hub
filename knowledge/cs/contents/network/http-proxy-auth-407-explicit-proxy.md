@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "HTTP Proxy Auth, 407, Explicit Proxy"
+concept_id: network/http-proxy-auth-407-explicit-proxy
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- explicit-proxy
+- proxy-auth
+- connect-tunnel
+aliases:
+- HTTP proxy auth
+- 407 Proxy Authentication Required
+- explicit proxy
+- Proxy-Authorization
+- Proxy-Authenticate
+- CONNECT tunnel auth
+- enterprise proxy ACL
+symptoms:
+- 407을 origin 서버 인증 실패나 401로 오해한다
+- 브라우저는 되는데 CLI나 앱은 Proxy-Authorization을 보내지 않아 실패한다
+- CONNECT tunnel이 proxy auth 전에 열리는 것으로 착각한다
+- proxy 인증 통과와 host/port ACL 허용을 같은 단계로 본다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http-proxy-connect-tunnels
+- network/proxy-header-normalization-chain-trust-boundary
+next_docs:
+- network/captive-portal-intercepting-proxy-behavior
+- network/tls-loadbalancing-proxy
+- network/alb-elb-retry-amplification-proxy-chain
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/http-proxy-connect-tunnels.md
+- contents/network/proxy-header-normalization-chain-trust-boundary.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/captive-portal-intercepting-proxy-behavior.md
+- contents/network/alb-elb-retry-amplification-proxy-chain.md
+confusable_with:
+- network/http-proxy-connect-tunnels
+- network/captive-portal-intercepting-proxy-behavior
+- network/tls-loadbalancing-proxy
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors: []
+expected_queries:
+- "407 Proxy Authentication Required는 401과 어떻게 달라?"
+- "explicit proxy에서 CONNECT tunnel 전에 proxy auth가 필요한 이유는?"
+- "브라우저는 proxy 인증 prompt로 되는데 curl이나 앱은 왜 실패해?"
+- "Proxy-Authorization과 Proxy-Authenticate 헤더는 어디에서 쓰여?"
+- "proxy auth 통과 후에도 host port ACL에서 막힐 수 있는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 explicit proxy, 407 Proxy Authentication Required,
+  Proxy-Authenticate/Proxy-Authorization, CONNECT tunnel 인증, enterprise proxy
+  ACL을 다루는 advanced playbook이다.
+---
 # HTTP Proxy Auth, 407, Explicit Proxy
 
 > 한 줄 요약: explicit proxy는 CONNECT나 일반 HTTP 요청 전에 인증이 필요할 수 있고, 407은 그 경계가 아직 통과되지 않았다는 신호다.

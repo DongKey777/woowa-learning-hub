@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Booking Guard Row Retry Card
+concept_id: database/booking-guard-row-retry-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- guard-row-retry
+- booking-busy-policy
+- lock-timeout
+- deadlock-retry
+aliases:
+- booking guard row retry card
+- guard row retry booking
+- booking lock timeout deadlock retry
+- guard row wait fail fast retry
+- booking busy retry basics
+- lock timeout after guard row
+- deadlock retry booking beginner
+- guard row timeout retry once
+- booking guard row 충돌
+- 예약 guard row 재시도
+symptoms:
+- guard row lock wait, fail fast, retry를 같은 while-loop 정책으로 묶어 hot key queue를 더 키운다
+- lock timeout과 deadlock을 같은 재시도 의미로 보고 transaction boundary 바깥 retry가 필요한지 구분하지 못한다
+- 예약 guard row holder가 긴 외부 I/O를 포함하는데 wait budget이나 retry만 늘려 해결하려 한다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/guard-row-booking-timeline-card
+- database/booking-error-language-card
+- database/deadlock-vs-lock-wait-timeout-primer
+next_docs:
+- database/busy-fail-fast-vs-one-short-retry-card
+- spring/service-layer-transaction-boundary-patterns
+- database/idempotent-transaction-retry-envelopes
+linked_paths:
+- contents/database/guard-row-booking-timeline-card.md
+- contents/database/booking-error-language-card.md
+- contents/database/busy-fail-fast-vs-one-short-retry-card.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+confusable_with:
+- database/booking-error-language-card
+- database/busy-fail-fast-vs-one-short-retry-card
+- database/deadlock-vs-lock-wait-timeout-primer
+- database/guard-row-booking-timeline-card
+forbidden_neighbors: []
+expected_queries:
+- booking guard row 충돌에서 언제 짧게 기다리고 언제 fail fast하고 언제 bounded retry를 해야 해?
+- MySQL 1205 lock timeout과 1213 deadlock은 guard row booking retry 정책에서 어떻게 다르게 봐야 해?
+- guard row hot key queue가 길 때 retry를 늘리기보다 busy로 빠르게 실패시키는 이유가 뭐야?
+- deadlock은 whole transaction retry가 맞고 lock timeout은 보통 busy인 기준을 예약 예시로 설명해줘
+- 같은 room_type stay_day guard row를 잡는 booking 요청에서 wait, fail fast, retry를 나누는 beginner 표가 필요해
+contextual_chunk_prefix: |
+  이 문서는 Booking Guard Row Retry Card beginner chooser로, reservation guard row queue에서
+  짧은 wait, fail fast busy response, deadlock whole-transaction bounded retry, lock timeout 후 1회 확인 retry를
+  구분해 hot key 혼잡과 blind retry를 줄이는 기준을 설명한다.
+---
 # Booking Guard Row Retry Card
 
 > 한 줄 요약: booking guard row 충돌은 모두 같은 처리로 묶지 말고, **줄이 짧아 곧 끝날 장면은 잠깐 기다리고**, **이미 긴 혼잡은 빠르게 실패시키고**, **deadlock이나 짧은 lock timeout 뒤 재분류가 쉬운 경우만 제한적으로 재시도**하는 편이 초보자에게 가장 안전하다.

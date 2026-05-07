@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: CannotAcquireLockException 40001 Insert-if-Absent FAQ
+concept_id: database/cannotacquirelockexception-40001-insert-if-absent-faq
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- spring-exception-sqlstate
+- cannot-acquire-lock
+- sqlstate-40001
+- insert-if-absent
+aliases:
+- cannotacquirelockexception 40001 faq
+- CannotAcquireLockException
+- postgres 40001 difference
+- insert-if-absent faq
+- 40001 deadlock or serialization failure
+- sqlstate 40001 beginner
+- busy vs retryable faq
+- cannotacquirelockexception retryable or busy
+- 왜 40001이 deadlock 아니에요
+- 처음 SQLSTATE
+symptoms:
+- Spring CannotAcquireLockException이라는 표면 이름만 보고 timeout, deadlock, serialization failure를 같은 retry 정책으로 묶는다
+- PostgreSQL 40001을 deadlock이나 already exists로 오해하고 whole transaction retry 경계를 놓친다
+- insert-if-absent에서 duplicate key, lock timeout, 40001을 already exists, busy, retryable로 번역하지 못한다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/spring-cannotacquirelockexception-root-sql-code
+- database/insert-if-absent-retry-outcome-guide
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- spring/service-layer-transaction-boundary-patterns
+linked_paths:
+- contents/database/spring-cannotacquirelockexception-root-sql-code-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+confusable_with:
+- database/spring-cannotacquirelockexception-root-sql-code
+- database/insert-if-absent-retry-outcome-guide
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/postgresql-serializable-retry-playbook
+forbidden_neighbors: []
+expected_queries:
+- CannotAcquireLockException이 떴을 때 Spring 예외 이름보다 root SQLSTATE errno를 먼저 봐야 하는 이유가 뭐야?
+- PostgreSQL 40001은 deadlock이 아니라 serialization failure이고 whole transaction retry가 필요한 신호야?
+- insert-if-absent에서 duplicate key, lock timeout, 40001을 already exists, busy, retryable로 어떻게 번역해?
+- CannotAcquireLockException 안에 55P03, 40P01, 40001이 섞일 수 있어서 바로 무한 retry하면 안 되는 이유가 뭐야?
+- SQL 한 줄 retry와 transaction 전체 retry를 40001과 deadlock 기준으로 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 CannotAcquireLockException / 40001 Insert-if-Absent FAQ beginner chooser로,
+  Spring 표면 예외명과 root SQLSTATE/errno를 분리하고 PostgreSQL 40001 serialization failure,
+  duplicate key already exists, lock timeout busy, deadlock retryable을 구분하는 기준을 설명한다.
+---
 # `CannotAcquireLockException` / `40001` 혼동 FAQ
 
 > 한 줄 요약: `CannotAcquireLockException`은 "락 문제처럼 보인다"는 Spring 표면 이름일 뿐이고, PostgreSQL `40001`은 deadlock이 아니라 serialization failure라서 `insert-if-absent`에서는 **예외 이름보다 DB 신호를 먼저 `busy` / `retryable`로 번역**해야 덜 헷갈린다.

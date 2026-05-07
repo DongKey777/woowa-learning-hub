@@ -47,7 +47,7 @@ prerequisites:
 next_docs:
 - language/constructor-to-value-object-factory-bridge
 - language/request-dto-to-value-object-boundary-primer
-- design-pattern/factory-basics
+- design-pattern/factory
 linked_paths:
 - contents/language/java/java-methods-constructors-practice-primer.md
 - contents/language/java/java-access-modifiers-member-model-basics.md

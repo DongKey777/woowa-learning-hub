@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Mobile Push Notification Pipeline 설계
+concept_id: system-design/mobile-push-notification-pipeline-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- mobile push
+- APNs
+- FCM
+- device token
+aliases:
+- mobile push
+- APNs
+- FCM
+- device token
+- collapse key
+- priority
+- silent push
+- token refresh
+- delivery receipt
+- notification routing
+- Mobile Push Notification Pipeline 설계
+- mobile push notification pipeline design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/notification-system-design.md
+- contents/system-design/notification-preferences-graph-design.md
+- contents/system-design/email-delivery-platform-design.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Mobile Push Notification Pipeline 설계 설계 핵심을 설명해줘
+- mobile push가 왜 필요한지 알려줘
+- Mobile Push Notification Pipeline 설계 실무 트레이드오프는 뭐야?
+- mobile push 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Mobile Push Notification Pipeline 설계를 다루는 deep_dive 문서다. mobile push pipeline은 APNs/FCM을 통해 모바일 기기로 알림을 전달하고, 토큰 수명, collapse, 우선순위, 사용자 선호를 함께 관리하는 시스템이다. 검색 질의가 mobile push, APNs, FCM, device token처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Mobile Push Notification Pipeline 설계
 
 > 한 줄 요약: mobile push pipeline은 APNs/FCM을 통해 모바일 기기로 알림을 전달하고, 토큰 수명, collapse, 우선순위, 사용자 선호를 함께 관리하는 시스템이다.

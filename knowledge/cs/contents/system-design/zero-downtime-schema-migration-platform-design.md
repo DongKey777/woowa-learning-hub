@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Zero-Downtime Schema Migration Platform 설계
+concept_id: system-design/zero-downtime-schema-migration-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- zero downtime schema migration
+- expand and contract
+- online ddl
+- backfill
+aliases:
+- zero downtime schema migration
+- expand and contract
+- online ddl
+- backfill
+- shadow read
+- compatibility window
+- migration control plane
+- cutover
+- schema evolution
+- throttled backfill
+- dual write
+- read path cutover
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Zero-Downtime Schema Migration Platform 설계 설계 핵심을 설명해줘
+- zero downtime schema migration가 왜 필요한지 알려줘
+- Zero-Downtime Schema Migration Platform 설계 실무 트레이드오프는 뭐야?
+- zero downtime schema migration 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Zero-Downtime Schema Migration Platform 설계를 다루는 deep_dive 문서다. 무중단 스키마 마이그레이션 플랫폼은 애플리케이션 버전 차이, 대규모 backfill, 읽기/쓰기 경로의 호환성 문제를 제어해 서비스 중단 없이 데이터 구조를 바꾸는 운영 시스템이다. 검색 질의가 zero downtime schema migration, expand and contract, online ddl, backfill처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Zero-Downtime Schema Migration Platform 설계
 
 > 한 줄 요약: 무중단 스키마 마이그레이션 플랫폼은 애플리케이션 버전 차이, 대규모 backfill, 읽기/쓰기 경로의 호환성 문제를 제어해 서비스 중단 없이 데이터 구조를 바꾸는 운영 시스템이다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Decorator vs Proxy
+concept_id: design-pattern/decorator-vs-proxy
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- decorator-vs-proxy
+- wrapper-intent-choice
+- spring-transaction-proxy
+aliases:
+- decorator vs proxy
+- decorator proxy difference
+- 데코레이터 vs 프록시
+- decorator 기능 추가
+- proxy 접근 제어
+- spring aop proxy pattern
+- transactional proxy
+- wrapper pattern comparison
+- 기능 조합 vs 호출 제어
+symptoms:
+- 데코레이터와 프록시를 같은 wrapper 구현으로만 보고 기능 조합과 호출 제어 목적을 구분하지 못한다
+- Spring AOP나 @Transactional을 기능이 추가된다는 표면만 보고 decorator라고 설명한다
+- 캐시, 로깅, 재시도 같은 횡단 관심사를 모두 같은 패턴으로 묶어 디버깅 경계와 self-invocation 문제를 놓친다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/decorator-proxy-basics
+- spring/aop-proxy-mechanism
+- design-pattern/facade-vs-adapter-vs-proxy-decision-guide
+next_docs:
+- design-pattern/decorator-vs-proxy-decision-guide
+- design-pattern/retry-policy-vs-decorator-chain
+- spring/aop-proxy-mechanism
+linked_paths:
+- contents/design-pattern/decorator-proxy-basics.md
+- contents/design-pattern/decorator-vs-proxy-decision-guide.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/design-pattern/retry-policy-vs-decorator-chain.md
+confusable_with:
+- design-pattern/decorator-proxy-basics
+- design-pattern/decorator-vs-proxy-decision-guide
+- design-pattern/facade-vs-adapter-vs-proxy-decision-guide
+- spring/aop-proxy-mechanism
+forbidden_neighbors: []
+expected_queries:
+- Decorator와 Proxy는 같은 인터페이스 wrapper인데 기능 조합과 호출 제어로 어떻게 나뉘어?
+- Spring AOP와 @Transactional은 decorator보다 proxy라고 보는 이유가 뭐야?
+- 캐시를 붙인 wrapper는 decorator인지 proxy인지 어떤 기준으로 판단해?
+- decorator chain이 깊어지면 디버깅이 어려워지는 이유가 뭐야?
+- proxy에서 self-invocation이나 호출 경계 문제가 중요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Decorator vs Proxy chooser로, 같은 wrapper 구조라도 Decorator는
+  기능을 쌓는 조합, Proxy는 원본 호출을 대신 받아 접근과 경계를 제어하는
+  패턴이라는 선택 기준을 Spring AOP와 함께 설명한다.
+---
 # 데코레이터 vs 프록시
 
 > 한 줄 요약: 둘 다 객체를 감싸지만, 데코레이터는 기능을 "쌓는" 구조이고 프록시는 호출을 "가로채는" 구조다.

@@ -69,13 +69,13 @@ expected_queries:
 - JWKS endpoint timeout 때 refresh storm을 어떻게 막는지 drill 관점으로 설명해줘
 - unknown kid는 왜 stale cache로 통과시키면 안 돼?
 contextual_chunk_prefix: |
-  이 문서는 JWT 검증 경로가 실제로 깨졌을 때 JWKS dependency outage,
-  stale cache, bad publish, old key removal failure를 어떻게 나눠 보고
-  어떤 순서로 signer freeze, verifier refresh collapse, bounded stale,
-  rollback, republish를 연습해야 하는지 확인하는 drill이다. kid miss
-  폭증, unable to find JWK, refresh storm, stale-if-error 한계, unknown
-  kid fail-closed, emergency key pinning 같은 자연어 paraphrase가 본
-  문서의 outage recovery ladder와 failover drill에 매핑된다.
+  이 문서는 JWT 검증 장애가 났을 때 JWKS outage, stale cache, bad
+  publish, old key 제거 실패를 같은 사고로 뭉개지 않고, signer
+  freeze와 verifier refresh와 bounded stale을 어떤 순서로 점검할지
+  확인 질문으로 굳히는 drill이다. kid miss 폭증, unable to find
+  JWK, refresh storm, stale-if-error 한계, unknown kid fail-closed,
+  emergency key pinning 같은 자연어 paraphrase가 본 문서의 outage
+  recovery ladder와 failover drill에 매핑된다.
 ---
 # JWT / JWKS Outage Recovery / Failover Drills
 

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Session Inventory UX / Revocation Scope Design
+concept_id: security/session-inventory-ux-revocation-scope-design
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session inventory ux
+- revocation scope design
+- logout all devices ux
+- current session vs current device
+aliases:
+- session inventory ux
+- revocation scope design
+- logout all devices ux
+- current session vs current device
+- session management screen
+- revoke scope naming
+- session inventory copy
+- device session list
+- refresh family revoke
+- logout propagation copy
+- session list semantics
+- operator session inventory
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/logout-scope-primer.md
+- contents/security/device-session-graph-revocation-design.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/customer-facing-support-access-notifications.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Inventory UX / Revocation Scope Design 핵심 개념을 설명해줘
+- session inventory ux가 왜 필요한지 알려줘
+- Session Inventory UX / Revocation Scope Design 실무 설계 포인트는 뭐야?
+- session inventory ux에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Session Inventory UX / Revocation Scope Design를 다루는 deep_dive 문서다. 세션 관리 화면은 "현재 세션", "현재 기기", "refresh family", "모든 기기" 같은 revoke 범위를 사용자와 운영자가 같은 의미로 이해하게 만들어야 하며, support AOBO와 break-glass도 ordinary session과 섞이지 않게 보여 줘야 한다. 검색 질의가 session inventory ux, revocation scope design, logout all devices ux, current session vs current device처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Session Inventory UX / Revocation Scope Design
 
 > 한 줄 요약: 세션 관리 화면은 "현재 세션", "현재 기기", "refresh family", "모든 기기" 같은 revoke 범위를 사용자와 운영자가 같은 의미로 이해하게 만들어야 하며, support AOBO와 break-glass도 ordinary session과 섞이지 않게 보여 줘야 한다.

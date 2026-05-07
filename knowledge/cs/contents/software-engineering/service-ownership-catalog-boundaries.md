@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Service Ownership and Catalog Boundaries
+concept_id: software-engineering/service-ownership-catalog-boundaries
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- service-catalog
+- ownership
+- domain-boundary
+- operations
+aliases:
+- service ownership catalog
+- service catalog boundary
+- ownership boundary metadata
+- domain steward service catalog
+- operational service registry
+- 서비스 소유권 카탈로그
+symptoms:
+- service catalog가 이름 목록만 제공하고 owner, backup owner, on-call, runbook, ADR, dependency가 없어 장애 때 책임자를 못 찾아
+- 도메인 경계와 팀 경계가 어긋나 BFF, ACL, schema policy 소유권이 서로 떠밀려
+- catalog hygiene와 stale entry 탐지가 없어 서비스 책임 정보가 코드, 배포 설정, 운영 문서와 다른 상태로 남아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/bounded-context-failure-patterns
+- software-engineering/monolith-to-msa-failure-patterns
+next_docs:
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/service-maturity-model
+linked_paths:
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/bff-boundaries-client-specific-aggregation.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+confusable_with:
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/on-call-ownership-boundaries
+- software-engineering/bounded-context-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- service catalog를 단순 목록이 아니라 owner, on-call, runbook, ADR, dependency를 찾는 운영 메타데이터로 설계하려면?
+- 서비스 소유권이 모호하면 장애, 배포 승인, 계약 테스트에서 어떤 문제가 생겨?
+- domain boundary와 team ownership boundary가 어긋날 때 catalog에 무엇을 기록해야 해?
+- stale service catalog entry를 배포, on-call, runbook 변경과 동기화하려면 어떤 hygiene가 필요해?
+- 신규 합류자나 incident responder가 서비스 책임자를 빠르게 찾게 하는 catalog 필드를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 service catalog를 단순 서비스 목록이 아니라 owner, on-call, runbook, ADR, dependency를 연결하는 운영 책임 지도으로 설계하는 advanced playbook이다.
+---
 # Service Ownership and Catalog Boundaries
 
 > 한 줄 요약: 서비스 카탈로그는 서비스 목록이 아니라, 누가 무엇을 소유하고 어떤 경계로 책임지는지 즉시 찾게 해 주는 운영 메타데이터다.

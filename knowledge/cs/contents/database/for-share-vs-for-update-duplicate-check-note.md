@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: FOR SHARE vs FOR UPDATE Duplicate Check Note
+concept_id: database/for-share-vs-for-update-duplicate-check-note
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- for-share-vs-for-update-duplicate
+- empty-result-locking-read
+- unique-backstop-duplicate-check
+aliases:
+- for share vs for update duplicate check
+- mysql for share for update exact key
+- empty result for share vs for update
+- exact key duplicate precheck share update
+- select for share duplicate check
+- select for update duplicate check
+- missing row share update same
+- FOR SHARE FOR UPDATE 차이
+- duplicate precheck lock mode
+- 0 row locking read
+symptoms:
+- duplicate pre-check에서 FOR UPDATE가 FOR SHARE보다 항상 안전하다고 단정하고 있어
+- 0 row empty-result 장면에서 lock mode 이름보다 index path와 isolation이 더 중요하다는 점을 놓치고 있어
+- 기존 row를 읽은 경우와 missing row를 읽은 경우의 FOR SHARE/FOR UPDATE 차이를 섞고 있어
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/unique-vs-locking-read-duplicate-primer
+- database/mysql-rr-exact-key-probe-visual-guide
+next_docs:
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/mysql-rc-duplicate-check-pitfall-note
+- database/explain-checklist-exact-key-locking-reads
+- database/spring-jpa-exact-key-lock-mapping
+linked_paths:
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/mysql-rc-duplicate-check-pitfall-note.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/mysql-explain-range-locking-primer.md
+confusable_with:
+- database/unique-vs-locking-read-duplicate-primer
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/mysql-rc-duplicate-check-pitfall-note
+forbidden_neighbors: []
+expected_queries:
+- duplicate check에서 FOR SHARE와 FOR UPDATE는 언제 차이가 크고 언제 차이가 작아?
+- exact-key pre-check가 0 row를 읽으면 lock mode보다 index path와 isolation이 중요한 이유는 뭐야?
+- MySQL REPEATABLE READ에서 empty-result FOR SHARE와 FOR UPDATE는 duplicate correctness를 어떻게 보조해?
+- PostgreSQL에서 missing row를 FOR UPDATE로 잠글 수 있다고 보면 안 되는 이유는 뭐야?
+- FOR UPDATE라서 중복 방지가 안전했다는 설명이 왜 과장될 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 duplicate pre-check에서 FOR SHARE와 FOR UPDATE를 existing row 장면과 empty-result missing row 장면으로 나눠 읽는 beginner chooser다.
+  for share vs for update duplicate check, empty result locking read, exact key precheck, unique backstop 같은 자연어 비교 질문이 본 문서에 매핑된다.
+---
 # FOR SHARE vs FOR UPDATE Duplicate Check Note
 
 > 한 줄 요약: exact-key duplicate pre-check에서 `FOR SHARE`와 `FOR UPDATE`의 차이는 **이미 row가 있을 때** 더 또렷하고, `0 row` empty-result 장면에서는 어떤 인덱스 경로와 isolation을 탔는지가 더 중요해서 그 차이가 대부분의 duplicate correctness를 바꾸지 못한다.

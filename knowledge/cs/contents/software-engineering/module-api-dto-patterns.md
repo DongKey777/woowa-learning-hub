@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Module API DTO Patterns
+concept_id: software-engineering/module-api-dto-patterns
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+- missions/backend
+review_feedback_tags:
+- module-api
+- dto
+- entity-leakage
+- modular-monolith
+aliases:
+- Module API DTO Patterns
+- module boundary DTO contract
+- command query result DTO
+- cross module DTO
+- module facade beginner
+- 모듈 API DTO 계약
+symptoms:
+- payment나 order 모듈이 서로의 aggregate/entity를 직접 주고받아 내부 필드 변경이 다른 모듈까지 번진다
+- command DTO, query DTO, result DTO를 같은 DTO로 부르며 호출 의도와 응답 계약을 구분하지 못한다
+- 다른 모듈의 내부 service 여러 개를 순서대로 호출하면서 facade나 module API 경계를 두지 않는다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/entity-leakage-review-checklist
+next_docs:
+- software-engineering/service-contract-smell-cards
+- software-engineering/shared-module-guardrails
+- software-engineering/command-dto-vs-query-view-naming-checklist
+linked_paths:
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/shared-module-guardrails.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/service-contract-smell-cards.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/entity-leakage-review-checklist.md
+- contents/software-engineering/command-dto-vs-query-view-naming-checklist.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+confusable_with:
+- software-engineering/entity-leakage-review-checklist
+- software-engineering/service-contract-smell-cards
+- software-engineering/modular-monolith-boundary-enforcement
+forbidden_neighbors: []
+expected_queries:
+- 같은 코드베이스라도 다른 모듈에는 aggregate나 Entity 대신 command query result DTO를 넘겨야 하는 이유가 뭐야?
+- 모듈 API 계약에서 Command DTO, Query DTO, Result DTO를 각각 언제 쓰는지 비교해줘
+- public module API에서 entity 누수가 보이면 어떤 DTO로 끊어야 하는지 초심자에게 설명해줘
+- module facade가 필요한 경우와 공개 service interface 하나로 충분한 경우를 어떻게 구분해?
+- 다른 모듈이 내부 service 여러 개를 순서대로 호출하기 시작하면 facade가 필요한 신호인지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 modular monolith와 layered 구조에서 모듈 경계를 넘는 계약을 Command DTO, Query DTO, Result DTO, module facade로 고르는 beginner chooser이다.
+---
 # Module API DTO Patterns (모듈 간 DTO 계약 입문)
 
 > 한 줄 요약: 모듈 간 계약에서는 aggregate나 entity를 직접 넘기기보다, `command/query/result DTO`를 기본값으로 두고, 여러 내부 service를 묶어야 할 때만 module facade를 두는 편이 초심자에게도 더 안전하다.
@@ -20,6 +86,16 @@
 
 
 retrieval-anchor-keywords: module api dto patterns, cross module dto contract, module boundary dto, command query result dto, 모듈 api 계약이 뭐예요, 모듈 api 계약 왜 dto로 나눠요, 모듈 api 계약 예시, 모듈 간 dto 계약, cross module dto 어떻게 판단해요, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, what is module api dto, 공개 api에서 entity 누수, public api entity leak, 모듈 공개 api entity 누수
+
+## 미션 진입 증상
+
+| backend/payment 장면 | 먼저 볼 경계 |
+|---|---|
+| `payment` 모듈이 `Order` aggregate를 직접 받는다 | module API DTO가 필요한가 |
+| 주문 필드명 변경에 결제/정산 모듈이 같이 깨진다 | 내부 모델이 공개 계약으로 새는가 |
+| command, query, result가 모두 `Map`이나 entity다 | 호출 의도별 DTO가 분리됐는가 |
+| 다른 모듈의 service 여러 개를 순서대로 호출한다 | module facade가 필요한가 |
+
 <details>
 <summary>Table of Contents</summary>
 

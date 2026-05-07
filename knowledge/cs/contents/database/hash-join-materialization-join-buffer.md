@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Hash Join, Materialization, Join Buffer
+concept_id: database/hash-join-materialization-join-buffer
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- hash-join-materialization
+- join-buffer-plan-reading
+- optimizer-intermediate-structure
+aliases:
+- hash join
+- materialization
+- join buffer
+- block nested loop
+- subquery materialization
+- optimizer_switch
+- EXPLAIN ANALYZE join
+- derived table materialization
+- Using join buffer
+- hash join materialization
+symptoms:
+- MySQL EXPLAIN에서 Using join buffer나 materialization이 보이는데 nested loop와 어떻게 다른지 모르겠어
+- 인덱스 lookup 반복보다 hash join이나 materialization이 나을 수 있는 상황을 판단해야 해
+- join plan이 바뀌며 메모리 사용이나 spill 위험이 늘어난 것을 query tuning에서 같이 봐야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/sql-join-basics
+- database/sql-joins-and-query-order
+next_docs:
+- database/join-algorithms-across-engines
+- database/mysql-optimizer-hints-index-merge
+- database/index-condition-pushdown-filesort-temporary-table
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/sql-joins-and-query-order.md
+- contents/database/sql-join-basics.md
+- contents/database/join-algorithms-across-engines.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/query-tuning-checklist.md
+confusable_with:
+- database/join-algorithms-across-engines
+- database/index-condition-pushdown-filesort-temporary-table
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- hash join, materialization, join buffer는 nested loop join과 어떻게 다르게 비용을 줄여?
+- MySQL EXPLAIN에서 Using join buffer (hash join)이 보이면 무엇을 의미해?
+- IN subquery나 derived table materialization은 언제 재계산보다 유리해?
+- join plan이 hash join으로 바뀌면 메모리와 spill 위험을 어떻게 같이 봐야 해?
+- optimizer_switch로 materialization이나 hash join 계획을 비교 실험할 때 주의점은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 hash join, materialization, join buffer, block nested loop가 반복 index lookup 비용을 줄이기 위해 중간 구조를 만드는 optimizer 전략임을 설명하는 advanced deep dive다.
+  hash join, materialization, join buffer, Using join buffer, optimizer_switch 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Hash Join, Materialization, Join Buffer
 
 > 한 줄 요약: 인덱스가 없거나 재사용이 많을 때 옵티마이저는 nested loop만 고집하지 않고, 해시와 물질화를 써서 반복 비용을 줄인다.

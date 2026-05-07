@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+review_feedback_tags:
+- projection-applied-watermark
+- applied-watermark
+- projection-watermark
+- required-watermark-vs
 aliases:
 - applied watermark
 - projection watermark
@@ -37,7 +42,6 @@ contextual_chunk_prefix: |
   checkpoint, projection 진행 기록 같은 자연어 paraphrase가 본 문서의
   표식 메커니즘에 매핑된다.
 ---
-
 # Projection Applied Watermark Basics
 
 > 한 줄 요약: `applied_watermark`는 "이 read model이 안전하게 반영을 끝낸 마지막 기준선"이고, projection은 이 값을 저장하고 조금씩 전진시키며, read path는 이 값을 밖으로 꺼내 `required_watermark`와 비교해 stale 여부를 단순하게 판단한다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Shadow Process Catalog Entry Schema
+concept_id: software-engineering/shadow-process-catalog-entry-schema
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- schema
+- review-packet
+- retirement
+aliases:
+- shadow process catalog entry schema
+- shadow catalog template
+- workaround registry schema
+- shadow process metadata
+- catalog intake template
+- shadow 카탈로그 엔트리 스키마
+symptoms:
+- shadow process entry가 단순 메모라 signal evidence, target state, review forum, retirement tracking이 한 row로 이어지지 않아
+- lifecycle_state와 target_state.decision을 분리하지 않아 temporary_hold, blocked, retire, absorb 판단이 같은 필드에 섞여
+- retirement_tracking에 exit_condition, scorecard_schema_ref, verification_metric, threshold_rule, last_verdict_record가 없어 closed와 retired를 구분하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/shadow-process-catalog-retirement
+next_docs:
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-packet-automation-mapping
+- software-engineering/shadow-retirement-scorecard-schema
+linked_paths:
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/shadow-catalog-reopen-and-successor-rules.md
+- contents/software-engineering/shadow-packet-automation-mapping.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-promotion-snapshot-schema-fields.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/shadow-retirement-scorecard-schema.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/consumer-exception-registry-templates.md
+confusable_with:
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-retirement-scorecard-schema
+forbidden_neighbors: []
+expected_queries:
+- shadow process catalog entry schema는 signal evidence, target state, review forum, retirement tracking을 어떻게 한 row로 묶어야 해?
+- shadow entry에서 lifecycle_state와 target_state.decision을 분리해야 하는 이유를 설명해줘
+- catalog_id, current_path, signal_evidence, review_forum, exit_condition 같은 최소 required field는 왜 필요한가?
+- promotion_snapshot과 retirement_tracking을 entry schema에 넣으면 intake provenance와 closeout proof가 어떻게 이어져?
+- review_packet_items와 packet automation mapping을 schema에 연결해 forum packet drift를 줄이는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 shadow process catalog entry가 detection, decision, review, retirement를 한 row로 연결하도록 identity, signal evidence, target state, review, retirement tracking schema를 정의하는 advanced playbook이다.
+---
 # Shadow Process Catalog Entry Schema
 
 > 한 줄 요약: shadow process catalog가 inventory로 끝나지 않으려면, 각 항목이 signal evidence, target state, review forum, retirement tracking을 같은 schema 안에서 묶어 detection부터 officialization/retirement까지 이어지게 해야 한다.

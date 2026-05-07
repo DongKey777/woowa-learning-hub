@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: SQL 조인과 쿼리 실행 순서
+concept_id: database/sql-joins-and-query-order
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- sql-join-logical-processing-order
+- left-join-where-null-trap
+- group-by-having-boundary
+aliases:
+- sql joins and query order
+- SQL 조인과 쿼리 실행 순서
+- SQL join
+- INNER JOIN LEFT JOIN 차이
+- LEFT JOIN이 INNER JOIN처럼 됨
+- logical query processing
+- WHERE GROUP BY HAVING 순서
+- GROUP BY HAVING 차이
+- subquery vs join
+- 조인 실행 순서
+- SQL 읽는 순서
+symptoms:
+- SQL 작성 순서와 논리 처리 순서를 같다고 생각해서 WHERE, GROUP BY, HAVING 위치를 헷갈려
+- LEFT JOIN 뒤 WHERE 조건 때문에 오른쪽이 없는 row가 사라지는 이유를 설명하지 못해
+- JOIN과 subquery 중 무엇이 항상 빠르다고 단정하고 실행 계획을 확인하지 않아
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/sql-relational-modeling-basics
+next_docs:
+- database/left-join-filter-placement-primer
+- database/having-vs-where-beginner-card
+- database/join-row-increase-distinct-symptom-card
+- database/index-and-explain
+linked_paths:
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/left-join-filter-placement-primer.md
+- contents/database/having-vs-where-beginner-card.md
+- contents/database/group-by-order-by-different-axis-mysql-postgresql-bridge.md
+- contents/database/join-row-increase-distinct-symptom-card.md
+- contents/database/index-and-explain.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/left-join-filter-placement-primer
+- database/having-vs-where-beginner-card
+- database/join-row-increase-distinct-symptom-card
+- database/index-and-explain
+forbidden_neighbors: []
+expected_queries:
+- SQL JOIN과 논리적 쿼리 처리 순서를 FROM JOIN WHERE GROUP BY HAVING SELECT 기준으로 설명해줘
+- INNER JOIN과 LEFT JOIN 차이를 매칭 row와 NULL 보존 기준으로 알려줘
+- LEFT JOIN 후 WHERE에 오른쪽 테이블 조건을 걸면 왜 INNER JOIN처럼 동작할 수 있어?
+- WHERE와 HAVING 차이를 그룹핑 전 조건과 그룹핑 후 조건으로 설명해줘
+- subquery와 JOIN 중 무엇이 더 빠른지는 왜 실행 계획을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 SQL JOIN과 logical query processing order를 beginner가 읽는 순서로 정리하고 INNER JOIN, LEFT JOIN, WHERE, GROUP BY, HAVING, subquery vs join을 구분하는 primer다.
+  left join becomes inner, where vs having, group by order, join row explosion, logical query processing, subquery vs join 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # SQL 조인과 쿼리 실행 순서
 
 

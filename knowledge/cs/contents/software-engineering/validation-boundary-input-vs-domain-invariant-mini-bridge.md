@@ -10,7 +10,11 @@ level: beginner
 language: mixed
 source_priority: 85
 mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
 - missions/roomescape
+- missions/shopping-cart
 review_feedback_tags:
 - input-vs-domain-validation
 - invariant-boundary

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Mesh Adaptive Concurrency, Local Reply, Metrics Tuning"
+concept_id: network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- adaptive-concurrency
+- service-mesh
+- local-reply
+aliases:
+- mesh adaptive concurrency
+- sidecar local reply metrics
+- inflight limit tuning
+- route-level limiter
+- adaptive concurrency metrics
+- local reply reason
+- latency sample window
+symptoms:
+- sidecar가 가끔 503을 만든다고만 보고 inflight limit과 local reply reason을 보지 않는다
+- adaptive concurrency sample window가 너무 짧아 limiter가 요동치는 문제를 놓친다
+- route class를 분리하지 않아 streaming이나 admin traffic이 핵심 unary route와 같이 잘린다
+- app service time과 sidecar local reply metric을 같은 timeline에 놓지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+- network/service-mesh-local-reply-timeout-reset-attribution
+next_docs:
+- network/queue-saturation-attribution-metrics-runbook
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+linked_paths:
+- contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md
+- contents/network/service-mesh-local-reply-timeout-reset-attribution.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/queue-saturation-attribution-metrics-runbook.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+confusable_with:
+- network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/queue-saturation-attribution-metrics-runbook
+forbidden_neighbors: []
+expected_queries:
+- "mesh adaptive concurrency local reply metric을 어떻게 읽어야 해?"
+- "sidecar 503이 adaptive concurrency limit 때문인지 upstream 오류인지 구분하는 법은?"
+- "latency sample window가 짧으면 limiter가 왜 요동쳐?"
+- "route class isolation 없이 adaptive concurrency를 켜면 어떤 문제가 생겨?"
+- "inflight limit, local reply reason, app service time을 같이 보는 방법은?"
+contextual_chunk_prefix: |
+  이 문서는 service mesh adaptive concurrency의 inflight limit, latency sample
+  window, sidecar local reply reason, route class isolation, metric tuning을
+  다루는 advanced playbook이다.
+---
 # Mesh Adaptive Concurrency, Local Reply, Metrics Tuning
 
 > 한 줄 요약: mesh adaptive concurrency는 켜는 것보다 읽는 게 더 어렵다. inflight limit, latency sample, local reply reason, route class를 함께 보지 않으면 "sidecar가 가끔 503을 만든다" 정도로만 보인다.

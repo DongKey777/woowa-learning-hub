@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Cache Acceptance Rules for Causal Reads
+concept_id: system-design/cache-acceptance-rules-for-causal-reads
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- cache acceptance rules for causal reads
+- cache acceptance causal reads
+- causal read cache hit check
+- causal token cache hit miss refill
+aliases:
+- cache acceptance rules for causal reads
+- cache acceptance causal reads
+- causal read cache hit check
+- causal token cache hit miss refill
+- cache hit accept rule causal token
+- cache miss causal routing
+- cache refill causal guard
+- required watermark cache acceptance
+- notification token cache check
+- watermark-aware cache hit reject
+- stale cache after notification click
+- effect before cause cache bridge
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/token-propagation-through-bff-and-gateway.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/watermark-metadata-persistence-basics.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/rejected-hit-observability-primer.md
+- contents/system-design/outbox-watermark-token-primer.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cache Acceptance Rules for Causal Reads 설계 핵심을 설명해줘
+- cache acceptance rules for causal reads가 왜 필요한지 알려줘
+- Cache Acceptance Rules for Causal Reads 실무 트레이드오프는 뭐야?
+- cache acceptance rules for causal reads 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Cache Acceptance Rules for Causal Reads를 다루는 deep_dive 문서다. causal read에서 cache는 "값이 있나?"보다 "이 causal token이 요구하는 기준선을 만족하나?"를 먼저 물어야 하고, 그 질문은 hit, miss, refill 세 단계에서 같아야 한다. 검색 질의가 cache acceptance rules for causal reads, cache acceptance causal reads, causal read cache hit check, causal token cache hit miss refill처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Cache Acceptance Rules for Causal Reads
 
 > 한 줄 요약: causal read에서 cache는 "값이 있나?"보다 "이 causal token이 요구하는 기준선을 만족하나?"를 먼저 물어야 하고, 그 질문은 hit, miss, refill 세 단계에서 같아야 한다.

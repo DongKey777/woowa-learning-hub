@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: __Host- Cookie Migration Primer
+concept_id: security/host-cookie-migration-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- __host- cookie migration primer
+- __host cookie migration
+- host-only cookie migration primer
+- shared-domain session to __host cookie
+aliases:
+- __host- cookie migration primer
+- __host cookie migration
+- host-only cookie migration primer
+- shared-domain session to __host cookie
+- domain example.com to __host
+- parent-domain cookie to host-only cookie
+- host-prefixed session migration
+- __host session stale auth state
+- __host cookie logout cleanup
+- __host cookie cutover
+- __host cookie duplicate shadowing
+- shared cookie to app-local session
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/cookie-scope-migration-cleanup.md
+- contents/security/cookie-prefixes-host-secure-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/subdomain-logout-cookie-cleanup-primer.md
+- contents/security/duplicate-cookie-name-shadowing.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/subdomain-login-callback-boundaries.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- __Host- Cookie Migration Primer 핵심 개념을 설명해줘
+- __host- cookie migration primer가 왜 필요한지 알려줘
+- __Host- Cookie Migration Primer 실무 설계 포인트는 뭐야?
+- __host- cookie migration primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 __Host- Cookie Migration Primer를 다루는 primer 문서다. `__Host-` cookie는 "더 안전한 shared-domain cookie"가 아니라 **한 host에만 묶인 host-only cookie**다. 그래서 migration 핵심은 prefix를 붙이는 것보다, old shared-domain session을 어떻게 끊고 각 host의 새 로그인 상태를 어떻게 만들지 분리하는 데 있다. 검색 질의가 __host- cookie migration primer, __host cookie migration, host-only cookie migration primer, shared-domain session to __host cookie처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # __Host- Cookie Migration Primer
 
 > 한 줄 요약: `__Host-` cookie는 "더 안전한 shared-domain cookie"가 아니라 **한 host에만 묶인 host-only cookie**다. 그래서 migration 핵심은 prefix를 붙이는 것보다, old shared-domain session을 어떻게 끊고 각 host의 새 로그인 상태를 어떻게 만들지 분리하는 데 있다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Strict Fallback Degraded UX Contracts
+concept_id: design-pattern/strict-fallback-degraded-ux-contracts
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- degraded-ux-contract
+- processing-pending-response
+- retry-after-contract
+aliases:
+- strict fallback degraded ux contract
+- degraded response contract
+- processing state contract
+- pending state response contract
+- retry-after contract
+- strict fallback user visible guarantees
+- fallback breaker response
+- honest eventual consistency ux
+- stale success prevention
+- bounded retry poll contract
+symptoms:
+- primary read와 fallback source가 모두 즉시 정답을 못 줄 때 stale 200 success처럼 보여 false completion을 만든다
+- PROCESSING, PENDING, manual review, breaker-open을 같은 회색 상태로 보여 retry-after와 사용자 다음 행동이 모순된다
+- retry-after를 보호용 backoff가 아니라 장식 숫자로 내려 polling amplification과 중복 제출을 유도한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/fallback-capacity-and-headroom-contracts
+- design-pattern/semantic-lock-pending-state-pattern
+next_docs:
+- design-pattern/session-pinning-vs-version-gated-strict-reads
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/process-manager-deadlines-timeouts
+linked_paths:
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/semantic-lock-pending-state-pattern.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+confusable_with:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/fallback-capacity-and-headroom-contracts
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/session-pinning-vs-version-gated-strict-reads
+forbidden_neighbors: []
+expected_queries:
+- Strict fallback degraded UX는 fallback도 정답을 못 줄 때 PROCESSING/PENDING/retry-after를 response contract로 고정하는 패턴이야?
+- PROCESSING은 시스템 catch-up이고 PENDING은 사람 승인이나 외부 provider 대기라는 차이를 사용자에게 왜 분리해야 해?
+- retry-after는 UX 힌트가 아니라 breaker와 poll amplification을 보호하는 backoff contract인 이유가 뭐야?
+- degraded response에는 operation_id, reason_code, retry_after, user_guarantees, next_actor가 왜 필요해?
+- stale success를 보여주는 것보다 processing/pending contract로 truthful eventual consistency를 드러내는 게 더 안전한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Strict Fallback Degraded UX Contracts playbook으로, primary read와 fallback
+  source가 즉시 canonical truth를 줄 수 없을 때 PROCESSING/PENDING, reason_code, operation_id,
+  retry-after, safe_to_resubmit, next_actor, user guarantee를 response contract로 내려 stale success와
+  poll amplification을 막는 방법을 설명한다.
+---
 # Strict Fallback Degraded UX Contracts
 
 > 한 줄 요약: primary read도 fallback source도 즉시 정답을 못 줄 때는 `processing`/`pending`/`retry-after`를 임시 스피너가 아니라 response-side contract로 고정해, 사용자가 무엇을 다시 시도해야 하고 무엇은 이미 안전하게 접수됐는지 일관되게 알 수 있어야 한다.

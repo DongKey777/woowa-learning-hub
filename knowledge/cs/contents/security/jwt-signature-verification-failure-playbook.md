@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: JWT Signature Verification Failure Playbook
+concept_id: security/jwt-signature-verification-failure-playbook
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- JWT signature verification
+- JWT validation failure
+- JWKS outage
+- kid miss
+aliases:
+- JWT signature verification
+- JWT validation failure
+- JWKS outage
+- kid miss
+- kid rollover
+- stale JWKS cache
+- algorithm allowlist
+- issuer binding
+- signature invalid
+- verification playbook
+- duplicate kid
+- fail closed
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwt-deep-dive.md
+- contents/security/jwk-rotation-cache-invalidation-kid-rollover.md
+- contents/security/key-rotation-runbook.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/secret-scanning-credential-leak-response.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- JWT Signature Verification Failure Playbook 핵심 개념을 설명해줘
+- JWT signature verification가 왜 필요한지 알려줘
+- JWT Signature Verification Failure Playbook 실무 설계 포인트는 뭐야?
+- JWT signature verification에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 JWT Signature Verification Failure Playbook를 다루는 deep_dive 문서다. JWT 검증 장애는 "서명이 틀렸다" 한 문장으로 뭉개면 못 고친다. 파싱, issuer 바인딩, JWKS 조회, `kid` 선택, 알고리즘 검증, claim 검증을 단계별로 분리해야 안전하게 복구할 수 있다. 검색 질의가 JWT signature verification, JWT validation failure, JWKS outage, kid miss처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # JWT Signature Verification Failure Playbook
 
 > 한 줄 요약: JWT 검증 장애는 "서명이 틀렸다" 한 문장으로 뭉개면 못 고친다. 파싱, issuer 바인딩, JWKS 조회, `kid` 선택, 알고리즘 검증, claim 검증을 단계별로 분리해야 안전하게 복구할 수 있다.

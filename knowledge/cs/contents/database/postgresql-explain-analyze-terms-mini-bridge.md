@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: PostgreSQL EXPLAIN ANALYZE Terms Mini Bridge
+concept_id: database/postgresql-explain-analyze-terms-mini-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- postgresql-explain
+- actual-rows
+- buffers
+- heap-fetches
+aliases:
+- postgresql explain analyze actual rows buffers heap fetches
+- explain analyze terms beginner
+- actual rows vs buffers
+- buffers 뭐예요
+- heap fetches 뭐예요
+- explain analyze 처음 헷갈려요
+- actual rows why different
+- heap fetches buffers latency together
+- EXPLAIN ANALYZE 용어
+- actual rows buffers heap fetches 같이 읽기
+symptoms:
+- EXPLAIN ANALYZE에서 actual rows, Buffers, Heap Fetches를 각각 외우지만 한 plan 이야기로 연결하지 못하고 있어
+- actual rows는 작지만 buffers가 커서 row 수와 page touch 비용을 분리해야 해
+- Index Only Scan인데 Heap Fetches가 남고 buffers와 실행 시간이 같이 흔들리는 이유를 이해해야 해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/postgresql-plan-node-mini-card
+next_docs:
+- database/postgresql-buffers-hit-read-dirtied-written-mini-card
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/statistics-histograms-cardinality-estimation
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/postgresql-buffers-hit-read-dirtied-written-mini-card.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md
+- contents/database/postgresql-visibility-map-all-visible-beginner-card.md
+- contents/database/mysql-postgresql-index-storage-bridge.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+confusable_with:
+- database/postgresql-buffers-hit-read-dirtied-written-mini-card
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/postgresql-plan-node-mini-card
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL EXPLAIN ANALYZE에서 actual rows, buffers, heap fetches를 어떻게 같이 읽어?
+- actual rows는 작은데 buffers가 크면 어떤 page touch 비용을 의심해야 해?
+- Heap Fetches가 늘면 buffers와 latency가 항상 같이 느는지 설명해줘
+- estimate rows와 actual rows가 다를 때 statistics 문제를 어떻게 이어서 봐?
+- Index Only Scan plan에서 Heap Fetches와 Buffers를 한 문장으로 해석해줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL EXPLAIN ANALYZE의 actual rows, Buffers, Heap Fetches를 row count, page touch, heap visibility recheck로 함께 읽는 beginner symptom router다.
+  EXPLAIN ANALYZE 용어, actual rows buffers heap fetches 같이 읽기 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법
 
 > 한 줄 요약: `actual rows`는 "몇 row가 이 단계를 통과했는지", `buffers`는 "그 row를 위해 몇 page를 만졌는지", `heap fetches`는 "`Index Only Scan`인데도 heap 확인이 몇 번 남았는지"를 보여 주므로, 셋을 같이 보면 plan 출력이 한 장의 이야기로 이어진다.

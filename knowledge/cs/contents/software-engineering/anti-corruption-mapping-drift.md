@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Anti-Corruption Mapping Drift
+concept_id: software-engineering/anti-corruption-drift
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- anti-corruption-layer
+- contract-drift
+- semantic-drift
+aliases:
+- Anti-Corruption Mapping Drift
+- ACL mapping drift
+- semantic drift in translation layer
+- external model change drift
+- adapter rot
+- 매핑 의미 드리프트
+symptoms:
+- 외부 status, type, code 문자열 변환은 맞지만 내부 비즈니스 의미가 바뀐 것을 감지하지 못해
+- UNKNOWN, default, 임시 if-else가 늘어나는데 ACL 재설계나 contract review가 아니라 작은 패치로만 누적해
+- 외부 계약 변화와 내부 도메인 언어 변화의 소유권이 없어 sample replay, shadow compare, business review 없이 배포해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/anti-corruption-layer
+- software-engineering/api-versioning-contracts-acl
+next_docs:
+- software-engineering/contract-drift-governance
+- software-engineering/consumer-migration-playbook
+- software-engineering/data-contract-lifecycle
+linked_paths:
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/bff-boundaries-client-specific-aggregation.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/data-contract-ownership-lifecycle.md
+confusable_with:
+- software-engineering/anti-corruption-layer
+- software-engineering/contract-drift-governance
+- software-engineering/data-contract-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- Anti-Corruption Layer에서 mapping drift와 semantic drift가 생기는 원인을 설명해줘
+- 외부 CANCELLED PENDING amount 같은 필드 의미가 바뀌었을 때 ACL이 어떻게 틀어질 수 있어?
+- UNKNOWN default 매핑이 늘어날 때 왜 단순 if else 패치보다 재검증 체계가 필요해?
+- ACL mapping drift를 sample replay shadow compare contract test business review로 잡는 흐름을 알려줘
+- 외부 API 변화와 내부 도메인 변화의 소유권을 ACL에서 어떻게 관리해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Layer의 mapping drift를 syntax 변환 문제가 아니라 external contract와 internal domain meaning이 서서히 어긋나는 semantic drift로 진단하는 advanced playbook이다.
+---
 # Anti-Corruption Mapping Drift
 
 > 한 줄 요약: Anti-Corruption Layer의 진짜 위험은 번역이 한 번 틀리는 것이 아니라, 외부 변화와 내부 모델 변화가 쌓이면서 매핑 의미가 서서히 어긋나는 drift다.

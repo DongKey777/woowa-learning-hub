@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: JNI Native Call Overhead
+concept_id: language/jni-native-call-overhead
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jni
+- native-boundary
+- performance
+aliases:
+- JNI Native Call Overhead
+- Java Native Interface crossing overhead
+- JNI pinning copying safepoint
+- native boundary hot path cost
+- JNI array critical GC interaction
+- 자바 JNI native call 비용
+symptoms:
+- native 함수가 C/C++라 무조건 빠를 것이라고 생각해 Java-native 경계 전환 비용과 call frequency를 놓쳐
+- Java 배열이나 ByteBuffer를 native로 넘길 때 pinning/copying과 GC/safepoint 상호작용을 고려하지 않아 latency spike를 만든다
+- thread dump와 Java stack만 보고 native frame 내부 지연이나 crash 원인을 추적하려 해 관측 한계를 놓쳐
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/safepoint-stop-the-world-diagnostics
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/memory-barriers-varhandle-fences
+next_docs:
+- language/java-agent-instrumentation-basics
+- language/jcmd-diagnostic-command-cheatsheet
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/java-agent-instrumentation-basics.md
+- contents/language/java/memory-barriers-varhandle-fences.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+confusable_with:
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/safepoint-stop-the-world-diagnostics
+- language/java-agent-instrumentation-basics
+forbidden_neighbors: []
+expected_queries:
+- JNI native call이 Java 메서드 호출보다 비싸질 수 있는 이유를 설명해줘
+- Java 배열을 JNI로 넘길 때 pinning과 copying이 GC와 latency에 어떤 영향을 줘?
+- 작은 nativeCall을 hot path에서 반복 호출하면 왜 batching을 고려해야 해?
+- JNI 지연이나 crash를 jcmd와 JFR로 관측할 때 무엇을 봐야 해?
+- native library 자체보다 Java-native boundary가 병목일 수 있는 상황을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JNI native boundary crossing, type marshaling, pinning/copying, safepoint/GC interaction, hot path call count를 설명하는 advanced deep dive다.
+  JNI overhead, native call, array pinning, direct buffer, safepoint, Java native boundary 질문이 본 문서에 매핑된다.
+---
 # JNI Native Call Overhead
 
 > 한 줄 요약: JNI는 Java와 native 사이의 강한 경계를 넘는 도구라 기능은 넓지만, 호출 비용, pinning, copying, safepoint interaction, debugging 난이도를 함께 감수해야 한다.

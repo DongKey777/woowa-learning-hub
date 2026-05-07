@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Striped Guard Row Rebalance Basics
+concept_id: database/striped-guard-row-rebalance
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- guard-row
+- rebalance
+- refill
+- contention
+- booking
+aliases:
+- striped guard row rebalance
+- striped guard row refill
+- bucket budget refill
+- bucket rebalance
+- low frequency refill path
+- striped guard slow path
+- budget transfer
+- bucket headroom refill
+- avoid global lock hot path
+- striped guard no global lock
+symptoms:
+- striped guard row에서 hot path가 local budget만 보지 않고 매 요청마다 global refill을 시도해
+- 특정 bucket은 꽉 찼고 다른 bucket은 남아 stranded headroom이 생겼어
+- rebalance가 active claim을 옮기거나 전 bucket을 잠가 release bookkeeping을 흔들 위험이 있어
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- database/striped-guard-row-budgeting
+- database/guard-row-hot-row-symptoms-primer
+next_docs:
+- database/hot-row-contention-counter-sharding
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/shared-pool-guard-design-room-type-inventory
+linked_paths:
+- contents/database/striped-guard-row-budgeting-primer.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+confusable_with:
+- database/striped-guard-row-budgeting
+- database/hot-row-contention-counter-sharding
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+forbidden_neighbors: []
+expected_queries:
+- striped guard row에서 refill과 rebalance는 왜 hot path가 아니라 low frequency slow path여야 해?
+- bucket이 하나는 꽉 차고 다른 bucket은 남았을 때 budget만 옮기고 active claim은 옮기지 않는 이유가 뭐야?
+- acquire 실패 때마다 즉석 global rebalance를 호출하면 striping 이점이 왜 사라져?
+- rebalance worker가 source와 destination bucket을 작은 범위, 고정 순서로 잠그는 이유는 뭐야?
+- stranded headroom을 조금 감수하고 local budget hot path를 유지하는 tradeoff를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 striped guard row rebalance/refill을 low frequency slow path, budget transfer, no global lock hot path 규칙으로 설명하는 beginner playbook이다.
+  bucket budget refill, stranded headroom, striped guard slow path, budget만 이동 질문이 본 문서에 매핑된다.
+---
 # Striped Guard Row Rebalance Basics
 
 > 한 줄 요약: striped guard row에서 refill/rebalance는 "빠른 승인 경로"가 아니라 "가끔 예산을 옮기는 느린 경로"로 분리해야 하고, 초보자는 `hot path는 local budget만 본다`, `rebalance는 budget만 옮긴다`, `이동은 작은 범위와 고정 순서로 잠근다` 이 세 규칙부터 지키면 된다.

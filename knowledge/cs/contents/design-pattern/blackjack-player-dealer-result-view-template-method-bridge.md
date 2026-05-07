@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > blackjack에서 플레이어와 딜러 결과 출력이 "이름 출력 -> 카드 펼치기 -> 점수/상태 표시"처럼 같은 순서를 갖고, 일부 단계만 다르다면 `if (dealer)` 분기보다 부모가 출력 skeleton을 쥐는 Template Method 쪽으로 읽는 편이 빠르다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "딜러와 플레이어 출력 메서드가 거의 같은데 한 줄만 달라요" | 이름, 카드, 점수 출력 순서는 같고 hidden card 처리만 다른 OutputView 코드 | 공통 skeleton과 participant별 variation step을 분리한다 |
+| "첫 카드 숨김과 최종 공개 분기가 곳곳에 흩어져요" | dealer hidden/reveal 조건이 여러 출력 메서드에 반복되는 구조 | 출력 순서 책임과 도메인 점수 계산 책임을 구분한다 |
+| "participant 타입 if문으로 문자열을 조립하고 있어요" | `isDealer` 분기가 view/presenter에 계속 추가되는 구현 | type switch보다 고정 흐름 일부 단계를 override하는지 본다 |
+
 ## 미션 시나리오
 
 blackjack 콘솔 미션에서는 `OutputView`가 금방 커진다. 플레이어들의 손패를 보여 줄 때와

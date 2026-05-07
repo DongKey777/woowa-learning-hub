@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: JWT Claims vs Roles vs Spring Authorities vs Application Permissions
+concept_id: security/jwt-claims-roles-authorities-permissions-mapping
+canonical: false
+category: security
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- jwt claims vs authorities
+- claims vs roles vs authorities mapping
+- jwt claims roles authorities permissions mapping
+- claim vs authority vs permission
+aliases:
+- jwt claims vs authorities
+- claims vs roles vs authorities mapping
+- jwt claims roles authorities permissions mapping
+- claim vs authority vs permission
+- role vs authority spring security
+- spring grantedauthority
+- granted authority
+- jwt role claim
+- scope claim
+- permissions claim
+- external idp group mapping
+- jwt to grantedauthority
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/oauth-scope-vs-api-audience-vs-application-permission.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/jwt-deep-dive.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/spring-authority-mapping-pitfalls.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- JWT Claims vs Roles vs Spring Authorities vs Application Permissions 핵심 개념을 설명해줘
+- jwt claims vs authorities가 왜 필요한지 알려줘
+- JWT Claims vs Roles vs Spring Authorities vs Application Permissions 실무 설계 포인트는 뭐야?
+- jwt claims vs authorities에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 JWT Claims vs Roles vs Spring Authorities vs Application Permissions를 다루는 deep_dive 문서다. JWT claim은 발급자가 말한 사실이고, role은 권한 묶음 개념이며, Spring authority는 그 사실을 프레임워크가 검사하기 좋게 바꾼 문자열이고, application permission은 우리 서비스가 현재 문맥에서 실제로 허용할 행동이다. 검색 질의가 jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # JWT Claims vs Roles vs Spring Authorities vs Application Permissions
 
 > 한 줄 요약: JWT claim은 발급자가 말한 사실이고, role은 권한 묶음 개념이며, Spring authority는 그 사실을 프레임워크가 검사하기 좋게 바꾼 문자열이고, application permission은 우리 서비스가 현재 문맥에서 실제로 허용할 행동이다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Aggregate Boundary vs Transaction Boundary
+concept_id: design-pattern/aggregate-boundary-vs-transaction-boundary
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- aggregate-boundary
+- transaction-boundary
+- ddd-consistency-boundary
+aliases:
+- aggregate boundary vs transaction boundary
+- aggregate boundary
+- transaction boundary
+- one aggregate per transaction
+- cross aggregate invariant
+- immediate consistency boundary
+- saga local transaction
+- aggregate와 transaction 경계
+- 애그리거트 경계 트랜잭션 경계
+symptoms:
+- 한 번에 commit해야 한다는 이유만으로 여러 도메인 객체를 거대 aggregate로 합친다
+- aggregate boundary와 DB transaction boundary를 같은 개념으로 설명해 외부 API 호출까지 transaction 안에 넣는다
+- cross-aggregate invariant를 saga, reservation, outbox 같은 프로세스 설계 없이 rollback으로만 해결하려 한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/unit-of-work-pattern
+- design-pattern/domain-events-vs-integration-events
+next_docs:
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/aggregate-reference-by-id
+- design-pattern/saga-coordinator-pattern-language
+linked_paths:
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/aggregate-reference-by-id.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+confusable_with:
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/unit-of-work-pattern
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/domain-events-vs-integration-events
+forbidden_neighbors: []
+expected_queries:
+- Aggregate boundary와 transaction boundary는 즉시 일관성과 atomic commit 관점에서 어떻게 달라?
+- 한 command가 한 aggregate를 한 local transaction으로 바꾸는 건 규칙이야 기본값이야?
+- 같은 DB transaction에 outbox와 audit log가 들어가도 같은 aggregate가 아닌 이유가 뭐야?
+- cross-aggregate invariant를 거대 aggregate나 긴 transaction 대신 saga로 풀어야 하는 경우는 언제야?
+- 외부 결제 API 호출을 DB transaction 안에 넣으면 aggregate 설계가 왜 위험해져?
+contextual_chunk_prefix: |
+  이 문서는 Aggregate Boundary vs Transaction Boundary chooser로, aggregate는
+  즉시 일관성을 지키는 도메인 경계이고 transaction은 이번 실행의 commit/rollback
+  경계라는 차이를 설명하며, mega aggregate와 giant transaction을 피하는 기준을 다룬다.
+---
 # Aggregate Boundary vs Transaction Boundary
 
 > 한 줄 요약: Aggregate boundary는 즉시 일관성을 지켜야 하는 도메인 경계이고, transaction boundary는 한 유스케이스에서 함께 commit/rollback할 작업 경계다. 둘을 같은 것으로 취급하면 거대 aggregate와 과도한 트랜잭션이 동시에 생긴다.

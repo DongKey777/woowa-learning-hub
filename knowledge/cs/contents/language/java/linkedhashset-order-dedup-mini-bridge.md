@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: LinkedHashSet Order Dedup Mini Bridge
+concept_id: language/linkedhashset-order-dedup-mini-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- linkedhashset
+- treeset
+- deduplication
+aliases:
+- LinkedHashSet 순서 유지 vs TreeSet 정렬 유지
+- linkedhashset vs treeset beginner
+- insertion order set vs sorted set
+- set to list conversion Java
+- new ArrayList from Set
+- 입력 순서 유지 Set 정렬 유지 Set
+symptoms:
+- LinkedHashSet의 순서 유지를 정렬 유지로 이해해 TreeSet과 요구사항을 섞어 선택해
+- Set으로 중복 제거한 뒤 API 응답이나 인덱스 접근이 필요할 때 List로 변환하는 시점을 놓쳐
+- HashSet/LinkedHashSet 중복 판단은 equals/hashCode이고 TreeSet 중복 판단은 comparator/compareTo와 연결된다는 차이를 설명하지 못해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/list-set-map-requirement-to-type-drill
+- language/collections-equality-mutable-state-foundations
+next_docs:
+- language/hashset-vs-treeset-duplicate-semantics
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/list-set-map-requirement-to-type-drill
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/list-set-map-requirement-to-type-drill.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+confusable_with:
+- language/hashset-vs-treeset-duplicate-semantics
+- language/list-set-map-requirement-to-type-drill
+- language/treeset-treemap-natural-ordering-compareto-bridge
+forbidden_neighbors: []
+expected_queries:
+- LinkedHashSet과 TreeSet은 순서 유지와 정렬 유지가 어떻게 달라?
+- 중복 제거 후 입력 순서를 그대로 API 응답으로 내보내려면 어떤 타입을 써야 해?
+- Set으로 모은 뒤 get(0) 같은 인덱스 접근이 필요하면 언제 List로 바꿔야 해?
+- LinkedHashSet은 equals hashCode로 중복을 막고 TreeSet은 compareTo Comparator로 중복을 판단하는 차이를 설명해줘
+- 순서라는 말이 입력 순서인지 정렬 순서인지 요구사항에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 LinkedHashSet insertion order, TreeSet sorted order, Set deduplication, Set-to-List conversion 시점을 beginner 관점에서 연결하는 primer다.
+  LinkedHashSet vs TreeSet, insertion order, sorted set, set to list, dedupe semantics 질문이 본 문서에 매핑된다.
+---
 # `LinkedHashSet` 순서 유지 vs `TreeSet` 정렬 유지 브리지
 
 > 한 줄 요약: 초급자는 `Set`으로 중복을 먼저 정리한 뒤에도 `출력`, `API 응답`, `인덱스 접근`이 필요해지면 `new ArrayList<>(set)`로 한 번 바꾼다는 흐름까지 같이 기억하면 덜 헷갈린다.

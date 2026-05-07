@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL Optimizer Hints and Index Merge
+concept_id: database/mysql-optimizer-hints-index-merge
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- mysql-optimizer
+- optimizer-hints
+- index-merge
+- plan-stability
+aliases:
+- MySQL optimizer hints
+- USE INDEX
+- FORCE INDEX
+- IGNORE INDEX
+- index merge
+- index_merge_intersect
+- index_merge_union
+- optimizer switch
+- MySQL 힌트 언제 쓰나요
+- index merge가 느려요
+symptoms:
+- MySQL optimizer가 index_merge plan을 골랐는데 rows와 filesort 비용이 커져 query latency가 튀고 있어
+- FORCE INDEX나 USE INDEX로 급한 장애를 넘겼지만 데이터 분포 변화 뒤 힌트가 기술 부채가 되었어
+- 통계 왜곡, stale stats, join order drift 때문에 plan을 힌트로 좁힐지 ANALYZE와 index 재설계를 할지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/query-tuning-checklist
+next_docs:
+- database/optimizer-trace-reading
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/statistics-histograms-cardinality-estimation
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/optimizer-trace-reading.md
+- contents/database/optimizer-switch-plan-stability-invisible-indexes.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+confusable_with:
+- database/optimizer-trace-reading
+- database/optimizer-switch-plan-stability-invisible-indexes
+- database/statistics-histograms-cardinality-estimation
+forbidden_neighbors: []
+expected_queries:
+- MySQL index_merge plan이 언제 도움이 되고 언제 느려지는지 설명해줘
+- FORCE INDEX를 임시 조치로 쓸 때 어떤 운영 부채와 재검증 기준을 남겨야 해?
+- optimizer hint를 넣기 전에 ANALYZE TABLE이나 통계 왜곡을 먼저 봐야 하는 이유가 뭐야?
+- USE INDEX, FORCE INDEX, IGNORE INDEX의 차이를 plan stability 관점에서 알려줘
+- index_merge_intersection이 composite index보다 느릴 수 있는 상황을 예시로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL optimizer hints, FORCE INDEX, USE INDEX, IGNORE INDEX, index_merge plan을 통계 왜곡과 plan drift 관점에서 다루는 advanced deep dive다.
+  index merge가 느림, 힌트 언제 쓰나요, optimizer switch, stale stats 질문이 본 문서에 매핑된다.
+---
 # MySQL Optimizer Hints and Index Merge
 
 > 한 줄 요약: 옵티마이저는 똑똑하지만 완벽하지 않다. 잘못된 실행 계획을 읽고, 필요할 때만 힌트로 좁히는 감각이 중요하다.

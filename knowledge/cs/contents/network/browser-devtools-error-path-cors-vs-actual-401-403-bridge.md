@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "Browser DevTools에서 CORS처럼 보이지만 actual `401`/`403`이 있는 경우: Error-Path CORS 브리지"
+concept_id: network/browser-devtools-error-path-cors-vs-actual-401-403-bridge
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- error-path-cors
+- actual-401-403-devtools
+- preflight-vs-actual
+aliases:
+- actual 401 cors bridge
+- actual 403 cors bridge
+- error path cors devtools
+- network tab 401 console cors
+- network tab 403 console cors
+- cors masks auth failure
+symptoms:
+- Network actual GET이나 POST에 401/403이 있는데 Console CORS 문구만 보고 요청이 안 갔다고 생각한다
+- OPTIONS-only preflight failure와 actual request auth failure를 구분하지 못한다
+- actual 401/403의 인증/인가 의미를 버리고 CORS 설정만 수정하려 한다
+intents:
+- troubleshooting
+- comparison
+- symptom
+prerequisites:
+- network/browser-devtools-options-preflight-vs-actual-failure-mini-card
+- network/cross-origin-cookie-credentials-cors-primer
+next_docs:
+- security/error-path-cors-primer
+- security/auth-failure-response-401-403-404
+- security/preflight-debug-checklist
+- network/application-tab-vs-request-cookie-header-mini-card
+linked_paths:
+- contents/network/browser-devtools-options-preflight-vs-actual-failure-mini-card.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/network/http-status-codes-basics.md
+- contents/security/error-path-cors-primer.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/preflight-debug-checklist.md
+confusable_with:
+- network/browser-devtools-options-preflight-vs-actual-failure-mini-card
+- network/cross-origin-cookie-credentials-cors-primer
+- security/error-path-cors-primer
+- security/auth-failure-response-401-403-404
+- security/preflight-debug-checklist
+forbidden_neighbors: []
+expected_queries:
+- "Network에는 actual 401이 있는데 Console은 CORS라고 할 때 무엇부터 봐?"
+- "actual 403 row가 보이면 CORS 설정 문제인지 authz 실패인지 어떻게 구분해?"
+- "OPTIONS만 실패한 preflight와 actual request 401/403을 DevTools에서 나누는 법을 알려줘"
+- "CORS가 실제 인증 실패를 가리는 error-path CORS 장면을 설명해줘"
+- "request Cookie가 비어 있는 actual 401이면 credential 문제와 CORS 문제 중 어디부터 봐?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools에서 Console CORS error보다 Network actual GET/POST row
+  존재 여부를 먼저 보고, actual 401/403 auth failure와 error-path CORS
+  response exposure failure를 함께 읽는 intermediate bridge다.
+---
 # Browser DevTools에서 CORS처럼 보이지만 actual `401`/`403`이 있는 경우: Error-Path CORS 브리지
 
 > 한 줄 요약: DevTools `Network`에 actual `GET`/`POST`의 `401`/`403`이 이미 보이는데 콘솔은 계속 CORS만 말하면, "요청 자체가 막혔다"가 아니라 "실제 auth failure가 error-path CORS에 가려졌다"를 먼저 의심해야 한다.
@@ -7,6 +75,14 @@
 > 문서 역할: 이 문서는 beginner가 `OPTIONS-only preflight failure`를 이미 한 번 가른 뒤, `actual request exists + console CORS` 장면을 DevTools 증거 순서로 다시 읽게 만드는 intermediate bridge다.
 
 > target query shape: `network tab 401 but console cors`, `actual request exists cors 403`, `devtools cors masks 401`, `왜 network에는 403인데 프론트는 cors래요`
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Network에는 actual 401/403이 있는데 Console CORS 문구만 보고 있어요" | roomescape admin, shopping-cart auth API, payment callback debugging | actual request가 서버까지 갔는지 먼저 보고 auth failure lane을 버리지 않는다 |
+| "OPTIONS-only 실패와 actual request 401/403을 구분하지 못하겠어요" | preflight failure와 실제 인증/인가 실패가 섞인 DevTools trace | actual row 존재 여부로 preflight lane과 error-path CORS lane을 나눈다 |
+| "request Cookie가 비어 있는 actual 401이면 CORS부터 봐야 하나요?" | cookie credentials, SameSite, session auth 실패 | Cookie 전송 실패와 error response 노출 실패를 따로 확인한다 |
 
 관련 문서:
 

@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Process Manager Deadlines and Timeouts
+concept_id: design-pattern/process-manager-deadlines-timeouts
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- process-manager-deadline
+- timeout-workflow
+- stale-timer-guard
+aliases:
+- process manager deadline
+- timeout workflow
+- timer scheduling
+- reminder pattern
+- deadline exceeded event
+- stale timer
+- reservation expiry
+- workflow owner
+- approval sla
+- timer version
+symptoms:
+- deadline 처리를 scheduler callback 하나로만 구현해 깨운 뒤 어떤 상태 전이를 할지 도메인 정책이 흩어진다
+- 결제 성공 후 뒤늦게 도착한 만료 timer를 stale signal로 무시하지 못해 잘못된 expire command가 나간다
+- timeout을 exception으로만 보고 미응답, reminder, expiry, manual review escalation 같은 도메인 이벤트로 모델링하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/workflow-owner-vs-participant-context
+next_docs:
+- design-pattern/human-approval-manual-review-workflow-pattern
+- design-pattern/escalation-reassignment-queue-ownership-pattern
+- design-pattern/reservation-hold-expiry-consistency-seam
+linked_paths:
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/process-manager-state-store-recovery.md
+- contents/design-pattern/human-approval-manual-review-workflow-pattern.md
+- contents/design-pattern/escalation-reassignment-queue-ownership-pattern.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/reservation-hold-expiry-consistency-seam.md
+- contents/design-pattern/orchestration-vs-choreography-pattern-language.md
+- contents/design-pattern/command-bus-pattern.md
+- contents/design-pattern/event-envelope-pattern.md
+confusable_with:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/process-manager-state-store-recovery
+- design-pattern/workflow-owner-vs-participant-context
+- design-pattern/reservation-hold-expiry-consistency-seam
+forbidden_neighbors: []
+expected_queries:
+- Process Manager에서 scheduler는 언제 깨울지를 담당하고 manager는 deadline signal을 어떻게 해석해?
+- timeout은 exception이 아니라 주문 만료, reminder, manual review escalation 같은 domain event 입력일 수 있는 이유가 뭐야?
+- stale timer를 막기 위해 current status와 timer version token을 함께 비교해야 하는 이유가 뭐야?
+- 장기 workflow에서 payment deadline이나 approval SLA 같은 time boundary는 어느 context가 소유해야 해?
+- 타이머가 늦게 오거나 중복 발행될 때 process manager는 idempotency와 상태 전이를 어떻게 보호해?
+contextual_chunk_prefix: |
+  이 문서는 Process Manager Deadlines and Timeouts playbook으로, long-running workflow에서
+  scheduler는 wake-up signal을 만들고 process manager는 current state, deadline, timer version,
+  stale signal guard를 이용해 timeout, reminder, expiry, escalation을 도메인 상태 전이로 해석하는
+  방법을 설명한다.
+---
 # Process Manager Deadlines and Timeouts
 
 > 한 줄 요약: Process Manager는 장기 프로세스의 deadline, timeout, reminder를 상태와 함께 관리하며, 시간을 또 하나의 도메인 이벤트처럼 다뤄 다음 명령을 결정한다.

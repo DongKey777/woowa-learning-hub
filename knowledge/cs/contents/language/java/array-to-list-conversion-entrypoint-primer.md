@@ -59,10 +59,11 @@ expected_queries:
 - Java 배열을 수정 가능한 List로 넘기려면?
 - List.of로 바꾸는 거랑 new ArrayList 차이를 모르겠어
 contextual_chunk_prefix: |
-  이 문서는 배열을 List로 바꾸려는 Java 입문자가 공유 뷰와 독립 복사, 수정
-  가능 리스트와 읽기 전용 목록을 먼저 나눠 보는 primer다. Arrays.asList로
-  충분한가, 원본 배열과 같이 바뀌면 안 되나, add/remove가 필요한가, new
-  ArrayList로 끊어야 하나, List.of처럼 읽기 전용이면 되나 같은 자연어
+  이 문서는 배열을 List로 바꾸려는 Java 입문자가 원본 저장소를 같이 볼지,
+  복사본으로 끊을지, 그리고 변경 가능한 목록이 필요한지 읽기 전용이면 되는지
+  순서대로 나눠 기초를 잡는 primer다. 배열과 리스트가 같이 흔들리면 곤란함,
+  add는 해야 하지만 원본 공유는 싫음, 화면용으로 잠깐 감싸면 충분함,
+  Arrays.asList와 List.of와 new ArrayList 중 어디서 갈라지나 같은 자연어
   paraphrase가 본 문서의 첫 선택 기준에 매핑된다.
 ---
 # 배열 vs `List` 변환 엔트리 프라이머

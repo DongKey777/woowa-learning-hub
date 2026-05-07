@@ -47,9 +47,7 @@ confusable_with:
 - database/replica-lag-read-after-write-strategies
 - database/replica-read-routing-anomalies
 - database/cache-replica-split-read-inconsistency
-forbidden_neighbors:
-- contents/database/replica-lag-read-after-write-strategies.md
-- contents/database/read-your-writes-session-pinning.md
+forbidden_neighbors: []
 expected_queries:
 - failover 뒤에 왜 어떤 요청은 새 값이고 어떤 요청은 옛 값이야?
 - 승격 후 새로고침할 때마다 데이터가 번갈아 보이면 어디부터 봐야 해?

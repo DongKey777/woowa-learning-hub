@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: IDENTITY vs SEQUENCE Batch Verification Example
+concept_id: software-engineering/identity-sequence-batch-verification
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- jpa
+- batch
+- identity
+- sequence
+aliases:
+- IDENTITY vs SEQUENCE Batch Verification Example
+- identity sequence batch verification
+- GenerationType IDENTITY SEQUENCE batching
+- JPA identity sequence insert test
+- batchExecutionCount identity sequence
+- identity 먼저 넣고 sequence 키 먼저
+symptoms: []
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/datajpatest-flush-clear
+next_docs:
+- software-engineering/datasource-proxy-vs-statistics
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/persistence-follow-up-question-guide
+linked_paths:
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/datasource-proxy-vs-hibernate-statistics-query-count-batch-primer.md
+confusable_with:
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/datajpatest-flush-clear
+- software-engineering/datasource-proxy-vs-statistics
+forbidden_neighbors: []
+expected_queries:
+- JPA IDENTITY와 SEQUENCE 전략이 insert batching 검증에서 다르게 보이는 이유를 초심자에게 설명해줘
+- GenerationType.IDENTITY는 왜 insert 전에 PK를 몰라 batchExecutionCount가 0으로 보일 수 있어?
+- SEQUENCE allocationSize를 쓰면 같은 save 루프에서 batch 실행 흔적이 더 잘 보이는 이유가 뭐야?
+- count() 테스트와 batchExecutionCount 테스트가 서로 다른 것을 검증한다는 점을 알려줘
+- DataJpaTest에서 IDENTITY와 SEQUENCE를 비교해 batch 적용 여부를 확인하는 예시가 필요해
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 IDENTITY vs SEQUENCE Batch Verification Example를 다루는 chooser 문서다. IDENTITY vs SEQUENCE Batch Verification Example, identity sequence batch verification, GenerationType IDENTITY SEQUENCE batching, JPA identity sequence insert test, batchExecutionCount identity sequence 같은 lexical 표현과 JPA IDENTITY와 SEQUENCE 전략이 insert batching 검증에서 다르게 보이는 이유를 초심자에게 설명해줘, GenerationType.IDENTITY는 왜 insert 전에 PK를 몰라 batchExecutionCount가 0으로 보일 수 있어? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # IDENTITY vs SEQUENCE Batch Verification Example
 
 > 한 줄 요약: 같은 insert 테스트라도 `IDENTITY`는 "먼저 넣고 키를 받는 흐름"이라 batch 검증이 약해지기 쉽고, `SEQUENCE`는 "키를 먼저 확보하고 모아 넣는 흐름"이라 같은 테스트에서 batch 실행 흔적이 더 잘 드러난다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Stack vs Heap Escape Intuition
+concept_id: language/stack-vs-heap-escape-intuition
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jvm
+- escape-analysis
+- allocation
+aliases:
+- Stack vs Heap Escape Intuition
+- Java stack heap escape analysis
+- stack allocation myth HotSpot
+- scalar replacement allocation elimination
+- object lifetime observability
+- 자바 stack heap escape analysis
+symptoms:
+- Java local variable은 stack이고 object는 heap이라는 단순 그림만으로 HotSpot escape analysis와 allocation elimination을 설명하려 해
+- 작은 DTO를 재사용하면 항상 빠르다고 생각해 JIT가 allocation을 제거할 수 있는 경우와 object identity가 관찰되는 경우를 구분하지 못해
+- object가 method 밖이나 다른 thread로 escape하면 JIT가 scalar replacement를 더 보수적으로 해야 한다는 lifetime과 observability 기준을 놓쳐
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/escape-analysis-scalar-replacement
+- language/escape-analysis-stack-allocation-benchmark-misconceptions
+- language/jit-warmup-deoptimization
+next_docs:
+- language/object-pooling-myths-modern-jvm
+- language/object-layout-jol-intuition
+- language/jmh-benchmarking-pitfalls
+linked_paths:
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/escape-analysis-stack-allocation-benchmark-misconceptions.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/varhandle-unsafe-atomics.md
+confusable_with:
+- language/escape-analysis-scalar-replacement
+- language/object-pooling-myths-modern-jvm
+- language/jmh-benchmarking-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- Java stack vs heap 직관보다 escape analysis와 allocation elimination이 더 중요한 이유가 뭐야?
+- local variable은 stack이지만 참조하는 객체는 heap이라는 설명은 어디까지 맞고 어디서 부족해?
+- 객체가 method 밖이나 다른 thread로 escape하면 JIT 최적화가 왜 보수적으로 바뀌어?
+- scalar replacement와 stack allocation myth를 HotSpot 관점으로 설명해줘
+- 작은 DTO 재사용보다 그냥 생성해도 JIT가 allocation을 없앨 수 있는 경우를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java stack vs heap 직관을 HotSpot escape analysis, scalar replacement, allocation elimination, object identity, lifetime observability 관점으로 확장하는 advanced deep dive다.
+  stack vs heap, escape analysis, scalar replacement, allocation elimination, object pooling myth 질문이 본 문서에 매핑된다.
+---
 # Stack vs Heap Escape Intuition
 
 > 한 줄 요약: "스택에 올라간다/힙에 올라간다"는 직관은 편하지만, HotSpot의 실제 최적화는 escape analysis와 allocation elimination으로 훨씬 더 유연하게 동작한다.

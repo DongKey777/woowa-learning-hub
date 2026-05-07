@@ -76,6 +76,14 @@ contextual_chunk_prefix: |
 
 shopping-cart에서 "주문이 두 번 생김"과 "마지막 재고가 둘 다 팔림"은 같은 문제가 아니다. 전자는 `idempotency_key` + `UNIQUE`로 같은 결제 시도를 한 번만 인정하는 문제이고, 후자는 `UPDATE ... WHERE stock > 0` 같은 write-time 조건으로 재고 invariant를 닫는 문제다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제 버튼을 두 번 눌렀더니 주문이 두 개 생겨요" | 같은 checkout attempt가 재시도/더블클릭으로 두 번 들어온 장면 | idempotency key와 `UNIQUE`로 같은 시도를 한 번만 인정한다 |
+| "재고 1개인데 동시에 결제 성공이 떠요" | 마지막 재고 oversell | 조건부 `UPDATE ... WHERE stock > 0`처럼 write-time invariant로 닫는다 |
+| "`@Transactional`을 붙였는데도 중복 주문이 나요" | transaction boundary를 dedup/stock guard로 오해한 코드 | local transaction, idempotency, stock arbitration을 다른 축으로 본다 |
+
 ## 미션 시나리오
 
 학습자가 shopping-cart 미션에서 자주 맞는 장면은 이렇다. 사용자가 결제 버튼을 두 번 누르거나 네트워크 timeout 뒤 재시도하면 `POST /orders`가 두 번 들어온다. 동시에 인기 상품 재고가 1개 남았을 때 두 사용자가 거의 같이 결제하면 둘 다 "성공"처럼 보일 수 있다.

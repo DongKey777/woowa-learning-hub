@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: posix_spawn File Actions Primer
+concept_id: operating-system/posix-spawn-file-actions-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- posix-spawn-file
+- actions
+- actions-adddup2
+- addopen-addclose
+aliases:
+- posix_spawn file actions
+- posix_spawn_file_actions_adddup2
+- addopen addclose
+- child dup2 close open checklist
+- stdout stderr redirect spawn
+- file actions vs fork exec
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/posix-spawn-attributes-primer.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+expected_queries:
+- posix_spawn_file_actions는 exec 직전 child의 dup2 close open checklist야?
+- stdout stderr redirect를 posix_spawn_file_actions_adddup2로 어떻게 이해해?
+- fork exec 기반 redirect와 posix_spawn file actions mental model은 같아?
+- posix_spawn file actions와 attributes 차이를 초급자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 posix_spawn_file_actions_*를 exec 직전 child가 수행할 dup2, close, open 작업 목록을
+  미리 적어 둔 checklist로 설명한다. stdout/stderr redirect와 subprocess fd hygiene에 연결한다.
+---
 # posix_spawn File Actions Primer
 
 > 한 줄 요약: `posix_spawn_file_actions_*()`는 "`exec()` 직전 child가 할 `dup2()` / `close()` / `open()` 체크리스트를 미리 적어 둔 것"이라고 생각하면 stdout/stderr redirect를 거의 같은 mental model로 읽을 수 있다.

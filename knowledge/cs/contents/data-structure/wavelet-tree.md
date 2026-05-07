@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Wavelet Tree Intuition
+concept_id: data-structure/wavelet-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 83
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- wavelet-tree
+- static-range-rank
+- kth-range-query
+aliases:
+- Wavelet Tree
+- wavelet tree intuition
+- range kth query
+- range frequency query
+- static order statistics
+- compressed sequence rank
+- value partition tree
+symptoms:
+- range kth, range count, frequency query를 모두 segment tree 집계 문제로만 보고 값 기준 recursive partition을 떠올리지 못한다
+- Wavelet Tree가 index position 기준이 아니라 value range 기준으로 나누며 bitvector rank를 써서 구간을 내려간다는 점을 놓친다
+- 업데이트가 잦은 동적 ordered set 문제에 정적 Wavelet Tree를 적용하려 해 재구성 비용을 과소평가한다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/coordinate-compression-patterns
+- data-structure/succinct-bitvector-rank-select
+next_docs:
+- data-structure/order-statistic-tree
+- data-structure/sparse-table
+- data-structure/succinct-bitvector-rank-select
+linked_paths:
+- contents/data-structure/coordinate-compression-patterns.md
+- contents/data-structure/order-statistic-tree.md
+- contents/data-structure/sparse-table.md
+- contents/data-structure/succinct-bitvector-rank-select.md
+confusable_with:
+- data-structure/order-statistic-tree
+- data-structure/sparse-table
+- data-structure/segment-tree-lazy-propagation
+- data-structure/succinct-bitvector-rank-select
+forbidden_neighbors: []
+expected_queries:
+- Wavelet Tree는 value range를 나눠서 range kth query를 어떻게 처리해?
+- 구간 내 k번째 값과 특정 값 이하 개수를 빠르게 묻는 정적 구조는?
+- Wavelet Tree와 Order Statistic Tree는 정적 데이터와 동적 삽입 삭제 관점에서 어떻게 달라?
+- Wavelet Tree에서 bitvector rank가 각 레벨의 구간 이동에 왜 필요해?
+- range frequency query를 segment tree가 아니라 wavelet tree로 보는 경우는 언제야?
+contextual_chunk_prefix: |
+  이 문서는 Wavelet Tree를 value range partition과 bitvector rank를 이용해
+  static array의 range kth, range count, frequency query를 처리하는 compressed
+  sequence structure로 설명한다. Order Statistic Tree, Sparse Table과 비교한다.
+---
 # Wavelet Tree Intuition
 
 > 한 줄 요약: Wavelet Tree는 값의 범위를 기준으로 배열을 분할해 rank, kth, range count 같은 질의를 빠르게 하는 압축형 구조다.

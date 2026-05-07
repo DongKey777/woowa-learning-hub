@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Memento vs Event Sourcing
+concept_id: design-pattern/memento-vs-event-sourcing
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- memento-event-sourcing
+- snapshot-vs-event-log
+- undo-vs-audit
+aliases:
+- memento vs event sourcing
+- snapshot restore
+- state history
+- undo redo
+- event replay
+- snapshot vs event log
+- undo vs audit
+- state snapshot pattern
+- event sourcing snapshot
+- memento pattern
+symptoms:
+- undo와 audit을 같은 문제로 보고 상태 복원용 snapshot과 사건 증명용 event log를 구분하지 않는다
+- 단순 draft 복원이나 편집 취소에 Event Sourcing을 도입해 replay, schema evolution, projection 비용을 과하게 만든다
+- Event Sourcing을 쓰면서 replay 비용을 줄일 snapshot/checkpoint 전략 없이 모든 상태를 매번 처음부터 재생한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/command-pattern-undo-queue
+- design-pattern/event-sourcing-pattern-language
+- design-pattern/checkpoint-snapshot-pattern
+next_docs:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/snapshot-versioning-compatibility-pattern
+linked_paths:
+- contents/design-pattern/event-sourcing-pattern-language.md
+- contents/design-pattern/command-pattern-undo-queue.md
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/checkpoint-snapshot-pattern.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/snapshot-versioning-compatibility-pattern.md
+confusable_with:
+- design-pattern/event-sourcing-pattern-language
+- design-pattern/checkpoint-snapshot-pattern
+- design-pattern/command-pattern-undo-queue
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+forbidden_neighbors: []
+expected_queries:
+- Memento와 Event Sourcing은 둘 다 과거로 돌아가는 것처럼 보이는데 목적이 어떻게 달라?
+- undo redo는 상태 snapshot 복원이 맞고 audit은 event log가 더 맞는 이유가 뭐야?
+- Event Sourcing을 단순 draft restore에 쓰면 replay와 schema evolution 비용이 과한 이유가 뭐야?
+- 이벤트 재생 비용을 줄이기 위해 snapshot이나 checkpoint를 함께 쓰는 기준은 뭐야?
+- 상태 스냅샷을 저장하는 Memento와 상태를 만든 사건을 저장하는 Event Sourcing의 trade off는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Memento vs Event Sourcing chooser로, 특정 시점의 상태 snapshot을 저장해
+  undo/restore를 쉽게 하는 Memento와 상태를 만든 domain event log를 저장해 audit/replay를 가능하게
+  하는 Event Sourcing을 구분하고 snapshot, checkpoint, replay 비용의 trade-off를 설명한다.
+---
 # Memento vs Event Sourcing
 
 > 한 줄 요약: Memento는 특정 시점의 상태 스냅샷을 저장하고, Event Sourcing은 상태를 만든 사건의 흐름을 저장한다.
@@ -21,6 +89,8 @@ Event Sourcing은 **상태를 바꾼 사건을 저장하고 다시 재생해서 
 
 - Memento: 스냅샷 중심
 - Event Sourcing: 사건 중심
+
+따라서 질문을 "되돌릴 수 있나"로만 두면 둘이 비슷해 보인다. 더 나은 질문은 "사용자가 이전 상태로 빨리 돌아가야 하는가, 아니면 시스템이 왜 그 상태가 됐는지를 증명해야 하는가"다.
 
 ### Retrieval Anchors
 
@@ -150,4 +220,3 @@ Memento는 빠른 복원, Event Sourcing은 풍부한 이력이 강점이다.
 ## 한 줄 정리
 
 Memento는 상태 스냅샷, Event Sourcing은 사건 로그다. 둘은 비슷해 보여도 목적과 비용 구조가 다르다.
-

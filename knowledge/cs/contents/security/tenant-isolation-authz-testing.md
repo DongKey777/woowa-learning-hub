@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Tenant Isolation / AuthZ Testing
+concept_id: security/tenant-isolation-authz-testing
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- tenant isolation
+- authz testing
+- owner mismatch
+- tenant mismatch
+aliases:
+- tenant isolation
+- authz testing
+- owner mismatch
+- tenant mismatch
+- controller test
+- service test
+- integration test
+- cross-tenant access
+- ownership
+- tenant boundary
+- negative test
+- 로그인 됐는데 왜 403
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/permission-checks-rest-flows-primer.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant Isolation / AuthZ Testing 핵심 개념을 설명해줘
+- tenant isolation가 왜 필요한지 알려줘
+- Tenant Isolation / AuthZ Testing 실무 설계 포인트는 뭐야?
+- tenant isolation에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Tenant Isolation / AuthZ Testing를 다루는 deep_dive 문서다. tenant isolation 테스트는 "한 테넌트의 권한이 다른 테넌트로 새지 않는가"를 시스템적으로 검증하는 보안 테스트다. 검색 질의가 tenant isolation, authz testing, owner mismatch, tenant mismatch처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Tenant Isolation / AuthZ Testing
 
 > 한 줄 요약: tenant isolation 테스트는 "한 테넌트의 권한이 다른 테넌트로 새지 않는가"를 시스템적으로 검증하는 보안 테스트다.

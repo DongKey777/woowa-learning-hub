@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Structured Fanout With HttpClient
+concept_id: language/structured-fanout-httpclient
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- structured-concurrency
+- httpclient
+- fanout
+aliases:
+- Structured Fan-out With HttpClient
+- StructuredTaskScope HttpClient fan-out
+- virtual thread HttpClient fan-out
+- request scoped remote fan-out
+- parent deadline retry concurrency budget
+- Java HttpClient structured fanout
+symptoms:
+- virtual thread가 blocking HttpClient.send를 싸게 만든다는 이유로 parent deadline, retry cap, remote concurrency cap 없이 fan-out 폭을 늘려 retry storm을 만들어
+- 여러 remote calls가 같은 request lifetime에 묶여야 하는데 scattered CompletableFuture나 detached retry로 orphan work가 남아
+- partial success가 가능한 downstream과 fail-fast required downstream을 같은 exception flow로 처리해 degraded response 의미를 설명하지 못해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/structured-concurrency-scopedvalue
+- language/virtual-threads-project-loom
+- language/httpclient-idempotency-keys-safe-http-retries
+next_docs:
+- language/partial-success-fan-in-patterns
+- language/remote-bulkhead-metrics-under-virtual-threads
+- language/connection-budget-alignment-after-loom
+linked_paths:
+- contents/language/java/structured-concurrency-scopedvalue.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/partial-success-fan-in-patterns.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/httpclient-idempotency-keys-safe-http-retries.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/remote-bulkhead-metrics-under-virtual-threads.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md
+- contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- language/partial-success-fan-in-patterns
+- language/remote-bulkhead-metrics-under-virtual-threads
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+forbidden_neighbors: []
+expected_queries:
+- virtual threads 위에서 HttpClient blocking send를 structured fan-out으로 묶는 기준은 뭐야?
+- parent deadline retry cap remote concurrency cap을 같은 budget으로 설계하지 않으면 어떤 retry storm이 생겨?
+- 여러 outbound HTTP 호출이 request가 끝나면 함께 취소되어야 할 때 StructuredTaskScope 스타일이 왜 유용해?
+- partial success downstream은 fail-fast exception이 아니라 typed slot result로 fan-in하는 이유가 뭐야?
+- HttpClient fan-out에서 per-attempt timeout과 upstream semaphore bulkhead를 어떻게 같이 설계해?
+contextual_chunk_prefix: |
+  이 문서는 virtual thread 환경에서 blocking HttpClient.send를 StructuredTaskScope-style fan-out으로 묶고 parent deadline, retry cap, remote concurrency cap, cancellation을 설계하는 advanced playbook이다.
+  structured fan-out, HttpClient, virtual threads, parent deadline, retry storm, remote bulkhead 질문이 본 문서에 매핑된다.
+---
 # Structured Fan-out With `HttpClient`
 
 > 한 줄 요약: 여러 원격 호출이 같은 요청 수명 안에서 함께 성공하거나 함께 포기되어야 할 때는 virtual thread 위의 blocking `HttpClient.send()`를 `StructuredTaskScope`-style fan-out으로 묶고, parent deadline, retry 상한, cancellation, remote concurrency cap을 같은 budget으로 설계한다.

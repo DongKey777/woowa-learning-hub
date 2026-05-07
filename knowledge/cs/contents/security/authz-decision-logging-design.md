@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: AuthZ Decision Logging Design
+concept_id: security/authz-decision-logging-design
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- authz decision logging
+- decision reason
+- policy version
+- allow deny
+aliases:
+- authz decision logging
+- decision reason
+- policy version
+- allow deny
+- PDP
+- PEP
+- traceability
+- resource owner
+- policy engine
+- security telemetry
+- deny spike
+- decision metrics
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/scim-drift-reconciliation.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- AuthZ Decision Logging Design 핵심 개념을 설명해줘
+- authz decision logging가 왜 필요한지 알려줘
+- AuthZ Decision Logging Design 실무 설계 포인트는 뭐야?
+- authz decision logging에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 AuthZ Decision Logging Design를 다루는 deep_dive 문서다. authz decision log는 허용/거부 결과만 남기는 것이 아니라, 정책 버전과 평가 근거까지 기록해야 나중에 재현 가능한 증거가 된다. 검색 질의가 authz decision logging, decision reason, policy version, allow deny처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # AuthZ Decision Logging Design
 
 > 한 줄 요약: authz decision log는 허용/거부 결과만 남기는 것이 아니라, 정책 버전과 평가 근거까지 기록해야 나중에 재현 가능한 증거가 된다.

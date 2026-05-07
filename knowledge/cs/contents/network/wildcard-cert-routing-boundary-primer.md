@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Wildcard Certificate vs Routing Boundary Primer"
+concept_id: network/wildcard-cert-routing-boundary-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- wildcard-certificate
+- routing-boundary
+- connection-coalescing
+aliases:
+- wildcard certificate
+- wildcard cert routing boundary
+- certificate scope vs routing boundary
+- same certificate different backend
+- CDN wildcard certificate
+- load balancer wildcard certificate
+- connection sharing boundary
+symptoms:
+- wildcard certificate가 여러 hostname을 덮으면 같은 connection 공유가 자동 허가된다고 본다
+- certificate scope와 CDN/LB routing boundary를 같은 범위로 착각한다
+- 같은 인증서를 쓰는 host라도 backend와 policy가 다르면 421이나 default backend 문제가 날 수 있음을 놓친다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http2-http3-connection-reuse-coalescing
+- network/http2-origin-frame-421-primer
+next_docs:
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/sni-routing-mismatch-hostname-failure
+- network/tls-loadbalancing-proxy
+linked_paths:
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/421-trace-mini-lab-wildcard-cert-coalescing.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+confusable_with:
+- network/http2-http3-connection-reuse-coalescing
+- network/http2-origin-frame-421-primer
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/sni-routing-mismatch-hostname-failure
+forbidden_neighbors: []
+expected_queries:
+- "wildcard certificate가 있어도 routing boundary 때문에 connection coalescing이 제한되는 이유는?"
+- "certificate scope와 routing boundary 차이를 초보자에게 설명해줘"
+- "같은 wildcard cert를 쓰는데 일부 host만 같은 connection으로 공유하면 안 되는 경우는?"
+- "CDN wildcard certificate와 LB backend routing을 어떻게 구분해?"
+- "잘못 coalescing된 wildcard cert 요청이 421로 돌아오는 흐름은?"
+contextual_chunk_prefix: |
+  이 문서는 wildcard certificate의 certificate scope와 CDN/LB routing boundary,
+  same certificate different backend, connection coalescing guardrail을 설명하는
+  beginner primer다.
+---
 # Wildcard Certificate vs Routing Boundary Primer
 
 

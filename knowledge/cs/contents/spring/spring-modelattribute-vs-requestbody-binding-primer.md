@@ -37,7 +37,7 @@ intents:
 - comparison
 - troubleshooting
 prerequisites:
-- spring/spring-mvc-controller-basics
+- spring/mvc-controller-basics
 - spring/spring-mvc-request-lifecycle-basics
 next_docs:
 - spring/requestbody-400-before-controller-primer

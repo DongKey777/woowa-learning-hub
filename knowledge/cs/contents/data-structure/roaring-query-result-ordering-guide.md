@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Roaring Query Result Ordering Guide
+concept_id: data-structure/roaring-query-result-ordering-guide
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-query-planner
+- predicate-ordering
+- repair-debt-reduction
+aliases:
+- Roaring query result ordering
+- Roaring predicate ordering
+- repairAfterLazy debt reduction
+- shared bitmap intermediate
+- selective AND before OR
+- bitmap-wide repair avoidance
+- query planner fan-in
+symptoms:
+- OR가 많다는 사실만 보고 repairAfterLazy debt를 판단하고, intermediate를 얼마나 일찍 넓혔는지와 몇 번 finalize했는지를 계산하지 않는다
+- selective tenant/time/segment predicate를 나중에 걸어 넓은 OR intermediate를 먼저 만들고 대부분을 버린다
+- sibling branch마다 같은 wide OR를 다시 만들어 shared intermediate reuse와 finalization boundary 최적화를 놓친다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+next_docs:
+- data-structure/roaring-intermediate-repair-path-guide
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/bitmap-locality-remediation
+- data-structure/roaring-run-optimize-timing-guide
+linked_paths:
+- contents/data-structure/roaring-bitmap-wide-lazy-union-pipeline.md
+- contents/data-structure/roaring-lazy-union-and-repair-costs.md
+- contents/data-structure/roaring-intermediate-repair-path-guide.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/bitmap-locality-remediation-playbook.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+confusable_with:
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-intermediate-repair-path-guide
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-production-profiling-checklist
+forbidden_neighbors: []
+expected_queries:
+- Roaring query planner에서 selective AND를 wide OR보다 먼저 걸면 repairAfterLazy debt가 줄어드는 이유는?
+- 같은 wide OR intermediate를 branch마다 다시 만들지 않고 reuse해야 하는 이유는?
+- bitmap-wide repair debt를 active high key spread와 finalization 횟수로 보는 공식은?
+- getCardinality serialize cache publish를 Roaring query 중간에 넣으면 왜 repair cost가 커져?
+- Roaring-heavy query result ordering을 predicate selectivity 기준으로 설계하는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 Roaring-heavy query planner에서 selective predicate를 먼저 적용하고
+  shared intermediate를 재사용하며 exactness boundary를 늦춰 repairAfterLazy debt를
+  줄이는 playbook이다. active high key spread, wide OR fan-in, finalization 횟수를 다룬다.
+---
 # Roaring Query Result Ordering Guide
 
 > 한 줄 요약: Roaring-heavy query plan에서 `repairAfterLazy()` debt는 "`OR`가 많다"보다 **얼마나 일찍 intermediate를 넓히고, 같은 lazy 결과를 몇 번 다시 finalize하는가**에 더 가깝기 때문에, selective predicate를 먼저 묶고 shared intermediate를 재사용하는 쪽이 bitmap-wide repair를 훨씬 덜 만든다.

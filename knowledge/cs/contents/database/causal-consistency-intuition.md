@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Causal Consistency 입문
+concept_id: database/causal-consistency-intuition
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- causal-consistency-intuition
+- cause-before-effect-visibility
+- session-guarantee-bridge
+aliases:
+- causal consistency
+- causal consistency intuition
+- causal consistency beginner
+- cause before effect consistency
+- session causality
+- 원인보다 결과가 먼저 보여요
+- causal consistency 뭐예요
+- 인과 일관성
+- 게시글보다 댓글이 먼저 보여요
+symptoms:
+- 댓글이나 결제 결과는 보이는데 원인인 게시글이나 주문이 안 보이는 화면을 설명해야 해
+- read-your-writes와 monotonic reads가 causal consistency와 어떻게 연결되는지 헷갈려
+- 분산 시스템 일관성 종류를 처음 배우는데 강한 일관성과 causal consistency 차이를 알고 싶어
+intents:
+- definition
+- comparison
+prerequisites:
+- database/read-your-writes-session-pinning
+- database/monotonic-reads-session-guarantees
+next_docs:
+- database/client-consistency-tokens
+- database/replica-read-routing-anomalies
+- database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide
+linked_paths:
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/monotonic-reads-session-guarantees.md
+- contents/database/monotonic-write-guarantees.md
+- contents/database/client-consistency-tokens.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/read-your-writes-session-pinning
+- database/monotonic-reads-session-guarantees
+- database/client-consistency-tokens
+forbidden_neighbors: []
+expected_queries:
+- causal consistency를 처음 배우는데 원인보다 결과가 먼저 보인다는 말이 무슨 뜻이야?
+- read-your-writes와 monotonic reads는 causal consistency와 어떤 관계야?
+- 게시글보다 댓글이 먼저 보이는 문제는 어떤 일관성 보장으로 막아?
+- causal consistency와 strong consistency를 초보자 기준으로 비교해줘
+- consistency token이 causal consistency를 구현할 때 어떤 역할을 해?
+contextual_chunk_prefix: |
+  이 문서는 causal consistency를 원인보다 결과가 먼저 보이지 않게 하는 보장으로 설명하는 beginner primer다.
+  causal consistency, cause before effect, read-your-writes, monotonic reads, 인과 일관성 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Causal Consistency 입문: 원인보다 결과가 먼저 보이면 무엇을 막아야 하나
 
 > 한 줄 요약: causal consistency는 "원인보다 결과를 먼저 보지 않게 한다"는 약속이고, 한 번 본 원인의 효과는 그 뒤에도 계속 보여야 한다.

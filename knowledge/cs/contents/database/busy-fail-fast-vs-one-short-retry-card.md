@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Busy Fail Fast vs One Short Retry Card
+concept_id: database/busy-fail-fast-vs-one-short-retry-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- busy-fail-fast
+- short-retry
+- lock-timeout
+- retry-outcome-language
+aliases:
+- busy fail fast vs short retry
+- busy one short retry card
+- busy bucket retry policy beginner
+- lock timeout fail fast retry once
+- connection timeout busy retry once
+- busy should fail fast
+- busy short bounded retry
+- busy 즉시 실패 짧은 재시도
+- 락 타임아웃 한 번 재시도
+- busy retry 기준
+symptoms:
+- busy를 retryable과 같은 뜻으로 보고 lock timeout이나 pool contention에서 blind retry를 여러 번 건다
+- hot row나 connection pool 혼잡이 보이는데 fail fast 대신 wait와 retry를 늘려 queue를 더 길게 만든다
+- 같은 idempotent key 경쟁처럼 한 번만 더 보면 already exists로 재분류될 수 있는 경우와 그렇지 않은 busy를 구분하지 못한다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/lock-timeout-not-already-exists-common-confusion-card
+next_docs:
+- database/insert-if-absent-retry-outcome-guide
+- database/idempotent-transaction-retry-envelopes
+- database/connection-timeout-vs-lock-timeout-card
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/nowait-vs-short-lock-timeout-busy-guide.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+confusable_with:
+- database/booking-guard-row-retry-card
+- database/insert-if-absent-retry-outcome-guide
+- database/idempotent-transaction-retry-envelopes
+- database/connection-timeout-vs-lock-timeout-card
+forbidden_neighbors: []
+expected_queries:
+- busy는 기본 fail fast이고 언제만 한 번 짧게 retry해도 되는지 기준을 알려줘
+- lock timeout이 busy로 분류됐을 때 무한 retry가 아니라 1회 확인성 retry만 허용하는 이유가 뭐야?
+- 같은 idempotency key 경쟁에서 한 번 더 보면 already exists로 재분류될 수 있는 경우를 설명해줘
+- connection pool timeout이나 hot row contention에서는 왜 retry보다 빠른 busy 응답이 기본이야?
+- busy와 retryable, already exists를 beginner가 구분하는 체크리스트를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Busy Fail Fast vs One Short Retry Card beginner chooser로, busy bucket은 기본적으로
+  fail fast 혼잡 신호이며 같은 key/idempotent request의 winner가 곧 확정될 가능성이 높을 때만
+  1회 짧은 확인성 retry를 허용하는 기준을 설명한다.
+---
 # `busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?
 
 > 한 줄 요약: `busy`의 기본값은 무한 retry가 아니라 **빠른 실패**이고, "곧 풀릴 가능성이 높고 같은 요청을 한 번 더 확인하는 비용이 작다"는 조건일 때만 **짧은 1회 재시도**를 붙인다.

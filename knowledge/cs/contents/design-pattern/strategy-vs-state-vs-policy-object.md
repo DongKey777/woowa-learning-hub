@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Strategy vs State vs Policy Object
+concept_id: design-pattern/strategy-vs-state-vs-policy-object
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- strategy-state-policy-choice
+- pattern-role-confusion
+- payment-domain-patterns
+aliases:
+- strategy vs state
+- strategy vs policy object
+- state vs policy object
+- strategy state policy comparison
+- payment method vs payment status
+- refund policy object
+- workflow state transition
+- policy decision object
+- runtime algorithm selection vs domain rule
+- 결제 수단 선택 vs 주문 상태
+symptoms:
+- 모든 if-else 제거를 strategy로만 부르면서 실행 방법, 현재 상태, 도메인 판정 책임이 섞인다
+- 결제 수단 선택과 결제 진행 단계를 같은 패턴으로 모델링해 누가 구현을 선택하는지 불명확하다
+- 환불 가능 여부 같은 policy decision을 상태 전이나 실행 strategy처럼 만들어 변경 이유가 섞인다
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/strategy-pattern
+- design-pattern/policy-object-pattern
+next_docs:
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/pattern-selection
+- design-pattern/command-handler-pattern
+linked_paths:
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/pattern-selection.md
+- contents/software-engineering/oop-design-basics.md
+- contents/design-pattern/command-handler-pattern.md
+confusable_with:
+- design-pattern/strategy-pattern
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/policy-object-pattern
+- design-pattern/template-method-vs-strategy
+forbidden_neighbors: []
+expected_queries:
+- Strategy, State, Policy Object는 모두 if else를 객체로 빼는데 어떤 질문이 달라?
+- 결제 수단 선택은 strategy이고 결제 상태 전이는 state인 이유를 예시로 설명해줘
+- 환불 가능 여부나 수수료 판단은 왜 policy object로 이름 붙이는 편이 좋아?
+- State는 객체가 현재 단계에 따라 스스로 바뀌고 Strategy는 호출자가 실행 방법을 고른다는 차이가 뭐야?
+- 주문 취소 흐름에서 상태 전이, 환불 정책, 실제 환불 방식은 어떻게 역할을 나눠?
+contextual_chunk_prefix: |
+  이 문서는 Strategy vs State vs Policy Object chooser로, 실행 방법을 교체하는 Strategy,
+  현재 단계에 따라 허용 행동이 바뀌는 State, 허용 여부와 이유를 판단하는 Policy Object를
+  결제 수단, 결제 lifecycle, 환불 규정 예시로 구분한다.
+---
 # 실행 방법 선택, 상태 전이, 규칙 판정은 어떻게 다를까: Strategy vs State vs Policy Object
 
 > 한 줄 요약: 세 패턴 모두 객체로 분리해 보이지만, Strategy는 실행 방법을 고르고, State는 현재 단계에 따라 행동이 달라지며, Policy Object는 허용 여부 같은 도메인 판정을 맡는다.
@@ -28,6 +96,8 @@ retrieval-anchor-keywords: strategy vs state, strategy vs policy object, state v
 - Policy Object: "이 상황에서 허용되는 규칙은 무엇이지?"
 
 이 세 질문을 섞어 버리면, 결제 수단 선택을 상태처럼 모델링하거나, 주문 상태 전이를 단순 정책 객체로 눌러 담는 식의 혼란이 생긴다.
+
+구조가 비슷할 때일수록 이름은 구현 모양보다 "객체가 대답하는 질문"을 드러내야 한다. 그래야 나중에 변경 이유가 달라져도 한 객체가 세 역할을 동시에 떠안지 않는다.
 
 ### 먼저 질문 하나로 구분하기
 

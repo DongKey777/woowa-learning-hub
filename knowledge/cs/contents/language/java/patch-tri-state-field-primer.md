@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: PATCH Tri State Field Primer
+concept_id: language/patch-tri-state-field-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/spring-roomescape
+- missions/lotto
+review_feedback_tags:
+- patch
+- dto
+- null-handling
+aliases:
+- PATCH tri state field primer
+- PATCH missing explicit null value beginner
+- JSON patch null missing present
+- FieldPatch primer
+- partial update 유지 비우기 변경
+- PATCH DTO tri-state 결정 카드
+symptoms:
+- PATCH 요청에서 missing과 explicit null을 모두 값 없음으로 읽어 기존 값 유지와 값 비우기를 같은 동작으로 처리해
+- Java DTO의 String field 하나로 missing, null, present 세 상태를 모두 표현하려다 JSON binding 경계에서 의도를 잃어
+- create request와 PATCH request를 같은 DTO 의미로 보아 partial update의 유지 삭제 변경 contract를 분리하지 못해
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- language/json-null-missing-unknown-field-schema-evolution
+- software-engineering/dto-vo-entity-basics
+next_docs:
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+- language/request-dto-to-value-object-boundary-primer
+- spring/controller-entity-return-vs-dto-return-primer
+linked_paths:
+- contents/language/java/optional-vs-fieldpatch-patch-tri-state-bridge.md
+- contents/language/java/request-dto-to-value-object-boundary-primer.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
+confusable_with:
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+- language/json-null-missing-unknown-field-schema-evolution
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+forbidden_neighbors: []
+expected_queries:
+- PATCH DTO에서 missing explicit null value 세 상태를 beginner 기준으로 설명해줘
+- PATCH에서 필드가 없으면 유지하고 null이면 비우고 값이 있으면 변경한다는 표를 보고 싶어
+- JSON payload가 Java DTO로 바인딩될 때 missing과 explicit null이 왜 섞일 수 있어?
+- partial update에서 String field 하나만으로 tri-state를 표현하면 어떤 위험이 있어?
+- FieldPatch Missing NullValue Present 모델은 PATCH 서비스 적용 의미를 어떻게 분리해?
+contextual_chunk_prefix: |
+  이 문서는 PATCH DTO의 missing, explicit null, present value 세 상태를 유지, 비우기, 변경 의도로 읽는 beginner primer다.
+  PATCH tri-state, missing vs null, FieldPatch, partial update, DTO boundary 질문이 본 문서에 매핑된다.
+---
 # PATCH DTO에서 `missing` / explicit `null` / 값 있음 결정 카드
 
 > 한 줄 요약: PATCH의 JSON이 Java DTO로 들어올 때 beginner가 먼저 잡아야 할 표는 `missing = 유지`, `explicit null = 비우기`, `value = 변경`이다. 이 3칸을 구분하지 못하면 부분 수정 의도가 DTO 경계에서 바로 섞인다.

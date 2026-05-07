@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Persistence Model Leakage Anti-Patterns
+concept_id: software-engineering/persistence-model-leakage
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- persistence
+- entity-leakage
+- jpa
+- api-boundary
+aliases:
+- Persistence Model Leakage Anti-Patterns
+- JPA entity leakage
+- entity to DTO separation
+- domain model vs persistence model
+- entity를 JSON으로 바로 반환
+- service에서 entity setxxx
+symptoms:
+- Controller가 JPA Entity를 그대로 JSON 응답으로 반환해 LAZY, circular reference, internal column exposure, N+1 문제가 API 경계로 새어
+- application service나 domain code가 Entity, JpaRepository, cascade, orphanRemoval, dirty checking, fetch strategy를 직접 알고 규칙을 수행해
+- 목록/검색/화면 요구 때문에 aggregate나 entity가 read model과 API response 역할까지 떠안아 계속 부풀어
+intents:
+- symptom
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/repository-dao-entity
+next_docs:
+- software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/entity-leakage-review-checklist
+linked_paths:
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/architecture-layering-fundamentals.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/aggregate-persistence-mapping-pitfalls.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+confusable_with:
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/entity-leakage-review-checklist
+- software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells
+forbidden_neighbors: []
+expected_queries:
+- JPA Entity를 API 응답으로 바로 반환하면 왜 persistence model leakage가 되는지 초심자에게 설명해줘
+- domain model, persistence model, API model은 각각 왜 다른 이유로 바뀌는지 알려줘
+- service에서 Entity를 조회해 setXxx로 규칙을 수행하는 코드가 왜 ORM 누수인지 설명해줘
+- LAZY loading, N+1, fetch join, query model 분리가 entity leakage와 어떻게 연결돼?
+- entity leakage를 발견했을 때 response DTO, use case, persistence adapter mapping 순서로 어떻게 분리해?
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Persistence Model Leakage Anti-Patterns를 다루는 symptom_router 문서다. Persistence Model Leakage Anti-Patterns, JPA entity leakage, entity to DTO separation, domain model vs persistence model, entity를 JSON으로 바로 반환 같은 lexical 표현과 JPA Entity를 API 응답으로 바로 반환하면 왜 persistence model leakage가 되는지 초심자에게 설명해줘, domain model, persistence model, API model은 각각 왜 다른 이유로 바뀌는지 알려줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Persistence Model Leakage Anti-Patterns
 
 > 한 줄 요약: "`서비스나 API에 `Entity`가 이미 보이는데 왜 문제지?`", "`엔티티를 JSON으로 바로 내보내도 되나요?`"가 헷갈릴 때, JPA `@Entity`가 API 응답·애플리케이션 흐름·도메인 규칙까지 한 번에 새는 이유를 beginner 기준으로 끊어 보는 문서다.

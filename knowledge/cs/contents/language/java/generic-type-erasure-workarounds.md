@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Generic Type Erasure Workarounds
+concept_id: language/generic-type-erasure-workarounds
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- generics
+- type-erasure
+- runtime-type-info
+aliases:
+- generic type erasure workarounds
+- Java type erasure workaround
+- TypeReference super type token
+- Class<T> parameter
+- runtime generic type info
+- List<User> deserialization
+- 제네릭 타입 소거 우회
+symptoms:
+- Java generics가 runtime에 대부분 소거되어 new T, T[], instanceof List<String>이 안 되는 이유를 설명하지 못해
+- 역직렬화나 registry에서 List<User> 같은 중첩 타입 정보가 필요할 때 Class<T>만으로 충분하다고 생각해
+- super type token, TypeReference, Class<T> 주입, parser registry 같은 우회 패턴의 적용 경계를 구분하지 못해
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- language/java-generics-basics
+next_docs:
+- language/reflection-generics-annotations
+- language/reflection-cost-and-alternatives
+- language/classloader-exception-object-contracts
+linked_paths:
+- contents/language/java/reflection-generics-annotations.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/classloader-exception-boundaries-object-contracts.md
+- contents/language/java/collections-performance.md
+- contents/language/java/java-generics-basics.md
+confusable_with:
+- language/reflection-generics-annotations
+- language/reflection-cost-and-alternatives
+- language/classloader-exception-object-contracts
+forbidden_neighbors: []
+expected_queries:
+- Java generic type erasure 때문에 List<String>과 List<Integer>를 runtime에 구분하기 어려운 이유가 뭐야?
+- Class<T> parameter와 TypeReference super type token을 언제 나눠 써야 해?
+- List<User> JSON deserialization에서 runtime generic type info를 보존하는 방법을 알려줘
+- new T나 T[] 생성이 안 되는 type erasure 제약을 우회하는 패턴을 설명해줘
+- ParserRegistry처럼 타입별 handler를 generic erasure와 충돌하지 않게 설계하려면 어떻게 해?
+contextual_chunk_prefix: |
+  이 문서는 Java generic type erasure를 runtime type information, Class<T>, TypeReference/super type token, generic factory, parser registry, PECS boundary 관점으로 설명하는 intermediate primer다.
+  generic type erasure, TypeReference, Class<T>, List<User> deserialization, runtime generic type info 질문이 본 문서에 매핑된다.
+---
 # Generic Type Erasure Workarounds
 
 > 한 줄 요약: Java Generics는 런타임에 지워지기 때문에, 타입 정보가 꼭 필요하면 별도 보관 구조와 API 설계를 써야 한다.

@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Interrupt Basics
+concept_id: operating-system/interrupt-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 72
+review_feedback_tags:
+- interrupt
+- hardware-interrupt-software
+- cpu-interrupt-signal
+- syscall-vs-interrupt
+aliases:
+- interrupt basics
+- hardware interrupt software interrupt
+- CPU interrupt signal
+- syscall vs interrupt
+- hardirq softirq primer
+intents:
+- definition
+- deep_dive
+linked_paths:
+- contents/operating-system/syscall-basics.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/cpu-scheduling-basics.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+expected_queries:
+- 운영체제에서 interrupt는 CPU에게 어떤 신호를 보내는 메커니즘이야?
+- hardware interrupt와 software interrupt, syscall은 어떻게 달라?
+- hardirq와 softirq는 왜 latency debugging에서 중요해?
+- I/O event와 interrupt, scheduler가 어떻게 연결되는지 초급자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 interrupt를 hardware나 software가 CPU에게 현재 일을 잠시 멈추고 우선 처리해야 할
+  work를 알리는 mechanism으로 설명하는 beginner primer다. syscall, event loop, scheduler,
+  hardirq/softirq로 이어진다.
+---
 # 인터럽트 기초
 
 > 한 줄 요약: 인터럽트는 하드웨어나 소프트웨어가 CPU에게 "지금 하던 일 잠깐 멈추고 이것 먼저 처리해" 라고 신호를 보내는 메커니즘이다.

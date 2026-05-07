@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Batch Idempotency Key Boundaries
+concept_id: software-engineering/batch-idempotency-keys
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-recovery
+- idempotency
+- duplicate-suppression
+aliases:
+- Batch Idempotency Key Boundaries
+- item-level idempotency key
+- chunk-level idempotency key
+- run-level idempotency key
+- batch rerun duplicate safe
+- run id vs chunk id vs item id
+- 배치 멱등성 key 경계
+symptoms:
+- batch retry에서 한 item의 중복 부작용, 한 chunk의 중복 제출, 한 run의 중복 시작을 key 하나로 모두 막으려 해
+- run id가 있으니 item-level idempotency는 필요 없다고 보고 partial success 뒤 같은 item side effect가 두 번 일어나는 위험을 놓쳐
+- 매 retry마다 random UUID를 새로 만들어 같은 의도의 재시도를 중복 처리로 판별하지 못해
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/batch-partial-failure
+- software-engineering/idempotency-retry-consistency-boundaries
+next_docs:
+- software-engineering/batch-recovery-runbook
+- software-engineering/batch-result-modeling
+- software-engineering/true-bulk-contracts-partial-failure-results
+linked_paths:
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-recovery-runbook-bridge.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/webhook-and-broker-boundary-primer.md
+confusable_with:
+- software-engineering/idempotency-retry-consistency-boundaries
+- software-engineering/batch-partial-failure
+- software-engineering/batch-recovery-runbook
+forbidden_neighbors: []
+expected_queries:
+- batch recovery에서 item-level chunk-level run-level idempotency key를 왜 나눠야 해?
+- run key가 있어도 partial success item 중복 부작용을 막으려면 item key가 필요한 이유가 뭐야?
+- chunk timeout 후 같은 chunk를 다시 제출할 때 chunk key와 item key가 각각 무엇을 보호해?
+- retry마다 random UUID를 새로 만들면 idempotency가 깨지는 이유를 예시로 설명해줘
+- batch checkpoint resume과 idempotency key boundary를 어떻게 같이 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 batch retry와 recovery에서 item-level, chunk-level, run-level idempotency key를 분리해 duplicate-safe rerun과 partial success 복구를 설계하는 beginner bridge다.
+---
 # Batch Idempotency Key Boundaries
 
 > 한 줄 요약: retry-safe batch recovery는 "한 item의 중복", "한 chunk의 중복", "한 run의 중복"을 같은 key 하나로 뭉치지 않고 서로 다른 idempotency 경계로 나눌 때 안전해진다.

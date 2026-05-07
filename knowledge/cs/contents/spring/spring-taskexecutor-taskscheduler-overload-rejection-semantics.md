@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring TaskExecutor TaskScheduler Overload Queue Rejection Semantics
+concept_id: spring/taskexecutor-taskscheduler-overload-rejection-semantics
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- taskexecutor-taskscheduler-overload
+- rejection-semantics
+- taskexecutor-overload
+- taskscheduler-rejection-semantics
+aliases:
+- TaskExecutor overload
+- TaskScheduler rejection semantics
+- async executor queue
+- scheduler drift rejection
+- task pool backpressure
+- RejectedExecutionHandler Spring
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-transactional-async-composition-traps.md
+- contents/spring/spring-distributed-scheduling-cron-drift-leader-election-patterns.md
+- contents/spring/spring-applicationeventmulticaster-internals.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+symptoms:
+- @Async 작업이 밀려 request thread는 빨라 보여도 background backlog가 계속 증가한다.
+- scheduler가 cron cadence를 못 맞추고 drift되거나 같은 작업이 겹친다.
+- queue가 가득 찼을 때 caller가 backpressure를 맞는지 task가 버려지는지 불명확하다.
+expected_queries:
+- Spring TaskExecutor queue size와 rejection policy는 어떤 운영 계약이야?
+- @Async overload에서 무엇을 버리고 무엇을 기다리게 할지 어떻게 정해?
+- TaskScheduler cron drift와 overlap은 thread pool과 queue 때문에 생길 수 있어?
+- RejectedExecutionHandler를 Spring async scheduler에서 어떻게 해석해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring TaskExecutor와 TaskScheduler를 단순 실행기가 아니라 overload 때 queue,
+  rejection, caller backpressure, drift, overlap, resource isolation을 결정하는 운영 계약으로
+  설명한다.
+---
 # Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics
 
 > 한 줄 요약: Spring의 `TaskExecutor`와 `TaskScheduler`는 단순 실행 도구가 아니라, overload 시 무엇을 버리고 무엇을 밀어두고 누가 backpressure를 대신 맞을지 정하는 운영 계약이다.

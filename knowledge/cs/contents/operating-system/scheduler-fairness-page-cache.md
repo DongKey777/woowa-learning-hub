@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Scheduler Fairness Page Cache File System Basics
+concept_id: operating-system/scheduler-fairness-page-cache
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- scheduler-fairness-page
+- cache
+- run-queue-dirty
+- writeback-reclaim
+aliases:
+- scheduler fairness page cache
+- run queue dirty writeback reclaim
+- filesystem tail latency
+- CPU fairness and IO latency
+- page cache scheduler interaction
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/readahead-tuning-page-cache.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+expected_queries:
+- scheduler fairness와 page cache는 실제 서버 tail latency에서 어떻게 함께 꼬여?
+- run queue, dirty writeback, reclaim, readahead를 한 번에 봐야 하는 이유는?
+- CPU scheduler 문제처럼 보여도 page cache writeback이나 reclaim이 원인일 수 있어?
+- filesystem I/O latency와 CPU fairness를 연결해 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 scheduler fairness와 page cache가 따로 보면 단순하지만 실제 server에서는 run queue,
+  dirty writeback, reclaim, readahead가 함께 꼬여 tail latency를 만든다는 bridge다.
+---
 # Scheduler Fairness, Page Cache, File System Basics
 
 > 한 줄 요약: 스케줄러 공정성과 page cache는 따로 보이면 단순하지만, 실제 서버에서는 run queue, dirty writeback, reclaim, readahead가 함께 꼬이면서 tail latency를 만든다.

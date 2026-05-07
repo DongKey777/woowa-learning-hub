@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Java Equality and Identity Basics
+concept_id: language/java-equality-identity-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-equality-identity
+- equals-hashcode-contract
+- string-wrapper-enum-comparison
+aliases:
+- java equality basics
+- java identity basics
+- java == vs equals
+- same object vs same value
+- java hashCode basics
+- String equals beginner
+- HashSet HashMap equality
+- 자바 == equals 차이
+- 같은 객체 같은 값 차이
+- hashCode equals 규약
+- 문자열 비교 왜 안 돼요
+symptoms:
+- ==와 equals를 모두 같다라는 말로 외워서 같은 객체 질문과 같은 값 질문을 구분하지 못한다
+- String, wrapper, enum 비교를 같은 방식으로 처리해 어떤 경우는 우연히 맞고 어떤 경우는 틀린다
+- HashSet 중복 제거와 HashMap get 실패를 equals와 hashCode 계약으로 연결하지 못한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-execution-object-memory-mental-model-primer
+- language/java-types-class-object-oop-basics
+next_docs:
+- language/collections-equality-mutable-state-foundations
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/wrapper-value-comparison
+- language/enum-equality-quick-bridge
+linked_paths:
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-parameter-passing-pass-by-value-side-effects-primer.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+- contents/language/java/new-aliasing-equality-hashset-hashmap-get-bridge-drill.md
+- contents/language/java/wrapper-value-comparison-beginner-bridge.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/enum-equality-quick-bridge.md
+- contents/language/java/enum-string-boundary-bridge.md
+- contents/language/java/string-intern-pool-pitfalls.md
+confusable_with:
+- language/java-execution-object-memory-mental-model-primer
+- language/collections-equality-mutable-state-foundations
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java에서 ==와 equals는 각각 같은 객체와 같은 값을 어떻게 다르게 묻는지 설명해줘
+- 필드값이 같은 두 객체인데 ==가 false인 이유와 equals를 언제 구현해야 하는지 알고 싶어
+- String 비교에서 == 대신 equals를 써야 하는 이유를 wrapper와 enum 비교까지 같이 정리해줘
+- HashSet 중복 제거와 HashMap get이 equals hashCode 계약에 왜 같이 묶이는지 알려줘
+- new를 두 번 했는지 alias를 만든 건지 확인한 다음 equality 문제로 넘어가는 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java에서 identity와 equality를 구분하는 beginner primer다.
+  ==, equals, hashCode, same object vs same value, String comparison, wrapper comparison, enum comparison, HashSet/HashMap lookup, mutable key, object aliasing에서 equality로 넘어가는 route를 다룬다.
+---
 # Java Equality and Identity Basics
 
 > 한 줄 요약: Java 입문자가 `==`, `.equals()`, `hashCode()`, 문자열 비교, 기본형과 참조형 비교 차이를 한 흐름으로 이해하도록 정리한 primer다.

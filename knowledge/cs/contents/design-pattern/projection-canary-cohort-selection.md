@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Projection Canary Cohort Selection
+concept_id: design-pattern/projection-canary-cohort-selection
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-canary-cohort
+- fingerprint-bucket-coverage
+- strict-path-cohort
+aliases:
+- projection canary cohort selection
+- projection cutover cohort ladder
+- low risk cohort
+- representative cohort
+- strict path cohort
+- strict screen cohort
+- query fingerprint bucket selection
+- canary routing cohort
+- stage cohort matrix
+- fingerprint bucket quota
+symptoms:
+- projection canary를 1%, 10%, 50% 같은 traffic percentage로만 정의해 어떤 endpoint, actor scope, fingerprint bucket을 태웠는지 설명하지 못한다
+- low-risk traffic만 serve하고 strict-path와 tail bucket은 observe-only에도 넣지 않아 correctness bug를 늦게 발견한다
+- top volume bucket coverage만 보고 non-default sort, large page size, legacy cursor family, hot tenant 같은 risk sentinel을 놓친다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/canary-promotion-thresholds-projection-cutover
+next_docs:
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/projection-rollback-window-exit-criteria
+- design-pattern/fallback-capacity-and-headroom-contracts
+linked_paths:
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/canary-promotion-thresholds-projection-cutover.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/search-normalization-query-pattern.md
+- contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+confusable_with:
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/projection-rollback-window-exit-criteria
+forbidden_neighbors: []
+expected_queries:
+- Projection canary cohort selection은 몇 퍼센트보다 어떤 low-risk, representative, strict-path bucket을 태우는지가 중요한 이유가 뭐야?
+- CANARY 1%에서 low-risk cohort만 serve하고 representative와 strict-path를 observe-only로 유지하는 이유가 뭐야?
+- query fingerprint bucket coverage는 raw URL이 아니라 canonical packet의 fingerprint_bucket을 base unit으로 삼아야 하는 이유가 뭐야?
+- LOW_RISK_SEED, REP_CORE, STRICT_SENTINEL, TAIL_SENTINEL bucket을 stage별로 확장하는 기준은 뭐야?
+- canary cohort 확장은 랜덤 추가보다 endpoint, actor scope, tenant tier, page size, cursor family 같은 빠진 축을 채우는 게 안전한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Projection Canary Cohort Selection playbook으로, projection cutover canary를
+  단순 traffic percentage가 아니라 low-risk seed, representative core, strict sentinel,
+  tail sentinel cohort와 canonical fingerprint bucket coverage로 구성하고 stage별 serve/observe-only
+  surface를 확장하는 방법을 설명한다.
+---
 # Projection Canary Cohort Selection
 
 > 한 줄 요약: projection cutover canary는 "몇 %"보다 "누구를 태우는가"가 먼저이고, stage마다 low-risk, representative, strict-path cohort를 분리해 고정해야 query-fingerprint bucket coverage와 strict correctness를 함께 지킬 수 있다.

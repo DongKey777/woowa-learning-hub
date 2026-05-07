@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Session Revocation at Scale
+concept_id: security/session-revocation-at-scale
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session revocation
+- logout
+- token invalidation
+- blacklist
+aliases:
+- session revocation
+- logout
+- token invalidation
+- blacklist
+- revocation store
+- session version
+- authz version
+- claim version
+- token version
+- fan-out invalidation
+- logout all devices
+- distributed session
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/logout-scope-primer.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/authz-session-versioning-patterns.md
+- contents/security/jwt-deep-dive.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/background-job-auth-context-revalidation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Revocation at Scale 핵심 개념을 설명해줘
+- session revocation가 왜 필요한지 알려줘
+- Session Revocation at Scale 실무 설계 포인트는 뭐야?
+- session revocation에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Session Revocation at Scale를 다루는 deep_dive 문서다. 세션 폐기는 단순 로그아웃 버튼이 아니라, 다수 인스턴스와 여러 토큰 종류에 걸쳐 일관되게 반영되어야 하는 분산 무효화 문제다. 검색 질의가 session revocation, logout, token invalidation, blacklist처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Session Revocation at Scale
 
 > 한 줄 요약: 세션 폐기는 단순 로그아웃 버튼이 아니라, 다수 인스턴스와 여러 토큰 종류에 걸쳐 일관되게 반영되어야 하는 분산 무효화 문제다.

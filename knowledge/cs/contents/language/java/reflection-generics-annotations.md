@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Reflection Generics Annotations
+concept_id: language/reflection-generics-annotations
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- reflection
+- generics
+- annotations
+aliases:
+- Reflection Generics Annotations
+- Java reflection generics annotations
+- runtime metadata type erasure
+- reflection vs generics vs annotations
+- Java metaprogramming basics
+- 자바 리플렉션 제네릭 어노테이션
+symptoms:
+- Reflection, Generics, Annotation을 모두 고급 문법으로 묶어 runtime metadata, compile-time type safety, declarative metadata 역할 차이를 놓쳐
+- Generics가 runtime에도 타입 파라미터를 그대로 보존한다고 생각해 type erasure와 reflection workaround를 이해하지 못해
+- Annotation을 주석처럼만 이해해 compile-time processing과 runtime reflection consumption의 차이를 구분하지 못해
+intents:
+- deep_dive
+- definition
+- comparison
+prerequisites:
+- language/java-generics-basics
+- language/java-types-class-object-oop-basics
+next_docs:
+- language/reflection-cost-and-alternatives
+- language/generic-type-erasure-workarounds
+- language/java-annotation-processing
+linked_paths:
+- contents/language/java/java-generics-basics.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/generic-type-erasure-workarounds.md
+- contents/language/java/annotation-processing.md
+- contents/language/java/java-types-class-object-oop-basics.md
+confusable_with:
+- language/reflection-cost-and-alternatives
+- language/generic-type-erasure-workarounds
+- language/java-annotation-processing
+forbidden_neighbors: []
+expected_queries:
+- Java Reflection Generics Annotation은 런타임 컴파일타임 메타데이터 관점에서 어떻게 달라?
+- Reflection은 실행 중 클래스 정보를 조회하고 Generics는 compile-time type safety를 주는 도구라는 뜻을 설명해줘
+- Java generic type erasure 때문에 runtime reflection에서 타입 파라미터가 어떻게 제한돼?
+- Annotation은 compile-time processor와 runtime framework가 어떻게 다르게 활용해?
+- Reflection Generics Annotations를 자바 메타프로그래밍 큰 그림으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java Reflection, Generics, Annotations를 runtime type metadata, compile-time type safety, declarative metadata로 구분하는 advanced deep dive다.
+  reflection, generics, annotations, type erasure, annotation processing 질문이 본 문서에 매핑된다.
+---
 # Reflection, Generics, Annotations
 
 **난이도: 🔴 Advanced**

@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Seccomp Basics for Backend Teams
+concept_id: operating-system/seccomp-basics-backend-teams
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- seccomp-backend-teams
+- seccomp
+- syscall-allowlist-filter
+- container-syscall-sandbox
+aliases:
+- seccomp basics
+- syscall allowlist filter
+- container syscall sandbox
+- backend runtime attack surface
+- kernel level safety guard
+- seccomp profile debugging
+intents:
+- definition
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/security/least-privilege-rbac-basics.md
+- contents/security/secure-webhook-consumer-isolation.md
+expected_queries:
+- seccomp는 backend team이 container runtime attack surface를 줄일 때 어떤 역할을 해?
+- syscall allowlist filter가 kernel level safety guard라는 말은 무슨 뜻이야?
+- seccomp profile 때문에 syscall이 막혔는지 strace/eBPF로 어떻게 확인해?
+- container cgroup namespace와 seccomp는 각각 어떤 isolation layer야?
+contextual_chunk_prefix: |
+  이 문서는 seccomp를 허용된 syscall만 남기는 kernel-level filter로 설명한다. backend team이
+  container와 runtime attack surface를 줄일 때 namespace/cgroup과 별도로 syscall surface를 줄이는
+  안전장치다.
+---
 # Seccomp Basics, Backend Teams
 
 > 한 줄 요약: seccomp는 허용된 syscall만 남기는 필터라서, 백엔드 팀이 컨테이너와 런타임의 공격면을 줄일 때 가장 직접적인 커널 레벨 안전장치다.

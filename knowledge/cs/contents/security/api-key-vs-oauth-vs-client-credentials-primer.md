@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: API 키 vs OAuth vs Client Credentials 한 장 비교
+concept_id: security/api-key-vs-oauth-vs-client-credentials-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- api-key-oauth-client-credentials-choice
+- user-delegation-vs-service-identity
+- server-to-server-auth-contract
+aliases:
+- api key vs oauth vs client credentials
+- API 키 OAuth Client Credentials 비교
+- api key vs oauth 차이
+- client credentials 뭐예요
+- server to server oauth
+- user delegated oauth
+- 외부 api 인증 방식 선택
+- api key bearer token 차이
+- OAuth면 다 사용자 로그인인가요
+- 사용자 없이 OAuth token 받는 흐름
+symptoms:
+- 외부 API를 붙일 때 API 키, 사용자 위임 OAuth, Client Credentials 중 무엇을 골라야 할지 모르겠어
+- OAuth라는 말만 보고 무조건 사용자 로그인과 동의 화면이 있다고 오해하고 있어
+- Bearer 헤더에 들어가면 전부 OAuth access token인지 API 키도 가능한지 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- security/oauth2-basics
+- security/api-key-basics
+next_docs:
+- security/oauth2-basics
+- security/oauth-scope-vs-api-audience-vs-application-permission
+- security/workload-identity-vs-long-lived-service-account-keys
+- security/browser-direct-call-vs-server-proxy-decision-tree
+linked_paths:
+- contents/security/api-key-basics.md
+- contents/security/oauth2-basics.md
+- contents/security/oauth-scope-vs-api-audience-vs-application-permission.md
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+- contents/security/browser-direct-call-vs-server-proxy-decision-tree.md
+- contents/network/http-https-basics.md
+confusable_with:
+- security/oauth2-basics
+- security/oauth-scope-vs-api-audience-vs-application-permission
+- security/workload-identity-vs-long-lived-service-account-keys
+- security/browser-direct-call-vs-server-proxy-decision-tree
+forbidden_neighbors: []
+expected_queries:
+- API 키와 OAuth와 Client Credentials를 누구를 대표하는지 기준으로 비교해줘
+- 사용자 데이터에 접근하는 외부 API면 API key가 아니라 사용자 위임 OAuth를 봐야 하는 이유가 뭐야?
+- Client Credentials는 OAuth인데 왜 사용자 로그인 흐름이 없는 거야?
+- 서버 서버 호출에서 API 키와 Client Credentials는 공급자 계약 기준으로 어떻게 갈라?
+- Bearer 헤더에 들어가면 전부 OAuth token인지 API key도 가능한지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 외부 API 인증 방식을 API key, user delegated OAuth, OAuth client credentials로 나누고 지금 요청이 누구를 대표하는지 기준으로 선택하는 beginner chooser다.
+  api key vs oauth, client credentials, server-to-server auth, user delegated access, bearer token confusion, external API integration 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # API 키 vs OAuth vs Client Credentials 한 장 비교
 
 > 한 줄 요약: API 키는 "우리 앱 자체"를 식별할 때, 사용자 위임 OAuth는 "특정 사용자를 대신해" 외부 자원에 접근할 때, Client Credentials는 "사용자 없이 우리 서버 자체가 OAuth 토큰을 받아" 서버-서버 호출할 때 주로 쓴다.
@@ -7,6 +75,14 @@
 > 문서 역할: 이 문서는 외부 API 연동을 처음 고를 때 API 키, 사용자 위임 OAuth, Client Credentials를 구분하는 beginner primer다. 공급자별 세부 스펙과 토큰 운영 심화는 관련 문서로 넘긴다.
 
 > target query shape: `api key vs oauth 차이`, `client credentials 뭐예요`, `외부 api 붙이려는데 뭐 써야 하나`, `what is api key vs oauth vs client credentials`
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "외부 API를 붙일 때 API 키, OAuth, Client Credentials 중 무엇을 써야 하나요?" | 결제/파트너 API/사용자 외부 데이터 연동 방식 선택 | 지금 요청이 우리 앱, 특정 사용자, 우리 서버 중 누구를 대표하는지 본다 |
+| "OAuth면 무조건 사용자 로그인과 동의 화면이 있나요?" | server-to-server OAuth를 처음 보는 단계 | 사용자 위임 OAuth와 Client Credentials를 분리한다 |
+| "`Bearer` 헤더에 들어가면 전부 OAuth access token인가요?" | API key와 access token이 같은 헤더 모양으로 보이는 장면 | 토큰 모양보다 공급자 계약과 발급 주체를 기준으로 판단한다 |
 
 관련 문서:
 

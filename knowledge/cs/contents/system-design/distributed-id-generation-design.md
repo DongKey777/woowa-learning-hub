@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: 분산 ID 생성 설계
+concept_id: system-design/distributed-id-generation-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- distributed id generation
+- snowflake
+- uuidv7
+- ulid
+aliases:
+- distributed id generation
+- snowflake
+- uuidv7
+- ulid
+- monotonic id
+- shard key
+- hot partition
+- sequence
+- clock skew
+- base62
+- 분산 ID 생성 설계
+- distributed id generation design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/url-shortener-design.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 분산 ID 생성 설계 설계 핵심을 설명해줘
+- distributed id generation가 왜 필요한지 알려줘
+- 분산 ID 생성 설계 실무 트레이드오프는 뭐야?
+- distributed id generation 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 분산 ID 생성 설계를 다루는 deep_dive 문서다. 분산 환경에서 충돌 없이, 정렬 가능하고, 샤드 친화적인 ID를 생성하는 방법을 설계한다. 검색 질의가 distributed id generation, snowflake, uuidv7, ulid처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # 분산 ID 생성 설계
 
 > 한 줄 요약: 분산 환경에서 충돌 없이, 정렬 가능하고, 샤드 친화적인 ID를 생성하는 방법을 설계한다.

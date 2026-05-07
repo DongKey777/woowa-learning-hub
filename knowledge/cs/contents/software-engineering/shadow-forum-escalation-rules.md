@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Shadow Forum Escalation Rules
+concept_id: software-engineering/shadow-forum-escalation-rules
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- escalation
+- architecture-council
+- stewardship
+aliases:
+- shadow forum escalation rules
+- local stewardship vs architecture council
+- blocked shadow escalation
+- shadow governance routing
+- council escalation threshold
+- shadow 포럼 에스컬레이션 규칙
+symptoms:
+- 모든 shadow entry를 architecture council로 올려 governance 병목을 만들거나 high-blast 항목을 local forum이 너무 오래 붙잡아
+- blocked_duration, impacted_domains, affected_teams, shared control plane change 같은 escalation threshold와 clock이 없어 ownerless backlog가 늙어
+- council escalation packet에 blast radius와 requested action이 없어 상위 forum이 다시 사실 수집부터 하게 돼
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/architecture-council-cadence
+- software-engineering/shadow-catalog-review-cadence-profiles
+next_docs:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-review-outcome-template
+linked_paths:
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-review-outcome-template.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/break-glass-path-segmentation.md
+confusable_with:
+- software-engineering/architecture-council-cadence
+- software-engineering/shadow-catalog-review-cadence-profiles
+- software-engineering/support-sla-escalation-contracts
+forbidden_neighbors: []
+expected_queries:
+- shadow entry를 local stewardship에 남길지 architecture council로 올릴지 어떤 threshold와 clock으로 정해?
+- blocked_duration이 5영업일을 넘거나 impacted_domains가 2개 이상이면 council_next_cycle로 올리는 이유는?
+- high-blast release approval, deprecation bypass, shared source of truth shadow path는 왜 council_immediate가 필요해?
+- shadow escalation packet에는 catalog_id, lifecycle_state, blocked_since, affected_teams, requested_council_action을 왜 넣어야 해?
+- council escalation이 윗선 보고가 아니라 decision owner와 decision height를 바꾸는 state transition인 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shadow entry를 local stewardship forum과 architecture council 사이에서 authority boundary, blocked duration, blast radius, shared dependency 기준으로 라우팅하는 advanced escalation playbook이다.
+---
 # Shadow Forum Escalation Rules
 
 > 한 줄 요약: shadow entry는 모두 architecture council로 올리는 것이 아니라, local stewardship forum이 끝낼 수 있는 범위를 먼저 고정하고, `blocked_duration`, `impacted_domains`, `affected_teams`, `shared-control-plane change`, `missed unblock ETA` 같은 threshold를 넘는 항목만 정해진 clock으로 council에 올려야 backlog orphan과 governance 병목을 동시에 줄일 수 있다.

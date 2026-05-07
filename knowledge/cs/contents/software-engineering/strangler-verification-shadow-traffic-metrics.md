@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Strangler Verification, Shadow Traffic Metrics
+concept_id: software-engineering/strangler-verification-shadow-traffic-metrics
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- migration
+- shadow-traffic
+- verification
+- cutover-metrics
+aliases:
+- strangler verification
+- shadow traffic metrics
+- traffic mirroring response diff
+- semantic equivalence migration
+- cutover confidence metrics
+- Strangler shadow traffic 검증
+symptoms:
+- strangler 전환에서 새 시스템이 트래픽을 받기만 하면 충분하다고 보고 legacy와 semantic equivalence를 계측하지 않아
+- shadow traffic에 side effect 차단, dry-run, sandbox sink가 없어 결제, 메일, 포인트 같은 외부 부작용을 새 경로가 만들어
+- response diff rate만 보고 critical field mismatch, error code 의미, latency, timeout, fallback, replay lag를 함께 보지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/api-contract-testing
+next_docs:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/contract-drift-governance
+linked_paths:
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+confusable_with:
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/api-contract-testing
+- software-engineering/deployment-rollout-strategy
+forbidden_neighbors: []
+expected_queries:
+- Strangler 전환에서 shadow traffic은 실제 요청을 새 경로에 복제하되 무엇을 검증하려는 도구야?
+- response diff를 byte-by-byte가 아니라 필수 필드, 정렬, null, error semantics 같은 업무 의미로 비교해야 하는 이유는?
+- shadow traffic에서 write side effect를 막기 위해 dry-run mode, side-effect disabled mode, sandbox sink를 어떻게 써야 해?
+- cutover confidence는 response diff rate, critical field mismatch, 5xx, latency, timeout, replay lag를 왜 함께 봐야 해?
+- diff가 0이 아니어도 cutover 가능한 기준을 만들려면 mismatch 유형과 영향도를 어떻게 분류해?
+contextual_chunk_prefix: |
+  이 문서는 strangler migration에서 shadow traffic, response diff, side-effect isolation, cutover confidence metrics로 legacy와 new path의 semantic equivalence를 검증하는 advanced playbook이다.
+---
 # Strangler Verification, Shadow Traffic Metrics
 
 > 한 줄 요약: Strangler 전환은 트래픽을 옮기는 순간보다, 새 경로가 레거시와 충분히 같은 의미를 내는지 계측으로 증명하는 과정이 더 중요하다.

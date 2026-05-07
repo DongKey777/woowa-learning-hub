@@ -1,8 +1,77 @@
+---
+schema_version: 3
+title: Plugin Architecture Pattern Language
+concept_id: design-pattern/plugin-architecture-pattern-language
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- plugin-architecture
+- extension-point
+- registry-pattern
+- contract-versioning
+aliases:
+- plugin architecture
+- plugin architecture pattern
+- extension point
+- plugin contract
+- host plugin model
+- dynamic module loading
+- extension module
+- plugin registry
+- 플러그인 아키텍처
+- 확장 지점
+symptoms:
+- 구현체 몇 개를 List로 주입한 구조를 plugin architecture라고 부르지만 loading, version, isolation 계약이 없다
+- 확장 지점을 열어야 할지 strategy registry 정도로 충분한지 판단하지 못한다
+- plugin contract가 불안정한데 외부 확장을 허용해 host 안정성이 흔들린다
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- design-pattern/registry-pattern
+- design-pattern/strategy-pattern
+- design-pattern/bridge-storage-provider-abstractions
+next_docs:
+- design-pattern/policy-registry-pattern
+- design-pattern/factory-switch-registry-smell
+- design-pattern/strategy-explosion-smell
+linked_paths:
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/bridge-storage-provider-abstractions.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/policy-registry-pattern.md
+- contents/design-pattern/factory-switch-registry-smell.md
+- contents/design-pattern/strategy-explosion-smell.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/registry-pattern
+- design-pattern/policy-registry-pattern
+- design-pattern/strategy-pattern
+- design-pattern/bridge-storage-provider-abstractions
+forbidden_neighbors: []
+expected_queries:
+- Plugin Architecture는 Registry나 Strategy Map과 달리 host, extension point, contract version을 어떻게 관리해?
+- 결제 provider가 계속 늘어날 때 plugin architecture까지 필요한지 registry strategy로 충분한지 어떻게 판단해?
+- plugin contract가 안정적이지 않으면 확장성이 아니라 장애가 되는 이유가 뭐야?
+- host가 plugin loading activation deactivation failure isolation을 책임져야 하는 이유가 뭐야?
+- 플러그인 시스템을 과하게 열면 version conflict와 extension hell이 생기는 원인은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Plugin Architecture Pattern Language deep dive로, host가 extension point와 plugin
+  contract를 정의하고 registry, loading, activation, failure isolation, version compatibility를
+  관리해야 plugin architecture가 된다는 기준을 설명한다.
+---
 # Plugin Architecture: 기능을 꽂아 넣는 패턴 언어
 
 > 한 줄 요약: Plugin Architecture는 핵심 엔진과 확장 기능을 분리해, 새로운 기능을 코드 변경 최소화로 꽂아 넣는 구조다.
 
-**난이도: 🔴 Expert**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Registry Pattern](./registry-pattern.md)
@@ -56,6 +125,18 @@ Plugin은 보통 Registry에 등록된다.
 - 호환성 관리가 어려워진다
 - 버전 충돌이 생긴다
 - host가 불안정해진다
+
+### 4. Strategy Registry와의 경계
+
+단순히 "조건에 맞는 구현체 하나를 고른다"면 Strategy Registry로 충분한 경우가 많다.  
+Plugin Architecture라고 부르려면 적어도 다음 운영 계약이 필요하다.
+
+- plugin contract version을 검사한다
+- plugin이 실패해도 host 전체가 무너지지 않게 격리한다
+- plugin capability와 권한 범위를 제한한다
+- plugin 추가/제거/비활성화 정책이 배포 흐름과 연결된다
+
+이 조건이 없으면 플러그인이라는 이름만 붙은 전략 목록에 가깝다.
 
 ---
 
@@ -146,4 +227,3 @@ registry.register(plugin.name(), plugin);
 ## 한 줄 정리
 
 Plugin Architecture는 호스트와 확장 모듈의 계약을 분리해, 기능을 안전하게 꽂아 넣는 패턴 언어다.
-

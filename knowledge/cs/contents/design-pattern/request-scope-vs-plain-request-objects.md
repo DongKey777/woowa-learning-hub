@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Request Scope vs Plain Request Objects
+concept_id: design-pattern/request-scope-vs-plain-request-objects
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- request-scope
+- request-dto
+- command-object
+- spring-bean-lifecycle
+aliases:
+- request scope vs plain request objects
+- spring request scoped bean vs dto
+- requestscope bean vs requestbody dto
+- request scoped bean command object
+- binder created dto not bean
+- caller built command not bean
+- request dto plain object
+- request scoped context holder
+- dto should not be request scoped bean
+- 요청 스코프와 DTO 차이
+symptoms:
+- 요청마다 값이 달라진다는 이유만으로 DTO나 command에 @RequestScope와 @Component를 붙이려 한다
+- @RequestBody 객체가 Spring을 거쳐 만들어졌으니 bean이라고 오해한다
+- 요청 context holder가 필요한 경우와 method-local request data를 command로 넘기는 경우를 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- spring/bean-di-basics
+- design-pattern/singleton-vs-di-container-scope
+next_docs:
+- design-pattern/request-object-creation-vs-di-container
+- design-pattern/record-vs-builder-request-model-chooser
+- design-pattern/factory-vs-di-container-wiring
+- design-pattern/invariant-preserving-command-model
+linked_paths:
+- contents/design-pattern/request-object-creation-vs-di-container.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/singleton-vs-di-container-scope.md
+- contents/design-pattern/record-vs-builder-request-model-chooser.md
+- contents/spring/spring-bean-di-basics.md
+- contents/design-pattern/invariant-preserving-command-model.md
+confusable_with:
+- design-pattern/request-object-creation-vs-di-container
+- design-pattern/factory-vs-di-container-wiring
+- design-pattern/singleton-vs-di-container-scope
+- spring/bean-di-basics
+forbidden_neighbors: []
+expected_queries:
+- @RequestScope는 요청마다 새 Spring bean을 만드는 설정이고 request DTO는 plain object라는 차이를 설명해줘
+- @RequestBody로 만들어진 RegisterRequest는 Spring이 만들었는데도 container-managed bean이 아닌 이유가 뭐야?
+- request-scoped bean은 언제 쓰고 command나 DTO는 언제 그냥 new나 binder로 만들면 돼?
+- 요청마다 달라지는 객체가 모두 @RequestScope bean은 아닌 이유를 초보자 기준으로 알려줘
+- DTO에 repository를 주입하는 request scoped component가 왜 경계를 흐리는 설계야?
+contextual_chunk_prefix: |
+  이 문서는 Request Scope vs Plain Request Objects beginner chooser로, @RequestScope는
+  Spring container가 request lifecycle 동안 관리하는 collaborator/context의 scope이고
+  request DTO, command, value object는 binder나 caller가 이번 요청 값을 담아 만드는 plain object라는
+  차이를 설명한다.
+---
 # Request Scope vs Plain Request Objects: Spring Bean 생명주기와 요청 데이터 분리하기
 
 > 한 줄 요약: `@RequestScope`는 Spring이 관리하는 협력자를 요청마다 새로 만드는 설정이고, request DTO와 command는 이번 요청의 값을 담아 binder나 호출부가 만드는 평범한 데이터 객체다.

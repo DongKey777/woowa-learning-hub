@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: I/O Models and Event Loop
+concept_id: operating-system/io-models-and-event-loop
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- io-model-event-loop
+- blocking-nonblocking-sync-async
+- backpressure-readiness-debugging
+aliases:
+- io models and event loop
+- blocking vs non blocking io
+- synchronous vs asynchronous io
+- event loop readiness
+- epoll event loop basics
+- backpressure in event loop
+- off cpu wait
+- nonblocking io server model
+symptoms:
+- blocking non-blocking과 synchronous asynchronous를 같은 축으로 섞어 서버 모델을 설명한다
+- event loop는 CPU가 낮으면 정상이라고 보고 readiness wait와 off-CPU 대기를 확인하지 않는다
+- backpressure 없이 queue만 늘리면 비동기 서버가 빨라진다고 오해한다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+- operating-system/context-switching-deadlock-lockfree
+next_docs:
+- operating-system/epoll-kqueue-io-uring
+- operating-system/epoll-level-edge-oneshot-wakeup-semantics
+- operating-system/timerfd-epoll-timer-integration
+- operating-system/ebpf-perf-strace-production-tracing
+linked_paths:
+- contents/operating-system/epoll-kqueue-io-uring.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/timerfd-epoll-timer-integration.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/socket-accept-queue-kernel-diagnostics.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+confusable_with:
+- operating-system/epoll-kqueue-io-uring
+- operating-system/epoll-level-edge-oneshot-wakeup-semantics
+- operating-system/file-descriptor-socket-syscall-cost-server-impact
+- operating-system/softirq-hardirq-latency-server-debugging
+forbidden_neighbors: []
+expected_queries:
+- blocking I/O와 non-blocking I/O는 synchronous asynchronous와 어떻게 다른 축이야?
+- event loop 서버에서 CPU는 낮은데 latency가 높으면 무엇을 확인해야 해?
+- epoll readiness 기반 event loop는 backpressure를 왜 같이 설계해야 해?
+- thread-per-request와 event loop 모델은 context switch 비용이 어떻게 달라?
+- timerfd eventfd signalfd는 event loop control plane에서 어떤 역할을 해?
+contextual_chunk_prefix: |
+  이 문서는 blocking vs non-blocking, synchronous vs asynchronous, readiness,
+  epoll event loop, timer, eventfd, backpressure, off-CPU wait를 한 축으로
+  정리하는 OS deep dive다. 비동기 서버가 빠른 이유와 느려지는 이유를
+  운영 관찰 신호와 연결한다.
+---
 # I/O Models and Event Loop
 
 > 한 줄 요약: blocking, non-blocking, synchronous, asynchronous는 서로 다른 축이고, event loop는 readiness와 backpressure를 하나의 흐름으로 다루는 운영 모델이다.

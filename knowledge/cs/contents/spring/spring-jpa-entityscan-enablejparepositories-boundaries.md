@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Spring JPA EntityScan and EnableJpaRepositories Boundaries
+concept_id: spring/jpa-entityscan-enablejparepositories-boundaries
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- jpa-entityscan-enablejparepositories
+- boundaries
+- jpa-scan-boundary
+- entityscan
+aliases:
+- JPA scan boundary
+- @EntityScan
+- @EnableJpaRepositories
+- component scan vs entity scan
+- repository scan
+- Not a managed type
+- repository bean not found
+intents:
+- symptom
+- troubleshooting
+symptoms:
+- scanBasePackages를 넓혔는데도 JPA entity가 Not a managed type으로 실패한다.
+- service/controller는 component scan으로 잡히지만 Spring Data repository bean이 생성되지 않는다.
+- multi-module에서 entity scan과 repository scan 경계를 component scan과 같은 것으로 오해한다.
+linked_paths:
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/spring/spring-component-scan-failure-patterns.md
+- contents/spring/spring-scanbasepackages-vs-import-autoconfiguration-selection.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+confusable_with:
+- spring/component-scan-failure-patterns
+- spring/scanbasepackages-vs-import-autoconfiguration-selection
+- spring/boot-autoconfiguration-internals
+expected_queries:
+- @EntityScan과 @EnableJpaRepositories는 component scan과 뭐가 달라?
+- scanBasePackages를 지정했는데 Not a managed type이 나는 이유는?
+- multi-module Spring Boot에서 repository bean은 뜨는데 entity가 안 잡히면 어디를 봐?
+- entity scan과 repository scan boundary를 beginner 관점으로 설명해줘.
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot JPA startup에서 component scan, entity scan,
+  repository scan을 분리하는 symptom router다. @SpringBootApplication
+  scanBasePackages는 component scan이고, @EntityScan과 @EnableJpaRepositories는
+  JPA entity metadata와 Spring Data repository interface 탐색 경계를 따로 제어한다.
+---
 # Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다
 
 > 한 줄 요약: `@SpringBootApplication(scanBasePackages = ...)`로 component scan 범위를 넓혀도 JPA entity scan과 repository scan은 자동으로 따라오지 않으므로, multi-module에서 `@EntityScan`과 `@EnableJpaRepositories` 경계를 따로 맞추지 않으면 `Not a managed type`나 repository bean 누락이 바로 난다.

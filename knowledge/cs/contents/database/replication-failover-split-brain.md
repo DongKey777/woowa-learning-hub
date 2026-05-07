@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Replication Failover and Split Brain
+concept_id: database/replication-failover-split-brain
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- failover
+- split-brain
+- fencing
+- quorum
+- promotion
+aliases:
+- replication failover
+- split brain
+- stale primary
+- primary promotion safety
+- quorum failover
+- fencing token
+- commit horizon
+- write loss boundary
+- old primary still writable
+- dual primary incident
+symptoms:
+- replica를 primary로 승격했는데 old primary가 여전히 write를 받을 수 있어
+- 네트워크 분리 상황에서 두 노드가 동시에 primary라고 판단할 위험을 설명해야 해
+- failover 자동화가 promotion만 하고 fencing이나 endpoint 차단을 놓쳤어
+- 가장 최신 replica를 골랐는데도 write loss boundary와 commit horizon을 검증해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/mvcc-replication-sharding
+- database/failover-promotion-read-divergence
+next_docs:
+- database/failover-visibility-window-topology-cache-playbook
+- database/commit-horizon-after-failover-verification
+- database/db-lease-fencing-coordination
+linked_paths:
+- contents/database/mvcc-replication-sharding.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/commit-horizon-after-failover-verification.md
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/primary-switch-write-fencing.md
+confusable_with:
+- database/failover-promotion-read-divergence
+- database/commit-horizon-after-failover-verification
+- database/db-lease-fencing-coordination
+forbidden_neighbors: []
+expected_queries:
+- failover에서 replica promotion보다 old primary fencing이 더 중요한 이유가 뭐야?
+- split brain은 왜 두 개의 primary가 동시에 쓰기를 받는 데이터 손상 사고로 이어져?
+- quorum, lease, fencing token으로 failover safety를 어떻게 설계해야 해?
+- 최신 replica를 승격해도 commit horizon과 write loss boundary를 왜 확인해야 해?
+- 네트워크 partition을 단순 장애로 오판하면 자동 failover가 어떻게 위험해져?
+contextual_chunk_prefix: |
+  이 문서는 replication failover, primary promotion, split brain, quorum, fencing, stale primary 차단을 다루는 advanced playbook이다.
+  old primary still writable, dual primary, commit horizon, write loss boundary, failover safety 질문이 본 문서에 매핑된다.
+---
 # Replication Failover and Split Brain
 
 **난이도: 🔴 Advanced**

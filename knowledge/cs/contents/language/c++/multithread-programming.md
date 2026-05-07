@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: C++ Multithread Programming
+concept_id: language/cpp-multithread-programming
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- cpp-concurrency
+- thread-process
+- race-condition
+aliases:
+- C++ multithread programming
+- C++ thread mutex basics
+- C++ data race primer
+- C++ 병렬 프로그래밍
+- C++ race condition
+- std thread mutex
+- 멀티스레드 프로그래밍
+symptoms:
+- C++ thread와 process 차이를 모른 채 멀티스레드가 항상 성능을 올린다고 생각해
+- 공유 메모리와 data race 때문에 실행 결과가 매번 달라질 수 있다는 점을 설명해야 해
+- mutex lock unlock이 같은 critical section 보호에 왜 필요한지 큰 그림이 필요해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- operating-system/process-thread-basics
+- operating-system/context-switching-deadlock-lockfree
+next_docs:
+- operating-system/cpu-cache-coherence-memory-barrier
+- language/modern-cpp
+- operating-system/thread-safety-and-race-condition
+linked_paths:
+- contents/operating-system/process-thread-basics.md
+- contents/operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+confusable_with:
+- operating-system/process-thread-basics
+- operating-system/thread-safety-and-race-condition
+- operating-system/context-switching-deadlock-lockfree
+forbidden_neighbors: []
+expected_queries:
+- C++ 멀티스레드 프로그래밍에서 process thread mutex data race를 한 번에 설명해줘
+- 멀티스레드로 만들었는데 싱글스레드보다 느려질 수 있는 이유가 뭐야?
+- C++에서 race condition과 data race가 왜 디버깅하기 어려운지 알려줘
+- std thread와 mutex lock unlock으로 critical section을 보호하는 감각을 보고 싶어
+- thread 수와 CPU core 수가 꼭 같지 않아도 되는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 C++ multithread programming을 process/thread, shared memory, data race, mutex, critical section, multicore 성능 관점으로 설명하는 advanced deep dive다.
+  C++ thread, std::thread, mutex lock unlock, race condition, data race, context switching, 병렬 프로그래밍 질문이 본 문서에 매핑된다.
+---
 # Multithread Programming
 
 **난이도: 🔴 Advanced**

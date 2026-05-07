@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Browser DevTools Application 탭 저장소 읽기 1분 카드"
+concept_id: network/browser-devtools-application-storage-1minute-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- browser-storage-devtools
+- stored-vs-sent
+- cookie-localstorage-cache-storage
+aliases:
+- application tab storage
+- devtools stored vs sent
+- cookies local storage session storage
+- cache storage quick check
+- application cookies request cookie
+- localstorage authorization header
+symptoms:
+- Application 탭에 값이 보이면 이번 요청에도 자동으로 실렸다고 오해한다
+- Local Storage token이 있으면 Authorization header도 당연히 있다고 착각한다
+- Cache Storage entry를 HTTP cache hit이나 304와 같은 증거로 읽는다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/application-tab-vs-request-cookie-header-mini-card
+- network/service-worker-vs-http-cache-devtools-primer
+- network/cookie-vs-localstorage-token-storage-choice-card
+- network/cookie-session-jwt-browser-flow-primer
+- network/browser-devtools-cache-trace-primer
+linked_paths:
+- contents/network/application-tab-vs-request-cookie-header-mini-card.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/network/cookie-vs-localstorage-token-storage-choice-card.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+confusable_with:
+- network/application-tab-vs-request-cookie-header-mini-card
+- network/service-worker-vs-http-cache-devtools-primer
+- network/cookie-vs-localstorage-token-storage-choice-card
+- network/browser-devtools-cache-trace-primer
+- security/cookie-scope-mismatch-guide
+forbidden_neighbors: []
+expected_queries:
+- "DevTools Application 탭에 cookie가 보이는데 request Cookie 헤더가 비는 이유가 뭐야?"
+- "Local Storage에는 token이 있는데 Authorization 헤더가 안 붙으면 어디부터 봐?"
+- "Cache Storage에 entry가 있으면 Network의 304나 disk cache와 같은 뜻이야?"
+- "Application 탭의 Cookies Local Storage Session Storage Cache Storage를 처음에 어떻게 읽어?"
+- "브라우저 저장소에 값이 있는 것과 이번 요청에 실제로 쓰인 것을 어떻게 구분해?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools Application 탭의 Cookies, Local Storage, Session Storage,
+  Cache Storage를 stored evidence로 읽고, 실제 request Cookie header,
+  Authorization header, from ServiceWorker, 304 같은 sent/used evidence와
+  분리하는 beginner primer다.
+---
 # Browser DevTools Application 탭 저장소 읽기 1분 카드
 
 > 한 줄 요약: Application 탭의 `Cookies`, `Local Storage`, `Session Storage`, `Cache Storage`는 모두 "값이 저장돼 있다"를 보여 주지만, "이번 요청에 실제로 전송되거나 쓰였나"는 따로라서 먼저 `stored`와 `sent/used`를 갈라 읽어야 한다.

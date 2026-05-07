@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Natural Ordering in TreeSet and TreeMap
+concept_id: language/treeset-treemap-natural-ordering-compareto-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparable
+- treeset
+- treemap
+aliases:
+- Natural Ordering in TreeSet and TreeMap
+- TreeSet TreeMap compareTo natural ordering
+- compareTo zero same key slot
+- new TreeSet natural ordering duplicate
+- no comparator TreeMap compareTo overwrite
+- 자바 TreeSet TreeMap natural ordering
+symptoms:
+- Comparator를 직접 넘기지 않은 TreeSet TreeMap은 비교 규칙이 없다고 생각해 실제로는 compareTo natural ordering을 쓴다는 점을 놓쳐
+- compareTo()==0이면 TreeSet은 같은 원소 자리, TreeMap은 같은 key 자리로 볼 수 있다는 surprise를 explicit comparator와 분리해 이해하지 못해
+- compareTo에 tie-breaker가 없어서 서로 다른 객체가 sorted collection에서 하나로 합쳐지거나 value가 overwrite되는 문제를 만들어
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/bigdecimal-sorted-collection-bridge
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/navigablemap-navigableset-mental-model
+linked_paths:
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/bigdecimal-sorted-collection-bridge
+- language/hashset-vs-treeset-duplicate-semantics
+forbidden_neighbors: []
+expected_queries:
+- new TreeSet이나 new TreeMap에 comparator를 안 줘도 natural ordering compareTo를 쓴다는 뜻이 뭐야?
+- compareTo가 0이면 TreeSet은 하나만 남고 TreeMap은 value를 덮어쓸 수 있어?
+- Comparator를 안 줬는데도 왜 TreeSet에 하나만 남는지 compareTo tie-breaker로 설명해줘
+- explicit Comparator compare==0과 natural ordering compareTo==0 surprise는 어떻게 같은 문제야?
+- BigDecimal compareTo와 equals mismatch가 TreeSet TreeMap에서 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 TreeSet/TreeMap이 explicit Comparator가 없으면 Comparable.compareTo natural ordering을 쓰고 compareTo==0을 same element/key slot으로 보는 점을 설명하는 beginner primer다.
+  natural ordering, compareTo, TreeSet duplicate, TreeMap overwrite, Comparable 질문이 본 문서에 매핑된다.
+---
 # Natural Ordering in TreeSet and TreeMap
 
 > 한 줄 요약: `Comparator`를 직접 넘기지 않은 `TreeSet`/`TreeMap`도 안전지대가 아니며, natural ordering의 `compareTo() == 0`이면 같은 원소나 같은 key 자리로 판단되어 중복 무시와 값 덮어쓰기가 생길 수 있다.

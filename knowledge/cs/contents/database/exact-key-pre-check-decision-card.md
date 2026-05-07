@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Exact-Key Pre-Check Decision Card
+concept_id: database/exact-key-pre-check-decision-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- exact-key
+- pre-check
+- unique-constraint
+- locking-read
+aliases:
+- exact key pre check decision card
+- unique only vs locking precheck
+- skip precheck
+- exact key insert if absent chooser
+- when to skip precheck
+- locking read precheck
+- select for update before insert beginner
+- duplicate precheck decision table
+- 중복 사전조회 결정 카드
+- pre-check 생략 기준
+symptoms:
+- exact-key insert-if-absent에서 UNIQUE constraint 없이 FOR UPDATE pre-check만으로 중복을 막으려 한다
+- 기존 row를 insert 전에 읽어 바로 이어 처리할 필요가 없는데도 pre-check를 추가해 race와 쿼리 수를 늘린다
+- pre-check가 duplicate correctness의 주인공이고 UNIQUE는 보조라고 거꾸로 이해한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/unique-vs-locking-read-duplicate-primer
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+next_docs:
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/for-share-vs-for-update-duplicate-check-note
+- database/postgresql-exact-key-precheck-contrast-card
+linked_paths:
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/for-share-vs-for-update-duplicate-check-note.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/postgresql-exact-key-precheck-contrast-card.md
+confusable_with:
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+- database/unique-vs-locking-read-duplicate-primer
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/postgresql-exact-key-precheck-contrast-card
+forbidden_neighbors: []
+expected_queries:
+- exact-key insert-if-absent는 먼저 UNIQUE로 닫고 기존 row를 읽을 이유가 있을 때만 locking pre-check를 추가하는 게 맞아?
+- pre-check를 생략하고 duplicate key 후 fresh read로 처리하는 편이 더 단순한 경우를 알려줘
+- SELECT FOR UPDATE before insert가 UNIQUE constraint를 대체하지 못하는 이유가 뭐야?
+- existing row status를 insert 전에 읽어야 할 때만 locking pre-check가 의미 있는 이유를 설명해줘
+- MySQL RR에서 exact-key pre-check가 queue처럼 보이더라도 correctness는 UNIQUE가 맡는다는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Exact-Key Pre-Check Decision Card beginner chooser로, insert-if-absent exact key invariant는
+  UNIQUE constraint가 final gate이고 locking pre-check는 existing row를 먼저 읽거나 queueing 보조가 필요할 때만
+  추가하며 그렇지 않으면 skip하는 기준을 설명한다.
+---
 # Exact-Key Pre-Check Decision Card
 
 > 한 줄 요약: beginner 기준으로 exact-key insert-if-absent는 먼저 `UNIQUE`를 두고, "기존 row를 읽어 바로 이어 처리해야 하는가"가 있을 때만 locking pre-check를 더하며, 그조차 없다면 pre-check는 아예 생략하는 편이 더 단순하고 안전하다.

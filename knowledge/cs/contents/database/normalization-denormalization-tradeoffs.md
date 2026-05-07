@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 정규화와 반정규화 트레이드오프
+concept_id: database/normalization-denormalization-tradeoffs
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- normalization-denormalization-tradeoff
+- source-of-truth-vs-read-model
+- summary-table-sync-cost
+aliases:
+- normalization vs denormalization
+- 정규화 반정규화 차이
+- 정규화와 반정규화 트레이드오프
+- 반정규화 언제
+- read model 뭐예요
+- summary table 뭐예요
+- source of truth 뭐예요
+- join이 많아졌는데 반정규화해야 하나요
+- 조회가 느린데 반정규화해야 하나요
+- denormalized read model
+- write amplification summary table
+symptoms:
+- JOIN이 많아 보이면 바로 반정규화해야 한다고 생각해서 측정과 인덱스 점검 단계를 건너뛰어
+- 반정규화를 조회 성능만 보고 선택하고 source of truth, 동기화, 재계산 비용을 놓쳐
+- summary table이나 read model이 원본 테이블과 어긋날 때 어떤 실패를 감당하는 설계인지 헷갈려
+intents:
+- comparison
+- design
+prerequisites:
+- database/normalization-basics
+next_docs:
+- database/normalization-vs-denormalization-vs-summary-table-decision-guide
+- database/incremental-summary-table-refresh-watermark
+- database/summary-drift-detection-bounded-rebuild
+- spring/spring-data-jpa-basics
+linked_paths:
+- contents/database/normalization-basics.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/incremental-summary-table-refresh-watermark.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+- contents/database/normalization-vs-denormalization-vs-summary-table-decision-guide.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/normalization-basics
+- database/normalization-vs-denormalization-vs-summary-table-decision-guide
+- database/incremental-summary-table-refresh-watermark
+- database/sql-relational-modeling-basics
+forbidden_neighbors: []
+expected_queries:
+- 정규화와 반정규화 차이를 무결성, 조회 성능, 동기화 비용 기준으로 비교해줘
+- JOIN이 많고 조회가 느리면 바로 반정규화해야 하는지 판단 순서를 알려줘
+- read model과 summary table은 source of truth와 어떤 관계를 가져야 해?
+- 반정규화하면 write amplification과 drift detection 비용이 생긴다는 뜻을 설명해줘
+- 서비스 초반에는 정규화부터 시작하고 운영 병목이 측정되면 선택적 반정규화를 검토하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 normalization과 denormalization을 integrity와 read performance tradeoff로 비교하고, read model, summary table, source of truth, synchronization cost를 기준으로 선택하는 intermediate chooser다.
+  join too slow, denormalized table, summary table refresh, read SLA, write amplification, source of truth drift 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # 정규화와 반정규화 트레이드오프
 
 > 한 줄 요약: "데이터를 나눠 정확하게 저장할지, 조금 복제해서 빨리 읽을지"를 고르는 문서다. 정규화는 무결성을 지키고, 반정규화는 읽기를 빠르게 한다.

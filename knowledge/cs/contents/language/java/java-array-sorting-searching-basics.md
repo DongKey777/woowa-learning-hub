@@ -1,3 +1,80 @@
+---
+schema_version: 3
+title: Sorting and Searching Arrays Basics
+concept_id: language/java-array-sorting-searching-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- arrays-sort-binarysearch
+- comparator-precondition
+- in-place-sort-negative-result
+aliases:
+- java array sorting searching basics
+- Arrays.sort Arrays.binarySearch
+- sort mutates original array
+- binarySearch negative result
+- same comparator sort search
+- Java 배열 정렬 검색 입문
+- 배열 정렬 후 이분 검색
+- 내림차순 binarySearch 주의
+symptoms:
+- Arrays.sort가 새 배열을 반환한다고 생각해 원본 배열이 제자리에서 바뀌는 점을 놓친다
+- binarySearch를 정렬되지 않은 배열이나 다른 comparator 기준 배열에 호출해 결과를 신뢰한다
+- binarySearch의 음수 반환값을 단순 실패 코드로만 보고 insertion point 의미를 읽지 못한다
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- language/java-array-common-confusion-checklist
+- algorithm/binary-search-intro
+next_docs:
+- language/arrays-sort-binarysearch-precondition-bridge
+- language/binarysearch-duplicate-boundary-primer
+- language/java-comparable-comparator-basics
+- language/java-arrays-method-choice-30-second-card
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-arrays-method-choice-30-second-card.md
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/arrays-sort-binarysearch-precondition-bridge.md
+- contents/language/java/binarysearch-duplicate-boundary-primer.md
+- contents/language/java/primitive-descending-array-sort-bridge.md
+- contents/algorithm/binary-search-intro.md
+- contents/language/java/arrays-sort-vs-list-sort-bridge.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/primitive-array-descending-binarysearch-primer.md
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+confusable_with:
+- language/arrays-sort-binarysearch-precondition-bridge
+- language/binarysearch-duplicate-boundary-primer
+- algorithm/binary-search-intro
+- language/java-comparable-comparator-basics
+- language/java-array-common-confusion-checklist
+forbidden_neighbors: []
+expected_queries:
+- Arrays.sort는 원본 배열을 제자리에서 바꾸는지 새 배열을 반환하는지 알려줘
+- Arrays.binarySearch를 쓰기 전에 배열이 어떤 기준으로 정렬되어 있어야 해?
+- binarySearch 결과가 음수일 때 insertion point는 어떻게 계산해?
+- 내림차순이나 custom comparator로 정렬한 배열은 검색도 같은 comparator를 써야 해?
+- 중복값이 있을 때 Arrays.binarySearch는 첫 번째 인덱스를 보장해?
+contextual_chunk_prefix: |
+  이 문서는 Java Arrays.sort와 Arrays.binarySearch beginner primer로,
+  in-place sorting, binary search precondition, same comparator sort/search,
+  negative insertion point, duplicate result non-guarantee를 함께 설명한다.
+---
 # Sorting and Searching Arrays Basics
 
 > 한 줄 요약: Java 입문자가 `Arrays.sort()`와 `Arrays.binarySearch()`를 함께 배울 때 꼭 알아야 하는 "제자리 정렬", "같은 comparator로 정렬/검색", "음수 반환값 해석", "중복값과 comparator 계약"을 한 번에 묶어 정리한 beginner doc이다.

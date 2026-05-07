@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Java Deep Dive Catalog
+concept_id: language/java-deep-dive-catalog
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-collections-route
+- equality-hashcode-route
+- map-null-debugging
+aliases:
+- Java deep dive catalog
+- Java README
+- Java collections readme
+- Java equality route
+- List Set Map route
+- HashSet why size one
+- Map get null route
+- 자바 컬렉션 빠른 탐색
+symptoms:
+- Java 컬렉션 문서를 찾지만 실제 질문이 equals hashCode, HashSet 중복, Map get null 문제인지 먼저 분기해야 해
+- List Set Map Queue를 구현체 이름이 아니라 요구사항으로 번역하는 첫 입구가 필요해
+- ordered map, DTO value object, template method hook 같은 Java follow-up 문서 경로가 필요해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-equality-identity-basics
+next_docs:
+- language/java-collections-basics
+- language/collections-equality-mutable-state-foundations
+- language/map-get-null-containskey-getordefault-primer
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/list-set-map-requirement-to-type-drill.md
+- contents/language/java/request-dto-to-value-object-boundary-primer.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+confusable_with:
+- language/java-collections-basics
+- language/java-equality-identity-basics
+- language/map-get-null-containskey-getordefault-primer
+forbidden_neighbors: []
+expected_queries:
+- Java collections README에서 List Set Map과 equality 문서를 어디부터 읽어야 해?
+- HashSet size가 1이 되는 문제와 HashMap get null 문제를 같은 route로 설명해줘
+- Map도 Collection인지 List Set Map hierarchy를 초보자에게 알려줘
+- Java DTO value object ordered map template method follow-up 문서 경로를 찾아줘
+- 자바 컬렉션 빠른 탐색에서 HashSet 중복과 Map null 디버깅을 어디로 보내야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java 하위 문서의 collections/equality/map-null/template/value-object route를 제공하는 deep dive catalog primer다.
+  Java collections README, List Set Map, equals hashCode, HashSet size 1, Map get null, DTO value object, ordered map follow-up 질문이 본 문서에 매핑된다.
+---
 # Java Deep Dive Catalog
 
 **난이도: 🔴 Advanced**

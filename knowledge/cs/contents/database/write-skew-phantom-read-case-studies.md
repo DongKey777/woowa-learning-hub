@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Write Skew and Phantom Read Case Studies
+concept_id: database/write-skew-phantom-read-case-studies
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- write-skew
+- phantom-read
+- range-invariant
+- serializable
+- guard-row
+aliases:
+- write skew
+- phantom read
+- range invariant
+- set invariant
+- snapshot isolation anomaly
+- absence check race
+- doctor on call minimum staffing
+- capacity oversell
+- reservation overlap
+- predicate lock
+symptoms:
+- write skew와 phantom read가 모두 조회 후 판단에서 시작되지만 어떤 점이 다른지 사례로 설명해야 해
+- row lock이 있어도 서로 다른 row를 수정해 집합 불변식이 깨지는 이유를 이해해야 해
+- empty range나 absence check를 믿고 insert하다 phantom으로 중복 예약, overlap, capacity oversell이 생길 수 있어
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/read-committed-repeatable-read-anomalies
+next_docs:
+- database/range-invariant-enforcement-write-skew-phantom
+- database/exclusion-constraint-overlap-case-studies
+- database/write-skew-detection-compensation-patterns
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/write-skew-detection-compensation-patterns.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+confusable_with:
+- database/range-invariant-enforcement-write-skew-phantom
+- database/read-committed-repeatable-read-anomalies
+- database/write-skew-detection-compensation-patterns
+forbidden_neighbors: []
+expected_queries:
+- write skew와 phantom read는 둘 다 조회 후 판단에서 시작되지만 어떻게 다른 anomaly야?
+- doctor on-call minimum staffing 사례에서 서로 다른 row를 수정했는데 전체 불변식이 깨지는 이유를 설명해줘
+- absence check race로 예약 overlap이나 capacity oversell이 생기는 phantom 사례를 알려줘
+- snapshot isolation은 읽은 값이 안정돼 보여도 set invariant를 안전하게 만들지 못한다는 뜻이 뭐야?
+- guard row, exclusion constraint, serializable retry, post-commit compensation 중 어떤 사다리로 대응해?
+contextual_chunk_prefix: |
+  이 문서는 write skew와 phantom read case studies를 range invariant, set invariant, absence check race, snapshot isolation anomaly 관점으로 설명하는 advanced deep dive다.
+  doctor on call, capacity oversell, reservation overlap, predicate lock, guard row 질문이 본 문서에 매핑된다.
+---
 # Write Skew and Phantom Read Case Studies
 
 > 한 줄 요약: write skew와 phantom은 둘 다 "조회 후 판단"에서 시작되지만, write skew는 서로 다른 row를 갱신해 집합 규칙이 깨지고 phantom은 "없음/범위" 판단 사이로 새 row가 끼어드는 문제라는 점이 다르다.

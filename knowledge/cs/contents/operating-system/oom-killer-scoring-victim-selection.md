@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: OOM Killer Scoring Victim Selection
+concept_id: operating-system/oom-killer-scoring-victim-selection
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- oom-killer-scoring
+- victim-selection
+- oom-score-adj
+- badness-score
+aliases:
+- OOM killer scoring
+- victim selection
+- oom_score_adj
+- badness score
+- cgroup OOM victim
+- memory protection ratio
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/memory-management-numa-page-replacement-thrashing.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/memory-low-min-reclaim-protection.md
+expected_queries:
+- OOM killer는 어떤 scoring으로 victim process를 선택해?
+- oom_score_adj와 memory usage, protection ratio는 victim selection에 어떤 영향을 줘?
+- cgroup OOM에서 아무 process나 죽는 게 아니라는 걸 어떻게 설명해?
+- OOM victim selection을 운영에서 확인하려면 어떤 signal을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 OOM killer가 아무 process나 죽이지 않고 memory usage, badness score,
+  oom_score_adj, cgroup boundary와 protection context를 종합해 victim을 고르는 과정을 설명한다.
+---
 # OOM Killer Scoring, Victim Selection
 
 > 한 줄 요약: OOM killer는 "아무나" 죽이지 않고, 메모리 사용량과 보호 비율을 종합해 가장 덜 적절한 희생자를 고른다.

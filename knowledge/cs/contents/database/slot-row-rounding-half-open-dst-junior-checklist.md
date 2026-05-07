@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Slot Row Rounding, Half-Open Interval, and DST Junior Checklist
+concept_id: database/slot-row-rounding-half-open-dst-junior-checklist
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- slot-inventory
+- rounding
+- half-open-interval
+- timezone
+- dst
+aliases:
+- slot row junior checklist
+- slot row rounding checklist
+- half-open interval beginner
+- slot row DST pitfall
+- slotization beginner primer
+- slot rounding floor ceil
+- local time fold gap
+- slot row timezone checklist
+- rounded slot collision
+- start end booking
+symptoms:
+- slot row를 UNIQUE만 만들면 끝나는 모델로 보고 start/end 경계와 rounding 계약을 놓치고 있어
+- create, reschedule, cleanup, backfill이 서로 다른 slot expander를 써서 같은 예약이 다른 slot 집합으로 펼쳐져
+- DST gap/fold나 local wall-clock timestamp 때문에 slot key가 흔들릴 수 있어
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+next_docs:
+- database/slotization-precheck-overlap-rounding-dst
+- database/slot-delta-reschedule-semantics
+- database/guard-row-scope-design-multi-day-bookings
+linked_paths:
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+- contents/database/slotization-precheck-overlap-rounding-dst.md
+- contents/database/slot-delta-reschedule-semantics.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+confusable_with:
+- database/slot-delta-reschedule-semantics
+- database/slotization-precheck-overlap-rounding-dst
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+forbidden_neighbors: []
+expected_queries:
+- slot row를 도입하기 전에 half-open interval, rounding, timezone DST 계약을 왜 먼저 고정해야 해?
+- 예약 interval을 [start, end)로 보면 인접 예약이 왜 겹치지 않는지 slot 예시로 설명해줘
+- floor(start)와 ceil(end) rounding이 occupancy truth를 결정한다는 뜻이 뭐야?
+- UTC slot key와 local display를 분리하지 않으면 DST gap과 fold에서 어떤 문제가 생겨?
+- create, reschedule, cleanup, backfill이 같은 slot expander를 써야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 slot row 도입 전 half-open interval [start,end), slot rounding, timezone/DST, slot key generation을 beginner checklist로 설명한다.
+  slot row rounding, DST pitfall, local time fold/gap, rounded slot collision 질문이 본 문서에 매핑된다.
+---
 # Slot Row 도입 전 주니어 체크리스트: Rounding, Half-Open Interval, DST
 
 > 한 줄 요약: slot row는 `UNIQUE`만 만들면 끝나는 모델이 아니라, `[start, end)` 경계, slot rounding, timezone/DST 계약을 먼저 하나로 고정해야 충돌 truth가 흔들리지 않는다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: NOWAIT vs Short Lock Timeout Busy Guide
+concept_id: database/nowait-vs-short-lock-timeout-busy-guide
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- nowait
+- lock-timeout
+- busy-response
+- retry-policy
+aliases:
+- nowait vs short lock timeout busy guide
+- nowait busy not automatic retry
+- short lock timeout busy response
+- fail fast lock budget
+- lock budget busy result
+- nowait vs retryable difference
+- 짧은 락 예산 busy
+- NOWAIT 자동 retry 하면 안 되나요
+- lock timeout은 already exists인가요
+symptoms:
+- NOWAIT나 짧은 lock timeout 실패를 deadlock처럼 자동 retry loop에 넣으려 해
+- insert-if-absent에서 lock budget failure를 already exists나 retryable로 잘못 번역하고 있어
+- hot key나 guard row 경합에서 짧은 timeout retry가 backlog와 p99를 키우고 있어
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/insert-if-absent-retry-outcome-guide
+next_docs:
+- database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card
+- database/busy-fail-fast-vs-one-short-retry-card
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+linked_paths:
+- contents/database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/busy-fail-fast-vs-one-short-retry-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/database-first-step-bridge.md
+confusable_with:
+- database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card
+- database/insert-if-absent-retry-outcome-guide
+- database/lock-timeout-not-already-exists-common-confusion-card
+forbidden_neighbors: []
+expected_queries:
+- NOWAIT 실패나 짧은 lock timeout을 왜 자동 retry보다 busy로 봐야 해?
+- insert-if-absent에서 짧은 락 예산 실패를 already exists로 보면 안 되는 이유가 뭐야?
+- NOWAIT와 lock timeout, deadlock, serialization failure의 retry 정책 차이를 설명해줘
+- hot key 경합에서 내부 retry loop가 p99와 backlog를 키우는 이유를 알려줘
+- 짧은 확인성 retry 1회는 언제 허용하고 언제 바로 busy로 닫아야 해?
+contextual_chunk_prefix: |
+  이 문서는 NOWAIT와 짧은 lock timeout을 자동 retry가 아니라 busy 응답으로 번역하는 beginner playbook이다.
+  짧은 락 예산, nowait busy not retry, lock timeout already exists 아님, fail-fast lock budget 질문이 본 문서에 매핑된다.
+---
 # `NOWAIT`와 짧은 `lock timeout`은 왜 자동 retry보다 `busy`에 더 가깝게 볼까?
 
 > 한 줄 요약: `NOWAIT`와 짧은 `lock timeout`은 "곧 성공할지 모르는 실패"라기보다 "이 경로는 오래 기다리지 않겠다"는 **짧은 락 예산 선언**에 가깝기 때문에, `insert-if-absent`에서는 기본적으로 자동 retry 큐보다 `busy` 응답으로 닫는 편이 맞다.

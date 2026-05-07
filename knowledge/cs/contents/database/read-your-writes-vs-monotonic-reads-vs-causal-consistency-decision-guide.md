@@ -48,9 +48,7 @@ confusable_with:
 - database/read-your-writes-session-pinning
 - database/monotonic-reads-session-guarantees
 - database/causal-consistency-intuition
-forbidden_neighbors:
-- contents/database/read-your-writes-session-pinning.md
-- contents/database/replica-lag-read-after-write-strategies.md
+forbidden_neighbors: []
 expected_queries:
 - write는 성공했는데 바로 안 보이는 것과 새로고침 후 더 옛값을 보는 것은 어떤 보장 차이로 이해해야 해?
 - 같은 세션에서 시간이 뒤로 가지 않게 하는 것과 내가 쓴 값을 바로 보는 것은 뭐가 달라?

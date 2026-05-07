@@ -34,11 +34,11 @@ intents:
 prerequisites:
 - software-engineering/modular-monolith-boundary-enforcement
 - software-engineering/architectural-fitness-functions
-- software-engineering/policy-as-code-rollout-adoption-stages
+- software-engineering/policy-as-code-rollout-stages
 next_docs:
-- software-engineering/brownfield-modularization-strategy
-- software-engineering/policy-as-code-architecture-linting
-- software-engineering/override-burn-down-and-exemption-debt
+- software-engineering/brownfield-modularization
+- software-engineering/policy-as-code
+- software-engineering/override-burndown-exemption-debt
 linked_paths:
 - contents/software-engineering/modular-monolith-boundary-enforcement.md
 - contents/software-engineering/brownfield-modularization-strategy.md
@@ -49,8 +49,8 @@ linked_paths:
 - contents/software-engineering/override-burn-down-and-exemption-debt.md
 confusable_with:
 - software-engineering/modular-monolith-boundary-enforcement
-- software-engineering/policy-as-code-rollout-adoption-stages
-- software-engineering/brownfield-modularization-strategy
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/brownfield-modularization
 forbidden_neighbors: []
 expected_queries:
 - 기존 모놀리스에 ArchUnit을 넣을 때 첫날부터 hard fail로 막지 않는 순서는 어떻게 잡아?
@@ -59,14 +59,12 @@ expected_queries:
 - ArchUnit 도입할 때 observe, freeze, ratchet 단계를 왜 나눠야 해?
 - 브라운필드에서 아키텍처 테스트 예외 부채를 줄이려면 어떤 rollout 정책이 필요해?
 contextual_chunk_prefix: |
-  이 문서는 운영 중인 brownfield 모놀리스에 ArchUnit 같은 아키텍처 테스트를
-  넣을 때 기존 위반과 신규 위반을 분리해 rollout하는 playbook이다. 첫날부터
-  hard fail로 막기 어렵다, baseline이 면죄부가 될까 걱정된다, fail-new-only
-  gate를 어디서 여나, allowlist와 legacy freeze를 어떻게 나누나, ratchet을
-  어느 시점에 거나 같은 학습자 표현을 observe → freeze baseline →
-  fail-new-only → ratchet → hard fail 순서의 운영 기준으로 연결한다.
+  이 문서는 brownfield 모놀리스에 ArchUnit 규칙을 넣을 때 기존 위반과 새
+  위반을 분리해 rollout 전략으로 막는 playbook이다. 첫날부터 CI를 세게 막기
+  어렵다, baseline이 영구 예외가 될까 걱정된다, 새 위반만 끊는 gate를 어디서
+  여나, allowlist와 legacy freeze를 어떻게 나누나, 언제 hard fail로 올리나
+  같은 자연어 paraphrase가 본 문서의 단계별 운영 가이드에 매핑된다.
 ---
-
 # ArchUnit Brownfield Rollout Playbook
 
 > 한 줄 요약: 운영 중인 모놀리스에 ArchUnit을 넣을 때는 `전수조사 -> legacy baseline freeze -> fail-new-only gate -> module ratchet -> hard fail` 순서로 올려야 기존 위반과 새 위반을 분리하면서 예외 부채를 줄일 수 있다.

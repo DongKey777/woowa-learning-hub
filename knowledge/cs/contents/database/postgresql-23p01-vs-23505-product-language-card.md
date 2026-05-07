@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: PostgreSQL 23P01 vs 23505 Product Language Card
+concept_id: database/postgresql-23p01-vs-23505-product-language-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- sqlstate
+- product-error-language
+- duplicate-vs-overlap
+aliases:
+- postgresql 23p01 vs 23505 card
+- exclusion violation vs unique violation
+- overlap conflict vs exact duplicate
+- postgres product error language
+- 23P01 already booked
+- 23505 already exists
+- sqlstate 23p01 23505 mapping
+- 예약 겹침 오류 문구
+- exact key 중복 vs overlap conflict
+- postgres 23P01 23505 차이
+symptoms:
+- PostgreSQL class 23 constraint violation을 모두 duplicate로 말해 23505 exact key와 23P01 overlap conflict를 섞고 있어
+- 예약 도메인에서 23P01을 같은 키 중복 문장으로 번역해 사용자가 어떤 행동을 바꿔야 하는지 모르게 해
+- exact-key already exists와 time-range conflict를 service result label과 HTTP 응답에서 분리해야 해
+intents:
+- comparison
+- definition
+prerequisites:
+- database/postgresql-23p01-handling-note
+- database/duplicate-key-fresh-read-classifier-mini-card
+next_docs:
+- database/booking-error-language-card
+- database/db-signal-service-result-http-bridge
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+linked_paths:
+- contents/database/booking-error-language-card.md
+- contents/database/postgresql-23p01-handling-note.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/db-signal-service-result-http-bridge.md
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+confusable_with:
+- database/postgresql-23p01-handling-note
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/db-signal-service-result-http-bridge
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL 23505와 23P01을 already exists와 conflict 제품 문장으로 어떻게 다르게 번역해?
+- unique violation과 exclusion violation을 초보자용으로 exact key 중복과 overlap 충돌로 비교해줘
+- 예약 overlap 23P01을 같은 키 중복이라고 말하면 왜 제품 언어가 틀어져?
+- 23505는 idem replay 후보이고 23P01은 booking overlap conflict인 차이를 알려줘
+- SQLSTATE 23P01과 23505를 service result enum, HTTP 409로 매핑하는 기준을 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL SQLSTATE 23505 unique violation과 23P01 exclusion violation을 exact-key already exists와 overlap conflict 제품 언어로 나누는 beginner chooser다.
+  postgres 23P01 23505 차이, exact key 중복 vs overlap conflict, 예약 겹침 오류 문구 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `23P01` vs `23505` Product Language Card
 
 > 한 줄 요약: `23505`는 보통 "같은 키가 이미 있다"이고, `23P01`은 보통 "같은 자원/시간대에 겹치는 점유가 이미 있다"라서 제품 문장도 `already exists`와 `conflict`로 나눠 말하는 편이 안전하다.

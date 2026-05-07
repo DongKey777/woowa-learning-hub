@@ -79,6 +79,14 @@ contextual_chunk_prefix: |
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 bean 이름 문자열 qualifier에서 커스텀 qualifier annotation으로 넘어가는 시점을 잡아 주는 **beginner bridge primer**를 담당한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`@Qualifier(\"manualGenerator\")` 같은 문자열이 여기저기 반복돼요" | lotto 자동/수동 번호 생성 전략 중 특정 역할을 여러 service에 고정 주입하는 코드 | bean 이름 문자열보다 역할 annotation으로 의미를 드러낼 수 있는지 본다 |
+| "bean 이름을 바꿨더니 주입이 줄줄이 깨져요" | class rename이나 `@Bean` method rename 뒤 qualifier string이 남아 있는 상황 | 이름 계약과 역할 계약을 분리한다 |
+| "요청마다 바뀌지는 않는데 router를 써야 하나요?" | shopping-cart 결제 기본 구현체를 항상 같은 역할로 꽂는 구조 | runtime 선택이 아니면 custom qualifier가 router보다 단순할 수 있다 |
+
 **난이도: 🟢 Beginner**
 
 관련 문서:

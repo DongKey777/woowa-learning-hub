@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Lost Update vs Oversell vs Duplicate Insert Beginner Bridge
+concept_id: database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- lost-update-oversell-duplicate-insert
+- concurrency-symptom-map
+- same-row-vs-count-vs-exact-key
+aliases:
+- lost update vs oversell vs duplicate insert
+- oversell beginner
+- duplicate insert beginner
+- 마지막 재고 두 번 팔렸어요
+- 재고가 왜 음수가 돼요
+- 같은 insert가 두 번 들어가요
+- same row overwrite
+- count invariant break
+- unique key duplicate
+- concurrency symptom map
+symptoms:
+- 마지막 재고가 두 번 팔렸다는 증상만 보고 lost update, oversell, duplicate insert를 구분하지 못하고 있어
+- 같은 row overwrite, count/sum invariant break, exact key duplicate를 한 질문으로 뭉개고 있어
+- 락 문서로 들어가기 전에 동시성 증상을 어떤 범주로 보내야 할지 모르겠어
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/transaction-isolation-basics
+- database/lock-basics
+next_docs:
+- database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+- database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision
+- database/unique-vs-locking-read-duplicate-primer
+- database/transaction-boundary-isolation-locking-framework
+linked_paths:
+- contents/database/transaction-isolation-basics.md
+- contents/database/lock-basics.md
+- contents/database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision-card.md
+- contents/database/lost-update-vs-write-skew-vs-phantom-timeline-guide.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/spring/spring-transactional-basics.md
+- contents/database/lost-update-detection-patterns.md
+- contents/database/active-predicate-alignment-capacity-guards.md
+confusable_with:
+- database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+- database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision
+- database/unique-vs-locking-read-duplicate-primer
+forbidden_neighbors: []
+expected_queries:
+- 마지막 재고가 두 번 팔렸다는 증상은 lost update, oversell, duplicate insert 중 무엇인지 어떻게 나눠?
+- 같은 row overwrite와 count invariant break와 exact key duplicate를 초보자 기준으로 비교해줘
+- 재고가 음수가 된 것은 항상 lost update야, 아니면 oversell이라는 비즈니스 증상일 수 있어?
+- 같은 coupon issue insert가 두 번 들어가려 하면 duplicate insert와 UNIQUE를 먼저 봐야 해?
+- 락 문서 보기 전에 동시성 증상을 same row, total count, exact key로 분류하는 표를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 재고/예약/쿠폰 동시성 증상을 lost update, oversell, duplicate insert로 나누기 위해 same row overwrite, count/sum invariant, exact key insert 경쟁을 구분하는 beginner symptom router다.
+  lost update vs oversell vs duplicate insert, 마지막 재고 두 번 팔림, 같은 insert 두 번 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Lost Update vs Oversell vs Duplicate Insert Beginner Bridge
 
 > 한 줄 요약: `마지막 재고가 두 번 팔렸다`는 말 하나만으로는 lost update, oversell, duplicate insert를 구분할 수 없고, beginner는 먼저 "같은 row가 덮였나 / 합계 규칙이 깨졌나 / 같은 key row가 두 번 생기려 했나"를 나눠야 다음 락 문서를 덜 헷갈린다.

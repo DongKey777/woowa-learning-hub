@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: SQL Aggregate Functions and GROUP BY Basics
+concept_id: database/sql-aggregate-groupby-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- sql
+- aggregate
+- group-by
+- having
+- beginner
+aliases:
+- SQL aggregate beginner
+- GROUP BY basics
+- count sum avg
+- HAVING clause
+- aggregate function
+- WHERE vs HAVING
+- DISTINCT vs GROUP BY
+- group by null
+- sql 통계 쿼리
+- 집계 함수 입문
+symptoms:
+- GROUP BY와 집계 함수가 여러 행을 하나의 요약값으로 줄인다는 감각이 없어
+- WHERE에 COUNT 조건을 쓰려 하거나 HAVING과 WHERE 차이를 헷갈려 해
+- GROUP BY에 없는 컬럼을 SELECT에 넣어도 되는지 MySQL 동작 때문에 혼란스러워 해
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- database/sql-join-basics
+- database/sql-relational-modeling-basics
+next_docs:
+- database/having-vs-where-beginner-card
+- database/distinct-vs-group-by-beginner-card
+- database/sql-joins-and-query-order
+linked_paths:
+- contents/database/having-vs-where-beginner-card.md
+- contents/database/distinct-vs-group-by-beginner-card.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/index-and-explain.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/having-vs-where-beginner-card
+- database/distinct-vs-group-by-beginner-card
+- database/result-row-explosion-debugging
+forbidden_neighbors: []
+expected_queries:
+- SQL GROUP BY와 COUNT SUM AVG 같은 aggregate function을 처음 배우는데 쉽게 설명해줘
+- WHERE와 HAVING은 실행 순서가 어떻게 달라서 COUNT 조건은 HAVING에 써야 해?
+- GROUP BY에 없는 컬럼을 SELECT에 넣으면 왜 비결정적인 결과가 될 수 있어?
+- COUNT star와 COUNT column은 NULL 처리 때문에 어떤 차이가 있어?
+- DISTINCT와 GROUP BY는 둘 다 중복을 줄여 보이는데 의미가 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 SQL aggregate function, GROUP BY, COUNT/SUM/AVG, HAVING, WHERE vs HAVING을 beginner primer로 설명한다.
+  집계 함수 입문, group by 기초, sql 통계 쿼리, DISTINCT vs GROUP BY 질문이 본 문서에 매핑된다.
+---
 # SQL 집계 함수와 GROUP BY 기초
 
 > 한 줄 요약: 집계 함수는 여러 행을 하나의 요약값으로 줄이는 함수이고, GROUP BY는 특정 컬럼 기준으로 행을 묶어 그룹별 집계를 가능하게 하는 절이다.

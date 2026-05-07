@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Secrets Distribution System 설계
+concept_id: system-design/secrets-distribution-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- secrets distribution
+- secret manager
+- vault
+- kms
+aliases:
+- secrets distribution
+- secret manager
+- vault
+- kms
+- workload identity
+- short-lived credential
+- rotation
+- lease
+- envelope encryption
+- federation
+- audit trail
+- Secrets Distribution System 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+- contents/security/envelope-encryption-kms-basics.md
+- contents/security/key-rotation-runbook.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/audit-log-pipeline-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Secrets Distribution System 설계 설계 핵심을 설명해줘
+- secrets distribution가 왜 필요한지 알려줘
+- Secrets Distribution System 설계 실무 트레이드오프는 뭐야?
+- secrets distribution 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Secrets Distribution System 설계를 다루는 deep_dive 문서다. secrets distribution system은 짧은 수명의 자격 증명과 암호화된 비밀을 안전하게 배포하고 회전하는 중앙 신뢰 인프라다. 검색 질의가 secrets distribution, secret manager, vault, kms처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Secrets Distribution System 설계
 
 > 한 줄 요약: secrets distribution system은 짧은 수명의 자격 증명과 암호화된 비밀을 안전하게 배포하고 회전하는 중앙 신뢰 인프라다.

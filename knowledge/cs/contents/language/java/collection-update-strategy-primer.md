@@ -54,7 +54,9 @@ confusable_with:
 - language/map-remove-during-iteration-safety-primer
 - language/stream-tolist-vs-collectors-tolist-mutability-bridge
 - software-engineering/shopping-cart-order-snapshot-from-cart-bridge
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/language/java/optional-stream-immutable-collections-memory-leak-patterns.md
+- contents/language/java/collections-performance.md
 expected_queries:
 - shopping-cart 미션에서 컬렉션을 고칠 때 removeIf, 복사 후 교체, stream 새 결과 중 무엇을 먼저 골라야 해?
 - 주문 라인 목록 리팩터링에서 원본을 바로 수정할지 새 리스트를 만들어 끼울지 판단 기준을 알고 싶어
@@ -75,6 +77,14 @@ contextual_chunk_prefix: |
 > 한 줄 요약: 작은 Java 미션 리팩터링에서 컬렉션을 바꿀 때는 "원본을 바로 고칠지", "조건 삭제만 할지", "복사본을 만든 뒤 교체할지", "stream으로 새 결과를 만들지"를 먼저 나누면 코드 의도가 훨씬 빨리 읽힌다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`removeIf`를 쓸지 복사본을 만들어 교체할지 기준이 없어요" | 장바구니 라인 삭제, 블랙잭 카드 목록 갱신 | 원본을 바로 바꿀지 새 결과를 만들지 먼저 결정한다 |
+| "stream으로 새 목록을 만들지 원본을 바로 고칠지 헷갈려요" | 리팩토링 후 side effect 범위를 줄이는 단계 | in-place mutation, remove-only, copy-and-replace, stream result를 분리한다 |
+| "for-each 안에서 remove하다 예외가 나요" | Java 컬렉션 순회 중 수정 | 안전한 삭제 도구와 순회/수정 경계를 따로 본다 |
 
 관련 문서:
 

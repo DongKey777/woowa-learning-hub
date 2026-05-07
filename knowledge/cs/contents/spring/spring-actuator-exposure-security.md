@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring Actuator Exposure and Security
+concept_id: spring/actuator-exposure-security
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- actuator-exposure-security
+- actuator-exposure
+- management-endpoint-security
+- health-info-metrics
+aliases:
+- actuator exposure
+- management endpoint security
+- health info metrics conditions endpoint
+- management port 분리
+- env beans mappings 노출 위험
+- 운영 진단 endpoint
+intents:
+- troubleshooting
+- design
+symptoms:
+- health만 열었다고 생각했는데 env, beans, conditions 같은 내부 endpoint가 노출된다.
+- Actuator endpoint는 보이지만 인증, authorization, management port 경계가 불명확하다.
+- 로드밸런서 health check와 운영자 진단 endpoint를 같은 보안 정책으로 묶어 사고 위험이 생긴다.
+linked_paths:
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-observability-micrometer-tracing.md
+expected_queries:
+- Spring Actuator endpoint를 어디까지 노출해도 돼?
+- health endpoint와 metrics endpoint 보안 정책은 어떻게 나눠?
+- management port를 분리하는 이유가 뭐야?
+- Actuator env나 beans endpoint를 공개하면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Actuator의 health, info, metrics, env, beans, conditions
+  endpoint를 운영 진단면과 공격면으로 동시에 본다. exposure include/exclude,
+  management port, Spring Security filter chain, readiness/liveness와 내부 정보
+  노출을 분리해서 설계하는 playbook이다.
+---
 # Spring Actuator Exposure and Security
 
 > 한 줄 요약: Actuator는 운영에 필요한 내부 정보를 보여 주지만, exposure와 security를 분리해서 설계하지 않으면 가장 유용한 진단 창구가 가장 위험한 공격면이 된다.

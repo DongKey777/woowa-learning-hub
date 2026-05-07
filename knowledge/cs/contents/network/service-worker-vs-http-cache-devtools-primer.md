@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Service Worker vs HTTP Cache DevTools Primer"
+concept_id: network/service-worker-vs-http-cache-devtools-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- browser-devtools
+- service-worker
+- http-cache
+aliases:
+- from ServiceWorker
+- service worker vs HTTP cache
+- Cache Storage vs HTTP cache
+- memory cache disk cache 304
+- Disable cache Service Worker
+- DevTools service worker triage
+- service worker cache 차이
+symptoms:
+- from ServiceWorker, memory cache, disk cache, 304를 모두 같은 cache hit으로 본다
+- Service Worker 개입 여부를 확인하기 전에 Disable cache 실험부터 한다
+- Cache Storage와 브라우저 HTTP cache를 같은 저장소로 이해한다
+- 첫 방문인지 반복 방문인지 구분하지 않고 cache row를 판독한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-first-checklist-1minute-card
+- network/browser-devtools-cache-trace-primer
+next_docs:
+- network/http-caching-conditional-request-basics
+- network/cache-control-practical
+- network/browser-devtools-reload-hard-reload-disable-cache-primer
+- network/cookie-session-jwt-browser-flow-primer
+linked_paths:
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cache-control-practical.md
+- contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/system-design/cdn-basics.md
+confusable_with:
+- network/browser-devtools-cache-trace-primer
+- network/browser-devtools-reload-hard-reload-disable-cache-primer
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+forbidden_neighbors: []
+expected_queries:
+- "DevTools from ServiceWorker와 memory cache disk cache 304는 어떻게 달라?"
+- "Service Worker 개입 여부를 Disable cache 실험 전에 확인해야 하는 이유는?"
+- "Cache Storage와 HTTP cache는 같은 저장소야?"
+- "from ServiceWorker가 보이면 HTTP cache만으로 설명하면 안 되는 이유는?"
+- "첫 방문과 반복 방문을 나눠 DevTools cache row를 읽는 법은?"
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools에서 from ServiceWorker, Cache Storage,
+  memory/disk HTTP cache, 304 revalidation, Disable cache 실험을 구분하는
+  beginner primer다.
+---
 # Service Worker 개입 여부 빠른 확인 카드: `from ServiceWorker` vs HTTP cache
 
 **난이도: 🟢 Beginner**

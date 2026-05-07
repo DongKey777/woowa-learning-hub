@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Three-bucket Common Terms Card
+concept_id: database/three-bucket-terms-common
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- exception-vocabulary
+- duplicate-key
+- busy
+- retryable
+- beginner
+aliases:
+- three bucket common terms
+- already exists busy retryable glossary
+- service outcome bucket vocabulary
+- duplicate key busy retryable terms
+- beginner bucket terms
+- 3버킷 공통 용어
+- 중복 혼잡 재시도 용어
+- exception terminology
+- already exists glossary
+- retryable glossary
+symptoms:
+- DB 예외 이름보다 서비스가 어떤 문장으로 답해야 하는지를 먼저 정리해야 해
+- already exists, busy, retryable 세 용어의 기본 동작을 헷갈려 해
+- duplicate key를 retryable로 읽거나 busy를 성공 가능 대기로만 이해하고 있어
+intents:
+- definition
+- drill
+- comparison
+prerequisites:
+- database/unique-vs-locking-read-duplicate-primer
+- database/connection-timeout-vs-lock-timeout-card
+next_docs:
+- database/three-bucket-decision-tree
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/insert-if-absent-retry-outcome-guide
+linked_paths:
+- contents/database/three-bucket-decision-tree-mini-card.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+confusable_with:
+- database/three-bucket-decision-tree
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/insert-if-absent-retry-outcome-guide
+forbidden_neighbors: []
+expected_queries:
+- already exists, busy, retryable은 예외 이름이 아니라 서비스 결과 언어라는 뜻이 뭐야?
+- duplicate key는 already exists, lock timeout은 busy, deadlock은 retryable로 보는 기본 모델을 설명해줘
+- busy는 조금 더 기다리면 반드시 성공한다는 뜻이 아닌데 왜 blocker와 풀 고갈을 봐야 해?
+- retryable은 SQL 한 줄 재실행이 아니라 전체 transaction retry라는 말을 초보자에게 설명해줘
+- 3버킷 공통 용어를 먼저 잡으면 insert-if-absent 예외 해석이 왜 쉬워져?
+contextual_chunk_prefix: |
+  이 문서는 already exists, busy, retryable 3버킷을 DB 예외 이름이 아니라 service outcome vocabulary로 설명하는 beginner primer다.
+  3버킷 공통 용어, duplicate key busy retryable, 중복 혼잡 재시도 용어 질문이 본 문서에 매핑된다.
+---
 # 3버킷 공통 용어 카드
 
 > 한 줄 요약: `already exists` / `busy` / `retryable`은 예외 이름을 외우는 카드가 아니라, "지금 서비스가 어떤 문장으로 답해야 하는가"를 먼저 맞추는 공통 언어다.

@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Document Generation / Rendering Service 설계
+concept_id: system-design/document-generation-rendering-service-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- document generation
+- rendering service
+- pdf generation
+- docx
+aliases:
+- document generation
+- rendering service
+- pdf generation
+- docx
+- template rendering
+- html to pdf
+- async render
+- page break
+- watermark
+- snapshot
+- queue
+- Document Generation / Rendering Service 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/file-storage-presigned-url-cdn-design.md
+- contents/system-design/object-metadata-service-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/cdn-image-transformation-pipeline-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/config-distribution-system-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Document Generation / Rendering Service 설계 설계 핵심을 설명해줘
+- document generation가 왜 필요한지 알려줘
+- Document Generation / Rendering Service 설계 실무 트레이드오프는 뭐야?
+- document generation 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Document Generation / Rendering Service 설계를 다루는 deep_dive 문서다. document generation and rendering service는 템플릿과 데이터를 받아 PDF, DOCX, 이미지, HTML 같은 문서를 안정적으로 생성하는 비동기 렌더링 시스템이다. 검색 질의가 document generation, rendering service, pdf generation, docx처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Document Generation / Rendering Service 설계
 
 > 한 줄 요약: document generation and rendering service는 템플릿과 데이터를 받아 PDF, DOCX, 이미지, HTML 같은 문서를 안정적으로 생성하는 비동기 렌더링 시스템이다.

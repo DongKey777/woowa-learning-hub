@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Primitive vs Wrapper Fields in JSON Payload Semantics
+concept_id: language/primitive-vs-wrapper-fields-json-payload-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- dto
+- json
+- primitive-wrapper
+aliases:
+- Primitive vs Wrapper Fields in JSON Payload Semantics
+- int vs Integer JSON payload semantics
+- boolean vs Boolean missing explicit null
+- primitive wrapper DTO defaulting
+- API payload binding tri-state
+- 자바 DTO primitive wrapper JSON 의미
+symptoms:
+- DTO primitive field를 쓰면서 missing field와 explicit null이 default false나 0으로 뭉개질 수 있는 payload contract 차이를 놓쳐
+- Integer Boolean wrapper를 쓰면 tri-state 표현 공간은 생기지만 null 의미가 자동으로 정해지는 것은 아니라는 점을 문서화하지 않아
+- create API, PATCH API, event replay, backward compatibility 경계에서 primitive와 wrapper 선택을 취향이나 style 문제로만 처리해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/java-autoboxing-integercache-null-unboxing-pitfalls
+- language/json-null-missing-unknown-field-schema-evolution
+- language/empty-string-blank-null-missing-payload-semantics
+next_docs:
+- language/patch-tri-state-field-primer
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+linked_paths:
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/io-nio-serialization.md
+confusable_with:
+- language/json-null-missing-unknown-field-schema-evolution
+- language/patch-tri-state-field-primer
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+forbidden_neighbors: []
+expected_queries:
+- JSON DTO에서 int와 Integer, boolean과 Boolean 선택은 payload contract로 어떻게 달라?
+- primitive field를 쓰면 missing과 explicit null이 default value로 뭉개질 수 있다는 뜻을 설명해줘
+- wrapper field는 tri-state를 열어주지만 null 의미를 자동으로 정하지 않는다는 게 무슨 말이야?
+- create API와 PATCH API에서 primitive wrapper 선택 기준이 왜 달라질 수 있어?
+- backward compatibility와 event replay에서 DTO defaulting이 위험해지는 사례를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JSON payload DTO에서 primitive vs wrapper field 선택이 missing, explicit null, default value, PATCH tri-state, API compatibility에 미치는 의미를 점검하는 advanced playbook이다.
+  primitive vs wrapper, int Integer, boolean Boolean, JSON missing null, DTO defaulting 질문이 본 문서에 매핑된다.
+---
 # Primitive vs Wrapper Fields in JSON Payload Semantics
 
 > 한 줄 요약: API DTO에서 `int`/`Integer`, `boolean`/`Boolean` 선택은 취향이 아니라 payload contract다. primitive를 쓰면 missing과 explicit `null`이 기본값으로 뭉개질 수 있고, wrapper를 쓰면 tri-state가 생기므로 PATCH, defaulting, backward compatibility가 달라진다.

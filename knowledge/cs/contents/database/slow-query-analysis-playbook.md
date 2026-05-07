@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Slow Query Analysis Playbook
+concept_id: database/slow-query-analysis-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- slow-query
+- explain
+- performance
+- index-tuning
+- lock-wait
+aliases:
+- slow query playbook
+- EXPLAIN triage
+- EXPLAIN ANALYZE
+- query tuning checklist
+- plan drift
+- rows estimate wrong
+- using filesort
+- using temporary
+- app vs db bottleneck
+- 느린 쿼리 점검 순서
+symptoms:
+- API가 느린데 DB 쿼리, connection pool, lock wait, 네트워크 중 어디가 병목인지 분리해야 해
+- EXPLAIN rows 추정과 실제 실행 row가 크게 달라 plan drift나 statistics skew를 의심해야 해
+- Using filesort, Using temporary, key null, type ALL 같은 실행 계획 신호를 순서대로 해석해야 해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- database/index-and-explain
+- database/query-tuning-checklist
+next_docs:
+- database/index-condition-pushdown-filesort-temporary-table
+- database/statistics-histograms-cardinality-estimation
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+- contents/database/transaction-case-studies.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/bptree-vs-lsm-tree.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/multi-tenant-stats-skew-plan-isolation.md
+confusable_with:
+- database/query-tuning-checklist
+- database/index-condition-pushdown-filesort-temporary-table
+- database/statistics-histograms-cardinality-estimation
+forbidden_neighbors: []
+expected_queries:
+- 느린 쿼리를 인덱스 추가부터 하지 말고 어떤 순서로 재현하고 계측해야 해?
+- EXPLAIN ANALYZE에서 estimated rows와 actual rows mismatch가 크면 무엇을 의심해야 해?
+- Using filesort, Using temporary, type ALL, key null이 보일 때 triage 순서를 알려줘
+- API는 느린데 DB 실행은 빠르면 connection pool starvation이나 app bottleneck을 어떻게 분리해?
+- slow query log, 실행 계획, lock wait, connection pool 지표를 한 플레이북으로 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 slow query analysis를 재현, 계측, EXPLAIN/EXPLAIN ANALYZE, index, plan drift, lock wait, connection pool 분리 순서로 다루는 advanced playbook이다.
+  느린 쿼리 점검 순서, EXPLAIN triage, rows estimate wrong, app vs db bottleneck 질문이 본 문서에 매핑된다.
+---
 # 느린 쿼리 분석 플레이북
 
 > 한 줄 요약: 느린 쿼리는 인덱스 하나로 고치는 문제가 아니라, 재현과 계측으로 병목을 분리해 가는 문제다.

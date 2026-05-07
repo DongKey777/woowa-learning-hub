@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Spring Security 기초
+concept_id: spring/spring-security-basics
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- security-filter-chain-before-controller
+- spring-401-403-302-split
+- savedrequest-role-mapping
+aliases:
+- spring security basics
+- Spring Security 기초
+- spring security 입문
+- spring security filter chain beginner
+- spring security 401 403 차이
+- spring security 로그인 흐름
+- httpsecurity 기초
+- 302 login 왜 가요 spring security
+- spring security 403 왜 나와요
+- admin 403 beginner
+- 로그인 성공했는데 마지막 403
+- jwt filter 어디에 둬요
+- bearertokenauthenticationfilter basics
+symptoms:
+- Spring Security를 추가했더니 요청이 controller 전에 302 login이나 403으로 막혀
+- 401, 302 /login, 403 차이가 Spring Security filter chain에서 어떻게 갈리는지 헷갈려
+- 로그인 성공 후 원래 admin URL로 돌아왔는데 마지막에 403이 나는 이유가 궁금해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- security/authentication-vs-authorization
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- spring/security-architecture
+- spring/admin-302-login-vs-403-beginner-bridge
+- spring/admin-login-success-final-403-savedrequest-role-mapping-primer
+- spring/spring-security-filter-chain-ordering
+- security/session-cookie-jwt-basics
+linked_paths:
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-admin-302-login-vs-403-beginner-bridge.md
+- contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/network/http-state-session-cache.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- security/authentication-vs-authorization
+- security/auth-failure-response-401-403-404
+- spring/spring-security-filter-chain-ordering
+- spring/admin-302-login-vs-403-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- Spring Security filter chain은 controller 전에 인증과 인가를 어떻게 처리해?
+- Spring에서 401, 302 login redirect, 403 Forbidden은 각각 어떤 상황이야?
+- /admin 요청이 처음에는 302 login이고 로그인 뒤 마지막에 403이 나는 흐름을 설명해줘
+- SecurityContextHolder, Authentication, AuthorizationFilter를 beginner 기준으로 정리해줘
+- JWT custom filter를 UsernamePasswordAuthenticationFilter나 BearerTokenAuthenticationFilter 앞뒤 어디에 두는지 감을 잡고 싶어
+contextual_chunk_prefix: |
+  이 문서는 Spring Security가 servlet filter chain에서 controller 전에 요청을 가로채 인증과 인가를 수행하고, SecurityContextHolder에 authentication을 저장한 뒤 권한이 없으면 401, 302 login redirect, 403으로 갈라지는 흐름을 설명하는 beginner primer다.
+  admin 302 login, final 403, SavedRequest, ROLE_ADMIN mapping, JWT filter ordering, UsernamePasswordAuthenticationFilter, BearerTokenAuthenticationFilter 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Spring Security 기초: 인증과 인가의 흐름 잡기
 
 > 한 줄 요약: Spring Security는 필터 체인이 HTTP 요청을 가로채 인증(누구인지 확인)과 인가(뭘 할 수 있는지 판단)를 처리하고, 실패하면 적절한 응답을 반환한다.

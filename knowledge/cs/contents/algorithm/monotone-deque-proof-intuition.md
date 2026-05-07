@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Monotone Deque Proof Intuition
+concept_id: algorithm/monotone-deque-proof-intuition
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- monotone-deque-proof
+- sliding-window-extrema
+- amortized-o-n
+aliases:
+- monotone deque proof intuition
+- monotonic queue proof
+- sliding window maximum proof
+- why pop from back safe
+- why monotonic queue O(n)
+- dominated element
+- deque invariant
+- 단조 덱 증명
+- 왜 뒤에서 pop 해도 되는가
+symptoms:
+- 단조 덱 구현은 외웠지만 뒤에서 pop되는 원소가 앞으로도 답이 될 수 없는 이유를 설명하지 못한다
+- while pop이 중첩되어 보여 O(n^2)라고 오해하고 각 원소가 한 번 들어오고 한 번 나가는 상각 O(n)을 놓친다
+- sliding window maximum과 meeting rooms interval overlap을 모두 window 문제로 섞어 잘못 라우팅한다
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-queue-and-stack
+- algorithm/sliding-window-patterns
+next_docs:
+- algorithm/monotone-queue-dp
+- algorithm/amortized-analysis-pitfalls
+- algorithm/sweep-line-overlap-counting
+linked_paths:
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+- contents/algorithm/sweep-line-overlap-counting.md
+confusable_with:
+- data-structure/monotonic-queue-and-stack
+- algorithm/sliding-window-patterns
+- algorithm/sweep-line-overlap-counting
+- algorithm/amortized-analysis-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- Monotone deque에서 뒤의 작은 값을 pop해도 되는 이유를 dominated candidate로 설명해줘
+- sliding window maximum에서 deque front가 현재 최댓값인 불변식은 어떻게 유지돼?
+- monotonic queue가 O(n)인 이유는 각 원소가 한 번 들어오고 한 번 나가기 때문이야?
+- 단조 덱 증명과 구현 문서는 어떤 순서로 읽어야 해?
+- meeting rooms 같은 interval overlap은 monotone deque가 아니라 sweep line으로 가야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Monotone Deque proof bridge로, sliding window maximum/minimum에서
+  dominated candidate를 뒤에서 제거해도 안전한 이유와 각 원소가 한 번 들어오고
+  한 번 나가는 amortized O(n) 증명을 설명한다.
+---
 # Monotone Deque Proof Intuition
 
 > 한 줄 요약: 단조 덱의 핵심 증명은 "버려진 원소는 앞으로도 답이 될 수 없다"와 "각 원소는 한 번씩만 들어오고 나간다"로 정리된다.

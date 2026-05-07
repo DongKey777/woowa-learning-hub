@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Trust Boundary Bypass / Detection Signals
+concept_id: security/trust-boundary-bypass-detection-signals
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- trust boundary bypass
+- gateway bypass detection
+- direct to service traffic
+- missing auth proxy
+aliases:
+- trust boundary bypass
+- gateway bypass detection
+- direct to service traffic
+- missing auth proxy
+- internal header spoofing detection
+- mesh identity missing
+- edge bypass
+- auth boundary signal
+- unexpected direct path
+- trust boundary observability
+- Trust Boundary Bypass / Detection Signals
+- trust boundary bypass detection signals
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/gateway-auth-context-header-trust-boundary.md
+- contents/security/workload-identity-user-context-propagation-boundaries.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Trust Boundary Bypass / Detection Signals 핵심 개념을 설명해줘
+- trust boundary bypass가 왜 필요한지 알려줘
+- Trust Boundary Bypass / Detection Signals 실무 설계 포인트는 뭐야?
+- trust boundary bypass에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Trust Boundary Bypass / Detection Signals를 다루는 deep_dive 문서다. gateway, BFF, sidecar, internal auth proxy 같은 신뢰 경계는 한 번 설계했다고 끝나지 않고, direct-to-service path, unsigned internal header, missing mesh identity 같은 우회 경로가 실제로 열리는지 런타임 신호로 감시해야 한다. 검색 질의가 trust boundary bypass, gateway bypass detection, direct to service traffic, missing auth proxy처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Trust Boundary Bypass / Detection Signals
 
 > 한 줄 요약: gateway, BFF, sidecar, internal auth proxy 같은 신뢰 경계는 한 번 설계했다고 끝나지 않고, direct-to-service path, unsigned internal header, missing mesh identity 같은 우회 경로가 실제로 열리는지 런타임 신호로 감시해야 한다.

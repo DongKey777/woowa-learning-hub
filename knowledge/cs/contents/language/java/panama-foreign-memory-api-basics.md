@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Panama Foreign Memory API Basics
+concept_id: language/panama-foreign-memory-api-basics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- ffm
+- off-heap
+- native
+aliases:
+- Panama Foreign Memory API Basics
+- Java FFM API MemorySegment Arena
+- Foreign Function and Memory API basics
+- MemorySegment Arena lifetime model
+- JNI vs Panama FFM
+- 자바 Panama FFM API
+symptoms:
+- JNI와 FFM을 모두 native access로만 묶어 MemorySegment, Arena, layout 기반 접근, restricted native access 차이를 설명하지 못해
+- off-heap memory를 할당하면서 Arena lifetime을 명확히 두지 않아 scope 종료 뒤 접근이나 cleanup 책임을 흐리게 만들어
+- native 구조체 접근을 byte offset 수작업으로만 생각해 memory layout과 segment access가 주는 명시성을 놓쳐
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- language/jni-native-call-overhead
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/reachability-fences
+next_docs:
+- language/memory-barriers-varhandle-fences
+- language/cleaner-vs-finalize-deprecation
+- language/object-layout-jol-intuition
+linked_paths:
+- contents/language/java/jni-native-call-overhead.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/memory-barriers-varhandle-fences.md
+- contents/language/java/reachability-fences.md
+confusable_with:
+- language/jni-native-call-overhead
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/reachability-fences
+forbidden_neighbors: []
+expected_queries:
+- Panama FFM API에서 MemorySegment와 Arena lifetime 모델이 왜 핵심이야?
+- JNI와 Foreign Function and Memory API는 native call과 off-heap memory 접근에서 어떻게 달라?
+- Arena.ofConfined로 할당한 MemorySegment는 scope 종료 뒤 어떻게 정리돼?
+- FFM memory layout은 native struct offset 접근을 어떻게 더 명시적으로 만들어?
+- native access가 restricted method일 수 있다는 점을 Java FFM에서 어떻게 이해해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java Panama Foreign Function and Memory API를 MemorySegment, Arena lifetime, memory layout, JNI 대안 관점에서 설명하는 advanced deep dive다.
+  Panama, FFM API, MemorySegment, Arena, off-heap memory, native function 질문이 본 문서에 매핑된다.
+---
 # Panama Foreign Memory API Basics
 
 > 한 줄 요약: Panama FFM API는 JNI보다 더 안전하고 읽기 쉬운 방식으로 off-heap memory와 native function을 다루게 해 주며, `MemorySegment`와 `Arena`의 lifetime 모델이 핵심이다.

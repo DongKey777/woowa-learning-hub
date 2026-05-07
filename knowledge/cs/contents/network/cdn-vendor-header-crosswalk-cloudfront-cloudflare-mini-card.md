@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "CDN Vendor Header Crosswalk Mini Card: CloudFront / Cloudflare 단서 읽기"
+concept_id: network/cdn-vendor-header-crosswalk-cloudfront-cloudflare-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- cdn-vendor-header-crosswalk
+- cloudfront-cloudflare-devtools
+- edge-ownership-first-pass
+aliases:
+- cloudfront header clue
+- cloudflare header clue
+- cdn vendor header crosswalk
+- cf-cache-status
+- cf-ray
+- x-cache cloudfront
+symptoms:
+- Server CloudFront나 CF-Ray가 보이면 CDN이 최종 원인이라고 단정한다
+- CF-Cache-Status HIT와 DYNAMIC을 owner 확정표처럼 읽는다
+- X-Cache Miss를 origin app이 직접 에러를 만들었다는 뜻으로 확정한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-gateway-error-header-clue-card
+- network/browser-devtools-x-cache-age-ownership-1minute-card
+next_docs:
+- network/cdn-error-html-vs-app-json-decision-card
+- network/cdn-cache-key-invalidation
+- system-design/cdn-basics
+linked_paths:
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/browser-devtools-x-cache-age-ownership-1minute-card.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/cdn-cache-key-invalidation.md
+- contents/system-design/cdn-basics.md
+confusable_with:
+- network/browser-devtools-x-cache-age-ownership-1minute-card
+- network/cdn-error-html-vs-app-json-decision-card
+- network/browser-devtools-gateway-error-header-clue-card
+- system-design/cdn-basics
+forbidden_neighbors: []
+expected_queries:
+- "CloudFront Cloudflare 헤더를 DevTools에서 처음 볼 때 어떻게 번역해?"
+- "CF-Ray가 있으면 Cloudflare가 직접 에러를 만든 증거야?"
+- "X-Cache Hit from cloudfront와 Miss from cloudfront를 app owner와 어떻게 분리해?"
+- "CF-Cache-Status HIT DYNAMIC MISS를 초급 기준으로 설명해줘"
+- "CDN vendor header는 범인 확정이 아니라 edge 문맥을 여는 단서라는 점을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 Server: CloudFront/cloudflare, X-Cache, CF-Cache-Status,
+  CF-Ray, Via 같은 CDN vendor header를 app direct response, CDN pass-through,
+  edge cached response, edge generated error 후보로 번역하는 beginner primer다.
+---
 # CDN Vendor Header Crosswalk Mini Card: CloudFront / Cloudflare 단서 읽기
 
 > 한 줄 요약: `Server: CloudFront`, `CF-Cache-Status`, `CF-Ray`, `X-Cache` 같은 헤더는 "누가 최종 범인인가"를 확정하는 증거라기보다, 초급자가 응답 소유를 `app 직답` 대신 `edge/CDN 경유 또는 edge 응답 후보`로 안전하게 번역하게 돕는 명찰이다.

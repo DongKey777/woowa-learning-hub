@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: TreeMap subMap Schedule-Window Mini Drill
+concept_id: data-structure/treemap-submap-schedule-window-mini-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- treemap-submap
+- schedule-window
+- range-view-drill
+aliases:
+- TreeMap subMap schedule window drill
+- TreeMap subMap beginner
+- schedule window TreeMap
+- ordered map range query practice
+- subMap inclusive exclusive
+- TreeSet subset to TreeMap subMap
+- booking conflict window
+symptoms:
+- TreeMap subMap을 value 범위가 아니라 key 범위 slicing으로 읽어야 한다는 점을 놓친다
+- subMap start inclusive end exclusive 감각을 TreeSet subSet에서 TreeMap key-value 일정표로 옮기지 못한다
+- subMap이 비었다는 사실만으로 왼쪽에서 걸쳐 들어온 예약 충돌이 없다고 잘못 결론 낸다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/treeset-range-view-mini-drill
+- data-structure/treemap-headmap-tailmap-default-boundary-card
+next_docs:
+- data-structure/treemap-interval-entry-primer
+- database/mysql-overlap-fallback-beginner-bridge
+linked_paths:
+- contents/data-structure/treemap-headmap-tailmap-default-boundary-card.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treeset-range-view-mini-drill.md
+- contents/language/java/navigable-range-api-mini-drill.md
+- contents/language/java/treemap-range-view-live-window-primer.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+confusable_with:
+- data-structure/treeset-range-view-mini-drill
+- data-structure/treemap-headmap-tailmap-default-boundary-card
+- data-structure/treemap-interval-entry-primer
+- database/mysql-overlap-fallback-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeMap subMap으로 오전 일정 창을 자를 때 시작 포함 끝 제외를 어떻게 읽어?
+- TreeSet subSet에서 익힌 range view 감각을 TreeMap subMap으로 어떻게 옮겨?
+- subMap(start,end)이 비어도 왼쪽에서 시작한 예약이 겹칠 수 있는 이유는?
+- TreeMap subMap은 value가 아니라 key 범위를 자른다는 걸 예시로 보여줘
+- 예약 일정표에서 subMap headMap tailMap으로 창 조회하는 drill을 풀고 싶어
+contextual_chunk_prefix: |
+  이 문서는 TreeMap subMap을 sorted schedule key range를 자르는 mini drill로 설명한다.
+  TreeSet subSet의 start-inclusive end-exclusive 감각을 TreeMap key-value 일정표로 옮기고,
+  overlap 판단에는 floorEntry/ceilingEntry가 더 필요하다는 점을 다룬다.
+---
 # TreeMap `subMap` Schedule-Window Mini Drill
 
 > 한 줄 요약: `subMap()`은 "정렬된 일정표에서 오전 창, 오후 창만 잘라 보는 도구"라고 생각하면 되고, `TreeSet subSet`에서 익힌 `시작 포함, 끝 제외` 감각을 key-value 일정표로 그대로 옮기면 훨씬 덜 헷갈린다.

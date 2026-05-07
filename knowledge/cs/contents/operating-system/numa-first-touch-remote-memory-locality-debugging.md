@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: NUMA First Touch Remote Memory Locality Debugging
+concept_id: operating-system/numa-first-touch-remote-memory-locality-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- numa-first-touch
+- remote-memory-locality
+- memory-node-placement
+- numastat-remote-access
+aliases:
+- NUMA first touch
+- remote memory locality debugging
+- memory node placement
+- numastat remote access
+- CPU memory locality
+- first-touch allocation policy
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/numa-production-debugging.md
+- contents/operating-system/numa-autobalancing-runtime-debugging.md
+- contents/operating-system/autonuma-vs-manual-locality-tradeoffs.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/cpu-migration-load-balancing-locality-debugging.md
+- contents/operating-system/cpuset-isolation-noisy-neighbors.md
+symptoms:
+- CPU는 local core에서 도는 것 같지만 memory가 다른 NUMA node에 first-touch되어 remote latency가 난다.
+- worker placement와 memory allocation thread가 달라 locality가 깨진다.
+- numastat이나 perf counters로 remote access를 봐야 하는데 CPU affinity만 보고 있다.
+expected_queries:
+- NUMA first-touch는 memory가 어느 node에 배치되는지를 어떻게 결정해?
+- remote memory access는 CPU affinity만 봐서는 왜 해결되지 않아?
+- worker placement와 allocation thread를 맞춰 locality를 살리는 방법은?
+- NUMA locality debugging에서 numastat과 remote access를 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 NUMA 문제를 CPU가 어느 core에서 도는가보다 memory가 어느 node에 처음 배치됐고
+  지금 어떤 CPU가 remote로 읽고 있는가의 문제로 본다. first-touch, worker placement,
+  CPU/IRQ affinity, cpuset isolation을 연결한다.
+---
 # NUMA First-Touch, Remote Memory, Locality Debugging
 
 > 한 줄 요약: NUMA 문제는 "CPU가 어느 코어에서 도나"보다 "메모리가 어느 노드에 처음 배치됐고 지금 누가 remote로 읽고 있나"를 봐야 풀리는 경우가 많다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: LockSupport park unpark Permit Semantics and Coordination Pitfalls
+concept_id: language/locksupport-park-unpark-permit-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- locksupport
+- coordination
+- thread-dump
+aliases:
+- LockSupport park unpark permit semantics
+- thread per permit park unpark Java
+- LockSupport permit consumption
+- park unpark spurious return interrupt
+- low-level coordination primitive
+- 자바 LockSupport park unpark permit
+symptoms:
+- LockSupport를 sleep이나 wait/notify 대체재로만 이해해 thread당 최대 1개의 permit 모델을 설명하지 못해
+- unpark가 park보다 먼저 오면 signal이 사라진다고 생각하거나 여러 번 unpark하면 permit가 누적된다고 오해해
+- park를 predicate loop 없이 사용해 spurious return, interrupt, 기존 permit 소비 때문에 예상보다 바로 깨어나는 문제를 만든다
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/wait-notify-condition-spurious-wakeup-lost-signal
+- language/thread-dump-state-interpretation
+- language/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics
+next_docs:
+- language/thread-interruption-cooperative-cancellation-playbook
+- language/jfr-loom-incident-signal-map
+- language/java-concurrency-utilities
+linked_paths:
+- contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+- contents/language/java/java-concurrency-utilities.md
+confusable_with:
+- language/wait-notify-condition-spurious-wakeup-lost-signal
+- language/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics
+- language/thread-interruption-cooperative-cancellation-playbook
+forbidden_neighbors: []
+expected_queries:
+- LockSupport park unpark는 thread당 1개의 permit라는 모델을 어떻게 이해해야 해?
+- unpark가 park보다 먼저 호출되면 이후 park가 왜 바로 반환될 수 있어?
+- unpark를 여러 번 해도 permit가 누적되지 않는 이유와 Semaphore와 차이를 설명해줘
+- LockSupport.park를 predicate while loop와 blocker object와 함께 써야 하는 이유가 뭐야?
+- thread dump에서 parking to wait for가 보일 때 blocker와 predicate를 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 LockSupport.park/unpark를 thread당 1-bit permit semantics, spurious return, interrupt, blocker object 관점에서 설명하는 advanced deep dive다.
+  LockSupport, park unpark, permit semantics, spurious return, thread parking 질문이 본 문서에 매핑된다.
+---
 # `LockSupport.park`/`unpark` Permit Semantics and Coordination Pitfalls
 
 > 한 줄 요약: `LockSupport`는 low-level wait/notify 대체재처럼 보이지만, 실제 모델은 thread당 최대 1개의 permit이다. 이 permit semantics를 이해하지 못하면 lost wakeup이 아니라 "이미 있던 permit을 소비해 예상보다 바로 깨어나는" 종류의 버그가 생긴다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: BigDecimal 1.0 vs 1.00 Collections Mini Drill
+concept_id: language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-equality-ordering
+- hashset-treeset
+- treemap-key-semantics
+aliases:
+- BigDecimal 1.0 vs 1.00 drill
+- BigDecimal HashSet TreeSet TreeMap result
+- BigDecimal equals compareTo collection
+- bigdecimal mini drill
+- 자바 BigDecimal 컬렉션 결과 예측
+- HashSet TreeSet BigDecimal size
+symptoms:
+- BigDecimal 1.0과 1.00이 숫자로 같아 보이니 HashSet TreeSet TreeMap에서도 같은 결과가 나온다고 예상해
+- equals/hashCode 기준과 compareTo 기준이 sorted collection distinctness를 다르게 만든다는 점이 헷갈려
+- TreeMap에서 compareTo 0인 key가 같은 자리로 보고 값을 덮어쓰는 것을 reference 동일성으로 오해해
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/equality-vs-ordering-beginner-drill-sheet
+next_docs:
+- language/bigdecimal-sorted-collection-bridge
+- language/bigdecimal-comparator-tie-breaker-mini-drill
+- language/bigdecimal-hashset-treeset-contains-mini-drill
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+linked_paths:
+- contents/language/java/equality-vs-ordering-beginner-drill-sheet.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-comparator-tie-breaker-mini-drill.md
+- contents/language/java/bigdecimal-hashset-treeset-contains-mini-drill.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+confusable_with:
+- language/bigdecimal-sorted-collection-bridge
+- language/hashset-vs-treeset-duplicate-semantics
+- language/bigdecimal-comparator-tie-breaker-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal 1.0과 1.00을 HashSet TreeSet TreeMap에 넣으면 size가 어떻게 돼?
+- BigDecimal equals와 compareTo 차이가 HashSet과 TreeSet 결과를 왜 다르게 만들어?
+- TreeMap BigDecimal key에서 1.0 다음 1.00 put이 왜 값을 덮어써?
+- BigDecimal 컬렉션 결과를 실행 전에 예측하는 미니 드릴을 풀고 싶어
+- compareTo 0이면 sorted collection에서 같은 자리로 보는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal 1.0 vs 1.00을 HashSet, TreeSet, TreeMap에 넣었을 때 equals/hashCode와 compareTo 기준 차이를 손예측하는 beginner drill이다.
+  BigDecimal equals compareTo, HashSet size, TreeSet duplicate, TreeMap overwrite, collection prediction 질문이 본 문서에 매핑된다.
+---
 # BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`
 
 > 한 줄 요약: `BigDecimal("1.0")`와 `BigDecimal("1.00")`는 hash 기준(`equals`)에서는 다르고 sorted 기준(`compareTo == 0`)에서는 같은 자리처럼 보일 수 있다.

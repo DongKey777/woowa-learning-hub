@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Session Revocation Basics
+concept_id: system-design/session-revocation-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- session revocation basics
+- logout 뭐예요
+- logout propagation basics
+- forced logout basics
+aliases:
+- session revocation basics
+- logout 뭐예요
+- logout propagation basics
+- forced logout basics
+- short-lived access token basics
+- short-lived token why
+- jwt logout basics
+- logout all devices basics
+- session version basics
+- refresh token basics
+- browser logout tail
+- mobile logout tail
+symptoms: []
+intents:
+- definition
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/canonical-revocation-plane-across-token-generations-design.md
+- contents/system-design/revocation-bus-regional-lag-recovery-design.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Revocation Basics 설계 핵심을 설명해줘
+- session revocation basics가 왜 필요한지 알려줘
+- Session Revocation Basics 실무 트레이드오프는 뭐야?
+- session revocation basics 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Session Revocation Basics를 다루는 primer 문서다. logout, revoke propagation, short-lived token은 "토큰을 어떻게 검증하나"보다 "이미 발급된 자격을 언제부터 어떻게 못 쓰게 만드나"의 문제를 다루며, token-based auth도 lifecycle control을 위해 결국 서버 상태를 필요로 한다. 검색 질의가 session revocation basics, logout 뭐예요, logout propagation basics, forced logout basics처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Session Revocation Basics
 
 > 한 줄 요약: logout, revoke propagation, short-lived token은 "토큰을 어떻게 검증하나"보다 "이미 발급된 자격을 언제부터 어떻게 못 쓰게 만드나"의 문제를 다루며, token-based auth도 lifecycle control을 위해 결국 서버 상태를 필요로 한다.

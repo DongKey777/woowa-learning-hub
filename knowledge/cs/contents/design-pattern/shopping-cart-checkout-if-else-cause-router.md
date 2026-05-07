@@ -52,11 +52,7 @@ confusable_with:
 - design-pattern/shopping-cart-coupon-promotion-policy-object-bridge
 - design-pattern/shopping-cart-order-status-state-pattern-bridge
 - design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge
-forbidden_neighbors:
-- contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md
-- contents/design-pattern/shopping-cart-coupon-promotion-policy-object-bridge.md
-- contents/design-pattern/shopping-cart-order-status-state-pattern-bridge.md
-- contents/design-pattern/shopping-cart-pending-order-expiry-process-manager-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - shopping-cart checkout 서비스 if 문이 계속 늘어날 때 먼저 어떤 종류의 분기인지 어떻게 나눠 봐야 해?
 - 결제수단, 할인, 주문 상태, 만료 처리가 한 switch 문에 있으면 어떤 패턴 문서부터 읽어야 해?

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Mutable Element Pitfalls in List and Set
+concept_id: language/mutable-element-pitfalls-list-set-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- mutable-state
+- collection-debugging
+- equals-hashcode
+aliases:
+- Mutable Element Pitfalls in List and Set
+- Java mutable list set element pitfall
+- mutate element after add List Set
+- collection prints element but remove fails
+- List contains HashSet contains after mutation
+- 자바 List Set 원소 변경 함정
+symptoms:
+- 컬렉션 출력에는 원소가 보이는데 contains나 remove가 실패해 List와 Set의 lookup 기준 차이를 의심하지 못해
+- List는 원소 mutation 뒤에도 자리 자체는 유지되지만 contains, indexOf, remove(Object)가 현재 equals 기준으로 다시 비교된다는 점을 놓쳐
+- HashSet이나 TreeSet에 넣은 뒤 equality 또는 ordering 참여 필드를 바꿔 같은 객체인데도 찾지 못하는 상태를 만들어
+- mutable element 문제를 단순 참조 동일성 문제로만 보고 hashCode, equals, compareTo, Comparator 경로를 분리하지 못해
+intents:
+- troubleshooting
+- comparison
+- definition
+prerequisites:
+- language/java-collections-basics
+- language/collections-equality-mutable-state-foundations
+- language/java-equality-identity-basics
+next_docs:
+- language/mutable-elements-hashset-treeset-primer
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/hashmap-treemap-mutable-key-lookup-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/collections-equality-mutable-state-foundations.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/mutable-elements-hashset-treeset-primer.md
+- contents/language/java/mutable-hash-keys-hashset-hashmap-bridge.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/mutable-elements-hashset-treeset-primer
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/hashmap-treemap-mutable-key-lookup-primer
+forbidden_neighbors: []
+expected_queries:
+- List와 Set에 넣은 객체를 나중에 바꾸면 contains와 remove가 왜 다르게 흔들려?
+- 컬렉션 출력에는 보이는데 HashSet remove가 실패하는 mutable element 함정을 설명해줘
+- List는 원소 값을 바꿔도 구조는 덜 깨지지만 contains가 바뀔 수 있는 이유가 뭐야?
+- HashSet TreeSet은 삽입 후 기준 필드가 바뀌면 왜 자동 재배치하지 않아?
+- mutable element를 컬렉션에 넣을 때 equals hashCode compareTo 기준을 어떻게 점검해?
+contextual_chunk_prefix: |
+  이 문서는 List와 Set에 mutable element를 넣은 뒤 contains/remove가 흔들리는 증상을 equality, hash, ordering 기준으로 라우팅하는 beginner symptom router다.
+  mutable element, List contains, HashSet remove false, TreeSet mutation, collection debugging 질문이 본 문서에 매핑된다.
+---
 # Mutable Element Pitfalls in List and Set
 
 > 한 줄 요약: `List`는 원소를 넣은 뒤 값을 바꿔도 구조 자체는 보통 유지되지만, `Set`은 `equals()`/`hashCode()`나 정렬 기준 필드를 바꾸면 `contains()`/`remove()`/디버깅 감각이 쉽게 깨진다.

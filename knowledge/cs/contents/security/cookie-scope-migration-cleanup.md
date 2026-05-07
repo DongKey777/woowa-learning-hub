@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Cookie Scope Migration Cleanup
+concept_id: security/cookie-scope-migration-cleanup
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- cookie scope migration cleanup
+- session cookie migration cleanup
+- expire old cookies exact domain path
+- delete cookie exact path domain
+aliases:
+- cookie scope migration cleanup
+- session cookie migration cleanup
+- expire old cookies exact domain path
+- delete cookie exact path domain
+- cookie tombstone exact domain path
+- cookie cleanup matrix
+- cookie path migration cleanup
+- cookie domain migration cleanup
+- move session cookie from /app to /
+- move session cookie from auth.example.com to example.com
+- stale cookie after scope migration
+- old cookie shadows new cookie
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/duplicate-cookie-name-shadowing.md
+- contents/security/oauth-login-state-cookie-cleanup.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/secure-cookie-cleanup-behind-proxy.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/host-cookie-migration-primer.md
+- contents/security/subdomain-logout-cookie-cleanup-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cookie Scope Migration Cleanup 핵심 개념을 설명해줘
+- cookie scope migration cleanup가 왜 필요한지 알려줘
+- Cookie Scope Migration Cleanup 실무 설계 포인트는 뭐야?
+- cookie scope migration cleanup에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Cookie Scope Migration Cleanup를 다루는 deep_dive 문서다. session cookie scope를 옮길 때는 새 cookie를 발급하는 일과 옛 cookie를 지우는 일이 별개다. old cookie마다 **원래 `Domain`/host-only 방식과 `Path`를 정확히 맞춘 expired `Set-Cookie`**를 따로 보내야 stale cookie shadowing을 끊을 수 있다. 검색 질의가 cookie scope migration cleanup, session cookie migration cleanup, expire old cookies exact domain path, delete cookie exact path domain처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Cookie Scope Migration Cleanup
 
 > 한 줄 요약: session cookie scope를 옮길 때는 새 cookie를 발급하는 일과 옛 cookie를 지우는 일이 별개다. old cookie마다 **원래 `Domain`/host-only 방식과 `Path`를 정확히 맞춘 expired `Set-Cookie`**를 따로 보내야 stale cookie shadowing을 끊을 수 있다.

@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: JVM GC JMM Overview
+concept_id: language/jvm-gc-jmm-overview
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jvm
+- gc
+- jmm
+aliases:
+- JVM GC JMM overview
+- Java heap stack metaspace code cache
+- GC safepoint stop the world overview
+- Java Memory Model happens-before visibility ordering
+- TLAB PLAB allocation pressure
+- JVM GC JMM 큰 그림
+symptoms:
+- JVM을 단순 bytecode 실행기로만 이해해 class loading, JIT, GC, safepoint, code cache가 runtime latency에 영향을 주는 흐름을 놓쳐
+- GC pause와 safepoint stop-the-world를 같은 말로만 읽어 root 탐색, polling, allocation pressure를 분리하지 못해
+- JMM에서 atomicity, visibility, ordering을 구분하지 못해 volatile만 붙이면 모든 동시성 문제가 해결된다고 오해해
+intents:
+- deep_dive
+- definition
+- troubleshooting
+prerequisites:
+- language/java-memory-model-happens-before-volatile-final
+- language/java-concurrency-utilities
+- language/safepoint-stop-the-world-diagnostics
+next_docs:
+- language/tlab-plab-allocation-intuition
+- language/memory-barriers-varhandle-fences
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/safepoint-polling-mechanics.md
+- contents/language/java/tlab-plab-allocation-intuition.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/volatile-long-double-atomicity-memory-visibility.md
+- contents/language/java/memory-barriers-varhandle-fences.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/compressed-oops-class-pointers.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/classloader-exception-boundaries-object-contracts.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/gc-root-retention-analysis.md
+confusable_with:
+- language/java-memory-model-happens-before-volatile-final
+- language/safepoint-stop-the-world-diagnostics
+- language/jit-warmup-deoptimization
+forbidden_neighbors: []
+expected_queries:
+- JVM GC JMM을 heap stack metaspace safepoint visibility 관점으로 한 번에 설명해줘
+- Java GC pause와 safepoint stop-the-world는 어떤 관계가 있어?
+- JMM에서 atomicity visibility ordering과 happens-before를 어떻게 구분해야 해?
+- TLAB allocation이 빠른데도 allocation pressure가 GC 비용으로 이어지는 이유를 알려줘
+- JVM latency spike를 GC JIT safepoint thread park 관점으로 어떻게 나눠 봐?
+contextual_chunk_prefix: |
+  이 문서는 JVM runtime, heap/stack/metaspace/code cache, GC, safepoint, Java Memory Model을 연결하는 advanced overview다.
+  JVM GC JMM, heap stack metaspace, safepoint, happens-before, volatile, allocation pressure 질문이 본 문서에 매핑된다.
+---
 # JVM, GC, JMM
 
 > 한 줄 요약: JVM은 바이트코드를 실행하는 런타임이고, GC는 힙 생명주기를 관리하며, JMM은 멀티스레드에서 값이 언제 어떻게 보이는지를 정의한다.

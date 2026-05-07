@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문"
+concept_id: network/browser-devtools-blocked-canceled-failed-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- devtools-special-status
+- browser-side-request-failure
+- blocked-canceled-failed
+aliases:
+- devtools blocked canceled failed
+- browser special status memo
+- response headers missing devtools
+- canceled request browser
+- failed network row
+- blocked request policy
+symptoms:
+- DevTools Status의 blocked canceled failed를 서버가 준 HTTP status code처럼 읽는다
+- response headers가 없는 row에서 app 응답 body를 찾느라 원인 축을 놓친다
+- canceled 요청을 서버 오류로 단정하고 AbortController나 navigation cancel을 보지 않는다
+- failed row에서 DNS TLS connection failure를 보지 않고 controller 로그만 찾는다
+intents:
+- definition
+- troubleshooting
+- symptom
+prerequisites:
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/browser-devtools-blocked-mixed-content-vs-cors-mini-card
+- network/abortcontroller-search-autocomplete-canceled-trace-card
+- network/browser-devtools-gateway-error-header-clue-card
+- network/browser-devtools-response-body-ownership-checklist
+- security/cors-samesite-preflight
+linked_paths:
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/abortcontroller-search-autocomplete-canceled-trace-card.md
+- contents/network/browser-devtools-blocked-mixed-content-vs-cors-mini-card.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/http-request-response-headers-basics.md
+- contents/security/cors-samesite-preflight.md
+confusable_with:
+- network/browser-devtools-blocked-mixed-content-vs-cors-mini-card
+- network/abortcontroller-search-autocomplete-canceled-trace-card
+- network/http-request-response-headers-basics
+- security/cors-samesite-preflight
+forbidden_neighbors: []
+expected_queries:
+- "DevTools Status에 blocked canceled failed가 보이면 서버 HTTP 오류로 봐야 해?"
+- "Network row에 response headers가 없을 때 무엇부터 확인해야 해?"
+- "canceled 요청이 보이면 AbortController와 페이지 이동 중 무엇을 먼저 봐?"
+- "failed row가 500과 다른 이유를 DNS TLS connection 단계로 설명해줘"
+- "blocked와 canceled와 failed를 처음 배우는 기준으로 구분해줘"
+contextual_chunk_prefix: |
+  이 문서는 DevTools Status의 (blocked), canceled, (failed)를 서버 HTTP
+  response code가 아니라 browser-side special memo로 읽고, policy block,
+  JS/navigation cancel, DNS/TLS/network failure 갈래를 나누는 beginner
+  symptom router다.
+---
 # Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문
 
 > 한 줄 요약: DevTools `Status`에 `(blocked)`, `canceled`, `(failed)`가 보이면 먼저 "서버가 준 HTTP 에러 응답"이 아니라 "브라우저가 붙인 결과 메모"로 읽어야 응답 헤더와 서버 body를 찾느라 헤매지 않는다.

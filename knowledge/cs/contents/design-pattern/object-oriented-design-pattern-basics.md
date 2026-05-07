@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Object-Oriented Design Pattern Basics
+concept_id: design-pattern/object-oriented-design-pattern-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- design-pattern-basics
+- beginner-pattern-router
+- change-axis-pattern-choice
+aliases:
+- object oriented design pattern basics
+- beginner design pattern guide
+- design pattern where to start
+- design pattern what to learn first
+- strategy template method factory builder observer difference
+- 디자인 패턴 기초
+- 디자인 패턴 처음 뭐부터
+- 패턴 이름이 너무 많아요
+- 전략 템플릿 메소드 팩토리 빌더 차이
+- 상속보다 조합
+symptoms:
+- 디자인 패턴 이름은 들어봤지만 Strategy, Template Method, Factory, Builder, Observer가 어떤 문제 축을 다루는지 구분하지 못한다
+- if-else가 커지는 상황에서 전략인지 팩토리인지, 생성 문제인지 행동 문제인지 먼저 분류하지 못한다
+- 상속, 조합, 어댑터, 옵저버를 모두 멋진 구조 이름으로만 보고 무엇이 바뀌는가를 기준으로 선택하지 못한다
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- language/object-oriented-core-principles
+- software-engineering/oop-design-basics
+next_docs:
+- design-pattern/pattern-selection
+- design-pattern/composition-over-inheritance-practical
+- design-pattern/adapter-basics
+linked_paths:
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/factory-basics.md
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/observer-basics.md
+- contents/design-pattern/pattern-selection.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/pattern-selection
+- design-pattern/composition-over-inheritance-practical
+- design-pattern/template-method-vs-strategy
+- design-pattern/factory-vs-abstract-factory-vs-builder
+forbidden_neighbors: []
+expected_queries:
+- 디자인 패턴 처음 배우는데 Strategy, Template Method, Factory, Builder, Observer는 어떤 순서로 보면 돼?
+- 디자인 패턴을 이름부터 외우지 말고 무엇이 바뀌는가 기준으로 고르는 방법을 알려줘
+- 전략과 템플릿 메소드는 규칙 교체와 흐름 고정 관점에서 어떻게 달라?
+- 팩토리와 빌더는 생성 책임과 단계적 객체 조립 관점에서 어떻게 달라?
+- 초보자가 상속보다 조합을 먼저 기준점으로 잡아야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Object-Oriented Design Pattern Basics primer로, 처음 디자인 패턴을
+  배우는 학습자가 Strategy, Template Method, Factory, Builder, Observer를 이름이 아니라
+  change axis, composition-first route, 생성/행동/반응 책임 기준으로 빠르게 분류하도록 돕는다.
+---
 # 객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버
 
 > 한 줄 요약: 초보자가 가장 자주 헷갈리는 다섯 패턴을 "무엇이 바뀌는가" 기준으로 나눠서 빠르게 고르는 입문 가이드다.
@@ -24,6 +98,14 @@
 - [OOP 설계 원칙 기초](../software-engineering/oop-design-basics.md)
 
 retrieval-anchor-keywords: object oriented design pattern basics, beginner design pattern guide, design pattern what to learn first, design pattern where to start, strategy template method factory builder difference, 처음 배우는데 디자인 패턴, 디자인 패턴 처음 뭐부터, 디자인 패턴 뭐예요, 디자인 패턴 기초, 디자인 패턴 큰 그림, 패턴 이름이 너무 많아요, 패턴 언제 쓰는지 헷갈려요, 왜 상속보다 조합부터, strategy factory builder observer 차이, 템플릿 메소드 전략 팩토리 빌더 차이
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "패턴 이름은 아는데 미션 코드에 뭘 써야 할지 모르겠어요" | baseball, lotto, blackjack, roomescape에서 if 분기, 생성 분기, 이벤트 분리가 한꺼번에 보이는 코드 | 패턴 이름보다 무엇이 자주 바뀌는지 먼저 묻는다 |
+| "Strategy랑 Factory가 둘 다 분기를 줄이는 거 아닌가요?" | 검증/할인/승패 판정 행동 분기와 객체 생성 분기가 같은 service에 섞인 구조 | 행동 교체와 생성 책임을 다른 변화 축으로 본다 |
+| "상속보다 조합을 쓰라는 리뷰가 왜 자주 나오죠?" | Template Method, Strategy, Adapter 후보를 구조 이름으로만 고르는 초급 설계 | 공통 흐름 고정, 알고리즘 교체, 외부 인터페이스 적응을 분리한다 |
 
 ---
 

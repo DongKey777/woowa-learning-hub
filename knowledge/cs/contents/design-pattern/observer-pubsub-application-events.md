@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: 옵저버, Pub/Sub, ApplicationEvent
+concept_id: design-pattern/observer-pubsub-application-events
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- observer-pubsub-boundary
+- applicationevent-not-kafka
+- event-failure-boundary
+aliases:
+- observer vs pubsub vs direct call
+- direct call vs observer vs pubsub
+- same process observer vs broker pubsub
+- spring applicationevent same process
+- applicationevent not kafka
+- event listener ordering failure boundary
+- event-driven decoupling basics
+- when to use observer vs pubsub
+- spring eventlistener sync or async
+- broker pubsub retry durability
+symptoms:
+- Spring ApplicationEvent를 Kafka 같은 durable broker로 이해해 재시도, 적재, consumer lag가 자동 제공된다고 착각한다
+- listener 하나 실패했는데 원래 주문 처리까지 실패하거나, 반대로 외부 side effect가 rollback 전에 나가 실패 경계가 흐려진다
+- 핵심 정합성 경로까지 이벤트 fan out으로 숨겨 순서와 즉시 실패 전파가 코드에서 보이지 않는다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/observer
+- design-pattern/observer-vs-pubsub-quick-bridge
+- design-pattern/mediator-vs-observer-vs-pubsub
+next_docs:
+- design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/outbox-relay-idempotent-publisher
+linked_paths:
+- contents/design-pattern/observer.md
+- contents/design-pattern/observer-vs-pubsub-quick-bridge.md
+- contents/design-pattern/mediator-vs-observer-vs-pubsub.md
+- contents/design-pattern/observer-lifecycle-hygiene.md
+- contents/design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-eventlistener-ordering-async-traps.md
+- contents/security/webhook-signature-verification-replay-defense.md
+- contents/software-engineering/cache-message-observability.md
+confusable_with:
+- design-pattern/observer
+- design-pattern/observer-vs-pubsub-quick-bridge
+- design-pattern/domain-events-vs-integration-events
+- spring/eventlistener-transaction-phase-outbox
+forbidden_neighbors: []
+expected_queries:
+- Direct call, Observer, Pub/Sub는 이벤트라는 말이 같아도 실패 경계가 어떻게 달라?
+- Spring ApplicationEvent는 왜 Kafka 같은 durable broker가 아니라 same process observer 쪽에서 먼저 이해해야 해?
+- listener 실패가 주문 처리 트랜잭션에 붙는 증상이 보이면 어떤 경계를 다시 봐야 해?
+- 핵심 정합성 경로는 느슨한 결합보다 direct call이나 명시적 orchestration이 더 안전한 이유가 뭐야?
+- durable delivery, retry, 중복 제거가 필요하면 observer에서 outbox나 broker pubsub로 올라가야 하는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 옵저버, Pub/Sub, ApplicationEvent chooser로, direct call, same-process
+  observer/ApplicationEvent, broker Pub/Sub를 실행 시점, 실패 전파, transaction timing,
+  retry/durability, consumer 중복 처리 요구에 따라 구분하는 방법을 설명한다.
+---
 # 옵저버, Pub/Sub, ApplicationEvent
 
 > 한 줄 요약: `이벤트`라는 단어가 같아도 direct call, 같은 프로세스 옵저버, broker Pub/Sub는 실패 경계와 실행 의미가 달라서 "패턴 이름"보다 "지금 어떤 증상이 보이냐"로 구분하는 편이 더 안전하다.
@@ -42,6 +115,8 @@ retrieval-anchor-keywords: observer vs pubsub vs direct call, direct call vs obs
 
 `ApplicationEvent`는 보통 두 번째에 더 가깝다.
 Spring 컨테이너 내부에서 listener를 찾는 same-process event bus로 보면 맞고, Kafka처럼 durable broker라고 보면 틀리다.
+
+따라서 "이벤트로 뺐다"는 말만으로 비동기, 내구성, 재시도, 장애 격리가 생겼다고 판단하면 안 된다. 실제 경계는 dispatch 방식, transaction phase, broker/outbox 유무가 결정한다.
 
 중요한 질문은 "이벤트인가 아닌가"가 아니라 아래 세 가지다.
 

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Emergency Misclassification Signals
+concept_id: software-engineering/emergency-misclassification-signals
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- break-glass
+- emergency
+- shadow-process
+- override-debt
+aliases:
+- Emergency Misclassification Signals
+- emergency path reclassification
+- repeated emergency path signals
+- break glass misclassification
+- routine emergency detection
+- shadow vs override emergency routing
+symptoms:
+- 같은 workflow_family, policy_key, owner_scope가 반복해서 emergency로 열리지만 distinct incident ref나 drill ref가 약해
+- break-glass approval과 상태 저장이 DM, spreadsheet, 노션, 개인 기억 같은 off-plane artifact에 남아 공식 control plane이 source of truth가 아니야
+- expected_reentry_at breach, renewal_count 증가, scope drift가 반복되어 bounded exception이 override debt로 굳어져
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/break-glass-segmentation
+- software-engineering/manual-path-ratio-instrumentation
+next_docs:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/override-burndown-scorecards
+- software-engineering/break-glass-reentry
+linked_paths:
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/break-glass-reentry-governance.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+confusable_with:
+- software-engineering/break-glass-segmentation
+- software-engineering/shadow-process-detection-signals
+- software-engineering/override-burndown-scorecards
+forbidden_neighbors: []
+expected_queries:
+- 반복 emergency path가 진짜 incident pressure인지 shadow process나 override debt인지 어떻게 재분류해?
+- break-glass 사용량이 반복될 때 off-plane approval과 overdue reentry를 어떤 signal로 봐야 해?
+- incidentless repeat rule과 overdue reentry rule은 왜 override debt backlog로 보내야 해?
+- DM 승인이나 spreadsheet 상태 저장이 반복되는 emergency는 왜 shadow-process backlog로 보내야 해?
+- break-glass panel에만 남겨도 되는 조건과 shadow 또는 override backlog로 보내야 하는 조건을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 repeated emergency와 break-glass 사용을 incident pressure, shadow-process backlog, override-debt backlog로 재분류하는 advanced symptom router이다.
+---
 # Emergency Misclassification Signals
 
 > 한 줄 요약: repeated "emergency" path는 break-glass panel에만 남겨 두면 안 되며, off-plane/manual choreography가 핵심이면 shadow-process backlog로, timebox를 넘긴 scoped exception이 핵심이면 override-debt backlog로 재분류하는 detection rule이 있어야 한다.

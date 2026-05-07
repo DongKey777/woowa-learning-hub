@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Chunk-Boundary Pathologies In Roaring
+concept_id: data-structure/chunk-boundary-pathologies-in-roaring
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- roaring-chunk-boundary
+- bitmap-container-overhead
+- interval-vs-roaring-selection
+aliases:
+- chunk boundary roaring
+- Roaring 16-bit container boundary
+- high key header overhead
+- cross chunk run split
+- interval list vs roaring
+- run container boundary pathology
+- active chunk header cost
+symptoms:
+- 전역 interval 수와 cardinality만 보고 Roaring footprint를 예측하다가 16-bit container boundary 비용을 놓친다
+- 짧은 interval이 65536 경계를 넘는 순간 container와 header가 둘로 늘어나는 현상을 설명하지 못한다
+- runOptimize가 chunk 내부 run은 줄여도 여러 high key를 하나의 global run으로 합치지는 못한다는 한계를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap
+next_docs:
+- data-structure/roaring-container-transition-heuristics
+- data-structure/roaring-run-formation-and-row-ordering
+- data-structure/disjoint-interval-set
+- data-structure/row-ordering-and-bitmap-compression-playbook
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+confusable_with:
+- data-structure/roaring-bitmap
+- data-structure/disjoint-interval-set
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/roaring-container-transition-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap에서 16-bit container boundary가 footprint를 키우는 경우는?
+- 하나의 긴 interval이 여러 chunk를 넘으면 왜 run 수와 header 비용이 늘어?
+- interval list나 WAH EWAH와 Roaring은 cross-chunk run을 어떻게 다르게 저장해?
+- runOptimize를 해도 chunk boundary를 넘는 global run이 합쳐지지 않는 이유는?
+- active high key 수를 bitmap locality 지표로 봐야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap이 16-bit high key container 단위로 압축을
+  재시작하기 때문에 global interval이나 long run이 chunk boundary를
+  넘을 때 header와 local run 수가 늘어나는 pathology를 설명한다. interval
+  list, WAH/EWAH, disjoint interval set과 비교한다.
+---
 # Chunk-Boundary Pathologies In Roaring
 
 > 한 줄 요약: Roaring은 16-bit container 경계마다 압축이 다시 시작되므로, 전역적으로는 몇 개 안 되는 interval이나 긴 run도 경계를 많이 가로지르면 interval list나 whole-bitmap run codec보다 header와 run 수가 훨씬 빨리 늘 수 있다.

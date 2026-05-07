@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: MSW Stub vs Real Backend Component Test Card
+concept_id: software-engineering/msw-stub-real-backend-component-test
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- frontend-test
+- msw
+- component-test
+- api-contract
+aliases:
+- MSW stub vs real backend component test
+- component test real server
+- frontend component test MSW
+- test server vs stub
+- API drift frontend test
+- 컴포넌트 테스트 실제 백엔드 MSW
+symptoms: []
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- software-engineering/component-test-vs-browser-e2e-boundary-card
+- software-engineering/testing-strategy-and-test-doubles
+next_docs:
+- software-engineering/test-strategy-basics
+- software-engineering/api-contract-testing
+- network/browser-devtools-first-checklist-1minute-card
+linked_paths:
+- contents/software-engineering/component-test-vs-browser-e2e-boundary-card.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+confusable_with:
+- software-engineering/component-test-vs-browser-e2e-boundary-card
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/api-contract-testing
+forbidden_neighbors: []
+expected_queries:
+- 프론트엔드 component test에서 MSW stub을 쓸지 실제 백엔드를 붙일지 어떻게 판단해?
+- 화면 loading, error, empty state 검증은 왜 MSW stub component test가 기본값인지 설명해줘
+- 서버 response shape, nullable field, date format, cookie auth wiring이 질문이면 어떤 테스트 계층을 추가해야 해?
+- 실제 백엔드를 붙이면 무조건 더 좋은 테스트라고 보면 안 되는 이유가 뭐야?
+- MSW handler가 실제 API와 drift되면 contract test나 app integration test를 어떻게 보강해?
+contextual_chunk_prefix: |
+  이 문서는 frontend component test에서 화면 상태 검증은 MSW stub으로, 실제 서버 계약과 인증 wiring 검증은 더 넓은 integration/contract 계층으로 나눌지 고르는 beginner chooser이다.
+---
 # MSW stub vs 실제 백엔드 컴포넌트 테스트 카드
 
 > 한 줄 요약: 프론트엔드 컴포넌트 테스트에서 질문이 `이 화면이 어떤 상태를 보여 주나`에 머물면 MSW stub이 보통 더 맞고, 질문이 `실제 서버 계약과 직렬화/인증 wiring이 정말 이어지나`까지 올라가면 실제 백엔드나 테스트 서버를 붙일 후보가 된다.

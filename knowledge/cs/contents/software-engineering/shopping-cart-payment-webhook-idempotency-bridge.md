@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/shopping-cart
+- missions/payment
 review_feedback_tags:
 - payment-webhook-idempotency
 - duplicate-provider-callback
@@ -35,8 +36,8 @@ prerequisites:
 - database/idempotency-key-and-deduplication
 - design-pattern/shopping-cart-payment-gateway-anti-corruption-bridge
 next_docs:
-- software-engineering/webhook-and-broker-boundary-primer
-- spring/spring-payment-approval-db-failure-compensation-idempotency-primer
+- software-engineering/webhook-broker-boundary-primer
+- spring/payment-approval-db-failure-compensation-idempotency-primer
 - spring/shopping-cart-order-complete-after-commit-outbox-bridge
 linked_paths:
 - contents/software-engineering/webhook-and-broker-boundary-primer.md
@@ -67,12 +68,19 @@ contextual_chunk_prefix: |
   하지"라고 묻는 장면을 external event id, durable acceptance, 상태 재조회
   경계로 연결한다.
 ---
-
 # shopping-cart 결제 웹훅 재전송 ↔ Inbound Idempotency와 상태 재조회 브릿지
 
 ## 한 줄 요약
 
 > shopping-cart에서 결제사 webhook은 "HTTP 한 번 받는 요청"보다 "같은 승인 사실이 재배달될 수 있는 외부 이벤트"에 가깝기 때문에, `eventId` 같은 inbound key로 한 번만 반영하고 안전하게 받아 둔 뒤에야 `200 OK`를 보내는 편이 맞다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제사 webhook이 두 번 오면 주문 상태가 두 번 바뀌나요?" | provider callback 재전송, approve 응답과 webhook 동시 도착 | `providerEventId`나 `approvalId`로 같은 승인 사실을 한 번만 반영한다 |
+| "`200 OK`를 언제 보내야 하는지 모르겠어요" | webhook 수신 중 DB 저장 전 장애 가능성 | durable하게 받아 둔 뒤 성공 응답을 보내야 재전송 의미가 안전해진다 |
+| "timeout 뒤 같은 payment event가 오면 새 승인으로 처리해야 하나요?" | 늦은 webhook, replay, 상태 재조회 | 새 이벤트 생성보다 기존 주문/결제 상태 재조회와 replay-safe 응답을 우선한다 |
 
 ## 미션 시나리오
 

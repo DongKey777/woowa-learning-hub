@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Roaring Run-Churn Observability Guide
+concept_id: data-structure/roaring-run-churn-observability-guide
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roaring-run-churn
+- observability-hotspot
+- transition-cpu-share
+aliases:
+- Roaring run churn observability
+- array bitmap run churn
+- boundary pressure
+- run fragmentation ratio
+- lazy repair debt
+- transition CPU share
+- active chunk spread
+symptoms:
+- Roaring p95/p99 문제를 전체 bitmap 크기로만 보고 몇 개 hot chunk의 array/bitmap/run 재구성 루프를 놓친다
+- always-on low-cardinality metric과 sampled high-key hotspot event를 분리하지 않아 metric cardinality가 폭발한다
+- build, update, query_result, repair phase를 구분하지 않아 row ordering drift와 lazy repair debt를 같은 현상으로 읽는다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-instrumentation-schema-examples
+next_docs:
+- data-structure/roaring-query-result-ordering-guide
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/bit-sliced-bitmap-index
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-query-result-ordering-guide.md
+- contents/data-structure/roaring-instrumentation-schema-examples.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-instrumentation-schema-examples
+- data-structure/roaring-query-result-ordering-guide
+- data-structure/roaring-container-transition-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring run churn observability에서 boundary pressure run fragmentation lazy repair transition CPU를 어떻게 나눠 봐?
+- Roaring p95 p99가 나쁠 때 hot high_key chunk transition event를 어떻게 샘플링해?
+- array bitmap run churn dashboard를 low-cardinality metric과 sampled event로 나누는 방법은?
+- row ordering drift와 repairAfterLazy debt를 phase tag로 분리해야 하는 이유는?
+- Roaring analytics workload debugging에서 active chunk spread와 run count를 어떻게 관측해?
+contextual_chunk_prefix: |
+  이 문서는 Roaring-backed analytics workload의 p95/p99를 array/bitmap/run
+  churn, boundary pressure, run fragmentation, lazy repair debt, transition CPU로
+  분리해 관측하는 observability playbook이다.
+---
 # Roaring Run-Churn Observability Guide
 
 > 한 줄 요약: Roaring-backed analytics workload의 p95/p99 문제는 전체 bitmap 크기보다 `array/bitmap/run` 재구성 루프에서 더 자주 나오므로, 운영 계측도 `boundary pressure`, `run fragmentation`, `lazy repair`, `transition CPU`를 따로 보여줘야 한다.

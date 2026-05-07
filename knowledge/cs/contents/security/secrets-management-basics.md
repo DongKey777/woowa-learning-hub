@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 시크릿 관리 기초
+concept_id: security/secrets-management-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- secrets-management-basics
+- no-secrets-in-code
+- env-secret-store-runtime-injection
+aliases:
+- secrets management basics
+- secret management basics
+- API key 코드에 넣으면
+- git에 비밀번호
+- env 환경변수 기초
+- application.properties 보안
+- secret manager vs env
+- credential 노출
+- 시크릿 관리 입문
+symptoms:
+- private repository나 application.properties에 저장하면 시크릿이 안전하다고 오해한다
+- Git 히스토리에서 문자열을 지우면 유출 대응이 끝난다고 생각하고 key revoke와 rotation을 놓친다
+- .env 파일과 .env.example의 역할을 구분하지 못해 로컬 편의 파일을 커밋한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- security/api-key-basics
+next_docs:
+- security/secret-management-rotation-leak-patterns
+- security/log-masking-basics
+- security/password-hashing-basics
+- spring/ioc-container-internals
+linked_paths:
+- contents/security/password-hashing-basics.md
+- contents/security/api-key-basics.md
+- contents/spring/ioc-di-container.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/log-masking-basics.md
+confusable_with:
+- security/api-key-basics
+- security/secret-management-rotation-leak-patterns
+- security/log-masking-basics
+- security/password-hashing-basics
+forbidden_neighbors: []
+expected_queries:
+- DB 비밀번호나 API key를 코드나 application.properties에 넣으면 왜 위험해?
+- private GitHub 저장소라도 secret을 커밋하면 안 되는 이유가 뭐야?
+- .env 파일은 로컬에서만 쓰고 .env.example에는 값 없이 키 이름만 공유하는 이유가 뭐야?
+- secret이 Git 히스토리에 올라갔으면 문자열 삭제보다 revoke와 rotation이 먼저야?
+- 환경변수와 cloud secret manager는 운영 환경에서 어떤 역할 차이가 있어?
+contextual_chunk_prefix: |
+  이 문서는 secrets management beginner primer로, API key, DB password,
+  credential 같은 secret을 코드와 Git 밖에서 관리하고 환경변수나 secret
+  manager로 runtime injection하며, 노출 시 revoke와 rotation이 필요하다는
+  원칙을 설명한다.
+---
 # 시크릿 관리 기초: API 키와 비밀번호를 코드에 넣으면 안 되는 이유
 
 > 한 줄 요약: DB 비밀번호·API 키 같은 시크릿은 소스 코드나 Git에 절대 넣으면 안 되고, 환경변수나 전용 시크릿 스토어를 통해 런타임에 주입해야 한다.

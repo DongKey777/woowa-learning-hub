@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Hidden Classes and LambdaMetafactory Basics
+concept_id: language/hidden-classes-lambdametafactory-basics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/baseball
+- missions/racingcar
+review_feedback_tags:
+- jvm-internals
+- runtime-code-generation
+- lambda-invokedynamic
+aliases:
+- hidden classes LambdaMetafactory basics
+- Lookup defineHiddenClass primer
+- Java lambda invokedynamic metafactory
+- hidden class runtime generated class
+- LambdaMetafactory method handle bootstrap
+- 자바 hidden class lambda metafactory 기초
+symptoms:
+- lambda나 method reference가 익명 클래스와 완전히 같은 방식으로 구현된다고 생각해 invokedynamic bootstrap 경계를 설명하지 못해
+- runtime code generation helper를 일반 public class로만 상상해 hidden class의 discovery와 lifecycle 제약을 놓쳐
+- stack trace, instrumentation, class loading 관측에서 hidden class가 왜 덜 보이는지 원인을 찾지 못해
+intents:
+- deep_dive
+- definition
+- troubleshooting
+prerequisites:
+- language/reflection-cost-and-alternatives
+- language/java-agent-instrumentation-basics
+- language/jit-warmup-deoptimization
+next_docs:
+- language/classloader-delegation-edge-cases
+- language/class-initialization-ordering
+- language/java-agent-instrumentation-basics
+linked_paths:
+- contents/language/java/java-agent-instrumentation-basics.md
+- contents/language/java/class-initialization-ordering.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/language/java/method-inlining-heuristics-deopt-triggers.md
+confusable_with:
+- language/reflection-cost-and-alternatives
+- language/java-agent-instrumentation-basics
+- language/classloader-delegation-edge-cases
+forbidden_neighbors: []
+expected_queries:
+- Java hidden class는 일반 class와 무엇이 다르고 언제 쓰는지 설명해줘
+- LambdaMetafactory와 invokedynamic이 lambda 실행과 어떤 관계인지 알려줘
+- 런타임 생성 클래스가 Class.forName으로 잘 안 보이는 이유를 JVM 관점에서 설명해줘
+- method handle bootstrap과 lambda proxy 구현 흐름을 연결해서 설명해줘
+- instrumentation이나 stack trace에서 hidden class가 덜 보일 때 어떻게 해석해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java hidden class와 LambdaMetafactory를 JVM runtime code generation, invokedynamic, method handle bootstrap 관점에서 설명하는 advanced deep dive다.
+  hidden classes, Lookup#defineHiddenClass, lambda invokedynamic, runtime generated class, instrumentation visibility 질문이 본 문서에 매핑된다.
+---
 # Hidden Classes and `LambdaMetafactory` Basics
 
 > 한 줄 요약: hidden classes는 런타임 생성용 비노출 구현체를 만들기 위한 JVM 기능이고, `LambdaMetafactory`는 lambda/method reference를 `invokedynamic`과 연결하는 표준 부트스트랩 도구다.

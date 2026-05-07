@@ -75,6 +75,14 @@ contextual_chunk_prefix: |
 
 > 이미 winner가 확정됐으면 `already exists`, 아직 결론을 못 본 혼잡이면 `busy`, 이번 시도 전체를 새로 시작해야 하면 `retryable`을 먼저 고른다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "duplicate key, lock timeout, deadlock을 전부 같은 retry로 처리하고 있어요" | DB 예외를 서비스 응답으로 번역하는 단계 | already exists, busy, retryable 세 버킷을 먼저 고른다 |
+| "23505, 1205, 40001을 어디에 둬야 할지 감이 안 와요" | PostgreSQL/MySQL 에러코드 기반 triage | winner 확인, 혼잡, transaction 재시작 의미를 분리한다 |
+| "중복 생성 실패가 conflict인지 잠깐 뒤 재시도인지 모르겠어요" | duplicate row, lock wait, serialization failure가 섞인 리뷰 | 이미 승자가 있는지, 아직 못 본 건지, 새 판으로 다시 해야 하는지 묻는다 |
+
 ## 결정 매트릭스
 
 | 지금 받은 신호 | `already exists` | `busy` | `retryable` |

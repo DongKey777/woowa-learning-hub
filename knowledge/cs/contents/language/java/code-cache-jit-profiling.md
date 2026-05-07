@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Code Cache and JIT Profiling
+concept_id: language/code-cache-jit-profiling
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- jit-profiling
+- code-cache
+- latency-spike
+aliases:
+- Code Cache and JIT Profiling
+- HotSpot code cache
+- JIT code cache pressure
+- Compiler.codecache
+- tiered compilation profiling
+- nmethod code cache
+- JIT 재컴파일 지연
+symptoms:
+- warmup이 끝난 것처럼 보이는데도 latency와 throughput이 흔들리는 원인을 code cache pressure, deopt, recompilation과 연결하지 못해
+- JIT inlining과 code size 증가가 code cache 압박으로 이어질 수 있다는 트레이드오프를 놓쳐
+- JFR과 jcmd Compiler.codecache로 startup과 steady-state JIT 상태를 분리해서 보지 않아
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/jit-warmup-deoptimization
+next_docs:
+- language/method-inlining-heuristics-deopt-triggers
+- language/jfr-event-interpretation
+- language/jcmd-diagnostic-command-cheatsheet
+linked_paths:
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/method-inlining-heuristics-deopt-triggers.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+confusable_with:
+- language/jit-warmup-deoptimization
+- language/method-inlining-heuristics-deopt-triggers
+- language/jfr-event-interpretation
+forbidden_neighbors: []
+expected_queries:
+- HotSpot code cache pressure가 warmup 이후 latency spike를 만들 수 있는 이유가 뭐야?
+- jcmd Compiler.codecache와 JFR로 JIT compilation 상태를 어떻게 확인해?
+- tiered compilation C1 C2와 code cache nmethod를 연결해서 설명해줘
+- method inlining이 code size와 code cache 압박을 키울 수 있는 이유를 알려줘
+- 배포 직후 JIT warmup과 code cache 안정화 전 traffic이 몰리는 문제를 어떻게 본다?
+contextual_chunk_prefix: |
+  이 문서는 HotSpot code cache와 JIT profiling을 nmethod, C1/C2 tiered compilation, recompilation, deoptimization, code cache pressure, JFR, jcmd Compiler.codecache 관점으로 설명하는 advanced deep dive다.
+  code cache, JIT profiling, warmup latency, code cache pressure, PrintCompilation, Compiler.codecache 질문이 본 문서에 매핑된다.
+---
 # Code Cache and JIT Profiling
 
 > 한 줄 요약: code cache는 JIT가 생성한 machine code를 담는 영역이고, 코드 캐시 압박이나 재컴파일이 잦으면 warmup 이후에도 latency와 throughput이 흔들릴 수 있다.

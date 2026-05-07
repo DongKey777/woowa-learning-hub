@@ -62,11 +62,12 @@ expected_queries:
 - component count를 세는 문제를 path 문제처럼 풀지 않으려면 어떤 기준을 잡아야 해?
 - 그래프 문제를 읽을 때 union-find와 shortest path를 처음부터 어떻게 분리해?
 contextual_chunk_prefix: |
-  이 문서는 그래프 입문자가 연결돼 있나, 같은 그룹인가, 실제 경로를
-  보여줘, 가장 짧게 가는 길을 알려줘 같은 질문을 union-find, BFS,
-  shortest-path로 먼저 라우팅하게 돕는 symptom_router다. 연결 여부,
-  component count, path reconstruction, minimum path 같은 자연어
-  paraphrase가 본 문서의 분기 기준에 매핑된다.
+  이 문서는 그래프 문제를 읽을 때 연결만 확인하는 질문과 실제 경로를
+  복원하는 질문, 가장 짧은 경로를 구하는 질문이 한꺼번에 섞이는
+  학습자에게 union-find, BFS, shortest-path로 먼저 분기하게 돕는
+  symptom_router다. 같은 묶음인지 확인, 갈 수만 있으면 됨, 경로 하나
+  출력, 가장 적은 이동 횟수, component 개수 세기 같은 자연어
+  paraphrase가 본 문서의 라우팅 기준에 매핑된다.
 ---
 # Connectivity Question Router
 

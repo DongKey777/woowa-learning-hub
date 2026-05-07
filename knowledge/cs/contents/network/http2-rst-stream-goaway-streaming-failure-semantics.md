@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "HTTP/2 RST_STREAM, GOAWAY, Streaming Failure Semantics"
+concept_id: network/http2-rst-stream-goaway-streaming-failure-semantics
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- http2-rst-stream
+- grpc-streaming
+- goaway-drain
+aliases:
+- RST_STREAM
+- GOAWAY
+- HTTP/2 stream reset
+- gRPC cancellation
+- REFUSED_STREAM
+- last stream id
+- graceful drain
+- streaming failure semantics
+symptoms:
+- RST_STREAM 한 stream 취소와 TCP connection close를 같은 장애로 해석한다
+- GOAWAY를 항상 실패로 보고 graceful drain이나 max connection age를 놓친다
+- gRPC retry를 error code만 보고 side effect/idempotency 없이 자동화한다
+- trailers로 온 application status와 transport reset을 구분하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http2-multiplexing-hol-blocking
+- network/http2-flow-control-window-update-stalls
+next_docs:
+- network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+- network/grpc-deadlines-cancellation-propagation
+- network/grpc-status-trailers-transport-error-mapping
+- network/fin-rst-half-close-eof-semantics
+linked_paths:
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/http2-upload-early-reject-rst-stream-flow-control-cleanup.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/grpc-keepalive-goaway-max-connection-age.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/sse-failure-attribution-http1-http2.md
+confusable_with:
+- network/grpc-status-trailers-transport-error-mapping
+- network/grpc-deadlines-cancellation-propagation
+- network/http2-flow-control-window-update-stalls
+- network/fin-rst-half-close-eof-semantics
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 RST_STREAM과 GOAWAY는 어떤 층의 신호야?"
+- "GOAWAY last stream id를 보고 graceful drain인지 장애인지 어떻게 판단해?"
+- "gRPC streaming 중 RST_STREAM이 오면 retry해도 되는지 어떻게 결정해?"
+- "trailers로 온 grpc-status와 transport reset은 어떻게 구분해?"
+- "RST_STREAM NO_ERROR가 upload early reject에서 stop signal일 수 있는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2 RST_STREAM, GOAWAY, last stream id, TCP FIN/RST,
+  gRPC streaming cancellation, trailers와 transport failure 구분을 다루는
+  advanced playbook이다.
+---
 # HTTP/2 RST_STREAM, GOAWAY, Streaming Failure Semantics
 
 > 한 줄 요약: HTTP/2에서 `RST_STREAM`은 한 stream만 끊고, `GOAWAY`는 연결 전체에 새 stream 금지를 알리며, TCP `FIN`/`RST`는 transport를 끝낸다. 이 셋을 구분하지 못하면 gRPC retry와 streaming 실패를 잘못 해석하게 된다.

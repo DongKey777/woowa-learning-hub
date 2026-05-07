@@ -1,8 +1,87 @@
+---
+schema_version: 3
+title: HTTP 메서드와 REST 멱등성 입문
+concept_id: network/http-methods-rest-idempotency-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- http-method-intent-resource-action
+- idempotency-retry-safety
+- rest-resource-method-boundary
+aliases:
+- http methods rest idempotency basics
+- HTTP 메서드 REST 멱등성 입문
+- http method 뭐가 있나요
+- get post put delete 차이
+- 멱등성이 뭐예요
+- idempotent 뜻
+- safe method 뜻
+- rest api 설계 입문
+- 리소스 기반 api
+- http method spring controller mapping entry
+- POST 재시도 중복 생성
+- PUT PATCH DELETE idempotency
+symptoms:
+- GET, POST, PUT, PATCH, DELETE를 리소스와 동작 기준으로 어떻게 나누는지 모르겠어
+- 멱등성이 네트워크 재시도와 중복 생성 방지에 왜 중요한지 헷갈려
+- Spring @GetMapping, @PostMapping이 HTTP method 의미와 어떻게 연결되는지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/http-methods-rest-idempotency
+- spring/mvc-controller-basics
+- spring/request-pipeline-bean-container
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/network/http-methods-rest-idempotency.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- network/http-methods-rest-idempotency
+- network/http-status-codes-basics
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+forbidden_neighbors: []
+expected_queries:
+- GET, POST, PUT, PATCH, DELETE 차이를 safe와 idempotent 기준으로 설명해줘
+- POST는 왜 멱등이 아니라서 재시도하면 주문이 두 개 생길 수 있어?
+- PUT과 PATCH는 전체 교체와 부분 수정 기준으로 어떻게 구분해?
+- REST API에서 URI는 resource를 나타내고 method가 action을 나타낸다는 뜻이 뭐야?
+- HTTP method 의미가 Spring MVC @GetMapping @PostMapping과 어떻게 이어져?
+contextual_chunk_prefix: |
+  이 문서는 HTTP method를 resource에 대한 의도 표현으로 보고 GET, POST, PUT, PATCH, DELETE의 safe와 idempotent 특성을 REST API 설계와 retry safety에 연결하는 beginner primer다.
+  get post put patch delete 차이, 멱등성, POST duplicate submit, idempotency key, Spring controller mapping, resource based API 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HTTP 메서드와 REST 멱등성 입문
 
 > 한 줄 요약: GET/POST/PUT/DELETE 등 HTTP 메서드는 리소스에 어떤 동작을 할지 의도를 표현하며, 멱등성은 같은 요청을 여러 번 보내도 결과가 달라지지 않는 성질이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "GET, POST, PUT, PATCH, DELETE를 어떤 기준으로 나눠야 할지 모르겠어요" | 예약/주문/상품 API URI와 controller mapping 설계 | URI는 resource, method는 action 의도로 읽는다 |
+| "POST를 재시도하면 주문이 두 번 생길 수 있다는 말이 헷갈려요" | checkout timeout 뒤 재시도, 예약 생성 중복 제출 | safe, idempotent, duplicate submit 방지 필요성을 연결한다 |
+| "`@GetMapping`, `@PostMapping`이 HTTP method 의미와 어떻게 이어지나요?" | Spring MVC controller 첫 설계 | controller annotation을 HTTP 요청 의도와 같은 축으로 본다 |
 
 관련 문서:
 

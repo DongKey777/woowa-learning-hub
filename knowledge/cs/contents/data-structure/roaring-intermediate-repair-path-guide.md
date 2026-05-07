@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Roaring Intermediate Repair Path Guide
+concept_id: data-structure/roaring-intermediate-repair-path-guide
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-intermediate-repair
+- temporary-container-rewrite
+- query-result-repair-phase
+aliases:
+- Roaring intermediate repair path
+- temporary container Roaring
+- lazy OR temporary bitmap
+- repairAfterLazy hotspot
+- query result repair phase
+- toEfficientContainer profiling
+- ingest churn vs repair churn
+symptoms:
+- repairAfterLazy hotspot을 단순히 OR가 많아서 생긴다고만 보고 temporary container rewrite와 final representation 선택 비용을 분리하지 않는다
+- array -> temporary lazy bitmap -> array 같은 query intermediate 변화를 persisted bitmap ingest churn으로 잘못 해석한다
+- XOR도 일부 repair path가 있지만 모든 XOR가 repairAfterLazy debt를 만든다고 과잉 일반화한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-lazy-union-and-repair-costs
+next_docs:
+- data-structure/roaring-query-result-ordering-guide
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/roaring-run-optimize-timing-guide
+linked_paths:
+- contents/data-structure/roaring-bitmap-wide-lazy-union-pipeline.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-lazy-union-and-repair-costs.md
+- contents/data-structure/roaring-query-result-ordering-guide.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/roaring-andnot-result-heuristics.md
+confusable_with:
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-bitmap-wide-lazy-union-pipeline
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-andnot-result-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring repairAfterLazy hotspot은 temporary container rewrite와 어떤 관련이 있어?
+- array union array가 temporary lazy bitmap을 만들었다가 final array로 demotion되는 경로를 설명해줘
+- ingest churn과 query_result repair churn을 Roaring profiling에서 왜 분리해야 해?
+- run native XOR OR에서 toEfficientContainer finalize path는 언제 보이나?
+- Roaring intermediate repair path를 OR XOR ANDNOT별로 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 Roaring set-op에서 lazy bitmap이나 provisional run 같은 temporary
+  container가 생기고 repairAfterLazy 또는 toEfficientContainer에서 final
+  container로 rewrite되는 path를 설명한다. query_result repair phase와 ingest
+  churn을 분리해 profiling하는 기준을 제공한다.
+---
 # Roaring Intermediate Repair Path Guide
 
 > 한 줄 요약: Roaring의 lazy `OR`와 일부 run-native `XOR`/`OR` 경로는 결과를 곧바로 final container로 확정하지 않고 `lazy bitmap`이나 provisional `run` 같은 임시 container를 만든 뒤 `repairAfterLazy()` 또는 `toEfficientContainer()`에서 다시 고치므로, profiling도 ingest churn과 `query_result -> repair` 재작성 비용을 분리해서 봐야 한다.

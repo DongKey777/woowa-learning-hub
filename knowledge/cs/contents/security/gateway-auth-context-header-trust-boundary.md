@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Gateway Auth Context Headers / Trust Boundary
+concept_id: security/gateway-auth-context-header-trust-boundary
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- gateway auth header
+- trusted auth context
+- X-Authenticated-User
+- X-User-Id spoofing
+aliases:
+- gateway auth header
+- trusted auth context
+- X-Authenticated-User
+- X-User-Id spoofing
+- edge authentication
+- header stripping
+- auth context propagation
+- confused deputy
+- gateway trust boundary
+- internal auth header
+- forwarded identity
+- caller identity
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/forwarded-header-trust-boundary-primer.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/workload-identity-user-context-propagation-boundaries.md
+- contents/security/trust-boundary-bypass-detection-signals.md
+- contents/security/token-exchange-impersonation-risks.md
+- contents/security/authentication-vs-authorization.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/proxy-header-normalization-chain-trust-boundary.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Gateway Auth Context Headers / Trust Boundary 핵심 개념을 설명해줘
+- gateway auth header가 왜 필요한지 알려줘
+- Gateway Auth Context Headers / Trust Boundary 실무 설계 포인트는 뭐야?
+- gateway auth header에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Gateway Auth Context Headers / Trust Boundary를 다루는 deep_dive 문서다. gateway가 인증을 끝냈다고 해서 upstream 서비스가 아무 auth header나 믿어도 되는 것은 아니며, strip/overwrite, hop identity, canonical context가 함께 있어야 header spoofing과 confused deputy를 막을 수 있다. 검색 질의가 gateway auth header, trusted auth context, X-Authenticated-User, X-User-Id spoofing처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Gateway Auth Context Headers / Trust Boundary
 
 > 한 줄 요약: gateway가 인증을 끝냈다고 해서 upstream 서비스가 아무 auth header나 믿어도 되는 것은 아니며, strip/overwrite, hop identity, canonical context가 함께 있어야 header spoofing과 confused deputy를 막을 수 있다.

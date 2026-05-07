@@ -38,8 +38,8 @@ prerequisites:
 next_docs:
 - spring/shopping-cart-payment-transaction-boundary-bridge
 - spring/shopping-cart-order-complete-after-commit-outbox-bridge
-- spring/spring-eventlistener-transaction-phase-outbox
-- spring/spring-eventlistener-ordering-async-traps
+- spring/eventlistener-transaction-phase-outbox
+- spring/eventlistener-ordering-async-traps
 linked_paths:
 - contents/spring/shopping-cart-payment-transaction-boundary-bridge.md
 - contents/spring/shopping-cart-order-complete-after-commit-outbox-bridge.md
@@ -49,8 +49,8 @@ linked_paths:
 confusable_with:
 - spring/shopping-cart-payment-transaction-boundary-bridge
 - spring/shopping-cart-order-complete-after-commit-outbox-bridge
-- spring/spring-eventlistener-transaction-phase-outbox
-- spring/spring-eventlistener-ordering-async-traps
+- spring/eventlistener-transaction-phase-outbox
+- spring/eventlistener-ordering-async-traps
 forbidden_neighbors: []
 expected_queries:
 - shopping-cart에서 주문 완료는 됐는데 메일이나 알림이 빠질 때 먼저 어느 경계를 의심해야 해?
@@ -67,7 +67,6 @@ contextual_chunk_prefix: |
   빠진다" 같은 표현을 transaction boundary, event phase, outbox, async trap
   갈래로 라우팅한다.
 ---
-
 # shopping-cart 주문 완료 후속 작업 누락 원인 라우터
 
 ## 한 줄 요약

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Message-Driven Adapter Example
+concept_id: software-engineering/message-driven-adapter
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- hexagonal
+- inbound-adapter
+- message-consumer
+- scheduled-job
+aliases:
+- Message-Driven Adapter Example
+- inbound adapter examples
+- HTTP controller vs message consumer vs batch job
+- same use case different triggers
+- consumer도 controller service 같이 쓰나
+- 메시지 기반 어댑터 예시
+symptoms: []
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- data-structure/queue-basics
+next_docs:
+- software-engineering/inbound-adapter-testing-matrix
+- software-engineering/batch-job-scope
+- software-engineering/outbox-message-adapter-test-matrix
+linked_paths:
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/webhook-and-broker-boundary-primer.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+- contents/software-engineering/outbox-message-adapter-test-matrix.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/design-pattern/command-handler-pattern.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/workflow-orchestration-saga-design.md
+confusable_with:
+- software-engineering/inbound-adapter-testing-matrix
+- software-engineering/batch-job-scope
+- software-engineering/webhook-broker-boundary-primer
+forbidden_neighbors: []
+expected_queries:
+- HTTP controller, message consumer, scheduled job가 모두 같은 use case를 여는 inbound adapter인지 어떻게 판단해?
+- consumer도 controller처럼 같은 application service를 호출해도 되는지 초심자에게 설명해줘
+- 같은 일을 다른 trigger로 여는 경우와 아예 다른 use case로 나눠야 하는 경우를 비교해줘
+- message consumer adapter가 payload, ack, retry, idempotency를 어디까지 책임져야 해?
+- queue FIFO 개념에서 hexagonal inbound adapter와 use case boundary로 넘어가는 안전한 학습 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Message-Driven Adapter Example를 다루는 primer 문서다. Message-Driven Adapter Example, inbound adapter examples, HTTP controller vs message consumer vs batch job, same use case different triggers, consumer도 controller service 같이 쓰나 같은 lexical 표현과 HTTP controller, message consumer, scheduled job가 모두 같은 use case를 여는 inbound adapter인지 어떻게 판단해?, consumer도 controller처럼 같은 application service를 호출해도 되는지 초심자에게 설명해줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Message-Driven Adapter Example
 
 > 한 줄 요약: HTTP controller, message consumer, batch job는 먼저 "같은 일을 여는 서로 다른 입구인가?"를 보고 하나의 유스케이스 경계를 공유할지 판단하면 되고, 그다음에 inbound adapter 같은 용어를 붙이면 된다.

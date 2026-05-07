@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Shadow Catalog Reopen and Successor Rules
+concept_id: software-engineering/shadow-catalog-reopen-successor-rules
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- recurrence
+- lineage
+- retirement
+aliases:
+- shadow catalog reopen rules
+- shadow successor entry
+- reopen vs successor
+- recurrence lineage rule
+- same entry reopen
+- shadow 재오픈 후속 항목 규칙
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-retirement-proof-metrics
+next_docs:
+- software-engineering/shadow-temporary-hold-exit-criteria
+- software-engineering/decision-revalidation-lifecycle
+- software-engineering/shadow-review-outcome-template
+linked_paths:
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-review-outcome-template.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/shadow-retirement-scorecard-schema.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/service-split-merge-absorb-evolution-framework.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+confusable_with:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-retirement-proof-metrics
+- software-engineering/decision-revalidation-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- retired shadow entry에서 recurrence가 보이면 같은 entry를 reopen할지 successor entry를 만들지 어떻게 판단해?
+- 같은 shadow identity와 같은 replacement path라면 reopen하고 path, scope, owner, replacement가 바뀌면 successor를 만드는 이유는?
+- reopen할 때 catalog_id는 유지하되 과거 retired_at과 proof snapshot을 append-only history로 남기는 방법은?
+- successor entry는 lineage_root_id와 predecessor_catalog_ids를 왜 가져야 해?
+- verification_pending에서 same-path recurrence가 잡히면 새 entry가 아니라 같은 row를 rollback하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shadow recurrence를 같은 entry reopen으로 볼지 successor entry로 분리할지 identity continuity, replacement continuity, backlog shape 기준으로 고르는 advanced chooser이다.
+---
 # Shadow Catalog Reopen and Successor Rules
 
 > 한 줄 요약: shadow recurrence가 보였다고 매번 새 catalog entry를 만드는 것도, 반대로 같은 entry를 무조건 재사용하는 것도 위험하므로, **같은 shadow identity와 같은 replacement path의 실패**라면 reopen하고, **scope/path/owner/replacement가 구조적으로 달라졌다면 successor entry**를 만들어 lineage와 history를 남겨야 한다.

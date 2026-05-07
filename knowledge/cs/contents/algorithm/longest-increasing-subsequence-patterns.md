@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Longest Increasing Subsequence Patterns
+concept_id: algorithm/longest-increasing-subsequence-patterns
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- lis-subsequence-vs-subarray
+- tails-binary-search
+- sequence-optimization
+aliases:
+- longest increasing subsequence patterns
+- LIS patterns
+- longest increasing subsequence
+- patience sorting LIS
+- tails array
+- lower bound on tails
+- subsequence optimization
+- non contiguous subsequence
+- 최장 증가 부분 수열
+- LIS 패턴
+- 부분 수열 최적화
+- 증가 수열 DP
+symptoms:
+- subsequence와 subarray를 같은 말로 보고 연속 구간이 아닌 문제에 sliding window를 붙인다
+- LIS의 O(n log n) 풀이가 binary search를 쓰니까 문제 자체를 이분 탐색으로만 라우팅한다
+- 길이만 필요한지 실제 수열 복원이 필요한지 나누지 않아 tails 풀이와 DP 풀이 선택이 흔들린다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- algorithm/dp-intro
+- algorithm/binary-search-intro
+next_docs:
+- algorithm/binary-search-patterns
+- algorithm/sliding-window-patterns
+- algorithm/two-pointer
+- algorithm/greedy-vs-dp-decision-card
+linked_paths:
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/two-pointer.md
+- contents/algorithm/greedy-vs-dp-decision-card.md
+- contents/algorithm/dp-intro.md
+confusable_with:
+- algorithm/sliding-window-patterns
+- algorithm/binary-search-patterns
+- algorithm/two-pointer
+forbidden_neighbors: []
+expected_queries:
+- LIS에서 subsequence는 중간 원소를 건너뛰어도 되는 뜻이고 subarray와 어떻게 다른지 설명해줘
+- longest increasing subsequence를 O(n squared) DP와 tails plus binary search로 푸는 차이를 알고 싶어
+- LIS 풀이에서 lower bound가 왜 tails 배열 위치를 찾는 데 쓰이는지 예시로 알려줘
+- 문제에 increasing sequence가 나오면 sliding window가 아니라 LIS로 의심해야 하는 기준이 뭐야?
+- LIS 길이만 구하는 경우와 실제 수열을 복원해야 하는 경우 풀이가 어떻게 달라져?
+contextual_chunk_prefix: |
+  이 문서는 longest increasing subsequence를 subsequence 최적화 문제로 라우팅하는 bridge다.
+  subarray/substring과 다른 non-contiguous order-preserving sequence, O(n^2) DP, O(n log n) tails array, lower_bound binary search, 복원 여부, sliding window 및 two pointer와의 경계를 다룬다.
+---
 # Longest Increasing Subsequence Patterns
 
 > 한 줄 요약: LIS는 단순 길이 계산을 넘어서, 최적 부분구조와 이분 탐색을 결합해 순서 최적화 문제를 푸는 대표 패턴이다.

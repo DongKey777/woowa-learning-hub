@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Hungarian Algorithm Intuition
+concept_id: algorithm/hungarian-algorithm-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- hungarian-algorithm
+- linear-assignment
+- weighted-perfect-matching
+aliases:
+- Hungarian algorithm
+- Kuhn Munkres
+- linear assignment
+- optimal assignment
+- minimum cost assignment
+- square cost matrix assignment
+- weighted bipartite matching
+- one worker one job
+- 헝가리안 알고리즘
+- 최적 배정
+symptoms:
+- worker-job cost matrix의 exact 1대1 최소 비용 배정을 일반 shortest path나 max flow로 먼저 해석한다
+- Hungarian, bitmask DP, min-cost max-flow의 선택 기준을 N 크기, capacity, partial assignment 기준으로 나누지 못한다
+- cost matrix가 정사각이 아니거나 공급 수요 용량이 있는 문제에도 Hungarian을 무리하게 적용하려 한다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/network-flow-intuition
+- algorithm/bitmask-dp
+next_docs:
+- algorithm/min-cost-max-flow-intuition
+- algorithm/bitmask-dp
+- algorithm/network-flow-intuition
+linked_paths:
+- contents/algorithm/min-cost-max-flow-intuition.md
+- contents/algorithm/bitmask-dp.md
+- contents/algorithm/network-flow-intuition.md
+confusable_with:
+- algorithm/min-cost-max-flow-intuition
+- algorithm/bitmask-dp
+- algorithm/network-flow-intuition
+- algorithm/graph
+forbidden_neighbors: []
+expected_queries:
+- Hungarian 알고리즘은 정사각 cost matrix의 1대1 최소 비용 배정을 푸는 알고리즘이야?
+- optimal assignment와 minimum weight perfect matching은 어떤 문제 모양을 말해?
+- Hungarian과 min-cost max-flow와 bitmask DP assignment를 언제 구분해서 써야 해?
+- worker 수와 job 수가 다르면 dummy를 넣어 balanced assignment로 맞추는 이유가 뭐야?
+- capacity나 supply demand가 있으면 Hungarian보다 min-cost max-flow가 더 자연스러운 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Hungarian Algorithm intuition deep dive로, square cost matrix에서
+  각 row와 column을 정확히 한 번씩 쓰는 linear assignment, optimal
+  worker-task assignment, weighted perfect matching을 설명하고 bitmask DP 및
+  min-cost max-flow와의 경계를 잡는다.
+---
 # Hungarian Algorithm Intuition
 
 > 한 줄 요약: Hungarian 알고리즘은 정사각 cost matrix에서 모든 행과 열을 정확히 한 번씩 쓰는 1:1 최소 비용 배정을 푸는 특화 알고리즘이다.

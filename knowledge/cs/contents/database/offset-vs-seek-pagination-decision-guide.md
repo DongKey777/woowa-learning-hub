@@ -50,8 +50,7 @@ confusable_with:
 - database/pagination-duplicates-missing-symptom-router
 - database/roomescape-admin-reservation-list-pagination-stability-bridge
 - database/read-after-write-routing-decision-guide
-forbidden_neighbors:
-- contents/database/roomescape-admin-reservation-list-pagination-stability-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 관리자 목록처럼 몇 페이지로 바로 점프해야 하면 offset과 seek 중 무엇이 더 자연스러워?
 - 무한 스크롤에서 새 글이 끼어들어도 덜 흔들리게 하려면 offset보다 다른 방식을 먼저 봐야 해?
@@ -72,6 +71,14 @@ contextual_chunk_prefix: |
 ## 한 줄 요약
 
 > 페이지 번호 점프와 단순 구현이 먼저면 `OFFSET`, 다음 페이지만 빠르고 안정적으로 이어 가는 UX가 먼저면 `seek`, 중복·누락이 이미 아프다면 방식보다 먼저 stable order와 cursor 계약을 같이 고정한다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "roomescape 관리자 목록은 페이지 번호가 필요하니까 offset이면 되나요?" | 운영 화면에서 특정 페이지 점프와 안정 정렬을 같이 요구하는 목록 API | UX가 page jump인지 next-more인지 먼저 고르고 tie-breaker를 붙인다 |
+| "무한 스크롤에서 다음 페이지가 중복되거나 빠져요" | 새 row가 끼어드는 피드/주문 목록을 `LIMIT/OFFSET`으로 이어 읽는 코드 | offset window drift와 stable order 부재를 먼저 의심한다 |
+| "cursor를 쓰면 중복/누락이 자동으로 없어지나요?" | cursor에 `created_at`만 넣고 동률 row를 안정적으로 넘기지 못하는 구현 | seek도 유일한 정렬 key와 cursor 계약이 있어야 안전하다 |
 
 ## 결정 매트릭스
 

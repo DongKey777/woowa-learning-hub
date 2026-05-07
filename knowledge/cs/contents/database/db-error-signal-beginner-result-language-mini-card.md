@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Duplicate Key vs Lock Timeout vs Deadlock Beginner Bridge
+concept_id: database/db-error-signal-beginner-result-language-mini-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- db-error-signal
+- duplicate-key
+- lock-timeout
+- deadlock
+aliases:
+- duplicate key vs lock timeout vs deadlock
+- db error signal beginner result language
+- duplicate key lock timeout deadlock beginner bridge
+- already exists busy retryable one page
+- duplicate insert lock primer bridge
+- loser signal beginner bridge
+- 중복키 락타임아웃 데드락 차이
+- duplicate key랑 lock timeout 차이
+- deadlock retry 왜 해요
+- already exists busy retryable
+symptoms:
+- duplicate key, lock wait timeout, deadlock을 모두 실패로만 보고 already exists, busy, retryable 서비스 언어로 나누지 못한다
+- lock timeout을 이미 winner가 있는 duplicate key처럼 읽어 409 conflict로 단정한다
+- deadlock retry를 SQL 한 줄 재실행으로 처리하고 transaction 전체 attempt retry 경계를 놓친다
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/three-bucket-terms-common
+next_docs:
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/deadlock-vs-lock-wait-timeout-primer
+- database/db-signal-service-result-http-bridge
+linked_paths:
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/lock-duplicate-three-bucket-mini-bridge.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/three-bucket-decision-tree-mini-card.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/database/db-signal-service-result-http-bridge.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/duplicate-key-vs-busy-response-mapping
+- database/lock-duplicate-three-bucket-mini-bridge
+- database/deadlock-vs-lock-wait-timeout-primer
+- database/db-signal-service-result-http-bridge
+forbidden_neighbors: []
+expected_queries:
+- duplicate key, lock timeout, deadlock을 이미 있음, 지금 막힘, 이번 시도만 다시로 어떻게 번역해?
+- duplicate key는 already exists이고 lock wait timeout은 busy라서 같은 409로 보면 안 되는 이유가 뭐야?
+- deadlock은 왜 retryable이고 SQL 한 줄이 아니라 transaction 전체를 bounded retry해야 해?
+- 중복 insert primer 다음에 lock timeout과 deadlock loser signal을 한 장 표로 보고 싶어
+- busy와 retryable과 already exists를 DB 예외 신호에서 처음 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 Duplicate Key vs Lock Timeout vs Deadlock beginner bridge로, duplicate key loser는
+  already exists, lock wait timeout은 busy, deadlock은 retryable whole-transaction retry라는
+  서비스 결과 언어로 DB error signal을 번역하는 첫 표를 제공한다.
+---
 # Duplicate Key vs Lock Timeout vs Deadlock 입문 브리지
 
 > 한 줄 요약: 중복 insert primer에서 `duplicate key`를 막 배운 초보자는 락 입문으로 넘어가기 전에 loser signal을 먼저 `이미 있음` / `지금 막힘` / `이번 시도만 다시`로 번역해 두면 `busy`와 `retryable`이 훨씬 빨리 연결된다.

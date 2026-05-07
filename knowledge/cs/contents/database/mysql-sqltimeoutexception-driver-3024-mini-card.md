@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL SQLTimeoutException vs Driver Timeout vs 3024 Mini Card
+concept_id: database/mysql-sqltimeoutexception-driver-3024-mini-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- timeout
+- jdbc
+- mysql-3024
+- exception-mapping
+aliases:
+- mysql sqltimeoutexception 3024
+- driver timeout vs mysql timeout
+- mysql query execution interrupted 3024
+- sqltimeoutexception what is
+- jdbc query timeout vs socket timeout
+- mysql max execution time exceeded
+- timeout surface signal primer
+- MySQL timeout 뭐예요
+- SQLTimeoutException은 3024인가요
+- driver socketTimeout mysql
+symptoms:
+- java.sql.SQLTimeoutException 표면 예외만 보고 MySQL 서버 timeout인지 driver socket timeout인지 단정하고 있어
+- MySQL errno 3024와 JDBC query timeout, network socket timeout의 ownership을 구분해야 해
+- timeout을 retry 문제로 볼지 slow query plan 문제로 볼지 root cause vendor code와 메시지로 내려가야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/timeout-errorcode-mapping-mini-card
+- database/statement-timeout-vs-lock-timeout-card
+next_docs:
+- database/query-tuning-checklist
+- database/hikari-connection-pool-tuning
+- database/transaction-timeout-vs-lock-timeout
+linked_paths:
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/statement-timeout-vs-lock-timeout-card.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md
+- contents/database/query-tuning-checklist.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+confusable_with:
+- database/statement-timeout-vs-lock-timeout-card
+- database/timeout-errorcode-mapping-mini-card
+- database/hikari-connection-pool-tuning
+forbidden_neighbors: []
+expected_queries:
+- SQLTimeoutException이 보이면 항상 MySQL 3024 서버 timeout으로 봐도 돼?
+- driver socketTimeout과 MySQL errno 3024를 로그에서 어떻게 구분해?
+- JDBC query timeout, network timeout, server max execution time을 ownership 기준으로 설명해줘
+- MySQL 3024가 lock timeout이 아니라 slow query signal에 가까운 이유가 뭐야?
+- timeout 예외를 보면 root cause, vendor code, query plan 중 무엇부터 확인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 java.sql.SQLTimeoutException, JDBC driver socket timeout, MySQL errno 3024 query execution timeout을 ownership 기준으로 분리하는 beginner symptom router다.
+  SQLTimeoutException은 3024인가요, driver timeout vs mysql timeout, MySQL timeout 뭐예요 질문이 본 문서에 매핑된다.
+---
 # MySQL `SQLTimeoutException` vs Driver Timeout vs `3024` 미니카드
 
 > 한 줄 요약: `SQLTimeoutException`은 자바 표면 이름이고, driver timeout은 클라이언트 쪽 끊김이며, MySQL `3024`는 서버가 실행 시간을 넘겨 직접 끊은 신호다.

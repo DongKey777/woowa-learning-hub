@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: CDC Gap Repair, Reconciliation, and Rebuild Boundaries
+concept_id: database/cdc-gap-repair-reconciliation-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- cdc-gap-repair
+- reconciliation
+- bounded-repair
+- projection-rebuild
+aliases:
+- cdc gap repair
+- cdc reconciliation
+- replay boundary
+- bounded repair fence
+- replay cutoff
+- connector outage recovery
+- binlog gap
+- wal gap
+- projection repair
+- repair manifest
+symptoms:
+- CDC connector를 다시 켰다는 사실만으로 gap boundary와 sink drift가 복구됐다고 판단한다
+- lag와 실제 gap을 구분하지 못해 replay, source backfill, recompute, full rebuild 중 repair mode를 잘못 고른다
+- repair lower/upper fence와 domain scope 없이 live traffic과 repair traffic을 섞어 검증이 흔들린다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/cdc-debezium-outbox-binlog
+- database/cdc-backpressure-binlog-retention-replay
+- database/online-backfill-consistency
+next_docs:
+- database/cdc-replay-verification-idempotency-runbook
+- database/online-backfill-verification-cutover-gates
+- system-design/replay-repair-orchestration-control-plane-design
+linked_paths:
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/cdc-backpressure-binlog-retention-replay.md
+- contents/database/online-backfill-consistency.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/incremental-summary-table-refresh-watermark.md
+- contents/database/read-repair-reconciliation-after-failover.md
+- contents/database/cdc-replay-verification-idempotency-runbook.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/system-design/reconciliation-window-cutoff-control-design.md
+confusable_with:
+- database/cdc-backpressure-binlog-retention-replay
+- database/cdc-replay-verification-idempotency-runbook
+- database/online-backfill-verification-cutover-gates
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+forbidden_neighbors: []
+expected_queries:
+- CDC 장애 뒤 connector restart보다 gap boundary, repair scope, replay backfill recompute 선택이 중요한 이유가 뭐야?
+- CDC lag와 실제 binlog gap을 어떻게 구분하고 replay 가능한지 판단해?
+- CDC repair에서 lower fence, upper fence, tenant aggregate bucket scope를 명시해야 하는 이유가 뭐야?
+- projection drift를 replay, source backfill, recompute, full rebuild 중 무엇으로 수리할지 고르는 기준을 알려줘
+- CDC gap repair 후 source count, checksum, sample diff로 reconciliation하는 절차를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 CDC Gap Repair, Reconciliation, and Rebuild Boundaries playbook으로,
+  CDC connector outage나 log gap 뒤 lag vs actual gap을 구분하고 bounded repair fence, domain scope,
+  replay/backfill/recompute/rebuild mode, reconciliation verification을 선택하는 절차를 설명한다.
+---
 # CDC Gap Repair, Reconciliation, and Rebuild Boundaries
 
 > 한 줄 요약: CDC 장애 뒤의 핵심은 connector를 다시 켜는 것이 아니라, 어느 구간이 비었는지 확인하고 replay·backfill·recompute 중 어떤 수리 경계를 택할지 빠르게 결정하는 것이다.

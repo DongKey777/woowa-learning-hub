@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Shared-Pool Guard Design for Room-Type Inventory
+concept_id: database/shared-pool-guard-design-room-type-inventory
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- room-type-inventory
+- guard-row
+- booking
+- pooled-inventory
+- ledger
+aliases:
+- shared pool guard
+- room-type inventory
+- room type day guard
+- pooled inventory ledger
+- hotel room-type capacity
+- sell from pool assign later
+- fungible room inventory
+- unit-day assignment guard
+- pooled booking oversell
+- room assignment after booking
+symptoms:
+- room-type inventory를 pooled availability로 팔고 나중에 실제 room_id를 assign해야 해
+- sell-time room_type_day guard와 assignment-time unit guard를 같은 invariant로 뭉개서 oversell이나 late assignment failure가 생길 수 있어
+- guard row, append-only ledger, active predicate, overlap fallback을 함께 설계해야 해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/guard-row-scope-quick-examples
+- database/guard-row-scope-design-multi-day-bookings
+next_docs:
+- database/active-predicate-alignment-capacity-guards
+- database/overlap-predicate-index-design-booking-tables
+- database/engine-fallbacks-overlap-enforcement
+linked_paths:
+- contents/database/guard-row-scope-quick-examples.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/active-predicate-alignment-capacity-guards.md
+- contents/database/active-predicate-drift-reservation-arbitration.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+confusable_with:
+- database/guard-row-scope-design-multi-day-bookings
+- database/active-predicate-alignment-capacity-guards
+- database/overlap-predicate-index-design-booking-tables
+forbidden_neighbors: []
+expected_queries:
+- room-type inventory를 pooled availability로 팔고 나중에 room assignment하는 모델에서 어떤 guard가 필요해?
+- sell-time room_type_day guard와 assignment-time unit guard는 왜 서로 다른 invariant야?
+- pooled booking oversell을 막으면서 check-in 직전 late room assignment failure도 줄이려면 어떻게 설계해?
+- guard row와 append-only ledger를 같이 두면 repair, replay, audit 관점에서 무엇이 좋아져?
+- room_type_id stay_day 기준 판매와 room_id stay_day 기준 배정을 분리해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shared-pool room-type inventory를 sell-time pool guard, pooled inventory ledger, assignment-time unit guard로 나누는 advanced playbook이다.
+  room_type_day guard, fungible room inventory, sell from pool assign later, pooled booking oversell 질문이 본 문서에 매핑된다.
+---
 # Shared-Pool Guard Design for Room-Type Inventory
 
 > 한 줄 요약: room-type inventory를 pooled availability로 팔고 나중에 실제 객실을 배정한다면, sell-time day guard, replay 가능한 ledger, assignment-time unit guard를 서로 다른 invariant로 분리해 설계해야 oversell과 late assignment failure를 동시에 줄일 수 있다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Lock Escalation Misconceptions
+concept_id: database/lock-escalation-misconceptions
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- lock-escalation-misconception
+- row-lock-vs-mdl-range-lock
+- lock-granularity-debugging
+aliases:
+- lock escalation
+- table lock
+- row lock
+- lock granularity
+- escalation misconception
+- savepoint lock retention
+- row lock table lock misconception
+- 락 에스컬레이션
+- 테이블 락으로 상승
+- lock escalation myth
+symptoms:
+- row lock이 많아지면 모든 DB에서 자동으로 table lock으로 escalation된다고 단정하고 있어
+- 실제 원인이 gap/next-key lock, metadata lock, long transaction, full scan인데 lock escalation으로 오해하고 있어
+- 대량 update나 DDL blocking을 row lock escalation 하나로 설명하려 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/transaction-isolation-locking
+- database/lock-wait-deadlock-latch-triage-playbook
+next_docs:
+- database/gap-lock-next-key-lock
+- database/metadata-lock-ddl-blocking
+- database/savepoint-lock-retention-edge-cases
+- database/deadlock-vs-lock-wait-timeout-primer
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/savepoint-lock-retention-edge-cases.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+confusable_with:
+- database/gap-lock-next-key-lock
+- database/metadata-lock-ddl-blocking
+- database/savepoint-lock-retention-edge-cases
+forbidden_neighbors: []
+expected_queries:
+- row lock이 많아지면 항상 table lock으로 escalation되는 건 아니야?
+- lock escalation으로 보이는 장애가 실제로는 MDL, range lock, long transaction일 수 있는 이유는 뭐야?
+- 대량 update 뒤 전체가 멈춘 것처럼 보이면 lock escalation보다 무엇을 먼저 관측해야 해?
+- DB마다 lock escalation 정책이 다르다는 점을 운영 판단에서 어떻게 반영해?
+- row lock, gap lock, metadata lock, table lock을 구분해서 디버깅하는 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 row lock이 많아졌다고 모든 DB에서 자동 table lock으로 escalation된다고 일반화하는 오해를 풀고 MDL, range lock, long transaction, query shape를 먼저 관측하게 하는 advanced deep dive다.
+  lock escalation, table lock, row lock, metadata lock, lock granularity 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Lock Escalation Misconceptions
 
 > 한 줄 요약: lock escalation은 모든 DB에서 같은 방식으로 일어나지 않으며, row lock이 늘어난다고 자동으로 테이블 락으로 바뀐다고 생각하면 운영 판단이 틀어진다.

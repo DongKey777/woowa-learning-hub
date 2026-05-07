@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Scheduler Wakeup Latency runqlat Queueing Debugging
+concept_id: operating-system/scheduler-wakeup-latency-runqlat-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- scheduler-wakeup-latency
+- runqlat
+- wakeup-to-run
+- latency
+aliases:
+- scheduler wakeup latency
+- runqlat debugging
+- wakeup-to-run latency
+- runnable queueing delay
+- event loop p99 scheduler
+- lock handoff scheduler delay
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/schedstat-proc-sched-runtime-debugging.md
+- contents/operating-system/lock-contention-futex-offcpu-debugging.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+symptoms:
+- CPU 평균 사용률은 낮지만 runnable task가 wakeup 후 실제 CPU를 받기까지 밀린다.
+- event loop, lock handoff, request dispatch p99가 scheduler wakeup-to-run delay로 무너진다.
+- runqlat tail과 per-task schedstat를 연결해 원인을 좁혀야 한다.
+expected_queries:
+- runqlat은 runnable task가 wakeup된 뒤 CPU를 받기까지의 latency를 어떻게 보여줘?
+- CPU 평균 사용률이 낮아도 scheduler wakeup latency 때문에 p99가 무너질 수 있어?
+- event loop나 lock handoff 지연을 wakeup-to-run tail로 어떻게 확인해?
+- runqlat과 schedstat, PSI를 함께 보는 scheduler debugging flow는?
+contextual_chunk_prefix: |
+  이 문서는 CPU average utilization이 낮아도 runnable task가 wakeup된 뒤 실제 CPU를 받기까지
+  queueing되면 event loop, lock handoff, request dispatch p99가 무너질 수 있다는 scheduler
+  wakeup latency playbook이다.
+---
 # Scheduler Wakeup Latency, runqlat, Queueing Debugging
 
 > 한 줄 요약: CPU 평균 사용률이 낮아도 runnable 태스크가 wakeup된 뒤 실제로 CPU를 받기까지 밀리면 event loop, lock handoff, request dispatch의 p99는 쉽게 무너진다.

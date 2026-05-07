@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Fraud Rules Authoring Platform 설계
+concept_id: system-design/fraud-rules-authoring-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- fraud rules authoring
+- rule DSL
+- policy simulation
+- historical replay
+aliases:
+- fraud rules authoring
+- rule DSL
+- policy simulation
+- historical replay
+- canary rules
+- thresholds
+- scoring rules
+- rule versioning
+- explainable fraud
+- decision tree
+- Fraud Rules Authoring Platform 설계
+- fraud rules authoring platform design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/fraud-risk-scoring-pipeline-design.md
+- contents/system-design/fraud-case-management-workflow-design.md
+- contents/system-design/experimentation-ab-testing-platform-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/event-bus-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Fraud Rules Authoring Platform 설계 설계 핵심을 설명해줘
+- fraud rules authoring가 왜 필요한지 알려줘
+- Fraud Rules Authoring Platform 설계 실무 트레이드오프는 뭐야?
+- fraud rules authoring 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Fraud Rules Authoring Platform 설계를 다루는 deep_dive 문서다. fraud rules authoring platform은 사기 탐지 규칙을 작성, 테스트, 시뮬레이션, 배포, 롤백하는 정책 개발 환경이다. 검색 질의가 fraud rules authoring, rule DSL, policy simulation, historical replay처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Fraud Rules Authoring Platform 설계
 
 > 한 줄 요약: fraud rules authoring platform은 사기 탐지 규칙을 작성, 테스트, 시뮬레이션, 배포, 롤백하는 정책 개발 환경이다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 커밋 메시지 컨벤션 기초
+concept_id: software-engineering/commit-message-basics
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+review_feedback_tags:
+- commit-message-basics
+- conventional-commits
+- change-history-searchability
+aliases:
+- commit message basics
+- conventional commits
+- type scope subject
+- feat fix refactor test docs chore
+- git commit 메시지
+- 커밋 메시지 입문
+- 좋은 커밋 작성법
+- 커밋 타입 설명
+- 이력 추적
+symptoms:
+- 커밋 메시지를 수정 작업 같은 개인 메모로만 써서 변경 이유와 범위를 나중에 추적하기 어렵다
+- feat, fix, refactor, test, docs, chore를 외부 동작 변화 기준으로 구분하지 못한다
+- 하나의 커밋에 여러 변경 목적이 섞였는데 메시지 type 하나로 덮으려 한다
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- software-engineering/git-workflow-basics
+next_docs:
+- software-engineering/code-review-basics
+- software-engineering/git-workflow-basics
+- software-engineering/clean-code-basics
+linked_paths:
+- contents/software-engineering/code-review-basics.md
+- contents/software-engineering/git-workflow-basics.md
+- contents/software-engineering/clean-code-basics.md
+- contents/language/java/java-language-basics.md
+confusable_with:
+- software-engineering/git-workflow-basics
+- software-engineering/code-review-basics
+- software-engineering/clean-code-basics
+forbidden_neighbors: []
+expected_queries:
+- 커밋 메시지는 type scope subject 구조로 어떻게 쓰면 돼?
+- feat fix refactor test docs chore는 외부 동작 변화 기준으로 어떻게 나눠?
+- 좋은 커밋 메시지는 왜 git log와 변경 이유 추적에 도움이 돼?
+- 하나의 커밋에 기능 추가와 리팩터링이 섞이면 메시지보다 커밋을 나눠야 해?
+- 커밋 메시지 subject에는 무엇을 바꿨는지 어느 정도로 적어야 해?
+contextual_chunk_prefix: |
+  이 문서는 commit message beginner primer로, Conventional Commits의
+  type(scope): subject 형식, feat/fix/refactor/test/docs/chore 구분,
+  변경 이유와 범위를 git log에서 찾기 쉽게 남기는 기준을 설명한다.
+---
 # 커밋 메시지 컨벤션 기초 (Commit Message Basics)
 
 > 한 줄 요약: 커밋 메시지는 변경 이유와 범위를 type(scope): subject 구조로 담아 팀이 이력을 빠르게 추적할 수 있게 한다.

@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > blackjack에서 `hit` 한 번은 "행동 로그 한 줄 추가"만이 아니라 "현재 손패 합계, 다음 차례, 종료 여부가 어떻게 바뀌었는가"까지 함께 확정되는 write다. 그래서 action history append와 round snapshot update를 같은 트랜잭션으로 읽는 편이 현재 truth가 덜 흔들린다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "hit 로그는 남았는데 현재 손패 점수가 이전 값이에요" | action history insert와 round_state update가 따로 commit되는 코드 | 한 action이 남기는 history와 current snapshot을 같은 transaction으로 묶는다 |
+| "append log만 있으면 현재 상태 row는 없어도 되나요?" | 매 조회마다 전체 action history로 현재 점수/차례를 재계산하려는 설계 | beginner 단계에서는 current truth row와 audit history 역할을 나눠 본다 |
+| "점수 계산은 도메인인데 DB 트랜잭션은 왜 보나요?" | `Game.hit` 결과를 여러 table write로 반영하면서 일부만 성공하는 구조 | 도메인 결과를 저장소 truth로 원자적으로 반영하는 write 단위를 잡는다 |
+
 ## 미션 시나리오
 
 콘솔 blackjack은 메모리 안 `Game` 객체 하나가 행동 이력과 현재 상태를 동시에

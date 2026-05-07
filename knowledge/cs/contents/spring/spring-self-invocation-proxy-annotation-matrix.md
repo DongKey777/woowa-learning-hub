@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring Self Invocation Proxy Annotation Matrix
+concept_id: spring/self-invocation-proxy-annotation-matrix
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+review_feedback_tags:
+- self-invocation-proxy
+- annotation
+- trap
+- transactional-self-invocation
+aliases:
+- Spring self invocation proxy trap
+- @Transactional self invocation
+- @Async self invocation
+- @Cacheable self invocation
+- @Validated self invocation
+- @PreAuthorize self invocation
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+linked_paths:
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-transactional-self-invocation-test-bridge-primer.md
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- contents/spring/spring-async-self-invocation-same-thread-symptom-card.md
+- contents/spring/spring-method-validation-proxy-pitfalls.md
+- contents/spring/spring-security-method-security-deep-dive.md
+- contents/spring/spring-cache-abstraction-traps.md
+expected_queries:
+- Spring self invocation은 @Transactional뿐 아니라 @Async @Cacheable @Validated @PreAuthorize에도 생겨?
+- 내부 메서드 호출이 proxy advice를 타지 않는 이유를 annotation별로 비교해줘
+- @PreAuthorize나 @Validated가 self invocation에서 빠지는 증상을 어떻게 확인해?
+- self invocation 문제는 service 분리, self proxy 주입, AspectJ 중 무엇으로 고쳐야 해?
+contextual_chunk_prefix: |
+  이 문서는 self-invocation을 @Transactional 하나의 예외가 아니라 Spring proxy 기반 annotation
+  전반의 반복 패턴으로 설명한다. @Async, @Cacheable, @Validated, @PreAuthorize,
+  method security, cache, transaction advice가 내부 호출에서 왜 빠지는지 matrix로 묶는다.
+---
 # Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`
 
 > 한 줄 요약: self-invocation 문제는 `@Transactional` 하나의 예외가 아니라, 프록시 기반 애노테이션 전반에서 같은 원리로 반복되는 함정이므로 "어떤 애노테이션이 왜 내부 호출에서 빠지는지"를 한 번에 묶어 보는 편이 실전적이다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Saga Pivot Transaction Design
+concept_id: database/saga-pivot-transaction-design
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- saga
+- pivot-transaction
+- compensation
+- forward-recovery
+- distributed-transaction
+aliases:
+- saga pivot
+- pivot transaction
+- irreversible step
+- compensation boundary
+- forward recovery
+- saga rollback boundary
+- business rollback boundary
+- payment pivot
+- external side effect boundary
+- 보상 트랜잭션 경계
+symptoms:
+- Saga에서 어느 단계까지 보상 가능하고 어느 단계부터 forward recovery가 필요한지 구분해야 해
+- 결제 승인이나 외부 예약 확정처럼 되돌리기 어려운 지점을 pivot으로 잡아야 해
+- pivot 이후 실패를 단순 rollback으로 처리하려고 해서 정합성 사고가 날 수 있어
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- database/outbox-saga-eventual-consistency
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/saga-reservation-consistency
+- database/exactly-once-myths-db-queue
+- database/outbox-saga-eventual-consistency
+linked_paths:
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/saga-reservation-consistency.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/idempotency-key-and-deduplication.md
+confusable_with:
+- database/outbox-saga-eventual-consistency
+- database/saga-reservation-consistency
+- database/exactly-once-myths-db-queue
+forbidden_neighbors: []
+expected_queries:
+- Saga pivot transaction은 왜 보상 가능 구간과 forward recovery 구간을 나누는 경계야?
+- 결제 승인 같은 irreversible step을 pivot으로 잡을 때 무엇을 기준으로 판단해야 해?
+- pivot 이후 실패를 단순 rollback으로 처리하면 왜 외부 부작용과 정합성이 깨져?
+- compensation과 forward recovery는 Saga에서 어떤 단계 전후로 달라져?
+- 기술 트랜잭션 경계보다 비즈니스 되돌림 가능성이 pivot 설계에서 더 중요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Saga pivot transaction, compensation boundary, irreversible step, forward recovery를 distributed workflow 설계 관점으로 설명하는 advanced deep dive다.
+  결제 승인 pivot, 외부 부작용, 보상 트랜잭션 경계, rollback 불가능 구간 질문이 본 문서에 매핑된다.
+---
 # Saga Pivot Transaction Design
 
 > 한 줄 요약: Saga의 pivot transaction은 되돌리기 어려운 경계선이라, 그 전과 후의 실패 처리 방식이 완전히 달라진다.

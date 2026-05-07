@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL EXPLAIN for Range Locking Primer
+concept_id: database/mysql-explain-range-locking-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- mysql-explain
+- range-lock
+- overlap-query
+- gap-lock
+aliases:
+- mysql explain range locking
+- explain range locking read
+- explain overlap query beginner
+- type range for update
+- range lock beginner
+- overlap query explain checklist
+- FOR UPDATE인데 넓게 막혀요
+- range explain 처음
+- 겹치는 row만 잠그나요
+symptoms:
+- overlap query에 FOR UPDATE를 붙였는데 EXPLAIN rows가 넓고 lock wait도 넓게 퍼져
+- exact-key locking read처럼 생각하고 있지만 실제 plan type이 range라 잠금 표면이 더 넓어
+- Using where가 남아 logical overlap 전체가 index range로 정확히 표현되지 않았을 가능성이 있어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/explain-checklist-exact-key-locking-reads
+- database/gap-lock-next-key-lock
+next_docs:
+- database/mysql-repeatable-read-safe-range-checklist
+- database/overlap-predicate-index-design-booking-tables
+- database/mysql-empty-result-locking-reads
+linked_paths:
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/mysql-overlap-fallback-beginner-bridge.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/mysql-repeatable-read-safe-range-checklist.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/index-and-explain.md
+- contents/database/mysql-empty-result-locking-reads.md
+confusable_with:
+- database/explain-checklist-exact-key-locking-reads
+- database/mysql-empty-result-locking-reads
+- database/overlap-predicate-index-design-booking-tables
+forbidden_neighbors: []
+expected_queries:
+- overlap query에서 EXPLAIN type range와 rows를 보고 lock footprint를 어떻게 추정해?
+- FOR UPDATE인데 왜 겹치는 row보다 넓게 막히는지 beginner 관점으로 설명해줘
+- exact-key locking read와 range locking read의 EXPLAIN 확인 포인트를 비교해줘
+- Using where가 남은 overlap query를 predicate lock처럼 설명하면 왜 위험해?
+- range scan에서 chosen index axis와 logical overlap predicate를 어떻게 분리해서 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL overlap query, range locking read, EXPLAIN type range와 rows를 보고 FOR UPDATE의 lock footprint를 과장하지 않게 돕는 beginner primer다.
+  FOR UPDATE인데 넓게 막힘, explain range locking, overlap query rows가 큼 질문이 본 문서에 매핑된다.
+---
 # MySQL EXPLAIN for Range Locking Primer
 
 > 한 줄 요약: exact-key locking read에서 `EXPLAIN`으로 "거의 한 칸만 보나"를 확인했다면, range/overlap query에서는 반대로 "`EXPLAIN`이 어디까지 넓게 훑는가"를 먼저 확인해야 한다.

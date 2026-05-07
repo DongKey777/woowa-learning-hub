@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Order Statistic Tree
+concept_id: data-structure/order-statistic-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- order-statistic-tree
+- rank-query
+- kth-element-balanced-tree
+aliases:
+- Order Statistic Tree
+- rank query
+- kth element tree
+- subtree size balanced BST
+- select by rank
+- indexed tree
+- median maintenance
+symptoms:
+- 정렬된 set은 유지하지만 k번째 원소나 특정 key의 rank를 빠르게 물어야 하는 요구를 일반 BST로만 처리하려 한다
+- subtree size를 유지하면 왼쪽 subtree count로 select/rank를 계산할 수 있다는 핵심을 놓친다
+- rank가 필요 없고 floor/ceiling만 필요한 ordered map 문제에도 order statistic tree를 과하게 적용한다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/balanced-bst-vs-unbalanced-bst
+next_docs:
+- data-structure/treap-vs-skip-list
+- data-structure/skip-list
+- algorithm/binary-search-patterns
+linked_paths:
+- contents/data-structure/treap-vs-skip-list.md
+- contents/data-structure/skip-list.md
+- contents/algorithm/binary-search-patterns.md
+confusable_with:
+- data-structure/treap-vs-skip-list
+- data-structure/skip-list
+- data-structure/fenwick-tree
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+forbidden_neighbors: []
+expected_queries:
+- Order Statistic Tree는 k번째 원소와 rank query를 어떻게 빠르게 처리해?
+- balanced BST에 subtree size를 붙이면 select by rank가 가능한 이유는?
+- 실시간 ranking이나 median maintenance에서 Order Statistic Tree가 맞는 경우는?
+- rank가 필요 없으면 TreeMap이나 Skip List로 충분한 이유는?
+- kth element query와 range count를 ordered set에서 처리하는 구조를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 balanced BST에 subtree size를 유지해 kth element, rank query,
+  range count, median maintenance를 처리하는 Order Statistic Tree primer다.
+  Treap, Red-Black Tree, AVL, Skip List와 기능적 차이를 설명한다.
+---
 # Order Statistic Tree
 
 > 한 줄 요약: Order Statistic Tree는 정렬된 집합에서 k번째 원소와 rank를 빠르게 찾도록 subtree size를 유지하는 균형 트리다.

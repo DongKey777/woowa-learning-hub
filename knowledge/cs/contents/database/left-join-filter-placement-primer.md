@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: LEFT JOIN 필터 위치 입문서
+concept_id: database/left-join-filter-placement-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- left-join-filter-placement
+- outer-join-null-preservation
+- where-on-predicate-boundary
+aliases:
+- left join filter placement
+- left join where on 차이
+- outer join collapsed to inner join
+- right table predicate where clause
+- on clause vs where clause
+- left join null filter
+- 오른쪽 테이블 조건
+- 조인 필터 위치
+symptoms:
+- LEFT JOIN을 썼는데 오른쪽 테이블 조건을 WHERE에 둬서 NULL 보존 row가 사라지는 이유를 모른다
+- ON은 join 조건이고 WHERE는 최종 결과 필터라는 논리 처리 위치 차이를 설명하지 못한다
+- 모든 고객 사용자 상품을 남기고 오른쪽 조건만 붙이고 싶은 상황과 최종 row 자체를 제거하고 싶은 상황을 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- database/sql-join-basics
+- database/sql-joins-and-query-order
+next_docs:
+- database/having-vs-where-beginner-card
+- database/join-row-increase-distinct-symptom-card
+- database/sql-relational-modeling-basics
+linked_paths:
+- contents/database/sql-join-basics.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/sql-reading-relational-modeling-primer.md
+- contents/database/primary-foreign-key-basics.md
+confusable_with:
+- database/sql-joins-and-query-order
+- database/having-vs-where-beginner-card
+- database/join-row-increase-distinct-symptom-card
+- database/sql-relational-modeling-basics
+forbidden_neighbors: []
+expected_queries:
+- LEFT JOIN에서 오른쪽 테이블 조건을 WHERE에 두면 왜 INNER JOIN처럼 좁아져?
+- ON 절과 WHERE 절은 JOIN 논리 처리 순서에서 어떤 역할 차이가 있어?
+- 모든 고객을 남기고 PAID 주문만 붙이고 싶으면 조건을 어디에 둬야 해?
+- LEFT JOIN 후 NULL row를 보존하려면 right table predicate를 어떻게 배치해?
+- outer join이 collapsed to inner join처럼 되는 흔한 SQL 실수를 예제로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 LEFT JOIN filter placement beginner primer로, ON은 오른쪽에서
+  어떤 row를 붙일지 정하고 WHERE는 JOIN 뒤 최종 결과를 거르는 단계라는
+  차이를 설명한다. right table predicate를 WHERE에 두면 NULL 보존 row가
+  사라져 INNER JOIN처럼 좁아질 수 있다.
+---
 # LEFT JOIN 필터 위치 입문서 (LEFT JOIN Filter Placement Primer)
 
 > 한 줄 요약: `LEFT JOIN`에서 오른쪽 테이블 조건을 `WHERE`에 두면 `NULL` 행이 제거되어 결과가 `INNER JOIN`처럼 좁아질 수 있고, "오른쪽에서 어떤 행을 붙일지" 조건은 보통 `ON`에 두는 편이 안전하다.

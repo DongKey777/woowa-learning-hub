@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: TreeMap ceilingKey vs ceilingEntry Return-Shape Twin Card
+concept_id: data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- treemap-return-shape
+- ceilingkey-ceilingentry
+- navigablemap-beginner
+aliases:
+- TreeMap ceilingKey vs ceilingEntry
+- ceilingKey ceilingEntry 차이
+- ceilingKey returns key
+- ceilingEntry returns entry
+- right side lookup TreeMap
+- key entry return shape
+- ceiling exact match 포함
+symptoms:
+- ceilingKey와 ceilingEntry가 같은 오른쪽 후보를 찾지만 반환 shape만 key vs entry로 다르다는 점을 놓친다
+- ceilingEntry가 value를 준다는 이유로 ceilingKey보다 더 멀리 찾는다고 오해한다
+- 오른쪽 후보가 없을 때 ceilingKey와 ceilingEntry가 모두 null일 수 있다는 경계 처리를 빠뜨린다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/treemap-key-entry-strictness-bridge
+next_docs:
+- data-structure/treemap-ceilingkey-higherkey-exact-match-choice-card
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+- data-structure/treeset-treemap-null-boundary-quick-reference
+linked_paths:
+- contents/data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/data-structure/treeset-treemap-null-boundary-quick-reference.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/treemap-ceilingkey-higherkey-exact-match-choice-card
+- data-structure/treemap-key-entry-strictness-bridge
+- data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card
+- data-structure/treeset-treemap-null-boundary-quick-reference
+forbidden_neighbors: []
+expected_queries:
+- TreeMap ceilingKey와 ceilingEntry는 같은 후보를 찾는데 반환값이 어떻게 달라?
+- ceilingEntry는 key와 value를 같이 주고 ceilingKey는 key만 준다는 걸 예시로 설명해줘
+- ceilingKey와 ceilingEntry는 exact match를 포함하고 오른쪽 후보 없으면 null인가?
+- 다음 예약 시작만 필요할 때와 다음 예약 end value까지 필요할 때 어떤 메서드를 써?
+- TreeMap 오른쪽 후보 lookup에서 key return shape와 entry return shape를 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap ceilingKey와 ceilingEntry를 같은 right-side inclusive candidate
+  lookup이지만 반환 shape가 key-only와 key-plus-value Entry로 다르다고 설명하는
+  beginner bridge다. exact match 포함과 null boundary를 함께 다룬다.
+---
 # TreeMap `ceilingKey` vs `ceilingEntry` Return-Shape Twin Card
 
 > 한 줄 요약: `ceilingKey(x)`와 `ceilingEntry(x)`는 둘 다 `x`와 같거나 바로 다음인 오른쪽 후보를 찾지만, 전자는 key만 돌려주고 후자는 key+value를 함께 돌려준다.

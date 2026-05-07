@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Record Serialization Evolution
+concept_id: language/record-serialization-evolution
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- record
+- serialization
+- compatibility
+aliases:
+- Record Serialization Evolution
+- record serialization canonical constructor
+- record component change compatibility
+- serialization proxy record invariant
+- record serialVersionUID evolution
+- 자바 record 직렬화 진화
+symptoms:
+- record 선언이 간결하다는 이유로 component 목록과 canonical constructor가 serialization contract가 된다는 점을 놓쳐
+- record component 추가나 타입 변경을 단순 refactor로 보고 old serialized data와 JSON payload compatibility 영향을 고려하지 않아
+- compact constructor normalization이나 validation 변경이 과거 데이터 역직렬화 의미를 바꿀 수 있다는 점을 놓쳐
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- language/serialization-compatibility-serial-version-uid
+- language/serialization-proxy-pattern-invariant-preservation
+- language/records-sealed-pattern-matching
+next_docs:
+- language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+- language/enum-persistence-json-unknown-value-evolution
+- language/value-object-invariants-canonicalization-boundary-design
+linked_paths:
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/serialization-proxy-pattern-invariant-preservation.md
+- contents/language/java/records-sealed-pattern-matching.md
+- contents/language/java/record-sealed-hierarchy-evolution-pattern-matching-compatibility.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/class-initialization-ordering.md
+confusable_with:
+- language/serialization-compatibility-serial-version-uid
+- language/serialization-proxy-pattern-invariant-preservation
+- language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+forbidden_neighbors: []
+expected_queries:
+- record serialization에서 component와 canonical constructor가 compatibility contract가 되는 이유가 뭐야?
+- record component를 추가하면 old serialized data나 JSON payload compatibility가 어떻게 깨질 수 있어?
+- compact constructor의 validation이나 normalization 변경이 과거 데이터 복원에 어떤 영향을 줘?
+- record를 장기 저장 포맷으로 쓸 때 serialization proxy가 더 안전할 수 있는 이유가 뭐야?
+- record와 serialVersionUID, readResolve, value object invariant를 함께 고려하는 방법을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java record를 serialization format으로 쓸 때 component evolution, canonical constructor, compact constructor, serialization proxy, invariant compatibility를 다루는 advanced deep dive다.
+  record serialization, canonical constructor, component evolution, serialization proxy, compatibility 질문이 본 문서에 매핑된다.
+---
 # Record Serialization Evolution
 
 > 한 줄 요약: record는 선언이 간결하지만 serialization 계약은 여전히 타입/필드 진화 규칙을 따른다. record를 직렬화 포맷으로 쓸 때는 canonical constructor와 필드 변경이 호환성에 미치는 영향을 꼭 따져야 한다.

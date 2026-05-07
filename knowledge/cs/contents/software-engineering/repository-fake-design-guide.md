@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Repository Fake Design Guide
+concept_id: software-engineering/repository-fake-design
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- repository
+- fake
+- hexagonal-test
+- persistence-boundary
+aliases:
+- fake repository design
+- memory repository contract
+- outbound port fake
+- repository fake vs mock
+- in-memory repository test adapter
+- 저장소 fake 설계 가이드
+symptoms:
+- repository fake가 OrderEntity, JpaRepository, Pageable, flush 같은 persistence 세부를 노출해서 use case test가 DB 구현을 알아야 해
+- fake가 같은 객체 참조를 돌려줘 save 없이 dirty checking처럼 변경이 반영되는 테스트 착시를 만들어
+- mock과 fake 선택 기준 없이 repository 호출 횟수만 검증해서 저장 계약의 결과가 테스트에 드러나지 않아
+intents:
+- troubleshooting
+- design
+- comparison
+prerequisites:
+- software-engineering/repository-interface-contract
+- software-engineering/fake-vs-mock-first-test-primer
+next_docs:
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/persistence-model-leakage
+- software-engineering/hexagonal-testing-seams-primer
+linked_paths:
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/outbound-notifier-mock-boundary-primer.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+confusable_with:
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/repository-interface-contract
+- software-engineering/persistence-adapter-mapping-checklist
+forbidden_neighbors: []
+expected_queries:
+- repository fake를 JPA 흉내가 아니라 outbound port 계약으로 설계하려면 무엇을 재현해야 해?
+- fake repository가 Entity나 Pageable을 저장하면 use case test에 어떤 persistence 세부가 새어 나와?
+- repository mock과 fake는 호출 검증과 저장 결과 검증 관점에서 언제 다르게 선택해야 해?
+- fake가 save 없이 변경을 반영하는 dirty checking 착시를 만들지 않으려면 어떻게 구현해야 해?
+- service test에서 repository port contract만 의존하게 만드는 fake 설계 체크리스트를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Repository Fake Design Guide를 다루는 playbook 문서다. fake repository design, memory repository contract, outbound port fake, repository fake vs mock, in-memory repository test adapter 같은 lexical 표현과 repository fake를 JPA 흉내가 아니라 outbound port 계약으로 설계하려면 무엇을 재현해야 해?, fake repository가 Entity나 Pageable을 저장하면 use case test에 어떤 persistence 세부가 새어 나와? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Repository Fake Design Guide
 
 > 한 줄 요약: repository fake는 DB 없는 JPA 흉내가 아니라 outbound port 계약을 메모리에서 재현하는 test adapter여야 하고, 유스케이스 test는 그 계약만 의존해야 persistence 세부가 새지 않는다.

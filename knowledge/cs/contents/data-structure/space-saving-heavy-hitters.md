@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Space-Saving Heavy Hitters
+concept_id: data-structure/space-saving-heavy-hitters
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- heavy-hitters
+- stream-summary
+- observability-hot-key
+aliases:
+- Space-Saving heavy hitters
+- heavy hitter sketch
+- top-k streaming
+- frequent items summary
+- hot key detection
+- noisy tenant detection
+- bounded counter summary
+symptoms:
+- Count-Min Sketch로 임의 key 빈도는 추정하면서도 현재 top offender 후보군을 직접 유지하지 못한다
+- high-cardinality observability에서 모든 key를 exact counter로 세려다 메모리와 label cardinality 비용을 키운다
+- Space-Saving의 min counter replacement가 overestimate error를 만든다는 점을 모른 채 과금이나 정산 truth로 사용하려 한다
+intents:
+- definition
+- design
+prerequisites:
+- data-structure/count-min-sketch
+- data-structure/approximate-counting-rate-limiting-observability
+next_docs:
+- data-structure/count-min-vs-hyperloglog
+- data-structure/hdr-histogram
+- data-structure/sketch-filter-selection-playbook
+linked_paths:
+- contents/data-structure/count-min-sketch.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+- contents/data-structure/hdr-histogram.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+confusable_with:
+- data-structure/count-min-sketch
+- data-structure/hyperloglog
+- data-structure/approximate-counting-rate-limiting-observability
+- data-structure/sketch-filter-selection-playbook
+forbidden_neighbors: []
+expected_queries:
+- Space-Saving heavy hitters는 Count-Min Sketch와 어떤 운영 질문이 달라?
+- top-k streaming에서 noisy tenant 후보를 제한된 슬롯으로 유지하는 방법은?
+- hot key detection에 exact counter map 대신 Space-Saving을 쓰는 이유는?
+- Space-Saving의 min counter replacement가 왜 overestimate error를 만들 수 있어?
+- high-cardinality observability에서 현재 top offender를 빠르게 찾는 자료구조는?
+contextual_chunk_prefix: |
+  이 문서는 Space-Saving을 스트림에서 heavy hitter와 top offender 후보를 직접
+  유지하는 bounded summary로 설명한다. Count-Min Sketch의 point query와
+  Space-Saving의 top-k candidate tracking을 구분한다.
+---
 # Space-Saving Heavy Hitters
 
 > 한 줄 요약: Space-Saving은 제한된 슬롯으로 스트림의 상위 빈도 항목을 직접 유지해, Count-Min Sketch보다 더 곧바로 heavy hitter 후보를 뽑고 싶은 운영용 자료구조다.

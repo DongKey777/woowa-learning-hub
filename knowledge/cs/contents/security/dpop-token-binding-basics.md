@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: DPoP / Token Binding Basics
+concept_id: security/dpop-token-binding-basics
+canonical: true
+category: security
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- dpop
+- token binding
+- proof-of-possession
+- jwk thumbprint
+aliases:
+- dpop
+- token binding
+- proof-of-possession
+- jwk thumbprint
+- cnf claim
+- htm
+- htu
+- replay protection
+- sender-constrained token
+- proof replay
+- jti store outage
+- dpop 뭐예요
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwt-deep-dive.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/security/proof-of-possession-vs-bearer-token-tradeoffs.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/oauth-device-code-flow-security.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- DPoP / Token Binding Basics 핵심 개념을 설명해줘
+- dpop가 왜 필요한지 알려줘
+- DPoP / Token Binding Basics 실무 설계 포인트는 뭐야?
+- dpop에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 DPoP / Token Binding Basics를 다루는 primer 문서다. DPoP는 bearer token을 proof-of-possession token에 가깝게 만들어 토큰 재사용을 줄이지만, key 관리와 replay 방지를 같이 설계해야 의미가 있다. 검색 질의가 dpop, token binding, proof-of-possession, jwk thumbprint처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # DPoP / Token Binding Basics
 
 > 한 줄 요약: DPoP는 bearer token을 proof-of-possession token에 가깝게 만들어 토큰 재사용을 줄이지만, key 관리와 replay 방지를 같이 설계해야 의미가 있다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: List.copyOf vs stream.toList Readonly Snapshot Bridge
+concept_id: language/list-copyof-vs-stream-tolist-readonly-snapshot-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- readonly-collection
+- defensive-copy
+- stream
+aliases:
+- List.copyOf vs stream.toList readonly snapshot
+- java list copyOf vs stream toList
+- read-only list snapshot bridge
+- collection boundary copyOf
+- stream pipeline toList result
+- 자바 읽기 전용 리스트 스냅샷
+symptoms:
+- List.copyOf와 stream.toList를 결과가 비슷하다는 이유로 출발점 차이 없이 아무 곳에서나 섞어 써
+- 읽기 전용 리스트 구조와 요소 객체의 불변성을 같은 것으로 이해해 mutable element 상태 변화까지 막힌다고 오해해
+- Collections.unmodifiableList와 snapshot copy를 구분하지 못해 원본 리스트 변경이 view에 비치는지 예측하지 못해
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/java-stream-lambda-basics
+- language/immutable-objects-and-defensive-copying
+next_docs:
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- language/java-immutable-object-basics
+- language/map-of-copyof-unmodifiablemap-readonly-bridge
+linked_paths:
+- contents/language/java/list-copyof-listof-unmodifiablelist-beginner-bridge.md
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/stream-tolist-vs-collectors-tolist-mutability-bridge.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/language/java/map-of-copyof-unmodifiablemap-readonly-bridge.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+confusable_with:
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/stream-tolist-vs-collectors-tolist-mutability-bridge
+- language/java-immutable-object-basics
+forbidden_neighbors: []
+expected_queries:
+- List.copyOf와 stream.toList는 둘 다 읽기 전용 snapshot인데 언제 무엇을 써야 해?
+- 기존 컬렉션 경계에서는 List.copyOf가 자연스럽고 stream 파이프라인 끝에서는 toList가 자연스러운 이유를 설명해줘
+- List.copyOf 결과는 요소 객체까지 immutable로 만들어 주는지 알려줘
+- Collections.unmodifiableList와 List.copyOf snapshot은 원본 변경 반영이 어떻게 달라?
+- List.copyOf는 null 요소를 허용하지 않고 stream.toList는 담을 수 있는 차이를 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 List.copyOf와 stream.toList를 read-only list snapshot 도구로 비교하되 collection boundary와 stream pipeline 출발점 차이를 설명하는 beginner chooser다.
+  List.copyOf vs stream.toList, readonly snapshot, unmodifiableList view, mutable element, null element 질문이 본 문서에 매핑된다.
+---
 # `List.copyOf(...)` vs `stream.toList()` 읽기 전용 스냅샷 브리지
 
 > 한 줄 요약: 둘 다 "구조를 못 바꾸는 리스트 snapshot"을 만들 때 쓰지만, `List.copyOf(...)`는 이미 가진 컬렉션을 경계에서 복사할 때, `stream.toList()`는 stream 파이프라인 결과를 바로 받을 때 더 자연스럽다.

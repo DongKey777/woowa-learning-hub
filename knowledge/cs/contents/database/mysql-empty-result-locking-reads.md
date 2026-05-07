@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: MySQL Empty-Result Locking Reads
+concept_id: database/mysql-empty-result-locking-reads
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- gap-lock
+- locking-read
+- empty-result
+- predicate-lock-myth
+aliases:
+- mysql empty result locking read
+- select for update zero rows
+- select for share zero rows
+- nonexistence lock myth
+- zero row gap lock
+- absence serialization mysql
+- where clause is not predicate lock
+- FOR UPDATE 0 row
+- 없는 row를 잠그나요
+- 결과가 없는데 락이 잡히나요
+symptoms:
+- SELECT FOR UPDATE나 FOR SHARE가 0 row를 돌려줬는데 없는 row 전체가 잠겼다고 해석하고 있어
+- overlap predicate가 비었으니 논리적 부재가 보호된다고 믿고 insert race를 설계하고 있어
+- READ COMMITTED 전환 뒤 empty-result locking read가 phantom insert를 막지 못해 중복이나 겹침이 생겨
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/gap-lock-next-key-lock
+- database/transaction-isolation-locking
+next_docs:
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/mysql-explain-range-locking-primer
+- database/overlap-predicate-index-design-booking-tables
+linked_paths:
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/mysql-explain-range-locking-primer.md
+confusable_with:
+- database/gap-lock-next-key-lock
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/range-invariant-enforcement-write-skew-phantom
+forbidden_neighbors: []
+expected_queries:
+- MySQL에서 SELECT FOR UPDATE가 0 row면 없는 row 자체가 잠긴 거야?
+- empty result locking read와 gap lock, next-key lock의 실제 보호 범위를 설명해줘
+- READ COMMITTED에서 0 row FOR UPDATE가 phantom insert를 못 막는 이유가 뭐야?
+- overlap check에서 WHERE 절 전체가 아니라 chosen index path가 잠기는 이유를 알려줘
+- FOR SHARE와 FOR UPDATE가 empty result에서는 얼마나 다르게 동작해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL SELECT FOR UPDATE, FOR SHARE가 0 row를 반환할 때 nonexistence 전체를 잠근다는 착각을 교정하는 advanced symptom router다.
+  empty-result locking read, zero row gap lock, 없는 row를 잠그나요, WHERE predicate lock myth 질문이 본 문서에 매핑된다.
+---
 # MySQL Empty-Result Locking Reads
 
 > 한 줄 요약: `SELECT ... FOR UPDATE`나 `FOR SHARE`가 `0 row`를 돌려줘도, MySQL이 잠그는 것은 보통 "WHERE 절의 부재"가 아니라 많아야 **스캔한 인덱스 gap/next-key**다. `READ COMMITTED`에서는 그 보호도 일반적으로 사라진다.

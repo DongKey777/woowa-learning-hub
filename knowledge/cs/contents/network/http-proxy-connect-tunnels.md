@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "HTTP Proxy CONNECT Tunnels"
+concept_id: network/http-proxy-connect-tunnels
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- http-connect-tunnel
+- explicit-proxy-policy
+- tls-proxy-boundary
+aliases:
+- HTTP CONNECT
+- proxy tunnel
+- HTTPS proxy
+- CONNECT request
+- explicit proxy
+- TLS tunnel
+symptoms:
+- CONNECT 터널을 일반 HTTP proxy request처럼 보고 이후 TLS/SNI/ALPN 문제를 구분하지 못한다
+- proxy auth나 host/port ACL 때문에 터널이 안 열리는 문제를 origin HTTPS 장애로 오해한다
+- CONNECT MITM과 opaque tunnel을 같은 보안/관측 모델로 취급한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/api-gateway-reverse-proxy-operational-points
+- network/tls-loadbalancing-proxy
+next_docs:
+- network/http-proxy-auth-407-explicit-proxy
+- network/captive-portal-intercepting-proxy-behavior
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/sni-routing-mismatch-hostname-failure
+linked_paths:
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/proxy-protocol-client-ip-trust-boundary.md
+- contents/network/http-methods-rest-idempotency.md
+- contents/network/captive-portal-intercepting-proxy-behavior.md
+confusable_with:
+- network/http-proxy-auth-407-explicit-proxy
+- network/captive-portal-intercepting-proxy-behavior
+- network/tls-loadbalancing-proxy
+- network/sni-routing-mismatch-hostname-failure
+forbidden_neighbors: []
+expected_queries:
+- "HTTP CONNECT는 proxy에게 TCP tunnel을 열어 달라는 요청이라는 점을 설명해줘"
+- "CONNECT 200 Connection Established 이후 TLS handshake 문제는 어디서 봐야 해?"
+- "Explicit proxy에서 CONNECT host port ACL과 proxy auth 실패를 어떻게 구분해?"
+- "CONNECT tunnel과 TLS MITM proxy는 보안과 관측 면에서 어떻게 달라?"
+- "curl -x로 HTTPS proxy CONNECT 흐름을 확인하는 방법을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 HTTP CONNECT method, explicit proxy tunnel, 200 Connection
+  Established, proxy auth/ACL, TLS tunnel, MITM interception, SNI/ALPN
+  downstream failure를 다루는 advanced proxy playbook이다.
+---
 # HTTP Proxy CONNECT Tunnels
 
 > 한 줄 요약: CONNECT는 HTTP 프록시를 통해 임의의 TCP 목적지로 터널을 여는 방식이라서, TLS와 사설 네트워크 접근에서 자주 보이지만 정책 통제가 중요하다.

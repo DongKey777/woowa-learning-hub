@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Map Value Transform Primer replaceAll vs entrySet setValue vs New Map
+concept_id: language/map-entry-setvalue-vs-put-remove-structural-change-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-update
+- entryset
+- replaceall
+aliases:
+- Map 값 변환 replaceAll vs entrySet setValue
+- map value transform primer
+- java map replaceAll beginner
+- entrySet setValue vs put structural change
+- new map copy transform Java
+- Map 순회 중 값 변환
+symptoms:
+- Map value만 바꾸는 문제와 key 추가/삭제 같은 구조 변경 문제를 섞어 순회 중 put/remove를 남발해
+- 모든 value를 같은 규칙으로 바꾸는 데도 직접 for loop와 put을 써서 replaceAll 의도를 놓쳐
+- 원본을 보존해야 하는 상황에서 in-place mutation을 선택해 중간 상태와 side effect 범위가 흐려져
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/map-iteration-patterns-cheat-sheet
+- language/map-remove-during-iteration-safety-primer
+- language/collection-update-strategy-primer
+next_docs:
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- language/map-remove-during-iteration-safety-primer
+- language/java-stream-lambda-basics
+linked_paths:
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+- contents/language/java/collection-update-strategy-primer.md
+- contents/language/java/java-stream-lambda-basics.md
+- contents/language/java/map-put-putifabsent-computeifabsent-merge-overwrite-bridge.md
+confusable_with:
+- language/map-remove-during-iteration-safety-primer
+- language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+- language/collection-update-strategy-primer
+forbidden_neighbors: []
+expected_queries:
+- Java Map value를 변환할 때 replaceAll entrySet setValue 새 맵 만들기 중 무엇을 골라야 해?
+- Map을 순회하면서 value만 바꾸려면 entry.setValue와 map.put 중 무엇이 더 의도가 분명해?
+- 원본 Map을 보존해야 하면 새 Map을 만들어 변환하는 패턴을 보여줘
+- replaceAll은 구조 변경이 아니라 value 재계산이라는 점을 설명해줘
+- Map 순회 중 값 변환과 key 추가 삭제를 왜 다른 문서로 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java Map value transformation을 replaceAll, entrySet().setValue, new map copy 패턴으로 고르는 beginner chooser다.
+  Map replaceAll, entry.setValue, value transform, structural change, 새 맵 만들기 질문이 본 문서에 매핑된다.
+---
 # Map 값 변환 프라이머: `replaceAll()` vs `entrySet()` 수정 vs 새 맵 만들기
 
 > 한 줄 요약: `Map`을 돌며 value를 바꿔야 할 때 초보자 기본값은 `replaceAll()`이고, 조건 분기가 더 필요하면 `entrySet()` 수정, 원본 보존이 더 중요하면 새 맵 만들기로 나누면 덜 헷갈린다.

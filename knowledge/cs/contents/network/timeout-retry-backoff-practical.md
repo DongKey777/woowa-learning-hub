@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Timeout, Retry, Backoff 실전
+concept_id: network/timeout-retry-backoff-practical
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timeout-retry-backoff-discipline
+- retry-budget-idempotency
+- jitter-retry-storm-containment
+aliases:
+- timeout retry backoff
+- timeout retry backoff practical
+- exponential backoff
+- jitter
+- retry storm
+- request timeout
+- connect timeout
+- read timeout
+- deadline budget
+- retry budget
+- transient failure
+- fail-fast
+- timeout retry backoff beginner
+- 재시도 폭풍
+symptoms:
+- 장애가 났을 때 무조건 retry하면 왜 retry storm이 되는지 모르겠어
+- connect timeout, read timeout, request timeout, deadline budget 차이가 헷갈려
+- POST 요청을 retry해도 되는지 멱등성과 idempotency key를 같이 봐야 하는 이유가 궁금해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- network/http-methods-rest-idempotency-basics
+- system-design/request-deadline-timeout-budget-primer
+next_docs:
+- network/timeout-types-connect-read-write
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/request-timing-decomposition
+- network/proxy-retry-budget-discipline
+- system-design/retry-amplification-and-backpressure-primer
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/proxy-retry-budget-discipline.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+confusable_with:
+- system-design/request-deadline-timeout-budget-primer
+- system-design/retry-amplification-and-backpressure-primer
+- network/timeout-types-connect-read-write
+- network/proxy-retry-budget-discipline
+forbidden_neighbors: []
+expected_queries:
+- timeout, retry, backoff를 네트워크 장애에서 어떤 순서로 설계해야 해?
+- connect timeout과 read timeout과 request timeout을 어떻게 나눠 봐야 해?
+- retry는 어떤 실패에서 해도 되고 400, 401, 403 같은 실패에서는 왜 하면 안 돼?
+- exponential backoff와 jitter가 retry storm을 줄이는 이유를 설명해줘
+- POST를 retry하려면 idempotency key와 retry budget이 왜 필요해?
+contextual_chunk_prefix: |
+  이 문서는 네트워크 요청 실패를 무조건 재시도하지 않고 timeout, retry, exponential backoff, jitter, retry budget, deadline budget, idempotency를 기준으로 다루는 intermediate playbook이다.
+  connect timeout, read timeout, request timeout, retry storm, transient 502 503 504, POST retry duplicate submit, idempotency key, fail-fast 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Timeout, Retry, Backoff 실전
 
 

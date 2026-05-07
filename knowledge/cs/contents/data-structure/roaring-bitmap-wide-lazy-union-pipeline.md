@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Roaring Bitmap-Wide Lazy Union Pipeline
+concept_id: data-structure/roaring-bitmap-wide-lazy-union-pipeline
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-lazy-union
+- repair-after-lazy-boundary
+- bitmap-wide-aggregation
+aliases:
+- Roaring lazy union pipeline
+- bitmap-wide lazy union
+- repairAfterLazy bitmap level
+- per-container lazy result
+- invalid cardinality Roaring
+- horizontal_or Roaring
+- cardinality-sensitive consumer
+symptoms:
+- Roaring lazy union에서 bit pattern이 틀리는 것이 아니라 cardinality와 final representation 선택이 늦춰진다는 점을 오해한다
+- same-key container lazyOR 결과와 bitmap-level highLowContainer merge를 같은 층위로 보고 repair boundary를 놓친다
+- getCardinality, rank, select, serialize 같은 소비자가 repairAfterLazy 이후에 안전해지는 시점을 구분하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/roaring-lazy-union-and-repair-costs
+next_docs:
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-container-transition-heuristics
+- data-structure/roaring-run-optimize-timing-guide
+- data-structure/roaring-query-result-ordering-guide
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/roaring-lazy-union-and-repair-costs.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/roaring-andnot-result-heuristics.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+confusable_with:
+- data-structure/roaring-lazy-union-and-repair-costs
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-andnot-result-heuristics
+- data-structure/roaring-intermediate-repair-path-guide
+forbidden_neighbors: []
+expected_queries:
+- Roaring lazy union에서 비트 패턴은 정확하지만 cardinality가 invalid일 수 있다는 뜻은?
+- per-container lazyOR와 bitmap-level highLowContainer merge는 어떻게 이어져?
+- repairAfterLazy는 언제 호출해야 getCardinality rank select serialize가 안전해져?
+- horizontal_or는 key-local repair를 하고 lazyor는 bitmap-wide repair boundary를 남길 수 있어?
+- Roaring bitmap-wide lazy union pipeline을 단계별로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap의 lazy union을 same-key container lazyOR와 bitmap-wide
+  highLowContainer merge, repairAfterLazy boundary로 나누어 설명하는 playbook이다.
+  invalid cardinality, exact bit pattern, cardinality-sensitive consumers를 다룬다.
+---
 # Roaring Bitmap-Wide Lazy Union Pipeline
 
 > 한 줄 요약: Roaring의 lazy union은 먼저 **같은 `high key` 안에서 container별 비트 패턴만 정확히 합치고 cardinality/최종 표현 선택을 미루는** 방식으로 진행되며, 그 결과가 bitmap 전체로 쌓인 뒤에는 `repairAfterLazy()` 경계를 지나야 `getCardinality`, `rank`, `select`, `serialize` 같은 bitmap-level 소비자가 안전해진다.

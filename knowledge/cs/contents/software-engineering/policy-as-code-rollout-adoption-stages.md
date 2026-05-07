@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Policy as Code Rollout and Adoption Stages
+concept_id: software-engineering/policy-as-code-rollout-stages
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- policy-as-code
+- rollout
+- adoption-stage
+- guardrail
+aliases:
+- Policy as Code Rollout and Adoption Stages
+- policy rollout stages
+- visibility warning soft block hard block
+- policy adoption stage
+- lint adoption rollout
+- policy soft block hard block
+symptoms:
+- 새 policy를 visibility나 warning 없이 바로 hard block으로 걸어 false positive와 delivery outage를 만들거나, 반대로 warning만 계속 유지해 행동 변화가 없어
+- remediation guide, owner contact, grace period, override path, stage 승격 기준 없이 policy rollout을 운영해 팀이 규칙을 신뢰하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/policy-as-code
+- software-engineering/platform-policy-override-governance
+next_docs:
+- software-engineering/policy-as-code-adoption-order
+- software-engineering/policy-candidate-backlog
+- software-engineering/rollout-guardrail-profiles
+linked_paths:
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+- contents/software-engineering/rollout-guardrail-profiles-auto-pause-resume.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/policy-candidate-backlog-scoring-and-priority.md
+confusable_with:
+- software-engineering/policy-as-code-adoption-order
+- software-engineering/policy-candidate-backlog
+- software-engineering/rollout-guardrail-profiles
+forbidden_neighbors: []
+expected_queries:
+- policy as code를 visibility, warning, soft block, hard block 단계로 rollout하는 전략을 알려줘
+- false positive ratio, override rate, training 완료 같은 stage 승격 기준은 어떻게 잡아?
+- warning 단계는 단순 알림이 아니라 remediation guide와 owner support가 필요한 이유가 뭐야?
+- soft block은 break-glass나 explicit override를 가진 통제로 언제 쓰는지 설명해줘
+- hard block 전에 policy owner, override governance, telemetry, escalation path가 준비돼야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 policy-as-code를 visibility, warning, soft block, hard block adoption stage로 rollout해 false positive와 override debt를 줄이는 advanced playbook이다.
+---
 # Policy as Code Rollout and Adoption Stages
 
 > 한 줄 요약: policy as code는 규칙을 한 번에 fail-close로 밀어붙이는 것이 아니라, visibility, warning, soft block, hard block 같은 adoption stage를 거치며 false positive와 override debt를 줄이는 rollout 전략이 필요하다.

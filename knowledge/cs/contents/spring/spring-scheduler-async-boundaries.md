@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring Scheduler Async Boundaries
+concept_id: spring/scheduler-async-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- scheduler-async-boundaries
+- scheduled-async-boundary
+- scheduler-async-transaction
+- scheduled-task-security
+aliases:
+- @Scheduled @Async boundary
+- Spring scheduler async transaction
+- scheduled task security context
+- TaskScheduler TaskExecutor propagation
+- async logging MDC propagation
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-transactional-async-composition-traps.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+- contents/spring/spring-requestcontextholder-threadlocal-leakage-async-pools.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+symptoms:
+- @Scheduled 작업에서 @Transactional이나 SecurityContext가 요청 처리와 다르게 동작한다.
+- @Async로 넘긴 뒤 MDC, request id, authentication 정보가 사라진다.
+- scheduler와 executor queue가 밀려 작업이 중복되거나 지연된다.
+expected_queries:
+- Spring @Scheduled와 @Async를 같이 쓸 때 transaction security logging 경계는?
+- scheduled task는 웹 요청 context가 없는데 어떤 값을 전파하면 안 돼?
+- TaskExecutor와 TaskScheduler overload를 어떻게 관측해야 해?
+- @Async로 넘긴 작업에서 SecurityContext와 MDC가 사라지는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 @Scheduled와 @Async가 thread boundary를 만들 때 transaction, security,
+  request context, MDC logging, executor queue와 rejection semantics가 함께 바뀐다는 점을
+  운영 playbook으로 설명한다.
+---
 # Spring Scheduler / Async Boundaries
 
 > 한 줄 요약: `@Scheduled`와 `@Async`는 편하지만, 스레드 경계가 생기는 순간 트랜잭션, 보안, 로깅 전파를 같이 설계해야 한다.

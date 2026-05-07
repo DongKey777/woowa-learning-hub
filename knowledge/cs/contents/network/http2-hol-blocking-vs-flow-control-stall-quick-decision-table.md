@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table"
+concept_id: network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- http2-hol-vs-flow-control
+- window-update-stall
+- beginner-h2-stall-router
+aliases:
+- http2 hol vs flow-control stall
+- HOL blocking vs WINDOW_UPDATE
+- packet loss vs credit starvation
+- stream slot vs window credit
+- h2 stall quick decision
+- max_concurrent_streams vs window_update
+symptoms:
+- HTTP/2에서 느려진 것을 모두 HOL blocking이라고 부른다
+- WINDOW_UPDATE나 flow-control credit 부족을 packet loss 문제로 오해한다
+- MAX_CONCURRENT_STREAMS slot 부족과 열린 stream의 window credit 부족을 같은 장애로 읽는다
+intents:
+- comparison
+- troubleshooting
+- symptom
+prerequisites:
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/http2-multiplexing-hol-blocking
+- network/http2-flow-control-window-update-stalls
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/packet-loss-jitter-reordering-diagnostics
+linked_paths:
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/http2-max-concurrent-streams-pending-queue-saturation.md
+- contents/network/tcp-zero-window-persist-probe-receiver-backpressure.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+confusable_with:
+- network/http2-multiplexing-hol-blocking
+- network/http2-flow-control-window-update-stalls
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/tcp-zero-window-persist-probe-receiver-backpressure
+- network/packet-loss-jitter-reordering-diagnostics
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 HOL blocking과 flow-control stall을 어떻게 빠르게 구분해?"
+- "WINDOW_UPDATE 지연은 packet loss 기반 HOL blocking과 무엇이 달라?"
+- "MAX_CONCURRENT_STREAMS slot 부족과 window credit 부족은 어떤 증상 차이가 있어?"
+- "같은 H2 connection의 작은 RPC도 느려지면 HOL인지 flow control인지 어떻게 봐?"
+- "H2 stall에서 재전송 RTT 상승과 credit starvation 신호를 비교해줘"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2에서 TCP HOL blocking, flow-control stall,
+  WINDOW_UPDATE credit starvation, MAX_CONCURRENT_STREAMS slot saturation,
+  packet loss/retransmission을 빠르게 라우팅하는 beginner chooser다.
+---
 # HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table
 
 > 한 줄 요약: `HOL blocking`은 보통 "같은 전송 경로에서 손실 때문에 모두 같이 기다리는 문제"이고, `flow-control stall`은 "상대가 더 읽었다는 credit를 안 돌려줘서 조용히 멈추는 문제"다.

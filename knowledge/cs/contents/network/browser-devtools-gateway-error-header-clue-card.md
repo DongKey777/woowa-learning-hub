@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: "Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드"
+concept_id: network/browser-devtools-gateway-error-header-clue-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- devtools-header-attribution
+- gateway-vs-app-owner
+- request-id-tracing-handoff
+aliases:
+- server via x-request-id
+- devtools response header first pass
+- gateway error header clue
+- response header owner
+- proxy app attribution header
+- application problem json owner
+symptoms:
+- response header가 비어 있는데도 app body와 controller 로그만 찾는다
+- Server나 Via가 proxy를 가리키는데 JSON이라는 이유로 app 응답이라고 확정한다
+- X-Request-Id와 traceparent의 역할을 섞어 request 추적 키를 놓친다
+- 502/504에서 gateway local reply와 app error payload를 header 없이 구분하려 한다
+intents:
+- troubleshooting
+- symptom
+- comparison
+prerequisites:
+- network/browser-devtools-first-checklist-1minute-card
+- network/http-request-response-headers-basics
+next_docs:
+- network/browser-devtools-502-504-app-500-decision-card
+- network/browser-devtools-response-body-ownership-checklist
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- network/browser-devtools-traceparent-vs-tracestate-mini-card
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/browser-devtools-blocked-canceled-failed-primer.md
+- contents/network/browser-devtools-first-checklist-1minute-card.md
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/browser-devtools-traceparent-vs-tracestate-mini-card.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/x-request-id-gateway-app-log-trace-beginner-bridge.md
+- contents/network/browser-devtools-x-cache-age-ownership-1minute-card.md
+- contents/network/http-request-response-headers-basics.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/browser-devtools-502-504-app-500-decision-card
+- network/browser-devtools-response-body-ownership-checklist
+- network/browser-devtools-traceparent-vs-tracestate-mini-card
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors: []
+expected_queries:
+- "DevTools 응답 헤더에서 Server Via X-Request-Id를 처음에 어떻게 읽어?"
+- "application/problem+json인데 Server가 nginx면 app 응답인지 gateway 응답인지 어떻게 구분해?"
+- "response headers가 비어 있으면 browser blocked canceled failed 쪽을 먼저 봐야 해?"
+- "X-Request-Id가 있으면 app log와 gateway log 중 어디부터 추적해?"
+- "502 504에서 Server Via header로 proxy local reply 가능성을 어떻게 봐?"
+contextual_chunk_prefix: |
+  이 문서는 DevTools response headers에서 Server, Via, X-Request-Id,
+  traceparent를 1분 안에 읽어 browser-side failure, proxy/gateway local
+  reply, app까지 도달한 request를 나누는 beginner symptom router다.
+---
 # Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드
 
 > 한 줄 요약: DevTools 응답 헤더에서 `Server`, `Via`, `X-Request-Id` 세 칸만 먼저 읽어도 "브라우저가 막은 건지, proxy가 대신 응답한 건지, app까지 들어간 건지"를 초급자 1차 분기로 빠르게 가를 수 있고, `application/problem+json`도 곧바로 app JSON으로 오해하지 않게 된다.

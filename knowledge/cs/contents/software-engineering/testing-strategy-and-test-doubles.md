@@ -1,6 +1,87 @@
+---
+schema_version: 3
+title: 테스트 전략과 테스트 더블
+concept_id: software-engineering/testing-strategy-and-test-doubles
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- test-double-purpose-before-name
+- fake-vs-mock-boundary
+- test-scope-signal-balance
+aliases:
+- testing strategy and test doubles
+- test strategy follow-up
+- test double basics
+- mock stub fake difference
+- first test checklist follow-up
+- unit slice integration e2e balance
+- springboottest not e2e
+- fake outbound port
+- contract test basics
+- hexagonal testing seam
+- repository fake vs mock example
+- mock 대신 fake 언제
+symptoms:
+- 첫 테스트는 골랐는데 mock, stub, fake, spy 중 무엇을 왜 쓰는지 헷갈려
+- Repository는 fake가 더 읽히고 외부 알림은 mock이 더 맞는 이유가 궁금해
+- 단위, slice, integration, contract, e2e 테스트가 주는 신뢰가 어떻게 다른지 알고 싶어
+intents:
+- comparison
+- design
+prerequisites:
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/hexagonal-testing-seams-primer
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/repository-fake-design
+- software-engineering/api-contract-testing
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/software-engineering/datajpatest-db-difference-checklist.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+confusable_with:
+- software-engineering/test-strategy-basics
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/stub-vs-spy-first-test-primer
+- software-engineering/hexagonal-testing-seams-primer
+forbidden_neighbors: []
+expected_queries:
+- mock, stub, fake, spy, dummy 차이를 테스트 목적 기준으로 설명해줘
+- repository는 fake로 상태 결과를 보고 알림 발송은 mock으로 호출을 보는 이유가 뭐야?
+- unit, slice, app integration, contract, e2e test가 주는 신뢰와 비용을 비교해줘
+- Ports and Adapters에서 outbound port를 fake로 대체하는 테스트 seam을 어떻게 잡아?
+- mock을 남발하면 리팩터링 내성이 왜 낮아지는지 예시로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 첫 테스트를 고른 뒤 mock, stub, fake, spy, dummy 같은 test double을 실제 의존성을 왜 대체하는가 기준으로 설명하고, unit, slice, app integration, contract, e2e test의 신뢰와 비용 균형을 비교하는 intermediate primer다.
+  fake repository vs mock repository, outbound port fake, call verification, state/result verification, hexagonal testing seam 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 테스트 전략과 테스트 더블
 
 > 한 줄 요약: 이 문서는 `첫 테스트를 고른 뒤 왜 그 선택이 맞는지`와 `mock/stub/fake 중 무엇을 왜 쓰는지`를 한 단계 더 설명하는 follow-up이다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "mock, stub, fake가 다 비슷해 보여요" | repository, payment client, number generator를 모두 같은 방식으로 대체하려는 테스트 | 테스트 대역 이름보다 검증하려는 경계를 먼저 정한다 |
+| "Repository는 fake가 낫고 알림은 mock이 낫다는 말이 왜죠?" | roomescape 저장 상태는 메모리 fake로 보고 shopping-cart 알림 전송은 호출 여부로 보는 테스트 | state verification과 interaction verification을 나눈다 |
+| "`@SpringBootTest`면 e2e 테스트인가요?" | 전체 Spring context는 뜨지만 브라우저/외부 시스템까지는 실제로 통과하지 않는 테스트 | app integration과 end-to-end 신뢰 범위를 구분한다 |
 
 **난이도: 🟡 Intermediate**
 

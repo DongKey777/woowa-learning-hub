@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Cursor Rollback Packet
+concept_id: design-pattern/cursor-rollback-packet
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cursor-rollback
+- rollback-cursor-world
+- page1-restart-contract
+aliases:
+- cursor rollback packet
+- rollback cursor ttl
+- projection rollback cursor version ttl
+- rollback cursor bridge ttl
+- rollback reject reason code
+- rollback restart reason code
+- client restart after rollback
+- projection rollback pagination restart
+- rollback cursor world reset
+- rollback page1 restart
+symptoms:
+- projection rollback에서 route만 old path로 되돌리고 candidate projection이 발급한 cursor version과 client cache 처리 정책을 정하지 않는다
+- rollback 직전 candidate cursor를 오래 REISSUE하거나 ACCEPT해 split-brain cursor world를 장시간 유지한다
+- REISSUE와 REJECT reason code, bridge TTL, page1 restart behavior를 packet으로 남기지 않아 client와 metric 해석이 갈린다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/cursor-pagination-parity-read-model-migration
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+next_docs:
+- design-pattern/legacy-cursor-reissue-api-surface
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/projection-rollback-window-exit-criteria
+linked_paths:
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/pinned-legacy-chain-risk-budget.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/normalization-version-rollout-playbook.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+- contents/design-pattern/legacy-cursor-reissue-api-surface.md
+confusable_with:
+- design-pattern/legacy-cursor-reissue-api-surface
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/strict-pagination-fallback-contracts
+forbidden_neighbors: []
+expected_queries:
+- Cursor rollback packet은 projection rollback 뒤 어떤 cursor version을 canonical로 볼지 다시 선언하는 문서야?
+- rollback 직전 candidate cursor를 bridge TTL 동안 REISSUE하고 이후 REJECT하는 이유가 뭐야?
+- rollback 후 pinned chain ttl을 기본 0초로 두고 page N continuation보다 page1 restart를 우선해야 하는 이유가 뭐야?
+- ROLLBACK_RESTART_REQUIRED와 ROLLBACK_CURSOR_BRIDGE_EXPIRED 같은 reason code를 분리해야 metrics와 client가 같은 해석을 하는 이유가 뭐야?
+- rollback은 route switch가 아니라 cursor world reset이라는 말은 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Cursor Rollback Packet playbook으로, projection rollback 이후 old path로
+  route만 되돌리는 데 그치지 않고 rollback_epoch, canonical cursor versions, bridge TTL,
+  requested version별 ACCEPT/REISSUE/REJECT policy, public/internal reason code, client page1
+  restart behavior를 한 packet으로 고정하는 방법을 설명한다.
+---
 # Cursor Rollback Packet
 
 > 한 줄 요약: projection rollback 뒤에는 traffic route만 old path로 되돌리는 것으로 끝나지 않고, 어떤 cursor version을 얼마 동안 받아줄지, 언제 `REISSUE`에서 `REJECT`로 전환할지, client가 어떻게 page 1부터 다시 시작할지를 하나의 rollback packet으로 고정해야 한다.

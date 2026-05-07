@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Service Contract Smell Cards
+concept_id: software-engineering/service-contract-smell-cards
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- service-layer
+- contract-leak
+- pageable
+- responseentity
+aliases:
+- service contract smell
+- service signature leak
+- ResponseEntity in service
+- Pageable in service
+- Entity in service parameter
+- 서비스 계약 냄새 카드
+symptoms:
+- service 메서드가 ResponseEntity, MultipartFile, HttpServletRequest 같은 웹 타입을 받아 유스케이스 결과보다 HTTP 세부를 말해
+- service가 Pageable, Sort, Page<Entity>를 그대로 노출해 조회 의도보다 Spring Data API가 계약이 돼
+- service 파라미터나 반환 타입에 Entity가 그대로 보여 저장 모델이 command, query, result 역할까지 먹고 있어
+- 구조는 맞아 보여도 service signature가 controller나 repository adapter의 언어를 직접 말해 경계가 새어
+intents:
+- symptom
+- troubleshooting
+- mission_bridge
+prerequisites:
+- software-engineering/service-layer-basics
+- software-engineering/dto-vo-entity-basics
+next_docs:
+- software-engineering/pageable-query-model-pagination
+- software-engineering/entity-leakage-review-checklist
+- software-engineering/persistence-adapter-mapping-checklist
+linked_paths:
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/pageable-service-contract-vs-query-model-pagination-bridge.md
+- contents/software-engineering/entity-leakage-review-checklist.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- software-engineering/layered-architecture-basics
+- software-engineering/dto-vo-entity-basics
+- software-engineering/pageable-query-model-pagination
+forbidden_neighbors: []
+expected_queries:
+- service에서 ResponseEntity를 반환하면 왜 HTTP 응답 책임이 service 계약으로 새는 거야?
+- service가 Pageable이나 Page<Entity>를 받거나 반환할 때 query/result DTO로 바꾸는 기준을 알려줘
+- service가 Entity를 파라미터로 바로 받는 리뷰를 받았을 때 command나 id로 좁히는 방법을 설명해줘
+- 레이어 자리는 맞는데 구조는 맞고 계약이 샌다는 말은 어떤 시그니처 냄새를 보라는 뜻이야?
+- MultipartFile이나 Authentication 같은 웹 타입을 service 안쪽으로 넘기지 않는 이유를 초심자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 service signature에 ResponseEntity, Pageable, MultipartFile, Entity 같은 웹/프레임워크/영속 타입이 새는 증상을 첫 수정 질문으로 번역하는 beginner symptom router이다.
+---
 # Service Contract Smell Cards
 
 > 한 줄 요약: "`구조는 맞는데 계약이 샌다`", "`service에서 `ResponseEntity`를 반환해요`", "`service가 `Pageable`을 받아요`", "`service가 `Entity`를 그대로 받아요`"처럼 들릴 때, service 메서드가 유스케이스 계약 대신 웹/프레임워크/영속 세부를 말하고 있는지 먼저 점검하는 문서다.

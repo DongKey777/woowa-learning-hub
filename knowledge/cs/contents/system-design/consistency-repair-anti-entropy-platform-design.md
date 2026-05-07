@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Consistency Repair / Anti-Entropy Platform 설계
+concept_id: system-design/consistency-repair-anti-entropy-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- consistency repair
+- anti-entropy
+- drift detection
+- merkle tree
+aliases:
+- consistency repair
+- anti-entropy
+- drift detection
+- merkle tree
+- repair queue
+- correction workflow
+- checksum bucket
+- source of truth
+- invariant scan
+- repair ledger
+- reconciliation repair
+- repair campaign
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Consistency Repair / Anti-Entropy Platform 설계 설계 핵심을 설명해줘
+- consistency repair가 왜 필요한지 알려줘
+- Consistency Repair / Anti-Entropy Platform 설계 실무 트레이드오프는 뭐야?
+- consistency repair 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Consistency Repair / Anti-Entropy Platform 설계를 다루는 deep_dive 문서다. consistency repair와 anti-entropy 플랫폼은 source of truth와 replica, cache, index, derived store 사이의 drift를 탐지하고, 안전한 보정 작업으로 정합성을 회복하는 운영 복구 시스템이다. 검색 질의가 consistency repair, anti-entropy, drift detection, merkle tree처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Consistency Repair / Anti-Entropy Platform 설계
 
 > 한 줄 요약: consistency repair와 anti-entropy 플랫폼은 source of truth와 replica, cache, index, derived store 사이의 drift를 탐지하고, 안전한 보정 작업으로 정합성을 회복하는 운영 복구 시스템이다.

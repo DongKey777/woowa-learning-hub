@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Empty String, Blank, null, and Missing Payload Semantics
+concept_id: language/empty-string-blank-null-missing-payload-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- payload-semantics
+- patch-semantics
+- canonicalization
+aliases:
+- empty string blank null missing payload semantics
+- PATCH missing null empty string
+- trim policy payload
+- search key normalization
+- Java empty blank null semantics
+- 빈 문자열 공백 null 누락
+symptoms:
+- empty string, blank string, null, missing field를 trim이나 defaulting으로 일찍 뭉개 PATCH semantics와 validation 의미를 잃어
+- nickname 같은 PATCH 요청에서 missing은 변경 없음, null은 제거, empty는 빈 값 시도라는 차이를 구분하지 못해
+- raw payload, validation result, canonical key, display value를 분리하지 않아 검색/중복 제거/캐시 키 기준이 경로마다 달라져
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- language/json-null-missing-unknown-field-schema-evolution
+next_docs:
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/value-object-invariants-canonicalization-boundary-design
+- language/locale-root-case-mapping-unicode-normalization
+linked_paths:
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/json-null-missing-unknown-field-schema-evolution
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/value-object-invariants-canonicalization-boundary-design
+forbidden_neighbors: []
+expected_queries:
+- PATCH payload에서 empty string blank null missing field를 각각 어떻게 해석해야 해?
+- trim을 controller에서 일찍 해버리면 empty와 blank 의미가 왜 사라질 수 있어?
+- raw payload validation canonical key display value를 문자열 입력에서 어떻게 분리해?
+- 검색 키 canonicalization과 사용자 표시 값을 같은 문자열 정책으로 묶으면 어떤 버그가 생겨?
+- old client가 빈 문자열을 보내고 new client가 null을 보낼 때 schema evolution을 어떻게 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 backend payload의 empty string, blank string, null, missing field를 PATCH semantics, trim policy, canonicalization, validation boundary, schema evolution 관점으로 설명하는 advanced deep dive다.
+  empty string, blank, null, missing, trim policy, PATCH semantics, canonical key 질문이 본 문서에 매핑된다.
+---
 # Empty String, Blank, `null`, and Missing Payload Semantics
 
 > 한 줄 요약: backend payload에서 `""`, `"   "`, `null`, 필드 누락은 서로 다른 의미를 가질 수 있다. 이 차이를 trim이나 defaulting으로 일찍 뭉개면 PATCH semantics, 검색 키 canonicalization, validation, migration behavior가 조용히 틀어진다.

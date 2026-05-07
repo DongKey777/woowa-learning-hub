@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Spring 404 ProblemDetail Framework vs Domain Bridge"
+concept_id: network/spring-404-problemdetail-framework-vs-domain-bridge
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- spring-404
+- problemdetail
+- response-owner
+aliases:
+- Spring 404 ProblemDetail
+- No static resource 404
+- framework 404 vs domain 404
+- 404 problem+json owner
+- static resource not found Spring
+- controller 안 탔는데 404
+symptoms:
+- 404 application/problem+json이면 항상 controller 예외 처리라고 판단한다
+- No static resource나 favicon 404를 도메인 not found로 오해한다
+- API prefix 누락, static resource lookup, domain lookup 실패를 같은 조사 경로로 본다
+- gateway/app/framework 중 response body owner를 먼저 가르지 않는다
+intents:
+- troubleshooting
+- comparison
+- mission_bridge
+prerequisites:
+- network/browser-asset-404-vs-api-404-mixup-mini-card
+- network/browser-devtools-response-body-ownership-checklist
+next_docs:
+- spring/problemdetail-error-response-design
+- spring/basicerrorcontroller-errorattributes-whitelabel-boundaries
+- network/ssr-view-render-vs-json-api-response-basics
+- network/browser-devtools-gateway-error-header-clue-card
+linked_paths:
+- contents/network/browser-asset-404-vs-api-404-mixup-mini-card.md
+- contents/network/gateway-json-vs-app-json-tiny-card.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/spring/spring-problemdetail-error-response-design.md
+- contents/spring/spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md
+confusable_with:
+- network/browser-asset-404-vs-api-404-mixup-mini-card
+- network/gateway-json-vs-app-json-tiny-card
+- spring/problemdetail-error-response-design
+- spring/basicerrorcontroller-errorattributes-whitelabel-boundaries
+forbidden_neighbors: []
+expected_queries:
+- "Spring 404 problem+json이 framework 404인지 domain 404인지 어떻게 구분해?"
+- "No static resource 404는 controller가 만든 도메인 404가 아닌 이유는?"
+- "favicon.ico 404와 API 404를 DevTools에서 어떻게 나눠?"
+- "ProblemDetail body 형식만으로 app 예외 처리라고 단정하면 안 되는 이유는?"
+- "Spring Boot BasicErrorController와 domain not found 예외는 어떻게 달라?"
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot/Framework의 404 ProblemDetail에서 framework/static
+  resource 404, BasicErrorController/ErrorAttributes, domain not found 404,
+  gateway/app body owner를 가르는 intermediate bridge다.
+---
 # Spring `404` `ProblemDetail`: framework `No static resource` vs domain not found bridge
 
 > 한 줄 요약: `404 application/problem+json`이라고 해서 곧바로 "우리 controller가 도메인 404를 만든 것"은 아니고, Spring framework가 static resource/mapping 단계에서 만든 `404`와 app이 도메인 규칙으로 만든 `404`를 먼저 갈라야 조사 시작점이 맞아진다.

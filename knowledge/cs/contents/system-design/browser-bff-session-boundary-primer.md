@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Browser BFF Session Boundary Primer
+concept_id: system-design/browser-bff-session-boundary-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- browser bff session boundary primer
+- cookie session
+- session cookie
+- opaque session cookie
+aliases:
+- browser bff session boundary primer
+- cookie session
+- session cookie
+- opaque session cookie
+- browser auth path
+- mobile auth path
+- api token flow
+- bearer token flow
+- bff token translation
+- backend for frontend auth
+- browser cookie vs mobile token
+- browser auth vs api auth
+symptoms: []
+intents:
+- definition
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/session-revocation-basics.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/security/bff-session-store-outage-degradation-recovery.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Browser BFF Session Boundary Primer 설계 핵심을 설명해줘
+- browser bff session boundary primer가 왜 필요한지 알려줘
+- Browser BFF Session Boundary Primer 실무 트레이드오프는 뭐야?
+- browser bff session boundary primer 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Browser BFF Session Boundary Primer를 다루는 primer 문서다. 브라우저는 보통 cookie session과 BFF를 통해 로그인 상태를 전달하고, 모바일/API는 bearer token을 직접 보내는 경우가 많아서 같은 인증이라도 상태 위치, 위협 모델, 운영 방식이 달라진다. 검색 질의가 browser bff session boundary primer, cookie session, session cookie, opaque session cookie처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Browser BFF Session Boundary Primer
 
 > 한 줄 요약: 브라우저는 보통 cookie session과 BFF를 통해 로그인 상태를 전달하고, 모바일/API는 bearer token을 직접 보내는 경우가 많아서 같은 인증이라도 상태 위치, 위협 모델, 운영 방식이 달라진다.

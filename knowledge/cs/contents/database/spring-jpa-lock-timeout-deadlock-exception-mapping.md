@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Spring/JPA Lock Timeout and Deadlock Exception Mapping
+concept_id: database/spring-jpa-lock-timeout-deadlock-exception-mapping
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- spring
+- jpa
+- lock-timeout
+- deadlock
+- exception-mapping
+aliases:
+- spring jpa exception mapping
+- MySQL 1205 1213 Spring
+- PostgreSQL 55P03 40P01 40001 Spring
+- CannotAcquireLockException classifier
+- DeadlockLoserDataAccessException
+- PessimisticLockException
+- Hibernate LockAcquisitionException
+- busy vs retryable Spring
+- lock timeout deadlock mapping
+- SQLSTATE errno retry classification
+symptoms:
+- Spring/JPA top-level 예외 이름만 보고 lock timeout과 deadlock, serialization failure를 구분하려 해
+- JDBC translator와 Hibernate/JPA translator 경로에 따라 같은 DB signal이 다른 예외로 보이는 이유를 설명해야 해
+- busy와 retryable 분류를 SQLSTATE/errno와 번역 경로까지 보고 안정적으로 정해야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/three-bucket-decision-tree
+- database/spring-cannotacquirelockexception-root-sql-code
+next_docs:
+- database/spring-jpa-postgresql-55p03-retry-policy-bridge
+- database/spring-retry-proxy-boundary-pitfalls
+- database/transaction-retry-serialization-failure-patterns
+linked_paths:
+- contents/database/three-bucket-decision-tree-mini-card.md
+- contents/database/spring-cannotacquirelockexception-root-sql-code-card.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md
+- contents/database/nowait-vs-short-lock-timeout-busy-guide.md
+- contents/database/spring-jpa-postgresql-55p03-retry-policy-bridge.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/spring-jpa-locking-example-guide.md
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/postgresql-serializable-retry-playbook.md
+confusable_with:
+- database/spring-cannotacquirelockexception-root-sql-code
+- database/spring-jpa-postgresql-55p03-retry-policy-bridge
+- database/three-bucket-decision-tree
+forbidden_neighbors: []
+expected_queries:
+- Spring/JPA에서 MySQL 1205 1213, PostgreSQL 55P03 40P01 40001이 어떤 예외로 보일 수 있어?
+- CannotAcquireLockException 하나만 보고 retry 여부를 결정하면 왜 lock timeout과 deadlock을 오분류해?
+- JDBC 경로와 Hibernate/JPA 경로에서 같은 deadlock이 서로 다른 Spring 예외 이름으로 보이는 이유가 뭐야?
+- lock timeout은 busy, deadlock과 serialization failure는 retryable로 보되 telemetry는 어떻게 분리해야 해?
+- SQLSTATE errno와 translation path를 같이 봐야 bounded retry를 안전하게 설계할 수 있다는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring/JPA lock timeout과 deadlock exception mapping을 SQLSTATE/errno, JDBC translator, Hibernate/JPA wrapper, busy vs retryable 분류로 설명하는 advanced deep dive다.
+  MySQL 1205/1213, PostgreSQL 55P03/40P01/40001, CannotAcquireLockException classifier 질문이 본 문서에 매핑된다.
+---
 # MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑
 
 > 한 줄 요약: 이 문서는 `busy` / `retryable` 1차 분류를 끝낸 뒤 읽는 확장판이다. lock timeout과 deadlock은 DB에서는 서로 다른 신호이고, Spring에서는 `CannotAcquireLockException` 하나로 뭉개져 보일 수도 있어서 **top-level 예외 이름만 보지 말고 `SQLSTATE/errno + 번역 경로(JDBC vs Hibernate/JPA)`까지 같이 봐야** bounded retry를 안전하게 설계할 수 있다.

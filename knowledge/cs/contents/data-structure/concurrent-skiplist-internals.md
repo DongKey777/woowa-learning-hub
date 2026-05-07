@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Concurrent Skip List Internals
+concept_id: data-structure/concurrent-skiplist-internals
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- concurrent-ordered-map
+- skiplist-internals
+- range-scan-concurrency
+aliases:
+- concurrent skip list
+- lock-free skip list
+- concurrent ordered map
+- concurrent sorted set
+- mark and unlink skip list
+- ceilingKey scheduler
+- probabilistic ordered index
+symptoms:
+- 동시성 환경에서 ordered map이나 range scan이 필요하지만 balanced tree rotation과 coarse lock 비용만 떠올린다
+- skip list의 upper level을 실제 set semantics로 오해하고 bottom ordered list의 linearization 역할을 놓친다
+- 삭제 시 logical mark와 physical unlink를 분리해야 하는 이유를 concurrent traversal race와 연결하지 못한다
+intents:
+- deep_dive
+- design
+prerequisites:
+- data-structure/skip-list
+- data-structure/treap-vs-skip-list
+next_docs:
+- data-structure/skip-list
+- data-structure/treap-vs-skip-list
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/michael-scott-lock-free-queue
+linked_paths:
+- contents/data-structure/skip-list.md
+- contents/data-structure/treap-vs-skip-list.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+confusable_with:
+- data-structure/skip-list
+- data-structure/treap-vs-skip-list
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/michael-scott-lock-free-queue
+forbidden_neighbors: []
+expected_queries:
+- Concurrent Skip List는 동시성 ordered map에서 balanced tree보다 왜 다루기 쉬워?
+- lock-free skip list에서 bottom layer가 correctness를 쥐는 이유는?
+- skip list 삭제에서 mark and unlink를 나누는 이유를 알려줘
+- ConcurrentSkipListMap이 ceilingKey나 range scan에 적합한 이유는?
+- ordered set을 동시성 환경에서 유지할 때 skip list와 TreeMap을 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 Concurrent Skip List를 트리 회전 없이 ordered map/set과 range
+  scan을 제공하는 동시성 친화 index로 설명한다. bottom layer correctness,
+  probabilistic level, lock-free 또는 fine-grained update, mark-and-unlink
+  deletion, ceilingKey scheduler 맥락을 다룬다.
+---
 # Concurrent Skip List Internals
 
 > 한 줄 요약: Concurrent Skip List는 ordered map/set를 락 경합과 재균형 비용 없이 유지하려고, 확률적 레벨과 lock-free 또는 fine-grained locking 삽입/삭제 규약을 결합한 동시성 친화 ordered index다.

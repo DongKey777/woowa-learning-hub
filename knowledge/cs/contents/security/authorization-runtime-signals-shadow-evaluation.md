@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Authorization Runtime Signals / Shadow Evaluation
+concept_id: security/authorization-runtime-signals-shadow-evaluation
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- authorization runtime signals
+- shadow evaluation
+- policy canary
+- deny spike
+aliases:
+- authorization runtime signals
+- shadow evaluation
+- policy canary
+- deny spike
+- shadow decision divergence
+- graph snapshot drift
+- graph snapshot version mismatch
+- authorization graph lag
+- authz runtime telemetry
+- policy rollout safety
+- owner mismatch spike
+- tenant mismatch signal
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+- contents/database/online-backfill-verification-cutover-gates.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Authorization Runtime Signals / Shadow Evaluation 핵심 개념을 설명해줘
+- authorization runtime signals가 왜 필요한지 알려줘
+- Authorization Runtime Signals / Shadow Evaluation 실무 설계 포인트는 뭐야?
+- authorization runtime signals에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Authorization Runtime Signals / Shadow Evaluation를 다루는 deep_dive 문서다. 인가 시스템은 설계 문서보다 런타임에서 더 많이 실패하므로, deny spike, owner mismatch, tenant mismatch, cache staleness, shadow decision divergence를 실시간으로 보고 정책 변경을 shadow evaluation과 canary로 배포해야 한다. 검색 질의가 authorization runtime signals, shadow evaluation, policy canary, deny spike처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Authorization Runtime Signals / Shadow Evaluation
 
 > 한 줄 요약: 인가 시스템은 설계 문서보다 런타임에서 더 많이 실패하므로, deny spike, owner mismatch, tenant mismatch, cache staleness, shadow decision divergence를 실시간으로 보고 정책 변경을 shadow evaluation과 canary로 배포해야 한다.

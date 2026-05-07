@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Guard Row vs Serializable Retry vs Reconciliation for Set Invariants
+concept_id: database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- set-invariant-enforcement-chooser
+- guard-row-vs-serializable
+- reconciliation-drift-repair
+aliases:
+- guard row vs serializable retry vs reconciliation
+- set invariant
+- count invariant
+- sum invariant
+- capacity oversell
+- minimum staffing
+- quota guard
+- invariant drift repair
+- serializable retry telemetry
+- guard row reconciliation
+symptoms:
+- capacity나 quota 같은 count/sum set invariant를 guard row, serializable retry, reconciliation 중 어디서 막을지 모르겠어
+- SELECT COUNT 후 insert 같은 read-then-write 경합으로 write skew가 나고 있어
+- guard row가 즉시 차단하지 못한 우회 쓰기나 cleanup lag를 reconciliation으로 잡아야 해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/range-invariant-enforcement-write-skew-phantom
+- database/active-predicate-alignment-capacity-guards
+next_docs:
+- database/serializable-retry-telemetry-set-invariants
+- database/summary-drift-detection-bounded-rebuild
+- database/hold-expiration-predicate-drift
+- database/hot-row-contention-counter-sharding
+linked_paths:
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/active-predicate-alignment-capacity-guards.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/serializable-retry-telemetry-set-invariants.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/write-skew-detection-compensation-patterns.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+- contents/database/hold-expiration-predicate-drift.md
+confusable_with:
+- database/range-invariant-enforcement-write-skew-phantom
+- database/active-predicate-alignment-capacity-guards
+- database/summary-drift-detection-bounded-rebuild
+forbidden_neighbors: []
+expected_queries:
+- capacity나 quota 같은 set invariant는 guard row, serializable retry, reconciliation 중 무엇으로 막아야 해?
+- guard row는 커밋 전 admission control이고 reconciliation은 커밋 후 repair라는 차이를 설명해줘
+- serializable retry는 query predicate 기반 write skew를 언제 현실적으로 막아?
+- hard invariant에 reconciliation only가 거의 맞지 않는 이유는 뭐야?
+- hot aggregate에서 guard row가 병목이면 striped guard row나 ledger로 언제 바꿔야 해?
+contextual_chunk_prefix: |
+  이 문서는 count/sum 기반 set invariant를 guard row, serializable retry, reconciliation 중 어느 방어선에서 막을지 고르는 advanced chooser다.
+  guard row vs serializable retry, set invariant, capacity oversell, reconciliation drift repair 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Guard Row vs Serializable Retry vs Reconciliation for Set Invariants
 
 > 한 줄 요약: capacity나 minimum staffing처럼 count/sum으로 정의되는 set invariant는 guard row로 즉시 차단하고, serializable retry는 재모델링이 어려운 조회-판단 경로를 감싸며, reconciliation은 drift와 우회 쓰기를 잡는 복구 루프로 써야 한다.

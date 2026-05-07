@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: PostgreSQL Visibility Map and All-Visible Beginner Card
+concept_id: database/postgresql-visibility-map-all-visible-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- visibility-map
+- index-only-scan
+- autovacuum
+aliases:
+- postgresql visibility map basics
+- all-visible meaning
+- visibility map what is
+- page visibility vs tuple visibility
+- row mvcc visibility beginner
+- why heap fetches remain
+- vacuum all visible basics
+- visibility map 처음
+- all visible 뭐예요
+- tuple visibility 뭐예요
+symptoms:
+- PostgreSQL visibility map을 row 단위 visible 여부 저장소로 오해하고 page-level all-visible hint를 놓치고 있어
+- Index Only Scan인데 Heap Fetches가 남는 이유를 visibility map과 all-visible page 상태로 연결해야 해
+- autovacuum가 visibility map을 회복시켜 heap 재확인을 줄이는 흐름을 이해해야 해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/mvcc-replication-sharding
+next_docs:
+- database/postgresql-buffers-hit-read-dirtied-written-mini-card
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/covering-index-vs-index-only-scan
+linked_paths:
+- contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+- contents/database/postgresql-explain-analyze-terms-mini-bridge.md
+confusable_with:
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/covering-index-vs-index-only-scan
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL visibility map과 all-visible은 무엇이고 Heap Fetches와 어떻게 연결돼?
+- all-visible이 tuple visibility와 같은 말이 아닌 이유를 page-level hint로 설명해줘
+- Index Only Scan에서 page가 all-visible이 아니면 왜 heap을 다시 확인해?
+- autovacuum이 visibility map을 갱신하면 heap fetches가 줄 수 있는 이유가 뭐야?
+- visibility map은 row별 메모인지 page별 메모인지 초보자용으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL visibility map과 all-visible page-level hint가 Index Only Scan의 Heap Fetches를 줄이거나 남기는 이유를 설명하는 beginner primer다.
+  visibility map 처음, all visible 뭐예요, tuple visibility와 page visibility 차이 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `visibility map`과 `all-visible`은 뭐예요?
 
 > 한 줄 요약: `visibility map`은 PostgreSQL이 "이 heap page는 지금 heap 본문을 다시 안 봐도 될 가능성이 높다"라고 빠르게 표시해 두는 메모이고, `all-visible`은 그 page의 tuple들이 현재 모든 스냅샷에서 보일 수 있다고 정리된 상태를 뜻한다.

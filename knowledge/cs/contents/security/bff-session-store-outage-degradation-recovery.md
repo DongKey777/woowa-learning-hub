@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: BFF Session Store Outage / Degradation Recovery
+concept_id: security/bff-session-store-outage-degradation-recovery
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- BFF session store outage
+- session cache outage
+- browser cookie but session missing
+- token cache outage
+aliases:
+- BFF session store outage
+- session cache outage
+- browser cookie but session missing
+- token cache outage
+- BFF degradation
+- session translation outage
+- browser server auth outage
+- BFF auth recovery
+- session store failover
+- login loop
+- 302 login loop
+- 401 302 bounce
+symptoms:
+- BFF Session Store Outage / Degradation Recovery 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/security/cookie-scope-mismatch-guide.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- BFF Session Store Outage / Degradation Recovery 장애가 나면 복구 순서는?
+- BFF session store outage 운영 대응 체크리스트가 뭐야?
+- BFF Session Store Outage / Degradation Recovery에서 blast radius를 어떻게 줄여?
+- BFF session store outage 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 BFF Session Store Outage / Degradation Recovery를 다루는 playbook 문서다. BFF 구조에서 session store나 server-side token cache가 죽으면 브라우저는 로그인된 것처럼 보여도 실제 번역 계층이 사라질 수 있으므로, cookie 존재와 세션 유효성을 분리해서 보고 route별 degraded mode와 복구 순서를 준비해야 한다. 검색 질의가 BFF session store outage, session cache outage, browser cookie but session missing, token cache outage처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # BFF Session Store Outage / Degradation Recovery
 
 > 한 줄 요약: BFF 구조에서 session store나 server-side token cache가 죽으면 브라우저는 로그인된 것처럼 보여도 실제 번역 계층이 사라질 수 있으므로, cookie 존재와 세션 유효성을 분리해서 보고 route별 degraded mode와 복구 순서를 준비해야 한다.

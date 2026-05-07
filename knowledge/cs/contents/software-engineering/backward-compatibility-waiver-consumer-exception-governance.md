@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Backward Compatibility Waivers and Consumer Exception Governance
+concept_id: software-engineering/compatibility-waiver-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- backward-compatibility
+- waiver-governance
+- consumer-exception
+aliases:
+- Backward Compatibility Waivers and Consumer Exception Governance
+- backward compatibility waiver
+- compatibility exception
+- consumer exception governance
+- lagging consumer waiver
+- compatibility allowlist
+symptoms:
+- lagging consumer를 위해 old contract를 잠깐 유지한다고 해놓고 expiry, owner, removal block 없이 permanent support처럼 굳혀
+- compatibility gate를 waiver로 우회하면서 allowlist, usage metric, final replay 같은 compensating control을 붙이지 않아
+- 반복되는 waiver가 공식 registry schema gap인지, 없애야 할 shadow bypass인지 구분하지 못해 예외 부채가 누적돼
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/backward-compatibility-gates
+- software-engineering/consumer-migration-playbook
+next_docs:
+- software-engineering/consumer-exception-model
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+- software-engineering/migration-wave-governance
+linked_paths:
+- contents/software-engineering/backward-compatibility-test-gates.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/deprecation-enforcement-tombstone-guardrails.md
+- contents/software-engineering/consumer-exception-operating-model.md
+confusable_with:
+- software-engineering/backward-compatibility-gates
+- software-engineering/consumer-exception-model
+- software-engineering/deprecation-enforcement-tombstone-guardrails
+forbidden_neighbors: []
+expected_queries:
+- backward compatibility gate가 있어도 lagging consumer 때문에 waiver가 필요한 상황을 어떻게 관리해?
+- compatibility waiver에는 consumer owner expiry compensating control removal block을 왜 넣어야 해?
+- temporary waiver와 permanent support를 구분하지 않으면 producer에 어떤 compatibility debt가 쌓여?
+- strict parser를 못 고친 consumer만 old payload allowlist로 유지할 때 어떤 관측과 종료 조건이 필요해?
+- 반복되는 waiver가 retire해야 할 bypass인지 absorb해야 할 registry schema gap인지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 backward compatibility waiver와 consumer exception governance를 lagging consumer, expiry, owner, allowlist, compensating control, removal block, waiver debt 관점에서 관리하는 advanced playbook이다.
+---
 # Backward Compatibility Waivers and Consumer Exception Governance
 
 > 한 줄 요약: backward compatibility gate가 있어도 현실에서는 lagging consumer와 temporary waiver가 생기므로, 어떤 예외를 얼마 동안 허용하고 어떤 compensating control과 removal 조건을 붙일지까지 관리하는 governance가 필요하다.

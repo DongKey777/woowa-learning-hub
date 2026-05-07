@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: JIT Warmup and Deoptimization
+concept_id: language/jit-warmup-deoptimization
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jit
+- performance
+- deoptimization
+aliases:
+- JIT Warmup and Deoptimization
+- HotSpot tiered compilation warmup
+- Java deoptimization uncommon trap
+- JIT profile pollution latency spike
+- PrintCompilation PrintInlining JFR compilation
+- 자바 JIT warmup deopt
+symptoms:
+- 서버 시작 직후 latency가 높다가 안정되는 현상을 cache 문제로만 보고 interpreter, C1/C2, tiered compilation warmup을 놓쳐
+- benchmark 결과를 warmup 없이 읽어 JIT 최적화 전후 구간과 deoptimization spike를 평균에 섞어 해석해
+- polymorphic call site, class loading, profile change로 JIT 가정이 깨져 deopt가 나는 상황을 단순 GC나 네트워크 지연으로 오진해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/jvm-gc-jmm-overview
+- language/method-inlining-heuristics-deopt-triggers
+- language/code-cache-jit-profiling
+next_docs:
+- language/jmh-benchmarking-pitfalls
+- language/escape-analysis-scalar-replacement
+- language/jfr-jmc-performance-playbook
+linked_paths:
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/g1-vs-zgc.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/language/java/code-cache-jit-profiling.md
+- contents/language/java/method-inlining-heuristics-deopt-triggers.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+confusable_with:
+- language/jmh-benchmarking-pitfalls
+- language/code-cache-jit-profiling
+- language/method-inlining-heuristics-deopt-triggers
+forbidden_neighbors: []
+expected_queries:
+- Java JIT warmup은 왜 필요하고 서버 시작 직후 latency가 높은 이유를 설명해줘
+- deoptimization은 어떤 JIT 가정이 깨질 때 발생하는지 예제로 알려줘
+- PrintCompilation PrintInlining이나 JFR compilation event로 JIT 문제를 어떻게 관측해?
+- polymorphic call site나 class loading이 JIT profile을 바꿔 latency spike를 만들 수 있어?
+- microbenchmark와 운영 성능이 JIT warmup 때문에 달라지는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 HotSpot JIT warmup, tiered compilation, inlining, type profile, deoptimization을 Java 성능 관측 관점에서 설명하는 advanced deep dive다.
+  JIT warmup, deoptimization, PrintCompilation, C1 C2, latency spike, benchmark trap 질문이 본 문서에 매핑된다.
+---
 # JIT Warmup and Deoptimization
 
 > 한 줄 요약: JIT는 실행 데이터를 바탕으로 코드를 최적화하지만, 그 가정이 깨지면 deoptimization이 발생한다.

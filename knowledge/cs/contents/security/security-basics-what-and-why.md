@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: 보안 기초: 왜 보안이 필요한가
+concept_id: security/security-basics-what-and-why
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- security-beginner-entry
+- cia-auth-authz
+- backend-security-first-route
+aliases:
+- security basics
+- 보안 기초
+- why security matters
+- CIA triad beginner
+- confidentiality integrity availability
+- 인증 인가 기초
+- backend security intro
+- attack surface basics
+- security beginner route
+- 보안 왜 필요해요
+symptoms:
+- 보안을 해킹 방지라는 막연한 말로만 이해해 기밀성, 무결성, 가용성, 인증, 인가 축으로 나누지 못한다
+- HTTPS만 켜면 보안이 끝난다고 생각해 입력 검증, 비밀번호 저장, 인가 체크 같은 별도 방어를 놓친다
+- 인증에 성공한 사용자라면 모든 API 접근이 허용된다고 생각해 인가 실패와 IDOR를 구분하지 못한다
+intents:
+- definition
+prerequisites: []
+next_docs:
+- security/https-tls-beginner
+- security/authentication-vs-authorization
+- security/xss-csrf-basics
+- security/password-hashing-basics
+linked_paths:
+- contents/security/https-tls-beginner.md
+- contents/security/authentication-vs-authorization.md
+- contents/network/http-state-session-cache.md
+- contents/security/xss-csrf-basics.md
+- contents/security/input-validation-basics.md
+- contents/security/owasp-top10-basics.md
+- contents/security/password-hashing-basics.md
+confusable_with:
+- security/authentication-vs-authorization
+- security/https-tls-beginner
+- security/owasp-top10-basics
+forbidden_neighbors: []
+expected_queries:
+- 보안을 처음 배울 때 CIA 트라이어드와 인증 인가를 어떤 축으로 이해해야 해?
+- HTTPS만 켜면 보안이 끝나는 게 아니라 입력 검증과 인가 체크가 따로 필요한 이유를 알려줘
+- 인증은 누구인지 확인이고 인가는 무엇을 할 수 있는지 판단이라는 차이를 예시로 설명해줘
+- 백엔드 API에서 보안은 요청이 들어온 뒤 어떤 순서로 등장하는지 큰 흐름으로 보고 싶어
+- 작은 서비스도 왜 자동화 스캐너나 기본 취약점 때문에 보안 기준이 필요한지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 security beginner entrypoint로 CIA triad와 인증/인가를 첫 축으로 잡는다.
+  confidentiality, integrity, availability, authentication, authorization, HTTPS, input validation, SQL injection, session/token theft, OWASP basic route를 다룬다.
+---
 # 보안 기초: 왜 보안이 필요한가
 
 > 한 줄 요약: 보안은 "나쁜 일이 일어나지 않게 한다"가 아니라, 인증·인가·기밀성·무결성·가용성이라는 다섯 축으로 위협을 구체적으로 막는 설계다.

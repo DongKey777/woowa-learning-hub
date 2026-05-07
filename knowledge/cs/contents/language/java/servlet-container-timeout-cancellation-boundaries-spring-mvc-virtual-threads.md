@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Servlet Container Timeout Cancellation Boundaries Spring MVC Virtual Threads
+concept_id: language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- servlet-timeout
+- virtual-threads
+- cancellation
+aliases:
+- Servlet Container Timeout and Cancellation Boundaries Spring MVC and Virtual Threads
+- servlet container timeout cancellation boundary
+- Spring MVC timeout cancellation virtual threads
+- request lifetime task lifetime downstream I/O lifetime
+- orphan async work after timeout
+- servlet timeout JDBC HTTP cancel
+symptoms:
+- servlet container timeout이 현재 request thread와 downstream I/O를 자동으로 끊는다고 기대해 client disconnect 뒤에도 worker task나 JDBC query가 계속 도는 orphan work를 만든다
+- response lifetime, request lifetime, application task lifetime, downstream I/O lifetime을 구분하지 않아 어느 timeout이 무엇을 실제로 끝냈는지 추적하지 못해
+- virtual thread request handling을 쓰면 blocking wait는 싸지만 JDBC statement나 outbound HTTP cancellation은 별도 전파가 필요하다는 점을 놓쳐
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/virtual-threads-project-loom
+- language/virtual-thread-framework-integration
+- language/thread-interruption-cooperative-cancellation-playbook
+next_docs:
+- language/servlet-async-timeout-downstream-deadline-propagation
+- language/servlet-asynclistener-cleanup-patterns
+- language/streaming-response-abort-surfaces-servlet-virtual-threads
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/virtual-thread-mvc-async-executor-boundaries.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/servlet-async-redispatch-filter-interceptor-ordering.md
+- contents/language/java/streaming-response-abort-surfaces-servlet-virtual-threads.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/structured-concurrency-scopedvalue.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+confusable_with:
+- language/servlet-async-timeout-downstream-deadline-propagation
+- language/servlet-asynclistener-cleanup-patterns
+- language/virtual-thread-framework-integration
+forbidden_neighbors: []
+expected_queries:
+- servlet container timeout은 request thread와 JDBC HTTP downstream 작업을 자동으로 취소해?
+- Spring MVC와 virtual threads에서 request lifetime task lifetime downstream I/O lifetime을 어떻게 분리해야 orphan work를 막아?
+- client disconnect나 broken pipe 뒤에도 application task가 계속 도는 이유와 cancellation 전파 방법을 알려줘
+- AsyncContext timeout과 connector timeout과 app worker deadline은 각각 무엇을 끝내는 timeout이야?
+- virtual thread가 많아도 JDBC Statement.cancel이나 outbound HTTP timeout은 별도 wiring이 필요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 servlet container timeout, Spring MVC async timeout, virtual thread request handling에서 response/request/task/downstream I/O lifetime과 cancellation boundary를 분리하는 advanced playbook이다.
+  servlet timeout, Spring MVC cancellation, virtual threads, orphan work, request lifetime 질문이 본 문서에 매핑된다.
+---
 # Servlet Container Timeout and Cancellation Boundaries: Spring MVC and Virtual Threads
 
 > 한 줄 요약: servlet container timeout은 "현재 요청 스레드를 자동으로 끊는 기능"이 아니라 connection, async context, application task, downstream I/O의 수명을 느슨하게 맞추는 경계다. Spring MVC와 virtual-thread request handling에서는 특히 "누가 timeout을 감지하고 누가 실제 작업을 멈추는가"를 따로 설계해야 orphan work를 막을 수 있다.

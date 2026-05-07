@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Observer Design Pattern
+concept_id: design-pattern/observer
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- observer-pattern
+- same-process-fanout
+- listener-failure-boundary
+aliases:
+- observer pattern
+- subject observer
+- state change notification
+- event listener pattern
+- when to use observer
+- observer vs direct call
+- observer vs pubsub
+- synchronous listener
+- ordering guarantee
+- failure boundary
+symptoms:
+- observer를 쓰면 직접 호출과 실패 경계가 완전히 분리된다고 생각하지만 실제로는 같은 프로세스 동기 fan out으로 예외가 전파된다
+- listener 등록 순서를 비즈니스 정책처럼 기대하면서도 정렬 계약을 코드에 명시하지 않는다
+- unsubscribe나 중복 등록 방지 없이 UI, session, plugin listener를 계속 붙여 중복 실행과 누수가 생긴다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- language/object-oriented-core-principles
+next_docs:
+- design-pattern/observer-vs-pubsub-quick-bridge
+- design-pattern/observer-pubsub-application-events
+- design-pattern/observer-lifecycle-hygiene
+linked_paths:
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/observer-lifecycle-hygiene.md
+- contents/design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing.md
+- contents/design-pattern/mediator-vs-observer-vs-pubsub.md
+- contents/design-pattern/pattern-selection.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- design-pattern/observer-vs-pubsub-quick-bridge
+- design-pattern/observer-pubsub-application-events
+- design-pattern/mediator-vs-observer-vs-pubsub
+- design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing
+forbidden_neighbors: []
+expected_queries:
+- Observer 패턴은 subject의 상태 변화를 여러 listener에게 알리는 구조라는 게 무슨 뜻이야?
+- observer는 느슨한 결합을 주지만 같은 프로세스 동기 호출이면 실패 경계가 남는 이유가 뭐야?
+- 주문 완료 후 알림, 메트릭, 캐시 무효화 같은 후속 반응은 observer와 direct call 중 어떻게 고르면 돼?
+- listener 순서가 비즈니스 정책이면 observer보다 직접 호출이나 명시적 orchestration이 더 안전한 이유가 뭐야?
+- observer에서 unsubscribe와 duplicate registration guard가 필요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Observer Design Pattern primer로, Subject가 상태 변화를 여러 Observer/listener에게
+  fan-out하는 구조와 same-process synchronous dispatch에서 남는 ordering, failure boundary,
+  unsubscribe/lifecycle 관리 문제를 초보자 기준으로 설명한다.
+---
 # Observer(옵저버) 디자인 패턴
 
 > 한 줄 요약: 한 객체의 상태 변화를 여러 리스너에 전파하되, 기본이 같은 프로세스 안의 동기 fan-out이라는 점을 이해하고 써야 하는 패턴이다.
@@ -43,6 +110,8 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 
 이 마지막 점이 중요하다.
 옵저버는 느슨한 결합을 주지만, **순서 보장과 실패 경계는 여전히 호출 체인에 남아 있는 경우가 많다.**
+
+따라서 observer를 선택할 때는 "구현체를 덜 알게 된다"는 구조 이점과 "같은 호출 흐름에서 listener가 실제로 실행된다"는 실행 의미를 분리해서 봐야 한다.
 
 ## 먼저 세 가지 질문
 

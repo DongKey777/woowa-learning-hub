@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Pool Timeout Term Matching Card
+concept_id: database/pool-timeout-term-matching-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- timeout
+- connection-pool
+- lock-timeout
+- transaction-boundary
+aliases:
+- pool timeout term matching
+- timeout terminology card
+- connection timeout vs transaction timeout
+- statement timeout vs lock wait timeout
+- borrow timeout
+- jdbc statement timeout
+- spring transaction timeout
+- innodb lock wait timeout
+- pool timeout 오해
+- 타임아웃 용어 차이
+symptoms:
+- connection timeout, transaction timeout, statement timeout, lock wait timeout을 모두 같은 timeout으로 보고 같은 튜닝 값을 늘리려 해
+- 앱 풀 입구 대기와 DB 내부 lock 대기, SQL 1개 실행 시간, 작업 전체 시간을 구분하지 못하고 있어
+- timeout 로그를 보고 어느 대기줄에서 시계가 끝났는지 먼저 분류해야 해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/connection-pool
+- database/transaction-locking-connection-pool-primer
+next_docs:
+- database/connection-timeout-vs-lock-timeout-card
+- database/statement-timeout-vs-lock-timeout-card
+- database/timeout-log-timeline-first-failure-checklist-card
+linked_paths:
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/statement-timeout-vs-lock-timeout-card.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/connection-pool-basics.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+confusable_with:
+- database/pool-metrics-lock-wait-timeout-mini-bridge
+- database/connection-timeout-vs-lock-timeout-card
+- database/statement-timeout-vs-lock-timeout-card
+forbidden_neighbors: []
+expected_queries:
+- connection timeout, transaction timeout, statement timeout, lock wait timeout 차이를 한 장으로 설명해줘
+- pool timeout은 DB lock wait timeout과 같은 대기인지 앱 풀 입구 대기인지 구분해줘
+- SQLTimeoutException이나 statement timeout과 lock wait timeout을 어떻게 분리해?
+- transaction timeout은 SQL 1개가 느린 것과 어떻게 달라?
+- 타임아웃 로그를 보면 어느 대기줄에서 시간이 끝났는지 어떤 순서로 확인해?
+contextual_chunk_prefix: |
+  이 문서는 connection timeout, transaction timeout, statement timeout, lock wait timeout을 앱 풀 입구, 작업 전체, SQL 실행, DB 락 대기 위치별로 구분하는 beginner symptom router다.
+  타임아웃 용어 차이, pool timeout 오해, app wait vs db lock wait 질문이 본 문서에 매핑된다.
+---
 # Pool-Timeout 용어 짝맞춤 카드
 
 > 한 줄 요약: `connection timeout`은 **앱 풀 입구 대기**, `transaction timeout`은 **작업 전체 시간 초과**, `statement timeout`은 **SQL 1개 실행 시간 초과**, `lock wait timeout`은 **DB 락 줄 대기 시간 초과**다.

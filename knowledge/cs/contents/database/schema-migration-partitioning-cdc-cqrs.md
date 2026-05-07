@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Schema Migration, Partitioning, CDC, CQRS
+concept_id: database/schema-migration-partitioning-cdc-cqrs
+canonical: true
+category: database
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- schema-migration
+- partitioning
+- cdc
+- cqrs
+- read-model
+aliases:
+- schema migration
+- partitioning
+- CDC
+- CQRS
+- multi-tenant database
+- online schema change
+- read model cutover
+- projection rebuild
+- dual read verification
+- event schema evolution
+symptoms:
+- 운영 중 DDL 변경, backfill, CDC, read model cutover 주제가 한꺼번에 엮여 어디서 시작할지 모르겠어
+- schema migration과 partitioning, CQRS를 각각 focused deep dive로 내려가야 해
+- read/write splitting이나 read model freshness 문제를 CDC와 projection SLO까지 연결해야 해
+intents:
+- definition
+- design
+- deep_dive
+prerequisites:
+- database/online-schema-change-strategies
+- database/cdc-debezium-outbox-binlog
+next_docs:
+- database/online-backfill-consistency
+- database/cdc-schema-evolution-compatibility-playbook
+- database/incremental-summary-table-refresh-watermark
+- database/multi-tenant-tenant-id-index-topology
+linked_paths:
+- contents/database/online-schema-change-strategies.md
+- contents/database/online-backfill-consistency.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/cdc-schema-evolution-compatibility-playbook.md
+- contents/database/incremental-summary-table-refresh-watermark.md
+- contents/database/multi-tenant-tenant-id-index-topology.md
+- contents/database/multi-tenant-stats-skew-plan-isolation.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- database/online-schema-change-strategies
+- database/cdc-debezium-outbox-binlog
+- database/incremental-summary-table-refresh-watermark
+forbidden_neighbors: []
+expected_queries:
+- schema migration, partitioning, CDC, CQRS를 한 번에 훑고 focused deep dive로 내려가는 순서를 알려줘
+- 운영 중 스키마 변경은 DDL만이 아니라 backfill, dual read, cutover 전략이라는 뜻이 뭐야?
+- CDC와 outbox, read model projection, freshness SLO가 어떻게 연결돼?
+- tenant partitioning과 multi-tenant statistics skew를 schema migration 문맥에서 어떻게 봐야 해?
+- CQRS read model을 만들면 동기화 지연, replay, rollback window까지 왜 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 schema migration, partitioning, CDC, CQRS, read model cutover를 focused database/design/system 문서로 연결하는 advanced bridge다.
+  online schema change, backfill, projection rebuild, dual read verification, event schema evolution 질문이 본 문서에 매핑된다.
+---
 # Schema Migration, Partitioning, CDC, CQRS
 
 **난이도: 🔴 Advanced**

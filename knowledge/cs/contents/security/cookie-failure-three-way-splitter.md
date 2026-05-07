@@ -9,6 +9,14 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- cookie-failure-three
+- way-splitter
+- cookie-failure-splitter
+- blocked-set-cookie
 summary: 쿠키 문제가 저장 차단, 저장 후 미전송, 전송 후 서버 익명 처리 중 어디에서 끊기는지 처음 나누는 beginner chooser다.
 aliases:
 - cookie failure splitter
@@ -16,6 +24,10 @@ aliases:
 - cookie sent but server anonymous
 - login loop cookie splitter
 - cookie debug first split
+symptoms:
+- 로그인 응답에는 Set-Cookie가 있는데 저장되지 않는지, 저장됐지만 전송되지 않는지, 전송됐지만 서버가 익명으로 보는지 구분하지 못한다
+- spring-roomescape나 shopping-cart에서 login loop가 나도 cookie 저장 단계와 request header 단계를 한꺼번에 의심한다
+- DevTools Application 탭과 Network Cookie header를 비교하지 않고 CORS 설정만 계속 바꾼다
 intents:
 - comparison
 - design
@@ -57,12 +69,19 @@ contextual_chunk_prefix: |
   Set-Cookie blocked, login loop with cookie present 같은 자연어 표현이
   본 문서의 세 갈래 가운데 하나에 매핑된다.
 ---
-
 # Cookie Failure Three-Way Splitter
 
 > 한 줄 요약: cookie 문제는 보통 하나가 아니라 세 갈래다. `Set-Cookie`가 아예 막혔는지, 저장은 됐지만 다음 요청에 안 붙는지, request에는 실렸는데 서버가 여전히 anonymous로 보는지를 먼저 갈라야 한다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`Set-Cookie`는 있는데 저장되지 않는지, 저장됐지만 전송되지 않는지 모르겠어요" | spring-roomescape/shopping-cart login loop 디버깅 | 저장 전, 전송 전, 서버 복원 세 단계를 나눈다 |
+| "Application에는 cookie가 있는데 request `Cookie` header가 비어 있어요" | SameSite, Domain, Path, Secure, credentials 문제 | browser storage와 request transmission을 비교한다 |
+| "request Cookie는 있는데 서버가 anonymous예요" | session id 전송 후 SecurityContext/session 복원 실패 | cookie transport가 아니라 server restore/auth mapping으로 분기한다 |
 
 관련 문서:
 

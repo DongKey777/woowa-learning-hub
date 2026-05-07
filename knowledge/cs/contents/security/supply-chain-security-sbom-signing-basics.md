@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Supply Chain Security / SBOM / Signing Basics
+concept_id: security/supply-chain-security-sbom-signing-basics
+canonical: true
+category: security
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- supply chain security
+- SBOM
+- signing
+- provenance
+aliases:
+- supply chain security
+- SBOM
+- signing
+- provenance
+- artifact integrity
+- dependency pinning
+- package lock
+- build attestation
+- artifact verification
+- supply chain attack
+- dependency audit
+- Supply Chain Security / SBOM / Signing Basics
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/secret-scanning-credential-leak-response.md
+- contents/security/key-rotation-runbook.md
+- contents/security/envelope-encryption-kms-basics.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/audit-logging-auth-authz-traceability.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Supply Chain Security / SBOM / Signing Basics 핵심 개념을 설명해줘
+- supply chain security가 왜 필요한지 알려줘
+- Supply Chain Security / SBOM / Signing Basics 실무 설계 포인트는 뭐야?
+- supply chain security에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Supply Chain Security / SBOM / Signing Basics를 다루는 primer 문서다. 공급망 보안은 취약한 패키지를 피하는 것만이 아니라, 무엇이 들어왔는지(SBOM)와 누가 만들었는지(signing/provenance)를 증명하는 체계다. 검색 질의가 supply chain security, SBOM, signing, provenance처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Supply Chain Security / SBOM / Signing Basics
 
 > 한 줄 요약: 공급망 보안은 취약한 패키지를 피하는 것만이 아니라, 무엇이 들어왔는지(SBOM)와 누가 만들었는지(signing/provenance)를 증명하는 체계다.

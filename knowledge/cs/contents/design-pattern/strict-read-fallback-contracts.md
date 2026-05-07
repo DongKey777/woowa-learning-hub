@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Strict Read Fallback Contracts
+concept_id: design-pattern/strict-read-fallback-contracts
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- strict-read-fallback
+- read-your-writes-contract
+- freshness-slo-fallback
+aliases:
+- strict read fallback contract
+- strict screen fallback
+- fallback ownership
+- fallback routing
+- fallback rate contract
+- read your writes contract
+- version gated fallback
+- watermark gated fallback
+- write model fallback
+- fallback reserve
+symptoms:
+- strict screen을 말하지만 어떤 화면, actor, TTL, fallback route가 strict인지 registry가 없다
+- projection lag가 날 때 write model, old projection, processing UX 중 어디로 라우팅할지 결정 규칙 없이 임의 우회한다
+- fallback rate를 예외 처리 성공률로만 보고 primary projection freshness debt나 cutover freeze signal로 해석하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/read-model-staleness-read-your-writes
+- design-pattern/projection-freshness-slo-pattern
+- design-pattern/projection-lag-budgeting-pattern
+next_docs:
+- design-pattern/session-pinning-vs-version-gated-strict-reads
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/fallback-capacity-and-headroom-contracts
+linked_paths:
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/strict-fallback-degraded-ux-contracts.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- design-pattern/session-pinning-vs-version-gated-strict-reads
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/strict-fallback-degraded-ux-contracts
+- design-pattern/fallback-capacity-and-headroom-contracts
+forbidden_neighbors: []
+expected_queries:
+- Strict read fallback contract는 read-your-writes 화면에서 어떤 trigger로 어느 fallback route를 쓸지 고정하는 운영 계약이야?
+- strict screen registry에는 screen id, strict reason, trigger, route, scope, owner, max rate가 왜 필요해?
+- fallback rate는 primary projection freshness debt를 보여주는 secondary SLI로 해석해야 하는 이유가 뭐야?
+- expectedVersion이나 watermark gate가 실패했을 때 write model fallback, old projection, processing UX 중 어떤 경로로 갈지 어떻게 정해?
+- fallback path에도 capacity headroom과 breaker가 없으면 freshness incident가 overload incident로 번지는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Strict Read Fallback Contracts playbook으로, read-your-writes가 필요한 strict
+  screen에 대해 registry, ownership, version/watermark trigger, fallback route, actor/TTL scope,
+  fallback rate SLO, capacity owner, degraded UX를 운영 계약으로 고정하는 방법을 설명한다.
+---
 # Strict Read Fallback Contracts
 
 > 한 줄 요약: strict screen fallback은 임시 우회가 아니라 운영 계약이므로, 어떤 화면이 strict한지, 누가 fallback을 소유하는지, 어떤 조건에서 어느 경로로 라우팅하는지, fallback rate를 freshness SLO에 어떻게 연결하는지를 함께 고정해야 read-your-writes 보장이 흔들리지 않는다.

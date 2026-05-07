@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Binary Lifting vs Heavy-Light Decomposition
+concept_id: algorithm/binary-lifting-vs-hld
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- binary-lifting-vs-hld
+- tree-query-selection
+- ancestor-vs-path-query
+aliases:
+- binary lifting vs hld
+- binary lifting vs heavy light decomposition
+- tree query comparison
+- LCA vs path query
+- ancestor query vs path query
+- segment tree on tree
+- heavy light decomposition
+- 트리 질의 비교
+symptoms:
+- kth ancestor나 LCA처럼 위로 점프하는 질의에 HLD를 먼저 써서 구현을 과하게 만든다
+- path sum, path max, path update처럼 경로 집계가 필요한데 binary lifting만으로 해결하려 한다
+- rerooting DP처럼 모든 루트의 값을 구하는 문제와 tree path query 문제를 섞는다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- algorithm/binary-lifting
+- data-structure/tree-basics
+next_docs:
+- data-structure/heavy-light-decomposition
+- algorithm/rerooting-dp
+- algorithm/tree-dfs-template-cheat-sheet
+linked_paths:
+- contents/algorithm/binary-lifting.md
+- contents/data-structure/heavy-light-decomposition.md
+- contents/algorithm/rerooting-dp.md
+confusable_with:
+- algorithm/binary-lifting
+- data-structure/heavy-light-decomposition
+- algorithm/rerooting-dp
+- data-structure/tree-basics
+forbidden_neighbors: []
+expected_queries:
+- Binary Lifting과 Heavy-Light Decomposition은 조상 점프와 경로 질의 관점에서 어떻게 달라?
+- kth ancestor나 LCA만 필요하면 HLD보다 binary lifting이 충분한 이유가 뭐야?
+- path sum이나 path max처럼 경로 집계가 필요하면 HLD가 더 자연스러운 이유가 뭐야?
+- LCA는 binary lifting으로 구하고 경로 집계는 HLD로 같이 쓸 수 있어?
+- rerooting DP와 tree path query는 all roots와 path aggregation 관점에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Binary Lifting vs Heavy-Light Decomposition bridge로, binary lifting은
+  kth ancestor와 LCA 같은 ancestor jump에 강하고, HLD는 tree path sum/max/update를
+  segment tree on tree로 처리하는 경로 질의에 강하다는 선택 기준을 설명한다.
+---
 # Binary Lifting vs Heavy-Light Decomposition
 
 > 한 줄 요약: Binary Lifting은 조상 점프에 강하고, Heavy-Light Decomposition은 경로 질의에 강하다.

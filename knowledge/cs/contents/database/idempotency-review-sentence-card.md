@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Idempotency 리뷰 문장 카드
+concept_id: database/idempotency-review-sentence-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- idempotency-review-sentence
+- whole-transaction-retry-review
+- replay-safe-retry-blocker
+aliases:
+- idempotency review sentence card
+- whole transaction retry review
+- duplicate write review comment
+- retry outside transactional review
+- idempotency key review phrase
+- outbox duplicate side effect review
+- replay safe retry review
+- transaction retry blocker phrase
+- 멱등성 리뷰 문장
+- 중복 write 리뷰
+symptoms:
+- whole-transaction retry 코드 리뷰에서 재시도 가능과 중복 반영 안전을 구분하지 못하고 있어
+- @Transactional 안 retry와 외부 side effect가 섞인 코드를 어떤 문장으로 차단할지 필요해
+- duplicate 뒤 blind retry 대신 fresh read/replay 계약을 요청하는 리뷰 문장을 만들고 싶어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/idempotent-transaction-retry-envelopes
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/idempotency-key-status-contract-examples
+- database/transaction-boundary-external-io-checklist
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/database/spring-retry-envelope-placement-primer.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+confusable_with:
+- database/idempotent-transaction-retry-envelopes
+- database/idempotency-key-status-contract-examples
+- database/transaction-boundary-external-io-checklist
+forbidden_neighbors: []
+expected_queries:
+- whole-transaction retry 코드 리뷰에서 idempotency key가 없으면 어떤 차단 문장을 써야 해?
+- retry 가능과 중복 반영 안전을 분리해서 묻는 리뷰 문장을 만들어줘
+- @Transactional 안 재시도와 외부 API 호출이 섞인 코드를 어떻게 리뷰해야 해?
+- duplicate 뒤 blind retry 대신 fresh read와 replay 계약을 요청하는 문장을 알려줘
+- outbox나 idempotency key 없이 retry loop를 추가한 PR에 어떤 코멘트를 남기면 돼?
+contextual_chunk_prefix: |
+  이 문서는 whole-transaction retry 리뷰에서 idempotency key, fresh transaction boundary, side effect separation, fresh read/replay contract를 요구하는 beginner playbook이다.
+  idempotency review sentence, whole transaction retry review, duplicate write review comment 같은 자연어 리뷰 요청이 본 문서에 매핑된다.
+---
 # Idempotency 리뷰 문장 카드
 
 > 한 줄 요약: whole-transaction retry를 넣는 코드 리뷰에서는 "다시 시도는 가능하지만 결과 반영은 한 번만 되는가?"를 먼저 묻고, 그 답이 없으면 idempotency key, side effect 분리, fresh transaction 경계를 요청하거나 차단 문장으로 닫는다.

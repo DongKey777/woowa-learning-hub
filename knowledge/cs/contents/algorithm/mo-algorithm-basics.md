@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Mo's Algorithm Basics
+concept_id: algorithm/mo-algorithm-basics
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- mo-algorithm
+- offline-range-query
+- sqrt-decomposition-ordering
+aliases:
+- mo's algorithm
+- Mo algorithm basics
+- offline range query
+- sqrt decomposition query ordering
+- range query reordering
+- add remove window maintenance
+- 구간 질의 오프라인
+- 모 알고리즘
+symptoms:
+- 모든 구간 질의를 입력 순서대로 처음부터 다시 계산해 반복 비용을 줄이지 못한다
+- online으로 즉시 답해야 하는 질의와 offline으로 순서를 바꿀 수 있는 질의를 구분하지 못한다
+- Mo's algorithm에서 query ordering보다 add remove 상태 유지 함수 비용이 핵심이라는 점을 놓친다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/sliding-window-patterns
+- algorithm/basic
+next_docs:
+- algorithm/bitset-optimization-patterns
+- data-structure/fenwick-tree
+- data-structure/segment-tree-lazy-propagation
+linked_paths:
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- algorithm/sliding-window-patterns
+- data-structure/fenwick-tree
+- data-structure/segment-tree-lazy-propagation
+- algorithm/bitset-optimization-patterns
+forbidden_neighbors: []
+expected_queries:
+- Mo's algorithm은 offline range query를 왜 재정렬해서 포인터 이동 비용을 줄여?
+- query 순서를 바꿀 수 없는 online 질의에는 Mo's algorithm이 왜 맞지 않아?
+- sqrt decomposition으로 left block과 right order를 정하는 직관을 알려줘
+- 구간 내 distinct count나 frequency query에서 add/remove 함수가 왜 중요해?
+- prefix sum, segment tree, Mo's algorithm은 range query 조건에서 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 Mo's Algorithm advanced deep dive로, offline range query를 block
+  ordering으로 재정렬해 현재 구간에서 다음 구간으로 이동할 때 add/remove만
+  수행하여 frequency, distinct count 같은 구간 통계를 유지하는 기법을 설명한다.
+---
 # Mo's Algorithm Basics
 
 > 한 줄 요약: Mo's algorithm은 오프라인 구간 질의를 재정렬해 포인터 이동 비용을 줄이는 sqrt decomposition 기반 기법이다.

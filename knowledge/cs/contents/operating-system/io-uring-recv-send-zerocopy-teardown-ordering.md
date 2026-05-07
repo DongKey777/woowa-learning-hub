@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring recv send zerocopy Teardown Ordering
+concept_id: operating-system/io-uring-recv-send-zerocopy-teardown-ordering
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-recv
+- send-zerocopy-teardown
+- ordering
+- io-uring-zerocopy
+aliases:
+- io_uring zerocopy teardown ordering
+- send_zc notification CQE
+- recv_multishot terminal CQE
+- request drain buffer-lifetime drain
+- tx buffer lifetime
+- late notification CQE
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-send-bundle-zerocopy-fixed-buffer-completion-accounting.md
+- contents/operating-system/io-uring-cancel-scope-fixed-files-mixed-ops.md
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+- contents/operating-system/io-uring-completion-observability-playbook.md
+symptoms:
+- send_zc data CQE만 보고 tx buffer를 재사용했다가 늦게 온 notification CQE와 충돌한다.
+- recv_multishot terminal CQE와 send/sendmsg data CQE를 같은 종료선으로 착각한다.
+- connection state와 user_data를 cancel CQE 직후 해제해 late CQE가 stale state를 참조한다.
+expected_queries:
+- io_uring zerocopy send teardown에서 data CQE와 notification CQE는 어떻게 달라?
+- recv_multishot terminal CQE와 send completion, zerocopy notification을 분리해야 하는 이유는?
+- request drain과 buffer-lifetime drain을 connection shutdown에서 어떻게 추적해?
+- cancel CQE만 보고 connection state를 해제하면 어떤 late CQE 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 io_uring connection teardown에서 recv_multishot terminal CQE, send/sendmsg data CQE,
+  send_zc notification CQE가 서로 다른 종료선이라는 점을 설명한다. request drain과
+  buffer-lifetime drain을 분리해 tx buffer, user_data, connection state를 해제해야 한다.
+---
 # io_uring recv multishot, send/sendmsg, zerocopy notification teardown ordering
 
 > 한 줄 요약: connection teardown에서 `recv_multishot` terminal CQE, `send` / `sendmsg` data CQE, `send_zc` / `sendmsg_zc` notification CQE는 서로 다른 종료선이다. cancel CQE나 zerocopy의 첫 data CQE만 보고 connection state, `user_data`, tx buffer를 해제하면 늦게 도착한 terminal/notif CQE와 충돌하므로, shared state machine은 `request drain`과 `buffer-lifetime drain`을 분리해 추적해야 한다.

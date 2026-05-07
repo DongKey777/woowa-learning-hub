@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Streaming Analytics Pipeline 설계
+concept_id: system-design/streaming-analytics-pipeline-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- streaming analytics
+- event time
+- watermark
+- window aggregation
+aliases:
+- streaming analytics
+- event time
+- watermark
+- window aggregation
+- sessionization
+- approximate count
+- heavy hitters
+- count min sketch
+- hyperloglog
+- stream processor
+- state store
+- checkpoint recovery
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+- contents/data-structure/count-min-sketch.md
+- contents/data-structure/hyperloglog.md
+- contents/system-design/event-bus-control-plane-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/stateful-stream-processor-state-store-checkpoint-recovery-design.md
+- contents/system-design/analytics-late-data-reconciliation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Streaming Analytics Pipeline 설계 설계 핵심을 설명해줘
+- streaming analytics가 왜 필요한지 알려줘
+- Streaming Analytics Pipeline 설계 실무 트레이드오프는 뭐야?
+- streaming analytics 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Streaming Analytics Pipeline 설계를 다루는 deep_dive 문서다. streaming analytics pipeline은 이벤트를 실시간으로 흡수해 윈도우 집계, 세션화, 이상 탐지, 근사 통계를 만드는 데이터 처리 시스템이다. 검색 질의가 streaming analytics, event time, watermark, window aggregation처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Streaming Analytics Pipeline 설계
 
 > 한 줄 요약: streaming analytics pipeline은 이벤트를 실시간으로 흡수해 윈도우 집계, 세션화, 이상 탐지, 근사 통계를 만드는 데이터 처리 시스템이다.

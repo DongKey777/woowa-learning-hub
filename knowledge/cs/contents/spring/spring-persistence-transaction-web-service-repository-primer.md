@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Spring Persistence / Transaction Mental Model Primer
+concept_id: spring/spring-persistence-transaction-web-service-repository-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- service-transaction-boundary
+- persistence-context-flush-commit
+- lazy-loading-controller-sql-boundary
+aliases:
+- spring persistence transaction mental model
+- service repository transaction example
+- persistence context beginner
+- transaction mental model
+- service commit unit beginner
+- flush commit difference beginner
+- lazy loading beginner
+- service에서 조회했는데 controller에서 sql 또 나가요
+- 처음 jpa transaction persistence context 뭐예요
+- controller service repository transaction
+- save 안 했는데 update SQL
+- dirty checking transaction boundary
+symptoms:
+- service 안에서 엔티티를 바꿨는데 save 없이도 update SQL이 나가는 이유가 헷갈려
+- flush와 commit 차이가 모르겠고 언제 DB에 반영되는지 궁금해
+- service에서 조회했는데 controller나 DTO 변환 중 SQL이 또 나가는 이유가 궁금해
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- spring/transactional-basics
+- database/jdbc-jpa-mybatis-basics
+next_docs:
+- spring/service-layer-transaction-boundary-patterns
+- spring/lazy-loading-dto-mapping-checklist
+- spring/persistence-context-flush-clear-detach-boundaries
+- spring/open-session-in-view-tradeoffs
+- database/transaction-isolation-basics
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/database/database-first-step-bridge.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-lazy-loading-dto-mapping-checklist.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/database/n-plus-one-query-detection-solutions.md
+- contents/database/transaction-isolation-basics.md
+confusable_with:
+- spring/transactional-basics
+- spring/spring-data-jpa-basics
+- spring/persistence-context-flush-clear-detach-boundaries
+- database/jdbc-jpa-mybatis-basics
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 service 메서드 전체가 transaction boundary라는 말을 예시로 설명해줘
+- persistence context가 managed entity 변경을 기억하고 flush 때 SQL을 보낸다는 뜻이 뭐야?
+- flush와 commit 차이를 rollback 가능성과 다른 transaction에서 보이는 시점으로 비교해줘
+- service에서 조회한 엔티티를 controller에서 DTO로 바꿀 때 lazy loading SQL이 왜 또 나가?
+- save를 안 했는데 dirty checking으로 update가 나가는 흐름을 beginner 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Spring Web, Service, Repository, @Transactional, persistence context를 한 장으로 묶어 service 메서드가 commit 단위가 되고 영속성 컨텍스트가 엔티티 변경을 추적하다 flush와 commit 시점에 SQL과 확정으로 이어진다는 mental model을 설명한다.
+  save 없이 update SQL, dirty checking, flush vs commit, lazy loading after service, OSIV, service transaction boundary 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기
 
 > 한 줄 요약: 초급자는 `@Transactional`을 "DB 저장 스위치"가 아니라, service 메서드 안에서 persistence context를 열고 닫으며 commit 전까지 변경을 모아 두는 경계로 보면 훨씬 덜 헷갈린다.

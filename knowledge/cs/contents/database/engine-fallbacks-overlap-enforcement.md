@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Engine Fallbacks for Overlap Enforcement
+concept_id: database/engine-fallbacks-overlap-enforcement
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- overlap-enforcement-engine-fallback
+- postgresql-exclusion-vs-mysql-guard-row
+- phantom-safe-booking-modeling
+aliases:
+- overlap enforcement across engines
+- PostgreSQL vs MySQL overlap
+- exclusion constraint fallback
+- phantom-safe overlap rule
+- slotization booking
+- guard row booking
+- next-key locking overlap
+- continuous interval fallback
+- MySQL overlap fallback
+- PostgreSQL exclusion constraint
+symptoms:
+- PostgreSQL exclusion constraint로 풀던 overlap 규칙을 MySQL에 그대로 옮기려 하고 있어
+- 예약 겹침 방지를 absence check나 SELECT FOR UPDATE 하나로 끝내도 되는지 헷갈려
+- continuous interval, slot row, guard row, ledger 중 어떤 arbitration surface를 골라야 할지 모르겠어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/exclusion-constraint-overlap-case-studies
+- database/range-invariant-enforcement-write-skew-phantom
+next_docs:
+- database/overlap-predicate-index-design-booking-tables
+- database/guard-row-scope-design-multi-day-bookings
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+- database/phantom-safe-booking-patterns-primer
+linked_paths:
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+confusable_with:
+- database/exclusion-constraint-overlap-case-studies
+- database/range-invariant-enforcement-write-skew-phantom
+- database/gap-lock-next-key-lock
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL exclusion constraint로 예약 겹침을 막던 규칙을 MySQL에서는 어떤 fallback으로 설계해야 해?
+- continuous interval overlap은 slotization, guard row, ledger 중 언제 골라야 해?
+- MySQL next-key locking 하나로 overlap predicate를 phantom-safe하게 만들 수 있어?
+- 예약 겹침 방지에서 arbitration surface를 DB constraint, slot row, guard row로 나누는 기준은 뭐야?
+- PostgreSQL vs MySQL overlap enforcement 차이를 booking 예시로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL exclusion constraint와 MySQL slot row, next-key locking, guard row, ledger fallback을 비교해 overlap enforcement arbitration surface를 고르는 advanced chooser다.
+  PostgreSQL vs MySQL overlap, exclusion constraint fallback, slotization booking, guard row booking 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Engine Fallbacks for Overlap Enforcement
 
 > 한 줄 요약: PostgreSQL은 exclusion constraint로 continuous overlap을 직접 중재하기 쉽지만, MySQL은 같은 규칙을 slot row, next-key locking 보조, guard row/ledger 같은 다른 arbitration surface로 내려야 phantom-safe하게 유지된다.

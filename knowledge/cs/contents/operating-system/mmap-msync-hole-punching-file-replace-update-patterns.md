@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: mmap msync Hole Punching File Replace Update Patterns
+concept_id: operating-system/mmap-msync-hole-punching-file-replace-update-patterns
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- mmap-msync-hole
+- punching-file-replace
+- update
+- punching
+aliases:
+- mmap msync hole punching
+- file replace live mapping
+- mmap update pattern
+- truncate SIGBUS avoidance
+- msync durability
+- hole punching mapped file
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/mmap-map-shared-vs-map-private-write-semantics.md
+- contents/operating-system/mmap-shared-truncate-sigbus-coherency-pitfalls.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/rename-atomicity-directory-fsync-crash-consistency.md
+- contents/operating-system/sparse-file-fallocate-hole-punching.md
+symptoms:
+- file-backed mmap 사용 중 truncate나 hole punching이 live mapping에 SIGBUS를 만든다.
+- msync timing과 rename/replace update pattern이 durability와 visibility expectation을 흐린다.
+- mapped file을 in-place update할지 새 file로 교체할지 판단이 필요하다.
+expected_queries:
+- mmap 파일을 운영에서 업데이트할 때 msync, hole punching, replace를 어떻게 다뤄?
+- live mapping이 있는 파일에 truncate나 hole punch를 하면 왜 SIGBUS가 날 수 있어?
+- mmap update pattern에서 rename atomicity와 directory fsync는 어디에 필요해?
+- file-backed mmap은 어떻게 읽느냐보다 update pattern이 더 중요하다는 뜻은?
+contextual_chunk_prefix: |
+  이 문서는 file-backed mmap을 운영에 쓸 때 read path보다 msync timing, truncate/hole punching,
+  live mapping replacement, rename atomicity, crash consistency가 더 중요해지는 update pattern
+  playbook이다.
+---
 # mmap, msync, Hole Punching, File Replace Update Patterns
 
 > 한 줄 요약: file-backed `mmap()`을 운영에 쓰는 순간 중요한 것은 "어떻게 읽느냐"보다 "언제 `msync`하고, 언제 hole punching/truncate/replace를 피하며, live mapping을 어떤 업데이트 패턴으로 바꿀 것인가"다.

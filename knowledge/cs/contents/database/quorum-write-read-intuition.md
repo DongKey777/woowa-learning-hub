@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Quorum Write and Read Intuition
+concept_id: database/quorum-write-read-intuition
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- quorum
+- replication
+- consistency
+- distributed-database
+aliases:
+- quorum
+- majority write
+- majority read
+- quorum intuition
+- consistency budget
+- quorum write read intuition
+- read quorum
+- write quorum
+- quorum이 뭐예요
+- majority consistency
+symptoms:
+- quorum을 단순 성능 최적화나 살아 있는 노드 수 확인으로만 보고 read/write consistency budget을 놓치고 있어
+- majority write와 majority read가 latency와 최신성 신뢰도 tradeoff를 만든다는 점을 이해해야 해
+- quorum이면 read-after-write가 항상 자동 보장된다고 과장하고 있어
+intents:
+- definition
+- comparison
+prerequisites:
+- database/replication-failover-split-brain
+next_docs:
+- database/replica-lag-read-after-write-strategies
+- database/read-your-writes-session-pinning
+- database/primary-switch-write-fencing
+linked_paths:
+- contents/database/replication-failover-split-brain.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+confusable_with:
+- database/replica-lag-read-after-write-strategies
+- database/replication-failover-split-brain
+- database/read-your-writes-session-pinning
+forbidden_neighbors: []
+expected_queries:
+- quorum write와 quorum read는 분산 DB에서 어떤 consistency budget을 의미해?
+- majority write가 성공 기준을 높이는 대신 latency를 늘릴 수 있는 이유를 설명해줘
+- quorum이면 read-after-write가 항상 보장되는지, 라우팅과 구현에 따라 왜 다를 수 있는지 알려줘
+- replica lag가 있는 시스템에서 single replica read와 read quorum의 차이를 비교해줘
+- quorum이 split brain 사고방식과 어떻게 연결되는지 초보자용으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 quorum write, quorum read, majority acknowledgement를 분산 저장의 consistency budget과 latency tradeoff 관점으로 설명하는 beginner primer다.
+  quorum이 뭐예요, majority write, read quorum 질문이 본 문서에 매핑된다.
+---
 # Quorum Write와 Read Intuition
 
 > 한 줄 요약: quorum은 “몇 개가 살아 있으면 안전한가”를 결정하는 규칙이고, 앱 팀은 그 규칙을 일관성 예산으로 이해해야 한다.

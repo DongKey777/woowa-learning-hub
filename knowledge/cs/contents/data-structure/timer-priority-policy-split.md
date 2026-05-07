@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Timer Priority Policy Split
+concept_id: data-structure/timer-priority-policy-split
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timer-priority-split
+- delayqueue-compareto-misuse
+- ready-queue-priority
+aliases:
+- timer priority policy split
+- due time gate
+- deadline gate vs business priority
+- DelayQueue business priority
+- ready queue priority
+- delayed compareTo priority misuse
+- two stage scheduler
+symptoms:
+- Delayed.compareTo에 business priority를 먼저 넣어 미래 high priority task가 이미 due인 low priority task를 head 뒤에 숨기는 버그를 만든다
+- due-time gate와 ready queue priority ordering을 분리하지 않아 시간이 된 작업 중 우선순위라는 요구를 잘못 구현한다
+- priority가 같은 deadline tie-breaker인지, already-due 작업 사이의 business policy인지 구분하지 못한다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/delayqueue-delayed-contract-primer
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+next_docs:
+- data-structure/ready-queue-starvation-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/priorityblockingqueue-timer-misuse-primer
+linked_paths:
+- contents/data-structure/java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/ready-queue-starvation-primer.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+confusable_with:
+- data-structure/delayqueue-vs-priorityqueue-timer-pitfalls
+- data-structure/priorityblockingqueue-timer-misuse-primer
+- data-structure/ready-queue-starvation-primer
+- data-structure/delayqueue-delayed-contract-primer
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue compareTo에 business priority를 넣으면 future high priority가 due task를 막는 이유는?
+- timer scheduler에서 due-time gate와 ready queue priority를 어떻게 나눠야 해?
+- 시간이 된 작업 중 VIP 먼저 실행하려면 DelayQueue 하나로 해결하면 안 되는 이유는?
+- deadline tie-breaker로 priority를 쓰는 것과 already-due task priority ordering은 어떻게 달라?
+- two stage scheduler에서 DelayQueue와 PriorityQueue를 함께 쓰는 패턴을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 timer scheduler에서 due-time gate와 business-priority ready queue를
+  분리하는 playbook이다. Delayed.compareTo를 priority comparator로 오용하면
+  future high priority task가 expired task를 숨길 수 있음을 설명한다.
+---
 # Timer Priority Policy Split
 
 > 한 줄 요약: timer queue에서는 "시간이 됐는가"와 "시간이 된 작업 중 무엇을 먼저 할 것인가"를 같은 `Delayed.compareTo()`에 억지로 넣지 말고, due-time gate와 business-priority ready queue로 나누면 버그가 줄어든다.

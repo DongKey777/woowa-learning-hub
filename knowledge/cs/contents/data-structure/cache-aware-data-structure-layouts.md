@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Cache-Aware Data Structure Layouts
+concept_id: data-structure/cache-aware-data-structure-layouts
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- cache-aware-layout
+- pointer-chasing-locality
+- memory-hierarchy-data-structure
+aliases:
+- cache-aware layout
+- cache-friendly data structure
+- pointer chasing locality
+- memory hierarchy aware structure
+- cache line layout
+- Eytzinger layout
+- hot cold splitting
+symptoms:
+- 같은 O(log n) 자료구조인데 production hot path에서 pointer chasing과 cache miss 때문에 예상보다 느리다
+- node fan-out, field placement, contiguous array layout을 알고리즘 차수와 별개로 설계해야 한다는 점을 놓친다
+- cache-aware와 cache-oblivious, Eytzinger, blocked array, ART 같은 layout 선택지를 한 층위로 비교하지 못한다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/adaptive-radix-tree
+linked_paths:
+- contents/data-structure/heap-variants.md
+- contents/data-structure/adaptive-radix-tree.md
+- contents/data-structure/robin-hood-hashing.md
+- contents/data-structure/cache-oblivious-vs-cache-aware-layouts.md
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+- contents/data-structure/lsm-friendly-index-structures.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+confusable_with:
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/adaptive-radix-tree
+forbidden_neighbors: []
+expected_queries:
+- 자료구조 성능에서 빅오보다 cache miss와 pointer chasing이 더 중요해지는 경우는?
+- cache-aware layout은 node 크기와 fan-out을 어떻게 설계해?
+- 같은 O(log n) 검색에서 Eytzinger layout과 blocked array가 왜 다르게 빠를 수 있어?
+- hot path 자료구조를 cache-friendly하게 만들 때 무엇부터 봐야 해?
+- cache-aware와 cache-oblivious layout 차이를 실무 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 자료구조의 이론적 시간복잡도보다 실제 memory access pattern,
+  cache line, pointer chasing, prefetch, false sharing, node fan-out이 hot path
+  성능을 좌우하는 상황을 다루는 cache-aware layout playbook이다.
+---
 # Cache-Aware Data Structure Layouts
 
 > 한 줄 요약: cache-aware layout은 자료구조의 빅오보다 메모리 접근 패턴을 먼저 설계해, pointer chasing과 cache miss로 무너지는 실제 성능을 줄이려는 구조적 접근이다.

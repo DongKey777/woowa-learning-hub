@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Collection vs Collections vs Arrays 유틸리티 미니 브리지
+concept_id: language/collection-vs-collections-vs-arrays-utility-mini-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-collections-basics
+- api-name-confusion
+- arrays-aslist
+aliases:
+- Collection vs Collections vs Arrays
+- Java Collection Collections Arrays 차이
+- Collection interface Collections utility Arrays utility
+- Arrays.asList fixed size list
+- Collections.sort vs Arrays.sort
+- 자바 컬렉션 유틸리티 클래스 차이
+symptoms:
+- Collection 인터페이스와 Collections/Arrays static utility class를 이름만 보고 같은 계층으로 오해해
+- List를 Arrays.sort로 정렬하거나 배열을 Collections.sort로 정렬하려는 API 선택 혼동이 있어
+- Arrays.asList 결과가 보통 ArrayList라고 생각해 add remove UnsupportedOperationException을 만난다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+next_docs:
+- language/arrays-aslist-fixed-size-list-checklist
+- language/iterable-collection-map-iteration-bridge
+- language/java-array-sorting-searching-basics
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/arrays-aslist-fixed-size-list-checklist.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+confusable_with:
+- language/java-collections-basics
+- language/arrays-aslist-fixed-size-list-checklist
+- language/iterable-collection-map-iteration-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java Collection Collections Arrays 차이를 인터페이스와 유틸리티 클래스 관점으로 설명해줘
+- Collections.sort와 Arrays.sort를 언제 쓰는지 List와 배열 기준으로 비교해줘
+- Arrays.asList 결과에서 add remove가 왜 UnsupportedOperationException이 나는지 알려줘
+- Map도 Collection인지 Java collection hierarchy를 초보자에게 설명해줘
+- Collection은 데이터 계약이고 Collections Arrays는 도구함이라는 기억법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java Collection interface, Collections utility class, Arrays utility class 차이를 beginner API 선택 관점으로 설명하는 primer다.
+  Collection vs Collections vs Arrays, Collections.sort, Arrays.sort, Arrays.asList fixed-size list, Map hierarchy 질문이 본 문서에 매핑된다.
+---
 # Collection vs Collections vs Arrays 유틸리티 미니 브리지
 
 > 한 줄 요약: `Collection`은 데이터를 "담고 조작하는 인터페이스"이고, `Collections`와 `Arrays`는 각각 "컬렉션"과 "배열"을 도와주는 static 유틸리티 클래스다.

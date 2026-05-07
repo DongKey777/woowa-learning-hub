@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Lock 예외와 Unique 예외 통합 미니 브리지
+concept_id: database/lock-duplicate-three-bucket-mini-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- lock-duplicate-three-bucket
+- already-exists-busy-retryable-bridge
+- deadlock-40001-retry-unit
+aliases:
+- lock unique exception bridge
+- duplicate key lock timeout deadlock one page
+- busy retryable already exists lock duplicate
+- deadlock 40001 same retry rule
+- unique violation vs lock timeout vs deadlock
+- spring exception 3 bucket bridge
+- lock duplicate mini bridge
+- 락 예외 중복키 예외 비교
+- deadlock 40001 retry
+- already exists busy retryable
+symptoms:
+- duplicate key, lock timeout, deadlock, serialization failure를 모두 같은 retry 정책으로 처리하려 해
+- duplicate 경로는 already exists, lock timeout은 busy, deadlock/40001은 retryable이라는 3버킷 구분이 필요해
+- deadlock과 40001은 원인은 다르지만 retry 단위가 전체 transaction이라는 점을 설명해야 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/deadlock-vs-lock-wait-timeout-primer
+next_docs:
+- database/duplicate-key-vs-busy-response-mapping
+- database/lock-timeout-not-already-exists-common-confusion-card
+- database/insert-if-absent-retry-outcome-guide
+- database/postgresql-serializable-retry-playbook
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/three-bucket-decision-tree-mini-card.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+confusable_with:
+- database/three-bucket-terms-common
+- database/duplicate-key-vs-busy-response-mapping
+- database/lock-timeout-not-already-exists-common-confusion-card
+forbidden_neighbors: []
+expected_queries:
+- duplicate key, lock timeout, deadlock, serialization failure를 already exists busy retryable로 한 장에서 비교해줘
+- lock timeout은 already exists가 아니라 busy이고 duplicate key는 already exists인 이유는 뭐야?
+- deadlock과 PostgreSQL 40001은 원인은 달라도 왜 transaction 전체 retry 규칙이 같아?
+- DuplicateKeyException을 retryable로 두면 왜 같은 key에 다시 부딪힐 수 있어?
+- lock exception과 unique exception을 서비스 결과 언어로 통합해서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 unique/duplicate 경로와 lock/deadlock/serialization 경로를 already exists, busy, retryable 세 버킷으로 비교하는 beginner chooser다.
+  duplicate key, lock timeout, deadlock, 40001, already exists busy retryable 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Lock 예외와 Unique 예외 통합 미니 브리지
 
 > 한 줄 요약: beginner는 lock 경로와 duplicate-key 경로를 따로 외우기보다, 먼저 `already exists` / `busy` / `retryable` 3버킷으로 번역한 뒤 "승자가 이미 있나, 아직 막혀 있나, 이번 시도만 버리면 되나"를 한 장에서 비교하면 된다.

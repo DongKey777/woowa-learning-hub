@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "NAT64, DNS64 Operational Intuition"
+concept_id: network/nat64-dns64-operational-intuition
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- nat64
+- dns64
+- ipv6-only
+aliases:
+- NAT64
+- DNS64
+- IPv6-only
+- IPv4 reachability
+- address synthesis
+- NAT64 translator
+- DNS64 prefix
+- dual-stack migration
+symptoms:
+- IPv6-only 클라이언트가 IPv4-only 서비스에 닿으려면 DNS와 NAT 변환이 함께 필요하다는 점을 놓친다
+- DNS64 합성 AAAA와 실제 IPv6 native AAAA를 구분하지 못한다
+- NAT64 prefix와 translator reachability가 어긋난 문제를 backend 장애로 본다
+- 일부 앱이 합성 주소를 이상하게 다루는 edge case를 고려하지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/ipv4-vs-ipv6-operational-tradeoffs
+- network/dns-basics
+next_docs:
+- network/happy-eyeballs-dual-stack-racing
+- network/dns-ttl-cache-failure-patterns
+- network/dns-negative-caching-nxdomain-behavior
+- network/ipv4-vs-ipv6-operational-tradeoffs
+linked_paths:
+- contents/network/ipv4-vs-ipv6-operational-tradeoffs.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/dns-negative-caching-nxdomain-behavior.md
+confusable_with:
+- network/ipv4-vs-ipv6-operational-tradeoffs
+- network/happy-eyeballs-dual-stack-racing
+- network/dns-split-horizon-behavior
+- network/dns-negative-caching-nxdomain-behavior
+forbidden_neighbors: []
+expected_queries:
+- "NAT64와 DNS64는 IPv6-only 환경에서 어떻게 IPv4-only 서비스에 연결해?"
+- "DNS64가 합성한 AAAA와 NAT64 translator가 함께 맞아야 하는 이유는?"
+- "IPv6-only 망에서 어떤 IPv4 사이트만 안 될 때 무엇을 확인해?"
+- "NAT64 prefix mismatch나 translator unreachable은 어떤 증상으로 보여?"
+- "NAT64 DNS64와 dual-stack migration trade-off를 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 IPv6-only 클라이언트가 IPv4-only 목적지에 접근할 때 DNS64
+  address synthesis와 NAT64 translator/prefix가 함께 동작하는 방식을 다루는
+  advanced playbook이다.
+---
 # NAT64, DNS64 Intuition
 
 > 한 줄 요약: NAT64와 DNS64는 IPv6-only 세계에서 IPv4 서비스를 이어주는 브리지지만, DNS와 주소 변환이 함께 맞아야 한다.

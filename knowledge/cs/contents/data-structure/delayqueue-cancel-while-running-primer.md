@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: DelayQueue Cancel-While-Running Primer
+concept_id: data-structure/delayqueue-cancel-while-running-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 86
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- delayqueue-cancel-race
+- self-rescheduling-task
+- generation-guard
+aliases:
+- DelayQueue cancel while running
+- post run re-enqueue race
+- self rescheduling cancel race
+- repeating task cancel while executing
+- generation guard DelayQueue
+- stale reenqueue DelayQueue
+- 실행 중 취소 재등록 race
+symptoms:
+- 반복 작업 실행 중 cancel이나 interval 변경이 들어왔는데 실행이 끝난 뒤 오래된 정책으로 다음 ticket을 다시 offer한다
+- DelayQueue 문제가 아니라 self-rescheduling correctness 문제인데 queue remove 비용만 먼저 보려 한다
+- 실행 전 최신성 검사만 하고 실행 후 재등록 직전 최신 state 또는 generation을 다시 확인하지 않는다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+next_docs:
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/periodic-task-cancellation-bridge
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+linked_paths:
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/periodic-task-cancellation-bridge.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/delayqueue-handle-vs-equality-cancel-guide.md
+- contents/data-structure/delayqueue-queue-size-vs-live-timers-primer.md
+confusable_with:
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/periodic-task-cancellation-bridge
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue 반복 작업 실행 중 cancel되면 왜 실행 후 재등록 race가 생겨?
+- self-rescheduling task에서 post-run re-enqueue 전에 generation을 다시 확인해야 하는 이유는?
+- fixed-rate 작업 실행 중 interval 변경이 들어오면 stale ticket을 어떻게 막아?
+- DelayQueue cancel while running 문제를 beginner 기준으로 timeline으로 설명해줘
+- 실행 전 검사만으로는 반복 task cancel race를 막지 못하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 DelayQueue 반복 작업이 실행 후 다음 ticket을 다시 넣는
+  self-rescheduling 구조라서, 실행 중 cancel이나 reconfigure가 들어왔을 때
+  post-run re-enqueue 직전에 최신 state와 generation을 다시 확인해야 한다는
+  correctness playbook이다.
+---
 # DelayQueue Cancel-While-Running Primer
 
 > 한 줄 요약: `DelayQueue` 반복 작업은 "실행이 끝난 뒤 다음 ticket을 다시 넣는 구조"라서, 실행 도중 `cancel`이나 설정 변경이 들어오면 **실행 후 재등록 직전에 최신 state를 다시 확인**해야 post-run re-enqueue race를 막을 수 있다.

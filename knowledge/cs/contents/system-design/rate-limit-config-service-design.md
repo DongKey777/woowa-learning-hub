@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Rate Limit Config Service 설계
+concept_id: system-design/rate-limit-config-service-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- rate limit config
+- quota policy
+- limit rollout
+- token bucket config
+aliases:
+- rate limit config
+- quota policy
+- limit rollout
+- token bucket config
+- tenant limit
+- endpoint limit
+- dynamic throttling
+- policy snapshot
+- propagation
+- safety guard
+- Rate Limit Config Service 설계
+- rate limit config service design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/entitlement-quota-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Rate Limit Config Service 설계 설계 핵심을 설명해줘
+- rate limit config가 왜 필요한지 알려줘
+- Rate Limit Config Service 설계 실무 트레이드오프는 뭐야?
+- rate limit config 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Rate Limit Config Service 설계를 다루는 deep_dive 문서다. rate limit config service는 endpoint, tenant, user, key별 제한 정책을 중앙에서 관리하고, edge와 app에 안전하게 배포하는 제어 평면이다. 검색 질의가 rate limit config, quota policy, limit rollout, token bucket config처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Rate Limit Config Service 설계
 
 > 한 줄 요약: rate limit config service는 endpoint, tenant, user, key별 제한 정책을 중앙에서 관리하고, edge와 app에 안전하게 배포하는 제어 평면이다.

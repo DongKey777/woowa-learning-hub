@@ -33,10 +33,10 @@ intents:
 prerequisites:
   - spring/servlet-container-disconnect-exception-mapping
   - spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
-  - network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb
+  - network/request-timing-decomposition
 next_docs:
-  - spring/spring-async-mvc-streaming-observability-playbook
-  - spring/spring-http2-reset-attribution-spring-mvc
+  - spring/async-mvc-streaming-observability-playbook
+  - spring/http2-reset-attribution-spring-mvc
   - network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
 linked_paths:
   - contents/spring/spring-servlet-container-disconnect-exception-mapping.md
@@ -49,7 +49,7 @@ linked_paths:
   - contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
 confusable_with:
   - spring/servlet-container-disconnect-exception-mapping
-  - network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb
+  - network/request-timing-decomposition
 forbidden_neighbors: []
 expected_queries:
   - access log가 200인데 download가 중간에 끊긴 건 어떻게 읽어?
@@ -66,7 +66,6 @@ contextual_chunk_prefix: |
   해석하는지, ClientAbortException과 bytes sent를 어떤 순서로 읽는지에 초점을
   둔다.
 ---
-
 # Spring Partial-Response Access Log Interpretation
 
 > 한 줄 요약: truncated download나 streaming disconnect를 볼 때 access log의 status는 "무슨 응답 코드가 commit됐는가", bytes sent는 "실제로 어디까지 body가 나갔는가", app log의 disconnect 예외는 "서버가 언제 더 못 쓴다는 사실을 알았는가"를 각각 답하므로, 세 신호를 한 타임라인으로 겹쳐 읽어야 오판이 줄어든다.

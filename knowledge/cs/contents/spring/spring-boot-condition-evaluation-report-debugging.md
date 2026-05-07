@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring Boot Condition Evaluation Report Debugging
+concept_id: spring/boot-condition-evaluation-report-debugging
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- boot-condition-evaluation
+- report
+- conditionevaluationreport
+- auto-configuration-report
+aliases:
+- ConditionEvaluationReport
+- auto-configuration report
+- positive matches
+- negative matches
+- --debug
+- actuator conditions endpoint
+- ConditionalOnMissingBean miss
+intents:
+- troubleshooting
+- deep_dive
+symptoms:
+- 자동 구성 후보가 왜 positive match나 negative match가 됐는지 추적해야 한다.
+- 특정 Bean이 classpath, property, web application type, existing bean 조건 때문에 빠진다.
+- test slice, profile, CI에서 ConditionEvaluationReport가 로컬과 다르게 나온다.
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-application-context-refresh-phases.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-test-slices-context-caching.md
+expected_queries:
+- ConditionEvaluationReport에서 positive matches와 negative matches를 어떻게 읽어?
+- Spring Boot auto-configuration이 왜 빠졌는지 report로 확인하는 법은?
+- @ConditionalOnMissingBean did not match는 무슨 뜻이야?
+- --debug 로그와 actuator conditions endpoint는 어떤 차이가 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot ConditionEvaluationReport를 advanced debugging 관점에서
+  설명한다. classpath condition, property condition, web application type,
+  @ConditionalOnMissingBean, positive/negative matches, --debug 로그,
+  actuator conditions endpoint, test slice와 startup bean graph 분석에 매핑된다.
+---
 # Spring Boot Condition Evaluation Report Debugging
 
 > 한 줄 요약: ConditionEvaluationReport는 Spring Boot 자동 구성이 왜 켜지고 꺼졌는지 설명해 주는 디버깅 창구이며, 자동 구성 문제의 첫 번째 증거다.

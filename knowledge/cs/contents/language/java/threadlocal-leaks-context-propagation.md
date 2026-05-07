@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: ThreadLocal Leaks and Context Propagation
+concept_id: language/threadlocal-leaks-context-propagation
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- threadlocal
+- context-propagation
+- memory-leak
+aliases:
+- ThreadLocal Leaks and Context Propagation
+- Java ThreadLocal leak remove
+- MDC context propagation capture restore
+- InheritableThreadLocal executor pitfall
+- virtual thread ThreadLocal cleanup
+- 자바 ThreadLocal 누수 context propagation
+symptoms:
+- thread pool worker가 여러 요청을 재사용한다는 점을 놓치고 ThreadLocal.set 후 remove를 빠뜨려 다음 요청에 context가 새어
+- InheritableThreadLocal이 executor task에도 자동 전파된다고 오해해 이미 생성된 pool thread에서 값이 전달되지 않는 문제를 만든다
+- CompletableFuture stage hop이나 async executor 경계에서 request ID, auth, locale, tracing context를 capture/restore하지 않아 context가 섞이거나 사라져
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/classloader-memory-leak-playbook
+- language/oom-heap-dump-playbook
+- language/completablefuture-allof-join-timeout-exception-handling-hazards
+next_docs:
+- language/inheritablethreadlocal-vs-scopedvalue-context-propagation
+- language/virtual-thread-migration-pinning
+- language/structured-concurrency-scopedvalue
+linked_paths:
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md
+- contents/language/java/inheritablethreadlocal-vs-scopedvalue-context-propagation.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+confusable_with:
+- language/inheritablethreadlocal-vs-scopedvalue-context-propagation
+- language/structured-concurrency-scopedvalue
+- language/virtual-thread-migration-pinning
+forbidden_neighbors: []
+expected_queries:
+- ThreadLocal은 thread pool reuse에서 왜 remove를 빼먹으면 request context leak가 생겨?
+- InheritableThreadLocal은 자식 thread 생성 시점 복사이지 executor task 자동 전파가 아니라는 뜻을 설명해줘
+- CompletableFuture async hop에서 MDC request id auth context를 capture restore remove하는 패턴을 알려줘
+- virtual threads가 와도 ThreadLocal lifecycle cleanup과 context propagation 문제가 완전히 사라지지는 않는 이유가 뭐야?
+- ScopedValue는 ThreadLocal context propagation 문제의 어떤 부분을 더 안전하게 다룰 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 ThreadLocal leak, remove discipline, InheritableThreadLocal executor pitfall, async capture/restore, MDC context propagation, virtual threads cleanup을 다루는 advanced playbook이다.
+  ThreadLocal leak, context propagation, MDC, InheritableThreadLocal, ScopedValue 질문이 본 문서에 매핑된다.
+---
 # ThreadLocal Leaks and Context Propagation
 
 > 한 줄 요약: `ThreadLocal`은 thread에 붙는 상태라 thread pool 재사용에서 쉽게 누수되고, async 경계에서는 자동 전파되지 않으므로 `remove()`와 capture/restore 패턴이 필수다.

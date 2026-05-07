@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Timeout Churn Structure Selection Bridge
+concept_id: data-structure/timeout-churn-structure-selection-bridge
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timeout-churn
+- timer-structure-selection
+- delayqueue-vs-timing-wheel
+aliases:
+- timeout churn structure selection
+- ScheduledThreadPoolExecutor vs DelayQueue vs timing wheel
+- many long delay timeouts cancelled
+- cancellation heavy timer queue
+- heap timer queue vs timing wheel
+- long delay cancelled task retention
+- timeout scheduler chooser
+symptoms:
+- long-delay timeout이 많고 대부분 cancel되는 workload를 단순 API 선택 문제로만 보고 cancellation churn 비용을 분리하지 않는다
+- DelayQueue로 내려오면 heap cancel/remove와 stale entry 문제가 자동 해결된다고 오해한다
+- timing wheel의 bucket 근사와 churn 최적화 tradeoff를 exact earliest ordering 요구와 비교하지 않는다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/scheduledfuture-cancel-stale-entries
+next_docs:
+- data-structure/timing-wheel-vs-delay-queue
+- data-structure/hierarchical-timing-wheel
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+linked_paths:
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/data-structure/hierarchical-timing-wheel.md
+confusable_with:
+- data-structure/timing-wheel-vs-delay-queue
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+forbidden_neighbors: []
+expected_queries:
+- long delay timeout이 많고 대부분 cancel되면 ScheduledThreadPoolExecutor DelayQueue timing wheel 중 뭘 골라?
+- timeout cancellation churn이 큰 workload에서 heap timer queue와 timing wheel은 어떻게 달라?
+- DelayQueue를 쓰면 long-delay cancelled task retention 문제가 자동으로 해결돼?
+- removeOnCancelPolicy와 timing wheel은 timeout churn을 어떤 다른 방식으로 다뤄?
+- 정확한 deadline ordering보다 bucket 근사 expiry를 허용하면 어떤 timer 구조가 유리해?
+contextual_chunk_prefix: |
+  이 문서는 long-delay timeout이 많고 대부분 만료 전에 취소되는 workload에서
+  ScheduledThreadPoolExecutor, DelayQueue, timing wheel을 고르는 chooser다.
+  heap stale entry, remove cost, bucket precision tradeoff를 beginner bridge로 연결한다.
+---
 # Timeout Churn Structure Selection Bridge
 
 > 한 줄 요약: "오래 기다리는 timeout을 엄청 많이 걸어 두지만, 대부분은 중간에 취소된다"면 `ScheduledThreadPoolExecutor`와 `DelayQueue`는 heap 계열 기본값이고, timing wheel은 그 cancellation churn을 더 싸게 처리하려고 쓰는 구조다.

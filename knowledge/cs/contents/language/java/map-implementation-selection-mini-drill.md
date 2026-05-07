@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Map Implementation Selection Mini Drill
+concept_id: language/map-implementation-selection-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-implementation
+- hashmap
+- linkedhashmap-treemap
+aliases:
+- Map 구현체 선택 미니 드릴
+- HashMap LinkedHashMap TreeMap worksheet
+- java ordered map choice beginner
+- 순서 없음 넣은 순서 최근 접근 순서 정렬 순서
+- accessOrder true Map 선택
+- 자바 Map 구현체 고르기
+symptoms:
+- HashMap 출력 순서가 우연히 일정해 보여 그 순서를 계약처럼 믿고 구현체 선택을 잘못해
+- LinkedHashMap을 정렬 Map으로 오해하거나 accessOrder=true 모드와 기본 삽입 순서 모드를 구분하지 못해
+- 이름순, 점수순, 날짜순 같은 key 정렬 요구를 TreeMap 신호로 읽지 못해 LinkedHashMap으로 해결하려 해
+intents:
+- drill
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/list-set-map-requirement-to-type-drill
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+next_docs:
+- language/linkedhashmap-access-order-cache-behavior-bridge
+- language/navigablemap-navigableset-mental-model
+- language/hashmap-vs-treemap-beginner-selection-bridge
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/list-set-map-requirement-to-type-drill.md
+- contents/language/java/hashmap-vs-treemap-beginner-selection-bridge.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/linkedhashmap-access-order-cache-behavior-bridge.md
+- contents/data-structure/linkedhashmap-access-order-mini-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+- language/linkedhashmap-access-order-cache-behavior-bridge
+- language/hashmap-vs-treemap-beginner-selection-bridge
+forbidden_neighbors: []
+expected_queries:
+- HashMap LinkedHashMap TreeMap 중 요구사항 문장을 보고 무엇을 고르는지 드릴로 연습해줘
+- 순서 없음 넣은 순서 최근 접근 순서 key 정렬 순서를 Map 구현체로 어떻게 매핑해?
+- get만 했는데 항목이 뒤로 가는 캐시 같은 동작이면 왜 LinkedHashMap accessOrder=true야?
+- 이름순 점수순 날짜순 같은 key 정렬 요구는 왜 TreeMap 신호야?
+- HashMap 출력 순서를 우연한 결과로 보고 계약처럼 믿으면 안 되는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HashMap, LinkedHashMap, LinkedHashMap access-order, TreeMap을 순서 요구 문장으로 분류하는 beginner drill이다.
+  Map implementation choice, HashMap vs LinkedHashMap vs TreeMap, accessOrder true, key sorted order 질문이 본 문서에 매핑된다.
+---
 # Map 구현체 선택 미니 드릴
 
 > 한 줄 요약: 짧은 요구 문장을 보고 `HashMap`/`LinkedHashMap`/`TreeMap` 중 무엇을 먼저 골라야 하는지 손으로 빠르게 분류하는 1페이지 beginner 워크시트다.

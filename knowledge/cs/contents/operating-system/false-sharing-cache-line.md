@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: False Sharing Cache Line
+concept_id: operating-system/false-sharing-cache-line
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- false-sharing-cache
+- line
+- cache-line-bouncing
+- cache-line-contention
+aliases:
+- false sharing cache line
+- cache line bouncing
+- cache line contention
+- @Contended padding
+- hot counter contention
+- coherence traffic
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+symptoms:
+- 서로 다른 변수인데 같은 cache line에 있어 core 간 invalidation traffic이 폭증한다.
+- hot counter나 ring buffer head/tail 때문에 CPU 사용률 대비 throughput이 낮다.
+- padding이나 @Contended 적용 전후로 p99 latency가 크게 달라진다.
+expected_queries:
+- false sharing은 서로 다른 변수인데 왜 cache line 때문에 성능이 급락해?
+- cache line bouncing과 coherence traffic을 어떻게 디버깅해?
+- Java @Contended나 padding으로 false sharing을 줄이는 기준은?
+- hot counter와 ring buffer head tail contention이 p99에 영향을 줄 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 서로 다른 변수라도 같은 cache line에 있으면 여러 core가 같은 line ownership을
+  계속 invalidation하며 coherence traffic과 p99 latency를 만들 수 있다는 false sharing
+  증상을 설명한다.
+---
 # False Sharing, Cache Line
 
 > 한 줄 요약: 서로 다른 변수라도 같은 cache line에 있으면 코어 간 무효화 경쟁 때문에 성능이 급락한다.

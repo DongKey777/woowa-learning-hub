@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Hardware-Backed Keys / Attestation
+concept_id: security/hardware-backed-keys-attestation
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- hardware-backed keys
+- attestation
+- TPM
+- Secure Enclave
+aliases:
+- hardware-backed keys
+- attestation
+- TPM
+- Secure Enclave
+- HSM
+- key protection
+- non-exportable key
+- device attestation
+- platform attestation
+- hardware root of trust
+- attestation policy
+- attestation recovery
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/webauthn-passkeys-phishing-resistant-login.md
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+- contents/security/envelope-encryption-kms-basics.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/hardware-attestation-policy-failure-recovery.md
+- contents/security/key-rotation-runbook.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Hardware-Backed Keys / Attestation 핵심 개념을 설명해줘
+- hardware-backed keys가 왜 필요한지 알려줘
+- Hardware-Backed Keys / Attestation 실무 설계 포인트는 뭐야?
+- hardware-backed keys에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Hardware-Backed Keys / Attestation를 다루는 deep_dive 문서다. hardware-backed key는 키를 소프트웨어 저장소가 아니라 TPM, Secure Enclave, HSM 같은 하드웨어 경계에 묶어 유출 위험을 줄인다. 검색 질의가 hardware-backed keys, attestation, TPM, Secure Enclave처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Hardware-Backed Keys / Attestation
 
 > 한 줄 요약: hardware-backed key는 키를 소프트웨어 저장소가 아니라 TPM, Secure Enclave, HSM 같은 하드웨어 경계에 묶어 유출 위험을 줄인다.

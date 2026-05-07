@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Read Committed vs Repeatable Read Anomalies
+concept_id: database/read-committed-repeatable-read-anomalies
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- isolation-level
+- read-committed
+- repeatable-read
+- phantom-read
+- business-invariant
+aliases:
+- read committed vs repeatable read
+- RC vs RR anomaly
+- non-repeatable read
+- phantom read
+- snapshot isolation anomaly
+- gap locking disabled
+- 격리 수준 이상 현상
+- 트랜잭션 격리 수준 비교
+- repeatable read phantom
+- read committed latest read
+symptoms:
+- Read Committed와 Repeatable Read의 차이를 최신성 대 관측 일관성 기준으로 설명해야 해
+- RR이면 phantom이나 write skew가 전부 막힌다고 오해하고 있어
+- 격리수준만 높이면 재고나 예약 같은 비즈니스 불변식이 자동으로 보호되는지 묻고 있어
+intents:
+- comparison
+- definition
+- deep_dive
+prerequisites:
+- database/transaction-isolation-locking
+- database/gap-lock-next-key-lock
+next_docs:
+- database/write-skew-phantom-read-case-studies
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+confusable_with:
+- database/transaction-isolation-locking
+- database/gap-lock-next-key-lock
+- database/isolation-anomaly-cheat-sheet
+- database/range-invariant-enforcement-write-skew-phantom
+forbidden_neighbors: []
+expected_queries:
+- Read Committed와 Repeatable Read는 어떤 이상 현상이 다르게 남아?
+- 트랜잭션 격리수준을 RC에서 RR로 올리면 phantom read가 항상 없어져?
+- Repeatable Read가 비즈니스 불변식까지 자동으로 지켜준다고 보면 왜 틀려?
+- 최신성이 중요한 화면과 일관성이 중요한 배치는 격리수준을 어떻게 다르게 봐야 해?
+- MySQL에서 READ COMMITTED로 내리면 gap lock 기반 absence check가 왜 흔들릴 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Read Committed와 Repeatable Read의 anomaly 차이를 non-repeatable read, phantom read, snapshot, gap lock, business invariant 관점으로 비교하는 chooser다.
+  트랜잭션 격리수준 비교, RC/RR 차이, repeatable read phantom 질문이 본 문서에 매핑된다.
+---
 # Read Committed와 Repeatable Read의 이상 현상 비교
 
 > 한 줄 요약: Read Committed는 최신성을, Repeatable Read는 관측 일관성을 더 챙기지만, 둘 다 비즈니스 불변식을 자동으로 지켜주지는 않는다.

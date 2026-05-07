@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Linux Process State Machine, Zombie, Orphan
+concept_id: operating-system/linux-process-state-zombie-orphan
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- process-state-basics
+- zombie-orphan-distinction
+- wait-reap-pid-limit
+aliases:
+- linux process state zombie orphan
+- process state R S D Z
+- zombie process basics
+- orphan process basics
+- ready runnable sleeping difference
+- waitpid reap child process
+- ps state z meaning
+- 좀비 프로세스와 고아 프로세스 차이
+symptoms:
+- zombie를 CPU를 먹는 살아 있는 프로세스로 오해해 부모의 wait 누락을 보지 못한다
+- orphan과 zombie를 모두 죽은 프로세스라고 섞어 설명한다
+- ready runnable sleeping blocked 차이를 몰라 ps 상태 문자 R S D Z를 잘못 해석한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites: []
+next_docs:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/container-pid-1-sigterm-zombie-reaping-basics
+- operating-system/fork-exec-copy-on-write-behavior
+- operating-system/pid-limit-process-table-exhaustion
+linked_paths:
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/pid-limit-process-table-exhaustion.md
+confusable_with:
+- operating-system/container-pid-1-sigterm-zombie-reaping-basics
+- operating-system/fork-exec-copy-on-write-behavior
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/pid-limit-process-table-exhaustion
+forbidden_neighbors: []
+expected_queries:
+- zombie process와 orphan process는 무엇이 달라?
+- ps에서 R S D Z 상태 문자는 어떤 의미야?
+- ready runnable sleeping blocked를 입문자 기준으로 어떻게 구분해?
+- 자식 프로세스가 종료됐는데 왜 부모가 wait하지 않으면 좀비가 남아?
+- 컨테이너 PID 1이 child process를 reap하지 않으면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Linux process state beginner primer로, R, S, D, Z 상태와
+  ready, runnable, sleeping, blocked 표현을 정리하고 zombie는 wait되지
+  않은 종료 기록이며 orphan은 부모를 잃은 살아 있는 프로세스라는 차이를
+  설명한다.
+---
 # Linux Process State Machine, Zombie, Orphan
 
 > 한 줄 요약: 리눅스에서 프로세스가 어떻게 종료되고 회수되는지 알아야 좀비 프로세스, 고아 프로세스, 자식 회수 누락 장애를 설명할 수 있다.

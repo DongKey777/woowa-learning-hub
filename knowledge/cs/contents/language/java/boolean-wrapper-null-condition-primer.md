@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Boolean null 조건문 beginner bridge
+concept_id: language/boolean-wrapper-null-condition-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- wrapper-nullability
+- boolean-tristate
+- patch-dto
+aliases:
+- Boolean null condition primer
+- Java Boolean null semantics
+- if flag null NPE
+- Boolean TRUE equals null safe
+- tri state Boolean
+- boolean vs Boolean PATCH DTO
+- 자바 Boolean null 조건문
+symptoms:
+- Boolean wrapper를 if 조건문에 바로 넣어 null unboxing NullPointerException이 날 수 있다는 점을 놓쳐
+- true false null 세 상태를 값 비교와 조건문 의미로 분리하지 못해
+- PATCH DTO나 선택 상태에서 Boolean null이 미입력인지 미결정인지 false인지 도메인 모델로 올리지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/primitive-wrapper-choice-primer
+next_docs:
+- language/wrapper-value-comparison
+- language/optional-boolean-double-absence-follow-up-card
+- language/domain-state-type-primer-enum-record-value-object
+linked_paths:
+- contents/language/java/primitive-wrapper-choice-primer.md
+- contents/language/java/wrapper-value-comparison-beginner-bridge.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-boolean-double-absence-follow-up-card.md
+- contents/language/java/java-enum-basics.md
+- contents/language/java/domain-state-type-primer-enum-record-value-object.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/design-pattern/null-object-pattern.md
+confusable_with:
+- language/primitive-wrapper-choice-primer
+- language/wrapper-value-comparison
+- language/optional-boolean-double-absence-follow-up-card
+forbidden_neighbors: []
+expected_queries:
+- Java Boolean이 null일 수도 있을 때 if flag 조건문은 왜 NPE가 날 수 있어?
+- Boolean.TRUE.equals(flag)를 쓰면 null safe하게 true만 볼 수 있다는 뜻이야?
+- boolean과 Boolean을 PATCH DTO에서 언제 나눠야 하는지 설명해줘
+- true false null 세 상태를 enum이나 상태 타입으로 올려야 하는 순간은 언제야?
+- Boolean null 조건문에서 값 비교와 참일 때만 실행을 어떻게 분리해?
+contextual_chunk_prefix: |
+  이 문서는 Java Boolean wrapper null condition을 null unboxing NPE, Boolean.TRUE.equals, tri-state semantics, PATCH DTO missing/null/false boundary로 설명하는 beginner primer다.
+  Boolean null, if flag NPE, true false null, boolean vs Boolean, Optional<Boolean>, enum state 질문이 본 문서에 매핑된다.
+---
 # `Boolean`이 `null`일 수도 있을 때 조건문을 어떻게 읽을까 beginner bridge
 
 > 한 줄 요약: "`Boolean`이 왜 `null`일 수 있죠?"라는 질문은 대개 "이 값이 `true`/`false`만으로는 부족해서 미입력이나 미결정 상태도 표현하나요?"를 묻는 것이고, 조건문에서는 단순 wrapper 값 비교와 다르게 "지금 이 값이 참인가"와 "아직 상태가 비어 있나"를 분리해서 읽어야 한다.

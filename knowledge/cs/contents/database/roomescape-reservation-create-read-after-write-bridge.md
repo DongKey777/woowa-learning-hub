@@ -74,6 +74,14 @@ contextual_chunk_prefix: |
 
 roomescape에서 예약 생성 직후 재조회가 흔들리는 장면은 "저장이 실패했다"보다 "방금 쓴 결과를 다음 읽기에서 아직 같은 시점으로 못 본다"는 read-after-write 문제일 때가 많다. 그래서 첫 조회 freshness 요구를 일반 조회와 분리해 읽어야 한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 생성은 성공했는데 관리자 목록에 방금 예약이 바로 안 보여요" | `POST /reservations` 직후 목록/상세 재조회 | write 성공과 다음 read freshness를 분리한다 |
+| "가능 시간 재조회에서는 방금 잡은 슬롯이 아직 열려 보여요" | 예약 생성 직후 availability query가 이전 상태를 읽는 장면 | anti-join 버그뿐 아니라 recent-write read path를 의심한다 |
+| "새로고침 한 번 더 하면 맞아지는데 첫 조회만 이전 상태예요" | 짧은 stale read window | 예약 직후 첫 read만 더 엄격하게 보장할 필요가 있는지 본다 |
+
 ## 미션 시나리오
 
 roomescape 미션에서 관리자 예약 생성 API를 붙이고 나면, 학습자는 곧바로 목록 재조회나 가능 시간 재계산으로 결과를 확인하고 싶어진다. `POST /admin/reservations`는 성공했고 응답도 정상인데, 직후 `GET /admin/reservations`에서는 새 예약이 안 보이거나 가능 시간 조회에서는 방금 잡은 슬롯이 아직 열려 보이는 장면이 생기면 "트랜잭션이 덜 묶였나?"부터 떠올리기 쉽다.

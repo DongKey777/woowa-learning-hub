@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Cookie vs `localStorage` 토큰 저장 선택 카드"
+concept_id: network/cookie-vs-localstorage-token-storage-choice-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- token-storage-choice
+- cookie-vs-localstorage
+- xss-csrf-tradeoff
+aliases:
+- cookie vs localstorage token storage
+- httponly cookie vs localstorage
+- localstorage token authorization
+- cookie token csrf
+- browser automatic cookie sending
+- bearer token storage lane
+symptoms:
+- cookie와 localStorage를 모두 같은 브라우저 저장소라 보고 자동 전송 차이를 놓친다
+- bearer token 구조에서 credentials include만 추가하면 인증이 해결된다고 오진한다
+- localStorage token이 있는데 Authorization header가 비어 있는 장면을 token 만료로 바로 읽는다
+- HttpOnly cookie가 XSS와 CSRF를 모두 해결한다고 착각한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- network/cookie-session-jwt-browser-flow-primer
+- security/xss-csrf-basics
+next_docs:
+- network/cookie-attribute-matrix-samesite-httponly-secure-domain-path
+- network/cross-origin-cookie-credentials-cors-primer
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- security/csrf-in-spa-bff-architecture
+linked_paths:
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/security/xss-csrf-basics.md
+- contents/security/csrf-in-spa-bff-architecture.md
+confusable_with:
+- network/cookie-attribute-matrix-samesite-httponly-secure-domain-path
+- network/cross-origin-cookie-credentials-cors-primer
+- network/application-tab-vs-request-cookie-header-mini-card
+- security/xss-csrf-basics
+- security/csrf-in-spa-bff-architecture
+forbidden_neighbors: []
+expected_queries:
+- "cookie와 localStorage 중 토큰 저장 위치를 자동 전송과 XSS CSRF 기준으로 비교해줘"
+- "localStorage에 access token이 있는데 Authorization header가 비면 무엇부터 봐?"
+- "HttpOnly cookie는 XSS 토큰 탈취와 CSRF 위험을 각각 어떻게 바꿔?"
+- "Bearer token 구조에서 credentials include를 고치는 게 왜 답이 아닐 수 있어?"
+- "DevTools에서 cookie lane과 Authorization bearer lane을 어떻게 구분해?"
+contextual_chunk_prefix: |
+  이 문서는 token storage 선택에서 cookie는 browser automatic Cookie header,
+  localStorage는 JavaScript-built Authorization header라는 차이와 XSS,
+  CSRF, DevTools diagnosis lane을 비교하는 beginner chooser다.
+---
 # Cookie vs `localStorage` 토큰 저장 선택 카드
 
 > 한 줄 요약: `cookie`는 브라우저가 조건이 맞으면 요청에 자동으로 붙일 수 있는 저장소이고, `localStorage`는 자바스크립트가 직접 꺼내 써야 하는 저장소라서, 초급자 판단 기준은 "자동 전송이 필요한가", "XSS와 CSRF 중 어디가 바로 커지는가", "DevTools에서 어디를 확인할 것인가"로 먼저 나누면 된다.

@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring Test Property Override Boundaries Primer
+concept_id: spring/test-property-override-boundaries-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 75
+review_feedback_tags:
+- test-property-override
+- boundaries
+- springboottest-properties
+- testpropertysource
+aliases:
+- @SpringBootTest properties
+- @TestPropertySource
+- @DynamicPropertySource
+- test property override
+- context cache property key
+- dynamic test property
+intents:
+- comparison
+- troubleshooting
+linked_paths:
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-dynamicpropertysource-vs-serviceconnection-primer.md
+- contents/spring/spring-test-context-cache-split-triage-guide.md
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-multidocument-yaml-on-profile-primer.md
+confusable_with:
+- spring/property-source-precedence-quick-guide
+- spring/dynamicpropertysource-vs-serviceconnection-primer
+- spring/test-context-cache-split-triage-guide
+expected_queries:
+- @SpringBootTest(properties) @TestPropertySource @DynamicPropertySource 차이는 뭐야?
+- 테스트에서 설정 값을 덮어쓸 때 어떤 도구를 골라야 해?
+- DynamicPropertySource는 실행 중 계산되는 값이라 context cache에 어떤 영향을 줘?
+- test property override가 Spring test context cache를 갈라놓을 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring test property override를 @SpringBootTest(properties) 상수,
+  @TestPropertySource 공유 설정 묶음, @DynamicPropertySource 실행 중 계산되는 값으로 나누는
+  chooser다. property precedence와 context cache key 영향을 함께 설명한다.
+---
 # Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache
 
 > 한 줄 요약: 셋 다 테스트에서 설정을 덮어쓰는 도구지만, `properties`는 "이 테스트 클래스에 바로 적는 상수", `@TestPropertySource`는 "공유 가능한 테스트용 설정 묶음", `@DynamicPropertySource`는 "실행 중에 계산되는 값"으로 나누면 대부분의 혼란이 정리된다.

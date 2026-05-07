@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: DelayQueue Queue Size vs Live Timers Primer
+concept_id: data-structure/delayqueue-queue-size-vs-live-timers-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- delayqueue-observability
+- queue-size-vs-live-work
+- stale-timer-metrics
+aliases:
+- DelayQueue size live timers
+- queue size not live work
+- stale timer count
+- cancelled timer queue size
+- DelayQueue queue size overcount
+- live scheduled work vs queue entries
+- timer queue retention metrics
+symptoms:
+- DelayQueue.size가 커졌다고 실제로 실행될 live timer 수가 늘었다고 해석한다
+- lazy cancellation이나 reschedule-via-new-ticket 때문에 stale entry가 queue size에 포함되는 것을 모니터링에서 놓친다
+- queue entries, live timers, ready timers를 같은 대시보드 숫자로 보고 cleanup 정책과 alert를 잘못 잡는다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- data-structure/queue-basics
+- data-structure/heap-basics
+next_docs:
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+- data-structure/timing-wheel-vs-delay-queue
+linked_paths:
+- contents/data-structure/queue-basics.md
+- contents/data-structure/heap-basics.md
+- contents/data-structure/delayqueue-delayed-contract-primer.md
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/data-structure/scheduledfuture-cancel-stale-entries.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+confusable_with:
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/scheduledfuture-cancel-stale-entries
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+- data-structure/timing-wheel-vs-delay-queue
+forbidden_neighbors: []
+expected_queries:
+- DelayQueue.size가 live timers 수보다 크게 보이는 이유는?
+- lazy cancellation을 쓰면 cancelled timer가 queue size에 계속 잡히는 게 정상일 수 있어?
+- queue entries와 live timers와 ready timers를 모니터링에서 어떻게 분리해?
+- ScheduledExecutor queue size가 큰데 실제 실행 작업은 적을 때 무엇을 봐야 해?
+- stale timer와 cancelled entry를 DelayQueue observability에서 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 DelayQueue.size가 물리적으로 queue 안에 남은 entries를 세며,
+  live timers나 ready timers 수와 다를 수 있다는 symptom router다. lazy
+  cancellation, stale reschedule tickets, purge/removeOnCancelPolicy, timer
+  retention metrics를 분리한다.
+---
 # DelayQueue Queue Size vs Live Timers Primer
 
 > 한 줄 요약: `DelayQueue.size()`는 "queue 안에 들어 있는 entry 수"를 세기 때문에, lazy cancellation이나 stale-entry reschedule 패턴을 쓰면 "앞으로 실제로 실행될 live timer 수"보다 더 크게 보일 수 있다.

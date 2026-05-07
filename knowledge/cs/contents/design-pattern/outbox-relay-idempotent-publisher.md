@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Outbox Relay and Idempotent Publisher
+concept_id: design-pattern/outbox-relay-idempotent-publisher
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- outbox-relay
+- idempotent-publisher
+- at-least-once-delivery
+aliases:
+- outbox relay
+- idempotent publisher
+- at least once publish
+- duplicate event delivery
+- relay lease
+- publish mark sent
+- outbox dead letter
+- poison message
+- outbox 멱등 발행
+- 중복 이벤트 발행
+symptoms:
+- outbox를 쓰면 exactly-once delivery가 자동으로 보장된다고 생각해 at-least-once와 idempotency 설계를 빼먹는다
+- 브로커 publish 성공 후 sent mark 전에 crash 나는 경우 같은 중복 발행 시나리오를 고려하지 않는다
+- poison message를 무한 재시도해 relay backlog 전체를 막고 projection lag를 키운다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/event-envelope-pattern
+- database/outbox-saga-eventual-consistency
+next_docs:
+- design-pattern/idempotent-consumer-projection-dedup-pattern
+- design-pattern/projection-lag-budgeting-pattern
+- spring/eventlistener-transaction-phase-outbox
+linked_paths:
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/event-envelope-pattern.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/system-design/change-data-capture-outbox-relay-design.md
+confusable_with:
+- design-pattern/idempotent-consumer-projection-dedup-pattern
+- database/outbox-saga-eventual-consistency
+- spring/eventlistener-transaction-phase-outbox
+- design-pattern/projection-lag-budgeting-pattern
+forbidden_neighbors: []
+expected_queries:
+- Outbox Relay는 DB commit 이후 pending outbox row를 어떻게 claim하고 broker로 publish해?
+- outbox를 써도 exactly-once가 아니라 at-least-once와 idempotent publisher가 필요한 이유가 뭐야?
+- broker publish 성공 후 markSent 전에 crash 나면 중복 발행을 eventId와 message key로 어떻게 버텨?
+- relay lease, attempt count, dead-letter, poison message 처리는 sent flag만으로 왜 부족해?
+- 소비자 dedup도 필요하지만 publisher 쪽 stable event id와 retry policy가 중요한 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Outbox Relay and Idempotent Publisher playbook으로, transaction commit과
+  message publish 사이의 gap을 outbox relay가 처리하며, at-least-once delivery,
+  stable eventId/message key, lease/status, retry, dead-letter 정책으로 중복 발행과
+  poison message를 운영적으로 통제하는 방법을 설명한다.
+---
 # Outbox Relay and Idempotent Publisher
 
 > 한 줄 요약: Outbox relay는 DB commit 이후 메시지를 안전하게 꺼내 보내는 운영 패턴이고, idempotent publisher는 중복 전송과 재시도를 전제로 외부 발행을 안정화한다.

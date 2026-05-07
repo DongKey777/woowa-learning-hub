@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Pinned Legacy Chain Risk Budget
+concept_id: design-pattern/pinned-legacy-chain-risk-budget
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- pinned-legacy-chain
+- accept-cursor-risk-budget
+- fallback-continuity-reserve
+aliases:
+- pinned legacy chain risk budget
+- accept pinned chain ttl
+- pinned chain capacity reserve
+- pinned chain rollback expiry
+- legacy cursor accept allowlist
+- pinned chain accept justification
+- page2 continuity budget
+- fallback continuity reserve
+- active pinned chain cap
+- accept as costly exception
+symptoms:
+- legacy cursor가 decode된다는 이유만으로 ACCEPT를 허용해 old cursor world의 page2 continuity를 암묵적으로 운영한다
+- pinned chain TTL, max page depth, reserved concurrency, rollback zero-ttl 없이 ACCEPT를 편의 기능처럼 남긴다
+- page1-only fallback reserve와 pinned-chain reserve를 구분하지 않아 next-page continuation이 fallback source를 포화시킨다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/fallback-capacity-and-headroom-contracts
+- design-pattern/cursor-compatibility-sampling-cutover
+next_docs:
+- design-pattern/cursor-rollback-packet
+- design-pattern/legacy-cursor-reissue-api-surface
+- design-pattern/session-pinning-vs-version-gated-strict-reads
+linked_paths:
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/cursor-rollback-packet.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/legacy-cursor-reissue-api-surface.md
+- contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+confusable_with:
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/cursor-rollback-packet
+- design-pattern/fallback-capacity-and-headroom-contracts
+forbidden_neighbors: []
+expected_queries:
+- ACCEPT pinned legacy chain은 decode 가능한 cursor를 받는 게 아니라 old cursor world page2 continuity를 운영하는 비싼 예외야?
+- pinned chain에는 short absolute TTL, max page depth, active chain cap, capacity reserve, rollback zero ttl이 필요한 이유가 뭐야?
+- legacy cursor ACCEPT는 allowlist bucket별 page1->page2 PASS와 allowlist 밖 ACCEPT 0건이 증명되어야 하는 이유가 뭐야?
+- page1-only fallback reserve와 pinned chain reserve는 active chain과 next-page request 때문에 다르게 산정해야 하는 이유가 뭐야?
+- rollback 후 pinned_chain_ttl_after_rollback_seconds를 0으로 두어 split-brain cursor world를 빨리 끊어야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Pinned Legacy Chain Risk Budget playbook으로, legacy cursor ACCEPT를
+  단순 compatibility가 아니라 page2+ same-source continuity를 잠깐 운영하는 비싼 예외로 보고,
+  justify gate, allowlist, short absolute TTL, max page depth, reserved RPS/concurrency,
+  active pinned chain cap, rollback zero-TTL을 risk budget packet으로 고정하는 방법을 설명한다.
+---
 # Pinned Legacy Chain Risk Budget
 
 > 한 줄 요약: `ACCEPT` / pinned legacy chain은 "decode 가능한 cursor를 잠깐 받아 준다"가 아니라 old/legacy cursor world의 page `2+` continuity를 짧게 운영하는 예외 계약이므로, justify gate, seconds-scale TTL, 전용 capacity reserve, rollback 시 즉시 종료 규칙을 함께 가진 risk budget으로만 허용해야 한다.

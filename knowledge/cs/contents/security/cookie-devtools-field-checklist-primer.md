@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Cookie DevTools Field Checklist Primer
+concept_id: security/cookie-devtools-field-checklist-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- cookie devtools checklist
+- cookie field checklist
+- cookie compare set-cookie application request
+- cookie blocked reason basics
+aliases:
+- cookie devtools checklist
+- cookie field checklist
+- cookie compare set-cookie application request
+- cookie blocked reason basics
+- cookie scope mismatch basics
+- cookie request header compare
+- cookie name domain path samesite secure
+- browser cookie first minute
+- 쿠키가 있는데도 요청에 안 감
+- cookie 왜 안 보내요
+- cookie 뭐예요 basics
+- Cookie DevTools Field Checklist Primer
+symptoms:
+- Application 탭에는 session cookie가 보이는데 실제 API 요청 Cookie header가 비어 있어 로그인 유지가 안 된다
+- Set-Cookie, Application 저장 상태, Network 요청 header를 같은 줄에서 비교하지 못해 cookie 문제 원인을 놓친다
+- SameSite, Secure, Domain, Path 중 어느 필드를 먼저 봐야 하는지 몰라 CORS와 session 복원 문제를 섞는다
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/cookie-failure-three-way-splitter.md
+- contents/security/cookie-rejection-reason-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cookie DevTools Field Checklist Primer 핵심 개념을 설명해줘
+- cookie devtools checklist가 왜 필요한지 알려줘
+- Cookie DevTools Field Checklist Primer 실무 설계 포인트는 뭐야?
+- cookie devtools checklist에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Cookie DevTools Field Checklist Primer를 다루는 primer 문서다. cookie 디버깅 첫 1분은 "브라우저가 받았나, 저장했나, 보냈나"를 같은 cookie 이름 기준으로 `Set-Cookie` 한 줄, `Application` 한 줄, request `Cookie` 한 줄만 비교하면 된다. 검색 질의가 cookie devtools checklist, cookie field checklist, cookie compare set-cookie application request, cookie blocked reason basics처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Cookie DevTools Field Checklist Primer
 
 > 한 줄 요약: cookie 디버깅 첫 1분은 "브라우저가 받았나, 저장했나, 보냈나"를 같은 cookie 이름 기준으로 `Set-Cookie` 한 줄, `Application` 한 줄, request `Cookie` 한 줄만 비교하면 된다.

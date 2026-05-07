@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: On-Call Ownership Boundaries
+concept_id: software-engineering/on-call-ownership-boundaries
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- on-call
+- ownership
+- escalation
+- incident-response
+aliases:
+- On-Call Ownership Boundaries
+- pager duty ownership
+- support boundary escalation path
+- service stewardship on-call
+- ownership matrix on-call
+- 온콜 소유권 경계
+symptoms:
+- 호출을 받는 팀이 서비스 소유자가 아니거나 service owner는 있는데 on-call과 escalation path가 없어 장애가 공중에 떠
+- 하나의 on-call이 너무 많은 서비스와 서로 다른 runbook을 맡거나, 너무 잘게 쪼개져 handoff 비용이 커져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/incident-review-learning-loop
+next_docs:
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/service-criticality-tiering
+- software-engineering/runbook-playbook-automation-boundaries
+linked_paths:
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/service-criticality-tiering-control-intensity.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+confusable_with:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/change-ownership-handoff
+- software-engineering/support-sla-escalation-contracts
+forbidden_neighbors: []
+expected_queries:
+- on-call ownership은 누가 밤에 일어나느냐가 아니라 서비스 책임 경계를 운영 가능하게 만드는 설계라는 뜻을 설명해줘
+- 서비스 owner와 on-call이 분리되면 incident response가 왜 느려지는지 알려줘
+- 24/7 대응이 필요한 서비스와 business hours 대응으로 충분한 서비스를 criticality 기준으로 어떻게 나눠?
+- escalation path, runbook, owner metadata를 on-call matrix에 어떻게 연결해야 해?
+- on-call fatigue를 page frequency, false positive, night page, runbook resolution rate로 어떻게 줄여?
+contextual_chunk_prefix: |
+  이 문서는 on-call을 개인 배정표가 아니라 service ownership, criticality, escalation path, runbook, fatigue metrics가 연결된 advanced playbook으로 다룬다.
+---
 # On-Call Ownership Boundaries
 
 > 한 줄 요약: on-call ownership은 "누가 밤에 일어나느냐"가 아니라, 어떤 서비스와 책임 경계를 누가 끝까지 운영 가능한지 정하는 설계다.

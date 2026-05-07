@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Multipart Upload Request Pipeline
+concept_id: spring/multipart-upload-request-pipeline
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- multipart-upload-request
+- pipeline
+- multipart-upload
+- multipartresolver
+aliases:
+- multipart upload
+- MultipartResolver
+- MultipartFile
+- boundary parsing
+- temp file
+- max file size
+- max request size
+- upload pipeline
+intents:
+- troubleshooting
+- deep_dive
+symptoms:
+- multipart file이 올라왔는데 controller의 MultipartFile 또는 @RequestPart가 null로 들어온다.
+- 큰 파일 요청에서 Spring까지 오기 전 또는 multipart parsing 중 413이나 size limit error가 난다.
+- temp file cleanup이 되지 않아 업로드 임시 파일이 쌓인다.
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-conversion-service-formatter-binder-pipeline.md
+- contents/spring/spring-content-negotiation-pitfalls.md
+- contents/spring/spring-actuator-exposure-security.md
+expected_queries:
+- Spring multipart upload request는 어떤 pipeline으로 파싱돼?
+- MultipartResolver와 MultipartFile은 언제 만들어져?
+- max-file-size와 max-request-size 오류를 어떻게 구분해?
+- multipart temp file cleanup과 boundary parsing 문제는 어디서 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring multipart upload request pipeline을 boundary parsing,
+  MultipartResolver, MultipartFile, @RequestPart, part binding, max file size,
+  max request size, memory threshold, temp file storage/cleanup, validation and
+  binding으로 나눠 진단하는 playbook이다.
+---
 # Spring Multipart Upload Request Pipeline
 
 > 한 줄 요약: multipart upload는 단순 파일 전송이 아니라 boundary parsing, part binding, size limits, and temp storage가 이어지는 요청 파이프라인이다.

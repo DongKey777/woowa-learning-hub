@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Dummy vs Stub 초심자 미니 카드
+concept_id: software-engineering/dummy-vs-stub-beginner-mini-card
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 75
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- dummy-vs-stub-boundary
+- mock-overuse-vocabulary
+- fixed-return-vs-placeholder
+aliases:
+- dummy vs stub
+- dummy stub beginner
+- test double basics
+- fixed input mock confusion
+- fixed input test double
+- 처음 dummy stub 헷갈려
+- 왜 이건 mock 아니에요
+- what is dummy
+- what is stub
+- beginner test double primer
+- 자리만 채우는 객체
+- 고정된 반환값 더블
+- 모든 고정값 더블이 mock인가요
+- basics
+symptoms:
+- 값만 넣은 테스트 더블을 전부 mock이라고 부르게 돼요
+- 이 객체가 dummy인지 stub인지 자꾸 헷갈려요
+- 자리만 채운 객체와 답을 돌려주는 객체를 어떻게 가르는지 모르겠어요
+intents:
+- drill
+prerequisites:
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/stub-vs-spy-first-test-primer
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/testing-strategy-and-test-doubles
+linked_paths:
+- contents/software-engineering/stub-vs-spy-first-test-primer.md
+- contents/software-engineering/fake-vs-mock-first-test-primer.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/stub-vs-spy-first-test-primer
+- software-engineering/fake-vs-mock-first-test-primer
+- software-engineering/testing-strategy-and-test-doubles
+forbidden_neighbors: []
+expected_queries:
+- 테스트 더블에서 안 쓰는 자리 채움 객체와 미리 답을 주는 객체 차이를 예시로 설명해줘
+- 생성자 때문에 넣은 객체가 실제 검증에 안 쓰이면 어떤 더블로 봐야 해?
+- 고정된 반환값이 있으면 다 mock이라고 보면 안 되는 이유가 뭐야?
+- 할인 등급처럼 준비한 답을 주는 가짜 객체는 왜 dummy가 아니라 다른 이름을 써?
+- beginner 기준으로 dummy와 stub을 가장 빨리 구분하는 질문표가 필요해
+contextual_chunk_prefix: |
+  이 문서는 테스트 더블 입문자가 자리만 채우는 객체와 미리 답을
+  돌려주는 객체를 구분하도록 확인 질문으로 굳히는 drill이다.
+  생성자 맞추기용 객체, 안 읽히는 대체물, 준비한 답을 주는 테스트
+  객체, 고정값 더블 분류, 호출 기록 없이 역할 나누기 같은 자연어
+  paraphrase가 본 문서의 핵심 구분에 매핑된다.
+---
 # Dummy vs Stub 초심자 미니 카드
 
 > 한 줄 요약: 초심자가 `고정된 입력을 넣은 테스트 더블`을 전부 `mock`이라고 부르기 쉬운데, 실제로는 `아예 안 읽히는 자리 채움`이면 dummy이고 `미리 준비한 답을 돌려주는 대체물`이면 stub이다.

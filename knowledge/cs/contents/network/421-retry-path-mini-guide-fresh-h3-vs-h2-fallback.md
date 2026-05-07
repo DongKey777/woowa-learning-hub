@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: '421 Retry Path Mini Guide: Fresh H3 Connection vs H2 Fallback'
+concept_id: network/http-421-retry-path-fresh-h3-vs-h2-fallback
+canonical: false
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- retry-path-before-root-cause
+- fresh-h3-vs-h2-fallback
+- connection-id-before-cache
+aliases:
+- 421 retry path basics
+- 421 fresh h3 vs h2 fallback
+- same url 421 then h3
+- same url 421 then h2
+- h3 421 fallback beginner
+- fresh quic connection retry
+- wrong h3 reuse retry
+symptoms:
+- 같은 URL이 `421` 뒤에 다시 보이는데 둘째 줄이 `h3`인지 `h2`인지 해석을 못 해서 recovery인지 fallback인지 섞여 보인다
+- 첫 줄은 `421`, 둘째 줄은 성공인데 protocol이 유지된 건지 내려간 건지 몰라 브라우저가 무엇을 교정했는지 설명이 필요하다
+- "`same url twice`를 보고 중복 호출로 봐야 하는지 새 QUIC connection 재시도로 봐야 하는지 판단이 안 선다"
+intents:
+- comparison
+- design
+prerequisites:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/first-request-h2-next-request-h3-symptom-router
+next_docs:
+- network/http3-421-observability-primer
+- network/h3-stale-alt-svc-421-recovery-primer
+linked_paths:
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/h3-fallback-trace-bridge.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+confusable_with:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/first-request-h2-next-request-h3-symptom-router
+forbidden_neighbors:
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+expected_queries:
+- 421 뒤 두 번째 요청이 h3면 새 QUIC connection으로 다시 간 거라고 봐도 돼?
+- 421 다음 줄이 h2로 바뀌면 fresh h3가 아니라 fallback으로 읽는 기준이 뭐야?
+- 같은 URL이 두 번 뜰 때 fresh h3 retry와 h2 fallback을 어떻게 구분해?
+- 421 recovery trace에서 protocol이 유지되는 경우와 내려가는 경우 차이를 설명해줘
+- connection id가 바뀌었는데 protocol까지 바뀌면 브라우저가 어떤 선택을 한 거야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 `421` 뒤 retry path를 볼 때, 둘째 줄이 같은 h3의 새
+  connection인지 아니면 h2 fallback인지 먼저 고르도록 돕는 network chooser다.
+  same URL 두 줄, `421 -> h3`, `421 -> h2`, fresh QUIC connection, wrong
+  reuse 다음 보수적 재선택 같은 자연어 표현이 retry path 분기와 관찰 기준에
+  직접 매핑되도록 설계했다.
+---
 # 421 Retry Path Mini Guide: Fresh H3 Connection vs H2 Fallback
 
 > 한 줄 요약: H3 connection reuse 뒤 `421`이 나오면 브라우저는 "같은 H3라도 새 QUIC connection으로 다시 갈지", 아니면 "더 보수적으로 H2로 내려갈지"를 고르며, 초급자는 그 차이를 `same origin, new connection, same protocol?` 순서로 읽으면 된다.

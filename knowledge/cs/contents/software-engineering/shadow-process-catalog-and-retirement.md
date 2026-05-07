@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Shadow Process Catalog and Retirement
+concept_id: software-engineering/shadow-process-catalog-retirement
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- retirement
+- governance
+- ownership
+aliases:
+- shadow process catalog
+- hidden workflow registry
+- unofficial operation retirement
+- shadow process retirement pipeline
+- workaround catalog
+- 비공식 운영 절차 카탈로그
+symptoms:
+- 슬랙 DM 승인, 개인 spreadsheet allowlist, 문서에 없는 rollback 순서 같은 shadow process가 공식 catalog 없이 구두 지식으로 남아
+- shadow process를 발견해도 retire, absorb, officialize, temporary hold 경로와 review cadence가 없어 inventory로만 쌓여
+- closed와 retired를 구분하지 않아 replacement path가 열렸다는 보고만으로 old manual path가 실제 사라졌다고 착각해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/team-apis-interaction-modes
+- software-engineering/platform-policy-override-governance
+next_docs:
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-retirement-proof-metrics
+linked_paths:
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/incident-feedback-policy-ownership-closure.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/shadow-catalog-reopen-and-successor-rules.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+confusable_with:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/shadow-retirement-proof-metrics
+forbidden_neighbors: []
+expected_queries:
+- shadow process catalog는 비공식 운영 절차를 어떤 fields로 드러내고 retire, absorb, officialize 경로를 정해야 해?
+- 슬랙 DM 배포 예외나 개인 spreadsheet allowlist 같은 hidden workflow를 catalog entry로 올리는 기준은?
+- shadow process를 무조건 금지하지 않고 공식 경로를 더 쓰기 좋게 만들어 retirement하는 이유는?
+- temporary_hold가 terminal outcome이 아니라 bounded pause인 이유와 exit criteria를 설명해줘
+- closed와 retired를 구분하기 위해 manual_path_ratio와 recurrence proof를 어떻게 scorecard로 확인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 슬랙 DM, 개인 시트, 구두 절차 같은 shadow process를 catalog로 드러내고 retire, absorb, officialize, temporary hold 경로로 관리하는 advanced governance playbook이다.
+---
 # Shadow Process Catalog and Retirement
 
 > 한 줄 요약: 공식 문서와 제어면 밖에서 돌아가는 shadow process는 단기 생존에는 유용할 수 있지만 장기적으로는 governance와 ownership을 잠식하므로, 어떤 비공식 운영 절차가 존재하는지 catalog로 드러내고 retire/absorb/officialize 경로를 정해야 한다.

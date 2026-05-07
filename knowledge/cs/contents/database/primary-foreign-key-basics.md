@@ -1,8 +1,81 @@
+---
+schema_version: 3
+title: Primary Key and Foreign Key Basics
+concept_id: database/primary-foreign-key-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- primary-key
+- foreign-key
+- referential-integrity
+- schema-design
+aliases:
+- primary key basics
+- foreign key basics
+- pk fk 입문
+- 기본키 외래키 처음 배우는데
+- pk fk 차이
+- 기본키가 뭐예요
+- 외래키 제약 설명
+- surrogate key natural key
+- 참조 무결성 기초
+- db 관계 키 입문
+symptoms:
+- primary key와 foreign key의 역할을 모두 인덱스나 JPA 관계 매핑으로만 보고 식별자와 참조 무결성 차이를 놓치고 있어
+- natural key, surrogate key, composite key 선택 기준을 초급 단계에서 구분해야 해
+- FK 제약이 성능 최적화가 아니라 DB 수준 referential integrity 보장이라는 점을 이해해야 해
+intents:
+- definition
+- comparison
+prerequisites:
+- database/database-first-step-bridge
+next_docs:
+- database/join-table-composite-key-basics
+- database/index-and-explain
+- database/normalization-basics
+linked_paths:
+- contents/database/join-table-composite-key-basics.md
+- contents/database/index-and-explain.md
+- contents/database/normalization-basics.md
+- contents/software-engineering/repository-dao-entity.md
+confusable_with:
+- database/join-table-composite-key-basics
+- database/index-and-explain
+- database/normalization-basics
+forbidden_neighbors: []
+expected_queries:
+- primary key와 foreign key의 차이를 행 식별자와 참조 무결성 기준으로 설명해줘
+- natural key와 surrogate key 중 무엇을 PK로 고를지 초급자용으로 비교해줘
+- composite primary key는 join table에서 언제 쓰는지 알려줘
+- foreign key constraint가 성능 최적화가 아니라 무결성 보장이라는 말이 무슨 뜻이야?
+- JPA Entity 관계와 DB PK FK 제약을 같은 말로 보면 안 되는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 primary key, foreign key, surrogate key, natural key, composite key, referential integrity를 관계형 DB 초급자 관점에서 설명하는 beginner primer다.
+  기본키가 뭐예요, 외래키 제약 설명, PK FK 차이 질문이 본 문서에 매핑된다.
+---
 # 기본 키와 외래 키 기초 (Primary Key & Foreign Key Basics)
 
 > 한 줄 요약: 기본 키는 테이블 안에서 행을 유일하게 식별하는 컬럼이고, 외래 키는 다른 테이블의 기본 키를 참조해 두 테이블 사이의 관계와 무결성을 보장한다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "PK와 FK가 둘 다 인덱스나 JPA 관계처럼 보여요" | member-reservation, order-order_item 모델링 | 행 식별자와 참조 무결성 보장을 분리한다 |
+| "natural key, surrogate key, composite key 중 무엇을 골라야 하나요?" | 예약 슬롯, 주문 항목, 쿠폰 claim의 key 설계 | 실세계 의미 변경 가능성과 조합 유일성을 먼저 본다 |
+| "FK 제약이 성능 최적화인지 무결성 보장인지 헷갈려요" | 부모 삭제, 자식 row 삽입 실패, cascade 정책 리뷰 | DB가 없는 부모 참조와 삭제 정책을 강제하는 장치로 이해한다 |
 
 관련 문서:
 

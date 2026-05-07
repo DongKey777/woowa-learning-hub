@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: CDC Replay Verification, Idempotency, and Acceptance Runbook
+concept_id: database/cdc-replay-verification-idempotency-runbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- cdc-replay
+- replay-verification
+- idempotency
+- acceptance-runbook
+aliases:
+- cdc replay verification
+- replay acceptance
+- replay idempotency
+- bounded repair fence
+- replay cutoff
+- projection replay check
+- dedup replay validation
+- replay checksum
+- replay shadow compare
+- backend repair runbook
+symptoms:
+- CDC replay를 다시 흘렸다는 실행 사실로만 끝내고 count, checksum, sample diff, shadow compare acceptance를 남기지 않는다
+- idempotency guard 없이 replay해 search index, summary table, webhook 같은 downstream side effect가 중복된다
+- upper fence와 repair manifest 없이 live traffic과 replay traffic을 섞어 mismatch 해석이 불가능해진다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/cdc-gap-repair-reconciliation-playbook
+- database/cdc-backpressure-binlog-retention-replay
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/online-backfill-verification-cutover-gates
+- database/summary-drift-detection-bounded-rebuild
+- system-design/dual-read-comparison-verification-platform-design
+linked_paths:
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/cdc-backpressure-binlog-retention-replay.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/database/online-backfill-verification-cutover-gates.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/system-design/reconciliation-window-cutoff-control-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- database/cdc-gap-repair-reconciliation-playbook
+- database/online-backfill-verification-cutover-gates
+- database/idempotency-key-and-deduplication
+- system-design/replay-repair-orchestration-control-plane-design
+forbidden_neighbors: []
+expected_queries:
+- CDC replay는 다시 흘리는 것으로 끝이 아니라 idempotency guard와 acceptance verification이 필요한 이유가 뭐야?
+- replay 후 count checksum sample diff shadow compare로 복구 완료를 증명하는 기준을 알려줘
+- CDC replay 중 webhook, email, cache invalidation 같은 external side effect를 mute하거나 분리해야 하는 이유가 뭐야?
+- repair manifest에 lower upper fence, scope, expected cardinality, acceptance query를 남기는 절차를 설명해줘
+- replay-safe consumer에서 event dedup, effect idempotency, repair-run journal을 세 겹으로 보는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 CDC Replay Verification, Idempotency, and Acceptance Runbook playbook으로,
+  bounded replay가 duplicate side effect 없이 충분히 복구됐음을 event dedup, side-effect mute,
+  repair manifest, count/checksum/sample diff/shadow compare acceptance로 검증하는 절차를 설명한다.
+---
 # CDC Replay Verification, Idempotency, and Acceptance Runbook
 
 > 한 줄 요약: CDC replay는 "다시 흘렸다"로 끝나는 작업이 아니라, 중복 side effect 없이 scope가 충분히 복구됐음을 count/checksum/shadow compare로 확인하는 검증 절차가 함께 있어야 한다.

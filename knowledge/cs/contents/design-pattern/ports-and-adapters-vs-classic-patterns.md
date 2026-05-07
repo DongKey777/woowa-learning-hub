@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Ports and Adapters vs GoF Patterns
+concept_id: design-pattern/ports-and-adapters-vs-classic-patterns
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- ports-and-adapters
+- gof-adapter
+- boundary-architecture
+- adapter-confusion
+aliases:
+- ports and adapters vs gof patterns
+- ports and adapters vs adapter pattern
+- hexagonal vs adapter pattern
+- architecture adapter vs gof adapter
+- port adapter boundary
+- inbound outbound adapter
+- controller adapter repository adapter
+- adapter pattern confusion
+- 포트와 어댑터 vs 어댑터 패턴
+- 헥사고날과 GoF 어댑터 차이
+symptoms:
+- adapter라는 단어만 보고 GoF Adapter, Spring HandlerAdapter, hexagonal adapter를 같은 패턴으로 설명한다
+- controller adapter와 repository adapter를 만들었지만 port가 없어 의존성 방향이 뒤집히지 않는다
+- SDK wrapper 문제를 아키텍처 분리 문제로 과하게 키우거나, 반대로 경계 분리 문제를 단순 wrapper로 축소한다
+intents:
+- comparison
+- design
+- definition
+prerequisites:
+- design-pattern/adapter
+- design-pattern/facade-vs-adapter-vs-proxy
+- software-engineering/ports-and-adapters-beginner-primer
+next_docs:
+- design-pattern/hexagonal-ports-pattern-language
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/adapter-chaining-smells
+- software-engineering/hexagonal-testing-seams-primer
+linked_paths:
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/design-pattern/adapter.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/hexagonal-ports-pattern-language.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/adapter-chaining-smells.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+confusable_with:
+- design-pattern/adapter
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/hexagonal-ports-pattern-language
+- design-pattern/anti-corruption-adapter-layering
+forbidden_neighbors: []
+expected_queries:
+- Ports and Adapters와 GoF Adapter는 adapter라는 이름은 같아도 왜 범위와 목적이 달라?
+- controller adapter repository adapter를 만들면 자동으로 hexagonal architecture가 되는 거야?
+- SDK wrapper처럼 시그니처만 맞추는 문제와 application boundary를 분리하는 문제를 어떻게 구분해?
+- inbound port와 outbound port가 없으면 adapter 패키지를 나눠도 의존성 방향이 뒤집히지 않는 이유가 뭐야?
+- 어댑터 패턴을 처음 배운 뒤 hexagonal architecture로 넘어갈 때 어떤 순서로 이해해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Ports and Adapters vs GoF Patterns chooser로, GoF Adapter의 object-level
+  interface translation과 hexagonal architecture의 port, inbound adapter, outbound adapter,
+  dependency inversion boundary를 비교해 같은 adapter 용어가 다른 층위에서 쓰이는 지점을 설명한다.
+---
 # Ports and Adapters vs GoF 패턴: 경계에서 책임을 자르는 법
 
 > 한 줄 요약: Ports and Adapters는 아키텍처 경계의 규칙이고, GoF 어댑터는 클래스 수준 변환이다. 둘을 구분해야 코드 경계가 흐려지지 않는다.
@@ -74,6 +144,18 @@ Ports and Adapters는 그보다 큰 범위에서 **의존성 방향을 뒤집는
 | 중심 | 변환 | 의존성 역전 |
 
 둘은 배타적이지 않다. Ports and Adapters 구조 안쪽의 boundary마다 GoF Adapter 하나가 놓일 수 있다. 혼동 포인트는 "adapter"라는 이름이 같다는 것뿐이고, 역할 층위는 다르다.
+
+### 2-1. 빠른 판별법
+
+질문이 "이 객체를 저 인터페이스에 맞추려면 어떤 wrapper를 둘까?"라면 GoF Adapter 문제다.  
+질문이 "application core가 web, DB, message, external API를 몰라도 유스케이스를 유지할 수 있을까?"라면 Ports and Adapters 문제다.
+
+| 증상 | 더 가까운 범주 | 확인 질문 |
+|---|---|---|
+| 외부 SDK 메서드 이름과 내부 interface가 맞지 않는다 | GoF Adapter | 변환 대상 객체가 하나인가? |
+| controller와 batch가 같은 주문 유스케이스를 호출해야 한다 | Ports and Adapters | inbound port가 있는가? |
+| 결제 provider를 바꿔도 domain rule을 건드리고 싶지 않다 | Ports and Adapters | outbound port가 provider 세부를 숨기는가? |
+| 복잡한 subsystem 호출 순서를 단순화하고 싶다 | Facade | interface mismatch보다 사용성 단순화가 핵심인가? |
 
 ### 3. 패키지 경계가 설계의 절반이다
 

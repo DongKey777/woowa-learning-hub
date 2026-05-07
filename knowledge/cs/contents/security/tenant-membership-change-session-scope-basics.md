@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Tenant Membership Change vs Session Scope Basics
+concept_id: security/tenant-membership-change-session-scope-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- tenant membership change
+- tenant context stale
+- active tenant stale
+- workspace switch 403
+aliases:
+- tenant membership change
+- tenant context stale
+- active tenant stale
+- workspace switch 403
+- old workspace still visible
+- 현재 workspace와 tenant 목록이 왜 다르지
+- tenant context 뭐예요
+- current tenant context
+- tenant membership list
+- active workspace vs membership list
+- tenant selector hint
+- stale tenant session
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/concealment-404-entry-cues.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/network/http-https-basics.md
+- contents/spring/spring-security-basics.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant Membership Change vs Session Scope Basics 핵심 개념을 설명해줘
+- tenant membership change가 왜 필요한지 알려줘
+- Tenant Membership Change vs Session Scope Basics 실무 설계 포인트는 뭐야?
+- tenant membership change에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Tenant Membership Change vs Session Scope Basics를 다루는 primer 문서다. org/team/tenant 이동은 단순 UI 선택 변경이 아니라 현재 session이 들고 있는 active tenant, membership snapshot, derived scope를 다시 맞춰야 하는 보안 이벤트다. 검색 질의가 tenant membership change, tenant context stale, active tenant stale, workspace switch 403처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Tenant Membership Change vs Session Scope Basics
 
 > 한 줄 요약: org/team/tenant 이동은 단순 UI 선택 변경이 아니라 현재 session이 들고 있는 active tenant, membership snapshot, derived scope를 다시 맞춰야 하는 보안 이벤트다.

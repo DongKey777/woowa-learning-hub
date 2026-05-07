@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Spring Relaxed Binding Env Var Cheatsheet
+concept_id: spring/relaxed-binding-env-var-cheatsheet
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- relaxed-binding-env
+- var-cheatsheet
+- var
+- environment-variable-property
+aliases:
+- Spring relaxed binding env var
+- environment variable property key conversion
+- dotted dashed list map binding
+- ConfigurationProperties env var
+- SPRING_APPLICATION_JSON alternative
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-configurationproperties-binding-internals.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-external-config-file-precedence-primer.md
+- contents/spring/spring-multidocument-yaml-on-profile-primer.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+expected_queries:
+- Spring Boot 환경 변수 이름은 application.yml key를 어떻게 바꿔야 해?
+- dotted dashed property를 uppercase underscore env var로 바꾸는 규칙은?
+- list index와 map key를 Spring relaxed binding 환경 변수로 표현하는 법은?
+- ConfigurationProperties가 환경 변수 값을 못 읽을 때 무엇을 확인해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot relaxed binding에서 dotted, dashed, list index, map key 형태의
+  property를 운영/CI 환경 변수 이름으로 바꾸는 규칙을 cheatsheet로 제공한다.
+  ConfigurationProperties, Environment, property source precedence와 연결된다.
+---
 # Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기
 
 > 한 줄 요약: Spring Boot 환경 변수 이름은 "property key를 대문자 underscore 이름으로 옮긴 것"이지만, `.`은 `_`로 바꾸고 `-`는 제거한다. list index는 `_0_`처럼 감싸고, map key는 단순 소문자 key부터 안전하게 시작한다.

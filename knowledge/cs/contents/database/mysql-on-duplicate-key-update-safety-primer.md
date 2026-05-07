@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: MySQL ON DUPLICATE KEY UPDATE Safety Primer
+concept_id: database/mysql-on-duplicate-key-update-safety-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- mysql-upsert
+- idempotency
+- duplicate-key
+- request-hash
+aliases:
+- mysql on duplicate key update primer
+- mysql upsert safety
+- on duplicate key update idempotency
+- same key different payload conflict
+- duplicate key hides conflict
+- upsert overwrite risk
+- mysql upsert beginner
+- request hash conflict detection
+- ON DUPLICATE KEY UPDATE 안전한가요
+- upsert가 멱등성을 보장하나요
+symptoms:
+- ON DUPLICATE KEY UPDATE를 쓰면 같은 key 다른 payload 충돌까지 자동 해결된다고 믿고 있어
+- idempotency key duplicate path에서 request_hash를 비교하지 않고 amount나 status를 조용히 덮어써
+- retry 흡수용 upsert와 last write wins update를 같은 멱등성 패턴으로 혼동하고 있어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/idempotency-key-and-deduplication
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+next_docs:
+- database/upsert-contention-unique-index-locking
+- database/duplicate-key-vs-busy-response-mapping
+- database/unique-claim-existing-row-reuse-primer
+linked_paths:
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+confusable_with:
+- database/upsert-contention-unique-index-locking
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/idempotency-key-and-deduplication
+forbidden_neighbors: []
+expected_queries:
+- MySQL ON DUPLICATE KEY UPDATE가 idempotency를 자동으로 보장하지 않는 이유가 뭐야?
+- same key different payload가 upsert에서 조용히 덮어써지는 위험을 설명해줘
+- request_hash를 비교해서 같은 재시도와 conflict를 나누는 upsert 패턴을 알려줘
+- duplicate path에서 amount나 status를 VALUES로 덮으면 왜 멱등성이 깨질 수 있어?
+- ON DUPLICATE KEY UPDATE를 no-op update로 쓰는 경우와 위험한 경우를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL INSERT ON DUPLICATE KEY UPDATE가 unique key 충돌을 SQL 안에서 처리하지만 idempotency와 payload conflict까지 판단하지는 못한다는 beginner primer다.
+  upsert safety, ON DUPLICATE KEY UPDATE 안전한가요, same key different payload conflict 질문이 본 문서에 매핑된다.
+---
 # MySQL `ON DUPLICATE KEY UPDATE` Safety Primer
 
 > 한 줄 요약: `INSERT ... ON DUPLICATE KEY UPDATE`는 "같은 key면 한 줄만 남긴다"는 점에서는 편하지만, **같은 요청의 재시도**를 흡수할 때만 멱등성에 가깝고 **같은 key에 다른 payload가 들어온 충돌**까지 안전하게 해결해 주지는 않는다.

@@ -1,3 +1,43 @@
+---
+schema_version: 3
+title: Scheduler Signals Example Walkthrough
+concept_id: operating-system/scheduler-signals-example-walkthrough
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: drill
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- scheduler-signals-walkthrough
+- vmstat-load-average
+- proc-sched-runqlat
+- cpu-saturation-io
+aliases:
+- scheduler signals walkthrough
+- vmstat load average proc sched runqlat
+- CPU saturation IO false positive
+- scheduler example drill
+- load average false positive
+intents:
+- drill
+- troubleshooting
+linked_paths:
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/schedstat-proc-sched-runtime-debugging.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+expected_queries:
+- vmstat, load average, /proc/pid/sched, runqlat를 옆으로 붙여 scheduler signal을 읽는 예제가 필요해
+- load average만 보면 CPU saturation과 I/O false positive를 왜 헷갈려?
+- scheduler observation을 실제 walkthrough로 연습하고 싶어
+- runnable queue와 wakeup latency를 한 사례로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 load average만 보면 쉽게 틀리므로 vmstat, /proc/<pid>/sched, schedstat, runqlat를
+  나란히 읽어 CPU saturation과 I/O false positive, scheduler wait를 가르는 walkthrough drill이다.
+---
 # Scheduler Signals Example Walkthrough: `vmstat`, Load Average, `/proc/<pid>/sched`, `runqlat`
 
 > 한 줄 요약: `load average`만 보면 쉽게 틀리고, `vmstat`, `/proc/<pid>/sched`, `runqlat`를 옆으로 붙여 읽어야 진짜 CPU saturation과 I/O false positive를 가를 수 있다.

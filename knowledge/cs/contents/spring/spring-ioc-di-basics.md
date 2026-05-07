@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+review_feedback_tags:
+- ioc-di
+- ioc
+- dependency-injection
+- spring
 aliases:
 - IoC
 - DI
@@ -37,7 +42,6 @@ contextual_chunk_prefix: |
   넘김, new 대신 주입, 필요한 도구를 직접 만들지 않고 받아씀, 코드가 더 시험
   쉬워짐 같은 자연어 paraphrase가 IoC와 DI의 입문 설명에 매핑된다.
 ---
-
 # IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가
 
 > 한 줄 요약: IoC는 객체 생성과 조립의 제어권을 개발자에서 컨테이너로 넘기는 원칙이고, DI는 그 구현 방법으로 컨테이너가 필요한 의존 객체를 주입해 결합도를 낮춘다.

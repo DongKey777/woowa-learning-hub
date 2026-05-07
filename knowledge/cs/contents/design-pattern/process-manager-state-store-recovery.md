@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Process Manager State Store and Recovery Pattern
+concept_id: design-pattern/process-manager-state-store-recovery
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- process-manager-state-store
+- workflow-recovery
+- durable-workflow-state
+aliases:
+- process manager state store
+- workflow recovery
+- durable workflow state
+- correlation key restore
+- resume after restart
+- workflow instance rehydration
+- stale timer recovery
+- last processed sequence
+- durable process manager
+- workflow state store
+symptoms:
+- long-running process manager 상태를 메모리 객체로만 두어 서버 재시작 순간 workflow ownership과 deadline이 사라진다
+- correlation key가 없어 이벤트가 어떤 workflow instance에 속하는지 찾지 못한다
+- DB에 status만 저장하고 last processed event, outstanding deadline, emitted command id를 남기지 않아 recovery 때 중복/누락을 구분하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/checkpoint-snapshot-pattern
+next_docs:
+- design-pattern/workflow-owner-vs-participant-context
+- design-pattern/compensation-vs-reconciliation-pattern
+- design-pattern/command-bus-pattern
+linked_paths:
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/compensation-vs-reconciliation-pattern.md
+- contents/design-pattern/checkpoint-snapshot-pattern.md
+- contents/design-pattern/command-bus-pattern.md
+confusable_with:
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/checkpoint-snapshot-pattern
+- design-pattern/compensation-vs-reconciliation-pattern
+- design-pattern/process-manager-vs-saga-coordinator
+forbidden_neighbors: []
+expected_queries:
+- Process Manager는 클래스가 아니라 durable workflow instance로 봐야 하는 이유가 뭐야?
+- correlation key가 없으면 이벤트를 어떤 workflow state에 적용할지 찾지 못해 recovery가 어려운 이유가 뭐야?
+- process manager state store에는 status뿐 아니라 last processed event id, deadline, last command id를 왜 저장해?
+- 서버 재시작 후 stale timer, duplicate event, already emitted command를 어떻게 재동기화해?
+- event sourcing이 아니어도 durable state store와 cursor command log로 workflow recovery를 설계할 수 있는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Process Manager State Store and Recovery Pattern playbook으로,
+  process manager를 메모리 객체가 아니라 correlation key로 찾는 durable workflow instance로 보고
+  current state, last processed sequence, outstanding deadline, emitted command id, recovery/resume 정책을
+  함께 저장해 재시작 후에도 long-running ownership을 유지하는 방법을 설명한다.
+---
 # Process Manager State Store and Recovery Pattern
 
 > 한 줄 요약: long-running workflow를 조율하는 process manager는 메모리 객체가 아니라 durable state store와 recovery 전략을 함께 가져야 하며, 그렇지 않으면 재시작 순간 흐름 소유권이 사라진다.

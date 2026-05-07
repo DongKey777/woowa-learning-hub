@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > 콘솔 blackjack의 `Scanner` 입력은 Spring MVC에서 `@RequestBody` DTO와 `@PathVariable`로 갈라지고, 컨트롤러는 입력 형식만 걸러 준다. `이미 stand 한 게임에 다시 hit 금지` 같은 규칙은 DTO가 아니라 `Game`과 서비스 흐름이 끝까지 지켜야 한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "콘솔에서 `hit` 입력받던 코드를 controller에 그대로 옮겨도 되나요?" | `@RequestBody` 문자열을 controller if 문으로 비교하고 바로 game 메서드를 호출하는 코드 | HTTP 입력 형식 해석과 blackjack 게임 규칙 적용을 분리한다 |
+| "잘못된 action이랑 이미 끝난 게임에 hit한 걸 둘 다 400으로 내려도 되나요?" | action 값 오류와 현재 게임 상태 충돌이 같은 예외로 묶인 API | request binding/validation 실패와 domain state conflict를 다른 실패 의미로 본다 |
+| "DTO에 `@Valid`를 붙였는데 종료된 게임 액션까지 막고 싶어요" | Game 상태를 알아야 하는 규칙을 DTO annotation으로 처리하려는 시도 | DTO는 요청 모양을 보고, Game/service는 현재 상태 기반 규칙을 본다 |
+
 ## 미션 시나리오
 
 콘솔 blackjack에서는 `"hit"`나 `"stand"` 문자열을 읽고 바로 메서드를 호출해도

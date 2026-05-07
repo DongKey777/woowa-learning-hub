@@ -1,6 +1,84 @@
+---
+schema_version: 3
+title: Spring BindingResult local validation 400 primer
+concept_id: spring/spring-bindingresult-local-validation-400-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- bindingresult-local-validation-branch
+- validation-400-vs-message-conversion
+- methodargumentnotvalidexception-boundary
+aliases:
+- spring bindingresult local validation 400
+- BindingResult 400 flow
+- BindingResult 있으면 뭐가 달라져요
+- 왜 MethodArgumentNotValidException 안 나요
+- @Valid 실패인데 컨트롤러 안으로 왜 들어와요
+- BindingResult 붙였는데 400 컨트롤러 전
+- @RequestBody BindingResult
+- validation error local response
+- controller local validation handling
+- MethodArgumentNotValidException vs BindingResult
+symptoms:
+- @Valid 실패인데 BindingResult가 있으면 왜 컨트롤러 메서드 안으로 들어오는지 이해하지 못해
+- DTO를 만들기도 전에 실패하는 JSON parse나 타입 변환 400을 BindingResult가 잡을 수 있다고 오해해
+- MethodArgumentNotValidException 전역 처리와 BindingResult 로컬 처리를 같은 400 흐름으로 섞어 읽어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- spring/valid-400-vs-message-conversion-400-primer
+next_docs:
+- spring/custom-error-dto-to-problemdetail-handoff-primer
+- spring/spring-exception-handling-basics
+- spring/requestbody-400-before-controller-primer
+- spring/methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+linked_paths:
+- contents/spring/spring-valid-400-vs-message-conversion-400-primer.md
+- contents/spring/spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/network/http-request-response-headers-basics.md
+confusable_with:
+- spring/requestbody-400-before-controller-primer
+- spring/methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge
+- spring/spring-exception-handling-basics
+- spring/custom-error-dto-to-problemdetail-handoff-primer
+forbidden_neighbors: []
+expected_queries:
+- Spring에서 @Valid 뒤에 BindingResult를 붙이면 400 흐름이 어떻게 달라져?
+- BindingResult가 있으면 왜 MethodArgumentNotValidException이 안 나고 컨트롤러 안으로 들어와?
+- JSON parse 실패나 LocalDate 변환 실패는 왜 BindingResult가 잡지 못해?
+- BindingResult 로컬 처리와 @RestControllerAdvice 전역 400 처리를 어떻게 구분해?
+- BindingResult는 검증 대상 파라미터 바로 뒤에 둬야 한다는 규칙을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC validation 400에서 @Valid 대상 바로 뒤 BindingResult가 있으면 Bean Validation 실패가 MethodArgumentNotValidException 전역 경로가 아니라 controller local branch로 들어온다는 점을 설명하는 beginner primer다.
+  BindingResult, @Valid, MethodArgumentNotValidException, request body conversion 400, local validation response, ProblemDetail handoff 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드
 
 > 한 줄 요약: "`BindingResult` 있으면 뭐가 달라져요?", "왜 `MethodArgumentNotValidException` 안 나요?", "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?", "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?" 같은 검색형 증상은 `@Valid` 옆 `BindingResult`가 validation 실패를 전역 `400` 예외 대신 컨트롤러 로컬 분기로 바꾸는지부터 보면 풀린다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`@Valid` 실패인데 컨트롤러 안으로 들어와요" | lotto 구매 금액 DTO 검증 실패를 `BindingResult`로 직접 분기 처리하는 method | BindingResult가 있으면 Bean Validation 실패가 local branch가 된다 |
+| "JSON parse 실패도 `BindingResult`로 잡히나요?" | request body가 DTO로 만들어지기 전 타입 변환/문법 오류가 나는 상황 | message conversion 400과 validation 400을 분리한다 |
+| "전역 `@RestControllerAdvice`랑 둘 다 써도 되나요?" | 어떤 endpoint는 local error response, 어떤 endpoint는 공통 error DTO를 쓰는 코드 | local handling과 global exception handling의 우선 경로를 구분한다 |
 
 **난이도: 🟢 Beginner**
 

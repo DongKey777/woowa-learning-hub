@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Identity Lifecycle / Provisioning Primer
+concept_id: security/identity-lifecycle-provisioning-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- identity lifecycle primer
+- provisioning primer
+- scim primer
+- scim beginner route
+aliases:
+- identity lifecycle primer
+- provisioning primer
+- scim primer
+- scim beginner route
+- deprovision beginner route
+- user lifecycle basics
+- scim disable but still access primer
+- provisioning vs login
+- deprovision vs revoke
+- group removal still access
+- disable still access next step
+- 그룹 제거했는데 권한 남음
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/scim-provisioning-security.md
+- contents/security/scim-drift-reconciliation.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+- contents/security/claim-freshness-after-permission-changes.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Identity Lifecycle / Provisioning Primer 핵심 개념을 설명해줘
+- identity lifecycle primer가 왜 필요한지 알려줘
+- Identity Lifecycle / Provisioning Primer 실무 설계 포인트는 뭐야?
+- identity lifecycle primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Identity Lifecycle / Provisioning Primer를 다루는 primer 문서다. identity lifecycle은 "계정을 만들고 지우는 기능"이 아니라, 사람이나 앱의 상태 변화가 계정, 그룹, 세션, 권한 판단까지 같은 방향으로 따라오게 만드는 흐름이다. 검색 질의가 identity lifecycle primer, provisioning primer, scim primer, scim beginner route처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Identity Lifecycle / Provisioning Primer
 
 > 한 줄 요약: identity lifecycle은 "계정을 만들고 지우는 기능"이 아니라, 사람이나 앱의 상태 변화가 계정, 그룹, 세션, 권한 판단까지 같은 방향으로 따라오게 만드는 흐름이다.

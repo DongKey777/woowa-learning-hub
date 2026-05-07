@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: JMH Benchmarking Pitfalls
+concept_id: language/jmh-benchmarking-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jmh
+- benchmark
+- performance-measurement
+aliases:
+- JMH Benchmarking Pitfalls
+- Java microbenchmark warmup dead-code elimination
+- JMH Blackhole constant folding fork
+- false sharing allocation effects benchmark
+- JIT benchmark trap
+- 자바 JMH 벤치마크 함정
+symptoms:
+- JMH를 쓰면 자동으로 정확한 benchmark라고 생각해 warmup, fork, input design, profiler interference를 검토하지 않아
+- benchmark 결과를 사용하지 않아 dead-code elimination이나 constant folding으로 실제 작업이 사라진 숫자를 성능 개선으로 오해해
+- microbenchmark 결과를 production latency나 contention으로 그대로 일반화해 cache, GC, scheduling, load pattern 차이를 놓쳐
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/jit-warmup-deoptimization
+- language/escape-analysis-scalar-replacement
+- language/code-cache-jit-profiling
+next_docs:
+- language/escape-analysis-stack-allocation-benchmark-misconceptions
+- language/jfr-jmc-performance-playbook
+- operating-system/cpu-cache-coherence-memory-barrier
+linked_paths:
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/escape-analysis-stack-allocation-benchmark-misconceptions.md
+- contents/language/java/class-initialization-ordering.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+confusable_with:
+- language/jit-warmup-deoptimization
+- language/escape-analysis-stack-allocation-benchmark-misconceptions
+- language/jfr-jmc-performance-playbook
+forbidden_neighbors: []
+expected_queries:
+- JMH를 써도 benchmark가 틀릴 수 있는 warmup DCE constant folding 함정을 설명해줘
+- JMH Blackhole은 왜 필요하고 결과를 소비하지 않으면 어떤 최적화가 일어나?
+- @Warmup @Measurement @Fork를 어떻게 해석해야 steady state를 더 잘 볼 수 있어?
+- microbenchmark 결과를 production 성능으로 그대로 일반화하면 왜 위험해?
+- false sharing allocation elimination escape analysis가 JMH 결과를 왜곡하는 예를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JMH microbenchmark에서 warmup, dead-code elimination, constant folding, Blackhole, fork, false sharing, allocation effects를 점검하는 advanced playbook이다.
+  JMH pitfalls, Java microbenchmark, Blackhole, warmup, constant folding, production 성능 비교 질문이 본 문서에 매핑된다.
+---
 # JMH Benchmarking Pitfalls
 
 > 한 줄 요약: JMH는 microbenchmark를 덜 틀리게 만들지만, warmup, dead-code elimination, constant folding, false sharing, allocation effects를 잘못 다루면 여전히 잘못된 결론을 낼 수 있다.

@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: O_CLOEXEC FD Inheritance Exec Time Leaks
+concept_id: operating-system/o-cloexec-fd-inheritance-exec-leaks
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- o-cloexec-fd
+- inheritance-exec-leaks
+- inheritance
+- exec-time-fd
+aliases:
+- O_CLOEXEC FD inheritance
+- exec time fd leak
+- close-on-exec
+- socket pipe temp file leaked to child
+- subprocess fd hygiene
+- CLOEXEC race
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/deleted-open-file-space-leak-log-rotation.md
+symptoms:
+- execve 후 child process가 예상치 못한 socket, pipe, temp file descriptor를 계속 잡고 있다.
+- parent가 fd를 닫았는데 child inheritance 때문에 connection이나 deleted file이 살아 있다.
+- close와 fork/exec 사이 race 때문에 CLOEXEC 없이 fd leak이 발생한다.
+expected_queries:
+- execve는 주소 공간을 바꿔도 file descriptor를 기본적으로 유지해?
+- O_CLOEXEC와 FD_CLOEXEC를 습관적으로 써야 하는 이유는?
+- socket이나 pipe가 child process로 새어 나가면 어떤 장애가 생겨?
+- subprocess fd hygiene와 close-on-exec race를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 execve가 address space는 바꾸지만 file descriptor table entry는 기본적으로 유지하기
+  때문에 O_CLOEXEC/FD_CLOEXEC 습관이 없으면 socket, pipe, temporary file이 child process로
+  새어 나가는 exec-time leak을 다룬다.
+---
 # O_CLOEXEC, FD Inheritance, Exec-Time Leaks
 
 > 한 줄 요약: `execve()`는 주소 공간은 바꾸지만 file descriptor는 기본적으로 유지하므로, `O_CLOEXEC` 습관이 없으면 소켓, 파이프, 임시 파일이 자식 프로세스로 새어 나가기 쉽다.

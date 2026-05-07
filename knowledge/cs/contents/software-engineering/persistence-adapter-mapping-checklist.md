@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Persistence Adapter Mapping Checklist
+concept_id: software-engineering/persistence-adapter-mapping-checklist
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- persistence
+- repository
+- jpa-entity
+- mapping
+aliases:
+- Persistence Adapter Mapping Checklist
+- domain object to JPA entity mapping
+- repository adapter mapping
+- persistence adapter checklist
+- domain model vs JPA entity
+- JPA entity mapper 책임
+symptoms:
+- application service가 Spring Data repository와 JPA Entity를 직접 알고 entity.setXxx, flush, LAZY, cascade, dirty checking 전제에 기대어 규칙을 수행해
+- domain object와 persistence entity를 같은 모델로 밀어붙여 API 응답, query model, ORM 최적화 요구가 도메인 규칙 모델을 부풀려
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/repository-interface-contract
+- software-engineering/ports-and-adapters-beginner-primer
+next_docs:
+- software-engineering/persistence-model-leakage
+- software-engineering/aggregate-persistence-mapping
+- software-engineering/repository-fake-design
+linked_paths:
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/aggregate-persistence-mapping-pitfalls.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/hexagonal-testing-seams-primer.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+confusable_with:
+- software-engineering/persistence-model-leakage
+- software-engineering/repository-interface-contract
+- software-engineering/aggregate-persistence-mapping
+forbidden_neighbors: []
+expected_queries:
+- domain object와 JPA entity를 어디서 나누고 persistence adapter가 mapper 책임을 가져야 하는지 체크리스트로 알려줘
+- repository port는 도메인 언어를 유지하고 adapter가 OrderEntity, FK, fetch 전략을 감싸야 하는 이유가 뭐야?
+- service가 OrderJpaRepository와 Entity를 직접 쓰는 코드에서 어떤 mapping leakage가 생겨?
+- fetch join, cascade, dirty checking, orphanRemoval 같은 ORM 세부가 domain model로 새면 왜 위험해?
+- mapper unit test와 repository integration test를 나눠 round-trip과 ORM 세부를 검증하는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 repository port는 도메인 언어를 유지하고 persistence adapter가 domain object와 JPA entity 매핑, fetch/cascade/dirty checking 세부를 감싸는지 점검하는 beginner playbook이다.
+---
 # Persistence Adapter Mapping Checklist
 
 > 한 줄 요약: domain object와 JPA entity를 같은 모델로 밀어붙이지 말고, repository port는 도메인 언어를 유지한 채 persistence adapter가 매핑과 ORM 세부를 바깥에서 감싸는지 점검하는 짧은 체크리스트다.

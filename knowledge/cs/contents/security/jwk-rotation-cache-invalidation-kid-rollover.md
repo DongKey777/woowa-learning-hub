@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: JWK Rotation / Cache Invalidation / `kid` Rollover
+concept_id: security/jwk-rotation-cache-invalidation-kid-rollover
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- JWK
+- JWKS
+- kid rollover
+- kid miss
+aliases:
+- JWK
+- JWKS
+- kid rollover
+- kid miss
+- key rotation
+- cache invalidation
+- public key cache
+- signing key
+- verification key
+- rotation window
+- stale key
+- JWKS TTL
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/jwt-deep-dive.md
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/jwks-rotation-cutover-failure-recovery.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/key-rotation-runbook.md
+- contents/security/secret-scanning-credential-leak-response.md
+- contents/security/session-revocation-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- JWK Rotation / Cache Invalidation / `kid` Rollover 핵심 개념을 설명해줘
+- JWK가 왜 필요한지 알려줘
+- JWK Rotation / Cache Invalidation / `kid` Rollover 실무 설계 포인트는 뭐야?
+- JWK에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 JWK Rotation / Cache Invalidation / `kid` Rollover를 다루는 deep_dive 문서다. JWK 회전은 새 키를 JWKS에 올리는 것보다, 검증자 캐시를 언제 깨고 `kid` 기반으로 어떤 키를 신뢰할지 운영하는 문제가 더 어렵다. 검색 질의가 JWK, JWKS, kid rollover, kid miss처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # JWK Rotation / Cache Invalidation / `kid` Rollover
 
 > 한 줄 요약: JWK 회전은 새 키를 JWKS에 올리는 것보다, 검증자 캐시를 언제 깨고 `kid` 기반으로 어떤 키를 신뢰할지 운영하는 문제가 더 어렵다.

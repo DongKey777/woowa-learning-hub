@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: CopyOnWriteArrayList Snapshot Iteration and Write Amplification
+concept_id: language/copyonwritearraylist-snapshot-iteration-write-amplification
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- concurrent-collection
+- copy-on-write
+- write-amplification
+aliases:
+- CopyOnWriteArrayList snapshot iteration
+- CopyOnWriteArrayList write amplification
+- read mostly collection
+- listener registry collection
+- stale snapshot iterator
+- copy on write array list
+symptoms:
+- CopyOnWriteArrayList를 thread-safe ArrayList로만 보고 write마다 전체 배열 복사가 발생하는 비용 모델을 놓쳐
+- iterator가 생성 시점 snapshot을 보므로 최신 current-state 판정에는 맞지 않는다는 점을 모른다
+- listener registry처럼 read-mostly에는 맞지만 request마다 갱신되는 write-heavy path에서는 allocation burst와 GC pressure를 만든다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- language/collections-performance
+next_docs:
+- language/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs
+- language/concurrenthashmap-compound-actions-hot-key-contention
+- language/oom-heap-dump-playbook
+linked_paths:
+- contents/language/java/collections-performance.md
+- contents/language/java/concurrenthashmap-compound-actions-hot-key-contention.md
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/oom-heap-dump-playbook.md
+confusable_with:
+- language/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs
+- language/concurrenthashmap-compound-actions-hot-key-contention
+- language/collections-performance
+forbidden_neighbors: []
+expected_queries:
+- CopyOnWriteArrayList는 thread-safe ArrayList가 아니라 snapshot iteration과 write amplification 구조라는 뜻이야?
+- CopyOnWriteArrayList iterator가 최신 상태가 아니라 생성 시점 snapshot을 보는 이유를 설명해줘
+- listener registry에는 CopyOnWriteArrayList가 맞고 write-heavy queue에는 왜 부적합해?
+- CopyOnWriteArrayList add remove가 큰 리스트에서 allocation과 GC pressure를 만드는 이유가 뭐야?
+- stale snapshot을 business decision에 쓰면 어떤 버그가 생길 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 CopyOnWriteArrayList를 snapshot iteration, copy-on-write array replacement, read-mostly listener registry, write amplification, stale snapshot 관점으로 설명하는 advanced deep dive다.
+  CopyOnWriteArrayList, snapshot iterator, write amplification, listener registry, stale snapshot 질문이 본 문서에 매핑된다.
+---
 # `CopyOnWriteArrayList` Snapshot Iteration and Write Amplification
 
 > 한 줄 요약: `CopyOnWriteArrayList`는 thread-safe `ArrayList`가 아니라 "읽을 때 snapshot을 보고, 쓸 때 전체 배열을 복사하는" 컬렉션이다. listener registry나 read-mostly 설정 목록에는 잘 맞지만, write-heavy 경로에 넣으면 allocation과 stale snapshot 버그를 만든다.

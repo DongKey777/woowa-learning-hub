@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: HashMap vs TreeMap 초급 선택 브리지
+concept_id: language/hashmap-vs-treemap-beginner-selection-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-selection
+- hashmap-treemap
+- ordered-lookup
+aliases:
+- HashMap vs TreeMap beginner selection bridge
+- HashMap TreeMap 차이 초급
+- sorted map basics
+- hash based lookup vs sorted map ordering
+- TreeMap floorKey ceilingKey subMap
+- HashMap 정렬 안 됨
+symptoms:
+- HashMap과 TreeMap을 둘 다 key로 찾는 Map이라고만 보고 hash/equality lookup과 ordering lookup 차이를 놓쳐
+- TreeMap이 단순히 출력 정렬만 해 주는 것이 아니라 compare == 0 overwrite와 range lookup 기준도 제공한다는 점을 모른다
+- 순서가 중요하지 않은 id lookup과 가까운 key/range 조회가 필요한 정렬 map 요구를 구분하지 못해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+next_docs:
+- language/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/treemap-put-return-value-overwrite-bridge
+linked_paths:
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+- contents/language/java/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md
+- contents/language/java/treemap-put-return-value-overwrite-bridge.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treemap-null-key-vs-nullable-field-primer.md
+confusable_with:
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+- language/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge
+- language/treeset-treemap-natural-ordering-compareto-bridge
+forbidden_neighbors: []
+expected_queries:
+- HashMap과 TreeMap을 언제 선택해야 하는지 hash lookup과 sorted lookup으로 설명해줘
+- TreeMap은 정렬 출력뿐 아니라 floorKey ceilingKey subMap 같은 range lookup이 핵심이라는 뜻이야?
+- HashMap은 equals hashCode 기준이고 TreeMap은 compareTo Comparator 기준으로 key를 찾는 차이를 알려줘
+- TreeMap에서 id가 다른 객체가 comparator 때문에 value overwrite 되는 예제를 보여줘
+- HashMap은 순서가 없고 TreeMap은 key 정렬 순서라는 점을 초보자용으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 HashMap vs TreeMap 선택을 hash/equality lookup과 sorted key ordering/range lookup, compare == 0 overwrite semantics로 설명하는 beginner bridge다.
+  HashMap vs TreeMap, sorted map, floorKey, ceilingKey, subMap, hash lookup, TreeMap overwrite 질문이 본 문서에 매핑된다.
+---
 # HashMap vs TreeMap 초급 선택 브리지
 
 > 한 줄 요약: `HashMap`은 "정렬 없이 key를 빨리 찾는 서랍", `TreeMap`은 "정렬된 key 줄에서 찾는 사전"으로 읽으면 초보자가 가장 헷갈리는 조회 규칙, 순서, 덮어쓰기 차이를 한 번에 묶을 수 있다.

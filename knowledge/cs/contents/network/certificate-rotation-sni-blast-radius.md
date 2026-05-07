@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Certificate Rotation, SNI Blast Radius"
+concept_id: network/certificate-rotation-sni-blast-radius
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- certificate-rotation
+- sni-routing-blast-radius
+- tls-ingress-rollout
+aliases:
+- certificate rotation
+- SNI blast radius
+- fullchain bundle rollout
+- cert renewal ingress
+- TLS termination staged rotation
+- hot reload cert
+symptoms:
+- 인증서 교체 후 특정 도메인이나 특정 리전만 TLS hostname mismatch로 실패한다
+- intermediate/fullchain 누락이나 SAN mismatch가 SNI별로 다르게 터진다
+- hot reload가 일부 worker나 ingress에만 반영되어 old/new certificate가 섞인다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- security/https-tls-beginner
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+next_docs:
+- network/sni-routing-mismatch-hostname-failure
+- network/alpn-negotiation-failure-routing-mismatch
+- network/certificate-pinning-tradeoffs
+- network/tls-session-resumption-0rtt-replay-risk
+- network/api-gateway-reverse-proxy-operational-points
+linked_paths:
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+confusable_with:
+- network/sni-routing-mismatch-hostname-failure
+- network/alpn-negotiation-failure-routing-mismatch
+- network/certificate-pinning-tradeoffs
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+forbidden_neighbors: []
+expected_queries:
+- "인증서 회전 후 특정 SNI만 실패하면 어디부터 봐야 해?"
+- "certificate rotation은 왜 단순 파일 교체가 아니라 ingress rollout 문제야?"
+- "fullchain intermediate 누락과 SAN mismatch가 SNI blast radius를 키우는 이유를 설명해줘"
+- "hot reload로 cert를 바꿨는데 일부 worker만 옛 인증서를 주는 장면을 어떻게 진단해?"
+- "staged certificate rotation에서 canary와 rollback 확인 항목을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 certificate rotation을 SNI routing, SAN/fullchain bundle,
+  ingress/CDN/LB rollout, hot reload consistency, staged rollout blast
+  radius 관점으로 다루는 advanced TLS operations playbook이다.
+---
 # Certificate Rotation, SNI Blast Radius
 
 > 한 줄 요약: 인증서 회전은 단순 교체가 아니라 SNI별 라우팅과 bundle 배포가 함께 맞아야 하는 작업이라, 하나만 틀어져도 blast radius가 커진다.

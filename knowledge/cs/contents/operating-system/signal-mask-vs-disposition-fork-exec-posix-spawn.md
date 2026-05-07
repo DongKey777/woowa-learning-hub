@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Signal Mask vs Disposition Bridge
+concept_id: operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- signal-mask-vs
+- disposition-fork-exec
+- posix-spawn
+- disposition
+aliases:
+- signal mask vs disposition
+- blocked ignored caught signal
+- fork exec posix_spawn signal state
+- SIGINT block ignore
+- signal handler reset on exec
+- posix_spawn signal attrs
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/posix-spawn-attributes-primer.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/proc-pid-status-signal-fields-debugging-primer.md
+- contents/operating-system/sigchld-ignore-vs-waitpid-bridge.md
+- contents/operating-system/signals-process-supervision.md
+expected_queries:
+- signal mask와 signal disposition은 어떻게 달라?
+- SIGINT를 block한 것과 ignore한 것은 왜 다른 상태야?
+- fork는 mask와 disposition을 복사하고 exec는 caught handler를 default로 되돌려?
+- posix_spawn attrs로 initial signal mask/default를 어떻게 설정해?
+contextual_chunk_prefix: |
+  이 문서는 blocked signal을 지금 전달을 막아 둔 signal mask 문제로, ignored/default/handler를
+  전달되면 무엇을 할지인 disposition 문제로 분리한다. fork, exec, posix_spawn 경계에서
+  무엇이 복사되고 reset되는지 설명한다.
+---
 # Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`
 
 > 한 줄 요약: blocked signal은 "지금은 전달을 막아 둔 상태"인 signal mask 문제이고, ignored/default/handler는 "전달되면 무엇을 할지"인 signal disposition 문제다. `fork()`는 둘을 복사하고, `exec()`는 mask는 남기되 caught handler를 기본 동작으로 되돌리며, `posix_spawn()`은 보통 `fork()+exec()`처럼 시작하되 attrs로 초기 mask/default를 덮어쓸 수 있다.

@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Authority Transfer vs Revoke Lag Primer Bridge
+concept_id: security/authority-transfer-vs-revoke-lag-primer-bridge
+canonical: false
+category: security
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- authority transfer vs revoke lag
+- authority transfer beginner bridge
+- revoke lag beginner bridge
+- still access after transfer
+aliases:
+- authority transfer vs revoke lag
+- authority transfer beginner bridge
+- revoke lag beginner bridge
+- still access after transfer
+- still access after revoke
+- authority transfer cleanup
+- authority transfer parity
+- revoke lag route split
+- backfill green but access tail remains
+- deprovision tail vs revoke lag
+- old owner removed but access still works
+- beginner authority transfer route
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/identity-lifecycle-provisioning-primer.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/claim-freshness-after-permission-changes.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+- contents/security/revocation-propagation-lag-debugging.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Authority Transfer vs Revoke Lag Primer Bridge 차이를 실무 기준으로 설명해줘
+- authority transfer vs revoke lag를 언제 선택해야 해?
+- Authority Transfer vs Revoke Lag Primer Bridge를 헷갈리지 않게 비교해줘
+- authority transfer vs revoke lag 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Authority Transfer vs Revoke Lag Primer Bridge를 다루는 bridge 문서다. `authority transfer`는 source of truth, parity, cleanup owner를 맞추는 변화 관리 질문이고, `revoke lag`는 old session/token/cache가 아직 요청을 받아 주는 runtime incident 질문이므로 같은 "still access" 문장으로 들어와도 먼저 분리해야 한다. 검색 질의가 authority transfer vs revoke lag, authority transfer beginner bridge, revoke lag beginner bridge, still access after transfer처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Authority Transfer vs Revoke Lag Primer Bridge
 
 > 한 줄 요약: `authority transfer`는 source of truth, parity, cleanup owner를 맞추는 변화 관리 질문이고, `revoke lag`는 old session/token/cache가 아직 요청을 받아 주는 runtime incident 질문이므로 같은 "still access" 문장으로 들어와도 먼저 분리해야 한다.

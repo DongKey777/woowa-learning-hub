@@ -44,7 +44,9 @@ linked_paths:
 confusable_with:
 - algorithm/mo-algorithm-basics
 - algorithm/sweep-line-overlap-counting
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/algorithm/mo-algorithm-basics.md
+- contents/algorithm/sliding-window-patterns.md
 expected_queries:
 - offline query를 재정렬해서 푼다는 발상이 Mo 알고리즘과 어떻게 연결되는지 설명해줘
 - 구간 질의에서 상태 이동 비용을 줄이려고 질의 순서를 바꾸는 기준이 뭐야

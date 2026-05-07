@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: GC Root Retention Analysis
+concept_id: language/gc-root-retention-analysis
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- heap-dump
+- memory-leak
+- gc-root
+aliases:
+- GC root retention analysis
+- heap dump retention path
+- dominator tree retained size
+- GC root reference chain
+- ThreadLocal retention
+- static field leak
+- classloader retention path
+symptoms:
+- heap dump에서 객체 수만 보고 어떤 GC root가 객체를 살려 두는지 reference chain과 retention path를 추적하지 않아
+- shallow size와 retained size를 혼동해 실제 누수 원인을 지배하는 dominator를 놓쳐
+- ThreadLocal, static cache, classloader, JNI global reference가 의도된 보관인지 leak인지 한도와 cleanup policy로 판단하지 못해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/oom-heap-dump-playbook
+next_docs:
+- language/classloader-memory-leak-playbook
+- language/threadlocal-leaks-context-propagation
+- language/phantom-weak-soft-references
+linked_paths:
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/phantom-weak-soft-references.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+confusable_with:
+- language/oom-heap-dump-playbook
+- language/classloader-memory-leak-playbook
+- language/threadlocal-leaks-context-propagation
+forbidden_neighbors: []
+expected_queries:
+- heap dump에서 GC root retention path를 따라 객체가 왜 살아 있는지 분석하는 방법을 알려줘
+- shallow size와 retained size, dominator tree 차이를 memory leak 분석 관점으로 설명해줘
+- static field ThreadLocal classloader JNI global reference가 GC root가 되는 경로를 알려줘
+- 누수처럼 보이는 장기 보관과 진짜 leak을 cache TTL eviction cleanup policy로 어떻게 구분해?
+- redeploy 후 old classloader가 root chain에 남는 문제를 heap dump에서 어떻게 찾지?
+contextual_chunk_prefix: |
+  이 문서는 GC root retention analysis를 heap dump, reference chain, dominator tree, retained size, ThreadLocal, static field, classloader, JNI global reference 관점으로 진단하는 advanced playbook이다.
+  GC root, retention path, heap dump, dominator tree, retained size, memory leak analysis 질문이 본 문서에 매핑된다.
+---
 # GC Root Retention Analysis
 
 > 한 줄 요약: GC root 분석은 "왜 객체가 아직 살아 있는가"를 묻는 일이고, heap dump에서 root chain과 retention path를 읽어야 진짜 누수와 단순 장기 보관을 구분할 수 있다.

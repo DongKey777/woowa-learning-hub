@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: HTTPS와 TLS 기초
+concept_id: security/https-tls-beginner
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- https-tls-basics
+- certificate-authority
+- secure-cookie-proxy
+aliases:
+- https tls beginner
+- HTTPS TLS 기초
+- HTTPS가 뭔가요
+- TLS 기초
+- HTTP vs HTTPS
+- SSL TLS 차이
+- certificate authority beginner
+- TLS handshake 쉽게
+- Secure cookie HTTPS
+- 자물쇠 아이콘
+- 전송 암호화 입문
+symptoms:
+- HTTPS를 HTTP의 빠른 버전처럼 이해해 TLS가 기밀성, 무결성, 서버 신원 확인을 추가한다는 점을 놓친다
+- 자물쇠 아이콘이 있으면 사이트 자체가 완전히 안전하다고 생각해 전송 보호와 애플리케이션 취약점을 섞는다
+- Secure cookie가 HTTP나 프록시 뒤에서 왜 안 붙는지 HTTPS 인식과 TLS 종료 경계를 연결하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- security/security-basics-what-and-why
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- security/https-hsts-mitm
+- security/secure-cookie-behind-proxy-guide
+- network/tls-loadbalancing-proxy
+- network/http1-http2-http3-beginner-comparison
+linked_paths:
+- contents/security/https-hsts-mitm.md
+- contents/security/security-basics-what-and-why.md
+- contents/network/http-state-session-cache.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/network/tls-loadbalancing-proxy.md
+confusable_with:
+- network/tls-loadbalancing-proxy
+- security/https-hsts-mitm
+- security/security-basics-what-and-why
+forbidden_neighbors: []
+expected_queries:
+- HTTPS와 TLS는 HTTP에 무엇을 추가해서 도청, 변조, 서버 사칭을 줄이는지 설명해줘
+- SSL과 TLS는 어떤 관계이고 지금 SSL 인증서라고 부르는 말은 실제로 무엇을 뜻해?
+- 브라우저 자물쇠 아이콘은 전송 암호화와 서버 인증서를 뜻하지만 왜 사이트 전체 안전을 보장하지는 않아?
+- Secure cookie가 HTTP에서는 안 붙고 프록시 뒤 HTTPS 인식이 어긋나면 어떤 문제가 생겨?
+- TLS handshake에서 인증서와 CA 검증, 세션키 교환이 어떤 순서로 일어나는지 입문자 기준으로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HTTPS와 TLS를 전송 중 도청, 변조, 서버 사칭을 줄이는 beginner primer로 설명한다.
+  HTTP vs HTTPS, TLS handshake, certificate authority, server certificate, SSL vs TLS, Secure cookie, proxy TLS termination, HSTS/MITM follow-up을 다룬다.
+---
 # HTTPS와 TLS 기초
 
 > 한 줄 요약: HTTPS는 HTTP 요청을 "봉투 없이 보내는 메모"에서 "봉인된 봉투에 넣어 보내는 메모"로 바꾸는 것이고, TLS는 그 봉투를 잠그고 서버 신원을 확인하는 규칙이다.

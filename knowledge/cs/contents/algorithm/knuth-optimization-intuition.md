@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Knuth Optimization Intuition
+concept_id: algorithm/knuth-optimization-intuition
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- knuth-optimization
+- interval-dp
+- opt-monotonicity
+aliases:
+- knuth optimization
+- knuth dp optimization
+- interval dp optimization
+- opt monotonicity
+- quadrangle inequality
+- optimal split monotonicity
+- 파일 합치기 최적화
+- 구간 dp 최적화
+- 크누스 최적화
+symptoms:
+- interval DP의 모든 분할점을 매번 탐색해 O(n^3)에서 막히는데 후보 범위를 줄일 조건을 모른다
+- divide and conquer DP optimization과 Knuth optimization을 모두 monotone opt라고만 보고 적용 조건을 섞는다
+- quadrangle inequality나 opt monotonicity가 확인되지 않았는데도 Knuth optimization을 적용하려고 한다
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- algorithm/dp-intro
+- algorithm/divide-and-conquer-dp-optimization
+- algorithm/monotone-queue-dp
+next_docs:
+- algorithm/convex-hull-trick-basics
+- algorithm/topological-dp
+- algorithm/amortized-analysis-pitfalls
+linked_paths:
+- contents/algorithm/dp-intro.md
+- contents/algorithm/divide-and-conquer-dp-optimization.md
+- contents/algorithm/monotone-queue-dp.md
+- contents/algorithm/convex-hull-trick-basics.md
+confusable_with:
+- algorithm/divide-and-conquer-dp-optimization
+- algorithm/monotone-queue-dp
+- algorithm/convex-hull-trick-basics
+- algorithm/dp-intro
+forbidden_neighbors: []
+expected_queries:
+- Knuth optimization은 interval DP에서 최적 분할점 범위를 어떻게 줄여?
+- divide and conquer DP optimization과 Knuth optimization은 적용 조건이 어떻게 달라?
+- quadrangle inequality와 opt monotonicity가 없으면 Knuth optimization을 쓰면 안 되는 이유가 뭐야?
+- 파일 합치기 같은 구간 병합 DP에서 opt[l][r] 범위는 어떻게 정해?
+- interval DP를 O(n^3)에서 O(n^2)로 줄일 수 있는 조건을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Knuth Optimization intuition deep dive로, interval DP에서
+  opt monotonicity와 quadrangle inequality가 성립할 때 최적 분할점 후보를
+  opt[l][r-1]부터 opt[l+1][r] 범위로 줄이는 감각을 설명한다.
+---
 # Knuth Optimization Intuition
 
 > 한 줄 요약: Knuth Optimization은 특정 interval DP에서 최적 분할점이 더 강하게 정리될 때 탐색을 크게 줄이는 기법이다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: CPU Cache, Coherence, Memory Barrier
+concept_id: operating-system/cpu-cache-coherence-memory-barrier
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- coherence-vs-ordering
+- memory-barrier-release-acquire
+- false-sharing-performance-diagnosis
+aliases:
+- CPU cache coherence memory barrier
+- cache coherence
+- memory barrier
+- false sharing
+- cache line
+- MESI basics
+- release acquire fence
+- visibility ordering
+- perf c2c cache line
+- 멀티코어 가시성 순서
+- CPU cache와 JMM 연결
+- cache line ping pong
+symptoms:
+- 플래그를 봤는데 데이터가 아직 예전 값처럼 보이는 이유가 궁금해
+- coherence와 memory ordering 차이가 헷갈려
+- 스레드 수를 늘렸는데 cache line 경쟁 때문에 더 느려지는 것 같아
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- operating-system/process-thread-basics
+- language/java-memory-model-happens-before-volatile-final
+next_docs:
+- operating-system/false-sharing-cache-line
+- operating-system/context-switching-deadlock-lockfree
+- operating-system/cpu-affinity-irq-affinity-core-locality
+- language/java-memory-model-happens-before-volatile-final
+linked_paths:
+- contents/operating-system/false-sharing-cache-line.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/cfs-scheduler-nice-cpu-fairness.md
+- contents/operating-system/workqueues-kthreads-debugging.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/volatile-counter-atomicity-cause-router.md
+confusable_with:
+- operating-system/false-sharing-cache-line
+- operating-system/context-switching-deadlock-lockfree
+- language/java-memory-model-happens-before-volatile-final
+forbidden_neighbors: []
+expected_queries:
+- cache coherence와 memory ordering은 뭐가 달라?
+- memory barrier 없이 ready flag를 보면 왜 data가 아직 안 보일 수 있어?
+- false sharing과 cache line ping-pong이 멀티스레드 성능을 어떻게 망쳐?
+- Java volatile과 CPU memory barrier가 어떤 관계인지 설명해줘
+- perf c2c로 cache line 경쟁을 의심하는 상황을 알고 싶어
+contextual_chunk_prefix: |
+  이 문서는 멀티코어 CPU에서 cache line, coherence traffic, memory ordering, memory barrier, release/acquire, false sharing이 동시성 성능과 visibility bug에 어떻게 연결되는지 설명하는 advanced deep dive다.
+  Java volatile과 JMM 뒤의 하드웨어 감각, 플래그는 봤는데 데이터가 안 보이는 증상, cache line ping-pong, MESI, perf c2c 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # CPU Cache, Coherence, Memory Barrier
 
 > 한 줄 요약: 멀티코어에서 성능 문제와 동시성 버그는 cache line 경쟁, coherence traffic, memory ordering이 서로 섞여서 나타나며, 먼저 false sharing과 visibility를 구분해야 한다.

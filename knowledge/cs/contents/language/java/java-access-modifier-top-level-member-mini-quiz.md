@@ -56,10 +56,11 @@ expected_queries:
 - nested record는 protected가 되는데 top-level record는 왜 안 되는지 연습하고 싶어
 - 컴파일 성공 실패를 예측하는 접근 제한자 입문 문제를 찾고 있어
 contextual_chunk_prefix: |
-  이 문서는 Java 입문자가 top-level에서는 안 되지만 멤버에서는 되는
-  modifier 경계를 5문항 예측형으로 처음 잡는 primer다. 컴파일 성공
-  실패 먼저 맞혀 보기, 파일 최상단 선언 vs 클래스 안 선언, private
-  class 기억이 왜 섞이는지, nested record는 왜 되지 같은 자연어
+  이 문서는 Java 입문자가 파일 최상단 선언과 클래스 안쪽 선언을 구분하며
+  top-level에서는 막히고 member나 nested type에서는 열리는 modifier 경계를
+  예측형 문제로 처음 잡는 primer다. private class를 본 기억이 왜 맞기도
+  틀리기도 한가, protected interface는 왜 실패하나, nested record는 왜
+  허용되나, 컴파일 전에 위치만 보고 성공 실패를 가르고 싶다 같은 자연어
   paraphrase가 본 문서의 위치별 접근 제한자 판단에 매핑된다.
 ---
 # 접근 제한자 오해 미니 퀴즈: top-level vs member

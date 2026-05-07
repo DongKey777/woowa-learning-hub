@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Moderation Queue System 설계
+concept_id: system-design/moderation-queue-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- moderation queue
+- content moderation
+- report queue
+- human review
+aliases:
+- moderation queue
+- content moderation
+- report queue
+- human review
+- policy engine
+- escalation
+- trust and safety
+- triage
+- review SLA
+- harmful content
+- Moderation Queue System 설계
+- moderation queue system design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/fraud-risk-scoring-pipeline-design.md
+- contents/system-design/fraud-case-management-workflow-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/notification-system-design.md
+- contents/system-design/rate-limiter-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Moderation Queue System 설계 설계 핵심을 설명해줘
+- moderation queue가 왜 필요한지 알려줘
+- Moderation Queue System 설계 실무 트레이드오프는 뭐야?
+- moderation queue 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Moderation Queue System 설계를 다루는 deep_dive 문서다. moderation queue system은 신고, 자동 탐지, 인간 검토를 결합해 사용자 생성 콘텐츠를 안전하게 심사하는 운영 파이프라인이다. 검색 질의가 moderation queue, content moderation, report queue, human review처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Moderation Queue System 설계
 
 > 한 줄 요약: moderation queue system은 신고, 자동 탐지, 인간 검토를 결합해 사용자 생성 콘텐츠를 안전하게 심사하는 운영 파이프라인이다.

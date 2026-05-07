@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Executor Sizing Queue Rejection Policy
+concept_id: language/executor-sizing-queue-rejection-policy
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- threadpoolexecutor-sizing
+- bounded-queue-rejection-backpressure
+- executor-latency-debt
+aliases:
+- Executor sizing queue rejection policy
+- ThreadPoolExecutor sizing
+- executor queue rejection
+- CallerRunsPolicy AbortPolicy
+- bounded executor queue
+- thread pool overload
+- executor latency debt
+- Java backpressure executor
+symptoms:
+- ThreadPoolExecutor를 thread count만 조정하는 도구로 보고 queue와 rejection policy를 따로 설계하지 않고 있어
+- 무제한 queue가 오류를 줄이는 대신 latency debt를 쌓는다는 점을 놓치고 있어
+- CallerRunsPolicy와 AbortPolicy가 단순 에러 처리가 아니라 부하 제어 계약이라는 점을 이해하지 못하고 있어
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/java-concurrency-utilities
+- data-structure/bounded-queue-policy-primer
+- operating-system/runtime-symptom-to-os-signal-router-beginner
+next_docs:
+- language/blockingqueue-transferqueue-concurrentskiplistset-semantics
+- language/completablefuture-execution-model-common-pool-pitfalls
+- language/jfr-jmc-performance-playbook
+- system-design/job-queue-design
+linked_paths:
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/blockingqueue-transferqueue-concurrentskiplistset-semantics.md
+- contents/language/java/jvm-gc-jmm-overview.md
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/data-structure/bounded-queue-policy-primer.md
+- contents/system-design/job-queue-design.md
+confusable_with:
+- data-structure/bounded-queue-policy-primer
+- system-design/job-queue-design
+- language/completablefuture-execution-model-common-pool-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- ThreadPoolExecutor는 corePoolSize, maximumPoolSize, queue, rejection policy를 어떻게 같이 봐야 해?
+- 무제한 executor queue가 에러 없이 latency debt를 쌓는 이유는 뭐야?
+- CallerRunsPolicy는 호출자에게 backpressure를 주는 방식으로 어떻게 동작해?
+- CPU-bound와 blocking I/O 작업에서 thread pool sizing 기준이 왜 달라?
+- API와 배치가 같은 executor를 공유하면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Java ThreadPoolExecutor design deep dive로, corePoolSize, maximumPoolSize, bounded/unbounded queue, RejectedExecutionHandler, CallerRunsPolicy, AbortPolicy, latency debt, executor backpressure를 설명한다.
+  executor sizing, queue saturation, rejection policy, bounded queue, thread pool overload, CallerRunsPolicy 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Executor Sizing, Queue, Rejection Policy
 
 > 한 줄 요약: `ThreadPoolExecutor`는 "스레드 수"만 정하는 도구가 아니라, 큐와 거절 정책까지 함께 설계해야 시스템이 예측 가능해진다.

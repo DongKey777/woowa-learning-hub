@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: 입력값 검증 기초
+concept_id: security/input-validation-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- input-validation-basics
+- server-side-validation-boundary
+- validation-vs-sanitization
+aliases:
+- input validation basics
+- 입력값 검증 기초
+- server side validation
+- validation vs sanitization
+- allowlist vs blocklist
+- Bean Validation
+- 클라이언트 검증만 하면 안 되나요
+- 서버사이드 검증
+- 검증 누락 위험
+symptoms:
+- 프론트엔드 검증이 있으니 서버 검증을 생략해도 된다고 생각해 신뢰 경계를 놓친다
+- validation과 sanitization을 같은 처리로 보고 거부할 값과 안전하게 출력할 값을 구분하지 못한다
+- 형식 검증과 도메인 규칙 검증을 모두 controller나 모두 domain에 몰아넣어 책임 경계가 흐려진다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- security/security-basics-what-and-why
+next_docs:
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+- security/sql-injection-basics
+- security/xss-csrf-basics
+- spring/spring-bindingresult-local-validation-400-primer
+linked_paths:
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+- contents/security/sql-injection-basics.md
+- contents/security/xss-csrf-basics.md
+- contents/security/security-basics-what-and-why.md
+- contents/security/sql-injection-beyond-preparedstatement.md
+- contents/security/xss-csrf-spring-security.md
+confusable_with:
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+- security/sql-injection-basics
+- security/xss-csrf-basics
+- spring/spring-bindingresult-local-validation-400-primer
+forbidden_neighbors: []
+expected_queries:
+- 프론트엔드 검증이 있어도 서버에서 input validation을 다시 해야 하는 이유가 뭐야?
+- validation과 sanitization은 거부와 변환 관점에서 어떻게 달라?
+- allowlist가 blocklist보다 입력 검증에서 더 안전한 이유를 설명해줘
+- Spring Bean Validation은 형식 검증이고 도메인 규칙은 service나 domain에서 다시 봐야 해?
+- 서버 입력 검증이 SQL injection과 XSS 방어와 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 input validation beginner primer로, 서버는 클라이언트를 신뢰하지
+  않는다는 원칙에서 syntactic validation과 semantic validation, allowlist,
+  blocklist, validation vs sanitization, Bean Validation과 domain invariant
+  boundary를 설명한다.
+---
 # 입력값 검증 기초
 
 > 한 줄 요약: 입력값 검증은 "서버는 클라이언트를 신뢰하지 않는다"는 원칙에서 출발하며, 형식(타입·길이·패턴)과 의미(허용 범위·비즈니스 규칙) 두 층으로 나눠 방어한다.

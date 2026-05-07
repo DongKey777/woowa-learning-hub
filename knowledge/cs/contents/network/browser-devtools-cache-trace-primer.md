@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기"
+concept_id: network/browser-devtools-cache-trace-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- browser-http-cache-trace
+- conditional-request-304
+- memory-disk-cache-devtools
+aliases:
+- browser devtools cache trace
+- memory cache disk cache
+- 304 revalidation devtools
+- from memory cache
+- from disk cache
+- conditional request trace
+symptoms:
+- 304 Not Modified를 memory cache hit와 같은 종류의 local cache hit로 오해한다
+- DevTools Response 탭에 body가 보이면 304가 새 body를 내려준 것이라고 착각한다
+- Protocol h2 h3나 CDN header를 body 출처 신호로 섞어 읽는다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-caching-conditional-request-basics
+- network/browser-devtools-first-checklist-1minute-card
+next_docs:
+- network/browser-devtools-disable-cache-on-off-experiment-card
+- network/service-worker-vs-http-cache-devtools-primer
+- network/cache-control-practical
+- network/vary-content-negotiation-basics-language-compression
+- network/browser-devtools-x-cache-age-ownership-1minute-card
+linked_paths:
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/browser-devtools-disable-cache-on-off-experiment-card.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/network/cache-control-practical.md
+- contents/network/vary-content-negotiation-basics-language-compression.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/security/cors-samesite-preflight.md
+- contents/network/browser-devtools-x-cache-age-ownership-1minute-card.md
+confusable_with:
+- network/browser-devtools-disable-cache-on-off-experiment-card
+- network/service-worker-vs-http-cache-devtools-primer
+- network/devtools-waterfall-primer
+- network/browser-devtools-x-cache-age-ownership-1minute-card
+- network/http-caching-conditional-request-basics
+forbidden_neighbors: []
+expected_queries:
+- "DevTools에서 from memory cache와 from disk cache와 304는 어떻게 달라?"
+- "304 Not Modified인데 Response 탭에 body가 보이는 이유를 설명해줘"
+- "같은 URL 반복 방문에서 cache hit인지 revalidation인지 무엇을 먼저 봐?"
+- "If-None-Match와 If-Modified-Since가 있으면 브라우저 cache trace를 어떻게 읽어?"
+- "Protocol h3와 304가 같이 보이면 body cache와 HTTP 버전을 어떻게 분리해?"
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools Network 탭에서 from memory cache, from disk
+  cache, validator revalidation, 304 Not Modified, cached body reuse를
+  first visit/repeat visit/body source 순서로 읽는 beginner HTTP cache
+  trace primer다.
+---
 # Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기
 
 **난이도: 🟢 Beginner**

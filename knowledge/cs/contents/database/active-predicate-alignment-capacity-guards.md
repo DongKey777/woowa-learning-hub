@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Active Predicate Alignment for Capacity Guards
+concept_id: database/active-predicate-alignment-capacity-guards
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- capacity-guard
+- active-predicate
+- guard-row-drift
+- reservation-capacity
+aliases:
+- active predicate alignment
+- capacity guard predicate
+- expires_at released_at alignment
+- soft delete guard row drift
+- admission check guard row reconciliation
+- reservation capacity drift
+- active predicate reconciliation
+- released_at vs deleted_at counter
+- capacity guard active set
+- 예약 capacity guard predicate
+symptoms:
+- admission check는 expires_at만 보고 빈 자리라고 판단하지만 guard row counter는 아직 reserved 수량을 잡고 있다
+- reconciliation scan이 deleted_at 기준으로 계산해 runtime guard predicate와 다른 active set을 정상처럼 본다
+- expired-but-unreleased row가 쌓여 false capacity blocker 또는 false vacancy가 반복된다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+- database/hold-expiration-predicate-drift
+- database/active-hold-table-split-pattern
+next_docs:
+- database/expired-unreleased-drift-runbook
+- database/expiry-worker-race-patterns
+- database/range-invariant-enforcement-write-skew-phantom
+linked_paths:
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/expired-unreleased-drift-runbook.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/expiry-worker-race-patterns.md
+confusable_with:
+- database/active-hold-table-split-pattern
+- database/active-predicate-drift-reservation-arbitration
+- database/hold-expiration-predicate-drift
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+forbidden_neighbors: []
+expected_queries:
+- capacity guard에서 admission check, guard row mutation, reconciliation scan이 같은 active predicate를 봐야 하는 이유가 뭐야?
+- expires_at은 release 후보이고 released_at은 capacity handoff truth라는 차이를 설명해줘
+- deleted_at이나 archive worker가 guard row counter를 바꾸면 capacity drift가 생기는 이유가 뭐야?
+- expired-but-unreleased claim 때문에 capacity가 남아 보이는데 guard update가 실패하는 문제를 어떻게 진단해?
+- reservation capacity guard에서 active predicate alignment contract를 SQL과 worker 기준으로 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 Active Predicate Alignment for Capacity Guards playbook으로, expirable reservation claim에서
+  admission check, guard row counter mutation, reconciliation scan이 expires_at, released_at, deleted_at을
+  같은 active set contract로 해석해야 false vacancy와 false blocker를 막을 수 있음을 설명한다.
+---
 # Active Predicate Alignment for Capacity Guards
 
 > 한 줄 요약: capacity guard는 counter 하나만 맞추는 문제가 아니라, admission check·guard row 전이·reconciliation scan이 `expires_at`, `released_at`, soft-delete를 같은 active predicate로 해석하게 만드는 문제다.

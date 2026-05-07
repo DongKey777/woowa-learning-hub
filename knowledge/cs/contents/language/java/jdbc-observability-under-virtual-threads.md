@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: JDBC Observability Under Virtual Threads
+concept_id: language/jdbc-observability-under-virtual-threads
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- jdbc-observability
+- virtual-thread
+- connection-pool
+aliases:
+- JDBC Observability Under Virtual Threads
+- virtual thread JDBC diagnostics
+- Hikari pending acquire virtual thread
+- connection hold time long transaction
+- DB lock wait after Loom
+- virtual thread 데이터베이스 병목 관측
+symptoms:
+- virtual thread가 많이 보인다는 사실만 보고 pinning 문제로 결론 내려 datasource acquire wait, connection hold time, DB lock wait를 분리하지 못해
+- Hikari pending acquire 증가를 pool size 부족으로만 보고 long transaction이나 transaction 안 외부 HTTP wait를 놓쳐
+- JDBC execute/commit socket wait를 네트워크 문제로만 해석해 DB lock contention과 blocker chain을 붙여 보지 못해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/virtual-threads-project-loom
+- language/connection-budget-alignment-after-loom
+- database/hikari-connection-pool-tuning
+next_docs:
+- language/jfr-loom-incident-signal-map
+- language/jdbc-db-side-cancel-confirmation-playbook
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/virtual-thread-vs-reactive-db-observability.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/jdbc-db-side-cancel-confirmation-playbook.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/jfr-loom-incident-signal-map.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/spring/spring-transaction-debugging-playbook.md
+confusable_with:
+- language/connection-budget-alignment-after-loom
+- language/jfr-loom-incident-signal-map
+- database/lock-wait-deadlock-latch-triage-playbook
+forbidden_neighbors: []
+expected_queries:
+- virtual thread 도입 후 JDBC 장애를 datasource acquire wait connection hold time DB lock wait로 어떻게 나눠 봐?
+- Hikari pending acquire가 늘 때 pool size부터 키우면 왜 위험할 수 있어?
+- transaction duration과 SQL duration 합을 비교해 long transaction을 찾는 방법을 알려줘
+- JDBC execute나 commit에서 오래 멈출 때 DB lock wait와 Java monitor contention을 어떻게 구분해?
+- Loom 환경에서 connection pool wait와 VirtualThreadPinned 이벤트를 같은 시간창에서 해석하는 순서를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 virtual thread 환경의 JDBC 관측을 datasource acquire wait, connection hold time, long transaction, DB lock wait, JFR/thread dump 신호로 분해하는 advanced playbook이다.
+  virtual thread JDBC diagnostics, Hikari pending, connection hold time, DB lock wait, long transaction 질문이 본 문서에 매핑된다.
+---
 # JDBC Observability Under Virtual Threads
 
 > 한 줄 요약: virtual thread 도입 뒤 JDBC 장애 해석의 핵심은 "스레드가 많이 보인다"가 아니라 datasource acquire wait, connection hold time, DB lock wait를 분리해서 보는 것이다. virtual thread는 blocking JDBC를 감당하기 쉽게 만들지만, pool wait와 long transaction, lock contention을 숨겨 주지는 않는다.

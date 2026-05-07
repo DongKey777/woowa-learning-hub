@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: XA and Two-Phase Commit Pitfalls
+concept_id: database/xa-two-phase-commit-pitfalls
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- xa
+- two-phase-commit
+- distributed-transaction
+- outbox
+- saga
+aliases:
+- XA
+- two-phase commit
+- 2PC
+- prepare phase
+- heuristic outcome
+- in-doubt transaction
+- distributed transaction
+- XA RECOVER
+- coordinator crash
+- prepare locks
+symptoms:
+- XA/2PC가 둘 다 커밋하거나 둘 다 롤백을 보장하는 만능 해법이라고 생각하고 있어
+- prepare 후 coordinator crash로 in-doubt transaction과 장기 lock이 남는 운영 위험을 설명해야 해
+- outbox, saga, idempotent command 같은 대체 패턴과 tradeoff를 비교해야 해
+intents:
+- deep_dive
+- comparison
+- troubleshooting
+prerequisites:
+- database/outbox-saga-eventual-consistency
+- database/cdc-debezium-outbox-binlog
+next_docs:
+- database/exactly-once-myths-db-queue
+- database/idempotency-key-and-deduplication
+- database/saga-pivot-transaction-design
+linked_paths:
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/saga-pivot-transaction-design.md
+confusable_with:
+- database/outbox-saga-eventual-consistency
+- database/exactly-once-myths-db-queue
+- database/saga-pivot-transaction-design
+forbidden_neighbors: []
+expected_queries:
+- XA와 two phase commit은 prepare와 commit 단계에서 어떻게 동작하고 왜 운영에서 까다로워?
+- 2PC prepare 상태에서 coordinator가 죽으면 in-doubt transaction과 lock이 왜 위험해져?
+- heuristic mixed outcome이나 한 participant만 commit되는 상황을 어떻게 복구해야 해?
+- 외부 결제 시스템처럼 XA participant가 아닌 자원까지 하나의 transaction으로 묶으려 하면 왜 불안정해져?
+- XA 대신 outbox CDC, saga compensation, idempotent retry를 선택하는 tradeoff를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 XA와 two-phase commit pitfalls를 prepare phase, in-doubt transaction, coordinator crash, heuristic outcome, outbox/saga 대체 패턴으로 설명하는 advanced deep dive다.
+  2PC, XA RECOVER, prepare locks, distributed transaction 질문이 본 문서에 매핑된다.
+---
 # XA와 Two-Phase Commit의 함정
 
 > 한 줄 요약: 2PC는 “둘 다 커밋하거나 둘 다 롤백”을 약속하지만, 실제 운영에서는 준비 상태가 오히려 가장 위험한 상태가 된다.

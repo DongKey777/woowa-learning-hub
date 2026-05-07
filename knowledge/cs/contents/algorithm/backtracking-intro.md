@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: 백트래킹 입문
+concept_id: algorithm/backtracking-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- backtracking-basics
+- pruning-recursive-search
+- visited-undo-state
+aliases:
+- backtracking intro
+- backtracking basics
+- pruning beginner
+- recursive search with pruning
+- n queen beginner
+- visited undo backtracking
+- 백트래킹 입문
+- 가지치기 기초
+- 재귀 백트래킹
+symptoms:
+- 완전 탐색과 백트래킹을 모두 재귀 탐색으로만 보고 pruning 조건의 역할을 구분하지 못한다
+- visited 표시를 재귀 호출 뒤 되돌리지 않아 다른 경로 상태가 오염된다
+- 가지치기 조건을 재귀 호출 전에 두지 않아 불필요한 탐색을 줄이지 못한다
+intents:
+- definition
+- drill
+- troubleshooting
+prerequisites:
+- algorithm/brute-force-intro
+- algorithm/recursion-intro
+next_docs:
+- algorithm/dfs-bfs-intro
+- algorithm/bitmask-dp
+- algorithm/dp-intro
+- algorithm/problem-signal-to-pattern-router-beginner
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/brute-force-intro.md
+- contents/algorithm/recursion-intro.md
+- contents/data-structure/graph-basics.md
+confusable_with:
+- algorithm/brute-force-intro
+- algorithm/dfs-bfs-intro
+- algorithm/dp-intro
+- algorithm/recursion-intro
+forbidden_neighbors: []
+expected_queries:
+- 백트래킹은 완전 탐색에 가지치기를 더한 것이라는 말을 예제로 설명해줘
+- visited 배열을 재귀 호출 뒤에 해제해야 하는 이유가 뭐야?
+- pruning 조건은 재귀 호출 전과 후 중 어디에 두어야 탐색을 줄일 수 있어?
+- N-Queen이나 스도쿠에서 백트래킹이 모든 경우를 끝까지 보지 않는 이유는 뭐야?
+- 백트래킹과 DFS는 알고리즘과 탐색 전략 관점에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 backtracking beginner primer로, brute force에 pruning을 더해
+  유망하지 않은 경로를 조기에 포기하는 재귀 탐색을 설명한다. visited,
+  undo, base case, pruning before recursive call 같은 구현 함정을 다룬다.
+---
 # 백트래킹 입문 (Backtracking Basics)
 
 > 한 줄 요약: 백트래킹은 완전 탐색에 "이미 틀렸으면 더 깊이 가지 말자"는 가지치기를 더한 방법으로, 조건을 만족할 수 없는 경로를 조기에 포기해 탐색 범위를 줄인다.

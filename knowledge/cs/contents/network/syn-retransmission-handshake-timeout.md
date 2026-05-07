@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "SYN Retransmission, Handshake Timeout Behavior"
+concept_id: network/syn-retransmission-handshake-timeout
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- tcp-handshake
+- connect-timeout
+- syn-retransmission
+aliases:
+- SYN retransmission
+- handshake timeout
+- SYN-SENT
+- SYN-ACK timeout
+- connect timeout
+- tcp_syn_retries
+- three-way handshake
+- SYN cookie
+symptoms:
+- connect timeout을 app read timeout이나 server handler latency와 섞는다
+- SYN-SENT가 많이 쌓였는데 NAT, firewall, LB, accept backlog를 보지 않는다
+- handshake timeout을 너무 길게 잡아 worker가 묶이고 retry가 늦어진다
+- health check는 정상인데 실제 client connect만 실패하는 상황을 설명하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/timeout-types-connect-read-write
+- network/tcp-congestion-control
+next_docs:
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/accept-queue-syn-backlog-listen-overflow
+- network/load-balancer-healthcheck-failure-patterns
+- network/tls-loadbalancing-proxy
+linked_paths:
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/nat-conntrack-ephemeral-port-exhaustion.md
+- contents/network/tcp-congestion-control.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/accept-queue-syn-backlog-listen-overflow.md
+confusable_with:
+- network/timeout-types-connect-read-write
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/accept-queue-syn-backlog-listen-overflow
+- network/packet-loss-jitter-reordering-diagnostics
+forbidden_neighbors: []
+expected_queries:
+- "SYN retransmission이 많고 connect timeout이 날 때 무엇을 의심해야 해?"
+- "SYN-SENT 상태가 쌓이면 NAT firewall LB backlog 중 어디를 봐야 해?"
+- "handshake timeout과 read timeout은 어떻게 달라?"
+- "health check는 통과하는데 client connect만 실패하는 이유는?"
+- "tcp_syn_retries와 app connect timeout을 어떻게 맞춰야 해?"
+contextual_chunk_prefix: |
+  이 문서는 TCP three-way handshake, SYN retransmission, SYN-SENT,
+  connect/handshake timeout, NAT/firewall/LB/backlog 원인을 다루는 advanced
+  playbook이다.
+---
 # SYN Retransmission, Handshake Timeout Behavior
 
 > 한 줄 요약: SYN 재전송은 네트워크가 연결 수립에 실패했다는 신호이고, handshake timeout은 그 실패를 앱이 언제 포기할지 정하는 운영 경계다.

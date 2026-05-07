@@ -1,8 +1,87 @@
+---
+schema_version: 3
+title: Idempotency Key Status Contract Examples
+concept_id: database/idempotency-key-status-contract-examples
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/shopping-cart
+- missions/payment
+- missions/backend
+review_feedback_tags:
+- idempotency-status-contract
+- duplicate-fresh-read-response
+- processing-replay-conflict
+aliases:
+- idempotency key status contract
+- idempotency response contract
+- pending processing succeeded
+- processing succeeded replay hash mismatch
+- duplicate key after fresh read api contract
+- same key same hash replay
+- same key processing 202
+- same key different hash 409
+- idempotency status header
+- 멱등성 key 상태 응답
+symptoms:
+- idempotency key duplicate 뒤에 다시 처리할지 기존 row를 읽어 응답할지 결정하지 못하고 있어
+- PENDING, PROCESSING, SUCCEEDED의 저장 상태와 API 응답 의미를 섞고 있어
+- 같은 key 같은 hash replay, processing 202, 다른 hash 409 conflict 응답 계약을 정해야 해
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- database/idempotency-key-and-deduplication
+- database/duplicate-key-fresh-read-classifier-mini-card
+next_docs:
+- database/duplicate-key-replay-vs-in-progress-vs-conflict-decision-guide
+- database/pending-row-recovery-primer
+- database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide
+- database/idempotency-review-sentence-card
+linked_paths:
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+- contents/database/pending-row-recovery-primer.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/duplicate-key-replay-vs-in-progress-vs-conflict-decision-guide.md
+- contents/database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide.md
+confusable_with:
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/duplicate-key-vs-busy-response-mapping
+- database/pending-row-recovery-primer
+forbidden_neighbors: []
+expected_queries:
+- idempotency key duplicate 뒤 fresh read 결과가 PENDING이면 202 PROCESSING으로 응답해야 해?
+- 같은 idempotency key와 같은 request hash가 SUCCEEDED면 기존 결과를 replay하는 계약을 어떻게 잡아?
+- 같은 key인데 request hash가 다르면 409 conflict로 닫아야 하는 이유는 뭐야?
+- PENDING 저장 상태와 PROCESSING API 응답 의미를 어떻게 구분해?
+- duplicate key 이후 다시 실행하지 않고 기존 idempotency row 상태로 응답하는 예시를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 idempotency key duplicate 이후 fresh read한 row 상태를 PENDING/PROCESSING/SUCCEEDED, replay, hash mismatch conflict 응답 계약으로 매핑하는 beginner chooser다.
+  idempotency key status, processing 202, replay response, hash mismatch 409 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Idempotency Key Status Contract Examples
 
 > 한 줄 요약: exact-key duplicate가 감지된 뒤에는 새로 처리하려 하지 말고, 기존 idempotency row를 다시 읽어 `PENDING`/`PROCESSING`/`SUCCEEDED` 역할을 먼저 맞춘 뒤, `PROCESSING`, replay, hash-mismatch conflict 셋 중 하나의 **응답 계약**으로 닫으면 된다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| payment/backend 장면 | 먼저 볼 상태 계약 |
+|---|---|
+| 같은 idempotency key가 다시 들어왔다 | 기존 row를 fresh read했는가 |
+| 기존 row가 처리 중이다 | 202/PROCESSING 응답이 필요한가 |
+| 이미 성공한 같은 요청이다 | response replay가 가능한가 |
+| 같은 key인데 payload가 다르다 | 409 conflict로 막아야 하는가 |
 
 관련 문서:
 

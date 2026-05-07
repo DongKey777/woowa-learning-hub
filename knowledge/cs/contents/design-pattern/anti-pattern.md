@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Anti-Pattern
+concept_id: design-pattern/anti-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- anti-pattern
+- design-smell
+- pattern-overuse
+aliases:
+- anti pattern
+- antipattern
+- 안티 패턴
+- bad software design signals
+- spaghetti code
+- golden hammer
+- lava flow
+- copy paste programming
+- design pattern overuse
+- service locator anti pattern
+symptoms:
+- 설계를 유연하게 만들려는 패턴 적용이 오히려 이해 비용과 클래스 수를 늘려 패턴 과사용 냄새가 난다
+- Golden Hammer처럼 한 번 배운 솔루션을 문제 맥락과 무관하게 반복 적용한다
+- spaghetti code, lava flow, copy-paste programming 같은 냄새가 있는데 어떤 설계 신호로 봐야 할지 분류하지 못한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- design-pattern/pattern-selection
+- software-engineering/oop-design-basics
+next_docs:
+- design-pattern/god-object-spaghetti-golden-hammer
+- design-pattern/service-locator-antipattern
+- design-pattern/repository-pattern-vs-antipattern
+linked_paths:
+- contents/design-pattern/god-object-spaghetti-golden-hammer.md
+- contents/design-pattern/pattern-selection.md
+- contents/design-pattern/strategy-explosion-smell.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/repository-pattern-vs-antipattern.md
+- contents/design-pattern/service-locator-antipattern.md
+confusable_with:
+- design-pattern/god-object-spaghetti-golden-hammer
+- design-pattern/service-locator-antipattern
+- design-pattern/repository-pattern-vs-antipattern
+- design-pattern/pattern-selection
+forbidden_neighbors: []
+expected_queries:
+- Anti-pattern은 좋은 설계 패턴과 달리 반복적으로 해로운 설계 선택이라는 점에서 어떻게 봐야 해?
+- Spaghetti code, Golden Hammer, Lava Flow, Copy Paste Programming은 어떤 설계 냄새야?
+- 디자인 패턴 과사용은 패턴 이름은 멋진데 문제 설명이 더 복잡해지는 신호로 어떻게 판단해?
+- Service Locator나 global lookup 같은 숨은 의존성 안티패턴은 왜 테스트와 추적을 어렵게 해?
+- 패턴을 적용하기 전에 지금 복잡도를 줄이는지 미래 가정만 늘리는지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Pattern primer로, spaghetti code, golden hammer, lava flow,
+  copy-paste programming, service locator, design pattern overuse 같은 반복적인 나쁜 설계 신호를
+  분류하고, 패턴 적용 자체가 목적이 되어 실제 change axis보다 추상화가 많아지는 상황을 경계한다.
+---
 # 안티 패턴
 
 **난이도: 🔴 Advanced**

@@ -1,8 +1,88 @@
+---
+schema_version: 3
+title: HTTP 요청 응답 헤더 기초
+concept_id: network/http-request-response-headers-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- http-header-metadata-basics
+- content-type-accept-boundary
+- authorization-cookie-cache-header-routing
+aliases:
+- http request response headers basics
+- HTTP 요청 응답 헤더 기초
+- http headers basics
+- 요청 헤더 응답 헤더 차이
+- Content-Type Accept 차이
+- Authorization 헤더
+- Cache-Control 헤더
+- Set-Cookie 헤더
+- 헤더가 왜 필요해요
+- Spring @RequestBody Content-Type
+- response Content-Type mismatch
+symptoms:
+- Content-Type과 Accept가 둘 다 JSON처럼 보여서 어느 쪽이 보내는 형식인지 헷갈려
+- Authorization, Cookie, Set-Cookie가 모두 인증 관련으로 보여서 요청과 응답 방향을 섞어 읽어
+- Spring @RequestBody가 동작하지 않을 때 Content-Type부터 봐야 하는 이유가 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/browser-devtools-accept-vs-content-type-mini-card
+- network/http-caching-conditional-request-basics
+- network/cookie-session-jwt-browser-flow-primer
+- security/cors-basics
+linked_paths:
+- contents/network/http-https-basics.md
+- contents/network/browser-devtools-accept-vs-content-type-mini-card.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/security/cors-basics.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- network/browser-devtools-accept-vs-content-type-mini-card
+- network/cookie-session-jwt-browser-flow-primer
+- security/cors-basics
+- network/http-caching-conditional-request-basics
+forbidden_neighbors: []
+expected_queries:
+- HTTP 요청 헤더와 응답 헤더는 각각 어떤 역할을 해?
+- Content-Type과 Accept 헤더 차이를 요청 본문과 응답 기대 형식 기준으로 설명해줘
+- Authorization 헤더와 Cookie 헤더는 인증 정보를 어떻게 다르게 전달해?
+- Set-Cookie는 응답 헤더이고 Cookie는 요청 헤더라는 뜻을 예시로 보여줘
+- Spring에서 @RequestBody JSON 파싱이 안 될 때 Content-Type을 왜 확인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 HTTP header를 request와 response에 붙는 metadata로 보고 Content-Type, Accept, Authorization, Cookie, Set-Cookie, Cache-Control의 방향과 역할을 정리하는 beginner primer다.
+  content type accept 차이, authorization bearer header, set-cookie vs cookie, spring requestbody json parsing, response content type mismatch 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HTTP 요청·응답 헤더 기초
 
 > 한 줄 요약: HTTP 헤더는 요청과 응답에 붙는 메타데이터로, 콘텐츠 형식·인증 토큰·캐시 정책·보안 설정 같은 부가 정보를 전달하는 이름-값 쌍이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`Content-Type`과 `Accept`가 둘 다 JSON이라 어느 쪽을 봐야 할지 모르겠어요" | `@RequestBody` 400/415, HTML 응답을 JSON처럼 파싱하는 장면 | 요청 본문 형식과 기대 응답 형식을 다른 방향의 header로 나눈다 |
+| "`Cookie`, `Set-Cookie`, `Authorization`이 모두 인증처럼 보여요" | 로그인/세션/토큰 요청을 DevTools에서 읽는 단계 | 요청 header와 응답 header의 방향을 먼저 고정한다 |
+| "Spring에서 JSON 파싱이 안 될 때 왜 header부터 보라고 하나요?" | controller 전에 끝나는 body 변환 실패 | `Content-Type`이 message converter 선택의 첫 신호임을 확인한다 |
 
 관련 문서:
 

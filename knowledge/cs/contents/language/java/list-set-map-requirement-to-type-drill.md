@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: List Set Map Requirement-to-Type Drill
+concept_id: language/list-set-map-requirement-to-type-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- collection-choice
+- list-set-map
+- requirement-reading
+aliases:
+- List Set Map Requirement-to-Type Drill
+- java list set map practice
+- 요구사항 보고 List Set Map 고르기
+- collection selection exercise beginner
+- 순서 중복 key-value 판단 연습
+- 자바 컬렉션 타입 분류 드릴
+symptoms:
+- 구현체 이름부터 외우려 해서 요구 문장의 순서, 중복, key 조회 신호를 먼저 읽지 못해
+- 중복 제거와 입력 순서 유지가 같이 있을 때 Set 인터페이스와 LinkedHashSet 구현체 선택 단계를 구분하지 못해
+- Map 신호가 key라는 단어가 아니라 id로 찾기, 코드별 값처럼 문장 안에 숨어 있을 때 놓쳐
+intents:
+- drill
+- definition
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/iterable-collection-map-iteration-bridge
+- language/linkedhashset-order-dedup-mini-bridge
+next_docs:
+- language/map-iteration-patterns-cheat-sheet
+- language/map-get-null-containskey-getordefault-primer
+- language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/linkedhashset-order-dedup-mini-bridge.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md
+confusable_with:
+- language/iterable-collection-map-iteration-bridge
+- language/linkedhashset-order-dedup-mini-bridge
+- language/map-iteration-patterns-cheat-sheet
+forbidden_neighbors: []
+expected_queries:
+- 요구사항 문장을 보고 List Set Map 중 무엇을 먼저 고르는지 드릴로 연습해줘
+- 순서 인덱스가 중요하면 List, 중복 제거면 Set, key 조회면 Map이라는 기준을 예제로 보여줘
+- 중복 제거와 입력 순서 유지가 같이 필요하면 LinkedHashSet을 언제 떠올려야 해?
+- id로 찾기나 코드별 값처럼 key라는 단어가 없어도 Map 신호인 문장을 알려줘
+- 최근 10개, 이미 처리한 주문 번호, 상품 코드별 재고 같은 요구를 타입으로 분류해줘
+contextual_chunk_prefix: |
+  이 문서는 요구 문장을 List, Set, Map 인터페이스 선택으로 번역하는 beginner drill이다.
+  List Set Map 선택, 순서 중복 key-value, requirement to type, collection choice 질문이 본 문서에 매핑된다.
+---
 # List/Set/Map Requirement-to-Type Drill
 
 > 한 줄 요약: 문제 문장을 보고 `List`, `Set`, `Map` 중 무엇을 먼저 떠올려야 하는지 짧게 훈련하는 초급 분류 드릴이다.

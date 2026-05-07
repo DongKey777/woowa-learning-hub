@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+review_feedback_tags:
+- bean-lifecycle
+- postconstruct
+- predestroy
+- spring
 aliases:
   - bean lifecycle
   - Spring Bean lifecycle
@@ -26,6 +31,8 @@ prerequisites:
 next_docs:
   - spring/bean-lifecycle-scope-traps
 linked_paths:
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/network/http-state-session-cache.md
   - contents/spring/spring-bean-di-basics.md
   - contents/spring/ioc-di-container.md
 forbidden_neighbors:
@@ -45,7 +52,6 @@ contextual_chunk_prefix: |
   시작 시 Bean 생성, @PostConstruct 초기화, @PreDestroy 정리, 객체 생성
   ~소멸 큰 흐름 같은 자연어 paraphrase가 본 문서의 단계 흐름에 매핑된다.
 ---
-
 # Spring Bean 생명주기 기초: 생성부터 소멸까지
 
 > 한 줄 요약: Spring Bean은 컨테이너 시작 시 생성되고, `@PostConstruct`로 초기화 작업을 할 수 있으며, `@PreDestroy`로 소멸 전 정리 작업을 할 수 있다.

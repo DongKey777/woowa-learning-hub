@@ -45,7 +45,8 @@ confusable_with:
 - spring/component-scan-failure-patterns
 - spring/same-name-bean-collision-cause-router
 forbidden_neighbors:
-- contents/spring/spring-component-scan-failure-patterns.md
+- contents/spring/lotto-manual-auto-generator-qualifier-bridge.md
+- contents/spring/shopping-cart-payment-method-router-qualifier-bridge.md
 expected_queries:
 - Spring에서 같은 타입 bean이 두 개라 주입이 깨질 때 어디부터 봐야 해?
 - NoUniqueBeanDefinitionException이 뜨면 원인을 어떻게 나눠서 봐?

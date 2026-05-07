@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Lock Coarsening and Lock Elimination
+concept_id: language/lock-coarsening-elimination
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jit
+- lock-optimization
+- escape-analysis
+aliases:
+- Lock Coarsening and Lock Elimination
+- HotSpot lock elimination coarsening
+- synchronized JIT optimization
+- escape analysis lock elision
+- monitor optimization critical section
+- 자바 락 제거 락 병합 최적화
+symptoms:
+- synchronized가 코드에 보이면 항상 같은 비용으로 monitor enter/exit가 발생한다고 생각해 JIT lock elimination 가능성을 놓쳐
+- 작은 synchronized 블록이 반복될 때 JIT가 coarsening으로 임계영역을 합칠 수 있다는 점과 contention tradeoff를 구분하지 못해
+- 작은 리팩터링이나 identityHashCode, reflection, agent 관측이 escape/alias 분석을 바꿔 lock 최적화 결과가 달라지는 이유를 설명하지 못해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/escape-analysis-scalar-replacement
+- language/jit-warmup-deoptimization
+- language/java-memory-model-happens-before-volatile-final
+next_docs:
+- language/jmh-benchmarking-pitfalls
+- language/jfr-jmc-performance-playbook
+- language/java-biased-locking-removal-lock-states
+linked_paths:
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/biased-locking-removal-lock-states.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+confusable_with:
+- language/escape-analysis-scalar-replacement
+- language/jit-warmup-deoptimization
+- language/java-biased-locking-removal-lock-states
+forbidden_neighbors: []
+expected_queries:
+- HotSpot lock elimination과 lock coarsening은 synchronized 성능에 어떤 영향을 줘?
+- escape analysis가 thread 밖으로 새지 않는 lock을 제거할 수 있는 이유를 설명해줘
+- 작은 synchronized 블록 여러 개를 JIT가 하나로 합치는 lock coarsening의 장단점은 뭐야?
+- identityHashCode나 reflection agent 관측이 lock 최적화를 방해할 수 있어?
+- JMH와 JFR로 lock elimination이 실제 workload에서 먹는지 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 HotSpot JIT의 lock elimination, lock coarsening, escape analysis, monitor optimization을 설명하는 advanced deep dive다.
+  synchronized optimization, lock elision, lock coarsening, escape analysis, JIT monitor 질문이 본 문서에 매핑된다.
+---
 # Lock Coarsening and Lock Elimination
 
 > 한 줄 요약: HotSpot은 escape analysis와 JIT 최적화를 통해 필요 없는 lock을 제거하거나 여러 lock을 더 큰 임계영역으로 합칠 수 있지만, 이 최적화는 코드 구조와 관찰 가능성에 크게 의존한다.

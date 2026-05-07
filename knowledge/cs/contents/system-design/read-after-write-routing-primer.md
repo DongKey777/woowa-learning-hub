@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+review_feedback_tags:
+- read-after-write
+- routing
+- primary-fallback-routing
+- recent-write-routing
 aliases:
 - read-after-write routing
 - primary fallback routing
@@ -38,7 +43,6 @@ contextual_chunk_prefix: |
   직후 조회 stale, write→read 라우팅 같은 자연어 paraphrase가 본 문서의
   큰 그림에 매핑된다.
 ---
-
 # Read-After-Write Routing Primer
 
 > 한 줄 요약: read-after-write routing은 write 직후 읽기를 무심코 replica로 보내지 않고, primary fallback, session pinning, monotonic reads로 필요한 경로만 더 신선한 read path에 태우는 입문 설계 문서다.

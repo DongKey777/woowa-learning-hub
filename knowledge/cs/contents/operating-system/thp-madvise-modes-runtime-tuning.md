@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: THP madvise Modes Runtime Tuning
+concept_id: operating-system/thp-madvise-modes-runtime-tuning
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- thp-madvise-modes
+- tuning
+- thp-madvise-mode
+- transparent-hugepage-tuning
+aliases:
+- THP madvise mode
+- transparent hugepage runtime tuning
+- MADV_HUGEPAGE
+- MADV_NOHUGEPAGE
+- huge page hint
+- latency throughput THP
+intents:
+- comparison
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/thp-huge-pages-tlb-latency.md
+- contents/operating-system/khugepaged-runtime-behavior.md
+- contents/operating-system/compaction-fragmentation-latency.md
+- contents/operating-system/posix-fadvise-madvise-page-cache-hints.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+confusable_with:
+- operating-system/thp-huge-pages-tlb-latency
+- operating-system/khugepaged-runtime-behavior
+- operating-system/compaction-fragmentation-latency
+expected_queries:
+- THP madvise mode는 app이 huge page를 기대할 영역을 어떻게 힌트로 주는 거야?
+- MADV_HUGEPAGE와 MADV_NOHUGEPAGE는 latency throughput tradeoff에서 언제 써?
+- THP always 대신 madvise를 쓰면 어떤 runtime tuning 장점이 있어?
+- huge page collapse와 compaction risk를 madvise mode로 제한할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 THP madvise 계열 mode를 application이 huge page를 언제 어디에 기대할지 kernel에 주는
+  hint로 설명한다. always보다 좁은 영역에 THP 기대를 제한해 latency와 throughput 균형을 맞춘다.
+---
 # THP `madvise` Modes, Runtime Tuning
 
 > 한 줄 요약: THP의 `madvise` 계열 모드는 앱이 huge page를 언제, 어디에 기대할지 조절하는 힌트이며, 잘 고르면 latency와 throughput 사이 균형을 맞출 수 있다.

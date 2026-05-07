@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Design Pattern Category Index
+concept_id: design-pattern/design-pattern-index
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 79
+mission_ids: []
+review_feedback_tags:
+- design-pattern-index
+- beginner-route
+- pattern-selection
+- naming-boundary
+aliases:
+- design pattern category index
+- design pattern readme
+- design pattern beginner route
+- design pattern basics route
+- strategy factory registry repository route
+- pattern naming guide
+- 처음 design pattern
+- 디자인 패턴 입문 길찾기
+- 패턴 이름 헷갈림
+symptoms:
+- Strategy, Factory, Registry, Repository를 이름으로만 외워 행동 교체, 생성, lookup, 저장-조회 경계를 구분하지 못한다
+- 패턴 문서가 많아 어디서 시작해야 할지 몰라 deep dive부터 들어간다
+- factory, selector, resolver, registry 같은 네이밍을 책임 기준이 아니라 익숙한 단어 기준으로 붙인다
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- language/object-oriented-core-principles
+- design-pattern/composition-over-inheritance-basics
+next_docs:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+- design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+- design-pattern/repository-pattern-vs-antipattern
+linked_paths:
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/repository-pattern-vs-antipattern.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/factory-basics.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+confusable_with:
+- design-pattern/pattern-selection
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+- design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+- design-pattern/repository-pattern-vs-antipattern
+forbidden_neighbors: []
+expected_queries:
+- 디자인 패턴을 처음 볼 때 Strategy Factory Registry Repository를 어떤 순서와 질문으로 나눠 읽으면 좋아?
+- 행동 교체, 객체 생성, key lookup, 저장 조회 경계로 pattern naming을 구분하는 beginner route를 알려줘
+- Factory Selector Resolver Registry가 헷갈릴 때 이름보다 책임을 먼저 보는 기준은 뭐야?
+- design-pattern 카테고리에서 deep dive 전에 먼저 읽을 문서 흐름을 추천해줘
+- repository를 DB 코드 모음으로 보지 않고 aggregate 저장과 read model 조회로 나누는 첫 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Design Pattern Category Index primer로, beginner가 pattern name을 암기하기 전에
+  behavior replacement, object creation, registered lookup, aggregate persistence/read model boundary라는
+  네 질문으로 Strategy, Factory, Registry, Repository 경로를 선택하도록 돕는다.
+---
 # Design Pattern (디자인 패턴)
 
 > 한 줄 요약: 처음 배우는 입구에서는 `전략 / 팩토리 / 레지스트리 / repository`를 한꺼번에 외우지 말고, **행동 교체 / 생성 / 등록 lookup / 저장-조회 경계** 네 질문으로 먼저 자르면 된다.

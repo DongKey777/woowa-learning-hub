@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Aho-Corasick
+concept_id: algorithm/aho-corasick
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- aho-corasick-multiple-pattern
+- trie-failure-link-automaton
+- text-scanning-filter
+aliases:
+- aho corasick
+- Aho-Corasick
+- multiple pattern matching
+- trie failure link
+- multi-pattern automaton
+- keyword search automaton
+- spam filter pattern matching
+- intrusion detection signatures
+- 다중 패턴 매칭
+symptoms:
+- 패턴이 여러 개인데 각 패턴마다 KMP나 contains를 반복해 텍스트를 여러 번 스캔한다
+- Aho-Corasick을 단순 trie로만 보고 mismatch 시 돌아갈 failure link와 output link 역할을 놓친다
+- 패턴 하나만 찾는 문제에도 Aho-Corasick을 먼저 떠올려 전처리 비용을 과하게 쓴다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/string
+- data-structure/trie-prefix-search-autocomplete
+next_docs:
+- algorithm/kmp-vs-z-algorithm
+- algorithm/rolling-hash-rabin-karp
+- algorithm/trie-vs-radix-vs-suffix-automaton-comparison
+linked_paths:
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/algorithm/kmp-vs-z-algorithm.md
+- contents/algorithm/suffix-tree-intuition.md
+- contents/algorithm/string.md
+confusable_with:
+- algorithm/kmp-vs-z-algorithm
+- algorithm/rolling-hash-rabin-karp
+- data-structure/trie-prefix-search-autocomplete
+- algorithm/trie-vs-radix-vs-suffix-automaton-comparison
+forbidden_neighbors: []
+expected_queries:
+- Aho-Corasick은 여러 패턴을 한 번의 텍스트 스캔으로 어떻게 찾는 알고리즘이야?
+- trie에 failure link와 output link를 더하면 다중 패턴 매칭이 왜 빨라져?
+- 패턴 하나만 찾을 때는 Aho-Corasick보다 KMP가 더 간단한 이유가 뭐야?
+- 금칙어 필터나 시그니처 탐지에서 Aho-Corasick이 유리한 상황을 설명해줘
+- rolling hash 후보 필터링과 Aho-Corasick exact multi-pattern matching은 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Aho-Corasick advanced deep dive로, 여러 keyword pattern을 trie에
+  넣고 failure link와 output link를 구성해 긴 text stream을 한 번 스캔하며
+  모든 패턴을 찾는 multi-pattern matching automaton을 설명한다.
+---
 # Aho-Corasick
 
 > 한 줄 요약: Aho-Corasick은 여러 패턴을 한 번의 텍스트 스캔으로 찾기 위해 trie에 실패 링크를 더한 다중 패턴 매칭 자동자다.

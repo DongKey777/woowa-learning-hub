@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Read / Write Quorum & Staleness Budget 설계
+concept_id: system-design/read-write-quorum-staleness-budget-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- read quorum
+- write quorum
+- staleness budget
+- bounded staleness
+aliases:
+- read quorum
+- write quorum
+- staleness budget
+- bounded staleness
+- read repair
+- hinted handoff
+- leaderless replication
+- consistency level
+- quorum tradeoff
+- read your writes budget
+- Read / Write Quorum & Staleness Budget 설계
+- read write quorum staleness budget design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/consensus-membership-reconfiguration-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Read / Write Quorum & Staleness Budget 설계 설계 핵심을 설명해줘
+- read quorum가 왜 필요한지 알려줘
+- Read / Write Quorum & Staleness Budget 설계 실무 트레이드오프는 뭐야?
+- read quorum 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Read / Write Quorum & Staleness Budget 설계를 다루는 deep_dive 문서다. read/write quorum과 staleness budget 설계는 분산 저장소에서 읽기·쓰기 응답성과 정합성, 장애 허용성을 균형 있게 맞추기 위해 quorum 크기와 허용 stale 범위를 명시하는 consistency management 설계다. 검색 질의가 read quorum, write quorum, staleness budget, bounded staleness처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Read / Write Quorum & Staleness Budget 설계
 
 > 한 줄 요약: read/write quorum과 staleness budget 설계는 분산 저장소에서 읽기·쓰기 응답성과 정합성, 장애 허용성을 균형 있게 맞추기 위해 quorum 크기와 허용 stale 범위를 명시하는 consistency management 설계다.

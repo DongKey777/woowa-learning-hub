@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Spring MVC to JDBC Transaction DI AOP Transition Checklist
+concept_id: spring/mvc-jdbc-transaction-di-aop-transition-checklist
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- mvc-jdbc-transaction
+- di-aop-transition
+- controller-service-repository
+- mental-model
+aliases:
+- MVC JDBC transaction DI AOP transition
+- controller service repository mental model
+- request is not transaction
+- service owns transaction boundary
+- Spring proxy before deep dive
+- 초급 Spring 전환 체크리스트
+intents:
+- definition
+- design
+- mission_bridge
+linked_paths:
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/database/database-first-step-bridge.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-basics.md
+- contents/spring/spring-ioc-di-basics.md
+- contents/spring/spring-aop-basics.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+confusable_with:
+- spring/request-pipeline-bean-container
+- spring/mvc-controller-basics
+- database/database-first-step-bridge
+- database/jdbc-jpa-mybatis-basics
+- spring/ioc-di-basics
+expected_queries:
+- Spring MVC에서 JDBC 트랜잭션 DI AOP로 넘어갈 때 무엇부터 봐야 해?
+- 요청 처리와 트랜잭션 경계는 어떻게 분리해서 이해해야 해?
+- controller service repository 구조에서 DB 작업 책임은 어디에 둬야 해?
+- @Transactional 프록시 deep dive 전에 알아야 할 초급 체크리스트는?
+contextual_chunk_prefix: |
+  이 문서는 Spring 초급자가 MVC 요청 처리, JDBC/트랜잭션, DI/AOP 프록시를 한 번에
+  섞어 오진하는 상황을 줄이기 위한 bridge다. 컨트롤러는 HTTP 변환, 서비스는 유스케이스와
+  트랜잭션 경계, 리포지토리는 DB 접근 책임이라는 분리 기준을 설명한다.
+---
 # Spring MVC -> JDBC/트랜잭션 -> DI/AOP 전환 오해 체크리스트
 
 > 한 줄 요약: MVC에서 JDBC/트랜잭션으로, 다시 DI/AOP로 넘어갈 때는 "요청 처리", "DB 작업", "경계", "프록시"를 한 칸씩 분리해서 봐야 초반 deep dive 오진입을 줄일 수 있다.

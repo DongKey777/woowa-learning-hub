@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: 최소 권한 원칙과 RBAC 기초
+concept_id: security/least-privilege-rbac-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- least privilege basics
+- rbac 기초
+- 역할 기반 접근 제어
+- 최소 권한 원칙이란
+aliases:
+- least privilege basics
+- rbac 기초
+- 역할 기반 접근 제어
+- 최소 권한 원칙이란
+- role based access control beginner
+- 권한 관리 입문
+- admin 권한 남용
+- 역할이란 뭔가요
+- rbac 왜 써요
+- permission vs role
+- spring security role
+- 권한 분리 기초
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/spring/spring-security-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 최소 권한 원칙과 RBAC 기초 핵심 개념을 설명해줘
+- least privilege basics가 왜 필요한지 알려줘
+- 최소 권한 원칙과 RBAC 기초 실무 설계 포인트는 뭐야?
+- least privilege basics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 최소 권한 원칙과 RBAC 기초를 다루는 primer 문서다. 최소 권한 원칙은 "필요한 권한만 줘라"이고, RBAC는 "역할을 묶어서 권한을 관리해라"다. 둘을 함께 쓰면 권한이 과도하게 퍼지는 사고를 예방한다. 검색 질의가 least privilege basics, rbac 기초, 역할 기반 접근 제어, 최소 권한 원칙이란처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # 최소 권한 원칙과 RBAC 기초
 
 > 한 줄 요약: 최소 권한 원칙은 "필요한 권한만 줘라"이고, RBAC는 "역할을 묶어서 권한을 관리해라"다. 둘을 함께 쓰면 권한이 과도하게 퍼지는 사고를 예방한다.

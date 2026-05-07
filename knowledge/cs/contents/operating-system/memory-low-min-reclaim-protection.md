@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: memory.low memory.min Reclaim Protection
+concept_id: operating-system/memory-low-min-reclaim-protection
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- memory-low-min
+- reclaim-protection
+- memory-low-memory
+- min
+aliases:
+- memory.low memory.min
+- cgroup reclaim protection
+- protected memory workload
+- cache heap reclaim protection
+- memory min hard protection
+- memory low best effort protection
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+- contents/operating-system/memory-reclaim-cgroup-v2-proactive-reclaim.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+symptoms:
+- 중요한 workload의 heap이나 page cache를 reclaim에서 어느 정도 보호하고 싶다.
+- memory.high/max만 설정했더니 protected workload와 background workload가 같은 압박을 맞는다.
+- memory.low와 memory.min의 보호 강도 차이를 이해하지 못해 OOM/reclaim tradeoff가 흐려진다.
+expected_queries:
+- memory.low와 memory.min은 cgroup reclaim protection에서 어떻게 달라?
+- 중요한 workload의 cache와 heap을 reclaim에서 보호하려면 어떤 cgroup knob를 써?
+- memory.low는 best-effort protection이고 memory.min은 더 강한 protection이라는 뜻은?
+- memory.high max와 low min을 함께 설계할 때 어떤 tradeoff가 있어?
+contextual_chunk_prefix: |
+  이 문서는 memory.low와 memory.min을 cgroup이 reclaim에서 우선 보호받을 memory amount를
+  표현하는 knob로 설명한다. 중요한 workload의 heap/page cache 완충, reclaim pressure,
+  OOM trade-off를 함께 다룬다.
+---
 # memory.low, memory.min, Reclaim Protection
 
 > 한 줄 요약: `memory.low`와 `memory.min`은 cgroup이 reclaim에서 우선적으로 보호받을 메모리를 정하는 장치라서, 중요한 워크로드의 cache와 heap을 완충하는 데 유용하다.

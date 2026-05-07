@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Java equals hashCode Comparable 계약
+concept_id: language/java-equals-hashcode-comparable-contracts
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- equals-hashcode-contract
+- compareto-equals-consistency
+- mutable-key-collection-bug
+aliases:
+- java equals hashcode comparable contracts
+- equals hashcode contract advanced
+- comparable contract advanced
+- compareTo equals consistency
+- hashset duplicate bug contract
+- treeset compareTo 0 duplicate surprise
+- treemap compareTo 0 overwrite
+- mutable key hashmap lookup bug
+- jpa entity identity hashcode bug
+- bigdecimal equals compareTo mismatch
+- 왜 hashset 중복 제거가 이상해요
+- 왜 treeset에서 값이 사라져요
+- 왜 map get이 null처럼 보여요
+symptoms:
+- HashMap에 넣은 key를 수정했더니 get이 null처럼 보여
+- TreeSet에서 compareTo가 0이라 값이 사라지는 이유가 헷갈려
+- equals와 hashCode와 compareTo 계약을 어디까지 맞춰야 하는지 모르겠어
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-comparable-comparator-basics
+next_docs:
+- language/hashset-vs-treeset-duplicate-semantics
+- language/comparator-consistency-with-equals-bridge
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- data-structure/hashmap-internals
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/comparator-consistency-with-equals-bridge.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/classloader-exception-boundaries-object-contracts.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/java-comparable-comparator-basics
+- language/hashset-vs-treeset-duplicate-semantics
+- language/comparator-consistency-with-equals-bridge
+forbidden_neighbors: []
+expected_queries:
+- equals가 true면 hashCode도 같아야 하는 이유를 HashMap 동작으로 설명해줘
+- compareTo가 0이면 TreeSet이나 TreeMap에서 왜 같은 값처럼 취급돼?
+- mutable key를 HashMap에 넣고 필드를 바꾸면 왜 get이 실패할 수 있어?
+- BigDecimal 1.0과 1.00이 HashSet과 TreeSet에서 다르게 보이는 이유가 뭐야?
+- JPA entity id 생성 전후 hashCode가 바뀌면 Set에서 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Java equals, hashCode, Comparable, Comparator 계약이 HashMap, HashSet, TreeMap, TreeSet의 중복 제거와 조회와 정렬에 어떤 영향을 주는지 설명하는 advanced deep dive다.
+  mutable key, hash bucket lookup, compareTo equals consistency, TreeSet duplicate disappearance, TreeMap overwrite, BigDecimal equals compareTo mismatch, JPA entity identity 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Java `equals`, `hashCode`, `Comparable` 계약
 
 > 한 줄 요약: 같은 객체를 같은 객체로 인정하는 기준과 정렬 기준을 제대로 설계해야 `HashMap`, `HashSet`, `TreeMap`, `TreeSet`이 예측 가능하게 동작한다.

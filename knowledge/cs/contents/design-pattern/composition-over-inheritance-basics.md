@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: 상속보다 조합 기초
+concept_id: design-pattern/composition-over-inheritance-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/shopping-cart
+review_feedback_tags:
+- composition-over-inheritance
+- is-a-vs-has-a-boundary
+- strategy-template-handoff
+aliases:
+- composition over inheritance
+- 상속보다 조합
+- 상속 vs 조합
+- inheritance vs composition beginner
+- is-a has-a 차이
+- 부모 클래스 만들어야 하나요
+- 코드 재사용이면 상속인가요
+- 조합이 뭐예요
+- 전략 패턴 전에 조합
+- template method strategy handoff
+- 상속은 언제 써요
+symptoms:
+- 코드 재사용이 보이면 바로 extends를 만들려고 해서 is-a 관계인지 먼저 확인하지 않아
+- 상속, 템플릿 메소드, 전략 패턴을 모두 재사용 방법으로만 보고 고정 흐름과 교체 규칙을 구분하지 못해
+- 서비스가 다른 역할 객체를 사용하기만 하는데 부모 클래스로 물려받는 구조가 자연스러운지 헷갈려
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- language/java-inheritance-overriding-basics
+next_docs:
+- design-pattern/strategy-pattern-basics
+- design-pattern/template-method-basics
+- design-pattern/template-method-vs-strategy
+- language/java-abstract-class-vs-interface-basics
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/composition-over-inheritance-practical.md
+confusable_with:
+- design-pattern/template-method-basics
+- design-pattern/strategy-pattern-basics
+- design-pattern/template-method-vs-strategy
+- language/java-abstract-class-vs-interface-basics
+forbidden_neighbors: []
+expected_queries:
+- 상속보다 조합이라는 말을 is-a와 has-a 기준으로 설명해줘
+- 코드 재사용이 필요할 때 바로 부모 클래스를 만들면 왜 위험할 수 있어?
+- 템플릿 메소드는 부모가 흐름을 쥐는 예외이고 전략은 조합으로 규칙을 바꾸는 구조라는 차이를 알려줘
+- OrderService가 NotificationService를 extends하는 것보다 NotificationSender를 필드로 받는 쪽이 자연스러운 이유가 뭐야?
+- 상속과 조합을 언제 선택해야 하는지 beginner 기준 30초 표로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 composition over inheritance를 is-a 관계가 아니면 extends보다 has-a 협력 객체를 우선 검토하는 beginner primer로 설명한다.
+  code reuse by inheritance, composition, has-a vs is-a, strategy pattern handoff, template method exception, dependency injection for collaboration 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # 상속보다 조합 기초 (Composition over Inheritance Basics)
 
 > 한 줄 요약: 처음 배우는 단계에서는 "코드 재사용이 보이면 일단 상속"보다, "이 객체가 정말 부모의 한 종류인가?"를 먼저 묻고 아니면 조합을 기본값으로 두는 편이 안전하다.

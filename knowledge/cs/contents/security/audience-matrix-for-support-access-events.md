@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Audience Matrix for Support Access Events
+concept_id: security/audience-matrix-for-support-access-events
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- audience matrix for support access events
+- support access audience matrix
+- support audience routing
+- AOBO audience routing
+aliases:
+- audience matrix for support access events
+- support access audience matrix
+- support audience routing
+- AOBO audience routing
+- break glass audience routing
+- affected user notification
+- tenant admin notification
+- security contact notification
+- b2b support access alert
+- b2c support access alert
+- privileged support change alert
+- emergency access routing
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-access-alert-router-primer.md
+- contents/security/customer-facing-support-access-notifications.md
+- contents/security/canonical-security-timeline-event-schema.md
+- contents/security/aobo-start-end-event-contract.md
+- contents/security/delivery-surface-policy-for-support-access-alerts.md
+- contents/security/tenant-policy-schema-for-privileged-support-alerts.md
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Audience Matrix for Support Access Events 핵심 개념을 설명해줘
+- audience matrix for support access events가 왜 필요한지 알려줘
+- Audience Matrix for Support Access Events 실무 설계 포인트는 뭐야?
+- audience matrix for support access events에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Audience Matrix for Support Access Events를 다루는 deep_dive 문서다. support AOBO와 break-glass 알림은 "이벤트가 있었는가"보다 "그 blast radius를 누가 설명하고 책임져야 하는가"를 기준으로 affected user, tenant admin, security contact에 다르게 라우팅해야 하며, B2C는 개인 traceability 중심, B2B는 tenant accountability escalation이 추가된다. 검색 질의가 audience matrix for support access events, support access audience matrix, support audience routing, AOBO audience routing처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Audience Matrix for Support Access Events
 
 > 한 줄 요약: support AOBO와 break-glass 알림은 "이벤트가 있었는가"보다 "그 blast radius를 누가 설명하고 책임져야 하는가"를 기준으로 affected user, tenant admin, security contact에 다르게 라우팅해야 하며, B2C는 개인 traceability 중심, B2B는 tenant accountability escalation이 추가된다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: HTTP와 HTTPS 기초
+concept_id: network/http-https-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- http-vs-https-tls-basics
+- certificate-trust-chain
+- tls-handshake-before-http
+aliases:
+- http https basics
+- HTTP와 HTTPS 기초
+- http vs https 차이
+- https 왜 써야 해요
+- tls란 뭔가요
+- ssl tls 입문
+- 암호화 통신 기초
+- https 인증서
+- 평문 암호화 차이
+- 브라우저 자물쇠 아이콘
+- tls handshake basics
+- certificate authority basics
+symptoms:
+- HTTPS가 HTTP와 완전히 다른 프로토콜인지 TLS가 아래에 붙는 것인지 헷갈려
+- TLS handshake와 TCP handshake가 언제 일어나는지 모르겠어
+- 인증서가 왜 서버 인증과 암호화에 필요한지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/tls-loadbalancing-proxy
+- network/http-methods-rest-idempotency-basics
+- security/cors-basics
+- network/certificate-rotation-sni-blast-radius
+linked_paths:
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/certificate-rotation-sni-blast-radius.md
+- contents/security/cors-basics.md
+confusable_with:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/tls-loadbalancing-proxy
+- network/certificate-rotation-sni-blast-radius
+forbidden_neighbors: []
+expected_queries:
+- HTTP와 HTTPS 차이를 TLS 암호화, 인증, 무결성 기준으로 설명해줘
+- TLS handshake는 TCP 연결 뒤 HTTP 요청 전 어느 시점에 일어나?
+- SSL과 TLS는 뭐가 다르고 왜 SSL 인증서라고 부르는지 알려줘
+- HTTPS 인증서는 CA가 무엇을 보증하는 문서야?
+- TLS termination을 로드밸런서나 프록시에서 한다는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 HTTP는 평문 요청 응답 규칙이고 HTTPS는 그 아래 TLS를 추가해 암호화, 서버 인증, 무결성을 제공한다는 차이를 설명하는 beginner primer다.
+  TCP handshake 뒤 TLS handshake, CA certificate, SSL vs TLS, 브라우저 자물쇠, TLS termination, load balancer proxy 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # HTTP와 HTTPS 기초
 
 > 한 줄 요약: HTTP는 평문으로 데이터를 주고받고, HTTPS는 TLS 계층을 추가해 암호화·인증·무결성을 보장한다.

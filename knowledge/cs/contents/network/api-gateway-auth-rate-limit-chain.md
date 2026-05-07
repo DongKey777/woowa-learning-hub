@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: API Gateway Auth Rate Limit Chain
+concept_id: network/api-gateway-auth-rate-limit-chain
+canonical: false
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- gateway-auth-rate-limit
+- policy-chain
+- early-reject
+aliases:
+- API gateway auth rate limit chain
+- gateway auth before rate limit
+- JWT validation token bucket
+- tenant quota gateway
+- 401 vs 403 vs 429
+- upload auth before body
+- gateway policy chain
+symptoms:
+- API Gateway 인증과 rate limit을 독립 middleware로만 보고 검사 순서와 실패 코드 계약을 운영 정책 체인으로 설계하지 않는다
+- 인증되지 않은 요청이 rate limit 자원을 소모하거나, 익명 폭주 차단을 못 하는 순서 tradeoff를 고려하지 않는다
+- 대용량 upload에서 early reject 뒤 request body drain과 keep-alive reuse를 함께 설계하지 않는다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- network/api-gateway-reverse-proxy-operational-points
+- network/http-status-codes-basics
+next_docs:
+- network/gateway-buffering-vs-spring-early-reject
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/expect-100-continue-proxy-request-buffering
+linked_paths:
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+confusable_with:
+- network/api-gateway-reverse-proxy-operational-points
+- network/expect-100-continue-proxy-request-buffering
+- network/gateway-buffering-vs-spring-early-reject
+- network/http-request-body-drain-early-reject-keepalive-reuse
+forbidden_neighbors: []
+expected_queries:
+- API Gateway에서 auth와 rate limit은 어떤 순서로 검사하고 401 403 429를 어떻게 나눠야 해?
+- JWT 검증과 tenant quota token bucket을 gateway policy chain으로 설계하는 기준은?
+- 인증 안 된 요청이 rate limit 자원을 소모하지 않게 하려면 어떤 순서를 봐야 해?
+- 대용량 upload API에서 auth early reject와 body drain keep-alive reuse를 같이 보는 이유는?
+- gateway auth rate limit chain에서 익명 폭주 차단과 사용자별 quota를 어떻게 균형 잡아?
+contextual_chunk_prefix: |
+  이 문서는 API Gateway의 auth, authorization, rate limit, logging, routing을 정책 체인으로
+  설계하는 playbook이다. JWT/API key 검증, token bucket, tenant quota, 401/403/429 구분,
+  early reject와 request body drain을 다룬다.
+---
 # API Gateway Auth Rate Limit Chain
 
 > 한 줄 요약: API Gateway의 인증과 rate limit은 따로 붙이는 기능이 아니라, 어떤 순서로 검사하고 어떤 실패를 돌려줄지까지 포함한 운영 체인이다.

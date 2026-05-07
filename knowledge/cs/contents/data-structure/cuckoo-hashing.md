@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Cuckoo Hashing
+concept_id: data-structure/cuckoo-hashing
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- cuckoo-hashing
+- eviction-chain
+- high-throughput-lookup
+aliases:
+- Cuckoo Hashing
+- multiple hash functions table
+- relocation hashing
+- eviction chain
+- candidate bucket lookup
+- constant lookup hash table
+- cuckoo rehash cycle
+symptoms:
+- lookup은 후보 bucket 몇 개만 보면 빠르지만 insertion은 eviction chain 때문에 길어질 수 있다는 비대칭을 놓친다
+- relocation cycle이 생기면 rehash가 필요하다는 점을 load factor와 hash seed 정책으로 연결하지 못한다
+- Cuckoo Filter의 fingerprint relocation과 Cuckoo Hashing의 key relocation을 같은 원리로 보지 못한다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/hashmap-internals
+next_docs:
+- data-structure/cuckoo-filter
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/consistent-hashing-ring
+linked_paths:
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/cuckoo-filter.md
+- contents/data-structure/bloom-filter-vs-cuckoo-filter.md
+- contents/data-structure/consistent-hashing-ring.md
+confusable_with:
+- data-structure/hashmap-internals
+- data-structure/cuckoo-filter
+- data-structure/consistent-hashing-ring
+forbidden_neighbors: []
+expected_queries:
+- Cuckoo Hashing은 왜 lookup은 빠르고 insertion은 relocation chain이 문제가 될 수 있어?
+- 충돌이 나면 기존 key를 다른 후보 bucket으로 밀어내는 방식은 어떻게 동작해?
+- Cuckoo Hashing에서 cycle이 생기면 왜 rehash가 필요해?
+- Cuckoo Filter와 Cuckoo Hashing은 어떤 relocation 원리를 공유해?
+- high-throughput key lookup에서 Cuckoo Hashing을 고려하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Cuckoo Hashing을 여러 candidate bucket과 eviction chain으로
+  구성된 high-throughput hash table 기법으로 설명한다. lookup fast path,
+  insertion relocation, cycle rehash, load factor, Cuckoo Filter와의 원리
+  연결을 다룬다.
+---
 # Cuckoo Hashing
 
 > 한 줄 요약: Cuckoo Hashing은 두 개 이상의 후보 위치를 두고 원소를 계속 밀어내며 저장하는 고성능 해시 테이블 기법이다.

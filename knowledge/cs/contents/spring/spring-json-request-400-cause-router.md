@@ -61,11 +61,11 @@ confusable_with:
 forbidden_neighbors: []
 expected_queries:
 - JSON API가 스프링 컨트롤러에 닿기 전에 400으로 끝날 때 어디부터 나눠서 봐야 해?
-- `415`랑 `400`이 번갈아 보여서 헷갈릴 때 첫 분기 기준을 알려줘
+- "`415`랑 `400`이 번갈아 보여서 헷갈릴 때 첫 분기 기준을 알려줘"
 - 날짜 필드 때문에 요청이 깨지는지 validation 전에 죽는지 빠르게 구분하고 싶어
 - fetch에서는 실패하고 Postman에서는 되는 JSON 요청이면 무엇을 먼저 비교해야 해?
 - body를 안 보낸 건지 JSON 파싱이 깨진 건지 스프링에서 어떻게 가려?
-- `@Valid`가 안 탄 것처럼 보이는 JSON 400을 어떤 순서로 진단해?
+- "`@Valid`가 안 탄 것처럼 보이는 JSON 400을 어떤 순서로 진단해?"
 contextual_chunk_prefix: |
   이 문서는 스프링 학습자가 JSON 요청 400을 만났을 때 media type 계약,
   body 누락, DTO 변환 실패, 날짜 형식, validation 진입 여부를 먼저 나누는

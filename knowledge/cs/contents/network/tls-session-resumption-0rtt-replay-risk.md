@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "TLS Session Resumption, 0-RTT, Replay Risk"
+concept_id: network/tls-session-resumption-0rtt-replay-risk
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tls-resumption
+- zero-rtt
+- replay-risk
+aliases:
+- TLS session resumption
+- session ticket
+- session cache
+- PSK
+- TLS 1.3 0-RTT
+- early data
+- replay risk
+- handshake RTT
+symptoms:
+- TLS resumption을 보안 약화로만 보거나 0-RTT를 모든 API에 켜도 된다고 생각한다
+- session ticket key가 LB 뒤 인스턴스마다 달라 resumption hit rate가 떨어지는 문제를 놓친다
+- 0-RTT early data replay risk와 일반 retry/idempotency 문제를 분리하지 못한다
+- handshake latency 증가를 certificate 검증만 보고 session cache/ticket 문제를 보지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tls-loadbalancing-proxy
+- network/request-timing-decomposition
+next_docs:
+- network/http3-quic-practical-tradeoffs
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-types-connect-read-write
+- network/ocsp-crl-revocation-tradeoffs
+linked_paths:
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+confusable_with:
+- network/ocsp-crl-revocation-tradeoffs
+- network/certificate-rotation-sni-blast-radius
+- network/http-421-non-idempotent-retry-guardrail-primer
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- "TLS session resumption과 0-RTT early data의 장단점은?"
+- "0-RTT replay risk 때문에 어떤 요청은 early data로 보내면 안 돼?"
+- "LB 뒤에서 session ticket key 공유가 resumption hit rate에 미치는 영향은?"
+- "TLS handshake latency가 늘 때 session cache와 certificate 검증 중 무엇을 봐?"
+- "0-RTT는 retry와 어떻게 다르고 idempotent 요청에만 안전한 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 TLS session resumption, session cache/ticket, PSK, TLS 1.3
+  0-RTT early data, handshake RTT 절감과 replay risk를 다루는 advanced
+  playbook이다.
+---
 # TLS Session Resumption, 0-RTT, Replay Risk
 
 > 한 줄 요약: TLS 세션 재개는 handshake 비용을 줄이고, 0-RTT는 한 번 더 RTT를 아끼지만, 그만큼 replay 위험과 운영 복잡도를 같이 가져온다.

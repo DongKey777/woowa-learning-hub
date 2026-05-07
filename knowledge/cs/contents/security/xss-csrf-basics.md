@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: XSS와 CSRF 기초
+concept_id: security/xss-csrf-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- xss-csrf-threat-separation
+- script-execution-vs-forged-request
+- csrf-token-samesite-basics
+aliases:
+- xss csrf basics
+- XSS와 CSRF 기초
+- xss csrf 차이
+- xss가 뭔가요
+- csrf란 무엇인가
+- cross site scripting beginner
+- cross site request forgery beginner
+- csrf token 왜 써요
+- HttpOnly cookie xss csrf
+- Spring Security CSRF 403
+- social login first post 403
+symptoms:
+- XSS와 CSRF를 둘 다 웹 보안 공격이라고만 알고 원인과 방어 방향을 섞어 이해하고 있어
+- 쿠키 기반 인증에서 왜 CSRF token이나 SameSite가 필요한지 모르겠어
+- Spring Security에서 POST가 403으로 막힐 때 CSRF 방어를 먼저 봐야 하는지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- network/http-https-basics
+- security/session-cookie-jwt-basics
+next_docs:
+- security/xss-csrf-spring-security
+- security/csrf-in-spa-bff-architecture
+- security/browser-storage-threat-model-for-tokens
+- security/cors-samesite-preflight
+linked_paths:
+- contents/security/xss-csrf-spring-security.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/oauth2-basics.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/cors-samesite-preflight.md
+- contents/spring/spring-mvc-request-lifecycle.md
+confusable_with:
+- security/browser-storage-threat-model-for-tokens
+- security/csrf-in-spa-bff-architecture
+- security/cors-samesite-preflight
+- security/xss-csrf-spring-security
+forbidden_neighbors: []
+expected_queries:
+- XSS와 CSRF 차이를 스크립트 실행과 인증 상태 도용 요청 기준으로 설명해줘
+- XSS는 출력 이스케이프와 CSP로, CSRF는 token과 SameSite로 막는 이유가 뭐야?
+- HttpOnly cookie는 XSS token 탈취를 줄이지만 왜 CSRF는 따로 봐야 해?
+- Spring Security에서 CSRF 때문에 POST가 403이 나는 흐름을 초급자 관점으로 설명해줘
+- social login callback 뒤 첫 POST가 403이면 OAuth와 CSRF 중 무엇을 이어 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 XSS를 malicious script execution 문제로, CSRF를 authenticated browser가 forged state-changing request를 보내는 문제로 분리해 설명하는 beginner primer다.
+  XSS vs CSRF, output escaping, CSP, CSRF token, SameSite cookie, Spring Security CSRF 403, social login first POST 403 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # XSS와 CSRF 기초
 
 > 한 줄 요약: XSS는 "내 사이트에서 공격자 스크립트가 실행되는 문제"이고, CSRF는 "사용자의 인증 상태를 몰래 이용해 요청을 보내는 문제"다. 원인도 방어 방향도 다르다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "Certificate Pinning Trade-offs"
+concept_id: network/certificate-pinning-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- tls-hardening-tradeoff
+- certificate-pinning-rotation
+- mobile-client-operational-risk
+aliases:
+- certificate pinning
+- SPKI pinning
+- public key pinning
+- backup pin rotation
+- mobile client pinning
+- TLS hardening operational risk
+symptoms:
+- pinning 적용 후 정상 인증서 회전인데도 일부 클라이언트가 TLS 연결을 거부한다
+- backup pin이나 rollover plan 없이 primary cert pin만 배포해 복구 경로가 없다
+- CA 체인 또는 공개키 교체를 보안 강화와 운영 장애 위험으로 함께 보지 못한다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- security/https-tls-beginner
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+next_docs:
+- network/certificate-rotation-sni-blast-radius
+- network/ocsp-crl-revocation-tradeoffs
+- network/tls-session-resumption-0rtt-replay-risk
+- network/mtls-handshake-failure-diagnosis
+linked_paths:
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/certificate-rotation-sni-blast-radius.md
+- contents/network/ocsp-crl-revocation-tradeoffs.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/mtls-handshake-failure-diagnosis.md
+confusable_with:
+- network/certificate-rotation-sni-blast-radius
+- network/ocsp-crl-revocation-tradeoffs
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/mtls-handshake-failure-diagnosis
+forbidden_neighbors: []
+expected_queries:
+- "certificate pinning은 MITM 방어와 인증서 회전 리스크를 어떻게 trade-off 해?"
+- "SPKI pinning과 backup pin이 없으면 인증서 교체 때 어떤 장애가 생겨?"
+- "모바일 앱에서 public key pinning을 쓸 때 운영 복구 경로를 어떻게 설계해?"
+- "pinning이 보안 기능이면서 운영 장애 증폭 장치가 되는 이유를 설명해줘"
+- "CA 체인 변경과 certificate pinning 실패를 어떻게 구분해?"
+contextual_chunk_prefix: |
+  이 문서는 certificate pinning, SPKI pinning, backup pin, mobile client
+  trust narrowing을 MITM 방어와 certificate rotation outage risk 관점에서
+  비교하는 advanced TLS hardening playbook이다.
+---
 # Certificate Pinning Trade-offs
 
 > 한 줄 요약: certificate pinning은 중간자 공격을 줄일 수 있지만, 인증서 회전과 복구 유연성을 크게 깎아 운영 리스크를 만든다.

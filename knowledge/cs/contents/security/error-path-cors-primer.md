@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Error-Path CORS Primer
+concept_id: security/error-path-cors-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- error path cors primer
+- cors masks 401
+- cors masks 403
+- real 401 looks like cors
+aliases:
+- error path cors primer
+- cors masks 401
+- cors masks 403
+- real 401 looks like cors
+- real 403 looks like cors
+- missing access-control-allow-origin on error
+- error response missing cors header
+- actual request exists but browser says cors
+- preflight passed then cors error
+- post 401 but frontend sees cors
+- post 403 but frontend sees cors
+- auth failure masked by cors
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/cors-basics.md
+- contents/security/preflight-debug-checklist.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cors-samesite-preflight.md
+- contents/spring/spring-problemdetail-error-response-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Error-Path CORS Primer 핵심 개념을 설명해줘
+- error path cors primer가 왜 필요한지 알려줘
+- Error-Path CORS Primer 실무 설계 포인트는 뭐야?
+- error path cors primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Error-Path CORS Primer를 다루는 primer 문서다. actual `401`/`403`이 이미 발생했어도 error response에 CORS 헤더가 빠지면 브라우저는 그 숫자를 JS에 넘기지 못하고, 겉으로는 "CORS 에러만 난 것처럼" 보일 수 있다. 검색 질의가 error path cors primer, cors masks 401, cors masks 403, real 401 looks like cors처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Error-Path CORS Primer
 
 > 한 줄 요약: actual `401`/`403`이 이미 발생했어도 error response에 CORS 헤더가 빠지면 브라우저는 그 숫자를 JS에 넘기지 못하고, 겉으로는 "CORS 에러만 난 것처럼" 보일 수 있다.

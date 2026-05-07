@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: I/O 유형별 실패신호 매핑 카드
+concept_id: database/io-failure-signal-three-bucket-mapping-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- io-failure-three-bucket
+- already-processed-timeout
+- external-io-idempotency
+aliases:
+- io failure signal mapping card
+- HTTP timeout gRPC deadline broker ack failure
+- busy retryable already processed
+- network failure service outcome
+- ack timeout duplicate side effect
+- timeout does not mean retry
+- deadline exceeded maybe committed
+- broker ack lost maybe published
+- I/O 실패신호 매핑
+- already-processed
+symptoms:
+- HTTP timeout, gRPC DEADLINE_EXCEEDED, broker ack failure를 모두 retryable로 보고 중복 side effect를 만들 수 있어
+- timeout이 서버 rollback 확정이 아니라 already-processed 가능성을 가진다는 점을 놓치고 있어
+- 외부 I/O 실패를 busy, retryable, already-processed로 먼저 번역해 다음 행동을 정해야 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/three-bucket-terms-common
+- database/transaction-boundary-external-io-checklist
+next_docs:
+- database/idempotency-key-and-deduplication
+- database/exactly-once-myths-db-queue
+- database/idempotency-key-status-contract-examples
+- database/idempotent-transaction-retry-envelopes
+linked_paths:
+- contents/database/three-bucket-terms-common-card.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/db-signal-service-result-http-bridge.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/idempotency-key-status-contract-examples.md
+confusable_with:
+- database/three-bucket-terms-common
+- database/transaction-boundary-external-io-checklist
+- database/exactly-once-myths-db-queue
+forbidden_neighbors: []
+expected_queries:
+- HTTP timeout이나 gRPC DEADLINE_EXCEEDED를 바로 retryable로 보면 왜 위험해?
+- broker publish ack timeout은 publish 실패 확정이 아니라 already-processed 가능성을 먼저 봐야 해?
+- I/O 실패 신호를 busy, retryable, already-processed로 번역하는 기준을 알려줘
+- 503 Service Unavailable은 busy로 보고 backoff와 queue 길이를 먼저 봐야 하는 이유는 뭐야?
+- timeout 후 같은 요청을 재실행하기 전에 idempotency key나 결과 조회가 필요한 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 HTTP timeout, 5xx, gRPC DEADLINE_EXCEEDED, broker ack failure를 busy, retryable, already-processed 세 버킷으로 번역하는 beginner chooser다.
+  io failure signal, timeout does not mean retry, already-processed, broker ack timeout 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # I/O 유형별 실패신호 매핑 카드
 
 > 한 줄 요약: HTTP timeout, gRPC `DEADLINE_EXCEEDED`, broker ack 실패는 "에러 이름"보다 먼저 `busy` / `retryable` / `already-processed`로 번역해야 다음 동작이 덜 흔들린다.

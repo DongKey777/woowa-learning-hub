@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Session Quarantine / Partial Lockdown Patterns
+concept_id: security/session-quarantine-partial-lockdown-patterns
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- session quarantine
+- partial lockdown
+- suspicious session
+- step-up recovery
+aliases:
+- session quarantine
+- partial lockdown
+- suspicious session
+- step-up recovery
+- compromised session containment
+- session downgrade
+- restricted session
+- auth quarantine
+- risk-based lockdown
+- refresh freeze
+- read-only session
+- Session Quarantine / Partial Lockdown Patterns
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/mfa-step-up-auth-design.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/bff-session-store-outage-degradation-recovery.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/system-design/session-store-design-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Session Quarantine / Partial Lockdown Patterns 핵심 개념을 설명해줘
+- session quarantine가 왜 필요한지 알려줘
+- Session Quarantine / Partial Lockdown Patterns 실무 설계 포인트는 뭐야?
+- session quarantine에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Session Quarantine / Partial Lockdown Patterns를 다루는 deep_dive 문서다. 보안 이상 신호가 생겼다고 항상 즉시 전세션 revoke를 할 필요는 없으며, session quarantine은 기본 접근은 줄이고 민감 작업은 step-up으로 승격시키는 중간 상태를 운영하는 패턴이다. 검색 질의가 session quarantine, partial lockdown, suspicious session, step-up recovery처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Session Quarantine / Partial Lockdown Patterns
 
 > 한 줄 요약: 보안 이상 신호가 생겼다고 항상 즉시 전세션 revoke를 할 필요는 없으며, session quarantine은 기본 접근은 줄이고 민감 작업은 step-up으로 승격시키는 중간 상태를 운영하는 패턴이다.

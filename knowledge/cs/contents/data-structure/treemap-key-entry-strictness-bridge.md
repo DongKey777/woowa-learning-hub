@@ -46,8 +46,7 @@ confusable_with:
 - data-structure/treemap-neighbor-query-micro-drill
 - data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
 - data-structure/treemap-interval-entry-primer
-forbidden_neighbors:
-- contents/data-structure/treemap-neighbor-query-micro-drill.md
+forbidden_neighbors: []
 expected_queries:
 - TreeMap에서 lowerKey와 lowerEntry가 어떻게 이어지는지 strict 기준으로 보고 싶어
 - entry로 바꾸면 exact match 포함 여부도 바뀌는지 헷갈려

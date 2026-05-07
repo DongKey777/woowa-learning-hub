@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Orchestration vs Choreography Failure Handling
+concept_id: design-pattern/orchestration-vs-choreography-failure-handling
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- workflow-failure-ownership
+- retry-compensation-ownership
+- reconciliation-owner
+aliases:
+- orchestration failure handling
+- choreography failure handling
+- retry ownership
+- compensation ownership
+- failure visibility
+- distributed unknown state
+- reconciliation ownership
+- workflow failure owner
+- local retry vs global semantics
+- unknown state reconciliation
+symptoms:
+- orchestration과 choreography를 중앙 vs 분산 제어 방식으로만 보고 실패 감지, retry, compensation, reconciliation owner를 명시하지 않는다
+- choreography에서 각 consumer가 알아서 retry하면 된다고 생각해 global business failure story가 분산된다
+- unknown state를 누가 소유하고 reconciliation을 시작할지 정하지 않아 결제/재고/주문 상태가 서로 다르게 남는다
+intents:
+- troubleshooting
+- design
+- comparison
+prerequisites:
+- design-pattern/orchestration-vs-choreography-pattern-language
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/compensation-vs-reconciliation-pattern
+next_docs:
+- design-pattern/workflow-owner-vs-participant-context
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/reservation-hold-expiry-consistency-seam
+linked_paths:
+- contents/design-pattern/orchestration-vs-choreography-pattern-language.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/compensation-vs-reconciliation-pattern.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+confusable_with:
+- design-pattern/orchestration-vs-choreography-pattern-language
+- design-pattern/compensation-vs-reconciliation-pattern
+- design-pattern/workflow-owner-vs-participant-context
+- design-pattern/process-manager-vs-saga-coordinator
+forbidden_neighbors: []
+expected_queries:
+- Orchestration과 Choreography의 차이는 failure visibility와 retry compensation reconciliation ownership에서 어떻게 드러나?
+- choreography에서 각 서비스가 local retry를 하면 global failure semantics가 왜 더 중요해져?
+- 결제 unknown state와 재고 release 시점을 누가 판단해야 하는지 workflow owner를 정해야 하는 이유가 뭐야?
+- 핵심 금전 재고 상태 변경은 central failure policy에 두고 알림 검색 통계는 local best-effort로 둘 수 있는 기준은 뭐야?
+- unknown state를 reconciliation trigger로 넘길 owner가 없으면 어떤 운영 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Orchestration vs Choreography Failure Handling playbook으로, 중앙 제어냐
+  이벤트 자율 반응이냐보다 실패를 누가 감지하고 retry, compensation, reconciliation, unknown state
+  decision을 소유하는지가 더 중요하다는 기준을 설명한다.
+---
 # Orchestration vs Choreography Failure Handling
 
 > 한 줄 요약: orchestration과 choreography의 차이는 흐름 제어 방식만이 아니라, 실패를 어디서 감지하고 누가 retry/compensation/reconciliation을 책임지는가의 차이이기도 하다.

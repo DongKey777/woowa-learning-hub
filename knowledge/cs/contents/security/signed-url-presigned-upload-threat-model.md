@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Signed URL / Presigned Upload Threat Model
+concept_id: security/signed-url-presigned-upload-threat-model
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- presigned URL
+- signed URL
+- upload ticket
+- object key
+aliases:
+- presigned URL
+- signed URL
+- upload ticket
+- object key
+- content-type restriction
+- expiry
+- replay
+- overwrite
+- bucket policy
+- multipart upload
+- callback verification
+- Signed URL / Presigned Upload Threat Model
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/file-storage-presigned-url-cdn-design.md
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/ssrf-egress-control.md
+- contents/security/jwt-deep-dive.md
+- contents/security/https-hsts-mitm.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Signed URL / Presigned Upload Threat Model 핵심 개념을 설명해줘
+- presigned URL가 왜 필요한지 알려줘
+- Signed URL / Presigned Upload Threat Model 실무 설계 포인트는 뭐야?
+- presigned URL에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Signed URL / Presigned Upload Threat Model를 다루는 deep_dive 문서다. presigned URL은 권한이 붙은 임시 쓰기 티켓이므로, 만료와 object key 고정, content 제한, 후속 검증 없이는 업로드 권한 탈취가 된다. 검색 질의가 presigned URL, signed URL, upload ticket, object key처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Signed URL / Presigned Upload Threat Model
 
 > 한 줄 요약: presigned URL은 권한이 붙은 임시 쓰기 티켓이므로, 만료와 object key 고정, content 제한, 후속 검증 없이는 업로드 권한 탈취가 된다.

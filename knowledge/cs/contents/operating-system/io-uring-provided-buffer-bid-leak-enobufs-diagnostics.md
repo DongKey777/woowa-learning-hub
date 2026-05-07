@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: io_uring Provided Buffer Bid Leak ENOBUFS Diagnostics
+concept_id: operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- io-uring-provided
+- buffer-bid-leak
+- enobufs-diagnostics
+- provided-buffer-bid
+aliases:
+- provided buffer bid leak
+- io_uring ENOBUFS diagnostics
+- IORING_CQE_F_BUFFER
+- IORING_CQE_F_BUF_MORE
+- recv_multishot bid ownership
+- buffer recycle leak
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-provided-buffer-exhaustion-observability-playbook.md
+- contents/operating-system/io-uring-fdinfo-pbuf-status-enobufs-reconciliation-playbook.md
+- contents/operating-system/io-uring-provided-buffer-group-sharding-size-cpu-numa.md
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+symptoms:
+- provided-buffer bid leak처럼 보이지만 kernel memory leak이 아니라 userspace ownership ledger가 끊겼다.
+- IORING_CQE_F_BUFFER, F_MORE, F_BUF_MORE를 잘못 해석해 bid recycle 시점을 놓친다.
+- terminal -ENOBUFS CQE가 나오기 전 buffer-ring available/head와 CQE flags가 어긋난다.
+expected_queries:
+- io_uring provided buffer bid leak은 진짜 kernel memory leak이야?
+- IORING_CQE_F_BUFFER F_MORE F_BUF_MORE를 bid recycle ownership과 어떻게 연결해?
+- recv_multishot에서 -ENOBUFS failure signature를 어떻게 진단해?
+- buffer-ring available head와 terminal ENOBUFS CQE를 함께 보는 법은?
+contextual_chunk_prefix: |
+  이 문서는 provided-buffer bid leak을 커널이 buffer를 잃어버린 memory leak보다 userspace
+  ownership ledger가 끊긴 상태로 설명한다. CQE flags, buffer ring state, terminal -ENOBUFS를
+  함께 맞춰 본다.
+---
 # io_uring Provided-Buffer Bid Leak, ENOBUFS, Recycle Diagnostics
 
 > 한 줄 요약: provided-buffer `bid leak`는 대개 커널이 버퍼를 잃어버린 메모리 누수가 아니라 userspace ownership ledger가 끊긴 상태다. `recv_multishot`에서 이를 진단하려면 CQE의 `IORING_CQE_F_BUFFER` / `IORING_CQE_F_MORE` / `IORING_CQE_F_BUF_MORE`, buffer-ring의 `available/head` 상태, 그리고 terminal `-ENOBUFS` CQE가 남기는 failure signature를 함께 맞춰 봐야 한다.

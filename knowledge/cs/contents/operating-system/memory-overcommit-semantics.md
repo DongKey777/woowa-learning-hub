@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Memory Overcommit Semantics
+concept_id: operating-system/memory-overcommit-semantics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- memory-overcommit-semantics
+- overcommit-commit-charge
+- malloc-success-allocation
+- failure
+aliases:
+- memory overcommit semantics
+- overcommit commit charge
+- malloc success allocation failure
+- vm.overcommit_memory
+- OOM after allocation touch
+- virtual memory promise
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/oom-killer-scoring-victim-selection.md
+- contents/operating-system/vm-swappiness-reclaim-behavior.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/virtual-memory-basics.md
+expected_queries:
+- memory overcommit은 malloc이 성공해도 실제 touch 시점에 실패할 수 있다는 뜻이야?
+- vm.overcommit_memory와 commit charge를 어떻게 이해해야 해?
+- virtual memory promise와 OOM killer는 어떻게 연결돼?
+- overcommit 정책 때문에 allocation 성공과 runtime failure가 분리되는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 memory overcommit을 물리 memory를 미리 다 예약하지 않고 virtual allocation을
+  먼저 허용하는 정책으로 설명한다. commit 성공과 실제 page fault/touch 시점 실패,
+  reclaim, OOM killer를 분리해 본다.
+---
 # Memory Overcommit, Semantics
 
 > 한 줄 요약: memory overcommit은 "미리 다 예약하지 않고 일단 허용"하는 정책이라서, 커밋은 성공해도 실제 할당 시점에 실패할 수 있다.

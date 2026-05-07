@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: JWT 깊이 파기
+concept_id: security/jwt-deep-dive
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- jwt
+- claim set
+- signature validation
+- jwks
+aliases:
+- jwt
+- claim set
+- signature validation
+- jwks
+- refresh token
+- revocation
+- jwt primer return
+- security readme return path
+- authz freshness before jwt deep dive
+- onceperrequestfilter beginner route
+- onceperrequestfilter safe next doc
+- spring filter example before jwt deep dive
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/claim-freshness-after-permission-changes.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/token-introspection-vs-self-contained-jwt.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/jwk-rotation-cache-invalidation-kid-rollover.md
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/spring/spring-security-architecture.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- JWT 깊이 파기 핵심 개념을 설명해줘
+- jwt가 왜 필요한지 알려줘
+- JWT 깊이 파기 실무 설계 포인트는 뭐야?
+- jwt에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 JWT 깊이 파기를 다루는 deep_dive 문서다. JWT는 "로그인 상태를 담은 문자열"이 아니라, 서명된 클레임 집합이다. 구조, 검증, 갱신, 탈취 대응을 같이 봐야 운영할 수 있다. 검색 질의가 jwt, claim set, signature validation, jwks처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # JWT 깊이 파기
 
 > 한 줄 요약: JWT는 "로그인 상태를 담은 문자열"이 아니라, 서명된 클레임 집합이다. 구조, 검증, 갱신, 탈취 대응을 같이 봐야 운영할 수 있다.

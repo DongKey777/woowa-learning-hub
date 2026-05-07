@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Cache-Oblivious vs Cache-Aware Layouts
+concept_id: data-structure/cache-oblivious-vs-cache-aware-layouts
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- cache-oblivious-vs-aware
+- memory-hierarchy-layout-choice
+- hardware-parameter-locality
+aliases:
+- cache oblivious vs cache aware
+- cache-aware layout
+- cache-oblivious layout
+- block size agnostic structure
+- hardware conscious data structure
+- vEB layout vs Eytzinger
+- memory hierarchy layout tradeoff
+symptoms:
+- cache-aware와 cache-oblivious를 locality를 보느냐 안 보느냐의 차이로 오해한다
+- cache line, page, block size 같은 hardware parameter를 코드에 박는 것이 언제 장점이고 위험인지 구분하지 못한다
+- vEB, Eytzinger, blocked array, cache-oblivious B-tree를 workload와 운영 환경 없이 이름으로만 고르려 한다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/cache-aware-data-structure-layouts
+next_docs:
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+- data-structure/adaptive-radix-tree
+linked_paths:
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+- contents/data-structure/cache-oblivious-b-tree-vs-plain-veb-layout.md
+- contents/data-structure/adaptive-radix-tree.md
+- contents/data-structure/succinct-bitvector-rank-select.md
+confusable_with:
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/eytzinger-layout-and-cache-friendly-search
+forbidden_neighbors: []
+expected_queries:
+- cache-aware와 cache-oblivious layout은 정확히 무엇이 달라?
+- cache line이나 page size를 구조에 직접 반영하는 장단점을 알려줘
+- cache-oblivious가 특정 block 크기를 몰라도 locality를 얻는다는 뜻은?
+- vEB Eytzinger blocked array를 어떤 workload 기준으로 비교해야 해?
+- 실무에서는 왜 cache-aware 튜닝이 더 자주 보이는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 cache-aware와 cache-oblivious layout을 hardware parameter를 직접
+  구조에 반영하는지 여부로 비교한다. cache line, page, block size, vEB,
+  Eytzinger, blocked array, recursive packing을 memory hierarchy locality
+  관점에서 분리한다.
+---
 # Cache-Oblivious vs Cache-Aware Layouts
 
 > 한 줄 요약: cache-aware는 cache line과 block 크기를 의식해 레이아웃을 잡고, cache-oblivious는 특정 계층 크기를 박지 않고도 여러 메모리 계층에서 locality를 얻으려는 설계다.

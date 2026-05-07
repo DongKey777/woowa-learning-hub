@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Cleaner vs finalize Deprecation
+concept_id: language/cleaner-vs-finalize-deprecation
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- resource-cleanup
+- finalize-deprecation
+- autocloseable
+aliases:
+- Cleaner vs finalize
+- finalize deprecation
+- Java Cleaner
+- AutoCloseable cleanup
+- finalization removal
+- phantom reference cleanup
+- Cleaner는 즉시 닫기가 아니다
+symptoms:
+- finalize에 자원 해제 로직을 넣어 GC 타이밍과 finalization 지연에 의존해
+- Cleaner가 있으니 close를 호출하지 않아도 된다고 오해하고 native/off-heap 자원 해제를 늦춰
+- AutoCloseable과 try-with-resources가 1차 해법이고 Cleaner는 fallback이라는 경계를 놓쳐
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/try-with-resources-suppressed-exceptions
+next_docs:
+- language/direct-buffer-offheap-memory-troubleshooting
+- language/phantom-weak-soft-references
+- language/classloader-memory-leak-playbook
+linked_paths:
+- contents/language/java/try-with-resources-suppressed-exceptions.md
+- contents/language/java/phantom-weak-soft-references.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/classloader-memory-leak-playbook.md
+confusable_with:
+- language/try-with-resources-suppressed-exceptions
+- language/phantom-weak-soft-references
+- language/direct-buffer-offheap-memory-troubleshooting
+forbidden_neighbors: []
+expected_queries:
+- Java finalize가 deprecated 된 이유와 Cleaner가 바꾼 점을 설명해줘
+- Cleaner가 있어도 파일 socket native memory를 명시적으로 close해야 하는 이유가 뭐야?
+- AutoCloseable try-with-resources와 Cleaner fallback의 역할을 어떻게 나눠?
+- finalization은 왜 실행 시점이 예측 불가능하고 성능 문제가 있어?
+- off-heap resource cleanup에서 Cleaner를 안전장치로만 봐야 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java finalize deprecation과 Cleaner를 AutoCloseable, try-with-resources, GC timing, reference processing, off-heap resource cleanup 관점으로 설명하는 advanced deep dive다.
+  finalize deprecated, Cleaner, AutoCloseable, explicit close, native memory cleanup, finalization 질문이 본 문서에 매핑된다.
+---
 # Cleaner vs `finalize()` Deprecation
 
 > 한 줄 요약: `finalize()`는 예측 불가능성과 성능 문제 때문에 deprecated 되었고, Cleaner는 더 나은 대안이지만 여전히 즉시성 보장이 없어서 자원 관리는 기본적으로 명시적으로 닫는 것이 맞다.

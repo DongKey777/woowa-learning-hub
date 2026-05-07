@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Authorization Caching / Staleness
+concept_id: security/authorization-caching-staleness
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- authorization cache
+- staleness
+- permission cache
+- policy version
+aliases:
+- authorization cache
+- staleness
+- permission cache
+- policy version
+- authz version
+- claim version
+- revocation
+- TTL
+- negative cache
+- cache invalidation
+- RBAC
+- ABAC
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/jwt-deep-dive.md
+- contents/security/authz-session-versioning-patterns.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/authz-negative-cache-failure-case-study.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/authorization-graph-caching.md
+- contents/security/delegated-admin-tenant-rbac.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Authorization Caching / Staleness 핵심 개념을 설명해줘
+- authorization cache가 왜 필요한지 알려줘
+- Authorization Caching / Staleness 실무 설계 포인트는 뭐야?
+- authorization cache에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Authorization Caching / Staleness를 다루는 deep_dive 문서다. authorization cache는 성능을 크게 올릴 수 있지만, 권한 회수와 정책 변경을 늦출 수 있으므로 versioned invalidation과 짧은 TTL이 같이 필요하다. 검색 질의가 authorization cache, staleness, permission cache, policy version처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Authorization Caching / Staleness
 
 > 한 줄 요약: authorization cache는 성능을 크게 올릴 수 있지만, 권한 회수와 정책 변경을 늦출 수 있으므로 versioned invalidation과 짧은 TTL이 같이 필요하다.

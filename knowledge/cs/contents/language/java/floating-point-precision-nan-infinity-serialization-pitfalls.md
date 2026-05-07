@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Floating-Point Precision, NaN, Infinity, and Serialization Pitfalls
+concept_id: language/floating-point-precision-nan-infinity-serialization-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- floating-point
+- numeric-serialization
+- precision-loss
+aliases:
+- floating point precision
+- Java double float precision
+- NaN Infinity signed zero
+- IEEE 754 Java
+- JSON number precision loss
+- BigDecimal.valueOf double
+- double 0.1 0.2 problem
+symptoms:
+- double과 float를 정확한 실수 타입으로 기대해 0.1 + 0.2, 누적 합, 경계값 비교에서 근사 오차를 놓쳐
+- NaN, Infinity, -0.0이 equality, hash, sorting, JSON serialization에서 일반 숫자처럼 동작하지 않는다는 점을 고려하지 않아
+- double을 캐시 키나 signature input, wire contract로 그대로 써서 언어별 파싱과 문자열 표현 차이에 취약해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+next_docs:
+- language/bigdecimal-construction-policy-beginner-bridge
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/io-nio-serialization
+linked_paths:
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/language/java/integer-overflow-exact-arithmetic-unit-conversion-pitfalls.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+- contents/language/java/bigdecimal-construction-policy-beginner-bridge.md
+confusable_with:
+- language/bigdecimal-money-equality-rounding-serialization-pitfalls
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+- language/bigdecimal-construction-policy-beginner-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java double 0.1 + 0.2가 0.3과 정확히 같지 않을 수 있는 이유를 설명해줘
+- NaN Infinity signed zero가 equality hash sorting JSON에서 어떤 함정을 만들어?
+- floating point를 cache key나 signature input으로 쓰기 전에 어떤 representation policy가 필요해?
+- 돈이나 정산 계산에 double 대신 BigDecimal이나 minor unit long을 쓰는 이유가 뭐야?
+- JSON number로 double을 내보낼 때 precision loss와 NaN Infinity 직렬화 문제를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java floating-point를 IEEE 754 double/float precision, NaN, Infinity, signed zero, epsilon comparison, JSON serialization, BigDecimal boundary로 설명하는 advanced deep dive다.
+  double precision, 0.1 + 0.2, NaN, Infinity, signed zero, JSON number, BigDecimal.valueOf 질문이 본 문서에 매핑된다.
+---
 # Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls
 
 > 한 줄 요약: `double`과 `float`는 빠른 근사값 타입이지 "실수 일반"이 아니다. 이 특성을 잊으면 `0.1 + 0.2`, `NaN`, signed zero, JSON 숫자 직렬화, 캐시 키, 정렬에서 조용한 오류가 생긴다.

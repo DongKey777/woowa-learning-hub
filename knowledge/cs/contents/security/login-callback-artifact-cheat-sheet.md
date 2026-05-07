@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Login Callback Artifact Cheat Sheet
+concept_id: security/login-callback-artifact-cheat-sheet
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- login callback artifact cheat sheet
+- callback artifact glossary
+- state nonce login_state oauth_txn difference
+- social login callback artifacts beginner
+aliases:
+- login callback artifact cheat sheet
+- callback artifact glossary
+- state nonce login_state oauth_txn difference
+- social login callback artifacts beginner
+- callback success but app anonymous artifact split
+- callback cookie vs handoff code vs session cookie
+- shared session cookie vs one-time handoff code
+- login callback terms beginner
+- callback capture chooser link
+- callback to local session bridge
+- state mismatch which cookie beginner
+- oidc nonce vs oauth state beginner
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/social-login-to-local-session-bridge.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/samesite-login-callback-primer.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/network/http-https-basics.md
+- contents/security/callback-cookie-name-splitter.md
+- contents/security/oauth2-authorization-code-grant.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Login Callback Artifact Cheat Sheet 핵심 개념을 설명해줘
+- login callback artifact cheat sheet가 왜 필요한지 알려줘
+- Login Callback Artifact Cheat Sheet 실무 설계 포인트는 뭐야?
+- login callback artifact cheat sheet에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Login Callback Artifact Cheat Sheet를 다루는 deep_dive 문서다. social login callback에서 자주 보이는 `state`, `nonce`, `login_state`, `oauth_txn`, shared session cookie, one-time handoff code는 전부 "로그인 관련 값"처럼 보여도 쓰는 시점과 책임이 다르다. 먼저 어느 artifact가 어느 hop에서 다시 필요한지 갈라야 `state mismatch`, callback 성공 후 anonymous, 중복 cookie 혼동을 덜 섞는다. 검색 질의가 login callback artifact cheat sheet, callback artifact glossary, state nonce login_state oauth_txn difference, social login callback artifacts beginner처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Login Callback Artifact Cheat Sheet
 
 > 한 줄 요약: social login callback에서 자주 보이는 `state`, `nonce`, `login_state`, `oauth_txn`, shared session cookie, one-time handoff code는 전부 "로그인 관련 값"처럼 보여도 쓰는 시점과 책임이 다르다. 먼저 어느 artifact가 어느 hop에서 다시 필요한지 갈라야 `state mismatch`, callback 성공 후 anonymous, 중복 cookie 혼동을 덜 섞는다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문"
+concept_id: network/browser-http-version-selection-alpn-alt-svc-fallback
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- http-version-selection
+- alpn-alt-svc-fallback
+- h2-h3-browser-observability
+aliases:
+- browser http version selection
+- alpn vs alt-svc
+- first request h2 repeat h3
+- h3 fallback browser
+- http3 selection primer
+- browser protocol negotiation
+symptoms:
+- 첫 요청이 h2이고 다음 새 연결이 h3인 것을 fallback 장애로 오해한다
+- ALPN과 Alt-Svc를 모두 같은 HTTP header 협상으로 생각한다
+- DevTools Protocol=h2만 보고 H3 시도 실패 여부까지 확정한다
+- 304나 browser cache signal과 h2 h3 protocol 선택을 섞어 읽는다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http1-http2-http3-beginner-comparison
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/alt-svc-header-reading-micro-note
+- network/alt-svc-cache-lifecycle-basics
+- network/h3-discovery-observability-primer
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+- network/browser-devtools-protocol-column-labels-primer
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/alt-svc-header-reading-micro-note.md
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/security/https-tls-beginner.md
+confusable_with:
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+- network/browser-devtools-protocol-column-labels-primer
+- network/h3-discovery-observability-primer
+- network/alt-svc-cache-lifecycle-basics
+- network/http-caching-conditional-request-basics
+forbidden_neighbors: []
+expected_queries:
+- "브라우저가 첫 요청은 h2로 하고 다음 새 연결은 h3로 하는 이유가 뭐야?"
+- "ALPN과 Alt-Svc는 HTTP 버전 선택에서 각각 어떤 역할을 해?"
+- "DevTools Protocol이 h2라고 나오면 H3 fallback이 있었다고 봐도 돼?"
+- "Alt-Svc는 지금 연결이 아니라 다음 연결 힌트라는 점을 설명해줘"
+- "H3 fallback과 cache 304 신호를 Network 탭에서 어떻게 분리해?"
+contextual_chunk_prefix: |
+  이 문서는 브라우저 HTTP version selection을 ALPN current connection,
+  Alt-Svc next connection hint, HTTPS RR discovery, H3 fallback, DevTools
+  Protocol column 관찰 순서로 설명하는 beginner primer다.
+---
 # 브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문
 
 > 한 줄 요약: 브라우저는 보통 현재 연결은 ALPN으로, 다음 새 연결의 H3 후보는 `Alt-Svc`로 배워서 고르므로 첫 요청은 `h2`, 나중 새 연결은 `h3`가 될 수 있다.

@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Cgroup IO Controller Basics
+concept_id: operating-system/cgroup-io-controller-basics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- cgroup-io-controller
+- io-max-io
+- weight
+- block-io-isolation
+aliases:
+- cgroup IO controller
+- io.max io.weight
+- block IO isolation
+- cgroup disk throttling
+- IO controller basics
+- workload storage priority
+intents:
+- definition
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+- contents/operating-system/blk-mq-cgroup-io-writeback-timeline-debugging.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/dirty-page-ratios-writeback-tuning.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/container-cgroup-namespace.md
+expected_queries:
+- cgroup IO controller는 디스크 I/O를 워크로드별로 어떻게 제한해?
+- io.max와 io.weight는 storage throttling과 priority에서 어떻게 달라?
+- page cache writeback과 cgroup IO limit은 언제 연결돼?
+- container별 disk I/O 격리를 하려면 cgroup controller에서 무엇을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 cgroup I/O controller가 disk와 block queue를 workload별로 나누어 read/write
+  rate, weight, priority를 조정하는 isolation tool이라는 점을 설명한다. blk-mq, writeback,
+  PSI와 연결한다.
+---
 # Cgroup IO Controller, Basics
 
 > 한 줄 요약: cgroup I/O controller는 디스크와 블록 큐를 워크로드별로 나누어 쓰기/읽기 속도와 우선순위를 조정하는 격리 도구다.

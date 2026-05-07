@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Orchestration vs Choreography Pattern Language
+concept_id: design-pattern/orchestration-vs-choreography-pattern-language
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- orchestration-vs-choreography
+- distributed-workflow-design
+- event-driven-autonomy
+aliases:
+- orchestration vs choreography
+- central coordinator
+- event driven workflow
+- distributed workflow design
+- process manager
+- service autonomy
+- retry ownership
+- workflow choreography
+- 중앙 오케스트레이션
+- 이벤트 자율 반응
+symptoms:
+- 분산 워크플로를 모두 중앙 coordinator로 몰거나, 반대로 핵심 상태 전이까지 owner 없는 choreography로 흩어버린다
+- 알림/검색/통계 같은 부가 반응과 결제/재고/주문 같은 핵심 보상 경로를 같은 제어 방식으로 설계한다
+- choreography의 낮은 결합도만 보고 전체 흐름 추적과 장애 분석 비용을 과소평가한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/observer-pubsub-application-events
+next_docs:
+- design-pattern/orchestration-vs-choreography-failure-handling
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/workflow-owner-vs-participant-context
+linked_paths:
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/orchestration-vs-choreography-failure-handling.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/chain-of-responsibility-filters-interceptors.md
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+confusable_with:
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/orchestration-vs-choreography-failure-handling
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/observer-pubsub-application-events
+forbidden_neighbors: []
+expected_queries:
+- Orchestration과 Choreography는 중앙 coordinator가 지휘하는 방식과 서비스가 이벤트에 자율 반응하는 방식으로 어떻게 달라?
+- 결제 재고 주문처럼 실패 보상과 순서가 중요한 핵심 플로우는 orchestration이 더 맞는 이유가 뭐야?
+- 주문 완료 후 알림 검색 인덱스 통계 같은 부가 반응은 choreography가 잘 맞는 이유가 뭐야?
+- choreography는 결합도가 낮지만 전체 흐름 tracing과 장애 분석이 어려워지는 이유가 뭐야?
+- 실무에서 핵심 경로는 orchestration, 부가 반응은 choreography로 혼합하는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Orchestration vs Choreography chooser로, 분산 workflow에서 중앙 coordinator가
+  step order와 compensation을 지휘하는 orchestration과 각 service가 integration event에 자율적으로
+  반응하는 choreography를 제어 방식, coupling, tracing, failure ownership 기준으로 비교한다.
+---
 # Orchestration vs Choreography Pattern Language
 
 > 한 줄 요약: Orchestration은 중앙이 흐름을 지휘하고, Choreography는 각 서비스가 이벤트에 반응하며 스스로 흐름을 맞춘다.

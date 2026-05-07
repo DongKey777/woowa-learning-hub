@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring spring.config.additional-location Primer
+concept_id: spring/config-additional-location-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- config-additional-location
+- config-location
+- default-plus-override
+- config
+aliases:
+- spring.config.additional-location
+- spring.config.location
+- default plus override config
+- packaged application.yml plus external override
+- optional config additional location
+- Spring external config location
+- config location replaces defaults
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-external-config-file-precedence-primer.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-docker-compose-k8s-env-injection-basics-primer.md
+- contents/spring/spring-spring-application-json-primer.md
+expected_queries:
+- spring.config.additional-location은 spring.config.location과 뭐가 달라?
+- jar 안 application.yml 기본값을 유지하고 외부 파일만 덮으려면 어떻게 해?
+- spring.config.location을 쓰면 기본 탐색 위치가 사라지는 이유가 뭐야?
+- optional file과 additional-location은 언제 같이 써?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot external config에서 spring.config.location은 기본 search
+  location을 대체하고, spring.config.additional-location은 기본 위치를 유지한 채
+  외부 override 위치를 추가한다는 beginner mental model을 제공한다.
+  packaged application.yml과 배포별 external override를 안전하게 결합하는 primer다.
+---
 # Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때
 
 > 한 줄 요약: beginner가 "jar 안 기본 설정은 그대로 두고, 운영/개발 환경 파일만 위에 덮고 싶다"면 `spring.config.location`보다 `spring.config.additional-location`이 더 안전한 출발점이다.

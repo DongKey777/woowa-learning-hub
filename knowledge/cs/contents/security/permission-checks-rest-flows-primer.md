@@ -1,8 +1,78 @@
+---
+schema_version: 3
+title: Permission Checks In REST Flows
+concept_id: security/permission-checks-rest-flows-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- permission checks in rest flows
+- rest authorization primer
+- rest object authorization beginner
+- valid token is not enough
+aliases:
+- permission checks in rest flows
+- rest authorization primer
+- rest object authorization beginner
+- valid token is not enough
+- valid login is not enough
+- login success but 403
+- token valid but 403
+- object-level authorization primer
+- object level authorization rest api
+- rest endpoint permission check order
+- role scope ownership tenant rest
+- role vs scope vs ownership vs tenant
+symptoms:
+- 로그인은 됐는데 특정 API만 403이 나오면 role, scope, ownership 중 무엇을 봐야 할지 모르겠다
+- 유효한 토큰이면 특정 주문이나 예약 resource도 열려야 한다고 생각한다
+- REST endpoint에서 action permission과 resource ownership 확인 순서를 코드로 설명하지 못한다
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/pdp-pep-boundaries-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Permission Checks In REST Flows 핵심 개념을 설명해줘
+- permission checks in rest flows가 왜 필요한지 알려줘
+- Permission Checks In REST Flows 실무 설계 포인트는 뭐야?
+- permission checks in rest flows에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Permission Checks In REST Flows를 다루는 primer 문서다. REST API에서 `로그인 성공`과 `토큰 유효`는 출발점일 뿐이고, 실제 허용은 `action permission`, `scope`, `ownership`, `tenant`를 요청 패턴에 맞게 따로 확인해야 끝난다. 검색 질의가 permission checks in rest flows, rest authorization primer, rest object authorization beginner, valid token is not enough처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Permission Checks In REST Flows
 
 > 한 줄 요약: REST API에서 `로그인 성공`과 `토큰 유효`는 출발점일 뿐이고, 실제 허용은 `action permission`, `scope`, `ownership`, `tenant`를 요청 패턴에 맞게 따로 확인해야 끝난다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 미션 장면 | 이 문서에서 먼저 잡을 질문 |
+|---|---|
+| 일반 회원이 admin API를 호출한다 | 기능 권한이 있는가 |
+| 로그인한 사용자가 남의 주문 ID를 넣는다 | resource ownership이 맞는가 |
+| token은 유효한데 `403`이 나온다 | scope, role, ownership 중 어느 gate인가 |
 
 
 관련 문서:

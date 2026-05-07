@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL
+concept_id: database/ordered-guard-row-upsert-patterns-postgresql-mysql
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 93
+mission_ids: []
+review_feedback_tags:
+- guard-row
+- upsert-ordering
+- deadlock
+- postgresql-mysql
+aliases:
+- ordered guard row upsert
+- ordered upsert plus lock
+- pre-seeded guard row
+- guard row creation race
+- guard creation deadlock
+- exact pk lock after upsert
+- PostgreSQL on conflict guard row
+- MySQL on duplicate key guard row
+- canonical guard ordering
+- guard row bootstrap
+symptoms:
+- guard row가 아직 없을 수 있는 sparse key space에서 생성 race와 multi-key deadlock을 줄여야 해
+- PostgreSQL ON CONFLICT나 MySQL ON DUPLICATE KEY UPDATE를 lock 획득 shortcut으로 쓰다가 plan order drift와 deadlock이 생겨
+- pre-seeded guard row와 ordered upsert plus lock 중 어떤 protocol이 hot path에 맞는지 결정해야 해
+intents:
+- design
+- troubleshooting
+prerequisites:
+- database/guard-row-scope-design-multi-day-bookings
+- database/upsert-contention-unique-index-locking
+next_docs:
+- database/shared-pool-guard-design-room-type-inventory
+- database/deadlock-case-study
+- database/transaction-retry-serialization-failure-patterns
+linked_paths:
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/deadlock-case-study.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+confusable_with:
+- database/upsert-contention-unique-index-locking
+- database/guard-row-scope-design-multi-day-bookings
+- database/deadlock-case-study
+forbidden_neighbors: []
+expected_queries:
+- guard row를 runtime에 만들 때 pre-seed와 ordered upsert plus lock 중 무엇이 안전해?
+- PostgreSQL ON CONFLICT나 MySQL ON DUPLICATE KEY UPDATE로 guard row를 만들 때 deadlock을 줄이는 순서를 알려줘
+- sparse guard key creation에서 existence phase와 lock phase를 분리해야 하는 이유가 뭐야?
+- multi-key guard row를 canonical order로 잠그지 않으면 어떤 deadlock이 생겨?
+- pre-seeded guard row가 hot path에서 missing row branch를 제거해 주는 장점을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 guard row가 없는 sparse key space에서 pre-seeded guard row와 ordered upsert-plus-lock protocol로 PostgreSQL/MySQL multi-key deadlock을 줄이는 advanced playbook이다.
+  guard row creation race, ordered upsert plus lock, canonical guard ordering, exact PK lock after upsert 질문이 본 문서에 매핑된다.
+---
 # Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL
 
 > 한 줄 요약: guard row를 미리 심어 두면 hot path는 "기존 row를 canonical order로 잠그는 문제"로 단순해지고, 런타임 생성이 필요하다면 `upsert`는 존재 보장 단계로만 보고 exact-PK lock을 같은 순서로 다시 잡아야 PostgreSQL/MySQL 모두에서 plan-order drift와 guard-creation deadlock을 줄일 수 있다.

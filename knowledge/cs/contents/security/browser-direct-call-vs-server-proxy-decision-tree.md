@@ -9,7 +9,10 @@ doc_role: chooser
 level: beginner
 language: ko
 source_priority: 88
-mission_ids: []
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
 review_feedback_tags:
 - secret-boundary-before-cors
 - browser-vs-server-credential-placement
@@ -55,7 +58,7 @@ confusable_with:
 - security/api-key-vs-oauth-vs-client-credentials-primer
 - security/browser-bff-token-boundary-session-translation
 - security/cors-basics
-forbidden_neighbors:
+forbidden_neighbors: []
 expected_queries:
 - OpenAI나 결제 API를 프론트에서 직접 부르면 왜 위험해?
 - CORS가 막혀도 서버 프록시로 가야 하는 기준을 알려줘
@@ -76,6 +79,14 @@ contextual_chunk_prefix: |
 > 한 줄 요약: `CORS 때문에 프론트에서 직접 붙일까?`라는 질문은 보통 CORS 질문이 아니라 `누가 시크릿을 들고 외부 API를 호출해야 하나`라는 경계 질문이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "CORS 때문에 프론트에서 secret key로 직접 붙여야 하나요?" | 결제/외부 API를 브라우저에서 호출하려는 설계 | CORS 우회보다 secret 보관 경계를 먼저 본다 |
+| "외부 API를 브라우저에서 바로 호출해도 되는지 판단이 안 돼요" | publishable key와 server secret이 섞인 연동 | provider가 browser-safe key를 허용하는지 확인한다 |
+| "BFF를 두는 이유가 CORS인지 시크릿 경계인지 헷갈려요" | 프론트 요청을 우리 서버가 대신 호출하는 구조 | 브라우저 노출 금지 자격증명과 사용자 세션 번역 책임을 분리한다 |
 
 관련 문서:
 

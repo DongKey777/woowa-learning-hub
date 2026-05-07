@@ -60,11 +60,12 @@ expected_queries:
 - 1.00으로 찾았는데 1.0 key가 돌아오는 이유를 알고 싶어
 - subMap inclusive false가 exact match에서 어떻게 동작하는지 예제로 보고 싶어
 contextual_chunk_prefix: |
-  이 문서는 Java 학습자가 BigDecimal key를 TreeMap에서 조회할 때 숫자
-  비교와 표현 비교가 어떻게 이어지는지 연결하는 bridge다. 1과 1.0이
-  같은 자리로 잡힘, floorKey가 어디에 멈추는지, scale 다른 값으로 범위
-  조회, exact match 제외 headMap, 저장된 대표 key가 반환됨 같은 자연어
-  paraphrase가 본 문서의 조회 규칙에 매핑된다.
+  이 문서는 Java 학습자가 TreeMap의 BigDecimal key 조회에서 숫자상 같은 값과
+  문자열 모양이 다른 값을 어떻게 같은 자리로 읽는지, 그리고 floorKey,
+  ceilingKey, subMap 경계가 그 규칙과 어떻게 이어지는지 연결하는 bridge다.
+  1과 1.00이 왜 같은 칸처럼 잡히나, 범위 검색이 scale 차이를 무시해도 되나,
+  exact match는 빼고 바로 아래 값만 보고 싶다, 대표로 저장된 key가 왜 저 값인가
+  같은 자연어 paraphrase가 본 문서의 조회 판단에 매핑된다.
 ---
 # BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups
 

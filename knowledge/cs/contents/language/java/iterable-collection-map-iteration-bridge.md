@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Iterable vs Collection vs Map Iteration Bridge
+concept_id: language/iterable-collection-map-iteration-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- collection-hierarchy
+- map-iteration
+- iterable
+aliases:
+- Iterable Collection Map 브리지 입문
+- iterable vs collection vs map
+- map is not collection Java
+- Java entrySet keySet values iteration
+- 자바 컬렉션 계층 구조 반복 입문
+- Map은 Collection인가요
+symptoms:
+- Map도 데이터 모음이니 Collection을 상속한다고 생각해 for-each에서 바로 순회하려다 막혀
+- Iterable과 Collection을 같은 말로 이해해 순회 가능성과 add/remove/size 조작 계약을 구분하지 못해
+- Map 순회에서 keySet, values, entrySet 중 무엇을 골라야 하는지 질문 목적별로 나누지 못해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/java-generics-basics
+- language/collection-vs-collections-vs-arrays-utility-mini-bridge
+next_docs:
+- language/map-iteration-patterns-cheat-sheet
+- language/hashset-vs-treeset-duplicate-semantics
+- language/navigablemap-navigableset-mental-model
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-generics-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/collection-vs-collections-vs-arrays-utility-mini-bridge.md
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+confusable_with:
+- language/java-collections-basics
+- language/map-iteration-patterns-cheat-sheet
+- language/collection-vs-collections-vs-arrays-utility-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- Iterable Collection Map 차이를 Java 컬렉션 계층 구조로 설명해줘
+- Map은 왜 Collection을 상속하지 않고 for-each로 바로 돌 수 없어?
+- Java Map을 반복할 때 entrySet keySet values 중 무엇을 써야 해?
+- Iterable은 순회만 되고 Collection은 add remove size가 되는 이유를 알려줘
+- List Set Queue Map이 컬렉션 프레임워크에서 어떻게 나뉘는지 beginner 관점으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java Iterable, Collection, Map의 계층과 iteration API를 beginner 관점에서 연결하는 primer다.
+  iterable vs collection vs map, Map is not Collection, entrySet keySet values, for-each iteration 질문이 본 문서에 매핑된다.
+---
 # Iterable vs Collection vs Map 브리지 입문
 
 > 한 줄 요약: `Iterable`은 "반복할 수 있다"는 약속이고, `Collection`은 "원소 묶음" 인터페이스이며, `Map`은 key-value 사전이라 `Collection` 계층과 분리되어 있다.

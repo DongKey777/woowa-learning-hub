@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Fenwick Tree vs Segment Tree
+concept_id: data-structure/fenwick-vs-segment-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- fenwick-vs-segment-tree
+- range-query-structure-choice
+- point-update-vs-lazy-range
+aliases:
+- Fenwick Tree vs Segment Tree
+- BIT vs Segment Tree
+- range sum point update choice
+- lazy propagation vs Fenwick
+- prefix sum interval query
+- dynamic range query tradeoff
+- 구간 합 자료구조 선택
+symptoms:
+- 필요한 연산이 point update와 prefix/range sum뿐인데 Segment Tree를 먼저 골라 구현 복잡도를 키운다
+- range update, range min/max, custom merge가 필요한데 Fenwick Tree 기본형으로 억지로 처리하려 한다
+- static query에는 Sparse Table, dynamic update에는 Fenwick/Segment Tree라는 큰 분기를 먼저 자르지 못한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/fenwick-tree
+- data-structure/segment-tree-lazy-propagation
+next_docs:
+- data-structure/fenwick-segment-tree-operations-playbook
+- data-structure/sparse-table
+- data-structure/coordinate-compression-patterns
+linked_paths:
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/fenwick-segment-tree-operations-playbook.md
+- contents/data-structure/sparse-table.md
+confusable_with:
+- data-structure/fenwick-tree
+- data-structure/segment-tree-lazy-propagation
+- data-structure/sparse-table
+- data-structure/disjoint-sparse-table
+forbidden_neighbors: []
+expected_queries:
+- Fenwick Tree와 Segment Tree는 필요한 연산 기준으로 어떻게 골라?
+- point update와 prefix sum이면 Fenwick이 충분하고 range update면 Segment Tree를 보는 이유는?
+- range min max custom merge가 필요하면 Fenwick보다 Segment Tree가 나은가?
+- static range query와 dynamic update query를 먼저 어떻게 나눠야 해?
+- 구간 합 문제에서 BIT와 세그먼트 트리 선택 기준을 beginner보다 깊게 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Fenwick Tree와 Segment Tree를 필요한 range operation 기준으로
+  비교하는 chooser다. point update, prefix/range sum, range min/max, lazy
+  propagation, custom merge, static query vs dynamic update를 분리한다.
+---
 # Fenwick Tree vs Segment Tree
 
 > 한 줄 요약: Fenwick Tree는 점 갱신과 누적합에 가볍고, Segment Tree는 더 넓은 범위 연산과 유연성에서 강하다.

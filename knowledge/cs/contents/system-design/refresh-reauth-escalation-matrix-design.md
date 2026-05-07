@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Refresh Reauth Escalation Matrix 설계
+concept_id: system-design/refresh-reauth-escalation-matrix-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- refresh reauth escalation matrix
+- mixed-version refresh migration
+- silent refresh migration
+- refresh step-up
+aliases:
+- refresh reauth escalation matrix
+- mixed-version refresh migration
+- silent refresh migration
+- refresh step-up
+- full reauthentication
+- risk-gated reissue
+- refresh assurance portability
+- auth assurance carry-over
+- auth_time migration
+- acr amr migration
+- refresh binding portability
+- device-bound refresh migration
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/refresh-family-rotation-cutover-design.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/system-design/refresh-exchange-idempotency-under-cutover-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/edge-verifier-claim-skew-fallback-design.md
+- contents/system-design/capability-sunset-gate-matrix-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/security/mfa-step-up-auth-design.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/token-misuse-detection-replay-containment.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Refresh Reauth Escalation Matrix 설계 설계 핵심을 설명해줘
+- refresh reauth escalation matrix가 왜 필요한지 알려줘
+- Refresh Reauth Escalation Matrix 설계 실무 트레이드오프는 뭐야?
+- refresh reauth escalation matrix 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Refresh Reauth Escalation Matrix 설계를 다루는 deep_dive 문서다. refresh reauth escalation matrix 설계는 mixed-version refresh migration 동안 "형식만 옮기면 되는지", "현재 세션이 더 강한 증거를 한 번 더 제출하면 되는지", "현재 세션 자체를 더는 믿으면 안 되는지"를 구분해 silent migration, step-up, full reauthentication을 서로 다른 증거 강도로 결정하는 운영 설계다. 검색 질의가 refresh reauth escalation matrix, mixed-version refresh migration, silent refresh migration, refresh step-up처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Refresh Reauth Escalation Matrix 설계
 
 > 한 줄 요약: refresh reauth escalation matrix 설계는 mixed-version refresh migration 동안 "형식만 옮기면 되는지", "현재 세션이 더 강한 증거를 한 번 더 제출하면 되는지", "현재 세션 자체를 더는 믿으면 안 되는지"를 구분해 silent migration, step-up, full reauthentication을 서로 다른 증거 강도로 결정하는 운영 설계다.

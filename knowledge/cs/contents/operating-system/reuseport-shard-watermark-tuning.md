@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: SO_REUSEPORT Shard Watermark Tuning
+concept_id: operating-system/reuseport-shard-watermark-tuning
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- reuseport-shard-watermark
+- tuning
+- so-reuseport-shard
+- imbalance
+aliases:
+- SO_REUSEPORT shard imbalance
+- per listener pause watermark
+- reuseport backlog shard
+- listener headroom
+- accept pause resume policy
+- port average hides shard overflow
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/listener-overload-thresholds-accept-pause-policy.md
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/ephemeral-ports-time-wait-reuse-recovery.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+symptoms:
+- SO_REUSEPORT 전체 평균 backlog는 괜찮아 보이는데 특정 listener shard만 먼저 넘친다.
+- accept pause/resume 정책을 port 단위로 걸어 shard별 headroom 차이를 놓친다.
+- reuseport 분산이 균등하지 않아 일부 worker만 overload된다.
+expected_queries:
+- SO_REUSEPORT는 accept 경합을 줄이지만 listener별 backlog imbalance를 만들 수 있어?
+- port 전체 평균이 아니라 shard별 pause watermark를 봐야 하는 이유는?
+- reuseport listener headroom과 accept pause policy를 어떻게 설계해?
+- 특정 shard만 overflowing되는 문제를 runtime에서 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 operating-system 카테고리에서 SO_REUSEPORT Shard Watermark Tuning를 다루는 playbook 문서다. SO_REUSEPORT shard imbalance, per listener pause watermark, reuseport backlog shard, listener headroom, accept pause resume policy 같은 lexical 표현과 SO_REUSEPORT는 accept 경합을 줄이지만 listener별 backlog imbalance를 만들 수 있어?, port 전체 평균이 아니라 shard별 pause watermark를 봐야 하는 이유는? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # SO_REUSEPORT Shard Imbalance and Per-Listener Pause Watermark Tuning
 
 > 한 줄 요약: `SO_REUSEPORT`는 accept 경합을 줄여 주지만 backlog도 listener별로 쪼개 버린다. 그래서 port 전체 평균이 멀쩡해 보여도 특정 shard만 먼저 넘칠 수 있고, pause/resume 정책도 "포트 하나"가 아니라 "listener마다 다른 headroom" 기준으로 설계해야 한다.

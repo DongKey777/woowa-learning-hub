@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Statistics, Histograms, and Cardinality Estimation
+concept_id: database/statistics-histograms-cardinality-estimation
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- statistics
+- histogram
+- cardinality
+- optimizer
+- plan-drift
+aliases:
+- statistics
+- histogram
+- cardinality estimation
+- persistent statistics
+- selectivity
+- ANALYZE TABLE
+- optimizer cost model
+- skewed distribution
+- rows estimate wrong
+- plan drift
+symptoms:
+- EXPLAIN rows 추정치와 EXPLAIN ANALYZE actual rows가 크게 달라서 통계나 분포 문제를 의심해야 해
+- 배포 후 SQL은 같은데 데이터 분포가 바뀌어 wrong index choice나 join order drift가 생겼어
+- status, tenant 같은 skewed column에 histogram이나 ANALYZE TABLE이 필요한지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- database/index-and-explain
+- database/query-tuning-checklist
+next_docs:
+- database/secondary-index-maintenance-statistics-skew
+- database/slow-query-analysis-playbook
+- database/mysql-optimizer-hints-index-merge
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/query-tuning-checklist.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with:
+- database/secondary-index-maintenance-statistics-skew
+- database/index-condition-pushdown-filesort-temporary-table
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- EXPLAIN rows estimate와 actual rows가 다르면 cardinality estimation과 statistics를 어떻게 봐야 해?
+- ANALYZE TABLE이나 histogram이 stale statistics와 skewed distribution 문제를 언제 완화해?
+- 같은 SQL인데 plan drift가 생기고 wrong join order를 고르는 이유를 통계 관점으로 설명해줘
+- rows 추정치가 너무 낮거나 높으면 index choice와 filesort temporary 선택이 어떻게 흔들려?
+- tenant skew나 status skew 때문에 optimizer misestimate가 생기는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 statistics, histograms, cardinality estimation, selectivity, ANALYZE TABLE을 EXPLAIN rows mismatch와 plan drift 관점으로 설명하는 advanced deep dive다.
+  rows estimate wrong, actual rows mismatch, stale statistics, histogram skew, optimizer misestimate 질문이 본 문서에 매핑된다.
+---
 # Statistics, Histograms, and Cardinality Estimation
 
 > 한 줄 요약: `rows`는 "DB가 이 조건이면 이 정도 row가 남을 것 같다"고 적어 둔 추정치라서, 실제 분포와 통계가 어긋나면 같은 인덱스도 전혀 다른 계획으로 보일 수 있다.

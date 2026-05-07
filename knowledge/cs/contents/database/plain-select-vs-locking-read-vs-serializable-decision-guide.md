@@ -51,7 +51,10 @@ confusable_with:
 - database/mvcc-snapshot-vs-locking-read-portability
 - database/read-committed-vs-repeatable-read-vs-serializable-decision-guide
 - database/lock-basics
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/unique-vs-version-cas-vs-for-update-decision-guide.md
 expected_queries:
 - 같은 데이터를 읽는 코드에서 그냥 조회면 충분한지, FOR UPDATE가 필요한지, 아예 SERIALIZABLE로 감싸야 하는지 어떻게 먼저 가르지?
 - 방금 본 값이 안 바뀌면 좋다는 요구와 다른 요청을 막아야 한다는 요구는 왜 같은 해결책이 아니야?

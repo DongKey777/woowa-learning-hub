@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: LSM-Friendly Index Structures
+concept_id: data-structure/lsm-friendly-index-structures
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- lsm-index-structures
+- memtable-sstable-index
+- bloom-filter-read-amplification
+aliases:
+- LSM-friendly index structures
+- memtable skip list
+- SSTable block index
+- fence pointer
+- Bloom filter per SSTable
+- sparse index
+- write optimized index
+symptoms:
+- LSM storage를 하나의 거대한 tree로만 이해해 memtable, SSTable block index, fence pointer, Bloom filter의 역할 분담을 놓친다
+- write path의 mutable ordered structure와 read path의 immutable sparse block index 요구를 같은 기준으로 비교한다
+- Bloom filter를 주 인덱스로 오해하고 negative lookup read amplification을 줄이는 보조 구조라는 역할을 놓친다
+intents:
+- design
+- deep_dive
+prerequisites:
+- data-structure/skip-list
+- data-structure/bloom-filter
+next_docs:
+- data-structure/finite-state-transducer
+- data-structure/adaptive-radix-tree
+- database/bptree-vs-lsm-tree
+linked_paths:
+- contents/data-structure/skip-list.md
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/finite-state-transducer.md
+- contents/data-structure/adaptive-radix-tree.md
+confusable_with:
+- data-structure/skip-list
+- data-structure/bloom-filter
+- data-structure/finite-state-transducer
+- data-structure/adaptive-radix-tree
+- database/bptree-vs-lsm-tree
+forbidden_neighbors: []
+expected_queries:
+- LSM storage에서 memtable sparse block index fence pointer Bloom filter는 각각 무슨 역할이야?
+- write path와 read path에 맞는 작은 index structures를 조합한다는 뜻은?
+- SSTable negative lookup에서 Bloom filter가 read amplification을 어떻게 줄여?
+- memtable은 왜 mutable ordered structure가 필요하고 skip list가 자주 쓰여?
+- LSM-friendly index structures를 B+Tree 같은 단일 index와 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 LSM 계열 저장소에서 하나의 index가 아니라 memtable, SSTable
+  sparse block index, fence pointer, Bloom filter, FST 같은 구조를 write path와
+  read path에 맞게 조합하는 playbook이다.
+---
 # LSM-Friendly Index Structures
 
 > 한 줄 요약: LSM 계열 저장소는 하나의 거대한 트리보다 memtable, sparse block index, fence pointer, Bloom filter 같은 작은 구조를 조합해 write path와 read path를 나눈다.

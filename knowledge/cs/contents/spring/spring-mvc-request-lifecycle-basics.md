@@ -1,8 +1,87 @@
+---
+schema_version: 3
+title: Spring MVC 요청 생명주기 기초
+concept_id: spring/spring-mvc-request-lifecycle-basics
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- spring-mvc-request-lifecycle
+- dispatcher-servlet-binding-basics
+- filter-interceptor-controller-advice
+aliases:
+- spring mvc request lifecycle basics
+- dispatcher servlet request flow
+- spring mvc 큰 그림
+- filter interceptor controller advice
+- argument binding message conversion
+- conversionservice formatter webdatabinder
+- 요청이 컨트롤러까지 어떻게 가요
+- query param localdate 변환
+symptoms:
+- Spring MVC의 Filter, DispatcherServlet, HandlerMapping, binding, controller, advice 단계를 모두 자동 처리로만 보고 위치를 구분하지 못한다
+- ConversionService, Formatter, WebDataBinder 이름을 먼저 외우다가 요청 값 채우기 단계라는 큰 그림을 놓친다
+- 400, 415, 404, 405, 302, 403을 모두 controller 내부 오류처럼 디버깅한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- spring/mvc-controller-basics
+next_docs:
+- spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+- spring/requestbody-400-before-controller-primer
+- spring/modelattribute-vs-requestbody-binding-primer
+- spring/spring-validation-binding-error-pipeline
+linked_paths:
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-requestbody-400-before-controller-primer.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md
+- contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with:
+- spring/mvc-request-lifecycle
+- spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge
+- spring/requestbody-400-before-controller-primer
+- spring/spring-controller-not-hit-decision-guide
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+forbidden_neighbors: []
+expected_queries:
+- Spring MVC 요청은 Filter부터 ControllerAdvice까지 어떤 순서로 흘러가?
+- DispatcherServlet은 요청 생명주기에서 무슨 역할을 해?
+- query param을 LocalDate로 바꾸는 ConversionService와 WebDataBinder는 어디 단계야?
+- RequestBody 400이나 415가 컨트롤러 전에 나는 이유를 요청 흐름으로 설명해줘
+- Filter와 Interceptor와 ControllerAdvice를 요청 생명주기에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC beginner primer로, HTTP 요청이 Filter,
+  DispatcherServlet, HandlerMapping, binding, controller, exception resolver,
+  ControllerAdvice를 지나 응답이 되는 흐름을 한 장으로 설명한다.
+---
 # Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기
 
 > 한 줄 요약: Spring MVC를 처음 배울 때는 "요청이 어디서 들어와서, 누가 컨트롤러를 찾고, 값은 누가 채우고, 실패는 누가 HTTP 응답으로 바꾸는가"를 한 장의 흐름으로 먼저 잡으면 된다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "요청이 controller까지 오는 순서가 전부 자동처럼 보여요" | 방탈출/장바구니 API 요청 디버깅 | Filter, DispatcherServlet, HandlerMapping, binding, controller 자리를 분리한다 |
+| "`@RequestBody` 400이나 415가 왜 controller 전에 나는지 모르겠어요" | JSON 요청 DTO 바인딩 실패 | 값 채우기와 message conversion 단계가 controller 호출 전임을 확인한다 |
+| "Filter, Interceptor, ControllerAdvice가 모두 중간 처리처럼 보여요" | 인증/로그/예외 처리 위치를 처음 나누는 단계 | 입구 차단, controller 전후 작업, 실패 응답 번역을 다른 축으로 본다 |
 
 관련 문서:
 

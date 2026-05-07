@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Java 타입, 클래스, 객체, OOP 입문
+concept_id: language/java-types-class-object-oop-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-class-object-type
+- primitive-reference-split
+- oop-first-map
+aliases:
+- java oop primer
+- Java 타입 클래스 객체
+- class object instance basics
+- 클래스 객체 인스턴스 차이
+- primitive reference type
+- 기본형 참조형 차이
+- interface abstract class basics
+- 객체지향 기초
+- OOP 큰 그림
+- 자바 class object 입문
+symptoms:
+- class, object, instance, reference variable을 한 줄에 섞어 읽어서 객체가 언제 생기는지 놓친다
+- 기본형과 참조형 차이를 모른 채 String, 배열, 사용자 정의 객체를 primitive처럼 다룬다
+- 인터페이스, 추상 클래스, 상속, 조합 이야기가 한꺼번에 나와 객체지향 큰 그림에서 다음 문서를 고르지 못한다
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-language-basics
+- language/java-execution-object-memory-mental-model-primer
+next_docs:
+- language/java-methods-constructors-practice-primer
+- language/java-equality-identity-basics
+- language/java-inheritance-overriding-basics
+- language/java-abstract-class-vs-interface-basics
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+- contents/language/java/java-methods-constructors-practice-primer.md
+- contents/language/java/java-parameter-passing-pass-by-value-side-effects-primer.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/java-overloading-vs-overriding-beginner-primer.md
+- contents/language/java/java-access-modifiers-member-model-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+- contents/software-engineering/service-layer-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- language/java-execution-object-memory-mental-model-primer
+- language/java-equality-identity-basics
+- language/java-abstract-class-vs-interface-basics
+forbidden_neighbors: []
+expected_queries:
+- Java에서 class object instance reference variable 차이를 beginner 기준으로 한 번에 정리해줘
+- Student student 선언과 new Student 생성이 어떻게 다르고 언제 객체가 실제로 생기는지 알고 싶어
+- 기본형과 참조형을 값 자체와 객체 참조 관점으로 어떻게 구분해야 해?
+- 인터페이스와 추상 클래스, 상속, 조합으로 넘어가기 전에 OOP 큰 그림에서 무엇부터 잡아야 해?
+- Java 객체 감각을 우테코 백엔드 미션의 Service Repository 책임으로 어떻게 넘겨야 하는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java의 타입, 클래스, 객체, 인스턴스, 기본형/참조형, OOP 첫 지도를 잡는 primer다.
+  class/object/reference variable, new와 constructor, primitive vs reference type, interface vs abstract class, inheritance, composition, service responsibility로 넘어가는 beginner route를 다룬다.
+---
 # Java 타입, 클래스, 객체, OOP 입문
 
 > 한 줄 요약: Java 입문자가 문법 암기에서 멈추지 않도록 기본형과 참조형, 클래스와 객체, 인터페이스와 추상 클래스, OOP 핵심 원리를 한 흐름으로 묶어 설명하는 primer다.

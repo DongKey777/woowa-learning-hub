@@ -37,11 +37,11 @@ intents:
 - definition
 prerequisites:
 - database/transaction-isolation-locking
-- database/redo-log-undo-log-checkpoint-crash-recovery
+- database/redo-undo-checkpoint-crash-recovery
 next_docs:
 - database/vacuum-purge-freeze-risk-runbook-routing
 - database/mvcc-history-list-snapshot-too-old
-- database/purge-backlog-remediation-throttle
+- database/purge-backlog-remediation-throttle-playbook
 linked_paths:
 - contents/database/vacuum-purge-freeze-risk-runbook-routing.md
 - contents/database/mvcc-history-list-snapshot-too-old.md

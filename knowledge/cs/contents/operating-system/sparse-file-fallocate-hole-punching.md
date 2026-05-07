@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Sparse Files fallocate Hole Punching
+concept_id: operating-system/sparse-file-fallocate-hole-punching
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- sparse-file-fallocate
+- hole-punching
+- logical-size-allocated
+- blocks
+aliases:
+- sparse file fallocate hole punching
+- logical size allocated blocks
+- file hole punching
+- preallocation
+- disk usage mismatch
+- WAL snapshot backup sparse
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-msync-hole-punching-file-replace-update-patterns.md
+- contents/operating-system/rename-atomicity-directory-fsync-crash-consistency.md
+- contents/operating-system/deleted-open-file-space-leak-log-rotation.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+expected_queries:
+- sparse file의 logical size와 실제 allocated blocks는 왜 다를 수 있어?
+- fallocate preallocation과 hole punching은 disk usage와 crash consistency에 어떤 영향을 줘?
+- WAL, snapshot, backup에서 sparse file을 잘못 해석하면 어떤 문제가 생겨?
+- mmap live mapping과 hole punching을 함께 쓰면 왜 위험할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 file logical size와 allocated block size가 다를 수 있으며 sparse file, fallocate
+  preallocation, hole punching 차이를 모르면 WAL, snapshot, backup, disk alarm을 잘못 해석하기
+  쉽다는 점을 설명한다.
+---
 # Sparse Files, fallocate, Hole Punching
 
 > 한 줄 요약: 파일의 논리 크기와 실제 할당 블록은 다를 수 있고, sparse file·preallocation·hole punching의 차이를 모르면 WAL, snapshot, backup, disk alarm을 잘못 해석하기 쉽다.

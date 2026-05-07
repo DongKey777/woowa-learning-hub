@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Read Repair and Failover Reconciliation
+concept_id: database/read-repair-reconciliation-after-failover
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- failover
+- read-repair
+- reconciliation
+- stale-cache
+- projection-drift
+aliases:
+- read repair
+- failover reconciliation
+- divergence scan
+- version based repair
+- stale projection repair
+- cache DB mismatch after failover
+- failover 후 데이터 불일치
+- read model reconciliation
+- authoritative source repair
+- commit horizon repair
+symptoms:
+- failover 후 라우팅은 정상인데 캐시나 검색 인덱스가 예전 상태를 보여줘
+- old primary와 new primary 사이에 일부 row가 갈라졌는지 확인해야 해
+- read repair와 reconciliation job 중 무엇을 먼저 적용해야 하는지 판단해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/failover-promotion-read-divergence
+- database/replica-read-routing-anomalies
+next_docs:
+- database/failover-visibility-window-topology-cache-playbook
+- database/commit-horizon-after-failover-verification
+- database/summary-drift-detection-bounded-rebuild
+linked_paths:
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/commit-horizon-after-failover-verification.md
+confusable_with:
+- database/failover-promotion-read-divergence
+- database/read-repair-vs-reconciliation-vs-bounded-rebuild-decision-guide
+- database/summary-drift-detection-bounded-rebuild
+forbidden_neighbors: []
+expected_queries:
+- failover 이후 캐시와 DB 값이 다를 때 read repair와 reconciliation을 어떻게 나눠야 해?
+- 라우팅 전환은 끝났는데 검색 인덱스나 read model이 stale하면 어떤 복구 절차가 필요해?
+- version 비교 없이 repair job이 stale data를 덮어쓰면 왜 위험해?
+- failover 후 old primary와 new primary 사이 divergence scan을 어떤 우선순위로 돌려야 해?
+- read repair는 요청 경로에서 고치고 reconciliation은 배치로 훑는다는 차이를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 failover 이후 stale cache, stale projection, read model divergence를 read repair와 reconciliation job으로 복구하는 intermediate playbook이다.
+  failover 후 데이터 불일치, version based repair, authoritative source, divergence scan 질문이 본 문서에 매핑된다.
+---
 # Read Repair와 Failover Reconciliation
 
 > 한 줄 요약: failover가 끝난 뒤에는 읽기 경로를 바로잡는 것만큼, 이미 갈라진 데이터를 다시 맞추는 작업이 중요하다.

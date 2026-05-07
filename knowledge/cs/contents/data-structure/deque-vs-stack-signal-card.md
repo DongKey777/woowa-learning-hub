@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Deque vs Stack Signal Card
+concept_id: data-structure/deque-vs-stack-signal-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- deque-vs-stack-signal
+- window-answer-vs-index-finalize
+- monotonic-structure-router
+aliases:
+- deque vs stack
+- monotonic deque vs stack
+- window answer read
+- index answer finalize
+- sliding window maximum deque
+- next greater element stack
+- 언제 deque 쓰나요
+symptoms:
+- Deque와 Stack을 둘 다 보조 구조로만 보고 답을 언제 읽는가라는 핵심 신호를 놓친다
+- 매 window마다 현재 대표값을 읽는 문제를 stack으로 보거나, next greater처럼 나중 값이 이전 index 답을 확정하는 문제를 deque로 본다
+- monotonic deque와 monotonic stack의 pop 조건은 비슷해도 output timing이 다르다는 점을 설명하지 못한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/deque-basics
+- data-structure/stack-basics
+next_docs:
+- data-structure/monotonic-queue-and-stack
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+- algorithm/sliding-window-patterns
+linked_paths:
+- contents/data-structure/deque-basics.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+confusable_with:
+- data-structure/monotonic-queue-and-stack
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+- data-structure/deque-router-example-pack
+forbidden_neighbors: []
+expected_queries:
+- Deque와 Stack은 답을 언제 읽는지 기준으로 어떻게 구분해?
+- sliding window maximum은 deque이고 next greater element는 stack인 이유는?
+- window answer read와 index answer finalize 차이를 예제로 설명해줘
+- monotonic deque와 monotonic stack은 pop 조건이 비슷한데 왜 다른 문제에 쓰여?
+- 처음 deque stack이 헷갈릴 때 10초 결정표를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 monotonic deque와 monotonic stack을 답을 읽는 시점으로 구분하는
+  beginner chooser다. 매 window의 현재 답을 front에서 읽으면 deque, 현재
+  값이 과거 index의 답을 확정하면 stack이라는 window-answer-read vs
+  index-answer-finalize 신호를 강조한다.
+---
 # Deque vs Stack: 언제 덱이고 언제 스택인가
 
 > 한 줄 요약: `매 window마다 지금 답을 읽는 문제`면 보통 deque이고, `각 index의 답이 나중 값 때문에 확정되는 문제`면 보통 stack이다.

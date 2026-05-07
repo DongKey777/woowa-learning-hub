@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Backward Compatibility Test Gates
+concept_id: software-engineering/backward-compatibility-gates
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- backward-compatibility
+- release-gate
+- consumer-contract
+aliases:
+- Backward Compatibility Test Gates
+- backward compatibility gate
+- compatibility release gate
+- provider consumer compatibility matrix
+- semantic compatibility gate
+- 호환성 테스트 게이트
+symptoms:
+- backward compatibility를 문서상 약속으로만 두고 PR, CI, release 단계에서 실제 gate로 막지 않아
+- schema parse 가능성만 보고 enum 의미 변경, default value, strict parser 같은 semantic compatibility 문제를 놓쳐
+- consumer matrix와 rollback/feature-flag 대응 없이 compatibility failure를 단순 테스트 실패로만 처리해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/api-contract-testing
+- software-engineering/schema-contract-evolution-cross-service
+next_docs:
+- software-engineering/compatibility-waiver-governance
+- software-engineering/consumer-migration-playbook
+- software-engineering/contract-drift-governance
+linked_paths:
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+confusable_with:
+- software-engineering/api-contract-testing
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/compatibility-waiver-governance
+forbidden_neighbors: []
+expected_queries:
+- backward compatibility test gate는 contract test와 schema compatibility check를 release policy로 어떻게 강제해?
+- PR CI release 단계에 각각 어떤 compatibility gate를 두면 좋아?
+- 형식상 parse는 되지만 enum 의미나 default value 때문에 semantic compatibility가 깨지는 사례를 알려줘
+- consumer matrix에는 consumer version parser strictness last successful contract 같은 정보를 왜 넣어야 해?
+- compatibility gate 실패 시 rollback feature flag old schema migration pause를 어떻게 연결해?
+contextual_chunk_prefix: |
+  이 문서는 backward compatibility test gate를 provider contract, schema check, replay compatibility, semantic rule, consumer matrix, release gate와 연결하는 advanced playbook이다.
+---
 # Backward Compatibility Test Gates
 
 > 한 줄 요약: backward compatibility test gate는 새 코드가 이전 소비자와 계약을 깨지 않는지를 배포 전에 강제하는 안전선이다.

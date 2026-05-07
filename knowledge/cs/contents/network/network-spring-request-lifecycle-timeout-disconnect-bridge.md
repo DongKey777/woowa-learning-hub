@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: "Network, Spring Request Lifecycle, Timeout, Disconnect Bridge"
+concept_id: network/network-spring-request-lifecycle-timeout-disconnect-bridge
+canonical: true
+category: network
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- spring-lifecycle
+- disconnect-attribution
+- timeout-bridge
+aliases:
+- Spring request lifecycle bridge
+- client disconnect Spring MVC
+- 499 to Spring mapping
+- late write failure Spring
+- response commit timing
+- servlet async timeout
+- reactive cancellation
+- Spring early reject body drain
+symptoms:
+- edge 499와 Spring ClientAbortException을 일대일로 바로 매핑하려 한다
+- first byte 전 timeout과 response commit 후 broken pipe를 같은 처리 경로로 본다
+- early reject 후 unread request body cleanup ownership을 놓친다
+- reactive cancel signal이 producer 작업을 즉시 멈춘다고 가정한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- spring/mvc-request-lifecycle
+next_docs:
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/sse-webflux-streaming-cancel-after-first-byte
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/network/webflux-request-body-abort-surface-map.md
+- contents/network/container-specific-disconnect-logging-recipes-spring-boot.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/multipart-parsing-vs-auth-reject-boundary.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+confusable_with:
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/servlet-container-abort-surface-map-tomcat-jetty-undertow
+- network/sse-webflux-streaming-cancel-after-first-byte
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+forbidden_neighbors: []
+expected_queries:
+- "edge 499가 Spring MVC 안에서는 어떤 lifecycle 표면으로 보일 수 있어?"
+- "first byte 전 timeout과 response commit 후 broken pipe는 어떻게 달라?"
+- "Spring early reject 뒤 남은 request body drain ownership을 어떻게 봐?"
+- "WebFlux cancellation이 producer stop까지 늦게 전파되는 이유는?"
+- "network timeout disconnect와 Spring servlet async timeout을 한 timeline으로 연결해줘"
+contextual_chunk_prefix: |
+  이 문서는 edge 499/timeout/late write failure와 Spring MVC servlet dispatch,
+  async timeout, response commit, WebFlux cancellation, request body drain을
+  연결하는 advanced bridge다.
+---
 # Network, Spring Request Lifecycle, Timeout, Disconnect Bridge
 
 > 한 줄 요약: 네트워크에서 보이는 upload early reject, `499`, timeout, first byte 지연, late write failure는 Spring 안에 들어오면 servlet dispatch, unread body cleanup, async request, response commit, reactive cancellation 같은 다른 표면으로 바뀐다. 둘을 이어 보지 않으면 같은 장애를 두 팀이 다르게 설명하게 된다.

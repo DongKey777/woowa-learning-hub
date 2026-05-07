@@ -35,7 +35,7 @@ next_docs:
   - spring/boot-condition-evaluation-report-first-debug-checklist
   - spring/conditionalonclass-classpath-scope-optional-test-slice-primer
   - spring/conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer
-  - spring/conditionalonmissingbean-vs-primary-primer
+  - spring/spring-conditionalonmissingbean-vs-primary-primer
 linked_paths:
   - contents/spring/spring-starter-added-but-bean-missing-faq.md
   - contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
@@ -48,14 +48,14 @@ linked_paths:
 confusable_with:
   - spring/bean-not-found-cause-router
   - spring/bean-registration-path-decision-guide
-  - spring/conditionalonmissingbean-vs-primary-primer
-forbidden_neighbors:
+  - spring/spring-conditionalonmissingbean-vs-primary-primer
+forbidden_neighbors: []
 expected_queries:
-  - Spring Boot에서 starter를 넣었는데 왜 기본 Bean이 안 만들어져?
-  - starter dependency는 추가했는데 특정 환경에서만 auto-configuration이 빠질 때 어디부터 봐야 해?
-  - condition report에 negative match가 보이면 classpath 문제인지 property 문제인지 어떻게 나눠?
-  - ObjectMapper를 조금 건드린 뒤 starter 기본 Bean이 사라진 것처럼 보일 때 먼저 무엇을 의심해?
-  - @WebMvcTest나 CI에서만 starter Bean이 없으면 scan 문제랑 자동 구성 조건을 어떻게 구분해?
+- Spring Boot에서 starter를 넣었는데 왜 기본 Bean이 안 만들어져?
+- starter dependency는 추가했는데 특정 환경에서만 auto-configuration이 빠질 때 어디부터 봐야 해?
+- condition report에 negative match가 보이면 classpath 문제인지 property 문제인지 어떻게 나눠?
+- ObjectMapper를 조금 건드린 뒤 starter 기본 Bean이 사라진 것처럼 보일 때 먼저 무엇을 의심해?
+- "@WebMvcTest나 CI에서만 starter Bean이 없으면 scan 문제랑 자동 구성 조건을 어떻게 구분해?"
 contextual_chunk_prefix: |
   이 문서는 Spring Boot에서 "starter를 넣었는데 bean이 안 떠요",
   "starter dependency는 있는데 auto-configuration이 안 붙어요", "condition
@@ -64,7 +64,6 @@ contextual_chunk_prefix: |
   학습자 증상을 classpath 조건 실패 / property 조건 불일치 / 사용자 bean 선점
   back-off / test slice와 scan 경계 혼동으로 나누는 symptom_router다.
 ---
-
 # Starter 넣었는데 Bean이 안 떠요 원인 라우터
 
 ## 한 줄 요약

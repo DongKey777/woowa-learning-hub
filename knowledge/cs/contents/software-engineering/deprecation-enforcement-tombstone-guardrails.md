@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Deprecation Enforcement, Tombstone, and Sunset Guardrails
+concept_id: software-engineering/deprecation-enforcement-tombstone-guardrails
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- deprecation
+- tombstone
+- sunset
+- guardrail
+aliases:
+- Deprecation Enforcement Tombstone Sunset Guardrails
+- sunset enforcement ladder
+- tombstone mode guardrail
+- deprecated API new consumer block
+- allowlist only sunset
+- deprecation warning block removal flow
+symptoms:
+- deprecated 상태인데 신규 consumer가 계속 들어와 sunset window가 끝없이 늘어나
+- warning만 오래 유지하거나 갑자기 hard block을 걸어 migration 충격과 support 문의가 커져
+- tombstone response가 replacement path, reason, support channel, traceable error code를 주지 않아 소비자가 실패 이유를 알 수 없어
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-deprecation-sunset-lifecycle
+- software-engineering/deprecation-communication-playbook
+next_docs:
+- software-engineering/tombstone-response-template-consumer-guidance
+- software-engineering/consumer-exception-model
+- software-engineering/shadow-process-officialization-absorption-criteria
+linked_paths:
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/deprecation-communication-playbook.md
+- contents/software-engineering/api-lifecycle-stage-model.md
+- contents/software-engineering/contract-registry-governance.md
+- contents/software-engineering/backward-compatibility-waiver-consumer-exception-governance.md
+- contents/software-engineering/tombstone-response-template-and-consumer-guidance.md
+- contents/software-engineering/consumer-exception-operating-model.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+confusable_with:
+- software-engineering/deprecation-communication-playbook
+- software-engineering/service-deprecation-sunset-lifecycle
+- software-engineering/tombstone-response-template-consumer-guidance
+forbidden_neighbors: []
+expected_queries:
+- deprecated API를 notice, warning, new consumer block, allowlist, tombstone, removal 단계로 운영하려면 어떻게 해?
+- tombstone mode가 그냥 404가 아니라 replacement와 support 정보를 줘야 하는 이유가 뭐야?
+- sunset date가 왔는데 일부 consumer waiver가 남아 있을 때 allowlist-only enforcement를 어떻게 설계해?
+- deprecated 상태에서 신규 consumer 유입을 registry, gateway, lint 단계에서 막는 방법을 알려줘
+- 반복되는 sunset 예외 경로를 retire할 bypass인지 absorb할 capability gap인지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 deprecation을 communication에서 실제 sunset으로 닫기 위해 new consumer block, warning, allowlist, tombstone, removal guardrail을 설계하는 advanced playbook이다.
+---
 # Deprecation Enforcement, Tombstone, and Sunset Guardrails
 
 > 한 줄 요약: deprecation이 공지로만 끝나면 종료는 계속 밀리므로, 신규 사용 차단, warning, allowlist, tombstone mode, final removal 같은 enforcement ladder를 자동화된 guardrail로 운영해야 실제 sunset이 닫힌다.

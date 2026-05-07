@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Browser DevTools 저장됨 vs 전송됨 vs 재사용됨 판독 드릴 3문제"
+concept_id: network/browser-devtools-stored-sent-reused-tracing-drill
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: drill
+level: intermediate
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- devtools-stored-sent-reused
+- browser-storage-request-header-cache
+- intermediate-tracing-drill
+aliases:
+- stored vs sent vs reused drill
+- application vs network tracing practice
+- cookie stored but not sent drill
+- localstorage token authorization drill
+- cache storage vs 304 practice
+- devtools storage request cache drill
+symptoms:
+- Application 탭에 cookie나 token이 보이면 request header에도 갔다고 단정한다
+- Cache Storage entry 존재와 이번 row의 HTTP cache 304 재사용을 같은 증거로 읽는다
+- 401을 보자마자 token 만료로 결론내고 Authorization header 전송 여부를 확인하지 않는다
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-application-storage-1minute-card
+- network/browser-devtools-cache-trace-primer
+next_docs:
+- network/application-tab-vs-request-cookie-header-mini-card
+- network/cookie-vs-localstorage-token-storage-choice-card
+- network/service-worker-vs-http-cache-devtools-primer
+- security/cookie-scope-mismatch-guide
+linked_paths:
+- contents/network/browser-devtools-application-storage-1minute-card.md
+- contents/network/application-tab-vs-request-cookie-header-mini-card.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/service-worker-vs-http-cache-devtools-primer.md
+- contents/network/cookie-vs-localstorage-token-storage-choice-card.md
+- contents/security/cookie-scope-mismatch-guide.md
+confusable_with:
+- network/browser-devtools-application-storage-1minute-card
+- network/application-tab-vs-request-cookie-header-mini-card
+- network/browser-devtools-cache-trace-primer
+- network/service-worker-vs-http-cache-devtools-primer
+- network/cookie-vs-localstorage-token-storage-choice-card
+forbidden_neighbors: []
+expected_queries:
+- "DevTools에서 저장됨 전송됨 재사용됨을 구분하는 연습 문제를 풀고 싶어"
+- "Application에 cookie가 있는데 request Cookie header가 비는 장면을 드릴로 설명해줘"
+- "localStorage token은 있는데 Authorization header가 없는 401을 어떻게 판독해?"
+- "Cache Storage entry와 304 Not Modified를 섞지 않는 연습을 하고 싶어"
+- "Application 탭과 Network 탭 증거를 한 줄씩 분리해서 읽는 법을 훈련해줘"
+contextual_chunk_prefix: |
+  이 문서는 DevTools Application stored evidence, Network request header
+  sent evidence, 304/from cache/from ServiceWorker reused evidence를 세
+  문제로 분리해 읽게 하는 intermediate drill 문서다.
+---
 # Browser DevTools 저장됨 vs 전송됨 vs 재사용됨 판독 드릴 3문제
 
 > 한 줄 요약: `Application` 탭에서 저장된 것, `Network` 탭에서 실제 전송된 것, cache나 Service Worker로 재사용된 것을 같은 뜻으로 읽지 않게 만드는 3문제 추적 드릴이다.

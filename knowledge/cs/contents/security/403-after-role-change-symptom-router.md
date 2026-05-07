@@ -9,7 +9,10 @@ doc_role: symptom_router
 level: intermediate
 language: ko
 source_priority: 80
-mission_ids: []
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
 review_feedback_tags:
 - stale-authority-after-role-change
 - role-prefix-mapping

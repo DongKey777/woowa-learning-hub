@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Shadow Promotion Snapshot Schema Fields
+concept_id: software-engineering/shadow-promotion-snapshot-schema-fields
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- promotion-snapshot
+- schema
+- provenance
+aliases:
+- shadow promotion snapshot schema fields
+- promotion_snapshot block
+- promotion snapshot minimum fields
+- catalog entry promotion tier confidence
+- shadow intake provenance
+- shadow 승격 스냅샷 필드
+symptoms:
+- promotion_tier와 promotion_confidence만 남기고 shadow_candidate_key, rule_ref, window, threshold_snapshot이 없어 왜 catalog에 들어왔는지 replay할 수 없어
+- fast_track hard gate와 confidence cap을 packet summary에서 숨겨 forum이 승격 이유를 다시 추측해
+intents:
+- definition
+- design
+- deep_dive
+prerequisites:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/shadow-process-catalog-entry-schema
+next_docs:
+- software-engineering/break-glass-segmentation
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-packet-automation-mapping
+linked_paths:
+- contents/software-engineering/shadow-candidate-promotion-thresholds.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-packet-automation-mapping.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+confusable_with:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-process-catalog-entry-schema
+forbidden_neighbors: []
+expected_queries:
+- shadow promotion_snapshot에는 tier, confidence, evaluated_at, shadow_candidate_key, rule_ref, window를 왜 남겨야 해?
+- promotion tier와 target_state.decision은 왜 intake provenance와 future decision으로 분리해야 해?
+- threshold_snapshot에 manual_request_count, distinct_days, signal families, mirror breach, confidence cap ratio를 남기는 이유는?
+- review packet에 promotion_threshold_summary와 promotion_evidence_refs를 최소 projection으로 보여야 forum이 무엇을 재현할 수 있어?
+- fast_track entry에서 triggered_conditions와 reason_codes가 비어 있으면 어떤 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 shadow candidate 승격 판정을 replay 가능한 provenance로 남기기 위해 catalog entry의 promotion_snapshot과 review packet projection 필드를 정의하는 advanced primer이다.
+---
 # Shadow Promotion Snapshot Schema Fields
 
 > 한 줄 요약: shadow candidate가 어떤 tier와 confidence로 catalog에 들어왔는지 나중에 다시 추측하지 않으려면, catalog entry에는 replay 가능한 `promotion_snapshot` block을, review packet에는 그 block의 최소 projection을 같은 의미로 남겨야 한다.

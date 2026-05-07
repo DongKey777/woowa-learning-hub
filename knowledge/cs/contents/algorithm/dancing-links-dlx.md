@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Dancing Links / DLX Basics
+concept_id: algorithm/dancing-links-dlx
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- dancing-links
+- exact-cover
+- reversible-backtracking
+aliases:
+- dancing links
+- DLX
+- algorithm x
+- exact cover
+- cover uncover
+- sudoku exact cover
+- reversible linked list backtracking
+- 포인터 복구 백트래킹
+- 정확한 덮개
+symptoms:
+- 스도쿠나 exact cover 문제를 단순 백트래킹으로만 풀어 매번 후보 구조를 복사한다
+- cover와 uncover 순서를 반대로 복구하지 않아 포인터 구조가 깨진다
+- exact cover 모델링과 일반 constraint satisfaction 문제를 구분하지 못한다
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- algorithm/backtracking-intro
+- data-structure/linked-list-basics
+- algorithm/basic
+next_docs:
+- algorithm/meet-in-the-middle
+- algorithm/dsu-rollback
+- algorithm/branch-and-bound-primer
+linked_paths:
+- contents/algorithm/backtracking-intro.md
+- contents/algorithm/meet-in-the-middle.md
+- contents/data-structure/linked-list-basics.md
+- contents/algorithm/basic.md
+confusable_with:
+- algorithm/backtracking-intro
+- algorithm/meet-in-the-middle
+- algorithm/dsu-rollback
+- data-structure/linked-list-basics
+forbidden_neighbors: []
+expected_queries:
+- Dancing Links는 exact cover 백트래킹에서 cover와 uncover를 어떻게 빠르게 해?
+- DLX에서 포인터를 지웠다가 복구하는 순서가 왜 중요해?
+- 스도쿠를 exact cover matrix로 바꾸면 Algorithm X가 어떻게 동작해?
+- 일반 백트래킹과 DLX는 후보 제거와 복구 비용에서 어떻게 달라?
+- exact cover 문제인지 아닌지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 Dancing Links / DLX deep dive로, exact cover 문제를 matrix로
+  모델링하고 cover/uncover 포인터 조작을 통해 백트래킹 복구 비용을 줄이는
+  Algorithm X 구현 감각을 설명한다.
+---
 # Dancing Links / DLX Basics
 
 > 한 줄 요약: Dancing Links(DLX)는 정확한 덮개(Exact Cover) 문제를 빠르게 되돌리기 위해 연결 리스트 포인터를 지웠다가 복구하는 백트래킹 기법이다.

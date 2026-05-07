@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Object Pooling Myths in the Modern JVM
+concept_id: language/object-pooling-myths-modern-jvm
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jvm-performance
+- allocation
+- object-pooling
+aliases:
+- Object Pooling Myths in the Modern JVM
+- Java object pooling myth allocation rate
+- escape analysis object pool tradeoff
+- modern JVM allocation vs reuse
+- pooling contention stale state
+- 자바 객체 풀링 오해
+symptoms:
+- 객체 생성은 항상 비싸니 작은 DTO도 pool에 넣어야 한다고 생각해 modern JVM allocation, TLAB, escape analysis를 고려하지 않아
+- object pool로 allocation을 줄였다고 판단하지만 contention, stale state, reset 누락, cache locality 악화 비용을 측정하지 않아
+- pool이 필요한 native resource나 large buffer 사례와 일반 heap object 재사용 사례를 구분하지 못해 premature optimization을 만든다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/escape-analysis-scalar-replacement
+- language/stack-vs-heap-escape-intuition
+- language/jmh-benchmarking-pitfalls
+next_docs:
+- language/tlab-plab-allocation-intuition
+- language/object-layout-jol-intuition
+- language/cleaner-vs-finalize-deprecation
+linked_paths:
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/stack-vs-heap-escape-intuition.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+- contents/language/java/cleaner-vs-finalize-deprecation.md
+- contents/language/java/tlab-plab-allocation-intuition.md
+- contents/language/java/object-layout-jol-intuition.md
+confusable_with:
+- language/escape-analysis-scalar-replacement
+- language/tlab-plab-allocation-intuition
+- language/jmh-benchmarking-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- modern JVM에서 object pooling이 항상 성능을 올리지 않는 이유를 설명해줘
+- 작은 DTO를 pool에 넣는 것보다 그냥 생성하는 게 나을 수 있는 이유가 뭐야?
+- object pool은 allocation을 줄이는 대신 contention stale state reset 누락 비용을 만들 수 있어?
+- escape analysis와 scalar replacement가 object pooling 판단에 어떤 영향을 줘?
+- large buffer나 native resource처럼 pool이 합리적인 경우와 아닌 경우를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 modern JVM에서 object pooling을 기본 최적화로 쓰면 왜 위험한지 allocation, escape analysis, GC, contention, benchmark 관점에서 점검하는 advanced playbook이다.
+  object pooling, allocation rate, escape analysis, scalar replacement, pooling myth, JMH 질문이 본 문서에 매핑된다.
+---
 # Object Pooling Myths in the Modern JVM
 
 > 한 줄 요약: 현대 JVM에서는 무조건적인 object pooling이 성능을 올린다는 믿음이 자주 틀리며, JIT, escape analysis, GC, allocation rate 때문에 오히려 단순 생성이 더 나을 수 있다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 두 포인터 패턴 심화
+concept_id: algorithm/two-pointer
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- two-pointer-pattern-selection
+- pair-relation-vs-window
+- sorted-array-pointer-invariant
+aliases:
+- two pointer pattern
+- two-pointer deep dive
+- opposite direction two pointer
+- same direction two pointer
+- sorted pair sum
+- pair relation scan
+- left right contraction
+- palindrome scan
+- 투 포인터 패턴
+- 양끝 포인터
+- 같은 방향 포인터
+- 정렬 배열 두 수 합
+symptoms:
+- two pointer를 sliding window와 같은 말로 외워서 연속 구간 문제와 두 값 관계 문제를 섞어 푼다
+- 정렬 전처리가 필요한 opposite-direction 문제를 정렬 없이 O(n)으로 풀 수 있다고 착각한다
+- subsequence라는 단어만 보고 LIS 최적화와 단순 포함 검사 two pointer를 구분하지 못한다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- algorithm/two-pointer-intro
+- algorithm/sort-intro
+next_docs:
+- algorithm/sliding-window-patterns
+- algorithm/binary-search-patterns
+- algorithm/longest-increasing-subsequence-patterns
+- data-structure/monotonic-queue-and-stack
+linked_paths:
+- contents/algorithm/two-pointer-intro.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/longest-increasing-subsequence-patterns.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/data-structure/monotonic-queue-and-stack.md
+confusable_with:
+- algorithm/sliding-window-patterns
+- algorithm/binary-search-patterns
+- algorithm/longest-increasing-subsequence-patterns
+forbidden_neighbors: []
+expected_queries:
+- two pointer와 sliding window를 문제 문장에서 어떻게 구분해야 하는지 pair relation과 contiguous window 기준으로 설명해줘
+- 정렬된 배열에서 target 합을 찾을 때 왜 양끝 포인터를 움직이면 후보를 안전하게 버릴 수 있어?
+- same direction pointer와 opposite direction pointer를 언제 각각 쓰는지 예시로 알려줘
+- subsequence가 보일 때 단순 포함 검사는 two pointer로 되고 LIS 최적화는 다른 패턴인 이유가 궁금해
+- pair sum 문제를 binary search 대신 two pointer로 푸는 선택 기준을 복잡도와 전제 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 두 인덱스의 관계를 줄이며 후보를 제거하는 two pointer bridge다.
+  same-direction pointer, opposite-direction pointer, sorted pair sum, palindrome scan, pair difference, sliding window와 subsequence/LIS, binary search, interval/sweep line 문제의 라우팅 경계를 다룬다.
+---
 # 두 포인터 (two-pointer)
 
 > 한 줄 요약: 두 포인터는 두 인덱스를 이동시키며 관계를 좁혀 가는 상위 패턴이고, pair-relation scan과 contiguous window를 구분해야 오판이 줄어든다.

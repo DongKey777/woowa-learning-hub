@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Repository Naming Smells Primer
+concept_id: software-engineering/repository-naming-smells
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- repository
+- dao
+- naming
+- persistence-boundary
+aliases:
+- repository method naming smell
+- repository vs dao method name
+- domain language repository names
+- SQL shaped repository API
+- insert select update repository smell
+- 저장소 메서드 이름 냄새
+symptoms:
+- Repository 메서드 이름에 insert, select, update, join, row, table 같은 SQL 모양이 그대로 드러나
+- service 코드가 repository 계약을 읽을 때 업무 문장보다 DB 조작 문장처럼 보여
+- 도메인 대상과 조회 의도 대신 테이블명, 컬럼명, 정렬 조건, join 방식이 메서드 이름의 중심이 돼
+- query model, DAO, domain repository 경계가 이름에서 섞여 어떤 호출자가 써야 하는지 모호해
+intents:
+- symptom
+- definition
+- comparison
+prerequisites:
+- software-engineering/repository-interface-contract
+next_docs:
+- software-engineering/persistence-follow-up-question-guide
+- software-engineering/repository-dao-entity
+- software-engineering/dao-vs-query-model
+linked_paths:
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/dao-vs-query-model-entrypoint-primer.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/spring/spring-data-vs-domain-repository-bridge.md
+confusable_with:
+- software-engineering/repository-interface-contract
+- software-engineering/repository-dao-entity
+- software-engineering/dao-vs-query-model
+forbidden_neighbors: []
+expected_queries:
+- repository 메서드 이름에 insert, select, update, join이 보이면 왜 DAO 냄새로 봐야 해?
+- repository 계약 이름을 도메인 말투로 붙이는 기준을 초심자에게 설명해줘
+- OrderRepository.save와 OrderDao.insertOrderRow는 이름에서 어떤 경계 차이를 보여줘?
+- 서비스 코드에서 repository 호출이 비즈니스 문장처럼 읽히는지 어떻게 점검해?
+- query model 이름과 domain repository 이름이 섞였을 때 어디부터 분리해야 해?
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Repository Naming Smells Primer를 다루는 symptom_router 문서다. repository method naming smell, repository vs dao method name, domain language repository names, SQL shaped repository API, insert select update repository smell 같은 lexical 표현과 repository 메서드 이름에 insert, select, update, join이 보이면 왜 DAO 냄새로 봐야 해?, repository 계약 이름을 도메인 말투로 붙이는 기준을 초심자에게 설명해줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Repository Naming Smells Primer
 
 > 한 줄 요약: 처음 배우는데 `Repository` 메서드 이름이 헷갈리면, "무엇을 저장/조회하나"를 도메인 말투로 말하면 repository 계약에 가깝고, "어느 테이블을 어떤 SQL로 건드리나"가 이름에 드러나면 DAO/API 냄새일 가능성이 크다.

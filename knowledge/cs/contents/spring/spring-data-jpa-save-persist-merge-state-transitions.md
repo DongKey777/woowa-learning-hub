@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring Data JPA save, persist, and merge State Transitions
+concept_id: spring/data-jpa-save-persist-merge-state-transitions
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- data-jpa-save
+- persist-merge-state
+- transitions
+- persist-vs-merge
+aliases:
+- Spring Data JPA save
+- persist vs merge
+- detached entity merge
+- managed entity save unnecessary
+- entity state transition
+- isNew detection
+- Persistable assigned id
+- merge returns managed copy
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-transaction-isolation-readonly-pitfalls.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+expected_queries:
+- Spring Data JPA save는 persist와 merge 중 무엇을 호출해?
+- managed entity에 save를 다시 호출할 필요가 없는 이유는?
+- merge는 detached 객체를 그대로 managed로 바꾸는 거야?
+- assigned id나 Persistable을 쓰면 isNew 판단이 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Data JPA repository.save가 entity 상태에 따라 persist 또는
+  merge 의미로 갈리는 점을 deep dive한다. new/transient, managed, detached,
+  removed, isNew detection, Persistable, assigned id, merge returns managed copy,
+  dirty checking과 overwrite 위험을 설명한다.
+---
 # Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions
 
 > 한 줄 요약: Spring Data JPA의 `save()`는 만능 저장 버튼이 아니라 엔티티가 new인지 detached인지에 따라 `persist`와 `merge` 의미가 갈리므로, 상태 전이를 모르면 불필요한 merge와 의도치 않은 값 덮어쓰기가 생긴다.

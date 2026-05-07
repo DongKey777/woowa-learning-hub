@@ -1,3 +1,85 @@
+---
+schema_version: 3
+title: Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머
+concept_id: data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/backend
+review_feedback_tags:
+- structure-selection-by-operation
+- queue-vs-bfs-boundary
+- prefix-search-vs-exact-lookup
+- bitmap-overkill-first-check
+aliases:
+- map vs set vs queue
+- priority queue가 뭐예요
+- trie bitmap 뭐예요
+- 자료구조 처음 배우는데
+- 처음 배우는데 map set queue 차이
+- queue가 왜 bfs에도 나와요
+- 왜 이 문제는 queue가 아니라 bfs예요
+- set이랑 map이 왜 달라요
+- bitmap은 언제 써요
+- exact lookup vs prefix search
+- integer ids sparse range repeated set algebra
+- 정수 id sparse range 교집합 반복
+- sparse integer id 집합 연산 처음
+- 왜 bitset이 아까워요
+- beginner selection primer
+symptoms:
+- 자료구조 이름은 아는데 문제를 보면 map이랑 set 중 어디서 시작할지 모르겠어
+- queue, bfs, priority queue가 한 덩어리로 보여서 분기가 안 돼
+- trie랑 bitmap은 특별한 상황 같아서 언제 꺼내야 하는지 감이 안 와
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+linked_paths:
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
+- contents/data-structure/queue-bfs-priorityqueue-map-lookup-micro-drill.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md
+- contents/data-structure/trie-prefix-search-autocomplete.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/system-design/search-system-design.md
+confusable_with:
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+forbidden_neighbors:
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/system-design/search-system-design.md
+expected_queries:
+- 자료구조 선택을 연산 질문 기준으로 한 번에 정리한 입문 글
+- map set queue priority queue trie bitmap을 큰 그림으로 구분하고 싶어
+- queue랑 bfs를 처음에 어떻게 나눠 읽어야 해
+- exact lookup이랑 prefix search를 어떤 구조로 나눠 생각해?
+- 비트맵은 언제부터 고려하고 평소에는 왜 안 꺼내?
+- 처음 배우는 백엔드 주니어용 자료구조 선택 로드맵
+contextual_chunk_prefix: |
+  이 문서는 자료구조 선택 beginner primer로 Map, Set, Queue,
+  PriorityQueue, Trie, Bitmap을 이름이 아니라 반복 질문과 연산 기준으로 고른다.
+  key lookup, membership, FIFO order, urgent minimum/maximum, prefix search,
+  dense integer id set algebra를 처음 배우는 백엔드 주니어 질문에 맞춰 분기한다.
+---
 # Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머
 
 > 한 줄 요약: 주니어가 자료구조를 고를 때는 이름보다 "반복해서 무슨 질문을 하느냐"를 먼저 잡아야 한다. `lookup`이면 `map`, `중복/존재 확인`이면 `set`, `도착 순서`면 `queue`, `가장 급한 것`이면 `priority queue`, `접두사 검색`이면 `trie`, `많은 id의 예/아니오 집합 연산`이면 `bitmap`이 첫 출발점이다.

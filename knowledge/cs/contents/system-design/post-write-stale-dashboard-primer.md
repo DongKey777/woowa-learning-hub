@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+review_feedback_tags:
+- post-write-stale
+- dashboard
+- stale-read-dashboard
+- read-source-distribution
 aliases:
 - post-write stale dashboard
 - stale read dashboard
@@ -36,7 +41,6 @@ contextual_chunk_prefix: |
   설계, post-write stale 화면, primary fallback headroom 같은 자연어
   paraphrase가 본 문서의 dashboard 설계에 매핑된다.
 ---
-
 # Post-Write Stale Dashboard Primer
 
 > 한 줄 요약: post-write stale dashboard는 write 직후 [stale window](./cross-primer-glossary-anchors.md#term-stale-window) 안에서 stale read가 실제로 보였는지, 그 read가 어느 source에서 왔는지, primary fallback이 늘어날 때 [headroom](./cross-primer-glossary-anchors.md#term-headroom)이 남는지를 한 화면으로 묶어 보는 초보자용 운영 대시보드 입문이다.

@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: 대칭키·비대칭키 암호화 기초
+concept_id: security/symmetric-asymmetric-encryption-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- 대칭키 비대칭키 차이
+- symmetric asymmetric encryption beginner
+- 암호화 기초
+- 공개키 개인키 뭔가요
+aliases:
+- 대칭키 비대칭키 차이
+- symmetric asymmetric encryption beginner
+- 암호화 기초
+- 공개키 개인키 뭔가요
+- rsa aes 차이
+- 암호화 복호화 입문
+- 키 배포 문제
+- 암호화가 뭐예요
+- https 암호화 원리
+- beginner encryption basics
+- security readme encryption primer
+- security beginner route
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/envelope-encryption-kms-basics.md
+- contents/security/https-tls-beginner.md
+- contents/security/https-hsts-mitm.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 대칭키·비대칭키 암호화 기초 핵심 개념을 설명해줘
+- 대칭키 비대칭키 차이가 왜 필요한지 알려줘
+- 대칭키·비대칭키 암호화 기초 실무 설계 포인트는 뭐야?
+- 대칭키 비대칭키 차이에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 대칭키·비대칭키 암호화 기초를 다루는 primer 문서다. 대칭키는 같은 열쇠로 잠그고 여는 방식이라 빠르지만 키를 안전하게 나눠야 하는 문제가 있고, 비대칭키는 공개키로 잠그고 개인키로만 열어서 키 배포 문제를 해결하지만 느리다. 검색 질의가 대칭키 비대칭키 차이, symmetric asymmetric encryption beginner, 암호화 기초, 공개키 개인키 뭔가요처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # 대칭키·비대칭키 암호화 기초
 
 > 한 줄 요약: 대칭키는 같은 열쇠로 잠그고 여는 방식이라 빠르지만 키를 안전하게 나눠야 하는 문제가 있고, 비대칭키는 공개키로 잠그고 개인키로만 열어서 키 배포 문제를 해결하지만 느리다.

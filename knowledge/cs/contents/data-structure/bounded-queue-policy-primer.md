@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Bounded Queue Policy Primer
+concept_id: data-structure/bounded-queue-policy-primer
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- bounded-queue-full-policy
+- backpressure-vs-blocking
+- rejection-overwrite-buffer-contract
+aliases:
+- bounded queue policy
+- bounded buffer policy
+- full queue policy
+- reject overwrite blocking backpressure
+- queue가 꽉 찼을 때
+- backpressure vs blocking
+- fixed size queue policy
+- ring buffer overwrite
+symptoms:
+- bounded queue를 만들면서 꽉 찼을 때 reject, overwrite, blocking, backpressure 계약을 정하지 않고 있어
+- blocking과 backpressure를 같은 말처럼 이해하고 있어
+- overwrite를 써도 FIFO 의미가 그대로 유지된다고 오해하고 있어
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- operating-system/sync-async-blocking-nonblocking-basics
+next_docs:
+- data-structure/circular-queue-vs-ring-buffer
+- data-structure/ring-buffer
+- data-structure/bounded-mpmc-queue
+- language/executor-sizing-queue-rejection-policy
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/circular-queue-vs-ring-buffer-primer.md
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/bounded-mpmc-queue.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- data-structure/circular-queue-vs-ring-buffer
+- data-structure/ring-buffer
+- system-design/job-queue-design
+- language/executor-sizing-queue-rejection-policy
+forbidden_neighbors: []
+expected_queries:
+- bounded queue가 꽉 찼을 때 reject, overwrite, blocking, backpressure 중 무엇을 골라야 해?
+- blocking은 local thread가 기다리는 것이고 backpressure는 상류를 늦추는 계약인 이유가 뭐야?
+- ring buffer overwrite 정책은 FIFO queue 의미를 어떻게 바꿔?
+- queue full에서 새 항목과 오래된 항목 중 무엇을 버릴지 어떻게 결정해?
+- Java ThreadPoolExecutor queue와 rejection policy는 bounded queue 정책과 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 bounded queue policy beginner primer로, full queue에서 reject, overwrite, blocking, backpressure 중 누가 양보하는지 계약을 먼저 정하게 돕는다.
+  queue가 꽉 찼을 때, reject vs overwrite, blocking vs backpressure, fixed size buffer, ring buffer overwrite 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Bounded Queue Policy Primer
 
 > 한 줄 요약: 고정 크기 queue/buffer가 꽉 찼을 때는 `reject`, `overwrite`, `blocking`, `backpressure` 중 어떤 계약을 택하는지가 구조 선택만큼 중요하다.

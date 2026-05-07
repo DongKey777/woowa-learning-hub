@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Autoboxing, IntegerCache, and Null Unboxing Pitfalls
+concept_id: language/java-autoboxing-integercache-null-unboxing-pitfalls
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- wrapper-nullability
+- equals-vs-identity
+- map-null-unboxing
+aliases:
+- Java autoboxing pitfalls
+- IntegerCache
+- null unboxing NPE
+- wrapper equality
+- Boolean unboxing
+- primitive vs wrapper
+- Map get null unboxing
+- 자바 오토박싱 함정
+symptoms:
+- Integer Long Boolean wrapper를 primitive처럼 보고 == 비교, null unboxing, cache 범위 차이를 놓쳐
+- Map get 결과를 바로 산술 연산하거나 boolean 조건에 넣어 NullPointerException이 발생해
+- primitive field와 wrapper field 선택이 API nullability와 JSON semantics에 영향을 준다는 점이 흐려져
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- language/java-equality-identity-basics
+- language/primitive-wrapper-choice-primer
+next_docs:
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/map-get-null-containskey-getordefault-primer
+- language/floating-point-precision-nan-infinity-serialization-pitfalls
+- language/value-object-invariants-canonicalization-boundary-design
+linked_paths:
+- contents/language/java-equals-hashcode-comparable-contracts.md
+- contents/language/java/collections-performance.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+confusable_with:
+- language/primitive-wrapper-choice-primer
+- language/java-equality-identity-basics
+- language/map-get-null-containskey-getordefault-primer
+forbidden_neighbors: []
+expected_queries:
+- Java autoboxing 때문에 Integer == 비교가 작은 값은 되고 큰 값은 깨지는 이유를 알려줘
+- Boolean이나 Integer wrapper가 null일 때 unboxing NPE가 나는 패턴을 설명해줘
+- Map get 결과를 바로 더하면 왜 NullPointerException이 날 수 있어?
+- primitive와 wrapper field를 JSON payload에서 언제 나눠야 하는지 알려줘
+- IntegerCache와 wrapper equality를 equals identity 관점으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java autoboxing, IntegerCache, wrapper identity, null unboxing, primitive vs wrapper semantics를 설명하는 advanced deep dive다.
+  Integer ==, Long cache, Boolean null, Map get null unboxing, OptionalInt, IntStream, DTO wrapper field 질문이 본 문서에 매핑된다.
+---
 # Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls
 
 > 한 줄 요약: wrapper type은 primitive처럼 보여도 identity, nullability, allocation, caching semantics가 다르다. autoboxing에 기대면 `==` 비교 버그, `NullPointerException`, hot path boxing overhead, `Map#get()` 함정이 조용히 들어온다.

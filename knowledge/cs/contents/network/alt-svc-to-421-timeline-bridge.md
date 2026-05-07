@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Alt-Svc To 421 Timeline Bridge
+concept_id: network/alt-svc-to-421-timeline-bridge
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- alt-svc-to-421
+- stale-discovery-timeline
+- h3-recovery-trace
+aliases:
+- Alt-Svc to 421 timeline
+- stale Alt-Svc timeline bridge
+- HTTP/3 421 timeline
+- stale discovery to 421
+- Alt-Svc then 421 then 200
+- H3 wrong path after old Alt-Svc
+- same URL 421 recovery
+symptoms:
+- 과거에 배운 Alt-Svc나 HTTPS RR discovery 상태와 나중에 보인 421 retry trace를 별개의 문제로만 본다
+- Alt-Svc와 421이 같은 trace에 보이면 discovery와 reuse guardrail이 모순이라고 오해한다
+- 같은 URL이 421 뒤 200으로 두 줄 보이면 브라우저 recovery 가능성을 보지 않고 프론트 중복 호출로 단정한다
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+next_docs:
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/alt-svc-cache-vs-per-origin-421-recovery
+- network/http3-421-observability-primer
+linked_paths:
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/alt-svc-cache-vs-per-origin-421-recovery.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-cache-vs-per-origin-421-recovery
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/http3-cross-origin-reuse-guardrails-primer
+forbidden_neighbors: []
+expected_queries:
+- 예전에 배운 Alt-Svc가 왜 나중에 HTTP/3 421로 이어질 수 있어?
+- Alt-Svc와 421이 같은 trace에 같이 보이면 discovery와 reuse correction을 어떻게 나눠 읽어?
+- 같은 URL이 421 뒤 200으로 회복되면 브라우저 fresh path retry일 수 있는 이유는?
+- stale H3 endpoint hint가 wrong path 421 then 200 timeline을 만드는 과정을 설명해줘
+- Alt-Svc는 어디로 가볼까의 증거이고 421은 방금 connection이 틀렸다는 증거라는 걸 알려줘
+contextual_chunk_prefix: |
+  이 문서는 과거 Alt-Svc 또는 HTTPS RR로 배운 H3 discovery state가 시간이 지난 뒤
+  HTTP/3 421 Misdirected Request와 fresh path retry로 이어지는 timeline bridge다.
+  discovery evidence와 connection reuse guardrail correction을 분리한다.
+---
 # Alt-Svc To 421 Timeline Bridge
 
 

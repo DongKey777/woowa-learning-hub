@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Java Optional 입문
+concept_id: language/java-optional-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional-empty-vs-null
+- optional-vs-empty-collection
+- optional-field-parameter-antipattern
+aliases:
+- java optional basics
+- Optional 입문
+- null 대신 Optional
+- Optional.empty
+- Optional.ofNullable
+- optional orElse beginner
+- optional vs empty list
+- optional vs enum
+- Optional 필드 파라미터 안티패턴
+- Map get null Optional
+symptoms:
+- 단건의 없음, 여러 건의 0개, 없음의 이유를 모두 Optional 하나로 표현하려고 한다
+- Optional을 반환 타입이 아니라 field나 parameter에 넣어 null보다 더 복잡한 API를 만든다
+- Map.get null, Optional.empty, enum 상태를 같은 없음으로 보고 구분 기준을 잃는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/java-generics-basics
+next_docs:
+- language/optional-collections-domain-null-handling-bridge
+- language/optional-list-empty-collection-symptom-card
+- language/map-get-null-containskey-getordefault-primer
+- language/java-enum-basics
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/optional-list-empty-collection-symptom-card.md
+- contents/language/java/optional-boolean-double-absence-follow-up-card.md
+- contents/language/java/optional-vs-fieldpatch-patch-tri-state-bridge.md
+- contents/language/java/java-enum-basics.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/optional-field-parameter-antipattern-card.md
+- contents/language/java/optional-empty-equals-before-unwrapping-primer.md
+- contents/language/java/java-exception-handling-basics.md
+- contents/language/java/java-generics-basics.md
+- contents/language/java/java-stream-lambda-basics.md
+confusable_with:
+- language/java-collections-basics
+- language/java-enum-basics
+- language/map-get-null-containskey-getordefault-primer
+forbidden_neighbors: []
+expected_queries:
+- Java Optional은 null 대신 언제 반환 타입으로 쓰고 field나 parameter에는 왜 보통 쓰지 않는지 알려줘
+- Optional과 빈 리스트는 둘 다 없음을 표현하는데 단건과 여러 건 기준으로 어떻게 나눠야 해?
+- Optional.empty와 Map.get null, enum 상태가 각각 어떤 다른 의미의 없음인지 비교해줘
+- Optional.of, ofNullable, empty, orElse, orElseGet 차이를 초보자 기준으로 설명해줘
+- Optional Boolean이나 Optional List가 왜 의미를 두 겹으로 만들기 쉬운지 예시로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java Optional을 단건의 있음/없음 표현으로 잡는 beginner primer다.
+  Optional.empty, ofNullable, orElse, orElseGet, return type usage, field/parameter anti-pattern, Optional vs empty collection, Optional vs enum state, Map.get null semantics, PATCH tri-state와의 경계를 다룬다.
+---
 # Java Optional 입문
 
 > 한 줄 요약: Optional은 "값이 있을 수도 없을 수도 있다"는 상태를 타입으로 표현해서, null을 직접 다루다 생기는 NullPointerException을 줄이는 컨테이너다.

@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: 정렬 알고리즘의 종류와 개념
+concept_id: algorithm/sort
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- sorting-algorithm-comparison
+- stable-inplace-comparison-sort
+- sorting-as-preprocessing
+aliases:
+- sort algorithm comparison
+- sorting algorithms
+- stable sort unstable sort
+- in-place sort
+- comparison sort non-comparison sort
+- merge sort vs quick sort
+- sorting as preprocessing
+- 정렬 알고리즘 비교
+- 정렬 전처리
+symptoms:
+- 정렬을 결과를 보기 좋게 만드는 작업으로만 보고 binary search, interval, sweep line의 전처리 역할을 놓친다
+- stable unstable, in-place, comparison sort, non-comparison sort 기준을 섞어 알고리즘 선택 이유를 설명하지 못한다
+- 구간 문제에서 무엇을 기준으로 정렬하고 어떤 상태를 유지해야 하는지 구분하지 못한다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- algorithm/basic
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/binary-search-patterns
+- algorithm/two-pointer
+- algorithm/interval-greedy-patterns
+- algorithm/sweep-line-overlap-counting
+linked_paths:
+- contents/algorithm/basic.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/two-pointer.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/data-structure/interval-tree.md
+- contents/data-structure/heap-variants.md
+confusable_with:
+- algorithm/sort-intro
+- algorithm/binary-search-patterns
+- algorithm/interval-greedy-patterns
+- algorithm/sweep-line-overlap-counting
+- data-structure/heap-variants
+forbidden_neighbors: []
+expected_queries:
+- 정렬 알고리즘을 stable unstable in-place comparison sort 기준으로 비교해줘
+- merge sort와 quick sort는 시간복잡도와 안정성 관점에서 어떻게 달라?
+- 정렬은 binary search나 two pointer나 interval 문제에서 어떤 전처리 역할을 해?
+- 구간 문제에서 시작점 정렬과 끝점 정렬과 event 정렬은 어떻게 달라?
+- counting sort나 radix sort는 comparison sort와 어떤 전제가 달라?
+contextual_chunk_prefix: |
+  이 문서는 sorting algorithm intermediate primer로, insertion, selection,
+  bubble, merge, quick, heap, counting, radix sort를 stable/unstable,
+  in-place, comparison/non-comparison, preprocessing 관점에서 비교한다.
+---
 # 정렬 알고리즘의 종류와 개념
 
 > 작성자 : [장주섭](https://github.com/wntjq68), [이세명](https://github.com/3people)

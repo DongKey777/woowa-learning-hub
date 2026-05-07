@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Idempotency Keys and Safe HTTP Retries
+concept_id: language/httpclient-idempotency-keys-safe-http-retries
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- http-retry
+- idempotency-key
+- duplicate-side-effect
+aliases:
+- Java HttpClient safe retry idempotency key
+- HttpClient POST retry duplicate suppression
+- idempotency key dedup contract
+- repeatable request body retry
+- Java HTTP retry side effect safety
+- 자바 HttpClient 멱등성 키 안전 재시도
+symptoms:
+- POST timeout 뒤 바로 재시도해도 된다고 생각해 duplicate side effect와 idempotency key store 계약을 분리하지 못해
+- Java HttpClient redirect나 transport retry가 body replay 경계를 만든다는 점을 놓쳐 같은 요청이 다시 나갈 수 있음을 관측하지 못해
+- retry 때마다 Idempotency-Key나 request body fingerprint가 바뀌어 dedup이 무력화되는 문제를 추적하지 못해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/http-methods-rest-idempotency
+- network/timeout-retry-backoff-practical
+- database/idempotency-key-and-deduplication
+next_docs:
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+- spring/delivery-reliability-retryable-resilience4j-outbox-relay
+- language/structured-fanout-httpclient
+linked_paths:
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards.md
+- contents/network/http-methods-rest-idempotency.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/spring/spring-delivery-reliability-retryable-resilience4j-outbox-relay.md
+confusable_with:
+- network/timeout-retry-backoff-practical
+- database/idempotency-key-and-deduplication
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+forbidden_neighbors: []
+expected_queries:
+- Java HttpClient에서 POST를 안전하게 retry하려면 Idempotency-Key를 어떻게 설계해야 해?
+- timeout 후 결제 승인 요청을 재시도하면 중복 결제가 생길 수 있는 이유를 설명해줘
+- HttpClient redirect나 transport failure가 request body replay와 어떤 관련이 있어?
+- 같은 idempotency key에 다른 payload가 들어오면 서버는 왜 conflict로 막아야 해?
+- retry 가능한 BodyPublisher와 dedup fingerprint를 같이 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java HttpClient의 POST retry, redirect, body replayability를 Idempotency-Key와 server dedup contract로 안전하게 묶는 troubleshooting playbook이다.
+  HttpClient safe retry, POST timeout duplicate side effect, Idempotency-Key, request fingerprint, replay-safe retry 질문이 본 문서에 매핑된다.
+---
 # Idempotency Keys and Safe HTTP Retries
 
 > 한 줄 요약: Java `HttpClient`에서 `POST`/side effect 호출 재시도는 "실패했으니 한 번 더"가 아니라, body replay 가능성, redirect/transport 재전송 경계, `Idempotency-Key` + dedup 계약을 같이 고정했을 때만 안전하다.

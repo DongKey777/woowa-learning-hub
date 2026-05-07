@@ -9,6 +9,11 @@ doc_role: playbook
 level: beginner
 language: mixed
 source_priority: 78
+review_feedback_tags:
+- component-scan-failure
+- component-scan
+- componentscan
+- nosuchbeandefinitionexception
 aliases:
 - component scan
 - ComponentScan
@@ -24,6 +29,8 @@ symptoms:
 linked_paths:
 - contents/spring/spring-bean-di-basics.md
 - contents/spring/spring-di-exception-quick-triage.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
 expected_queries:
 - component scan이 안 되는 이유가 뭐야?
 - service bean not found는 왜 나?
@@ -37,7 +44,6 @@ contextual_chunk_prefix: |
   ComponentScan 경계, dispatcher 404 vs Bean 404 같은 자연어 paraphrase가
   본 문서의 진단에 매핑된다.
 ---
-
 # Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정
 
 > 한 줄 요약: component scan은 "프로젝트 전체 검색"이 아니라 `@SpringBootApplication`이나 `@ComponentScan`이 정한 base package 아래에서 stereotype 후보만 찾는 과정이므로, 패키지 위치 하나만 어긋나도 `NoSuchBeanDefinitionException`이나 "service bean not found" 같은 증상으로 바로 드러난다.

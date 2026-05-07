@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Nullable String Comparator Bridge
+concept_id: language/nullable-string-comparator-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator
+- string
+- null-handling
+aliases:
+- Nullable String Comparator Bridge
+- Java nullable String sorting
+- String CASE_INSENSITIVE_ORDER nullsLast
+- null last string sort
+- case insensitive nullable comparator
+- 자바 nullable String 정렬
+symptoms:
+- nullable String 정렬에서 문자열 비교 방식만 고르고 null을 앞이나 뒤에 둘 정책을 빠뜨려 NPE나 불안정한 정렬을 만든다
+- String.CASE_INSENSITIVE_ORDER를 TreeSet이나 TreeMap comparator로 쓰며 대소문자만 다른 값이 같은 자리로 취급될 수 있음을 놓쳐
+- null은 뒤에 두고 값만 내림차순으로 정렬하려다 comparator 전체 reversed로 null 위치까지 뒤집어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/java-comparator-utility-patterns
+- language/java-string-basics
+next_docs:
+- language/nullable-wrapper-comparator-bridge
+- language/comparator-null-reversal-primer
+- language/locale-root-case-mapping-unicode-normalization
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/equalsignorecase-vs-case-insensitive-order-bridge.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/java-string-basics.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+confusable_with:
+- language/equalsignorecase-vs-case-insensitive-order-bridge
+- language/nullable-wrapper-comparator-bridge
+- language/comparator-null-reversal-primer
+forbidden_neighbors: []
+expected_queries:
+- nullable String을 null은 뒤에 두고 대소문자 무시로 정렬하려면 comparator를 어떻게 짜?
+- String.CASE_INSENSITIVE_ORDER를 TreeSet comparator로 쓰면 Mina와 MINA가 같은 자리로 보일 수 있어?
+- null은 뒤에 두고 문자열 값만 Z에서 A로 정렬하려면 reversed scope를 어떻게 잡아야 해?
+- empty string blank null missing payload를 String comparator 설계와 어떻게 구분해?
+- nullable String 정렬에서 nullsLast와 CASE_INSENSITIVE_ORDER를 같이 읽는 법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 nullable String sorting에서 null placement, case sensitivity, tie-breaker, sorted collection duplicate semantics를 분리하는 beginner chooser다.
+  nullable String comparator, nullsLast, CASE_INSENSITIVE_ORDER, reversed scope, TreeSet duplicate 질문이 본 문서에 매핑된다.
+---
 # Nullable String Comparator Bridge
 
 > 한 줄 요약: nullable `String` 정렬은 "문자열 비교"보다 먼저 "`null`을 어디에 둘까?"를 정하고, 그 다음 "대소문자를 구분할까?"를 붙여 읽으면 초보자가 가장 덜 헷갈린다. 그래서 기본 출발점은 `Comparator.comparing(..., Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))` 같은 형태다.

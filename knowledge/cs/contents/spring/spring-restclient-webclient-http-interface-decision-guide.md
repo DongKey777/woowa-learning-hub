@@ -10,7 +10,11 @@ level: beginner
 language: mixed
 source_priority: 88
 mission_ids: []
-review_feedback_tags: []
+review_feedback_tags:
+- restclient-webclient-http
+- interface
+- http-client-choice
+- http-exchange-client
 aliases:
   - spring http client choice
   - restclient webclient http interface 차이
@@ -32,7 +36,7 @@ prerequisites:
   - spring/boot-autoconfiguration-basics
 next_docs:
   - spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
-  - spring/restclient-vs-webclient-lifecycle-boundaries
+  - spring/spring-restclient-vs-webclient-lifecycle-boundaries
   - spring/async-context-propagation-restclient-http-interface-clients
 linked_paths:
   - contents/spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md
@@ -42,7 +46,7 @@ linked_paths:
   - contents/spring/spring-webflux-vs-mvc.md
 confusable_with:
   - spring/restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer
-  - spring/restclient-vs-webclient-lifecycle-boundaries
+  - spring/spring-restclient-vs-webclient-lifecycle-boundaries
   - spring/async-context-propagation-restclient-http-interface-clients
 forbidden_neighbors: []
 expected_queries:
@@ -58,7 +62,6 @@ contextual_chunk_prefix: |
   reactive까지 필요한가, 선언형 인터페이스는 언제 얹는가 같은 질문을
   실행 모델, 호출 수, 선언 방식 세 갈래 결정으로 연결한다.
 ---
-
 # Spring `RestClient` vs `WebClient` vs HTTP Interface 결정 가이드
 
 ## 한 줄 요약

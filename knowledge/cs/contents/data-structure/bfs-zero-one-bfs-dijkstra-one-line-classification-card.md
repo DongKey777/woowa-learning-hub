@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: BFS vs 0-1 BFS vs Dijkstra 한 줄 분류 카드
+concept_id: data-structure/bfs-zero-one-bfs-dijkstra-classification
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- shortest-path-first-split
+- queue-deque-priorityqueue
+- bfs-vs-dijkstra
+aliases:
+- bfs vs 0-1 bfs vs dijkstra
+- shortest path one line classification
+- deque vs priority queue shortest path
+- 0-1 BFS 언제 써요
+- 비용 합 왜 다익스트라
+- 횟수면 BFS
+- 일반 비용이면 Dijkstra
+symptoms:
+- 최단이라는 단어만 보고 이동 횟수인지 비용 합인지 자르지 않은 채 BFS를 붙인다
+- 0과 1 비용만 있는 문제에서 일반 priority queue Dijkstra로 과하게 가거나 deque 신호를 놓친다
+- queue, deque, priority queue가 각각 어떤 shortest path 비용 모델에 대응하는지 헷갈린다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/graph-basics
+- data-structure/queue-basics
+next_docs:
+- algorithm/dfs-bfs-intro
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/zero-one-bfs-grid-conversion-primer
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+linked_paths:
+- contents/data-structure/graph-basics.md
+- contents/data-structure/queue-bfs-priorityqueue-map-lookup-micro-drill.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md
+- contents/algorithm/zero-one-bfs-grid-conversion-primer.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- algorithm/dfs-bfs-intro
+- algorithm/bfs-vs-dijkstra-shortest-path-mini-card
+- algorithm/zero-one-bfs-grid-conversion-primer
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+forbidden_neighbors: []
+expected_queries:
+- 최소 이동 횟수와 최소 비용 합을 보면 BFS와 Dijkstra를 어떻게 나눠?
+- 0-1 BFS는 언제 쓰고 왜 deque를 쓰는지 beginner 기준으로 알려줘
+- 횟수면 BFS 0/1 비용이면 0-1 BFS 일반 비용이면 Dijkstra라는 말이 맞아?
+- shortest path 문제에서 queue deque priority queue 신호를 어떻게 읽어?
+- 최단이라는 단어만 보고 BFS로 가면 안 되는 예시를 들어줘
+contextual_chunk_prefix: |
+  이 문서는 shortest path 문제에서 먼저 최소화 대상과 비용 모양을 자르는
+  beginner chooser다. 이동 횟수는 BFS와 queue, 0/1 비용 합은 0-1 BFS와
+  deque, 일반 비음수 비용 합은 Dijkstra와 priority queue로 연결한다.
+---
 # BFS vs 0-1 BFS vs Dijkstra 한 줄 분류 카드
 
 > 한 줄 요약: shortest-path 문제를 읽을 때 `최소 이동 횟수`, `0/1 비용`, `일반 비용 합` 중 무엇을 묻는지만 먼저 자르면 BFS, 0-1 BFS, Dijkstra를 초보자도 덜 섞는다.

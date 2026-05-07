@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Beginner Consistency Self-Check Worksheet
+concept_id: system-design/beginner-consistency-self-check-worksheet
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 72
+mission_ids: []
+review_feedback_tags:
+- beginner consistency self-check worksheet
+- estimation invalidation monotonic guard dashboard check
+- min-version floor worksheet
+- list detail monotonic guard practice
+aliases:
+- beginner consistency self-check worksheet
+- estimation invalidation monotonic guard dashboard check
+- min-version floor worksheet
+- list detail monotonic guard practice
+- glossary to worksheet bridge
+- missed 2 plus worksheet
+- read-after-write vs monotonic vs causal worksheet
+- floor mismatch quiz
+- monotonic guard wrong choice
+- 방금 저장한 값이 안 보임
+- 목록이 상세보다 예전 값
+- 알림 눌렀는데 원인이 안 보임
+symptoms: []
+intents:
+- drill
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/cross-primer-glossary-anchors.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/database/causal-consistency-intuition.md
+- contents/system-design/notification-causal-token-walkthrough.md
+- contents/system-design/notification-badge-vs-source-freshness-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Beginner Consistency Self-Check Worksheet 연습 문제를 풀어보고 싶어
+- beginner consistency self-check worksheet로 설계 판단을 점검해줘
+- Beginner Consistency Self-Check Worksheet에서 내가 놓친 조건은 뭐야?
+- beginner consistency self-check worksheet 체크리스트를 질문 형태로 내줘
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Beginner Consistency Self-Check Worksheet를 다루는 drill 문서다. 숫자로 병목 후보를 추정하고, 무효화 패턴을 고른 뒤, 화면 역행 방지(min-version floor)와 운영 대시보드 점검까지 한 번에 연습하는 초급자용 빈칸 워크시트다. 검색 질의가 beginner consistency self-check worksheet, estimation invalidation monotonic guard dashboard check, min-version floor worksheet, list detail monotonic guard practice처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Beginner Consistency Self-Check Worksheet
 
 > 한 줄 요약: 숫자로 병목 후보를 추정하고, 무효화 패턴을 고른 뒤, 화면 역행 방지(min-version floor)와 운영 대시보드 점검까지 한 번에 연습하는 초급자용 빈칸 워크시트다.

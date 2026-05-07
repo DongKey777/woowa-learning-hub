@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Specification vs Query Service Boundary
+concept_id: design-pattern/specification-vs-query-service-boundary
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- specification-query-boundary
+- read-contract-boundary
+- repository-query-leakage
+aliases:
+- specification vs query service
+- domain condition boundary
+- read contract boundary
+- repository query leakage
+- screen model query
+- search vs domain rule
+- query object
+- domain specification vs jpa specification
+- 화면 검색 조건 vs 도메인 조건
+- query service boundary
+symptoms:
+- 관리자 화면 검색 조건과 탭/정렬/페이징 요구를 모두 Domain Specification으로 올려 도메인 언어가 화면 요구에 끌려간다
+- Query Service 대신 repository method와 specification 조합만 늘려 read contract와 aggregate persistence boundary가 흐려진다
+- JPA Specification이라는 구현 도구를 도메인 Specification과 동일시해 command side 규칙과 query side 최적화를 섞는다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/specification-pattern
+- design-pattern/query-object-search-criteria-pattern
+- design-pattern/repository-boundary-aggregate-vs-read-model
+next_docs:
+- design-pattern/search-normalization-query-pattern
+- design-pattern/cqrs-command-query-separation-pattern-language
+- design-pattern/read-model-staleness-read-your-writes
+linked_paths:
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/query-object-search-criteria-pattern.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/repository-pattern-vs-antipattern.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/search-normalization-query-pattern.md
+confusable_with:
+- design-pattern/specification-pattern
+- design-pattern/query-object-search-criteria-pattern
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/cqrs-command-query-separation-pattern-language
+forbidden_neighbors: []
+expected_queries:
+- Specification과 Query Service는 조건을 다루지만 도메인 조건과 화면 조회 계약이 어떻게 달라?
+- 관리자 검색 조건을 Domain Specification으로 모두 올리면 repository boundary가 흐려지는 이유가 뭐야?
+- JPA Specification을 Query Service 내부 구현으로 쓸 수는 있지만 공개 계약 의도는 왜 별도로 봐야 해?
+- 취소 가능한 주문인지 판단하는 조건은 Specification이고 관리자 주문 목록 조회는 Query Service에 가까운 이유가 뭐야?
+- screen query leakage를 막으려면 Query Object, Read Repository, Domain Specification 책임을 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 Specification vs Query Service Boundary chooser로, 도메인 언어를 가진
+  boolean condition은 Specification 후보이고, 화면/검색/집계/페이징/정렬을 만족하는 read
+  contract는 Query Service와 Query Object 후보라는 경계를 repository boundary와 함께 설명한다.
+---
 # Specification vs Query Service Boundary
 
 > 한 줄 요약: Specification은 도메인 조건의 의미를 조합하는 데 강하고, Query Service는 화면/검색/집계 요구를 만족하는 조회 계약을 조직하는 데 강하므로 둘의 경계를 섞지 않는 편이 repository boundary를 지키기 쉽다.
@@ -28,6 +96,8 @@ Specification을 도입하면 곧 이런 유혹이 생긴다.
 - Query Service: 조회 목적에 맞는 read contract를 제공
 
 이 둘을 섞기 시작하면 domain condition과 screen query가 같은 추상화 위에 올라가면서 repository boundary가 다시 흐려질 수 있다.
+
+그래서 "조건식인가"보다 먼저 "이 조건이 도메인 판단에 재사용되는가, 아니면 특정 화면의 read contract인가"를 물어야 한다.
 
 ### Retrieval Anchors
 

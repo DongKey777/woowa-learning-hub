@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Primitive Wrapper Choice Primer
+concept_id: language/primitive-wrapper-choice-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- primitive-wrapper
+- null-handling
+- api-design
+aliases:
+- Primitive wrapper choice primer
+- int Integer 차이
+- primitive vs wrapper beginner
+- int vs Integer null 차이
+- Boolean null 선택 기준
+- 자바 primitive wrapper 언제 써요
+symptoms:
+- int와 Integer 차이를 객체냐 primitive냐로만 외워 실제 설계 질문인 필수값인지 null도 상태인지 판단하지 못해
+- Boolean wrapper 요청 필드의 null이 안 보냄, 명시적 비움, 아직 모름 중 무엇인지 API 계약에서 정하지 않아
+- 반환값의 없음까지 wrapper null 하나로 표현하려 해 Optional이나 상태 타입이 더 직접적인 경우를 놓쳐
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- language/java-language-basics
+- language/wrapper-value-comparison
+next_docs:
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/boolean-wrapper-null-condition-primer
+- language/domain-state-type-primer-enum-record-value-object
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/wrapper-value-comparison-beginner-bridge.md
+- contents/language/java/boolean-wrapper-null-condition-primer.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/language/java/domain-state-type-primer-enum-record-value-object.md
+- contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md
+confusable_with:
+- language/wrapper-value-comparison
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- language/boolean-wrapper-null-condition-primer
+forbidden_neighbors: []
+expected_queries:
+- int와 Integer 차이는 값이 항상 있어야 하는지 null도 상태인지로 어떻게 고르면 돼?
+- primitive와 wrapper를 필드 파라미터 반환값에서 각각 언제 쓰는지 beginner 기준으로 설명해줘
+- Boolean 요청 필드에서 null은 안 보냄인지 비움인지 아직 모름인지 왜 계약을 정해야 해?
+- 반환값이 없을 수도 있을 때 wrapper null보다 Optional이나 상태 타입을 먼저 검토하는 이유가 뭐야?
+- int Integer 비교 문제와 타입 선택 문제는 왜 분리해서 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 int/long/boolean primitive와 Integer/Long/Boolean wrapper 선택을 필수값인지 null도 상태인지 기준으로 설명하는 beginner primer다.
+  int Integer 차이, primitive wrapper, Boolean null, wrapper choice, field parameter return type 질문이 본 문서에 매핑된다.
+---
 # Primitive-wrapper choice primer: `int`/`long`/`boolean` vs `Integer`/`Long`/`Boolean`
 
 > 한 줄 요약: "`int`와 `Integer` 차이가 뭐예요?"라는 질문은 결국 "이 값이 항상 있어야 하나, 아니면 `null`도 상태인가?"를 묻는 것이고, 값이 반드시 있어야 하면 primitive를 먼저 보고 "비어 있음", "미입력", "선택값" 같은 상태를 표현해야 하면 wrapper를 검토하면 된다.

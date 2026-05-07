@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Trie Prefix Search and Autocomplete
+concept_id: data-structure/trie-prefix-search-autocomplete
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids:
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- trie-prefix-search
+- autocomplete
+- prefix-index
+aliases:
+- Trie prefix search
+- prefix tree autocomplete
+- digital search tree
+- top-k autocomplete
+- suggestion ranking
+- search-as-you-type
+- radix tree prefix index
+symptoms:
+- HashMap exact lookup으로 prefix candidates를 찾으려 해 모든 key scan 비용을 만든다
+- Trie가 prefix candidate collection까지만 빠르게 해 주고 ranking/top-k suggestion은 별도 문제라는 점을 놓친다
+- 문자 집합과 node child representation을 고려하지 않고 배열 children과 Map children을 무조건 선택한다
+intents:
+- definition
+- design
+prerequisites:
+- data-structure/hashmap-internals
+- data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+next_docs:
+- data-structure/radix-tree
+- data-structure/adaptive-radix-tree
+- data-structure/finite-state-transducer
+linked_paths:
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/skip-list.md
+- contents/data-structure/radix-tree.md
+- contents/data-structure/adaptive-radix-tree.md
+- contents/data-structure/finite-state-transducer.md
+- contents/data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card.md
+- contents/system-design/search-system-design.md
+confusable_with:
+- data-structure/trie-vs-hashmap-exact-lookup-beginner-card
+- data-structure/trie-prefix-search-vs-treemap-ordered-map-beginner-card
+- data-structure/radix-tree
+- data-structure/finite-state-transducer
+forbidden_neighbors: []
+expected_queries:
+- Trie는 prefix search와 autocomplete에서 HashMap exact lookup보다 왜 자연스러워?
+- prefix를 따라간 뒤 후보 수집과 top-k ranking은 Trie에서 어떻게 나눠 생각해야 해?
+- Trie node children을 배열로 둘지 Map으로 둘지 문자 집합에 따라 어떻게 골라?
+- 자동완성에서 node별 topSuggestions cache와 on-demand DFS는 어떤 tradeoff가 있어?
+- Radix Tree Adaptive Radix Tree FST는 Trie의 메모리 문제와 어떻게 이어져?
+contextual_chunk_prefix: |
+  이 문서는 Trie를 문자열 prefix를 공유하는 tree로 설명하고 prefix search,
+  autocomplete, top-k suggestion, child representation, memory tradeoff를 다룬다.
+  HashMap exact lookup, TreeMap ordered range, Radix Tree, FST와 역할을 구분한다.
+---
 # Trie (Prefix Search / Autocomplete)
 
 > 한 줄 요약: Trie는 문자열의 공통 접두사를 공유해 prefix search와 autocomplete, top-k suggestion을 빠르게 만드는 자료구조다.

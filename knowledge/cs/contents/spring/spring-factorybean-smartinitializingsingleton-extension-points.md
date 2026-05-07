@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring FactoryBean and SmartInitializingSingleton Extension Points
+concept_id: spring/factorybean-smartinitializingsingleton-extension-points
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- factorybean-smartinitializingsingleton-extension
+- points
+- factorybean
+- smartinitializingsingleton
+aliases:
+- FactoryBean
+- SmartInitializingSingleton
+- &beanName
+- FactoryBean product object
+- singleton after initialization hook
+- startup callback
+- bean factory product vs factory
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+- contents/spring/spring-application-context-refresh-phases.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-startup-bean-graph-debugging-playbook.md
+expected_queries:
+- Spring FactoryBean은 일반 Bean과 어떻게 달라?
+- FactoryBean 자체를 꺼내려면 왜 &beanName을 써야 해?
+- SmartInitializingSingleton은 @PostConstruct와 어떤 시점이 달라?
+- 모든 singleton 초기화 이후 registry를 스캔하려면 어떤 hook을 써?
+contextual_chunk_prefix: |
+  이 문서는 FactoryBean이 Bean을 만드는 Bean이고, 컨테이너 조회 시 보통
+  getObject() product가 노출된다는 점을 설명한다. &beanName으로 factory 자체를
+  보는 규칙, SmartInitializingSingleton afterSingletonsInstantiated hook,
+  @PostConstruct보다 늦은 startup callback을 다루는 advanced deep dive다.
+---
 # Spring `FactoryBean` and `SmartInitializingSingleton` Extension Points
 
 > 한 줄 요약: `FactoryBean`은 "Bean을 만드는 Bean"이고 `SmartInitializingSingleton`은 "모든 singleton 초기화 이후" 훅이므로, 둘을 모르면 컨테이너 확장 코드를 만들 때 생성 시점과 제품 객체를 자주 혼동하게 된다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: MySQL EXPLAIN type ALL Beginner Card
+concept_id: database/mysql-explain-type-all-beginner-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- mysql-explain
+- full-scan
+- index-basics
+- beginner-card
+aliases:
+- mysql explain type all
+- type all what is
+- explain type all beginner
+- full table scan beginner
+- key null type all
+- explain rows too large
+- full scan 뭐예요
+- explain type all 왜 떠요
+- explain 처음 type all
+symptoms:
+- MySQL EXPLAIN에서 type ALL이 보여 full table scan인지 초보자 관점에서 해석해야 해
+- type ALL과 key NULL, rows 큰 값이 같이 보여 인덱스 부재와 조건 선택도 문제를 분리해야 해
+- 작은 테이블의 ALL과 큰 테이블의 위험한 full scan을 같은 장애로 단정하고 있어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/mysql-explain-key-null-beginner-card
+next_docs:
+- database/mysql-explain-using-temporary-beginner-card
+- database/postgresql-plan-node-mini-card
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/mysql-explain-key-null-beginner-card.md
+- contents/database/index-basics.md
+- contents/database/query-tuning-checklist.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/database/postgresql-plan-node-mini-card.md
+- contents/database/mysql-explain-using-temporary-beginner-card.md
+confusable_with:
+- database/mysql-explain-key-null-beginner-card
+- database/mysql-explain-using-temporary-beginner-card
+- database/postgresql-plan-node-mini-card
+forbidden_neighbors: []
+expected_queries:
+- MySQL EXPLAIN에서 type ALL은 무조건 나쁜 full scan 신호야?
+- type ALL과 key NULL, rows를 같이 보고 초보자는 무엇부터 확인해야 해?
+- 작은 테이블에서는 type ALL이 보여도 괜찮을 수 있는 이유를 설명해줘
+- explain type all이 뜰 때 인덱스 부재와 조건이 너무 넓은 경우를 어떻게 구분해?
+- full table scan 초보자 해석을 key, rows, Extra 순서로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL EXPLAIN type ALL을 넓은 full table scan 신호로 읽고 key NULL, rows, Extra와 함께 원인을 줄이는 beginner symptom card다.
+  full scan 뭐예요, explain type all 왜 떠요, key null type all 질문이 본 문서에 매핑된다.
+---
 # MySQL `EXPLAIN`에서 `type = ALL`이 보여요
 
 > 한 줄 요약: MySQL `EXPLAIN`의 `type = ALL`은 테이블을 넓게 훑는 full scan 쪽 신호이고, 초보자는 먼저 `key = NULL` 여부와 `rows` 크기를 같이 보면 된다.

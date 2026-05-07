@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Replication Lag Forensics and Root-Cause Playbook
+concept_id: database/replication-lag-forensics-root-cause-playbook
+canonical: false
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- replication-lag-root-cause
+- transport-vs-apply-split
+- stale-read-vs-routing-confusion
+aliases:
+- replication lag forensics
+- apply lag root cause
+- transport lag triage
+- replica SQL thread delay
+- relay log backlog
+- read replica incident
+- stale read but lag low
+- batch 뒤 replica lag
+symptoms:
+- 방금 쓴 값이 안 보여서 replica lag를 의심하는데 lag 수치는 낮다
+- 야간 배치나 대량 delete 뒤에만 replica lag가 갑자기 치솟는다
+- 하루 종일 lag가 조금씩 쌓여서 read replica가 계속 늦다
+- failover 직후 일부 화면만 예전 값을 보여서 복제 지연인지 라우팅 문제인지 헷갈린다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/replica-lag-read-after-write-strategies
+- system-design/read-after-write-consistency-basics
+next_docs:
+- database/replica-lag-observability-routing-slo
+- database/failover-visibility-window-topology-cache-playbook
+- system-design/mixed-cache-replica-freshness-bridge
+linked_paths:
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/group-commit-binlog-fsync-durability.md
+- contents/database/cdc-backpressure-binlog-retention-replay.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+confusable_with:
+- database/replica-lag-read-after-write-strategies
+- system-design/mixed-cache-replica-freshness-bridge
+- database/failover-visibility-window-topology-cache-playbook
+forbidden_neighbors: []
+expected_queries:
+- replica lag가 낮은데 왜 방금 쓴 값이 안 보여?
+- 야간 배치 뒤 replica lag가 확 튀면 어디부터 원인을 나눠?
+- transport lag랑 apply lag를 운영에서 어떻게 빨리 구분해?
+- read replica가 하루 종일 조금씩 늦어질 때 뭘 먼저 봐야 해?
+- failover 직후 stale read가 replication lag인지 topology cache 문제인지 어떻게 가려?
+contextual_chunk_prefix: |
+  이 문서는 replication lag incident를 transport delay, apply delay,
+  visibility delay로 먼저 갈라서 원인을 찾는 advanced playbook이다.
+  방금 쓴 값이 안 보이는데 lag는 낮다, 야간 배치 뒤 replica가 밀린다,
+  failover 뒤 일부 화면만 예전 값이다 같은 증상 표현이 stale cache나
+  read routing 혼선이 아니라 replication forensics 분기로 이어질 때
+  이 문서가 top-1 입구가 되도록 설계됐다.
+---
+
 # Replication Lag Forensics and Root-Cause Playbook
 
 > 한 줄 요약: replication lag를 줄이려면 "얼마나 늦었는가"보다 먼저, transport delay인지 apply delay인지, 특정 긴 트랜잭션/DDL 때문인지, replica 자원 포화 때문인지 분류해야 한다.

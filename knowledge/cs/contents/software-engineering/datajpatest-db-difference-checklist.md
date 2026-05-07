@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: DataJpaTest DB Difference Checklist
+concept_id: software-engineering/datajpatest-db-difference
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- datajpatest
+- testcontainers
+- database-difference
+aliases:
+- DataJpaTest DB 차이 가이드
+- DataJpaTest DB Difference Checklist
+- H2 PostgreSQL mismatch
+- H2 MySQL mismatch
+- native query real DB test
+- Testcontainers JPA beginner
+symptoms:
+- DataJpaTest가 H2에서 통과했으니 PostgreSQL/MySQL 운영 DB 전용 쿼리, 함수, 타입, collation도 안전하다고 가정해
+- nativeQuery, ILIKE, JSONB, enum, timezone, quoted identifier가 있는데도 H2를 최종 심판으로 삼아
+- 운영은 Flyway/Liquibase migration인데 테스트는 ddl-auto create에 기대 schema shape 차이를 놓쳐
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- software-engineering/test-strategy-basics
+- spring/testcontainers-boundary-strategy
+next_docs:
+- software-engineering/datajpatest-flush-clear
+- software-engineering/jpa-batch-config-pitfalls
+- software-engineering/persistence-adapter-mapping-checklist
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/spring/spring-testcontainers-boundary-strategy.md
+confusable_with:
+- software-engineering/datajpatest-flush-clear
+- software-engineering/jpa-batch-config-pitfalls
+- spring/testcontainers-boundary-strategy
+forbidden_neighbors: []
+expected_queries:
+- DataJpaTest에서 H2로 충분한 경우와 Testcontainers 실제 DB로 옮겨야 하는 경우를 어떻게 구분해?
+- nativeQuery, ILIKE, JSONB, DB 함수, timezone, collation 차이가 있으면 왜 H2 단독 판정이 위험해?
+- 운영은 Flyway/Liquibase인데 테스트는 ddl-auto create면 어떤 schema mismatch가 생길 수 있어?
+- PostgreSQL 전용 query 하나만 실제 DB container로 옮겨 시작하는 기준을 알려줘
+- DataJpaTest 실패를 JPA 매핑 문제로 보기 전에 H2 vs 운영 DB 심판 차이를 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 DataJpaTest에서 H2와 실제 PostgreSQL/MySQL/Testcontainers 판정 경계를 native query, DB function/type, migration schema, sorting/timezone 차이로 구분하는 beginner primer다.
+---
 # DataJpaTest DB 차이 가이드
 
 > 한 줄 요약: `@DataJpaTest`에서 H2로는 통과해도 실제 DB 전용 쿼리에서는 흔들릴 수 있으니, **언제 H2로 충분하고 언제 Testcontainers로 실제 엔진을 붙여야 하는지**를 먼저 나누면 초반 시행착오를 크게 줄일 수 있다.

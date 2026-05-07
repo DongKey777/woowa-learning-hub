@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Sequencer-Based Ring Buffer Coordination
+concept_id: data-structure/sequencer-based-ring-buffer-coordination
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- ring-buffer-sequencer
+- gating-sequence-backpressure
+- disruptor-style-coordination
+aliases:
+- sequencer based ring buffer
+- Disruptor sequencer
+- gating sequence
+- publish cursor
+- claim sequence
+- sequence barrier
+- bounded ring coordination
+symptoms:
+- ring buffer를 배열 head tail 문제로만 보고 claim, fill, publish, consume 단계 분리를 놓친다
+- multi producer에서 claim sequence와 publish cursor가 다를 수 있어 contiguous publish가 막히는 상황을 이해하지 못한다
+- slow consumer gating sequence가 capacity credit을 회수하지 않아 producer backpressure가 걸리는 원인을 queue 용량 문제로만 본다
+intents:
+- deep_dive
+- design
+prerequisites:
+- data-structure/ring-buffer
+- data-structure/bounded-mpmc-queue
+next_docs:
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/lock-free-mpsc-queue
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+linked_paths:
+- contents/data-structure/ring-buffer.md
+- contents/data-structure/bounded-mpmc-queue.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/aba-problem-and-tagged-pointers.md
+- contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md
+confusable_with:
+- data-structure/ring-buffer
+- data-structure/bounded-mpmc-queue
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/lock-free-mpsc-queue
+forbidden_neighbors: []
+expected_queries:
+- sequencer based ring buffer에서 claim sequence publish cursor gating sequence가 각각 뭐야?
+- Disruptor 스타일 ring buffer가 단순 MPMC queue와 다른 점은?
+- slow consumer gating sequence 때문에 producer가 막히는 backpressure를 어떻게 이해해?
+- multi producer ring buffer에서 claim은 됐지만 publish가 연속으로 안 되는 상황은 왜 생겨?
+- bounded ring buffer를 capacity credit 모델로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 sequencer 기반 ring buffer를 claim sequence, publish cursor,
+  gating sequence, consumer progress sequence로 나누어 설명한다. bounded ring의
+  capacity credit, slow consumer backpressure, Disruptor-style sequence barrier를 다룬다.
+---
 # Sequencer-Based Ring Buffer Coordination
 
 > 한 줄 요약: sequencer 기반 ring buffer는 claim sequence, publish cursor, gating sequence를 분리해 bounded ring의 capacity를 credit처럼 관리하고, multi-stage consumer의 진행 순서를 coordination plane에서 통제하는 구조다.

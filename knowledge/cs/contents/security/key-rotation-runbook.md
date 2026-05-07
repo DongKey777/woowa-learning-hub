@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Key Rotation Runbook
+concept_id: security/key-rotation-runbook
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- key rotation
+- runbook
+- dual validation
+- key version
+aliases:
+- key rotation
+- runbook
+- dual validation
+- key version
+- grace window
+- revoke old key
+- JWKS
+- signing key
+- rotation incident
+- cutover
+- audit trail
+- kid rollover
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/jwt-deep-dive.md
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/jwks-rotation-cutover-failure-recovery.md
+- contents/security/signing-key-compromise-recovery-playbook.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/secret-scanning-credential-leak-response.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Key Rotation Runbook 핵심 개념을 설명해줘
+- key rotation가 왜 필요한지 알려줘
+- Key Rotation Runbook 실무 설계 포인트는 뭐야?
+- key rotation에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Key Rotation Runbook를 다루는 deep_dive 문서다. key rotation은 새 키를 만드는 작업이 아니라, 발급, 배포, 검증, 중복 허용, 폐기, 감사까지 포함한 운영 절차다. 검색 질의가 key rotation, runbook, dual validation, key version처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Key Rotation Runbook
 
 > 한 줄 요약: key rotation은 새 키를 만드는 작업이 아니라, 발급, 배포, 검증, 중복 허용, 폐기, 감사까지 포함한 운영 절차다.

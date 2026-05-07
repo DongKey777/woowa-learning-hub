@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: HTTP의 무상태성과 쿠키, 세션, 캐시
+concept_id: network/http-state-session-cache
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- http-stateless-cookie-session-cache
+- devtools-cookie-request-cache-split
+- session-vs-cache-confusion
+aliases:
+- http stateless cookie session cache
+- HTTP 무상태 쿠키 세션 캐시
+- cookie session cache 차이
+- stateless 뭐예요
+- Set-Cookie Cookie header
+- server session
+- browser cache 304
+- sessionStorage session cookie
+- 쿠키 세션 캐시 차이
+- 로그인 유지와 304 차이
+symptoms:
+- cookie, session, cache, stateless를 모두 상태 유지라는 말로 묶어 브라우저 저장, 서버 복원, body 재사용을 구분하지 못한다
+- Application 탭에 cookie가 보이는 것과 Request Cookie 헤더에 실제 전송되는 것을 같은 확인으로 본다
+- 304나 memory cache를 로그인 세션 복원 신호로 오해한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/cookie-session-jwt-browser-flow-primer
+- network/http-caching-conditional-request-basics
+- network/browser-devtools-application-storage-1minute-card
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/browser-devtools-application-storage-1minute-card.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- network/cookie-session-jwt-browser-flow-primer
+- network/http-caching-conditional-request-basics
+- network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer
+forbidden_neighbors: []
+expected_queries:
+- HTTP stateless, cookie, session, cache는 모두 상태와 관련 있지만 각각 누가 무엇을 저장하는지 구분해줘
+- Application 탭 Cookies에는 있는데 Network Request Cookie 헤더에는 없는 경우 무엇을 먼저 봐야 해?
+- 304 Not Modified나 from memory cache가 로그인 세션 유지와 같은 뜻이 아닌 이유를 알려줘
+- sessionStorage, session cookie, server session은 이름은 비슷한데 위치와 질문이 어떻게 달라?
+- Set-Cookie가 왔고 다음 요청에 Cookie가 실렸는데도 /me가 401이면 cookie 전송과 session 복원을 어떻게 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 HTTP stateless, cookie, session, cache를 저장/전송/서버복원/body재사용 네 축으로 분리하는 beginner primer다.
+  Set-Cookie, Cookie header, Application storage, server session, JSESSIONID, 304, memory cache, disk cache, login 유지, DevTools first triage를 다룬다.
+---
 # HTTP의 무상태성과 쿠키, 세션, 캐시
 
 > 한 줄 요약: `stateless`, `cookie`, `session`, `cache`는 모두 "상태"와 관련 있지만 같은 층위의 개념은 아니다. 이 문서는 브라우저 저장, 서버 저장, 응답 재사용을 한 번에 분리해 보는 beginner primer다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Destructive Schema Cleanup, Column Retirement, and Contract-Phase Safety
+concept_id: database/destructive-schema-cleanup-column-retirement
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- destructive-schema-cleanup
+- column-retirement-contract-phase
+- expand-contract-safety
+aliases:
+- destructive schema cleanup
+- column retirement
+- contract phase safety
+- drop column safety
+- field removal runbook
+- expand contract cleanup
+- backward compatibility window
+- destructive migration
+- 컬럼 제거 안전 절차
+- contract phase
+symptoms:
+- 새 컬럼 전환은 끝났지만 old column을 실제로 drop해도 되는지 증명하지 못하고 있어
+- 코드에서는 안 쓰는 것 같은데 배치, CDC, DLQ replay, analytics 경로가 old field를 계속 볼까 걱정돼
+- contract phase에서 rollback 옵션까지 같이 사라지는 위험을 체크해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/online-schema-change-strategies
+- database/cdc-schema-evolution-compatibility-playbook
+next_docs:
+- database/instant-ddl-vs-copy-inplace-algorithms
+- database/online-backfill-consistency
+- database/index-maintenance-window-rollout-playbook
+linked_paths:
+- contents/database/cdc-schema-evolution-compatibility-playbook.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/instant-ddl-vs-copy-inplace-algorithms.md
+- contents/database/instant-add-column-metadata-semantics.md
+- contents/database/online-backfill-consistency.md
+- contents/database/index-maintenance-window-rollout-playbook.md
+- contents/database/generated-columns-functional-index-migration.md
+confusable_with:
+- database/online-schema-change-strategies
+- database/instant-ddl-vs-copy-inplace-algorithms
+- database/cdc-schema-evolution-compatibility-playbook
+forbidden_neighbors: []
+expected_queries:
+- old column을 drop하기 전에 어떤 접근 로그와 replay window를 확인해야 해?
+- expand-contract migration에서 contract phase가 add column보다 위험한 이유는 뭐야?
+- 코드에서 안 쓰는 컬럼도 배치나 CDC consumer가 쓰는지 어떻게 증명해?
+- destructive schema cleanup을 rollback 가능성까지 고려해서 어떤 순서로 해야 해?
+- column retirement 전에 read-off, write-off, retention window를 어떻게 검증해?
+contextual_chunk_prefix: |
+  이 문서는 expand-contract migration의 contract phase에서 old column과 old field를 제거하기 전 의존성 제거, replay window, DDL 위험, rollback 상실을 검증하는 advanced playbook이다.
+  column retirement, drop column safety, destructive migration, contract phase safety 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Destructive Schema Cleanup, Column Retirement, and Contract-Phase Safety
 
 > 한 줄 요약: 컬럼 추가보다 더 위험한 순간은 old field를 실제로 제거하는 contract phase이며, 이때는 "아무도 더 이상 읽지 않는다"는 사실을 증명하는 절차가 필요하다.

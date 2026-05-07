@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Distributed Uniqueness와 ID Allocation Consistency
+concept_id: database/distributed-uniqueness-id-allocation-consistency
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- distributed-uniqueness
+- id-allocation-consistency
+- unique-constraint-as-last-defense
+aliases:
+- distributed uniqueness
+- id allocation consistency
+- distributed id allocation
+- unique constraint fallback
+- ULID snowflake ticket pool
+- business key collision
+- distributed id collision
+- 분산 유일성
+- 주문번호 중복
+- ticket pool allocation
+symptoms:
+- 여러 인스턴스가 주문번호나 쿠폰번호를 동시에 발급하면서 중복 충돌 회수 전략이 없어
+- Snowflake나 ULID를 쓰면 DB unique constraint가 필요 없는지 헷갈려
+- failover나 재시도 후 ID 발급 순서와 유일성을 같은 문제로 보고 있어
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/idempotency-key-and-deduplication
+- database/replication-failover-split-brain
+next_docs:
+- database/hot-row-contention-counter-sharding
+- database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide
+- database/commit-horizon-after-failover-verification
+linked_paths:
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide.md
+- contents/database/commit-horizon-after-failover-verification.md
+confusable_with:
+- database/idempotency-key-and-deduplication
+- database/hot-row-contention-counter-sharding
+- database/replication-failover-split-brain
+forbidden_neighbors: []
+expected_queries:
+- 분산 환경에서 주문번호 유일성은 ID 생성만으로 충분하지 않은 이유가 뭐야?
+- UUID, ULID, Snowflake, ticket pool은 유일성과 정렬성을 어떻게 다르게 보장해?
+- Snowflake worker id 설정이 틀리면 어떤 중복 충돌이 생기고 DB constraint는 어떤 역할을 해?
+- failover 후 ID 순서가 꼬인 것처럼 보여도 유일성과 최신성은 왜 별개야?
+- 분산 ID 생성 전략과 unique constraint 회수 전략을 같이 설계해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 분산 ID, business key, UUID, ULID, Snowflake, ticket pool 발급에서 충돌 회피와 DB unique constraint 기반 회수 전략을 함께 설계하는 advanced deep dive다.
+  distributed uniqueness, id allocation, unique constraint, ULID, Snowflake, ticket pool 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Distributed Uniqueness와 ID Allocation Consistency
 
 > 한 줄 요약: 분산 환경에서 “유일해야 한다”는 요구는 단순한 생성 문제가 아니라, 충돌을 언제 발견하고 어떻게 회수할지의 문제다.

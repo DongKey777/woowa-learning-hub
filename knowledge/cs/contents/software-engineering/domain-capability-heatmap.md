@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Domain Capability Heatmap
+concept_id: software-engineering/domain-capability-heatmap
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- capability-planning
+- roadmap
+- heatmap
+- architecture-strategy
+aliases:
+- Domain Capability Heatmap
+- capability heatmap
+- business capability risk map
+- domain maturity heatmap
+- capability investment map
+- 도메인 역량 히트맵
+symptoms:
+- 리팩터링, 플랫폼 투자, migration 우선순위를 서비스 목록이나 목소리 큰 요청 기준으로만 정해 business value와 risk가 연결되지 않아
+- capability별 maturity, operational risk, bottleneck, change frequency가 보이지 않아 roadmap과 architecture runway가 따로 움직여
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- software-engineering/capability-roadmap
+- software-engineering/service-maturity-model
+next_docs:
+- software-engineering/migration-scorecards
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/architecture-runway
+linked_paths:
+- contents/software-engineering/capability-based-roadmap-planning.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/organizational-coupling-conway-effects.md
+- contents/software-engineering/migration-scorecards.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/architecture-runway-refactoring-window.md
+confusable_with:
+- software-engineering/capability-roadmap
+- software-engineering/migration-scorecards
+- software-engineering/service-maturity-model
+forbidden_neighbors: []
+expected_queries:
+- domain capability heatmap으로 비즈니스 가치, 리스크, 성숙도, 병목을 함께 보려면 어떤 축을 써야 해?
+- 리팩터링이나 플랫폼 투자 우선순위를 capability heatmap에서 어떻게 뽑아?
+- 서비스 단위가 아니라 business capability 기준으로 roadmap을 잡아야 하는 이유가 뭐야?
+- heatmap의 red yellow green 색상이 실제 데이터와 scorecard로 연결되려면 무엇이 필요해?
+- 조직 병목과 Conway effect를 capability heatmap에서 어떻게 발견해?
+contextual_chunk_prefix: |
+  이 문서는 domain capability의 business value, operational risk, maturity, dependency bottleneck, change frequency를 heatmap으로 시각화해 roadmap 우선순위를 잡는 advanced playbook이다.
+---
 # Domain Capability Heatmap
 
 > 한 줄 요약: domain capability heatmap은 도메인과 서비스의 중요도, 병목, 위험, 성숙도를 시각화해 어디에 먼저 투자할지 보여 주는 전략 맵이다.

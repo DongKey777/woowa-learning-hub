@@ -59,6 +59,7 @@ linked_paths:
 - contents/database/slotization-migration-backfill-playbook.md
 - contents/database/slot-delta-reschedule-semantics.md
 - contents/database/idempotency-key-and-deduplication.md
+- contents/database/roomescape-reschedule-old-slot-still-blocked-symptom-router.md
 confusable_with:
 - database/roomescape-reservation-concurrency-bridge
 - database/roomescape-reservation-cancel-reschedule-active-predicate-bridge
@@ -68,6 +69,9 @@ expected_queries:
 - roomescape 예약 변경에서 old scope와 new scope를 같이 잠가야 하나요?
 - 예약 reschedule을 release 후 acquire 두 단계로 처리하면 왜 위험해요?
 - 예약 취소와 연장 요청이 동시에 오면 어떤 transition contract로 묶어야 해요?
+- 예약 시간을 옮길 때 이전 슬롯과 새 슬롯을 한 트랜잭션에서 같이 다뤄야 하나요?
+- 취소 요청과 만료 배치가 동시에 돌면 좌석 카운터를 어떻게 안 틀리게 맞춰요?
+- 예약 변경 뒤 예전 시간대가 계속 막혀 보이면 어떤 전이 설계를 먼저 의심해야 해요?
 contextual_chunk_prefix: |
   이 문서는 roomescape 같은 예약 미션에서 예약 변경과 취소를 release 후
   acquire 두 번의 write가 아니라 old/new scope handoff로 잡는 advanced

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: JPA Batch Config Pitfalls
+concept_id: software-engineering/jpa-batch-config-pitfalls
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- jpa
+- batch
+- persistence-adapter
+- flush-clear
+aliases:
+- JPA Batch Config Pitfalls
+- hibernate jdbc batch size pitfalls
+- saveAll batching misconception
+- jpa flush clear batch beginner
+- GenerationType IDENTITY batching pitfall
+- JPA 배치 설정 함정
+symptoms:
+- hibernate.jdbc.batch_size를 켰는데 saveAll insert가 한 건씩 나가거나 batchExecutionCount가 0으로 보여
+- service나 domain 코드가 50건마다 flush clear 같은 ORM 전송 타이밍을 알아야 동작해 persistence adapter 경계가 새어
+- 단순 SQL 전송 최적화를 application의 saveAll bulk port 계약으로 승격해 실패 의미와 retry 의미가 흐려져
+intents:
+- symptom
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/repository-dao-entity
+- software-engineering/persistence-adapter-mapping-checklist
+next_docs:
+- software-engineering/identity-sequence-batch-verification
+- software-engineering/datajpatest-flush-clear
+- software-engineering/adapter-bulk-optimization
+linked_paths:
+- contents/software-engineering/identity-vs-sequence-batch-verification-example.md
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/saveall-sendall-port-smells-safer-alternatives.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/aggregate-persistence-mapping-pitfalls.md
+confusable_with:
+- software-engineering/identity-sequence-batch-verification
+- software-engineering/adapter-bulk-optimization
+- software-engineering/saveall-sendall-port-smells
+forbidden_neighbors: []
+expected_queries:
+- hibernate.jdbc.batch_size를 켰는데 JPA insert batching이 안 되는 이유를 IDENTITY, flush, SQL 모양 기준으로 진단해줘
+- saveAll을 쓰면 자동으로 bulk 업무 계약이 된다고 보면 안 되는 이유가 뭐야?
+- flush clear timing은 왜 service가 아니라 persistence adapter 내부 concern이어야 해?
+- GenerationType.IDENTITY가 insert batch에서 걸림돌이 되는 이유를 초심자에게 설명해줘
+- JPA batch 적용 여부를 SQL 로그, Hibernate statistics, datasource proxy로 확인하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 JPA Batch Config Pitfalls를 다루는 symptom_router 문서다. JPA Batch Config Pitfalls, hibernate jdbc batch size pitfalls, saveAll batching misconception, jpa flush clear batch beginner, GenerationType IDENTITY batching pitfall 같은 lexical 표현과 hibernate.jdbc.batch_size를 켰는데 JPA insert batching이 안 되는 이유를 IDENTITY, flush, SQL 모양 기준으로 진단해줘, saveAll을 쓰면 자동으로 bulk 업무 계약이 된다고 보면 안 되는 이유가 뭐야? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # JPA Batch Config Pitfalls
 
 > 한 줄 요약: `hibernate.jdbc.batch_size`를 켰다고 자동으로 대량 저장이 빨라지는 것은 아니며, `flush` 타이밍, `IDENTITY` 키 생성 방식, 그리고 "이게 배치 업무 계약인가 아니면 ORM 최적화인가"를 분리해서 봐야 초심자가 덜 헷갈린다.

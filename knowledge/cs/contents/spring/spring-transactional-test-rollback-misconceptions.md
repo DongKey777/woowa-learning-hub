@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring Transactional Test Rollback Misconceptions
+concept_id: spring/transactional-test-rollback-misconceptions
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- transactional-test-rollback
+- misconceptions
+- misconception
+- test-rollback-side
+aliases:
+- @Transactional test rollback misconception
+- test rollback side effects
+- transaction outside test method
+- DataJpaTest rollback visibility
+- Testcontainers transaction rollback
+- async side effect not rolled back
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-test-slice-import-testconfiguration-boundaries.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/spring/spring-testcontainers-boundary-strategy.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-transactional-async-composition-traps.md
+symptoms:
+- @Transactional 테스트가 끝나면 모든 부작용이 rollback된다고 믿었지만 외부 작업이 남는다.
+- async thread, afterCommit callback, Testcontainers 외부 상태는 테스트 transaction 밖에서 실행된다.
+- flush/clear 없이 테스트 안에서만 봐서 실제 commit visibility를 오해한다.
+expected_queries:
+- @Transactional test는 모든 부작용을 자동 rollback해?
+- 테스트 transaction 밖에서 실행된 async나 afterCommit 작업은 왜 남을 수 있어?
+- DataJpaTest rollback과 flush clear visibility를 어떻게 구분해?
+- Testcontainers를 쓰면 transactional test rollback 오해가 어떻게 드러나?
+contextual_chunk_prefix: |
+  이 문서는 @Transactional test가 test method transaction 안의 DB 변경을 rollback할 수 있지만
+  async, afterCommit, 외부 system, container state, 이미 commit된 side effect까지 자동으로
+  되돌리는 것은 아니라는 misconception을 다룬다.
+---
 # Spring Transactional Test Rollback Misconceptions
 
 > 한 줄 요약: `@Transactional` 테스트가 자동으로 모든 부작용을 되돌린다고 믿으면 안 되며, 트랜잭션 범위 밖의 작업은 그대로 남을 수 있다.

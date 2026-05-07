@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java Binary Compatibility and Runtime Linkage Errors
+concept_id: language/java-binary-compatibility-linkage-errors
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- binary-compatibility
+- linkage-error
+- dependency-version
+aliases:
+- Java Binary Compatibility and Runtime Linkage Errors
+- NoSuchMethodError AbstractMethodError IncompatibleClassChangeError
+- Java source binary behavioral compatibility
+- mixed version deployment linkage error
+- classpath hell binary compatibility
+- 자바 런타임 LinkageError 호환성
+symptoms:
+- 소스는 컴파일되는데 운영에서 NoSuchMethodError나 AbstractMethodError가 터져 source compatibility와 binary compatibility를 구분하지 못해
+- 인터페이스에 abstract method를 추가해 기존 구현체 jar가 재컴파일되지 않은 상태에서 AbstractMethodError가 나는 원인을 놓쳐
+- classpath나 classloader가 다른 버전의 jar를 로드하는데도 source tree만 보고 문제를 찾으려 해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/classloader-delegation-edge-cases
+- language/java-module-system-runtime-boundaries
+- language/interface-default-method-contract-evolution-primer
+next_docs:
+- language/classloader-memory-leak-playbook
+- language/serialization-compatibility-serial-version-uid
+- language/java-agent-instrumentation-basics
+linked_paths:
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/language/java/java-module-system-runtime-boundaries.md
+- contents/language/java/abstract-class-vs-interface.md
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/java-agent-instrumentation-basics.md
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/interface-default-method-diamond-conflict-basics.md
+confusable_with:
+- language/classloader-delegation-edge-cases
+- language/serialization-compatibility-serial-version-uid
+- language/interface-default-method-contract-evolution-primer
+forbidden_neighbors: []
+expected_queries:
+- Java NoSuchMethodError가 컴파일은 됐는데 런타임에서만 나는 이유를 설명해줘
+- source compatibility binary compatibility behavioral compatibility 차이를 예제로 알려줘
+- 인터페이스에 새 추상 메서드를 추가하면 왜 AbstractMethodError가 날 수 있어?
+- IncompatibleClassChangeError와 IllegalAccessError는 어떤 변경에서 생기는지 알려줘
+- dependency version mismatch나 classpath hell로 LinkageError가 날 때 무엇을 확인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java source, binary, behavioral compatibility와 NoSuchMethodError, AbstractMethodError, IncompatibleClassChangeError 같은 runtime linkage failure를 다루는 advanced playbook이다.
+  binary compatibility, LinkageError, mixed version deployment, classpath hell, interface evolution 질문이 본 문서에 매핑된다.
+---
 # Java Binary Compatibility and Runtime Linkage Errors
 
 > 한 줄 요약: 소스 코드는 컴파일되고 테스트도 통과했는데 운영에서 `NoSuchMethodError`, `AbstractMethodError`, `IncompatibleClassChangeError`가 터지는 이유는, Java 호환성이 source, binary, behavioral로 갈라져 있기 때문이다.

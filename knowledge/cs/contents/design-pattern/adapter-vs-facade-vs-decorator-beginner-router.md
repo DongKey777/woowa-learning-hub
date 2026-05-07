@@ -52,7 +52,7 @@ confusable_with:
 - design-pattern/adapter-basics
 - design-pattern/facade-vs-adapter-vs-proxy
 - design-pattern/decorator-proxy-basics
-forbidden_neighbors:
+forbidden_neighbors: []
 expected_queries:
 - 어댑터랑 퍼사드랑 데코레이터를 처음 배울 때 어떻게 빨리 구분해?
 - 외부 SDK 번역이랑 복잡한 입구 단순화는 어떤 패턴 차이야?

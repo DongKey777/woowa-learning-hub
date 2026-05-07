@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Monotonic Duplicate Rule Micro-Drill
+concept_id: data-structure/monotonic-duplicate-rule-micro-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-duplicate-rule
+- operator-boundary-drill
+- tie-handling-index
+aliases:
+- monotonic duplicate rule drill
+- monotonic duplicate micro drill
+- monotonic duplicate tie handling
+- less than vs less than equal monotonic
+- greater than vs greater than equal monotonic
+- leftmost max duplicate deque
+- 단조 중복 규칙 드릴
+symptoms:
+- 단조 deque/stack에서 값은 맞지만 duplicate index tie-break가 필요한 순간 `<`와 `<=` 차이로 오답이 난다
+- 같은 값이 들어왔을 때 이전 값을 남길지 새 값을 남길지 먼저 정하지 않고 pop 조건을 감으로 고른다
+- next greater, previous smaller, window extrema의 strict/or-equal 규칙을 같은 표로 묶어 손으로 검증하지 못한다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-operator-boundary-cheat-sheet
+next_docs:
+- data-structure/monotonic-strict-vs-equal-translation-card
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+linked_paths:
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/sliding-window-duplicate-extrema-index-drill.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+- contents/data-structure/monotonic-queue-and-stack.md
+confusable_with:
+- data-structure/monotonic-operator-boundary-cheat-sheet
+- data-structure/monotonic-strict-vs-equal-translation-card
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+forbidden_neighbors: []
+expected_queries:
+- Monotonic deque나 stack에서 duplicate가 있을 때 <와 <= 차이를 손으로 연습하고 싶어
+- 같은 값이면 이전 index를 남길지 새 index를 남길지 pop 조건으로 어떻게 정해?
+- sliding window maximum에서 leftmost max와 rightmost max가 중복값에서 어떻게 달라?
+- previous smaller strict와 smaller or equal은 duplicate에서 어떤 pop 조건을 써?
+- 단조 구조 duplicate tie handling micro drill을 보여줘
+contextual_chunk_prefix: |
+  이 문서는 monotonic deque/stack에서 duplicate values가 있을 때 strict
+  operator와 or-equal operator가 leftmost/rightmost tie-break와 answer
+  eligibility를 어떻게 바꾸는지 연습하는 drill이다. `<` vs `<=`, `>` vs
+  `>=`, previous smaller, next greater, window extrema를 다룬다.
+---
 # Monotonic Duplicate Rule Micro-Drill
 
 > 한 줄 요약: monotonic deque/stack에서 `<` vs `<=`, `>` vs `>=`는 "같은 값이 나오면 이전 값을 남길지, 새 값을 남길지"를 정하는 규칙이다.

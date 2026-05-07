@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Logout Scope Primer
+concept_id: security/logout-scope-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- logout scope primer
+- single-device logout
+- logout all devices
+- current session logout
+aliases:
+- logout scope primer
+- single-device logout
+- logout all devices
+- current session logout
+- current device logout
+- session invalidation basics
+- refresh token revocation basics
+- logout scope difference
+- bff logout cleanup
+- server-side logout cleanup
+- cookie delete not enough
+- logout still works after logout
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/subdomain-logout-cookie-cleanup-primer.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Logout Scope Primer 핵심 개념을 설명해줘
+- logout scope primer가 왜 필요한지 알려줘
+- Logout Scope Primer 실무 설계 포인트는 뭐야?
+- logout scope primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Logout Scope Primer를 다루는 primer 문서다. logout은 버튼 하나가 아니라 여러 층의 출입증을 어디까지 끊을지 정하는 범위 문제다. 초보자는 먼저 `현재 세션`, `이 기기`, `모든 기기`, `refresh token revoke`, `BFF 서버 정리`를 분리해서 보면 덜 헷갈린다. 검색 질의가 logout scope primer, single-device logout, logout all devices, current session logout처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Logout Scope Primer
 
 > 한 줄 요약: logout은 버튼 하나가 아니라 여러 층의 출입증을 어디까지 끊을지 정하는 범위 문제다. 초보자는 먼저 `현재 세션`, `이 기기`, `모든 기기`, `refresh token revoke`, `BFF 서버 정리`를 분리해서 보면 덜 헷갈린다.

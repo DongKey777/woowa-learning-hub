@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Spring Distributed Scheduling, Cron Drift, and Leader-Election Patterns
+concept_id: spring/distributed-scheduling-cron-drift-leader-election-patterns
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- distributed-scheduling-cron
+- drift-leader-election
+- distributed-scheduling
+- cron-drift
+aliases:
+- distributed scheduling
+- cron drift
+- leader election
+- scheduler duplicate execution
+- fixedRate overlap
+- distributed lock scheduler
+- missed tick
+- schedule lag
+- fencing token
+intents:
+- design
+- troubleshooting
+symptoms:
+- 멀티 인스턴스에서 @Scheduled job이 중복 실행된다.
+- GC pause, scheduler pool saturation, clock skew 때문에 cron tick이 밀리거나 겹친다.
+- 장애 후 missed window를 skip, catch-up, coalesce 중 어떻게 처리할지 불명확하다.
+linked_paths:
+- contents/spring/spring-scheduler-async-boundaries.md
+- contents/spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md
+- contents/spring/spring-startup-runner-smartlifecycle-readiness-warmup.md
+- contents/spring/spring-delivery-reliability-retryable-resilience4j-outbox-relay.md
+- contents/spring/spring-batch-chunk-retry-skip.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/distributed-lock-design.md
+expected_queries:
+- Spring @Scheduled를 멀티 인스턴스에서 돌리면 왜 중복 실행돼?
+- distributed scheduler에서 leader election과 distributed lock은 어떻게 달라?
+- cron drift와 schedule lag를 어떻게 관측해야 해?
+- missed tick은 skip catch-up coalesce 중 어떻게 정책을 정해?
+contextual_chunk_prefix: |
+  이 문서는 Spring @Scheduled가 로컬 JVM scheduler라는 전제에서 출발해
+  multi-instance duplicate execution, cron drift, leader election, lease,
+  distributed lock, checkpoint/watermark, catch-up/coalesce/misfire policy,
+  fencing token을 설계하는 advanced playbook이다.
+---
 # Spring Distributed Scheduling, Cron Drift, and Leader-Election Patterns
 
 > 한 줄 요약: `@Scheduled`는 기본적으로 로컬 JVM 스케줄러이므로 멀티 인스턴스 환경에서는 duplicate execution, cron drift, missed window를 먼저 가정해야 하고, leader election, lease, checkpoint, catch-up policy를 함께 설계해야 장애 후에도 설명 가능한 스케줄링이 된다.

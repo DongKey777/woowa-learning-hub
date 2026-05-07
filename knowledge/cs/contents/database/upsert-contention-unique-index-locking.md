@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Upsert Contention, Unique Index Arbitration, and Locking
+concept_id: database/upsert-contention-unique-index-locking
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- upsert
+- unique-index
+- contention
+- idempotency
+- locking
+aliases:
+- upsert
+- insert on duplicate key update
+- on conflict do update
+- unique index arbitration
+- insert race
+- duplicate key retry
+- hot unique key
+- idempotent write path
+- guard row upsert
+- unique vs upsert outcome
+symptoms:
+- upsert를 중복이면 알아서 합쳐지는 문법 설탕으로 보고 hot key lock/update path 비용을 놓치고 있어
+- SELECT 후 INSERT/UPDATE race를 unique index arbitration으로 줄이는 이유를 설명해야 해
+- duplicate key와 deadlock, lock timeout을 같은 retry 정책으로 묶어 중복 side effect가 생길 수 있어
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/idempotency-key-and-deduplication
+- database/unique-vs-locking-read-duplicate-primer
+next_docs:
+- database/mysql-on-duplicate-key-update-safety-primer
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+- database/exactly-once-myths-db-queue
+linked_paths:
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/mysql-on-duplicate-key-update-safety-primer.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/deadlock-case-study.md
+- contents/database/read-before-write-race-timeline-mysql-postgresql.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+confusable_with:
+- database/unique-vs-locking-read-duplicate-primer
+- database/mysql-on-duplicate-key-update-safety-primer
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+forbidden_neighbors: []
+expected_queries:
+- upsert는 중복이면 알아서 합쳐지는 문법이 아니라 unique index arbitration이라는 뜻이 뭐야?
+- INSERT ON DUPLICATE KEY UPDATE나 ON CONFLICT DO UPDATE에서 hot unique key가 병목이 되는 이유는?
+- upsert가 read-before-write race window를 줄이지만 외부 side effect까지 idempotent하게 만들지는 못하는 이유를 설명해줘
+- duplicate key, deadlock, lock timeout은 upsert 경로에서 retry 정책과 metric을 어떻게 분리해야 해?
+- 같은 idempotency_key에 payload가 다르면 upsert update path가 결과를 오염시킬 수 있는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 upsert contention을 unique index arbitration, hot unique key, duplicate key retry, deadlock retry, idempotent write path 관점으로 설명하는 advanced deep dive다.
+  ON DUPLICATE KEY UPDATE, ON CONFLICT DO UPDATE, unique vs upsert outcome 질문이 본 문서에 매핑된다.
+---
 # Upsert Contention, Unique Index Arbitration, and Locking
 
 > 한 줄 요약: `upsert`는 "중복이면 알아서 합쳐진다"는 문법 설탕이 아니라, unique index 충돌을 어떤 락과 재시도로 흡수할지 정하는 쓰기 경로 설계다.

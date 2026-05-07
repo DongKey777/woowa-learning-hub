@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Legacy Cursor Reissue API Surface
+concept_id: design-pattern/legacy-cursor-reissue-api-surface
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- legacy-cursor-reissue
+- pagination-restart-envelope
+- cursor-api-contract
+aliases:
+- legacy cursor reissue api surface
+- reissue response shape
+- reject response shape
+- pagination restart envelope
+- cursor restart metadata
+- page1 restart response
+- clear cursor and restart
+- served page depth reset
+- requested emitted cursor version
+- cursor verdict api contract
+symptoms:
+- legacy cursor를 REISSUE했지만 response에 served_page_depth=1과 restart block이 없어 client가 page N 뒤에 row를 append한다
+- REJECT를 generic INVALID_CURSOR로만 내려 canary metric과 client가 restart required boundary를 구분하지 못한다
+- requested cursor world와 served cursor world, requested/emitted cursor version을 response shape에서 분리하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/cursor-rollback-packet
+next_docs:
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/read-model-cutover-guardrails
+linked_paths:
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/design-pattern/cursor-rollback-packet.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/normalization-version-rollout-playbook.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+confusable_with:
+- design-pattern/cursor-rollback-packet
+- design-pattern/cursor-compatibility-sampling-cutover
+- design-pattern/strict-pagination-fallback-contracts
+- design-pattern/pinned-legacy-chain-risk-budget
+forbidden_neighbors: []
+expected_queries:
+- Legacy cursor REISSUE response는 continuation success가 아니라 page1 restart success라는 사실을 어떻게 API surface에 드러내?
+- REISSUE 응답에 requested_page_depth와 served_page_depth를 분리해서 내려야 client가 append를 멈추는 이유가 뭐야?
+- REJECT problem envelope에도 pagination_contract restart metadata를 유지해야 하는 이유가 뭐야?
+- requested_cursor_version, emitted_cursor_version, verdict, reason_code를 HTTP status와 분리해야 cutover metrics가 안정되는 이유가 뭐야?
+- REISSUE는 success일 수 있지만 continuity outcome은 RESTART_EXPECTED로 세야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Legacy Cursor Reissue API Surface playbook으로, pagination cutover에서
+  legacy cursor를 REISSUE/REJECT할 때 response envelope에 verdict, reason_code,
+  requested/served page depth, requested/emitted cursor version, restart block, clear cached
+  cursor contract를 명시해 client와 observability가 page1 restart boundary를 같은 의미로 읽게 하는 방법을 설명한다.
+---
 # Legacy Cursor Reissue API Surface
 
 > 한 줄 요약: pagination cutover에서 legacy cursor를 `REISSUE`/`REJECT`로 처리할 때는 단순 `INVALID_CURSOR`나 generic `next_cursor`로 숨기지 말고, 응답이 page `N` continuation이 아니라 page `1` restart boundary라는 사실을 response shape에 명시해야 client, observability, canary 해석이 모두 일치한다.

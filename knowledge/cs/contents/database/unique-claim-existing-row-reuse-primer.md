@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: UNIQUE Claim and Existing-Row Reuse Primer
+concept_id: database/unique-claim-existing-row-reuse-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- unique-claim
+- idempotency
+- pending-row
+- duplicate-key
+- existing-row-reuse
+aliases:
+- unique claim existing row reuse
+- unique claim row first
+- existing row reuse primer
+- idempotency pending succeeded row reuse
+- duplicate key then select for update
+- unique first locking read later
+- same key pending row reuse
+- same key succeeded row replay
+- winner row reuse
+- insert pending unique then reuse row
+symptoms:
+- idempotency key로 PENDING row를 claim한 뒤 duplicate loser가 existing row를 재사용해야 해
+- SELECT FOR UPDATE가 없는 row를 claim하는 것이 아니라 이미 생긴 PENDING/SUCCEEDED row를 관찰하는 보조 단계라는 점을 설명해야 해
+- duplicate 뒤 같은 INSERT를 blind retry하지 말고 fresh read로 winner row 상태를 분류해야 해
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- database/pending-row-recovery-primer
+- database/unique-vs-locking-read-duplicate-primer
+next_docs:
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/read-before-write-race
+- database/upsert-contention-unique-index-locking
+linked_paths:
+- contents/database/pending-row-recovery-primer.md
+- contents/database/postgresql-mysql-claim-sql-mini-card.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/read-before-write-race-timeline-mysql-postgresql.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/upsert-contention-unique-index-locking.md
+confusable_with:
+- database/unique-vs-locking-read-duplicate-primer
+- database/pending-row-recovery-primer
+- database/duplicate-key-fresh-read-classifier-mini-card
+forbidden_neighbors: []
+expected_queries:
+- idempotency path에서 UNIQUE insert가 winner를 정하고 loser는 existing PENDING or SUCCEEDED row를 재사용한다는 패턴을 설명해줘
+- duplicate key 이후 SELECT FOR UPDATE는 없는 row를 claim하는 게 아니라 이미 생긴 row 상태를 보는 보조 단계라는 뜻이 뭐야?
+- 같은 idempotency_key가 PENDING이면 in-progress busy, SUCCEEDED면 previous response replay로 나누는 기준을 알려줘
+- unique first locking read later 패턴에서 FOR UPDATE가 uniqueness를 대신하지 못하는 이유는?
+- duplicate 뒤 같은 INSERT blind retry보다 primary fresh read로 winner row를 분류해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 UNIQUE claim + existing-row reuse를 idempotency key, PENDING/SUCCEEDED row, duplicate loser fresh read, locking read after claim 관점으로 설명하는 beginner primer다.
+  unique claim row first, duplicate key then select for update, same key pending row reuse, winner row replay 질문이 본 문서에 매핑된다.
+---
 # UNIQUE Claim + Existing-Row Reuse Primer
 
 > 한 줄 요약: 멱등성 경로에서 "누가 먼저 요청을 선점했는가"는 `UNIQUE`가 정하고, 그 뒤의 `SELECT ... FOR UPDATE`는 **없는 row를 막는 용도**가 아니라 이미 생긴 `PENDING`/`SUCCEEDED` row를 관찰하거나 재사용하는 용도로만 본다.

@@ -1,3 +1,43 @@
+---
+schema_version: 3
+title: Spring SPRING_APPLICATION_JSON Primer
+concept_id: spring/spring-application-json-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- application-json
+- nested-config-env
+- var
+- map-list-configuration
+aliases:
+- SPRING_APPLICATION_JSON
+- nested config env var
+- map list configuration property
+- JSON property source
+- relaxed binding alternative
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-configurationproperties-binding-internals.md
+- contents/spring/spring-external-config-file-precedence-primer.md
+expected_queries:
+- SPRING_APPLICATION_JSON은 일반 환경 변수보다 언제 나아?
+- nested object list map 설정을 env var로 넣기 어려울 때 어떻게 해?
+- Spring Boot JSON property source는 property precedence에서 어디쯤이야?
+- ConfigurationProperties 복잡한 key를 운영 환경에 넣는 안전한 방법은?
+contextual_chunk_prefix: |
+  이 문서는 값 하나 둘은 일반 environment variable이 더 단순하지만 nested object, list,
+  map key처럼 relaxed binding 이름이 깨지기 쉬운 설정은 SPRING_APPLICATION_JSON으로
+  한 번에 넣는 편이 안전한 순간을 설명하는 primer다.
+---
 # Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간
 
 > 한 줄 요약: 값 하나 둘 바꾸는 정도면 일반 환경 변수가 더 단순하지만, nested object/list/map key처럼 이름 모양이 깨지기 쉬운 설정은 `SPRING_APPLICATION_JSON`으로 한 번에 넣는 편이 안전하다.

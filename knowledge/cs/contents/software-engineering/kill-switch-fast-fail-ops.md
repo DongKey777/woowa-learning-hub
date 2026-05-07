@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Kill Switch Fast-Fail Ops
+concept_id: software-engineering/kill-switch-fast-fail
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- kill-switch
+- fast-fail
+- incident-response
+- blast-radius
+aliases:
+- Kill Switch Fast-Fail Ops
+- kill switch emergency stop
+- operational fast fail guardrail
+- side effect kill switch
+- write kill switch
+- 사고 확산 차단 스위치
+symptoms:
+- 결제, 알림, 외부 API, 데이터 쓰기 경로에서 문제가 번지는데 feature flag처럼 느슨한 제어만 있어 피해 확산을 즉시 멈추지 못해
+- kill switch 상태를 장애 난 DB나 remote config에서만 읽어 정작 사고 때 스위치 자체가 동작하지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/configuration-governance
+next_docs:
+- software-engineering/incident-review-learning-loop
+- software-engineering/deployment-rollout-strategy
+- spring/resilience4j-retry-circuit-breaker-bulkhead
+linked_paths:
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/feature-flag-cleanup-expiration.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+confusable_with:
+- software-engineering/feature-flag-dependency-management
+- spring/resilience4j-retry-circuit-breaker-bulkhead
+- software-engineering/configuration-governance
+forbidden_neighbors: []
+expected_queries:
+- kill switch와 feature flag와 circuit breaker는 각각 무엇이 다르고 언제 써야 해?
+- 결제, 알림, 데이터 쓰기 사고에서 side-effect kill switch나 write kill switch를 어떻게 설계해?
+- 원격 설정 서버나 DB가 죽어도 kill switch가 동작하려면 어떤 control plane과 cache가 필요해?
+- kill switch를 켠 뒤 read-only degraded mode나 queueing fallback을 어떻게 설계해야 해?
+- 누가 언제 왜 어떤 scope로 kill switch를 켰는지 audit trail이 필요한 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 feature flag보다 보수적인 운영용 kill switch를 traffic, side-effect, write, downstream scope로 나눠 fast-fail과 피해 확산 차단을 설계하는 advanced playbook이다.
+---
 # Kill Switch Fast-Fail Ops
 
 > 한 줄 요약: Kill switch는 기능을 숨기는 플래그가 아니라, 장애가 번지기 전에 피해 범위를 강제로 끊는 운영용 최종 차단장치다.

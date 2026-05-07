@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "HTTP/2 Flow Control, WINDOW_UPDATE, Stall"
+concept_id: network/http2-flow-control-window-update-stalls
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- http2-flow-control
+- grpc-streaming-stall
+- backpressure
+aliases:
+- HTTP/2 flow control
+- WINDOW_UPDATE stall
+- connection window starvation
+- stream window credit
+- gRPC streaming backpressure
+- SETTINGS_INITIAL_WINDOW_SIZE
+- flow control stall
+symptoms:
+- HTTP/2 stream은 열렸는데 DATA frame 흐름만 조용히 멈춘다
+- 큰 streaming 응답 뒤에 같은 연결의 작은 RPC까지 느려진다
+- WINDOW_UPDATE가 늦거나 connection window가 0에 가까운데 네트워크 손실로만 본다
+- SETTINGS_MAX_CONCURRENT_STREAMS 대기와 flow control stall을 구분하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table
+- network/http2-multiplexing-hol-blocking
+next_docs:
+- network/http2-upload-early-reject-rst-stream-flow-control-cleanup
+- network/grpc-deadlines-cancellation-propagation
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+linked_paths:
+- contents/network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http2-upload-early-reject-rst-stream-flow-control-cleanup.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http2-max-concurrent-streams-pending-queue-saturation.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+confusable_with:
+- network/http2-hol-blocking-vs-flow-control-stall-quick-decision-table
+- network/http2-multiplexing-hol-blocking
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/packet-loss-jitter-reordering-diagnostics
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 WINDOW_UPDATE가 늦어서 stream이 stall되는 패턴을 설명해줘"
+- "connection window와 stream window가 각각 바닥날 때 증상이 어떻게 달라?"
+- "gRPC streaming이 작은 unary RPC까지 느리게 만드는 이유가 뭐야?"
+- "HTTP/2 flow control stall과 MAX_CONCURRENT_STREAMS 대기를 어떻게 구분해?"
+- "RST_STREAM 이후에도 DATA가 connection window를 점유할 수 있는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2 stream window, connection window, WINDOW_UPDATE,
+  gRPC streaming backpressure, flow-control stall과 multiplexing/concurrency
+  병목의 구분을 다루는 advanced playbook이다.
+---
 # HTTP/2 Flow Control, WINDOW_UPDATE, Stall
 
 > 한 줄 요약: HTTP/2 멀티플렉싱이 있어도 `WINDOW_UPDATE`가 늦거나 connection window가 고갈되면 stream은 조용히 멈추고, 운영자는 이를 네트워크 불안정으로 오해하기 쉽다.

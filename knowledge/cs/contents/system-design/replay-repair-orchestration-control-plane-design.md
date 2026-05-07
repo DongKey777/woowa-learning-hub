@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Replay / Repair Orchestration Control Plane 설계
+concept_id: system-design/replay-repair-orchestration-control-plane-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- replay orchestration
+- repair control plane
+- redrive governance
+- replay approval
+aliases:
+- replay orchestration
+- repair control plane
+- redrive governance
+- replay approval
+- blast radius budget
+- repair workflow
+- dry run
+- execution guardrail
+- operational runbook
+- repair campaign
+- Replay / Repair Orchestration Control Plane 설계
+- replay repair orchestration control plane design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/workflow-orchestration-saga-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/summary-drift-detection-bounded-rebuild.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Replay / Repair Orchestration Control Plane 설계 설계 핵심을 설명해줘
+- replay orchestration가 왜 필요한지 알려줘
+- Replay / Repair Orchestration Control Plane 설계 실무 트레이드오프는 뭐야?
+- replay orchestration 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Replay / Repair Orchestration Control Plane 설계를 다루는 deep_dive 문서다. replay와 repair orchestration control plane은 재처리·보정 작업의 범위, 승인, 우선순위, 안전장치, 감사 흔적을 관리해 대규모 운영 복구 작업을 통제 가능한 workflow로 만드는 제어 시스템이다. 검색 질의가 replay orchestration, repair control plane, redrive governance, replay approval처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Replay / Repair Orchestration Control Plane 설계
 
 > 한 줄 요약: replay와 repair orchestration control plane은 재처리·보정 작업의 범위, 승인, 우선순위, 안전장치, 감사 흔적을 관리해 대규모 운영 복구 작업을 통제 가능한 workflow로 만드는 제어 시스템이다.

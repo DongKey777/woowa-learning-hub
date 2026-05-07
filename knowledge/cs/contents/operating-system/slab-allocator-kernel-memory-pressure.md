@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Slab Allocator Kernel Memory Pressure
+concept_id: operating-system/slab-allocator-kernel-memory-pressure
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- slab-allocator-kernel
+- memory-pressure
+- kernel-object-memory
+- dentry-inode-slab
+aliases:
+- slab allocator kernel memory pressure
+- kernel object memory
+- dentry inode slab pressure
+- slab reclaim
+- hidden kernel memory
+- OOM slab growth
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/vfs-dentry-inode-cache-pressure.md
+- contents/operating-system/tmpfs-shmem-cgroup-memory-accounting.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+symptoms:
+- process RSS에는 잘 안 보이는데 slab/kernel object growth가 system memory pressure를 만든다.
+- dentry, inode, socket 같은 kernel objects가 쌓여 reclaim과 OOM의 숨은 원인이 된다.
+- cgroup memory pressure를 application heap만 보고 설명할 수 없다.
+expected_queries:
+- slab memory는 process RSS에 잘 안 보이는데 OOM 원인이 될 수 있어?
+- kernel object memory pressure를 dentry inode slab growth와 어떻게 연결해?
+- slab reclaim과 PSI memory pressure를 운영에서 어떻게 확인해?
+- cgroup memory usage에서 kernel memory accounting도 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 slab memory를 process RSS에 잘 안 보이는 kernel object memory로 설명한다.
+  dentry/inode/socket 같은 object가 쌓이면 system memory pressure와 OOM의 hidden cause가 될 수 있다.
+---
 # Slab Allocator, Kernel Memory Pressure
 
 > 한 줄 요약: slab 메모리는 프로세스 RSS에 잘 안 보이지만, 커널 객체가 쌓이면 system memory pressure와 OOM의 숨은 원인이 될 수 있다.

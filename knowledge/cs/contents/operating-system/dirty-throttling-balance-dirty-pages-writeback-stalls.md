@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Dirty Throttling balance_dirty_pages Writeback Stalls
+concept_id: operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- dirty-throttling-balance
+- dirty-pages-writeback
+- stalls
+- dirty-throttling
+aliases:
+- dirty throttling
+- balance_dirty_pages
+- writeback stall
+- dirty page debt
+- writer throttling
+- stalled writes p99
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/dirty-page-ratios-writeback-tuning.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+- contents/operating-system/vmstat-counters-runtime-pressure.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/blk-mq-cgroup-io-writeback-timeline-debugging.md
+symptoms:
+- storage device가 완전히 느린 것은 아닌데 application write p99가 주기적으로 튄다.
+- dirty page debt가 커져 balance_dirty_pages가 writer thread를 직접 늦춘다.
+- background flusher가 따라가지 못해 writeback stall이 request latency로 돌아온다.
+expected_queries:
+- balance_dirty_pages가 writer를 직접 throttle해서 p99를 키우는 이유는?
+- dirty page debt와 writeback stall은 storage latency와 어떻게 구분해?
+- dirty throttling을 vmstat PSI fsync tail latency와 함께 디버깅하려면?
+- write 지연이 storage 자체가 아니라 page cache dirty throttling 때문일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 write latency가 항상 storage device 자체의 느림에서 오지 않고 dirty page debt가
+  커지면 balance_dirty_pages가 writer를 직접 늦춰 writeback stall을 application p99로
+  되돌린다는 점을 증상별로 설명한다.
+---
 # Dirty Throttling, balance_dirty_pages, Writeback Stalls
 
 > 한 줄 요약: 쓰기 지연이 항상 storage 자체의 느림에서 오는 것은 아니며, dirty page debt가 커지면 `balance_dirty_pages()`가 writer를 직접 늦추고 writeback stall을 애플리케이션 p99로 되돌려 준다.

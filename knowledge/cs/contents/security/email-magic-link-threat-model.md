@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Email Magic-Link Threat Model
+concept_id: security/email-magic-link-threat-model
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- magic link
+- email login
+- one-time link
+- email token
+aliases:
+- magic link
+- email login
+- one-time link
+- email token
+- replay
+- referrer leak
+- email forwarding
+- prefetch
+- phishing
+- login link
+- account recovery
+- burn after read
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/password-reset-magic-link-public-origin-guide.md
+- contents/security/password-reset-threat-modeling.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/one-time-token-consumption-race-burn-after-read.md
+- contents/security/open-redirect-hardening.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Email Magic-Link Threat Model 핵심 개념을 설명해줘
+- magic link가 왜 필요한지 알려줘
+- Email Magic-Link Threat Model 실무 설계 포인트는 뭐야?
+- magic link에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Email Magic-Link Threat Model를 다루는 deep_dive 문서다. magic link는 비밀번호 대신 쓰는 편한 로그인 수단이지만, 이메일 계정 탈취, link forwarding, referrer leak, prefetch, replay를 함께 고려해야 한다. 검색 질의가 magic link, email login, one-time link, email token처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Email Magic-Link Threat Model
 
 > 한 줄 요약: magic link는 비밀번호 대신 쓰는 편한 로그인 수단이지만, 이메일 계정 탈취, link forwarding, referrer leak, prefetch, replay를 함께 고려해야 한다.

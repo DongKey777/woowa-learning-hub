@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Platform Policy Ownership and Override Governance
+concept_id: software-engineering/platform-policy-override-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- platform-policy
+- override
+- governance
+- guardrail
+aliases:
+- Platform Policy Ownership and Override Governance
+- platform policy ownership
+- policy override governance
+- guardrail ownership
+- exemption registry policy
+- platform rule owner
+symptoms:
+- platform policy는 rule text만 있고 owner, objective, change trigger, override type, review cadence가 없어 낡아도 바뀌지 않고 예외가 쌓여
+- same-policy repeated override와 no-expiry override가 늘어나는데 팀 문제로만 보고 policy scope, false positive, platform UX를 재검토하지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/platform-control-plane-delegation
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/override-burndown-exemption-debt
+- software-engineering/policy-as-code-rollout-stages
+- software-engineering/platform-scorecards
+linked_paths:
+- contents/software-engineering/platform-control-plane-delegation-boundaries.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/architecture-exception-process.md
+- contents/software-engineering/platform-scorecards.md
+- contents/software-engineering/policy-as-code-rollout-adoption-stages.md
+- contents/software-engineering/override-burn-down-and-exemption-debt.md
+confusable_with:
+- software-engineering/override-burndown-exemption-debt
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/policy-as-code-rollout-stages
+forbidden_neighbors: []
+expected_queries:
+- platform policy는 static rule set이 아니라 owner, objective, override lifecycle을 가진 제품 자산이라는 뜻을 설명해줘
+- override가 발생했다는 사실을 숨길 게 아니라 policy quality와 현실 적합성 신호로 봐야 하는 이유가 뭐야?
+- temporary, scoped, permanent carve-out override는 expiry와 review cadence가 어떻게 달라야 해?
+- same-policy repeated override가 늘어나면 rule scope나 platform UX를 어떻게 다시 봐야 해?
+- platform policy가 business semantics까지 잡으면 product team이 shadow path를 만드는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 platform policy를 owner, objective, lifecycle, override type, expiry, burn-down scorecard까지 포함한 advanced governance playbook으로 다룬다.
+---
 # Platform Policy Ownership and Override Governance
 
 > 한 줄 요약: platform policy는 규칙 문장 자체보다 누가 소유하고 어떻게 바꾸며 어떤 override를 언제까지 허용하는지가 더 중요하고, 이 lifecycle이 없으면 guardrail은 곧 무시되거나 shadow path로 대체된다.

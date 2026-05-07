@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring Bean Definition Overriding Semantics
+concept_id: spring/bean-definition-overriding-semantics
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- bean-definition-overriding
+- semantics
+- beandefinitionoverrideexception
+- bean-name-collision
+aliases:
+- bean definition overriding
+- BeanDefinitionOverrideException
+- bean name collision
+- @Primary vs override
+- ConditionalOnMissingBean
+- bean alias
+- duplicate bean name
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-primary-vs-bean-override-primer.md
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-configuration-proxybeanmethods-beanpostprocessor-chain.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+expected_queries:
+- Bean definition overriding은 @Primary와 뭐가 달라?
+- 같은 이름 bean이 둘이면 Spring Boot는 어떻게 처리해?
+- ConditionalOnMissingBean은 override와 어떤 점이 달라?
+- bean name collision과 타입 후보 충돌을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Spring bean definition overriding, bean name collision,
+  @Primary와 alias, @ConditionalOnMissingBean, Boot 자동 구성 back-off를 구분한다.
+  이름 충돌과 타입 후보 선택 문제를 분리하고, 운영에서 우연한 override를 막는
+  컨테이너 안전성 계약을 설명한다.
+---
 # Spring Bean Definition Overriding Semantics
 
 > 한 줄 요약: Bean definition overriding은 이름이 같을 때 누가 이기는지의 규칙이 아니라, 어떤 설정이 안전하게 교체 가능한지에 대한 컨테이너 계약이다.

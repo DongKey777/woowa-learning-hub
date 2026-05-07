@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: lower vs floor Exact Match Mini Drill
+concept_id: language/lower-vs-floor-exact-match-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- navigable-map
+- boundary-api
+- exact-match
+aliases:
+- lower vs floor exact match drill
+- TreeMap lower floor exact key
+- TreeSet lower floor same value
+- NavigableMap exact match worksheet
+- lower는 자기 자신이 아닌가
+- 자바 lower floor 차이
+symptoms:
+- floor와 lower를 모두 아래쪽 key로만 외워 exact match에서 floor는 포함, lower는 제외라는 차이를 놓쳐
+- lower(10)이 null인 것을 boundary result가 아니라 TreeMap null key 허용 정책 문제로 오해해
+- exact match가 아닐 때 둘이 같은 결과를 낼 수 있다는 점 때문에 exact match 순간의 차이를 예측하지 못해
+intents:
+- drill
+- definition
+- troubleshooting
+prerequisites:
+- language/navigablemap-navigableset-mental-model
+- language/submap-boundaries-primer
+- language/descending-view-mental-model
+next_docs:
+- language/ceiling-vs-higher-exact-match-mini-drill
+- language/ordered-map-null-safe-practice-drill
+- language/treemap-null-key-vs-nullable-field-primer
+linked_paths:
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/descending-view-mental-model.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/language/java/ceiling-vs-higher-exact-match-mini-drill.md
+- contents/language/java/treemap-null-key-vs-nullable-field-primer.md
+confusable_with:
+- language/ceiling-vs-higher-exact-match-mini-drill
+- language/ordered-map-null-safe-practice-drill
+- language/navigablemap-navigableset-mental-model
+forbidden_neighbors: []
+expected_queries:
+- TreeMap TreeSet에서 lower와 floor는 exact match일 때 어떻게 달라?
+- floor(30)는 30을 돌려주고 lower(30)는 20을 돌려주는 이유를 설명해줘
+- lower(10)이 null이면 null key 문제가 아니라 boundary result라는 뜻인지 알려줘
+- NavigableMap에서 lower floor ceiling higher 네 쌍을 exact match 기준으로 구분해줘
+- lower vs floor 차이를 10 20 30 40 예제로 드릴해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeSet/TreeMap Navigable API에서 lower와 floor의 exact match 포함/제외 차이를 손예측하는 beginner drill이다.
+  lower vs floor, exact match, boundary null result, NavigableMap, TreeMap floorEntry 질문이 본 문서에 매핑된다.
+---
 # `lower` vs `floor` Exact Match 미니 드릴
 
 > 한 줄 요약: `TreeSet`/`TreeMap`에서 exact match를 물었을 때 `lower`는 한 칸 왼쪽으로 가고 `floor`는 현재 자리에 멈춘다는 차이만 따로 떼어 짧게 손예측해 보는 1페이지 드릴이다.

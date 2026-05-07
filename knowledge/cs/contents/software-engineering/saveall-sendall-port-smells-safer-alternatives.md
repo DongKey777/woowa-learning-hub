@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: saveAll/sendAll Port Smells and Safer Alternatives
+concept_id: software-engineering/saveall-sendall-port-smells
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- ports-and-adapters
+- batch
+- bulk-contract
+- invariants
+aliases:
+- saveAll port smell
+- sendAll port smell
+- bulk port smell
+- per item port vs bulk port
+- named bulk contract
+- saveAll 포트 냄새
+symptoms:
+- outbound port에 saveAll이나 sendAll을 그대로 노출해서 item 단위 불변식, 실패 정책, idempotency 단위가 계약에서 사라져
+- List를 받는 bulk port가 한 건 실패 시 전체 실패인지 partial success인지 결과 타입으로 설명하지 않아
+- JPA batch나 외부 SDK bulk endpoint 같은 adapter 최적화 이유가 application port 이름으로 승격돼
+- true bulk 업무인데 SettlementChunk, NotificationBatch, BulkSubmitResult 같은 named contract 없이 단순 List로만 표현돼
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/bulk-port-tradeoffs
+next_docs:
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/adapter-bulk-optimization
+- software-engineering/jpa-batch-config-pitfalls
+linked_paths:
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/message-driven-adapter-example.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/domain-invariants-as-contracts.md
+confusable_with:
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/true-bulk-contracts-partial-failure-results
+- software-engineering/jpa-batch-config-pitfalls
+forbidden_neighbors: []
+expected_queries:
+- saveAll이나 sendAll을 outbound port로 바로 올리면 item 단위 invariant와 실패 정책이 왜 숨어?
+- bulk 처리는 언제 adapter 내부 최적화이고 언제 named bulk contract로 port에 올라와야 해?
+- per-item port를 유지하면서 JDBC batch나 외부 bulk API 최적화를 adapter에 숨기는 방법을 알려줘
+- partial failure가 필요한 bulk 업무는 List 반환 대신 어떤 result type을 둬야 해?
+- saveAll을 쓰면 JPA batch가 자동으로 잘 되는지와 port 설계 문제를 어떻게 분리해서 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 saveAll/sendAll 같은 bulk helper 이름이 outbound port 계약으로 새어 item invariant, partial failure, idempotency 경계를 숨기는 증상을 다루는 beginner symptom router이다.
+---
 # saveAll/sendAll Port Smells and Safer Alternatives
 
 > 한 줄 요약: `saveAll`/`sendAll`를 outbound port로 바로 노출하면 "무엇을 한 번에 처리하는가"보다 "일단 묶어서 빠르게 보낸다"만 계약에 남아, item 단위 불변식과 실패 정책이 숨어 버리기 쉽다.

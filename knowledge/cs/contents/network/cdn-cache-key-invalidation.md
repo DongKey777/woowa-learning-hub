@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "CDN Cache Key와 Invalidation"
+concept_id: network/cdn-cache-key-invalidation
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- cdn-cache-key
+- cache-invalidation
+- vary-personalization
+aliases:
+- CDN cache key
+- cache invalidation
+- purge CDN
+- surrogate key
+- cache segmentation
+- query string cache key
+symptoms:
+- 같은 URL의 개인화 응답이나 언어별 응답이 CDN cache key 설계 누락으로 섞인다
+- purge를 대량으로 때려 origin thundering herd와 edge stale inconsistency를 만든다
+- Vary, Accept-Language, Authorization, Cookie를 cache key 설계에서 빠뜨린다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- network/cache-control-practical
+- network/vary-content-negotiation-basics-language-compression
+next_docs:
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+- system-design/cache-invalidation-patterns-primer
+- system-design/cdn-basics
+linked_paths:
+- contents/network/cache-control-practical.md
+- contents/network/http-state-session-cache.md
+- contents/network/vary-content-negotiation-basics-language-compression.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/compression-cache-vary-accept-encoding-personalization.md
+- contents/network/cache-vary-accept-encoding-edge-case-playbook.md
+- contents/system-design/cdn-basics.md
+- contents/system-design/cache-invalidation-patterns-primer.md
+confusable_with:
+- network/cache-control-practical
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+- system-design/cache-invalidation-patterns-primer
+- system-design/cdn-basics
+forbidden_neighbors: []
+expected_queries:
+- "CDN cache key에 path query Accept-Language Authorization Cookie를 어떻게 포함할지 설계해줘"
+- "CDN invalidation purge와 versioned URL은 어떤 trade-off가 있어?"
+- "개인화 응답이 CDN cache에 섞이는 사고를 cache key 관점으로 설명해줘"
+- "Accept-Language나 Vary를 cache key에 안 넣으면 어떤 문제가 생겨?"
+- "대량 purge가 origin thundering herd를 만드는 이유와 완화 전략을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 CDN cache key, Vary, Accept-Encoding, Accept-Language,
+  Authorization/Cookie segmentation, purge, invalidation, versioned URL,
+  surrogate key를 운영 사고 관점으로 다루는 advanced cache playbook이다.
+---
 # CDN Cache Key와 Invalidation
 
 > 한 줄 요약: CDN은 캐시를 빨리 쓰는 기술이 아니라, 캐시 키와 무효화 규칙을 얼마나 정확히 설계하느냐의 문제다.

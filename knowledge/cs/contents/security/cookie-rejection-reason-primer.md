@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Cookie Rejection Reason Primer
+concept_id: security/cookie-rejection-reason-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- cookie rejection reason primer
+- devtools set-cookie blocked
+- blocked response cookies beginner
+- secure cookie blocked http
+aliases:
+- cookie rejection reason primer
+- devtools set-cookie blocked
+- blocked response cookies beginner
+- secure cookie blocked http
+- samesite none without secure
+- invalid domain attribute cookie
+- cookie path too narrow beginner
+- set-cookie 줬는데 저장이 안 됨
+- 로그인한 뒤 쿠키가 막힘
+- browser session beginner ladder return
+- return to browser session troubleshooting path
+- cookie rejection next step branch
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/cookie-devtools-field-checklist-primer.md
+- contents/security/cookie-prefixes-host-secure-primer.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/samesite-none-cross-site-login-primer.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/subdomain-login-callback-boundaries.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Cookie Rejection Reason Primer 핵심 개념을 설명해줘
+- cookie rejection reason primer가 왜 필요한지 알려줘
+- Cookie Rejection Reason Primer 실무 설계 포인트는 뭐야?
+- cookie rejection reason primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Cookie Rejection Reason Primer를 다루는 primer 문서다. DevTools의 `This Set-Cookie was blocked...` 같은 문구는 보통 "쿠키 전체가 신비롭게 망가졌다"는 뜻이 아니라, 브라우저가 `Secure`, `SameSite`, `Domain`, `Path` 중 어느 축에서 멈췄는지 알려 주는 힌트다. 검색 질의가 cookie rejection reason primer, devtools set-cookie blocked, blocked response cookies beginner, secure cookie blocked http처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Cookie Rejection Reason Primer
 
 > 한 줄 요약: DevTools의 `This Set-Cookie was blocked...` 같은 문구는 보통 "쿠키 전체가 신비롭게 망가졌다"는 뜻이 아니라, 브라우저가 `Secure`, `SameSite`, `Domain`, `Path` 중 어느 축에서 멈췄는지 알려 주는 힌트다.

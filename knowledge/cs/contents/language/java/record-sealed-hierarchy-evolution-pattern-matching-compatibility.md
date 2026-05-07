@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Record Sealed Hierarchy Evolution and Pattern Matching Compatibility
+concept_id: language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- record
+- sealed
+- compatibility
+aliases:
+- Record Sealed Hierarchy Evolution and Pattern Matching Compatibility
+- record evolution sealed hierarchy compatibility
+- exhaustive switch unknown variant
+- default branch hazard sealed hierarchy
+- pattern matching compatibility Java
+- 자바 record sealed hierarchy evolution
+symptoms:
+- record component 추가를 단순 필드 추가로 보고 constructor signature, JSON binding, old payload compatibility 변화까지 고려하지 않아
+- sealed hierarchy에 새 variant를 추가하면 exhaustive switch compile safety는 올라가지만 old binary나 payload consumer runtime compatibility는 별도 문제라는 점을 놓쳐
+- pattern matching switch에 default branch를 넣어 새 variant를 조용히 삼키면서 unknown variant policy를 명시하지 않아
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- language/record-serialization-evolution
+- language/sealed-interfaces-exhaustive-switch-design
+- language/java-binary-compatibility-linkage-errors
+next_docs:
+- language/enum-persistence-json-unknown-value-evolution
+- language/json-null-missing-unknown-field-schema-evolution
+- language/records-sealed-pattern-matching
+linked_paths:
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/sealed-interfaces-exhaustive-switch-design.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+confusable_with:
+- language/record-serialization-evolution
+- language/sealed-interfaces-exhaustive-switch-design
+- language/enum-persistence-json-unknown-value-evolution
+forbidden_neighbors: []
+expected_queries:
+- record component 추가와 sealed hierarchy variant 추가가 API payload compatibility에 어떤 영향을 줘?
+- sealed exhaustive switch는 compile time safety를 주지만 runtime unknown variant 문제는 왜 별도로 봐야 해?
+- pattern matching switch의 default branch는 새 variant를 조용히 삼킬 수 있는 evolution policy라는 뜻이 뭐야?
+- internal sealed closed world와 external payload unknown variant world를 어떻게 분리해야 해?
+- record serialization evolution과 binary compatibility를 함께 고려하는 Java API 진화 전략을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 record component와 sealed hierarchy variant가 진화할 때 pattern matching exhaustive switch, default branch, unknown variant, payload compatibility가 어떻게 충돌하는지 설명하는 advanced deep dive다.
+  record evolution, sealed hierarchy, pattern matching, exhaustive switch, unknown variant, compatibility 질문이 본 문서에 매핑된다.
+---
 # Record/Sealed Hierarchy Evolution and Pattern Matching Compatibility
 
 > 한 줄 요약: record와 sealed hierarchy는 닫힌 모델을 잘 표현하지만, API와 payload가 진화하면 그 닫힘이 곧 호환성 제약이 된다. component 추가, variant 추가, default branch 남용, unknown variant 처리 부재는 컴파일 안정성과 runtime compatibility를 서로 어긋나게 만들 수 있다.

@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Backup, Restore, Disaster Recovery Drill 설계
+concept_id: system-design/backup-restore-disaster-recovery-drill-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- backup restore
+- disaster recovery
+- point in time recovery
+- snapshot backup
+aliases:
+- backup restore
+- disaster recovery
+- point in time recovery
+- snapshot backup
+- wal shipping
+- restore drill
+- rpo rto
+- backup catalog
+- immutable backup
+- integrity verification
+- cross-region vault
+- resilience validation
+symptoms:
+- Backup, Restore, Disaster Recovery Drill 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/audit-evidence-vault-design.md
+- contents/system-design/object-metadata-service-design.md
+- contents/system-design/file-storage-presigned-url-cdn-design.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Backup, Restore, Disaster Recovery Drill 설계 장애 대응 순서를 알려줘
+- backup restore 복구 설계 체크리스트가 뭐야?
+- Backup, Restore, Disaster Recovery Drill 설계에서 blast radius를 어떻게 제한해?
+- backup restore 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Backup, Restore, Disaster Recovery Drill 설계를 다루는 playbook 문서다. 백업과 복구 설계는 데이터를 저장하는 것보다, 원하는 시점과 우선순위로 실제 복원이 가능한지 반복적으로 검증하는 운영 복구 시스템이다. 검색 질의가 backup restore, disaster recovery, point in time recovery, snapshot backup처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Backup, Restore, Disaster Recovery Drill 설계
 
 > 한 줄 요약: 백업과 복구 설계는 데이터를 저장하는 것보다, 원하는 시점과 우선순위로 실제 복원이 가능한지 반복적으로 검증하는 운영 복구 시스템이다.

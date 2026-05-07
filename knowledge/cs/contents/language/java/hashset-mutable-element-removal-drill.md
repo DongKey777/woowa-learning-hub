@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: HashSet Mutable Element Removal Drill
+concept_id: language/hashset-mutable-element-removal-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- hashset-mutation
+- equals-hashcode
+- removal-debug
+aliases:
+- HashSet mutable element removal drill
+- HashSet contains remove fail
+- mutable hashCode field HashSet
+- same object remove false
+- HashSet remove false after mutation
+- 자바 HashSet remove 실패
+symptoms:
+- HashSet에 넣은 원소의 equals/hashCode 기준 필드를 바꿨는데 같은 객체이니 contains/remove가 될 거라고 기대해
+- contains와 remove가 둘 다 현재 hashCode로 bucket을 찾는 lookup 경로라 같은 이유로 실패할 수 있다는 점을 놓쳐
+- 출력에는 원소가 보이지만 bucket lookup으로는 못 찾는 차이를 이해하지 못해
+intents:
+- drill
+- troubleshooting
+- definition
+prerequisites:
+- language/mutable-hash-keys-hashset-hashmap-bridge
+next_docs:
+- language/mutable-elements-hashset-treeset-primer
+- language/hashset-vs-treeset-duplicate-semantics
+- language/java-immutable-object-basics
+linked_paths:
+- contents/language/java/mutable-hash-keys-hashset-hashmap-bridge.md
+- contents/language/java/mutable-elements-hashset-treeset-primer.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+confusable_with:
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/mutable-elements-hashset-treeset-primer
+- language/hashmap-treemap-mutable-key-lookup-primer
+forbidden_neighbors: []
+expected_queries:
+- HashSet에 넣은 원소 필드를 바꿨더니 같은 객체인데 contains와 remove가 false인 이유를 알려줘
+- HashSet remove가 실패하는 mutable hashCode field 드릴을 풀고 싶어
+- 출력에는 원소가 보이는데 HashSet remove가 안 되는 bucket lookup 차이를 설명해줘
+- HashSet 원소의 equals hashCode 기준 필드를 바꾸면 왜 옛 bucket에 남는지 알려줘
+- HashSet mutable element는 빼고 바꾸고 다시 넣는 패턴이 왜 필요한지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 HashSet에 넣은 mutable element의 equals/hashCode 기준 필드가 바뀌면 contains/remove lookup이 실패할 수 있음을 손예측하는 beginner drill이다.
+  HashSet mutable element, remove false, contains false, hashCode changed, same object lookup 질문이 본 문서에 매핑된다.
+---
 # HashSet Mutable Element Removal Drill
 
 > 한 줄 요약: `HashSet`에 넣은 원소의 `equals()`/`hashCode()` 기준 필드를 바꾸면, `contains()`와 `remove()`가 둘 다 같은 lookup 이유로 실패할 수 있다.

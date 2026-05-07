@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Secondary Index Maintenance Cost and ANALYZE Statistics Skew
+concept_id: database/secondary-index-maintenance-statistics-skew
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- secondary-index
+- analyze-table
+- statistics-skew
+- histogram
+- optimizer
+aliases:
+- secondary index maintenance cost
+- ANALYZE statistics skew
+- index write amplification
+- optimizer misestimate
+- persistent statistics
+- histogram skew
+- page split cost
+- covering index width cost
+- leaf fanout
+- 인덱스 유지 비용
+symptoms:
+- 읽기 최적화용 secondary index를 많이 달았더니 쓰기 경로가 느려졌어
+- 데이터 분포가 바뀐 뒤 ANALYZE가 늦어져 optimizer가 잘못된 인덱스를 고르는 것 같아
+- covering index 폭을 넓혔더니 leaf fanout과 write amplification 비용이 커졌어
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/index-and-explain
+- database/statistics-histograms-cardinality-estimation
+next_docs:
+- database/secondary-index-change-propagation
+- database/covering-index-width-fanout-write-amplification
+- database/multi-tenant-stats-skew-plan-isolation
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+- contents/database/multi-tenant-stats-skew-plan-isolation.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+confusable_with:
+- database/secondary-index-change-propagation
+- database/statistics-histograms-cardinality-estimation
+- database/covering-index-width-fanout-write-amplification
+forbidden_neighbors: []
+expected_queries:
+- secondary index를 많이 추가하면 INSERT UPDATE DELETE write path가 왜 느려져?
+- ANALYZE TABLE이 늦거나 statistics skew가 생기면 optimizer가 왜 잘못된 plan을 고를 수 있어?
+- histogram과 persistent statistics는 status skew나 tenant skew를 완화하는 데 언제 도움 돼?
+- covering index를 넓힐수록 leaf fanout과 page split, write amplification이 왜 커져?
+- 인덱스 하나 더 추가하기 전에 read pattern과 write maintenance cost를 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 secondary index maintenance cost와 ANALYZE TABLE/statistics skew를 write amplification, optimizer misestimate, histogram, leaf fanout 관점으로 설명하는 advanced deep dive다.
+  인덱스 유지 비용, statistics skew, histogram, covering index width cost 질문이 본 문서에 매핑된다.
+---
 # Secondary Index Maintenance Cost and ANALYZE Statistics Skew
 
 > 한 줄 요약: secondary index는 읽기를 빠르게 하지만, 쓰기 경로에는 매번 세금이 붙고, ANALYZE가 늦으면 옵티마이저는 그 세금을 잘못 계산한다.

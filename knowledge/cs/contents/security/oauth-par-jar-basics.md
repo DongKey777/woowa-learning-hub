@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: OAuth PAR / JAR Basics
+concept_id: security/oauth-par-jar-basics
+canonical: true
+category: security
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- PAR
+- pushed authorization request
+- JAR
+- JWT secured authorization request
+aliases:
+- PAR
+- pushed authorization request
+- JAR
+- JWT secured authorization request
+- OAuth
+- front-channel
+- back-channel
+- authorization request
+- request object
+- signed request
+- exact redirect
+- oauth branch point
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/oauth-client-authentication-private-key-jwt-mtls.md
+- contents/security/pkce-failure-modes-recovery.md
+- contents/security/open-redirect-hardening.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/token-exchange-impersonation-risks.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- OAuth PAR / JAR Basics 핵심 개념을 설명해줘
+- PAR가 왜 필요한지 알려줘
+- OAuth PAR / JAR Basics 실무 설계 포인트는 뭐야?
+- PAR에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 OAuth PAR / JAR Basics를 다루는 primer 문서다. PAR와 JAR는 OAuth 요청을 더 단단하게 만드는 장치다. 요청을 front-channel에 그대로 두지 않고, authorization request 자체를 서버가 미리 받거나 서명된 형태로 보호한다. 검색 질의가 PAR, pushed authorization request, JAR, JWT secured authorization request처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # OAuth PAR / JAR Basics
 
 > 한 줄 요약: PAR와 JAR는 OAuth 요청을 더 단단하게 만드는 장치다. 요청을 front-channel에 그대로 두지 않고, authorization request 자체를 서버가 미리 받거나 서명된 형태로 보호한다.

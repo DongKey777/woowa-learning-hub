@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Rate Limiting vs Brute Force Defense
+concept_id: security/rate-limiting-vs-brute-force-defense
+canonical: false
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- rate limit
+- brute force
+- credential stuffing
+- login throttling
+aliases:
+- rate limit
+- brute force
+- credential stuffing
+- login throttling
+- account lockout
+- bot defense
+- captcha
+- MFA
+- sliding window
+- token bucket
+- per-account limit
+- per-IP limit
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/api-gateway-auth-rate-limit-chain.md
+- contents/system-design/rate-limiter-design.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/password-storage-bcrypt-scrypt-argon2.md
+- contents/security/abuse-throttling-runtime-signals.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Rate Limiting vs Brute Force Defense 차이를 실무 기준으로 설명해줘
+- rate limit를 언제 선택해야 해?
+- Rate Limiting vs Brute Force Defense를 헷갈리지 않게 비교해줘
+- rate limit 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Rate Limiting vs Brute Force Defense를 다루는 bridge 문서다. rate limiting은 자원 보호 장치이고, brute force defense는 공격 비용을 올리는 보안 장치다. 둘은 겹치지만 같지 않다. 검색 질의가 rate limit, brute force, credential stuffing, login throttling처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Rate Limiting vs Brute Force Defense
 
 > 한 줄 요약: rate limiting은 자원 보호 장치이고, brute force defense는 공격 비용을 올리는 보안 장치다. 둘은 겹치지만 같지 않다.

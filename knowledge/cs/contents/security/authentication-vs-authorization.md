@@ -1,9 +1,88 @@
+---
+schema_version: 3
+title: 인증과 인가의 차이
+concept_id: security/authentication-vs-authorization
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- authn-vs-authz-boundary
+- principal-not-permission
+- token-valid-not-authorized
+aliases:
+- authentication vs authorization
+- authn vs authz
+- authn authz primer
+- authn authz boundary
+- 인증과 인가 차이
+- 인증과 인가 기본 primer
+- 로그인 됐는데 왜 403
+- token valid인데 왜 거부
+- principal meaning
+- principal vs user
+- principal vs session
+- 권한 확인과 신원 확인 차이
+symptoms:
+- 로그인 자체는 됐는데 왜 특정 기능은 403인지 모르겠어
+- 인증과 인가를 같은 말로 쓰는 것 같아서 헷갈려
+- token signature 검증 성공이 곧 권한 허용인지 궁금해
+intents:
+- definition
+- comparison
+prerequisites:
+- security/authentication-authorization-session-foundations
+next_docs:
+- security/auth-failure-response-401-403-404
+- security/permission-model-bridge-authn-to-role-scope-ownership
+- security/role-change-session-freshness-basics
+- security/session-cookie-jwt-basics
+linked_paths:
+- contents/security/authentication-authorization-session-foundations.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/security/session-revocation-at-scale.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with:
+- security/authentication-authorization-session-foundations
+- security/auth-failure-response-401-403-404
+- security/permission-model-bridge-authn-to-role-scope-ownership
+forbidden_neighbors: []
+expected_queries:
+- 인증과 인가는 뭐가 다르고 왜 로그인 성공 뒤에도 403이 날 수 있어?
+- principal은 userId랑 같은 말인지 아니면 더 넓은 요청 주체인지 설명해줘
+- token valid가 application permission 통과를 의미하지 않는 이유가 뭐야?
+- authn 성공 신호와 authz 성공 신호를 HTTP 401 403과 연결해서 알려줘
+- role이 바뀌었는데 기존 session이 계속 살아 있으면 무엇을 다시 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 인증은 누구인지 확인하는 단계이고 인가는 principal, resource, action, permission model을 기준으로 행동을 허용할지 판단하는 단계라는 차이를 beginner에게 설명하는 primer다.
+  로그인 성공, token valid, principal 복원, 401과 403 구분, role scope ownership tenant permission이 섞인 자연어 질문이 본 문서에 매핑된다.
+---
 # 인증과 인가의 차이
 
 > 한 줄 요약: 인증은 `누구인가`를 확인하는 일이고, 인가는 `무엇을 할 수 있는가`를 판단하는 일이다. 이 둘 사이에 `principal`, `session`, `permission model`이 끼어든다는 점까지 같이 잡아야 실제 서비스가 안전해진다.
 
 **난이도: 🟢 Beginner**
 
+## 미션 진입 증상
+
+| auth 장면 | 먼저 볼 분리 |
+|---|---|
+| 로그인 성공 후 관리자 API는 403이다 | 인증 성공과 인가 성공을 나눴는가 |
+| token signature는 맞는데 거부된다 | principal은 있어도 permission이 부족한가 |
+| role, scope, ownership을 모두 권한이라고만 부른다 | permission model 축을 나눴는가 |
+| 권한 변경 후에도 이전 결정이 남는다 | session/cache freshness 문제인가 |
 
 관련 문서:
 

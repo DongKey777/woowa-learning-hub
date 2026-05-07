@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: jcmd Diagnostic Command Cheat Sheet
+concept_id: language/jcmd-diagnostic-command-cheatsheet
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- jvm-diagnostics
+- jcmd
+- production-debugging
+aliases:
+- jcmd Diagnostic Command Cheat Sheet
+- JVM jcmd Thread.print GC.class_histogram
+- VM.native_memory jcmd summary
+- JFR start check stop jcmd
+- Java production JVM diagnostic command
+- 자바 jcmd 진단 명령 치트시트
+symptoms:
+- JVM 서비스가 느려졌는데 thread dump, heap info, VM flags, JFR 중 무엇부터 볼지 정하지 못해
+- heap 사용량은 정상인데 RSS가 늘어나는 상황에서 native memory, thread stack, code cache, class metadata를 분리하지 못해
+- classloader leak이나 code cache 문제를 heap dump만으로 찾으려 해 jcmd의 classloader_stats와 codecache 명령을 놓쳐
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/jfr-jmc-performance-playbook
+- language/thread-dump-state-interpretation
+- language/direct-buffer-offheap-memory-troubleshooting
+next_docs:
+- language/jfr-event-interpretation
+- language/classloader-memory-leak-playbook
+- language/safepoint-stop-the-world-diagnostics
+linked_paths:
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+confusable_with:
+- language/jfr-jmc-performance-playbook
+- language/thread-dump-state-interpretation
+- language/direct-buffer-offheap-memory-troubleshooting
+forbidden_neighbors: []
+expected_queries:
+- jcmd로 운영 중 JVM에서 thread heap native memory JFR을 무엇부터 확인해야 해?
+- GC.class_histogram과 heap dump는 언제 구분해서 쓰는 게 좋아?
+- VM.native_memory로 heap 밖 RSS 증가를 어떻게 조사해?
+- jcmd JFR.start JFR.check JFR.stop 기본 사용법을 알려줘
+- classloader leak 의심 시 jcmd VM.classloader_stats와 어떤 명령을 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 jcmd를 Thread.print, GC.class_histogram, VM.native_memory, JFR, classloader, code cache 진단 명령으로 연결하는 advanced playbook이다.
+  jcmd, JVM diagnostic command, thread dump, native memory, JFR start, classloader_stats 질문이 본 문서에 매핑된다.
+---
 # `jcmd` Diagnostic Command Cheat Sheet
 
 > 한 줄 요약: `jcmd`는 실행 중인 JVM에 진단 명령을 보내는 범용 도구이고, thread, GC, heap, native memory, JFR, classloader, code cache를 한 곳에서 다룰 수 있는 운영용 칼이다.

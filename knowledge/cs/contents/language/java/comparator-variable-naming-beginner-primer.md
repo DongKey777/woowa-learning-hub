@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Comparator 변수명 짓기 초급 패턴
+concept_id: language/comparator-variable-naming-beginner-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator-readability
+- naming
+- sorting-intent
+aliases:
+- Comparator variable naming beginner primer
+- Java comparator name pattern
+- byName comparator
+- byScoreDescThenName comparator
+- named comparator reuse
+- comparator 이름 규칙
+- 정렬 의도 변수명
+symptoms:
+- comparator1, tempComparator, studentComparator처럼 정렬 기준과 방향이 드러나지 않는 이름으로 리뷰와 재사용 지점을 흐려
+- byScoreThenName이라고 이름 붙이고 실제 코드는 reversed 방향이 달라 이름과 동작이 어긋나
+- 같은 comparator를 list.sort와 stream.sorted에 재사용해야 하는데 익명 comparator 복붙으로 정책이 갈라져
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- language/java-comparator-utility-patterns
+next_docs:
+- language/comparator-reversed-scope-primer
+- language/list-sort-vs-stream-sorted-comparator-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+linked_paths:
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/list-sort-vs-stream-sorted-comparator-bridge.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+confusable_with:
+- language/comparator-reversed-scope-primer
+- language/java-comparator-utility-patterns
+- language/list-sort-vs-stream-sorted-comparator-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java Comparator 변수명을 byName byScoreDescThenName처럼 짓는 패턴을 알려줘
+- comparator 이름에 기준 방향 tie-breaker를 드러내야 하는 이유가 뭐야?
+- named comparator를 list.sort와 stream.sorted에 재사용하는 예제를 보여줘
+- byScoreThenName 이름과 reversed 코드가 어긋나는 문제를 어떻게 점검해?
+- 정렬 의도가 읽히는 comparator 변수명 규칙을 초보자 기준으로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java Comparator variable naming을 byName, byScoreDesc, byScoreDescThenName 같은 기준/방향/tie-breaker 명명 패턴으로 설명하는 beginner primer다.
+  comparator naming, named comparator reuse, sort intent, byScoreDescThenName, comparator readability 질문이 본 문서에 매핑된다.
+---
 # Comparator 변수명 짓기 초급 패턴
 
 > 한 줄 요약: `Comparator<Student> byName`처럼 "무엇을 어떤 방향으로 비교하는지"를 변수명에 넣으면 정렬 의도와 재사용 지점이 한 줄에서 바로 읽힌다.

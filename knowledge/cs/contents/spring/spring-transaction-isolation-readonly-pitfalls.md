@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring Transaction Isolation ReadOnly Pitfalls
+concept_id: spring/transaction-isolation-readonly-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transaction-isolation-readonly
+- pitfalls
+- transactional-readonly-pitfalls
+- transaction-isolation
+aliases:
+- @Transactional readOnly pitfalls
+- transaction isolation Spring
+- read only transaction not enforcement
+- flush mode readonly
+- replica routing readonly
+- isolation consistency cost
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/database/transaction-isolation-basics.md
+symptoms:
+- readOnly=true인데 쓰기 시도가 완전히 막히지 않거나 flush behavior만 달라진다.
+- isolation level을 높였더니 latency, lock, throughput 비용이 커진다.
+- readOnly transaction을 replica routing 신호로 쓰다가 read-after-write 문제가 생긴다.
+expected_queries:
+- @Transactional(readOnly=true)는 DB write를 항상 막아?
+- Spring transaction isolation은 어떤 일관성과 비용 tradeoff야?
+- readOnly와 replica routing을 연결할 때 어떤 pitfall이 있어?
+- isolation level을 높이면 왜 lock이나 latency 비용이 커질 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 @Transactional(readOnly=true)와 isolation을 편의 옵션이 아니라 consistency,
+  flush behavior, DB enforcement, replica routing, lock/latency cost를 정하는 계약으로 설명한다.
+---
 # Spring Transaction Isolation / ReadOnly Pitfalls
 
 > 한 줄 요약: `@Transactional(readOnly = true)`와 isolation은 편의 옵션이 아니라, 어떤 일관성과 어떤 비용을 감수할지 정하는 계약이다.

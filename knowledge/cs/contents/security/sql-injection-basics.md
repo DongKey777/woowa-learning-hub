@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: SQL 인젝션 기초
+concept_id: security/sql-injection-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- sql injection basics
+- sql 인젝션이 뭐예요
+- preparedstatement 왜 써야 해요
+- 사용자 입력 쿼리 위험
+aliases:
+- sql injection basics
+- sql 인젝션이 뭐예요
+- preparedstatement 왜 써야 해요
+- 사용자 입력 쿼리 위험
+- 쿼리 조작 공격
+- beginner sql injection
+- sql injection prevention
+- parameterized query
+- sql injection example
+- database attack beginner
+- security readme sql injection primer
+- security beginner route
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/sql-injection-beyond-preparedstatement.md
+- contents/security/input-validation-basics.md
+- contents/security/security-basics-what-and-why.md
+- contents/security/idor-bola-patterns-and-fixes.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SQL 인젝션 기초 핵심 개념을 설명해줘
+- sql injection basics가 왜 필요한지 알려줘
+- SQL 인젝션 기초 실무 설계 포인트는 뭐야?
+- sql injection basics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SQL 인젝션 기초를 다루는 primer 문서다. SQL 인젝션은 사용자 입력이 SQL 쿼리의 일부로 해석되는 취약점이고, PreparedStatement로 입력을 값(파라미터)과 구조(쿼리)를 분리하면 막을 수 있다. 검색 질의가 sql injection basics, sql 인젝션이 뭐예요, preparedstatement 왜 써야 해요, 사용자 입력 쿼리 위험처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SQL 인젝션 기초
 
 > 한 줄 요약: SQL 인젝션은 사용자 입력이 SQL 쿼리의 일부로 해석되는 취약점이고, PreparedStatement로 입력을 값(파라미터)과 구조(쿼리)를 분리하면 막을 수 있다.

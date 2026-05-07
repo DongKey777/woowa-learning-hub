@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "Hairpin NAT, Loopback Behavior"
+concept_id: network/hairpin-nat-loopback-behavior
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- hairpin-nat-loopback
+- internal-public-ip-path
+- nat-conntrack-observability
+aliases:
+- hairpin NAT
+- loopback NAT
+- NAT reflection
+- internal to public IP
+- LAN loopback
+- conntrack hairpin
+symptoms:
+- 내부 클라이언트가 public hostname을 호출해 NAT를 돌아 내부 서버로 다시 들어오는 경로를 놓친다
+- 내부 테스트가 외부보다 느린데 hairpin NAT와 conntrack 증가를 의심하지 않는다
+- split-horizon DNS가 없어서 내부 트래픽이 public IP 경로로 우회하는 장면을 못 본다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/dns-split-horizon-behavior
+next_docs:
+- network/nat-keepalive-tuning-connection-lifetime
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/connection-reuse-vs-service-discovery-churn
+linked_paths:
+- contents/network/nat-conntrack-ephemeral-port-exhaustion.md
+- contents/network/nat-keepalive-tuning-connection-lifetime.md
+- contents/network/dns-split-horizon-behavior.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/connection-reuse-vs-service-discovery-churn.md
+confusable_with:
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/dns-split-horizon-behavior
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/connection-reuse-vs-service-discovery-churn
+forbidden_neighbors: []
+expected_queries:
+- "Hairpin NAT는 내부 클라이언트가 public IP로 나갔다 다시 내부 서버로 들어오는 구조야?"
+- "내부에서 같은 hostname이 외부보다 느리면 NAT loopback을 어떻게 의심해?"
+- "Split-horizon DNS가 hairpin NAT를 피하는 데 어떤 역할을 해?"
+- "NAT reflection 때문에 conntrack entry가 늘고 client IP 로그가 애매해지는 흐름을 설명해줘"
+- "내부 서비스 호출이 public IP를 쓰는지 dig ip route ss로 확인하는 순서를 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 hairpin NAT, loopback NAT, NAT reflection이 내부 클라이언트의
+  public hostname 호출을 NAT/conntrack을 거쳐 내부 서버로 되돌리는 경로와
+  split-horizon DNS 대안을 설명하는 advanced playbook이다.
+---
 # Hairpin NAT, Loopback Behavior
 
 > 한 줄 요약: hairpin NAT는 내부 클라이언트가 공인 주소로 다시 내부 서버를 호출하게 만드는 우회 경로라서, 라우팅과 관측이 생각보다 복잡해진다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Interface Default Method Contract Evolution Primer
+concept_id: language/interface-default-method-contract-evolution-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/racingcar
+review_feedback_tags:
+- interface-contract
+- default-method
+- abstraction-choice
+aliases:
+- 인터페이스 default method 계약 진화
+- interface default method contract evolution
+- default method vs abstract method beginner
+- 인터페이스 추상 메서드 default method 차이
+- default method는 왜 생겼나요
+- 부모 흐름 고정 vs 인터페이스 계약 진화
+symptoms:
+- default method를 추상 클래스의 공통 구현 공유와 같은 목적으로만 이해해 인터페이스 계약 진화라는 용도를 놓쳐
+- 추상 메서드를 추가할 때 기존 구현체가 깨지는 이유와 default method가 완충 장치가 되는 이유를 구분하지 못해
+- 부모가 흐름을 고정하는 문제와 인터페이스 계약을 넓히는 문제를 섞어 template method와 default method 선택을 혼동해
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- language/java-inheritance-overriding-basics
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/template-method-basics
+next_docs:
+- language/interface-default-method-diamond-conflict-basics
+- language/default-method-contract-evolution-vs-conflict-mini-drill
+- language/interface-default-vs-static-method-primer
+linked_paths:
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/marker-interface-vs-capability-method-bridge.md
+- contents/language/java/interface-default-method-diamond-conflict-basics.md
+- contents/language/java/default-method-contract-evolution-vs-conflict-mini-drill.md
+- contents/language/java/interface-default-vs-static-method-primer.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/abstract-class-vs-interface.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+- contents/design-pattern/template-method-basics.md
+confusable_with:
+- language/interface-default-method-diamond-conflict-basics
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/template-method-basics
+forbidden_neighbors: []
+expected_queries:
+- Java interface default method는 추상 메서드와 어떤 역할이 달라?
+- default method가 기존 구현체를 깨뜨리지 않고 인터페이스를 진화시키는 방법을 설명해줘
+- 인터페이스 default method와 추상 클래스 공통 구현을 언제 구분해서 써야 해?
+- default method를 capability method나 편의 메서드로 쓰는 기준을 알려줘
+- 부모가 흐름을 쥐는 template method와 인터페이스 계약 진화는 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Java interface default method를 abstract method contract, compatibility evolution, template method와 구분해 설명하는 beginner primer다.
+  default method contract evolution, 추상 메서드 차이, 인터페이스 계약 진화, default method 왜 생겼나 질문이 본 문서에 매핑된다.
+---
 # 인터페이스 default method 기초: 계약 vs evolution
 
 > 한 줄 요약: 인터페이스의 추상 메서드는 "구현체가 반드시 지켜야 하는 계약"이고, `default method`는 "기존 구현체를 덜 깨뜨리면서 인터페이스를 키우는 진화용 기본값"이다. 처음 배우는데는 둘을 같은 "구현 메서드"로 보지 말고 역할부터 나눠 읽으면 덜 헷갈린다.

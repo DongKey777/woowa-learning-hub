@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: JPA PESSIMISTIC_WRITE Range Locking Limits
+concept_id: database/range-locking-limits-jpa
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- jpa
+- pessimistic-lock
+- range-invariant
+- phantom
+aliases:
+- jpa pessimistic write limitation
+- jpa range lock limitation
+- jpa absence invariant
+- spring data jpa for update zero rows
+- jpa overlap check race
+- jpa pessimistic lock phantom
+- jpa no rows locked insert race
+- jpa booking overlap double booking
+- jpa guard row
+- jpa range locking limits
+symptoms:
+- JPA LockModeType.PESSIMISTIC_WRITE가 반환된 entity row뿐 아니라 없음, overlap, count/sum predicate까지 잠근다고 오해하고 있어
+- Spring Data JPA FOR UPDATE query가 0 row를 반환했는데 missing key나 time range를 예약했다고 믿고 insert race를 만들고 있어
+- exact duplicate는 UNIQUE, range/set invariant는 guard row, exclusion constraint, native SQL로 옮길지 판단해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/spring-jpa-locking-example-guide
+- database/range-invariant-enforcement-write-skew-phantom
+next_docs:
+- database/spring-jpa-exact-key-lock-mapping
+- database/mysql-empty-result-locking-reads
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+linked_paths:
+- contents/database/spring-jpa-locking-example-guide.md
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+confusable_with:
+- database/spring-jpa-exact-key-lock-mapping
+- database/mysql-empty-result-locking-reads
+- database/range-invariant-enforcement-write-skew-phantom
+forbidden_neighbors: []
+expected_queries:
+- JPA PESSIMISTIC_WRITE는 0 row absence나 overlap predicate를 잠그는 도구야?
+- Spring Data JPA FOR UPDATE query가 empty result일 때 insert race가 생기는 이유를 설명해줘
+- PESSIMISTIC_WRITE로 예약 overlap을 막기보다 exclusion constraint나 guard row로 옮겨야 하는 기준은 뭐야?
+- exact duplicate는 UNIQUE로 닫고 range invariant는 native SQL 또는 guard row로 옮기는 판단을 정리해줘
+- JPA pessimistic lock과 DB native SKIP LOCKED, NOWAIT, ordered multi-lock의 경계를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 JPA LockModeType.PESSIMISTIC_WRITE가 existing entity row lock에는 맞지만 absence, overlap, count/sum range invariant를 직접 잠그지 못하는 한계와 전환 기준을 다루는 advanced playbook이다.
+  JPA range locking limits, PESSIMISTIC_WRITE 0 row, jpa overlap check race 질문이 본 문서에 매핑된다.
+---
 # JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준
 
 > 한 줄 요약: JPA `PESSIMISTIC_WRITE`는 조회된 엔티티 row를 잠그는 도구이지 `없음`, overlap, count/sum 같은 predicate invariant를 직접 잠그는 도구가 아니다. exact duplicate는 제약조건으로, range/set invariant는 guard row나 constraint로, lock footprint 제어는 native SQL로 옮겨야 한다.

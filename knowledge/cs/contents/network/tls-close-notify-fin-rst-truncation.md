@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "TLS close_notify, FIN/RST, Truncation"
+concept_id: network/tls-close-notify-fin-rst-truncation
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tls-shutdown
+- truncation
+- fin-rst
+aliases:
+- TLS close_notify
+- TLS truncation
+- FIN RST EOF
+- SSL_ERROR_ZERO_RETURN
+- SSL_ERROR_SYSCALL
+- TLS shutdown
+- graceful TLS close
+- truncation attack
+symptoms:
+- TCP FIN만 보면 TLS record stream도 정상 종료됐다고 생각한다
+- close_notify 없는 EOF를 항상 성공으로 처리해 truncated response 위험을 놓친다
+- TLS termination hop마다 close_notify/FIN/RST 의미가 달라질 수 있음을 보지 않는다
+- drain 중 바로 RST를 보내 truncation이나 connection reset 표면을 만든다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/fin-rst-half-close-eof-semantics
+- network/tls-loadbalancing-proxy
+next_docs:
+- network/connection-draining-vs-fin-rst-graceful-close
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/mtls-handshake-failure-diagnosis
+- network/tls-record-sizing-flush-streaming-latency
+linked_paths:
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/mtls-handshake-failure-diagnosis.md
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/connection-draining-vs-fin-rst-graceful-close.md
+confusable_with:
+- network/fin-rst-half-close-eof-semantics
+- network/connection-draining-vs-fin-rst-graceful-close
+- network/tls-record-sizing-flush-streaming-latency
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+forbidden_neighbors: []
+expected_queries:
+- "TLS close_notify와 TCP FIN/RST는 어떻게 달라?"
+- "close_notify 없이 EOF만 오면 truncation 위험을 왜 봐야 해?"
+- "SSL_ERROR_ZERO_RETURN과 SSL_ERROR_SYSCALL은 어떤 종료 표면이야?"
+- "TLS termination proxy hop마다 종료 의미가 달라지는 이유는?"
+- "draining 중 close_notify 후 FIN과 즉시 RST의 차이를 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 TLS close_notify, TCP FIN/RST/EOF, SSL_ERROR_ZERO_RETURN,
+  SSL_ERROR_SYSCALL, truncation 위험과 graceful TLS shutdown을 다루는 advanced
+  playbook이다.
+---
 # TLS close_notify, FIN/RST, Truncation
 
 > 한 줄 요약: TCP의 `FIN`과 `RST`는 연결 종료를 말할 뿐이고, TLS의 `close_notify`는 암호화된 바이트 스트림이 정상적으로 끝났다는 신호라서 둘을 혼동하면 truncation과 EOF 해석이 흔들린다.

@@ -45,7 +45,7 @@ confusable_with:
   - design-pattern/chain-of-responsibility-filters-interceptors
   - design-pattern/middleware-pattern-language
   - design-pattern/pipeline-vs-chain-of-responsibility
-forbidden_neighbors:
+forbidden_neighbors: []
 expected_queries:
   - 요청을 여러 단계로 처리할 때 middleware, 책임 연쇄, pipeline을 어떤 기준으로 골라야 해?
   - 인증이나 로깅처럼 앞에서 끊을 수 있는 흐름과 데이터 변환 단계를 한 번에 구분해줘

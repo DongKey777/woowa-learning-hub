@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Bitset Optimization Patterns
+concept_id: algorithm/bitset-optimization-patterns
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- bitset-optimization
+- word-level-parallelism
+- dense-boolean-state
+aliases:
+- bitset optimization patterns
+- bitwise dp
+- vectorized set operations
+- shift and or
+- word level parallelism
+- boolean dp bitset
+- dense set operations
+- subset sum bitset
+- 비트셋 최적화
+symptoms:
+- boolean[] 상태를 그대로 순회하며 dense한 상태 공간에서 word-level parallelism 이점을 놓친다
+- bitset shift-or 전이를 단순 비트 트릭으로만 보고 subset sum 같은 DP 전이 최적화를 연결하지 못한다
+- sparse 상태에도 무조건 bitset을 펼쳐 메모리 낭비와 scan 비용을 만든다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- algorithm/bitmask-dp
+- algorithm/basic
+next_docs:
+- data-structure/count-min-sketch
+- algorithm/monotone-queue-dp
+- algorithm/amortized-analysis-pitfalls
+linked_paths:
+- contents/algorithm/bitmask-dp.md
+- contents/data-structure/count-min-sketch.md
+- contents/algorithm/basic.md
+confusable_with:
+- algorithm/bitmask-dp
+- data-structure/count-min-sketch
+- algorithm/amortized-analysis-pitfalls
+- data-structure/bitset-vs-roaring-bitmap-handoff
+forbidden_neighbors: []
+expected_queries:
+- Bitset optimization은 boolean DP 상태를 word 단위 병렬 연산으로 어떻게 빠르게 해?
+- subset sum에서 bitset shift와 OR로 가능한 합을 갱신하는 직관을 알려줘
+- dense 상태와 sparse 상태에서 bitset 선택 기준은 어떻게 달라?
+- bitmask DP와 bitset optimization은 상태 표현과 전이 최적화 관점에서 무엇이 달라?
+- 권한 flag나 feature flag 집합처럼 dense boolean 상태를 bitset으로 다루는 장단점은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Bitset Optimization advanced deep dive로, dense boolean state를
+  bitset으로 압축해 word-level parallelism, shift/or transition, set
+  intersection/union, subset sum DP를 빠르게 처리하는 패턴을 설명한다.
+---
 # Bitset Optimization Patterns
 
 > 한 줄 요약: Bitset optimization은 비트 연산과 벡터화 감각을 이용해 집합 DP, 전이, 포함 검사를 빠르게 만드는 패턴이다.

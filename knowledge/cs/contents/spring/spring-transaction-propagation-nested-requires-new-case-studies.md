@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Transaction Propagation Nested RequiresNew Case Studies
+concept_id: spring/transaction-propagation-nested-requires-new-case-studies
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transaction-propagation-nested
+- requires-new-studies
+- nested-vs-requires
+- new
+aliases:
+- NESTED vs REQUIRES_NEW
+- savepoint vs independent commit
+- nested transaction case study
+- requires new audit log
+- partial rollback savepoint
+- independent transaction boundary
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md
+- contents/spring/spring-transaction-propagation-mandatory-supports-not-supported-boundaries.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-jpatransactionmanager-savepoint-expectations-mini-card.md
+confusable_with:
+- spring/transaction-propagation-required-requires-new-rollbackonly-primer
+- spring/jpatransactionmanager-savepoint-expectations-mini-card
+- spring/unexpectedrollback-rollbackonly-marker-traps
+expected_queries:
+- NESTED와 REQUIRES_NEW는 둘 다 안쪽 작업 분리처럼 보이는데 어떻게 달라?
+- savepoint rollback과 independent commit을 transaction propagation에서 어떻게 구분해?
+- audit log는 REQUIRES_NEW가 맞고 일부 검증 rollback은 NESTED가 맞아?
+- JpaTransactionManager에서 NESTED savepoint 기대가 깨질 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 NESTED와 REQUIRES_NEW를 둘 다 안쪽 작업 분리라고 뭉뚱그리지 않고,
+  savepoint 기반 부분 rollback과 independent transaction commit이라는 전혀 다른 경계로
+  비교하는 chooser다.
+---
 # Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies
 
 > 한 줄 요약: `NESTED`와 `REQUIRES_NEW`는 둘 다 "안쪽 작업을 분리한다"처럼 보이지만, 실제로는 savepoint와 독립 커밋이라는 전혀 다른 경계다.

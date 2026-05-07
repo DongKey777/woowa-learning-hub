@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Object Layout and JOL Intuition
+concept_id: language/object-layout-jol-intuition
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/racingcar
+- missions/payment
+review_feedback_tags:
+- jvm-memory
+- object-layout
+- jol
+aliases:
+- Object Layout and JOL Intuition
+- Java Object Layout JOL header padding
+- mark word compressed oops alignment
+- object footprint field packing
+- JVM object header memory footprint
+- 자바 객체 레이아웃 JOL
+symptoms:
+- Java 객체 메모리 사용량을 필드 크기의 단순 합으로 계산해 object header, alignment, padding, compressed pointer 효과를 놓쳐
+- 작은 객체를 많이 만들 때 footprint가 예상보다 큰 원인을 GC나 컬렉션만으로 오진하고 JOL로 layout을 확인하지 않아
+- false sharing이나 lock state 이야기를 object header와 cache line 관점 없이 추상적인 성능 문제로만 해석해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/compressed-oops-class-pointers
+- language/stack-vs-heap-escape-intuition
+- operating-system/cpu-cache-coherence-memory-barrier
+next_docs:
+- language/tlab-plab-allocation-intuition
+- language/escape-analysis-scalar-replacement
+- language/object-pooling-myths-modern-jvm
+linked_paths:
+- contents/language/java/compressed-oops-class-pointers.md
+- contents/language/java/stack-vs-heap-escape-intuition.md
+- contents/language/java/memory-barriers-varhandle-fences.md
+- contents/language/java/biased-locking-removal-lock-states.md
+- contents/operating-system/cpu-cache-coherence-memory-barrier.md
+confusable_with:
+- language/compressed-oops-class-pointers
+- language/stack-vs-heap-escape-intuition
+- language/tlab-plab-allocation-intuition
+forbidden_neighbors: []
+expected_queries:
+- Java 객체 메모리 크기는 필드 크기 합보다 왜 커지고 JOL로 무엇을 확인할 수 있어?
+- object header mark word klass pointer alignment padding compressed oops를 beginner 이후 단계로 설명해줘
+- 작은 객체를 많이 만들 때 padding과 alignment가 footprint에 어떤 영향을 줘?
+- JOL 출력은 JVM 옵션과 구현에 따라 달라질 수 있다는 뜻을 어떻게 해석해?
+- object layout과 false sharing cache line lock state는 어떤 관계가 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java Object Layout과 JOL을 통해 object header, mark word, alignment, padding, compressed oops, footprint를 읽는 advanced deep dive다.
+  object layout, JOL, mark word, padding, compressed oops, object footprint 질문이 본 문서에 매핑된다.
+---
 # Object Layout and JOL Intuition
 
 > 한 줄 요약: object layout은 필드 순서보다 훨씬 더 많은 것을 포함하며, JOL은 header, alignment, padding, compressed pointer effect를 눈으로 확인하는 데 유용하다.

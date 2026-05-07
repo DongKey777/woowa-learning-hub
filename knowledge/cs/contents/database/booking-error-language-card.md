@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: MySQL Booking Error Wording Card
+concept_id: database/booking-error-language-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- mysql-error-wording
+- booking-conflict-language
+- slot-row-vs-guard-row
+- duplicate-vs-busy
+aliases:
+- mysql booking error wording card
+- mysql 1062 1205 1213 booking
+- mysql booking duplicate timeout deadlock
+- slot row guard row error wording
+- booking error language card
+- 예약 오류 문구 처음
+- mysql 1062 예약
+- mysql 1205 already booked 아니에요
+- 예약 중복 락 타임아웃 차이
+- booking conflict primer
+symptoms:
+- MySQL 1062, 1205, 1213을 모두 예약 실패나 이미 예약됨으로 같은 사용자 문장에 매핑한다
+- slot-row UNIQUE 충돌과 guard-row lock timeout/deadlock surface를 구분하지 못한다
+- lock timeout을 winner가 확정된 conflict가 아니라 아직 결론을 못 본 busy로 번역하지 못한다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/constraint-first-booking-primer
+next_docs:
+- database/booking-guard-row-retry-card
+- database/duplicate-key-vs-busy-response-mapping
+- database/lock-timeout-not-already-exists-common-confusion-card
+linked_paths:
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/guard-row-booking-timeline-card.md
+- contents/database/booking-guard-row-retry-card.md
+- contents/database/postgresql-23p01-vs-23505-product-language-card.md
+- contents/database/duplicate-key-vs-busy-response-mapping.md
+- contents/database/lock-timeout-not-already-exists-common-confusion-card.md
+- contents/database/constraint-first-booking-primer.md
+- contents/system-design/inventory-reservation-system-design.md
+confusable_with:
+- database/booking-guard-row-retry-card
+- database/duplicate-key-vs-busy-response-mapping
+- database/lock-timeout-not-already-exists-common-confusion-card
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+forbidden_neighbors: []
+expected_queries:
+- MySQL 예약 경로에서 1062, 1205, 1213을 이미 선점됨, 지금 혼잡함, 이번 시도 재시도로 어떻게 번역해?
+- slot row UNIQUE 충돌과 guard row lock timeout은 제품 문장이 왜 달라야 해?
+- MySQL 1205 lock timeout을 이미 예약됨으로 말하면 안 되고 busy로 읽어야 하는 이유가 뭐야?
+- 예약 중복, 락 타임아웃, deadlock을 beginner가 사용자 문장으로 나누는 표를 보여줘
+- 1062가 idempotency key 중복인지 slot key 중복인지 확인해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 MySQL Booking Error Wording Card beginner chooser로, booking path에서 MySQL 1062,
+  1205, 1213과 PostgreSQL 23P01/23505를 slot-row, guard-row, idempotency, busy/retryable/conflict
+  제품 문장으로 번역하는 기준을 설명한다.
+---
 # MySQL Booking Error Wording Card
 
 > 한 줄 요약: MySQL 예약 경로에서 `1062`, `1205`, `1213`을 보면 초보자는 먼저 "이미 같은 slot이 잡혔다", "지금 guard 줄이 막혔다", "이번 시도만 다시 하면 된다"로 번역해야 slot-row 구현과 guard-row 구현의 제품 문장이 덜 섞인다.

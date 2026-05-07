@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Hazard Pointers vs Epoch-Based Reclamation
+concept_id: data-structure/hazard-pointers-vs-epoch-based-reclamation
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- memory-reclamation
+- hazard-pointer-vs-ebr
+- lock-free-memory-safety
+aliases:
+- hazard pointers vs epoch based reclamation
+- EBR
+- safe node reclamation
+- retired nodes
+- lock-free memory safety
+- hazard pointer slot
+- epoch reclamation
+symptoms:
+- lock-free 자료구조에서 node를 logical remove한 순간 바로 free해도 된다고 생각해 다른 thread의 stale pointer 접근 위험을 만든다
+- Hazard Pointer의 precise pointer protection과 EBR의 batch epoch reclamation trade-off를 구분하지 못한다
+- linked queue와 bounded ring에서 reclamation 부담이 드러나는 위치가 다르다는 점을 고려하지 않는다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/aba-problem-tagged-pointers
+- data-structure/michael-scott-lock-free-queue
+next_docs:
+- data-structure/reclamation-cost-tradeoffs
+- data-structure/bounded-mpmc-queue
+- data-structure/lock-free-mpsc-queue
+- data-structure/lock-free-spsc-ring-buffer
+linked_paths:
+- contents/data-structure/bounded-mpmc-queue.md
+- contents/data-structure/michael-scott-lock-free-queue.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/aba-problem-and-tagged-pointers.md
+- contents/data-structure/reclamation-cost-tradeoffs.md
+confusable_with:
+- data-structure/aba-problem-tagged-pointers
+- data-structure/reclamation-cost-tradeoffs
+- data-structure/michael-scott-lock-free-queue
+- data-structure/bounded-mpmc-queue
+forbidden_neighbors: []
+expected_queries:
+- Hazard Pointers와 Epoch-Based Reclamation은 lock-free node reclamation에서 어떻게 달라?
+- lock-free queue에서 제거된 node를 바로 free하면 왜 memory safety 문제가 생겨?
+- hazard pointer publish와 EBR epoch advance trade-off를 설명해줘
+- 느린 thread가 epoch reclamation을 막을 수 있다는 뜻은?
+- bounded ring과 linked lock-free queue에서 reclamation cost가 다르게 보이는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 lock-free 자료구조에서 logical removal과 physical memory free를
+  분리해야 하는 safe reclamation chooser다. Hazard Pointers는 pointer 단위
+  protection, Epoch-Based Reclamation은 epoch batch reclamation이며, linked
+  queue와 bounded ring에서 비용이 드러나는 위치를 비교한다.
+---
 # Hazard Pointers vs Epoch-Based Reclamation
 
 > 한 줄 요약: Hazard Pointers와 Epoch-Based Reclamation은 lock-free 구조에서 제거된 노드를 언제 안전하게 회수할지 정하는 메모리 회수 지원 구조이며, linked queue와 bounded ring은 이 비용이 드러나는 위치가 다르다.

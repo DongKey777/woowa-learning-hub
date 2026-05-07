@@ -9,6 +9,17 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- bean-di
+- bean
+- component-scan
+- dependency-injection
 aliases:
   - spring bean
   - bean
@@ -26,13 +37,13 @@ prerequisites:
   - software-engineering/oop-design-basics
 next_docs:
   - spring/bean-lifecycle-basics
-  - spring/transactional
+  - spring/transactional-basics
 linked_paths:
   - contents/spring/ioc-di-container.md
   - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
   - contents/software-engineering/layered-architecture-basics.md
 confusable_with:
-  - design-pattern/service-locator
+  - design-pattern/service-locator-antipattern
   - design-pattern/factory
 forbidden_neighbors:
   - contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
@@ -55,7 +66,6 @@ contextual_chunk_prefix: |
   만들지 않고 외부에서 받는 방식 같은 자연어 paraphrase가 본 문서의 핵심
   wiring 동작에 매핑된다.
 ---
-
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기
 
 > 한 줄 요약: Spring Bean은 "내가 `new`로 직접 만든 객체"가 아니라, 컨테이너가 등록하고 조립하고 필요하면 프록시로 감싸서 꺼내 주는 객체다.
@@ -63,6 +73,14 @@ contextual_chunk_prefix: |
 > 문서 역할: 이 문서는 spring 카테고리 안에서 Bean 등록, component scan, configuration, proxy 감각을 한 번에 묶는 **beginner primer**를 담당한다. "왜 DI가 필요한가" 자체는 `spring-ioc-di-basics.md`가 먼저 담당한다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Controller 안의 Service는 누가 넣어 주는지 모르겠어요" | Spring 입문에서 레이어 객체가 연결되는 방식을 처음 보는 단계 | Bean 등록과 DI 연결을 요청 처리와 분리한다 |
+| "`bean` 등록, component scan, DI가 같은 말처럼 보여요" | `@Controller`, `@Service`, `@Repository`를 처음 붙이는 미션 | scan은 후보 찾기, DI는 후보 연결, proxy는 호출 감싸기로 자른다 |
+| "왜 `new`로 직접 만들지 않고 주입받아야 해요?" | 테스트 가능성과 레이어 결합도 리뷰 | 객체 생성 책임과 사용 책임을 분리하는 효과를 본다 |
 
 관련 문서:
 

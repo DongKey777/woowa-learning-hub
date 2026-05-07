@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Data Structure 자료구조 라우팅 인덱스
+concept_id: data-structure/data-structure-routing-index
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- data-structure-first-router
+- map-set-queue-tree-split
+- beginner-navigation
+aliases:
+- data structure readme
+- 자료구조 처음 라우터
+- map set queue tree 뭐부터
+- beginner data structure routing
+- 자료구조 입구 문서
+- queue bfs map set 차이
+- TreeMap TreeSet PriorityQueue 선택
+symptoms:
+- 처음 자료구조를 볼 때 map, set, queue, tree 중 어디서 시작할지 모르겠다
+- queue와 BFS, TreeSet과 PriorityQueue, HashMap과 TreeMap이 같은 층위처럼 보여 분기가 섞인다
+- 정렬, 범위 조회, 이웃 값, FIFO 순서, 중복 제거 중 어떤 요구가 먼저인지 문제 문장에서 못 자른다
+intents:
+- troubleshooting
+- comparison
+- definition
+prerequisites:
+- language/java-collections-basics
+next_docs:
+- data-structure/backend-data-structure-starter-pack
+- data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer
+- data-structure/map-vs-set-requirement-bridge
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/connectivity-question-router
+- algorithm/dfs-bfs-intro
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+- contents/data-structure/map-vs-set-requirement-bridge.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/hashset-vs-treeset-beginner-bridge.md
+- contents/data-structure/treeset-vs-priorityqueue-neighbor-choice-card.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/queue-bfs-priorityqueue-map-lookup-micro-drill.md
+- contents/data-structure/connectivity-question-router.md
+- contents/algorithm/dfs-bfs-intro.md
+confusable_with:
+- data-structure/backend-data-structure-starter-pack
+- language/java-collections-basics
+- algorithm/dfs-bfs-intro
+- data-structure/queue-basics
+- data-structure/map-vs-set-requirement-bridge
+forbidden_neighbors: []
+expected_queries:
+- 자료구조 처음인데 Map Set Queue Tree 중 무엇부터 봐야 해?
+- queue랑 BFS가 왜 같이 나오고 어떻게 분리해야 하는지 알려줘
+- HashMap TreeMap TreeSet PriorityQueue를 문제 문장으로 구분하고 싶어
+- 정렬 범위 조회 이웃 값이 보이면 어떤 자료구조로 가야 해?
+- 중복 제거와 key 조회와 FIFO 순서를 처음에 어떻게 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 자료구조 카테고리의 beginner 라우팅 인덱스다. 학습자가
+  Map, Set, Queue, Deque, PriorityQueue, TreeMap, TreeSet, Trie, Bitmap,
+  Graph, BFS를 한꺼번에 같은 층위로 읽지 않도록 문제 문장을 요구 신호로
+  번역한다. 중복 제거, key 조회, FIFO 순서, 정렬/범위 조회, 이웃 값,
+  연결성 질문을 첫 분기로 삼는다.
+---
 # Data Structure (자료구조)
 
 > 한 줄 요약: 자료구조 README는 백엔드 주니어가 `map`, `queue`, `tree` 계열을 헷갈릴 때 문제 문장을 먼저 번역해 출발점을 고르게 돕는 입구 문서다.

@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: "Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains"
+concept_id: network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- client-disconnect-cancellation
+- nginx-499-broken-pipe
+- proxy-chain-zombie-work
+aliases:
+- client disconnect
+- nginx 499
+- broken pipe EPIPE
+- cancellation propagation
+- downstream disconnect
+- zombie work
+symptoms:
+- edge proxy에는 499가 찍히고 backend에는 200이 찍혀 성공 실패 판단을 한 로그로만 하려 한다
+- client가 떠난 뒤에도 backend DB query나 fan-out 호출이 계속 돌아 zombie work가 남는다
+- response flush 단계의 broken pipe를 서버가 잘못 응답한 500으로 오해한다
+- upload 중 disconnect와 response 중 disconnect를 같은 복구 전략으로 묶는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/fin-rst-half-close-eof-semantics
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+next_docs:
+- network/grpc-deadlines-cancellation-propagation
+- network/proxy-to-container-upload-cleanup-matrix
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+- network/sse-webflux-streaming-cancel-after-first-byte
+- spring/mvc-async-deferredresult-callable-dispatch
+linked_paths:
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/network/sse-failure-attribution-http1-http2.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+confusable_with:
+- network/fin-rst-half-close-eof-semantics
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/grpc-deadlines-cancellation-propagation
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/network-spring-request-lifecycle-timeout-disconnect-bridge
+forbidden_neighbors: []
+expected_queries:
+- "Nginx 499와 backend 200이 같이 보이면 client disconnect를 어떻게 해석해?"
+- "broken pipe EPIPE는 서버가 500을 만든 게 아니라 late write failure일 수 있어?"
+- "proxy chain에서 cancellation propagation이 안 되면 zombie work가 왜 남아?"
+- "upload 중 client disconnect와 response flush 중 disconnect는 무엇이 달라?"
+- "SSE나 gRPC streaming에서 downstream disconnect를 backend 작업 취소로 연결하는 법을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 client disconnect, nginx 499, broken pipe/EPIPE, downstream
+  cancellation propagation, proxy chain local observation, backend zombie work,
+  upload/response/streaming cancel을 다루는 advanced operational playbook이다.
+---
 # Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains
 
 > 한 줄 요약: 클라이언트가 먼저 떠난 요청은 access log의 `499`로만 끝나는 문제가 아니다. 취소 신호가 proxy와 backend를 제대로 통과하지 않으면 zombie work가 남고, 너무 늦게 알면 `broken pipe`, `EPIPE`, late write failure로 드러난다.

@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: DO NOTHING vs DO UPDATE Outcome Primer for PostgreSQL and MySQL
+concept_id: database/do-nothing-vs-do-update-outcome-primer-postgresql-mysql
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- upsert-outcome
+- do-nothing
+- do-update
+- mysql-on-duplicate-key
+aliases:
+- do nothing vs do update primer
+- postgres on conflict do nothing returning 0 row
+- postgres on conflict do update returning row
+- mysql on duplicate key update affected rows
+- upsert return value beginner
+- created existing conflict in progress upsert
+- do nothing loser signal
+- do update merge signal
+- upsert 뭐예요
+- do nothing do update 차이
+symptoms:
+- PostgreSQL DO NOTHING RETURNING 0 rows를 실패로만 보고 fresh read로 existing winner를 확인해야 한다는 점을 놓친다
+- DO UPDATE나 MySQL ON DUPLICATE KEY UPDATE가 row를 반환하거나 affectedRows를 주면 무조건 created로 닫는다
+- upsert 결과를 DB 실행 결과로만 보고 created, existing, conflict, in-progress 서비스 outcome을 분리하지 못한다
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/postgresql-mysql-claim-sql-mini-card
+- database/insert-if-absent-retry-outcome-guide
+next_docs:
+- database/mysql-on-duplicate-key-update-safety-primer
+- database/unique-claim-existing-row-reuse-primer
+- database/upsert-contention-unique-index-locking
+linked_paths:
+- contents/database/postgresql-mysql-claim-sql-mini-card.md
+- contents/database/mysql-on-duplicate-key-update-safety-primer.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
+- contents/database/read-before-write-race-timeline-mysql-postgresql.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/spring/spring-payment-approval-db-failure-compensation-idempotency-primer.md
+confusable_with:
+- database/insert-if-absent-retry-outcome-guide
+- database/mysql-on-duplicate-key-update-safety-primer
+- database/unique-claim-existing-row-reuse-primer
+- database/duplicate-key-vs-busy-response-mapping
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL ON CONFLICT DO NOTHING RETURNING 0 rows는 loser signal이고 fresh read로 existing row를 봐야 해?
+- PostgreSQL DO UPDATE와 MySQL ON DUPLICATE KEY UPDATE는 기존 row merge path라서 created로 단정하면 안 되는 이유가 뭐야?
+- upsert 결과를 created existing conflict in-progress 서비스 outcome으로 닫는 기준을 알려줘
+- MySQL ON DUPLICATE KEY UPDATE affectedRows 1, 2, 0을 business result로 바로 믿으면 안 되는 이유가 뭐야?
+- idempotency key 기반 create-or-reuse에서 DO NOTHING과 DO UPDATE 중 어느 쪽이 beginner에게 더 안전해?
+contextual_chunk_prefix: |
+  이 문서는 DO NOTHING vs DO UPDATE Outcome Primer chooser로, PostgreSQL ON CONFLICT DO NOTHING
+  RETURNING 0 rows를 loser signal로 보고 fresh read를 수행하는 방식과 DO UPDATE/MySQL ON DUPLICATE KEY UPDATE의
+  merge semantics를 created/existing/conflict/in-progress outcome 기준으로 설명한다.
+---
 # PostgreSQL `DO NOTHING` vs `DO UPDATE` Outcome Primer, with MySQL `ON DUPLICATE KEY UPDATE`
 
 > 한 줄 요약: 초보자는 upsert 결과를 "row가 만들어졌나?"보다 "`created` / `existing` / `conflict` / `in-progress`를 서비스가 어떻게 닫나?"로 읽어야 하며, PostgreSQL `DO NOTHING`은 보통 **0-row loser 신호**, PostgreSQL `DO UPDATE`와 MySQL `ON DUPLICATE KEY UPDATE`는 보통 **existing-row merge 신호**로 보는 편이 덜 헷갈린다.

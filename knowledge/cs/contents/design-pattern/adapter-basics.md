@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: 어댑터 패턴 기초
+concept_id: design-pattern/adapter-basics
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- adapter-interface-translation
+- external-sdk-boundary
+- wrapper-pattern-confusion
+aliases:
+- adapter pattern basics
+- 어댑터 패턴 기초
+- adapter pattern beginner
+- incompatible interface adapter
+- legacy API adapter
+- adapter vs facade
+- adapter vs decorator
+- ports and adapters beginner
+symptoms:
+- adapter를 단순 wrapper나 DTO 변환과 같은 말로 써서 인터페이스 번역 책임을 흐리고 있어
+- 외부 SDK 타입과 상태 코드가 서비스 전역으로 퍼져 provider 교체 비용이 커지고 있어
+- GoF Adapter와 Ports and Adapters의 adapter라는 단어를 같은 층위로 섞고 있어
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/oop-design-basics
+- software-engineering/ports-and-adapters-beginner-primer
+next_docs:
+- design-pattern/adapter-vs-facade-vs-decorator-beginner-router
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/adapter
+- design-pattern/adapter-chaining-smells
+linked_paths:
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/adapter.md
+- contents/design-pattern/adapter-chaining-smells.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/adapter-vs-facade-vs-decorator-beginner-router.md
+confusable_with:
+- design-pattern/adapter-vs-facade-vs-decorator-beginner-router
+- design-pattern/facade-vs-adapter-vs-proxy
+- design-pattern/ports-and-adapters-vs-classic-patterns
+forbidden_neighbors: []
+expected_queries:
+- 어댑터 패턴은 서로 맞지 않는 인터페이스를 어떻게 번역해?
+- 외부 SDK 상태 코드와 타입을 서비스에서 직접 쓰지 않으려면 adapter를 어떻게 둬?
+- Adapter와 Facade와 Decorator는 wrapper처럼 보여도 목적이 어떻게 달라?
+- GoF Adapter와 Ports and Adapters의 adapter는 어떤 층위가 달라?
+- 어댑터 안에 비즈니스 정책을 넣으면 왜 책임이 흐려져?
+contextual_chunk_prefix: |
+  이 문서는 GoF Adapter beginner primer로, Target interface, Adaptee, Adapter translation, external SDK boundary, type/unit/status code conversion을 설명한다.
+  어댑터 패턴, legacy API adapter, adapter vs facade, adapter vs decorator, ports and adapters 용어 혼동 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 어댑터 패턴 기초 (Adapter Pattern Basics)
 
 > 한 줄 요약: 어댑터는 서로 맞지 않는 인터페이스를 중간에서 번역해주는 변환기로, 기존 코드를 바꾸지 않고 외부 라이브러리나 레거시 API를 연결할 때 쓴다.

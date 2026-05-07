@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Review Comment Pattern Cards
+concept_id: software-engineering/review-comment-pattern-cards
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- review-comment
+- layering
+- service-responsibility
+- dto-entity-boundary
+aliases:
+- review feedback pattern cards
+- service too big review comment
+- controller does too much comment
+- DTO Entity boundary review
+- validation 위치 리뷰 문장
+- 리뷰 코멘트 해석 카드
+symptoms:
+- service가 너무 비대하다는 리뷰를 받고도 규칙, 저장 세부, 응답 조립 중 어느 책임을 먼저 분리할지 모르겠어
+- controller가 일을 너무 많이 한다는 코멘트를 형식 검증과 업무 규칙 경계 문제로 번역하지 못해
+- 응답 조립 책임이 섞였다는 말이 DTO, Entity, Controller, Service 중 어느 경계 문제인지 헷갈려
+- validation 위치가 섞였다는 리뷰를 입력 포맷 검사와 도메인 규칙 검사로 나누지 못해
+intents:
+- symptom
+- troubleshooting
+- mission_bridge
+prerequisites: []
+next_docs:
+- software-engineering/service-layer-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/dto-vo-entity-basics
+linked_paths:
+- contents/software-engineering/mission-review-vocabulary-primer.md
+- contents/software-engineering/readable-code-layering-test-feedback-loop-primer.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/test-strategy-basics.md
+confusable_with:
+- software-engineering/mission-review-vocabulary-primer
+- software-engineering/service-layer-basics
+- software-engineering/layered-architecture-basics
+forbidden_neighbors: []
+expected_queries:
+- service가 너무 비대하다는 리뷰를 받았을 때 규칙, 저장 세부, 응답 조립 중 어디부터 봐야 해?
+- controller가 일을 너무 많이 한다는 코멘트를 초심자에게 어떤 수정 질문으로 번역하면 돼?
+- 응답 조립 책임이 섞였다는 리뷰는 DTO와 Entity 경계에서 무엇을 보라는 뜻이야?
+- validation 위치가 섞였다는 말은 입력 형식 검증과 도메인 규칙 검증을 어떻게 나누라는 거야?
+- 리뷰 문장을 이론 전체가 아니라 첫 수정 체크리스트로 읽는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Review Comment Pattern Cards를 다루는 symptom_router 문서다. review feedback pattern cards, service too big review comment, controller does too much comment, DTO Entity boundary review, validation 위치 리뷰 문장 같은 lexical 표현과 service가 너무 비대하다는 리뷰를 받았을 때 규칙, 저장 세부, 응답 조립 중 어디부터 봐야 해?, controller가 일을 너무 많이 한다는 코멘트를 초심자에게 어떤 수정 질문으로 번역하면 돼? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Review Comment Pattern Cards
 
 > 한 줄 요약: "service가 너무 비대함", "controller가 일을 너무 많이 함" 같은 리뷰 문장은 설계 이론 시험이 아니라, **지금 코드에서 책임이 섞인 지점을 먼저 자르라**는 신호로 읽으면 된다.

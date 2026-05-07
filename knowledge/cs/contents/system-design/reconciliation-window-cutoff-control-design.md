@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Reconciliation Window / Cutoff Control 설계
+concept_id: system-design/reconciliation-window-cutoff-control-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- reconciliation window
+- cutoff control
+- late arrival
+- settlement window
+aliases:
+- reconciliation window
+- cutoff control
+- late arrival
+- settlement window
+- close period
+- reopen correction
+- watermark cutoff
+- posting window
+- financial close
+- correction after close
+- analytics restatement
+- Reconciliation Window / Cutoff Control 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/billing-usage-metering-system-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/system-design/streaming-analytics-pipeline-design.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/analytics-late-data-reconciliation-design.md
+- contents/system-design/dashboard-restatement-ux-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Reconciliation Window / Cutoff Control 설계 설계 핵심을 설명해줘
+- reconciliation window가 왜 필요한지 알려줘
+- Reconciliation Window / Cutoff Control 설계 실무 트레이드오프는 뭐야?
+- reconciliation window 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Reconciliation Window / Cutoff Control 설계를 다루는 deep_dive 문서다. reconciliation window와 cutoff control 설계는 late arrival, settlement delay, correction 허용 범위를 고려해 어떤 시점을 기준으로 정산·집계·청구 창을 닫고 다시 여는지 명시하는 운영 제어 설계다. 검색 질의가 reconciliation window, cutoff control, late arrival, settlement window처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Reconciliation Window / Cutoff Control 설계
 
 > 한 줄 요약: reconciliation window와 cutoff control 설계는 late arrival, settlement delay, correction 허용 범위를 고려해 어떤 시점을 기준으로 정산·집계·청구 창을 닫고 다시 여는지 명시하는 운영 제어 설계다.

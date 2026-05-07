@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: serialPersistentFields readObjectNoData Evolution Escape Hatches
+concept_id: language/serialpersistentfields-readobjectnodata-evolution-escape-hatches
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- serialization
+- compatibility
+- evolution
+aliases:
+- serialPersistentFields readObjectNoData evolution escape hatches
+- Java serialPersistentFields PutField GetField
+- readObjectNoData native serialization
+- persistent field schema evolution
+- native serialization escape hatch
+- 자바 serialPersistentFields readObjectNoData
+symptoms:
+- native serialization이 현재 non-transient field에 끌려가는 기본 동작만 알고 serialPersistentFields로 저장 계약을 분리할 수 있는 경우를 놓쳐
+- putFields readFields mapping 코드를 migration layer로 다루지 않고 serializer hook 정도로만 생각해 compatibility reasoning이 불투명해져
+- readObjectNoData가 hierarchy evolution 같은 edge case의 safety net이지 일반 복구 로직이 아니라는 점을 구분하지 못해
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- language/serialization-compatibility-serial-version-uid
+- language/serialization-proxy-pattern-invariant-preservation
+- language/record-serialization-evolution
+next_docs:
+- language/value-object-invariants-canonicalization-boundary-design
+- language/json-null-missing-unknown-field-schema-evolution
+- language/io-nio-serialization
+linked_paths:
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/serialization-proxy-pattern-invariant-preservation.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/serialization-proxy-pattern-invariant-preservation
+- language/serialization-compatibility-serial-version-uid
+- language/record-serialization-evolution
+forbidden_neighbors: []
+expected_queries:
+- serialPersistentFields는 실제 클래스 필드와 별개로 persistent field schema를 어떻게 통제해?
+- ObjectOutputStream PutField와 ObjectInputStream GetField는 serialization migration layer처럼 쓰이는 이유가 뭐야?
+- readObjectNoData는 class hierarchy evolution에서 언제 호출될 수 있는 escape hatch야?
+- serialPersistentFields는 serialization proxy보다 경계를 덜 분리하지만 언제 유용할 수 있어?
+- native serialization evolution escape hatch는 강력하지만 왜 reasoning 비용이 커져?
+contextual_chunk_prefix: |
+  이 문서는 Java native serialization에서 serialPersistentFields, PutField/GetField, readObjectNoData를 field schema evolution escape hatch로 설명하는 advanced deep dive다.
+  serialPersistentFields, readObjectNoData, PutField, GetField, serialization evolution 질문이 본 문서에 매핑된다.
+---
 # `serialPersistentFields`, `readObjectNoData`, and Native Serialization Evolution Escape Hatches
 
 > 한 줄 요약: Java native serialization은 기본적으로 현재 필드 구조에 끌려가지만, `serialPersistentFields`와 `readObjectNoData()`는 그 계약을 부분적으로 통제할 수 있는 escape hatch다. 다만 강력한 대신 더 쉽게 불투명한 호환성 코드를 만든다.

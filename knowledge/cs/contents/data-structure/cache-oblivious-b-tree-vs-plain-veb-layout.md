@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Cache-Oblivious B-Tree vs Plain vEB Layout
+concept_id: data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cache-oblivious-ordered-index
+- veb-vs-leaf-packed
+- range-scan-locality
+aliases:
+- cache-oblivious B-tree
+- plain vEB binary layout
+- leaf packed ordered index
+- recursive guide index
+- lower_bound range scan locality
+- cache-oblivious leaf block layout
+- vEB vs cache oblivious BTree
+symptoms:
+- point lookup locality만 보고 plain vEB layout을 range scan이 많은 ordered index에도 그대로 쓰려 한다
+- lower_bound 이후 iterator scan이 본체인 workload에서 leaf packing과 contiguous chunk의 이점을 놓친다
+- cache-oblivious B-tree와 vEB layout을 둘 다 재귀 배치라는 이유만으로 같은 선택지로 본다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/ordered-search-workload-matrix
+next_docs:
+- data-structure/ordered-search-workload-matrix
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/hybrid-top-index-leaf-layouts
+- data-structure/lsm-friendly-index-structures
+linked_paths:
+- contents/data-structure/ordered-search-workload-matrix.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+- contents/data-structure/cache-oblivious-vs-cache-aware-layouts.md
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/eytzinger-layout-and-cache-friendly-search.md
+- contents/data-structure/hybrid-top-index-leaf-layouts.md
+- contents/data-structure/lsm-friendly-index-structures.md
+confusable_with:
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/eytzinger-layout-and-cache-friendly-search
+- data-structure/hybrid-top-index-leaf-layouts
+forbidden_neighbors: []
+expected_queries:
+- plain vEB binary layout과 cache-oblivious B-tree는 range scan에서 어떻게 달라?
+- lower_bound 뒤에 여러 값을 scan하는 workload에는 왜 leaf-packed layout이 유리해?
+- cache-oblivious ordered index에서 search path와 scan continuation을 어떻게 나눠 봐야 해?
+- vEB layout이 point lookup에는 좋아도 ordered iterator에는 아쉬운 이유는?
+- guide index와 packed leaf hybrid를 언제 선택해야 해?
+contextual_chunk_prefix: |
+  이 문서는 plain vEB binary layout과 cache-oblivious B-tree 또는 leaf-packed
+  hybrid를 ordered search workload 기준으로 비교하는 chooser다. root-to-leaf
+  point lookup locality와 lower_bound 이후 range scan continuation locality를
+  분리해 판단한다.
+---
 # Cache-Oblivious B-Tree / Leaf-Packed Variants vs Plain vEB Layout
 
 > 한 줄 요약: plain vEB binary layout은 root-to-leaf search locality에는 강하지만, range scan 친화적 ordered index를 만들려면 leaf를 연속 chunk로 다루는 cache-oblivious B-tree나 leaf-packed hybrid가 더 직접적이다.

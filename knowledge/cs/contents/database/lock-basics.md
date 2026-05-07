@@ -10,7 +10,11 @@ level: beginner
 language: ko
 source_priority: 90
 mission_ids: []
-review_feedback_tags: []
+review_feedback_tags:
+- lock
+- database-lock
+- row-lock
+- shared-lock
 aliases:
 - database lock
 - row lock
@@ -60,7 +64,6 @@ contextual_chunk_prefix: |
   데이터 동시에 수정, 락이 뭐야, optimistic vs pessimistic, shared vs
   exclusive lock 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
 ---
-
 # 락 기초 (Database Lock Basics)
 
 > 한 줄 요약: 데이터베이스 락은 동시에 실행되는 트랜잭션이 같은 데이터를 충돌 없이 변경할 수 있도록 순서를 강제하는 메커니즘이다.

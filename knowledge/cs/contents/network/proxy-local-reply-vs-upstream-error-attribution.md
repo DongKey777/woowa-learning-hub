@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Proxy Local Reply vs Upstream Error Attribution"
+concept_id: network/proxy-local-reply-vs-upstream-error-attribution
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- proxy-local-reply
+- upstream-attribution
+- gateway-error
+aliases:
+- proxy local reply
+- upstream error attribution
+- generated response
+- Envoy local reply
+- Nginx generated error
+- gateway response source
+- 502 503 504 attribution
+symptoms:
+- 사용자가 503을 봤다는 이유만으로 upstream app이 503을 반환했다고 판단한다
+- app 로그에는 없는데 edge나 gateway에서 502 503 504 429가 생기는 상황을 설명하지 못한다
+- proxy local timeout과 app 성공 로그가 동시에 존재할 때 blame을 잘못 잡는다
+- status code만 보고 retry해서 local rate limit이나 auth reject를 악화시킨다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/api-gateway-reverse-proxy-operational-points
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+next_docs:
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/grpc-status-trailers-transport-error-mapping
+linked_paths:
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/service-mesh-local-reply-timeout-reset-attribution.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+confusable_with:
+- network/service-mesh-local-reply-timeout-reset-attribution
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/grpc-status-trailers-transport-error-mapping
+forbidden_neighbors: []
+expected_queries:
+- "502 503 504가 proxy local reply인지 upstream app 응답인지 어떻게 구분해?"
+- "edge는 504인데 app은 200 성공 로그가 있는 상황을 어떻게 해석해?"
+- "Envoy local reply와 upstream reset attribution을 어떤 지표로 나눠?"
+- "gateway local rate limit 429를 app 429로 오해하면 왜 위험해?"
+- "proxy generated response에는 어떤 header나 timing clue가 남아?"
+contextual_chunk_prefix: |
+  이 문서는 proxy/gateway local reply와 upstream app response attribution,
+  502/503/504/429 생성 주체, timeout/reset/rate-limit source-aware retry를
+  다루는 advanced playbook이다.
+---
 # Proxy Local Reply vs Upstream Error Attribution
 
 > 한 줄 요약: `502`, `503`, `504`, `429`가 보여도 그 응답이 upstream app이 만든 것인지 proxy가 local reply로 합성한 것인지 구분하지 못하면 장애 원인을 엉뚱한 서비스에 돌리기 쉽다.

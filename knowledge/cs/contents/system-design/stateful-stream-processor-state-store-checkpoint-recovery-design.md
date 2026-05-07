@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Stateful Stream Processor State Store / Checkpoint Recovery 설계
+concept_id: system-design/stateful-stream-processor-state-store-checkpoint-recovery-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- stateful stream processor
+- state store
+- checkpoint recovery
+- savepoint
+aliases:
+- stateful stream processor
+- state store
+- checkpoint recovery
+- savepoint
+- barrier alignment
+- keyed state
+- operator state
+- incremental checkpoint
+- changelog
+- state restore
+- rescaling
+- Stateful Stream Processor State Store / Checkpoint Recovery 설계
+symptoms:
+- Stateful Stream Processor State Store / Checkpoint Recovery 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/streaming-analytics-pipeline-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Stateful Stream Processor State Store / Checkpoint Recovery 설계 장애 대응 순서를 알려줘
+- stateful stream processor 복구 설계 체크리스트가 뭐야?
+- Stateful Stream Processor State Store / Checkpoint Recovery 설계에서 blast radius를 어떻게 제한해?
+- stateful stream processor 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Stateful Stream Processor State Store / Checkpoint Recovery 설계를 다루는 playbook 문서다. stateful stream processor의 state store와 checkpoint recovery는 연산 상태를 지속적으로 스냅샷하고 장애 후 복구·재스케일을 가능하게 만들어, 실시간 처리와 상태 정합성을 함께 유지하는 스트림 플랫폼 핵심 기술이다. 검색 질의가 stateful stream processor, state store, checkpoint recovery, savepoint처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Stateful Stream Processor State Store / Checkpoint Recovery 설계
 
 > 한 줄 요약: stateful stream processor의 state store와 checkpoint recovery는 연산 상태를 지속적으로 스냅샷하고 장애 후 복구·재스케일을 가능하게 만들어, 실시간 처리와 상태 정합성을 함께 유지하는 스트림 플랫폼 핵심 기술이다.

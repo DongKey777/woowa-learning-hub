@@ -55,9 +55,7 @@ confusable_with:
 - database/replica-lag-read-after-write-strategies
 - database/read-your-writes-vs-monotonic-reads-vs-causal-consistency-decision-guide
 - database/cache-replica-split-read-inconsistency
-forbidden_neighbors:
-- contents/database/read-your-writes-session-pinning.md
-- contents/database/replica-lag-read-after-write-strategies.md
+forbidden_neighbors: []
 expected_queries:
 - write 직후 첫 조회만 안전하게 만들려면 primary fallback, session pinning, token 방식 중 무엇부터 고르면 돼?
 - 저장 후 상세 화면은 바로 보여야 하지만 전체 세션을 오래 primary에 묶고 싶지 않을 때 어떤 전략이 맞아?
@@ -92,6 +90,14 @@ contextual_chunk_prefix: |
 - [database 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: read after write routing, primary fallback vs session pinning, consistency token basics, strict read window chooser, replica lag read path, stale first read why, write 직후 조회 라우팅, 저장 직후 옛값 왜, 언제 primary fallback, 언제 session pinning, version gate 뭐예요, recent write flow basics
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 생성은 성공했는데 목록 첫 조회만 이전 상태처럼 보여요" | roomescape 저장 직후 replica/cache 경로에서 옛값을 읽는 화면 | 직후 한두 번만 primary fallback이 필요한 strict read window인지 본다 |
+| "결제 직후 상세는 최신인데 목록 배지는 뒤로 가요" | shopping-cart/payment에서 화면마다 read source와 freshness 기준이 다른 UX | 같은 사용자 여정을 session pinning이나 token으로 묶어야 하는지 판단한다 |
+| "모든 조회를 primary로 보내면 해결 아닌가요?" | stale read를 피하려다 read 부하와 비용을 전부 primary로 몰아넣는 설계 | strict 범위, actor, 화면별 freshness 증명을 먼저 좁힌다 |
 
 ## 먼저 잡는 멘탈 모델
 

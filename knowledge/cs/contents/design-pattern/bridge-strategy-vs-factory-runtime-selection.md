@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Bridge vs Strategy vs Factory Runtime Selection
+concept_id: design-pattern/bridge-strategy-vs-factory-runtime-selection
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- bridge-vs-strategy-vs-factory
+- runtime-selection
+- behavior-vs-creation-axis
+aliases:
+- bridge vs strategy vs factory
+- runtime selection strategy factory
+- behavior axis vs creation axis
+- policy selection not factory
+- runtime policy chooser
+- selector vs factory naming
+- bridge two change axes
+- behavior selection vs object creation
+- 언제 strategy 언제 factory
+- bridge strategy factory payment example
+symptoms:
+- 런타임에 뭔가를 고른다는 이유만으로 policy/strategy lookup 코드를 Factory라고 이름 붙인다
+- 이미 만들어진 strategy를 Map에서 get하는 책임과 요청마다 provider client를 create하는 책임을 한 클래스에 섞는다
+- 결제 방식과 PG provider처럼 행동 축과 구현 provider 축이 함께 늘어나는데 Strategy나 Factory 하나로만 해결하려 한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/strategy-pattern-basics
+- design-pattern/factory
+- design-pattern/bridge-storage-provider-abstractions
+next_docs:
+- design-pattern/factory-misnaming-checklist
+- design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist
+- design-pattern/strategy-vs-state-vs-policy-object
+linked_paths:
+- contents/design-pattern/factory.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/bridge-storage-provider-abstractions.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+confusable_with:
+- design-pattern/factory-misnaming-checklist
+- design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/bridge-storage-provider-abstractions
+forbidden_neighbors: []
+expected_queries:
+- 런타임에 고른다는 이유만으로 Factory가 아니라 Strategy나 Registry일 수 있는 기준은 뭐야?
+- Strategy는 행동 선택, Factory는 객체 생성, Bridge는 두 변화 축 분리라는 차이를 설명해줘
+- PaymentStrategyRegistry가 Map에서 이미 준비된 전략을 꺼내기만 하면 왜 Factory보다 Registry에 가까워?
+- 결제 수단과 PG provider가 함께 늘어날 때 Strategy, Factory, Bridge를 어떻게 나눠?
+- Factory가 strategy를 만들 수 있어도 strategy의 책임이 factory가 되지는 않는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Bridge vs Strategy vs Factory runtime selection chooser로, 런타임 선택을
+  무조건 Factory라고 부르지 않고 행동을 고르는 Strategy/Selector/Registry, 객체 생성을 숨기는
+  Factory, 행동 축과 provider 축을 분리하는 Bridge의 책임 경계를 결제 예시로 설명한다.
+---
 # 런타임 선택에서 Bridge vs Strategy vs Factory: 행동 축과 생성 축을 헷갈리지 않기
 
 > 한 줄 요약: 런타임에 "이번에는 어떤 정책/행동을 쓸까"를 고르는 일은 보통 Strategy이고, Factory는 그 전략이나 협력 객체를 어떻게 만들지를 숨길 때 등장하며, Bridge는 행동 종류와 구현 제공자처럼 두 변화 축이 함께 늘어날 때 쓴다.

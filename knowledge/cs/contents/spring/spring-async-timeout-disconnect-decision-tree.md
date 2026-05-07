@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Spring Async Timeout vs Disconnect Decision Tree
+concept_id: spring/async-timeout-disconnect-decision-tree
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- async-timeout-disconnect
+- tree
+- asyncrequesttimeoutexception
+- asyncrequestnotusableexception
+aliases:
+- AsyncRequestTimeoutException
+- AsyncRequestNotUsableException
+- disconnected client signal
+- DeferredResult timeout
+- SseEmitter disconnect
+- StreamingResponseBody broken pipe
+- response committed async
+intents:
+- symptom
+- troubleshooting
+symptoms:
+- async endpoint에서 timeout 예외와 client disconnect 예외가 섞여 보인다.
+- SseEmitter나 ResponseBodyEmitter가 첫 바이트 이후 실패해서 ProblemDetail로 바뀌지 않는다.
+- completion 이후 late write 때문에 AsyncRequestNotUsableException이 난다.
+linked_paths:
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-servlet-container-disconnect-exception-mapping.md
+- contents/spring/spring-async-mvc-streaming-observability-playbook.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+confusable_with:
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- spring/problemdetail-before-after-commit-matrix
+- spring/servlet-container-disconnect-exception-mapping
+expected_queries:
+- AsyncRequestTimeoutException과 AsyncRequestNotUsableException은 어떻게 구분해?
+- SseEmitter에서 client disconnect와 timeout을 어떻게 나눠 봐?
+- 첫 바이트가 나간 뒤에는 왜 ProblemDetail로 바꾸기 어려워?
+- StreamingResponseBody broken pipe는 Spring 예외 처리로 잡아야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC async endpoint의 DeferredResult, ResponseBodyEmitter,
+  SseEmitter, StreamingResponseBody를 timeout, disconnect, first-byte commit,
+  late write, ProblemDetail 가능 여부로 분기한다. AsyncRequestTimeoutException,
+  AsyncRequestNotUsableException, broken pipe, ClientAbortException을 구분하는
+  advanced symptom router다.
+---
 # Spring Async Timeout vs Disconnect Decision Tree
 
 > 한 줄 요약: `AsyncRequestTimeoutException`은 기본 async timeout 신호이고, `AsyncRequestNotUsableException`은 이미 죽은 response에 다시 쓰려 할 때 드러나는 unusable 신호이며, raw disconnected-client 예외는 transport 계층 신호이므로, 네 가지 반환 타입은 "어떤 async primitive 위에 올라탔는가"와 "첫 바이트가 이미 나갔는가" 두 축으로 읽어야 헷갈리지 않는다.

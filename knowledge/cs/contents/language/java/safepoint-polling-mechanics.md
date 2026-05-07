@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Safepoint Polling Mechanics
+concept_id: language/safepoint-polling-mechanics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- safepoint
+- jit
+- latency
+aliases:
+- Safepoint Polling Mechanics
+- safepoint polling loop back-edge
+- HotSpot poll page compiled code
+- safepoint reachability poll density
+- method exit poll safepoint
+- 자바 safepoint polling
+symptoms:
+- GC pause가 긴데 실제로는 모든 thread가 safepoint에 도달하기까지 기다린 time-to-safepoint 문제일 수 있음을 구분하지 못해
+- 긴 loop나 native call에서 safepoint polling density와 poll reachability가 낮아 진입 지연이 생길 수 있다는 점을 놓쳐
+- safepoint poll과 deoptimization, runtime check, method exit의 관계를 모른 채 STW latency를 GC 원인으로만 해석해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/safepoint-stop-the-world-diagnostics
+- language/jit-warmup-deoptimization
+- language/thread-dump-state-interpretation
+next_docs:
+- language/jfr-jmc-performance-playbook
+- language/java-agent-instrumentation-basics
+- language/method-inlining-heuristics-deopt-triggers
+linked_paths:
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java/java-agent-instrumentation-basics.md
+confusable_with:
+- language/safepoint-stop-the-world-diagnostics
+- language/jit-warmup-deoptimization
+- language/thread-dump-state-interpretation
+forbidden_neighbors: []
+expected_queries:
+- HotSpot safepoint polling은 loop back-edge와 method exit에서 JVM 정지 요청을 어떻게 확인해?
+- GC pause처럼 보이지만 time-to-safepoint가 긴 경우를 어떻게 의심할 수 있어?
+- 긴 CPU loop나 native call이 safepoint 진입 지연을 만들 수 있는 이유가 뭐야?
+- safepoint poll density는 성능과 응답성 사이에 어떤 tradeoff를 만들어?
+- safepoint polling과 deoptimization은 같은 현상은 아니지만 왜 같이 관측될 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 HotSpot safepoint polling을 compiled code의 loop back-edge, method exit, runtime check, native call boundary에서 설명하는 advanced deep dive다.
+  safepoint polling, loop back-edge, poll density, time-to-safepoint, HotSpot 질문이 본 문서에 매핑된다.
+---
 # Safepoint Polling Mechanics
 
 > 한 줄 요약: safepoint polling은 compiled code가 JVM의 정지 요청을 감지하는 메커니즘이고, loop back-edge와 method exit에 들어가는 poll이 길어지면 safepoint 진입 지연으로 이어질 수 있다.

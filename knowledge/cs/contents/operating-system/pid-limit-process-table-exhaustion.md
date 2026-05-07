@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: PID Limits Process Table Exhaustion
+concept_id: operating-system/pid-limit-process-table-exhaustion
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- pid-limit-process
+- table-exhaustion
+- pids-max
+- fork-resource-temporarily
+aliases:
+- PID limit process table exhaustion
+- pids.max
+- fork resource temporarily unavailable
+- process table full
+- cgroup PID exhaustion
+- cannot create new process
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/fd-exhaustion-ulimit-diagnostics.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+symptoms:
+- fork나 process spawn이 실패하고 resource temporarily unavailable이 난다.
+- cgroup pids.max 또는 system process table exhaustion 때문에 새 실행 단위를 만들 수 없다.
+- zombie process reaping 실패와 PID exhaustion이 연결되어 server가 멈춘다.
+expected_queries:
+- PID limit과 process table exhaustion은 단순 fork 실패 숫자가 아니야?
+- cgroup pids.max 때문에 container가 새 process나 thread를 못 만들 수 있어?
+- zombie reaping 실패가 PID exhaustion으로 이어지는지 어떻게 확인해?
+- fork resource temporarily unavailable을 FD exhaustion이나 OOM과 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 PID limit이 단순 fork를 막는 숫자가 아니라 process/thread 같은 새 execution unit을
+  만들 수 없게 해 server를 멈추게 할 수 있다는 symptom router다. cgroup pids.max,
+  process table, zombie reaping, FD/OOM과 구분한다.
+---
 # PID Limits, Process Table Exhaustion
 
 > 한 줄 요약: PID limits는 단순히 fork를 막는 숫자가 아니라, 프로세스와 cgroup이 더 이상 새 실행 단위를 만들지 못하게 해서 서버를 멈추게 할 수 있다.

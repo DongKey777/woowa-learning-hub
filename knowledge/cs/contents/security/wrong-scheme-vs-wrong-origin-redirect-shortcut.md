@@ -57,8 +57,7 @@ confusable_with:
 - security/secure-cookie-behind-proxy-guide
 - security/absolute-redirect-url-behind-load-balancer-guide
 - security/cookie-scope-mismatch-guide
-forbidden_neighbors:
-- contents/security/cookie-scope-mismatch-guide.md
+forbidden_neighbors: []
 expected_queries:
 - 로그인 뒤 Location 헤더가 http로 내려오면 먼저 뭘 의심해야 해?
 - https인데 host가 app-internal로 바뀌는 redirect는 뭐가 다른가요

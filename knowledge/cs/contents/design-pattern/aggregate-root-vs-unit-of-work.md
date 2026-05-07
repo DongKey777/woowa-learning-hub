@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Aggregate Root vs Unit of Work
+concept_id: design-pattern/aggregate-root-vs-unit-of-work
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- aggregate-root
+- unit-of-work
+- domain-vs-persistence-boundary
+aliases:
+- aggregate root vs unit of work
+- aggregate root
+- unit of work relation
+- domain consistency boundary
+- persistence change tracking
+- aggregate invariants
+- aggregate version
+- aggregate와 unit of work
+- 도메인 경계와 커밋 경계
+symptoms:
+- Aggregate Root와 Unit of Work를 둘 다 transaction 관련 개념으로만 보고 도메인 규칙과 변경 추적 책임을 섞는다
+- Aggregate 내부에 repository save나 flush 같은 persistence 로직을 넣어 도메인 모델과 저장 메커니즘을 결합한다
+- Unit of Work가 있으니 aggregate invariant guard가 필요 없다고 오해한다
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/unit-of-work-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+next_docs:
+- design-pattern/aggregate-version-optimistic-concurrency-pattern
+- design-pattern/aggregate-reference-by-id
+- design-pattern/repository-boundary-aggregate-vs-read-model
+linked_paths:
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/aggregate-version-optimistic-concurrency-pattern.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/aggregate-reference-by-id.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+confusable_with:
+- design-pattern/unit-of-work-pattern
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/transaction-script-vs-rich-domain-model
+forbidden_neighbors: []
+expected_queries:
+- Aggregate Root와 Unit of Work는 도메인 일관성 경계와 변경 커밋 경계 관점에서 어떻게 달라?
+- Aggregate Root 안에 저장 로직이나 flush를 넣으면 왜 관심사가 섞여?
+- Unit of Work가 dirty checking과 commit을 해도 aggregate invariant guard가 필요한 이유가 뭐야?
+- 한 command에서 aggregate root를 바꾸고 Unit of Work로 커밋하는 흐름을 설명해줘
+- Aggregate boundary와 transaction boundary를 구분할 때 Aggregate Root와 Unit of Work는 각각 어떤 역할이야?
+contextual_chunk_prefix: |
+  이 문서는 Aggregate Root vs Unit of Work chooser로, Aggregate Root는 domain
+  consistency boundary와 invariant 접근 규칙이고 Unit of Work는 transaction 안의
+  change tracking, dirty checking, flush/commit 메커니즘이라는 차이를 설명한다.
+---
 # Aggregate Root vs Unit of Work
 
 > 한 줄 요약: Aggregate Root는 도메인 일관성 경계를 지키고, Unit of Work는 그 경계 안의 변경을 하나의 트랜잭션으로 묶는다.

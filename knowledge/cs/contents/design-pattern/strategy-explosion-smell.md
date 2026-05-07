@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: 전략 폭발 냄새: 전략 패턴이 많아질수록 의심해야 하는 것
+title: '전략 폭발 냄새: 전략 패턴이 많아질수록 의심해야 하는 것'
 concept_id: design-pattern/strategy-explosion-smell
 canonical: false
 category: design-pattern

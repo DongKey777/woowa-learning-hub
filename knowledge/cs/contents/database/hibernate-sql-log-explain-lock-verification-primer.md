@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Hibernate SQL Log + EXPLAIN Lock Verification Primer
+concept_id: database/hibernate-sql-log-explain-lock-verification-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- hibernate-sql-log-explain-lock-verification
+- locking-repository-method-plan-check
+- for-update-index-path-verification
+aliases:
+- hibernate sql log explain primer
+- spring jpa lock verification explain
+- mysql explain for update beginner
+- hibernate sql log index path verification
+- locking repository method explain check
+- pessimistic lock index path drift
+- logged sql explain beginner
+- 하이버네이트 SQL 로그 EXPLAIN
+- 락킹 repository 메서드 검증
+- JPA 비관적 락 explain
+symptoms:
+- @Lock(PESSIMISTIC_WRITE)를 붙였다는 사실만 보고 실제 SQL과 index path 검증을 생략하고 있어
+- Hibernate 로그의 FOR UPDATE SQL이 intended unique key path를 타는지 EXPLAIN으로 확인해야 해
+- repository method refactor 후 WHERE shape, join, order by, function 때문에 lock footprint가 바뀌었는지 의심돼
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/spring-jpa-exact-key-lock-mapping
+- database/index-and-explain
+next_docs:
+- database/explain-checklist-exact-key-locking-reads
+- database/hibernate-lock-sql-log-to-deadlock-triage-bridge
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/range-locking-limits-jpa
+linked_paths:
+- contents/database/spring-jpa-exact-key-lock-mapping-guide.md
+- contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/index-and-explain.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/range-locking-limits-jpa.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+confusable_with:
+- database/spring-jpa-exact-key-lock-mapping
+- database/explain-checklist-exact-key-locking-reads
+- database/range-locking-limits-jpa
+forbidden_neighbors: []
+expected_queries:
+- Spring Data JPA @Lock repository 메서드가 실제로 어떤 FOR UPDATE SQL을 내는지 어떻게 검증해?
+- Hibernate SQL 로그를 MySQL EXPLAIN에 붙여 intended index path를 확인하는 순서를 알려줘
+- locking repository method가 full unique-key equality path를 유지하는지 key와 rows로 어떻게 봐?
+- PESSIMISTIC_WRITE를 붙였는데 query drift 때문에 lock footprint가 바뀌는 사례는 뭐야?
+- 코드, SQL 로그, EXPLAIN plan을 끊지 않고 검증해야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Spring/Hibernate locking repository 메서드의 의도를 실제 SQL 로그와 MySQL EXPLAIN index path로 검증하는 beginner playbook이다.
+  hibernate sql log explain, spring jpa lock verification, FOR UPDATE index path, pessimistic lock query drift 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Hibernate SQL Log + EXPLAIN Lock Verification Primer
 
 > 한 줄 요약: Spring/Hibernate의 locking repository 메서드를 믿기 전에, **실제로 찍힌 SQL**을 Hibernate 로그에서 확인하고 그 SQL을 MySQL `EXPLAIN`에 붙여 intended index path가 유지되는지 보는 beginner primer다.

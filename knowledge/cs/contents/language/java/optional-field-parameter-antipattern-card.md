@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Optional Field Parameter Antipattern Card
+concept_id: language/optional-field-parameter-antipattern-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional
+- api-design
+- dto
+aliases:
+- Optional field parameter antipattern card
+- Java Optional field anti pattern
+- Java Optional parameter anti pattern
+- return Optional not field parameter
+- Optional null double state
+- 자바 Optional 필드 파라미터 안티패턴
+symptoms:
+- Optional을 필드로 저장해 Optional 자체가 null인 상태와 Optional.empty가 동시에 생기는 double state를 만들어
+- Optional을 파라미터로 받아 호출자가 Optional.of, Optional.empty, null 중 무엇을 넘겨야 하는지 API 의미가 흐려져
+- 반환값의 absence 표시 도구를 DTO, entity, request field에 그대로 확장해 직렬화, 바인딩, PATCH 의미를 더 어렵게 만들어
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-optional-basics
+- language/optional-collections-domain-null-handling-bridge
+- software-engineering/dto-vo-entity-basics
+next_docs:
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+- language/optional-list-empty-collection-symptom-card
+- language/json-null-missing-unknown-field-schema-evolution
+linked_paths:
+- contents/language/java/optional-list-empty-collection-symptom-card.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-collections-domain-null-handling-bridge.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/software-engineering/dto-vo-entity-basics.md
+confusable_with:
+- language/optional-list-empty-collection-symptom-card
+- language/optional-vs-fieldpatch-patch-tri-state-bridge
+- language/json-null-missing-unknown-field-schema-evolution
+forbidden_neighbors: []
+expected_queries:
+- Optional은 왜 보통 반환값에 쓰고 필드나 파라미터에는 덜 권장되는지 설명해줘
+- Optional field를 쓰면 Optional.empty와 Optional 자체 null이 같이 생길 수 있다는 뜻이 뭐야?
+- Optional parameter 대신 오버로딩 clear 메서드 command object builder를 쓰는 기준은 뭐야?
+- DTO나 entity 필드에 Optional을 넣으면 직렬화와 바인딩에서 어떤 문제가 생길 수 있어?
+- Optional<List<T>>와 Optional field antipattern을 같이 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Optional을 return type으로 쓰는 경우와 field/parameter에 두는 anti-pattern을 API design 관점에서 구분하는 beginner chooser다.
+  Optional field, Optional parameter, return Optional, double state, DTO binding 질문이 본 문서에 매핑된다.
+---
 # `Optional` 필드/파라미터 anti-pattern 30초 카드
 
 > 한 줄 요약: `Optional`은 보통 "반환값에서 없음 여부를 드러내는 상자"로 가장 잘 맞고, 필드나 파라미터에 넣기 시작하면 상태가 두 겹으로 늘고 API 읽기가 더 어려워진다.

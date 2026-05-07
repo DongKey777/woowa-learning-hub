@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Map 구현체별 반복 순서 치트시트
+concept_id: language/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-implementation
+- iteration-order
+- linkedhashmap-access-order
+aliases:
+- HashMap LinkedHashMap TreeMap iteration order
+- Java Map order cheat sheet
+- HashMap iteration order not guaranteed
+- LinkedHashMap insertion order access order
+- TreeMap sorted order
+- 자바 Map 구현체별 순서
+symptoms:
+- HashMap 출력 순서가 우연히 일정해 보인 것을 iteration order contract로 믿어
+- LinkedHashMap access-order=true에서 get만 해도 순서가 바뀌고 eviction 대상이 달라지는 이유를 놓쳐
+- 삽입/접근 순서가 필요한 요구와 floorKey/subMap 같은 정렬 기반 이웃·범위 조회 요구를 구분하지 못해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+next_docs:
+- language/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge
+- language/linkedhashmap-access-order-cache-behavior-bridge
+- language/navigablemap-navigableset-mental-model
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/map-implementation-selection-mini-drill.md
+- contents/language/java/linkedhashmap-access-order-cache-behavior-bridge.md
+- contents/language/java/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+confusable_with:
+- language/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge
+- language/linkedhashmap-access-order-cache-behavior-bridge
+- language/hashmap-vs-treemap-beginner-selection-bridge
+forbidden_neighbors: []
+expected_queries:
+- HashMap LinkedHashMap TreeMap 반복 순서 차이를 초보자용 치트시트로 알려줘
+- HashMap은 지금 순서가 맞아 보여도 iteration order를 믿으면 안 되는 이유가 뭐야?
+- LinkedHashMap 기본 삽입 순서와 access-order=true 접근 순서 차이를 설명해줘
+- TreeMap은 key 정렬 순서와 floorKey subMap 같은 range lookup을 제공한다는 뜻이야?
+- 처음 넣은 순서를 유지해야 할 때 LinkedHashMap과 TreeMap 중 무엇을 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 HashMap, LinkedHashMap, TreeMap iteration order를 no-order, insertion/access order, sorted key order와 floorKey/subMap capabilities로 비교하는 beginner cheat sheet다.
+  HashMap order, LinkedHashMap insertion order, access-order, TreeMap sorted order, Map implementation choice 질문이 본 문서에 매핑된다.
+---
 # Map 구현체별 반복 순서 치트시트
 
 > 한 줄 요약: `HashMap`은 반복 순서를 믿으면 안 되고, `LinkedHashMap`은 기본이 삽입 순서지만 `access-order=true`면 조회만 해도 최근 접근 순서로 바뀌며, `TreeMap`은 key 정렬 순서와 `floorKey`/`subMap` 같은 이웃·범위 조회를 함께 제공한다.

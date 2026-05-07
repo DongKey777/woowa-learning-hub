@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Vendor Edge 421 Field Map
+concept_id: network/vendor-edge-421-field-map
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- envoy-vs-nginx-421-clues
+- local-reply-vs-upstream-status
+- vendor-field-name-translation
+aliases:
+- vendor edge 421 field map
+- nginx 421 log
+- envoy 421 log
+- local reply 421
+- 421 upstream status dash
+- authority sni mismatch 421
+- managed edge 421 origin status empty
+symptoms:
+- 예시 문서에서는 `misdirected_request`라고 하는데 우리 로그에는 다른 필드명만 보여 vendor별 번역표가 필요하다
+- Nginx, Envoy, managed edge가 모두 `421`를 남기는데 upstream 비었음을 어디서 읽어야 하는지 헷갈린다
+- "`421`가 edge local reply인지 origin-generated인지 vendor 로그 필드 이름 차이 때문에 판단이 안 된다"
+intents:
+- comparison
+prerequisites:
+- network/http3-421-observability-primer
+- network/http-421-troubleshooting-trace-examples
+next_docs:
+- network/wildcard-cert-coalescing-421-trace-mini-lab
+- network/browser-421-but-curl-200-symptom-router
+linked_paths:
+- contents/network/http3-421-observability-primer.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/421-trace-mini-lab-wildcard-cert-coalescing.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+confusable_with:
+- network/http3-421-observability-primer
+- network/http-421-troubleshooting-trace-examples
+- network/wildcard-cert-coalescing-421-trace-mini-lab
+forbidden_neighbors:
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+expected_queries:
+- Nginx, Envoy, managed edge에서 421 local reply 단서를 어떤 필드로 찾아?
+- upstream_status가 비어 있는 421 로그를 vendor별로 어떻게 번역해 읽어야 해?
+- response_code_details 없이도 wrong connection 421를 판독하는 법을 알려줘
+- authority와 SNI가 어긋난 421를 로그 필드 이름 차이까지 포함해서 설명해줘
+- edge-generated 421와 origin-generated 421를 vendor 로그에서 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 정규화된 `421` 예시를 Nginx, Envoy, managed edge 로그
+  필드 이름으로 번역해 읽도록 돕는 network bridge다. local reply, empty
+  upstream, authority-SNI mismatch, vendor별 필드명 차이 같은 자연어 표현이
+  wrong connection 증거와 origin-generated 구분 포인트에 직접 매핑되도록
+  설계했다.
+---
 # Vendor Edge 421 Field Map
 
 

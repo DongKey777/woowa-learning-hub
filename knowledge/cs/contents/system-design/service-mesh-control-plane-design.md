@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Service Mesh Control Plane 설계
+concept_id: system-design/service-mesh-control-plane-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- service mesh control plane
+- xds
+- sidecar proxy
+- traffic policy
+aliases:
+- service mesh control plane
+- xds
+- sidecar proxy
+- traffic policy
+- mTLS rollout
+- retry timeout policy
+- telemetry config
+- service identity
+- canary routing
+- mesh policy distribution
+- control plane data plane separation
+- protocol version skew
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md
+- contents/system-design/edge-authorization-service-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/config-rollback-safety-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Service Mesh Control Plane 설계 설계 핵심을 설명해줘
+- service mesh control plane가 왜 필요한지 알려줘
+- Service Mesh Control Plane 설계 실무 트레이드오프는 뭐야?
+- service mesh control plane 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Service Mesh Control Plane 설계를 다루는 deep_dive 문서다. service mesh control plane은 서비스 간 통신 정책, mTLS, traffic shaping, retry/timeout, telemetry 구성을 중앙에서 배포해 sidecar나 node proxy가 일관된 네트워크 동작을 수행하게 만드는 운영 제어 시스템이다. 검색 질의가 service mesh control plane, xds, sidecar proxy, traffic policy처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Service Mesh Control Plane 설계
 
 > 한 줄 요약: service mesh control plane은 서비스 간 통신 정책, mTLS, traffic shaping, retry/timeout, telemetry 구성을 중앙에서 배포해 sidecar나 node proxy가 일관된 네트워크 동작을 수행하게 만드는 운영 제어 시스템이다.

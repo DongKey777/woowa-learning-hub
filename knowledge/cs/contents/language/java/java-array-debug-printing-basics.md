@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Java Array Debug Printing Basics
+concept_id: language/java-array-debug-printing-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- array-debugging
+- tostring
+- beginner-routing
+aliases:
+- Java Array Debug Printing Basics
+- 배열 출력 왜 이상해요
+- java array print weird output
+- Arrays.toString deepToString when to use
+- 배열 [I@ 출력 의미
+- 2차원 배열 출력 [[Ljava
+symptoms:
+- System.out.println(array)나 문자열 더하기로 배열을 찍고 [I@ 또는 [Ljava 같은 문자열을 배열 내용으로 오해해
+- 2차원 배열에 Arrays.toString만 써서 안쪽 row가 여전히 reference-like 문자열로 보이는 이유를 찾지 못해
+- 출력 문제를 해결하기 전에 equality나 copy 문제로 넘어가 원인 분기가 섞여
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/java-array-common-confusion-checklist
+- language/java-arrays-method-choice-30-second-card
+- language/java-language-basics
+next_docs:
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+linked_paths:
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-arrays-method-choice-30-second-card.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-2d-array-deeptostring-deepequals-shallow-copy-bridge.md
+- contents/language/java/java-language-basics.md
+confusable_with:
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java 배열을 출력하면 [I@ 같은 값이 나오는 이유가 뭐야?
+- 1차원 배열은 Arrays.toString이고 2차원 배열은 deepToString을 쓰는 이유를 설명해줘
+- 문자열과 배열을 바로 더하면 왜 배열 내용이 안 보이는지 알려줘
+- 배열 출력 문제와 값 비교 false 문제를 어떻게 먼저 구분해?
+- char 배열 출력만 예외처럼 보이는 이유와 일반 배열 규칙을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java array debug printing에서 [I@, [Ljava, Arrays.toString, Arrays.deepToString 증상을 라우팅하는 beginner symptom router다.
+  배열 출력 이상, System.out.println(array), Arrays.toString, deepToString, 2차원 배열 출력 질문이 본 문서에 매핑된다.
+---
 # Java Array Debug Printing Basics
 
 > 한 줄 요약: 배열을 그대로 출력하면 내용이 아니라 reference-like 문자열이 보이기 쉽고, 1차원 배열은 `Arrays.toString()`, 중첩 배열은 `Arrays.deepToString()`으로 봐야 실제 값을 확인할 수 있다.

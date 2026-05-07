@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: eBPF perf strace and Production Tracing
+concept_id: operating-system/ebpf-perf-strace-production-tracing
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+review_feedback_tags:
+- ebpf-perf-strace
+- production-tracing
+- where-is-it
+- waiting
+aliases:
+- eBPF perf strace production tracing
+- where is it waiting
+- runtime debugging tools
+- syscall tracing
+- runqlat off CPU
+- production observability OS
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/context-switching-deadlock-lockfree.md
+- contents/operating-system/epoll-kqueue-io-uring.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/schedstat-proc-sched-runtime-debugging.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+symptoms:
+- 애플리케이션이 느린데 CPU, IO, lock, scheduler wait 중 어디서 기다리는지 모른다.
+- strace로 syscall은 보이지만 production overhead와 sampling 한계가 걱정된다.
+- perf/eBPF로 off-CPU wait, wakeup latency, syscall latency를 구분해야 한다.
+expected_queries:
+- eBPF perf strace를 production tracing에서 어떤 순서로 써야 해?
+- 느린 장애에서 무엇이 느린가보다 어디서 기다리는가를 먼저 잡는다는 게 무슨 뜻이야?
+- syscall tracing, runqlat, off-CPU profiling을 어떻게 연결해?
+- strace와 perf, eBPF의 장단점을 OS runtime debugging 관점에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 느린 장애를 무엇이 느린가보다 어디에서 기다리는가로 먼저 좁히는 OS production
+  tracing playbook이다. strace, perf, eBPF, runqlat, schedstat, syscall/user-kernel boundary를
+  연결한다.
+---
 # eBPF, perf, strace, and Production Tracing
 
 > 한 줄 요약: 느린 장애를 풀려면 "무엇이 느린가"가 아니라 "어디에서 기다리는가"를 먼저 잡아야 한다.

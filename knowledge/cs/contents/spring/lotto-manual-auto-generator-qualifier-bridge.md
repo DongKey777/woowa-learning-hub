@@ -68,6 +68,14 @@ contextual_chunk_prefix: |
 
 > lotto에서 `NumberGenerator` 구현체가 여러 개라면, "기본으로 꽂을 하나"와 "특정 자리에서만 다른 구현을 쓸 하나"를 Bean wiring에서 먼저 정하고 서비스 내부 분기로 미루지 않는 편이 낫다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`NumberGenerator` Bean이 두 개라 Spring이 뭘 넣을지 모르겠대요" | 자동 생성기, 수동 생성기, 테스트용 고정 생성기가 같은 타입 후보로 등록된 상태 | 기본 후보와 특정 주입 지점 선택을 `@Primary`/`@Qualifier`로 나눈다 |
+| "서비스 내부 if문으로 manual/auto를 고르면 안 되나요?" | 구매 흐름 조립과 생성기 구현 선택이 `LottoService`에 함께 들어간 코드 | 요청마다 바뀌는 정책인지, 애플리케이션 wiring에서 고정되는 선택인지 먼저 가른다 |
+| "테스트 더블 때문에 운영 Bean 선택까지 흔들려요" | 테스트용 생성기가 운영 context와 같은 타입으로 섞여 주입 충돌이 나는 상황 | 테스트 configuration과 운영 Bean 후보 경계를 분리한다 |
+
 ## 미션 시나리오
 
 lotto를 Spring으로 옮기면 처음엔 `RandomNumberGenerator` 하나만 있어서 생성자 주입이 자연스럽다. 그런데 수동 입력을 별도 생성 경로로 다루거나, 테스트에서 `FixedNumberGenerator`를 추가하면 `NumberGenerator` 타입 후보가 둘 이상이 된다. 이때 학습자는 보통 "서비스 안에서 `if (manual)`로 고르면 되지 않나?" 혹은 "`@Primary` 하나 붙이면 다 끝나나?"에서 막힌다.

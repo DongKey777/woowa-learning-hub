@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: memory.high vs memory.max Cgroup Behavior
+concept_id: operating-system/memory-high-vs-memory-max-cgroup-behavior
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- memory-high-vs
+- memory-max-cgroup
+- behavior
+- memory-max
+aliases:
+- memory.high vs memory.max
+- cgroup memory high max
+- memory throttle vs hard limit
+- memory pressure cgroup
+- reclaim before OOM
+- cgroup memory events
+intents:
+- comparison
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/oom-killer-scoring-victim-selection.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/memory-reclaim-cgroup-v2-proactive-reclaim.md
+confusable_with:
+- operating-system/oom-killer-cgroup-memory-pressure
+- operating-system/memory-reclaim-cgroup-v2-proactive-reclaim
+- operating-system/cgroup-swap-controller-basics
+expected_queries:
+- memory.high와 memory.max는 cgroup에서 어떤 성격이 달라?
+- memory.high는 압박을 먼저 주는 완충선이고 memory.max는 hard limit이라는 뜻은?
+- cgroup memory pressure에서 reclaim, PSI, OOM killer를 어떻게 같이 봐?
+- memory.high를 설정하면 latency와 OOM 위험이 어떻게 달라져?
+contextual_chunk_prefix: |
+  이 문서는 memory.high를 reclaim pressure와 throttling을 먼저 주는 soft boundary로,
+  memory.max를 넘으면 OOM/hard limit으로 이어지는 hard boundary로 비교한다.
+  PSI, memory.events, reclaim, OOM killer와 연결한다.
+---
 # memory.high vs memory.max, Cgroup Behavior
 
 > 한 줄 요약: `memory.high`는 압박을 먼저 주는 완충선이고, `memory.max`는 그 선을 넘었을 때의 하드 리밋이라 둘의 성격이 완전히 다르다.

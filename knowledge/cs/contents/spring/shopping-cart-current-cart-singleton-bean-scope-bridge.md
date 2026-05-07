@@ -68,6 +68,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart에서 `currentCart`나 `selectedCoupon` 같은 현재 상태를 controller나 service 필드에 붙여 두면, Spring의 singleton Bean 수명과 회원별 장바구니 수명이 충돌해서 요청 간 상태 오염이 생기기 쉽다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "service 필드에 `currentCart`를 뒀더니 다른 요청의 장바구니가 섞여요" | 회원별 장바구니 상태를 singleton Bean에 보관한 구조 | Bean 수명과 회원별 cart 수명을 분리한다 |
+| "장바구니를 메모리에 들고 있었는데 새로고침이나 다른 탭에서 상태가 이상해요" | 여러 요청/탭/사용자 사이 상태 오염 | 상태 원천을 DB, session, 명시 저장소 중 어디에 둘지 정한다 |
+| "singleton Bean에 회원별 cart를 저장해도 되는지 모르겠어요" | Spring service를 상태 저장소처럼 쓰는 구현 | service는 상태를 오래 들기보다 `cartId` 기반 조회/갱신을 조립한다 |
+
 ## 미션 시나리오
 
 shopping-cart를 웹으로 옮기면 학습자는 자주 "현재 사용자의 장바구니"를 한 객체로

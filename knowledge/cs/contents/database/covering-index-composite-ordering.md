@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 커버링 인덱스와 복합 인덱스 컬럼 순서
+concept_id: database/covering-index-composite-ordering
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- composite-index-column-order
+- covering-index-order-by-limit
+- using-filesort-after-index
+aliases:
+- covering index composite ordering
+- composite index column order
+- leftmost prefix rule
+- left prefix rule
+- where order by limit index
+- using filesort with composite index
+- 복합 인덱스 컬럼 순서
+- 커버링 인덱스 컬럼 순서
+- 왼쪽 접두어 규칙
+symptoms:
+- 복합 인덱스를 만들었는데 ORDER BY LIMIT 쿼리에 Using filesort가 계속 남아 있어
+- WHERE 조건과 ORDER BY가 같이 있을 때 인덱스 컬럼 순서를 어떻게 정할지 모르겠어
+- 커버링 인덱스를 만들면 무조건 좋은지, SELECT 컬럼을 어디까지 넣어야 하는지 헷갈려
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/index-and-explain
+- database/index-basics
+next_docs:
+- database/covering-index-vs-index-only-scan
+- database/covering-index-width-fanout-write-amplification
+- database/pagination-offset-vs-seek
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/index-basics.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+- contents/database/pagination-offset-vs-seek.md
+- contents/database/query-tuning-checklist.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+confusable_with:
+- database/index-and-explain
+- database/covering-index-vs-index-only-scan
+- database/covering-index-width-fanout-write-amplification
+forbidden_neighbors: []
+expected_queries:
+- WHERE와 ORDER BY LIMIT이 같이 있는 쿼리는 복합 인덱스 컬럼 순서를 어떻게 잡아야 해?
+- 복합 인덱스가 있는데도 Using filesort가 남으면 어떤 축을 먼저 봐야 해?
+- 커버링 인덱스와 왼쪽 접두어 규칙을 같이 설명해줘
+- SELECT 컬럼까지 인덱스에 넣으면 언제 read 성능이 좋아지고 언제 비용이 커져?
+- 최근 주문 목록 조회에 member_id, status, created_at 인덱스 순서를 어떻게 선택해?
+contextual_chunk_prefix: |
+  이 문서는 WHERE, ORDER BY, LIMIT 쿼리에 맞춰 복합 인덱스 컬럼 순서와 커버링 인덱스 범위를 설계하는 advanced deep dive다.
+  leftmost prefix, covering index, using filesort, order by limit slow, composite index column order 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 커버링 인덱스와 복합 인덱스 컬럼 순서
 
 **난이도: 🔴 Advanced**

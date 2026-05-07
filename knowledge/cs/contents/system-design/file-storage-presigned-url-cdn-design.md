@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: File Storage Presigned URL + CDN 설계
+concept_id: system-design/file-storage-presigned-url-cdn-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- file storage presigned url cdn design
+- presigned url 뭐예요
+- cdn 파일 업로드 설계
+- 처음 배우는데 파일 저장 큰 그림
+aliases:
+- file storage presigned url cdn design
+- presigned url 뭐예요
+- cdn 파일 업로드 설계
+- 처음 배우는데 파일 저장 큰 그림
+- object storage direct upload
+- signed url upload flow
+- cdn download architecture
+- private bucket public bucket
+- file upload scalability
+- multipart resumable upload
+- presigned url security
+- 파일 업로드 서버 안 거치는 이유
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/cdn-basics.md
+- contents/system-design/object-metadata-service-design.md
+- contents/network/http-state-session-cache.md
+- contents/network/cache-control-practical.md
+- contents/security/https-hsts-mitm.md
+- contents/security/signed-url-presigned-upload-threat-model.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-multipart-upload-request-pipeline.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- File Storage Presigned URL + CDN 설계 설계 핵심을 설명해줘
+- file storage presigned url cdn design가 왜 필요한지 알려줘
+- File Storage Presigned URL + CDN 설계 실무 트레이드오프는 뭐야?
+- file storage presigned url cdn design 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 File Storage Presigned URL + CDN 설계를 다루는 deep_dive 문서다. 대용량 파일 업로드/다운로드는 애플리케이션을 통하지 않고 object storage와 CDN으로 직접 흘려보내는 구조가 확장성과 비용 면에서 유리하다. 검색 질의가 file storage presigned url cdn design, presigned url 뭐예요, cdn 파일 업로드 설계, 처음 배우는데 파일 저장 큰 그림처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # File Storage Presigned URL + CDN 설계
 
 > 한 줄 요약: 대용량 파일 업로드/다운로드는 애플리케이션을 통하지 않고 object storage와 CDN으로 직접 흘려보내는 구조가 확장성과 비용 면에서 유리하다.

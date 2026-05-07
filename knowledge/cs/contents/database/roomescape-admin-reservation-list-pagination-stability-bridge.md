@@ -35,7 +35,7 @@ prerequisites:
 next_docs:
 - database/pagination-duplicates-missing-symptom-router
 - database/covering-index-composite-ordering
-- software-engineering/pageable-service-contract-vs-query-model-pagination-bridge
+- software-engineering/pageable-query-model-pagination
 linked_paths:
 - contents/database/pagination-offset-vs-seek.md
 - contents/database/pagination-duplicates-missing-symptom-router.md
@@ -63,7 +63,6 @@ contextual_chunk_prefix: |
   밀림, 느린 쿼리보다 정렬 규약이 문제임 같은 자연어 paraphrase가 stable order와
   window drift 개념에 매핑된다.
 ---
-
 # roomescape 관리자 예약 목록 페이지네이션 ↔ 안정 정렬과 window drift 브릿지
 
 ## 한 줄 요약
@@ -71,6 +70,14 @@ contextual_chunk_prefix: |
 roomescape 관리자 예약 목록에서 pagination 문제는 "쿼리가 느리다"보다 "목록을 어떤 순서의 진실로 자를 것인가"에 가깝다. 그래서 리뷰에서 `created_at`만 정렬하지 말고 `id`까지 묶으라거나, `OFFSET`이 흔들릴 수 있다고 말하는 것은 모두 stable order를 먼저 고정하라는 뜻이다.
 
 다만 "방금 만든 예약이 첫 조회에만 잠깐 안 보인다"면 stable order보다 [roomescape 예약 생성 직후 재조회 ↔ Read-After-Write 브릿지](./roomescape-reservation-create-read-after-write-bridge.md) 쪽이 더 직접적인 원인일 수 있다. 이 문서는 같은 데이터셋을 자를 때 경계가 흔들리는 문제를 다룬다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "관리자 예약 목록 1페이지 끝이 2페이지에도 또 나와요" | `LIMIT/OFFSET`으로 자르는 사이 새 예약이 들어오는 목록 API | offset window가 현재 시점 기준으로 다시 잘린다는 점을 이해한다 |
+| "`created_at`으로 정렬했는데 새로고침마다 순서가 달라요" | 같은 생성 시각 row가 여러 개 있고 tie-breaker가 없는 쿼리 | `created_at, id`처럼 안정 정렬을 완성해야 한다 |
+| "N+1만 해결했는데도 목록 리뷰가 계속 달려요" | fetch plan은 개선됐지만 pagination 정렬 계약이 불명확한 관리자 화면 | 성능 문제와 페이지 절단 correctness를 별도 축으로 본다 |
 
 ## 미션 시나리오
 

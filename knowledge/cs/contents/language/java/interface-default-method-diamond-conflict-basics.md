@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Interface Default Method Diamond Conflict Basics
+concept_id: language/interface-default-method-diamond-conflict-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/racingcar
+review_feedback_tags:
+- default-method
+- inheritance-conflict
+- override-overload
+aliases:
+- Java default method diamond conflict
+- 인터페이스 default method 충돌
+- implements two interfaces same default method
+- InterfaceName.super default method call
+- default method override overload 구분
+- 같은 default method 두 개 컴파일 에러
+symptoms:
+- 인터페이스 두 개를 implements했더니 같은 default method 때문에 컴파일 에러가 나는데 어느 쪽이 선택되는지 몰라
+- method 이름이 같으면 무조건 충돌이라고 생각해 overload와 같은 signature 충돌을 구분하지 못해
+- InterfaceName.super.method 호출을 클래스 override 안이 아니라 아무 곳에서나 쓸 수 있다고 오해해
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- language/interface-default-method-contract-evolution-primer
+- language/java-overloading-vs-overriding-beginner-primer
+- language/java-abstract-class-vs-interface-basics
+next_docs:
+- language/default-method-contract-evolution-vs-conflict-mini-drill
+- language/interface-default-vs-static-method-primer
+- language/java-binary-compatibility-linkage-errors
+linked_paths:
+- contents/language/java/java-overloading-vs-overriding-beginner-primer.md
+- contents/language/java/interface-default-method-contract-evolution-primer.md
+- contents/language/java/default-method-contract-evolution-vs-conflict-mini-drill.md
+- contents/language/java/interface-default-vs-static-method-primer.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+confusable_with:
+- language/interface-default-method-contract-evolution-primer
+- language/java-overloading-vs-overriding-beginner-primer
+- language/default-method-contract-evolution-vs-conflict-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- Java에서 인터페이스 두 개가 같은 default method를 가지면 왜 컴파일 에러가 나?
+- default method diamond conflict를 override로 해결하는 방법을 예제로 보여줘
+- InterfaceName.super.method는 언제 어디서 사용할 수 있어?
+- default method 충돌과 overloading은 signature 기준으로 어떻게 구분해?
+- 클래스 메서드와 인터페이스 default method가 같이 있으면 어떤 규칙이 우선이야?
+contextual_chunk_prefix: |
+  이 문서는 Java default method diamond conflict를 class wins, more specific interface wins, tie requires override 규칙으로 안내하는 beginner symptom router다.
+  같은 default method 두 개, implements 충돌, InterfaceName.super, override vs overload, signature conflict 질문이 본 문서에 매핑된다.
+---
 # Java `default method` diamond conflict 기초
 
 > 한 줄 요약: 처음 배우는데 다중 인터페이스에서 같은 `default method`가 부딪히면, Java는 "자동으로 아무거나 고르지 않고" 구현 클래스가 직접 정하라고 요구한다. 큰 그림은 `클래스 메서드 우선 -> 더 구체적인 인터페이스 우선 -> 그래도 동률이면 내가 override` 순서로 잡으면 된다.

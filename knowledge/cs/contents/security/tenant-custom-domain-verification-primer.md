@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Tenant Custom Domain Verification Primer
+concept_id: security/tenant-custom-domain-verification-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- tenant custom domain verification
+- custom domain auth email
+- tenant redirect domain safety
+- verified custom domain mapping
+aliases:
+- tenant custom domain verification
+- custom domain auth email
+- tenant redirect domain safety
+- verified custom domain mapping
+- domain ownership proof
+- tenant domain txt verification
+- tenant domain cname verification
+- multi-tenant custom domain beginner
+- auth email custom domain selection
+- magic link tenant domain
+- password reset tenant domain
+- redirect domain allowlist
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/password-reset-magic-link-public-origin-guide.md
+- contents/security/absolute-redirect-url-behind-load-balancer-guide.md
+- contents/security/open-redirect-hardening.md
+- contents/security/subdomain-login-callback-boundaries.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant Custom Domain Verification Primer 핵심 개념을 설명해줘
+- tenant custom domain verification가 왜 필요한지 알려줘
+- Tenant Custom Domain Verification Primer 실무 설계 포인트는 뭐야?
+- tenant custom domain verification에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Tenant Custom Domain Verification Primer를 다루는 primer 문서다. tenant custom domain은 "고객이 입력한 문자열"이 아니라, DNS/HTTP proof로 소유를 검증한 뒤 별도 상태로 저장하고, auth email과 redirect에서는 그 검증된 매핑만 조회해서 써야 안전하다. 검색 질의가 tenant custom domain verification, custom domain auth email, tenant redirect domain safety, verified custom domain mapping처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Tenant Custom Domain Verification Primer
 
 > 한 줄 요약: tenant custom domain은 "고객이 입력한 문자열"이 아니라, DNS/HTTP proof로 소유를 검증한 뒤 별도 상태로 저장하고, auth email과 redirect에서는 그 검증된 매핑만 조회해서 써야 안전하다.

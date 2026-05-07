@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Servlet Async Timeout Downstream Deadline Propagation
+concept_id: language/servlet-async-timeout-downstream-deadline-propagation
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- servlet-async
+- timeout
+- deadline
+aliases:
+- Servlet Async Timeout to Downstream HTTP and JDBC Deadline Propagation
+- servlet async timeout downstream deadline propagation
+- request scoped deadline budget
+- async timeout to HTTP JDBC cancel
+- Statement.cancel deadline propagation
+- Spring MVC async timeout downstream cancellation
+symptoms:
+- servlet async timeout을 마지막 503/504 장치로만 두고 outbound HTTP timeout이나 JDBC statement timeout을 parent deadline에서 좁혀 전달하지 않아
+- async timeout 후에도 sendAsync retry chain, worker Future, JDBC query가 계속 살아 있어 late completion과 orphan work가 생겨
+- relative timeout 숫자를 레이어마다 고정해 request가 이미 시간을 쓴 뒤 시작한 child call이 parent보다 긴 deadline을 갖게 만들어
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/servlet-asynclistener-cleanup-patterns
+- language/structured-fanout-httpclient
+next_docs:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/completablefuture-cancellation-semantics
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+linked_paths:
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/language/java/servlet-asynclistener-cleanup-patterns.md
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+confusable_with:
+- language/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads
+- language/servlet-asynclistener-cleanup-patterns
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+forbidden_neighbors: []
+expected_queries:
+- servlet async timeout을 request-scoped parent deadline으로 보고 HTTP와 JDBC timeout에 어떻게 전파해야 해?
+- async timeout 후 Future.cancel true, HTTP retry stop, Statement.cancel을 같은 coordinator가 묶어야 하는 이유가 뭐야?
+- absolute deadline 하나에서 remaining budget을 계산하는 방식이 relative timeout 숫자보다 안전한 이유를 설명해줘
+- parent request timeout 뒤에 child HTTP retry나 JDBC query가 계속 돌면 어떤 cancellation ownership 누수가 생겨?
+- Spring MVC async WebAsyncTask DeferredResult timeout과 downstream cancel wiring을 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 Servlet async timeout을 request-scoped parent deadline으로 보고 outbound HTTP, retry, JDBC Statement timeout/cancel에 remaining budget을 전파하는 advanced playbook이다.
+  servlet async timeout, deadline propagation, HTTP timeout, JDBC Statement.cancel, cancellation ownership 질문이 본 문서에 매핑된다.
+---
 # Servlet Async Timeout to Downstream HTTP and JDBC Deadline Propagation
 
 > 한 줄 요약: servlet async timeout은 "늦은 응답을 503/504로 끝내는 마지막 장치"가 아니라 request-scoped parent deadline이다. 이 parent deadline을 outbound HTTP와 JDBC statement timeout으로 계속 좁혀 전달하고, timeout 순간에는 `Future.cancel(true)`, HTTP retry 중단, `Statement.cancel()`을 함께 묶어야 cancellation ownership이 계층마다 어긋나지 않는다.

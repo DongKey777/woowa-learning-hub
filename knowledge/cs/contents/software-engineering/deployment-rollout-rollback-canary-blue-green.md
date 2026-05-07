@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Deployment Rollout, Rollback, Canary, Blue-Green
+concept_id: software-engineering/deployment-rollout-strategy
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- deployment
+- rollback
+- canary
+- blue-green
+aliases:
+- Deployment Rollout Rollback Canary Blue-Green
+- canary vs blue green vs rolling deployment
+- deployment rollback basics
+- progressive delivery intro
+- 배포 전략 롤백 카나리 블루그린
+- release vs deploy rollout
+symptoms: []
+intents:
+- comparison
+- definition
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/feature-flag-dependency-management
+- system-design/deploy-rollback-safety-compatibility-envelope-design
+next_docs:
+- system-design/deploy-rollback-safety-compatibility-envelope-design
+- software-engineering/data-migration-cutover
+- software-engineering/kill-switch-fast-fail
+linked_paths:
+- contents/software-engineering/data-migration-rehearsal-reconciliation-cutover.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/dependency-update-blast-radius-management.md
+confusable_with:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/data-migration-cutover
+- system-design/deploy-rollback-safety-compatibility-envelope-design
+forbidden_neighbors: []
+expected_queries:
+- canary, blue-green, rolling deployment를 언제 선택해야 하는지 비교해줘
+- 배포와 릴리스가 다른 이유와 feature flag로 둘을 분리하는 방법을 알려줘
+- 롤백이 코드 롤백만으로 끝나지 않는 이유를 데이터와 설정 관점에서 설명해줘
+- 카나리 배포에서 p95, 5xx, conversion 같은 지표를 어떻게 보고 확대 여부를 판단해?
+- DB schema change가 있을 때 blue-green이나 rolling rollback이 왜 어려워져?
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Deployment Rollout, Rollback, Canary, Blue-Green를 다루는 chooser 문서다. Deployment Rollout Rollback Canary Blue-Green, canary vs blue green vs rolling deployment, deployment rollback basics, progressive delivery intro, 배포 전략 롤백 카나리 블루그린 같은 lexical 표현과 canary, blue-green, rolling deployment를 언제 선택해야 하는지 비교해줘, 배포와 릴리스가 다른 이유와 feature flag로 둘을 분리하는 방법을 알려줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Deployment Rollout, Rollback, Canary, Blue-Green
 
 

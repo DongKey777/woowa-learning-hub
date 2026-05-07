@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh
+concept_id: network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+canonical: false
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- adaptive-concurrency
+- gateway-mesh-overload
+- latency-signal-limiter
+aliases:
+- adaptive concurrency
+- concurrency limiter
+- latency signal
+- gateway overload control
+- service mesh limiter
+- inflight limit
+- sidecar local reply
+symptoms:
+- static max inflight만으로 overload를 막으려 해 service time 변화와 queue pressure에 늦게 반응한다
+- total latency나 global average만 신호로 써 route mix, long-lived stream, unary traffic 차이를 limiter가 섞어 본다
+- mesh/gateway local reply를 app 장애로 오해하고 limiter reason tagging과 attribution metric을 남기지 않는다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/upstream-queueing-connection-pool-wait-tail-latency
+next_docs:
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/request-timing-decomposition
+linked_paths:
+- contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/mesh-adaptive-concurrency-local-reply-metrics-tuning.md
+confusable_with:
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/upstream-queueing-connection-pool-wait-tail-latency
+- network/service-mesh-sidecar-proxy
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors: []
+expected_queries:
+- adaptive concurrency limiter는 latency와 queue pressure를 보고 inflight limit을 어떻게 조절해?
+- static concurrency limit을 높이면 p99가 무너지고 낮추면 처리량이 아쉬운 상황을 어떻게 다뤄?
+- gateway나 service mesh에서 adaptive limiter가 local 503을 만들 때 app 장애와 어떻게 구분해?
+- long-lived streaming traffic과 latency-sensitive unary route를 같은 limiter로 묶으면 왜 위험해?
+- limiter reason tagging과 route별 metrics가 adaptive concurrency 운영에 필요한 이유는?
+contextual_chunk_prefix: |
+  이 문서는 gateway/mesh adaptive concurrency limiter를 latency signal, queue pressure,
+  inflight limit, local reply attribution 관점으로 설명하는 playbook이다. static limit,
+  route/class-aware limiter, long-lived traffic 분리를 다룬다.
+---
 # Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh
 
 > 한 줄 요약: adaptive concurrency는 고정 상한 대신 현재 latency와 queue 압력을 보고 허용 동시성을 조절하는 방식이라서, overload를 늦게 드러내는 정적 큐보다 healthy latency를 더 잘 지킬 수 있다.

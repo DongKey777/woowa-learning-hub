@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Signed Cookies Server Sessions JWT Tradeoffs
+concept_id: security/signed-cookies-server-sessions-jwt-tradeoffs
+canonical: true
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- signed-cookie-session-jwt-tradeoff
+- revocation-csrf-scalability-boundary
+- browser-auth-state-location
+aliases:
+- signed cookies server sessions jwt tradeoffs
+- signed cookie vs server session vs jwt
+- signed cookie server session jwt 비교
+- server session revocation
+- jwt revocation 어렵다
+- stateless auth tradeoff
+- cookie auth csrf
+- session store scaling
+- browser auth state location
+- server session vs jwt scale
+symptoms:
+- signed cookie, server session, JWT가 모두 로그인 상태처럼 보여서 상태가 어디에 있는지 헷갈려
+- JWT는 stateless라 좋은데 logout 즉시 반영과 revocation이 왜 어려운지 모르겠어
+- cookie 기반 인증을 쓰면 CSRF와 확장성, session store를 함께 봐야 하는 이유가 궁금해
+intents:
+- comparison
+- design
+prerequisites:
+- network/cookie-session-jwt-browser-flow-primer
+- security/session-cookie-jwt-basics
+next_docs:
+- security/browser-storage-threat-model-for-tokens
+- security/session-revocation-at-scale
+- security/csrf-in-spa-bff-architecture
+- spring/securitycontextrepository-sessioncreationpolicy-boundaries
+linked_paths:
+- contents/network/http-state-session-cache.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/jwt-deep-dive.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/session-revocation-at-scale.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+confusable_with:
+- network/cookie-session-jwt-browser-flow-primer
+- security/session-cookie-jwt-basics
+- security/browser-storage-threat-model-for-tokens
+- system-design/browser-bff-session-boundary-primer
+forbidden_neighbors: []
+expected_queries:
+- signed cookie, server session, JWT를 상태 위치와 revocation 기준으로 비교해줘
+- server session은 왜 logout과 강제 만료가 JWT보다 쉬운 거야?
+- JWT가 stateless auth에 유리하지만 revoke가 어려운 이유를 설명해줘
+- cookie 기반 인증에서는 왜 CSRF와 SameSite, Origin 검증을 다시 봐야 해?
+- 브라우저 웹앱과 모바일 API에서 session과 JWT 선택 기준이 어떻게 달라져?
+contextual_chunk_prefix: |
+  이 문서는 signed cookie, server session, JWT의 authentication state 위치와 trust boundary를 비교하고 revocation, CSRF, scalability tradeoff를 다루는 advanced deep dive다.
+  server session store, signed cookie tamper proofing, JWT revocation, stateless auth, cookie CSRF, browser web app vs mobile API 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Signed Cookies / Server Sessions / JWT Tradeoffs
 
 > 한 줄 요약: signed cookie, server session, JWT는 모두 인증 상태를 담지만, 누가 상태를 들고 누가 검증하는지에 따라 CSRF, revocation, 확장성의 균형이 달라진다.

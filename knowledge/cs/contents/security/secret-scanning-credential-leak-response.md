@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Secret Scanning / Credential Leak Response
+concept_id: security/secret-scanning-credential-leak-response
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- secret scanning
+- credential leak
+- revoke
+- rotate
+aliases:
+- secret scanning
+- credential leak
+- revoke
+- rotate
+- leak response
+- commit history
+- CI guard
+- log masking
+- incident response
+- token invalidation
+- blast radius
+- Secret Scanning / Credential Leak Response
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/secret-management-rotation-leak-patterns.md
+- contents/security/jwt-deep-dive.md
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/security/webhook-signature-verification-replay-defense.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Secret Scanning / Credential Leak Response 핵심 개념을 설명해줘
+- secret scanning가 왜 필요한지 알려줘
+- Secret Scanning / Credential Leak Response 실무 설계 포인트는 뭐야?
+- secret scanning에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Secret Scanning / Credential Leak Response를 다루는 deep_dive 문서다. secret scanning은 유출을 "발견"하는 도구이고, 실제 대응은 회전, 폐기, 영향 범위 식별, 로그 추적까지 이어져야 완성된다. 검색 질의가 secret scanning, credential leak, revoke, rotate처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Secret Scanning / Credential Leak Response
 
 > 한 줄 요약: secret scanning은 유출을 "발견"하는 도구이고, 실제 대응은 회전, 폐기, 영향 범위 식별, 로그 추적까지 이어져야 완성된다.

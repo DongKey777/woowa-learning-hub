@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: BatchExecutionCount Assertion Boundaries Primer
+concept_id: software-engineering/batch-execution-count
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-testing
+- hibernate-statistics
+- assertion-boundary
+aliases:
+- BatchExecutionCount Assertion Boundaries Primer
+- batchExecutionCount assertion
+- Hibernate batch execution count test
+- executeBatch count brittle
+- JPA batch test assertion
+- batch count exact number brittle
+symptoms:
+- batchExecutionCount를 업무 결과로 오해해 정확히 executeBatch가 몇 번 호출됐는지 초심자 테스트에서 강하게 잠가
+- IDENTITY vs SEQUENCE, flush timing, provider/driver 차이 때문에 내부 batch grouping이 흔들리는 것을 로직 회귀로 잘못 해석해
+- 저장 결과 확인과 provider 최적화 신호 확인을 한 assertion에 섞어 테스트 실패 원인을 읽기 어렵게 만들어
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/jpa-batch-config-pitfalls
+next_docs:
+- software-engineering/sql-log-vs-hibernate-statistics
+- software-engineering/identity-sequence-batch-verification
+- software-engineering/datajpatest-flush-clear
+linked_paths:
+- contents/software-engineering/jpa-batch-config-pitfalls.md
+- contents/software-engineering/sql-log-vs-hibernate-statistics-verification-boundaries.md
+- contents/software-engineering/identity-vs-sequence-batch-verification-example.md
+- contents/software-engineering/datajpatest-flush-clear-batch-checklist.md
+- contents/software-engineering/test-strategy-basics.md
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+confusable_with:
+- software-engineering/sql-log-vs-hibernate-statistics
+- software-engineering/identity-sequence-batch-verification
+- software-engineering/datajpatest-flush-clear
+forbidden_neighbors: []
+expected_queries:
+- batchExecutionCount == 3 같은 exact assertion이 JPA batch 테스트에서 왜 brittle해?
+- 초심자 batch 테스트에서 entityInsertCount와 repository count는 강하게 보고 batchExecutionCount는 왜 >0 정도만 봐?
+- IDENTITY와 SEQUENCE 전략에 따라 Hibernate batch count 기대가 달라지는 이유를 알려줘
+- flush clear 뒤 재조회 결과와 Hibernate statistics를 어떤 경계로 나눠 테스트해야 해?
+- SQL 로그와 batchExecutionCount가 다르게 보일 때 어떤 것을 업무 결과와 provider 신호로 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 JPA/Hibernate batchExecutionCount assertion을 업무 결과 assertion과 provider 내부 batch 신호로 분리해, exact executeBatch count 대신 stable beginner test boundary를 잡는 primer다.
+---
 # BatchExecutionCount Assertion Boundaries Primer
 
 > 한 줄 요약: 초심자 batch 테스트는 `저장이 됐는가`와 `batch가 완전히 죽지는 않았는가` 정도만 느슨하게 확인하는 편이 안전하고, `정확히 몇 번 executeBatch가 호출됐는가`까지 잠그면 provider와 DB 차이에 너무 쉽게 흔들린다.

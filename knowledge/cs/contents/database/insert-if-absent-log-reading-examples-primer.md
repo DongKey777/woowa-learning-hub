@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Insert-if-Absent 로그 읽기 예시 프라이머
+concept_id: database/insert-if-absent-log-reading-examples-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- insert-if-absent-log-reading
+- duplicate-timeout-deadlock-first-action
+- sqlstate-first-action
+aliases:
+- insert-if-absent log reading examples
+- insert if absent first action
+- duplicate timeout deadlock 40001 log primer
+- sqlstate log reading beginner
+- duplicate key timeout deadlock serialization logs
+- mysql 1062 1205 1213 log example
+- postgres 23505 55P03 40P01 40001 log example
+- insert-if-absent 로그 읽기
+- 중복 타임아웃 데드락 로그
+- first action duplicate timeout deadlock
+symptoms:
+- insert-if-absent 장애 로그를 보고 duplicate, timeout, deadlock, 40001의 첫 액션을 바로 고르지 못하고 있어
+- 예외 클래스 이름만 보고 already exists, busy, retryable 서비스 결과 라벨을 잘못 붙이고 있어
+- SQLSTATE/vendor code를 root cause 대신 first action classifier로 읽는 연습이 필요해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/insert-if-absent-retry-outcome-guide
+- database/three-bucket-terms-common
+next_docs:
+- database/spring-insert-if-absent-sqlstate-cheat-sheet
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/duplicate-key-vs-busy-response-mapping
+- database/postgresql-serializable-retry-playbook
+linked_paths:
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/spring-insert-if-absent-sqlstate-cheat-sheet.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/db-error-signal-beginner-result-language-mini-card.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+confusable_with:
+- database/insert-if-absent-retry-outcome-guide
+- database/spring-insert-if-absent-sqlstate-cheat-sheet
+- database/duplicate-key-vs-busy-response-mapping
+forbidden_neighbors: []
+expected_queries:
+- insert-if-absent 로그에서 duplicate, timeout, deadlock, 40001을 보면 첫 액션을 어떻게 골라?
+- MySQL 1062, 1205, 1213 로그 예시를 already exists, busy, retryable로 번역해줘
+- PostgreSQL 23505, 55P03, 40P01, 40001을 초보자 기준으로 어떻게 읽어?
+- DuplicateKeyException 뒤에는 같은 insert retry가 아니라 winner fresh read가 첫 액션인 이유는 뭐야?
+- lock wait timeout은 already exists가 아니라 busy로 먼저 봐야 하는 이유를 로그 예시로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 insert-if-absent 장애 로그에서 duplicate, lock timeout, deadlock, serialization failure를 보고 첫 액션과 service result label을 고르는 beginner playbook이다.
+  insert-if-absent log reading, MySQL 1062 1205 1213, PostgreSQL 23505 55P03 40001 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Insert-if-Absent 로그 읽기 예시 프라이머
 
 > 한 줄 요약: `insert-if-absent` 장애 로그를 보면 초보자는 "원인 분석"보다 먼저 **첫 액션**을 고정하면 덜 흔들린다. `duplicate`는 winner 확인, `timeout`은 blocker 확인, `deadlock`과 `40001`은 새 트랜잭션 재시도부터 시작한다.

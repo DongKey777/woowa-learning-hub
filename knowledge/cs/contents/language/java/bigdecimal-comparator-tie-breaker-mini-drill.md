@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: BigDecimal Comparator Tie-Breaker Mini Drill
+concept_id: language/bigdecimal-comparator-tie-breaker-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-comparator
+- treeset-treemap
+- comparator-tie-breaker
+aliases:
+- BigDecimal comparator tie breaker
+- BigDecimal value then scale comparator
+- BigDecimal TreeSet scale
+- BigDecimal TreeMap scale
+- thenComparingInt BigDecimal scale
+- 자바 BigDecimal scale tie breaker
+symptoms:
+- BigDecimal TreeSet에서 1.0과 1.00을 둘 다 남기고 싶은데 natural ordering이 compareTo 0으로 합치는 이유를 놓쳐
+- tie-breaker가 단순 정렬 장식이 아니라 sorted collection의 같은 key 여부까지 바꾼다는 점이 헷갈려
+- scale을 살린 comparator를 쓰면 get 조회도 같은 표현 scale로 해야 한다는 점을 예상하지 못해
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/bigdecimal-sorted-collection-bridge
+next_docs:
+- language/comparator-consistency-with-equals-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+linked_paths:
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/comparator-consistency-with-equals-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+confusable_with:
+- language/bigdecimal-sorted-collection-bridge
+- language/comparator-consistency-with-equals-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal TreeSet에서 1.0과 1.00을 둘 다 남기려면 comparator를 어떻게 만들어야 해?
+- Comparator.naturalOrder 다음 thenComparingInt BigDecimal scale을 붙이면 조회 기준도 바뀌나?
+- BigDecimal TreeMap에서 scale tie breaker를 쓰면 get(new BigDecimal(\"1\"))가 왜 null이야?
+- comparator tie breaker가 sorted collection distinctness를 바꾸는 이유를 알려줘
+- BigDecimal value then scale comparator 미니 드릴을 풀고 싶어
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal TreeSet/TreeMap에서 natural ordering 뒤 scale tie-breaker를 붙여 1.0과 1.00을 따로 남기는 beginner drill이다.
+  BigDecimal comparator, thenComparingInt scale, TreeSet distinctness, TreeMap lookup, compareTo vs tie-breaker 질문이 본 문서에 매핑된다.
+---
 # BigDecimal Comparator Tie-Breaker 미니 드릴
 
 > 한 줄 요약: `TreeSet`/`TreeMap`에서 `BigDecimal`의 숫자값은 같지만 scale은 다른 `1.0`과 `1.00`을 둘 다 남기고 싶다면, `compareTo()` 뒤에 `scale()` tie-breaker를 직접 붙여야 한다.

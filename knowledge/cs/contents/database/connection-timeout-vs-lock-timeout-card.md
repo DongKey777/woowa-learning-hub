@@ -9,7 +9,9 @@ doc_role: drill
 level: beginner
 language: mixed
 source_priority: 75
-mission_ids: []
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
 review_feedback_tags:
 - pool-vs-lock-wait-confusion
 - first-failure-timeline
@@ -51,7 +53,9 @@ confusable_with:
 - database/db-timeout-first-splitter
 - database/timeout-errorcode-mapping-mini-card
 - database/lock-wait-timeout-symptom-router
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/postgresql-serializable-retry-playbook.md
 expected_queries:
 - Hikari Connection is not available 와 lock wait timeout exceeded 를 같은 원인으로 봐도 돼?
 - 커넥션 풀 대기 실패랑 DB 락 대기 실패를 초보자 기준으로 빨리 구분해줘

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: ClassLoader, Exception Boundaries, and Object Contracts
+concept_id: language/classloader-exception-object-contracts
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 81
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- classloader-boundary
+- exception-contract
+- equals-hashcode-comparable
+aliases:
+- ClassLoader exception object contracts
+- Java exception boundary
+- equals hashCode compareTo contract boundary
+- LinkageError NoSuchMethodError
+- domain exception design
+- ClassLoader 객체 계약
+symptoms:
+- ClassLoader, exception design, equals/hashCode/compareTo를 별도 암기 주제로 보고 모두 boundary contract라는 공통점을 놓쳐
+- domain exception과 infrastructure exception을 섞어 복구 가능한 실패와 시스템 실패를 구분하지 못해
+- compareTo == 0과 equals true 불일치가 TreeSet TreeMap HashSet HashMap 계약에 미치는 영향을 놓쳐
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- language/java-language-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/classloader-delegation-edge-cases
+- language/java-binary-compatibility-linkage-errors
+- language/java-equals-hashcode-comparable-contracts
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/language/java/java-module-system-runtime-boundaries.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+- contents/language/java/class-initialization-ordering.md
+- contents/language/java/serialization-compatibility-serial-version-uid.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- language/classloader-delegation-edge-cases
+- language/java-binary-compatibility-linkage-errors
+- language/java-equals-hashcode-comparable-contracts
+forbidden_neighbors: []
+expected_queries:
+- ClassLoader 경계, exception 설계, equals hashCode compareTo를 boundary contract로 같이 설명해줘
+- domain exception과 infrastructure exception을 service boundary에서 어떻게 나눠야 해?
+- Java LinkageError NoSuchMethodError가 classloader와 binary compatibility 경계에서 왜 발생해?
+- compareTo와 equals 계약 불일치가 TreeSet TreeMap HashSet에서 어떤 문제를 만들어?
+- ClassLoader 로딩 경계와 객체 equality 계약을 실무 예제로 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 ClassLoader loading boundary, exception design boundary, equals/hashCode/compareTo object contract를 하나의 Java boundary model로 묶는 advanced deep dive다.
+  ClassLoader, domain exception, LinkageError, NoSuchMethodError, equals hashCode comparable contract, TreeMap contract 질문이 본 문서에 매핑된다.
+---
 # ClassLoader, Exception 경계, 객체 계약
 
 > 한 줄 요약: ClassLoader는 로딩 경계, Exception 설계는 실패 경계, equals/hashCode/compareTo는 객체 계약을 정하는 도구다.

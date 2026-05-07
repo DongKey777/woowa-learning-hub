@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Real-time Leaderboard 설계
+concept_id: system-design/real-time-leaderboard-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- real-time leaderboard
+- top-k
+- score update
+- ranking store
+aliases:
+- real-time leaderboard
+- top-k
+- score update
+- ranking store
+- hot key
+- write amplification
+- eventual consistency
+- score board
+- sliding window
+- anti-cheat
+- cache invalidation
+- Real-time Leaderboard 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/recommendation-feed-ranking-architecture.md
+- contents/system-design/job-queue-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Real-time Leaderboard 설계 설계 핵심을 설명해줘
+- real-time leaderboard가 왜 필요한지 알려줘
+- Real-time Leaderboard 설계 실무 트레이드오프는 뭐야?
+- real-time leaderboard 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Real-time Leaderboard 설계를 다루는 deep_dive 문서다. 실시간 리더보드는 빈번한 점수 갱신과 순위 조회를 동시에 만족시키기 위해, 정렬 자료구조와 집계 파이프라인을 함께 설계하는 시스템이다. 검색 질의가 real-time leaderboard, top-k, score update, ranking store처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Real-time Leaderboard 설계
 
 > 한 줄 요약: 실시간 리더보드는 빈번한 점수 갱신과 순위 조회를 동시에 만족시키기 위해, 정렬 자료구조와 집계 파이프라인을 함께 설계하는 시스템이다.

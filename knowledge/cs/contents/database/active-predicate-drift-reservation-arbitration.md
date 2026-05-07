@@ -1,3 +1,76 @@
+---
+schema_version: 3
+title: Active Predicate Drift in Reservation Arbitration
+concept_id: database/active-predicate-drift-reservation-arbitration
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- reservation-overlap
+- active-predicate-drift
+- blackout-booking-hold
+- overlap-arbitration
+aliases:
+- active predicate drift reservation arbitration
+- reservation active predicate drift
+- held confirmed expired lifecycle drift
+- booking blackout cleanup predicate alignment
+- overlap blocker normalization
+- active overlap flag
+- reservation blocker active set
+- released_at overlap truth
+- 예약 active predicate drift
+- overlap arbitration drift
+symptoms:
+- booking create, hold create, blackout edit, cleanup worker가 서로 다른 status/expires_at predicate로 overlap blocker를 해석한다
+- expires_at이 지났지만 released_at이 없는 hold를 어떤 path는 무시하고 어떤 path는 계속 blocker로 본다
+- HELD에서 CONFIRMED로 handoff되는 동안 hold relation과 booking relation을 path마다 다르게 읽어 overlap 누락이나 false blocker가 생긴다
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- database/hold-expiration-predicate-drift
+- database/overlap-predicate-index-design-booking-tables
+- database/exclusion-constraint-overlap-case-studies
+next_docs:
+- database/engine-fallbacks-overlap-enforcement
+- database/expiry-worker-race-patterns
+- database/expired-unreleased-drift-runbook
+linked_paths:
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/expiry-worker-race-patterns.md
+- contents/database/expired-unreleased-drift-runbook.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/write-skew-phantom-read-case-studies.md
+confusable_with:
+- database/active-predicate-alignment-capacity-guards
+- database/hold-expiration-predicate-drift
+- database/overlap-predicate-index-design-booking-tables
+- database/exclusion-constraint-overlap-case-studies
+forbidden_neighbors: []
+expected_queries:
+- 예약 overlap arbitration에서 HELD CONFIRMED BLACKOUT EXPIRED를 path마다 다르게 보면 어떤 active predicate drift가 생겨?
+- expires_at이 지난 hold를 booking path는 빼고 blackout path는 blocker로 보는 false blocker 문제를 설명해줘
+- active_overlap flag나 released_at을 canonical blocker truth로 쓰는 MySQL reservation 설계가 왜 안전해?
+- hold에서 booking으로 confirm할 때 canonical overlap blocker surface를 하나로 유지해야 하는 이유가 뭐야?
+- booking, blackout, cleanup이 같은 overlap probe를 쓰지 않으면 어떤 race와 phantom 문제가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 Active Predicate Drift in Reservation Arbitration symptom router로, reservation/blackout/hold
+  overlap enforcement에서 lifecycle label과 active overlap membership가 path마다 달라지는 증상을
+  released_at 또는 active_overlap 같은 canonical blocker truth로 정규화하는 방법을 설명한다.
+---
 # Active Predicate Drift in Reservation Arbitration
 
 > 한 줄 요약: 예약 overlap arbitration은 interval 조건만 맞추면 끝나는 문제가 아니다. `HELD`/`CONFIRMED`/`BLACKOUT`/`EXPIRED`를 booking, blackout, cleanup path가 서로 다른 active predicate로 해석하면, `EXPIRED` 전이 지연이 곧 false blocker와 overlap 누락으로 번진다.

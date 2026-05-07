@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Fenwick Tree Binary Indexed Tree
+concept_id: data-structure/fenwick-tree
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- fenwick-tree
+- prefix-sum-point-update
+- lowbit-indexing
+aliases:
+- Fenwick Tree
+- Binary Indexed Tree
+- BIT prefix sum
+- lowbit
+- point update range sum
+- cumulative frequency tree
+- inversion count BIT
+symptoms:
+- prefix sum과 point update를 모두 빠르게 해야 하는데 매번 전체 prefix를 다시 계산하거나 Segment Tree부터 과하게 떠올린다
+- Fenwick Tree의 1-indexing과 lowbit가 각 index의 담당 구간을 결정한다는 핵심을 이해하지 못한다
+- range sum은 prefix(r) - prefix(l-1)로 계산된다는 기본형과 range update 같은 변형을 섞어 시작한다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- algorithm/time-complexity-intro
+next_docs:
+- data-structure/fenwick-vs-segment-tree
+- data-structure/fenwick-segment-tree-operations-playbook
+- data-structure/segment-tree-lazy-propagation
+- algorithm/amortized-analysis-pitfalls
+linked_paths:
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/fenwick-vs-segment-tree.md
+- contents/data-structure/fenwick-segment-tree-operations-playbook.md
+- contents/data-structure/basic.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+confusable_with:
+- data-structure/fenwick-vs-segment-tree
+- data-structure/segment-tree-lazy-propagation
+- data-structure/sparse-table
+- data-structure/coordinate-compression-patterns
+forbidden_neighbors: []
+expected_queries:
+- Fenwick Tree는 prefix sum과 point update를 어떻게 O(log n)에 처리해?
+- Binary Indexed Tree에서 lowbit와 1-indexing이 왜 중요한지 설명해줘
+- range sum을 prefix(r) - prefix(l-1)로 계산하는 Fenwick 기본형을 알려줘
+- 누적 빈도나 inversion count 문제에서 Fenwick Tree를 쓰는 이유는?
+- Fenwick Tree와 Segment Tree 중 단순 prefix/range sum에는 무엇이 더 깔끔해?
+contextual_chunk_prefix: |
+  이 문서는 Fenwick Tree 또는 Binary Indexed Tree를 prefix sum과 point update를
+  O(log n)에 처리하는 누적 자료구조로 설명하는 primer다. lowbit, 1-indexing,
+  range sum, cumulative frequency, inversion count, Segment Tree와의 경계를
+  다룬다.
+---
 # Fenwick Tree (Binary Indexed Tree)
 
 > 한 줄 요약: Fenwick Tree는 prefix sum과 point update를 모두 O(log n)으로 처리하는 가벼운 누적 자료구조다.

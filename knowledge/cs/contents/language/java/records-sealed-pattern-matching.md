@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Records Sealed Pattern Matching
+concept_id: language/records-sealed-pattern-matching
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- record
+- sealed
+- pattern-matching
+aliases:
+- Java record sealed class pattern matching 입문
+- records sealed pattern matching
+- record sealed class beginner
+- pattern matching instanceof switch
+- DTO value object sealed hierarchy
+- 자바 record sealed pattern matching
+symptoms:
+- record, sealed, pattern matching을 코드를 짧게 쓰는 문법으로만 외워 값 상자, 허용된 타입 목록, 안전한 분기라는 문제 분리를 놓쳐
+- record를 DTO, value object, entity와 같은 층위로 섞어 식별자와 생명주기가 있는 타입에도 무조건 적용하려 해
+- sealed hierarchy와 pattern matching switch를 쓰면서 variant 추가와 exhaustive branch가 설계와 호환성에 미치는 영향을 고려하지 않아
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- language/java-language-basics
+- language/object-oriented-core-principles
+next_docs:
+- language/record-value-object-equality-basics
+- language/sealed-interfaces-exhaustive-switch-design
+- language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/language/java/record-value-object-equality-basics.md
+- contents/language/java/sealed-interfaces-exhaustive-switch-design.md
+- contents/language/java/record-sealed-hierarchy-evolution-pattern-matching-compatibility.md
+- contents/software-engineering/dto-vo-entity-basics.md
+confusable_with:
+- language/record-value-object-equality-basics
+- language/sealed-interfaces-exhaustive-switch-design
+- language/record-sealed-hierarchy-evolution-pattern-matching-compatibility
+forbidden_neighbors: []
+expected_queries:
+- Java record sealed class pattern matching을 beginner 기준으로 값 상자 허용 타입 목록 안전한 분기로 설명해줘
+- record는 DTO나 value object에 언제 잘 맞고 entity와는 왜 구분해야 해?
+- sealed class는 가능한 상태가 몇 개로 고정된 결과 타입에서 왜 유용해?
+- pattern matching은 instanceof와 casting을 어떻게 줄여 주는지 예제로 알려줘
+- record sealed pattern matching 다음에 equality exhaustive switch compatibility를 어떤 순서로 읽으면 좋아?
+contextual_chunk_prefix: |
+  이 문서는 modern Java의 record, sealed class, pattern matching을 값 상자, 제한된 hierarchy, 안전한 type branch로 소개하는 beginner primer다.
+  record, sealed class, pattern matching, DTO, value object, exhaustive switch 질문이 본 문서에 매핑된다.
+---
 # Java record, sealed class, pattern matching 입문
 
 > 한 줄 요약: `record`, `sealed`, `pattern matching`은 "코드를 짧게 쓰는 문법"이 아니라 `값 상자`, `허용된 타입 목록`, `안전한 분기`를 beginner 관점에서 분리해 주는 입문 묶음이다.

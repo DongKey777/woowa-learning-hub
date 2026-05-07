@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Roaring Container Transition Heuristics
+concept_id: data-structure/roaring-container-transition-heuristics
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roaring-container-transition
+- array-bitmap-run-churn
+- runoptimize-threshold
+aliases:
+- Roaring container transition
+- array bitmap run transition
+- 4096 threshold
+- runOptimize timing
+- container churn
+- bitmap promotion demotion
+- run container heuristic
+symptoms:
+- Roaring 성능을 전체 cardinality로만 보고 16-bit chunk별 array/bitmap/run 표현과 transition churn을 관측하지 않는다
+- cardinality 4096 근처 chunk에서 array bitmap promotion/demotion이 반복되는 hotspot을 놓친다
+- run container는 cardinality보다 run 수와 serialized-size 비교로 결정된다는 점을 이해하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- data-structure/roaring-bitmap
+next_docs:
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-run-optimize-timing-guide
+- data-structure/roaring-production-profiling-checklist
+- data-structure/row-ordering-and-bitmap-compression-playbook
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/chunk-boundary-pathologies-in-roaring.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-run-optimize-timing-guide.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/roaring-bitmap
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-run-optimize-timing-guide
+- data-structure/chunk-boundary-pathologies-in-roaring
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap에서 array container와 bitmap container는 왜 4096 cardinality 근처에서 전환돼?
+- array bitmap run container transition churn을 production에서 어떻게 의심해?
+- run container는 cardinality보다 run count와 serialized size가 중요하다는 뜻은?
+- Roaring runOptimize를 언제 하면 좋고 hot path에서 왜 조심해야 해?
+- container별 cardinality histogram과 transition counter로 Roaring 성능을 분석하는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap의 array/bitmap/run container transition heuristic을
+  다루는 playbook이다. 4096 cardinality threshold, run count serialized-size
+  comparison, runOptimize timing, container churn, production profiling을 설명한다.
+---
 # Roaring Container Transition Heuristics
 
 > 한 줄 요약: Roaring의 실전 성능은 container 종류 자체보다, `array <-> bitmap <-> run` 전환이 언제 일어나고 그 재구성이 workload에 의해 얼마나 자주 반복되는지에 크게 좌우된다.

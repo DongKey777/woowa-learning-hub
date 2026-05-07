@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Secret Management, Rotation, Leak Patterns
+concept_id: security/secret-management-rotation-leak-patterns
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- secret management deep dive
+- rotation leak patterns
+- secrets beginner handoff
+- secrets management primer return
+aliases:
+- secret management deep dive
+- rotation leak patterns
+- secrets beginner handoff
+- secrets management primer return
+- credential leak rotation basics
+- return to security README
+- Secret Management, Rotation, Leak Patterns
+- secret management rotation leak patterns
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/https-hsts-mitm.md
+- contents/security/jwt-deep-dive.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/system-design/system-design-framework.md
+- contents/security/secrets-management-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Secret Management, Rotation, Leak Patterns 핵심 개념을 설명해줘
+- secret management deep dive가 왜 필요한지 알려줘
+- Secret Management, Rotation, Leak Patterns 실무 설계 포인트는 뭐야?
+- secret management deep dive에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Secret Management, Rotation, Leak Patterns를 다루는 deep_dive 문서다. 시크릿 관리는 "안 보이게 저장"이 끝이 아니라, 유출 경로를 줄이고, 회전하고, 회수할 수 있어야 운영된다. 검색 질의가 secret management deep dive, rotation leak patterns, secrets beginner handoff, secrets management primer return처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Secret Management, Rotation, Leak Patterns
 
 > 한 줄 요약: 시크릿 관리는 "안 보이게 저장"이 끝이 아니라, 유출 경로를 줄이고, 회전하고, 회수할 수 있어야 운영된다.

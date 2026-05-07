@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Service Bootstrap Governance
+concept_id: software-engineering/service-bootstrap-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- service-governance
+- bootstrap
+- golden-path
+- ownership
+aliases:
+- service bootstrap governance
+- service creation checklist
+- golden path bootstrap
+- service scaffold governance
+- service catalog registration at bootstrap
+- 서비스 부트스트랩 거버넌스
+symptoms:
+- 새 서비스를 템플릿 생성으로만 시작해서 owner, on-call, observability, release strategy, catalog registration이 비어 있어
+- bootstrap generator에는 기본값이 있지만 PRR, service catalog, policy gate에서 유지 여부를 검증하지 않아 시간이 지나며 누락돼
+- 실험 서비스와 운영 서비스의 bootstrap default가 구분되지 않아 운영 전환 때 ownership과 policy 부채가 드러나
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-template-tradeoffs
+- software-engineering/platform-paved-road
+next_docs:
+- software-engineering/service-maturity-model
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/policy-as-code
+linked_paths:
+- contents/software-engineering/service-template-tradeoffs.md
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/technology-radar-adoption-governance.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/platform-control-plane-delegation-boundaries.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+confusable_with:
+- software-engineering/service-template-tradeoffs
+- software-engineering/platform-paved-road
+- software-engineering/service-maturity-model
+forbidden_neighbors: []
+expected_queries:
+- service bootstrap governance에서 새 서비스 생성 순간에 owner, on-call, observability, release strategy를 왜 강제해야 해?
+- 서비스 템플릿과 bootstrap governance는 코드 scaffold와 운영 정책 관점에서 어떻게 달라?
+- bootstrap 기준을 generator, catalog registration, PRR policy gate에 나눠 심는 이유를 설명해줘
+- 실험용 서비스와 운영용 서비스의 bootstrap default를 어떻게 구분해야 해?
+- golden path bootstrap에 예외 경로를 둘 때 어떤 metadata와 approval을 남겨야 해?
+contextual_chunk_prefix: |
+  이 문서는 새 서비스 생성 시 owner, on-call, observability, release, catalog registration 같은 운영 기본값을 강제하는 advanced service governance playbook이다.
+---
 # Service Bootstrap Governance
 
 > 한 줄 요약: service bootstrap governance는 새 서비스를 빨리 시작하게 하는 일이 아니라, 시작 순간부터 ownership, policy, observability, and lifecycle defaults를 강제로 갖추게 하는 운영 규칙이다.

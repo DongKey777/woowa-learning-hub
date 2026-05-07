@@ -34,7 +34,7 @@ prerequisites:
 next_docs:
   - software-engineering/service-layer-basics
   - software-engineering/dto-vo-entity-basics
-  - software-engineering/query-model-separation-read-heavy-apis
+  - software-engineering/query-model-separation-read-heavy
 linked_paths:
   - contents/software-engineering/service-layer-basics.md
   - contents/software-engineering/dto-vo-entity-basics.md
@@ -58,12 +58,19 @@ contextual_chunk_prefix: |
   다시 계산함, service가 map을 조립해서 넘김, 의미 있는 결과 타입으로 묶기
   같은 학습자 표현을 service 결과 모델과 값 의미 설명으로 매핑한다.
 ---
-
 # lotto 당첨 통계/수익률 계산 ↔ 결과 객체 경계 브릿지
 
 ## 한 줄 요약
 
 > lotto 결과 단계에서 필요한 것은 "등수별 개수"와 "총 수익률"이라는 하나의 결과 의미다. 그래서 `Map<Rank, Integer>`와 `double`을 따로 흘리기보다 `WinningStatistics` 같은 결과 객체로 묶는 편이 계산 책임과 출력 책임을 분리하기 쉽다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`Map<Rank, Integer>`를 그대로 OutputView에 넘기면 왜 별로예요?" | 등수별 개수 map과 구매 금액을 출력 계층이 다시 조합하는 코드 | 자료구조보다 당첨 통계라는 결과 의미를 타입으로 닫는다 |
+| "수익률 계산을 출력할 때마다 다시 하고 있어요" | `OutputView`가 총 당첨금, 수익률, 정렬 순서를 다시 계산하는 구조 | service 결과 객체가 계산된 의미를 제공하고 view는 표현만 하게 한다 |
+| "`WinningStatistics`가 DTO인지 값 객체인지 헷갈려요" | 결과 계산 후 전달 모델과 도메인 불변식 모델을 같은 이름으로 보는 상황 | 엔티티가 아니라 유스케이스 결과 계약/읽기 모델로 본다 |
 
 ## 미션 시나리오
 

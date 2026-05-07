@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring Starter Condition Report Starter Drill
+concept_id: spring/starter-condition-report-starter-drill
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- starter-condition-report
+- starter
+- condition-evaluation-report
+- datasourceautoconfiguration-positive-negative
+aliases:
+- Condition Evaluation Report starter drill
+- DataSourceAutoConfiguration positive negative match
+- spring-boot-starter-data-jpa condition report
+- auto configuration report walkthrough
+- starter dependency report drill
+intents:
+- drill
+- troubleshooting
+linked_paths:
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-starter-dependency-map-primer.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md
+confusable_with:
+- spring/starter-added-but-bean-missing-faq
+- spring/starter-dependency-map-primer
+- spring/boot-condition-evaluation-report-debugging
+- spring/boot-autoconfiguration-basics
+expected_queries:
+- spring-boot-starter-data-jpa를 Condition Evaluation Report에서 어떻게 추적해?
+- DataSourceAutoConfiguration이 positive negative match인 이유를 drill로 보고 싶어
+- starter dependency 하나가 auto-configuration과 bean 생성으로 이어지는 흐름은?
+- Spring Boot condition report 읽는 연습 문제를 풀고 싶어
+contextual_chunk_prefix: |
+  이 문서는 spring-boot-starter-data-jpa 같은 starter dependency 하나를 Condition Evaluation
+  Report의 positive/negative entry와 직접 연결해 읽는 beginner drill이다.
+  classpath 조건, DataSourceAutoConfiguration, JPA auto-configuration 흐름을 따라간다.
+---
 # Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법
 
 > 한 줄 요약: `spring-boot-starter-data-jpa`를 넣었다는 사실만으로 JPA 관련 bean이 확정되지는 않는다. Condition Evaluation Report에서 `DataSourceAutoConfiguration`과 JPA auto-configuration이 왜 positive 또는 negative였는지 연결해서 봐야 한다.

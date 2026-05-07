@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring Boot Customizer vs Top-Level Bean Replacement Primer
+concept_id: spring/boot-customizer-vs-top-level-bean-replacement-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- boot-customizer-vs
+- top-level-bean
+- replacement
+- replace
+aliases:
+- Boot customizer vs replace
+- ObjectMapper customizer
+- RestClient.Builder customizer
+- WebClient.Builder customizer
+- top-level bean replacement
+- customizer keeps Boot defaults
+- shared builder owner
+intents:
+- definition
+- design
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration-basics.md
+- contents/spring/spring-boot-properties-vs-customizer-vs-bean-replacement-primer.md
+- contents/spring/spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/network/timeout-types-connect-read-write.md
+expected_queries:
+- Spring Boot에서 customizer와 top-level bean replacement는 어떻게 골라?
+- ObjectMapper 옵션 하나 바꾸려고 @Bean ObjectMapper를 직접 만들면 왜 위험해?
+- RestClient.Builder나 WebClient.Builder는 customizer로 바꾸는 게 언제 맞아?
+- Boot 기본 조립을 유지하면서 특정 client만 다르게 만드는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 Spring Boot가 만든 ObjectMapper, RestClient.Builder,
+  WebClient.Builder 같은 top-level bean을 customizer로 덧칠할지,
+  Boot-managed builder로 전용 client를 만들지, 아니면 bean replacement로 owner를
+  가져올지 고르는 beginner bridge primer다.
+---
 # Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `RestClient.Builder`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까
 
 > 한 줄 요약: Boot가 이미 조립해 주는 상위 bean은 "옵션 몇 개 추가"면 customizer bean으로 다루고, 생성 책임과 기본 계약 자체를 바꾸려 할 때만 top-level bean 교체로 올라간다. 이 규칙은 `RestClient.Builder`와 `WebClient.Builder`에 거의 같은 모양으로 적용된다.

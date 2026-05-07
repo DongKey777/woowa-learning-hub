@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Config Distribution System 설계
+concept_id: system-design/config-distribution-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- config distribution
+- push pull hybrid
+- versioned config
+- snapshot
+aliases:
+- config distribution
+- push pull hybrid
+- versioned config
+- snapshot
+- rollout
+- checksum
+- config cache
+- propagation delay
+- last known good
+- control plane
+- endpoint routing
+- bootstrap config
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/control-plane-data-plane-separation-design.md
+- contents/system-design/config-rollback-safety-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Config Distribution System 설계 설계 핵심을 설명해줘
+- config distribution가 왜 필요한지 알려줘
+- Config Distribution System 설계 실무 트레이드오프는 뭐야?
+- config distribution 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Config Distribution System 설계를 다루는 deep_dive 문서다. config distribution system은 서비스 설정을 빠르게 전파하고, 버전 관리와 안전한 롤백을 보장하는 중앙 제어 시스템이다. 검색 질의가 config distribution, push pull hybrid, versioned config, snapshot처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Config Distribution System 설계
 
 > 한 줄 요약: config distribution system은 서비스 설정을 빠르게 전파하고, 버전 관리와 안전한 롤백을 보장하는 중앙 제어 시스템이다.

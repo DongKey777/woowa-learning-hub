@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Dirty Page Ratios Writeback Tuning
+concept_id: operating-system/dirty-page-ratios-writeback-tuning
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- dirty-page-ratios
+- writeback-tuning
+- dirty-background-ratio
+- dirty-ratio
+aliases:
+- dirty page ratios
+- writeback tuning
+- dirty_background_ratio dirty_ratio
+- dirty_bytes dirty_background_bytes
+- flush latency spike
+- page cache dirty tuning
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/fsync-tail-latency-dirty-writeback-debugging.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/vm-swappiness-reclaim-behavior.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+symptoms:
+- write burst를 완충하려다 dirty page가 쌓여 한 번에 flush되며 latency spike가 난다.
+- dirty_ratio와 dirty_background_ratio를 높였더니 writer throttling 시점이 늦어졌지만 p99가 커진다.
+- memory reclaim과 writeback이 겹쳐 application write latency가 흔들린다.
+expected_queries:
+- dirty page ratio와 writeback tuning은 latency spike와 어떻게 연결돼?
+- dirty_background_ratio dirty_ratio dirty_bytes를 어떻게 해석해야 해?
+- writeback tuning을 잘못하면 flush가 몰려 p99가 커질 수 있어?
+- page cache dirty writeback과 reclaim, PSI를 함께 보는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 dirty page ratio와 writeback tuning이 write burst를 완충하지만 너무 크게 잡거나
+  storage 속도와 맞지 않으면 flush가 몰려 latency spike와 dirty throttling을 만드는
+  trade-off를 다룬다.
+---
 # Dirty Page Ratios, Writeback Tuning
 
 > 한 줄 요약: dirty page 비율과 writeback 튜닝은 쓰기 폭주를 완충하는 장치지만, 잘못 잡으면 flush가 몰려 latency spike를 만든다.

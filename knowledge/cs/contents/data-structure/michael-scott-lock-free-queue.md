@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Michael-Scott Lock-Free Queue
+concept_id: data-structure/michael-scott-lock-free-queue
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- michael-scott-queue
+- lock-free-mpmc-queue
+- cas-helping-reclamation
+aliases:
+- Michael-Scott Queue
+- MS Queue
+- lock-free MPMC queue
+- CAS linked queue
+- nonblocking queue
+- head tail helping
+- lock-free concurrent queue
+symptoms:
+- MPSC나 SPSC로 충분한 상황과 enqueue/dequeue 모두 다중 경쟁하는 MPMC 상황을 구분하지 않고 범용 queue를 고른다
+- dummy node, head/tail lag, helping 패턴을 이해하지 못해 lock-free progress 보장의 핵심을 놓친다
+- GC가 없는 환경에서 ABA와 memory reclamation이 MS Queue 구현의 본론이라는 점을 의사코드 밖 문제로 밀어둔다
+intents:
+- deep_dive
+- comparison
+prerequisites:
+- data-structure/lock-free-mpsc-queue
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+next_docs:
+- data-structure/aba-problem-tagged-pointers
+- data-structure/bounded-mpmc-queue
+- data-structure/work-stealing-deque
+linked_paths:
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/lock-free-spsc-ring-buffer.md
+- contents/data-structure/hazard-pointers-vs-epoch-based-reclamation.md
+- contents/data-structure/aba-problem-and-tagged-pointers.md
+- contents/data-structure/work-stealing-deque.md
+confusable_with:
+- data-structure/lock-free-mpsc-queue
+- data-structure/lock-free-spsc-ring-buffer
+- data-structure/bounded-mpmc-queue
+- data-structure/hazard-pointers-vs-epoch-based-reclamation
+forbidden_neighbors: []
+expected_queries:
+- Michael-Scott Queue는 lock-free MPMC queue로 어떤 문제를 해결해?
+- MS Queue에서 dummy node와 head tail helping이 필요한 이유는?
+- MPSC SPSC MPMC queue를 producer consumer 수 기준으로 어떻게 구분해?
+- CAS linked queue에서 ABA와 memory reclamation이 왜 어려운가?
+- lock-free queue에서 helping이 progress 보장에 어떻게 기여해?
+contextual_chunk_prefix: |
+  이 문서는 Michael-Scott Queue를 CAS 기반 linked-list lock-free MPMC queue
+  deep dive로 설명한다. dummy node, head/tail separation, helping, enqueue와
+  dequeue 경쟁, ABA, hazard pointers, epoch-based reclamation을 다룬다.
+---
 # Michael-Scott Lock-Free Queue
 
 > 한 줄 요약: Michael-Scott Queue는 CAS 기반 linked-list 알고리즘으로 다중 producer와 다중 consumer를 lock-free하게 처리하는 고전적인 MPMC queue 구조다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: "HTTP/2 and HTTP/3 Connection Reuse Coalescing"
+concept_id: network/http2-http3-connection-reuse-coalescing
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- connection-coalescing
+- http2-http3
+- 421-recovery
+aliases:
+- HTTP/2 connection coalescing
+- HTTP/3 connection coalescing
+- origin coalescing
+- cross-origin connection reuse
+- multiple origins same connection
+- certificate SAN reuse
+- 421 misdirected request
+symptoms:
+- 같은 origin connection reuse와 다른 origin coalescing을 같은 말로 본다
+- wildcard certificate만 있으면 어떤 backend에도 같은 연결을 태워도 된다고 오해한다
+- HTTP/2 ORIGIN frame, certificate scope, routing boundary, 421 recovery를 분리하지 못한다
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/http2-origin-frame-421-primer
+- network/http3-cross-origin-reuse-guardrails-primer
+linked_paths:
+- contents/network/http1-http2-http3-beginner-comparison.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/wildcard-cert-routing-boundary-primer.md
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+- contents/network/connection-reuse-vs-service-discovery-churn.md
+confusable_with:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http2-origin-frame-421-primer
+- network/http3-cross-origin-reuse-guardrails-primer
+- network/wildcard-cert-routing-boundary-primer
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/2 HTTP/3 connection coalescing을 초보자에게 설명해줘"
+- "connection reuse와 cross-origin coalescing은 어떻게 달라?"
+- "certificate SAN이 맞아도 routing boundary 때문에 421이 날 수 있는 이유는?"
+- "HTTP/2 ORIGIN frame과 HTTP/3 reuse guardrail은 어떻게 달라?"
+- "www와 static이 같은 H2/H3 연결을 공유하려면 어떤 조건이 필요해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/2와 HTTP/3 connection reuse/coalescing, origin,
+  certificate SAN, routing boundary, ORIGIN frame, 421 recovery를 설명하는
+  beginner primer다.
+---
 # HTTP/2와 HTTP/3 Connection Coalescing 입문
 
 

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: gh-ost / pt-online-schema-change Cutover Precheck Runbook
+concept_id: database/gh-ost-pt-osc-cutover-precheck-runbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- online-schema-cutover-precheck
+- metadata-lock-preflight
+- gh-ost-pt-osc-readiness
+aliases:
+- gh-ost precheck
+- pt-online-schema-change precheck
+- pt-osc cutover
+- gh-ost cutover
+- online schema cutover checklist
+- metadata lock preflight
+- ddl cutover readiness
+- cutover runbook
+- gh-ost pt-osc cutover
+- 온라인 스키마 변경 cutover
+symptoms:
+- gh-ost나 pt-online-schema-change copy는 끝났지만 cutover 직전 long transaction과 MDL blocker를 확인하지 않았어
+- online schema change가 안전하다고 믿고 replica lag, app compatibility, p99 guardrail 없이 swap하려 해
+- cutover precheck에 abort 기준이 없어 metadata lock 대기와 latency spike를 장애로 맞고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/online-schema-change-strategies
+- database/metadata-lock-ddl-blocking
+next_docs:
+- database/metadata-lock-outage-triage-cancel-recovery
+- database/index-maintenance-window-rollout-playbook
+- database/replication-lag-forensics-root-cause-playbook
+- database/destructive-schema-cleanup-column-retirement
+linked_paths:
+- contents/database/online-schema-change-strategies.md
+- contents/database/metadata-lock-ddl-blocking.md
+- contents/database/metadata-lock-outage-triage-cancel-recovery.md
+- contents/database/index-maintenance-window-rollout-playbook.md
+- contents/database/replication-lag-forensics-root-cause-playbook.md
+- contents/database/destructive-schema-cleanup-column-retirement.md
+- contents/database/online-backfill-verification-cutover-gates.md
+confusable_with:
+- database/metadata-lock-ddl-blocking
+- database/online-schema-change-strategies
+- database/index-maintenance-window-rollout-playbook
+forbidden_neighbors: []
+expected_queries:
+- gh-ost나 pt-online-schema-change cutover 전에 어떤 precheck와 abort 기준이 필요해?
+- online schema change copy는 끝났는데 cutover에서 metadata lock 대기를 피하려면 무엇을 봐야 해?
+- long transaction, replica lag, app p99, compatibility를 cutover readiness로 어떻게 점검해?
+- gh-ost와 pt-osc는 copy 방식은 달라도 cutover에서 왜 둘 다 MDL에 민감해?
+- cutover 직전 old app new schema와 new app old replica compatibility를 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 gh-ost와 pt-online-schema-change의 마지막 cutover 전 long transaction, metadata lock, replica lag, app compatibility, abort criteria를 확인하는 advanced playbook이다.
+  gh-ost precheck, pt-online-schema-change precheck, metadata lock preflight, online schema cutover checklist 같은 자연어 운영 질문이 본 문서에 매핑된다.
+---
 # gh-ost / pt-online-schema-change Cutover Precheck Runbook
 
 > 한 줄 요약: `gh-ost`와 `pt-online-schema-change`의 위험 구간은 복사보다 cutover이며, 직전 precheck가 부실하면 metadata lock 대기와 app latency spike를 장애처럼 맞게 된다.

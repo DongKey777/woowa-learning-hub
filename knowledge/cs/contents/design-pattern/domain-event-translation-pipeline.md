@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Domain Event Translation Pipeline
+concept_id: design-pattern/domain-event-translation-pipeline
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- domain-event-translation
+- published-language
+- event-contract-evolution
+aliases:
+- domain event translation pipeline
+- integration event mapper
+- published language versioning
+- event contract evolution
+- outbox translator
+- event upcasting strategy
+- domain event to integration event
+- 이벤트 번역 파이프라인
+- published language 계약
+symptoms:
+- 내부 aggregate event를 외부 consumer가 쓰는 integration event로 그대로 노출해 내부 모델 변경이 외부 계약 파괴로 이어진다
+- outbox 저장 시점과 integration payload translation 시점을 구분하지 못해 replay와 계약 변경 전략이 흐려진다
+- translator가 계약 shape 변환을 넘어 도메인 계산과 권한 판단까지 떠안아 god mapper가 된다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/event-envelope-pattern
+next_docs:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/tolerant-reader-event-contract-pattern
+- design-pattern/event-sourcing-pattern-language
+linked_paths:
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/event-envelope-pattern.md
+- contents/design-pattern/bounded-context-relationship-patterns.md
+- contents/design-pattern/anti-corruption-translation-map-pattern.md
+confusable_with:
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/event-envelope-pattern
+forbidden_neighbors: []
+expected_queries:
+- Domain Event Translation Pipeline은 내부 domain event를 published language integration event로 어떻게 번역해?
+- outbox에 domain event snapshot을 저장할지 integration payload까지 완성해 저장할지 어떤 trade-off가 있어?
+- 내부 aggregate 모델이 바뀌어도 외부 event contract를 안정적으로 유지하려면 translator가 왜 필요해?
+- Published Language는 내부 entity dump가 아니라 consumer-facing 계약이어야 하는 이유가 뭐야?
+- event contract를 진화시킬 때 optional field 추가, V2 이벤트, upcaster는 어떻게 선택해?
+contextual_chunk_prefix: |
+  이 문서는 Domain Event Translation Pipeline deep dive로, aggregate가 기록한
+  Domain Event를 outbox, translator, event envelope, publisher를 거쳐 Published
+  Language 기반 Integration Event로 변환하며 내부 모델 진화와 외부 계약 안정성을 분리하는
+  방법을 설명한다.
+---
 # Domain Event Translation Pipeline
 
 > 한 줄 요약: Domain Event Translation Pipeline은 내부 도메인 이벤트를 그대로 외부에 내보내지 않고, outbox와 translator를 거쳐 published language로 변환하면서 계약 진화를 관리하는 패턴이다.

@@ -1,6 +1,83 @@
+---
+schema_version: 3
+title: LazyInitializationException Debug Sequence
+concept_id: spring/spring-lazyinitializationexception-debug-sequence
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- lazyinitializationexception-debug
+- transaction-boundary-dto-mapping
+- osiv-fetch-plan
+aliases:
+- lazyinitializationexception debug sequence
+- lazy loading transaction boundary
+- dto mapping lazy exception
+- osiv lazy initialization
+- hibernate lazy initialization exception
+- lazy loading controller service boundary
+- 왜 LazyInitializationException 나지
+- JPA lazy loading 디버깅
+symptoms:
+- LazyInitializationException을 단순히 연관관계를 못 읽은 문제로 보고 접근 위치와 transaction boundary를 추적하지 않는다
+- DTO 변환을 controller나 serializer 쪽에 둔 채 fetch join만 추가하려 한다
+- OSIV on에서는 증상이 숨고 off에서는 터지는 차이를 경계 위반 신호로 해석하지 못한다
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- spring/spring-persistence-transaction-web-service-repository-primer
+- database/jdbc-jpa-mybatis-basics
+next_docs:
+- spring/lazy-loading-dto-mapping-checklist
+- spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
+- spring/open-session-in-view-tradeoffs
+- database/n-plus-one-query-detection-solutions
+linked_paths:
+- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
+- contents/spring/spring-lazy-loading-dto-mapping-checklist.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
+- contents/database/n-plus-one-query-detection-solutions.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- spring/lazy-loading-dto-mapping-checklist
+- spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card
+- spring/open-session-in-view-tradeoffs
+- spring/controller-entity-return-vs-dto-return-primer
+- database/n-plus-one-query-detection-solutions
+forbidden_neighbors: []
+expected_queries:
+- LazyInitializationException이 나면 stack trace에서 어디를 먼저 봐야 해?
+- lazy 연관을 controller에서 DTO로 바꾸면 transaction boundary 밖 접근이 되는 이유가 뭐야?
+- OSIV on에서는 안 터지고 off에서 LazyInitializationException이 나는 차이를 어떻게 해석해?
+- service 안에서 DTO를 만들었는데도 lazy exception이 나면 fetch plan을 어떻게 봐야 해?
+- LazyInitializationException과 N+1은 둘 다 fetch 문제지만 디버깅 순서가 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 LazyInitializationException troubleshooting playbook으로,
+  예외가 난 getter 위치, DTO 변환 위치, service transaction boundary,
+  OSIV 설정, fetch join 또는 EntityGraph 필요성을 순서대로 확인한다.
+---
 # LazyInitializationException Debug Sequence
 
 > 한 줄 요약: `LazyInitializationException`은 "연관을 못 읽었다"보다 "연관을 읽은 위치가 transaction 경계 밖이었다"에 가깝기 때문에, 초급자는 먼저 `어디서 접근했는지`를 따라가며 transaction boundary, DTO 변환 시점, OSIV 설정을 차례대로 분리해서 본다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`LazyInitializationException`이 controller에서 터져요" | roomescape 예약 목록을 조회한 뒤 controller/serializer에서 member나 time 연관을 읽는 흐름 | 예외가 난 getter 위치가 transaction 밖인지 먼저 따라간다 |
+| "fetch join만 계속 추가하면 되나요?" | shopping-cart 주문 조회에서 order item, product 연관을 DTO로 바꾸다 예외가 나는 코드 | fetch plan과 DTO mapping boundary를 함께 본다 |
+| "OSIV 켜면 안 터지고 끄면 터져요" | local에서는 통과하지만 production 설정이나 test에서 lazy 접근이 드러나는 상황 | OSIV가 숨긴 service boundary 위반 신호로 해석한다 |
 
 **난이도: 🟢 Beginner**
 

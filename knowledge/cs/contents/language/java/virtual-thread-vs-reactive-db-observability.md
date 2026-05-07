@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Virtual Thread vs Reactive DB Observability
+concept_id: language/virtual-thread-reactive-db
+canonical: true
+category: language
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- virtual-thread
+- reactive
+- database-observability
+aliases:
+- Virtual Thread vs Reactive DB Observability
+- JDBC vs R2DBC observability
+- virtual thread JDBC vs reactive DB
+- Loom vs WebFlux database troubleshooting
+- thread timeline vs signal timeline
+- virtual thread reactive DB 관측 비교
+symptoms:
+- virtual thread JDBC와 reactive DB stack의 병목 신호를 모두 thread dump만으로 해석하려 해 reactive signal age와 demand를 놓쳐
+- reactive timeout이나 cancel signal을 DB query가 실제 중단됐다는 증거로 바로 해석해 driver cleanup과 server-side cancel 확인을 빠뜨려
+- Hikari pending acquire, R2DBC pending acquire, operator backlog, lock wait를 같은 이름의 latency로 뭉개 원인 분리를 못 해
+intents:
+- comparison
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/virtual-threads-project-loom
+- language/jdbc-observability-under-virtual-threads
+- spring/webflux-vs-mvc
+next_docs:
+- language/virtual-thread-jdbc-cancel-semantics
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- system-design/backpressure-and-load-shedding-design
+linked_paths:
+- contents/language/java/virtual-threads-project-loom.md
+- contents/language/java/virtual-thread-spring-jdbc-httpclient-framework-integration.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+confusable_with:
+- language/jdbc-observability-under-virtual-threads
+- spring/webflux-vs-mvc
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+forbidden_neighbors: []
+expected_queries:
+- virtual thread JDBC와 reactive R2DBC의 DB 장애 관측은 thread timeline과 signal timeline에서 어떻게 달라?
+- Hikari pending acquire와 R2DBC pending acquire를 각각 어떤 증거로 해석해야 해?
+- reactive timeout cancel signal이 나도 DB query가 계속 돌 수 있는 이유를 설명해줘
+- Loom vs WebFlux에서 database bottleneck을 thread dump, publisher age, demand, pool metric으로 어떻게 비교해?
+- virtual thread와 reactive 중 어떤 스택이 DB lock wait나 backpressure 원인을 더 빨리 드러내?
+contextual_chunk_prefix: |
+  이 문서는 virtual thread + JDBC와 reactive DB stack을 observability 관점에서 고르는 advanced chooser다.
+  JDBC vs R2DBC, Loom vs WebFlux, thread timeline, signal timeline, pending acquire, reactive cancel, backpressure 질문이 본 문서에 매핑된다.
+---
 # Virtual Thread vs Reactive DB Observability
 
 > 한 줄 요약: virtual thread + JDBC는 대기를 thread/pool 타임라인으로 드러내고, reactive DB stack은 대기를 signal/demand 타임라인으로 드러낸다. 둘 다 결국 pool과 DB lock, timeout을 봐야 하지만, virtual thread는 "누가 어디서 block 중인가", reactive는 "어느 publisher가 왜 신호를 못 내보내는가"라는 렌즈가 먼저다.

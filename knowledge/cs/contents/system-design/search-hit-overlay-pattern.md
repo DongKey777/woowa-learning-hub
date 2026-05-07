@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Search Hit Overlay Pattern
+concept_id: system-design/search-hit-overlay-pattern
+canonical: false
+category: system-design
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- search hit overlay pattern
+- stale search hit overlay
+- search stale row patch
+- stale search result patch
+aliases:
+- search hit overlay pattern
+- stale search hit overlay
+- search stale row patch
+- stale search result patch
+- search freshness overlay
+- top k hydrate overlay
+- ranked ids then hydrate
+- search result hydration pattern
+- search result patching
+- search hit enrichment freshness
+- search detail consistency
+- search hit stale after update
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/document-search-ranking-platform-design.md
+- contents/system-design/tenant-aware-search-architecture-design.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Search Hit Overlay Pattern 설계 핵심을 설명해줘
+- search hit overlay pattern가 왜 필요한지 알려줘
+- Search Hit Overlay Pattern 실무 트레이드오프는 뭐야?
+- search hit overlay pattern 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Search Hit Overlay Pattern를 다루는 deep_dive 문서다. search index는 후보를 빨리 찾고, fresher row/detail store는 상위 hit의 몇 개 필드만 안전하게 덮어쓰는 식으로 합치면 모든 search read를 primary read로 바꾸지 않고도 stale 검색 결과를 줄일 수 있다. 검색 질의가 search hit overlay pattern, stale search hit overlay, search stale row patch, stale search result patch처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Search Hit Overlay Pattern
 
 > 한 줄 요약: search index는 후보를 빨리 찾고, fresher row/detail store는 상위 hit의 몇 개 필드만 안전하게 덮어쓰는 식으로 합치면 모든 search read를 primary read로 바꾸지 않고도 stale 검색 결과를 줄일 수 있다.

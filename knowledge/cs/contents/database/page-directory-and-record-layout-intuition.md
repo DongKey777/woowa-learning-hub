@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Page Directory and Record Layout Intuition
+concept_id: database/page-directory-and-record-layout-intuition
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- innodb-page
+- record-layout
+- btree
+- storage-internals
+aliases:
+- page directory
+- record layout
+- infimum supremum
+- heap number
+- page slots
+- InnoDB page structure
+- next record pointer
+- page directory slots
+- InnoDB page 내부 구조
+- record header layout
+symptoms:
+- InnoDB page를 단순한 16KB 바이트 덩어리로 보고 record header와 page directory가 만드는 내부 탐색 구조를 놓치고 있어
+- page split, latch contention, clustered locality를 설명하려면 page 내부 record layout과 directory slot 감각이 필요해
+- infimum, supremum, heap number, next record 같은 storage internals 용어를 연결해서 이해해야 해
+intents:
+- deep_dive
+- definition
+prerequisites:
+- database/clustered-index-locality
+- database/bptree-vs-lsm-tree
+next_docs:
+- database/page-split-merge-fill-factor
+- database/btree-latch-contention-hot-pages
+- database/innodb-buffer-pool-internals
+linked_paths:
+- contents/database/clustered-index-locality.md
+- contents/database/btree-latch-contention-hot-pages.md
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/bptree-vs-lsm-tree.md
+- contents/database/innodb-buffer-pool-internals.md
+confusable_with:
+- database/page-split-merge-fill-factor
+- database/btree-latch-contention-hot-pages
+- database/clustered-index-locality
+forbidden_neighbors: []
+expected_queries:
+- InnoDB page directory와 record layout은 page 내부에서 무엇을 해?
+- infimum과 supremum record가 page boundary에서 왜 필요한지 설명해줘
+- page 내부 record header와 next pointer가 B-tree 탐색과 어떤 관련이 있어?
+- page split이 비싼 이유를 page directory 재배치와 연결해서 알려줘
+- hot page latch contention을 이해하려면 왜 page structure를 알아야 해?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB page directory, record header, infimum, supremum, heap number, next record pointer가 page 내부 검색 구조를 만드는 원리를 다루는 advanced deep dive다.
+  InnoDB page 내부 구조, page directory slots, record layout 질문이 본 문서에 매핑된다.
+---
 # Page Directory and Record Layout Intuition
 
 > 한 줄 요약: InnoDB page는 그냥 데이터 덩어리가 아니라, record header와 page directory가 함께 작동하는 작은 검색 구조다.

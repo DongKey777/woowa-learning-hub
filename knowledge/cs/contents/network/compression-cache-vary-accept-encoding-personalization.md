@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Compression, Cache, Vary, Accept-Encoding, Personalization"
+concept_id: network/compression-cache-vary-accept-encoding-personalization
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- vary-accept-encoding
+- compression-cache-correctness
+- personalized-cache-leak
+aliases:
+- Vary Accept-Encoding
+- compression cache
+- personalized cache
+- content encoding variant
+- CDN vary
+- cache variant mix
+symptoms:
+- gzip/br 압축만 보고 Vary: Accept-Encoding 누락으로 variant가 섞이는 위험을 놓친다
+- 로그인/권한별 personalized response를 public shared cache에 잘못 올린다
+- cache hit ratio만 보고 Content-Encoding 또는 language variant correctness 사고를 놓친다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/vary-content-negotiation-basics-language-compression
+- network/cache-control-practical
+next_docs:
+- network/http-response-compression-buffering-streaming-tradeoffs
+- network/cdn-cache-key-invalidation
+- network/cache-vary-accept-encoding-edge-case
+linked_paths:
+- contents/network/vary-content-negotiation-basics-language-compression.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/cache-control-practical.md
+- contents/network/cdn-cache-key-invalidation.md
+- contents/network/http-state-session-cache.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/cache-vary-accept-encoding-edge-case-playbook.md
+confusable_with:
+- network/vary-content-negotiation-basics-language-compression
+- network/cache-control-practical
+- network/cdn-cache-key-invalidation
+- network/cache-vary-accept-encoding-edge-case
+- network/http-response-compression-buffering-streaming-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "Vary: Accept-Encoding이 없으면 gzip br cache variant가 어떻게 섞여?"
+- "compression과 CDN cache key와 personalization을 같이 봐야 하는 이유는?"
+- "로그인 사용자 응답과 anonymous 응답이 shared cache에서 섞이는 사고를 설명해줘"
+- "Accept-Language Accept-Encoding Content-Encoding variant correctness를 어떻게 관찰해?"
+- "Vary를 너무 넓히면 cache hit ratio가 무너지는 trade-off를 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 compression, Content-Encoding, Vary: Accept-Encoding,
+  Accept-Language, personalized response, CDN cache key, shared cache
+  correctness와 hit ratio trade-off를 다루는 advanced cache playbook이다.
+---
 # Compression, Cache, Vary, Accept-Encoding, Personalization
 
 > 한 줄 요약: 압축과 캐시는 따로 튜닝하는 기능이 아니다. `Accept-Encoding`, personalization, CDN key, `Vary`를 제대로 맞추지 않으면 gzip/br 효율보다 잘못된 캐시 혼합이 더 큰 장애를 만든다.

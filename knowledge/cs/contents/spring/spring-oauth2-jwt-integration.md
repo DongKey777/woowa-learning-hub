@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring OAuth2 and JWT Integration Boundaries
+concept_id: spring/oauth2-jwt-integration
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- oauth2-jwt-integration
+- oauth2-login-internal
+- jwt-boundary
+- authenticationsuccesshandler-token-issuing
+aliases:
+- Spring OAuth2 JWT integration
+- OAuth2 login internal JWT boundary
+- AuthenticationSuccessHandler token issuing
+- OAuth2UserService mapping
+- RequestCache SavedRequest JWT login
+- BFF session token boundary
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/network/http-state-session-cache.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/spring/spring-security-logout-handler-success-boundaries.md
+- contents/security/bff-session-store-outage-degradation-recovery.md
+expected_queries:
+- Spring OAuth2 로그인 성공 후 애플리케이션 JWT는 어디서 발급해야 해?
+- OAuth2 access token과 우리 서비스 JWT를 같은 것으로 봐도 돼?
+- RequestCache SavedRequest와 JWT 무상태 인증은 어떻게 충돌해?
+- BFF 세션과 브라우저 토큰 저장 경계는 어떻게 설계해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Security OAuth2 login 결과와 애플리케이션 내부 JWT 또는 session을
+  분리해서 설계하는 deep dive다. AuthenticationSuccessHandler, OAuth2UserService,
+  SecurityContextRepository, RequestCache, refresh token 저장소, logout 경계를 다룬다.
+---
 # Spring OAuth2 + JWT 통합
 
 > 한 줄 요약: OAuth2 로그인과 애플리케이션 JWT는 역할이 다르므로, 외부 인증 결과를 내부 토큰으로 바꾸는 경계를 분명히 설계해야 한다.

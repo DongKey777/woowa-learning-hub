@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring recv bundle recvmsg multishot buffer ring head recycling
+concept_id: operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- io-uring-recv
+- bundle-recvmsg-multishot
+- buffer-ring-head
+- ioring-recvsend-bundle
+aliases:
+- io_uring recv bundle recvmsg multishot
+- IORING_RECVSEND_BUNDLE
+- buffer ring head recycling
+- CQE byte window
+- tail bid kernel-owned
+- F_BUF_MORE window accounting
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+- contents/operating-system/io-uring-provided-buffers-fixed-buffers-memory-pressure.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-read-vs-read-multishot-incremental-short-read-eof-recycle.md
+- contents/operating-system/io-uring-provided-buffer-ring-head-resync-cq-overflow-worker-handoff.md
+symptoms:
+- recv bundle CQE 하나가 여러 contiguous provided buffer를 소비하는데 CQE 하나 bid 하나로 accounting한다.
+- IOU_PBUF_RING_INC에서 tail bid가 아직 kernel-owned인데 먼저 recycle한다.
+- low-water를 free bid count만으로 잡아 다음 burst가 먹을 contiguous slot 수를 놓친다.
+expected_queries:
+- io_uring recv bundle에서 CQE 하나가 여러 provided buffer를 소비할 때 accounting은 어떻게 해?
+- IORING_RECVSEND_BUNDLE과 IOU_PBUF_RING_INC에서 F_BUF_MORE를 어떻게 해석해?
+- tail remaining bytes와 contiguous slot 수로 low-water를 잡아야 하는 이유는?
+- bid 등장만으로 recycle하지 말고 window 소비 완료와 F_BUF_MORE 해제를 같이 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 recv_multishot과 IORING_RECVSEND_BUNDLE에서 CQE 하나가 여러 contiguous provided
+  buffer를 소비할 수 있고, IOU_PBUF_RING_INC에서는 accounting unit이 bid 하나가 아니라
+  CQE byte window와 아직 kernel-owned인 tail bid로 바뀐다는 점을 설명한다.
+---
 # io_uring recv bundle, recvmsg multishot, buffer-ring head recycling
 
 > 한 줄 요약: `recv_multishot + IORING_RECVSEND_BUNDLE`는 CQE 하나가 여러 contiguous provided buffer를 함께 소비할 수 있고, `IOU_PBUF_RING_INC`가 켜지면 accounting 단위가 "CQE 하나 = bid 하나"가 아니라 "**CQE가 넘긴 byte window + 아직 kernel-owned인 tail bid**"로 바뀐다. 그래서 burst receive에서는 low-water를 free-bid count가 아니라 `tail 잔여 바이트 + 다음 burst가 먹을 contiguous slot 수`로 계산해야 하고, recycle도 `bid 등장`이 아니라 `window 소비 완료 + F_BUF_MORE 해제`를 같이 봐야 안전하다.

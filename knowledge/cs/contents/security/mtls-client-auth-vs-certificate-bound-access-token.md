@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: mTLS Client Auth vs Certificate-Bound Access Token
+concept_id: security/mtls-client-auth-vs-certificate-bound-access-token
+canonical: false
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- mTLS client auth
+- certificate-bound token
+- sender-constrained access token
+- cert bound access token
+aliases:
+- mTLS client auth
+- certificate-bound token
+- sender-constrained access token
+- cert bound access token
+- mutual TLS token binding
+- OAuth mTLS
+- PoP token
+- client certificate binding
+- token replay resistance
+- mixed rollout
+- tls termination metadata
+- cert rotation tail
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+- contents/security/oauth-client-authentication-private-key-jwt-mtls.md
+- contents/security/proof-of-possession-vs-bearer-token-tradeoffs.md
+- contents/security/dpop-token-binding-basics.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/token-misuse-detection-replay-containment.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- mTLS Client Auth vs Certificate-Bound Access Token 차이를 실무 기준으로 설명해줘
+- mTLS client auth를 언제 선택해야 해?
+- mTLS Client Auth vs Certificate-Bound Access Token를 헷갈리지 않게 비교해줘
+- mTLS client auth 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 mTLS Client Auth vs Certificate-Bound Access Token를 다루는 bridge 문서다. mTLS client authentication은 "누가 토큰을 받아 가는가"를 강하게 만들고, certificate-bound access token은 "받아 간 토큰을 누가 실제로 쓰는가"까지 묶으므로, 둘은 비슷해 보여도 보호하는 경계가 다르다. 검색 질의가 mTLS client auth, certificate-bound token, sender-constrained access token, cert bound access token처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # mTLS Client Auth vs Certificate-Bound Access Token
 
 > 한 줄 요약: mTLS client authentication은 "누가 토큰을 받아 가는가"를 강하게 만들고, certificate-bound access token은 "받아 간 토큰을 누가 실제로 쓰는가"까지 묶으므로, 둘은 비슷해 보여도 보호하는 경계가 다르다.

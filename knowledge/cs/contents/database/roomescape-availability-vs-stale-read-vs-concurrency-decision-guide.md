@@ -50,9 +50,7 @@ confusable_with:
 - database/roomescape-reservation-create-read-after-write-bridge
 - database/roomescape-reservation-concurrency-bridge
 - database/roomescape-available-times-active-predicate-antijoin-bridge
-forbidden_neighbors:
-- contents/database/roomescape-reservation-create-read-after-write-bridge.md
-- contents/database/roomescape-available-times-active-predicate-antijoin-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - roomescape에서 가능 시간 조회는 열려 있는데 실제 저장만 막히면 어떤 종류 문제부터 나눠 봐야 해?
 - 예약 직후 첫 새로고침만 이전 값이면 조회 SQL보다 freshness 경로를 먼저 의심하는 기준이 뭐야?

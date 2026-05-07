@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: "Upstream Queueing, Connection Pool Wait, Tail Latency"
+concept_id: network/upstream-queueing-connection-pool-wait-tail-latency
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- queueing
+- connection-pool-wait
+- tail-latency
+aliases:
+- upstream queueing
+- connection pool wait
+- pending acquire
+- pool acquisition timeout
+- tail latency queue
+- head of line in queue
+- fail-fast queueing
+symptoms:
+- upstream service time이 정상인데 gateway p99만 튄다
+- connect time만 보고 connection pool pending wait를 놓친다
+- 큰 pending queue가 overload를 흡수한다고만 보고 timeout budget 소모를 보지 않는다
+- long-lived stream과 짧은 unary 요청이 같은 pool을 공유해 꼬리 지연이 커진다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/connection-keepalive-loadbalancing-circuit-breaker
+next_docs:
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+- network/queue-saturation-attribution-metrics-runbook
+linked_paths:
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/accept-queue-syn-backlog-listen-overflow.md
+- contents/network/proxy-retry-budget-discipline.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/http2-max-concurrent-streams-pending-queue-saturation.md
+- contents/network/connection-pool-starvation-stale-idle-reuse-debugging.md
+- contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md
+- contents/network/queue-saturation-attribution-metrics-runbook.md
+confusable_with:
+- network/connection-pool-starvation-stale-idle-reuse-debugging
+- network/http2-max-concurrent-streams-pending-queue-saturation
+- network/accept-queue-syn-backlog-listen-overflow
+- network/retry-storm-containment-concurrency-limiter-load-shedding
+forbidden_neighbors: []
+expected_queries:
+- "upstream은 빠른데 connection pool wait 때문에 p99가 튀는 패턴을 설명해줘"
+- "connect latency와 connect 시작 전 pending queue 대기는 어떻게 달라?"
+- "pool acquisition timeout과 tail latency를 어떤 metric으로 봐야 해?"
+- "pending queue를 크게 두면 왜 timeout budget을 먼저 태울 수 있어?"
+- "long-lived stream이 unary API connection pool을 독점할 때 어떻게 분리해?"
+contextual_chunk_prefix: |
+  이 문서는 upstream queueing, connection pool pending acquire wait,
+  worker/sidecar queue, timeout budget 소모, p95/p99 tail latency를 다루는
+  advanced playbook이다.
+---
 # Upstream Queueing, Connection Pool Wait, Tail Latency
 
 > 한 줄 요약: 느린 요청의 상당수는 upstream이 응답을 늦게 해서가 아니라, 요청이 실제 네트워크 I/O를 시작하기도 전에 worker queue나 connection pool 대기열에서 시간을 태워서 생긴다.

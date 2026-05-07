@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Advisory Locks vs Row Locks
+concept_id: database/advisory-locks-vs-row-locks
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- advisory-lock
+- row-lock
+- job-serialization
+- lock-scope
+aliases:
+- advisory locks vs row locks
+- advisory lock
+- row lock
+- coarse grained lock
+- job serialization
+- metadata lock vs advisory lock
+- pg advisory lock
+- application lock vs row lock
+- advisory lock row lock 차이
+- 작업 단위 잠금
+symptoms:
+- 배치 job이나 tenant migration 중복 실행을 실제 data row lock으로만 막으려 한다
+- advisory lock을 데이터 정합성 보호 수단으로 오해해 row update invariant를 직접 보장한다고 믿는다
+- metadata lock, row lock, advisory lock을 모두 DB lock이라는 말로 묶어 실패 양상을 구분하지 못한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/gap-lock-next-key-lock
+next_docs:
+- database/db-lease-fencing-coordination
+- database/deadlock-case-study
+- database/queue-claim-skip-locked-fairness
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/deadlock-case-study.md
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/queue-claim-skip-locked-fairness.md
+confusable_with:
+- database/db-lease-fencing-coordination
+- database/transaction-isolation-locking
+- database/gap-lock-next-key-lock
+- database/queue-claim-skip-locked-fairness
+forbidden_neighbors: []
+expected_queries:
+- advisory lock과 row lock은 데이터 row 보호와 작업 단위 직렬화 관점에서 어떻게 달라?
+- PostgreSQL advisory lock으로 재고 차감 정합성을 대신할 수 없는 이유가 뭐야?
+- 같은 tenant report job이 두 번 도는 것을 막을 때 row lock보다 advisory lock이 자연스러운 이유를 설명해줘
+- metadata lock과 advisory lock은 둘 다 잠기는 것처럼 보여도 목적과 실패 양상이 어떻게 달라?
+- advisory lock을 오래 잡으면 장애 감지 지연과 retry 폭증이 생기는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Advisory Locks vs Row Locks chooser로, row lock은 실제 data row의 transactional consistency를
+  보호하고 advisory lock은 application-defined key로 batch/job/workflow entry를 직렬화하는 coordination gate라는
+  보호 대상 차이를 설명한다.
+---
 # Advisory Locks와 Row Locks
 
 > 한 줄 요약: row lock은 데이터 자체를 보호하고, advisory lock은 데이터 밖의 “작업 순서”를 보호한다.

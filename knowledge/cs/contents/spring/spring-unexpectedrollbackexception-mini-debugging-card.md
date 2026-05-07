@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring UnexpectedRollbackException Mini Debugging Card
+concept_id: spring/unexpectedrollbackexception-mini-debugging-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 77
+review_feedback_tags:
+- unexpectedrollbackexception
+- transaction-marked-as
+- rollback-only
+- symptom-router
+aliases:
+- UnexpectedRollbackException mini card
+- transaction marked as rollback-only
+- catch 했는데 마지막에 터짐
+- 마지막 save가 문제가 아님
+- rollback-only beginner debugging
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- contents/spring/spring-rollbackonly-vs-checked-exception-commit-surprise-card.md
+- contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-transactional-basics.md
+symptoms:
+- catch 했는데 method 끝에서 UnexpectedRollbackException이 난다.
+- 마지막 save나 commit 라인이 원인처럼 보이지만 이전 예외가 rollback-only를 만들었다.
+- rollback-only 메시지를 봤지만 어떤 내부 작업이 marker를 찍었는지 모른다.
+confusable_with:
+- spring/transaction-propagation-required-requires-new-rollbackonly-primer
+- spring/rollbackonly-vs-checked-exception-commit-surprise-card
+- spring/unexpectedrollback-rollbackonly-marker-traps
+- spring/transactional-basics
+expected_queries:
+- UnexpectedRollbackException 초급 디버깅 순서를 알려줘
+- catch 했는데 마지막에 transaction marked as rollback-only가 터지는 이유는?
+- 마지막 save가 아니라 이전 실패가 원인인지 어떻게 확인해?
+- rollback-only marker를 symptom-to-cause로 빠르게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 UnexpectedRollbackException을 초급자가 마지막 save 문제로 오해하지 않도록,
+  이미 rollback-only가 된 transaction을 catch-and-continue 코드가 끝까지 끌고 왔다는
+  symptom-to-cause debugging card로 설명한다.
+---
 # Mini Debugging Card for `UnexpectedRollbackException`
 
 > 한 줄 요약: `UnexpectedRollbackException`은 "마지막 save가 문제"라는 뜻이 아니라, **이미 rollback-only가 된 트랜잭션을 catch-and-continue 코드가 끝까지 끌고 왔다**는 신호인 경우가 많다.

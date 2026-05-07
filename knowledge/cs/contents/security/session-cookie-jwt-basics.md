@@ -9,6 +9,15 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- session-cookie-jwt
+- cookie-session-jwt
+- http-stateless
+- jsessionid
 aliases:
 - session cookie jwt
 - cookie session jwt
@@ -40,12 +49,20 @@ contextual_chunk_prefix: |
   누군지 기억, HTTP 상태 없음, JSESSIONID와 JWT 차이 같은 자연어
   paraphrase가 본 문서의 세 갈래 비교에 매핑된다.
 ---
-
 # 세션·쿠키·JWT 기초
 
 > 한 줄 요약: HTTP는 기본적으로 상태가 없어서, 로그인 상태를 유지하려면 쿠키·서버 세션 또는 JWT 중 하나로 "이전에 인증된 사람이 다시 왔다"는 사실을 서버에게 알려야 한다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| browser/auth 장면 | 먼저 볼 개념 |
+|---|---|
+| 로그인 후 새 요청에서 다시 anonymous가 된다 | cookie/session continuity가 이어졌는가 |
+| `JSESSIONID`와 JWT를 같은 저장소처럼 본다 | server session과 signed token을 나눴는가 |
+| cookie는 있는데 다시 login redirect가 난다 | 저장, 전송, 서버 session 복원 중 어디인가 |
+| token은 valid인데 API는 403이다 | 인증 전달이 아니라 인가 문제인가 |
 
 관련 문서:
 

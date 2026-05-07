@@ -59,18 +59,26 @@ expected_queries:
 - "예약 시간 `10:00~10:30` 뒤에 `10:30~11:00`을 넣을 수 있는지 기준을 알고 싶어"
 - "double booking 검사에서 `<` 대신 `<=`를 쓰는 이유를 예약 예제로 보고 싶어"
 contextual_chunk_prefix: |
-  이 문서는 roomescape 예약 충돌을 처음 연결하는 학습자가 [start, end)
-  경계를 왜 쓰는지, 끝 시각과 다음 시작 시각이 같을 때 왜 안 겹친다고
-  읽는지 Woowa 미션과 연결해 잇는 mission_bridge다. 예약 끝과 다음
-  시작이 같은데 왜 허용돼, 반열린 구간을 예약표에 어떻게 읽어,
-  맞닿음과 겹침 구분, prev.end <= start 뜻, 경계 off-by-one 같은
-  자연어 paraphrase가 본 문서의 경계 규칙에 매핑된다.
+  이 문서는 roomescape 예약 충돌을 구현할 때 [start, end) 경계를 실제
+  비교식으로 옮기지 못하는 학습자에게 끝 시각과 다음 시작 시각이
+  맞닿을 때 왜 허용되는지 Woowa 미션과 연결해 잇는 mission_bridge다.
+  10시 30분 끝나면 바로 다음 예약 가능, <= 와 < 중 뭐가 맞나,
+  맞닿음은 겹침이 아님, prev.end 조건 읽기, 경계에서 테스트가 깨짐
+  같은 자연어 paraphrase가 본 문서의 예약 경계 규칙에 매핑된다.
 ---
 # Reservation Interval Half-Open Boundary Card
 
 > 한 줄 요약: 예약 충돌 검사에서 `[start, end)`를 쓰면 "`끝 시각과 다음 시작 시각이 같을 때는 안 겹친다`"를 한 줄로 고정할 수 있어 `TreeMap` 이웃 검사 조건을 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 끝 시각과 다음 시작 시각이 같을 때 겹친다고 처리해서 테스트가 깨져요" | `10:00~10:30` 뒤 `10:30~11:00` 예약 가능 여부 | `[start, end)`에서는 끝 시각은 포함하지 않으므로 맞닿음은 허용한다 |
+| "`<`와 `<=` 중 무엇이 맞는지 헷갈려요" | overlap condition boundary bug | `prev.end <= start`와 `end <= next.start`를 경계 규칙으로 고정한다 |
+| "`[start, end)`를 본 적은 있는데 실제 예약 로직에 못 붙이겠어요" | TreeMap/DB overlap 검사 구현 | inclusive start, exclusive end를 비교식으로 옮긴다 |
 
 관련 문서:
 

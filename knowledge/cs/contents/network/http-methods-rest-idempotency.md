@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: HTTP 메서드, REST, 멱등성
+concept_id: network/http-methods-rest-idempotency
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- http-method-semantics
+- rest-resource-design
+- idempotency-retry-safety
+aliases:
+- http methods rest idempotency
+- HTTP 메서드 REST 멱등성
+- GET POST PUT PATCH DELETE
+- safe method
+- idempotent request
+- REST resource design
+- retry safety
+- RESTful API semantics
+- PUT PATCH difference
+- POST 중복 생성
+- idempotency key
+symptoms:
+- GET, POST, PUT, PATCH, DELETE를 URL 모양이나 Spring annotation 이름으로만 외워 HTTP 의미와 리소스 상태 변화를 설명하지 못한다
+- safe와 idempotent를 같은 말로 보고 조회 안전성, 최종 상태 동일성, 네트워크 재시도 안전성을 섞는다
+- POST 결제나 주문 생성 재시도에서 중복 생성 위험과 idempotency key 필요성을 놓친다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- network/http-methods-rest-idempotency-basics
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+- network/grpc-vs-rest
+- network/timeout-retry-backoff-practical
+- network/api-gateway-auth-rate-limit-chain
+linked_paths:
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/grpc-vs-rest.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+confusable_with:
+- network/http-methods-rest-idempotency-basics
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+- network/http-status-codes-basics
+forbidden_neighbors: []
+expected_queries:
+- HTTP GET POST PUT PATCH DELETE를 safe와 idempotent 기준으로 어떻게 API 설계에 적용해야 해?
+- REST는 URL을 예쁘게 짓는 규칙이 아니라 resource와 method 의미를 지키는 것이라는 뜻을 설명해줘
+- PUT과 PATCH 차이는 전체 교체와 부분 수정 말고 재시도 멱등성 관점에서 어떻게 봐야 해?
+- POST 결제 요청이 timeout 후 재시도되면 왜 중복 결제가 생길 수 있고 idempotency key가 필요한지 알려줘
+- safe method와 idempotent method는 무엇이 다르고 네트워크 retry 정책과 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 HTTP method semantics, REST resource design, safe/idempotent 성질을 retry safety로 연결하는 intermediate bridge다.
+  GET, POST, PUT, PATCH, DELETE, safe method, idempotency, RESTful API, resource/action separation, POST duplicate submit, payment retry, idempotency key 설계를 다룬다.
+---
 # HTTP 메서드, REST, 멱등성
 
 

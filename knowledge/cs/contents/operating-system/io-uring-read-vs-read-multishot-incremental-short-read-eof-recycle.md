@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: io_uring read vs read_multishot Incremental Short Read EOF Recycle
+concept_id: operating-system/io-uring-read-vs-read-multishot-incremental-short-read-eof-recycle
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- io-uring-read
+- vs-read-multishot
+- incremental-short-read
+- iou-pbuf-ring
+aliases:
+- io_uring read vs read_multishot
+- IOU_PBUF_RING_INC
+- short read EOF recycle
+- IORING_CQE_F_BUF_MORE
+- same-bid cursor
+- bid window retire
+intents:
+- comparison
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-provided-buffer-ring-head-resync-cq-overflow-worker-handoff.md
+- contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md
+confusable_with:
+- operating-system/io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling
+- operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics
+- operating-system/io-uring-multishot-cancel-rearm-drain-shutdown
+expected_queries:
+- io_uring read와 read_multishot에서 short read나 EOF가 곧 bid recycle을 뜻해?
+- IORING_CQE_F_BUF_MORE는 지금 더 읽을 데이터가 있다는 뜻이야 아니면 same-bid cursor 의미야?
+- IOU_PBUF_RING_INC에서 bid/window retire 기준으로 recycle해야 하는 이유는?
+- read_multishot는 pollable fd에서만 살아 있고 F_MORE로 generation 종료를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 IOU_PBUF_RING_INC에서 short read나 EOF가 곧 bid completion을 뜻하지 않으며,
+  IORING_CQE_F_MORE는 request generation 종료를, F_BUF_MORE는 same-bid cursor가 아직 닫히지
+  않았음을 나타낸다는 점을 비교한다.
+---
 # io_uring read vs read_multishot: incremental short-read, EOF, recycle timing
 
 > 한 줄 요약: `IOU_PBUF_RING_INC`에서는 `short read`나 `EOF`가 곧바로 "이 `bid`는 끝났다"를 뜻하지 않는다. `read_multishot`는 pollable fd에서만 살아 있고 `IORING_CQE_F_MORE`로 request generation 종료를, `IORING_CQE_F_BUF_MORE`로 같은 `bid`의 continuation 가능성을 따로 봐야 하며, 이 `F_BUF_MORE`는 "지금 더 읽을 데이터가 있다"가 아니라 "**same-`bid` cursor가 아직 안 닫혔다**"에 가깝다. 일반 `read`도 pipe/regular file에서 같은 `bid`를 여러 SQE에 걸쳐 이어 쓸 수 있으므로 recycle은 `res`나 EOF가 아니라 `bid/window retire` 기준으로 해야 한다.

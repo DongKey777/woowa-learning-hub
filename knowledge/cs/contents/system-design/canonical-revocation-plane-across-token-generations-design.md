@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Canonical Revocation Plane Across Token Generations 설계
+concept_id: system-design/canonical-revocation-plane-across-token-generations-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- canonical revocation plane across token generations
+- mixed-version token revocation
+- legacy new token coexistence
+- canonical revoke ledger
+aliases:
+- canonical revocation plane across token generations
+- mixed-version token revocation
+- legacy new token coexistence
+- canonical revoke ledger
+- alias mapping
+- alias projection
+- token generation coexistence
+- generation-aware revoke fan-out
+- canonical family quarantine
+- family quarantine release gate
+- legacy verifier alias miss
+- multi-generation revoke propagation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/refresh-family-rotation-cutover-design.md
+- contents/system-design/revocation-bus-regional-lag-recovery-design.md
+- contents/system-design/refresh-reauth-escalation-matrix-design.md
+- contents/system-design/edge-verifier-claim-skew-fallback-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/token-misuse-detection-replay-containment.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Canonical Revocation Plane Across Token Generations 설계 설계 핵심을 설명해줘
+- canonical revocation plane across token generations가 왜 필요한지 알려줘
+- Canonical Revocation Plane Across Token Generations 설계 실무 트레이드오프는 뭐야?
+- canonical revocation plane across token generations 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Canonical Revocation Plane Across Token Generations 설계를 다루는 deep_dive 문서다. canonical revocation plane across token generations 설계는 legacy/new access token, refresh token, verifier, cache tier가 함께 살아 있는 overlap window 동안 세대별 ID를 canonical subject/session/family scope로 접어 넣고, revoke fan-out과 family quarantine를 한 state machine으로 운영해 zombie allow와 lineage fork를 동시에 막는 운영 설계다. 검색 질의가 canonical revocation plane across token generations, mixed-version token revocation, legacy new token coexistence, canonical revoke ledger처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Canonical Revocation Plane Across Token Generations 설계
 
 > 한 줄 요약: canonical revocation plane across token generations 설계는 legacy/new access token, refresh token, verifier, cache tier가 함께 살아 있는 overlap window 동안 세대별 ID를 canonical subject/session/family scope로 접어 넣고, revoke fan-out과 family quarantine를 한 state machine으로 운영해 zombie allow와 lineage fork를 동시에 막는 운영 설계다.

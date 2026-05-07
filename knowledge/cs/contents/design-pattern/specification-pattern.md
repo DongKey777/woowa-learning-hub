@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Specification Pattern
+concept_id: design-pattern/specification-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- specification-pattern
+- predicate-composition
+- policy-boundary
+aliases:
+- specification pattern
+- predicate composition
+- order search filter
+- eligibility rule
+- jpa specification
+- specification vs query service
+- specification vs policy object
+- boolean specification
+- rich decision result
+- 조건 명세 패턴
+symptoms:
+- 복잡한 조건문을 service if-else로 반복해 조건 조합, 재사용, 단위 테스트가 어려워진다
+- Specification에 거절 사유, 수수료, 후속 액션까지 넣어 boolean condition과 rich policy decision이 섞인다
+- JPA Specification을 쓰면 도메인 명세와 조회 성능 문제가 자동으로 해결된다고 오해한다
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/layered-validation-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/composition-over-inheritance-practical
+next_docs:
+- design-pattern/specification-combinator-libraries
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/query-object-search-criteria-pattern
+linked_paths:
+- contents/design-pattern/layered-validation-pattern.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/query-object-search-criteria-pattern.md
+- contents/design-pattern/composition-over-inheritance-practical.md
+- contents/design-pattern/pattern-selection.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/specification-combinator-libraries.md
+confusable_with:
+- design-pattern/policy-object-pattern
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/query-object-search-criteria-pattern
+- design-pattern/strategy-pattern
+forbidden_neighbors: []
+expected_queries:
+- Specification Pattern은 조건식을 재사용 가능한 명세 객체로 만들고 AND OR NOT 조합을 가능하게 하는 패턴이야?
+- Strategy는 행동을 바꾸고 Specification은 참거짓 조건을 조합한다는 차이가 뭐야?
+- Policy Object는 이유, 수수료, 다음 액션 같은 rich decision을 돌려주고 Specification은 boolean에 강한 이유가 뭐야?
+- JPA Specification과 도메인 Specification은 겹칠 수 있지만 같은 것은 아닌 이유가 뭐야?
+- 검색 조건이 화면 요구라면 domain specification보다 Query Object나 Query Service가 더 자연스러운 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Specification Pattern playbook으로, "이 조건을 만족하는가"를 boolean
+  명세 객체로 분리하고 AND/OR/NOT 조합을 통해 검색 필터, eligibility rule, guard를
+  재사용하되, rich decision은 Policy Object로, 화면 조회 계약은 Query Object/Query Service로
+  넘기는 경계를 설명한다.
+---
 # Specification Pattern: 조건식을 조합 가능한 도메인 규칙으로 만들기
 
 > 한 줄 요약: Specification 패턴은 복잡한 조건문을 재사용 가능한 명세 객체로 분리해, 검색·검증·정책 판단을 조합 가능하게 만든다.
@@ -28,6 +100,8 @@ backend에서는 다음 상황에서 특히 유용하다.
 - 쿠폰/회원/권한 조건을 조합할 때
 - 승인 가능 여부를 계산할 때
 - 정책이 `AND`, `OR`, `NOT`으로 합성될 때
+
+핵심은 조건을 객체로 만든다는 사실보다, 그 조건이 **도메인 언어로 이름 붙고 다른 조건과 조합될 수 있는가**다. 이름 없는 predicate만 늘어나면 다시 흩어진 if문과 크게 다르지 않다.
 
 retrieval-anchor-keywords: specification pattern, 검증 규칙 교체, validation rule replacement, predicate composition, order search filter, eligibility rule, jpa specification, specification vs query service, specification vs policy object, boolean specification, rich decision result, 처음 배우는데 specification, specification 뭐예요
 

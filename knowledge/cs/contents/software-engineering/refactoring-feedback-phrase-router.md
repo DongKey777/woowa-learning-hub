@@ -37,7 +37,7 @@ prerequisites:
 - software-engineering/readable-code-layering-test-feedback-loop-primer
 - software-engineering/test-strategy-basics
 next_docs:
-- software-engineering/refactoring-first-failing-test-bridge
+- software-engineering/refactoring-first-failing-test
 - software-engineering/layered-architecture-basics
 - software-engineering/test-strategy-basics
 linked_paths:

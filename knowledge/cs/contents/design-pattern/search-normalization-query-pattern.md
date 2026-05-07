@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Search Normalization and Query Pattern
+concept_id: design-pattern/search-normalization-query-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- search-normalization
+- query-fingerprint
+- pagination-parity
+aliases:
+- search normalization
+- query normalization
+- criteria canonicalization
+- normalized filter set
+- normalized sort contract
+- query fingerprint
+- dual read parity input
+- cursor comparability
+- normalization version rollout
+- cache namespace bump
+symptoms:
+- blank와 null, status 순서, sort alias 차이 때문에 의미상 같은 검색이 다른 SQL, cache key, cursor 결과를 만든다
+- old read model과 new read model의 dual-read mismatch가 데이터 차이인지 input normalization drift인지 분리되지 않는다
+- normalization version을 바꾸면서 cursor version, cache namespace, parity sample key를 함께 버전 관리하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/query-object-search-criteria-pattern
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+next_docs:
+- design-pattern/normalization-version-rollout-playbook
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/read-model-cutover-guardrails
+linked_paths:
+- contents/design-pattern/query-object-search-criteria-pattern.md
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/normalization-version-rollout-playbook.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+confusable_with:
+- design-pattern/query-object-search-criteria-pattern
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/dual-read-pagination-parity-sample-packet-schema
+- design-pattern/normalization-version-rollout-playbook
+forbidden_neighbors: []
+expected_queries:
+- Search normalization은 blank, null, 중복 status, sort alias를 canonical query contract로 정리하는 패턴이야?
+- 같은 의미의 검색 조건이 다른 cache key와 cursor 결과를 만들지 않게 normalized query fingerprint가 필요한 이유가 뭐야?
+- dual-read parity에서 raw query string이 아니라 normalized contract를 sample key로 써야 하는 이유가 뭐야?
+- normalization rule이 바뀌면 cursor version, cache namespace, rejection reason도 함께 버전 관리해야 하는 이유가 뭐야?
+- validation은 잘못된 요청을 막고 normalization은 의미상 같은 요청을 같은 형태로 정리한다는 차이가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Search Normalization and Query Pattern playbook으로, raw query parameter를
+  normalized filter set, normalized sort, page size cap, query fingerprint, normalization
+  outcome으로 표준화해 cache key, cursor pagination, dual-read parity, cutover 비교의 입력
+  의미를 안정화하는 방법을 설명한다.
+---
 # Search Normalization and Query Pattern
 
 > 한 줄 요약: 검색 API는 조건을 받는 것보다 조건을 정규화하는 것이 더 중요할 때가 많고, Query Object 앞단의 normalization 규칙이 없으면 같은 의미의 질의가 서로 다른 결과와 캐시 키를 만들기 쉽다.
@@ -33,6 +105,8 @@ retrieval-anchor-keywords: search normalization, query normalization, criteria c
 이런 차이가 그대로 query layer로 내려가면 같은 의미의 요청도 서로 다른 결과, 다른 캐시 키, 다른 SQL로 이어질 수 있다.
 
 Search normalization 패턴은 Query Object를 **실행 가능한 읽기 계약으로 표준화하는 단계**다.
+
+좋은 normalization 결과는 raw request의 흔적을 지우는 것이 아니라, read layer가 공유할 수 있는 canonical contract와 보정/거절 이유를 함께 남긴다.
 
 ### Retrieval Anchors
 

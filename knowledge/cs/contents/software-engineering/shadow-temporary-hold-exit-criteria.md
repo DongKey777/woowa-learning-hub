@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Temporary Hold Exit Criteria
+concept_id: software-engineering/shadow-temporary-hold-exit-criteria
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- temporary-hold
+- governance
+- exit-criteria
+aliases:
+- temporary hold exit criteria
+- shadow temporary hold review
+- hold expiration governance
+- hold escalate absorb officialize
+- bounded pause shadow path
+- temporary_hold 종료 기준
+symptoms:
+- temporary_hold를 나중에 보자는 parking lot처럼 쓰고 expires_at, resume_state, extension_count, evidence_expected_at_review를 남기지 않아
+- hold 이유가 끝났는데도 expire하지 않고 같은 shadow path를 계속 연장해 implementation backlog를 숨겨
+- 반복 hold가 structured data path나 사람 판단 choreography로 굳었는데 absorb 또는 officialize로 재분류하지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-catalog-review-cadence-profiles
+next_docs:
+- software-engineering/shadow-process-officialization-absorption-criteria
+- software-engineering/shadow-lifecycle-scorecard-metrics
+- software-engineering/shadow-retirement-proof-metrics
+linked_paths:
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/break-glass-path-segmentation.md
+confusable_with:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-process-officialization-absorption-criteria
+- software-engineering/shadow-catalog-review-cadence-profiles
+forbidden_neighbors: []
+expected_queries:
+- temporary_hold를 parking lot가 아니라 bounded pause로 운영하려면 expire, extend, escalate를 어떻게 판정해?
+- hold_reason, expires_at, resume_state, extension_count, evidence_expected_at_review를 왜 entry와 packet에 남겨야 해?
+- 분기말 freeze 때문에 멈춘 absorb 작업은 freeze가 끝나면 어떤 조건에서 resume_state로 복귀해야 해?
+- temporary hold가 여러 번 연장되고 spreadsheet가 source of truth가 되면 왜 absorb로 escalation해야 해?
+- 사람 판단 순서가 반복 hold의 핵심이면 officialize가 absorb보다 맞는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shadow catalog의 temporary_hold를 expire, bounded extend, absorb/officialize escalation 중 하나로 매 review에서 판정하게 하는 advanced exit criteria playbook이다.
+---
 # Temporary Hold Exit Criteria
 
 > 한 줄 요약: `temporary_hold`는 "나중에 보자"가 아니라 bounded pause여야 하며, 각 review마다 hold를 종료해 `resume_state`로 복귀할지, 기한과 범위를 좁혀 한 번 더 연장할지, 아니면 shadow need가 굳어져 `absorb` 또는 `officialize`로 승격해야 할지를 concrete example로 판정해야 한다.

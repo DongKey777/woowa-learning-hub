@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring Docker Compose and Kubernetes Env Injection Basics Primer
+concept_id: spring/docker-compose-k8s-env-injection-basics-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- docker-compose-k8s
+- env-injection
+- docker-compose-env
+- kubernetes-configmap-env
+aliases:
+- Docker Compose Spring env
+- Kubernetes ConfigMap Spring env
+- Spring env var naming
+- platform env injection
+- Compose .env interpolation
+- Kubernetes envFrom ConfigMap
+- container process environment
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-spring-application-json-primer.md
+- contents/spring/spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md
+confusable_with:
+- spring/relaxed-binding-env-var-cheatsheet
+- spring/property-source-precedence-quick-guide
+- spring/spring-application-json-primer
+- spring/conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer
+expected_queries:
+- Docker Compose나 Kubernetes에서 Spring property env var 이름은 어떻게 정해?
+- Compose .env에 적었는데 Spring Boot가 못 읽는 이유가 뭐야?
+- ConfigMap key와 컨테이너 환경 변수 이름을 어떻게 구분해?
+- Spring property key와 플랫폼 env injection 문제를 어떻게 나눠 봐?
+contextual_chunk_prefix: |
+  이 문서는 Spring property canonical key, env var 이름 변환, Docker Compose
+  environment/env_file/.env interpolation, Kubernetes ConfigMap env/envFrom/valueFrom,
+  container process environment, property source precedence를 bridge한다.
+  Spring이 env var를 못 읽는다는 증상을 naming mistake와 platform injection mistake로 나눈다.
+---
 # Spring Docker Compose and Kubernetes Env Injection Basics: property 이름과 플랫폼 주입 실수 분리하기
 
 > 한 줄 요약: Spring 설정 문제가 보일 때는 먼저 **Spring이 기대하는 canonical property key**를 적고, 그다음 **플랫폼이 실제로 컨테이너 process environment에 어떤 env var를 넣었는지**를 분리해서 보면 된다.

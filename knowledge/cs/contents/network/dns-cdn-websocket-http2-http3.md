@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "DNS, CDN, HTTP/2, HTTP/3"
+concept_id: network/dns-cdn-websocket-http2-http3
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- browser-request-path-overview
+- dns-cdn-http2-http3
+- edge-delivery-performance
+aliases:
+- DNS CDN HTTP2 HTTP3
+- browser request path
+- recursive resolver authoritative DNS
+- CDN cache hit miss
+- HTTP2 multiplexing HTTP3 QUIC
+- edge delivery TTFB
+symptoms:
+- URL 입력부터 pixel 표시까지 DNS CDN transport 계층을 한 덩어리로만 설명한다
+- DNS TTL 전환, CDN cache key, HTTP/2 TCP HOL, HTTP/3 QUIC trade-off를 서로 분리하지 못한다
+- HTTP/2 server push 같은 오래된 최적화와 현대 대안인 103 Early Hints를 구분하지 않는다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- network/dns-basics
+- network/http1-http2-http3-beginner-comparison
+next_docs:
+- network/dns-ttl-cache-failure-patterns
+- network/cdn-cache-key-invalidation
+- network/request-timing-decomposition
+- network/http2-http3-connection-reuse-coalescing
+- network/http3-quic-practical-tradeoffs
+linked_paths:
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/cdn-cache-key-invalidation.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http3-quic-practical-tradeoffs.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/cdn-cache-key-invalidation
+- network/http1-http2-http3-beginner-comparison
+- network/http3-quic-practical-tradeoffs
+- network/request-timing-decomposition
+forbidden_neighbors: []
+expected_queries:
+- "브라우저 URL 입력부터 DNS CDN HTTP/2 HTTP/3까지 전체 요청 경로를 설명해줘"
+- "DNS TTL과 CDN cache miss와 TTFB가 각각 어느 계층 병목인지 구분해줘"
+- "HTTP/2 multiplexing과 HTTP/3 QUIC이 edge delivery에서 어떤 차이를 만들어?"
+- "CDN cache hit miss와 Origin Shield가 브라우저 성능에 어떤 영향을 줘?"
+- "HTTP/2 server push가 실전에서 줄고 103 Early Hints가 대안이 된 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 browser request path를 DNS recursive/authoritative lookup,
+  CDN edge cache hit/miss, TTFB, HTTP/2 multiplexing/TCP HOL, HTTP/3 QUIC
+  trade-off까지 큰 그림으로 묶는 advanced deep dive다.
+---
 # DNS, CDN, HTTP/2, HTTP/3
 
 **난이도: 🔴 Advanced**

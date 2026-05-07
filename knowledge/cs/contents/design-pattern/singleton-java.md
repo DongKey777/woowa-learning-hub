@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Singleton Java Implementation
+concept_id: design-pattern/singleton-java
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- java-singleton
+- holder-idiom
+- singleton-thread-safety
+aliases:
+- singleton java implementation
+- singleton java basics
+- double checked locking
+- holder idiom
+- enum singleton
+- serialization reflection classloader
+- spring singleton scope
+- volatile singleton
+- lazy singleton java
+- java singleton thread safe
+symptoms:
+- lazy singleton을 thread safety 없이 구현하거나 double checked locking에서 volatile을 빼 memory visibility 문제가 생긴다
+- Java Singleton을 JVM 전체 하나로 이해하지만 classloader, serialization, reflection에 의해 복제될 수 있다는 점을 놓친다
+- Spring singleton bean과 static getInstance singleton을 같은 것으로 보고 DI, testability, lifecycle 차이를 무시한다
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- design-pattern/singleton
+- language/object-oriented-core-principles
+- spring/ioc-container-internals
+next_docs:
+- design-pattern/singleton-vs-di-container-scope
+- design-pattern/service-locator-antipattern
+- spring/bean-naming-qualifier-rename-pitfalls-primer
+linked_paths:
+- contents/design-pattern/singleton.md
+- contents/design-pattern/singleton-vs-di-container-scope.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/design-pattern/factory.md
+- contents/spring/ioc-di-container.md
+confusable_with:
+- design-pattern/singleton
+- design-pattern/singleton-vs-di-container-scope
+- spring/ioc-container-internals
+- design-pattern/service-locator-antipattern
+forbidden_neighbors: []
+expected_queries:
+- Java Singleton은 private constructor, static instance, public accessor로 구현하지만 thread safety를 어떻게 보장해?
+- Holder idiom은 class loading 보장으로 lazy하고 thread safe한 singleton을 만드는 방법이야?
+- double checked locking에서 volatile이 없으면 반쯤 초기화된 객체를 볼 수 있는 이유가 뭐야?
+- enum singleton은 serialization과 reflection에 상대적으로 강한 이유가 뭐야?
+- Java Singleton과 Spring singleton bean은 전역 접근, lifecycle, testability 관점에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Singleton Java Implementation playbook으로, eager singleton, synchronized lazy,
+  initialization-on-demand holder idiom, volatile double-checked locking, enum singleton,
+  serialization/reflection/classloader caveat, Spring singleton scope와의 차이를 설명한다.
+---
 # 싱글톤 (Singleton) Java 구현 방법
 
 > 작성자 : [서그림](https://github.com/Seogeurim)

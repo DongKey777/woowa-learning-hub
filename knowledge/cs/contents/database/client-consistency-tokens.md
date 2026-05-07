@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Client Consistency Tokens
+concept_id: database/client-consistency-tokens
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- client-consistency-token
+- token-aware-read-routing
+- multi-tab-session-consistency
+aliases:
+- client consistency token
+- consistency token
+- session consistency token
+- causal token
+- dependency token
+- freshness contract
+- session watermark
+- x-consistency-token
+- gtid header
+- lsn header
+- 클라이언트 consistency token
+- 세션 워터마크
+symptoms:
+- 같은 계정의 여러 탭이나 디바이스가 서로 다른 최신선을 보고 있어
+- 서버 세션 affinity만으로 read-your-writes나 monotonic reads를 보장하기 어려워
+- stateless edge나 replica routing에서 클라이언트가 본 최신 시점을 다음 요청에 전달해야 해
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/read-your-writes-session-pinning
+- database/monotonic-reads-session-guarantees
+next_docs:
+- database/causal-consistency-intuition
+- database/replica-lag-read-after-write-strategies
+- database/replica-lag-observability-routing-slo
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/monotonic-reads-session-guarantees.md
+- contents/database/causal-consistency-intuition.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/replica-read-routing-anomalies.md
+confusable_with:
+- database/read-your-writes-session-pinning
+- database/causal-consistency-intuition
+- database/replica-lag-read-after-write-strategies
+forbidden_neighbors: []
+expected_queries:
+- client consistency token은 클라이언트가 마지막으로 본 시점을 어떻게 서버에 전달해?
+- 여러 탭에서 같은 계정이 오래된 데이터를 보지 않게 하려면 어떤 token 계약이 필요해?
+- X-Consistency-Token이나 LSN header를 read routing에 쓰는 흐름을 설명해줘
+- server-side sticky session과 client-carried consistency token은 언제 다르게 선택해?
+- causal token과 monotonic read token은 freshness 보장에서 어떤 차이가 있어?
+contextual_chunk_prefix: |
+  이 문서는 클라이언트가 마지막으로 본 LSN, GTID, commit version, session watermark를 다음 요청에 싣는 consistency token 설계를 다루는 advanced deep dive다.
+  client consistency token, x-consistency-token, session watermark, token-aware routing, multi-tab consistency 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Client Consistency Tokens
 
 > 한 줄 요약: consistency token은 클라이언트가 “내가 마지막으로 본 시점”을 서버에 알려 주는 계약이다.

@@ -1,6 +1,6 @@
 ---
 schema_version: 3
-title: 중복 제출 방지: UNIQUE 제약 vs Idempotency Key vs Pending Row Recovery 결정 가이드
+title: '중복 제출 방지: UNIQUE 제약 vs Idempotency Key vs Pending Row Recovery 결정 가이드'
 concept_id: database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide
 canonical: false
 category: database
@@ -56,7 +56,10 @@ confusable_with:
 - database/unique-vs-locking-read-duplicate-primer
 - database/idempotency-key-and-deduplication
 - database/pending-row-recovery-primer
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/database/idempotency-key-status-contract-examples.md
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/unique-claim-existing-row-reuse-primer.md
 expected_queries:
 - 중복 요청 한 번만 처리하려면 unique 제약부터 볼지 멱등성 키부터 볼지 어떻게 갈라?
 - DuplicateKeyException이 났을 때 이미 끝난 요청 재사용 문제랑 아직 processing 중인 요청을 어떻게 구분해?
@@ -64,12 +67,12 @@ expected_queries:
 - 같은 주문 생성 재시도에서 unique, idempotency key, pending recovery가 각각 맡는 역할을 한 장으로 설명해줘
 - 멱등성 키만 있으면 중복 제출이 끝나는 줄 알았는데 unique 제약이나 recovery 규칙이 왜 또 필요해?
 contextual_chunk_prefix: |
-  이 문서는 학습자가 중복 제출 방지를 모두 같은 문제로 보고 UNIQUE 제약,
-  idempotency key, PENDING row recovery를 한 번에 섞어 말할 때 어느 층의
-  문제인지 먼저 갈라 주는 beginner chooser다. exact duplicate winner를
-  DB가 확정해야 하는지, 같은 요청의 기존 결과를 재사용해야 하는지, 이미
-  잡힌 PENDING row가 정말 버려졌는지 판단해야 하는지 같은 자연어 질문이
-  이 문서의 결정 매트릭스와 오선택 패턴에 연결되도록 작성됐다.
+  이 문서는 학습자가 중복 제출 방지를 한 문제로 뭉뚱그리지 않고 저장 승자
+  확정, 같은 재시도 응답 재사용, 멈춘 처리 이어받기를 나눠 결정하게 돕는
+  beginner chooser다. 한 번만 저장되게 막기, 이전 성공 응답 다시 주기,
+  처리 중 멈춘 요청 대신 이어받기, duplicate key 뒤 상태 다시 읽기, 아직
+  진행 중인지 버려졌는지 가르기 같은 자연어 paraphrase가 이 문서의 선택
+  기준에 매핑된다.
 ---
 
 # 중복 제출 방지: UNIQUE 제약 vs Idempotency Key vs Pending Row Recovery 결정 가이드
@@ -77,6 +80,14 @@ contextual_chunk_prefix: |
 ## 한 줄 요약
 
 > exact duplicate winner를 저장 시점에 한 명으로 고정하는 문제면 `UNIQUE`, 같은 요청의 기존 성공/실패 결과를 재사용하는 문제면 `Idempotency Key`, 기존 `PENDING` row가 정말 버려졌는지 판단해 이어받는 문제면 `Pending Row Recovery`를 먼저 본다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "중복 제출을 막으려면 unique랑 idempotency key 중 뭐부터 봐요?" | 결제/주문/lotto 구매 요청이 timeout 뒤 재전송되는 흐름 | 저장 winner 확정과 같은 요청 응답 재사용을 다른 단계로 나눈다 |
+| "`DuplicateKeyException`이면 이미 성공한 요청이라고 봐도 되나요?" | 같은 key row가 있는데 상태가 `PENDING`, `SUCCESS`, `FAILED` 중 무엇인지 모르는 코드 | duplicate 신호 뒤 fresh read로 완료 replay와 in-progress를 재분류한다 |
+| "`PENDING` row가 오래 남아 있으면 바로 takeover하면 되나요?" | worker 장애와 느린 외부 호출이 구분되지 않은 payment/shopping-cart 처리 | abandoned ownership 판단에는 lease, heartbeat, CAS takeover 기준이 필요하다 |
 
 ## 결정 매트릭스
 

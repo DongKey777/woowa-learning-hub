@@ -31,7 +31,7 @@ intents:
 prerequisites: []
 next_docs:
 - spring/property-source-precedence-quick-guide
-- spring/activeprofiles-vs-test-overrides-primer
+- spring/spring-activeprofiles-vs-test-overrides-primer
 - spring/relaxed-binding-env-var-cheatsheet
 - spring/config-additional-location-primer
 linked_paths:
@@ -59,7 +59,6 @@ contextual_chunk_prefix: |
   test override 혼동 / env var 이름 변환 실수 / 외부 config location 탐색
   착시로 나누는 symptom_router다.
 ---
-
 # 설정값이 안 바뀌어요 원인 라우터
 
 ## 한 줄 요약

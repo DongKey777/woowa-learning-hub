@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Config Rollback Safety 설계
+concept_id: system-design/config-rollback-safety-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- config rollback safety
+- last known good config
+- config compatibility
+- staged config rollout
+aliases:
+- config rollback safety
+- last known good config
+- config compatibility
+- staged config rollout
+- config schema evolution
+- rollback key removal
+- config freeze
+- config blast radius
+- config version skew
+- safe config deploy
+- tenant scoped config recovery
+- Config Rollback Safety 설계
+symptoms:
+- Config Rollback Safety 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/deploy-rollback-safety-compatibility-envelope-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/service-mesh-control-plane-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+- contents/system-design/tenant-scoped-config-incident-recovery-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Config Rollback Safety 설계 장애 대응 순서를 알려줘
+- config rollback safety 복구 설계 체크리스트가 뭐야?
+- Config Rollback Safety 설계에서 blast radius를 어떻게 제한해?
+- config rollback safety 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Config Rollback Safety 설계를 다루는 playbook 문서다. config rollback safety 설계는 설정 변경이 코드 버전, 스키마, 라우팅 정책과 어느 범위까지 호환되는지 관리해 잘못된 config 배포 시 빠르게 last-known-good 상태로 복귀할 수 있게 만드는 운영 설계다. 검색 질의가 config rollback safety, last known good config, config compatibility, staged config rollout처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Config Rollback Safety 설계
 
 > 한 줄 요약: config rollback safety 설계는 설정 변경이 코드 버전, 스키마, 라우팅 정책과 어느 범위까지 호환되는지 관리해 잘못된 config 배포 시 빠르게 last-known-good 상태로 복귀할 수 있게 만드는 운영 설계다.

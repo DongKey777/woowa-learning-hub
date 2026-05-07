@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: MySQL RR Exact-Key Probe Assumptions Checklist
+concept_id: database/mysql-rr-exact-key-probe-assumptions-checklist
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- exact-key-probe
+- duplicate-check
+- index-path
+- mixed-writer-path
+aliases:
+- mysql rr exact key probe assumptions checklist
+- same key queue intuition breaks
+- index path drift duplicate check
+- mixed write path duplicate check
+- exact key probe checklist beginner
+- full unique key equality checklist
+- 같은 key queue 착시
+- 왜 같은 키인데 안 막혀요
+- duplicate precheck mixed writer
+symptoms:
+- 같은 business key라서 RR에서 줄이 설 거라고 믿었는데 실제로는 다른 index path나 mixed writer path로 들어가고 있어
+- duplicate pre-check가 full UNIQUE key equality인지, EXPLAIN key와 rows가 기대대로인지 확인하지 않았어
+- API, batch, admin tool이 같은 probe protocol을 타지 않아 exact-key queue 직관이 깨지고 있어
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/explain-checklist-exact-key-locking-reads
+next_docs:
+- database/unique-vs-locking-read-duplicate-primer
+- database/mysql-rc-duplicate-check-pitfall-note
+- database/mysql-repeatable-read-safe-range-checklist
+linked_paths:
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/mysql-rc-duplicate-check-pitfall-note.md
+- contents/database/mysql-repeatable-read-safe-range-checklist.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/database/for-share-vs-for-update-duplicate-check-note.md
+confusable_with:
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/mysql-repeatable-read-safe-range-checklist
+- database/unique-vs-locking-read-duplicate-primer
+forbidden_neighbors: []
+expected_queries:
+- MySQL RR에서 같은 key인데 왜 어떤 요청은 duplicate pre-check에 안 막혀?
+- exact-key probe가 full UNIQUE key equality와 intended index path를 타는지 체크하는 방법을 알려줘
+- index path drift나 mixed writer path가 same key queue 직관을 깨는 예시를 설명해줘
+- duplicate correctness는 UNIQUE가 맡고 RR probe는 보조 queue라는 말을 코드 리뷰에 어떻게 남겨?
+- EXPLAIN key type rows로 exact-key duplicate check 가정을 빠르게 점검해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL REPEATABLE READ exact-key probe의 same-key queue 직관이 full UNIQUE key equality, intended index path, unified writer protocol에 의존한다는 beginner playbook이다.
+  왜 같은 키인데 안 막혀요, index path drift duplicate check, mixed writer path 질문이 본 문서에 매핑된다.
+---
 # MySQL RR exact-key probe assumptions checklist
 
 > 한 줄 요약: MySQL `REPEATABLE READ`에서 "같은 key면 줄이 선다"는 감각은 **같은 index path**와 **같은 write protocol**이 유지될 때만 맞다. 이 문서는 그 가정이 깨졌는지 빠르게 점검하는 beginner checklist다.

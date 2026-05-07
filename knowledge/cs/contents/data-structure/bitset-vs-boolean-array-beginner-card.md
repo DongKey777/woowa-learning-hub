@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: BitSet vs boolean[] Beginner Card
+concept_id: data-structure/bitset-vs-boolean-array-beginner-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- boolean-array-vs-bitset
+- set-algebra-signal
+- dense-id-representation
+aliases:
+- bitset vs boolean array beginner
+- bitset vs boolean[] basics
+- boolean array 뭐예요
+- bitset 뭐예요
+- bit array 처음
+- why not boolean array
+- when to use bitset
+- beginner bitmap primer
+- bitset 헷갈림
+- boolean[] 헷갈림
+- what is bitset
+- basics bit array
+- dense integer id basics
+- 처음 bitset
+- 왜 bitset 써요
+symptoms:
+- boolean[]으로도 되는데 왜 굳이 BitSet을 쓰는지 모르겠어
+- 방문 여부 저장인데 배열처럼 볼지 집합처럼 볼지 헷갈려
+- 한 칸씩 읽는 문제와 집합 연산 문제를 구분하기 어렵다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/basic
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+next_docs:
+- data-structure/bitset-vs-roaring-bitmap-handoff
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+linked_paths:
+- contents/data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge.md
+- contents/data-structure/bitset-vs-roaring-bitmap-beginner-handoff.md
+- contents/data-structure/map-set-queue-priorityqueue-trie-bitmap-selection-primer.md
+- contents/algorithm/bitset-optimization-patterns.md
+confusable_with:
+- data-structure/bitmap-vs-set-dense-integer-id-beginner-bridge
+- data-structure/bitset-vs-roaring-bitmap-handoff
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+forbidden_neighbors: []
+expected_queries:
+- 체크박스 상태 저장에서 boolean 배열과 BitSet을 어떻게 고를까
+- 방문 여부만 저장하는데 BitSet이 필요한 상황이 따로 있어?
+- bitset을 집합처럼 이해해야 하는 이유를 입문자 기준으로 설명해줘
+- AND OR 같은 집합 연산이 나오면 왜 boolean[]보다 BitSet 쪽으로 기우나
+- 정수 id 플래그를 다룰 때 배열 사고와 비트 집합 사고를 어떻게 나눠?
+- 작은 상태표면 그냥 boolean[]으로 가도 되는 기준
+contextual_chunk_prefix: |
+  이 문서는 BitSet vs boolean[] beginner chooser로 정수 인덱스 체크 표면,
+  visited flag, boolean array, bit array, dense integer id, AND/OR/NOT 집합 연산을 구분한다.
+  한 칸씩 true/false를 읽고 쓰는 문제는 boolean[]에 남기고, 여러 집합을 합치고 뒤집고 스캔하는 문제는 BitSet으로 연결한다.
+---
 # BitSet vs boolean[] Beginner Card
 
 > 한 줄 요약: `boolean[]`은 칸마다 `true/false`를 직접 담는 가장 단순한 표이고, `BitSet`은 같은 "정수 id 체크 표"를 더 비트 집합답게 다루는 도구다. beginner는 "`한 칸씩 값만 저장하나`"와 "`집합처럼 합치고 뒤집고 스캔하나`"를 먼저 나누면 된다.

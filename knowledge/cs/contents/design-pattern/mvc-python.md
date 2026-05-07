@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: MVC Pattern Python Primer
+concept_id: design-pattern/mvc-python
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 72
+mission_ids: []
+review_feedback_tags:
+- mvc
+- model-view-controller
+- controller-boundary
+- presentation-separation
+aliases:
+- mvc python
+- mvc pattern
+- model view controller
+- mvc design pattern
+- python mvc pattern
+- controller model view
+- mvc beginner
+- model view controller pattern
+- MVC 패턴
+- 모델 뷰 컨트롤러
+symptoms:
+- Controller가 요청 라우팅, 비즈니스 규칙, 데이터 저장, 화면 표현을 모두 떠안아 MVC 경계가 흐려진다
+- Model을 단순 DB 테이블 객체로만 보거나 View가 business logic을 직접 실행하는 구조로 이해한다
+- Web MVC, GUI MVC, Spring MVC request lifecycle의 차이를 구분하지 못한다
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- software-engineering/oop-design-basics
+- software-engineering/layered-architecture-basics
+next_docs:
+- spring/spring-mvc-request-lifecycle-basics
+- software-engineering/service-layer-basics
+- software-engineering/controller-contract-vs-service-rule-first-test-mini-card
+linked_paths:
+- contents/software-engineering/oop-design-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/controller-contract-vs-service-rule-first-test-mini-card.md
+- contents/design-pattern/observer.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/composite-query-rule-trees.md
+confusable_with:
+- spring/spring-mvc-request-lifecycle-basics
+- software-engineering/layered-architecture-basics
+- software-engineering/service-layer-basics
+- design-pattern/observer
+forbidden_neighbors: []
+expected_queries:
+- MVC에서 Model View Controller는 각각 어떤 책임이고 Controller가 비즈니스 로직을 모두 가지면 왜 경계가 흐려져?
+- Python 예시로 보는 MVC 패턴과 Spring MVC request lifecycle은 어떤 점이 같고 달라?
+- View는 화면 표현, Controller는 요청 조율, Model은 상태와 규칙이라는 기준을 설명해줘
+- MVC가 compound pattern이라고 불리는 이유와 Observer, Composite, Strategy가 어떻게 섞이는지 알려줘
+- 입문자가 MVC를 DB table, HTML view, service layer와 헷갈릴 때 어디를 먼저 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 MVC Pattern Python Primer로, Model-View-Controller가 presentation, request
+  coordination, state/business model을 분리하는 기본 구조를 Python 예시로 설명하고
+  Spring MVC lifecycle, layered architecture, service layer와 혼동하기 쉬운 경계를 정리한다.
+---
 # MVC (Model-View-Controller) 디자인 패턴
 
 
@@ -67,6 +136,16 @@ retrieval-anchor-keywords: mvc python basics, mvc python beginner, mvc python in
 1. 데이터 조작과 표현의 분리
 2. 쉬운 유지보수와 구현
 3. 유연한 데이터 저장과 표현 방식의 수정. 서로 독립적이므로 쉽게 수정할 수 있다.
+
+### Backend에서 먼저 잡을 경계
+
+웹 backend에서 MVC를 읽을 때는 "Controller가 모든 일을 한다"가 아니라 아래 경계를 먼저 본다.
+
+- Controller: HTTP request를 해석하고 application/service로 전달한다
+- Model/domain/service: 상태와 업무 규칙을 처리한다
+- View/response: 사용자에게 보여 줄 형태로 결과를 표현한다
+
+따라서 controller가 DB 접근, 결제 규칙, 화면 조립을 모두 직접 처리하면 MVC 이름은 있어도 경계 분리는 약하다.
 
 ---
 

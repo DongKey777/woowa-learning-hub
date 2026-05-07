@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: API Gateway, Reverse Proxy 운영 포인트
+concept_id: network/api-gateway-reverse-proxy-operational-points
+canonical: false
+category: network
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- api-gateway
+- reverse-proxy
+- proxy-operational-points
+aliases:
+- API Gateway Reverse Proxy operational points
+- reverse proxy operations
+- proxy chain basics
+- timeout budget propagation
+- forwarded headers trust boundary
+- upstream timeout
+- gateway routing policy
+symptoms:
+- reverse proxy를 단순 중간 서버로만 보고 TLS termination, forwarded headers, timeout, buffering, keep-alive, logging 정책을 놓친다
+- API Gateway와 Reverse Proxy를 같은 말로만 써 트래픽 전달과 API 정책 통합의 초점 차이를 구분하지 못한다
+- 프록시가 만든 local reply와 upstream이 반환한 error를 구분할 request id, upstream time, retry count, 499 metric을 남기지 않는다
+intents:
+- definition
+- design
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/timeout-types-connect-read-write
+next_docs:
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+linked_paths:
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/proxy-retry-budget-discipline.md
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+- contents/network/h2c-cleartext-upgrade-prior-knowledge-routing.md
+- contents/network/tls-close-notify-fin-rst-truncation.md
+confusable_with:
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/timeout-budget-propagation-proxy-gateway-service-hop-chain
+- network/forwarded-x-forwarded-for-x-real-ip-trust-boundary
+- network/api-gateway-auth-rate-limit-chain
+forbidden_neighbors: []
+expected_queries:
+- API Gateway와 Reverse Proxy는 운영 관점에서 어떤 역할이 겹치고 어떻게 달라?
+- Reverse Proxy를 붙일 때 timeout buffering keep-alive forwarded headers logging을 왜 같이 봐야 해?
+- proxy local reply와 upstream error attribution을 구분하려면 어떤 access log field가 필요해?
+- X-Forwarded-For X-Real-IP 같은 header 신뢰 경계는 gateway에서 어떻게 관리해?
+- 프록시를 중간 서버가 아니라 운영 정책 진입점으로 보는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 API Gateway와 Reverse Proxy를 트래픽 전달과 API 정책 운영의 진입점으로
+  설명하는 primer다. timeout budget, forwarded header trust, buffering, keep-alive,
+  retry, local reply attribution, request tracing을 함께 다룬다.
+---
 # API Gateway, Reverse Proxy 운영 포인트
 
 

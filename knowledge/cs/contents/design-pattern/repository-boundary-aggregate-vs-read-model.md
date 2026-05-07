@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Repository Boundary: Aggregate Persistence vs Read Model
+concept_id: design-pattern/repository-boundary-aggregate-vs-read-model
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- repository-boundary
+- aggregate-persistence
+- read-model-separation
+aliases:
+- repository boundary
+- aggregate persistence boundary
+- read model boundary
+- cross aggregate query
+- repository remote call anti pattern
+- application orchestration
+- read repository
+- query service boundary
+- aggregate 저장소 경계
+- 조회 모델 분리
+symptoms:
+- aggregate repository가 화면 DTO, 원격 결제 상태, 배송 추적까지 조합해 persistence와 orchestration 책임이 섞인다
+- 읽기 요구가 복잡해졌다는 이유로 repository 메서드가 dashboard/search/report 형태로 폭증한다
+- command side aggregate persistence와 read model/query service 계약을 같은 repository에 모두 밀어 넣는다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/repository-pattern-vs-antipattern
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/aggregate-reference-by-id
+next_docs:
+- design-pattern/cqrs-command-query-separation-pattern-language
+- design-pattern/read-model-staleness-read-your-writes
+- design-pattern/specification-vs-query-service-boundary
+linked_paths:
+- contents/design-pattern/repository-pattern-vs-antipattern.md
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/aggregate-reference-by-id.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/query-object-search-criteria-pattern.md
+confusable_with:
+- design-pattern/repository-pattern-vs-antipattern
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/cqrs-command-query-separation-pattern-language
+- design-pattern/query-object-search-criteria-pattern
+forbidden_neighbors: []
+expected_queries:
+- Repository boundary는 aggregate persistence와 read model/query service를 어떻게 나눠야 해?
+- OrderRepository가 화면 DTO와 결제 배송 원격 조회까지 맡으면 왜 anti-pattern이 돼?
+- 같은 DB를 써도 command repository와 read repository를 계약상 분리할 수 있는 이유가 뭐야?
+- 복잡한 검색 조건이 늘어나면 repository를 키우지 말고 query service로 빼야 하는 신호는 뭐야?
+- aggregate repository에서 join을 전혀 하지 말라는 뜻이 아니라 계약 의도가 중요하다는 말은 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 Repository Boundary chooser로, command side repository는 aggregate
+  persistence와 restore/save 계약에 집중하고 화면 조합, 검색, 집계, remote orchestration은
+  read model, query service, application orchestration으로 분리하는 기준을 설명한다.
+---
 # Repository Boundary: Aggregate Persistence vs Read Model
 
 > 한 줄 요약: Repository boundary를 aggregate persistence에 맞춰 두면 도메인 경계가 선명해지고, 검색/조인/원격 조회는 query model이나 application orchestration으로 분리할 수 있다.

@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Dependency Governance and SBOM Policy
+concept_id: software-engineering/dependency-governance-sbom
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- dependency-governance
+- sbom
+- supply-chain
+- policy-as-code
+aliases:
+- Dependency Governance and SBOM Policy
+- dependency governance SBOM
+- software bill of materials policy
+- supply chain dependency policy
+- dependency allowlist governance
+- transitive dependency risk policy
+symptoms:
+- 새 라이브러리와 transitive dependency가 PR마다 들어오지만 license, provenance, vulnerability 기준이 자동으로 검증되지 않아
+- SBOM은 만들지만 allowlist, exception, release gate, security review와 연결되지 않아 취약점 대응 범위를 빨리 못 잡아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/dependency-update-blast-radius
+- software-engineering/policy-as-code
+next_docs:
+- software-engineering/dependency-update-blast-radius
+- software-engineering/architectural-fitness-functions
+- software-engineering/feature-flag-dependency-management
+linked_paths:
+- contents/software-engineering/dependency-update-blast-radius-management.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+confusable_with:
+- software-engineering/dependency-update-blast-radius
+- software-engineering/policy-as-code
+- software-engineering/architectural-fitness-functions
+forbidden_neighbors: []
+expected_queries:
+- SBOM과 dependency governance를 policy as code와 release gate에 연결하려면 어떻게 해야 해?
+- transitive dependency 취약점이 발견됐을 때 영향 범위와 우선순위를 어떻게 잡아?
+- 새 라이브러리 추가를 allowlist, license, provenance 기준으로 통제하는 운영 정책을 설계해줘
+- dependency 관리가 단순 버전 업데이트가 아니라 공급망 위험 관리가 되는 이유가 뭐야?
+- SBOM을 생성만 하고 실제 vulnerability 대응에 못 쓰는 조직은 무엇을 보강해야 해?
+contextual_chunk_prefix: |
+  이 문서는 dependency governance와 SBOM을 allowlist, provenance, vulnerability threshold, policy-as-code gate로 연결하는 advanced playbook이다.
+---
 # Dependency Governance and SBOM Policy
 
 > 한 줄 요약: dependency governance는 라이브러리 버전을 관리하는 일이 아니라, 무엇이 들어오고 나가는지 추적 가능한 정책으로 만들고 SBOM으로 공급망 위험을 다루는 것이다.

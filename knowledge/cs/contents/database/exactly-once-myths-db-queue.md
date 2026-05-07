@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Exactly-Once 신화와 DB + Queue 경계
+concept_id: database/exactly-once-myths-db-queue
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- exactly-once-myth
+- db-queue-boundary
+- outbox-idempotent-consumer
+aliases:
+- exactly once myths db queue
+- exactly once myth
+- at least once queue
+- outbox idempotent consumer
+- DB commit queue publish
+- queue retry duplicate
+- business exactly once
+- 메시지 중복 처리
+- outbox consumer dedupe
+- 한 번만 처리
+symptoms:
+- DB 커밋과 queue publish를 붙이면 end-to-end exactly-once가 자동으로 생긴다고 생각하고 있어
+- 메시지가 두 번 와서 포인트나 재고가 두 번 반영되는 문제를 consumer idempotency 없이 해결하려 해
+- outbox를 쓰면 중복 발행이 절대 없어진다고 오해하고 있어
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/outbox-saga-eventual-consistency
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/cdc-debezium-outbox-binlog
+- database/outbox-vs-cdc-vs-saga-decision-guide
+- system-design/message-queue-basics
+linked_paths:
+- contents/database/outbox-saga-eventual-consistency.md
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/outbox-vs-cdc-vs-saga-decision-guide.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/system-design/message-queue-basics.md
+confusable_with:
+- database/outbox-saga-eventual-consistency
+- database/cdc-debezium-outbox-binlog
+- database/idempotency-key-and-deduplication
+forbidden_neighbors: []
+expected_queries:
+- DB 트랜잭션과 queue publish를 같이 써도 exactly-once가 자동으로 안 되는 이유는 뭐야?
+- outbox pattern을 써도 consumer idempotency가 필요한 이유를 설명해줘
+- at-least-once delivery에서 메시지가 두 번 와도 비즈니스 효과가 한 번만 반영되게 하려면 어떻게 해?
+- broker exactly-once와 주문 결제 같은 business exactly-once는 왜 다른 층위야?
+- DB commit은 됐는데 메시지 발행 실패하거나 메시지만 중복되는 경계를 어떻게 설계해?
+contextual_chunk_prefix: |
+  이 문서는 DB commit, queue publish, outbox, at-least-once delivery, idempotent consumer 경계에서 end-to-end exactly-once 신화를 해체하는 advanced deep dive다.
+  exactly once, outbox, idempotent consumer, queue retry duplicate, DB commit queue publish 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Exactly-Once 신화와 DB + Queue 경계
 
 > 한 줄 요약: DB 트랜잭션과 메시지 발행을 붙여도, end-to-end exactly-once가 자동으로 생기지는 않는다.

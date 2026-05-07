@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: BlockingQueue, TransferQueue, and ConcurrentSkipListSet Semantics
+concept_id: language/blockingqueue-transferqueue-concurrentskiplistset-semantics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- java-concurrent-collections
+- backpressure
+- queue-semantics
+aliases:
+- BlockingQueue TransferQueue ConcurrentSkipListSet
+- BlockingQueue backpressure semantics
+- LinkedTransferQueue transfer vs put
+- ConcurrentSkipListSet live view
+- Java concurrent collection semantics
+- queue saturation latency debt
+symptoms:
+- BlockingQueue TransferQueue ConcurrentSkipListSet을 thread-safe collection이라는 한 문장으로 묶고 buffer, direct handoff, sorted membership 계약을 구분하지 못해
+- LinkedTransferQueue 타입만 보고 항상 backpressure가 있다고 오해하고 transfer 계열 연산을 쓰는지 확인하지 않아
+- queue size remainingCapacity hasWaitingConsumer 같은 관측값을 정확한 admission control gate로 사용하려 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-concurrency-utilities
+- language/executor-sizing-queue-rejection-policy
+next_docs:
+- language/thread-interruption-cooperative-cancellation-playbook
+- language/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs
+- language/wait-notify-condition-spurious-wakeup-lost-signal
+linked_paths:
+- contents/language/java/java-concurrency-utilities.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs.md
+- contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md
+- contents/language/java/collections-performance.md
+confusable_with:
+- language/executor-sizing-queue-rejection-policy
+- language/concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs
+- language/wait-notify-condition-spurious-wakeup-lost-signal
+forbidden_neighbors: []
+expected_queries:
+- BlockingQueue TransferQueue ConcurrentSkipListSet 차이를 buffer handoff sorted membership 계약으로 비교해줘
+- LinkedTransferQueue는 transfer를 써야 backpressure가 생긴다는 말이 무슨 뜻이야?
+- BlockingQueue put offer transfer tryTransfer 차이를 생산자 소비자 backpressure 관점으로 설명해줘
+- ConcurrentSkipListSet은 정렬된 snapshot인지 live view인지 알려줘
+- queue size나 remainingCapacity를 admission control로 쓰면 왜 race가 생길 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Java concurrent collection인 BlockingQueue, TransferQueue, ConcurrentSkipListSet을 bounded buffer, direct handoff, sorted live membership, backpressure semantics 관점으로 설명하는 advanced deep dive다.
+  BlockingQueue put offer, LinkedTransferQueue transfer, SynchronousQueue, ConcurrentSkipListSet, queue saturation 질문이 본 문서에 매핑된다.
+---
 # `BlockingQueue`, `TransferQueue`, and `ConcurrentSkipListSet` Semantics
 
 > 한 줄 요약: `BlockingQueue`, `TransferQueue`, `ConcurrentSkipListSet`은 모두 concurrent collection이지만, 실제로는 "얼마나 버퍼링할 것인가", "소비자가 실제로 받았는가", "정렬된 membership를 어떤 일관성으로 볼 것인가"라는 서로 다른 계약을 표현한다. 이를 섞어 쓰면 queue saturation 오해, 가짜 backpressure, comparator 기반 dedupe 버그가 생긴다.

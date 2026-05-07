@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Cross-Service NFR Budget Negotiation
+concept_id: software-engineering/nfr-budget-negotiation
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- nfr-budget
+- slo
+- cross-service-contract
+aliases:
+- Cross-Service NFR Budget Negotiation
+- NFR budget negotiation
+- latency budget negotiation
+- cross-service budget
+- freshness budget
+- degradation contract
+symptoms:
+- checkout p95 300ms 같은 end-to-end 목표를 선언만 하고 inventory, pricing, payment adapter 같은 supporting service budget으로 분해하지 않아
+- latency 숫자는 합의했지만 timeout, fallback, stale data 허용, retry 횟수, optional dependency skip 조건을 정하지 않아 budget breach 시 행동이 모호해
+- provider와 consumer가 각자 지표만 최적화해 fallback activation, stale complaint, queue age, request cost drift를 함께 보지 않아
+intents:
+- design
+- deep_dive
+- troubleshooting
+prerequisites:
+- software-engineering/nfr-budgeting
+- software-engineering/sla-slo-ownership-model
+next_docs:
+- software-engineering/bff-boundaries
+- software-engineering/release-policy-error-budget
+- software-engineering/architectural-fitness-functions
+linked_paths:
+- contents/software-engineering/non-functional-requirements-budgeting.md
+- contents/software-engineering/sla-slo-ownership-model.md
+- contents/software-engineering/bff-boundaries-client-specific-aggregation.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/architectural-fitness-functions.md
+confusable_with:
+- software-engineering/nfr-budgeting
+- software-engineering/sla-slo-ownership-model
+- software-engineering/bff-boundaries
+forbidden_neighbors: []
+expected_queries:
+- cross-service NFR budget은 한 서비스 숫자 선언이 아니라 latency availability freshness cost degradation rules를 협상하는 거야?
+- checkout p95 목표를 inventory pricing payment adapter supporting budgets로 어떻게 분해해?
+- budget negotiation에서 timeout fallback stale data retry optional dependency skip 조건을 같이 정해야 하는 이유는 뭐야?
+- BFF가 여러 downstream을 집계할 때 latency budget과 degraded mode를 어떻게 협상해야 해?
+- budget drift를 fallback activation, stale read complaint, queue age, request cost로 어떻게 감지해?
+contextual_chunk_prefix: |
+  이 문서는 cross-service NFR budget negotiation을 latency, availability, freshness, retry, cost, degraded mode를 서비스 경계 간 계약으로 분해하는 advanced playbook이다.
+---
 # Cross-Service NFR Budget Negotiation
 
 > 한 줄 요약: NFR budget은 한 서비스가 혼자 선언해서 끝나는 숫자가 아니라, user flow를 함께 만드는 서비스들이 latency, availability, freshness, cost, degradation rules를 서로 협상하고 기록해야 실제 설계 제약으로 작동한다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Entity Leakage Review Checklist
+concept_id: software-engineering/entity-leakage-review-checklist
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- entity-leakage
+- dto
+- service-contract
+- code-review
+aliases:
+- Entity Leakage Review Checklist
+- entity가 샌다 체크리스트
+- service signature entity leak
+- JPA Entity response DTO leak
+- public API entity leakage
+- 엔티티 누수 코드리뷰
+symptoms:
+- Controller 응답, Service 메서드 파라미터나 반환 타입, 모듈 public API에 JPA Entity가 그대로 등장해
+- 리뷰에서 entity가 샌다, service signature leak, 공개 API entity 누수라는 말을 들었지만 어디부터 봐야 할지 모르겠어
+- Entity에 JSON 직렬화, 화면 표시, 외부 응답 필드 책임이 붙어 저장 모델이 전달 계약처럼 쓰이고 있어
+intents:
+- symptom
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/dto-vo-entity-basics
+- software-engineering/service-contract-smell-cards
+next_docs:
+- software-engineering/persistence-model-leakage
+- software-engineering/module-api-dto-patterns
+- software-engineering/persistence-adapter-mapping-checklist
+linked_paths:
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/service-contract-smell-cards.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/module-api-dto-patterns.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- software-engineering/persistence-model-leakage
+- software-engineering/service-contract-smell-cards
+- software-engineering/module-api-dto-patterns
+forbidden_neighbors: []
+expected_queries:
+- 코드리뷰에서 entity가 샌다는 말을 들었을 때 Controller, Service, 모듈 API 중 어디를 먼저 봐야 해?
+- JPA Entity를 Response DTO로 바로 반환하면 왜 API 계약과 DB 구조가 묶이는지 설명해줘
+- service signature에 Entity가 파라미터나 반환 타입으로 나오면 어떤 누수인지 알려줘
+- 공개 모듈 API에서 Entity 대신 Command DTO나 Result DTO를 써야 하는 이유가 뭐야?
+- 초심자 기준으로 entity leakage를 빠르게 찾는 체크리스트를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 software-engineering 카테고리에서 Entity Leakage Review Checklist를 다루는 symptom_router 문서다. Entity Leakage Review Checklist, entity가 샌다 체크리스트, service signature entity leak, JPA Entity response DTO leak, public API entity leakage 같은 lexical 표현과 코드리뷰에서 entity가 샌다는 말을 들었을 때 Controller, Service, 모듈 API 중 어디를 먼저 봐야 해?, JPA Entity를 Response DTO로 바로 반환하면 왜 API 계약과 DB 구조가 묶이는지 설명해줘 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Entity Leakage Review Checklist
 
 > 한 줄 요약: 초심자 코드 리뷰에서 "`entity가 샌다`", "`service 시그니처 leak`"라는 말을 들었을 때 `@Entity`가 API DTO, service 계약, 모듈 경계를 넘어다니는지 "밖으로 나가는 타입 이름"부터 보는 짧은 체크리스트가 가장 효율적이다.

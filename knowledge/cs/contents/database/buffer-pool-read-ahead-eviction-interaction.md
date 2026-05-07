@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Buffer Pool Read-Ahead and Eviction Interaction
+concept_id: database/buffer-pool-read-ahead-eviction-interaction
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- buffer-pool
+- read-ahead
+- eviction
+- cache-pollution
+aliases:
+- buffer pool read ahead eviction interaction
+- buffer pool eviction
+- read ahead interaction
+- LRU eviction
+- buffer pool pollution
+- prefetch hot page
+- sequential scan eviction
+- random lookup cache pollution
+- read-ahead eviction
+- 버퍼풀 read ahead eviction
+symptoms:
+- 대용량 report나 sequential scan 직후 OLTP API latency가 튀고 hot page가 buffer pool에서 밀려난다
+- read-ahead로 scan 하나는 빨라졌지만 eviction 때문에 전체 시스템 p95/p99가 나빠진다
+- buffer pool이 작은 환경에서 prefetch가 cold pages를 채워 random lookup hot set을 오염시킨다
+intents:
+- symptom
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/innodb-buffer-pool-internals
+- database/read-ahead-sequential-scan-behavior
+- database/clustered-index-locality
+next_docs:
+- database/flush-neighbors-adaptive-flushing-io-capacity
+- database/slow-query-analysis-playbook
+- database/query-tuning-checklist
+linked_paths:
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/read-ahead-sequential-scan-behavior.md
+- contents/database/clustered-index-locality.md
+- contents/database/flush-neighbors-adaptive-flushing-io-capacity.md
+confusable_with:
+- database/read-ahead-sequential-scan-behavior
+- database/innodb-buffer-pool-internals
+- database/clustered-index-locality
+- database/adaptive-hash-index-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- read-ahead가 sequential scan을 빠르게 해도 buffer pool hot page를 밀어내 전체 latency를 악화시킬 수 있어?
+- 대용량 보고서 쿼리 뒤에 API가 느려지는 현상을 buffer pool eviction과 read-ahead interaction으로 설명해줘
+- prefetch가 실제로 곧 사용되지 않으면 buffer pool pollution이 되는 이유가 뭐야?
+- OLTP hot set과 batch sequential scan이 같은 buffer pool을 공유할 때 어떤 증상을 봐야 해?
+- innodb_read_ahead_threshold와 buffer pool size를 볼 때 eviction까지 같이 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Buffer Pool Read-Ahead and Eviction Interaction symptom router로, sequential scan
+  read-ahead/prefetch가 hot pages를 eviction해 OLTP random lookup latency를 악화시키는 buffer pool pollution과
+  locality trade-off를 설명한다.
+---
 # Buffer Pool Read-Ahead and Eviction Interaction
 
 > 한 줄 요약: read-ahead는 다음 page를 미리 가져오지만, eviction과 충돌하면 핫 페이지를 밀어내서 오히려 성능을 망칠 수 있다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Nagle Algorithm and Delayed ACK Small Packet Latency"
+concept_id: network/nagle-delayed-ack-small-packet-latency
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- tcp-small-packet-latency
+- nagle-delayed-ack
+- streaming-flush
+aliases:
+- Nagle algorithm
+- delayed ACK
+- TCP_NODELAY
+- small packet latency
+- request response stall
+- TCP corking
+- interactive traffic latency
+symptoms:
+- 작은 RPC나 제어 메시지가 대역폭은 낮은데 왕복 지연만 크게 늘어난다
+- Nagle과 delayed ACK가 서로 기다리는 stall을 네트워크 혼잡으로 오해한다
+- TCP_NODELAY를 켜면 항상 빨라진다고 단정한다
+- TLS record나 response compression buffering과 TCP small write 문제를 분리하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tcp-congestion-control
+- network/request-timing-decomposition
+next_docs:
+- network/tls-record-sizing-flush-streaming-latency
+- network/http-response-compression-buffering-streaming-tradeoffs
+- network/http2-multiplexing-hol-blocking
+- network/timeout-types-connect-read-write
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/mtu-fragmentation-mss-blackhole.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+confusable_with:
+- network/tcp-congestion-control
+- network/http2-multiplexing-hol-blocking
+- network/tls-record-sizing-flush-streaming-latency
+- network/http-response-compression-buffering-streaming-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "Nagle 알고리즘과 delayed ACK가 만나면 왜 작은 요청이 느려져?"
+- "TCP_NODELAY를 켜면 small packet latency가 항상 해결돼?"
+- "작은 RPC가 대역폭은 안 쓰는데 RTT가 늘어나는 이유를 설명해줘"
+- "Nagle delayed ACK stall과 TCP congestion control은 어떻게 달라?"
+- "TLS record flush와 HTTP compression buffering까지 같이 봐야 하는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 Nagle algorithm, delayed ACK, TCP_NODELAY, small packet latency,
+  TCP corking, TLS record flush와 response buffering의 상호작용을 다루는
+  advanced playbook이다.
+---
 # Nagle 알고리즘과 Delayed ACK
 
 > 한 줄 요약: 작은 패킷을 아끼려는 Nagle과 ACK를 늦추는 Delayed ACK가 만나면, 대역폭은 안 써도 지연은 크게 늘 수 있다.

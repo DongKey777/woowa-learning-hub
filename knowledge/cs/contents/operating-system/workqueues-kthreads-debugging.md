@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Workqueues Kthreads Debugging
+concept_id: operating-system/workqueues-kthreads-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- workqueues-kthreads
+- kernel-worker-overload
+- deferred-work-queue
+- kthread-backlog
+aliases:
+- workqueues kthreads debugging
+- kernel worker overload
+- deferred work queue
+- kthread backlog
+- workqueue saturation
+- hidden kernel worker
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/kworker-saturation-runtime-diagnostics.md
+- contents/operating-system/softirq-hardirq-latency-server-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/cpu-affinity-irq-affinity-core-locality.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+symptoms:
+- user request path에서 떼어낸 kernel deferred work가 workqueue/kthread backlog로 밀린다.
+- kworker saturation을 봤지만 어떤 kernel work가 쌓였는지 더 좁혀야 한다.
+- softirq follow-up이나 reclaim work가 hidden worker overload로 나타난다.
+expected_queries:
+- workqueue와 kthread는 kernel이 오래 걸리는 일을 user path에서 떼어내는 실행 단위야?
+- kworker saturation을 workqueues와 kthreads debugging으로 어떻게 좁혀?
+- deferred work backlog가 application p99 latency를 만들 수 있어?
+- eBPF perf로 kernel worker overload를 어떻게 관측해?
+contextual_chunk_prefix: |
+  이 문서는 workqueue와 kthread를 kernel이 오래 걸리는 work를 user/request path에서 떼어내 처리하는
+  execution units로 설명한다. bottleneck이 생기면 hidden kernel worker overload로 드러난다.
+---
 # Workqueues, Kthreads, Debugging
 
 > 한 줄 요약: workqueue와 kthread는 커널이 오래 걸리는 일을 유저 경로에서 떼어내기 위해 쓰는 실행 단위이고, 병목이 생기면 커널 내부의 숨은 worker 과부하가 드러난다.

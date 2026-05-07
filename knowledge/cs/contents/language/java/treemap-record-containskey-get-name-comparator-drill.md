@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: TreeMap Record containsKey get Name Comparator Drill
+concept_id: language/treemap-record-containskey-get-name-comparator-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- record
+- comparator
+aliases:
+- TreeMap record containsKey get name comparator drill
+- record key name only comparator containsKey get
+- compare zero same key lookup drill
+- TreeMap get different record same name
+- record equals comparator mismatch lookup
+- 자바 TreeMap record 조회 드릴
+symptoms:
+- TreeMap.containsKey와 get이 record equals가 아니라 comparator compare==0으로 key slot을 찾는다는 점을 놓쳐
+- name-only comparator로 저장한 TreeMap에서 id가 다른 record key도 같은 name이면 같은 key 자리로 조회될 수 있음을 예측하지 못해
+- HashMap lookup의 equals/hashCode 감각을 TreeMap lookup에 그대로 적용해 comparator path를 디버깅하지 않아
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/record-comparator-60-second-mini-drill
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+next_docs:
+- language/treemap-put-return-value-overwrite-bridge
+- language/record-value-object-equality-basics
+- language/equality-vs-ordering-beginner-drill-sheet
+linked_paths:
+- contents/language/java/record-comparator-60-second-mini-drill.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+- contents/language/java/record-value-object-equality-basics.md
+confusable_with:
+- language/record-comparator-60-second-mini-drill
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/map-lookup-debug-equals-hashcode-compareto-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeMap containsKey와 get은 record equals가 아니라 comparator compare==0 기준으로 조회한다는 드릴을 해보고 싶어
+- name-only comparator를 쓰면 new Student(99, Mina)로도 기존 Mina key 값을 찾을 수 있어?
+- TreeMap record key 조회에서 id가 달라도 name이 같으면 containsKey가 true가 되는 이유가 뭐야?
+- HashMap lookup과 TreeMap lookup은 equals hashCode vs comparator path가 어떻게 달라?
+- record comparator mismatch lookup surprise를 beginner worksheet로 예측하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 record key와 name-only Comparator를 쓰는 TreeMap에서 containsKey/get이 compare==0 기준으로 lookup되는 결과를 예측하는 beginner drill이다.
+  TreeMap containsKey, TreeMap get, record key, name comparator, compare zero lookup 질문이 본 문서에 매핑된다.
+---
 # TreeMap 조회 전용 미니 드릴: `containsKey()` / `get()` with `record` key and name-only comparator
 
 > 한 줄 요약: `TreeMap`이 `record` key를 찾을 때는 `equals()`가 아니라 comparator의 `compare(...) == 0` 기준으로 같은 key 자리를 찾기 때문에, `id`가 달라도 `name`만 같으면 `containsKey()`와 `get()`이 예상과 다르게 동작할 수 있다.

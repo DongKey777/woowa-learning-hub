@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Document Search / Ranking Platform 설계
+concept_id: system-design/document-search-ranking-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- document search ranking
+- enterprise search
+- ACL filter
+- BM25
+aliases:
+- document search ranking
+- enterprise search
+- ACL filter
+- BM25
+- reranking
+- snippets
+- freshness
+- hybrid search
+- query understanding
+- relevance
+- Document Search / Ranking Platform 설계
+- document search ranking platform design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/search-system-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/search-hit-overlay-pattern.md
+- contents/system-design/tenant-aware-search-architecture-design.md
+- contents/system-design/knowledge-search-rag-platform-design.md
+- contents/system-design/experimentation-ab-testing-platform-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Document Search / Ranking Platform 설계 설계 핵심을 설명해줘
+- document search ranking가 왜 필요한지 알려줘
+- Document Search / Ranking Platform 설계 실무 트레이드오프는 뭐야?
+- document search ranking 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Document Search / Ranking Platform 설계를 다루는 deep_dive 문서다. document search and ranking platform은 키워드, 의미 검색, 권한 필터, 랭킹 신호, 설명 가능한 결과를 결합한 엔터프라이즈 문서 검색 시스템이다. 검색 질의가 document search ranking, enterprise search, ACL filter, BM25처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Document Search / Ranking Platform 설계
 
 > 한 줄 요약: document search and ranking platform은 키워드, 의미 검색, 권한 필터, 랭킹 신호, 설명 가능한 결과를 결합한 엔터프라이즈 문서 검색 시스템이다.

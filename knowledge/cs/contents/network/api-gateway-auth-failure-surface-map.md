@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "API Gateway Auth Failure Surface Map: 401/403, 302, Login HTML"
+concept_id: network/api-gateway-auth-failure-surface-map
+canonical: false
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- gateway-auth-failure
+- login-html-200
+- response-surface-map
+aliases:
+- API gateway auth failure map
+- gateway 401 vs app 401
+- gateway 403 vs app 403
+- raw 401 JSON vs login HTML 200
+- raw 401 vs 302 login
+- API got login HTML
+- final HTML 200 not API success
+symptoms:
+- API 스펙의 raw 401/403과 브라우저에서 보이는 302 login redirect 또는 최종 login HTML 200을 서로 모순된 결과로 읽는다
+- fetch/XHR이 redirect를 따라가 마지막 login page 200만 받았는데 API 성공으로 오해한다
+- gateway local reply/rewrite와 upstream pass-through를 구분하지 않아 누가 auth failure 표면을 바꿨는지 추적하지 못한다
+intents:
+- symptom
+- troubleshooting
+prerequisites:
+- network/http-status-codes-basics
+- network/browser-devtools-response-body-ownership-checklist
+next_docs:
+- network/ssr-view-render-vs-json-api-response-basics
+- network/proxy-local-reply-vs-upstream-error-attribution
+- security/browser-401-vs-302-login-redirect-guide
+linked_paths:
+- contents/network/http-status-codes-basics.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/spring/spring-api-401-vs-browser-302-beginner-bridge.md
+confusable_with:
+- network/browser-devtools-response-body-ownership-checklist
+- network/ssr-view-render-vs-json-api-response-basics
+- network/proxy-local-reply-vs-upstream-error-attribution
+- security/browser-401-vs-302-login-redirect-guide
+forbidden_neighbors: []
+expected_queries:
+- API는 401 JSON이어야 하는데 브라우저에서는 login HTML 200이 오는 이유는?
+- Gateway auth failure가 raw 401 403, 302 login, final HTML 200으로 다르게 보일 수 있어?
+- final HTML 200은 API success가 아니라 redirect를 따라간 login page일 수 있다는 걸 설명해줘
+- gateway가 만든 401과 app이 만든 401을 DevTools와 로그에서 어떻게 구분해?
+- API Gateway auth failure surface를 결정 층 표면 층 호출자 층으로 나눠줘
+contextual_chunk_prefix: |
+  이 문서는 API Gateway 앞단 auth failure가 raw 401/403 JSON, 302 login redirect,
+  final login HTML 200으로 다르게 표면화되는 증상을 라우팅한다. 결정 주체, 표면 변환,
+  호출자 종류를 분리해 gateway local reply와 upstream pass-through를 구분한다.
+---
 # API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문
 
 > 한 줄 요약: gateway 앞단의 auth 거절은 raw API 계약으로 `401`/`403` JSON이 그대로 보일 수도 있고, 브라우저 UX나 프록시 rewrite가 끼면서 `302 -> /login` 또는 최종 login HTML `200`처럼 번역돼 보일 수도 있으니, 먼저 "누가 거절했고 누가 표면을 바꿨는가"를 분리해서 읽어야 한다.

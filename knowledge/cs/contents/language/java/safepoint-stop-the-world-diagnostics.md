@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Safepoint and Stop The World Diagnostics
+concept_id: language/safepoint-stop-the-world-diagnostics
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- safepoint
+- stw
+- jfr
+aliases:
+- Safepoint and Stop-the-World Diagnostics
+- JVM safepoint STW diagnostics
+- GC pause not only GC
+- Xlog safepoint JFR latency spike
+- time to safepoint native call
+- 자바 safepoint STW 진단
+symptoms:
+- stop-the-world pause를 모두 GC pause로 해석해 deoptimization, class unloading, JVMTI, thread dump, code cache 작업 가능성을 놓쳐
+- safepoint가 메커니즘이고 STW가 관찰 결과라는 구분 없이 멈추기 전 대기와 멈춘 뒤 작업 시간을 분리하지 않아
+- native call이나 long-running loop 때문에 safepoint 진입이 늦어진 신호를 JFR과 -Xlog:safepoint로 확인하지 않아
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- language/jfr-jmc-performance-playbook
+- language/jit-warmup-deoptimization
+- language/g1-vs-zgc
+next_docs:
+- language/safepoint-polling-mechanics
+- language/thread-dump-state-interpretation
+- language/direct-buffer-offheap-memory-troubleshooting
+linked_paths:
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/jit-warmup-deoptimization.md
+- contents/language/java/g1-vs-zgc.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+confusable_with:
+- language/safepoint-polling-mechanics
+- language/jfr-jmc-performance-playbook
+- language/g1-vs-zgc
+forbidden_neighbors: []
+expected_queries:
+- JVM safepoint와 stop-the-world는 같은 말이 아니라 메커니즘과 관찰 결과라는 뜻이 뭐야?
+- GC가 없는데도 latency spike가 생기면 safepoint STW 원인으로 무엇을 봐야 해?
+- -Xlog:safepoint와 JFR로 time-to-safepoint와 operation time을 어떻게 분리해?
+- deoptimization class unloading JVMTI thread dump도 STW처럼 보일 수 있어?
+- native call이나 JNI 구간이 safepoint 진입을 늦출 수 있는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 JVM safepoint와 stop-the-world pause를 GC뿐 아니라 deoptimization, class unloading, JVMTI, thread dump, native call 관점에서 진단하는 advanced playbook이다.
+  safepoint, STW, GC pause, JFR, Xlog safepoint, latency spike 질문이 본 문서에 매핑된다.
+---
 # Safepoint and Stop-the-World Diagnostics
 
 > 한 줄 요약: safepoint는 JVM이 전 스레드를 안전하게 멈추는 지점이고, stop-the-world(STW) 증상은 GC뿐 아니라 deoptimization, class unloading, JVMTI, thread dump 같은 여러 원인에서 나타난다.

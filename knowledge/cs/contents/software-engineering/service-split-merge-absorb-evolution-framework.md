@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Service Split, Merge, and Absorb Evolution Framework
+concept_id: software-engineering/service-split-merge-absorb-evolution
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- service-boundary
+- split
+- merge
+- platform-absorb
+aliases:
+- service split merge absorb framework
+- service boundary evolution
+- service consolidation decision
+- absorb service into platform
+- reverse migration merge service
+- 서비스 분할 병합 흡수 판단
+symptoms: []
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/team-cognitive-load-boundary-design
+- software-engineering/service-portfolio-lifecycle-governance
+next_docs:
+- software-engineering/brownfield-modularization
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/service-deprecation-sunset-lifecycle
+linked_paths:
+- contents/software-engineering/team-cognitive-load-boundary-design.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+confusable_with:
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/monolith-to-msa-failure-patterns
+- software-engineering/platform-product-capability-boundaries
+forbidden_neighbors: []
+expected_queries:
+- 서비스 경계를 split, merge, absorb, retire 중 무엇으로 진화시킬지 어떤 신호로 판단해?
+- 두 작은 서비스가 항상 같이 배포되고 장애도 함께 나면 merge가 split보다 나은 이유를 설명해줘
+- 기능을 platform capability로 absorb할 때 공통 기능과 숨은 도메인 로직을 어떻게 구분해?
+- service sprawl이 생겼을 때 운영 표면, owner, low traffic, contract overhead를 보고 consolidation을 판단하는 방법은?
+- split 또는 merge 결정을 migration path와 cleanup plan까지 포함해 review하는 예시를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 서비스 경계를 split, merge, absorb, retire 중 어느 경로로 조정할지 cognitive load, ownership, dependency shape, economics로 판단하는 advanced chooser이다.
+---
 # Service Split, Merge, and Absorb Evolution Framework
 
 > 한 줄 요약: 서비스 evolution은 항상 split만이 답이 아니며, cognitive load, ownership, dependency shape, economics를 보고 split, merge, absorb, retire 중 어떤 경로가 맞는지 판단하는 프레임이 필요하다.

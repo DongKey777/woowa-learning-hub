@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Token Introspection vs Self-Contained JWT
+concept_id: security/token-introspection-vs-self-contained-jwt
+canonical: false
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- token introspection
+- self-contained jwt
+- opaque token
+- jwks
+aliases:
+- token introspection
+- self-contained jwt
+- opaque token
+- jwks
+- revocation
+- authz version
+- latency
+- offline validation
+- token cache
+- introspection beginner handoff
+- jwt freshness primer return
+- security readme return path
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+- contents/security/jwt-deep-dive.md
+- contents/security/claim-freshness-after-permission-changes.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/authz-session-versioning-patterns.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/network/api-gateway-auth-rate-limit-chain.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Token Introspection vs Self-Contained JWT 차이를 실무 기준으로 설명해줘
+- token introspection를 언제 선택해야 해?
+- Token Introspection vs Self-Contained JWT를 헷갈리지 않게 비교해줘
+- token introspection 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Token Introspection vs Self-Contained JWT를 다루는 bridge 문서다. introspection은 중앙 제어와 즉시성에 강하고, self-contained JWT는 지연과 결합도를 줄인다. 선택은 revocation과 latency 중 무엇을 더 중시하느냐에 달려 있다. 검색 질의가 token introspection, self-contained jwt, opaque token, jwks처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Token Introspection vs Self-Contained JWT
 
 > 한 줄 요약: introspection은 중앙 제어와 즉시성에 강하고, self-contained JWT는 지연과 결합도를 줄인다. 선택은 revocation과 latency 중 무엇을 더 중시하느냐에 달려 있다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Deque Router Example Pack
+concept_id: data-structure/deque-router-example-pack
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 87
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- deque-pattern-router
+- monotonic-deque-vs-zero-one-bfs
+- plain-deque-simulation
+aliases:
+- deque router example pack
+- plain deque vs monotonic deque
+- monotonic deque vs 0-1 BFS
+- deque problem patterns
+- sliding window maximum deque
+- zero one BFS deque
+- 덱 문제 패턴 라우터
+symptoms:
+- Deque라는 자료구조 이름만 보고 양끝 시뮬레이션, monotonic deque, 0-1 BFS를 같은 패턴으로 처리한다
+- sliding window extrema는 index 후보를 유지하고 0-1 BFS는 distance layer를 유지한다는 불변식 차이를 놓친다
+- push_front push_back 같은 명령 시뮬레이션과 binary-weight shortest path를 같은 front/back 의미로 해석한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/deque-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-queue-and-stack
+- algorithm/sliding-window-patterns
+- algorithm/sparse-graph-shortest-paths
+linked_paths:
+- contents/data-structure/deque-basics.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/sparse-graph-shortest-paths.md
+confusable_with:
+- data-structure/deque-basics
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-queue-and-stack
+- algorithm/sparse-graph-shortest-paths
+forbidden_neighbors: []
+expected_queries:
+- Deque를 쓰는 문제에서 plain deque, monotonic deque, 0-1 BFS를 어떻게 구분해?
+- sliding window maximum은 왜 monotonic deque이고 양끝 명령 시뮬레이션과 달라?
+- 0-1 BFS에서 deque front back은 비용 0과 1 layer를 어떻게 표현해?
+- 덱 문제를 보면 답이 최단 거리인지 window extrema인지 명령 시뮬레이션인지 어떻게 먼저 자르지?
+- monotonic deque와 일반 deque의 불변식 차이를 예제로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Deque가 보일 때 plain deque simulation, monotonic deque for
+  sliding window extrema, 0-1 BFS for binary-weight shortest path를 분리하는
+  chooser다. front/back가 실제 양끝인지, candidate dominance인지, distance
+  layer인지 먼저 해석한다.
+---
 # Deque Router Example Pack
 
 > 한 줄 요약: 같은 `Deque`를 써도 plain deque는 양끝 시뮬레이션, monotonic deque는 contiguous window extrema, 0-1 BFS는 binary-weight shortest path를 푸는 서로 다른 패턴이다.

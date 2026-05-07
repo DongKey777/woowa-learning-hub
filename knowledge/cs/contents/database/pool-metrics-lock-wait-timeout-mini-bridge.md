@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Pool Metrics and Lock Wait Timeout Mini Bridge
+concept_id: database/pool-metrics-lock-wait-timeout-mini-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- connection-pool
+- lock-wait-timeout
+- hot-row
+- timeout-triage
+aliases:
+- pool metrics mini bridge
+- active idle awaiting meaning
+- threads awaiting connection
+- hikaricp active idle pending
+- lock wait timeout pool confusion
+- pool exhaustion vs lock contention
+- connection timeout vs lock wait timeout
+- pool metrics lock wait timeout
+- active idle awaiting 뜻
+- lock wait timeout과 풀 고갈
+symptoms:
+- Hikari active, idle, awaiting 지표와 DB lock wait timeout을 같은 원인으로 뭉뚱그려 pool size만 키우려 해
+- lock wait timeout 때문에 transaction이 길어지고 connection 반환이 늦어져 pool awaiting이 2차 증상으로 커지고 있어
+- 같은 row/key hot spot이 pool exhaustion과 lock timeout을 동시에 만들었는지 로그 타임라인으로 분리해야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/connection-pool
+- database/transaction-locking-connection-pool-primer
+next_docs:
+- database/pool-timeout-term-matching-card
+- database/timeout-log-timeline-first-failure-checklist-card
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/connection-pool-basics.md
+- contents/database/transaction-locking-connection-pool-primer.md
+- contents/database/timeout-log-timeline-first-failure-checklist-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/pool-timeout-term-matching-card.md
+confusable_with:
+- database/pool-timeout-term-matching-card
+- database/connection-timeout-vs-lock-timeout-card
+- database/guard-row-hot-row-symptoms-primer
+forbidden_neighbors: []
+expected_queries:
+- Hikari active idle awaiting 지표와 lock wait timeout을 어떻게 분리해서 읽어?
+- pool exhaustion과 DB lock contention이 같이 보일 때 시작점이 hot row인지 어떻게 확인해?
+- threads awaiting connection이 늘면 무조건 pool size를 키우면 되는지 설명해줘
+- lock wait timeout이 connection pool active를 오래 붙잡아 awaiting을 키우는 흐름을 알려줘
+- pool 로그와 DB lock timeout 로그 타임라인을 초보자용으로 해석해줘
+contextual_chunk_prefix: |
+  이 문서는 Hikari active, idle, awaiting pool metrics와 DB lock wait timeout을 앱 풀 입구 대기와 DB 내부 락 대기로 분리하는 beginner symptom router다.
+  pool exhaustion vs lock contention, active idle awaiting 뜻, lock wait timeout과 풀 고갈 질문이 본 문서에 매핑된다.
+---
 # Pool 지표 읽기 미니 브리지 (active/idle/awaiting + lock wait timeout)
 
 > 한 줄 요약: `active/idle/awaiting`는 "풀 좌석 상태", `lock wait timeout`은 "DB 내부 줄 막힘" 신호라서 같은 문제처럼 보여도 원인 축이 다르다.

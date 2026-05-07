@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기
+concept_id: design-pattern/state-pattern-workflow-payment
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- state-pattern
+- workflow-transition-guard
+- payment-state-model
+aliases:
+- state pattern workflow payment
+- order payment state machine
+- workflow transition guard
+- payment lifecycle state pattern
+- pending authorized captured failed
+- backend domain workflow
+- state pattern enough
+- local aggregate state
+- 상태 패턴
+- 결제 상태 전이
+symptoms:
+- 주문이나 결제 상태별 허용 행동이 service if-else에 흩어져 invalid transition을 막기 어렵다
+- 상태 식별 enum만 두고 CREATED, PENDING, AUTHORIZED 같은 단계별 도메인 규칙을 코드로 응집하지 못한다
+- 결제 수단 선택 같은 strategy 문제와 결제 진행 단계 같은 state 문제를 같은 구조로 섞는다
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/object-oriented-design-pattern-basics
+- design-pattern/strategy-pattern
+- design-pattern/policy-object-pattern
+next_docs:
+- design-pattern/state-machine-library-vs-state-pattern
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/process-manager-vs-saga-coordinator
+linked_paths:
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/state-machine-library-vs-state-pattern.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/command-pattern-undo-queue.md
+- contents/design-pattern/semantic-lock-pending-state-pattern.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+confusable_with:
+- design-pattern/strategy-vs-state-vs-policy-object
+- design-pattern/state-machine-library-vs-state-pattern
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/process-manager-vs-saga-coordinator
+forbidden_neighbors: []
+expected_queries:
+- 주문 결제 흐름에서 State Pattern은 if else로 흩어진 상태 전이를 어떻게 응집해?
+- 결제 수단 선택은 Strategy이고 결제 진행 단계는 State로 봐야 하는 이유가 뭐야?
+- enum status만 있는 코드와 상태 객체가 전이를 책임지는 구조는 어떤 차이가 있어?
+- Payment가 PENDING, AUTHORIZED, CAPTURED로 이동할 때 invalid transition을 어떻게 코드 구조로 막아?
+- 상태 패턴으로 충분한 로컬 aggregate 전이와 workflow engine이 필요한 long running flow는 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 상태 패턴 workflow/payment playbook으로, 주문/결제 aggregate의 CREATED,
+  PENDING, AUTHORIZED, CAPTURED 같은 현재 단계별 허용 행동과 invalid transition guard를
+  service if-else가 아니라 상태 객체와 도메인 메서드로 응집하는 방법을 설명한다.
+---
 # 상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기
 
 > 한 줄 요약: 상태 패턴은 if-else로 흩어진 상태 전이를 객체로 끌어올려, 결제와 워크플로 같은 도메인 흐름을 명시적으로 만든다.
@@ -30,6 +100,8 @@
 - 도메인 규칙이 문자열 비교로 숨어버린다
 
 상태 패턴은 이 문제를 **상태 객체 + 전이 규칙**으로 바꾼다.
+
+단, 이 문서의 초점은 한 aggregate 안의 로컬 상태 전이다. 며칠 동안 이어지는 timer, 사람 승인, crash recovery가 핵심이면 같은 상태 이름을 쓰더라도 process manager나 workflow engine 영역으로 올려 봐야 한다.
 
 ### Retrieval Anchors
 

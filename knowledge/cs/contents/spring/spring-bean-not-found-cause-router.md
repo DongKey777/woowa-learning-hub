@@ -9,7 +9,10 @@ doc_role: symptom_router
 level: beginner
 language: ko
 source_priority: 80
-mission_ids: []
+mission_ids:
+- missions/roomescape
+- missions/lotto
+- missions/shopping-cart
 review_feedback_tags:
   - bean-not-found-triage
   - test-slice-bean-missing

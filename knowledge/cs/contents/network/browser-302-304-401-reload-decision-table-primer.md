@@ -1,8 +1,83 @@
+---
+schema_version: 3
+title: Browser 302 vs 304 vs 401 새로고침 분기표
+concept_id: network/browser-302-304-401-reload-decision-table-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- browser-reload-status-debugging
+- redirect-cache-auth-triage
+- devtools-network-reading
+aliases:
+- browser 302 304 401 reload
+- 302 vs 304 vs 401
+- 새로고침 302 304 401
+- Location vs If-None-Match
+- login redirect vs cache revalidation
+- final html 200 hides 302
+- DevTools reload decision table
+symptoms:
+- 새로고침 뒤 302, 304, 401을 모두 비슷한 재요청으로 읽고 있어
+- 304를 redirect처럼 해석하거나 302를 cache 문제로 보고 있어
+- fetch가 login HTML 200을 받아 API 성공처럼 보이는 장면에서 원래 302를 놓치고 있어
+intents:
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-status-codes-basics
+- network/http-request-response-headers-basics
+next_docs:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/http-caching-conditional-request-basics
+- security/browser-401-vs-302-login-redirect-guide
+- network/browser-devtools-reload-hard-reload-disable-cache-primer
+linked_paths:
+- contents/network/http-status-codes-basics.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/http-caching-conditional-request-basics
+- security/browser-401-vs-302-login-redirect-guide
+- network/post-redirect-get-prg-beginner-primer
+forbidden_neighbors: []
+expected_queries:
+- 새로고침 뒤 302, 304, 401이 보이면 DevTools에서 무엇부터 봐야 해?
+- 302와 304를 Location 헤더와 validator로 어떻게 구분해?
+- 401은 브라우저가 자동으로 login redirect를 하는 상태 코드야?
+- fetch가 login HTML 200을 받았는데 API 성공이 아닐 수 있는 이유는 뭐야?
+- POST 303 GET 304 흐름에서 303과 304는 각각 어떤 질문이야?
+contextual_chunk_prefix: |
+  이 문서는 browser reload symptom chooser로, 302 redirect, 304 cache revalidation, 401 auth failure를 Location header, validator header, auth header 기준으로 분기한다.
+  새로고침 뒤 login으로 이동, 같은 URL 304, raw 401, final login HTML 200 hides 302 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Browser `302` vs `304` vs `401` 새로고침 분기표
 
 > 한 줄 요약: page reload 뒤 DevTools에 `302`, `304`, `401`이 보일 때는 "다른 URL로 이동시키는가, 기존 body를 다시 쓰는가, 인증 안 됐다고 멈추는가"를 먼저 갈라 읽으면 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "새로고침했더니 302, 304, 401이 다 보여서 같은 재요청처럼 보여요" | 로그인 후 예약 목록, 장바구니 페이지 새로고침 | redirect, cache 재검증, 인증 실패를 상태 코드별로 분리한다 |
+| "fetch는 200인데 응답 body가 로그인 HTML이라 API 성공인지 모르겠어요" | 세션 만료 뒤 AJAX 요청 | 최종 200 뒤에 숨은 302 login redirect 여부를 DevTools row로 확인한다 |
+| "304를 redirect처럼 보고 캐시 문제와 로그인 문제를 섞고 있어요" | browser reload trace 판독 | `Location`, validator, auth header 중 무엇이 먼저 보이는지 자른다 |
 
 관련 문서:
 

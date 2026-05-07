@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: BigDecimal HashMap vs TreeMap Lookup Mini Drill
+concept_id: language/bigdecimal-hashmap-treemap-lookup-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-lookup
+- hashmap-treemap
+- map-key-semantics
+aliases:
+- BigDecimal HashMap TreeMap lookup drill
+- BigDecimal containsKey get difference
+- BigDecimal HashMap get null TreeMap get success
+- BigDecimal key policy checklist
+- 자바 BigDecimal HashMap TreeMap 조회
+- BigDecimal equals compareTo lookup mismatch
+symptoms:
+- BigDecimal 1.0을 HashMap에 넣고 1로 get하면 null인데 TreeMap에서는 찾히는 이유를 equals와 compareTo 기준으로 나누지 못해
+- containsKey와 get 결과를 key 없음, null value, 비교 기준 차이와 섞어 해석해
+- BigDecimal key 정책을 정하지 않고 hash map과 sorted map 결과가 같을 거라고 예상해
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- language/bigdecimal-sorted-collection-bridge
+next_docs:
+- language/bigdecimal-key-policy-30-second-checklist
+- language/bigdecimal-navigablemap-lookup-bridge
+- language/bigdecimal-lowerkey-vs-floorkey-mini-drill
+linked_paths:
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+- contents/language/java/bigdecimal-navigablemap-lookup-bridge.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- language/bigdecimal-hashset-treeset-contains-mini-drill
+- language/bigdecimal-sorted-collection-bridge
+- language/bigdecimal-key-policy-30-second-checklist
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal 1.0을 HashMap에 put하고 1로 get하면 왜 null인데 TreeMap은 찾을 수 있어?
+- BigDecimal HashMap과 TreeMap 조회 기준을 equals hashCode와 compareTo로 비교해줘
+- BigDecimal containsKey와 get 결과를 1.0 1로 예측하는 미니 드릴을 풀고 싶어
+- BigDecimal key를 쓸 때 HashMap과 TreeMap 중 무엇을 조심해야 해?
+- TreeMap BigDecimal key는 compareTo 0이면 같은 key로 보는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal key lookup을 HashMap equals/hashCode와 TreeMap compareTo == 0 기준으로 비교하는 beginner drill이다.
+  BigDecimal HashMap get null, TreeMap get success, containsKey, 1.0 vs 1, key policy, lookup mismatch 질문이 본 문서에 매핑된다.
+---
 # BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`
 
 > 한 줄 요약: `BigDecimal("1.0")`를 넣어 두고 `BigDecimal("1")`로 조회하면, `HashMap`은 못 찾을 수 있고 `TreeMap`은 찾을 수 있다.

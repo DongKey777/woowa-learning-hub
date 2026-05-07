@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Tenant Partition Strategy / Reassignment 설계
+concept_id: system-design/tenant-partition-strategy-reassignment-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- tenant partition strategy
+- tenant reassignment
+- tenant sharding
+- tenant mobility
+aliases:
+- tenant partition strategy
+- tenant reassignment
+- tenant sharding
+- tenant mobility
+- hot tenant isolation
+- dedicated tenant cell
+- tenant promotion
+- partition directory
+- noisy neighbor mitigation
+- tenant placement
+- tenant scoped recovery
+- Tenant Partition Strategy / Reassignment 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/cell-based-architecture-blast-radius-isolation-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/tenant-scoped-config-incident-recovery-design.md
+- contents/system-design/tenant-split-out-service-identity-rollout-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant Partition Strategy / Reassignment 설계 설계 핵심을 설명해줘
+- tenant partition strategy가 왜 필요한지 알려줘
+- Tenant Partition Strategy / Reassignment 설계 실무 트레이드오프는 뭐야?
+- tenant partition strategy 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Tenant Partition Strategy / Reassignment 설계를 다루는 deep_dive 문서다. tenant partition strategy와 reassignment 설계는 tenant를 어떤 기준으로 shard, cell, cluster에 배치하고, hot tenant나 premium tenant를 언제 어떻게 다른 격리 단위로 이동시킬지 정하는 multi-tenant 운영 설계다. 검색 질의가 tenant partition strategy, tenant reassignment, tenant sharding, tenant mobility처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Tenant Partition Strategy / Reassignment 설계
 
 > 한 줄 요약: tenant partition strategy와 reassignment 설계는 tenant를 어떤 기준으로 shard, cell, cluster에 배치하고, hot tenant나 premium tenant를 언제 어떻게 다른 격리 단위로 이동시킬지 정하는 multi-tenant 운영 설계다.

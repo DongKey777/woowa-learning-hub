@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Router, Dispatcher, HandlerMapping vs Selector, Factory
+concept_id: design-pattern/router-dispatcher-handlermapping-vs-selector-factory
+canonical: true
+category: design-pattern
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- request-dispatch-naming
+- router-dispatcher-handlermapping
+- selector-factory-boundary
+aliases:
+- request dispatch naming
+- router vs selector naming
+- dispatcher vs selector naming
+- handler mapping vs selector
+- handler mapping vs factory
+- request router naming beginner
+- request dispatcher naming beginner
+- request routing vs strategy selector
+- handler lookup not factory
+- controller dispatch naming
+symptoms:
+- request-to-handler matching을 Selector나 Factory라고 이름 붙여 request dispatch boundary와 business policy selection을 섞는다
+- HandlerMapping이 기존 handler metadata를 찾을 뿐인데 Factory처럼 새 handler를 만드는 책임을 기대하게 한다
+- Router, HandlerMapping, Dispatcher가 각각 route decision, handler match, handoff orchestration이라는 레벨 차이를 드러내지 못한다
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+- design-pattern/factory-misnaming-checklist
+- design-pattern/chain-of-responsibility-filters-interceptors
+next_docs:
+- design-pattern/template-method-vs-filter-interceptor-chain
+- design-pattern/bean-name-vs-domain-key-lookup
+- design-pattern/registry-pattern
+linked_paths:
+- contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+- contents/design-pattern/chain-of-responsibility-filters-interceptors.md
+- contents/design-pattern/template-method-vs-filter-interceptor-chain.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/design-pattern/registry-pattern.md
+confusable_with:
+- design-pattern/factory-misnaming-checklist
+- design-pattern/registry-pattern
+- design-pattern/template-method-vs-filter-interceptor-chain
+- design-pattern/chain-of-responsibility-filters-interceptors
+forbidden_neighbors: []
+expected_queries:
+- Router, HandlerMapping, Dispatcher는 request flow에서 각각 route decision, handler match, handoff orchestration을 맡는 이름이야?
+- handler 하나를 고른다고 해서 Selector가 아니라 HandlerMapping이 더 맞는 경우는 언제야?
+- RequestDispatcher는 고르기만 하는 게 아니라 lookup, invoke, response handoff를 조율하므로 Selector와 다른 이유가 뭐야?
+- Factory는 새 객체 생성 책임이 public API에 드러날 때 쓰고 handler lookup에는 덜 맞는 이유가 뭐야?
+- request routing과 business policy selection을 이름에서 분리해야 코드 리뷰가 쉬운 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Router, Dispatcher, HandlerMapping vs Selector, Factory chooser로, request
+  dispatch 코드에서 Router는 큰 길 분기, HandlerMapping은 request-to-handler match,
+  Dispatcher는 lookup/invoke/response handoff orchestration을 뜻하며, handler 내부 정책 선택의
+  Selector나 새 객체 생성의 Factory와 이름을 분리해야 함을 설명한다.
+---
 # Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때
 
 > 한 줄 요약: request dispatch 코드는 "요청을 어디로 보낼까, 어떤 handler가 맞을까, 그 handoff 전체를 누가 조율할까"를 드러내는 이름이 먼저다. 그래서 보통 `Router`, `HandlerMapping`, `Dispatcher`가 맞고, handler 안쪽의 정책 선택이나 새 객체 생성에만 `Selector`, `Factory`를 쓴다.

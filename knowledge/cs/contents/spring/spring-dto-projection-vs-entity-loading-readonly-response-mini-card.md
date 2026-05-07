@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: DTO Projection vs Entity Loading Mini Card for Read-Only Responses
+concept_id: spring/dto-projection-vs-entity-loading-readonly-response-mini-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- dto-projection-vs
+- entity-loading-readonly
+- response
+- entity-loading
+aliases:
+- DTO projection vs entity loading
+- JPQL DTO projection
+- Querydsl DTO projection
+- read only response projection
+- entity loading vs projection JPA
+- select new DTO projection
+- response DTO no entity loading
+intents:
+- comparison
+- definition
+linked_paths:
+- contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
+- contents/spring/spring-lazy-loading-dto-mapping-checklist.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-data-jpa-basics.md
+- contents/database/n-plus-one-query-detection-solutions.md
+expected_queries:
+- 읽기 전용 응답에서는 DTO projection과 entity loading 중 무엇을 골라야 해?
+- JPQL select new DTO projection은 언제 자연스러워?
+- 조회 뒤 엔티티 규칙을 쓸 일이 있으면 projection이 맞지 않은 이유는?
+- DTO projection이 lazy loading과 N+1을 줄이는 데 어떻게 도움이 돼?
+contextual_chunk_prefix: |
+  이 문서는 read-only response에서 DTO projection과 entity loading을 비교하는
+  beginner mini card다. JPQL select new, Querydsl constructor projection,
+  필요한 컬럼만 읽기, lazy loading/N+1 회피, 조회 뒤 엔티티 규칙이나 상태 변경이
+  필요한 경우 entity loading을 고르는 기준을 설명한다.
+---
 # DTO Projection vs Entity Loading Mini Card for Read-Only Responses
 
 > 한 줄 요약: 응답이 읽기 전용이고 필요한 값이 몇 개 안 되면 JPQL/Querydsl DTO projection을 먼저 떠올리고, 조회 뒤에 엔티티 규칙을 쓰거나 상태 변경 가능성이 있으면 엔티티 로딩을 고른다.

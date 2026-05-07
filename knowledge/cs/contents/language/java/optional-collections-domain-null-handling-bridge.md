@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Optional Collections Domain Null Handling Bridge
+concept_id: language/optional-collections-domain-null-handling-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional
+- null-handling
+- domain-modeling
+aliases:
+- Optional collections domain null handling bridge
+- Optional vs empty collection
+- Optional List Map null handling design
+- absence reason domain type
+- Java null handling design beginner
+- 자바 Optional 컬렉션 도메인 타입 선택
+symptoms:
+- Optional<List<T>>로 0개 이상 결과를 감싸 데이터 개수 문제와 단건 absence 문제를 섞어 읽기 어렵게 만들어
+- Map.get null을 Optional absence처럼만 해석해 key 없음과 stored null value를 containsKey로 분리해야 하는 상황을 놓쳐
+- 없음의 이유가 비즈니스 상태인데 Optional.empty로만 표현해 미입력, 비공개, 취소, 숨김 같은 의미가 타입 밖으로 새어 나가
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-optional-basics
+- language/java-collections-basics
+- language/optional-list-empty-collection-symptom-card
+next_docs:
+- language/optional-boolean-double-absence-follow-up-card
+- language/map-get-null-containskey-getordefault-primer
+- language/domain-state-type-primer-enum-record-value-object
+linked_paths:
+- contents/language/java/optional-list-empty-collection-symptom-card.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-enum-basics.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-put-null-containskey-distinction-bridge.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/optional-list-empty-collection-symptom-card
+- language/map-get-null-containskey-getordefault-primer
+- language/optional-boolean-double-absence-follow-up-card
+forbidden_neighbors: []
+expected_queries:
+- Optional에 머물지 빈 컬렉션을 쓸지 도메인 상태 타입으로 올릴지 어떻게 고르면 좋아?
+- Optional<List<T>>보다 빈 List를 반환하는 게 더 읽기 쉬운 경우를 설명해줘
+- Map.get null은 Optional.empty와 다르게 key 없음과 null value를 어떻게 분리해야 해?
+- 없음의 이유가 비공개 미입력 취소처럼 중요하면 enum이나 domain type으로 올리는 기준이 뭐야?
+- Java null handling에서 단건 없음 다건 0개 Map key 없음 상태 의미를 한 장으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Java null handling에서 Optional, empty collection, Map.get null, domain state type을 absence shape별로 고르는 beginner chooser다.
+  Optional vs empty collection, Optional List, Map get null, absence reason, domain type 질문이 본 문서에 매핑된다.
+---
 # `Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge
 
 > 한 줄 요약: 값이 "하나 있을 수도 없을 수도 있음"이면 `Optional`에 머무르고, 값이 "0개 이상일 수 있음"이면 컬렉션으로 옮기고, "없음의 이유" 자체가 비즈니스 규칙이면 도메인 타입으로 끌어올리면 초보자도 null 처리를 덜 헷갈린다.

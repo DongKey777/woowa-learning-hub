@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Disjoint Interval Set
+concept_id: data-structure/disjoint-interval-set
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 85
+mission_ids:
+- missions/roomescape
+review_feedback_tags:
+- interval-canonicalization
+- treemap-interval-bridge
+- reservation-window-merge
+aliases:
+- disjoint interval set
+- interval set
+- merge intervals online
+- non-overlapping ranges
+- canonical interval map
+- TreeMap intervals
+- reservation window merge
+symptoms:
+- TreeMap으로 양옆 이웃을 읽는 단계와 insert 후 전체 구간을 non-overlapping canonical state로 유지하는 단계를 섞는다
+- 예약, allowlist, 점유 시간창을 겹치는 구간 그대로 쌓아 질의마다 여러 조각을 반복 비교한다
+- interval tree가 필요한 overlap search 문제와 disjoint interval set으로 충분한 merge/canonicalization 문제를 구분하지 못한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/treemap-interval-entry-primer
+next_docs:
+- data-structure/interval-tree
+- algorithm/sweep-line-overlap-counting
+- algorithm/interval-greedy-patterns
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+linked_paths:
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/data-structure/interval-tree.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- data-structure/interval-tree
+- algorithm/sweep-line-overlap-counting
+- algorithm/interval-greedy-patterns
+- data-structure/treemap-interval-entry-primer
+forbidden_neighbors: []
+expected_queries:
+- Disjoint Interval Set은 TreeMap interval primer 다음에 언제 필요해?
+- 예약 구간을 insert할 때마다 겹치는 구간을 merge해 canonical state로 유지하는 방법은?
+- interval tree와 disjoint interval set은 overlap query와 merge 유지 기준으로 어떻게 달라?
+- non-overlapping ranges를 TreeMap floor ceiling으로 관리하는 감각을 알려줘
+- IP allowlist나 예약 시간창을 disjoint interval로 유지하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 겹치지 않는 interval들을 정렬된 canonical state로 유지하는
+  Disjoint Interval Set chooser다. TreeMap floorEntry/ceilingEntry로 이웃을
+  읽는 primer에서 insert 후 merge, gap tracking, 예약 window, allowlist
+  range 관리로 넘어가는 기준을 설명한다.
+---
 # Disjoint Interval Set
 
 > 한 줄 요약: Disjoint Interval Set은 겹치지 않는 구간들을 정렬해 유지하면서 병합, 삭제, 충돌 검사를 빠르게 하도록 설계한 구간 관리 구조다.

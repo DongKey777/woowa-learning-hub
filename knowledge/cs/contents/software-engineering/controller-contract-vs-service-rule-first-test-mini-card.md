@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Controller 계약 변경 vs Service 규칙 변경 첫 failing test 미니 카드
+concept_id: software-engineering/controller-contract-vs-service-rule-first-test-mini-card
+canonical: false
+category: software-engineering
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 75
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- controller-contract-vs-service-rule
+- first-failing-test-scope
+- webmvctest-vs-unit-test
+aliases:
+- controller contract vs service rule
+- http contract change first failing test
+- business rule change first test
+- 주문 예시 http 계약 변경
+- 주문 예시 비즈니스 규칙 변경
+- controller service 테스트 뭐부터
+- webmvctest vs unit test basics
+- 처음 테스트 뭐부터 헷갈려요
+- controller contract beginner
+- service rule beginner
+- request dto response dto contract
+- what is http contract change
+symptoms:
+- controller를 고쳤는데 왜 웹 테스트부터가 아닌지 헷갈려요
+- 주문 예시에서 @WebMvcTest와 단위 테스트 중 뭘 먼저 써야 할지 모르겠어요
+- 요청 검증과 비즈니스 규칙 변경이 섞이면 첫 failing test를 어디에 둘지 감이 안 와요
+intents:
+- drill
+prerequisites:
+- software-engineering/test-strategy-basics
+- software-engineering/layered-architecture-basics
+next_docs:
+- software-engineering/order-validation-annotation-vs-domain-rule
+- software-engineering/refactoring-first-failing-test
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/order-validation-annotation-vs-domain-rule-card.md
+- contents/software-engineering/refactoring-first-failing-test-bridge.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- software-engineering/order-validation-annotation-vs-domain-rule
+- software-engineering/test-strategy-basics
+- software-engineering/refactoring-first-failing-test
+forbidden_neighbors: []
+expected_queries:
+- 요청 JSON 필드가 바뀐 경우와 주문 규칙이 바뀐 경우 첫 테스트 시작점을 어떻게 나눠?
+- 수량 누락 400 검증이랑 재고 부족 검증은 왜 같은 테스트에서 시작하면 안 돼?
+- controller 계약 변경인지 service 규칙 변경인지 빠르게 판단하는 체크리스트가 필요해
+- 주문 생성 PR에서 MockMvc부터 볼지 단위 테스트부터 볼지 헷갈릴 때 기준이 뭐야?
+- beginner 입장에서 웹 계약 테스트와 비즈니스 규칙 테스트를 분리하는 예시를 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 주문 생성처럼 같은 변경처럼 보여도 HTTP 요청·응답 모양
+  변경과 업무 판단 변경을 나눠 첫 failing test 선택을 확인 질문으로
+  굳히는 drill이다. JSON 필드 변경, 400 응답 형식 확인, 재고 부족
+  판단 검증, 웹 계층부터 볼지 규칙부터 볼지, 테스트 시작점 가르기
+  같은 자연어 paraphrase가 본 문서의 선택 기준에 매핑된다.
+---
 # Controller 계약 변경 vs Service 규칙 변경 첫 failing test 미니 카드
 
 > 한 줄 요약: 같은 주문 생성 예시라도 `HTTP 계약이 바뀐 것`인지 `비즈니스 규칙이 바뀐 것`인지 먼저 나누면, 첫 failing test를 `@WebMvcTest`와 단위 테스트 중 어디에 둘지 훨씬 덜 헷갈린다.

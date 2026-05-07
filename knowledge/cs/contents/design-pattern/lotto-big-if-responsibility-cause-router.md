@@ -50,11 +50,7 @@ confusable_with:
 - design-pattern/lotto-manual-auto-number-generator-strategy-bridge
 - design-pattern/lotto-strategy-rank-decision-bridge
 - software-engineering/lotto-winning-statistics-result-object-bridge
-forbidden_neighbors:
-- contents/design-pattern/lotto-static-factory-bridge.md
-- contents/design-pattern/lotto-manual-auto-number-generator-strategy-bridge.md
-- contents/design-pattern/lotto-strategy-rank-decision-bridge.md
-- contents/software-engineering/lotto-winning-statistics-result-object-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 로또 미션에서 긴 if 문이 생겼을 때 이게 생성 경로 문제인지 등수 판정 문제인지 어떻게 구분해?
 - 수동 구매와 자동 구매, 결과 통계까지 한 메서드에 몰렸는데 어떤 문서부터 보면 돼?

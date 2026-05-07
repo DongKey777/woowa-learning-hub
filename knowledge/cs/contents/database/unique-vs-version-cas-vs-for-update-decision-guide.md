@@ -59,12 +59,12 @@ expected_queries:
 - 재고 차감처럼 같은 row를 수정할 때는 optimistic lock과 row lock 중 어떤 기준으로 나눠?
 - '"없으면 insert"와 "읽고 수정 후 저장"을 같은 동시성 문제로 보면 어디서 틀어져?'
 contextual_chunk_prefix: |
-  이 문서는 학습자가 UNIQUE, version CAS, FOR UPDATE를 모두 락 종류로만
-  외우지 않도록 exact duplicate, existing row 덮어쓰기, 먼저 줄 세워야 하는
-  소유권 경쟁을 갈라 주는 beginner chooser다. 같은 요청 한 번만 성공, 읽고
-  계산한 뒤 저장 충돌, 조회는 잠갔는데 왜 또 중복이 나지, 재고 수정은 어떤
-  축으로 봐야 하지, 없던 row 생성과 있던 row 갱신을 왜 다르게 다뤄야 하지
-  같은 자연어 표현이 이 문서의 결정 분기에 매핑된다.
+  이 문서는 학습자가 UNIQUE, version CAS, FOR UPDATE를 모두 같은 락으로
+  외우지 않고 중복 생성 차단, 읽고 계산한 뒤 덮어쓰기 방지, 이미 있는 row
+  순서 세우기를 구분해 결정하게 돕는 beginner chooser다. 같은 키 두 번
+  생성 막기, 읽은 값이 바뀌었는지 확인하기, 기존 행 앞에서 기다리게 하기,
+  조회를 잠갔는데 왜 또 insert가 겹치지, 재고 수정은 무엇으로 막지 같은
+  자연어 paraphrase가 이 문서의 분기 기준에 매핑된다.
 ---
 
 # UNIQUE vs Version CAS vs FOR UPDATE 결정 가이드
@@ -72,6 +72,14 @@ contextual_chunk_prefix: |
 ## 한 줄 요약
 
 > exact duplicate면 `UNIQUE`, 같은 existing row를 읽고 바꾼다면 version CAS, 먼저 줄 세워야 하는 기존 row 소유권이면 `FOR UPDATE`를 먼저 본다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "중복 예약도 막고 재고 덮어쓰기도 막아야 하는데 같은 락으로 되나요?" | roomescape exact slot duplicate와 shopping-cart stock lost update를 한 도구로 풀려는 설계 | 새 row 중복 생성과 existing row read-modify-write를 다른 문제로 본다 |
+| "`FOR UPDATE`를 걸었는데도 duplicate key가 나요" | `SELECT ... FOR UPDATE`가 0 row를 읽은 뒤 동시에 insert하는 코드 | 잠글 기존 row가 없으면 최종 winner는 `UNIQUE`가 정한다는 점을 잡는다 |
+| "version column을 붙이면 쿠폰 1회 발급도 안전해지나요?" | coupon claim처럼 아직 row가 없을 수도 있는 exact key 경쟁 | version CAS는 이미 읽은 row 변경 감지에 맞고 insert-if-absent와 다르다 |
 
 ## 결정 매트릭스
 

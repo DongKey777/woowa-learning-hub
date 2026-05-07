@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: 정렬 알고리즘 입문
+concept_id: algorithm/sort-intro
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/lotto
+- missions/baseball
+review_feedback_tags:
+- sorting-basics-stability-complexity
+- builtin-sort-first
+- sort-to-binary-search-handoff
+aliases:
+- sort intro
+- sorting algorithms basics
+- 정렬 알고리즘 입문
+- 정렬 입문
+- 정렬이 뭐예요
+- 정렬 왜 해요
+- stable sort 뭐예요
+- O n log n 정렬
+- 버블 정렬 선택 정렬 삽입 정렬
+- 병합 정렬 퀵 정렬 차이
+- Java Arrays.sort Collections.sort
+- 정렬 후 이분 탐색
+symptoms:
+- 정렬 알고리즘 이름을 모두 외우려 하지만 실제로는 안정성, 시간복잡도, 내장 정렬 사용 기준을 설명하지 못해
+- stable sort가 필요한 장면과 단순 오름차순 정렬을 같은 질문으로 보고 있어
+- 정렬 자체가 목적일 때와 이분 탐색이나 중복 처리의 전처리일 때를 구분하지 못해
+intents:
+- definition
+- comparison
+prerequisites:
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/sort-to-binary-search-bridge
+- algorithm/binary-search-intro
+- algorithm/sort
+- language/java-array-sorting-searching-basics
+linked_paths:
+- contents/language/java/java-array-sorting-searching-basics.md
+- contents/algorithm/sort-to-binary-search-bridge.md
+- contents/algorithm/sort.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/binary-search-intro.md
+- contents/data-structure/heap-basics.md
+confusable_with:
+- algorithm/sort-to-binary-search-bridge
+- algorithm/binary-search-intro
+- algorithm/sort
+- language/java-array-sorting-searching-basics
+forbidden_neighbors: []
+expected_queries:
+- 정렬 알고리즘을 처음 배울 때 시간복잡도와 안정성을 기준으로 설명해줘
+- 버블, 선택, 삽입, 병합, 퀵 정렬을 beginner 기준으로 비교해줘
+- 실무나 코딩 테스트에서는 내장 정렬을 먼저 쓰고 안정성만 확인한다는 뜻이 뭐야?
+- stable sort는 언제 필요하고 같은 key의 원래 순서 보존이 왜 중요해?
+- 정렬이 이분 탐색의 전처리라는 흐름을 어떻게 이해하면 돼?
+contextual_chunk_prefix: |
+  이 문서는 sorting algorithm을 시간복잡도, stability, in-place memory, builtin sort usage 기준으로 처음 정리하고 sort 이후 binary search나 duplicate processing으로 넘기는 beginner primer다.
+  bubble sort, selection sort, insertion sort, merge sort, quick sort, stable sort, Arrays.sort, sort before binary search 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 정렬 알고리즘 입문 (Sorting Algorithms Basics)
 
 > 한 줄 요약: 정렬 알고리즘은 비교 횟수와 메모리 사용 방식에 따라 갈리며, 코딩 테스트에서는 언어 내장 정렬(O(n log n))을 쓰되 "왜 이 정렬인가"를 설명할 수 있어야 한다.

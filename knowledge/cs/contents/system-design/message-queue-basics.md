@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: 메시지 큐 기초
+concept_id: system-design/message-queue-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- sync-vs-async-boundary
+- queue-enqueue-not-business-complete
+- producer-consumer-speed-decoupling
+aliases:
+- message queue basics
+- 메시지 큐 기초
+- what is message queue
+- beginner message queue
+- 메시지 큐 입문
+- 왜 메시지 큐를 써요
+- 언제 rest 대신 queue
+- producer consumer 기초
+- queue enqueue business complete
+- 큐에 넣으면 끝인가요
+- direct api vs queue
+- 후처리 queue handoff
+symptoms:
+- 큐에 넣었는데 왜 업무가 아직 끝난 게 아닌지 헷갈려
+- 이메일이나 알림을 API 응답 뒤로 빼는 이유를 모르겠어
+- producer consumer broker topic queue 차이가 처음이라 막혀
+intents:
+- definition
+- comparison
+prerequisites:
+- system-design/system-design-foundations
+- system-design/stateless-backend-cache-database-queue-starter-pack
+next_docs:
+- system-design/per-key-queue-vs-direct-api-primer
+- system-design/queue-vs-cache-vs-db-decision-drill
+- system-design/consistency-idempotency-async-workflow-foundations
+- system-design/retry-amplification-and-backpressure-primer
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/system-design/per-key-queue-vs-direct-api-primer.md
+- contents/system-design/system-design-foundations.md
+- contents/system-design/stateless-backend-cache-database-queue-starter-pack.md
+- contents/system-design/queue-vs-cache-vs-db-decision-drill.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/retry-amplification-and-backpressure-primer.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/software-engineering/cache-message-observability.md
+- contents/design-pattern/command-pattern-basics.md
+- contents/design-pattern/command-pattern-undo-queue.md
+confusable_with:
+- system-design/per-key-queue-vs-direct-api-primer
+- system-design/queue-vs-cache-vs-db-decision-drill
+- design-pattern/command-pattern-basics
+- data-structure/queue-basics
+forbidden_neighbors: []
+expected_queries:
+- 메시지 큐를 쓰면 왜 API 응답이 빨라지는지 초보자 기준으로 설명해줘
+- 큐에 넣었다는 것과 실제 업무 완료가 왜 다른 상태야?
+- producer consumer broker topic queue를 처음 배우는 사람 기준으로 구분해줘
+- 이메일 발송이나 알림 생성은 왜 direct API 대신 queue로 보내?
+- 알고리즘 queue와 메시지 queue와 command queue가 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 message queue를 producer와 consumer의 속도를 분리하고 지금 응답에 꼭 필요 없는 후처리를 뒤로 넘기는 비동기 handoff 레이어로 설명하는 beginner primer다.
+  큐 적재 성공과 업무 처리 완료의 차이, direct API 대신 queue를 두는 이유, 이메일 알림 검색 인덱싱 같은 후처리 분리, 알고리즘 queue나 command queue와 메시지 queue를 구분하는 자연어 paraphrase가 본 문서에 매핑된다.
+---
 # 메시지 큐 기초 (Message Queue Basics)
 
 > 한 줄 요약: 메시지 큐는 `지금 응답에 꼭 필요 없는 일`을 뒤로 넘겨 생산자와 소비자의 속도를 분리하는 비동기 handoff 도구다.

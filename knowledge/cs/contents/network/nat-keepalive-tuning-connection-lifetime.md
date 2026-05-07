@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "NAT Keepalive Tuning, Connection Lifetime"
+concept_id: network/nat-keepalive-tuning-connection-lifetime
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- nat-keepalive
+- conntrack-timeout
+- connection-lifetime
+aliases:
+- NAT keepalive tuning
+- conntrack timeout
+- stale NAT mapping
+- connection lifetime
+- NAT rebinding
+- heartbeat interval
+- TCP keepalive tuning
+symptoms:
+- 한동안 조용한 뒤 NAT 뒤 첫 요청만 실패한다
+- keepalive를 켰는데도 NAT나 LB timeout보다 주기가 길어 연결이 끊긴다
+- probe를 너무 자주 보내 NAT gateway와 서버 비용이 늘어난다
+- 외부 API나 모바일 클라이언트에서 stale mapping 재사용이 반복된다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/tcp-keepalive-vs-app-heartbeat
+next_docs:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-retry-backoff-practical
+- network/http-keepalive-timeout-mismatch-deeper-cases
+linked_paths:
+- contents/network/nat-conntrack-ephemeral-port-exhaustion.md
+- contents/network/tcp-keepalive-vs-app-heartbeat.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- network/nat-conntrack-ephemeral-port-exhaustion
+- network/tcp-keepalive-vs-app-heartbeat
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/http-keepalive-timeout-mismatch-deeper-cases
+forbidden_neighbors: []
+expected_queries:
+- "NAT keepalive interval을 conntrack timeout보다 어떻게 짧게 잡아야 해?"
+- "stale NAT mapping 때문에 idle 뒤 첫 요청이 실패하는 패턴을 설명해줘"
+- "TCP keepalive와 app heartbeat 중 NAT mapping 유지에는 무엇을 봐야 해?"
+- "connection lifetime을 제한하면 NAT rebinding 문제를 어떻게 줄여?"
+- "probe를 너무 자주 보내지 않으면서 NAT timeout을 피하는 기준은?"
+contextual_chunk_prefix: |
+  이 문서는 NAT/conntrack timeout, stale NAT mapping, keepalive interval,
+  app heartbeat, TCP keepalive, connection lifetime tuning을 다루는
+  advanced playbook이다.
+---
 # NAT Keepalive Tuning, Connection Lifetime
 
 > 한 줄 요약: NAT는 오래 조용한 연결을 먼저 잊어버리므로, keepalive와 connection lifetime을 NAT/conntrack/idle timeout에 맞춰 조정해야 한다.

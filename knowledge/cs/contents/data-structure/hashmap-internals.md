@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: HashMap 내부 구조
+concept_id: data-structure/hashmap-internals
+canonical: true
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- hashmap-bucket-collision-treeify
+- resize-rehash-cost
+- mutable-key-lookup-bug
+aliases:
+- HashMap internals
+- Java HashMap internals
+- hash collision handling
+- resize rehash cost
+- treeify threshold
+- equals hashCode contract
+- mutable key bug
+- bucket index calculation
+- hash spread function
+- load factor threshold
+- HashMap 값이 사라진 것처럼 보여요
+- hashCode equals HashMap lookup
+symptoms:
+- HashMap에 넣은 key를 수정했더니 get이 null처럼 보여
+- hash collision이 많으면 Java HashMap 내부가 어떻게 바뀌는지 궁금해
+- resize와 rehash 비용이 언제 발생하는지 모르겠어
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- data-structure/hash-table-basics
+- language/java-equals-hashcode-comparable-contracts
+next_docs:
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- data-structure/robin-hood-hashing
+- language/java-equals-hashcode-comparable-contracts
+- language/collections-performance
+linked_paths:
+- contents/data-structure/hash-table-basics.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/robin-hood-hashing.md
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/language/java/collections-performance.md
+- contents/language/java-equals-hashcode-comparable-contracts.md
+confusable_with:
+- data-structure/hash-table-basics
+- data-structure/treemap-vs-hashmap-vs-linkedhashmap
+- language/java-equals-hashcode-comparable-contracts
+forbidden_neighbors: []
+expected_queries:
+- Java HashMap은 hashCode로 bucket index를 어떻게 계산하고 충돌을 어떻게 처리해?
+- HashMap bucket이 길어지면 treeify threshold와 resize가 어떻게 갈려?
+- mutable key를 HashMap에 넣으면 왜 값을 잃은 것처럼 보일 수 있어?
+- HashMap 평균 O(1)과 최악 O(n), treeified bucket O(log n)을 비교해줘
+- loadFactor 0.75와 resize rehash 비용이 실제 성능에 어떤 영향을 줘?
+contextual_chunk_prefix: |
+  이 문서는 Java HashMap 내부의 bucket index 계산, hash spreading, collision handling, linked list to red-black tree treeify threshold, load factor, resize, rehash, equals/hashCode contract, mutable key bug를 설명하는 advanced deep dive다.
+  HashMap 값이 사라짐, key 수정 후 get 실패, collision 많음, resize 비용, treeify, load factor 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # HashMap 내부 구조
 
 > 한 줄 요약: `HashMap`은 평균적으로 빠르지만, 키 설계와 충돌 처리, 리사이즈 비용을 모르면 쉽게 느려지고 심지어 값을 잃은 것처럼 보일 수 있는 자료구조다.

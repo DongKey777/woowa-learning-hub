@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "QUIC Version Negotiation, Fallback Behavior"
+concept_id: network/quic-version-negotiation-fallback
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- quic
+- http3-fallback
+- version-negotiation
+aliases:
+- QUIC version negotiation
+- HTTP/3 fallback
+- version negotiation packet
+- UDP blocked
+- browser fallback
+- Alt-Svc fallback
+- QUIC compatibility
+symptoms:
+- HTTP/3가 안 붙으면 서비스 전체가 실패해야 한다고 생각한다
+- QUIC version mismatch, UDP block, Alt-Svc stale cache, path validation 실패를 모두 같은 fallback으로 뭉갠다
+- fallback이 조용히 일어나서 앱에는 느림으로만 보이는 점을 놓친다
+- H3 attempted ratio와 fallback ratio를 따로 관측하지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/http3-quic-practical-tradeoffs
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+next_docs:
+- network/quic-connection-migration-path-change
+- network/udp-fragmentation-quic-packetization
+- network/happy-eyeballs-dual-stack-racing
+- network/packet-loss-jitter-reordering-diagnostics
+linked_paths:
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/quic-connection-migration-path-change.md
+- contents/network/udp-fragmentation-quic-packetization.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/http2-http3-downgrade-attribution-alt-svc-udp-block.md
+confusable_with:
+- network/http2-http3-downgrade-attribution-alt-svc-udp-block
+- network/h3-fallback-trace-bridge
+- network/udp-fragmentation-quic-packetization
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "QUIC version negotiation 실패와 HTTP/3 fallback을 어떻게 봐야 해?"
+- "특정 네트워크에서만 H3가 안 붙으면 UDP block과 version mismatch를 어떻게 구분해?"
+- "Alt-Svc cache와 실제 QUIC 지원 버전이 안 맞으면 어떤 fallback이 생겨?"
+- "HTTP/3 attempted ratio와 fallback ratio를 왜 따로 봐야 해?"
+- "QUIC이 안 될 때 HTTP/2로 graceful fallback해야 하는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 QUIC version negotiation, version negotiation packet,
+  HTTP/3 fallback to HTTP/2, UDP block, Alt-Svc cache mismatch와 관측 지표를
+  다루는 advanced playbook이다.
+---
 # QUIC Version Negotiation, Fallback Behavior
 
 > 한 줄 요약: QUIC은 버전 협상이 실패하면 fallback이 필요하고, 이때 HTTP/2나 다른 경로로 자연스럽게 돌아가는 설계가 중요하다.

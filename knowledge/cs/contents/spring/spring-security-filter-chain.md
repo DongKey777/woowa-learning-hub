@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- security-filter-chain
+- securityfilterchain
+- delegatingfilterproxy
+- exceptiontranslationfilter
 aliases:
 - Spring Security filter chain
 - SecurityFilterChain
@@ -38,7 +43,6 @@ contextual_chunk_prefix: |
   filter chain order, ExceptionTranslationFilter 같은 자연어 paraphrase가
   본 문서의 핵심 메커니즘에 매핑된다.
 ---
-
 # Spring Security Filter Chain
 
 > 한 줄 요약: Spring Security는 "체크리스트를 도는 인터셉터"가 아니라 서블릿 필터 체인 앞단에 끼워진 **별도의 필터 체인**이고, 인증과 인가는 체인 안의 서로 다른 단계에서 서로 다른 책임으로 돈다 — 이 순서를 이해해야 401과 403의 경계, JWT/OAuth 흐름, `permitAll()`이 통하지 않는 이유를 설명할 수 있다.

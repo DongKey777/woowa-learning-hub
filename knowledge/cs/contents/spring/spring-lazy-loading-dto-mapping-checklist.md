@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Lazy Loading to DTO Mapping Checklist
+concept_id: spring/lazy-loading-dto-mapping-checklist
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- lazy-loading-dto
+- mapping
+- service-dto-conversion
+- point
+aliases:
+- lazy loading DTO mapping
+- service DTO conversion point
+- LazyInitializationException DTO
+- OSIV DTO mapping
+- JPA fetch strategy checklist
+- controller entity return lazy loading
+- fetch join EntityGraph beginner
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
+- contents/spring/spring-dto-projection-vs-entity-loading-readonly-response-mini-card.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/database/n-plus-one-query-detection-solutions.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+expected_queries:
+- JPA lazy loading은 DTO 변환을 service 안에서 끝내야 해?
+- OSIV가 켜져 있어도 controller에서 entity를 펼치면 왜 위험해?
+- LazyInitializationException을 피하려면 fetch join EntityGraph DTO mapping을 어떻게 봐?
+- 응답 DTO에 필요한 연관은 어디서 읽고 닫는 게 좋아?
+contextual_chunk_prefix: |
+  이 문서는 lazy loading과 DTO mapping 경계를 beginner checklist로 정리한다.
+  service transaction 안에서 필요한 연관을 fetch join/@EntityGraph/projection으로
+  준비하고 DTO 변환을 끝내며, controller entity return, OSIV, LazyInitializationException,
+  hidden N+1과 늦은 SQL을 피하는 기본 흐름을 설명한다.
+---
 # Lazy Loading to DTO Mapping Checklist
 
 > 한 줄 요약: 초급자는 "엔티티는 service 안에서 필요한 만큼만 읽고, DTO는 그 안에서 닫아서 반환하며, OSIV는 문제를 숨길 수 있다"를 기본값으로 잡으면 lazy loading 혼란을 크게 줄일 수 있다.

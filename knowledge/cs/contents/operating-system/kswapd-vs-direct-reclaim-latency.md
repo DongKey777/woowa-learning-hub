@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: kswapd vs Direct Reclaim Latency
+concept_id: operating-system/kswapd-vs-direct-reclaim-latency
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- kswapd-vs-direct
+- reclaim-latency
+- reclaim
+- direct-reclaim-request
+aliases:
+- kswapd vs direct reclaim
+- reclaim latency
+- direct reclaim request path
+- memory pressure stall
+- background reclaim kswapd
+- allocation stall
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/vm-swappiness-reclaim-behavior.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/memory-reclaim-cgroup-v2-proactive-reclaim.md
+symptoms:
+- kswapd가 background에서 reclaim하는 정도는 버틸 수 있지만 direct reclaim이 request path에 들어와 p99가 튄다.
+- allocation stall과 PSI memory pressure가 증가하며 latency가 직접 악화된다.
+- reclaim이 page cache, swap, OOM killer와 어느 단계에서 연결되는지 불명확하다.
+expected_queries:
+- kswapd와 direct reclaim은 latency에 어떤 차이를 만들어?
+- direct reclaim이 request path에 침투하면 p99가 왜 바로 망가져?
+- memory pressure에서 PSI, major fault, OOM killer를 어떤 순서로 봐야 해?
+- background reclaim과 allocation stall을 운영 지표로 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 kswapd를 미리 memory를 치우는 background reclaim으로, direct reclaim을 allocation
+  request path에 직접 들어와 latency를 망가뜨리는 stall로 설명한다. PSI, page fault,
+  OOM, page cache와 연결한다.
+---
 # kswapd vs Direct Reclaim, Latency
 
 > 한 줄 요약: kswapd는 미리 메모리를 치우는 백그라운드 작업이고, direct reclaim은 요청 경로에 침투해 latency를 직접 망가뜨린다.

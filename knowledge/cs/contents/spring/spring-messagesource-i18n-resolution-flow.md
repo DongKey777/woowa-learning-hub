@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring MessageSource and i18n Resolution Flow
+concept_id: spring/messagesource-i18n-resolution-flow
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- messagesource-i18n-resolution
+- flow
+- messagesource
+- i18n
+aliases:
+- MessageSource
+- i18n
+- ResourceBundleMessageSource
+- message codes
+- fallback message
+- locale context
+- error code localization
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-problemdetail-error-response-design.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-conversion-service-formatter-binder-pipeline.md
+expected_queries:
+- Spring MessageSource는 locale code fallback formatting을 어떻게 처리해?
+- validation error message를 locale별로 바꾸려면 어떤 message code를 봐야 해?
+- ResourceBundleMessageSource 설정과 fallback 정책은 어떻게 잡아?
+- ProblemDetail error response를 i18n 메시지로 바꾸려면 무엇을 연결해?
+contextual_chunk_prefix: |
+  이 문서는 Spring MessageSource가 단순 번역 사전이 아니라 code lookup,
+  Locale, fallback, formatting, ResourceBundleMessageSource, validation error
+  message code, ProblemDetail localization을 결합해 메시지를 해석하는 i18n
+  resolution flow임을 설명한다.
+---
 # Spring `MessageSource` and i18n Resolution Flow
 
 > 한 줄 요약: `MessageSource`는 단순 번역 사전이 아니라 locale, code, fallback, and formatting을 결합해 메시지를 해석하는 국제화 엔진이다.

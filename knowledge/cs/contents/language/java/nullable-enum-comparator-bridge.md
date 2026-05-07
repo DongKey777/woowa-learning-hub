@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Nullable Enum Comparator Bridge
+concept_id: language/nullable-enum-comparator-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator
+- enum
+- null-handling
+aliases:
+- Nullable Enum Comparator Bridge
+- Java enum nullsFirst nullsLast comparator
+- enum declaration order vs name sort
+- nullable enum sort beginner
+- Comparator naturalOrder enum
+- 자바 nullable enum 정렬
+symptoms:
+- enum naturalOrder가 name 알파벳순이라고 생각해 선언 순서 기반 정렬 결과를 잘못 예측해
+- nullsLast comparator 전체에 reversed를 걸면 null 위치도 함께 뒤집힌다는 점을 놓쳐 null이 예상과 반대로 이동해
+- nullable enum 정렬에서 null 위치 정책과 enum 값 비교 기준을 한 comparator 층으로 섞어 유지보수하기 어려운 코드를 만들어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/java-enum-basics
+- language/java-comparable-comparator-basics
+- language/java-comparator-utility-patterns
+next_docs:
+- language/comparator-null-reversal-primer
+- language/nullable-string-comparator-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+linked_paths:
+- contents/language/java/java-enum-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/comparator-null-reversal-primer.md
+- contents/language/java/nullable-string-comparator-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+confusable_with:
+- language/comparator-null-reversal-primer
+- language/nullable-string-comparator-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+forbidden_neighbors: []
+expected_queries:
+- nullable enum을 nullsFirst nullsLast로 정렬할 때 enum 선언 순서와 name 순서를 어떻게 고르지?
+- enum naturalOrder는 알파벳순이 아니라 선언 순서라는 점을 예제로 설명해줘
+- nullsLast comparator를 reversed하면 null 위치도 바뀌는 이유가 뭐야?
+- null은 뒤에 두고 enum 값만 내림차순으로 정렬하려면 comparator를 어떻게 짜야 해?
+- TreeSet TreeMap에서 enum comparator가 중복 판단까지 바꿀 수 있는지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 nullable enum sorting을 null placement와 enum value ordering으로 분리해 Comparator 선택을 돕는 beginner chooser다.
+  nullable enum comparator, nullsFirst, nullsLast, enum naturalOrder, declaration order, name sort 질문이 본 문서에 매핑된다.
+---
 # `null` 가능한 enum, 어떻게 정렬할까 beginner bridge
 
 > 한 줄 요약: nullable `enum` 정렬은 먼저 `null`을 앞/뒤 어디에 둘지 정하고, 그다음 값끼리는 "enum 선언 순서"로 볼지 "`name()` 문자열 순서"로 볼지 나누면 된다.

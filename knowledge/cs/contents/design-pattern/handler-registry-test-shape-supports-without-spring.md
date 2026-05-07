@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: 'Handler Registry Test Shape: `supports()` 기반 registry를 Spring 없이 단위 테스트하기'
+concept_id: design-pattern/handler-registry-test-shape-supports-without-spring
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids:
+- missions/lotto
+- missions/blackjack
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- handler-registry-testing
+- supports-key-validation
+- no-spring-registry-test
+aliases:
+- handler registry test shape
+- supports registry test
+- supports based registry test
+- handler registry unit test without spring
+- spring handler registry unit test
+- no spring container registry test
+- no application context registry test
+- supports registry bootstrap test
+- duplicate supports key test
+- missing handler key test
+- fail fast registry bootstrap test
+- handler registry test shape supports without spring basics
+intents:
+- drill
+- design
+symptoms:
+- List<Handler> 구조인데 테스트도 꼭 Spring 컨테이너를 띄워야 하는지 모르겠어요
+- supports() 기반 registry의 duplicate와 missing 검증을 어디서 테스트해야 할지 헷갈려요
+- wiring 테스트와 registry 규칙 테스트가 한 파일에 섞여 너무 무거워졌어요
+prerequisites:
+- design-pattern/registry-vs-factory-injected-handler-maps
+- software-engineering/test-strategy-basics
+next_docs:
+- design-pattern/injected-registry-vs-service-locator-checklist
+- spring/spring-testing-basics
+- design-pattern/bean-name-vs-domain-key-lookup
+linked_paths:
+- contents/design-pattern/registry-vs-factory-injected-handler-maps.md
+- contents/design-pattern/bean-name-vs-domain-key-lookup.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/spring/spring-testing-basics.md
+confusable_with:
+- design-pattern/injected-registry-vs-service-locator-checklist
+- design-pattern/registry-vs-factory-injected-handler-maps
+- spring/spring-testing-basics
+forbidden_neighbors:
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/spring/spring-testing-basics.md
+expected_queries:
+- supports() 기반 handler registry를 Spring 없이 어떻게 테스트해?
+- duplicate key나 missing key 검증은 단위 테스트로 어디까지 보면 돼?
+- List<Handler>를 주입받는 registry가 있는데 꼭 @SpringBootTest가 필요해?
+- handler registry bootstrap 테스트와 wiring 테스트를 어떻게 나눠?
+- registry 테스트에서 fake handler와 Spring 컨테이너 중 무엇부터 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 `supports()` 기반 handler registry를 볼 때 Spring이 목록을 모아 주는
+  wiring 질문과 registry가 domain key로 검증/조회하는 질문을 분리하도록 돕는
+  drill이다. duplicate key, missing key, fail-fast bootstrap, fake handler로
+  생성자만 테스트하기, @SpringBootTest가 과한지 판단하기 같은 자연어
+  paraphrase가 본 문서의 테스트 모양과 quick check에 매핑된다.
+---
 # Handler Registry Test Shape: `supports()` 기반 registry를 Spring 없이 단위 테스트하기
 
 > 한 줄 요약: `supports()` 기반 handler registry 테스트의 핵심은 "Spring이 handler 목록을 모아 주는 일"과 "registry가 그 목록을 domain key로 검증/조회하는 일"을 분리해서 보는 것이다. registry 쪽은 보통 생성자 호출만으로 충분히 단위 테스트할 수 있다.

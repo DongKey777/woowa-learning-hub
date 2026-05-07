@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Guard-Row Dashboard Starter Card
+concept_id: database/guard-row-dashboard-starter-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- guard-row-dashboard-starter
+- hot-key-concentration-panel
+- deadlock-share-panel
+aliases:
+- guard row dashboard starter
+- guard row 3 panel dashboard
+- guard row wait panel
+- hot key concentration panel
+- deadlock share panel
+- guard row p95 wait threshold
+- top1 key concentration threshold
+- guard row observability thresholds
+- guard row dashboard
+- guard row 대시보드
+symptoms:
+- guard-row 경로의 첫 대시보드에 어떤 지표를 올려야 할지 모르겠어
+- wait time이 높은지, 한 key에 몰리는지, deadlock share가 높은지 한 화면에서 구분하고 싶어
+- lock wait timeout 개수만 보고 hot guard row인지 ordering drift인지 판단하려 하고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/guard-row-contention-observability-cheatsheet
+- database/guard-row-hot-row-symptoms-primer
+next_docs:
+- database/striped-guard-row-budgeting
+- database/busy-fail-fast-vs-one-short-retry-card
+- database/lock-wait-deadlock-latch-triage-playbook
+linked_paths:
+- contents/database/guard-row-contention-observability-cheatsheet.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+- contents/database/striped-guard-row-budgeting-primer.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/busy-fail-fast-vs-one-short-retry-card.md
+- contents/database/guard-row-scope-quick-examples.md
+confusable_with:
+- database/guard-row-contention-observability-cheatsheet
+- database/striped-guard-row-budgeting
+- database/lock-wait-deadlock-latch-triage-playbook
+forbidden_neighbors: []
+expected_queries:
+- guard-row dashboard starter는 wait time, hot-key concentration, deadlock share를 어떻게 한 화면에 두면 돼?
+- guard_row_wait_p95_ms와 top1_guard_key_wait_share는 어떤 threshold로 시작하면 좋아?
+- guard row wait time은 높고 deadlock share는 낮으면 어떤 결론을 내릴 수 있어?
+- top1 guard key concentration이 높으면 striping이나 fail-fast를 왜 먼저 검토해?
+- guard-row 경합에서 hot row와 ordering drift를 dashboard로 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 guard row 경합 첫 대시보드를 wait time, hot-key concentration, deadlock share 세 패널로 구성하는 beginner playbook이다.
+  guard row dashboard starter, p95 wait threshold, top1 key concentration, deadlock share 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Guard-Row Dashboard Starter Card
 
 > 한 줄 요약: guard-row 경로의 첫 대시보드는 "얼마나 오래 기다리나", "대기가 몇 개 key에 몰리나", "그 대기 중 deadlock 비중이 얼마나 되나"라는 세 질문만 한 화면에 두면 시작할 수 있다.

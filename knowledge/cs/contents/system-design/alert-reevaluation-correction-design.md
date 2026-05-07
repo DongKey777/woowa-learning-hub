@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Alert Re-Evaluation / Correction 설계
+concept_id: system-design/alert-reevaluation-correction-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- alert re-evaluation
+- corrected alert state
+- alert restatement
+- replayed metric alert
+aliases:
+- alert re-evaluation
+- corrected alert state
+- alert restatement
+- replayed metric alert
+- false positive correction
+- false negative recovery
+- alert provenance
+- alert recompute window
+- corrected incident signal
+- post-hoc alert evaluation
+- alert reevaluation after backfill
+- retrospective incident annotation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/analytics-late-data-reconciliation-design.md
+- contents/system-design/metrics-pipeline-tsdb-design.md
+- contents/system-design/dashboard-restatement-ux-design.md
+- contents/system-design/failure-injection-resilience-validation-platform-design.md
+- contents/system-design/streaming-analytics-pipeline-design.md
+- contents/system-design/audit-log-pipeline-design.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Alert Re-Evaluation / Correction 설계 설계 핵심을 설명해줘
+- alert re-evaluation가 왜 필요한지 알려줘
+- Alert Re-Evaluation / Correction 설계 실무 트레이드오프는 뭐야?
+- alert re-evaluation 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Alert Re-Evaluation / Correction 설계를 다루는 deep_dive 문서다. alert re-evaluation과 correction 설계는 late data, replay, metric restatement 이후 과거 alert 판단을 어떻게 다시 계산하고, false positive/false negative를 어떤 정책으로 정정할지 정하는 관측성 운영 설계다. 검색 질의가 alert re-evaluation, corrected alert state, alert restatement, replayed metric alert처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Alert Re-Evaluation / Correction 설계
 
 > 한 줄 요약: alert re-evaluation과 correction 설계는 late data, replay, metric restatement 이후 과거 alert 판단을 어떻게 다시 계산하고, false positive/false negative를 어떤 정책으로 정정할지 정하는 관측성 운영 설계다.

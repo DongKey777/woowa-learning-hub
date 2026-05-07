@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Eytzinger Layout and Cache-Friendly Search
+concept_id: data-structure/eytzinger-layout-and-cache-friendly-search
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- eytzinger-layout
+- cache-friendly-search
+- branchless-lower-bound
+aliases:
+- Eytzinger layout
+- cache-friendly binary search
+- implicit binary tree array
+- branch-friendly search
+- branchless lower bound
+- Eytzinger vs binary search
+- prefetch friendly search
+symptoms:
+- 정렬 배열 binary search가 O(log n)이므로 layout 최적화가 필요 없다고 보고 cache miss와 branch prediction 비용을 놓친다
+- Eytzinger layout을 heap과 같은 자료구조로 오해하고 sorted set을 search order에 맞게 재배치하는 layout 기법이라는 점을 놓친다
+- contains 예제에서 멈추고 lower_bound, predecessor, block boundary search workload에서의 장단점을 보지 않는다
+intents:
+- deep_dive
+- comparison
+prerequisites:
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/ordered-search-workload-matrix
+next_docs:
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+- data-structure/lsm-friendly-index-structures
+linked_paths:
+- contents/data-structure/cache-aware-data-structure-layouts.md
+- contents/data-structure/ordered-search-workload-matrix.md
+- contents/data-structure/cache-oblivious-vs-cache-aware-layouts.md
+- contents/data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/lsm-friendly-index-structures.md
+confusable_with:
+- data-structure/cache-aware-data-structure-layouts
+- data-structure/van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays
+- data-structure/cache-oblivious-vs-cache-aware-layouts
+- data-structure/cache-oblivious-b-tree-vs-plain-veb-layout
+forbidden_neighbors: []
+expected_queries:
+- Eytzinger layout은 plain binary search보다 cache-friendly해지는 이유가 뭐야?
+- sorted array를 implicit binary tree level order로 재배치한다는 뜻을 설명해줘
+- lower_bound search에서 Eytzinger layout이 branchless compare와 prefetch에 맞는 이유는?
+- Eytzinger와 vEB layout과 blocked array를 ordered search workload로 비교해줘
+- O(log n)이 같은데 memory access pattern이 검색 성능을 바꾸는 예시를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 sorted array search를 완전 이진트리 level-order인 Eytzinger
+  layout으로 재배치해 cache locality, branch prediction, prefetch, branchless
+  lower_bound를 개선하려는 deep dive다. plain binary search, vEB, blocked
+  array와 비교한다.
+---
 # Eytzinger Layout and Cache-Friendly Search
 
 > 한 줄 요약: Eytzinger layout은 정렬된 배열을 완전 이진트리 순서로 재배치해, binary search의 분기와 메모리 접근 패턴을 더 cache-friendly하게 만들려는 배열 레이아웃 기법이다.

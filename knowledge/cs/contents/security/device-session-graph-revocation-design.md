@@ -1,3 +1,79 @@
+---
+schema_version: 3
+title: Device / Session Graph Revocation Design
+concept_id: security/device-session-graph-revocation-design
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- session-graph-revocation-scope
+- device-family-tail-token
+- revoke-scope-learning-path
+aliases:
+- device session graph
+- session graph revocation
+- refresh family graph
+- device session lineage
+- logout all devices graph
+- step-up grant graph
+- session inventory
+- revocation scope graph
+- device token graph
+- session inventory ux
+- operator revoke preview
+- delegated session graph
+symptoms:
+- 모든 기기 로그아웃이 왜 단순 세션 삭제가 아닌지 설명이 안 돼요
+- refresh family를 끊었는데 일부 API가 잠깐 더 살아 있는 이유를 tail token 관점으로 보고 싶어요
+- current session, current device, all devices revoke 범위를 하나의 모델로 묶지 못하고 있어요
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- security/session-cookie-jwt-basics
+- security/refresh-token-family-invalidation-at-scale
+- security/session-revocation-at-scale
+next_docs:
+- security/revocation-propagation-lag-debugging
+- security/session-inventory-ux-revocation-scope-design
+- security/operator-tooling-state-semantics-safety-rails
+linked_paths:
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/device-binding-caveats.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/operator-tooling-state-semantics-safety-rails.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/system-design/browser-bff-session-boundary-primer.md
+confusable_with:
+- security/session-revocation-at-scale
+- security/refresh-token-family-invalidation-at-scale
+- security/session-quarantine-partial-lockdown-patterns
+forbidden_neighbors: []
+expected_queries:
+- device session graph라는 표현을 왜 써
+- logout all devices를 설계할 때 session graph로 봐야 하는 이유가 뭐야
+- refresh family revoke했는데 access token이 잠깐 더 살아 있는 건 왜야
+- current device only와 all devices revoke를 한 모델로 설명해줘
+- step-up grant와 downstream token까지 포함한 session revocation 범위를 설계하고 싶어
+contextual_chunk_prefix: |
+  이 문서는 device, browser session, refresh family, step-up grant,
+  downstream token을 한 그래프로 묶어 revoke 범위와 recovery UX를
+  어떻게 설계할지 깊이 잡는 deep_dive다. logout all devices를 왜 단순
+  세션 삭제로 보면 안 되나, current device only와 all devices revoke를
+  어떻게 한 모델로 설명하나, tail token이 왜 잠깐 남나, operator revoke
+  preview를 왜 graph cut으로 보나 같은 자연어 paraphrase가 본 문서의
+  내부 메커니즘에 매핑된다.
+---
 # Device / Session Graph Revocation Design
 
 > 한 줄 요약: 실제 사용자 세션은 선형 체인이 아니라 device, browser session, refresh family, step-up grant, downstream token이 연결된 그래프에 가깝기 때문에, revoke 범위와 recovery UX도 그래프 단위로 설계해야 한다.

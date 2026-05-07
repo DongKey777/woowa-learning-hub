@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring HandlerMethodArgumentResolver Pipeline
+concept_id: spring/handlermethodargumentresolver-pipeline
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- handlermethodargumentresolver-pipeline
+- handlermethodargumentresolver
+- argument-resolution
+- methodargumentresolver
+aliases:
+- HandlerMethodArgumentResolver
+- argument resolution
+- MethodArgumentResolver
+- RequestParamMethodArgumentResolver
+- PathVariableMethodArgumentResolver
+- custom argument resolver
+- controller method parameter
+- resolver chain
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-customizer-ladder-webmvcconfigurer-primer.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-conversion-service-formatter-binder-pipeline.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+expected_queries:
+- HandlerMethodArgumentResolver는 컨트롤러 파라미터를 어떻게 채워?
+- @RequestParam @PathVariable @RequestBody 값은 어떤 resolver chain이 처리해?
+- custom argument resolver를 추가할 때 supportsParameter 순서가 왜 중요해?
+- 컨트롤러 메서드 인자 해석과 validation binding은 어디서 이어져?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC HandlerMethodArgumentResolver chain이 controller method
+  parameter를 해석하는 방식을 deep dive한다. supportsParameter,
+  resolveArgument, @RequestParam, @PathVariable, @RequestBody, AuthenticationPrincipal,
+  HttpServletRequest, custom resolver, WebMvcConfigurer#addArgumentResolvers,
+  conversion/binding/validation pipeline과 연결된다.
+---
 # Spring `HandlerMethodArgumentResolver` Pipeline
 
 > 한 줄 요약: `HandlerMethodArgumentResolver`는 컨트롤러 메서드 인자를 만드는 체인이라서, 커스텀 인자를 넣을 때는 누가 어떤 순서로 값을 해석하는지 알아야 한다.

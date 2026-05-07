@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Control Plane / Data Plane Separation 설계
+concept_id: system-design/control-plane-data-plane-separation-design
+canonical: false
+category: system-design
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- control plane vs data plane
+- control plane data plane separation
+- control plane이 뭐예요
+- data plane이 뭐예요
+aliases:
+- control plane vs data plane
+- control plane data plane separation
+- control plane이 뭐예요
+- data plane이 뭐예요
+- 왜 control plane data plane 나눠요
+- 처음 control plane 헷갈려요
+- policy distribution basics
+- last known good snapshot
+- config propagation delay
+- runtime path isolation
+- failure domain separation
+- control plane beginner bridge
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/software-engineering/layered-architecture-basics.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Control Plane / Data Plane Separation 설계 설계 핵심을 설명해줘
+- control plane vs data plane가 왜 필요한지 알려줘
+- Control Plane / Data Plane Separation 설계 실무 트레이드오프는 뭐야?
+- control plane vs data plane 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Control Plane / Data Plane Separation 설계를 다루는 deep_dive 문서다. `control plane이 뭐고 data plane이 뭐예요?`, `왜 둘을 나눠요?`라는 질문에는 "정책 변경 경로와 요청 처리 경로를 분리해 운영 변경의 안전성과 런타임 성능을 동시에 지킨다"라고 잡으면 된다. 검색 질의가 control plane vs data plane, control plane data plane separation, control plane이 뭐예요, data plane이 뭐예요처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Control Plane / Data Plane Separation 설계
 
 > 한 줄 요약: `control plane이 뭐고 data plane이 뭐예요?`, `왜 둘을 나눠요?`라는 질문에는 "정책 변경 경로와 요청 처리 경로를 분리해 운영 변경의 안전성과 런타임 성능을 동시에 지킨다"라고 잡으면 된다.

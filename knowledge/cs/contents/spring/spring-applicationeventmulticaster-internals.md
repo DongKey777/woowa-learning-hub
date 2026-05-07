@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring ApplicationEventMulticaster Internals
+concept_id: spring/applicationeventmulticaster-internals
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- applicationeventmulticaster-internals
+- applicationeventmulticaster
+- simpleapplicationeventmulticaster
+- event-fan-out
+aliases:
+- ApplicationEventMulticaster
+- SimpleApplicationEventMulticaster
+- Spring event fan-out
+- async event dispatch
+- event listener error handler
+- ApplicationEventPublisher
+- transactional event delivery
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md
+- contents/spring/spring-eventlistener-ordering-async-traps.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/spring-scheduler-async-boundaries.md
+expected_queries:
+- ApplicationEventMulticaster는 Spring 이벤트에서 무슨 역할을 해?
+- SimpleApplicationEventMulticaster에 executor를 넣으면 뭐가 달라져?
+- Spring event listener 실패가 publisher까지 전파되는 이유가 뭐야?
+- 비동기 이벤트 리스너에서 순서와 에러를 어떻게 관측해?
+contextual_chunk_prefix: |
+  이 문서는 ApplicationEventPublisher와 ApplicationEventMulticaster를 구분하고,
+  SimpleApplicationEventMulticaster의 동기/비동기 fan-out, executor 설정,
+  error handler, @TransactionalEventListener와 outbox 경계를 설명한다.
+  이벤트가 발행됐는데 리스너가 안 돌거나 한 리스너 실패가 전체 흐름을 막는
+  증상에 매핑된다.
+---
 # Spring ApplicationEventMulticaster Internals
 
 > 한 줄 요약: `ApplicationEventMulticaster`는 이벤트를 어디서 어떻게 fan-out할지 정하는 내부 허브이며, 동기/비동기/에러 처리 전략이 여기서 갈린다.

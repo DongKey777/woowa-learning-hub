@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Saturating Arithmetic Clamping and Domain Contracts
+concept_id: language/saturating-arithmetic-clamping-domain-contracts
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/lotto
+- missions/payment
+review_feedback_tags:
+- numeric-boundary
+- overflow
+- domain-contract
+aliases:
+- Saturating Arithmetic Clamping and Domain Contracts
+- saturating arithmetic clamp fail-fast policy
+- numeric overflow domain contract
+- retry backoff clamp quota invariant
+- clamped value vs fail fast arithmetic
+- 자바 saturating arithmetic clamp 정책
+symptoms:
+- overflow를 피하려고 무조건 min max clamp를 적용해 재고, 잔액, quota 같은 core invariant 위반을 조용히 숨겨
+- UI progress나 retry backoff처럼 clamp가 자연스러운 곳과 정산 금액이나 권한 카운터처럼 fail-fast가 필요한 곳을 구분하지 못해
+- saturating arithmetic을 overflow workaround로만 적용하고 어디서 saturate하고 어디서 exception을 낼지 domain contract로 문서화하지 않아
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+- language/biginteger-unsigned-parsing-boundaries
+- language/value-object-invariants-canonicalization-boundary-design
+next_docs:
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/executor-sizing-queue-rejection-policy
+- software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge
+linked_paths:
+- contents/language/java/integer-overflow-exact-arithmetic-unit-conversion-pitfalls.md
+- contents/language/java/biginteger-unsigned-parsing-boundaries.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+confusable_with:
+- language/integer-overflow-exact-arithmetic-unit-conversion-pitfalls
+- language/parser-overflow-boundaries-parseint-parselong-tointexact
+- language/biginteger-unsigned-parsing-boundaries
+forbidden_neighbors: []
+expected_queries:
+- saturating arithmetic와 clamp는 fail-fast arithmetic과 어떤 domain contract 차이가 있어?
+- retry backoff는 max cap으로 clamp해도 자연스럽지만 재고나 잔액 clamp는 왜 bug를 숨길 수 있어?
+- overflow 방지로 min max clamp를 적용하기 전에 어디서 saturate하고 어디서 예외를 낼지 어떻게 정해?
+- quota counter metrics bucket UI progress와 core business invariant에서 clamp 정책이 왜 달라질 수 있어?
+- numeric overflow policy를 value object invariant와 validation boundary에 어떻게 문서화해?
+contextual_chunk_prefix: |
+  이 문서는 saturating arithmetic과 clamping을 retry backoff, metrics, quota, inventory, balance domain contract 관점에서 fail-fast와 비교하는 advanced playbook이다.
+  saturating arithmetic, clamp, numeric overflow, fail-fast, domain contract 질문이 본 문서에 매핑된다.
+---
 # Saturating Arithmetic, Clamping, and Domain Contracts
 
 > 한 줄 요약: overflow를 막기 위해 값을 min/max로 clamp하는 saturating arithmetic는 편리해 보이지만, 많은 backend 도메인에선 bug를 숨길 수 있다. 어디서 saturate할지와 어디서 fail-fast할지를 안 나누면 재고, quota, retry, backoff, metrics가 조용히 틀어진다.

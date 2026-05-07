@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: OAuth2 기초
+concept_id: security/oauth2-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- oauth-delegation-not-password-sharing
+- oauth-vs-oidc-login-boundary
+- external-token-internal-session-translation
+aliases:
+- oauth2 basics
+- OAuth2 기초
+- oauth2가 뭔가요
+- oauth2 입문
+- 소셜 로그인 원리
+- 구글 로그인 어떻게 되나
+- access token 이란
+- authorization server beginner
+- resource owner client authorization server resource server
+- oauth2 흐름 쉽게
+- 위임 인증 개념
+- third party access
+- oauth2 scope refresh token
+symptoms:
+- 구글로 로그인 버튼 뒤에서 OAuth2와 우리 서비스 세션이 어떻게 이어지는지 모르겠어
+- OAuth2가 로그인인지 권한 위임인지 헷갈려
+- access token, refresh token, scope, authorization server 역할이 섞여 보여
+intents:
+- definition
+- comparison
+prerequisites:
+- security/authentication-authorization-session-foundations
+next_docs:
+- security/oauth2-oidc-social-login-primer
+- security/oauth2-authorization-code-grant
+- security/api-key-vs-oauth-vs-client-credentials-primer
+- security/session-cookie-jwt-basics
+- security/oauth-scope-vs-api-audience-vs-application-permission
+linked_paths:
+- contents/security/api-key-vs-oauth-vs-client-credentials-primer.md
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/oauth-scope-vs-api-audience-vs-application-permission.md
+- contents/spring/spring-security-basics.md
+confusable_with:
+- security/oauth2-oidc-social-login-primer
+- security/oauth2-authorization-code-grant
+- security/api-key-vs-oauth-vs-client-credentials-primer
+- security/session-cookie-jwt-basics
+forbidden_neighbors: []
+expected_queries:
+- OAuth2는 로그인 기능인지 권한 위임인지 beginner 기준으로 설명해줘
+- 구글 소셜 로그인에서 외부 access token과 우리 서비스 session cookie는 어떻게 달라?
+- Resource Owner, Client, Authorization Server, Resource Server 역할을 예시로 정리해줘
+- scope와 access token과 refresh token은 각각 무엇을 제한하거나 이어 주는 값이야?
+- API key와 OAuth와 client credentials를 언제 구분해서 써야 해?
+contextual_chunk_prefix: |
+  이 문서는 OAuth2를 사용자가 비밀번호를 제3자 앱에 넘기지 않고 특정 scope로 자원 접근을 위임하는 protocol로 설명하는 beginner primer다.
+  구글 로그인, consent screen, access token, refresh token, scope, authorization server, resource server, external token과 internal session translation, OAuth2와 OIDC 차이를 묻는 자연어 질문이 본 문서에 매핑된다.
+---
 # OAuth2 기초: 내 앱이 왜 다른 서비스의 API를 쓸 수 있나
 
 > 한 줄 요약: OAuth2는 사용자가 비밀번호를 공유하지 않고도 제3자 앱이 특정 권한으로 내 자원에 접근할 수 있도록 허가하는 표준 위임 프로토콜이다.

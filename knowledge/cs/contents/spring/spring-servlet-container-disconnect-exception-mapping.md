@@ -32,8 +32,8 @@ prerequisites:
   - spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
 next_docs:
   - spring/partial-response-access-log-interpretation
-  - spring/spring-http2-reset-attribution-spring-mvc
-  - spring/spring-async-mvc-streaming-observability-playbook
+  - spring/http2-reset-attribution-spring-mvc
+  - spring/async-mvc-streaming-observability-playbook
 linked_paths:
   - contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
   - contents/spring/spring-http2-reset-attribution-spring-mvc.md
@@ -53,6 +53,7 @@ expected_queries:
   - Tomcat ClientAbortException이 Jetty EofException이랑 같은 종류의 disconnect야?
   - Undertow ClosedChannelException을 broken pipe랑 어떻게 분리해서 봐야 해?
   - AsyncRequestNotUsableException이 뜨면 Spring 버그인지 client disconnect인지 어떻게 읽어?
+  - 컨테이너마다 다른 disconnect 예외를 로그 알림에서 어떻게 정규화해?
 contextual_chunk_prefix: |
   이 문서는 Spring 서블릿 기반 스트리밍이나 다운로드에서 client disconnect가
   컨테이너별로 다른 예외 이름으로 보일 때 이를 같은 관측 축으로 정규화하려는
@@ -61,7 +62,6 @@ contextual_chunk_prefix: |
   같은 broken-pipe 계열 incident 안에서 container, phase, commit state 기준으로
   해석하게 돕는다.
 ---
-
 # Spring Servlet Container Disconnect Exception Mapping
 
 > 한 줄 요약: broken pipe 계열 실패는 모두 같아 보이지만 Tomcat은 `ClientAbortException`, Jetty는 `EofException`, Undertow는 대개 `ClosedChannelException` 또는 일반 `IOException`으로 드러나므로, 로그/알림은 예외 이름 자체보다 "어느 컨테이너에서 어느 전송 단계가 끊겼는가"로 정규화해야 한다.

@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: API Key Management Platform 설계
+concept_id: system-design/api-key-management-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- api key management
+- key issuance
+- secret rotation
+- key revocation
+aliases:
+- api key management
+- key issuance
+- secret rotation
+- key revocation
+- scope
+- usage analytics
+- client credentials
+- hmac
+- key inventory
+- developer portal
+- API Key Management Platform 설계
+- api key management platform design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/api-key-hmac-signature-replay-protection.md
+- contents/system-design/secrets-distribution-system-design.md
+- contents/system-design/rate-limit-config-service-design.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/system-design/edge-authorization-service-design.md
+- contents/security/workload-identity-vs-long-lived-service-account-keys.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- API Key Management Platform 설계 설계 핵심을 설명해줘
+- api key management가 왜 필요한지 알려줘
+- API Key Management Platform 설계 실무 트레이드오프는 뭐야?
+- api key management 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 API Key Management Platform 설계를 다루는 deep_dive 문서다. API key management platform은 키 발급, 권한, 회전, 폐기, 사용량 추적을 중앙에서 관리하는 개발자 보안 인프라다. 검색 질의가 api key management, key issuance, secret rotation, key revocation처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # API Key Management Platform 설계
 
 > 한 줄 요약: API key management platform은 키 발급, 권한, 회전, 폐기, 사용량 추적을 중앙에서 관리하는 개발자 보안 인프라다.

@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- deadlock-vs-lock
+- wait-timeout
+- timeout
+- lock-wait-timeout
 aliases:
 - deadlock vs lock wait timeout
 - deadlock vs lock timeout
@@ -26,13 +31,13 @@ linked_paths:
 - contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
 - contents/database/lock-wait-deadlock-latch-triage-playbook.md
 - contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md
-forbidden_neighbors:
-- contents/spring/spring-transactional-basics.md
 confusable_with:
 - database/lock-basics
 - database/db-timeout-first-splitter
 - database/lock-timeout-blocker-first-check
 - database/lock-timeout-not-already-exists-common-confusion-card
+forbidden_neighbors:
+- contents/spring/spring-transactional-basics.md
 expected_queries:
 - deadlock과 lock wait timeout은 뭐가 달라?
 - lock timeout이면 무조건 retry해도 돼?
@@ -41,14 +46,8 @@ expected_queries:
 - connection timeout, statement timeout, lock wait timeout이 섞이면 어느 문서부터 열어야 해?
 - deadlock vs lock timeout 처음인데 어떤 문서부터 보면 돼?
 contextual_chunk_prefix: |
-  이 문서는 deadlock과 lock 대기 시간 초과를 학습자가 처음 만났을 때
-  어떻게 가르고 어떤 retry 정책이 맞는지 잡는 chooser primer다. 데드락이랑
-  락 대기 시간 초과 어떻게 구분해, deadlock 처음 배우는데, 락 wait timeout
-  의미, victim 선정, retry 가능 여부, connection timeout / statement timeout /
-  lock wait timeout 중 어디서부터 갈라야 하는지 같은 자연어 표현이 본 문서의
-  두 분기와 follow-up 링크에 매핑된다.
+  이 문서는 database 카테고리에서 Deadlock vs Lock Wait Timeout 입문 프라이머를 다루는 chooser 문서다. deadlock vs lock wait timeout, deadlock vs lock timeout, lock wait timeout vs deadlock, connection timeout vs statement timeout vs lock wait timeout, db timeout first split 같은 lexical 표현과 deadlock과 lock wait timeout은 뭐가 달라?, lock timeout이면 무조건 retry해도 돼? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
 ---
-
 # Deadlock vs Lock Wait Timeout 입문 프라이머
 
 > 한 줄 요약: `deadlock`은 서로가 서로를 막아 DB가 희생자 하나를 고른 경우이고, `lock wait timeout`은 줄이 안 빠져 이번 시도가 기다리다 끝난 경우다.

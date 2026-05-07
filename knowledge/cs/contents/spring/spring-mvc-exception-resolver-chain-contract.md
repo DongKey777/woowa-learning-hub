@@ -1,3 +1,53 @@
+---
+schema_version: 3
+title: Spring MVC Exception Resolver Chain Contract
+concept_id: spring/mvc-exception-resolver-chain-contract
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- mvc-exception-resolver
+- chain-contract
+- handlerexceptionresolver
+- exceptionresolver-chain
+aliases:
+- HandlerExceptionResolver
+- ExceptionResolver chain
+- @ExceptionHandler
+- @ControllerAdvice
+- DefaultHandlerExceptionResolver
+- ResponseStatusExceptionResolver
+- MVC error contract
+- resolver order
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-validation-binding-error-pipeline.md
+- contents/spring/spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+expected_queries:
+- Spring MVC 예외는 HandlerExceptionResolver chain에서 어떤 순서로 처리돼?
+- @ControllerAdvice와 DefaultHandlerExceptionResolver는 어떤 책임이 달라?
+- ResponseStatusExceptionResolver는 error body 표준화와 어떤 관계가 있어?
+- response가 commit된 뒤에는 exception resolver가 왜 새 body를 만들기 어려워?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC exception handling을 단일 핸들러가 아니라
+  HandlerExceptionResolver chain 계약으로 설명한다. ExceptionHandlerExceptionResolver,
+  ResponseStatusExceptionResolver, DefaultHandlerExceptionResolver,
+  @ControllerAdvice/@ExceptionHandler, ProblemDetail, BasicErrorController, Security
+  filter exception boundary와 resolver order를 다룬다.
+---
 # Spring MVC Exception Resolver Chain Contract
 
 > 한 줄 요약: Spring MVC의 예외 처리는 단일 핸들러가 아니라 resolver chain의 계약이며, 어떤 resolver가 잡는지에 따라 API 오류 형식과 상태 코드가 달라진다.

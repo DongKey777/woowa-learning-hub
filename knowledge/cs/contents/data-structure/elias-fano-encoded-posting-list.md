@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Elias-Fano Encoded Posting List
+concept_id: data-structure/elias-fano-encoded-posting-list
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- elias-fano-posting-list
+- succinct-index
+- monotone-integer-sequence
+aliases:
+- Elias-Fano
+- Elias-Fano posting list
+- monotone integer sequence encoding
+- compressed posting list
+- succinct index
+- predecessor query compressed ids
+- doc id compression
+symptoms:
+- 정렬된 posting list를 일반 integer array나 bitmap으로만 저장해 monotone sequence compression의 공간 이점을 놓친다
+- compression을 하면 sequential scan만 가능하다고 생각해 select, skip, predecessor 탐색 가능성을 보지 못한다
+- Roaring Bitmap, bit-sliced bitmap, Elias-Fano를 모두 compressed integer set으로만 묶고 sorted id list workload 차이를 구분하지 못한다
+intents:
+- deep_dive
+- comparison
+prerequisites:
+- data-structure/succinct-bitvector-rank-select
+next_docs:
+- data-structure/roaring-bitmap
+- data-structure/bit-sliced-bitmap-index
+- data-structure/lsm-friendly-index-structures
+- data-structure/adaptive-radix-tree
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/succinct-bitvector-rank-select.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+- contents/data-structure/lsm-friendly-index-structures.md
+- contents/data-structure/adaptive-radix-tree.md
+confusable_with:
+- data-structure/roaring-bitmap
+- data-structure/bit-sliced-bitmap-index
+- data-structure/succinct-bitvector-rank-select
+- data-structure/lsm-friendly-index-structures
+forbidden_neighbors: []
+expected_queries:
+- Elias-Fano는 정렬된 posting list를 어떻게 압축하면서 select skip predecessor를 유지해?
+- monotone integer sequence에서 lower bits와 upper bitvector를 나누는 이유는?
+- compressed posting list를 Roaring Bitmap이나 Bit-Sliced Bitmap과 어떻게 비교해?
+- 검색엔진 term dictionary나 row id list에서 Elias-Fano가 맞는 경우는?
+- 압축된 sorted id list에서 predecessor query를 지원하는 감각을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 정렬된 integer posting list와 monotone sequence를 Elias-Fano로
+  압축하면서 select, skip, predecessor 같은 탐색을 유지하는 succinct index
+  deep dive다. lower bits, upper bitvector, rank/select, doc id compression,
+  memory efficient indexing을 다룬다.
+---
 # Elias-Fano Encoded Posting List
 
 > 한 줄 요약: Elias-Fano는 정렬된 정수 ID 목록을 매우 작게 압축하면서도 select, skip, predecessor 같은 탐색을 유지해, posting list와 memory-efficient index에 자주 쓰이는 단조 수열 인코딩이다.

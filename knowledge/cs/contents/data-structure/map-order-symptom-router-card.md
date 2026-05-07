@@ -56,13 +56,12 @@ expected_queries:
 - 해시맵이 가끔은 순서가 맞아 보여서 더 헷갈릴 때 어떤 문서를 먼저 봐야 해?
 - TreeMap 정렬 순서와 LinkedHashMap 삽입 순서를 증상 관점에서 나눠 설명해줘
 contextual_chunk_prefix: |
-  이 문서는 Map 출력 순서가 기대와 어긋나 당황한 학습자가
-  HashMap, LinkedHashMap, TreeMap 중 어떤 순서 계약을 잘못
-  가정했는지 증상에서 원인으로 이어지는 symptom_router다. 실행할
-  때마다 결과 줄이 흔들림, 조회만 했는데 맨 뒤로 이동, 넣은 순서가
-  유지돼야 함, 사전순처럼 읽힘, 최근 접근 기준이 섞임, 순회 규칙을
-  먼저 확인하고 싶다 같은 자연어 paraphrase가 본 문서의 분기
-  기준에 매핑된다.
+  이 문서는 Map 순회 결과가 흔들려서 순서 버그처럼 보일 때 어떤
+  구현체의 계약을 잘못 기대했는지 먼저 가르게 돕는 symptom_router다.
+  실행마다 줄 순서가 달라짐, 조회 뒤 맨 끝으로 밀림, 넣은 순서가
+  아니라 정렬처럼 보임, 우연한 HashMap 순서를 믿음, access-order가
+  섞여 보임, 출력 순서 규칙을 어디서부터 확인하나 같은 자연어
+  paraphrase가 본 문서의 원인 분기에 매핑된다.
 ---
 # Map order symptom router card
 

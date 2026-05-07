@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: PKCE Failure Modes / Recovery
+concept_id: security/pkce-failure-modes-recovery
+canonical: false
+category: security
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- PKCE
+- code_verifier
+- code_challenge
+- S256
+aliases:
+- PKCE
+- code_verifier
+- code_challenge
+- S256
+- authorization code
+- public client
+- verifier loss
+- replay
+- redirect_uri
+- state
+- OAuth2
+- authorization server
+symptoms:
+- PKCE Failure Modes / Recovery 관련 운영 사고나 보안 이상 징후가 발생해 대응 순서가 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/oidc-id-token-userinfo-boundaries.md
+- contents/security/jwt-deep-dive.md
+- contents/security/csrf-in-spa-bff-architecture.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- PKCE Failure Modes / Recovery 장애가 나면 복구 순서는?
+- PKCE 운영 대응 체크리스트가 뭐야?
+- PKCE Failure Modes / Recovery에서 blast radius를 어떻게 줄여?
+- PKCE 사고 후 어떤 증거를 남겨야 해?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 PKCE Failure Modes / Recovery를 다루는 playbook 문서다. PKCE는 code 탈취를 줄이지만, challenge 저장 실패, verifier 분실, redirect/state 오류, 잘못된 client 분류가 있으면 여전히 깨질 수 있다. 검색 질의가 PKCE, code_verifier, code_challenge, S256처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # PKCE Failure Modes / Recovery
 
 > 한 줄 요약: PKCE는 code 탈취를 줄이지만, challenge 저장 실패, verifier 분실, redirect/state 오류, 잘못된 client 분류가 있으면 여전히 깨질 수 있다.

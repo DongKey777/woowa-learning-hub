@@ -55,6 +55,8 @@ confusable_with:
 - algorithm/dfs-bfs-intro
 - algorithm/zero-one-bfs-state-visited-vs-dist-starter-card
 forbidden_neighbors:
+- contents/algorithm/shortest-path-reconstruction-bridge.md
+- contents/algorithm/sparse-graph-shortest-paths.md
 expected_queries:
 - 열쇠를 먹었는지에 따라 같은 칸을 다르게 봐야 하는 이유가 뭐야
 - 벽 부순 횟수까지 포함해서 BFS 상태를 잡는 법을 알고 싶어

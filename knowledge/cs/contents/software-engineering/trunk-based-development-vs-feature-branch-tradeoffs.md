@@ -35,10 +35,10 @@ intents:
 - design
 prerequisites:
 - software-engineering/git-workflow-basics
-- software-engineering/feature-flags-rollout-dependency-management
+- software-engineering/feature-flag-dependency-management
 next_docs:
-- software-engineering/lead-time-change-failure-recovery-loop
-- software-engineering/deployment-rollout-rollback-canary-blue-green
+- software-engineering/lead-time-change-failure-recovery
+- software-engineering/deployment-rollout-strategy
 - software-engineering/technical-debt-refactoring-timing
 linked_paths:
 - contents/software-engineering/git-workflow-basics.md
@@ -50,8 +50,8 @@ linked_paths:
 - contents/software-engineering/testing-strategy-and-test-doubles.md
 confusable_with:
 - software-engineering/git-workflow-basics
-- software-engineering/lead-time-change-failure-recovery-loop
-- software-engineering/feature-flags-rollout-dependency-management
+- software-engineering/lead-time-change-failure-recovery
+- software-engineering/feature-flag-dependency-management
 forbidden_neighbors:
 expected_queries:
 - 우리 팀이 trunk-based로 갈지 feature branch를 유지할지 판단할 때 제일 먼저 볼 기준이 뭐야?

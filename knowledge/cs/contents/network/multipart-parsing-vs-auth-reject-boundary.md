@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: "Multipart Parsing vs Auth Reject Boundary"
+concept_id: network/multipart-parsing-vs-auth-reject-boundary
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- multipart-auth-reject-boundary
+- spring-security-upload-body
+- multipart-filter-order
+aliases:
+- multipart auth reject boundary
+- MultipartFilter before Spring Security
+- request.getParts auth boundary
+- resolveLazily multipart
+- header-only reject upload
+- body-consuming reject upload
+symptoms:
+- controller 전에 401/403이 났으니 multipart body를 전혀 읽지 않았다고 단정한다
+- MultipartFilter나 request.getParts가 Spring Security 전에 body-consuming boundary를 앞당기는 점을 놓친다
+- resolveLazily=true가 multipart parse boundary를 없애는 것이 아니라 뒤로 미루는 것임을 구분하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/gateway-buffering-vs-spring-early-reject
+- network/http-request-body-drain-early-reject-keepalive-reuse
+next_docs:
+- network/spring-multipart-exception-translation-matrix
+- network/proxy-to-container-upload-cleanup-matrix
+- network/webflux-request-body-abort-surface-map
+- spring/multipart-upload-request-pipeline
+- spring/security-exceptiontranslation-entrypoint-accessdeniedhandler
+linked_paths:
+- contents/network/expect-100-continue-proxy-request-buffering.md
+- contents/network/http-request-body-drain-early-reject-keepalive-reuse.md
+- contents/network/gateway-buffering-vs-spring-early-reject.md
+- contents/network/proxy-to-container-upload-cleanup-matrix.md
+- contents/network/spring-multipart-exception-translation-matrix.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/webflux-request-body-abort-surface-map.md
+- contents/network/servlet-container-abort-surface-map-tomcat-jetty-undertow.md
+- contents/spring/spring-multipart-upload-request-pipeline.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+confusable_with:
+- network/gateway-buffering-vs-spring-early-reject
+- network/http-request-body-drain-early-reject-keepalive-reuse
+- network/proxy-to-container-upload-cleanup-matrix
+- network/spring-multipart-exception-translation-matrix
+- spring/multipart-upload-request-pipeline
+forbidden_neighbors: []
+expected_queries:
+- "multipart upload에서 auth reject가 header-only인지 body-consuming인지 어떻게 가르나?"
+- "MultipartFilter를 Spring Security 앞에 두면 왜 인증 전에 request body를 읽을 수 있어?"
+- "DispatcherServlet checkMultipart와 request.getParts가 controller 전 multipart parse를 시작하는 흐름을 설명해줘"
+- "resolveLazily=true는 multipart parsing 경계를 없애는 게 아니라 언제로 미뤄?"
+- "Unauthorized temp file upload를 막으려면 filter order와 multipart resolver를 어떻게 봐?"
+contextual_chunk_prefix: |
+  이 문서는 Spring multipart/form-data upload에서 MultipartFilter,
+  DispatcherServlet.checkMultipart, request.getParts, resolveLazily,
+  Spring Security filter chain, header-only reject vs body-consuming reject
+  boundary를 다루는 advanced playbook이다.
+---
 # Multipart Parsing vs Auth Reject Boundary
 
 > 한 줄 요약: `multipart/form-data` 업로드는 "controller 전이냐 후냐"보다 **누가 언제 `request.getParts()` 또는 그에 준하는 multipart resolution을 강제했는가**가 더 중요하다. Spring Security filter chain 앞뒤에 `MultipartFilter`를 어디 두는지, `DispatcherServlet.checkMultipart()`가 eager parse를 하는지, `resolveLazily=true`인지에 따라 같은 `401/403`도 header-only reject에서 body-consuming reject로 경계가 이동한다.

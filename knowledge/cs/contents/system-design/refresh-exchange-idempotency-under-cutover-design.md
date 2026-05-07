@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Refresh Exchange Idempotency Under Cutover 설계
+concept_id: system-design/refresh-exchange-idempotency-under-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- refresh exchange idempotency
+- refresh cutover duplicate handling
+- refresh exchange lease
+- refresh replay cache
+aliases:
+- refresh exchange idempotency
+- refresh cutover duplicate handling
+- refresh exchange lease
+- refresh replay cache
+- duplicate response replay
+- same-context duplicate
+- cross-context duplicate
+- benign retry vs compromise
+- forced reissue retry
+- already migrated receipt
+- refresh successor replay handle
+- refresh exchange decision id
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/refresh-family-rotation-cutover-design.md
+- contents/system-design/refresh-reauth-escalation-matrix-design.md
+- contents/system-design/canonical-revocation-plane-across-token-generations-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/security/refresh-token-rotation-reuse-detection.md
+- contents/security/refresh-token-family-invalidation-at-scale.md
+- contents/security/token-misuse-detection-replay-containment.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Refresh Exchange Idempotency Under Cutover 설계 설계 핵심을 설명해줘
+- refresh exchange idempotency가 왜 필요한지 알려줘
+- Refresh Exchange Idempotency Under Cutover 설계 실무 트레이드오프는 뭐야?
+- refresh exchange idempotency 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Refresh Exchange Idempotency Under Cutover 설계를 다루는 deep_dive 문서다. refresh exchange idempotency under cutover 설계는 forced reissue와 mixed-version overlap 동안 같은 refresh artifact가 다시 들어와도 successor를 한 번만 발급하고, lease·replay cache·duplicate-response contract로 benign retry와 실제 compromise 신호를 분리하는 운영 설계다. 검색 질의가 refresh exchange idempotency, refresh cutover duplicate handling, refresh exchange lease, refresh replay cache처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Refresh Exchange Idempotency Under Cutover 설계
 
 > 한 줄 요약: refresh exchange idempotency under cutover 설계는 forced reissue와 mixed-version overlap 동안 같은 refresh artifact가 다시 들어와도 successor를 한 번만 발급하고, lease·replay cache·duplicate-response contract로 benign retry와 실제 compromise 신호를 분리하는 운영 설계다.

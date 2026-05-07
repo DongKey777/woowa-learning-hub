@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring SecurityContextRepository and SessionCreationPolicy Boundaries
+concept_id: spring/securitycontextrepository-sessioncreationpolicy-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- securitycontextrepository-sessioncreationpolicy-boundaries
+- securitycontextrepository
+- sessioncreationpolicy-stateless
+- hidden-jsessionid
+aliases:
+- SecurityContextRepository
+- SessionCreationPolicy STATELESS
+- hidden JSESSIONID
+- Spring Security stateless session
+- security context persistence
+- saved request session creation
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-oauth2-jwt-integration.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+symptoms:
+- STATELESS를 설정했는데도 JSESSIONID가 생기거나 SavedRequest가 session을 만든다.
+- JWT 인증인데 SecurityContext가 요청마다 어디서 복원되는지 불명확하다.
+- 브라우저 로그인 흐름과 API 무상태 흐름이 같은 chain에서 섞인다.
+expected_queries:
+- SessionCreationPolicy.STATELESS만 붙이면 Spring Security가 완전히 무상태가 돼?
+- SecurityContextRepository는 인증 상태를 어디서 적재하고 저장해?
+- hidden JSESSIONID가 생기는 원인이 RequestCache나 SavedRequest일 수 있어?
+- JWT API와 browser login에서 SecurityContext 저장 정책을 어떻게 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 SessionCreationPolicy.STATELESS가 곧바로 무상태 인증을 보장하지 않는다는 점을
+  설명한다. 실제 인증 상태 적재와 저장은 SecurityContextRepository, RequestCache,
+  SavedRequest, OAuth2 login, browser/API chain 분리와 함께 판단해야 한다.
+---
 # Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries
 
 > 한 줄 요약: `SessionCreationPolicy.STATELESS`만 붙인다고 곧바로 무상태가 되는 것은 아니며, 실제 인증 상태의 적재/복원은 `SecurityContextRepository`와 숨은 세션 생성 지점이 결정한다.

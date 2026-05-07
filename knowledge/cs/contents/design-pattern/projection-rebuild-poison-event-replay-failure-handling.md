@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Poison Event and Replay Failure Handling in Projection Rebuilds
+concept_id: design-pattern/projection-rebuild-poison-event-replay-failure-handling
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-poison-event
+- replay-failure-handling
+- quarantine-ledger
+aliases:
+- projection poison event
+- replay failure quarantine
+- projection rebuild retry policy
+- partial replay failure
+- replay checkpoint recovery
+- projection replay signoff
+- quarantine ledger
+- poison event retry matrix
+- rebuild shard recovery
+- last verified watermark
+symptoms:
+- projection rebuild 실패를 무한 retry로만 처리해 deterministic poison event가 전체 backlog를 막는다
+- row upsert는 일부 성공했지만 checkpoint commit 실패 같은 partial replay failure에서 attempted watermark를 verified로 착각한다
+- quarantine event를 why/owner/disposition 없이 dead-letter에 넣어 cutover sign-off 때 영향 범위를 설명하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/event-contract-drift-triage-rebuilds
+- design-pattern/checkpoint-snapshot-pattern
+next_docs:
+- design-pattern/projection-replay-observability-alerting-pattern
+- design-pattern/projection-rebuild-evidence-packet
+- design-pattern/projection-lag-budgeting-pattern
+linked_paths:
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/projection-replay-observability-alerting-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/event-contract-drift-triage-rebuilds.md
+- contents/design-pattern/checkpoint-snapshot-pattern.md
+- contents/design-pattern/outbox-relay-idempotent-publisher.md
+confusable_with:
+- design-pattern/event-contract-drift-triage-rebuilds
+- design-pattern/projection-replay-observability-alerting-pattern
+- design-pattern/checkpoint-snapshot-pattern
+- design-pattern/idempotent-consumer-projection-dedup-pattern
+forbidden_neighbors: []
+expected_queries:
+- Projection rebuild에서 poison event와 transient failure를 retry policy와 quarantine policy로 어떻게 나눠?
+- partial replay failure에서 last attempted watermark가 아니라 last verified watermark로 재개해야 하는 이유가 뭐야?
+- quarantine ledger에는 event_id, failure_class, owner, disposition, replay_policy_after_fix를 왜 남겨야 해?
+- skip-with-signoff는 poison event 처리의 기본값이 아니라 좁은 예외 승인인 이유가 뭐야?
+- unresolved quarantine, partial gap, unapproved skip이 있으면 cutover sign-off를 막아야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Poison Event and Replay Failure Handling in Projection Rebuilds playbook으로,
+  projection replay 실패를 transient infra, deterministic poison, semantic event, partial apply로
+  분류하고 bounded retry, quarantine ledger, last verified watermark 재개, skip-with-signoff,
+  cutover sign-off gate를 설계하는 방법을 설명한다.
+---
 # Poison Event and Replay Failure Handling in Projection Rebuilds
 
 > 한 줄 요약: projection rebuild 중 poison event나 partial replay failure가 나오면, 무한 재시도보다 분류, 격리, 검증된 체크포인트 재개, sign-off 규칙을 먼저 고정해야 backfill 진행과 cutover 판단을 동시에 지킬 수 있다.

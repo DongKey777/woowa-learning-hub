@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: shell=True Shell Wrapper Boundary Primer
+concept_id: operating-system/shell-wrapper-boundary-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- shell-wrapper-boundary
+- shell-true-shell
+- wrapper
+- sh-c-boundary
+aliases:
+- shell=True shell wrapper
+- sh -c boundary
+- shell script wrapper
+- command string shell parsing
+- shell quoting security fd leak
+- parent shell app process tree
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/popen-runtime-wrapper-mapping.md
+- contents/operating-system/runtime-shell-option-matrix.md
+- contents/operating-system/shell-redirection-order-primer.md
+- contents/operating-system/subprocess-fd-hygiene-basics.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+expected_queries:
+- shell=True나 sh -c를 쓰면 target program을 직접 띄우는 것과 무엇이 달라?
+- shell wrapper가 quoting, security, fd leak 이야기를 함께 부르는 이유는?
+- parent -> shell -> app process tree에서 signal과 fd는 어떻게 보이나?
+- command string이 shell 문법으로 다시 해석된다는 뜻은?
+contextual_chunk_prefix: |
+  이 문서는 shell=True, sh -c, shell script wrapper가 target program을 직접 띄우지 않고 shell을
+  한 겹 더 거치게 하므로 command string parsing, quoting, redirection, fd visibility,
+  signal delivery가 달라진다는 beginner primer다.
+---
 # `shell=True` / Shell Wrapper Boundary Primer
 
 > 한 줄 요약: `shell=True`, `sh -c`, shell script wrapper는 target program을 직접 띄우지 않고 shell을 한 번 더 거치게 만든다. 그래서 command string은 shell 문법으로 다시 해석되고, 열린 fd도 먼저 shell에 보인다.

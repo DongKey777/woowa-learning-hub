@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Anti-Corruption Contract Test Pattern
+concept_id: design-pattern/anti-corruption-contract-test-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- anti-corruption-contract-test
+- provider-drift-regression
+- translator-fixture-test
+aliases:
+- anti corruption contract test
+- ACL contract test
+- translator contract fixture
+- external payload snapshot test
+- provider drift regression
+- acl compatibility test
+- fixture based contract test
+- provider sandbox gap
+- 외부 계약 drift 테스트
+symptoms:
+- ACL 구조는 있지만 provider payload shape drift를 production 장애 이후에야 발견한다
+- live sandbox integration test가 있으니 fixture 기반 regression test는 필요 없다고 생각한다
+- unknown enum, optional field 추가, 필수 field 누락 같은 translation 정책을 테스트로 고정하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-adapter-layering
+- design-pattern/tolerant-reader-event-contract-pattern
+next_docs:
+- design-pattern/anti-corruption-rollout-provider-sandbox-pattern
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/anti-corruption-translation-map-pattern
+linked_paths:
+- contents/design-pattern/anti-corruption-layer-operational-pattern.md
+- contents/design-pattern/anti-corruption-rollout-provider-sandbox-pattern.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/anti-corruption-translation-map-pattern.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/domain-event-translation-pipeline.md
+confusable_with:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-rollout-provider-sandbox-pattern
+- design-pattern/tolerant-reader-event-contract-pattern
+- design-pattern/domain-event-translation-pipeline
+forbidden_neighbors: []
+expected_queries:
+- ACL contract test는 provider API 전체 테스트가 아니라 translator semantics를 어떻게 고정해?
+- 외부 payload fixture에 unknown enum, missing required, optional field 추가 케이스를 넣는 이유가 뭐야?
+- sandbox 연동 테스트만으로 provider drift regression을 막기 어려운 이유는 뭐야?
+- tolerant reader 정책을 contract test로 어디까지 허용하고 quarantine할지 어떻게 고정해?
+- incident payload를 ACL regression fixture로 남기면 어떤 drift를 빨리 잡을 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Contract Test Pattern playbook으로, ACL translator와
+  facade가 기대하는 provider payload shape와 translation semantics를 fixture 기반
+  contract test로 고정해 provider drift regression을 production 전에 잡는 방법을 설명한다.
+---
 # Anti-Corruption Contract Test Pattern
 
 > 한 줄 요약: ACL이 외부 계약 drift를 막으려면 운영 신호만으로는 부족하고, translator와 facade가 기대하는 외부 shape를 fixture 기반 contract test로 계속 검증해야 한다.

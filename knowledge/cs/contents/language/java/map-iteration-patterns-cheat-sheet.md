@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Map Iteration Patterns Cheat Sheet
+concept_id: language/map-iteration-patterns-cheat-sheet
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-iteration
+- entryset
+- collection-basics
+aliases:
+- Map Iteration Patterns Cheat Sheet
+- map entrySet keySet values difference
+- Java Map for-each beginner
+- entrySet vs keySet get in loop
+- Map 자체는 Iterable 아님
+- 자바 Map 순회 패턴
+symptoms:
+- Map 자체를 for-each로 바로 순회할 수 있다고 생각해 entrySet, keySet, values 뷰를 꺼내야 하는 점을 놓쳐
+- key와 value가 둘 다 필요한데 keySet으로 돌며 map.get(key)를 매번 호출해 의도와 null handling이 흐려져
+- value만 필요한 상황에서도 entrySet을 쓰거나 key만 필요한 상황에서도 value를 꺼내 Map 반복 목적을 분리하지 못해
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- language/java-collections-basics
+- language/iterable-collection-map-iteration-bridge
+- language/map-get-null-containskey-getordefault-primer
+next_docs:
+- language/map-remove-during-iteration-safety-primer
+- language/map-entry-setvalue-vs-put-remove-structural-change-bridge
+- spring/spring-runtime-strategy-router-vs-qualifier-boundaries
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/java-stream-lambda-basics.md
+- contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+- contents/language/java/map-entry-setvalue-vs-put-remove-structural-change-bridge.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+confusable_with:
+- language/iterable-collection-map-iteration-bridge
+- language/map-get-null-containskey-getordefault-primer
+- language/map-entry-setvalue-vs-put-remove-structural-change-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java Map을 반복할 때 entrySet keySet values 중 무엇을 써야 해?
+- key와 value가 둘 다 필요하면 entrySet이 기본인 이유를 설명해줘
+- Map 자체는 왜 Iterable이 아니라서 for-each로 바로 돌 수 없어?
+- keySet으로 돌면서 map.get(key)를 쓰는 패턴은 언제 entrySet보다 덜 읽기 좋아?
+- Map.forEach 람다 버전도 entrySet keySet values 선택 기준이 같은지 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Map iteration에서 entrySet, keySet, values 선택 기준을 beginner cheat sheet로 정리하는 primer다.
+  Map iteration, entrySet vs keySet, values, map forEach, Map is not Iterable 질문이 본 문서에 매핑된다.
+---
 # Map Iteration Patterns Cheat Sheet
 
 > 한 줄 요약: `Map` 반복의 기본값은 `entrySet()`이다. key/value가 둘 다 필요하면 한 번에 꺼내고, 필요한 쪽만 볼 때만 `keySet()` 또는 `values()`를 고른다.

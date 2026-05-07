@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Xor Filter
+concept_id: data-structure/xor-filter
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- xor-filter
+- approximate-membership
+- static-prefilter
+aliases:
+- Xor Filter
+- xor filter approximate membership
+- static set filter
+- fingerprint filter
+- compact prefilter
+- Bloom alternative
+- negative lookup filter
+symptoms:
+- Xor Filter를 Bloom Filter나 Cuckoo Filter처럼 online insert/delete가 쉬운 mutable membership filter로 오해한다
+- lookup은 가볍지만 build는 hypergraph peeling과 seed retry가 필요한 오프라인 construction이라는 점을 놓친다
+- 정적 immutable segment prefilter에 맞는 구조를 rolling window membership이나 idempotency key cache에 적용하려 한다
+intents:
+- definition
+- comparison
+prerequisites:
+- data-structure/sketch-filter-selection-playbook
+- data-structure/bloom-filter-vs-cuckoo-filter
+next_docs:
+- data-structure/bloom-filter
+- data-structure/cuckoo-filter
+- data-structure/quotient-filter
+linked_paths:
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/cuckoo-filter.md
+- contents/data-structure/bloom-filter-vs-cuckoo-filter.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/quotient-filter.md
+confusable_with:
+- data-structure/bloom-filter
+- data-structure/cuckoo-filter
+- data-structure/bloom-filter-vs-cuckoo-filter
+- data-structure/quotient-filter
+- data-structure/sketch-filter-selection-playbook
+forbidden_neighbors: []
+expected_queries:
+- Xor Filter는 정적 key 집합에서 Bloom Filter보다 어떤 장점이 있어?
+- Xor Filter lookup은 간단하지만 build가 hypergraph peeling 때문에 어려운 이유는?
+- immutable segment prefilter에는 Xor Filter가 좋고 rolling window membership에는 조심해야 하는 이유는?
+- Bloom Cuckoo Xor Filter를 deletion 필요 여부와 static set 조건으로 비교해줘
+- negative lookup을 작은 메모리로 거르는 read-mostly approximate membership 구조는?
+contextual_chunk_prefix: |
+  이 문서는 Xor Filter를 정적 key 집합에 대해 작은 메모리로 approximate membership을
+  제공하는 read-mostly prefilter로 설명한다. Bloom Filter, Cuckoo Filter, Quotient Filter와
+  static build cost, lookup fast path, deletion 지원 차이를 비교한다.
+---
 # Xor Filter
 
 > 한 줄 요약: Xor Filter는 정적 key 집합에 대해 매우 작은 메모리로 approximate membership을 제공하는 구조로, Bloom/Cuckoo보다 더 압축적인 읽기 중심 prefilter가 필요할 때 강력한 선택지다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Redo Log, Undo Log, Checkpoint, Crash Recovery
+concept_id: database/redo-undo-checkpoint-crash-recovery
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- redo-log
+- undo-log
+- checkpoint
+- crash-recovery
+- durability
+aliases:
+- redo log
+- undo log
+- checkpoint
+- crash recovery
+- write ahead logging
+- WAL
+- LSN
+- dirty page flush
+- doublewrite buffer
+- fsync durability
+symptoms:
+- 커밋 latency가 fsync나 redo flush 때문에 튀는 이유를 설명해야 해
+- 장애 후 DB 재기동 시간이 checkpoint age와 redo 양에 좌우되는 이유를 묻고 있어
+- undo log가 rollback뿐 아니라 MVCC consistent read에도 쓰인다는 점을 놓치고 있어
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- database/transaction-isolation-locking
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/redo-log-write-amplification
+- database/group-commit-binlog-fsync-durability
+- database/checkpoint-age-flush-storms
+- database/doublewrite-buffer-torn-page-protection
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/redo-log-write-amplification.md
+- contents/database/group-commit-binlog-fsync-durability.md
+- contents/database/checkpoint-age-flush-storms.md
+- contents/database/doublewrite-buffer-torn-page-protection.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-sendfile-splice-zero-copy.md
+confusable_with:
+- database/redo-log-write-amplification
+- database/group-commit-binlog-fsync-durability
+- database/checkpoint-age-flush-storms
+forbidden_neighbors: []
+expected_queries:
+- redo log, undo log, checkpoint, crash recovery 관계를 InnoDB 기준으로 설명해줘
+- 커밋이 느려질 때 fsync와 redo flush, dirty page checkpoint를 같이 봐야 하는 이유가 뭐야?
+- undo log는 rollback 말고 MVCC consistent read에서 어떻게 쓰여?
+- checkpoint age가 커지면 장애 복구 시간과 운영 latency가 왜 동시에 문제가 돼?
+- doublewrite buffer와 redo log는 crash recovery에서 각각 어떤 문제를 막아?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB redo log, undo log, checkpoint, crash recovery를 WAL, fsync, dirty page flush, LSN, doublewrite buffer와 연결해 설명하는 advanced deep dive다.
+  커밋 지연, 장애 복구 시간, checkpoint age, redo/undo 차이 질문이 본 문서에 매핑된다.
+---
 # Redo Log, Undo Log, Checkpoint, Crash Recovery
 
 > 한 줄 요약: DB 장애 복구는 "죽은 뒤에 다시 살리는 기술"이 아니라, 평소의 쓰기 지연과 fsync 비용을 받아들이는 대신 장애 후 정합성을 되찾는 장치다.

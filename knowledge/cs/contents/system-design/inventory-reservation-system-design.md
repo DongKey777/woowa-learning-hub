@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Inventory Reservation System 설계
+concept_id: system-design/inventory-reservation-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- inventory reservation
+- stock hold
+- oversell prevention
+- reservation TTL
+aliases:
+- inventory reservation
+- stock hold
+- oversell prevention
+- reservation TTL
+- flash sale
+- atomic decrement
+- release reservation
+- compensation
+- saga
+- hot sku
+- Inventory Reservation System 설계
+- inventory reservation system design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/workflow-orchestration-saga-design.md
+- contents/system-design/distributed-lock-design.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Inventory Reservation System 설계 설계 핵심을 설명해줘
+- inventory reservation가 왜 필요한지 알려줘
+- Inventory Reservation System 설계 실무 트레이드오프는 뭐야?
+- inventory reservation 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Inventory Reservation System 설계를 다루는 deep_dive 문서다. 재고를 즉시 차감하지 않고 예약 상태로 관리해 oversell을 막고, 결제와 재고 해제를 함께 조율하는 설계다. 검색 질의가 inventory reservation, stock hold, oversell prevention, reservation TTL처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Inventory Reservation System 설계
 
 > 한 줄 요약: 재고를 즉시 차감하지 않고 예약 상태로 관리해 oversell을 막고, 결제와 재고 해제를 함께 조율하는 설계다.

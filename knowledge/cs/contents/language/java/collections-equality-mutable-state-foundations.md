@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Collections, Equality, and Mutable-State Foundations
+concept_id: language/collections-equality-mutable-state-foundations
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- collection-equality
+- mutable-key
+- hashset-hashmap
+aliases:
+- Collections Equality Mutable State Foundations
+- Java collections equality contract
+- HashSet HashMap equals hashCode beginner
+- mutable key HashMap bug
+- List Set Map equality route
+- HashSet 중복 HashMap get null
+symptoms:
+- List Set Map을 고른 뒤 equals hashCode와 mutable key 위험이 바로 따라온다는 점을 놓쳐
+- HashSet size가 이상하거나 HashMap get이 null인 문제를 같은 key/equality/mutation 축으로 묶어 보지 못해
+- 실행 모델 별칭 문제, equality 문제, collection lookup 문제를 한 번에 섞어 원인을 좁히지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/java-equality-identity-basics
+next_docs:
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/stable-id-map-key-primer
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/map-get-null-containskey-getordefault-primer
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/iterable-collection-map-iteration-bridge.md
+- contents/language/java/list-set-map-requirement-to-type-drill.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/language/java/list-contains-vs-set-contains-symptom-card.md
+- contents/language/java/hashmap-hashset-hashcode-equals-lookup-bridge.md
+- contents/language/java/stable-id-map-key-primer.md
+- contents/language/java/mutable-element-pitfalls-list-set-primer.md
+- contents/language/java/mutable-hash-keys-hashset-hashmap-bridge.md
+- contents/language/java/hashmap-treemap-mutable-key-lookup-primer.md
+- contents/language/java/map-remove-during-iteration-safety-primer.md
+- contents/language/java/collection-update-strategy-primer.md
+- contents/language/java/map-iteration-patterns-cheat-sheet.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/hashmap-hashset-hashcode-equals-lookup-bridge
+- language/mutable-hash-keys-hashset-hashmap-bridge
+forbidden_neighbors: []
+expected_queries:
+- HashSet은 하나인데 HashMap get은 null인 문제를 equals hashCode와 mutable key로 설명해줘
+- Java List Set Map 선택 후 무엇을 같은 값으로 볼지와 넣은 뒤 바꿔도 되는지를 어떻게 점검해?
+- 컬렉션 문제처럼 보이는데 객체 별칭, equality, collection lookup 중 어디부터 봐야 해?
+- HashMap key를 넣은 뒤 필드를 바꾸면 다시 못 찾는 이유가 뭐야?
+- Java collections equality mutable state foundation을 초보자 경로로 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Java collections 첫 선택 이후 equality, hashCode, mutable key, List/Set/Map lookup semantics를 연결하는 beginner primer다.
+  HashSet duplicate, HashMap get null, mutable key, equals hashCode, List Set Map selection, collection hierarchy 질문이 본 문서에 매핑된다.
+---
 # Collections, Equality, and Mutable-State Foundations
 
 > 한 줄 요약: `List`/`Set`/`Map`을 고른 뒤 바로 따라오는 `equals()`/`hashCode()`와 mutable key 위험만 먼저 묶고, sorted collection/comparator 세부는 관련 문서로 미루게 돕는 primer다.

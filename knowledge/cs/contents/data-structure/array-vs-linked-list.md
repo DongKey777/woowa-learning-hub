@@ -9,7 +9,10 @@ doc_role: chooser
 level: beginner
 language: ko
 source_priority: 88
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/blackjack
 review_feedback_tags:
 - arraylist-vs-linkedlist-default
 - cache-locality-tradeoff

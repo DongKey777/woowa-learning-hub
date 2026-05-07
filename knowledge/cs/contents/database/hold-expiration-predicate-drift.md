@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Hold Expiration Predicate Drift
+concept_id: database/hold-expiration-predicate-drift
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- hold-expiration-predicate-drift
+- active-predicate-desync
+- released-at-vs-deleted-at
+aliases:
+- hold expiration predicate drift
+- expired hold cleanup lag
+- active predicate desync
+- soft delete hold lifecycle
+- hold expiry worker
+- released_at vs deleted_at
+- expired but still blocking
+- read predicate vs constraint predicate
+- hold finalization lag
+- 만료됐는데 계속 충돌
+symptoms:
+- 화면에서는 hold가 만료되어 비어 보이는데 constraint나 unique key는 계속 충돌을 내고 있어
+- expires_at, released_at, deleted_at, status를 각 경로가 서로 다른 active predicate로 보고 있어
+- cleanup worker backlog가 active predicate drift로 번져 expired row가 계속 blocking truth에 남아 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/exclusion-constraint-overlap-case-studies
+- database/active-predicate-alignment-capacity-guards
+next_docs:
+- database/expiry-worker-race-patterns
+- database/expired-unreleased-drift-runbook
+- database/active-hold-table-split-pattern
+- database/queue-claim-skip-locked-fairness
+linked_paths:
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/active-predicate-alignment-capacity-guards.md
+- contents/database/soft-delete-uniqueness-indexing-lifecycle.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/expiry-worker-race-patterns.md
+- contents/database/expired-unreleased-drift-runbook.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/transactional-claim-check-job-leasing.md
+- contents/database/queue-claim-skip-locked-fairness.md
+confusable_with:
+- database/active-predicate-alignment-capacity-guards
+- database/expired-unreleased-drift-runbook
+- database/soft-delete-uniqueness-indexing-lifecycle
+forbidden_neighbors: []
+expected_queries:
+- hold가 expires_at은 지났는데 아직 unique나 exclusion constraint에서 충돌하면 무엇을 봐야 해?
+- expires_at, released_at, deleted_at을 같은 active predicate처럼 쓰면 왜 drift가 생겨?
+- 화면은 비었다고 보이는데 새 예약이 실패하는 expired hold cleanup lag를 어떻게 설명해?
+- hold expiration에서 blocking truth와 archive cleanup truth를 어떤 컬럼으로 분리해야 해?
+- read predicate와 constraint predicate가 다른 active set을 보면 어떤 장애가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 hold 만료에서 expires_at, released_at, deleted_at, status predicate가 어긋나 화면 availability와 constraint blocking truth가 달라지는 active predicate drift를 라우팅하는 advanced symptom router다.
+  hold expiration predicate drift, expired but still blocking, released_at vs deleted_at, cleanup lag 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Hold Expiration Predicate Drift
 
 > 한 줄 요약: hold 만료는 `expires_at`만으로 끝나지 않는다. 읽기, 제약, cleanup worker가 "언제 더 이상 자원을 막지 않는가"를 같은 컬럼으로 보지 않으면 cleanup 지연이 곧 active predicate drift가 된다.

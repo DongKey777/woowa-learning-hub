@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Ghost Reads와 Mixed Routing Write Fence Tokens
+concept_id: database/ghost-reads-mixed-routing-write-fence-tokens
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- ghost-read-mixed-routing
+- write-fence-token
+- failover-stale-writer
+aliases:
+- ghost read
+- mixed routing
+- write fence token
+- epoch token
+- stale route
+- stale writer fencing
+- failover ghost reads
+- mixed routing write fence
+- 유령 읽기
+- fence token
+symptoms:
+- failover 직후 같은 엔티티가 생겼다 사라지는 ghost read처럼 보여
+- old primary나 stale route가 늦은 write를 받아 새 primary 상태를 덮을 위험이 있어
+- read routing 문제로 보이지만 실제로는 write fencing epoch가 필요한 상황인지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/failover-promotion-read-divergence
+- database/primary-switch-write-fencing
+next_docs:
+- database/failover-visibility-window-topology-cache-playbook
+- database/client-consistency-tokens
+- database/read-after-write-routing-decision-guide
+linked_paths:
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/read-after-write-routing-decision-guide.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/client-consistency-tokens.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/replica-read-routing-anomalies.md
+confusable_with:
+- database/failover-promotion-read-divergence
+- database/failover-visibility-window-topology-cache-playbook
+- database/client-consistency-tokens
+forbidden_neighbors: []
+expected_queries:
+- failover 직후 ghost read가 생길 때 mixed routing과 stale writer를 어떻게 구분해?
+- write fence token이나 epoch token은 old primary의 늦은 write를 어떻게 막아?
+- 같은 데이터가 생겼다 사라지는 것처럼 보이면 read routing만 고치면 충분해?
+- stale route가 새 primary 상태를 덮지 못하게 fencing_epoch를 어떻게 써?
+- failover mixed routing에서 read consistency와 write safety를 같이 봐야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 failover 직후 mixed routing으로 생기는 ghost read와 stale writer overwrite 위험을 write fence token, epoch token으로 막는 advanced deep dive다.
+  ghost read, mixed routing, write fence token, stale route, failover ghost reads 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Ghost Reads와 Mixed Routing Write Fence Tokens
 
 > 한 줄 요약: failover 직후 옛 경로와 새 경로가 섞이면 유령 같은 읽기/쓰기가 생기고, fence token이 있어야 늦은 주체를 막을 수 있다.

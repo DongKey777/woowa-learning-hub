@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Optional vs FieldPatch PATCH Tri State Bridge
+concept_id: language/optional-vs-fieldpatch-patch-tri-state-bridge
+canonical: true
+category: language
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+source_priority: 91
+mission_ids:
+- missions/spring-roomescape
+- missions/lotto
+review_feedback_tags:
+- patch
+- optional
+- dto
+aliases:
+- Optional vs FieldPatch PATCH tri-state bridge
+- PATCH Optional tri-state misunderstanding
+- missing null present FieldPatch
+- partial update null missing difference
+- Optional two state vs tri state
+- PATCH DTO Optional FieldPatch 차이
+symptoms:
+- PATCH DTO에서 field missing, explicit null, value present 세 상태를 Optional.empty 하나로 눌러 기존 값 유지와 값 삭제를 구분하지 못해
+- 조회 결과의 있음 없음 문제와 partial update의 유지 삭제 변경 의도 문제를 모두 Optional로 처리하려 해 service 적용 의미가 흐려져
+- JSON binding이나 custom deserializer 설정 없이 Optional<T>만 두면 PATCH tri-state가 자동 표현된다고 오해해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/patch-tri-state-field-primer
+- language/java-optional-basics
+- language/optional-field-parameter-antipattern-card
+next_docs:
+- language/json-null-missing-unknown-field-schema-evolution
+- language/primitive-vs-wrapper-fields-json-payload-semantics
+- software-engineering/dto-vo-entity-basics
+linked_paths:
+- contents/language/java/patch-tri-state-field-primer.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/optional-field-parameter-antipattern-card.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
+confusable_with:
+- language/patch-tri-state-field-primer
+- language/optional-field-parameter-antipattern-card
+- language/json-null-missing-unknown-field-schema-evolution
+forbidden_neighbors: []
+expected_queries:
+- PATCH DTO에서 Optional과 FieldPatch는 missing null present 세 상태 때문에 어떻게 갈라져?
+- Optional.empty와 요청 필드 missing은 왜 같은 의미가 아닐 수 있어?
+- PATCH에서 nickname 유지 삭제 변경을 FieldPatch tri-state로 모델링하는 이유를 설명해줘
+- Optional은 조회 결과의 있음 없음에는 맞지만 partial update에는 부족할 수 있다는 뜻이 뭐야?
+- JSON null missing present를 Optional 단독으로 구분할 수 있는지 beginner 다음 단계로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Optional의 two-state absence와 PATCH DTO의 missing/null/present tri-state를 FieldPatch 모델로 구분하는 intermediate chooser다.
+  Optional vs FieldPatch, PATCH tri-state, missing null present, partial update 질문이 본 문서에 매핑된다.
+---
 # `Optional` vs `FieldPatch`: PATCH tri-state에서 왜 갈라지나
 
 > 한 줄 요약: `Optional`은 보통 "값 있음 / 없음" 2칸을 드러내는 데 잘 맞지만, PATCH DTO는 자주 `missing` / explicit `null` / 값 있음 3칸이 필요해서 `FieldPatch` 같은 tri-state 모델로 한 단계 올라간다.
@@ -16,6 +80,14 @@
 - [Java Deep Dive Catalog](./README.md)
 
 retrieval-anchor-keywords: optional vs fieldpatch, patch optional 왜 안 되나, patch tri-state bridge, optional tri-state misunderstanding, missing null present java, fieldpatch vs optional patch dto, optional로 patch 되나요, patch dto optional bridge, partial update null missing difference, fieldpatch 뭐예요, optional two state vs tri state, patch beginner next step, optional explicit null 왜 부족해, json patch missing keep clear, what is fieldpatch
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "PATCH DTO에 `Optional`을 쓰면 필드 유지/삭제/변경이 다 표현되나요?" | roomescape 회원 정보 수정이나 lotto 설정 변경에서 missing/null/value를 구분해야 하는 요청 | 조회 결과의 있음/없음과 부분 수정 의도의 3상태를 분리한다 |
+| "`Optional.empty()`랑 JSON 필드 누락이 같은 뜻 아닌가요?" | nickname을 안 보낸 경우와 `null`로 지우려는 경우가 같은 service 분기로 들어가는 코드 | missing은 유지, explicit null은 삭제일 수 있다는 적용 의미를 잡는다 |
+| "custom deserializer 없이도 tri-state가 자동으로 되나요?" | Jackson 바인딩 기본값만 믿고 PATCH 의미를 service에서 복원하려는 구현 | JSON binding 설정과 DTO 모델이 실제로 세 상태를 보존하는지 확인한다 |
 
 ## 핵심 개념
 

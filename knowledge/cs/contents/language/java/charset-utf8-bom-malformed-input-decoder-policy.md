@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Charset, UTF-8 BOM, Malformed Input, and Decoder Policy
+concept_id: language/charset-utf8-bom-malformed-input-decoder-policy
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- charset-boundary
+- payload-parsing
+- signature-mismatch
+aliases:
+- Charset UTF-8 BOM decoder policy
+- malformed input CodingErrorAction
+- default charset mojibake
+- Byte Order Mark CSV header
+- replacement character
+- Java charset boundary
+- UTF-8 BOM 문제
+symptoms:
+- new String(bytes)나 getBytes()가 default charset에 기대어 환경마다 로그 CSV 메시지 parsing이 다르게 깨져
+- malformed input을 replacement 문자로 조용히 삼켜 signature hash payload key가 달라지는 문제를 놓쳐
+- UTF-8 BOM이 첫 컬럼명이나 payload 앞 문자로 들어와 header mismatch를 만드는 상황을 인코딩 문제로 보지 못해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/io-nio-serialization
+next_docs:
+- language/locale-root-case-mapping-unicode-normalization
+- language/empty-string-blank-null-missing-payload-semantics
+- language/io-nio-serialization
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+- contents/language/java/empty-string-blank-null-missing-payload-semantics.md
+- contents/language/java/primitive-vs-wrapper-fields-json-payload-semantics.md
+confusable_with:
+- language/locale-root-case-mapping-unicode-normalization
+- language/empty-string-blank-null-missing-payload-semantics
+- language/io-nio-serialization
+forbidden_neighbors: []
+expected_queries:
+- Java에서 UTF-8 BOM 때문에 CSV 첫 헤더가 안 맞는 문제를 어떻게 진단해?
+- new String(bytes) default charset 의존이 운영에서 한글 mojibake를 만드는 이유가 뭐야?
+- CharsetDecoder malformed input을 replacement로 삼킬지 exception으로 실패할지 어떻게 정해야 해?
+- webhook signature 검증에서 bytes를 String으로 decode했다가 다시 encode하면 왜 mismatch가 날 수 있어?
+- Java charset policy를 boundary contract로 설계하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java charset boundary를 UTF-8 BOM, default charset, CharsetDecoder malformed input, CodingErrorAction, replacement character, byte-to-string signature mismatch 관점으로 설명하는 advanced deep dive다.
+  UTF-8 BOM, mojibake, CSV header mismatch, malformed input, default charset, webhook signature 질문이 본 문서에 매핑된다.
+---
 # Charset, UTF-8 BOM, Malformed Input, and Decoder Policy
 
 > 한 줄 요약: 문자열은 `String`으로 다 같아 보여도, 경계에서는 bytes와 charset policy가 먼저다. UTF-8 BOM, 잘못된 decoder 기본값, replacement 문자 허용, default charset 의존을 놓치면 로그, CSV, 메시지, 서명, payload parsing이 환경마다 다르게 깨진다.

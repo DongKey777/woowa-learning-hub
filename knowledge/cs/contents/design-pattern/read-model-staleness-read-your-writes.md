@@ -9,6 +9,11 @@ doc_role: bridge
 level: advanced
 language: mixed
 source_priority: 85
+review_feedback_tags:
+- read-model-staleness
+- read-your-writes
+- projection-lag
+- freshness-budget
 aliases:
 - read model staleness
 - read your writes
@@ -28,6 +33,11 @@ linked_paths:
 - contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
 forbidden_neighbors:
 - contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+confusable_with:
+- design-pattern/projection-freshness-slo-pattern
+- database/replica-lag-read-after-write-strategies
+- system-design/read-after-write-consistency-basics
+- system-design/projection-applied-watermark-basics
 expected_queries:
 - 저장했는데 목록에 바로 안 보이면 read model staleness 문제야?
 - read-your-writes 보장은 projection 구조에서 어떻게 설계해?
@@ -41,7 +51,6 @@ contextual_chunk_prefix: |
   budget, read model 정합성 같은 자연어 paraphrase가 본 문서의 비교
   관점에 매핑된다.
 ---
-
 # Read Model Staleness and Read-Your-Writes
 
 > 한 줄 요약: CQRS나 projection 기반 read model을 쓰면 staleness는 피할 수 없는 운영 성질이 되고, 사용자 경험과 정합성 기대치에 맞는 read-your-writes 전략을 따로 설계해야 한다.

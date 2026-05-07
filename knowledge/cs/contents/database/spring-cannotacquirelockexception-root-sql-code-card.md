@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Spring CannotAcquireLockException Root SQL Code Card
+concept_id: database/spring-cannotacquirelockexception-root-sql-code
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- spring
+- sqlstate
+- lock-exception
+- deadlock
+- timeout
+aliases:
+- Spring CannotAcquireLockException root SQL code
+- CannotAcquireLockException SQLSTATE errno
+- root SQLSTATE before retry
+- CannotAcquireLockException deadlock timeout
+- Spring lock exception root cause
+- findSql throwable helper
+- sqlstate errno 확인 순서
+- deadlock timeout 오해 방지
+- CannotAcquireLockException 40P01 55P03 40001 1205 1213
+- spring 락 예외 root SQL 코드
+symptoms:
+- CannotAcquireLockException 이름만 보고 deadlock인지 timeout인지 바로 판단하려 해
+- Spring 예외 봉투 안의 root SQLException SQLSTATE와 vendor errorCode를 먼저 읽어야 해
+- PostgreSQL 40001을 deadlock으로 묶거나 MySQL 1213과 1205를 구분하지 못하고 있어
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- database/three-bucket-decision-tree
+- database/timeout-errorcode-mapping-mini-card
+next_docs:
+- database/cannotacquirelockexception-40001-insert-if-absent-faq
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/three-bucket-decision-tree
+linked_paths:
+- contents/database/three-bucket-decision-tree-mini-card.md
+- contents/database/timeout-errorcode-mapping-mini-card.md
+- contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+confusable_with:
+- database/spring-jpa-lock-timeout-deadlock-exception-mapping
+- database/cannotacquirelockexception-40001-insert-if-absent-faq
+- database/three-bucket-decision-tree
+forbidden_neighbors: []
+expected_queries:
+- Spring CannotAcquireLockException은 왜 봉투 이름이고 root SQLSTATE errno를 먼저 읽어야 해?
+- CannotAcquireLockException에서 PostgreSQL 55P03, 40P01, 40001과 MySQL 1205, 1213을 어떻게 구분해?
+- CannotAcquireLockException이면 무조건 retry하면 안 되고 busy와 retryable을 root code로 나눠야 하는 이유가 뭐야?
+- PostgreSQL 40001은 deadlock이 아니라 serialization failure이고 deadlock은 40P01이라는 점을 설명해줘
+- Java cause chain에서 SQLException을 찾아 getSQLState와 getErrorCode를 읽는 helper가 왜 필요해?
+contextual_chunk_prefix: |
+  이 문서는 Spring CannotAcquireLockException을 outer exception wrapper로 보고 root SQLException SQLSTATE/errno로 deadlock, lock timeout, serialization failure를 분류하는 beginner primer다.
+  spring 락 예외 root SQL 코드, CannotAcquireLockException 40P01/55P03/40001/1205/1213 질문이 본 문서에 매핑된다.
+---
 # Spring `CannotAcquireLockException`에서 root SQL 코드 먼저 읽는 초간단 카드
 
 > 한 줄 요약: `CannotAcquireLockException`은 "락 계열로 번역됐다"는 바깥 이름일 뿐이라서, deadlock인지 timeout인지 판단하려면 **예외 이름에서 멈추지 말고 root `SQLSTATE/errno`를 먼저 확인**해야 한다.

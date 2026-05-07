@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: PostgreSQL Exact-Key Pre-Check Contrast Card
+concept_id: database/postgresql-exact-key-precheck-contrast-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- mysql-contrast
+- exact-key-probe
+- gap-lock
+aliases:
+- postgresql exact key precheck contrast
+- same explain not same lock behavior
+- explain confidence postgresql vs mysql
+- postgresql exact key no gap lock
+- postgres exact key pre check beginner
+- mysql next key vs postgres row lock
+- exact key explain portability
+- PostgreSQL absence check exact key
+- explain 좋지만 queue 아님
+- PostgreSQL unique probe no next key
+symptoms:
+- PostgreSQL에서 exact-key unique index probe EXPLAIN이 좋아 보이면 MySQL REPEATABLE READ gap/next-key queue 직관도 따라온다고 생각하고 있어
+- SELECT FOR UPDATE 0 row를 PostgreSQL에서 missing key 예약으로 해석하고 있어
+- absence safety가 필요할 때 UNIQUE, SERIALIZABLE retry, constraint, guard surface 중 무엇을 써야 하는지 비교해야 해
+intents:
+- comparison
+- definition
+prerequisites:
+- database/explain-checklist-exact-key-locking-reads
+- database/mysql-rr-exact-key-probe-visual-guide
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+- database/unique-vs-locking-read-duplicate-primer
+linked_paths:
+- contents/database/explain-checklist-exact-key-locking-reads.md
+- contents/database/mysql-rr-exact-key-probe-visual-guide.md
+- contents/database/empty-result-locking-cheat-sheet-postgresql-mysql.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
+- contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+confusable_with:
+- database/mysql-rr-exact-key-probe-visual-guide
+- database/postgresql-serializable-retry-playbook
+- database/empty-result-locking-cheat-sheet-postgresql-mysql
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL exact-key pre-check에서 좋은 EXPLAIN이 MySQL gap lock queue를 뜻하지 않는 이유가 뭐야?
+- PostgreSQL SELECT FOR UPDATE가 0 row이면 없는 key 자리를 예약했다고 봐도 돼?
+- MySQL RR exact-key probe와 PostgreSQL exact-key unique probe의 lock behavior를 비교해줘
+- PostgreSQL에서 absence safety가 필요하면 SERIALIZABLE retry와 UNIQUE 중 무엇을 봐야 해?
+- 같은 SQL과 같은 unique index라도 엔진별 locking semantics가 다른 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL exact-key unique index EXPLAIN을 MySQL REPEATABLE READ gap/next-key queue와 혼동하지 않게 연결하는 beginner bridge다.
+  PostgreSQL exact key no gap lock, same explain not same lock behavior, absence check exact key 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL Exact-Key Pre-Check Contrast Card
 
 > 한 줄 요약: PostgreSQL에서 `EXPLAIN`이 exact-key unique index probe처럼 보여도, 그것만으로 MySQL `REPEATABLE READ`의 gap/next-key queue 직관까지 따라온다고 읽으면 안 된다.

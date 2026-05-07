@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Browser DevTools 첫 확인 체크리스트 1분판
+concept_id: network/browser-devtools-first-checklist-1minute-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/payment
+review_feedback_tags:
+- browser-devtools-first-check
+- status-protocol-remote-address-connection-id
+- blocked-canceled-failed-disambiguation
+aliases:
+- devtools first checklist
+- browser devtools first check
+- network tab first read
+- status protocol remote address connection id
+- DevTools Network 첫 확인
+- blocked canceled failed 차이
+- 304 h3 devtools
+- 421 beginner capture
+symptoms:
+- Browser DevTools Network 탭에서 header 전체를 먼저 파다가 status protocol remote address connection id의 1차 분류를 놓친다
+- failed blocked canceled를 HTTP 상태코드처럼 읽어 서버가 응답한 숫자와 구분하지 못한다
+- 304, H3, 421 같은 줄을 cache 질문인지 protocol 질문인지 connection reuse 질문인지 바로 분기하지 못한다
+intents:
+- drill
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-request-response-headers-basics
+next_docs:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/browser-devtools-cache-trace-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- security/cors-samesite-preflight
+linked_paths:
+- contents/network/browser-devtools-blocked-canceled-failed-primer.md
+- contents/network/browser-devtools-protocol-column-labels-primer.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/security/cors-samesite-preflight.md
+confusable_with:
+- network/browser-devtools-blocked-canceled-failed-primer
+- network/browser-devtools-cache-trace-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/http3-421-observability-primer
+- security/cors-samesite-preflight
+forbidden_neighbors: []
+expected_queries:
+- Browser DevTools Network 탭에서 처음 1분 동안 Status Protocol Remote Address Connection ID를 어떻게 봐?
+- failed blocked canceled는 HTTP 상태코드가 아니라 브라우저 메모라는 뜻이야?
+- DevTools에서 304와 Protocol 열을 같이 보면 cache 재검증과 HTTP 버전을 어떻게 구분해?
+- 같은 URL이 두 줄로 보이면 cache, retry, connection reuse 중 무엇부터 확인해?
+- H3와 421이 보일 때 Response Alt-Svc를 언제 확인해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools Network 탭 첫 판독 drill로, Status, Protocol,
+  Remote Address, Connection ID 네 칸을 먼저 보고 failed, blocked, canceled,
+  304, H3, 421을 HTTP 상태코드와 브라우저 메모로 구분한다.
+---
 # Browser DevTools 첫 확인 체크리스트 1분판
 
 **난이도: 🟢 Beginner**

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: 'HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기'
+concept_id: network/http3-421-observability-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- 421-proof-capture-order
+- edge-local-reply-vs-app-4xx
+- h3-recovery-before-auth
+aliases:
+- http/3 421 observability
+- h3 421 devtools
+- h3 421 edge log
+- 421 coalescing recovery
+- http/3 misdirected request trace
+- wrong quic connection observability
+- beginner 421 proof checklist
+symptoms:
+- DevTools와 edge log를 같이 보는데 `421 -> 200`이 transport 복구인지 앱 성공인지 순서를 어떻게 읽어야 할지 헷갈린다
+- "`h3` 요청에서 `421` 다음 `403`이나 `404`가 붙어 mixed trace처럼 보여 무엇을 먼저 캡처해야 할지 모르겠다"
+- HTTP/3에서 wrong connection reuse를 증명하려면 어떤 필드를 모아야 하는지 beginner 기준 체크리스트가 필요하다
+- access log에는 `421`가 보이는데 앱 로그와 합쳐서 읽는 순서를 잡지 못해 observability 관점에서 막힌다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http-421-troubleshooting-trace-examples
+next_docs:
+- network/vendor-edge-421-field-map
+- network/wildcard-cert-coalescing-421-trace-mini-lab
+linked_paths:
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/network/chrome-netlog-h3-421-drilldown.md
+- contents/network/h3-fallback-trace-bridge.md
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/vendor-edge-421-field-map.md
+confusable_with:
+- network/http-421-troubleshooting-trace-examples
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/browser-421-but-curl-200-symptom-router
+forbidden_neighbors:
+- contents/network/chrome-netlog-h3-421-drilldown.md
+- contents/network/browser-netlog-h3-alt-svc-https-rr-appendix.md
+expected_queries:
+- HTTP/3에서 421 recovery를 증명하려면 DevTools와 edge log에서 무엇을 같이 봐야 해?
+- h3 요청이 421 뒤 403으로 이어질 때 transport 문제와 app 문제를 어떤 순서로 분리해?
+- wrong QUIC connection인지 확인하는 beginner용 캡처 체크리스트를 알려줘
+- edge log의 local reply 421와 앱 4xx를 한 trace에서 어떻게 읽어?
+- DevTools에 같은 URL 두 줄이 보일 때 h3 coalescing recovery라는 근거를 어디서 잡아?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 HTTP/3 `421` trace를 DevTools와 edge log의 순서로
+  읽어, wrong QUIC connection recovery와 app-level 4xx를 분리하도록 돕는
+  network primer다. h3 `421 -> 200`, `421 -> 403`, local reply, proof
+  checklist, same URL 두 줄 같은 자연어 표현이 observability 체크포인트와
+  증거 수집 순서에 직접 매핑되도록 설계했다.
+---
 # HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기
 
 

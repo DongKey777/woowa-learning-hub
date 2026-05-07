@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Service Template Trade-offs
+concept_id: software-engineering/service-template-tradeoffs
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- service-template
+- platform
+- golden-path
+- policy-as-code
+aliases:
+- service template tradeoffs
+- golden path template
+- service scaffold governance
+- template drift
+- paved road scaffold
+- 서비스 템플릿 트레이드오프
+symptoms: []
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- software-engineering/platform-paved-road
+- software-engineering/service-bootstrap-governance
+next_docs:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/policy-as-code
+- software-engineering/architectural-fitness-functions
+linked_paths:
+- contents/software-engineering/platform-paved-road-tradeoffs.md
+- contents/software-engineering/service-bootstrap-governance.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/architectural-fitness-functions.md
+confusable_with:
+- software-engineering/platform-paved-road
+- software-engineering/service-bootstrap-governance
+- software-engineering/golden-path-escape-hatch-policy
+forbidden_neighbors: []
+expected_queries:
+- service template은 새 서비스 시작을 빠르게 하지만 어떤 경우 팀 자율성과 설계 다양성을 해칠 수 있어?
+- service template, bootstrap governance, policy as code는 각각 어떤 역할로 나눠야 해?
+- template drift를 scaffold README, bootstrap PR, service catalog, PRR fitness function에서 어떻게 감시해?
+- 강한 opinionated template과 escape hatch를 함께 설계하려면 어떤 metadata를 남겨야 해?
+- 서비스 maturity를 높이기 위해 템플릿 기본값과 지속 검증을 연결하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 service template을 빠른 scaffold와 운영 표준화의 출발점으로 쓰되 template drift, escape hatch, policy-as-code 검증과 균형을 맞추는 advanced chooser이다.
+---
 # Service Template Trade-offs
 
 > 한 줄 요약: service template은 새 서비스를 빠르게 시작하게 하지만, 너무 강한 템플릿은 설계 다양성과 팀의 자율성을 갉아먹을 수 있다.

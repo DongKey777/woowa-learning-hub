@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: TreeMap put Return Value Overwrite Bridge
+concept_id: language/treemap-put-return-value-overwrite-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- map-api
+- comparator
+aliases:
+- TreeMap put return value overwrite bridge
+- Java TreeMap put returns previous value
+- compare zero same key slot put return
+- TreeMap comparator zero previous value
+- Map put old value beginner
+- 자바 TreeMap put 반환값
+symptoms:
+- TreeMap.put 반환값을 방금 넣은 새 값으로 오해하고 실제로는 같은 key 자리에 있던 이전 value라는 점을 놓쳐
+- comparator compare==0이면 key 객체가 달라도 같은 TreeMap key slot으로 보아 value가 overwrite될 수 있다는 점을 설명하지 못해
+- put 반환값 null을 항상 새 삽입으로만 보다가 nullable value Map에서는 containsKey 확인이 필요할 수 있다는 null ambiguity를 놓쳐
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-collections-basics
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/treeset-treemap-comparator-tie-breaker-basics
+next_docs:
+- language/treemap-record-containskey-get-name-comparator-drill
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/map-put-get-remove-containskey-return-cheat-sheet
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/treemap-record-containskey-get-name-comparator-drill.md
+- contents/language/java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md
+confusable_with:
+- language/map-put-get-remove-containskey-return-cheat-sheet
+- language/treeset-treemap-comparator-tie-breaker-basics
+- language/treemap-record-containskey-get-name-comparator-drill
+forbidden_neighbors: []
+expected_queries:
+- TreeMap.put 반환값은 새 값이 아니라 이전 값이라는 뜻을 예제로 설명해줘
+- TreeMap에서 comparator compare==0이면 다른 key 객체도 같은 key 자리로 보고 overwrite될 수 있어?
+- TreeMap put이 null을 반환하면 새 삽입인지 기존 value가 null인지 containsKey로 확인해야 하는 경우가 있어?
+- name-only comparator로 Student key를 넣으면 두 번째 put이 이전 value를 반환하고 size가 안 늘 수 있는 이유가 뭐야?
+- Map.put 반환값과 TreeMap comparator zero same slot을 beginner 기준으로 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap.put 반환값이 previous value이며 comparator compare==0이 같은 key slot overwrite를 만든다는 점을 설명하는 beginner primer다.
+  TreeMap put, previous value, compare zero, overwrite, Map.put return value 질문이 본 문서에 매핑된다.
+---
 # TreeMap `put` 반환값 브리지: `null` vs 이전 값
 
 > 한 줄 요약: `TreeMap.put(key, value)`의 반환값은 "방금 넣은 값"이 아니라 "그 key 자리에 원래 있던 이전 값"이다.

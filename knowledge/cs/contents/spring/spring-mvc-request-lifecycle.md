@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring MVC Request Lifecycle
+concept_id: spring/mvc-request-lifecycle
+canonical: true
+category: spring
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 90
+review_feedback_tags:
+- mvc-request-lifecycle
+- dispatcherservlet-pipeline
+- handlermapping-handleradapter
+- argument-resolver-return
+aliases:
+- Spring MVC request lifecycle
+- DispatcherServlet pipeline
+- HandlerMapping HandlerAdapter
+- argument resolver return value handler
+- exception resolver chain
+- servlet filter interceptor advice boundary
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/ioc-di-container.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-mvc-exception-resolver-chain-contract.md
+- contents/spring/spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+expected_queries:
+- Spring MVC 요청은 DispatcherServlet 이후 어떤 순서로 처리돼?
+- HandlerMapping HandlerAdapter argument resolver return value handler는 각각 어디서 동작해?
+- Spring MVC에서 filter interceptor ControllerAdvice 차이는 뭐야?
+- 요청 timeout이나 client disconnect를 MVC lifecycle에서 어디에 매핑해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC 요청이 Servlet filter, DispatcherServlet, HandlerMapping,
+  HandlerAdapter, argument resolver, controller, return value handler, exception resolver,
+  BasicErrorController, async dispatch 경계를 지나 응답으로 끝나는 전체 lifecycle을 설명한다.
+---
 # Spring MVC 요청 생명주기
 
 > 한 줄 요약: HTTP 요청이 `DispatcherServlet`을 지나 컨트롤러, 예외 처리, 응답 렌더링까지 도달하는 전체 파이프라인을 코드 수준에서 이해한다.

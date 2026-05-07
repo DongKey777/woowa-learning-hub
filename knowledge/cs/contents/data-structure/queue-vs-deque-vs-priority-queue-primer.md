@@ -9,7 +9,10 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/backend
 review_feedback_tags:
 - next-item-selection-rule
 - bfs-vs-work-queue-split

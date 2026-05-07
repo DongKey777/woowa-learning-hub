@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Read-Ahead False Positives and Buffer Pool Pollution
+concept_id: database/read-ahead-false-positives-buffer-pollution
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- read-ahead
+- buffer-pool
+- cache-pollution
+- storage-internals
+aliases:
+- read-ahead false positives
+- buffer pool pollution
+- prefetch miss
+- sequential scan heuristic
+- false positive prefetch
+- hot set eviction
+- random read ahead
+- read ahead 오판
+- 버퍼 풀 오염
+- hot page eviction
+symptoms:
+- read-ahead heuristic이 곧 쓰지 않을 page를 미리 읽어 hot working set을 buffer pool에서 밀어내고 있어
+- 짧은 range scan이나 중간에 끊기는 batch가 false positive prefetch를 반복해 OLTP latency를 흔들고 있어
+- read-ahead를 버그로 보거나 무조건 이득으로 보고 접근 패턴과 cache pollution tradeoff를 놓치고 있어
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/read-ahead-sequential-scan-behavior
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/read-ahead-sequential-scan-behavior
+- database/clustered-index-locality
+linked_paths:
+- contents/database/read-ahead-sequential-scan-behavior.md
+- contents/database/buffer-pool-read-ahead-eviction-interaction.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/clustered-index-locality.md
+confusable_with:
+- database/read-ahead-sequential-scan-behavior
+- database/buffer-pool-read-ahead-eviction-interaction
+- database/innodb-buffer-pool-internals
+forbidden_neighbors: []
+expected_queries:
+- read-ahead false positive는 왜 buffer pool pollution과 hot page eviction을 만들까?
+- 짧은 range scan이나 중간에 끊기는 batch가 false positive prefetch를 늘리는 이유를 설명해줘
+- read-ahead heuristic이 틀렸을 때 디스크 읽기 낭비와 cache pollution이 함께 생기는 흐름을 알려줘
+- OLTP hot set이 analytics scan 뒤 밀리는 상황을 read-ahead 관점으로 해석해줘
+- read-ahead false positive를 완전히 없애기보다 비용을 낮추는 쪽이 현실적인 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB read-ahead false positives가 곧 쓰지 않을 page를 prefetch해 buffer pool pollution, hot set eviction, cache miss를 만드는 advanced deep dive다.
+  read ahead 오판, 버퍼 풀 오염, hot page eviction 질문이 본 문서에 매핑된다.
+---
 # Read-Ahead False Positives and Buffer Pool Pollution
 
 > 한 줄 요약: read-ahead false positive는 "미리 읽었는데 곧 안 쓰는" page를 대량으로 끌어와 buffer pool을 오염시키는 현상이다.

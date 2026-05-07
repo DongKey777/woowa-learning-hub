@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Webhook Delivery Platform 설계
+concept_id: system-design/webhook-delivery-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- webhook delivery
+- signed payload
+- hmac signature
+- subscription registry
+aliases:
+- webhook delivery
+- signed payload
+- hmac signature
+- subscription registry
+- retries
+- idempotency
+- endpoint health
+- dead letter queue
+- delivery attempts
+- replay protection
+- Webhook Delivery Platform 설계
+- webhook delivery platform design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/notification-system-design.md
+- contents/system-design/job-queue-design.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md
+- contents/system-design/rate-limiter-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Webhook Delivery Platform 설계 설계 핵심을 설명해줘
+- webhook delivery가 왜 필요한지 알려줘
+- Webhook Delivery Platform 설계 실무 트레이드오프는 뭐야?
+- webhook delivery 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Webhook Delivery Platform 설계를 다루는 deep_dive 문서다. 외부 시스템으로 이벤트를 안정적으로 전달하기 위해 서명, 재시도, 순서, 관측성을 함께 설계하는 플랫폼이다. 검색 질의가 webhook delivery, signed payload, hmac signature, subscription registry처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Webhook Delivery Platform 설계
 
 > 한 줄 요약: 외부 시스템으로 이벤트를 안정적으로 전달하기 위해 서명, 재시도, 순서, 관측성을 함께 설계하는 플랫폼이다.

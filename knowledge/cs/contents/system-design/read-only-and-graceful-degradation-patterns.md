@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Read-Only and Graceful Degradation Patterns
+concept_id: system-design/read-only-and-graceful-degradation-patterns
+canonical: false
+category: system-design
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- read-only mode
+- graceful degradation patterns
+- stale read fallback
+- stale-if-error
+aliases:
+- read-only mode
+- graceful degradation patterns
+- stale read fallback
+- stale-if-error
+- cache outage degradation
+- database incident read-only
+- partial feature disablement
+- brownout pattern
+- degraded mode matrix
+- bounded stale fallback
+- write freeze during incident
+- replica lag downgrade
+symptoms:
+- Read-Only and Graceful Degradation Patterns 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+- contents/system-design/policy-snapshot-cache-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Read-Only and Graceful Degradation Patterns 장애 대응 순서를 알려줘
+- read-only mode 복구 설계 체크리스트가 뭐야?
+- Read-Only and Graceful Degradation Patterns에서 blast radius를 어떻게 제한해?
+- read-only mode 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Read-Only and Graceful Degradation Patterns를 다루는 playbook 문서다. cache 또는 database incident 때 stale read, read-only mode, partial feature disablement 중 어디까지 내려갈지 freshness budget, write safety, dependency headroom으로 가르는 문서이며, "읽기는 살리고 쓰기만 잠글 수 있나?"라는 질문의 첫 판단표를 준다. 검색 질의가 read-only mode, graceful degradation patterns, stale read fallback, stale-if-error처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Read-Only and Graceful Degradation Patterns
 
 > 한 줄 요약: cache 또는 database incident 때 stale read, read-only mode, partial feature disablement 중 어디까지 내려갈지 freshness budget, write safety, dependency headroom으로 가르는 문서이며, "읽기는 살리고 쓰기만 잠글 수 있나?"라는 질문의 첫 판단표를 준다.

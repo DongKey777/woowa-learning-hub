@@ -58,11 +58,12 @@ expected_queries:
 - summary invalidation과 bounded rebuild를 같이 설계하는 이유가 궁금해
 - stale aggregate를 운영 중에 안전하게 복구하는 흐름을 알고 싶어
 contextual_chunk_prefix: |
-  이 문서는 summary table이 refresh는 돌지만 값이 원본과 어긋나는 상황에서,
-  drift detection과 invalidation 그리고 bounded rebuild 범위를 어떻게 설계해야
-  하는지 설명하는 deep_dive다. summary drift, stale aggregate, bounded
-  rebuild, bucket invalidation, projection drift, why summary value differs
-  from source 같은 운영 질문을 부분 재계산과 freshness contract 관점으로 묶는다.
+  이 문서는 "summary table 값이 원본과 안 맞는다", "full rebuild 말고 일부 bucket만
+  다시 계산하고 싶다", "late event나 CDC gap 뒤 어디까지 되돌려야 하는지 모르겠다"
+  같은 운영 질문을 summary drift detection, bucket invalidation, bounded rebuild,
+  projection drift, freshness contract 설계로 연결하는 advanced deep dive다.
+  stale aggregate repair, partial rebuild scope, why summary value differs from
+  source 같은 검색을 부분 재계산 경계와 복구 안전성 판단 기준으로 묶는다.
 ---
 
 # Summary Drift Detection, Invalidation, and Bounded Rebuild

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "Load Balancer Health Check Failure Patterns"
+concept_id: network/load-balancer-healthcheck-failure-patterns
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- load-balancer
+- healthcheck
+- readiness-liveness
+aliases:
+- load balancer health check
+- readiness vs liveness
+- health check flapping
+- active passive health check
+- slow start warmup
+- false positive false negative
+- fail_timeout drain
+symptoms:
+- health endpoint 200 OK만 보고 서비스가 트래픽을 받아도 된다고 판단한다
+- readiness와 liveness를 섞어 cold start 서버에 바로 트래픽을 보낸다
+- 헬스체크 timeout이 너무 짧아 GC pause나 warmup을 장애로 오인한다
+- DB 지연을 health check에 직접 반영해 전체 capacity를 더 줄인다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-retry-backoff-practical
+next_docs:
+- network/lb-connection-draining-deployment-safe-close
+- network/accept-queue-syn-backlog-listen-overflow
+- network/request-timing-decomposition
+- network/service-mesh-sidecar-proxy
+linked_paths:
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/accept-queue-syn-backlog-listen-overflow.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/lb-connection-draining-deployment-safe-close.md
+confusable_with:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/lb-connection-draining-deployment-safe-close
+- network/service-mesh-sidecar-proxy
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- "load balancer health check가 오히려 장애를 만드는 패턴은?"
+- "readiness와 liveness를 헬스체크에서 어떻게 구분해야 해?"
+- "배포 직후 502가 늘면 health check slow start warmup을 어떻게 확인해?"
+- "health check false positive false negative를 실무에서 어떻게 줄여?"
+- "DB 지연을 health endpoint에 넣으면 왜 capacity가 더 줄 수 있어?"
+contextual_chunk_prefix: |
+  이 문서는 load balancer active/passive health check, readiness/liveness,
+  flapping, false positive/false negative, slow start, warmup, drain을 다루는
+  advanced playbook이다.
+---
 # Load Balancer 헬스체크 실패 패턴
 
 > 한 줄 요약: 헬스체크는 죽은 서버를 거르는 장치지만, 너무 단순하거나 너무 공격적으로 만들면 오히려 장애를 만든다.

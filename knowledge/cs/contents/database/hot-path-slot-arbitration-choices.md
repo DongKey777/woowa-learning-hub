@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Hot-Path Slot Arbitration Choices
+concept_id: database/hot-path-slot-arbitration-choices
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- hot-path-slot-arbitration
+- slot-unique-vs-guard-row
+- hybrid-fencing-booking
+aliases:
+- hot path slot arbitration
+- booking arbitration choice
+- slot unique key
+- unique slot claim
+- resource-day guard row
+- room day guard
+- duplicate slot insert storm
+- hybrid fencing booking
+- slot unique vs guard row
+- booking flash crowd locking
+symptoms:
+- high-contention booking hot path에서 slot unique key, resource-day guard row, hybrid fencing 중 어떤 queue shape를 골라야 할지 모르겠어
+- duplicate key로 빨리 탈락시키는 비용과 guard row lock wait 비용을 비교해야 해
+- 같은 booking retry, reschedule, expiry cleanup 경합까지 slot truth 하나로 닫으려 하고 있어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/guard-row-scope-design-multi-day-bookings
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+next_docs:
+- database/slot-delta-reschedule-semantics
+- database/hot-row-contention-counter-sharding
+- database/shared-pool-guard-design-room-type-inventory
+- database/upsert-contention-unique-index-locking
+linked_paths:
+- contents/database/slot-delta-reschedule-semantics.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/guard-row-hot-row-symptoms-primer.md
+confusable_with:
+- database/guard-row-scope-design-multi-day-bookings
+- database/hot-row-contention-counter-sharding
+- database/upsert-contention-unique-index-locking
+forbidden_neighbors: []
+expected_queries:
+- booking hot path에서 slot unique key와 resource-day guard row는 대기열 위치가 어떻게 달라?
+- duplicate slot insert storm을 긴 lock wait보다 낫다고 볼 수 있는 상황은 언제야?
+- hybrid fencing booking은 slot claim truth와 fence gate 역할을 어떻게 나눠?
+- reschedule, expiry cleanup, admin override가 섞이는 예약 경합에서 slot unique key만으로 부족한 이유는 뭐야?
+- high contention booking에서 패배 요청 비용을 duplicate key, lock wait, short fence retry로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 high-contention booking hot path에서 slot unique key, resource-day guard row, hybrid fencing 중 어디에 대기열과 패배 비용을 둘지 고르는 advanced chooser다.
+  hot path slot arbitration, slot unique key, resource-day guard row, hybrid fencing booking 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Hot-Path Slot Arbitration Choices
 
 > 한 줄 요약: high-contention booking hot path에서는 `slot unique key`, `resource-day guard row`, `hybrid fencing`이 모두 정합성은 지킬 수 있지만, 실제 차이는 어디에 대기열을 만들고 패배 요청이 어떤 비용을 치르게 할지를 어떻게 고르느냐에 있다.

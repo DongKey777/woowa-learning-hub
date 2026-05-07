@@ -1,8 +1,85 @@
+---
+schema_version: 3
+title: 인덱스 기초
+concept_id: database/index-basics
+canonical: true
+category: database
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- index-as-lookup-path
+- explain-before-index-guess
+- read-fast-write-cost-tradeoff
+aliases:
+- index basics
+- db index basics
+- b-tree index beginner
+- index 뭐예요
+- db index가 왜 필요해요
+- where 조건 하나인데 왜 느려요
+- full scan 왜 나와요
+- explain 전에 index basics
+- key null explain
+- using filesort beginner
+- rows가 너무 커 보여요
+- clustered secondary covering index
+symptoms:
+- WHERE 조건 하나인데 조회가 느린 이유를 모르겠어
+- 인덱스를 만들었는데 실제로 DB가 탔는지 확인하는 법이 헷갈려
+- EXPLAIN에서 key가 NULL이고 rows가 커 보여서 어디부터 봐야 할지 모르겠어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/sql-relational-modeling-basics
+next_docs:
+- database/index-and-explain
+- database/covering-index-composite-ordering
+- database/mysql-postgresql-index-storage-bridge
+- database/query-tuning-checklist
+- spring/spring-data-jpa-basics
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/mysql-postgresql-index-storage-bridge.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/query-tuning-checklist.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/spring/spring-data-jpa-basics.md
+confusable_with:
+- database/index-and-explain
+- database/covering-index-composite-ordering
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- DB index가 왜 필요한지 B-Tree와 full scan 기준으로 설명해줘
+- WHERE 조건 하나인데 왜 느린지 index 관점에서 처음부터 보고 싶어
+- EXPLAIN에서 key NULL, rows 큼, Using filesort가 보이면 무엇을 봐야 해?
+- clustered index와 secondary index와 covering index를 초보자 기준으로 구분해줘
+- 인덱스는 읽기를 빠르게 하지만 write 비용도 늘어난다는 말이 무슨 뜻이야?
+contextual_chunk_prefix: |
+  이 문서는 database index를 테이블에서 원하는 row를 빨리 찾기 위한 lookup path로 설명하고, B-Tree, clustered index, secondary index, covering index, composite index, EXPLAIN key rows Extra를 처음 연결하는 beginner primer다.
+  WHERE 조건 하나인데 느림, full scan, key null, using filesort, rows too high, index를 만들었는데 실제로 탔는지 확인하는 자연어 질문이 본 문서에 매핑된다.
+---
 # 인덱스 기초 (Index Basics)
 
 > 한 줄 요약: 인덱스는 "찾는 길을 미리 정리한 목록"이고, `EXPLAIN`은 DB가 실제로 그 길을 탔는지 확인하는 첫 도구다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "`WHERE` 조건 하나인데 조회가 왜 느린지 모르겠어요" | 예약 목록, 상품 검색, 주문 조회 API가 느린 장면 | index를 테이블 전체 scan을 줄이는 lookup path로 본다 |
+| "인덱스를 만들었는데 실제로 탔는지 확인하는 법을 모르겠어요" | JPA/SQL 성능 리뷰에서 EXPLAIN을 처음 보는 단계 | `EXPLAIN`의 `key`, `rows`, `Extra`로 실제 선택 경로를 확인한다 |
+| "`Using filesort`, `key = NULL`, rows 큰 값이 보여요" | 정렬/필터 조건이 붙은 목록 조회 튜닝 | 인덱스 부재, 조건식 모양, 정렬 경로를 먼저 분리한다 |
 
 관련 문서:
 

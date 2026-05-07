@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Operator Tooling State Semantics / Safety Rails
+concept_id: security/operator-tooling-state-semantics-safety-rails
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- operator tooling semantics
+- admin tool safety rails
+- support tool mode
+- act on behalf mode
+aliases:
+- operator tooling semantics
+- admin tool safety rails
+- support tool mode
+- act on behalf mode
+- break glass mode
+- operator UX safety
+- admin banner semantics
+- operational safety rails
+- operator session inventory
+- revoke blast radius preview
+- emergency access friction
+- preview drift
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/support-operator-acting-on-behalf-of-controls.md
+- contents/security/session-inventory-ux-revocation-scope-design.md
+- contents/security/device-session-graph-revocation-design.md
+- contents/security/revocation-impact-preview-data-contract.md
+- contents/security/revocation-preview-drift-response-contract.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/authz-kill-switch-break-glass-governance.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/step-up-session-coherence-auth-assurance.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Operator Tooling State Semantics / Safety Rails 핵심 개념을 설명해줘
+- operator tooling semantics가 왜 필요한지 알려줘
+- Operator Tooling State Semantics / Safety Rails 실무 설계 포인트는 뭐야?
+- operator tooling semantics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Operator Tooling State Semantics / Safety Rails를 다루는 deep_dive 문서다. 운영 도구는 "권한이 있는 관리자 화면"이 아니라 state machine이며, `view`, `assist`, `act-on-behalf-of`, `break-glass`를 같은 화면 흐름에 섞으면 operator 실수와 emergency override가 같은 흔적으로 남아 사고가 커진다. 검색 질의가 operator tooling semantics, admin tool safety rails, support tool mode, act on behalf mode처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Operator Tooling State Semantics / Safety Rails
 
 > 한 줄 요약: 운영 도구는 "권한이 있는 관리자 화면"이 아니라 state machine이며, `view`, `assist`, `act-on-behalf-of`, `break-glass`를 같은 화면 흐름에 섞으면 operator 실수와 emergency override가 같은 흔적으로 남아 사고가 커진다.

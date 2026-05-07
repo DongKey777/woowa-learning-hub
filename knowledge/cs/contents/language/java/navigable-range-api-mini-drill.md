@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Navigable Range API Mini Drill
+concept_id: language/navigable-range-api-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- treemap
+- navigablemap
+- range-view
+aliases:
+- Navigable Range API Mini Drill
+- TreeSet headSet tailSet subSet worksheet
+- TreeMap headMap tailMap subMap exercise
+- Java range view inclusive exclusive drill
+- sorted collection range boundary
+- 자바 Navigable range API 드릴
+symptoms:
+- headSet headMap은 끝 경계를 기본 제외하고 tailSet tailMap은 시작 경계를 기본 포함한다는 감각이 없어 결과를 한 칸씩 틀려
+- subSet과 subMap을 복사본으로 생각해 range view가 원본과 연결된 창이라는 점을 놓쳐
+- TreeMap range API에서 value가 아니라 key 구간을 기준으로 잘리는 점을 설명하지 못해
+intents:
+- drill
+- definition
+- comparison
+prerequisites:
+- language/navigablemap-navigableset-mental-model
+- language/submap-boundaries-primer
+- language/lower-vs-floor-exact-match-mini-drill
+next_docs:
+- language/descending-view-mental-model
+- language/pollfirst-polllast-view-semantics-primer
+- data-structure/treemap-interval-entry-primer
+linked_paths:
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/lower-vs-floor-exact-match-mini-drill.md
+- contents/language/java/descending-view-mental-model.md
+confusable_with:
+- language/submap-boundaries-primer
+- language/lower-vs-floor-exact-match-mini-drill
+- language/descending-view-mental-model
+forbidden_neighbors: []
+expected_queries:
+- TreeSet headSet tailSet subSet 결과를 실행 전에 예측하는 드릴을 해보고 싶어
+- TreeMap headMap tailMap subMap은 key 기준 범위인지 value 기준 범위인지 알려줘
+- headSet tailSet subSet의 기본 포함 제외 경계는 어떻게 외우면 좋아?
+- Navigable range view가 복사본이 아니라 원본과 연결된 창이라는 뜻을 설명해줘
+- subSet headSet tailSet에서 boolean inclusive 인자를 넣으면 결과가 어떻게 바뀌어?
+contextual_chunk_prefix: |
+  이 문서는 TreeSet과 TreeMap의 headSet, tailSet, subSet, headMap, tailMap, subMap range boundary를 예측하는 beginner drill이다.
+  Navigable range API, headSet, tailSet, subMap, inclusive exclusive, range view 질문이 본 문서에 매핑된다.
+---
 # Navigable Range API 미니 드릴
 
 > 한 줄 요약: `TreeSet`/`TreeMap`의 `headSet`, `tailSet`, `subSet`, `headMap`, `tailMap`, `subMap` 결과를 실행 전에 먼저 손으로 예측해 보면서 "시작 포함, 끝 제외" 감각을 고정하는 1페이지 beginner drill이다.

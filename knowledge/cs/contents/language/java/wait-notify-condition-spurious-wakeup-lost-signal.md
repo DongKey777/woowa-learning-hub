@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: wait/notify, Condition, Spurious Wakeup, and Lost Signal
+concept_id: language/wait-notify-condition-spurious-wakeup-lost-signal
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- guarded-block
+- lost-signal-debugging
+- condition-variable-protocol
+aliases:
+- wait notify Condition
+- spurious wakeup
+- lost signal
+- lost notification
+- guarded block
+- Condition await signal
+- monitor wait
+- notifyAll
+- producer consumer
+- WAITING thread
+- 조건 대기 프로토콜
+- 스퓨리어스 웨이크업
+symptoms:
+- wait나 await에서 깨어나면 조건이 참이라고 믿고 if로 감싸서 rare race와 spurious wakeup 버그를 만든다
+- 조건 변경과 notify가 같은 lock discipline 아래 있지 않아 lost signal로 worker가 영원히 기다린다
+- notify와 notifyAll, Condition queue, Semaphore, CountDownLatch를 모두 이벤트 전송 API처럼 섞어 쓴다
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/java-concurrency-utilities
+- language/thread-interruption-cooperative-cancellation-playbook
+next_docs:
+- language/locksupport-park-unpark-permit-semantics
+- language/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics
+- language/thread-dump-state-interpretation
+- language/java-memory-model-happens-before-volatile-final
+linked_paths:
+- contents/language/java/thread-interruption-cooperative-cancellation-playbook.md
+- contents/language/java/thread-dump-state-interpretation.md
+- contents/language/java-memory-model-happens-before-volatile-final.md
+- contents/language/java/locksupport-park-unpark-permit-semantics.md
+- contents/language/java/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/java-concurrency-utilities.md
+confusable_with:
+- language/locksupport-park-unpark-permit-semantics
+- language/semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics
+- language/thread-dump-state-interpretation
+forbidden_neighbors: []
+expected_queries:
+- wait notify에서 왜 if가 아니라 while로 predicate를 다시 확인해야 하는지 spurious wakeup 기준으로 설명해줘
+- lost signal은 조건 상태 변경과 notify가 같은 lock 아래 있지 않을 때 어떻게 생겨?
+- notify와 notifyAll은 언제 각각 위험하고 Condition을 쓰면 무엇이 더 명시적으로 나뉘어?
+- thread dump에 WAITING on object monitor가 쌓일 때 wait notify protocol에서 무엇을 확인해야 해?
+- producer consumer 문제에서 raw wait notify보다 BlockingQueue나 Semaphore를 쓰는 게 나은 경우를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 wait/notify와 Condition을 이벤트 전송이 아니라 condition predicate protocol로 다루는 playbook이다.
+  guarded block, while predicate loop, spurious wakeup, lost signal, notify vs notifyAll, Condition.await/signal, WAITING thread dump, LockSupport, Semaphore, CountDownLatch와의 경계를 다룬다.
+---
 # `wait`/`notify`, `Condition`, Spurious Wakeup, and Lost Signal
 
 > 한 줄 요약: `wait()`/`notify()`와 `Condition.await()`/`signal()`은 이벤트 전송 API가 아니라 조건 대기 프로토콜이다. 조건(predicate), 락, 신호 순서를 잘못 잡으면 spurious wakeup, lost signal, 영원한 `WAITING`이 생긴다.

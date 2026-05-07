@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Idempotency, Retry, Consistency Boundaries
+concept_id: software-engineering/idempotency-retry-consistency-boundaries
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- idempotency
+- retry
+- consistency-boundary
+- outbox
+aliases:
+- Idempotency Retry Consistency Boundaries
+- retry consistency boundary
+- idempotency key boundary
+- duplicate request suppression
+- exactly once myth
+- 멱등성 재시도 일관성 경계
+symptoms:
+- timeout 후 같은 쓰기 요청을 재시도하는데 idempotency key와 저장 경계가 없어 주문, 결제, 알림 같은 side effect가 중복돼
+- 부분 성공을 구분하지 못해 retry가 안전한 item과 manual review가 필요한 item을 같은 방식으로 다시 보내
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/api-design-error-handling
+- software-engineering/batch-idempotency-keys
+next_docs:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/batch-partial-failure
+- software-engineering/http-coalescing-failure-mapping
+linked_paths:
+- contents/software-engineering/api-design-error-handling.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/cache-message-observability.md
+- contents/software-engineering/http-coalescing-failure-mapping.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+confusable_with:
+- software-engineering/batch-idempotency-keys
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/http-coalescing-failure-mapping
+forbidden_neighbors: []
+expected_queries:
+- retry와 idempotency key를 consistency boundary 관점에서 같이 설계해야 하는 이유가 뭐야?
+- timeout 후 같은 주문 생성 요청을 다시 보낼 때 중복 생성을 막는 멱등성 저장 경계는 어떻게 잡아?
+- exactly once와 idempotency를 같은 말로 쓰면 왜 위험한지 설명해줘
+- 부분 성공이 있는 batch나 bulk API에서 item-level idempotency key가 필요한 이유가 뭐야?
+- DB commit과 message publish 사이에 outbox가 retry consistency를 어떻게 보완해?
+contextual_chunk_prefix: |
+  이 문서는 retry, idempotency key, duplicate suppression, consistency boundary, outbox를 함께 설계해야 하는 이유를 설명하는 advanced bridge이다.
+---
 # Idempotency, Retry, Consistency Boundaries
 
 > 한 줄 요약: 재시도와 멱등성은 분리할 수 없고, 둘 다 결국 "어디까지를 같은 결과로 볼 것인가"라는 일관성 경계 문제다.

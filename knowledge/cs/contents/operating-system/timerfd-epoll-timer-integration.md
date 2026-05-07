@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Timerfd Epoll Timer Integration
+concept_id: operating-system/timerfd-epoll-timer-integration
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- timerfd-epoll-timer
+- integration
+- fd-based-timer
+- event-loop-timeout
+aliases:
+- timerfd epoll timer integration
+- fd based timer
+- event loop timeout timerfd
+- periodic task epoll
+- backoff timer event loop
+- timerfd readable expirations
+intents:
+- deep_dive
+- design
+- troubleshooting
+linked_paths:
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/epoll-level-edge-oneshot-wakeup-semantics.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/clocksource-timer-resolution-jitter.md
+- contents/operating-system/monotonic-clock-wall-clock-timeout-deadline.md
+expected_queries:
+- timerfd를 epoll에 넣으면 timeout과 periodic task를 같은 event loop로 다룰 수 있어?
+- fd based timer와 signal/alarm 기반 timer는 event loop 설계에서 어떻게 달라?
+- timerfd expiration을 read해야 하는 이유와 edge-triggered 주의점은?
+- timeout, periodic task, backoff를 epoll control plane에 통합하는 법은?
+contextual_chunk_prefix: |
+  이 문서는 timerfd를 epoll에 등록해 I/O, timeout, periodic task, backoff를 같은 fd/event loop로
+  다루는 설계를 설명한다. clocksource, monotonic deadline, epoll wakeup semantics와 연결한다.
+---
 # Timerfd, Epoll Timer Integration
 
 > 한 줄 요약: timerfd를 epoll에 넣으면 I/O와 timer를 같은 이벤트 루프로 다룰 수 있어 timeout, periodic task, backoff를 한 경로로 통합하기 쉽다.

@@ -66,6 +66,14 @@ contextual_chunk_prefix: |
 
 > lotto의 `Rank`는 단순한 표시 이름보다 "몇 개 맞으면 이 등수인지"와 "상금이 얼마인지"를 함께 들고 있는 규칙 경계에 가깝다. 그래서 서비스가 긴 `if`로 등수를 다시 해석하기보다, 비교 결과를 `Rank`로 닫고 나머지는 그 의미를 읽는 편이 덜 흔들린다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "등수별 상금 if문이 service에 길게 늘어져요" | `matchCount`, `bonusMatched`, `prize` 분기가 여러 클래스에 반복되는 코드 | 닫힌 등수 규칙은 `Rank` enum 경계에 응집시킨다 |
+| "`Rank` enum은 있는데 출력에서 상금표를 다시 switch해요" | enum이 이름표만 들고 있고 상금/일치 조건은 밖에서 재해석되는 구조 | enum이 대표하는 규칙과 표시/집계 책임을 나눠 본다 |
+| "보너스 번호 여부를 누가 알아야 하죠?" | 2등 판정이 result service, statistics, output 사이에 흩어진 구현 | `Rank.from(matchCount, bonusMatched)`처럼 판정 규칙을 한곳으로 닫는다 |
+
 ## 미션 시나리오
 
 lotto 미션 후반에 자주 나오는 구조는 이렇다. 서비스가 티켓 한 장과 `WinningNumbers`를 비교한 뒤, `matchCount == 6`, `matchCount == 5 && bonus`, `matchCount == 5` 같은 분기를 길게 나열해 등수를 정한다. 그다음 또 다른 곳에서 상금 금액을 `switch`로 다시 붙이고, 출력 단계는 같은 등수 순서를 다시 배열한다.

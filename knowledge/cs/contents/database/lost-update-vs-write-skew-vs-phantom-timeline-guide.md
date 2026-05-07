@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Lost Update vs Write Skew vs Phantom Timeline Guide
+concept_id: database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- lost-update-write-skew-phantom
+- anomaly-timeline-guide
+- same-row-different-row-new-row
+aliases:
+- lost update vs write skew vs phantom
+- anomaly timeline guide
+- concurrency anomaly decision map
+- same row overwrite
+- different row invariant break
+- new row predicate race
+- read modify write race
+- minimum staffing write skew
+- overlap check phantom
+- lost update write skew phantom 차이
+symptoms:
+- lost update, write skew, phantom을 모두 동시성 문제로만 보고 어떤 row가 쓰였는지로 구분하지 못하고 있어
+- 같은 row 덮어쓰기, 서로 다른 row로 집합 규칙 깨짐, 없던 row insert race를 timeline으로 비교하고 싶어
+- capacity oversell처럼 write skew와 phantom-like insert race가 섞이는 증상을 분류해야 해
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/isolation-anomaly-cheat-sheet
+next_docs:
+- database/lost-update-detection-patterns
+- database/write-skew-phantom-read-case-studies
+- database/range-invariant-enforcement-write-skew-phantom
+- database/compare-and-swap-vs-pessimistic-locks
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/lost-update-detection-patterns.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/isolation-anomaly-cheat-sheet.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+confusable_with:
+- database/isolation-anomaly-cheat-sheet
+- database/lost-update-detection-patterns
+- database/range-invariant-enforcement-write-skew-phantom
+forbidden_neighbors: []
+expected_queries:
+- lost update, write skew, phantom을 같은 row, 다른 row, 새 row 기준으로 비교해줘
+- write skew는 서로 다른 existing row를 바꿨는데 count/sum/minimum 규칙이 깨지는 문제라는 뜻이야?
+- phantom은 없다고 믿은 범위에 새 row가 들어오는 predicate race라는 점을 timeline으로 설명해줘
+- lost update는 version check나 atomic update로 막고 write skew는 guard row가 필요한 이유는 뭐야?
+- capacity oversell에서 write skew와 phantom-like insert race가 어떻게 섞일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 lost update, write skew, phantom을 same row overwrite, different row invariant break, new row predicate race timeline으로 비교하는 beginner chooser다.
+  lost update vs write skew vs phantom, same row, different row, new row, anomaly timeline 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Lost Update vs Write Skew vs Phantom Timeline Guide
 
 > 한 줄 요약: lost update는 같은 row를 덮어쓰는 문제이고, write skew는 서로 다른 row를 바꿔 집합 규칙을 깨는 문제이며, phantom은 없다고 믿은 범위에 새 row가 끼어드는 문제다.

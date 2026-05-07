@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Builder vs Fluent Mutation Smell
+concept_id: design-pattern/builder-vs-fluent-mutation-smell
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- builder-mutation-smell
+- fluent-api-state
+- immutable-construction
+aliases:
+- builder vs fluent mutation
+- mutable fluent api
+- chainable setters
+- mutation smell
+- immutable construction
+- fluent setter smell
+- builder smell
+- toBuilder wither
+- fluent api vs builder
+- mutable builder misuse
+symptoms:
+- Builder처럼 보이는 fluent method가 새 객체를 조립하지 않고 기존 도메인 객체를 계속 변경한다
+- chainable setter 때문에 중간 상태가 외부에 노출되고 호출 순서에 따라 객체 유효성이 달라진다
+- 테스트용 fluent helper가 실제 domain API로 퍼져 불변 객체 생성과 mutable update 경계가 흐려진다
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/builder-pattern
+- design-pattern/immutable-builder-wither-patterns
+- design-pattern/composition-over-inheritance-practical
+next_docs:
+- design-pattern/prototype-pattern-caveats
+- design-pattern/invariant-preserving-command-model
+- design-pattern/anti-pattern
+linked_paths:
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/immutable-builder-wither-patterns.md
+- contents/design-pattern/composition-over-inheritance-practical.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/prototype-pattern-caveats.md
+confusable_with:
+- design-pattern/builder-pattern
+- design-pattern/immutable-builder-wither-patterns
+- design-pattern/prototype-pattern-caveats
+- design-pattern/anti-pattern
+forbidden_neighbors: []
+expected_queries:
+- Builder와 fluent mutation은 문법은 비슷하지만 객체를 만드는지 기존 객체를 바꾸는지 어떻게 달라?
+- chainable setter가 mutable 객체를 계속 바꾸면 중간 상태와 호출 순서 의존성이 생기는 이유가 뭐야?
+- toBuilder나 wither는 기존 객체를 보존하고 새 객체를 만들어 fluent mutation보다 안전한 이유가 뭐야?
+- fluent API라고 해서 모두 builder가 아닌 이유를 code review 기준으로 설명해줘
+- 테스트 helper의 mutable fluent API가 domain API로 퍼지면 왜 smell이야?
+contextual_chunk_prefix: |
+  이 문서는 Builder vs Fluent Mutation Smell symptom router로, builder처럼 보이는
+  fluent chain이 실제로는 기존 객체를 바꾸는 mutable setter API일 때 생기는 중간 상태,
+  호출 순서 의존성, invariant 약화 문제를 immutable builder, wither, toBuilder 기준으로 구분한다.
+---
 # Builder vs Fluent Mutation Smell
 
 > 한 줄 요약: Builder는 객체를 안전하게 조립하는 도구지만, fluent setter가 기존 객체를 바꾸기 시작하면 결국 mutable mutation smell이 된다.
@@ -147,4 +213,3 @@ Builder처럼 보이지만 mutable setter면 결국 변경 API다.
 ## 한 줄 정리
 
 Builder처럼 보이지만 실제로는 객체를 바꾸는 fluent API는 mutation smell일 가능성이 높다.
-

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Service Mesh Local Reply, Timeout, Reset Attribution"
+concept_id: network/service-mesh-local-reply-timeout-reset-attribution
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- service-mesh
+- local-reply
+- timeout-attribution
+aliases:
+- mesh local reply
+- sidecar timeout
+- Envoy local reply
+- service mesh reset
+- route timeout
+- circuit breaking
+- mTLS failure
+- sidecar overload
+symptoms:
+- mesh sidecar local reply를 app이 반환한 status로 오해한다
+- app timeout보다 짧은 route timeout 때문에 sidecar가 먼저 포기한 상황을 놓친다
+- gRPC UNAVAILABLE/CANCELLED를 app grpc-status로만 보고 sidecar reset이나 mTLS failure를 보지 않는다
+- sidecar overload나 adaptive concurrency rejection을 upstream app 장애로 blame한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/service-mesh-sidecar-proxy
+- network/proxy-local-reply-vs-upstream-error-attribution
+next_docs:
+- network/adaptive-concurrency-limiter-latency-signal-gateway-mesh
+- network/grpc-status-trailers-transport-error-mapping
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+linked_paths:
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md
+- contents/network/grpc-status-trailers-transport-error-mapping.md
+- contents/network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md
+- contents/network/mesh-adaptive-concurrency-local-reply-metrics-tuning.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+confusable_with:
+- network/proxy-local-reply-vs-upstream-error-attribution
+- network/mesh-adaptive-concurrency-local-reply-metrics-tuning
+- network/grpc-status-trailers-transport-error-mapping
+- network/mtls-handshake-failure-diagnosis
+forbidden_neighbors: []
+expected_queries:
+- "service mesh local reply가 app 응답인지 sidecar 응답인지 어떻게 구분해?"
+- "route timeout이 app timeout보다 짧을 때 어떤 attribution 문제가 생겨?"
+- "gRPC UNAVAILABLE이 sidecar reset이나 mTLS failure로 번역될 수 있는 이유는?"
+- "mesh adaptive concurrency local reject와 no healthy upstream을 어떻게 나눠?"
+- "Envoy sidecar local reply reason taxonomy를 어떤 metric으로 봐야 해?"
+contextual_chunk_prefix: |
+  이 문서는 service mesh sidecar local reply, route timeout, reset,
+  circuit breaking, mTLS failure, adaptive concurrency reject와 app/upstream
+  attribution을 다루는 advanced playbook이다.
+---
 # Service Mesh Local Reply, Timeout, Reset Attribution
 
 > 한 줄 요약: mesh 환경의 local reply는 단순히 "프록시가 대신 응답했다"를 넘어서 route timeout, retry policy, circuit breaking, mTLS failure, sidecar overload가 어떤 표면 증상으로 번역되는지까지 같이 봐야 한다.

@@ -9,6 +9,11 @@ doc_role: deep_dive
 level: advanced
 language: mixed
 source_priority: 80
+review_feedback_tags:
+- request-timing-decomposition
+- ttfb
+- ttlb
+- dns-time
 aliases:
 - request timing decomposition
 - TTFB
@@ -19,6 +24,17 @@ aliases:
 - latency breakdown
 intents:
 - deep_dive
+linked_paths:
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/upstream-queueing-connection-pool-wait-tail-latency.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/happy-eyeballs-dual-stack-racing.md
+- contents/network/queue-saturation-attribution-metrics-runbook.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-restclient-vs-webclient-lifecycle-boundaries.md
 expected_queries:
 - TTFB랑 TTLB는 뭐가 달라?
 - 요청 latency를 DNS connect TLS로 어떻게 나눠?
@@ -32,7 +48,6 @@ contextual_chunk_prefix: |
   breakdown, time_starttransfer, 각 단계별 병목 같은 자연어 paraphrase가
   본 문서의 layer 분해에 매핑된다.
 ---
-
 # Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB
 
 > 한 줄 요약: "요청이 2초 걸렸다"는 말만으로는 원인을 못 찾는다. DNS, connect, TLS, queue wait, TTFB, TTLB를 분리해 봐야 어느 계층이 실제로 시간을 태웠는지 보인다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Rerooting DP
+concept_id: algorithm/rerooting-dp
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- rerooting-dp
+- tree-dp-all-roots
+- prefix-suffix-child-merge
+aliases:
+- rerooting dp
+- tree rerooting
+- tree dp all roots
+- subtree dp
+- prefix suffix dp on tree
+- dp propagation on tree
+- sum of distances tree
+- all roots tree dp
+- 트리 루트 바꾸기 DP
+symptoms:
+- 트리 DP를 한 루트 기준 서브트리 값으로만 끝내고 모든 노드를 루트로 보는 답을 다시 계산해야 하는 상황을 놓친다
+- 자식 하나를 제외한 나머지 정보를 합치는 prefix suffix 누적 필요성을 이해하지 못한다
+- 일반 그래프에 rerooting DP를 바로 적용하려 하고 tree 전제를 확인하지 않는다
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- data-structure/tree-basics
+- algorithm/dp-intro
+next_docs:
+- algorithm/binary-lifting
+- algorithm/topological-dp
+- algorithm/tree-dfs-template-cheat-sheet
+linked_paths:
+- contents/algorithm/binary-lifting.md
+- contents/algorithm/graph.md
+- contents/algorithm/topological-dp.md
+- contents/data-structure/tree-basics.md
+confusable_with:
+- algorithm/binary-lifting
+- algorithm/topological-dp
+- algorithm/tree-dfs-template-cheat-sheet
+- data-structure/tree-basics
+forbidden_neighbors: []
+expected_queries:
+- Rerooting DP는 한 루트에서 구한 트리 DP를 모든 루트 답으로 어떻게 확장해?
+- down pass와 up pass 두 번 DFS로 subtree 정보와 parent side 정보를 어떻게 합쳐?
+- 자식 하나를 제외한 나머지 정보를 빠르게 합치려면 prefix suffix 누적이 왜 필요해?
+- 모든 노드까지 거리 합을 각 루트 기준으로 구할 때 rerooting DP를 어떻게 써?
+- rerooting DP는 왜 tree 전제가 필요하고 일반 graph에는 바로 적용하기 어려워?
+contextual_chunk_prefix: |
+  이 문서는 Rerooting DP deep dive로, tree DP에서 한 루트 기준 down 값을 구한 뒤
+  parent side 정보를 다시 내려 보내 모든 노드를 루트로 보는 답을 계산한다.
+  prefix/suffix child merge, all roots, sum of distances, subtree outside info를
+  다룬다.
+---
 # Rerooting DP
 
 > 한 줄 요약: Rerooting DP는 트리에서 한 번의 DFS 결과를 다시 뿌려 모든 정점을 루트로 보는 답을 효율적으로 계산하는 기법이다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "WebFlux Cancel-Lag Tuning"
+concept_id: network/webflux-cancel-lag-tuning
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- webflux
+- cancel-lag
+- reactor
+aliases:
+- WebFlux cancel lag
+- Reactor Netty cancel lag
+- publishOn prefetch
+- flatMap prefetch cancel lag
+- onBackpressureBuffer cancel lag
+- boundedElastic cancel lag
+- downstream disconnect zombie work
+symptoms:
+- downstream cancel이 오면 이미 시작된 DB/CPU/external call도 자동 중단된다고 생각한다
+- publishOn flatMap prefetch와 buffer가 cancel debt를 키우는 점을 놓친다
+- boundedElastic으로 event-loop를 보호했지만 blocking call 자체는 협조적 취소가 필요하다는 점을 모른다
+- disconnect 시각과 producer 실제 중단 시각을 따로 계측하지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/sse-webflux-streaming-cancel-after-first-byte
+- network/webflux-request-body-abort-surface-map
+next_docs:
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- spring/webclient-connection-pool-timeout-tuning
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/websocket-heartbeat-backpressure-reconnect
+linked_paths:
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/network-spring-request-lifecycle-timeout-disconnect-bridge.md
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/sse-webflux-streaming-cancel-after-first-byte
+- network/webflux-request-body-abort-surface-map
+- spring/reactive-blocking-bridge-boundedelastic-block-traps
+- network/upstream-queueing-connection-pool-wait-tail-latency
+forbidden_neighbors: []
+expected_queries:
+- "WebFlux cancel lag는 왜 downstream disconnect 뒤에도 작업이 계속 도는 문제야?"
+- "publishOn flatMap prefetch가 cancel debt를 키우는 이유는?"
+- "onBackpressureBuffer와 boundedElastic이 cancel 이후 zombie work를 만들 수 있어?"
+- "disconnect 시각과 producer stop 시각을 어떻게 따로 계측해?"
+- "WebFlux streaming에서 cancel lag를 줄이려면 어떤 operator와 buffer를 조정해?"
+contextual_chunk_prefix: |
+  이 문서는 Reactor Netty/WebFlux cancel lag, downstream disconnect,
+  publishOn/flatMap prefetch, onBackpressureBuffer, boundedElastic blocking bridge와
+  producer stop delay를 다루는 advanced playbook이다.
+---
 # WebFlux Cancel-Lag Tuning
 
 > 한 줄 요약: Reactor Netty/WebFlux는 downstream cancel 신호를 비교적 빨리 보지만, operator prefetch, explicit buffer, blocking bridge가 이미 받아 둔 일을 남겨 두면 cancel 이후에도 CPU, DB, 외부 호출이 한동안 계속된다.

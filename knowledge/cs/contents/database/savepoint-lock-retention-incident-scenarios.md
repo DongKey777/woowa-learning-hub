@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Savepoint and Lock Retention Incident Scenarios
+concept_id: database/savepoint-lock-retention-incidents
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- savepoint
+- lock-retention
+- incident-response
+- transaction-boundary
+- queue-claim
+aliases:
+- savepoint incident
+- lock retention incident
+- rollback to savepoint still blocking
+- savepoint outage
+- partial rollback recovery
+- savepoint behind blocker
+- savepoint transaction still open
+- lock surface after rollback
+- partial rollback still waiting
+- 부분 롤백 후 경합 지속
+symptoms:
+- rollback to savepoint는 성공했는데 다른 세션의 lock wait이나 starvation이 계속돼
+- batch claim 후 일부 row만 되돌렸지만 transaction이 계속 열려 있어 blocker가 남아
+- savepoint 뒤에 외부 API나 파일 처리를 기다리면서 DB lock을 오래 들고 있어
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/savepoint-partial-rollback
+- database/savepoint-lock-retention-edge-cases
+next_docs:
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/queue-claim-skip-locked-fairness
+- database/metadata-lock-outage-triage-cancel-recovery
+linked_paths:
+- contents/database/savepoint-lock-retention-edge-cases.md
+- contents/database/savepoint-partial-rollback.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/queue-claim-skip-locked-fairness.md
+- contents/database/metadata-lock-outage-triage-cancel-recovery.md
+confusable_with:
+- database/savepoint-lock-retention-edge-cases
+- database/savepoint-partial-rollback
+- database/lock-wait-deadlock-latch-triage-playbook
+forbidden_neighbors: []
+expected_queries:
+- rollback to savepoint는 성공했는데 왜 여전히 blocker와 lock wait이 남아?
+- savepoint incident에서 open transaction duration과 lock surface를 먼저 봐야 하는 이유가 뭐야?
+- batch claim 후 일부 row만 partial rollback했는데 다른 worker가 계속 굶는 경우 어떻게 복구해?
+- savepoint 뒤에 외부 I/O를 같은 transaction 안에서 기다리면 왜 outage로 번질 수 있어?
+- savepoint recovery는 더 많은 savepoint가 아니라 transaction 축소와 작은 retry unit이라는 뜻을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 savepoint incident, rollback to savepoint still blocking, lock retention incident를 open transaction과 lock surface 축소 관점으로 대응하는 advanced playbook이다.
+  부분 롤백 후 경합 지속, batch claim starvation, savepoint outage, transaction still open 질문이 본 문서에 매핑된다.
+---
 # Savepoint + Lock Retention Incident Scenarios and Recovery Patterns
 
 > 한 줄 요약: savepoint를 잘못 쓴 운영 사고는 "부분 롤백은 성공했는데 왜 여전히 막히지?"라는 형태로 나타나며, 대응은 savepoint 자체보다 open transaction과 남은 lock surface를 줄이는 쪽에 가깝다.

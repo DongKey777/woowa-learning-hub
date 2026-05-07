@@ -34,9 +34,9 @@ aliases:
 - 왜 webmvctest 에서 service 가 없어요
 - 헷갈리는 test slice di 예외
 symptoms:
-- `NoSuchBeanDefinitionException`이 떠서 bean이 없는 건지 이름이 안 맞는 건지 모르겠어요
-- `found 2`가 보이는데 `@Primary`, `@Qualifier` 중 뭘 먼저 봐야 할지 헷갈려요
-- `@WebMvcTest`나 `@DataJpaTest`에서만 서비스 bean이 없다고 떠요
+- "`NoSuchBeanDefinitionException`이 떠서 bean이 없는 건지 이름이 안 맞는 건지 모르겠어요"
+- "`found 2`가 보이는데 `@Primary`, `@Qualifier` 중 뭘 먼저 봐야 할지 헷갈려요"
+- "`@WebMvcTest`나 `@DataJpaTest`에서만 서비스 bean이 없다고 떠요"
 - 방금 구현체를 하나 더 추가했더니 startup DI 예외가 갑자기 생겼어요
 intents:
 - symptom
@@ -62,11 +62,11 @@ confusable_with:
 forbidden_neighbors: []
 expected_queries:
 - 스프링 DI 에러를 봤을 때 먼저 bean이 없는 문제인지 여러 개인 문제인지 어떻게 갈라?
-- `NoSuchBeanDefinitionException`이 나오면 scan 누락하고 qualifier mismatch 중 어디부터 확인해?
-- `found 2 beans` startup 오류가 떴을 때 첫 판단 기준을 빠르게 알고 싶어
-- `@WebMvcTest`에서만 서비스 주입이 깨질 때 이걸 일반 런타임 DI 오류처럼 봐도 돼?
+- "`NoSuchBeanDefinitionException`이 나오면 scan 누락하고 qualifier mismatch 중 어디부터 확인해?"
+- "`found 2 beans` startup 오류가 떴을 때 첫 판단 기준을 빠르게 알고 싶어"
+- "`@WebMvcTest`에서만 서비스 주입이 깨질 때 이걸 일반 런타임 DI 오류처럼 봐도 돼?"
 - 구현체 하나 더 추가한 뒤 autowire가 깨졌는데 어떤 분기표로 보면 빨라?
-- `NoUniqueBeanDefinitionException`하고 이름 바꿔서 생긴 주입 실패를 어떻게 구분해?
+- "`NoUniqueBeanDefinitionException`하고 이름 바꿔서 생긴 주입 실패를 어떻게 구분해?"
 contextual_chunk_prefix: |
   이 문서는 스프링 학습자가 DI 시작 단계에서 실패했을 때 후보가 아예
   없는지, 여러 개라 하나를 못 고르는지부터 먼저 나누는 symptom_router다.

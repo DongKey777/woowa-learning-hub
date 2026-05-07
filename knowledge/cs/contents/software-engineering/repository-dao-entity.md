@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Repository DAO Entity
+concept_id: software-engineering/repository-dao-entity
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- repository-dao-entity-boundary
+- persistence-model-leakage
+- domain-language-vs-sql-language
+aliases:
+- repository dao entity
+- Repository DAO Entity 차이
+- repository는 뭐예요
+- dao는 뭐예요
+- entity는 뭐예요
+- service가 dao를 바로 알아도 되나요
+- entity를 dto로 써도 되나요
+- repository와 query model 차이
+- persistence mental model
+- OrderRepository OrderDao OrderEntity
+- 저장 계층 책임 분리
+symptoms:
+- Repository, DAO, Entity를 모두 저장소라는 말로 묶어서 도메인 말투와 SQL 말투를 구분하지 못해
+- Service가 DAO나 JPA Entity를 직접 알 때 어떤 경계가 새는지 설명하기 어려워
+- Request DTO, Domain 객체, Persistence Entity가 한 타입으로 합쳐져 변경 비용이 커지고 있어
+intents:
+- definition
+- comparison
+prerequisites:
+- software-engineering/layered-architecture-basics
+- database/jdbc-jpa-mybatis-basics
+next_docs:
+- software-engineering/repository-interface-contract
+- software-engineering/persistence-adapter-mapping-checklist
+- software-engineering/dao-vs-query-model
+- software-engineering/dto-vo-entity-basics
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/repository-interface-contract-primer.md
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/dao-vs-query-model-entrypoint-primer.md
+- contents/software-engineering/repository-naming-smells-primer.md
+- contents/software-engineering/dto-vo-entity-basics.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/language/java/record-value-object-equality-basics.md
+confusable_with:
+- software-engineering/dto-vo-entity-basics
+- software-engineering/persistence-adapter-mapping-checklist
+- database/jdbc-jpa-mybatis-basics
+- design-pattern/repository-boundary-aggregate-vs-read-model
+forbidden_neighbors: []
+expected_queries:
+- Repository, DAO, Entity 차이를 주문 저장 예시로 설명해줘
+- Service가 DAO를 바로 알면 왜 저장 기술 세부가 유스케이스로 새는 거야?
+- Repository는 도메인 말투이고 DAO는 SQL 말투라는 뜻을 코드 예시로 보여줘
+- JPA Entity와 도메인 Entity, DTO를 한 타입으로 쓰면 어떤 변경 비용이 생겨?
+- 복잡한 조회가 많아질 때 Repository와 query model을 어떻게 나눠야 해?
+contextual_chunk_prefix: |
+  이 문서는 Repository를 domain language storage boundary로, DAO를 SQL row access tool로, Entity를 persistence shape로 분리하는 beginner primer다.
+  repository vs dao, JPA entity vs domain entity, service depends on dao smell, request dto leaks to repository, persistence adapter mapping 같은 자연어 리뷰 질문이 본 문서에 매핑된다.
+---
 # Repository, DAO, Entity
 
 > 한 줄 요약: 같은 주문 생성 예시로 보면 `Repository`는 "주문을 저장해 달라"는 창구이고, `DAO`는 SQL 실행 도구, `Entity`는 DB에 맞춘 저장 모양이다.
@@ -20,6 +95,14 @@
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
 retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity는 뭐예요, repository dao entity 뭐가 달라요, service가 dao를 바로 알아도 되나요, entity 저장 모양, entity를 dto로 써도 되나요, repository와 query model 차이, dao와 query model 차이, persistence mental model, 왜 repository가 dao 위에 있어요, what is repository entity
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Repository, DAO, Entity가 다 저장소 아닌가요?" | roomescape/shopping-cart 저장 계층 첫 분리 | 도메인 저장 창구, SQL 실행 도구, DB 저장 모양을 나눈다 |
+| "Service가 DAO를 바로 알면 왜 경계가 새나요?" | 유스케이스가 SQL/JPA 세부를 직접 아는 코드 | domain language와 persistence language 사이에 repository 계약을 둔다 |
+| "Entity를 DTO처럼 응답으로 내보내도 되나요?" | API 계약과 DB 컬럼 구조가 같은 타입에 묶인 장면 | 외부 response contract와 persistence shape를 분리한다 |
 
 처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결하고, 더 큰 설계 그림이 필요하면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 다시 올라가면 된다.
 

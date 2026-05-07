@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인"
+concept_id: network/browser-netlog-h3-alt-svc-https-rr-appendix
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- browser-netlog-h3-discovery
+- alt-svc-cache-vs-https-rr
+- h3-observability-appendix
+aliases:
+- browser netlog h3 appendix
+- netlog alt-svc cache
+- netlog https rr
+- chrome net-export alt-svc
+- h3 discovery netlog
+- alt-svc vs https rr evidence
+symptoms:
+- 첫 요청부터 h3가 보여 Alt-Svc cache 때문인지 HTTPS RR 때문인지 DevTools만으로 구분하지 못한다
+- response Alt-Svc와 DNS HTTPS RR이 둘 다 보여 단일 선택 원인을 과하게 단정한다
+- NetLog capture 시작 전 이미 있던 browser Alt-Svc mapping을 이번 response 효과로 오해한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/h3-discovery-observability-primer
+- network/browser-cache-toggles-vs-alt-svc-dns-cache-primer
+next_docs:
+- network/chrome-netlog-h3-421-drilldown
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+linked_paths:
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/chrome-netlog-h3-421-drilldown.md
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+confusable_with:
+- network/chrome-netlog-h3-421-drilldown
+- network/h3-discovery-observability-primer
+- network/alt-svc-cache-lifecycle-basics
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+forbidden_neighbors: []
+expected_queries:
+- "Browser NetLog에서 Alt-Svc cache와 HTTPS RR 흔적을 어떻게 나눠 봐?"
+- "첫 요청부터 h3가 보이면 이전 Alt-Svc mapping 때문인지 DNS HTTPS RR 때문인지 확인하는 법은?"
+- "Chrome net-export에서 H3 discovery 입력을 찾는 검색 키를 알려줘"
+- "Alt-Svc와 HTTPS RR이 둘 다 보이면 단일 원인으로 단정하면 안 되는 이유가 뭐야?"
+- "DevTools만으로 H3 선택 원인이 모호할 때 NetLog appendix를 어떻게 써?"
+contextual_chunk_prefix: |
+  이 문서는 Browser NetLog/Chrome net-export에서 Alt-Svc mapping cache,
+  HTTP server properties, host resolver HTTPS RR/SVCB, h3 ALPN hint 흔적을
+  찾아 H3 discovery 원인을 보강하는 intermediate deep dive appendix다.
+---
 # Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인
 
 

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Revocation Propagation Lag / Debugging
+concept_id: security/revocation-propagation-lag-debugging
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- revocation lag
+- logout propagation lag
+- revoke debugging
+- session invalidation delay
+aliases:
+- revocation lag
+- logout propagation lag
+- revoke debugging
+- session invalidation delay
+- refresh family revoke lag
+- token revocation delay
+- last accepted after revoke
+- logout inconsistency
+- revoke fan-out debugging
+- revocation propagation status
+- requested in progress fully blocked confirmed
+- fully blocked confirmed meaning
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/session-revocation-at-scale.md
+- contents/security/oidc-backchannel-logout-session-coherence.md
+- contents/security/revocation-propagation-status-contract.md
+- contents/security/auth-observability-sli-slo-alerting.md
+- contents/security/session-quarantine-partial-lockdown-patterns.md
+- contents/security/auth-incident-triage-blast-radius-recovery-matrix.md
+- contents/security/browser-bff-token-boundary-session-translation.md
+- contents/security/bff-session-store-outage-degradation-recovery.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+- contents/spring/spring-security-logout-handler-success-boundaries.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Revocation Propagation Lag / Debugging 핵심 개념을 설명해줘
+- revocation lag가 왜 필요한지 알려줘
+- Revocation Propagation Lag / Debugging 실무 설계 포인트는 뭐야?
+- revocation lag에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Revocation Propagation Lag / Debugging를 다루는 deep_dive 문서다. logout, password reset, admin disable, family revoke는 "호출됐다"로 끝나지 않고 언제 마지막으로 수용됐는지까지 봐야 하며, revocation lag는 저장소, cache, token TTL, route class, region fan-out을 나눠 디버깅해야 한다. 검색 질의가 revocation lag, logout propagation lag, revoke debugging, session invalidation delay처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Revocation Propagation Lag / Debugging
 
 > 한 줄 요약: logout, password reset, admin disable, family revoke는 "호출됐다"로 끝나지 않고 언제 마지막으로 수용됐는지까지 봐야 하며, revocation lag는 저장소, cache, token TTL, route class, region fan-out을 나눠 디버깅해야 한다.

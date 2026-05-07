@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Historical Backfill / Replay Platform 설계
+concept_id: system-design/historical-backfill-replay-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- historical backfill
+- replay platform
+- reprocessing
+- bootstrap
+aliases:
+- historical backfill
+- replay platform
+- reprocessing
+- bootstrap
+- replay cursor
+- watermark
+- side effect suppression
+- derived data rebuild
+- shadow backfill
+- throttled replay
+- checkpoint resume
+- repair replay
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/change-data-capture-outbox-relay-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/streaming-analytics-pipeline-design.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/event-bus-control-plane-design.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/stateful-stream-processor-state-store-checkpoint-recovery-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Historical Backfill / Replay Platform 설계 설계 핵심을 설명해줘
+- historical backfill가 왜 필요한지 알려줘
+- Historical Backfill / Replay Platform 설계 실무 트레이드오프는 뭐야?
+- historical backfill 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Historical Backfill / Replay Platform 설계를 다루는 deep_dive 문서다. historical backfill과 replay 플랫폼은 과거 데이터를 대규모로 다시 처리하되, live traffic을 보호하고 중복 side effect를 억제하면서 결과를 검증 가능한 형태로 재생성하는 운영 실행 시스템이다. 검색 질의가 historical backfill, replay platform, reprocessing, bootstrap처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Historical Backfill / Replay Platform 설계
 
 > 한 줄 요약: historical backfill과 replay 플랫폼은 과거 데이터를 대규모로 다시 처리하되, live traffic을 보호하고 중복 side effect를 억제하면서 결과를 검증 가능한 형태로 재생성하는 운영 실행 시스템이다.

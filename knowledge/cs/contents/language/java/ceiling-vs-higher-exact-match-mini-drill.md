@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: ceiling vs higher Exact Match Mini Drill
+concept_id: language/ceiling-vs-higher-exact-match-mini-drill
+canonical: true
+category: language
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- navigablemap
+- ordered-map
+- boundary-drill
+aliases:
+- ceiling vs higher exact match drill
+- TreeMap ceiling higher exact key
+- TreeSet ceiling higher same value
+- NavigableMap exact match right side
+- 자바 ceiling higher 차이
+- ordered map exact match drill
+symptoms:
+- ceiling은 exact match를 포함하고 higher는 제외한다는 inclusive vs strict 차이를 구분하지 못해
+- higher가 null을 반환하면 null key와 boundary result를 섞어 해석해
+- exact match가 아닐 때 ceiling과 higher가 같을 수 있고 exact match일 때만 갈라진다는 감각이 부족해
+intents:
+- drill
+- definition
+- troubleshooting
+prerequisites:
+- language/navigablemap-navigableset-mental-model
+next_docs:
+- language/lower-vs-floor-exact-match-mini-drill
+- language/submap-boundaries-primer
+- language/ordered-map-null-safe-practice-drill
+linked_paths:
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/lower-vs-floor-exact-match-mini-drill.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+confusable_with:
+- language/lower-vs-floor-exact-match-mini-drill
+- language/navigablemap-navigableset-mental-model
+- language/submap-boundaries-primer
+forbidden_neighbors: []
+expected_queries:
+- TreeMap에서 ceiling과 higher가 exact match일 때 왜 다르게 나와?
+- ceiling은 현재 key를 포함하고 higher는 제외한다는 차이를 예제로 보여줘
+- higher(40)이 null이면 TreeMap null key와 관련 있는 건지 boundary result인지 알려줘
+- NavigableMap ceiling higher exact match 미니 드릴을 풀고 싶어
+- ordered map에서 exact match가 아닐 때 ceiling과 higher가 같을 수 있는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 TreeSet/TreeMap Navigable API의 ceiling vs higher exact match 차이를 inclusive vs strict boundary, null boundary result로 손예측하는 beginner drill이다.
+  ceiling higher, exact match, ordered map, NavigableMap, boundary null, TreeSet TreeMap 질문이 본 문서에 매핑된다.
+---
 # `ceiling` vs `higher` Exact Match 미니 드릴
 
 > 한 줄 요약: `TreeSet`/`TreeMap`에서 exact match를 물었을 때 `ceiling`은 현재 자리에 멈추고 `higher`는 한 칸 오른쪽으로 가는 차이만 따로 떼어 짧게 손예측해 보는 1페이지 드릴이다.

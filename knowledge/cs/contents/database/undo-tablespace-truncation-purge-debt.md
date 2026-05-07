@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Undo Tablespace Truncation and Purge Debt
+concept_id: database/undo-tablespace-truncation-purge-debt
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- undo-tablespace
+- purge
+- mvcc
+- history-list
+- storage
+aliases:
+- undo tablespace
+- undo truncation
+- purge debt
+- innodb_undo_log_truncate
+- purge lag
+- history list length
+- rollback segment
+- undo tablespace bloat
+- undo shrink
+- purge debt storage
+symptoms:
+- undo tablespace가 계속 커지고 디스크가 줄지 않는데 truncate보다 purge lag와 long transaction을 먼저 봐야 해
+- history list length가 증가하고 오래된 snapshot 때문에 purge가 과거 버전을 치우지 못해
+- purge thread를 늘려도 긴 transaction이 있으면 undo debt가 줄지 않는 이유를 설명해야 해
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- database/mvcc-history-list-snapshot-too-old
+- database/undo-record-version-chain-traversal
+next_docs:
+- database/vacuum-purge-freeze-risk-runbook-routing
+- database/change-buffer-purge-history-length
+- database/purge-backlog-remediation-throttle-playbook
+linked_paths:
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/change-buffer-purge-history-length.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/database/undo-record-version-chain-traversal.md
+- contents/database/purge-backlog-remediation-throttle-playbook.md
+confusable_with:
+- database/undo-record-version-chain-traversal
+- database/mvcc-history-list-snapshot-too-old
+- database/vacuum-purge-freeze-risk-runbook-routing
+forbidden_neighbors: []
+expected_queries:
+- undo tablespace가 커졌을 때 truncate부터 보지 말고 purge debt와 long transaction을 먼저 봐야 하는 이유가 뭐야?
+- history list length가 증가하면 undo bloat와 consistent read 비용에 어떤 영향을 줘?
+- innodb_undo_log_truncate를 켜도 undo file size가 바로 줄지 않는 이유를 설명해줘
+- purge thread를 늘렸는데도 오래된 snapshot이 살아 있으면 왜 치울 수 없는 버전이 남아?
+- undo tablespace bloat를 정리 대상 파일이 아니라 MVCC purge debt 결과로 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 undo tablespace truncation과 purge debt를 innodb_undo_log_truncate, history list length, long transaction, rollback segment 관점으로 설명하는 advanced deep dive다.
+  undo tablespace bloat, purge lag, undo shrink, history list length 질문이 본 문서에 매핑된다.
+---
 # Undo Tablespace Truncation and Purge Debt
 
 > 한 줄 요약: undo tablespace는 단순 저장소가 아니라, purge가 밀릴수록 커지고 truncate 조건이 맞아야 줄어드는 부채 장부다.

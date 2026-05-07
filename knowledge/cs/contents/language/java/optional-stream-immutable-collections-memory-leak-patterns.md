@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Optional Stream Immutable Collections Memory Leak Patterns
+concept_id: language/optional-stream-immutable-collections-memory-leak-patterns
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- optional
+- stream
+- memory-leak
+aliases:
+- Optional Stream Immutable Collections Memory Leak Patterns
+- Java Optional Stream immutable collection pitfalls
+- Optional field parameter Stream boxing overhead
+- unmodifiableList List.copyOf read only view
+- Java memory leak pattern API intent cost
+- 자바 Optional Stream 불변 컬렉션 메모리 누수
+symptoms:
+- Optional, Stream, unmodifiable collection을 문법 축약 도구로만 써서 API 의도, boxing 비용, lazy evaluation, read-only view 차이를 놓쳐
+- Optional field나 parameter, Optional collection, Stream side effect가 섞이며 코드가 짧아졌지만 의미와 비용이 더 불분명해져
+- Collections.unmodifiableList를 immutable copy로 오해하거나 List.copyOf와 view wrapper 차이를 구분하지 못해 외부 mutation이 비쳐
+- static collection, listener, ThreadLocal, cache key 같은 Java memory leak pattern을 GC가 알아서 해결할 문제로만 오해해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/java-optional-basics
+- language/java-stream-lambda-basics
+- language/immutable-objects-and-defensive-copying
+next_docs:
+- language/optional-field-parameter-antipattern-card
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/threadlocal-leaks-context-propagation
+linked_paths:
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/autoboxing-integercache-null-unboxing-pitfalls.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+- contents/language/java/collections-performance.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/java-stream-lambda-basics.md
+confusable_with:
+- language/optional-field-parameter-antipattern-card
+- language/list-copyof-listof-unmodifiablelist-beginner-bridge
+- language/collections-performance
+forbidden_neighbors: []
+expected_queries:
+- Optional Stream immutable collections를 쓸 때 문법보다 의도와 비용을 어떻게 봐야 해?
+- Optional field parameter와 Stream side effect가 Java API design에서 왜 문제가 될 수 있어?
+- unmodifiableList와 List.copyOf의 read only view와 immutable snapshot 차이를 설명해줘
+- Java memory leak pattern에서 static collection listener ThreadLocal cache key를 어떻게 점검해?
+- Stream boxing overhead와 Optional 남용을 성능과 가독성 관점에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Optional, Stream, immutable/read-only collections, Java memory leak pattern을 API intent와 runtime cost 관점에서 점검하는 advanced playbook이다.
+  Optional pitfalls, Stream overhead, immutable collection, unmodifiableList, memory leak 질문이 본 문서에 매핑된다.
+---
 # Optional, Stream, Immutable Collections, Memory Leak Patterns
 
 **난이도: 🔴 Advanced**

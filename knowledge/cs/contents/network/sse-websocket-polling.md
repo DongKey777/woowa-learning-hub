@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "SSE, WebSocket, Polling"
+concept_id: network/sse-websocket-polling
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- realtime-transport
+- sse-websocket-polling
+- streaming-choice
+aliases:
+- SSE
+- WebSocket
+- polling
+- long polling
+- server sent events
+- real-time transport
+- duplex stream
+- browser reconnect
+symptoms:
+- 알림, 채팅, 진행률 스트리밍에 WebSocket만 정답이라고 고른다
+- 단방향 push, 양방향 frame, 주기적 조회 요구사항을 분리하지 못한다
+- proxy buffering, heartbeat, reconnect, Last-Event-ID 복구를 선택 기준에 넣지 않는다
+intents:
+- comparison
+- design
+- definition
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/timeout-types-connect-read-write
+next_docs:
+- network/websocket-heartbeat-backpressure-reconnect
+- network/websocket-proxy-buffering-streaming-latency
+- network/sse-last-event-id-replay-window
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+linked_paths:
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/websocket-proxy-buffering-streaming-latency.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/network/sse-last-event-id-replay-window.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+confusable_with:
+- network/websocket-heartbeat-backpressure-reconnect
+- network/websocket-proxy-buffering-streaming-latency
+- network/sse-last-event-id-replay-window
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+- "SSE WebSocket polling 중 어떤 실시간 통신 방식을 골라야 해?"
+- "알림 피드나 진행률 스트리밍은 SSE와 WebSocket 중 뭐가 더 맞아?"
+- "long polling과 SSE와 WebSocket의 trade-off를 비교해줘"
+- "Last-Event-ID replay window가 SSE 복구에서 왜 중요해?"
+- "WebSocket heartbeat backpressure reconnect를 선택 기준에 어떻게 넣어?"
+contextual_chunk_prefix: |
+  이 문서는 polling, long polling, SSE, WebSocket의 실시간 통신 선택 기준,
+  단방향/양방향 요구사항, proxy buffering, heartbeat, reconnect, Last-Event-ID
+  복구를 비교하는 intermediate chooser다.
+---
 # SSE, WebSocket, Polling
 
 

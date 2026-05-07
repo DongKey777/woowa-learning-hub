@@ -1,8 +1,86 @@
+---
+schema_version: 3
+title: 백엔드 주니어를 위한 복잡도와 알고리즘 패턴 기초
+concept_id: data-structure/complexity-algorithm-pattern-foundations-backend-juniors
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: mission_bridge
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+review_feedback_tags:
+- backend-algorithm-foundation
+- complexity-first-routing
+- data-structure-to-algorithm-bridge
+aliases:
+- backend complexity algorithm foundations
+- 백엔드 알고리즘 패턴 기초
+- 우테코 백엔드 알고리즘 입문
+- 정렬 이분탐색 BFS DFS 뭐부터
+- 자료구조에서 알고리즘으로 넘어가기
+- beginner Big-O router backend
+- backend junior algorithm foundation
+symptoms:
+- 백엔드 미션이나 알고리즘 문제에서 입력 크기와 답의 모양을 먼저 보지 않고 유명한 기법 이름부터 붙인다
+- 정렬, 이분 탐색, BFS/DFS, 구현/시뮬레이션, priority queue가 어떤 문제 신호에서 나오는지 섞인다
+- 자료구조 선택과 알고리즘 패턴 선택을 분리된 챕터로만 보고 실제 문제 문장에 함께 적용하지 못한다
+intents:
+- mission_bridge
+- troubleshooting
+prerequisites:
+- data-structure/backend-data-structure-starter-pack
+- algorithm/time-complexity-intro
+next_docs:
+- algorithm/backend-algorithm-starter-pack
+- algorithm/time-complexity-intro
+- algorithm/binary-search-intro
+- algorithm/dfs-bfs-intro
+- algorithm/sort-intro
+linked_paths:
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/algorithm/time-complexity-intro.md
+- contents/algorithm/binary-search-intro.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/sort-intro.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/graph-basics.md
+confusable_with:
+- algorithm/backend-algorithm-starter-pack
+- data-structure/backend-data-structure-starter-pack
+- algorithm/time-complexity-intro
+- algorithm/dfs-bfs-intro
+- algorithm/binary-search-intro
+forbidden_neighbors: []
+expected_queries:
+- 백엔드 주니어가 알고리즘 문제를 볼 때 입력 크기와 답의 모양을 어떻게 먼저 봐야 해?
+- 정렬 이분 탐색 BFS DFS 구현 중 첫 패턴을 문제 문장에서 고르는 방법은?
+- 자료구조 선택과 알고리즘 패턴 선택을 미션 문제에서 같이 보는 법을 알려줘
+- Big-O가 불안할 때 어떤 풀이를 먼저 버려야 하는지 beginner 기준으로 설명해줘
+- priority queue queue graph sort binary search가 나오는 신호를 한 번에 정리해줘
+contextual_chunk_prefix: |
+  이 문서는 Woowacourse 백엔드 주니어가 자료구조와 알고리즘을 별개
+  암기 과목으로 보지 않고, 입력 크기와 답의 모양으로 정렬, 이분 탐색,
+  BFS/DFS, priority queue, 구현/시뮬레이션을 고르는 mission bridge다.
+---
 # 백엔드 주니어를 위한 복잡도와 알고리즘 패턴 기초
 
 > 한 줄 요약: 백엔드 미션에서 알고리즘은 "유명한 기법 이름"보다 먼저 입력 크기와 답의 모양을 읽어 `정렬`, `이분 탐색`, `BFS/DFS`, `구현/그리디` 중 어디로 갈지를 고르는 감각이 핵심이다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "입력 크기와 답의 모양을 보지 않고 유명한 기법 이름부터 붙이고 있어요" | 알고리즘 문제나 미션 요구사항 첫 triage | Big-O로 불가능한 풀이를 먼저 지우고 답의 형태를 본다 |
+| "정렬, 이분 탐색, BFS/DFS, priority queue 신호가 섞여요" | backend junior 알고리즘 패턴 선택 | 순서/경계/연결/최소값/반복 질의 신호를 분리한다 |
+| "자료구조 선택과 알고리즘 패턴 선택을 실제 문제에 같이 적용하지 못해요" | queue/map/graph가 미션 코드와 문제 풀이에 같이 등장 | 구조 선택과 계산 패턴 선택을 한 장면에서 번역한다 |
 
 관련 문서:
 

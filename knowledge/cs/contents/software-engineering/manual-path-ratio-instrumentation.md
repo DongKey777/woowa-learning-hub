@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Manual Path Ratio Instrumentation
+concept_id: software-engineering/manual-path-ratio-instrumentation
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- manual-path
+- instrumentation
+- governance-metrics
+aliases:
+- Manual Path Ratio Instrumentation
+- manual_path_ratio formula
+- shadow_candidate_count computation
+- DM approval measurement
+- spreadsheet state telemetry
+- off-plane workflow signal
+symptoms:
+- manual_path_ratio를 DM 메시지 수, spreadsheet 수정 횟수, 노션 링크 수처럼 raw event count로 세서 실제 request 단위 우회 비율을 왜곡해
+- official control plane이 있는데 승인, allowlist, exception state가 DM이나 sheet에서 먼저 결정되고 mirror SLA를 넘겨 반영돼
+- 같은 workaround가 여러 raw signal로 중복 집계되어 shadow candidate bundle과 request fact를 구분하지 못해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/mirror-lag-sla-calibration
+next_docs:
+- software-engineering/shadow-candidate-promotion-thresholds
+- software-engineering/shadow-process-catalog-entry-schema
+- software-engineering/override-burndown-scorecards
+linked_paths:
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/mirror-lag-sla-calibration.md
+- contents/software-engineering/shadow-process-detection-signals.md
+- contents/software-engineering/shadow-candidate-promotion-thresholds.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/platform-policy-ownership-override-governance.md
+- contents/software-engineering/rollout-approval-workflow.md
+- contents/software-engineering/consumer-exception-registry-quality-automation.md
+confusable_with:
+- software-engineering/shadow-process-detection-signals
+- software-engineering/mirror-lag-sla-calibration
+- software-engineering/override-burndown-scorecards
+forbidden_neighbors: []
+expected_queries:
+- manual_path_ratio를 DM 메시지 수가 아니라 eligible request 기준으로 계산해야 하는 이유가 뭐야?
+- DM approval, spreadsheet state, off-plane artifact를 raw event에서 request fact로 정규화하는 방법을 알려줘
+- mirror SLA breach와 manual path signal을 같이 보아 shadow process candidate를 찾는 기준은 뭐야?
+- 같은 request가 DM, sheet, Notion 신호를 모두 남길 때 dedupe key와 candidate bundle을 어떻게 설계해?
+- break-glass나 override request 중 어떤 항목을 manual_path_ratio denominator에서 제외해야 해?
+contextual_chunk_prefix: |
+  이 문서는 DM approval, spreadsheet state, off-plane artifact를 request-level fact로 정규화해 manual_path_ratio와 shadow_candidate_count를 계산하는 advanced playbook이다.
+---
 # Manual Path Ratio Instrumentation
 
 > 한 줄 요약: `manual_path_ratio`와 `shadow_candidate_count`를 계산하려면 DM 승인, spreadsheet 상태 저장, off-plane 문서/스크립트 사용을 request 단위 fact로 정규화하고 mirror SLA와 dedupe 규칙을 같이 고정해야 한다.

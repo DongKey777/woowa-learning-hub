@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Timeout Tuning Order Checklist Card
+concept_id: database/timeout-tuning-order-checklist
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- timeout
+- connection-pool
+- lock-timeout
+- transaction-boundary
+- beginner
+aliases:
+- timeout tuning order checklist
+- before increasing timeout checklist
+- connection timeout tuning order
+- lock timeout tuning order
+- timeout value increase checklist
+- external delay lock wait pool timeout
+- timeout beginner card
+- 타임아웃 튜닝 순서
+- 타임아웃 값 올리기 전에
+- connection timeout 먼저 볼 것
+symptoms:
+- timeout 값을 올리기 전에 트랜잭션 길이, 외부 I/O, hot key, 실행 계획, 풀 크기를 순서대로 봐야 해
+- lock wait timeout이나 connection timeout이 외부 지연과 긴 트랜잭션에서 이어졌는지 확인해야 해
+- timeout 조정이 근본 대기 시간을 줄이는지, 같은 막힘을 더 오래 숨기는지 판단해야 해
+intents:
+- troubleshooting
+- definition
+- drill
+prerequisites:
+- database/transaction-boundary-external-io-checklist
+- database/connection-timeout-vs-lock-timeout-card
+next_docs:
+- database/pool-metrics-lock-wait-timeout-mini-bridge
+- database/query-tuning-checklist
+- database/hikari-connection-pool-tuning
+linked_paths:
+- contents/database/explain-first-read-timeout-mini-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/transaction-boundary-external-io-checklist-card.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/query-tuning-checklist.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/connection-timeout-vs-lock-timeout-card
+- database/transaction-boundary-external-io-checklist
+- database/pool-metrics-lock-wait-timeout-mini-bridge
+forbidden_neighbors: []
+expected_queries:
+- timeout 값을 올리기 전에 어떤 순서로 트랜잭션 길이, 외부 I/O, hot key, 실행 계획, pool size를 봐야 해?
+- connectionTimeout만 올리면 커넥션 반환 지연이 해결되는지 아니면 실패 시점만 늦어지는지 어떻게 판단해?
+- lock timeout을 늘리기 전에 blocker, 긴 transaction, hot key를 먼저 봐야 하는 이유가 뭐야?
+- 외부 API 지연이 긴 트랜잭션, lock wait, active connection 고정, pool timeout으로 이어지는 흐름을 설명해줘
+- timeout 튜닝에서 설정값은 왜 마지막에 봐야 하는지 초보자용 체크리스트로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 timeout tuning order를 transaction length, external I/O, hot key, EXPLAIN plan, pool size 순서로 분리하는 beginner playbook이다.
+  타임아웃 값 올리기 전에, connection timeout tuning, lock timeout tuning, external delay lock wait pool timeout 질문이 본 문서에 매핑된다.
+---
 # 타임아웃 튜닝 순서 체크리스트 카드
 
 > 한 줄 요약: timeout 값을 올리기 전에, 먼저 **왜 기다리는 시간이 길어졌는지**를 5단계로 분리해서 본다.

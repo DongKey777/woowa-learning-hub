@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Proof-of-Possession vs Bearer Token Trade-offs
+concept_id: security/proof-of-possession-vs-bearer-token-tradeoffs
+canonical: false
+category: security
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- proof of possession vs bearer
+- bearer token tradeoffs
+- PoP token
+- sender-constrained token
+aliases:
+- proof of possession vs bearer
+- bearer token tradeoffs
+- PoP token
+- sender-constrained token
+- DPoP vs bearer
+- token binding
+- stolen token replay
+- key-bound token
+- token replay resistance
+- certificate-bound access token
+- mTLS-bound token
+- partial rollout
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/dpop-token-binding-basics.md
+- contents/security/mtls-client-auth-vs-certificate-bound-access-token.md
+- contents/security/mtls-certificate-rotation-trust-bundle-rollout.md
+- contents/security/device-binding-caveats.md
+- contents/security/jwt-deep-dive.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/security/service-to-service-auth-mtls-jwt-spiffe.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Proof-of-Possession vs Bearer Token Trade-offs 차이를 실무 기준으로 설명해줘
+- proof of possession vs bearer를 언제 선택해야 해?
+- Proof-of-Possession vs Bearer Token Trade-offs를 헷갈리지 않게 비교해줘
+- proof of possession vs bearer 설계에서 자주 틀리는 지점은?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Proof-of-Possession vs Bearer Token Trade-offs를 다루는 bridge 문서다. bearer token은 단순성과 호환성이 강하고, proof-of-possession 계열은 재사용 저항성이 강하지만 키 관리와 클라이언트 복잡도가 커지므로, 토큰 탈취 위협 모델과 클라이언트 환경을 기준으로 선택해야 한다. 검색 질의가 proof of possession vs bearer, bearer token tradeoffs, PoP token, sender-constrained token처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Proof-of-Possession vs Bearer Token Trade-offs
 
 > 한 줄 요약: bearer token은 단순성과 호환성이 강하고, proof-of-possession 계열은 재사용 저항성이 강하지만 키 관리와 클라이언트 복잡도가 커지므로, 토큰 탈취 위협 모델과 클라이언트 환경을 기준으로 선택해야 한다.

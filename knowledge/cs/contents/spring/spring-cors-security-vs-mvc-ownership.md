@@ -32,11 +32,11 @@ intents:
 - design
 - troubleshooting
 prerequisites:
-- spring/spring-security-architecture
+- spring/security-architecture
 - spring/mvc-controller-basics
 next_docs:
 - spring/spring-security-filter-chain-ordering
-- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
 - spring/spring-content-negotiation-pitfalls
 linked_paths:
 - contents/spring/spring-security-filter-chain-ordering.md
@@ -46,7 +46,7 @@ linked_paths:
 - contents/spring/spring-content-negotiation-pitfalls.md
 confusable_with:
 - spring/spring-security-filter-chain-ordering
-- spring/spring-mvc-filter-interceptor-controlleradvice-boundaries
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
 - spring/spring-content-negotiation-pitfalls
 forbidden_neighbors: []
 expected_queries:

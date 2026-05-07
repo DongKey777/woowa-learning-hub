@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: SLA, SLO Ownership Model
+concept_id: software-engineering/sla-slo-ownership-model
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- sla
+- slo
+- ownership
+- error-budget
+aliases:
+- SLA SLO ownership model
+- reliability target ownership
+- SLO decomposition
+- error budget ownership
+- service objective accountability
+- SLA SLO 소유권 모델
+symptoms:
+- SLA와 SLO를 숫자만 정하고 service owner, supporting owner, platform owner 경계를 연결하지 않아 위반 때 책임이 흐려져
+- 하나의 SLO를 여러 팀이 나눠 책임져 아무도 최종 reliability target을 소유하지 않아
+- error budget 소진이 release policy, change freeze, PRR gate와 연결되지 않아 SLO가 운영 의사결정에 쓰이지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/on-call-ownership-boundaries
+- software-engineering/service-ownership-catalog-boundaries
+next_docs:
+- software-engineering/release-policy-error-budget
+- software-engineering/nfr-budgeting
+- software-engineering/nfr-budget-negotiation
+linked_paths:
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/non-functional-requirements-budgeting.md
+- contents/software-engineering/cross-service-nfr-budget-negotiation.md
+confusable_with:
+- software-engineering/nfr-budgeting
+- software-engineering/nfr-budget-negotiation
+- software-engineering/release-policy-error-budget
+forbidden_neighbors: []
+expected_queries:
+- SLA와 SLO는 숫자뿐 아니라 owner와 support boundary까지 포함하는 모델이라는 뜻을 설명해줘
+- 하나의 SLO에 service owner와 supporting owner, platform owner를 어떻게 나눠 연결해야 해?
+- SLA는 외부 약속이고 SLO는 내부 운영 목표라는 차이를 reliability ownership 관점에서 알려줘
+- error budget이 소진될 때 누가 release를 멈추고 change freeze를 결정하는지 어떻게 정해야 해?
+- 새 서비스 PRR에서 SLO와 owner가 없으면 운영 책임이 왜 흐려지는지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 SLA와 SLO를 reliability 숫자가 아니라 service owner, supporting owner, platform owner, error budget policy가 연결된 ownership model로 다루는 advanced playbook이다.
+---
 # SLA, SLO Ownership Model
 
 > 한 줄 요약: SLA와 SLO는 숫자만 정하는 것이 아니라, 누구의 책임인지와 어떤 경계에서 관리되는지까지 포함하는 소유권 모델이다.

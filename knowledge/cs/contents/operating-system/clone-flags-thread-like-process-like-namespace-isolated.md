@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: clone Flags Mental Model Thread Like Process Like Namespace Isolated
+concept_id: operating-system/clone-flags-thread-like-process-like-namespace-isolated
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- clone-flags-thread
+- like-process-like
+- namespace-isolated
+- clone-flags-mental
+aliases:
+- clone flags mental model
+- CLONE_THREAD CLONE_VM
+- thread-like process-like task
+- CLONE_NEW namespace child
+- Linux task clone
+- container namespace clone
+intents:
+- comparison
+- deep_dive
+linked_paths:
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/scheduler-observation-starter-guide.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with:
+- operating-system/process-spawn-api-comparison
+- operating-system/container-cgroup-namespace
+- operating-system/fork-exec-copy-on-write-behavior
+expected_queries:
+- Linux clone flags를 thread-like process-like namespace-isolated로 어떻게 분류해?
+- CLONE_THREAD와 CLONE_VM이 있으면 왜 thread처럼 보이는 task가 돼?
+- CLONE_NEW namespace flags는 container child와 어떻게 연결돼?
+- clone, fork, vfork, posix_spawn, exec 중 clone은 어떤 mental model로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 clone()이 항상 새 Linux task를 만들지만 CLONE_THREAD, CLONE_VM 같은 공유
+  flag 조합이면 thread-like하게, 공유 flag가 적으면 process-like하게, CLONE_NEW*를 얹으면
+  namespace-isolated child로 읽는 mental model을 제공한다.
+---
 # `clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated
 
 > 한 줄 요약: `clone()`은 항상 새 Linux task를 만들지만, `CLONE_THREAD`/`CLONE_VM` 축으로 가면 thread-like해지고, 공유 flag를 빼면 process-like해지며, `CLONE_NEW*`를 얹으면 namespace-isolated child로 읽는 편이 가장 덜 헷갈린다.

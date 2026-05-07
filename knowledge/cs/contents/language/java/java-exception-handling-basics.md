@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java 예외 처리 기초
+concept_id: language/java-exception-handling-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- throw-catch-throws-responsibility
+- checked-unchecked-contract
+- exception-to-http-boundary
+aliases:
+- java exception handling basics
+- Java 예외 처리 기초
+- try catch finally beginner
+- checked unchecked exception
+- throws throw 차이
+- RuntimeException checked exception
+- 예외 처리 큰 그림
+- NullPointerException beginner
+- IllegalArgumentException 언제
+- ControllerAdvice 예외 응답
+- finally return 주의
+symptoms:
+- throw, catch, throws를 모두 예외 처리라고만 알고 문제 발견 위치와 처리 책임 위치를 구분하지 못해
+- checked와 unchecked를 중요도 차이로 오해하고 API 계약과 호출자 복구 가능성 기준을 놓쳐
+- Spring에서 안쪽 도메인 예외가 바깥 ControllerAdvice에서 HTTP 응답으로 바뀌는 흐름이 헷갈려
+intents:
+- definition
+- comparison
+prerequisites:
+- language/java-methods-constructors-practice-primer
+next_docs:
+- language/try-with-resources-suppressed-exceptions
+- language/java-optional-basics
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
+- spring/spring-exception-handling-basics
+linked_paths:
+- contents/language/java/try-with-resources-suppressed-exceptions.md
+- contents/language/java/java-optional-basics.md
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-exception-handling-basics.md
+- contents/spring/spring-mvc-request-lifecycle.md
+confusable_with:
+- language/java-optional-basics
+- language/try-with-resources-suppressed-exceptions
+- spring/mvc-filter-interceptor-controlleradvice-boundaries
+forbidden_neighbors: []
+expected_queries:
+- Java throw, catch, throws 차이를 문제 발견과 처리 책임 기준으로 설명해줘
+- checked exception과 unchecked exception은 컴파일러 강제와 API 계약 기준으로 어떻게 달라?
+- RuntimeException을 아무 데서나 catch하면 왜 버그를 숨길 수 있어?
+- finally는 언제 실행되고 finally 안에서 return하면 왜 위험해?
+- Spring에서 service가 던진 예외를 ControllerAdvice가 HTTP 400이나 500으로 바꾸는 흐름을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java exception handling에서 throw는 문제 신호 생성, catch는 책임 있는 경계에서 복구 또는 변환, throws는 호출자에게 위임이라는 역할을 구분하는 beginner primer다.
+  try catch finally, checked unchecked exception, RuntimeException, IllegalArgumentException, throws vs throw, ControllerAdvice exception to HTTP response 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Java 예외 처리 기초
 
 > 한 줄 요약: 예외는 프로그램 실행 중 발생하는 비정상 상황을 표현하는 객체이고, try-catch-finally로 잡거나 throws로 위로 넘기는 두 가지 대응 방식이 있다.

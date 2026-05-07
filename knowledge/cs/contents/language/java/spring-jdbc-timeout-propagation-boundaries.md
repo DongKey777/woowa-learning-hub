@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Spring JDBC Timeout Propagation Boundaries
+concept_id: language/spring-jdbc-timeout-propagation-boundaries
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/spring-roomescape
+- missions/payment
+review_feedback_tags:
+- spring-jdbc
+- timeout
+- transaction
+aliases:
+- Spring JDBC Timeout Propagation Boundaries
+- Spring transaction timeout JdbcTemplate Statement.setQueryTimeout
+- DataSourceUtils applyTransactionTimeout
+- TransactionAwareDataSourceProxy timeout
+- JPA query timeout transaction TTL
+- Spring JDBC timeout propagation
+symptoms:
+- '@Transactional(timeout)'을 붙이면 모든 JDBC와 ORM SQL statement에 자동으로 같은 timeout이 적용된다고 생각해 plain DataSource 경로를 놓쳐
+- DataSourceUtils.getConnection만 사용하고 applyTransactionTimeout을 호출하지 않아 transaction에 참여하지만 Statement.setQueryTimeout은 빠지는 plain JDBC 코드를 만들어
+- JdbcTemplate, TransactionAwareDataSourceProxy, JPA Query hint, ORM flush 내부 statement의 timeout 전파 경계를 구분하지 못해 테스트가 한 경로만 통과해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/servlet-async-timeout-downstream-deadline-propagation
+- language/jdbc-observability-under-virtual-threads
+next_docs:
+- spring/transaction-debugging-playbook
+- spring/jdbctemplate-sqlexception-translation
+- spring/transactiontemplate-programmatic-transaction-boundaries
+linked_paths:
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-jdbctemplate-sqlexception-translation.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md
+- contents/spring/spring-transactiontemplate-programmatic-transaction-boundaries.md
+confusable_with:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/servlet-async-timeout-downstream-deadline-propagation
+- spring/transaction-debugging-playbook
+forbidden_neighbors: []
+expected_queries:
+- Spring transaction timeout은 JdbcTemplate과 plain DataSource JDBC와 JPA에서 각각 어떻게 전파돼?
+- DataSourceUtils.getConnection만으로는 Statement.setQueryTimeout이 붙지 않고 applyTransactionTimeout이 필요한 이유가 뭐야?
+- TransactionAwareDataSourceProxy는 legacy plain JDBC statement에 transaction timeout을 어떻게 적용해?
+- JdbcTemplate query timeout과 transaction timeout이 같이 있으면 remaining transaction TTL이 우선될 수 있어?
+- ORM flush나 lazy load 내부 statement timeout은 Spring이 어디까지 보장하고 provider 경계는 어디야?
+contextual_chunk_prefix: |
+  이 문서는 Spring transaction timeout이 JdbcTemplate, plain DataSource, TransactionAwareDataSourceProxy, JPA/ORM 경로에서 Statement.setQueryTimeout 또는 query hint로 전파되는 경계를 점검하는 advanced playbook이다.
+  Spring JDBC timeout, transaction timeout, JdbcTemplate, DataSourceUtils.applyTransactionTimeout, JPA query timeout 질문이 본 문서에 매핑된다.
+---
 # Spring JDBC Timeout Propagation Boundaries
 
 > 한 줄 요약: Spring transaction timeout은 자동 마법이 아니다. `JdbcTemplate`와 `TransactionAwareDataSourceProxy`는 남은 transaction TTL을 `Statement.setQueryTimeout(...)`으로 내려보내지만, plain `DataSource` JDBC는 직접 `DataSourceUtils.applyTransactionTimeout(...)`을 호출해야 하고, ORM 경로는 주로 JPA query hint / provider transaction timeout까지만 보장된다.

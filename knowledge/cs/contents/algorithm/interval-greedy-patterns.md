@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Interval Greedy Patterns
+concept_id: algorithm/interval-greedy-patterns
+canonical: true
+category: algorithm
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- interval-greedy-selection
+- meeting-room-boundary
+- greedy-exchange-argument
+aliases:
+- interval greedy patterns
+- interval scheduling
+- activity selection
+- non overlapping intervals
+- erase overlap intervals
+- earliest finish time
+- finish time greedy
+- meeting rooms one
+- reservation conflict removal
+- 구간 그리디 패턴
+- 회의 배정
+- 겹치지 않는 회의 선택
+- 끝나는 시간 기준 정렬
+symptoms:
+- meeting이나 reservation이라는 단어만 보고 sliding window나 two pointer로 처리하려고 한다
+- 최대 비겹침 선택 문제와 동시에 몇 개가 겹치는지 세는 sweep line 문제를 섞는다
+- interval을 시작점으로만 정렬해서 greedy 선택이 왜 틀리는지 설명하지 못한다
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+prerequisites:
+- algorithm/greedy
+- algorithm/sort-intro
+next_docs:
+- algorithm/sweep-line-overlap-counting
+- data-structure/interval-tree
+- data-structure/disjoint-interval-set
+- algorithm/greedy-vs-dp-decision-card
+linked_paths:
+- contents/algorithm/greedy.md
+- contents/algorithm/sort.md
+- contents/algorithm/sweep-line-overlap-counting.md
+- contents/data-structure/interval-tree.md
+- contents/data-structure/disjoint-interval-set.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/two-pointer.md
+confusable_with:
+- algorithm/sweep-line-overlap-counting
+- algorithm/sliding-window-patterns
+- algorithm/two-pointer
+forbidden_neighbors: []
+expected_queries:
+- interval scheduling에서 왜 시작 시간이 아니라 끝나는 시간 기준으로 정렬해야 greedy가 맞는지 알려줘
+- erase overlap intervals와 meeting rooms II가 모두 구간 문제인데 greedy와 sweep line을 어떻게 구분해?
+- 예약 충돌 제거 문제를 sliding window로 보면 안 되는 이유를 independent interval 기준으로 설명해줘
+- 회의 배정 문제에서 exchange argument로 earliest finish time 선택이 안전한 이유를 알고 싶어
+- online calendar booking처럼 interval이 계속 들어올 때는 왜 interval greedy가 아니라 interval tree나 disjoint interval set을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 interval scheduling과 activity selection을 끝점 기준 greedy로 라우팅하는 bridge다.
+  independent start/end interval records, non-overlapping selection, erase overlap intervals, meeting rooms I, minimum arrows, earliest finish time, exchange argument, sweep line overlap counting, sliding window, online interval data structure와의 경계를 다룬다.
+---
 # Interval Greedy Patterns
 
 > 한 줄 요약: 구간 문제는 시작점보다 끝점 기준이 더 중요할 때가 많고, 그때 greedy가 강력해진다.

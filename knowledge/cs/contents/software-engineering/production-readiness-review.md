@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Production Readiness Review
+concept_id: software-engineering/production-readiness-review
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- prr
+- production-readiness
+- launch-gate
+- operational-readiness
+aliases:
+- Production Readiness Review
+- PRR
+- operational readiness review
+- launch checklist
+- go-live gate
+- rollback readiness
+symptoms:
+- 기능은 완성됐지만 owner, on-call, dashboard, alert, rollback, runbook, support, data migration/reconciliation evidence 없이 production launch를 진행하려 해
+- PRR을 체크박스 회의로만 보고 service criticality, maturity, rollback drill, kill switch evidence 같은 운영 실패 내성을 검증하지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/service-maturity-model
+next_docs:
+- software-engineering/operational-readiness-drills-and-change-safety
+- software-engineering/service-criticality-tiering
+- software-engineering/runbook-playbook-automation-boundaries
+linked_paths:
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/service-maturity-model.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/data-migration-rehearsal-reconciliation-cutover.md
+- contents/software-engineering/prototype-spike-productionization-boundaries.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/service-criticality-tiering-control-intensity.md
+confusable_with:
+- software-engineering/service-maturity-model
+- software-engineering/operational-readiness-drills-and-change-safety
+- software-engineering/release-policy-error-budget
+forbidden_neighbors: []
+expected_queries:
+- Production Readiness Review는 배포 가능 여부보다 운영 실패를 견딜 준비를 보는 launch gate라는 뜻을 설명해줘
+- PRR에서 owner, on-call, dashboard, alerts, rollback, runbook, support path를 어떤 evidence로 봐야 해?
+- 새 API, 배치 job, BFF, 이벤트 발행 경로는 어떤 경우 PRR이 필수야?
+- service maturity와 criticality tier에 따라 PRR 조건을 다르게 적용하는 방법은?
+- PRR 결과를 승인, 보류, 조건부 승인과 이유로 남겨 다음 출시에서 회수해야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 production readiness review를 owner, observability, rollback, runbook, support, migration, drill evidence로 운영 실패 내성을 확인하는 advanced playbook이다.
+---
 # Production Readiness Review
 
 > 한 줄 요약: production readiness review는 배포 가능 여부를 보는 회의가 아니라, 운영 중 실패를 견딜 준비가 되었는지 검증하는 관문이다.

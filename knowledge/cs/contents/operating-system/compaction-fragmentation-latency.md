@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Compaction Fragmentation Latency
+concept_id: operating-system/compaction-fragmentation-latency
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- compaction-fragmentation-latency
+- memory-compaction-fragmentation
+- latency
+- buddy-allocator-order
+aliases:
+- memory compaction fragmentation latency
+- buddy allocator order allocation
+- compact_stall
+- page migration latency
+- THP compaction spike
+- memory fragmentation
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/thp-huge-pages-tlb-latency.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/memory-management-numa-page-replacement-thrashing.md
+- contents/operating-system/page-table-overhead-memory-footprint.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+symptoms:
+- allocation path에서 compaction이나 compact_stall이 발생하며 latency spike가 보인다.
+- THP나 high-order allocation 때문에 page migration과 fragmentation 비용이 튄다.
+- free memory는 있어 보이지만 contiguous page를 못 찾아 stall이 난다.
+expected_queries:
+- memory compaction과 fragmentation이 latency spike를 만드는 이유는?
+- buddy allocator high-order allocation과 compact_stall을 어떻게 해석해?
+- THP allocation이 compaction을 유발해 tail latency를 키울 수 있어?
+- free memory가 있어도 contiguous page 부족으로 stall이 나는 상황을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 compaction이 흩어진 page를 모아 high-order allocation을 만족시키는 작업이지만
+  fragmentation이 심하면 page migration과 compact_stall 자체가 latency spike가 된다는 점을
+  운영 증상과 연결한다.
+---
 # Compaction, Fragmentation, Latency
 
 > 한 줄 요약: compaction은 흩어진 페이지를 모으는 작업이지만, fragmentation이 심하면 그 자체가 latency spike가 된다.

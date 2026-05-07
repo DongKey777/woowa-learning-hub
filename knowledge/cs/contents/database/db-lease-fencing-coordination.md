@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: DB Lease and Fencing Token
+concept_id: database/db-lease-fencing-coordination
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- db-lease
+- fencing-token
+- distributed-lock
+- stale-worker
+aliases:
+- db lease fencing coordination
+- DB lease와 fencing token
+- lease
+- fencing token
+- clock skew
+- GC pause
+- distributed lock
+- stale worker
+- DB lease fencing
+- 분산 작업 lease
+symptoms:
+- lease 만료 후 새 worker가 소유권을 얻었는데 GC pause에서 돌아온 옛 worker가 뒤늦게 write한다
+- Redis lock이나 DB lease를 잡았다는 사실만 믿고 stale write를 막는 fencing token 검증을 두지 않는다
+- lease row가 hot spot이 되거나 TTL heartbeat 설정 때문에 장애 감지와 DB 부하가 흔들린다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+- database/deadlock-case-study
+- database/replication-failover-split-brain
+next_docs:
+- database/application-level-fencing-token-propagation
+- database/stale-lease-renewal-failure-fencing
+- database/ghost-reads-mixed-routing-write-fence-tokens
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/deadlock-case-study.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/application-level-fencing-token-propagation.md
+- contents/database/stale-lease-renewal-failure-fencing.md
+- contents/database/ghost-reads-mixed-routing-write-fence-tokens.md
+confusable_with:
+- database/advisory-locks-vs-row-locks
+- database/application-level-fencing-token-propagation
+- database/stale-lease-renewal-failure-fencing
+- database/replication-failover-split-brain
+forbidden_neighbors: []
+expected_queries:
+- DB lease는 소유권 표시이고 fencing token은 stale write를 막는 장치라는 차이를 설명해줘
+- lease만 있으면 GC pause나 network partition 뒤 오래된 worker가 최신 결과를 덮을 수 있는 이유가 뭐야?
+- fencing token이 단조 증가하고 더 낮은 token의 write를 거부해야 하는 원리를 SQL 예시로 알려줘
+- DB lease row가 hot spot이 되거나 TTL heartbeat가 너무 짧으면 어떤 운영 문제가 생겨?
+- Redis lock이나 DB lease에 fencing token이 없으면 분산 cron 중복 실행에서 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 DB Lease and Fencing Token deep dive로, DB를 coordination store로 쓰는 lease가
+  worker ownership을 표시하지만 GC pause, clock skew, network delay 뒤 stale worker write를 막으려면
+  monotonic fencing token을 모든 write에 검증해야 함을 설명한다.
+---
 # DB Lease와 Fencing Token
 
 > 한 줄 요약: lease는 “누가 먼저 잡았는가”를 말해 주지만, fencing token만 있어야 “오래된 주체가 아직도 쓰지 못한다”를 막을 수 있다.

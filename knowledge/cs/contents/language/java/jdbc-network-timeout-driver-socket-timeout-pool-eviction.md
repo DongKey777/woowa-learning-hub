@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: JDBC Network Timeout, Driver Socket Timeout, and Pool Eviction Under Virtual Threads
+concept_id: language/jdbc-network-timeout-driver-socket-timeout-pool-eviction
+canonical: true
+category: language
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- jdbc-timeout
+- connection-pool
+- virtual-thread
+aliases:
+- JDBC setNetworkTimeout driver socketTimeout pool eviction
+- JDBC network timeout vs socket timeout
+- Hikari connectionTimeout vs query timeout
+- pool eviction cannot cancel active query
+- virtual thread JDBC timeout ladder
+- 자바 JDBC 네트워크 타임아웃 풀 eviction
+symptoms:
+- Hikari connectionTimeout이나 maxLifetime을 줄이면 이미 실행 중인 JDBC socket read가 끊긴다고 오해해 active query hang을 해결하지 못해
+- statement timeout보다 driver socketTimeout을 짧게 둬 logical deadline보다 connection abort가 먼저 터지고 reconnect churn을 만든다
+- setNetworkTimeout을 request별로 바꾼 뒤 pool 반환 시 reset 검증을 하지 않아 다음 요청에 짧은 timeout이 새어 나가
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/spring-jdbc-timeout-propagation-boundaries
+- database/hikari-connection-pool-tuning
+next_docs:
+- language/jdbc-observability-under-virtual-threads
+- language/connection-budget-alignment-after-loom
+- language/jdbc-db-side-cancel-confirmation-playbook
+linked_paths:
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/spring-jdbc-timeout-propagation-boundaries.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/connection-budget-alignment-after-loom.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/database/hikari-connection-pool-tuning.md
+- contents/language/java/jdbc-db-side-cancel-confirmation-playbook.md
+confusable_with:
+- language/spring-jdbc-timeout-propagation-boundaries
+- language/jdbc-observability-under-virtual-threads
+- database/hikari-connection-pool-tuning
+forbidden_neighbors: []
+expected_queries:
+- JDBC setNetworkTimeout과 driver socketTimeout과 Hikari connectionTimeout 차이를 설명해줘
+- pool maxLifetime이나 idleTimeout이 active query socket hang을 바로 끊지 못하는 이유가 뭐야?
+- virtual thread 환경에서 JDBC timeout ladder를 statement timeout network timeout pool timeout 순서로 어떻게 잡아?
+- driver socket timeout이 statement timeout보다 짧으면 connection churn이 생기는 이유를 알려줘
+- setNetworkTimeout을 per-request로 바꿀 때 pool 반환 후 reset을 왜 검증해야 해?
+contextual_chunk_prefix: |
+  이 문서는 JDBC network timeout, driver socket/read timeout, statement timeout, connection pool timeout/eviction ownership을 virtual thread 부하에서 비교하는 advanced chooser다.
+  setNetworkTimeout, socketTimeout, Hikari connectionTimeout, pool eviction, virtual thread JDBC timeout 질문이 본 문서에 매핑된다.
+---
 # JDBC `setNetworkTimeout`, Driver `socketTimeout`, and Pool Eviction Under Virtual Threads
 
 > 한 줄 요약: JDBC `Connection.setNetworkTimeout(...)`은 checked-out connection의 I/O fail-safe이고, driver `socketTimeout`/`readTimeout`은 physical connection에 걸리는 driver-specific read ceiling이며, pool timeout/eviction은 borrow wait와 lifecycle 관리다. virtual thread 환경에서는 셋 다 "timeout"처럼 보이지만, 시작 시점과 정리 단위가 다르다.

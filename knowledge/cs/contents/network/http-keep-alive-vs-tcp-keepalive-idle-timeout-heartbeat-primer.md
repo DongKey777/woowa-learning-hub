@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: HTTP keep-alive vs TCP keepalive vs idle timeout vs heartbeat
+concept_id: network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- keepalive-term-disambiguation
+- idle-timeout-heartbeat-boundary
+- connection-liveness-vs-reuse
+aliases:
+- http keep-alive vs tcp keepalive
+- keepalive 차이
+- connection reuse vs liveness
+- idle timeout basics
+- heartbeat basics
+- HTTP keep-alive TCP keepalive idle timeout heartbeat
+- 왜 keepalive인데 끊겨요
+- keepalive랑 timeout 차이
+- keepalive 용어 분리
+symptoms:
+- keepalive라는 단어만 보고 HTTP connection reuse, TCP probe, idle timeout, heartbeat를 모두 같은 기능으로 설명한다
+- TCP keepalive를 켜면 proxy나 LB idle timeout이 사라진다고 오해한다
+- WebSocket SSE gRPC가 idle로 끊길 때 heartbeat와 TCP keepalive의 책임을 구분하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/keepalive-connection-reuse-basics
+next_docs:
+- network/tcp-keepalive-vs-app-heartbeat
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/keepalive-reuse-stale-idle-connection-primer
+- spring/webclient-connection-pool-timeout-tuning
+linked_paths:
+- contents/network/keepalive-connection-reuse-basics.md
+- contents/network/tcp-keepalive-vs-app-heartbeat.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/spring/spring-webclient-connection-pool-timeout-tuning.md
+confusable_with:
+- network/keepalive-connection-reuse-basics
+- network/tcp-keepalive-vs-app-heartbeat
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/keepalive-reuse-stale-idle-connection-primer
+forbidden_neighbors: []
+expected_queries:
+- HTTP keep-alive와 TCP keepalive와 idle timeout과 heartbeat를 한 번에 구분해줘
+- keepalive를 켰는데도 연결이 끊기는 이유가 idle timeout일 수 있어?
+- TCP keepalive는 로그인 유지나 HTTP connection reuse와 어떻게 달라?
+- WebSocket이나 SSE에서 heartbeat는 왜 앱이 보내는 신호야?
+- 한참 조용하면 proxy나 LB가 먼저 연결을 닫는 상황을 어떤 용어로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 keepalive 용어 분리 primer로, HTTP keep-alive는 connection
+  reuse, TCP keepalive는 kernel liveness probe, idle timeout은 조용한
+  연결 정리 기준, heartbeat는 애플리케이션이 주기적으로 보내는 생존 신호로
+  나눠 설명한다.
+---
 # HTTP keep-alive vs TCP keepalive vs idle timeout vs heartbeat
 
 > 한 줄 요약: `keepalive`라는 단어는 보통 네 가지를 섞어 부르지만, 초급자는 먼저 "재사용", "생존 확인", "가만히 있으면 닫는 시간", "주기적 신호"를 분리해서 보면 된다.

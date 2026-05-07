@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Flush Neighbors, Adaptive Flushing, and IO Capacity
+concept_id: database/flush-neighbors-adaptive-flushing-io-capacity
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- innodb-adaptive-flushing
+- flush-neighbors-io-capacity
+- dirty-page-writeback-control
+aliases:
+- flush neighbors
+- adaptive flushing
+- innodb_io_capacity
+- page cleaner
+- dirty page flush
+- flush list
+- writeback
+- neighbor flushing
+- InnoDB flush neighbors
+- IO capacity 튜닝
+symptoms:
+- dirty page가 쌓이다가 checkpoint age가 커져 한 번에 flush storm이 터지고 있어
+- HDD와 SSD에서 innodb_flush_neighbors와 innodb_io_capacity 설정 효과가 다르게 보여
+- 대량 UPDATE 후 CPU보다 I/O writeback과 page cleaner가 latency를 흔드는 것 같아
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/checkpoint-age-flush-storms
+- database/innodb-buffer-pool-internals
+next_docs:
+- database/adaptive-flushing-heuristics-dirty-page-feedback
+- database/group-commit-binlog-fsync-durability
+- database/doublewrite-buffer-torn-page-protection
+- database/change-buffer-merge-debt
+linked_paths:
+- contents/database/checkpoint-age-flush-storms.md
+- contents/database/innodb-buffer-pool-internals.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/adaptive-flushing-heuristics-dirty-page-feedback.md
+- contents/database/group-commit-binlog-fsync-durability.md
+- contents/database/doublewrite-buffer-torn-page-protection.md
+- contents/database/change-buffer-merge-debt.md
+confusable_with:
+- database/checkpoint-age-flush-storms
+- database/adaptive-flushing-heuristics-dirty-page-feedback
+- database/group-commit-binlog-fsync-durability
+forbidden_neighbors: []
+expected_queries:
+- InnoDB adaptive flushing은 dirty page와 checkpoint age를 보고 flush rate를 어떻게 조절해?
+- innodb_io_capacity가 너무 낮거나 높으면 foreground latency에 어떤 영향을 줘?
+- flush neighbors는 HDD와 SSD에서 왜 다르게 튜닝해야 해?
+- 대량 UPDATE 후 page cleaner와 writeback 때문에 latency가 튀는지 어떻게 확인해?
+- dirty page 비율만 보지 말고 redo 생성량과 flush list를 같이 봐야 하는 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 InnoDB flush neighbors, adaptive flushing, innodb_io_capacity, dirty page writeback이 checkpoint age와 foreground latency에 주는 영향을 설명하는 advanced deep dive다.
+  flush neighbors, adaptive flushing, innodb_io_capacity, page cleaner, dirty page 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Flush Neighbors, Adaptive Flushing, and IO Capacity
 
 > 한 줄 요약: InnoDB의 flush는 단순 쓰기가 아니라, 인접 페이지를 같이 밀지, 얼마나 빨리 밀지, 디스크 여력을 얼마나 쓸지 결정하는 제어 문제다.

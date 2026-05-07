@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- filter-security-chain
+- interceptor-admin-auth
+- filter-vs-securityfilterchain
+- vs-handlerinterceptor
 mission_ids:
 - missions/roomescape
 aliases:
@@ -28,7 +33,7 @@ linked_paths:
 - contents/security/session-cookie-jwt-basics.md
 confusable_with:
 - spring/spring-security-filter-chain-ordering
-- spring/spring-security-requestcache-savedrequest-boundaries
+- spring/security-requestcache-savedrequest-boundaries
 expected_queries:
 - Spring Filter랑 SecurityFilterChain, HandlerInterceptor 차이가 뭐야?
 - 관리자 인증에서 302 403 400이 섞이면 어디서 먼저 나눠?
@@ -43,7 +48,6 @@ contextual_chunk_prefix: |
   HandlerInterceptor, 어디서 인증을 걸어야 하나, jwt filter 위치 같은
   자연어 paraphrase가 본 문서의 세 갈래 비교에 매핑된다.
 ---
-
 # Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지
 
 > 한 줄 요약: RoomEscape 관리자 인증 흐름을 처음 잡을 때는 "`Filter`는 웹 입구", "Spring Security filter chain은 인증/인가 묶음", "`HandlerInterceptor`는 컨트롤러 주변 보조 작업"으로 나누면 덜 헷갈린다.

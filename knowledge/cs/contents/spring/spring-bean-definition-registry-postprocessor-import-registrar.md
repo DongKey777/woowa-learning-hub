@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring BeanDefinitionRegistryPostProcessor and ImportBeanDefinitionRegistrar
+concept_id: spring/bean-definition-registry-postprocessor-import-registrar
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 78
+review_feedback_tags:
+- bean-definition-registry
+- postprocessor-import-registrar
+- beandefinitionregistrypostprocessor
+- importbeandefinitionregistrar
+aliases:
+- BeanDefinitionRegistryPostProcessor
+- ImportBeanDefinitionRegistrar
+- registry post processor
+- bean definition registration
+- ImportSelector
+- metadata reader
+- definition phase
+intents:
+- deep_dive
+- design
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-debugging.md
+- contents/spring/spring-bean-definition-overriding-semantics.md
+expected_queries:
+- BeanDefinitionRegistryPostProcessor는 BeanFactoryPostProcessor와 뭐가 달라?
+- ImportBeanDefinitionRegistrar는 언제 써야 해?
+- Spring에서 BeanDefinition을 직접 등록하는 확장 지점은 뭐야?
+- ImportSelector와 ImportBeanDefinitionRegistrar 차이가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring 컨테이너의 Bean 인스턴스 생성 전 단계에서
+  BeanDefinitionRegistryPostProcessor와 ImportBeanDefinitionRegistrar가
+  bean definition을 등록하거나 조정하는 방식을 다룬다. BeanPostProcessor처럼
+  만들어진 객체를 감싸는 단계가 아니라 definition phase 확장 지점이다.
+---
 # Spring BeanDefinitionRegistryPostProcessor and ImportBeanDefinitionRegistrar
 
 > 한 줄 요약: `BeanDefinitionRegistryPostProcessor`와 `ImportBeanDefinitionRegistrar`는 Bean 인스턴스를 만드는 도구가 아니라, 컨테이너에 새 설계도를 등록하고 조정하는 가장 이른 확장 지점이다.

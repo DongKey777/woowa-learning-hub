@@ -1,3 +1,81 @@
+---
+schema_version: 3
+title: 멱등성 키와 중복 방지
+concept_id: database/idempotency-key-and-deduplication
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/shopping-cart
+review_feedback_tags:
+- idempotency-key-deduplication
+- retry-safe-api
+- unique-key-arbitration
+aliases:
+- idempotency key and deduplication
+- idempotency key
+- duplicate suppression
+- retry safe API
+- processed event table
+- request fingerprint
+- unique key arbitration
+- pending row recovery
+- 멱등성 키
+- 중복 요청 방지
+symptoms:
+- 네트워크 재시도나 메시지 redelivery가 생기면 트랜잭션만으로 중복 side effect가 막힌다고 오해한다
+- idempotency key와 business unique key를 같은 값으로 취급해 재시도 식별자와 도메인 식별자를 구분하지 못한다
+- PENDING PROCESSING SUCCESS 상태 계약 없이 insert-if-absent만 두고 timeout 이후 복구 흐름을 설계하지 않는다
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/transaction-basics
+- database/unique-vs-idempotency-key-vs-pending-row-recovery-decision-guide
+next_docs:
+- database/pending-row-recovery-primer
+- database/duplicate-suppression-windows
+- database/idempotent-transaction-retry-envelopes
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+linked_paths:
+- contents/database/pending-row-recovery-primer.md
+- contents/database/upsert-contention-unique-index-locking.md
+- contents/database/mysql-on-duplicate-key-update-safety-primer.md
+- contents/database/transactional-inbox-dedup-design.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/cdc-replay-verification-idempotency-runbook.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/duplicate-suppression-windows.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/security/token-misuse-detection-replay-containment.md
+- contents/security/replay-store-outage-degradation-recovery.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/network/proxy-retry-budget-discipline.md
+confusable_with:
+- database/duplicate-suppression-windows
+- database/pending-row-recovery-primer
+- database/transactional-inbox-dedup-design
+- database/exactly-once-myths-db-queue
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+forbidden_neighbors: []
+expected_queries:
+- idempotency key는 retry safe API에서 어떤 중복 요청을 막아?
+- 멱등성 키와 business unique key는 왜 항상 같은 값이 아니야?
+- 같은 key 같은 payload와 같은 key 다른 payload는 각각 어떻게 처리해야 해?
+- PENDING row가 남은 뒤 timeout이 나면 재실행보다 recovery를 먼저 봐야 하는 이유가 뭐야?
+- 트랜잭션은 원자성을 보장하지만 요청 재전송 중복을 왜 없애주지 못해?
+contextual_chunk_prefix: |
+  이 문서는 idempotency key와 deduplication deep dive로, 네트워크 retry,
+  API gateway 재전송, message redelivery에서 같은 side effect가 여러 번
+  실행되지 않도록 request fingerprint, unique key arbitration, pending row
+  recovery, processed event table, replay-safe response를 설계한다.
+---
 # 멱등성 키와 중복 방지
 
 **난이도: 🔴 Advanced**

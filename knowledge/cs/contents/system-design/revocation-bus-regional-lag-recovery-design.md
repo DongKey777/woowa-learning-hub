@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Revocation Bus Regional Lag Recovery 설계
+concept_id: system-design/revocation-bus-regional-lag-recovery-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- revocation bus regional lag
+- revoke propagation recovery
+- revocation redrive
+- revocation re-drive
+aliases:
+- revocation bus regional lag
+- revoke propagation recovery
+- revocation redrive
+- revocation re-drive
+- revoke dedupe
+- cache invalidation replay
+- stale allow recovery
+- regional revoke backlog
+- lagging cache tier
+- revoke epoch watermark
+- forced logout probe
+- revocation observability
+symptoms:
+- Revocation Bus Regional Lag Recovery 설계 관련 장애나 마이그레이션 리스크가 발생해 단계별 대응이 필요하다
+intents:
+- troubleshooting
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/canonical-revocation-plane-across-token-generations-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/consistency-repair-anti-entropy-platform-design.md
+- contents/system-design/replay-repair-orchestration-control-plane-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+- contents/system-design/refresh-family-rotation-cutover-design.md
+- contents/security/session-revocation-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Revocation Bus Regional Lag Recovery 설계 장애 대응 순서를 알려줘
+- revocation bus regional lag 복구 설계 체크리스트가 뭐야?
+- Revocation Bus Regional Lag Recovery 설계에서 blast radius를 어떻게 제한해?
+- revocation bus regional lag 운영 리스크를 줄이는 방법은?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Revocation Bus Regional Lag Recovery 설계를 다루는 playbook 문서다. revocation bus regional lag recovery 설계는 특정 region이나 cache tier가 revoke fan-out에서 뒤처졌을 때 durable replay log, idempotent dedupe, lag-aware traffic degrade, synthetic verification을 함께 써서 stale allow long tail을 수습하는 운영 설계다. 검색 질의가 revocation bus regional lag, revoke propagation recovery, revocation redrive, revocation re-drive처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Revocation Bus Regional Lag Recovery 설계
 
 > 한 줄 요약: revocation bus regional lag recovery 설계는 특정 region이나 cache tier가 revoke fan-out에서 뒤처졌을 때 durable replay log, idempotent dedupe, lag-aware traffic degrade, synthetic verification을 함께 써서 stale allow long tail을 수습하는 운영 설계다.

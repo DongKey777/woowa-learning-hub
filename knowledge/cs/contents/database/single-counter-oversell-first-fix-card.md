@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Single Counter Oversell First-Fix Card
+concept_id: database/single-counter-oversell-first-fix
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- oversell
+- single-counter
+- conditional-update
+- version-cas
+- for-update
+aliases:
+- single counter oversell first fix
+- conditional update vs version CAS vs FOR UPDATE
+- stock 1 oversell beginner
+- counter row oversell
+- single row inventory lock
+- conditional update
+- version CAS
+- 마지막 재고 뭐부터
+- 조건부 update 먼저
+- FOR UPDATE 언제
+symptoms:
+- stock=1 같은 single counter oversell을 보고 바로 FOR UPDATE부터 붙이려 해
+- UPDATE WHERE stock > 0 한 문장으로 닫을 수 있는지 먼저 판단해야 해
+- stale write 감지가 필요한지, 읽고 판단하는 절차가 남아 있는지 구분해야 해
+intents:
+- comparison
+- troubleshooting
+- definition
+prerequisites:
+- database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision
+- database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge
+next_docs:
+- database/compare-and-set-version-columns
+- database/transaction-boundary-isolation-locking-framework
+- database/unique-vs-version-cas-vs-for-update-chooser
+linked_paths:
+- contents/database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision-card.md
+- contents/database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision
+- database/unique-vs-version-cas-vs-for-update-chooser
+- database/compare-and-set-version-columns
+forbidden_neighbors: []
+expected_queries:
+- stock 1 같은 single counter oversell은 conditional UPDATE, version CAS, FOR UPDATE 중 무엇부터 봐야 해?
+- 한 SQL로 UPDATE WHERE stock > 0을 닫을 수 있으면 왜 조건부 update가 첫 선택이야?
+- stale write 감지가 핵심이면 version column CAS를 쓰고, 읽고 판단할 절차가 남으면 FOR UPDATE를 쓰는 기준을 설명해줘
+- 마지막 재고가 두 번 팔릴 때 single row inventory lock을 바로 쓰기 전에 어떤 질문을 해야 해?
+- 조건부 update와 version CAS와 pessimistic lock 실패 신호는 각각 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 single counter oversell을 conditional UPDATE, version CAS, FOR UPDATE 중 무엇부터 고를지 설명하는 beginner chooser다.
+  stock 1 oversell, 마지막 재고, 조건부 update 먼저, version CAS 언제, FOR UPDATE 언제 질문이 본 문서에 매핑된다.
+---
 # Single Counter Oversell First-Fix Card
 
 > 한 줄 요약: `stock = 1` 같은 single counter oversell은 보통 `조건부 UPDATE -> version CAS -> FOR UPDATE` 순서로 먼저 검토하면 되고, 핵심 기준은 "한 SQL로 끝나는가 / stale write를 감지해야 하나 / 읽고 판단하는 절차가 남아 있나"다.

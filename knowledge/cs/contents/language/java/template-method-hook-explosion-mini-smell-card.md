@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Template Method Hook Explosion Mini Smell Card
+concept_id: language/template-method-hook-explosion-mini-smell-card
+canonical: true
+category: language
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- template-method
+- strategy
+- oop-design
+aliases:
+- Template Method Hook Mini Smell Card
+- hook explosion Java
+- beforeX afterX shouldX smell
+- template method hooks keep growing
+- hook vs strategy beginner
+- 템플릿 메소드 hook smell
+symptoms:
+- beforeX afterX shouldX 같은 hook 이름이 계속 늘어나는데 상속 확장 성공으로만 보고 규칙이 갈라지는 초기 smell을 놓쳐
+- hook override 순서, super 호출 여부, cleanup 짝을 하위 클래스가 외워야 하는 구조가 되어도 template method를 계속 밀어붙여
+- 선택적 덧붙임이 아니라 결제 정책이나 알림 정책처럼 핵심 규칙 자체가 달라졌는데 strategy나 composition 분리를 검토하지 않아
+intents:
+- troubleshooting
+- design
+- comparison
+prerequisites:
+- language/template-method-vs-strategy-quick-check-card
+- language/java-abstract-class-vs-interface-basics
+- language/object-oriented-core-principles
+next_docs:
+- design-pattern/template-method-basics
+- design-pattern/template-hook-smells
+- design-pattern/composition-over-inheritance-basics
+linked_paths:
+- contents/language/java/template-method-vs-strategy-quick-check-card.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/object-oriented-core-principles.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- language/template-method-vs-strategy-quick-check-card
+- design-pattern/template-method-basics
+- design-pattern/template-hook-smells
+forbidden_neighbors: []
+expected_queries:
+- Template Method에서 beforeX afterX shouldX hook이 계속 늘어나면 왜 hook explosion smell로 봐야 해?
+- hook가 작은 선택적 확장인지 규칙 자체가 갈라지는 신호인지 어떻게 구분해?
+- 템플릿 메소드 hook을 더 추가하지 말고 strategy나 composition으로 빼야 하는 기준은 뭐야?
+- 하위 클래스가 override 순서와 super 호출 cleanup을 외워야 하면 왜 위험한 설계야?
+- hook explosion beginner smell을 PaymentTemplate 예제로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Template Method에서 beforeX/afterX/shouldX hook이 계속 늘어나는 hook explosion smell을 strategy/composition 분리 신호로 라우팅하는 beginner symptom router다.
+  template method hook, hook explosion, beforeX afterX shouldX, strategy, composition 질문이 본 문서에 매핑된다.
+---
 # `beforeX`/`afterX`/`shouldX`가 늘어날 때: Template Method Hook Mini Smell Card
 
 > 한 줄 요약: 템플릿 메소드를 처음 배우는 사람이 `beforeX`, `afterX`, `shouldX` 같은 hook 이름이 계속 늘어나는 장면을 보면, "상속 확장 성공"보다 "규칙이 갈라지기 시작했다"는 초기 설계 냄새로 먼저 읽게 만드는 tiny beginner bridge다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Shadow Retirement Proof Metrics
+concept_id: software-engineering/shadow-retirement-proof-metrics
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- retirement-proof
+- scorecard
+- verification
+aliases:
+- shadow retirement proof metrics
+- shadow process closed vs retired
+- manual_path_ratio zero
+- retirement hard gates
+- shadow retirement scorecard
+- shadow retirement 증빙 지표
+symptoms:
+- shadow process ticket을 closed로 표시했지만 manual_path_ratio, exception burndown, audit_log_coverage, recurrence 부재를 확인하지 않아
+- weighted score가 높다는 이유로 off-plane source나 recurrence hard gate failure를 덮고 retired로 전이해
+- verification window가 workflow cadence를 충분히 지나지 않았는데 조용했다는 이유만으로 retirement를 선언해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-process-catalog-retirement
+- software-engineering/shadow-catalog-lifecycle-states
+next_docs:
+- software-engineering/shadow-retirement-scorecard-schema
+- software-engineering/shadow-catalog-reopen-successor-rules
+- software-engineering/shadow-lifecycle-scorecard-metrics
+linked_paths:
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-retirement-scorecard-schema.md
+- contents/software-engineering/shadow-catalog-reopen-and-successor-rules.md
+- contents/software-engineering/manual-path-ratio-instrumentation.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/break-glass-path-segmentation.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/consumer-exception-operating-model.md
+- contents/software-engineering/consumer-exception-state-machine-review-cadence.md
+- contents/software-engineering/consumer-exception-registry-quality-automation.md
+confusable_with:
+- software-engineering/shadow-retirement-scorecard-schema
+- software-engineering/shadow-lifecycle-scorecard-metrics
+- software-engineering/shadow-catalog-reopen-successor-rules
+forbidden_neighbors: []
+expected_queries:
+- shadow process에서 closed와 retired를 구분하려면 어떤 hard gate metrics를 통과해야 해?
+- manual_path_ratio, exception_burndown_remaining, audit_log_coverage는 각각 어떤 retirement 착시를 막아?
+- authoritative_off_plane_artifact_count와 recurrence_after_closure가 0이어야 retired로 볼 수 있는 이유는?
+- retirement proof를 weighted total score보다 hard gate matrix로 보는 이유를 설명해줘
+- verification window를 calendar day가 아니라 workflow cadence와 실제 event 기준으로 잡는 방법은?
+contextual_chunk_prefix: |
+  이 문서는 shadow process를 retired로 닫기 전에 replacement adoption, manual_path_ratio, exception burndown, audit log coverage, off-plane state, mirror breach, recurrence hard gate를 검증하는 advanced playbook이다.
+---
 # Shadow Retirement Proof Metrics
 
 > 한 줄 요약: shadow process를 `closed`로 표시했다고 retirement가 증명되는 것은 아니며, `manual_path_ratio = 0`, old-path exception burndown 완료, `audit_log_coverage = 1.0`, off-plane state 제거, recurrence 부재를 같은 scorecard와 threshold로 통과해야 비로소 `retired`라고 말할 수 있다.

@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: "Login Redirect, Hidden JSESSIONID, SavedRequest Primer"
+concept_id: network/login-redirect-hidden-jsessionid-savedrequest-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- login-redirect
+- jsessionid
+- savedrequest
+aliases:
+- login redirect primer
+- hidden JSESSIONID
+- SavedRequest
+- cookie 있는데 다시 로그인
+- API gets login HTML
+- fetch login html instead of json
+- browser 401 302 login bounce
+symptoms:
+- Application 탭에 cookie가 보이면 request Cookie header에도 반드시 실린다고 생각한다
+- fetch API가 최종 login HTML 200을 받았는데 원래 API 성공으로 오해한다
+- SavedRequest를 인증 상태 저장과 같은 개념으로 본다
+- 302 Location, Set-Cookie JSESSIONID, redirect mode, cookie scope를 따로 보지 않는다
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-state-session-cache
+next_docs:
+- security/browser-401-vs-302-login-redirect-guide
+- security/fetch-credentials-vs-cookie-scope
+- spring/security-requestcache-savedrequest-boundaries
+- spring/securitycontextrepository-sessioncreationpolicy-boundaries
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-status-codes-basics.md
+- contents/network/http-request-response-headers-basics.md
+- contents/network/post-redirect-get-prg-beginner-primer.md
+- contents/network/http-state-session-cache.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+confusable_with:
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- security/browser-401-vs-302-login-redirect-guide
+- security/fetch-credentials-vs-cookie-scope
+- spring/security-requestcache-savedrequest-boundaries
+forbidden_neighbors: []
+expected_queries:
+- "쿠키에는 JSESSIONID가 보이는데 왜 다시 로그인으로 redirect돼?"
+- "fetch가 JSON 대신 login HTML 200을 받는 이유가 뭐야?"
+- "Spring Security SavedRequest는 로그인 상태 저장과 어떻게 달라?"
+- "Application Cookies에는 있는데 Network request Cookie header가 비어 있으면 무엇을 봐?"
+- "401이 302 /login으로 바뀌고 API가 HTML을 받는 흐름을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 browser login redirect에서 302 Location, Set-Cookie JSESSIONID,
+  SavedRequest, fetch redirect mode, request Cookie header gate, login HTML 200을
+  설명하는 beginner primer다.
+---
 # Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문
 
 > 한 줄 요약: 브라우저 로그인 흐름에서는 `302 Location`, `Set-Cookie: JSESSIONID`, 원래 URL을 기억하는 `SavedRequest`, 그리고 `fetch`의 `redirect: 'follow' | 'manual' | 'error'`에 따라 다르게 보이는 login HTML `200` 또는 redirect 차단이 한 묶음으로 보이기 쉽고, 초보자가 말하는 `hidden session`은 대개 "cookie는 보이는데 서버가 auth/session을 아직 못 복원하는 상태"를 가리킨다.

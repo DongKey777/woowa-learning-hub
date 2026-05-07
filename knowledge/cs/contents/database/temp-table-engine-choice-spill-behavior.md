@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Temporary Table Engine Choice and Spill Behavior
+concept_id: database/temp-table-engine-spill-behavior
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- temporary-table
+- spill
+- using-temporary
+- filesort
+- query-tuning
+aliases:
+- temporary table engine
+- internal temp table
+- temp table spill
+- in-memory temp table
+- on-disk temp table
+- TempTable engine
+- Created_tmp_disk_tables
+- tmp_table_size
+- max_heap_table_size
+- Using temporary
+symptoms:
+- EXPLAIN에 Using temporary가 보이고 Created_tmp_disk_tables가 늘어 disk spill을 의심해야 해
+- row 수는 많지 않은데 SELECT width가 넓어 temp table이 메모리에서 디스크로 떨어져
+- GROUP BY, DISTINCT, derived table materialization 중 어떤 internal temp table 경로가 spill을 만들었는지 봐야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/sort-buffer-temp-table-spill
+- database/index-condition-pushdown-filesort-temporary-table
+next_docs:
+- database/statistics-histograms-cardinality-estimation
+- database/hash-join-materialization-join-buffer
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/sort-buffer-temp-table-spill.md
+- contents/database/index-condition-pushdown-filesort-temporary-table.md
+- contents/database/query-tuning-checklist.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/hash-join-materialization-join-buffer.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+confusable_with:
+- database/sort-buffer-temp-table-spill
+- database/index-condition-pushdown-filesort-temporary-table
+- database/hash-join-materialization-join-buffer
+forbidden_neighbors: []
+expected_queries:
+- Using temporary와 Created_tmp_disk_tables가 같이 늘면 temp table spill을 어떻게 분석해야 해?
+- row 수는 작아도 row width가 넓으면 internal temp table이 disk로 떨어지는 이유가 뭐야?
+- GROUP BY, DISTINCT, derived table materialization이 어떤 임시 테이블 경로를 만들 수 있어?
+- tmp_table_size와 max_heap_table_size는 temp table memory/disk fallback에 어떻게 영향을 줘?
+- Using filesort가 주증상인지 Using temporary spill이 주증상인지 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 temporary table engine choice와 spill behavior를 internal temp table, Created_tmp_disk_tables, tmp_table_size, GROUP BY/DISTINCT materialization 관점으로 설명하는 advanced deep dive다.
+  Using temporary, temp table disk fallback, row width spill, Created_tmp_disk_tables 질문이 본 문서에 매핑된다.
+---
 # Temporary Table Engine Choice and Spill Behavior
 
 > 한 줄 요약: temp table은 내부 작업공간이고, 어떤 엔진을 쓰느냐보다 언제 디스크로 spill 되느냐가 성능을 가른다.

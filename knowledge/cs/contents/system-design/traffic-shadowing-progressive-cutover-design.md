@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Traffic Shadowing / Progressive Cutover 설계
+concept_id: system-design/traffic-shadowing-progressive-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- traffic shadowing
+- shadow traffic
+- progressive cutover
+- canary analysis
+aliases:
+- traffic shadowing
+- shadow traffic
+- progressive cutover
+- canary analysis
+- mirrored requests
+- diffing
+- dark launch
+- route guardrail
+- weighted routing
+- abort switch
+- read-only mirror
+- automated rollback
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/api-gateway-control-plane-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Traffic Shadowing / Progressive Cutover 설계 설계 핵심을 설명해줘
+- traffic shadowing가 왜 필요한지 알려줘
+- Traffic Shadowing / Progressive Cutover 설계 실무 트레이드오프는 뭐야?
+- traffic shadowing 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Traffic Shadowing / Progressive Cutover 설계를 다루는 deep_dive 문서다. traffic shadowing과 progressive cutover는 새 경로를 실제 운영 트래픽으로 검증하되, write side effect와 blast radius를 통제하면서 점진적으로 승격하는 라우팅 운영 시스템이다. 검색 질의가 traffic shadowing, shadow traffic, progressive cutover, canary analysis처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Traffic Shadowing / Progressive Cutover 설계
 
 > 한 줄 요약: traffic shadowing과 progressive cutover는 새 경로를 실제 운영 트래픽으로 검증하되, write side effect와 blast radius를 통제하면서 점진적으로 승격하는 라우팅 운영 시스템이다.

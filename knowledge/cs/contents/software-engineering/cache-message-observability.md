@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Cache Messaging Observability
+concept_id: software-engineering/cache-message-observability
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 84
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- cache
+- messaging
+- observability
+aliases:
+- Cache Messaging Observability
+- 캐시 메시징 관측성
+- cache hit ratio consumer lag traces
+- cache invalidation messaging DLQ
+- outbox inbox observability
+- backend observability basics
+symptoms:
+- cache, messaging, observability를 각각 성능, 비동기, 로그 정도로만 보고 운영 가능성을 만드는 세 축으로 연결하지 못해
+- TTL만 두면 cache invalidation이 끝난다고 보거나, at-least-once messaging에서 idempotency와 DLQ 관측을 빠뜨려
+- logs, metrics, traces를 많이 남기는 것으로 observability를 이해해 p99, consumer lag, cache hit ratio, request trace 같은 운영 질문을 놓쳐
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/software-engineering-index
+- spring/request-pipeline-bean-container
+next_docs:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/production-readiness-review
+- system-design/caching-basics
+linked_paths:
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/production-readiness-review.md
+- contents/system-design/caching-basics.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/distributed-cache-design.md
+confusable_with:
+- system-design/caching-basics
+- system-design/message-queue-basics
+- software-engineering/production-readiness-review
+forbidden_neighbors: []
+expected_queries:
+- cache messaging observability를 백엔드 운영에서 각각 어떤 문제를 푸는 축으로 보면 돼?
+- Cache-Aside, Read-Through, Write-Through, Write-Behind 전략은 언제 쓰고 어떤 invalidation 위험이 있어?
+- at-least-once messaging에서 duplicate, ordering, poison message를 idempotency, inbox, DLQ로 어떻게 다뤄?
+- logs metrics traces는 각각 어떤 운영 질문에 강하고 observability는 로그를 많이 남기는 것과 어떻게 달라?
+- cache hit ratio, consumer lag, p99 latency, trace를 PRR에서 어떤 신호로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 cache, messaging, observability를 cache invalidation, at-least-once delivery, DLQ, logs/metrics/traces, production readiness 관점에서 연결하는 intermediate bridge다.
+---
 # 캐시, 메시징, 관측성 🟡 Intermediate
 
 

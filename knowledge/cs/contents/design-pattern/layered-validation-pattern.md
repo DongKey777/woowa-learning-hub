@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Layered Validation Pattern
+concept_id: design-pattern/layered-validation-pattern
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- layered-validation
+- validation-responsibility
+- input-domain-policy-validation
+aliases:
+- layered validation
+- input validation
+- domain validation
+- policy validation
+- validation tiers
+- invariant enforcement
+- validation response code
+- specification vs policy object validation
+- validation template strategy
+- 검증 층 분리
+symptoms:
+- DTO 형식 오류, aggregate 불변식 위반, 권한/한도 정책 위반을 하나의 validate 함수와 같은 응답 코드로 뭉갠다
+- request validator에서 현재 주문 상태 전이나 aggregate invariant까지 잡으려 해 책임 경계가 흐려진다
+- 정책 검증에서 boolean 조건 조합과 rich decision 반환을 구분하지 못해 Specification과 Policy Object를 섞는다
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/command-handler-pattern
+next_docs:
+- design-pattern/specification-pattern
+- design-pattern/specification-vs-query-service-boundary
+- design-pattern/invariant-preserving-command-model
+linked_paths:
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/specification-vs-query-service-boundary.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/command-handler-pattern.md
+- contents/language/java/object-oriented-core-principles.md
+confusable_with:
+- design-pattern/specification-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/command-handler-pattern
+forbidden_neighbors: []
+expected_queries:
+- 입력 검증, 도메인 불변식 검증, 정책 검증은 실패 의미와 책임이 어떻게 달라?
+- DTO validator에서 aggregate 상태 전이 규칙까지 검사하면 경계가 흐려지는 이유가 뭐야?
+- validation 실패를 400, 403, 409처럼 나눌 때 숫자보다 실패 의미가 중요한 이유가 뭐야?
+- 정책 검증에서 boolean 조건 조합은 Specification이고 이유나 수수료를 돌려주면 Policy Object에 가까운 이유가 뭐야?
+- Command Handler에서 request validator, aggregate invariant, policy object는 어떤 순서로 연결해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Layered Validation Pattern playbook으로, 입력 형식 검증, aggregate/domain
+  invariant 검증, 권한/한도/요금 같은 policy 검증을 실패 의미와 책임별로 나누고,
+  Specification, Policy Object, Command Handler와 연결해 응답 계약을 선명하게 만드는 방법을 설명한다.
+---
 # Layered Validation Pattern: 입력, 도메인, 정책을 층별로 검증하기
 
 > 한 줄 요약: Layered Validation은 형식 검증, 도메인 불변식, 정책 판정을 한 번에 섞지 않고 층별로 나눠 책임을 분리하는 패턴 언어다.
@@ -27,6 +96,8 @@ retrieval-anchor-keywords: layered validation, input validation, domain validati
 - 정책 검증: 권한, 한도, 요금, 운영 규칙
 
 이 층을 섞으면 에러 메시지도, 책임도, 테스트도 흐려진다.
+
+따라서 "검증이 실패했다"라는 한 문장보다, **어느 층에서 막혔고 클라이언트나 호출자가 무엇을 바꿔야 하는지**를 먼저 드러내는 구조가 중요하다.
 
 ## 처음 읽는다면 30초 멘탈 모델
 

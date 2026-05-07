@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Support Contract Request Type and Severity Matrix
+concept_id: software-engineering/support-contract-request-type-severity-matrix
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- support-contract
+- severity
+- escalation
+- team-api
+aliases:
+- support request type severity matrix
+- support contract matrix
+- request type matrix
+- escalation severity matrix
+- migration support type
+- 지원 요청 유형 심각도 매트릭스
+symptoms:
+- normal question, migration blocker, contract clarification, incident escalation을 같은 support SLA로 처리해 urgency와 owner가 흐려져
+- severity를 business impact와 operational urgency가 아니라 요청자의 감정이나 목소리 크기로 올려 on-call lane이 오염돼
+- support matrix가 service catalog, deprecation notice, tombstone guidance에 노출되지 않아 요청이 개인 DM으로 우회해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/on-call-ownership-boundaries
+next_docs:
+- software-engineering/support-operating-models
+- software-engineering/deprecation-communication-playbook
+- software-engineering/consumer-exception-registry
+linked_paths:
+- contents/software-engineering/support-sla-escalation-contracts.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/team-apis-interaction-modes-architecture.md
+- contents/software-engineering/consumer-exception-registry-templates.md
+- contents/software-engineering/deprecation-communication-playbook.md
+- contents/software-engineering/support-operating-models-self-service-office-hours-oncall.md
+confusable_with:
+- software-engineering/support-sla-escalation-contracts
+- software-engineering/support-operating-models
+- software-engineering/on-call-ownership-boundaries
+forbidden_neighbors: []
+expected_queries:
+- support contract에서 request type과 severity matrix를 왜 나눠야 normal question과 incident escalation이 섞이지 않아?
+- migration support, contract clarification, rollout support, incident escalation은 response expectation과 handoff path가 어떻게 달라?
+- severity를 감정이 아니라 business impact와 urgency로 정의하려면 어떤 기준을 둬야 해?
+- deprecation cut-off 전 주에는 평시 support matrix와 다른 surge matrix가 필요한 이유는?
+- support matrix를 service catalog, team support page, tombstone response에 노출해야 개인 DM 우회를 줄이는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 support request를 information, migration, contract, rollout, incident type과 severity로 나눠 first response, owner, escalation path, handoff rule을 정하는 advanced playbook이다.
+---
 # Support Contract Request Type and Severity Matrix
 
 > 한 줄 요약: support SLA가 실제로 작동하려면 normal question, migration help, contract change, incident escalation 같은 request type과 severity를 나눠 각각 다른 response expectation과 handoff path를 주는 matrix가 필요하다.

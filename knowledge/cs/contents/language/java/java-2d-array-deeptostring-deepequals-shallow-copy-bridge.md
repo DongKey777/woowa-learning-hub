@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Java 2D Array deepToString deepEquals Shallow Copy Bridge
+concept_id: language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- array-debugging
+- shallow-copy
+- equality
+aliases:
+- Java 2차원 배열 출력 비교 shallow copy
+- java 2d array deepToString deepEquals shallow copy
+- 2차원 배열 clone 왜 같이 바뀜
+- Arrays.deepToString deepEquals 차이
+- Java matrix shallow copy beginner
+- 배열 안의 배열 복사 비교 출력
+symptoms:
+- 2차원 배열을 Arrays.toString이나 Arrays.equals로 처리해 row 배열 주소만 보이거나 값 비교가 false가 되는 원인을 찾지 못해
+- int[][] clone이나 copyOf가 완전한 deep copy라고 생각해 복사본 row 수정이 원본에 퍼지는 문제를 놓쳐
+- deepToString, deepEquals, clone/copyOf를 모두 배열 helper로만 외워 출력, 비교, 복사 역할을 구분하지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-array-common-confusion-checklist
+- language/java-2d-array-traversal-primer
+- language/java-array-copy-clone-basics
+next_docs:
+- language/java-array-debug-printing-basics
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+linked_paths:
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-2d-array-traversal-primer.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/data-structure/array-vs-linked-list.md
+confusable_with:
+- language/java-array-debug-printing-basics
+- language/java-array-equality-basics
+- language/java-array-copy-clone-basics
+forbidden_neighbors: []
+expected_queries:
+- Java 2차원 배열에서 deepToString deepEquals clone을 언제 써야 하는지 설명해줘
+- int[][]를 clone했는데 복사본을 바꾸면 원본도 바뀌는 이유가 뭐야?
+- Arrays.toString과 deepToString은 2차원 배열 출력에서 어떻게 달라?
+- Arrays.equals와 deepEquals는 중첩 배열 비교에서 어떤 차이가 있어?
+- 2차원 배열을 row까지 분리해서 deep copy하는 기본 코드를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Java 2D array를 array of arrays로 보고 deepToString, deepEquals, shallow copy를 한 번에 연결하는 beginner bridge다.
+  2차원 배열 출력, deepEquals, clone shallow copy, row shared, matrix copy 질문이 본 문서에 매핑된다.
+---
 # Java 2차원 배열 출력·비교·shallow copy 브리지
 
 > 한 줄 요약: Java의 2차원 배열은 "배열 안에 row 배열이 들어 있는 구조"라서, 출력은 `Arrays.deepToString()`, 값 비교는 `Arrays.deepEquals()`, `clone()`/`Arrays.copyOf()`는 바깥만 복사하는 shallow copy라는 세 규칙을 같이 묶어 보는 편이 덜 헷갈린다.

@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Distributed Lock 설계
+concept_id: system-design/distributed-lock-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- distributed lock
+- lease
+- fencing token
+- ownership
+aliases:
+- distributed lock
+- lease
+- fencing token
+- ownership
+- leader election
+- stale owner
+- compare and delete
+- coordination
+- failover control
+- placement fencing
+- consensus reconfiguration
+- Distributed Lock 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/database/deadlock-case-study.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/consensus-membership-reconfiguration-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Distributed Lock 설계 설계 핵심을 설명해줘
+- distributed lock가 왜 필요한지 알려줘
+- Distributed Lock 설계 실무 트레이드오프는 뭐야?
+- distributed lock 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Distributed Lock 설계를 다루는 deep_dive 문서다. 분산 환경에서 단일 실행권을 보장하려면, 락 자체보다 "언제 안전하게 풀 수 있는가"와 "누가 진짜 소유자인가"를 먼저 설계해야 한다. 검색 질의가 distributed lock, lease, fencing token, ownership처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Distributed Lock 설계
 
 > 한 줄 요약: 분산 환경에서 단일 실행권을 보장하려면, 락 자체보다 "언제 안전하게 풀 수 있는가"와 "누가 진짜 소유자인가"를 먼저 설계해야 한다.

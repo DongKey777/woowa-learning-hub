@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring SecurityFilterChain Multiple EntryPoints Primer
+concept_id: spring/securityfilterchain-multiple-entrypoints-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- securityfilterchain-multiple-entrypoints
+- multiple-securityfilterchain-entry
+- points
+- admin-302-api
+aliases:
+- multiple SecurityFilterChain entry points
+- admin 302 api 401
+- path based AuthenticationEntryPoint
+- browser login vs API JSON
+- SecurityFilterChain order
+intents:
+- definition
+- design
+- troubleshooting
+linked_paths:
+- contents/spring/spring-api-401-vs-browser-302-beginner-bridge.md
+- contents/spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-security-requestcache-savedrequest-boundaries.md
+- contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+expected_queries:
+- /admin은 302 login, /api는 401 JSON으로 나누려면 SecurityFilterChain을 어떻게 분리해?
+- AuthenticationEntryPoint를 경로별로 다르게 쓰는 이유는?
+- 브라우저 화면과 API 인증 실패 응답 계약을 같은 chain에 두면 왜 헷갈려?
+- SecurityFilterChain order와 requestMatcher는 entry point 선택에 어떤 영향을 줘?
+contextual_chunk_prefix: |
+  이 문서는 browser page와 JSON API가 인증 실패를 서로 다르게 해석할 때 SecurityFilterChain을
+  path별로 분리하고 각 chain에 맞는 AuthenticationEntryPoint를 붙이는 beginner primer다.
+  302 login redirect와 401 JSON 계약을 구분한다.
+---
 # Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer
 
 > 한 줄 요약: 브라우저 화면과 JSON API가 같은 인증 실패를 읽는 방식이 다르면, `SecurityFilterChain`도 경로별로 나눠 각 요청이 자기 계약에 맞는 `AuthenticationEntryPoint`를 타게 하는 편이 안전하다.

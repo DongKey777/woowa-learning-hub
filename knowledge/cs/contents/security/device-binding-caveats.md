@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Device Binding Caveats
+concept_id: security/device-binding-caveats
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- device binding
+- device-bound session
+- token binding
+- device key
+aliases:
+- device binding
+- device-bound session
+- token binding
+- device key
+- device identity
+- cloned device
+- shared device
+- recovery
+- privacy
+- mobile device migration
+- key rotation
+- session graph
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/dpop-token-binding-basics.md
+- contents/security/proof-of-possession-vs-bearer-token-tradeoffs.md
+- contents/security/hardware-backed-keys-attestation.md
+- contents/security/anti-automation-device-fingerprint-caveats.md
+- contents/security/browser-storage-threat-model-for-tokens.md
+- contents/security/device-session-graph-revocation-design.md
+- contents/security/session-revocation-at-scale.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Device Binding Caveats 핵심 개념을 설명해줘
+- device binding가 왜 필요한지 알려줘
+- Device Binding Caveats 실무 설계 포인트는 뭐야?
+- device binding에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Device Binding Caveats를 다루는 deep_dive 문서다. device binding은 세션이나 토큰을 특정 기기와 묶어 재사용을 줄이지만, 기기 변경, 복구, 공유 기기, 프라이버시, 위조 가능성을 함께 고려해야 한다. 검색 질의가 device binding, device-bound session, token binding, device key처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Device Binding Caveats
 
 > 한 줄 요약: device binding은 세션이나 토큰을 특정 기기와 묶어 재사용을 줄이지만, 기기 변경, 복구, 공유 기기, 프라이버시, 위조 가능성을 함께 고려해야 한다.

@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: 응용 자료 구조 개요
+concept_id: data-structure/applied-data-structures-overview
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 92
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+review_feedback_tags:
+- data-structure-routing
+- online-offline-query-update
+- backend-structure-selection
+aliases:
+- applied data structures overview
+- data structure routing
+- online offline data structure
+- query update tradeoff
+- 응용 자료구조 큰 그림
+- 자료구조 뭐부터 골라야 해
+- 반복 질의 자료구조 선택
+- interval priority membership prefix routing
+symptoms:
+- 자료구조 이름을 외우려 하고 문제의 query update 만료 우선순위 범위 질의 축을 먼저 나누지 않는다
+- online 즉답 문제를 offline 정렬 한 번으로 풀 수 있다고 오해한다
+- Bloom Filter 같은 근사 구조를 exact membership이 필요한 정답 경로에 바로 쓰려 한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/basic
+- algorithm/time-complexity-intro
+next_docs:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/heap-variants
+- data-structure/bloom-filter
+- data-structure/timing-wheel-vs-delay-queue
+linked_paths:
+- contents/data-structure/basic.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/algorithm/interval-greedy-patterns.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/deque-basics.md
+- contents/data-structure/lru-cache-basics.md
+confusable_with:
+- algorithm/backend-algorithm-starter-pack
+- algorithm/interval-greedy-patterns
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- data-structure/bloom-filter
+forbidden_neighbors: []
+expected_queries:
+- 응용 자료구조를 처음 배울 때 online offline query update를 어떻게 나눠?
+- 예약 충돌이나 범위 조회 문제에서 어떤 자료구조로 내려가야 해?
+- 반복 질의가 있는 문제는 배열 해시맵 정렬에서 언제 벗어나야 해?
+- membership test가 exact인지 approximate인지 자료구조 선택에 어떤 영향을 줘?
+- priority queue heap timing wheel bloom filter 같은 문서를 어떤 순서로 읽어야 해?
+contextual_chunk_prefix: |
+  이 문서는 응용 자료구조 beginner entrypoint로, 자료구조 이름 암기가 아니라
+  online/offline, query/update, 만료, 우선순위, 범위 질의, membership,
+  prefix 같은 연산 문장으로 문제를 라우팅한다.
+---
 # 응용 자료 구조 개요
 
 > 한 줄 요약: 응용 자료 구조는 이름을 더 외우는 과목이 아니라, 반복 질의와 상태 유지 방식에 맞춰 `online`/`offline`, `query`/`update`를 먼저 가르는 라우팅 문서다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: TreeSet, TreeMap Null-Boundary Quick Reference
+concept_id: data-structure/treeset-treemap-null-boundary-quick-reference
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- navigable-null-boundary
+- treeset-treemap-null
+- first-vs-neighbor-failure
+aliases:
+- TreeSet TreeMap null boundary
+- NavigableSet null return
+- NavigableMap null return
+- firstKey firstEntry null
+- floor ceiling null
+- ordered set map boundary
+- TreeSet TreeMap NPE beginner
+symptoms:
+- TreeSet TreeMap에서 못 찾으면 모두 예외라고 생각해 lower floor ceiling higher의 null 반환을 놓친다
+- firstKey와 firstEntry가 모두 first 계열이라 empty behavior도 같다고 오해한다
+- floor ceiling null을 exact match 부재로만 해석하고 해당 방향 후보 자체가 없다는 의미를 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/treeset-exact-match-drill
+- data-structure/treemap-key-entry-strictness-bridge
+next_docs:
+- data-structure/treemap-null-boundary-micro-drill
+- data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card
+- data-structure/treemap-key-entry-strictness-bridge
+linked_paths:
+- contents/data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card.md
+- contents/data-structure/treemap-null-boundary-micro-drill.md
+- contents/data-structure/treeset-exact-match-drill.md
+- contents/data-structure/treemap-neighbor-query-micro-drill.md
+- contents/data-structure/treemap-interval-entry-primer.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/ordered-map-null-safe-practice-drill.md
+- contents/language/java/firstentry-lastentry-vs-firstkey-lastkey-bridge.md
+confusable_with:
+- data-structure/treemap-null-boundary-micro-drill
+- data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card
+- data-structure/treeset-exact-match-drill
+- data-structure/treemap-key-entry-strictness-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeSet TreeMap에서 first 계열과 lower floor ceiling higher 계열은 null과 예외가 어떻게 달라?
+- TreeMap firstKey는 empty에서 예외인데 firstEntry는 null이라는 걸 정리해줘
+- floor ceiling lower higher가 경계 밖에서 null을 줄 수 있는 이유는?
+- NavigableSet NavigableMap null boundary를 NPE 안 나게 빠르게 확인하고 싶어
+- ordered set map에서 못 찾으면 null인지 예외인지 구분하는 quick reference가 필요해
+contextual_chunk_prefix: |
+  이 문서는 TreeSet과 TreeMap의 null boundary를 quick reference로 정리한다.
+  first/last key 계열의 empty exception, firstEntry/lastEntry의 null, lower/floor/
+  ceiling/higher neighbor 계열의 boundary null을 beginner-safe하게 분리한다.
+---
 # TreeSet, TreeMap Null-Boundary Quick Reference
 
 > 한 줄 요약: `TreeSet`/`TreeMap`에서 "`못 찾으면 예외인가, null인가?`"만 먼저 분리하면 `first` 계열과 `floor/ceiling/lower/higher` 계열 첫 사용 NPE 혼동을 크게 줄일 수 있다.

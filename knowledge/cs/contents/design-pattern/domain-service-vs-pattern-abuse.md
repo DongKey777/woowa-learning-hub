@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Domain Service vs Pattern Abuse
+concept_id: design-pattern/domain-service-vs-pattern-abuse
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- domain-service
+- god-service-smell
+- pattern-abuse
+aliases:
+- domain service
+- application service
+- anemic domain model
+- transaction script
+- rich domain model
+- god service
+- pattern abuse
+- domain service vs application service
+- service class smell
+- service에 모든 로직
+symptoms:
+- OrderService나 UserService가 상태 변경, 검증, 외부 호출, 저장, 이벤트 발행을 모두 처리해 God Service가 된다
+- Domain Service라는 이름으로 여러 entity 규칙뿐 아니라 usecase orchestration과 persistence까지 모아 책임이 커진다
+- 엔티티 메서드, policy object, specification, state object로 들어갈 규칙을 모두 service helper로 빼 anemic domain model이 된다
+intents:
+- comparison
+- troubleshooting
+- design
+prerequisites:
+- design-pattern/transaction-script-vs-rich-domain-model
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/policy-object-pattern
+next_docs:
+- design-pattern/layered-validation-pattern
+- design-pattern/specification-pattern
+- design-pattern/god-object-spaghetti-golden-hammer
+linked_paths:
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/transaction-script-vs-rich-domain-model.md
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/god-object-spaghetti-golden-hammer.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+confusable_with:
+- design-pattern/transaction-script-vs-rich-domain-model
+- design-pattern/god-object-spaghetti-golden-hammer
+- design-pattern/policy-object-pattern
+- design-pattern/specification-pattern
+forbidden_neighbors: []
+expected_queries:
+- Domain Service와 Application Service는 도메인 규칙과 유스케이스 조립 관점에서 어떻게 달라?
+- Service 클래스가 모든 검증, 상태 변경, 외부 호출, 저장을 처리하면 God Service가 되는 이유가 뭐야?
+- 여러 entity를 함께 판단하는 규칙은 Domain Service 후보이고 한 aggregate 상태 규칙은 entity나 state object 후보인 기준은 뭐야?
+- 할인 계산이나 취소 가능 여부를 Domain Service에 넣기 전에 Policy Object나 Specification을 검토해야 하는 이유가 뭐야?
+- Service를 줄인다고 모든 로직을 entity에 넣는 것도 위험한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Domain Service vs Pattern Abuse chooser로, 여러 entity나 value object에 걸친
+  도메인 규칙은 Domain Service 후보지만, usecase orchestration, persistence, external call,
+  validation, event publish까지 Service가 떠안으면 God Service와 anemic domain model로 흐르는
+  경계 기준을 설명한다.
+---
 # Domain Service vs Pattern Abuse
 
 > 한 줄 요약: Domain Service는 엔티티에 넣기 어려운 도메인 규칙을 담는 용도지만, 책임이 쌓이면 곧바로 패턴 과사용과 God Service가 된다.
@@ -23,6 +93,8 @@ Domain Service는 DDD에서 **엔티티나 값 객체에 넣기 어색한 도메
 
 - 언제 Domain Service가 필요한가
 - 언제 Domain Service가 사실상 비대해진 잡동사니인지
+
+판별 질문은 단순하다. **이 객체가 도메인 판단을 하는가, 아니면 유스케이스 진행과 인프라 호출을 조립하는가**다. 전자는 Domain Service 후보이고, 후자는 Application Service나 orchestrator 경계에 더 가깝다.
 
 ### Retrieval Anchors
 

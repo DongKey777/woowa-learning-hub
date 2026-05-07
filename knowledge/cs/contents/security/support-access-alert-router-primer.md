@@ -63,13 +63,12 @@ expected_queries:
 - read-only 조회와 write 지원 작업 알림을 같은 방식으로 보내도 되나요
 - support access email, inbox, timeline을 어떤 순서로 고르면 좋을까
 contextual_chunk_prefix: |
-  이 문서는 support AOBO와 break-glass 알림을 처음 접한 학습자가
-  audience 선택과 delivery surface 선택을 한 번에 섞지 않도록 돕는
-  security primer다. 누구에게 먼저 알려야 하나, read-only와 write를 같은
+  이 문서는 support AOBO와 break-glass 알림을 처음 다루는 학습자가
+  audience 선택과 delivery surface 선택을 섞지 않도록 기초를 잡는
+  primer다. 누구에게 먼저 알려야 하나, read-only와 write를 같은
   알림으로 보내도 되나, tenant admin과 security contact를 언제 갈라야
-  하나, mailbox compromise면 email 대신 무엇을 봐야 하나 같은 초보자
-  질문을 audience matrix와 delivery policy로 넘기기 전의 첫 분기점에
-  매핑한다.
+  하나, mailbox compromise면 email 대신 어디를 봐야 하나 같은 자연어
+  paraphrase가 본 문서의 첫 분기와 다음 문서 선택에 매핑된다.
 ---
 # Support Access Alert Router Primer
 

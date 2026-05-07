@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Shadow Catalog Review Cadence Profiles
+concept_id: software-engineering/shadow-catalog-review-cadence-profiles
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- review-cadence
+- escalation
+- governance
+aliases:
+- shadow review cadence profiles
+- shadow state review frequency
+- blocked escalation clock
+- temporary hold expiry cadence
+- verification pending proof freshness
+- shadow 검토 주기 프로파일
+symptoms:
+- detected, temporary_hold, blocked, verification_pending을 같은 monthly review로 다뤄 signal freshness, hold expiry, unblock clock, proof freshness가 사라져
+- blocked entry에 blocker_owner와 ETA가 없어도 escalation SLA가 없어서 ownerless backlog로 늙어
+- verification_pending에서 metric freshness를 확인하지 않아 증빙 없이 retired 판단이 밀려
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-review-packet-template
+next_docs:
+- software-engineering/shadow-lifecycle-scorecard-metrics
+- software-engineering/shadow-forum-escalation-rules
+- software-engineering/shadow-temporary-hold-exit-criteria
+linked_paths:
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-process-catalog-and-retirement.md
+- contents/software-engineering/shadow-forum-escalation-rules.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/shadow-lifecycle-scorecard-metrics.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/override-burndown-review-cadence-scorecards.md
+- contents/software-engineering/support-sla-escalation-contracts.md
+confusable_with:
+- software-engineering/shadow-catalog-lifecycle-states
+- software-engineering/shadow-lifecycle-scorecard-metrics
+- software-engineering/shadow-forum-escalation-rules
+forbidden_neighbors: []
+expected_queries:
+- shadow catalog review cadence는 detected, temporary_hold, blocked, verification_pending 상태별로 왜 달라야 해?
+- detected 상태를 빠른 intake queue로 보고 2영업일 triage와 weekly review를 두는 이유는?
+- temporary_hold는 age보다 expires_at clock과 extension_count를 기준으로 review해야 하는 이유를 설명해줘
+- blocked 상태에서 1영업일 안에 blocker_owner와 ETA가 없으면 왜 escalation해야 해?
+- verification_pending은 forum review와 metric freshness check를 왜 따로 관리해야 해?
+contextual_chunk_prefix: |
+  이 문서는 shadow catalog entry의 detected, temporary_hold, blocked, verification_pending 상태별 review frequency, owner expectation, escalation SLA를 다르게 운영하는 advanced cadence playbook이다.
+---
 # Shadow Catalog Review Cadence Profiles
 
 > 한 줄 요약: shadow catalog entry는 상태마다 위험 신호가 다르므로 `detected`, `temporary_hold`, `blocked`, `verification_pending`를 같은 회의 주기로 다루지 말고, 각각 다른 review frequency, owner expectation, escalation SLA를 가진 운영 프로파일로 관리해야 한다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: enum 내부 이름과 외부 code 저장 계약 브리지
+concept_id: language/enum-code-name-persistence-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- enum-boundary
+- persistence-contract
+- json-contract
+aliases:
+- enum code name persistence bridge
+- enum name vs code beginner
+- JPA EnumType STRING vs code
+- Jackson enum JSON code field
+- internal enum name external code
+- enum code 필드 저장 계약
+symptoms:
+- enum에 code 필드를 추가하면 DB/JSON이 자동으로 code를 저장하거나 전송한다고 기대해
+- Java 내부 비교 기준인 enum 상수와 외부 저장/전송 계약인 code/name 선택을 분리하지 못해
+- DB converter와 JSON serializer/DTO mapper가 서로 다른 adapter라 각각 값을 고른다는 점을 놓쳐
+intents:
+- definition
+- design
+- troubleshooting
+prerequisites:
+- language/enum-string-boundary-bridge
+- language/java-enum-basics
+next_docs:
+- language/enum-persistence-json-unknown-value-evolution
+- language/request-dto-to-value-object-boundary-primer
+- database/jdbc-jpa-mybatis-basics
+linked_paths:
+- contents/language/java/enum-string-boundary-bridge.md
+- contents/language/java/enum-persistence-json-unknown-value-evolution.md
+- contents/language/java/request-dto-to-value-object-boundary-primer.md
+- contents/database/jdbc-jpa-mybatis-basics.md
+confusable_with:
+- language/enum-string-boundary-bridge
+- language/enum-persistence-json-unknown-value-evolution
+- database/jdbc-jpa-mybatis-basics
+forbidden_neighbors: []
+expected_queries:
+- enum에 code 필드를 넣으면 DB나 JSON이 자동으로 code 값을 저장하는지 알려줘
+- JPA EnumType.STRING은 enum name을 저장하는지 code 필드를 저장하는지 비교해줘
+- enum 내부 상수 이름과 외부 code 계약을 DB JSON에서 어떻게 나눠야 해?
+- Jackson JSON에서 enum code를 내보내려면 serializer나 DTO mapper가 필요한 이유가 뭐야?
+- enum fromCode와 DB converter를 beginner 기준으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java enum의 internal name과 external code field를 DB persistence, JSON serialization, JPA converter, DTO mapper boundary로 분리하는 beginner primer다.
+  enum code field, EnumType.STRING, JSON enum code, fromCode, enum persistence contract 질문이 본 문서에 매핑된다.
+---
 # enum 내부 이름과 외부 code를 나누면 왜 DB/JSON 저장 계약도 같이 갈라질까
 
 > 한 줄 요약: enum에 `name`과 `code`를 둘 다 두는 순간 Java 내부 비교 기준과 DB/JSON 저장 기준이 자동으로 같지 않다. 내부에서는 enum 상수 이름을 쓰고, 외부 저장/전송에서는 어떤 값을 계약으로 쓸지 명시적으로 골라야 한다.

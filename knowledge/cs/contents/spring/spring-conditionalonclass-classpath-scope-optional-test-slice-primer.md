@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring ConditionalOnClass Classpath Scope Optional Test Slice Primer
+concept_id: spring/conditionalonclass-classpath-scope-optional-test-slice-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- conditionalonclass-classpath-scope
+- optional-test-slice
+- conditionalonclass
+- starter-present-auto
+aliases:
+- @ConditionalOnClass
+- starter present auto-configuration missing
+- classpath scope trap
+- optional dependency missing
+- compileOnly provided dependency
+- test slice auto-configuration missing
+- same code different classpath
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+expected_queries:
+- starter는 있는데 @ConditionalOnClass 때문에 auto-configuration이 왜 빠져?
+- compileOnly나 provided dependency가 runtime bean missing을 만들 수 있어?
+- @WebMvcTest와 @SpringBootTest에서 같은 auto-configuration 결과가 다른 이유는?
+- optional dependency가 빠져서 Spring Boot bean이 안 뜨는지 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 @ConditionalOnClass가 build 파일의 starter 존재가 아니라 현재 실행
+  classpath의 required class 존재를 본다는 점을 beginner 관점에서 설명한다.
+  compileOnly, provided, optional dependency, transitive optional, test slice,
+  @WebMvcTest와 @DataJpaTest의 classpath/auto-configuration 차이에 매핑된다.
+---
 # Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까
 
 > 한 줄 요약: starter가 build 파일에 있다는 사실과 `@ConditionalOnClass`가 **현재 실행 classpath**에서 요구 클래스를 찾는다는 사실은 다르다. dependency scope, optional dependency, test slice가 달라지면 같은 코드도 다른 auto-configuration 결과를 낸다.

@@ -9,7 +9,8 @@ doc_role: chooser
 level: beginner
 language: ko
 source_priority: 88
-mission_ids: []
+mission_ids:
+- missions/lotto
 review_feedback_tags:
 - greedy-counterexample-check
 - dp-state-definition
@@ -48,6 +49,8 @@ confusable_with:
 - algorithm/greedy-intro
 - algorithm/dp-intro
 forbidden_neighbors:
+- contents/algorithm/convex-hull-trick-basics.md
+- contents/algorithm/divide-and-conquer-dp-optimization.md
 expected_queries:
 - 그리디와 DP가 둘 다 떠오를 때 처음 30초 안에 무엇을 확인해야 해
 - 반례가 나오면 그리디를 버리고 DP로 가야 하는 기준을 알고 싶어

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Batch Recovery Runbook Bridge
+concept_id: software-engineering/batch-recovery-runbook
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- batch-recovery
+- runbook
+- safe-rerun
+aliases:
+- Batch Recovery Runbook Bridge
+- batch failure runbook beginner
+- safe rerun checklist
+- checkpoint resume runbook
+- batch stop or rerun decision
+- 배치 재실행 전 확인
+symptoms:
+- batch 실패 후 영향 범위, 진행 지점, 실패 분류, idempotency 근거 확인 없이 바로 전체 재실행 버튼부터 눌러
+- code policy에는 retry queue와 checkpoint가 있지만 operator runbook에는 어떤 상태를 보고 item/chunk/resume/new run을 고를지 적혀 있지 않아
+- stop condition, kill switch, pause scheduler, manual review 같은 안전 경로가 없어 재시도가 피해를 키워
+intents:
+- troubleshooting
+- design
+- definition
+prerequisites:
+- software-engineering/batch-partial-failure
+- software-engineering/batch-idempotency-keys
+next_docs:
+- software-engineering/retry-reason-taxonomy
+- software-engineering/retry-queue-assertions
+- software-engineering/runbook-playbook-automation-boundaries
+linked_paths:
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/software-engineering/retry-reason-taxonomy-primer.md
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/retry-queue-assertions-primer.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/batch-idempotency-key-boundaries.md
+- contents/software-engineering/batch-job-scope-hexagonal-architecture.md
+- contents/software-engineering/runbook-playbook-automation-boundaries.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+confusable_with:
+- software-engineering/batch-partial-failure
+- software-engineering/runbook-playbook-automation-boundaries
+- software-engineering/batch-result-testing
+forbidden_neighbors: []
+expected_queries:
+- batch 실패 후 바로 재실행하지 말고 operator가 처음 확인해야 할 영향 범위 진행 지점 실패 분류 idempotency 근거는 뭐야?
+- batch policy의 retry queue checkpoint를 운영 runbook 단계로 어떻게 번역해?
+- batch safe rerun checklist에서 item rerun, chunk rerun, same run resume, new run start는 어떻게 갈라져?
+- checkpoint가 없거나 snapshot이 달라졌을 때 stop condition으로 보내야 하는 이유를 알려줘
+- batch runbook에 pause scheduler kill switch manual review escalation을 언제 넣어야 해?
+contextual_chunk_prefix: |
+  이 문서는 batch failure policy를 operator runbook으로 번역해 impact scope, checkpoint, retry reason, idempotency evidence, stop condition, safe rerun checklist를 잡는 beginner bridge다.
+---
 # Batch Recovery Runbook Bridge
 
 > 한 줄 요약: batch 실패 정책은 코드 안의 retry 규칙으로 끝나지 않고, 운영자가 어떤 상태를 확인하고 언제 멈추며 어떤 조건에서 다시 실행해도 되는지까지 runbook 언어로 연결돼야 한다.

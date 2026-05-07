@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Spring RollbackOnly vs Checked Exception Commit Surprise Card
+concept_id: spring/rollbackonly-vs-checked-exception-commit-surprise-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 75
+review_feedback_tags:
+- rollbackonly-vs-checked
+- exception-commit-surprise
+- rollback-only-vs
+- checked-exception-commit
+aliases:
+- rollback-only vs checked exception commit
+- UnexpectedRollbackException beginner
+- checked exception no rollback
+- transaction marked rollback-only
+- exception but commit surprise
+intents:
+- comparison
+- troubleshooting
+linked_paths:
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-unexpectedrollbackexception-mini-debugging-card.md
+- contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- contents/spring/spring-transactional-test-rollback-misconceptions.md
+expected_queries:
+- rollback-only와 checked exception인데 commit되는 문제는 어떻게 달라?
+- UnexpectedRollbackException은 왜 마지막 commit 시점에 터져?
+- checked exception을 던졌는데 @Transactional이 rollback하지 않는 이유는?
+- 예외가 났는데 commit된 것처럼 보일 때 초급자는 무엇부터 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 초급자가 rollback-only로 이미 실패 예정인 transaction이 마지막에 터지는 문제와,
+  checked exception 기본 규칙 때문에 rollback되지 않는 문제를 구분하도록 돕는 comparison card다.
+  UnexpectedRollbackException과 rollbackFor 설정을 연결한다.
+---
 # Spring Mini Card: rollback-only 실패 vs checked exception인데 commit된 것처럼 보이는 놀람
 
 > 한 줄 요약: 둘 다 "예외가 났는데 기대와 다른 결과"처럼 보이지만, rollback-only는 **이미 실패 예정인 트랜잭션이 마지막에 터지는 문제**이고, checked exception commit surprise는 **예외를 던지고도 기본 규칙상 commit 방향으로 끝나는 문제**다.

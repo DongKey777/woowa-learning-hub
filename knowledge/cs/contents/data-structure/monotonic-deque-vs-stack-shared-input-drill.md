@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Monotonic Deque vs Monotonic Stack Shared-Input Drill
+concept_id: data-structure/monotonic-deque-vs-stack-shared-input-drill
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: ko
+source_priority: 88
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-structure-drill
+- deque-vs-stack-practice
+- window-vs-index-answer
+aliases:
+- monotonic deque vs stack drill
+- shared input monotonic structures
+- window answer read drill
+- index answer finalize drill
+- sliding window max vs next greater
+- monotonic beginner practice
+- 단조 덱 스택 공통 입력
+symptoms:
+- 같은 배열을 보고 sliding window maximum이면 deque, next greater element이면 stack이라는 질문 차이를 손으로 구분하지 못한다
+- window expiration과 answer finalization을 같은 pop 동작으로만 보고 output timing이 달라지는 이유를 놓친다
+- strict/or-equal 연산자 번역과 duplicate 처리 기준을 실제 dry run 전에 정하지 않아 한 글자 오답을 만든다
+intents:
+- drill
+- troubleshooting
+prerequisites:
+- data-structure/deque-vs-stack-signal-card
+- data-structure/monotonic-structure-router-quiz
+next_docs:
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+- data-structure/monotonic-operator-boundary-cheat-sheet
+linked_paths:
+- contents/data-structure/monotonic-structure-router-quiz.md
+- contents/data-structure/deque-vs-stack-signal-card.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-operator-boundary-cheat-sheet.md
+- contents/algorithm/sliding-window-patterns.md
+- contents/algorithm/monotone-deque-proof-intuition.md
+confusable_with:
+- data-structure/deque-vs-stack-signal-card
+- data-structure/monotonic-structure-router-quiz
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+forbidden_neighbors: []
+expected_queries:
+- 같은 입력으로 monotonic deque와 monotonic stack을 비교하는 연습을 하고 싶어
+- sliding window maximum과 next greater element는 왜 각각 deque와 stack이야?
+- window 만료와 index 답 확정의 차이를 dry run으로 보여줘
+- strict greater와 greater or equal 연산자 선택을 단조 구조에서 어떻게 점검해?
+- 단조 덱 스택 공통 입력 드릴로 처음부터 손체크하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 같은 input을 sliding window extrema와 next greater element로 풀어
+  monotonic deque와 monotonic stack의 차이를 연습하는 drill이다. window
+  expiration, answer finalization, strict/or-equal operator, duplicate handling
+  dry run을 다룬다.
+---
 # Monotonic Deque vs Monotonic Stack Shared-Input Drill
 
 > 한 줄 요약: 같은 입력을 두 번 풀어 보면, deque는 `window 극값`, stack은 `미해결 index 답 확정` 문제라는 차이가 바로 보인다.

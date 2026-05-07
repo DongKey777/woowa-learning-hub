@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring FilterRegistrationBean vs Component Filter Beginner Primer
+concept_id: spring/filterregistrationbean-vs-component-filter-beginner-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- filterregistrationbean-vs-component
+- filter
+- filter-bean-registration
+- servlet-filter-registration
+aliases:
+- FilterRegistrationBean vs Component filter
+- Spring filter bean registration
+- servlet filter registration
+- filter URL pattern order
+- filter auto registration
+- @Component Filter
+- filter enabled false
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-onceperrequestfilter-vs-filter-beginner-primer.md
+- contents/spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-bean-di-basics.md
+- contents/network/http-state-session-cache.md
+expected_queries:
+- FilterRegistrationBean과 @Component Filter는 어떻게 달라?
+- Spring Boot에서 Filter bean은 자동으로 servlet filter로 등록돼?
+- 필터 URL pattern이나 order를 지정하려면 무엇을 써야 해?
+- bean 등록과 servlet filter 등록을 어떻게 나눠 이해해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Spring Filter를 bean으로 등록하는 것과 servlet container에 URL pattern,
+  order, dispatcher type, enabled 여부로 등록하는 것을 분리하는 beginner primer다.
+  @Component Filter, @Bean Filter, FilterRegistrationBean, Spring Boot filter auto
+  registration, 전역 필터와 제한된 path mapping을 구분한다.
+---
 # Spring `FilterRegistrationBean` vs `@Component` 필터 입문: "bean 등록"과 "서블릿 필터 등록"을 언제 나눌까
 
 > 한 줄 요약: 초급자 기준으로는 "필터 객체를 Spring이 관리하게 하자"면 `@Component`/`@Bean`부터, "그 필터를 어느 경로와 순서로 실행할지까지 정하자"면 `FilterRegistrationBean`까지 같이 본다고 이해하면 된다.

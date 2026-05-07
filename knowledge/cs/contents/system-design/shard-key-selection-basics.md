@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Shard Key Selection Basics
+concept_id: system-design/shard-key-selection-basics
+canonical: true
+category: system-design
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- shard-key-selection
+- hot-partition-prevention
+- access-pattern-first-sharding
+aliases:
+- shard key selection
+- partition key basics
+- choosing shard key
+- hot partition
+- hot shard early warning
+- tenant id sharding pitfall
+- user id sharding pitfall
+- scatter gather basics
+- resharding cost
+symptoms:
+- tenant_id나 user_id를 무조건 shard key로 고르면 된다고 보고 hot tenant skew를 놓친다
+- cardinality만 높으면 좋은 key라고 판단하고 access pattern과 scatter gather 비용을 보지 않는다
+- time bucket을 쓰면서 최신 bucket으로 write가 몰리는 hot partition 문제를 예상하지 못한다
+intents:
+- design
+- comparison
+- troubleshooting
+prerequisites:
+- system-design/database-scaling-primer
+- database/mvcc-replication-sharding
+next_docs:
+- system-design/consistent-hashing-hot-key-strategies
+- system-design/shard-rebalancing-partition-relocation-design
+- system-design/tenant-partition-strategy-reassignment-design
+- database/schema-migration-partitioning-cdc-cqrs
+linked_paths:
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/system-design/tenant-partition-strategy-reassignment-design.md
+- contents/system-design/distributed-id-generation-design.md
+- contents/system-design/job-queue-design.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+confusable_with:
+- system-design/database-scaling-primer
+- system-design/consistent-hashing-hot-key-strategies
+- system-design/tenant-partition-strategy-reassignment-design
+- database/mvcc-replication-sharding
+forbidden_neighbors: []
+expected_queries:
+- shard key를 고를 때 tenant_id와 user_id 중 무엇을 먼저 봐야 해?
+- partition key는 cardinality만 높으면 좋은 선택이야?
+- hot partition을 피하려면 access pattern과 skew를 어떻게 같이 봐야 해?
+- time bucket으로 sharding하면 최신 데이터에 write가 몰리는 문제를 어떻게 대비해?
+- shard key를 잘못 골랐을 때 resharding 비용이 왜 큰가?
+contextual_chunk_prefix: |
+  이 문서는 shard key와 partition key를 엔티티 이름이 아니라 access pattern,
+  skew, hot partition, scatter-gather, resharding escape path 관점에서 고르는
+  bridge 문서다. tenant_id나 user_id를 기본값처럼 고르는 오해를 교정한다.
+---
 # Shard Key Selection Basics
 
 > 한 줄 요약: partition key와 shard key는 "무슨 엔티티 이름을 고를까"가 아니라, 어떤 읽기/쓰기 경로를 함께 묶고 시간이 지나도 얼마나 고르게 퍼질지를 정하는 설계 선택이다.

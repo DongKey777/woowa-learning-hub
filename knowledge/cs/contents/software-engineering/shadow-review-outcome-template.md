@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Shadow Review Outcome Template
+concept_id: software-engineering/shadow-review-outcome-template
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- shadow-process
+- review-outcome
+- state-transition
+- governance
+aliases:
+- shadow review outcome template
+- shadow decision record
+- post forum decision record
+- source packet ref outcome
+- shadow state transition record
+- shadow review 결과 템플릿
+symptoms:
+- shadow review packet은 표준화했지만 forum 결과를 자유 형식 회의록으로 남겨 다음 packet generator가 state transition을 다시 추론해야 해
+- decision_outcome만 있고 from_state, to_state, field_updates가 없어 temporary_hold, blocked, absorb, verification 연장 차이가 흐려져
+- outcome record가 append-only가 아니라 이전 결정을 덮어써 왜 방향이 바뀌었는지 decision history를 잃어
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-catalog-lifecycle-states
+next_docs:
+- software-engineering/shadow-forum-escalation-rules
+- software-engineering/shadow-packet-automation-mapping
+- software-engineering/shadow-retirement-scorecard-schema
+linked_paths:
+- contents/software-engineering/shadow-review-packet-template.md
+- contents/software-engineering/shadow-process-catalog-entry-schema.md
+- contents/software-engineering/shadow-catalog-lifecycle-states.md
+- contents/software-engineering/shadow-catalog-review-cadence-profiles.md
+- contents/software-engineering/shadow-catalog-reopen-and-successor-rules.md
+- contents/software-engineering/shadow-process-officialization-absorption-criteria.md
+- contents/software-engineering/shadow-temporary-hold-exit-criteria.md
+- contents/software-engineering/shadow-retirement-proof-metrics.md
+- contents/software-engineering/shadow-retirement-scorecard-schema.md
+- contents/software-engineering/decision-revalidation-supersession-lifecycle.md
+- contents/software-engineering/architecture-council-domain-stewardship-cadence.md
+confusable_with:
+- software-engineering/shadow-review-packet-template
+- software-engineering/shadow-packet-automation-mapping
+- software-engineering/shadow-catalog-lifecycle-states
+forbidden_neighbors: []
+expected_queries:
+- shadow review outcome template는 source_packet_ref, from_state, to_state, field_updates를 왜 필수로 남겨야 해?
+- forum 결과를 자유 형식 회의록이 아니라 authoritative delta로 기록해야 다음 packet generator가 drift하지 않는 이유는?
+- decision_outcome만으로 state transition을 추론하게 두면 temporary_hold와 blocked가 어떻게 섞여?
+- hold 연장, blocked 진입, verification closeout, reopen successor 전이에서 어떤 조건부 필드를 outcome에 남겨야 해?
+- review outcome을 append-only decision_records로 쌓고 supersedes_outcome_id로 정정하는 운영 규칙을 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 shadow review forum 결과를 source_packet_ref, from_state/to_state, field_updates, owner clock, verification follow-up을 가진 append-only outcome record로 남기는 advanced playbook이다.
+---
 # Shadow Review Outcome Template
 
 > 한 줄 요약: shadow review forum의 출력이 자유 형식 회의록이면 다음 packet과 state transition이 끊기므로, outcome record는 `source_packet_ref`, `from_state -> to_state`, `field_updates`, `owner/clock`, `verification follow-up`을 남기는 최소 decision template여야 한다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Policy Snapshot Cache 설계
+concept_id: system-design/policy-snapshot-cache-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- policy snapshot
+- config cache
+- authz cache
+- quota cache
+aliases:
+- policy snapshot
+- config cache
+- authz cache
+- quota cache
+- session cache
+- versioned snapshot
+- stale policy
+- fallback
+- checksum
+- invalidation
+- Policy Snapshot Cache 설계
+- policy snapshot cache design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/edge-authorization-service-design.md
+- contents/system-design/rate-limit-config-service-design.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/secrets-distribution-system-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/tenant-aware-search-architecture-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Policy Snapshot Cache 설계 설계 핵심을 설명해줘
+- policy snapshot가 왜 필요한지 알려줘
+- Policy Snapshot Cache 설계 실무 트레이드오프는 뭐야?
+- policy snapshot 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Policy Snapshot Cache 설계를 다루는 deep_dive 문서다. policy snapshot cache는 flag, config, quota, authz, session 같은 정책 데이터를 버전화해 빠르게 읽고 안전하게 갱신하는 캐시 계층이다. 검색 질의가 policy snapshot, config cache, authz cache, quota cache처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Policy Snapshot Cache 설계
 
 > 한 줄 요약: policy snapshot cache는 flag, config, quota, authz, session 같은 정책 데이터를 버전화해 빠르게 읽고 안전하게 갱신하는 캐시 계층이다.

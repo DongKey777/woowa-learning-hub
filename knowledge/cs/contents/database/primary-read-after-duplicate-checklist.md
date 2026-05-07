@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Primary Read-After-Duplicate Checklist
+concept_id: database/primary-read-after-duplicate-checklist
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- duplicate-key
+- read-after-write
+- primary-read
+- idempotency
+aliases:
+- primary read after duplicate checklist
+- duplicate then not found
+- duplicate key then select null
+- winner row not visible after duplicate
+- stale snapshot after duplicate key
+- replica read after duplicate key
+- fresh winner lookup checklist
+- primary winner lookup
+- duplicate key row not found why
+- mysql 1062 then row not found
+symptoms:
+- duplicate key 직후 SELECT가 null이라 winner row가 없다고 판단하고 같은 INSERT를 다시 던지려 해
+- duplicate는 primary write path에서 났는데 follow-up read는 replica나 오래된 transaction snapshot을 보고 있어
+- fresh primary winner lookup 뒤 request_hash와 status로 replay, processing, conflict를 재분류해야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/duplicate-key-fresh-read-classifier-mini-card
+- database/mysql-1062-fresh-read-mini-sequence-diagram
+next_docs:
+- database/read-your-writes-session-pinning
+- database/replica-lag-read-after-write-strategies
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+linked_paths:
+- contents/database/duplicate-key-fresh-read-classifier-mini-card.md
+- contents/database/mysql-1062-fresh-read-mini-sequence-diagram.md
+- contents/database/mysql-duplicate-key-retry-handling-cheat-sheet.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/postgresql-mysql-claim-sql-mini-card.md
+confusable_with:
+- database/mysql-duplicate-key-retry-handling-cheat-sheet
+- database/read-your-writes-session-pinning
+- database/replica-lag-read-after-write-strategies
+forbidden_neighbors: []
+expected_queries:
+- duplicate key 직후 SELECT가 null이면 winner가 없다고 보고 다시 INSERT해도 돼?
+- duplicate then not found가 replica lag나 stale snapshot 때문에 생기는 흐름을 설명해줘
+- MySQL 1062 뒤 fresh primary winner lookup으로 replay busy conflict를 나누는 순서를 알려줘
+- duplicate 후 같은 transaction에서 SELECT를 반복해도 fresh read가 아닐 수 있는 이유가 뭐야?
+- idempotency key duplicate 뒤 primary read를 통해 request_hash와 status를 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 duplicate key 이후 follow-up read가 null일 때 replica lag, stale snapshot, read route mismatch를 의심하고 fresh primary winner lookup을 수행하는 beginner playbook이다.
+  duplicate then not found, winner row not visible after duplicate, primary winner lookup 질문이 본 문서에 매핑된다.
+---
 # Primary Read-After-Duplicate Checklist
 
 > 한 줄 요약: `duplicate key` 직후 row가 안 보이는 것은 "winner가 없다"가 아니라 **replica read나 오래된 snapshot 때문에 아직 못 본다**는 뜻일 수 있으므로, 초보자 기본값은 `INSERT` 재시도보다 **fresh primary winner lookup**이다.

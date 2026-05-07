@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Release Policy, Change Freeze, and Error Budget Coupling
+concept_id: software-engineering/release-policy-error-budget
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- release-governance
+- change-freeze
+- error-budget
+- rollout
+aliases:
+- change freeze policy
+- release policy error budget
+- progressive rollout pause rule
+- SLO burn rate release gate
+- rollout pause and freeze exception
+- 배포 동결 에러 예산 정책
+symptoms:
+- change freeze를 모든 변경 금지로만 해석해서 hotfix, security patch, kill switch 같은 예외 경로까지 막아
+- error budget burn rate가 높은데도 canary 확대와 rollout pause 기준이 release policy에 연결되어 있지 않아
+- freeze, progressive rollout, kill switch, rollback을 서로 다른 운영 규칙으로 관리해 출시 판단이 느려져
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/feature-flag-dependency-management
+next_docs:
+- software-engineering/rollout-guardrail-profiles
+- software-engineering/rollout-approval-workflow
+- software-engineering/kill-switch-fast-fail
+linked_paths:
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/feature-flag-cleanup-expiration.md
+- contents/software-engineering/lead-time-change-failure-recovery-loop.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/operational-readiness-drills-and-change-safety.md
+- contents/software-engineering/rollout-guardrail-profiles-auto-pause-resume.md
+confusable_with:
+- software-engineering/deployment-rollout-strategy
+- software-engineering/rollout-approval-workflow
+- software-engineering/kill-switch-fast-fail
+forbidden_neighbors: []
+expected_queries:
+- change freeze를 무조건 멈춤이 아니라 error budget과 rollout pause 기준으로 설계하는 방법을 알려줘
+- 에러 예산 소진 속도가 높을 때 progressive rollout, freeze, kill switch 중 무엇을 선택해야 해?
+- release policy에서 hotfix와 security patch 예외를 어떻게 두면 change freeze가 병목이 되지 않을까?
+- SLO burn rate와 canary 확대 기준을 배포 승인 정책에 연결하는 예시를 설명해줘
+- freeze 기간에도 low-risk config나 긴급 패치를 허용하려면 어떤 guardrail이 필요해?
+contextual_chunk_prefix: |
+  이 문서는 change freeze, progressive rollout, error budget, kill switch 예외를 하나의 release policy로 묶어 출시 속도와 운영 위험을 조절하는 advanced playbook이다.
+---
 # Release Policy, Change Freeze, and Error Budget Coupling
 
 > 한 줄 요약: change freeze는 무조건 멈추는 규칙이 아니라, progressive rollout과 error budget을 함께 보고 언제 멈추고 언제 밀어붙일지 정하는 release policy다.

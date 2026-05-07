@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Scheduler Observation Starter Guide
+concept_id: operating-system/scheduler-observation-starter-guide
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 76
+review_feedback_tags:
+- scheduler-observation-starter
+- cpu-alert-first
+- checks
+- vmstat-r-proc
+aliases:
+- scheduler observation starter
+- CPU alert first checks
+- vmstat r proc sched runqlat
+- scheduler beginner guide
+- wakeup-to-run tail
+- CPU pressure triage
+intents:
+- troubleshooting
+- definition
+- drill
+linked_paths:
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/schedstat-proc-sched-runtime-debugging.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+- contents/operating-system/beginner-triage-quick-check-snippet-pack.md
+expected_queries:
+- CPU 경보가 떴을 때 scheduler 관측은 vmstat r, /proc/pid/sched, schedstat, runqlat 순서로 보면 돼?
+- scheduler basics를 읽은 직후 어떤 command부터 봐야 해?
+- load average만 보지 않고 누가 밀리는지 좁히는 beginner flow는?
+- runqlat은 언제 마지막 검증으로 쓰면 좋아?
+contextual_chunk_prefix: |
+  이 문서는 CPU alert를 본 초급자가 vmstat r로 전체 pressure를 보고, /proc/<pid>/sched로 밀리는
+  task를 좁히고, /proc/schedstat로 CPU skew를 확인한 뒤 runqlat으로 wakeup-to-run tail을 검증하는
+  안전한 관측 순서를 제공한다.
+---
 # Scheduler Observation Starter Guide: CPU 경보가 떴을 때 어디부터 볼까
 
 > 한 줄 요약: scheduler basics를 막 읽은 직후에는 `load average`나 CPU 경보를 보더라도 먼저 `vmstat r`로 전체 압력을 확인하고, `/proc/<pid>/sched`로 누가 밀리는지 좁힌 뒤, 그 한 태스크 시야가 부족할 때만 `/proc/schedstat`로 CPU 쏠림을 확인하고, 마지막에 `runqlat`로 wakeup-to-run tail을 검증하는 순서가 가장 안전하다.

@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: io_uring fdinfo PBUF Status ENOBUFS Reconciliation Playbook
+concept_id: operating-system/io-uring-fdinfo-pbuf-status-enobufs-reconciliation-playbook
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- io-uring-fdinfo
+- pbuf-status-enobufs
+- reconciliation
+- ioring-register-pbuf
+aliases:
+- io_uring fdinfo PBUF status ENOBUFS
+- IORING_REGISTER_PBUF_STATUS
+- provided buffer head reconciliation
+- CQ backlog head drift
+- per bid counters
+- quiescent window reconciliation
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/io-uring-completion-observability-playbook.md
+- contents/operating-system/io-uring-provided-buffer-bid-leak-enobufs-diagnostics.md
+- contents/operating-system/io-uring-provided-buffer-ring-head-resync-cq-overflow-worker-handoff.md
+- contents/operating-system/io-uring-provided-buffer-exhaustion-observability-playbook.md
+- contents/operating-system/io-uring-multishot-cancel-rearm-drain-shutdown.md
+symptoms:
+- -ENOBUFS가 보이지만 CQ backlog, head drift, recycle leak 중 무엇인지 분리되지 않는다.
+- fdinfo CQ/SQ snapshot과 PBUF status, per-bid counter가 서로 맞지 않는다.
+- quiescent window 없이 관측해 kernel-owned와 app-owned buffer 상태를 혼동한다.
+expected_queries:
+- io_uring -ENOBUFS가 떴을 때 fdinfo, PBUF status, per-bid counter를 어떻게 맞춰 봐?
+- IORING_REGISTER_PBUF_STATUS는 provided buffer head drift를 어떻게 보여줘?
+- CQ backlog와 진짜 recycle leak을 같은 quiescent window에서 구분하는 법은?
+- kernel-owned app-owned ready-to-readd buffer ledger를 어떻게 복원해?
+contextual_chunk_prefix: |
+  이 문서는 -ENOBUFS 진단에서 fdinfo는 CQ/SQ movement를, IORING_REGISTER_PBUF_STATUS는
+  kernel의 next-consume head를, per-bid counters는 bid ownership ledger를 보여준다는 점을
+  같은 quiescent window에서 맞춰 보는 playbook이다.
+---
 # io_uring fdinfo, PBUF status, ENOBUFS reconciliation playbook
 
 > 한 줄 요약: `-ENOBUFS`가 떴을 때 `/proc/<pid>/fdinfo/<ring-fd>`는 "CQ/SQ가 아직 움직이는가"를, `IORING_REGISTER_PBUF_STATUS`는 "kernel이 다음에 consume할 provided-buffer head가 어디인가"를, per-bid counters는 "누가 어떤 `bid`를 들고 있는가"를 말해 준다. 이 셋을 같은 quiescent window에서 맞춰야 CQ backlog, head drift, 진짜 recycle leak을 분리할 수 있다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Isolation Anomaly Cheat Sheet
+concept_id: database/isolation-anomaly-cheat-sheet
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- isolation-anomaly-cheat-sheet
+- lost-update-write-skew-phantom
+- isolation-vs-guardrail
+aliases:
+- isolation anomaly cheat sheet
+- dirty read matrix
+- non-repeatable read matrix
+- lost update matrix
+- write skew matrix
+- phantom matrix
+- dirty read non-repeatable read lost update write skew phantom
+- isolation level guardrail confusion
+- 격리 수준 이상현상
+- isolation anomaly table
+symptoms:
+- dirty read, non-repeatable read, lost update, write skew, phantom을 isolation level 이름만으로 해결하려 해
+- 읽기 관측 문제와 저장 시점 guardrail 문제를 구분하지 못하고 있어
+- REPEATABLE READ면 write skew나 phantom 기반 absence check까지 다 막힌다고 오해하고 있어
+intents:
+- comparison
+- definition
+- troubleshooting
+prerequisites:
+- database/transaction-isolation-locking
+next_docs:
+- database/read-committed-repeatable-read-anomalies
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+- database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+- database/range-invariant-enforcement-write-skew-phantom
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+- contents/database/lost-update-vs-write-skew-vs-phantom-timeline-guide.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+confusable_with:
+- database/transaction-isolation-locking
+- database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+- database/postgresql-vs-mysql-isolation-cheat-sheet
+forbidden_neighbors: []
+expected_queries:
+- dirty read, non-repeatable read, lost update, write skew, phantom을 한 표로 비교해줘
+- isolation level과 CAS, FOR UPDATE, UNIQUE, guard row 같은 guardrail은 어떻게 다르게 선택해?
+- REPEATABLE READ가 lost update, write skew, phantom을 모두 막는다고 보면 안 되는 이유는 뭐야?
+- lost update와 non-repeatable read는 같은 말이 아닌 이유를 설명해줘
+- phantom이나 write skew를 막으려면 isolation만 올릴지 guard row나 constraint를 둘지 어떻게 골라?
+contextual_chunk_prefix: |
+  이 문서는 dirty read, non-repeatable read, lost update, write skew, phantom을 isolation level과 저장 시점 guardrail 관점으로 나눠 비교하는 beginner chooser다.
+  isolation anomaly, dirty read, lost update, write skew, phantom, isolation vs guardrail 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Isolation Anomaly Cheat Sheet
 
 > 한 줄 요약: dirty read, non-repeatable read, lost update, write skew, phantom은 "무엇을 다시 읽었는가"보다 "무엇을 믿고 썼는가"와 함께 봐야 isolation과 guardrail을 헷갈리지 않는다.

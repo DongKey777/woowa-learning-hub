@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Sparse Table
+concept_id: data-structure/sparse-table
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- sparse-table
+- static-range-query
+- idempotent-operation
+aliases:
+- Sparse Table
+- RMQ sparse table
+- range minimum query preprocessing
+- static range query
+- idempotent range query
+- O(1) range query
+- 2^k table preprocessing
+symptoms:
+- update가 있는 배열에 Sparse Table을 적용하려 해 전처리 재구성 비용을 놓친다
+- min/max/gcd처럼 idempotent한 연산에서 겹치는 두 블록으로 O(1) 질의가 가능한 이유를 설명하지 못한다
+- Sparse Table과 Segment Tree, Fenwick Tree를 모두 range query 구조로만 보고 static vs dynamic 경계를 구분하지 못한다
+intents:
+- definition
+- comparison
+prerequisites:
+- algorithm/binary-search-patterns
+next_docs:
+- data-structure/segment-tree-lazy-propagation
+- data-structure/fenwick-vs-segment-tree
+- data-structure/disjoint-sparse-table
+linked_paths:
+- contents/data-structure/segment-tree-lazy-propagation.md
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/fenwick-vs-segment-tree.md
+- contents/data-structure/disjoint-sparse-table.md
+- contents/algorithm/binary-search-patterns.md
+confusable_with:
+- data-structure/disjoint-sparse-table
+- data-structure/segment-tree-lazy-propagation
+- data-structure/fenwick-tree
+- data-structure/fenwick-vs-segment-tree
+forbidden_neighbors: []
+expected_queries:
+- Sparse Table은 왜 static 배열의 RMQ를 O(1)로 답할 수 있어?
+- min max gcd처럼 idempotent operation이면 겹치는 두 구간을 써도 되는 이유는?
+- Sparse Table과 Segment Tree는 update 가능 여부에서 어떻게 갈려?
+- Sparse Table build O(n log n) query O(1) tradeoff를 설명해줘
+- binary lifting과 sparse table은 둘 다 2^k 전처리인데 무엇이 달라?
+contextual_chunk_prefix: |
+  이 문서는 Sparse Table을 변경 없는 배열에서 idempotent range query를 O(1)로
+  처리하는 static preprocessing 구조로 설명한다. RMQ, min/max/gcd, Segment Tree와
+  Fenwick Tree의 update tradeoff를 함께 비교한다.
+---
 # Sparse Table
 
 > 한 줄 요약: Sparse Table은 변경이 없는 배열에서 idempotent 구간 질의를 O(1)로 처리하기 위해 미리 2^k 길이 결과를 쌓아두는 자료구조다.

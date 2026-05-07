@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Hexagonal Testing Seams Primer
+concept_id: software-engineering/hexagonal-testing-seams-primer
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- hexagonal-testing-seam
+- fake-outbound-port
+- adapter-integration-test-boundary
+aliases:
+- Hexagonal testing seams
+- hexagonal testing seam primer
+- ports and adapters testing
+- use case unit test
+- fake outbound port
+- adapter integration test
+- fake vs mock hexagonal
+- inbound adapter slice test
+symptoms:
+- Hexagonal Architecture를 배웠지만 유스케이스 테스트와 어댑터 테스트를 같은 테스트에 섞고 있어
+- DB, HTTP, message broker를 끌고 들어와야만 유스케이스 규칙을 검증할 수 있다고 생각하고 있어
+- Fake, Mock, Stub을 언제 쓰는지 outbound port seam 기준으로 구분하지 못하고 있어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/test-strategy-basics
+next_docs:
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/inbound-adapter-testing-matrix
+- software-engineering/repository-fake-design
+- software-engineering/persistence-adapter-mapping-checklist
+linked_paths:
+- contents/software-engineering/test-strategy-basics.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/inbound-adapter-test-slices-primer.md
+- contents/software-engineering/inbound-adapter-testing-matrix.md
+- contents/software-engineering/testing-strategy-and-test-doubles.md
+- contents/software-engineering/repository-fake-design-guide.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing.md
+- contents/system-design/outbox-watermark-token-primer.md
+confusable_with:
+- software-engineering/test-strategy-basics
+- software-engineering/inbound-adapter-test-slices-primer
+- software-engineering/testing-strategy-and-test-doubles
+- software-engineering/repository-fake-design
+forbidden_neighbors: []
+expected_queries:
+- Hexagonal Architecture에서 use case unit test와 adapter integration test seam을 어떻게 나눠?
+- outbound port를 fake로 대체하면 유스케이스 규칙을 왜 빠르게 검증할 수 있어?
+- Fake와 Mock과 Stub은 hexagonal test에서 어떤 기준으로 골라?
+- adapter integration test는 DB, HTTP SDK, message broker 매핑을 언제 검증해야 해?
+- controller나 message handler 같은 inbound adapter는 slice test와 integration test 중 어디에 둬야 해?
+contextual_chunk_prefix: |
+  이 문서는 Hexagonal testing seam bridge로, use case unit test, outbound port fake/stub/mock, adapter integration test, inbound adapter slice test, repository fake, persistence adapter mapping을 구분한다.
+  hexagonal test, ports and adapters testing, fake outbound port, adapter integration, mock vs fake, 테스트 seam 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Hexagonal Testing Seams Primer
 
 > 한 줄 요약: Hexagonal Architecture에서 테스트 seam은 유스케이스를 빠르게 검증할 경계와, 어댑터를 실제 기술과 함께 검증할 경계를 분리해 주는 실전 규칙이다.

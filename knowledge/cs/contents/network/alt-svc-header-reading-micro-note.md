@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Alt-Svc Header Reading Micro-Note
+concept_id: network/alt-svc-header-reading-micro-note
+canonical: false
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- alt-svc-header
+- h3-header-reading
+- beginner-micro-note
+aliases:
+- Alt-Svc header reading
+- Alt-Svc h3 :443 meaning
+- Alt-Svc ma meaning
+- alternative service header
+- h3 same host port 443
+- Alt-Svc clear meaning
+- Alt-Svc header cheat sheet
+symptoms:
+- Alt-Svc h3=\":443\"를 현재 응답이 이미 H3라는 뜻으로 오해하고 다음 새 connection용 hint라는 점을 놓친다
+- ma를 connection lifetime으로 읽어 hint max-age와 cache lifecycle을 구분하지 못한다
+- :443처럼 host가 빠진 값을 잘못된 헤더로 보고 same host alternative service 축약을 이해하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- network/alt-svc-cache-lifecycle-basics
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+linked_paths:
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+forbidden_neighbors: []
+expected_queries:
+- Alt-Svc h3=\":443\" ma=86400 헤더를 초보자 기준으로 어떻게 읽어?
+- Alt-Svc의 h3는 HTTP/3 후보이고 ma는 hint 기억 시간이라는 걸 설명해줘
+- h3=\":443\"에서 host가 빠진 건 같은 host의 443 포트로 보면 돼?
+- Alt-Svc 헤더를 받았다고 현재 응답 protocol이 바로 h3로 바뀌는 건 아니지?
+- Alt-Svc header reading에서 ma scope 421로 내려가기 전에 알아야 할 최소 개념은?
+contextual_chunk_prefix: |
+  이 문서는 Alt-Svc header 값을 처음 읽는 beginner micro-note다. h3=\":443\"를
+  same-host H3 alternative service hint로, ma를 hint max-age로 읽으며 현재 응답 protocol과
+  다음 새 connection 후보를 구분한다.
+---
 # Alt-Svc Header Reading Micro-Note
 
 

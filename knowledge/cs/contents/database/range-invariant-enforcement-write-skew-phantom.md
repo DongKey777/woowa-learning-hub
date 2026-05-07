@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Range Invariant Enforcement for Write Skew and Phantom Anomalies
+concept_id: database/range-invariant-enforcement-write-skew-phantom
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 93
+mission_ids: []
+review_feedback_tags:
+- write-skew
+- phantom
+- range-invariant
+- guard-row
+aliases:
+- range invariant
+- set invariant
+- predicate lock
+- serializable snapshot isolation
+- write skew prevention
+- phantom-safe constraint
+- overlap invariant
+- capacity guard row
+- slotization
+- reservation ledger
+symptoms:
+- 조회 후 판단하고 insert/update하는 check-then-act 구조로 absence, overlap, capacity invariant를 지키려 해
+- write skew와 phantom이 row 하나 충돌이 아니라 범위나 집합 규칙 위반이라는 점을 놓치고 있어
+- exact uniqueness, overlap/range, set/count/sum invariant마다 UNIQUE, exclusion, slotization, guard row, serializable 중 무엇을 고를지 결정해야 해
+intents:
+- comparison
+- design
+prerequisites:
+- database/write-skew-phantom-read-case-studies
+- database/transaction-isolation-locking
+next_docs:
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+- database/engine-fallbacks-overlap-enforcement
+- database/exclusion-constraint-overlap-case-studies
+linked_paths:
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/write-skew-detection-compensation-patterns.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+confusable_with:
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+- database/engine-fallbacks-overlap-enforcement
+- database/write-skew-phantom-read-case-studies
+- database/exclusion-constraint-overlap-case-studies
+forbidden_neighbors: []
+expected_queries:
+- write skew와 phantom을 막으려면 range invariant를 어떤 저장 시점 enforcement로 내려야 해?
+- exact uniqueness, overlap invariant, capacity set invariant를 각각 어떤 도구로 닫아야 하는지 비교해줘
+- check-then-insert가 absence나 overlap에서 phantom에 취약한 이유를 설명해줘
+- slotization, exclusion constraint, guard row, serializable retry를 어떤 기준으로 선택해?
+- 단일 transaction으로 완전히 못 닫는 range invariant는 validation과 compensation을 어떻게 붙여?
+contextual_chunk_prefix: |
+  이 문서는 write skew와 phantom을 range invariant, set invariant, overlap invariant로 분류하고 UNIQUE, exclusion constraint, slotization, guard row, serializable, compensation 중 enforcement surface를 고르는 advanced chooser다.
+  range invariant, write skew prevention, phantom-safe constraint, capacity guard row 질문이 본 문서에 매핑된다.
+---
 # Range Invariant Enforcement for Write Skew and Phantom Anomalies
 
 > 한 줄 요약: write skew와 phantom은 row 하나가 아니라 범위·집합 규칙이 흔들릴 때 생기므로, 조회 후 판단보다 constraint, slotization, guard row 같은 저장 시점 enforcement로 옮겨야 한다.

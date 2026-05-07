@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Soft Delete, Uniqueness, and Data Lifecycle Design
+concept_id: database/soft-delete-uniqueness-indexing-lifecycle
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- soft-delete
+- uniqueness
+- lifecycle
+- indexing
+- tombstone
+aliases:
+- soft delete
+- deleted_at
+- tombstone lifecycle
+- unique constraint with soft delete
+- partial unique index
+- restore conflict
+- purge archive strategy
+- active row index
+- released_at vs deleted_at
+- live archive split
+symptoms:
+- soft delete 후 같은 email이나 business key를 다시 허용하려면 active row 기준 uniqueness를 설계해야 해
+- deleted row가 모든 read path와 JOIN, 통계, histogram을 오염시키는 문제를 설명해야 해
+- restore가 단순 deleted_at null 복원이 아니라 uniqueness와 reference 검증이 필요한 상태 전이라는 점을 놓치고 있어
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/active-hold-table-split-pattern
+- database/normalization-denormalization-tradeoffs
+next_docs:
+- database/hold-expiration-predicate-drift
+- database/foreign-key-cascade-lock-surprises
+- database/online-backfill-consistency
+linked_paths:
+- contents/database/hold-expiration-predicate-drift.md
+- contents/database/active-hold-table-split-pattern.md
+- contents/database/foreign-key-cascade-lock-surprises.md
+- contents/database/normalization-denormalization-tradeoffs.md
+- contents/database/online-schema-change-strategies.md
+- contents/database/online-backfill-consistency.md
+confusable_with:
+- database/active-hold-table-split-pattern
+- database/hold-expiration-predicate-drift
+- database/foreign-key-cascade-lock-surprises
+forbidden_neighbors: []
+expected_queries:
+- soft delete를 쓰면 uniqueness, active row index, restore conflict를 어떻게 설계해야 해?
+- PostgreSQL partial unique index와 MySQL generated column으로 deleted_at IS NULL 기준 uniqueness를 표현하는 차이는?
+- soft delete row가 read path, join condition, statistics, histogram을 계속 오염시키는 이유가 뭐야?
+- restore는 왜 플래그 복구가 아니라 현재 active row와 충돌 검증이 필요한 상태 전이야?
+- soft delete lifecycle에서 archive, hard delete, active/history split을 언제 고려해야 해?
+contextual_chunk_prefix: |
+  이 문서는 soft delete를 deleted_at, active row uniqueness, partial unique index, restore conflict, purge/archive lifecycle 관점으로 설명하는 advanced deep dive다.
+  unique constraint with soft delete, tombstone lifecycle, live archive split, active row index 질문이 본 문서에 매핑된다.
+---
 # Soft Delete, Uniqueness, and Data Lifecycle Design
 
 > 한 줄 요약: soft delete는 복구 가능성을 사는 대신, uniqueness·조회 조건·보관 정책을 계속 지불하는 설계다.

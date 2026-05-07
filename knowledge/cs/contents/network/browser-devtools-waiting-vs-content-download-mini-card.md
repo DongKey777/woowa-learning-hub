@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "Browser DevTools `Waiting` vs `Content Download` 미니 카드"
+concept_id: network/browser-devtools-waiting-vs-content-download-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- devtools-waterfall-timing
+- ttfb-vs-ttlb
+- waiting-vs-download
+aliases:
+- devtools waiting vs content download
+- waiting content download
+- first byte vs body download
+- ttfb ttlb basics
+- waterfall slowdown primer
+- browser timing waiting
+symptoms:
+- waiting과 content download를 모두 같은 서버 느림으로 묶어 원인 분기를 틀린다
+- waiting이 길다는 이유만으로 controller 실행 시간만 의심한다
+- content download가 긴데 DB나 upstream first-byte 지연으로 해석한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/devtools-waterfall-primer
+next_docs:
+- network/request-timing-decomposition
+- network/browser-devtools-502-504-app-500-decision-card
+- network/timeout-types-connect-read-write
+- spring/spring-mvc-request-lifecycle-basics
+linked_paths:
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- network/devtools-waterfall-primer
+- network/request-timing-decomposition
+- network/browser-devtools-502-504-app-500-decision-card
+- network/timeout-types-connect-read-write
+forbidden_neighbors: []
+expected_queries:
+- "DevTools waterfall에서 waiting과 content download는 무엇이 달라?"
+- "waiting이 길면 첫 바이트 전 대기인지 app 처리 시간인지 어떻게 봐?"
+- "content download가 길면 큰 payload와 streaming 중 무엇을 먼저 의심해?"
+- "TTFB와 TTLB를 브라우저 Waiting Content Download와 연결해줘"
+- "504를 볼 때 waiting과 content download 중 어느 쪽을 먼저 봐야 해?"
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools waterfall에서 Waiting은 first byte 전 대기,
+  Content Download는 response body 수신 시간으로 나누고 TTFB, TTLB,
+  504 timeout, large payload symptom을 분리하는 beginner primer다.
+---
 # Browser DevTools `Waiting` vs `Content Download` 미니 카드
 
 > 한 줄 요약: DevTools waterfall에서 `waiting`은 "응답이 시작되기 전 첫 바이트를 기다린 시간"이고 `content download`는 "응답이 시작된 뒤 body를 끝까지 받은 시간"이므로, 둘을 같은 느림으로 묶으면 원인 분기가 바로 틀어진다.

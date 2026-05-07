@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Level-Order Pattern Extensions
+concept_id: algorithm/level-order-pattern-extensions
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tree-bfs-level-order
+- queue-frontier-invariant
+- binary-tree-traversal
+aliases:
+- level order pattern extensions
+- tree bfs patterns
+- level order traversal variants
+- zigzag traversal
+- right side view
+- minimum depth bfs
+- complete binary tree check
+- queue frontier invariant
+- 레벨 순회 응용
+- 트리 bfs 패턴
+symptoms:
+- tree BFS 문제에서 큐를 쓰는 것은 알지만 levelSize가 현재 레벨 경계라는 불변식을 놓친다
+- zigzag traversal에서 방문 순서와 레벨 결과 후처리를 섞어 enqueue 순서를 망가뜨린다
+- minimum depth와 completeness check에서 조기 종료 조건을 리프나 null gap이 아닌 다른 신호로 판단한다
+intents:
+- troubleshooting
+- comparison
+- drill
+prerequisites:
+- algorithm/dfs-bfs-intro
+- data-structure/tree-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/binary-tree-traversal-routing-guide
+- algorithm/topological-dp
+- algorithm/graph
+linked_paths:
+- contents/algorithm/dfs-bfs-intro.md
+- contents/data-structure/tree-basics.md
+- contents/data-structure/binary-tree-traversal-routing-guide.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+confusable_with:
+- algorithm/dfs-bfs-intro
+- data-structure/binary-tree-traversal-routing-guide
+- data-structure/tree-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+forbidden_neighbors: []
+expected_queries:
+- level order traversal에서 levelSize를 먼저 읽는 이유가 뭐야?
+- zigzag traversal은 큐 순서를 바꾸는 문제야 아니면 레벨 결과를 뒤집는 문제야?
+- binary tree right side view는 레벨마다 마지막 노드를 기록하면 되는 이유가 뭐야?
+- minimum depth는 왜 BFS에서 처음 만난 리프를 바로 반환해도 돼?
+- complete binary tree check에서 null 뒤에 실노드가 나오면 왜 실패야?
+contextual_chunk_prefix: |
+  이 문서는 Level-Order Pattern Extensions playbook으로, tree BFS에서
+  queue frontier와 levelSize 경계를 유지해 zigzag traversal, right side view,
+  minimum depth, complete binary tree check를 같은 불변식으로 푸는 방법을 설명한다.
+---
 # Level-Order Pattern Extensions
 
 > 한 줄 요약: `level-order` 문제는 새 알고리즘을 계속 외우는 게 아니라, "큐에는 지금 레벨의 경계가 들어 있다"는 불변식을 어떻게 활용하느냐로 갈린다.

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Monotonic Reads and Session Guarantees Primer
+concept_id: system-design/monotonic-reads-and-session-guarantees-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- monotonic reads and session guarantees primer
+- monotonic reads primer
+- monotonic reads 뭐예요
+- session guarantees primer
+aliases:
+- monotonic reads and session guarantees primer
+- monotonic reads primer
+- monotonic reads 뭐예요
+- session guarantees primer
+- session guarantee 차이
+- session guarantees decision matrix
+- session policy implementation sketches
+- gateway app database hint propagation
+- list detail monotonicity bridge
+- list detail mismatch
+- list detail search min-version floor
+- value regression across pages
+symptoms: []
+intents:
+- definition
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/session-policy-implementation-sketches.md
+- contents/system-design/read-after-write-consistency-basics.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/list-detail-monotonicity-bridge.md
+- contents/system-design/causal-consistency-notification-primer.md
+- contents/system-design/mixed-cache-replica-read-path-pitfalls.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Monotonic Reads and Session Guarantees Primer 설계 핵심을 설명해줘
+- monotonic reads and session guarantees primer가 왜 필요한지 알려줘
+- Monotonic Reads and Session Guarantees Primer 실무 트레이드오프는 뭐야?
+- monotonic reads and session guarantees primer 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Monotonic Reads and Session Guarantees Primer를 다루는 primer 문서다. read-after-write는 "내가 방금 쓴 값", monotonic reads는 "내가 이미 본 값", causal consistency는 "내가 먼저 본 결과의 원인"을 기준으로 하고, session guarantees는 이 보장들을 한 사용자 흐름에 맞게 묶는 설계 이름이다. 검색 질의가 monotonic reads and session guarantees primer, monotonic reads primer, monotonic reads 뭐예요, session guarantees primer처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Monotonic Reads and Session Guarantees Primer
 
 > 한 줄 요약: read-after-write는 "내가 방금 쓴 값", monotonic reads는 "내가 이미 본 값", causal consistency는 "내가 먼저 본 결과의 원인"을 기준으로 하고, session guarantees는 이 보장들을 한 사용자 흐름에 맞게 묶는 설계 이름이다.

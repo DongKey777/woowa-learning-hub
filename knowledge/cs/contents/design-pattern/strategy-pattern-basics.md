@@ -9,7 +9,11 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
-mission_ids: []
+mission_ids:
+- missions/baseball
+- missions/blackjack
+- missions/lotto
+- missions/shopping-cart
 review_feedback_tags:
 - if-else-to-strategy
 - caller-selects-strategy
@@ -66,8 +70,8 @@ confusable_with:
 - design-pattern/strategy-map-vs-registry-primer
 - design-pattern/strategy-vs-state-vs-policy-object
 forbidden_neighbors:
-- contents/design-pattern/template-method-vs-strategy.md
-- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/strategy-explosion-smell.md
 expected_queries:
 - 전략 패턴은 언제 if-else보다 이득이 커져?
 - 호출자가 전략을 고른다는 말을 코드 흐름으로 설명해줘

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: HDR Histogram
+concept_id: data-structure/hdr-histogram
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- hdr-histogram
+- latency-percentile-telemetry
+- mergeable-histogram
+aliases:
+- HDR Histogram
+- high dynamic range histogram
+- latency percentile
+- p99 latency histogram
+- fixed relative precision
+- histogram merge
+- coordinated omission
+symptoms:
+- latency 평균만 보고 p95/p99 tail 문제를 놓치거나 raw sample을 모두 저장해야 percentile을 계산할 수 있다고 생각한다
+- fixed-width histogram이 wide latency range에서 bucket 폭과 메모리 사이 trade-off가 나빠지는 이유를 설명하지 못한다
+- HDR Histogram, DDSketch, KLL, t-Digest를 모두 quantile sketch로만 묶고 relative precision과 merge 방식 차이를 놓친다
+intents:
+- comparison
+- deep_dive
+prerequisites:
+- data-structure/sketch-filter-selection-playbook
+next_docs:
+- data-structure/ddsketch
+- data-structure/kll-sketch
+- data-structure/t-digest
+- data-structure/approximate-counting-rate-limiting-observability
+linked_paths:
+- contents/data-structure/hyperloglog.md
+- contents/data-structure/count-min-sketch.md
+- contents/data-structure/ddsketch.md
+- contents/data-structure/kll-sketch.md
+- contents/data-structure/t-digest.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+confusable_with:
+- data-structure/ddsketch
+- data-structure/kll-sketch
+- data-structure/t-digest
+- data-structure/hyperloglog
+forbidden_neighbors: []
+expected_queries:
+- HDR Histogram은 wide range latency p99를 작은 메모리로 어떻게 집계해?
+- fixed-width histogram이 tail latency percentile을 뭉갤 수 있는 이유는?
+- significant digits가 HDR Histogram의 relative precision을 어떻게 정해?
+- HDR Histogram과 DDSketch KLL t-Digest를 observability에서 어떻게 비교해?
+- 여러 인스턴스의 latency histogram을 merge해서 p95 p99를 계산하는 감각을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HDR Histogram을 wide dynamic range latency telemetry에서 고정
+  relative precision과 merge 가능한 bucket counts로 p95/p99를 계산하는
+  chooser로 설명한다. fixed-width histogram 한계, significant digits,
+  DDSketch/KLL/t-Digest와의 선택 기준을 다룬다.
+---
 # HDR Histogram
 
 > 한 줄 요약: HDR Histogram은 매우 넓은 값 범위를 고정된 상대 정밀도로 압축 저장해, latency percentile을 작은 메모리로 합산 가능하게 만드는 telemetry용 자료구조다.

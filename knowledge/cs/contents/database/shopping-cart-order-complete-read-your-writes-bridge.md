@@ -68,6 +68,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart에서 결제 성공 직후 주문 완료 화면이 비는 장면은 checkout 실패보다 "방금 쓴 주문을 다음 읽기에서 아직 못 본다"는 read-after-write 문제일 때가 많아서, 첫 조회 라우팅을 따로 설계해야 한다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제는 성공했는데 주문 완료 화면에 방금 주문이 안 보여요" | checkout commit 직후 `/orders/{id}` 또는 목록으로 이동 | write 성공 여부와 다음 read path freshness를 분리한다 |
+| "리다이렉트된 주문 상세가 비어 있다가 새로고침하면 보여요" | replica lag 또는 stale read window | 직후 첫 조회를 primary fallback/session pinning으로 다룰지 본다 |
+| "주문 생성 API는 성공인데 목록 조회가 가끔 이전 상태예요" | read replica와 primary가 섞인 주문 조회 | recent-write routing과 read-your-writes 계약을 명시한다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 결제가 성공하면 보통 곧바로 주문 완료 화면이나 주문 상세 페이지로 이동한다. 이때 백엔드에서는 `POST /orders`가 primary에 주문을 저장했고 응답도 정상으로 끝났는데, 직후의 `GET /orders/{id}`나 주문 목록 조회가 replica를 타면 아직 apply되지 않은 상태를 읽을 수 있다. 학습자 눈에는 "결제는 됐는데 주문이 없다", "새로고침하면 그제서야 보인다"는 이상한 UX로 보인다.

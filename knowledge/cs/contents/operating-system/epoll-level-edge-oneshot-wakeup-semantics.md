@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: epoll Level Edge ONESHOT Wakeup Semantics
+concept_id: operating-system/epoll-level-edge-oneshot-wakeup-semantics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- epoll-level-edge
+- oneshot-wakeup-semantics
+- epoll-level-triggered
+- edge-triggered-oneshot
+aliases:
+- epoll level triggered edge triggered oneshot
+- EPOLLET EPOLLONESHOT
+- EAGAIN drain discipline
+- epoll wakeup semantics
+- handler ownership model
+- ready queue wakeup reduction
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/epoll-kqueue-io-uring.md
+- contents/operating-system/io-models-and-event-loop.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/proc-pid-fdinfo-epoll-runtime-debugging.md
+confusable_with:
+- operating-system/epoll-kqueue-io-uring
+- operating-system/eventfd-signalfd-epoll-control-plane-integration
+- operating-system/thundering-herd-accept-wakeup
+expected_queries:
+- epoll level-triggered edge-triggered EPOLLONESHOT은 어떻게 선택해?
+- EPOLLET를 쓰면 EAGAIN까지 drain해야 하는 이유는?
+- EPOLLONESHOT은 handler ownership model을 어떻게 바꿔?
+- epoll wakeup semantics와 thundering herd 가능성을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 epoll LT, ET, EPOLLONESHOT 선택을 단순 API option이 아니라 wakeup 수,
+  ready queue semantics, herd 가능성, EAGAIN까지 drain하는 discipline, handler ownership
+  model을 결정하는 설계 선택으로 설명한다.
+---
 # epoll Level-Triggered, Edge-Triggered, ONESHOT Wakeup Semantics
 
 > 한 줄 요약: `epoll`의 LT, ET, `EPOLLONESHOT` 선택은 단순 API 옵션이 아니라 wakeup 수, herd 가능성, drain discipline, handler ownership 모델을 결정하는 설계 선택이다.

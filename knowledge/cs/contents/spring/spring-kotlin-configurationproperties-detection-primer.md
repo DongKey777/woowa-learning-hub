@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Kotlin ConfigurationProperties Detection Primer
+concept_id: spring/kotlin-configurationproperties-detection-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- kotlin-configurationproperties-detection
+- kotlin-configurationproperties
+- data-class-configuration
+- properties
+aliases:
+- Kotlin ConfigurationProperties
+- data class configuration properties
+- ConfigurationPropertiesScan
+- EnableConfigurationProperties Kotlin
+- constructor binding Kotlin
+- configuration properties bean missing
+- Kotlin settings binding
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-property-source-precedence-quick-guide.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+- contents/spring/spring-configurationproperties-binding-internals.md
+- contents/spring/spring-relaxed-binding-env-var-cheatsheet.md
+- contents/spring/spring-bean-not-found-cause-router.md
+expected_queries:
+- Kotlin @ConfigurationProperties data class가 Bean으로 등록되지 않는 이유는?
+- ConfigurationPropertiesScan과 EnableConfigurationProperties는 어떻게 찾아야 해?
+- Boot 3 Kotlin data class에서 @ConstructorBinding이 안 보여도 constructor binding이 돼?
+- 설정 클래스는 있는데 주입이 안 될 때 어떤 등록 포인트를 확인해?
+contextual_chunk_prefix: |
+  이 문서는 Kotlin의 @ConfigurationProperties data class와 실제 Bean 등록 포인트를
+  함께 찾는 beginner primer다. @ConfigurationPropertiesScan,
+  @EnableConfigurationProperties(Foo::class), Boot 3 constructor binding,
+  prefix, relaxed binding, configuration properties bean missing 증상에 매핑된다.
+---
 # Kotlin `@ConfigurationProperties` 탐지 보조 노트: data class와 등록 포인트를 같이 찾는 법
 
 > 한 줄 요약: Kotlin에서는 `data class`와 생성자 바인딩 문법 때문에 "`@ConfigurationProperties` 타입 정의"와 "실제 Bean 등록 포인트"가 떨어져 보이기 쉬우므로, 둘을 한 세트로 찾아야 한다.

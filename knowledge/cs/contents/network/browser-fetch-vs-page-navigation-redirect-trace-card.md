@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "Browser XHR/fetch vs page navigation DevTools 1분 비교 카드"
+concept_id: network/browser-fetch-vs-page-navigation-redirect-trace-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- fetch-vs-page-navigation
+- login-redirect-trace
+- api-contract-vs-page-ux
+aliases:
+- fetch vs page navigation redirect
+- xhr login redirect trace
+- api got login html
+- page navigation vs fetch
+- hidden login html 200
+- devtools 302 login row
+symptoms:
+- XHR/fetch가 login HTML 200을 받았는데 API 성공 JSON으로 오해한다
+- page navigation redirect와 API fetch redirect follow를 같은 UX 성공 기준으로 읽는다
+- DevTools 마지막 200 row만 보고 원래 /api 요청도 200이었다고 결론낸다
+intents:
+- comparison
+- troubleshooting
+- symptom
+prerequisites:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/browser-devtools-response-body-ownership-checklist
+next_docs:
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- network/fetch-redirected-response-url-opaqueredirect-mini-card
+- network/fetch-redirect-error-choice-card
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- security/browser-401-vs-302-login-redirect-guide
+linked_paths:
+- contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md
+- contents/network/fetch-redirected-response-url-opaqueredirect-mini-card.md
+- contents/network/fetch-redirect-error-choice-card.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- network/fetch-redirected-response-url-opaqueredirect-mini-card
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- security/browser-401-vs-302-login-redirect-guide
+forbidden_neighbors: []
+expected_queries:
+- "fetch가 302를 따라가서 login HTML 200을 받은 것과 page navigation redirect를 어떻게 구분해?"
+- "DevTools에서 Type document와 xhr fetch를 먼저 봐야 하는 이유가 뭐야?"
+- "API 호출이 200 text/html login page를 받으면 JSON 성공이 아니라는 점을 설명해줘"
+- "302 /login row와 최종 200 HTML row를 Network 탭에서 어떻게 나눠 읽어?"
+- "fetch response.redirected response.url과 DevTools redirect chain을 같이 보는 법을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools에서 page navigation(document) redirect와
+  XHR/fetch redirect follow를 Type, Status Code, Location, final
+  Content-Type, Response body 기준으로 나누어 API가 login HTML 200을
+  먹는 hidden auth failure를 판독하는 beginner chooser다.
+---
 # Browser XHR/fetch vs page navigation DevTools 1분 비교 카드
 
 > 한 줄 요약: 같은 `302 -> /login -> 200 HTML`도 page load와 XHR/fetch는 DevTools에서 먼저 봐야 하는 칸이 다르므로, `Type`, `Status Code`, `Location`, 최종 `Content-Type` 순서로 읽으면 "화면 이동"과 "API가 login HTML을 먹은 것"을 빠르게 분리할 수 있다.

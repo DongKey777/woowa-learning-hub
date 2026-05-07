@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "DNS Negative Caching, NXDOMAIN Behavior"
+concept_id: network/dns-negative-caching-nxdomain-behavior
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- dns-negative-caching
+- nxdomain-servfail
+- resolver-cache-propagation
+aliases:
+- DNS negative caching
+- NXDOMAIN behavior
+- stale negative response
+- resolver cache TTL
+- SERVFAIL vs NXDOMAIN
+- nonexistent name cache
+symptoms:
+- 새 DNS 레코드를 만들었는데 일부 resolver가 NXDOMAIN을 계속 반환한다
+- NXDOMAIN과 SERVFAIL을 모두 없는 이름으로 읽어 resolver/upstream/DNSSEC 실패를 놓친다
+- 삭제 후 복구 시 negative TTL과 SOA 기반 부정 응답 cache를 고려하지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/dns-ttl-cache-failure-patterns
+- network/dns-basics
+next_docs:
+- network/dns-split-horizon-behavior
+- network/connection-reuse-vs-service-discovery-churn
+- network/load-balancer-healthcheck-failure-patterns
+linked_paths:
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/dns-over-https-operational-tradeoffs.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/connection-reuse-vs-service-discovery-churn.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/dns-split-horizon-behavior
+- network/dns-over-https-operational-tradeoffs
+- network/connection-reuse-vs-service-discovery-churn
+forbidden_neighbors: []
+expected_queries:
+- "DNS negative caching 때문에 새 레코드를 만들었는데도 NXDOMAIN이 계속 보이는 이유는?"
+- "NXDOMAIN과 SERVFAIL은 DNS 장애에서 어떻게 다르게 읽어야 해?"
+- "SOA와 negative TTL이 nonexistent name cache에 어떤 영향을 줘?"
+- "DNS 레코드 삭제 후 복구할 때 stale negative response를 어떻게 고려해?"
+- "서비스 디스커버리 이름 변경 직후 일부 resolver만 안 붙는 현상을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 DNS negative caching, NXDOMAIN, SERVFAIL, SOA negative TTL,
+  recursive resolver cache, stale negative response가 새 레코드 론칭/삭제/복구
+  중 보이는 운영 장애를 설명하는 advanced DNS playbook이다.
+---
 # DNS Negative Caching, NXDOMAIN Behavior
 
 > 한 줄 요약: DNS negative caching은 없는 이름도 잠깐 캐시하기 때문에, 레코드가 늦게 생기거나 지워질 때 NXDOMAIN이 생각보다 오래 보일 수 있다.

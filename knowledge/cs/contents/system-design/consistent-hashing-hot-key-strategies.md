@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Consistent Hashing / Hot Key 전략
+concept_id: system-design/consistent-hashing-hot-key-strategies
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- consistent hashing
+- hot key
+- virtual node
+- ring
+aliases:
+- consistent hashing
+- hot key
+- virtual node
+- ring
+- rebalancing
+- shard split
+- cache hotspot
+- partition movement
+- key remap
+- hot shard
+- Consistent Hashing / Hot Key 전략
+- consistent hashing hot key strategies
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/shard-rebalancing-partition-relocation-design.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/bptree-vs-lsm-tree.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Consistent Hashing / Hot Key 전략 설계 핵심을 설명해줘
+- consistent hashing가 왜 필요한지 알려줘
+- Consistent Hashing / Hot Key 전략 실무 트레이드오프는 뭐야?
+- consistent hashing 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Consistent Hashing / Hot Key 전략를 다루는 deep_dive 문서다. consistent hashing은 key 이동을 줄이는 분산 배치 기법이고, hot key 전략은 그 배치가 깨질 때를 버티는 운영 설계다. 검색 질의가 consistent hashing, hot key, virtual node, ring처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Consistent Hashing / Hot Key 전략
 
 > 한 줄 요약: consistent hashing은 key 이동을 줄이는 분산 배치 기법이고, hot key 전략은 그 배치가 깨질 때를 버티는 운영 설계다.

@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Spring Security Method Security Deep Dive
+concept_id: spring/security-method-security-deep-dive
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- security-method-security
+- method-security
+- preauthorize
+- method-authorization-proxy
+aliases:
+- Spring method security
+- @PreAuthorize
+- method authorization proxy
+- self invocation bypass method security
+- SpEL security expression
+- AuthorizationManager method interceptor
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/spring-security-architecture.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-self-invocation-proxy-annotation-matrix.md
+- contents/spring/spring-mvc-request-lifecycle.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+expected_queries:
+- Spring method security는 URL 보안과 어떻게 달라?
+- @PreAuthorize가 self invocation에서 빠져나가는 이유는 proxy 때문이야?
+- Method security expression은 Authentication과 domain argument를 어떻게 참조해?
+- @Async나 thread boundary 뒤에서 method security가 달라지는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Spring method security를 URL filter chain보다 service method에 가까운 권한 강제
+  지점으로 설명한다. AOP proxy, self-invocation bypass, @PreAuthorize expression,
+  SecurityContext propagation, async boundary를 함께 다룬다.
+---
 # Spring Security Method Security Deep Dive
 
 > 한 줄 요약: Method security는 URL 차단보다 더 가까운 곳에서 권한을 강제하지만, 프록시 경계와 표현식, 호출 흐름을 이해하지 못하면 쉽게 빠져나간다.

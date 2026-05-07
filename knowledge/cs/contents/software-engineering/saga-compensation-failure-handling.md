@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Saga Compensation Failure Handling
+concept_id: software-engineering/saga-compensation-failure-handling
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- saga
+- compensation
+- idempotency
+- recovery
+aliases:
+- saga compensation failure
+- compensation failure handling
+- idempotent rollback in saga
+- saga manual recovery queue
+- orchestration compensation state
+- 사가 보상 실패 처리
+symptoms:
+- saga compensation을 일반 rollback처럼 보고 보상 작업 자체가 timeout, 중복, semantic conflict로 실패하는 상태를 따로 모델링하지 않아
+- COMPENSATION_FAILED, retryable compensation, manual recovery queue가 없어 운영자가 어느 단계에서 멈췄는지 알 수 없어
+- 보상 API가 idempotency key와 already compensated 확인 없이 여러 번 호출되어 중복 취소나 외부 상태 충돌을 만든다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- system-design/workflow-orchestration-saga-design
+- software-engineering/idempotency-retry-consistency-boundaries
+next_docs:
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/monolith-to-msa-failure-patterns
+- software-engineering/batch-recovery-runbook
+linked_paths:
+- contents/system-design/workflow-orchestration-saga-design.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/idempotency-retry-consistency-boundaries.md
+- contents/software-engineering/monolith-to-msa-failure-patterns.md
+- contents/software-engineering/api-design-error-handling.md
+confusable_with:
+- system-design/workflow-orchestration-saga-design
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/idempotency-retry-consistency-boundaries
+forbidden_neighbors: []
+expected_queries:
+- Saga compensation이 rollback과 다른 이유와 보상 작업이 실패할 때 상태를 어떻게 나눠야 하는지 설명해줘
+- COMPENSATION_FAILED 상태와 manual recovery queue를 saga state machine에 왜 둬야 해?
+- 보상 API를 idempotent하게 만들려면 idempotency key, 중복 실행 감지, already compensated 확인을 어떻게 설계해?
+- 결제 취소 compensation이 timeout 났을 때 retry, 재조회, 수동 복구를 어떤 기준으로 나눠?
+- compensation failure를 dead letter queue와 reconciliation job으로 수렴시키는 운영 흐름을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Saga compensation을 rollback이 아니라 실패할 수 있는 별도 업무 작업으로 보고 idempotent compensation, state machine, retry, manual recovery를 설계하는 advanced playbook이다.
+---
 # Saga Compensation Failure Handling
 
 > 한 줄 요약: Saga의 진짜 난점은 실패를 되돌리는 것이 아니라, compensation 자체가 또 실패할 때 시스템을 어떻게 안전하게 멈추고 복구할지 정하는 데 있다.

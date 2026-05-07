@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: equalsIgnoreCase vs CASE_INSENSITIVE_ORDER Bridge
+concept_id: language/equalsignorecase-vs-case-insensitive-order-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- string-comparison
+- comparator-ordering
+- null-safe-comparison
+aliases:
+- equalsIgnoreCase vs CASE_INSENSITIVE_ORDER
+- Java string case insensitive equality vs ordering
+- CASE_INSENSITIVE_ORDER sort
+- equalsIgnoreCase null safe
+- 대소문자 무시 비교 정렬
+- 자바 문자열 같은지 비교 vs 정렬 기준
+symptoms:
+- equalsIgnoreCase와 String.CASE_INSENSITIVE_ORDER가 둘 다 대소문자를 무시한다는 이유로 equality와 ordering 문제를 섞어
+- 문자열이 같은지 확인하는 boolean 비교와 정렬 순서를 만드는 comparator 결과를 구분하지 못해
+- case-insensitive TreeSet에서 compare 0이면 같은 자리로 합쳐질 수 있다는 sorted collection 효과를 놓쳐
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-string-basics
+- language/java-comparable-comparator-basics
+next_docs:
+- language/nullable-string-comparator-bridge
+- language/comparator-consistency-with-equals-bridge
+- language/locale-root-case-mapping-unicode-normalization
+linked_paths:
+- contents/language/java/java-string-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/nullable-string-comparator-bridge.md
+- contents/language/java/comparator-consistency-with-equals-bridge.md
+- contents/language/java/equality-vs-ordering-beginner-drill-sheet.md
+- contents/language/java/locale-root-case-mapping-unicode-normalization.md
+confusable_with:
+- language/comparator-consistency-with-equals-bridge
+- language/nullable-string-comparator-bridge
+- language/locale-root-case-mapping-unicode-normalization
+forbidden_neighbors: []
+expected_queries:
+- equalsIgnoreCase와 String.CASE_INSENSITIVE_ORDER 차이를 equality와 ordering으로 설명해줘
+- Java에서 대소문자 무시 문자열 비교와 대소문자 무시 정렬은 어떤 API를 써야 해?
+- CASE_INSENSITIVE_ORDER로 TreeSet을 만들면 case만 다른 문자열이 같은 자리로 합쳐질 수 있어?
+- equalsIgnoreCase null safe 패턴과 Comparator.nullsLast CASE_INSENSITIVE_ORDER를 비교해줘
+- 문자열이 같은지 확인하는 문제와 정렬 순서 문제를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Java String equalsIgnoreCase와 CASE_INSENSITIVE_ORDER를 equality boolean comparison과 case-insensitive ordering comparator로 구분하는 beginner primer다.
+  equalsIgnoreCase, CASE_INSENSITIVE_ORDER, case insensitive sort, null-safe string compare, TreeSet comparator equality 질문이 본 문서에 매핑된다.
+---
 # `equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge
 
 > 한 줄 요약: `equalsIgnoreCase()`는 "두 문자열이 같은가?"를 묻는 도구이고, `String.CASE_INSENSITIVE_ORDER`는 "무엇이 앞에 와야 하는가?"를 정하는 도구다. 둘 다 대소문자를 무시하지만, 해결하는 문제와 `null` 처리 방식은 다르다.

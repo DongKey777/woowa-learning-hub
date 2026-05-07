@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: SameSite=None Cross-Site Login Primer
+concept_id: security/samesite-none-cross-site-login-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- samesite none cross-site login primer
+- samesite none secure login primer
+- samesite=none external idp cookie
+- samesite=none iframe login cookie
+aliases:
+- samesite none cross-site login primer
+- samesite none secure login primer
+- samesite=none external idp cookie
+- samesite=none iframe login cookie
+- external idp callback cookie missing
+- partner portal iframe login loop
+- embedded login cookie blocked
+- social login cookie blocked samesite
+- 처음 배우는데 samesite none
+- samesite none 뭐예요
+- samesite none cross site login primer basics
+- samesite none cross site login primer beginner
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/cookie-rejection-reason-primer.md
+- contents/security/samesite-login-callback-primer.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/iframe-login-privacy-controls-primer.md
+- contents/security/embedded-login-csrf-bridge.md
+- contents/security/oauth2-oidc-social-login-primer.md
+- contents/security/subdomain-callback-handoff-chooser.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- SameSite=None Cross-Site Login Primer 핵심 개념을 설명해줘
+- samesite none cross-site login primer가 왜 필요한지 알려줘
+- SameSite=None Cross-Site Login Primer 실무 설계 포인트는 뭐야?
+- samesite none cross-site login primer에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 SameSite=None Cross-Site Login Primer를 다루는 primer 문서다. external IdP callback, partner portal iframe, embedded login처럼 브라우저가 **cross-site 맥락**에서 cookie를 다시 보내야 하는 흐름은 `SameSite=None; Secure` 축으로 봐야 하고, proxy 뒤에서 app이 HTTPS를 HTTP로 오해하는 문제는 `X-Forwarded-Proto` 축으로 따로 봐야 한다. 검색 질의가 samesite none cross-site login primer, samesite none secure login primer, samesite=none external idp cookie, samesite=none iframe login cookie처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # SameSite=None Cross-Site Login Primer
 
 > 한 줄 요약: external IdP callback, partner portal iframe, embedded login처럼 브라우저가 **cross-site 맥락**에서 cookie를 다시 보내야 하는 흐름은 `SameSite=None; Secure` 축으로 봐야 하고, proxy 뒤에서 app이 HTTPS를 HTTP로 오해하는 문제는 `X-Forwarded-Proto` 축으로 따로 봐야 한다.

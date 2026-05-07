@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: Shell Redirection Order Primer
+concept_id: operating-system/shell-redirection-order-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- shell-redirection-order
+- 2-1-order
+- stdout-stderr-redirect
+- fd-1-fd
+aliases:
+- shell redirection order
+- 2>&1 order
+- stdout stderr redirect
+- fd 1 fd 2 copy target
+- cmd >out 2>&1
+- cmd 2>&1 >out
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/stdio-buffering-after-redirect.md
+- contents/operating-system/runtime-shell-option-matrix.md
+- contents/operating-system/shell-wrapper-boundary-primer.md
+- contents/operating-system/ci-log-merge-behavior-primer.md
+expected_queries:
+- cmd >out 2>&1와 cmd 2>&1 >out은 왜 결과가 달라?
+- shell이 redirection을 왼쪽부터 적용한다는 뜻을 fd 1과 fd 2로 설명해줘
+- 2>&1은 stdout의 현재 대상을 복사하는 동작이야?
+- stderr stdout merge 순서와 CI log ordering은 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 shell redirection이 왼쪽부터 적용되고 2>&1은 stdout의 현재 target을 stderr에
+  복사하는 동작이라는 점을 fd 1과 fd 2 관점으로 설명하는 beginner bridge다.
+---
 # Shell Redirection Order Primer
 
 > 한 줄 요약: `cmd >out 2>&1`와 `cmd 2>&1 >out`의 차이는 shell이 redirection을 왼쪽부터 적용하면서 `2>&1`을 "stdout의 현재 대상 복사"로 처리하기 때문이다.

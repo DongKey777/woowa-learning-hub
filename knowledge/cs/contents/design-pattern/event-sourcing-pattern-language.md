@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Event Sourcing Pattern Language
+concept_id: design-pattern/event-sourcing-pattern-language
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- event-sourcing
+- event-replay
+- event-versioning
+aliases:
+- event sourcing
+- event log as source of truth
+- state reconstruction
+- replay events
+- event versioning
+- event upcaster
+- legacy replay compatibility
+- event sourced aggregate
+- event store
+- event sourcing cqrs
+symptoms:
+- 현재 상태만 저장하면서 왜 이 상태가 되었는지 감사, 재현, 장애 분석 근거가 부족하다
+- Event Sourcing을 단순 로그 저장으로 이해해 이벤트만으로 aggregate 상태를 재구성할 수 없게 설계한다
+- 이벤트 schema evolution, upcaster, snapshot, projection rebuild 비용을 고려하지 않고 CRUD 대체재처럼 도입한다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/cqrs-command-query-separation-pattern-language
+- design-pattern/memento-vs-event-sourcing
+next_docs:
+- design-pattern/event-upcaster-compatibility-patterns
+- design-pattern/checkpoint-snapshot-pattern
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+linked_paths:
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/event-upcaster-compatibility-patterns.md
+- contents/design-pattern/checkpoint-snapshot-pattern.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/unit-of-work-pattern.md
+- contents/design-pattern/memento-vs-event-sourcing.md
+- contents/design-pattern/idempotent-consumer-projection-dedup-pattern.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+confusable_with:
+- design-pattern/memento-vs-event-sourcing
+- design-pattern/domain-events-vs-integration-events
+- design-pattern/outbox-relay-idempotent-publisher
+- design-pattern/cqrs-command-query-separation-pattern-language
+forbidden_neighbors: []
+expected_queries:
+- Event Sourcing은 현재 상태를 저장하는 대신 event log를 source of truth로 삼는다는 게 무슨 뜻이야?
+- 단순 audit log와 event sourced aggregate의 event는 왜 달라?
+- replay로 상태를 재구성하려면 event schema versioning과 upcaster가 필요한 이유가 뭐야?
+- Event Sourcing을 CQRS, projection, snapshot과 함께 설계하는 이유가 뭐야?
+- 감사와 재현이 중요하지 않은 CRUD 도메인에서 Event Sourcing이 과한 선택일 수 있는 기준은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Event Sourcing Pattern Language deep dive로, 현재 상태를 직접 덮어쓰기보다
+  domain event log를 진실의 원천으로 append하고 replay로 aggregate state와 projection을
+  재구성하는 방식, 그리고 event versioning, upcaster, snapshot/checkpoint, CQRS projection의
+  운영 비용을 설명한다.
+---
 # Event Sourcing: 변경 이력을 진실의 원천으로 쓰는 패턴 언어
 
 > 한 줄 요약: Event Sourcing은 현재 상태를 직접 저장하기보다, 발생한 사건의 흐름을 저장하고 상태는 그 결과로 재구성하는 방식이다.
@@ -25,6 +96,8 @@ Event Sourcing은 **상태를 덮어쓰는 대신 사건을 순서대로 저장*
 - 감사와 재현이 쉽다
 - 읽기 모델을 따로 두는 경우가 많다
 - 이벤트 버전 관리가 필요하다
+
+그래서 Event Sourcing은 "로그를 많이 남기는 방식"이 아니라, 이벤트만으로 현재 상태를 다시 만들 수 있다는 강한 계약이다. 이 계약을 지키지 못하면 감사 로그도 아니고 안정적인 상태 저장도 아닌 중간 지대가 된다.
 
 ### Retrieval Anchors
 

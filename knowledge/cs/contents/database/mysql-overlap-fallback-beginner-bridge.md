@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: MySQL Overlap Fallback Beginner Bridge
+concept_id: database/mysql-overlap-fallback-beginner-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- booking-overlap
+- mysql-locking-read
+- slot-row
+- guard-row
+aliases:
+- mysql overlap fallback beginner
+- mysql locking read overlap
+- select for update overlap pitfall
+- slot row vs guard row mysql
+- mysql double booking beginner
+- PostgreSQL exclusion constraint vs MySQL locking read
+- MySQL에서 겹침 예약 막기
+- FOR UPDATE로 overlap 막을 수 있나요
+- slot row로 내려야 하나요
+symptoms:
+- MySQL SELECT FOR UPDATE를 PostgreSQL exclusion constraint처럼 겹치는 구간 자체를 막는 도구로 생각하고 있어
+- booking overlap을 base table range locking으로 버틸지 slot row, guard row로 바꿀지 선택해야 해
+- discrete slot, continuous interval, capacity sharing 중 어떤 충돌 surface가 맞는지 초급자 기준으로 고르고 싶어
+intents:
+- comparison
+- design
+prerequisites:
+- database/constraint-first-booking-primer
+- database/mysql-empty-result-locking-reads
+next_docs:
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/engine-fallbacks-overlap-enforcement
+linked_paths:
+- contents/database/constraint-first-booking-primer.md
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/phantom-safe-booking-patterns-primer.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+confusable_with:
+- database/mysql-empty-result-locking-reads
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+- database/unique-vs-slot-row-vs-guard-row-quick-chooser
+- database/engine-fallbacks-overlap-enforcement
+forbidden_neighbors: []
+expected_queries:
+- MySQL SELECT FOR UPDATE로 PostgreSQL exclusion constraint처럼 overlap을 직접 막을 수 있어?
+- 회의실 예약을 MySQL에서 slot row와 guard row 중 무엇으로 모델링할지 고르는 기준을 알려줘
+- continuous interval overlap을 base table locking read로 버티면 왜 plan과 index path에 민감해?
+- discrete booking slot이면 overlap query보다 slot row unique가 더 좋은 이유가 뭐야?
+- MySQL double booking을 junior 단계에서 안전하게 피하려면 어떤 fallback surface를 골라야 해?
+contextual_chunk_prefix: |
+  이 문서는 MySQL에서 booking overlap을 locking read로 직접 막으려는 착각을 slot row, guard row, exclusion constraint fallback 선택으로 연결하는 beginner chooser다.
+  FOR UPDATE로 overlap 막을 수 있나요, slot row vs guard row, MySQL double booking 질문이 본 문서에 매핑된다.
+---
 # MySQL Overlap Fallback Beginner Bridge
 
 > 한 줄 요약: MySQL의 `SELECT ... FOR UPDATE`는 PostgreSQL exclusion constraint처럼 "겹치는 시간 구간 자체"를 직접 막아 주는 도구가 아니라, 잘해야 특정 인덱스 scan 경로를 잠그는 보조 수단이다. 그래서 junior 단계에서는 "locking read로 버틸까?"보다 "slot row로 내릴까, guard row로 줄 세울까?"를 먼저 고르는 편이 안전하다.

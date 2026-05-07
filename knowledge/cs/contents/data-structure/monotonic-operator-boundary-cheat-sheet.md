@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Monotonic Operator Boundary Cheat Sheet
+concept_id: data-structure/monotonic-operator-boundary-cheat-sheet
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 89
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- monotonic-operator-boundary
+- strict-vs-equal
+- problem-sentence-to-pop-condition
+aliases:
+- monotonic operator boundary
+- monotonic pop condition table
+- less than vs less than equal monotonic
+- greater than vs greater than equal monotonic
+- strict vs or equal monotonic
+- problem phrase to operator
+- 단조 연산자 경계
+symptoms:
+- max/min 여부만 보고 pop 조건을 고르고, duplicate에서 오래된 값과 새 값 중 누가 남는지를 따로 결정하지 않는다
+- first greater, greater or equal, previous strictly smaller, leftmost max 같은 문장 표현을 바로 연산자로 번역하지 못한다
+- 값만 구하는 sliding window와 index tie-break가 필요한 window 문제에서 `<`/`<=` 선택이 달라질 수 있음을 놓친다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- data-structure/monotonic-queue-and-stack
+next_docs:
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/monotonic-strict-vs-equal-translation-card
+- data-structure/monotonic-deque-walkthrough
+- data-structure/monotonic-stack-walkthrough
+linked_paths:
+- contents/data-structure/monotonic-queue-and-stack.md
+- contents/data-structure/monotonic-duplicate-rule-micro-drill.md
+- contents/data-structure/monotonic-strict-vs-equal-translation-card.md
+- contents/data-structure/monotonic-deque-walkthrough.md
+- contents/data-structure/monotonic-stack-walkthrough.md
+- contents/data-structure/monotonic-deque-vs-stack-shared-input-drill.md
+confusable_with:
+- data-structure/monotonic-duplicate-rule-micro-drill
+- data-structure/monotonic-strict-vs-equal-translation-card
+- data-structure/monotonic-deque-vs-stack-shared-input-drill
+- data-structure/deque-vs-stack-signal-card
+forbidden_neighbors: []
+expected_queries:
+- Monotonic deque stack에서 < <= > >= pop 조건을 문제 문장으로 어떻게 고르지?
+- first greater와 greater or equal은 stack pop 조건이 어떻게 달라?
+- leftmost max와 rightmost max는 deque duplicate tie-break에서 어떤 연산자를 써?
+- previous strictly smaller에서 equal을 pop해야 하는 이유는?
+- 단조 구조 연산자 경계 치트시트를 한 화면으로 보고 싶어
+contextual_chunk_prefix: |
+  이 문서는 monotonic deque/stack의 operator boundary를 문제 문장에 맞춰
+  고르는 chooser다. first/next/previous greater/smaller, or equal, leftmost
+  max/min, rightmost max/min, duplicate tie-break를 pop condition으로 번역한다.
+---
 # Monotonic Operator Boundary Cheat Sheet
 
 > 한 줄 요약: monotonic deque/stack에서 `중복 값`이 있을 때 `<`/`<=`, `>`/`>=`는 "누가 남는가(오래된 값 vs 새 값)"를 정하는 경계다.

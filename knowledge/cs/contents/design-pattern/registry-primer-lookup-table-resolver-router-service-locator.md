@@ -9,6 +9,11 @@ doc_role: chooser
 level: beginner
 language: mixed
 source_priority: 88
+review_feedback_tags:
+- registry-lookup-table
+- resolver-service-locator
+- registry
+- lookup-table-vs
 aliases:
 - registry primer
 - lookup table vs registry
@@ -39,7 +44,6 @@ contextual_chunk_prefix: |
   자기 의존성을 키로 꺼내가기, lookup table 패턴, resolver 라우터 차이
   같은 자연어 paraphrase가 본 문서의 분기에 매핑된다.
 ---
-
 # Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기
 
 > 한 줄 요약: 초보자가 `lookup table`, `resolver`, `router`, `service locator`를 모두 "어딘가에서 찾아오는 코드"로 묶어 헷갈릴 때, 먼저 "단순 조회인지, 입력 해석인지, 요청 분기인지, 숨은 의존성 조회인지"로 나누면 된다.

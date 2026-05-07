@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Change Buffer Purge History List Length
+concept_id: database/change-buffer-purge-history-length
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: ko
+source_priority: 81
+mission_ids: []
+review_feedback_tags:
+- change-buffer
+- purge-debt
+- history-list-length
+- undo-log
+aliases:
+- change buffer purge history list length
+- change buffer and purge
+- purge history list length
+- history list length
+- undo debt
+- MVCC cleanup
+- innodb_purge_threads
+- secondary index merge purge
+- purge debt
+- history list length 증가
+symptoms:
+- 대량 write 이후 change buffer merge와 purge가 동시에 밀려 read latency, undo pressure, background IO가 함께 나빠진다
+- 오래 열린 transaction 때문에 purge가 과거 버전을 지우지 못해 History list length가 계속 증가한다
+- 쓰기 지연을 줄이는 옵션과 MVCC cleanup debt를 별개로 보고 동시에 터지는 운영 증상을 놓친다
+intents:
+- symptom
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/redo-undo-checkpoint-crash-recovery
+- database/transaction-isolation-locking
+- database/mvcc-replication-sharding
+next_docs:
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/change-buffer-merge-debt
+- database/change-buffer-myths-vs-reality
+linked_paths:
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/database/change-buffer-merge-debt.md
+- contents/database/change-buffer-myths-vs-reality.md
+confusable_with:
+- database/change-buffer-merge-debt
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/redo-undo-checkpoint-crash-recovery
+- database/transaction-isolation-locking
+forbidden_neighbors: []
+expected_queries:
+- change buffer와 purge history list length가 동시에 밀리면 undo debt와 read latency가 같이 나빠지는 이유가 뭐야?
+- 오래 열린 transaction이 purge를 막아 History list length가 증가하는 현상을 설명해줘
+- write-heavy batch 뒤에 InnoDB Ibuf와 history list length를 같이 봐야 하는 이유가 뭐야?
+- change buffer merge debt와 MVCC purge debt는 각각 어떤 미뤄진 비용이야?
+- purge lag, undo log, secondary index merge가 함께 터지는 운영 증상을 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 Change Buffer, Purge, History List Length symptom router로, secondary index change buffering과
+  MVCC undo purge가 모두 deferred work이며 long transaction, history list length, merge backlog가 함께 밀릴 때
+  read/write latency와 background IO가 악화되는 증상을 설명한다.
+---
 # Change Buffer, Purge, History List Length
 
 > 한 줄 요약: 쓰기 성능을 살리는 지연 장치와 과거 버전을 치우는 정리 작업은 한 몸이고, 둘이 밀리면 결국 undo debt로 돌아온다.

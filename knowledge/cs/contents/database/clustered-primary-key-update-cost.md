@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Clustered Primary Key Update Cost
+concept_id: database/clustered-primary-key-update-cost
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- primary-key-update
+- clustered-index
+- row-relocation
+- secondary-index-maintenance
+aliases:
+- clustered primary key update
+- PK change cost
+- primary key update cost
+- row relocation
+- delete insert PK update
+- secondary index maintenance PK
+- InnoDB clustering update
+- natural key PK update
+- clustered PK update cost
+- primary key 변경 비용
+symptoms:
+- 자연 키를 primary key로 잡았는데 나중에 email, phone, external code 변경 배치가 row relocation처럼 비싸진다
+- PK 변경을 단순 column update로 보고 clustered location과 secondary index reference 갱신 비용을 놓친다
+- secondary index가 많을수록 PK update 비용이 커지는 이유를 설명하지 못한다
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- database/clustered-index-locality
+- database/secondary-index-maintenance-statistics-skew
+next_docs:
+- database/page-split-merge-fill-factor
+- database/clustered-index-locality
+- database/redo-log-write-amplification
+linked_paths:
+- contents/database/clustered-index-locality.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/redo-log-write-amplification.md
+confusable_with:
+- database/clustered-index-locality
+- database/secondary-index-maintenance-statistics-skew
+- database/page-split-merge-fill-factor
+- database/index-basics
+forbidden_neighbors: []
+expected_queries:
+- clustered primary key를 update하면 row 값을 바꾸는 게 아니라 row relocation과 secondary index maintenance가 생기는 이유가 뭐야?
+- InnoDB에서 natural key를 PK로 쓰면 email이나 외부 코드 변경 때 왜 비용이 커져?
+- PK 변경이 delete insert처럼 느껴지고 redo undo page split을 동반하는 이유를 설명해줘
+- secondary index가 많을수록 primary key update cost가 커지는 구조를 알려줘
+- 변경 가능한 business key는 primary key보다 unique key로 두는 편이 나은 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Clustered Primary Key Update Cost deep dive로, InnoDB clustered primary key 변경이
+  row relocation, delete+insert-like work, secondary index reference maintenance, redo/undo, page split 비용을
+  동반하므로 mutable natural key를 PK로 둘 때 위험하다는 점을 설명한다.
+---
 # Clustered Primary Key Update Cost
 
 > 한 줄 요약: primary key를 바꾸는 일은 한 row의 값을 수정하는 게 아니라, clustered 위치와 모든 secondary index 참조를 함께 흔드는 작업이다.

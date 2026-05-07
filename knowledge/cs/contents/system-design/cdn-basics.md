@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: CDN 기초
+concept_id: system-design/cdn-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- cdn-cache-origin-boundary
+- global-latency-reduction
+- edge-cache-invalidation
+aliases:
+- CDN basics
+- Content Delivery Network
+- CDN 기초
+- edge server cache
+- origin server CDN
+- CDN hit miss
+- CDN invalidation
+- 정적 파일 CDN
+symptoms:
+- CDN을 원본 서버 대체물로 이해해서 origin과 edge 역할을 섞고 있어
+- Cache HIT, MISS, TTL, invalidation이 사용자 지연과 원본 부하에 어떻게 연결되는지 헷갈려
+- 개인화 API 응답을 CDN에 캐시해도 되는지 판단 기준이 흐려
+intents:
+- definition
+- design
+prerequisites:
+- network/http-caching-conditional-request-basics
+- system-design/caching-basics
+next_docs:
+- system-design/cdn-image-transformation-pipeline-design
+- network/cache-control-practical
+- system-design/file-storage-presigned-url-cdn-design
+- system-design/distributed-cache-design
+linked_paths:
+- contents/system-design/cdn-image-transformation-pipeline-design.md
+- contents/network/cache-control-practical.md
+- contents/system-design/file-storage-presigned-url-cdn-design.md
+- contents/network/http-caching-conditional-request-basics.md
+confusable_with:
+- network/http-caching-conditional-request-basics
+- system-design/distributed-cache-design
+- system-design/file-storage-presigned-url-cdn-design
+forbidden_neighbors: []
+expected_queries:
+- CDN은 origin server와 edge server 사이에서 어떤 역할을 해?
+- CDN cache HIT와 MISS는 지연 시간과 origin 부하에 어떻게 영향을 줘?
+- Cache-Control TTL을 길게 주면 CDN에서 어떤 장단점이 생겨?
+- 파일명 해시와 CDN invalidation은 어떤 문제를 다르게 해결해?
+- 개인화된 API 응답을 CDN에 캐시하면 왜 위험할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 CDN beginner primer로, origin server와 edge cache, cache HIT/MISS, Cache-Control TTL, invalidation, hashed asset URL을 통해 latency와 origin load를 줄이는 구조를 설명한다.
+  CDN이 뭐예요, edge server, origin 부하, CDN hit miss, 정적 파일 캐시, 개인화 응답 CDN 위험 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # CDN 기초 (CDN Basics)
 
 > 한 줄 요약: CDN은 정적 파일과 자주 요청되는 콘텐츠를 원본 서버 대신 전 세계 가까운 서버에서 전달해 응답 속도를 높이고 원본 부하를 줄인다.

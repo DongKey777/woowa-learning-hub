@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: "Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드"
+concept_id: network/fetch-redirected-response-url-opaqueredirect-mini-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- fetch-redirect-observation
+- response-url-final-destination
+- opaqueredirect-manual-mode
+aliases:
+- fetch redirected vs manual
+- response.redirected
+- response.url
+- opaqueredirect
+- manual redirect status 0
+- final url fetch
+symptoms:
+- response.url을 원래 요청 URL이라고 생각하고 final /login 도착을 놓친다
+- manual redirect에서 normal 302 Location header를 코드로 다 읽을 수 있다고 기대한다
+- response.redirected true면 원래 Location까지 알 수 있다고 착각한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+next_docs:
+- network/fetch-redirect-error-choice-card
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- security/browser-401-vs-302-login-redirect-guide
+linked_paths:
+- contents/network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md
+- contents/network/fetch-redirect-error-choice-card.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/fetch-redirect-error-choice-card
+- network/browser-fetch-vs-page-navigation-redirect-trace-card
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- network/redirect-vs-forward-vs-spa-navigation-basics
+forbidden_neighbors: []
+expected_queries:
+- "fetch response.redirected response.url opaqueredirect 차이를 설명해줘"
+- "response.url이 /login이면 API가 final login page로 도착한 것일 수 있어?"
+- "redirect manual에서 status 0 opaqueredirect가 보이면 왜 Location을 코드로 못 읽어?"
+- "follow 모드의 redirected와 url은 post-follow 신호라는 점을 알려줘"
+- "fetch redirect를 DevTools 302 row와 같이 추적하는 법을 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 fetch redirect follow에서 response.redirected와 response.url이
+  final destination/post-follow signal이고, manual mode에서는 opaqueredirect,
+  status 0 같은 제한 신호가 보인다는 차이를 설명하는 beginner primer다.
+---
 # Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드
 
 > 한 줄 요약: `response.redirected`와 `response.url`은 대개 `redirect: "follow"` 뒤에 보이는 최종 결과 신호이고, `redirect: "manual"`에서는 대신 `response.type === "opaqueredirect"` 같은 제한된 신호만 보여서 둘을 같은 칸에서 읽으면 "`manual`인데 왜 `redirected`가 안 보이죠?" 같은 혼동이 생긴다.

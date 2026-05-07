@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: MVCC History List Growth and Snapshot Too Old
+concept_id: database/mvcc-history-list-snapshot-too-old
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- mvcc
+- undo-log
+- purge-lag
+- long-transaction
+aliases:
+- MVCC history list growth
+- snapshot too old
+- history list length
+- undo log purge lag
+- vacuum debt
+- consistent snapshot too long
+- long transaction undo bloat
+- 오래 열린 트랜잭션 때문에 undo가 쌓여요
+- history list가 계속 커져요
+symptoms:
+- 오래 열린 read transaction 때문에 InnoDB history list length와 undo tablespace가 계속 커지고 있어
+- report query나 batch가 snapshot을 오래 붙잡아 purge lag, vacuum debt, replica lag가 같이 커져
+- snapshot too old 오류나 조용한 성능 저하가 긴 consistent read 이후 발생해
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/transaction-isolation-locking
+- database/redo-undo-checkpoint-crash-recovery
+next_docs:
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/vacuum-purge-freeze-risk-runbook-routing
+- database/autovacuum-freeze-debt-wraparound-playbook
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/mvcc-replication-sharding.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/database/vacuum-purge-freeze-risk-runbook-routing.md
+- contents/database/autovacuum-freeze-debt-wraparound-playbook.md
+confusable_with:
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/autovacuum-freeze-debt-wraparound-playbook
+- database/redo-undo-checkpoint-crash-recovery
+forbidden_neighbors: []
+expected_queries:
+- 오래 열린 트랜잭션 하나가 undo log와 history list length를 왜 키우는지 설명해줘
+- InnoDB에서 snapshot too old 대신 purge lag와 undo bloat로 보이는 증상을 어떻게 해석해?
+- report query가 consistent snapshot을 오래 잡을 때 운영 DB에 어떤 압박이 생겨?
+- MVCC history list growth를 줄이려면 batch read를 어떤 방식으로 나눠야 해?
+- vacuum debt와 purge lag를 lock wait나 디스크 부족과 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 MVCC history list growth, undo log purge lag, snapshot too old, long transaction이 과거 row version 정리를 막는 증상을 라우팅하는 advanced 문서다.
+  history list length 증가, undo tablespace 팽창, vacuum debt, 오래 열린 report query 질문이 본 문서에 매핑된다.
+---
 # MVCC History List Growth와 Snapshot Too Old
 
 > 한 줄 요약: 오래 열린 트랜잭션은 과거를 읽게 해 주는 대신, undo를 쌓아 올려 전체 시스템의 숨통을 조인다.

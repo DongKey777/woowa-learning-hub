@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Adapter Bulk Optimization Without Port Leakage
+concept_id: software-engineering/adapter-bulk-optimization
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/payment
+- missions/lotto
+review_feedback_tags:
+- ports-and-adapters
+- bulk-contract
+- boundary-leakage
+aliases:
+- Adapter Bulk Optimization Without Port Leakage
+- saveAll port smell
+- JDBC batch inside adapter
+- HTTP bulk endpoint mapping
+- per-item port contract
+- batch optimization without leakage
+- bulk port 언제 올리나요
+symptoms:
+- saveAll, JDBC batch, 외부 bulk endpoint 같은 기술 최적화 이름을 application port 이름으로 그대로 올려
+- 단건 도메인 의미와 bulk 전송 최적화를 분리하지 못해 use case 테스트에 JPA entity나 vendor bulk DTO가 들어와
+- partial failure와 idempotency가 실제 업무 단위인지 adapter 구현 세부인지 구분하지 못해 bulk port를 성급히 만든다
+intents:
+- design
+- troubleshooting
+- comparison
+prerequisites:
+- software-engineering/ports-and-adapters-beginner-primer
+- software-engineering/bulk-port-tradeoffs
+next_docs:
+- software-engineering/testing-named-bulk-contracts
+- software-engineering/bulk-idempotency-keys
+- software-engineering/true-bulk-contracts-partial-failure-results
+linked_paths:
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/software-engineering/testing-named-bulk-contracts.md
+- contents/software-engineering/bulk-idempotency-keys-for-named-contracts.md
+- contents/software-engineering/true-bulk-contracts-partial-failure-results.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+confusable_with:
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/testing-named-bulk-contracts
+- software-engineering/bulk-helper-vs-query-model
+forbidden_neighbors: []
+expected_queries:
+- saveAll이나 JDBC batch가 더 빠른데 application port도 saveAll로 만들어야 하는지 알려줘
+- HTTP bulk endpoint를 쓰더라도 domain port는 per-item 계약을 유지할 수 있는 이유가 뭐야?
+- adapter 안에서 batch 최적화를 숨기면 partial failure와 item result를 어떻게 보존해야 해?
+- bulk port를 진짜 업무 단위로 승격해야 하는 경우와 기술 최적화로 숨길 경우를 비교해줘
+- hexagonal architecture에서 JPA entity나 vendor bulk DTO가 port로 새는 냄새를 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 ports and adapters에서 saveAll, JDBC batch, HTTP bulk endpoint 같은 bulk 최적화를 adapter 내부 구현으로 숨기고 application port는 domain-shaped per-item contract를 유지하는 beginner bridge다.
+---
 # Adapter Bulk Optimization Without Port Leakage
 
 > 한 줄 요약: `saveAll`, JDBC batch, HTTP bulk endpoint는 adapter 안에서 사용할 수 있지만, application port는 여전히 "한 주문 저장", "한 알림 전송"처럼 item 단위와 도메인 언어를 유지해야 한다.

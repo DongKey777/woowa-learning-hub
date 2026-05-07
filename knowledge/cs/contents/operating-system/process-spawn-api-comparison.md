@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Process Spawn API Comparison fork vfork posix_spawn exec clone
+concept_id: operating-system/process-spawn-api-comparison
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 77
+review_feedback_tags:
+- process-spawn-api
+- comparison
+- fork-vfork-posix
+- spawn-exec-clone
+aliases:
+- fork vfork posix_spawn exec clone comparison
+- process spawn API
+- exec does not create new process
+- posix_spawn high level API
+- clone flags low level primitive
+- vfork exec path
+intents:
+- comparison
+- definition
+linked_paths:
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/fork-exec-copy-on-write-behavior.md
+- contents/operating-system/posix-spawn-file-actions-primer.md
+- contents/operating-system/posix-spawn-attributes-primer.md
+- contents/operating-system/clone-flags-thread-like-process-like-namespace-isolated.md
+confusable_with:
+- operating-system/fork-exec-copy-on-write-behavior
+- operating-system/posix-spawn-file-actions-primer
+- operating-system/clone-flags-thread-like-process-like-namespace-isolated
+expected_queries:
+- fork vfork posix_spawn exec clone은 무엇이 새로 생기고 무엇이 교체되는지 어떻게 달라?
+- exec는 새 process를 만드는 게 아니라 current process image를 갈아끼우는 거야?
+- posix_spawn은 fork/exec보다 어떤 high-level request로 보면 돼?
+- clone은 Linux에서 thread-like process-like namespace child를 직접 고르는 primitive야?
+contextual_chunk_prefix: |
+  이 문서는 fork, vfork, posix_spawn, exec, clone을 비교해 무엇이 새로 생기고 무엇이 기존
+  process image를 교체하는지 분리한다. subprocess API 이름이 섞일 때 읽는 beginner chooser다.
+---
 # Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`
 
 > 한 줄 요약: `fork()`는 부모를 하나 더 갈라 만드는 기본 모델이고, `vfork()`는 `exec()` 직전까지 부모를 잠깐 멈추는 특수 경로이며, `posix_spawn()`은 "새 프로그램 하나 실행"을 요청하는 고수준 API이고, `exec()`는 새 프로세스를 만드는 게 아니라 현재 프로세스를 갈아끼우고, `clone()`은 Linux에서 공유 범위를 직접 고르는 저수준 생성 primitive다.

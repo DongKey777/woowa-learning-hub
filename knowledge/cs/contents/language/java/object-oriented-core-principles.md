@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Object Oriented Core Principles
+concept_id: language/object-oriented-core-principles
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- oop
+- encapsulation
+- polymorphism
+aliases:
+- Object Oriented Core Principles
+- Java OOP beginner route
+- 객체지향 핵심 원리
+- 클래스 객체 캡슐화 상속 다형성 추상화
+- OOP to design pattern beginner route
+- 객체지향 큰 그림
+symptoms:
+- 클래스와 객체는 알지만 캡슐화, 상속, 다형성, 추상화가 코드에서 언제 쓰이는지 큰 그림으로 연결하지 못해
+- 상속을 코드 재사용 도구로 먼저 떠올려 is-a 관계와 조합 기본값을 구분하지 못해
+- 디자인 패턴을 배우기 전에 OOP 기본 원리와 Java 타입, 추상 클래스, 인터페이스 route가 끊겨 어디서 시작할지 막혀
+intents:
+- definition
+- design
+- comparison
+prerequisites:
+- language/java-types-class-object-oop-basics
+next_docs:
+- language/java-inheritance-overriding-basics
+- language/java-abstract-class-vs-interface-basics
+- design-pattern/composition-over-inheritance-basics
+linked_paths:
+- contents/language/java/java-types-class-object-oop-basics.md
+- contents/language/java/java-inheritance-overriding-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/abstract-class-vs-interface-follow-up-drill.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/software-engineering/oop-design-basics.md
+confusable_with:
+- language/java-types-class-object-oop-basics
+- language/java-inheritance-overriding-basics
+- design-pattern/composition-over-inheritance-basics
+forbidden_neighbors: []
+expected_queries:
+- 객체지향 핵심 원리를 Java beginner 기준으로 클래스 객체 캡슐화 상속 다형성 추상화 순서로 설명해줘
+- 클래스와 객체는 알겠는데 OOP로 설계한다는 게 코드에서 어떤 의미야?
+- 상속은 코드 재사용보다 is-a 관계일 때 쓰고 조합을 기본값으로 보는 이유가 뭐야?
+- OOP 큰 그림 다음에 추상 클래스 인터페이스 조합 디자인 패턴을 어떤 순서로 읽으면 좋아?
+- 캡슐화 정보 은닉 다형성 추상화를 정의 암기 말고 코드 상황으로 연결해줘
+contextual_chunk_prefix: |
+  이 문서는 Java beginner가 OOP 큰 그림을 클래스/객체, 캡슐화, 상속, 다형성, 추상화, 조합 route로 연결하는 primer다.
+  객체지향, OOP, encapsulation, inheritance, polymorphism, abstraction, composition 질문이 본 문서에 매핑된다.
+---
 # 객체지향 핵심 원리
 
 > 한 줄 요약: 처음 배우는 사람이 OOP 큰 그림에서 클래스/객체, 캡슐화, 상속, 다형성, 추상화가 언제 쓰이는지 연결해 보는 Java 중심 primer다.

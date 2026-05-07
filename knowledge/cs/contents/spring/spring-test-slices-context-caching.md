@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring Test Slices and Context Caching
+concept_id: spring/test-slices-context-caching
+canonical: true
+category: spring
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 82
+review_feedback_tags:
+- test-slices-context
+- caching
+- webmvctest-datajpatest-context
+- cache
+aliases:
+- Spring test slices context caching
+- WebMvcTest DataJpaTest context cache
+- test context reuse
+- slice test slow
+- context cache key
+- SpringBootTest vs slice cache
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-testing-basics.md
+- contents/spring/spring-test-slice-scan-boundaries.md
+- contents/spring/spring-transactional-self-invocation-test-bridge-primer.md
+- contents/spring/spring-test-property-override-boundaries-primer.md
+- contents/spring/spring-test-context-cache-split-triage-guide.md
+- contents/spring/spring-test-slice-import-testconfiguration-boundaries.md
+symptoms:
+- 테스트가 갑자기 느려졌고 비슷한 slice context가 여러 번 새로 뜬다.
+- @MockBean, property, import 차이 때문에 context cache reuse가 깨진다.
+- slice test와 SpringBootTest를 섞은 뒤 캐시 hit율이 낮다.
+expected_queries:
+- Spring test slice와 context caching은 느린 테스트에서 어떻게 같이 봐야 해?
+- WebMvcTest DataJpaTest가 context cache를 재사용하지 못하는 이유는?
+- Spring 테스트 context cache key는 어떤 요소로 갈라져?
+- slice test를 빠르게 유지하려면 property import mock bean을 어떻게 관리해?
+contextual_chunk_prefix: |
+  이 문서는 Spring 테스트가 느려졌을 때 slice 선택과 context cache reuse를 함께 보는
+  playbook이다. WebMvcTest, DataJpaTest, SpringBootTest, property override, @MockBean,
+  @DirtiesContext, @Import가 cache key에 미치는 영향을 다룬다.
+---
 # Spring Test Slices와 Context Caching
 
 > 한 줄 요약: 이 문서는 "`왜 테스트가 갑자기 느려졌지?`" 단계에서 slice와 context cache를 같이 보는 follow-up이고, 처음 테스트를 고르는 단계라면 먼저 beginner primer로 내려가는 편이 안전하다.

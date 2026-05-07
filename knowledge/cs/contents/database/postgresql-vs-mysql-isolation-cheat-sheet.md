@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: PostgreSQL vs MySQL Isolation Cheat Sheet
+concept_id: database/postgresql-vs-mysql-isolation-cheat-sheet
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- isolation-level
+- postgresql-mysql
+- gap-lock
+- serializable-retry
+aliases:
+- postgresql vs mysql isolation
+- postgres vs mysql isolation
+- isolation level 이름 같은데 왜 달라요
+- postgresql repeatable read
+- mysql repeatable read
+- postgresql serializable retry
+- mysql serializable lock wait
+- snapshot isolation vs next-key lock
+- write skew 왜 생겨요
+- gap lock 왜 나와요
+symptoms:
+- READ COMMITTED, REPEATABLE READ, SERIALIZABLE 이름이 같으니 PostgreSQL과 MySQL이 같은 방식으로 안전성을 만든다고 생각하고 있어
+- MySQL RR next-key lock에 기대던 absence check를 PostgreSQL RR로 그대로 옮기려 해
+- PostgreSQL SERIALIZABLE의 SSI abort/retry와 MySQL SERIALIZABLE의 lock-heavy 체감을 같은 운영 전략으로 다루려 해
+intents:
+- comparison
+- definition
+prerequisites:
+- database/transaction-isolation-locking
+- database/read-committed-repeatable-read-anomalies
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/gap-lock-next-key-lock
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/lost-update-vs-write-skew-vs-phantom-timeline-guide.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+confusable_with:
+- database/transaction-isolation-locking
+- database/mysql-gap-lock-blind-spots-read-committed
+- database/postgresql-serializable-retry-playbook
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL과 MySQL의 READ COMMITTED, REPEATABLE READ, SERIALIZABLE은 이름은 같아도 왜 체감이 달라?
+- PostgreSQL REPEATABLE READ와 MySQL REPEATABLE READ를 snapshot isolation과 next-key locking 관점에서 비교해줘
+- MySQL RR에서 되던 SELECT FOR UPDATE absence check를 PostgreSQL로 옮기면 왜 위험해?
+- PostgreSQL SERIALIZABLE은 retry 중심이고 MySQL SERIALIZABLE은 locking 중심으로 느껴지는 이유가 뭐야?
+- isolation level을 고를 때 엔진 구현 방식까지 같이 봐야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL과 MySQL InnoDB의 READ COMMITTED, REPEATABLE READ, SERIALIZABLE을 snapshot, next-key lock, SSI retry, lock wait 관점으로 비교하는 beginner bridge다.
+  isolation level 이름 같은데 왜 달라요, PostgreSQL RR vs MySQL RR, Serializable retry vs lock wait 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL vs MySQL Isolation Cheat Sheet
 
 > 한 줄 요약: `READ COMMITTED`, `REPEATABLE READ`, `SERIALIZABLE`은 이름이 같아도 PostgreSQL과 MySQL(InnoDB)이 안전성을 만드는 방식이 달라서, 한 엔진에서 통하던 동시성 직관을 다른 엔진에 그대로 옮기면 쉽게 틀린다.

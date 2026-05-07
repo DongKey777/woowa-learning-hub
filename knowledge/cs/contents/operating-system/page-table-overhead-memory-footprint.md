@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Page Table Overhead Memory Footprint
+concept_id: operating-system/page-table-overhead-memory-footprint
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- page-table-overhead
+- memory-footprint
+- memory-footprint-page
+- tables
+aliases:
+- page table overhead
+- memory footprint page tables
+- page table walk
+- vm.max_map_count
+- mmap heavy apps
+- TLB huge page overhead
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/tlb-page-table-walk-bridge.md
+- contents/operating-system/mmap-vs-read-page-cache-behavior.md
+- contents/operating-system/vm-max-map-count-mmap-heavy-apps.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/thp-huge-pages-tlb-latency.md
+- contents/operating-system/khugepaged-runtime-behavior.md
+expected_queries:
+- page table은 왜 memory footprint와 fault cost를 숨은 비용으로 키워?
+- mmap-heavy app에서 vm.max_map_count와 page table overhead를 어떻게 봐?
+- TLB miss와 page table walk, huge page는 어떤 관계야?
+- mapping 수와 memory size가 커질수록 page table 비용이 커지는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 page table이 address translation에 필요하지만 mapping 수와 memory footprint가 커질수록
+  hidden memory overhead, page table walk cost, fault cost가 커진다는 점을 설명한다.
+---
 # Page Table Overhead, Memory Footprint
 
 > 한 줄 요약: page table은 주소 변환을 위해 필요하지만, 매핑 수와 메모리 크기가 커질수록 숨은 메모리 오버헤드와 fault 비용이 커진다.

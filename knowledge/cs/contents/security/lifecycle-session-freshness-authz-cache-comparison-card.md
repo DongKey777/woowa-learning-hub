@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Lifecycle vs Session Freshness vs AuthZ Cache 비교 카드
+concept_id: security/lifecycle-session-freshness-authz-cache-comparison-card
+canonical: false
+category: security
+difficulty: beginner
+doc_role: deep_dive
+level: beginner
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- lifecycle vs session freshness vs authz cache
+- lifecycle freshness cache comparison
+- deprovision still access compare card
+- role changed but session still works compare
+aliases:
+- lifecycle vs session freshness vs authz cache
+- lifecycle freshness cache comparison
+- deprovision still access compare card
+- role changed but session still works compare
+- grant but only some pods 403 compare
+- beginner auth taxonomy split
+- lifecycle issue vs freshness issue vs cache issue
+- source of truth vs session claim vs authz cache
+- disable still access triage card
+- disable access shutdown mismatch
+- account-state tail
+- access tail after disable
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/identity-lifecycle-provisioning-primer.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/tenant-membership-change-session-scope-basics.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authz-cache-inconsistency-runtime-debugging.md
+- contents/security/scim-deprovisioning-session-authz-consistency.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Lifecycle vs Session Freshness vs AuthZ Cache 비교 카드 핵심 개념을 설명해줘
+- lifecycle vs session freshness vs authz cache가 왜 필요한지 알려줘
+- Lifecycle vs Session Freshness vs AuthZ Cache 비교 카드 실무 설계 포인트는 뭐야?
+- lifecycle vs session freshness vs authz cache에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Lifecycle vs Session Freshness vs AuthZ Cache 비교 카드를 다루는 deep_dive 문서다. `disable/deprovision`, `role changed but still works`, `grant했는데 특정 pod만 403` 같은 문장을 보면 먼저 "source of truth 변화 자체 문제인지", "현재 session/claim이 낡았는지", "인가 cache가 옛 결론을 재사용하는지"를 갈라야 한다. 검색 질의가 lifecycle vs session freshness vs authz cache, lifecycle freshness cache comparison, deprovision still access compare card, role changed but session still works compare처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Lifecycle vs Session Freshness vs AuthZ Cache 비교 카드
 
 **난이도: 🟢 Beginner**

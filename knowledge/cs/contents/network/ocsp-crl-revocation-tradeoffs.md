@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "OCSP, CRL Revocation Trade-offs"
+concept_id: network/ocsp-crl-revocation-tradeoffs
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- tls-revocation
+- ocsp-crl
+- certificate-validation
+aliases:
+- OCSP
+- CRL
+- certificate revocation
+- OCSP stapling
+- soft fail hard fail
+- revocation latency
+- trust store
+- certificate status
+symptoms:
+- 인증서가 만료 전이면 항상 신뢰해도 된다고 생각한다
+- OCSP 조회 지연이나 stapling 실패를 TLS handshake latency와 연결하지 못한다
+- revocation 조회 실패 시 soft fail과 hard fail trade-off를 설계하지 않는다
+- CRL 배치성, OCSP 실시간성, privacy/availability 균형을 구분하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/certificate-rotation-sni-blast-radius
+next_docs:
+- network/tls-session-resumption-0rtt-replay-risk
+- network/api-gateway-reverse-proxy-operational-points
+- network/dns-over-https-operational-tradeoffs
+- network/mtls-handshake-failure-diagnosis
+linked_paths:
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/certificate-rotation-sni-blast-radius.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/dns-over-https-operational-tradeoffs.md
+confusable_with:
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/certificate-rotation-sni-blast-radius
+- network/mtls-handshake-failure-diagnosis
+- network/tls-session-resumption-0rtt-replay-risk
+forbidden_neighbors: []
+expected_queries:
+- "OCSP와 CRL certificate revocation trade-off를 설명해줘"
+- "OCSP stapling 실패가 TLS handshake latency를 늘리는 이유는?"
+- "revocation check 실패 때 soft fail과 hard fail을 어떻게 선택해?"
+- "인증서가 만료 전이어도 폐기된 인증서를 믿지 않게 하는 방법은?"
+- "CRL과 OCSP는 실시간성, privacy, availability 측면에서 어떻게 달라?"
+contextual_chunk_prefix: |
+  이 문서는 certificate revocation에서 OCSP, CRL, OCSP stapling,
+  soft fail/hard fail, trust store, latency와 privacy/availability trade-off를
+  다루는 advanced playbook이다.
+---
 # OCSP, CRL Revocation Trade-offs
 
 > 한 줄 요약: 인증서 revocation은 OCSP의 실시간성, CRL의 배치성, 그리고 장애 시 fallback 행동을 함께 설계해야 한다.

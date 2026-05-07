@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Spring SSE Disconnect Observability Patterns
+concept_id: spring/sse-disconnect-observability-patterns
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- sse-disconnect-observability
+- eventsource-reconnect-pressure
+- last-successful-flush
+- interval
+aliases:
+- SSE disconnect observability
+- EventSource reconnect pressure
+- last successful flush interval
+- SseEmitter broken pipe
+- proxy idle close
+- streaming disconnect alerting
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-async-mvc-streaming-observability-playbook.md
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/spring/spring-mvc-sseemitter-vs-webflux-sse-timeout-behavior.md
+- contents/spring/spring-sse-buffering-compression-checklist.md
+- contents/spring/spring-sse-replay-buffer-last-event-id-recovery-patterns.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+symptoms:
+- SSE disconnect count만 alert로 걸었더니 정상 reconnect까지 noisy하게 잡힌다.
+- proxy idle close와 애플리케이션 성능 문제를 구분하기 어렵다.
+- broken pipe 예외 shape가 container마다 달라 같은 원인을 놓친다.
+expected_queries:
+- Spring SSE disconnect alerting은 disconnect count만 보면 왜 noisy해?
+- heartbeat cadence, last flush interval, reconnect pressure를 같이 봐야 하는 이유는?
+- proxy idle close와 실제 서버 지연을 SSE 관측 지표로 어떻게 나눠?
+- SseEmitter broken pipe 예외는 어떤 타임라인에서 해석해야 해?
+contextual_chunk_prefix: |
+  이 문서는 SSE endpoint 관측을 disconnect count 하나로 보지 않고 heartbeat cadence,
+  last successful flush interval, reconnect pressure, container exception shape를 같은
+  타임라인에서 읽어 proxy idle close와 실제 latency 문제를 분리하는 playbook이다.
+---
 # Spring SSE Disconnect Observability Patterns
 
 > 한 줄 요약: SSE endpoint alerting은 disconnect count 하나로 걸면 거의 반드시 noisy해지므로, heartbeat cadence, 마지막 성공 flush 간격, reconnect pressure, container 예외 shape를 같은 타임라인에서 읽어야 proxy idle close와 실제 성능 문제를 분리할 수 있다.

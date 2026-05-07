@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: 'Service-to-Service Auth: mTLS, JWT, SPIFFE'
+concept_id: security/service-to-service-auth-mtls-jwt-spiffe
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- service-to-service auth
+- mTLS
+- SPIFFE
+- SPIRE
+aliases:
+- service-to-service auth
+- mTLS
+- SPIFFE
+- SPIRE
+- workload identity
+- JWT
+- service mesh
+- certificate rotation
+- caller identity
+- user context propagation
+- certificate-bound token
+- 'Service-to-Service Auth: mTLS, JWT, SPIFFE'
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/service-mesh-sidecar-proxy.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/security/oauth2-authorization-code-grant.md
+- contents/security/jwt-deep-dive.md
+- contents/security/mtls-client-auth-vs-certificate-bound-access-token.md
+- contents/security/workload-identity-user-context-propagation-boundaries.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-oauth2-jwt-integration.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 'Service-to-Service Auth: mTLS, JWT, SPIFFE 핵심 개념을 설명해줘'
+- service-to-service auth가 왜 필요한지 알려줘
+- 'Service-to-Service Auth: mTLS, JWT, SPIFFE 실무 설계 포인트는 뭐야?'
+- service-to-service auth에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 Service-to-Service Auth: mTLS, JWT, SPIFFE를 다루는 deep_dive 문서다. 서비스 간 인증은 "누가 호출했는가"를 증명하는 문제이고, mTLS는 네트워크 경계에서, JWT는 메시지/클레임 경계에서 그 증명을 맡는다. 검색 질의가 service-to-service auth, mTLS, SPIFFE, SPIRE처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # Service-to-Service Auth: mTLS, JWT, SPIFFE
 
 > 한 줄 요약: 서비스 간 인증은 "누가 호출했는가"를 증명하는 문제이고, mTLS는 네트워크 경계에서, JWT는 메시지/클레임 경계에서 그 증명을 맡는다.

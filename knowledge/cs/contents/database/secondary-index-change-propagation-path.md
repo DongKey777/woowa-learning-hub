@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Secondary Index Change Propagation Path
+concept_id: database/secondary-index-change-propagation
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- secondary-index
+- write-amplification
+- change-buffer
+- redo-undo
+- page-split
+aliases:
+- secondary index propagation
+- secondary index change path
+- clustered index update
+- change buffer
+- index maintenance path
+- secondary index leaf page
+- delete mark purge
+- clustered row update
+- secondary index write path
+- 인덱스 변경 전파
+symptoms:
+- row 하나 UPDATE했을 뿐인데 clustered index와 여러 secondary index가 같이 바뀌는 이유를 설명해야 해
+- status 컬럼 업데이트가 secondary index 유지 비용 때문에 느려진 원인을 분석해야 해
+- change buffer가 secondary index 변경을 미룬 뒤 나중에 read path를 흔드는 상황을 이해해야 해
+intents:
+- deep_dive
+- troubleshooting
+- definition
+prerequisites:
+- database/index-and-explain
+- database/clustered-index-locality
+next_docs:
+- database/secondary-index-maintenance-statistics-skew
+- database/hot-update-secondary-index-churn
+- database/change-buffer-myths-vs-reality
+linked_paths:
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/hot-update-secondary-index-churn.md
+- contents/database/change-buffer-myths-vs-reality.md
+- contents/database/clustered-primary-key-update-cost.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/covering-index-width-fanout-write-amplification.md
+confusable_with:
+- database/secondary-index-maintenance-statistics-skew
+- database/hot-update-secondary-index-churn
+- database/change-buffer-myths-vs-reality
+forbidden_neighbors: []
+expected_queries:
+- UPDATE 한 번이 clustered index와 secondary index entry 여러 개를 바꾸는 전파 경로를 설명해줘
+- secondary index가 읽기 최적화인데 write path에서는 왜 유지 비용과 write amplification이 돼?
+- change buffer가 secondary index page 변경을 미루면 비용이 언제 다시 돌아와?
+- delete mark, undo chain, purge가 secondary index propagation과 어떻게 연결돼?
+- status 컬럼 인덱스를 추가한 뒤 UPDATE가 느려진 이유를 어떤 저장 구조로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 secondary index change propagation을 clustered index update, change buffer, undo/redo, page split, purge 흐름으로 설명하는 advanced deep dive다.
+  secondary index write path, index maintenance, 인덱스 변경 전파, clustered row update 질문이 본 문서에 매핑된다.
+---
 # Secondary Index Change Propagation Path
 
 > 한 줄 요약: 한 row의 UPDATE는 row 하나만 바꾸는 일이 아니라, clustered index와 모든 secondary index에 변경을 전파하는 연쇄 작업이다.

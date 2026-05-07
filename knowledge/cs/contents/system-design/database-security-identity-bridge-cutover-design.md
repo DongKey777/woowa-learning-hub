@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Database / Security Identity Bridge Cutover 설계
+concept_id: system-design/database-security-identity-bridge-cutover-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 76
+mission_ids: []
+review_feedback_tags:
+- database security bridge
+- identity capability cutover
+- auth claim migration
+- workload identity rollout
+aliases:
+- database security bridge
+- identity capability cutover
+- auth claim migration
+- workload identity rollout
+- backfill verification
+- auth shadow evaluation
+- cutover gate matrix
+- jwks overlap window
+- session revoke propagation
+- tenant routing cutover
+- authority transfer
+- bridge retirement
+symptoms: []
+intents:
+- comparison
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/dual-write-avoidance-migration-bridge-design.md
+- contents/system-design/zero-downtime-schema-migration-platform-design.md
+- contents/system-design/capability-negotiation-feature-gating-design.md
+- contents/system-design/bridge-retirement-evidence-packet-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/edge-authorization-service-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+- contents/system-design/tenant-split-out-service-identity-rollout-design.md
+- contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Database / Security Identity Bridge Cutover 설계 차이를 실무 기준으로 설명해줘
+- database security bridge를 언제 선택해야 해?
+- Database / Security Identity Bridge Cutover 설계 설계 판단 기준이 뭐야?
+- database security bridge에서 자주 헷갈리는 경계는?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Database / Security Identity Bridge Cutover 설계를 다루는 bridge 문서다. database / security identity bridge cutover 설계는 데이터 저장소 authority 이전과 identity capability rollout을 한 묶음의 승격 절차로 다뤄, backfill mismatch는 없지만 토큰/세션/정책이 뒤처지는 식의 반쪽 cutover를 막는 운영 설계다. 검색 질의가 database security bridge, identity capability cutover, auth claim migration, workload identity rollout처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Database / Security Identity Bridge Cutover 설계
 
 > 한 줄 요약: database / security identity bridge cutover 설계는 데이터 저장소 authority 이전과 identity capability rollout을 한 묶음의 승격 절차로 다뤄, backfill mismatch는 없지만 토큰/세션/정책이 뒤처지는 식의 반쪽 cutover를 막는 운영 설계다.

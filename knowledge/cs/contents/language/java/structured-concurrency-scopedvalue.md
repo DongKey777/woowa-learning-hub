@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Structured Concurrency and ScopedValue
+concept_id: language/structured-concurrency-scopedvalue
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids:
+- missions/payment
+- missions/spring-roomescape
+review_feedback_tags:
+- structured-concurrency
+- scopedvalue
+- virtual-threads
+aliases:
+- Structured Concurrency and ScopedValue
+- StructuredTaskScope ScopedValue
+- Java structured concurrency cancellation propagation
+- scope-bound context vs ThreadLocal
+- virtual threads structured task group
+- 자바 structured concurrency ScopedValue
+symptoms:
+- async task를 여러 Future와 CompletableFuture chain으로 흩어 놓아 parent request lifetime, failure propagation, cancellation cleanup을 한 scope로 추적하지 못해
+- ThreadLocal을 request context propagation 기본값으로 써 virtual thread나 thread reuse 경계에서 leak와 stale context 위험을 키워
+- ScopedValue를 mutable thread-bound storage처럼 생각해 scope-bound read-only context 전달이라는 모델을 놓쳐
+intents:
+- deep_dive
+- design
+- comparison
+prerequisites:
+- language/completablefuture-execution-model-common-pool-pitfalls
+- language/completablefuture-cancellation-semantics
+- language/virtual-threads-project-loom
+next_docs:
+- language/structured-fanout-httpclient
+- language/inheritablethreadlocal-vs-scopedvalue-context-propagation
+- language/virtual-thread-migration-pinning
+linked_paths:
+- contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md
+- contents/language/java/completablefuture-cancellation-semantics.md
+- contents/language/java/structured-fanout-httpclient.md
+- contents/language/java/threadlocal-leaks-context-propagation.md
+- contents/language/java/inheritablethreadlocal-vs-scopedvalue-context-propagation.md
+- contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md
+- contents/language/java/virtual-threads-project-loom.md
+confusable_with:
+- language/completablefuture-cancellation-semantics
+- language/threadlocal-leaks-context-propagation
+- language/inheritablethreadlocal-vs-scopedvalue-context-propagation
+forbidden_neighbors: []
+expected_queries:
+- structured concurrency는 여러 async task의 lifetime failure cancellation을 하나의 scope로 묶는다는 뜻이 뭐야?
+- ScopedValue는 ThreadLocal과 달리 scope-bound read-only context라는 점에서 어떤 차이가 있어?
+- StructuredTaskScope를 쓰면 한 task 실패 시 sibling task cancellation을 어떻게 구조화할 수 있어?
+- virtual threads와 structured concurrency를 같이 쓰면 callback chain보다 어떤 점이 단순해져?
+- request context propagation에서 InheritableThreadLocal 대신 ScopedValue를 고려하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 structured concurrency와 ScopedValue를 scope-bound task lifetime, failure/cancellation propagation, read-only context propagation, virtual threads 관점에서 설명하는 advanced deep dive다.
+  structured concurrency, StructuredTaskScope, ScopedValue, ThreadLocal, virtual threads 질문이 본 문서에 매핑된다.
+---
 # Structured Concurrency and `ScopedValue`
 
 > 한 줄 요약: structured concurrency는 여러 async 작업을 하나의 scope로 묶어 취소와 실패를 정리하게 해주고, `ScopedValue`는 그 scope 안에서만 보이는 읽기 전용 context를 제공한다.

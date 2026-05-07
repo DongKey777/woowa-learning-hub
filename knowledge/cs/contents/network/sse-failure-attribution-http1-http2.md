@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: "SSE Failure Attribution Across HTTP/1.1 and HTTP/2"
+concept_id: network/sse-failure-attribution-http1-http2
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- sse
+- failure-attribution
+- http1-http2
+aliases:
+- SSE failure attribution
+- downstream abort HTTP/1.1 HTTP/2
+- HTTP/2 RST_STREAM cancel
+- HTTP/1.1 chunked flush failure
+- 499 RST_STREAM EOF crosswalk
+- SSE client disconnect translation
+- chunked broken pipe
+symptoms:
+- SSE downstream abort에서 499, RST_STREAM, broken pipe, EOF를 서로 다른 장애로 중복 집계한다
+- HTTP/2 stream reset을 connection 전체 종료로 해석한다
+- HTTP/1.1 chunked flush failure를 first byte 실패로 오해한다
+- 마지막 정상 SSE event id와 write failure 시점을 구분하지 못한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/sse-webflux-streaming-cancel-after-first-byte
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+next_docs:
+- network/sse-last-event-id-replay-window
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+- network/spring-mvc-async-onerror-asyncrequestnotusableexception-crosswalk
+linked_paths:
+- contents/network/sse-webflux-streaming-cancel-after-first-byte.md
+- contents/network/sse-last-event-id-replay-window.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+- contents/network/http2-rst-stream-goaway-streaming-failure-semantics.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/spring-mvc-async-onerror-asyncrequestnotusableexception-crosswalk.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+confusable_with:
+- network/sse-webflux-streaming-cancel-after-first-byte
+- network/sse-last-event-id-replay-window
+- network/http2-rst-stream-goaway-streaming-failure-semantics
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+forbidden_neighbors: []
+expected_queries:
+- "SSE disconnect에서 499 RST_STREAM broken pipe EOF가 같이 보이면 어떻게 해석해?"
+- "HTTP/2 RST_STREAM과 HTTP/1.1 chunked flush failure는 같은 abort의 다른 표면일 수 있어?"
+- "SSE downstream abort attribution을 HTTP/1.1 HTTP/2 hop별로 나눠줘"
+- "chunked broken pipe가 first byte 실패가 아니라 commit 후 write failure일 수 있는 이유는?"
+- "SSE failure에서 마지막 정상 Last-Event-ID를 왜 봐야 해?"
+contextual_chunk_prefix: |
+  이 문서는 SSE downstream abort가 HTTP/2 RST_STREAM, edge 499,
+  HTTP/1.1 chunked flush failure/broken pipe/EOF로 번역되는 방식을 다루는
+  advanced playbook이다.
+---
 # SSE Failure Attribution Across HTTP/1.1 and HTTP/2
 
 > 한 줄 요약: 같은 SSE downstream abort도 edge access log에서는 `499`, HTTP/2 hop에서는 `RST_STREAM`, HTTP/1.1 write path에서는 chunked flush failure/`broken pipe`, read-side에서는 `EOF`로 갈라져 보인다. 이 표면들을 같은 incident의 다른 dialect로 묶지 못하면 blame과 replay 기준이 어긋난다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Index Condition Pushdown, Filesort, Temporary Table
+concept_id: database/index-condition-pushdown-filesort-temporary-table
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- explain-extra-icp-filesort-temporary
+- key-used-but-still-slow
+- mysql-extra-symptom-route
+aliases:
+- index condition pushdown
+- ICP
+- filesort
+- temporary table
+- using temporary
+- using filesort
+- using index condition
+- key used but using filesort
+- key used but using temporary
+- mysql explain extra
+symptoms:
+- MySQL EXPLAIN에서 key는 잡혔는데 Extra에 Using filesort나 Using temporary가 남아 있어
+- Using index condition이 보이지만 ICP가 기대만큼 row fetch를 줄이지 못하는 것 같아
+- GROUP BY, DISTINCT, ORDER BY 때문에 temporary/filesort/spill 신호를 어디 문서로 이어갈지 모르겠어
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/index-and-explain
+- database/covering-index-composite-ordering
+next_docs:
+- database/sort-buffer-temp-table-spill
+- database/temp-table-engine-spill-behavior
+- database/mysql-optimizer-hints-index-merge
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/index-and-explain.md
+- contents/database/covering-index-composite-ordering.md
+- contents/database/query-tuning-checklist.md
+- contents/database/sort-buffer-temp-table-spill.md
+- contents/database/temp-table-engine-choice-spill-behavior.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/database/mysql-explain-using-temporary-beginner-card.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+confusable_with:
+- database/index-and-explain
+- database/covering-index-composite-ordering
+- database/query-tuning-checklist
+forbidden_neighbors: []
+expected_queries:
+- MySQL EXPLAIN에서 key는 잡혔는데 Using filesort나 Using temporary가 남으면 무엇을 봐야 해?
+- Index Condition Pushdown은 인덱스 단계에서 어떤 조건을 먼저 걸러내는 최적화야?
+- Using temporary와 Using filesort는 GROUP BY, DISTINCT, ORDER BY에서 왜 같이 보일 수 있어?
+- rows 추정은 괜찮은데 Extra가 나쁘면 어떤 symptom route로 가야 해?
+- 복합 인덱스가 있는데 ORDER BY가 인덱스 순서로 끝나지 못하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL EXPLAIN Extra의 Using index condition, Using filesort, Using temporary 신호를 보고 key는 잡혔지만 여전히 느린 쿼리를 라우팅하는 advanced symptom router다.
+  index condition pushdown, Using filesort, Using temporary, key used but still slow 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Index Condition Pushdown, Filesort, Temporary Table
 
 > 한 줄 요약: 인덱스가 있어도 쿼리는 빠르지 않을 수 있다. MySQL이 어떤 조건을 인덱스 단계에서 걸러내고, 언제 정렬과 임시 테이블을 만들며, 왜 그 선택이 느려지는지를 읽을 수 있어야 한다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: JDBC 실전 코드 패턴
+concept_id: database/jdbc-code-patterns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- jdbc-code-patterns
+- connection-lifecycle
+- manual-commit-rollback
+aliases:
+- jdbc preparedstatement resultset
+- try-with-resources
+- auto commit
+- setAutoCommit false
+- manual commit rollback
+- connection lifecycle
+- connection borrow return
+- getConnection close pattern
+- jdbc repository example
+- 순수 JDBC 예제
+symptoms:
+- raw JDBC 코드에서 Connection, PreparedStatement, ResultSet, commit, rollback, close 순서를 읽지 못하고 있어
+- setAutoCommit(false)와 manual transaction 경계가 connection pool 점유 시간과 어떻게 연결되는지 헷갈려
+- batch insert나 generated keys 코드를 문법보다 transaction chunk와 resource cleanup 관점으로 봐야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/jdbc-jpa-mybatis-basics
+- database/transaction-basics
+next_docs:
+- database/jdbc-jpa-mybatis
+- database/connection-pool-transaction-propagation-bulk-write
+- database/hikari-connection-pool-tuning
+- database/transaction-isolation-locking
+linked_paths:
+- contents/database/jdbc-jpa-mybatis-basics.md
+- contents/database/jdbc-jpa-mybatis.md
+- contents/database/transaction-basics.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/hikari-connection-pool-tuning.md
+confusable_with:
+- database/jdbc-jpa-mybatis-basics
+- database/jdbc-jpa-mybatis
+- database/connection-pool-transaction-propagation-bulk-write
+forbidden_neighbors: []
+expected_queries:
+- raw JDBC 코드를 Connection, PreparedStatement, ResultSet, commit, rollback, close 순서로 어떻게 읽어?
+- setAutoCommit(false)를 쓰면 transaction 경계와 connection pool 반환이 어떻게 달라져?
+- try-with-resources가 JDBC에서 statement와 resultset 누수를 줄이는 이유는 뭐야?
+- JDBC batch insert는 chunk 크기와 commit 주기를 왜 같이 봐야 해?
+- close가 물리 connection 종료가 아니라 pool 반환일 수 있다는 점을 초보자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 raw JDBC 코드를 Connection, PreparedStatement, ResultSet, execute, commit/rollback, close 순서로 읽고 connection lifecycle을 이해하는 advanced playbook이다.
+  JDBC PreparedStatement, autoCommit, manual commit rollback, connection lifecycle 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # JDBC 실전 코드 패턴
 
 > 한 줄 요약: 이 문서는 raw JDBC 코드를 실제로 만났을 때 `Connection -> PreparedStatement -> ResultSet -> commit/rollback -> close` 순서로 읽게 만드는 follow-up entry다.

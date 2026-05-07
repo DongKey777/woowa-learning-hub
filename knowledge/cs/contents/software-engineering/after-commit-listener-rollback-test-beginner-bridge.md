@@ -35,7 +35,7 @@ prerequisites:
 next_docs:
 - software-engineering/testtransaction-vs-commit-choice-mini-card
 - software-engineering/outbox-message-adapter-test-matrix
-- spring/spring-after-commit-rollback-slice-test-mini-card
+- spring/after-commit-rollback-slice-test-mini-card
 linked_paths:
 - contents/software-engineering/transactional-test-rollback-vs-commit-boundary-card.md
 - contents/software-engineering/testtransaction-vs-commit-choice-mini-card.md
@@ -46,8 +46,10 @@ linked_paths:
 confusable_with:
 - software-engineering/transactional-test-rollback-vs-commit-boundary-card
 - software-engineering/testtransaction-vs-commit-choice-mini-card
-- spring/spring-after-commit-rollback-slice-test-mini-card
+- spring/after-commit-rollback-slice-test-mini-card
 forbidden_neighbors:
+  - contents/software-engineering/outbox-message-adapter-test-matrix.md
+  - contents/spring/spring-transactional-test-rollback-misconceptions.md
 expected_queries:
 - rollback 기반 테스트에서 AFTER_COMMIT 리스너가 안 도는 이유를 초심자 기준으로 설명해 줘
 - 이벤트는 발행됐는데 commit 뒤 listener는 왜 안 보일 수 있어?
@@ -62,7 +64,6 @@ contextual_chunk_prefix: |
   commit 차이가 뭐지 같은 자연어 paraphrase가 본 문서의 테스트 경계 판단에
   매핑된다.
 ---
-
 # 왜 rollback 테스트에서 `AFTER_COMMIT` listener가 안 보이나요
 
 > 한 줄 요약: rollback 기반 테스트는 보통 commit을 만들지 않으므로, `@TransactionalEventListener(AFTER_COMMIT)`가 안 보일 때는 listener 버그보다 "아직 commit 세계로 안 나갔다"를 먼저 의심해야 한다.

@@ -39,9 +39,9 @@ prerequisites:
 - spring/boot-autoconfiguration-basics
 - spring/ioc-di-basics
 next_docs:
-- spring/spring-boot-condition-evaluation-report-debugging
-- spring/spring-startup-bean-graph-debugging-playbook
-- spring/spring-conditional-activation-annotation-decision-guide
+- spring/boot-condition-evaluation-report-debugging
+- spring/startup-bean-graph-debugging-playbook
+- spring/conditional-activation-annotation-decision-guide
 linked_paths:
 - contents/spring/spring-boot-autoconfiguration-basics.md
 - contents/spring/spring-configuration-vs-autoconfiguration-primer.md
@@ -50,7 +50,7 @@ linked_paths:
 - contents/spring/spring-application-context-refresh-phases.md
 confusable_with:
 - spring/boot-autoconfiguration-basics
-- spring/spring-boot-condition-evaluation-report-debugging
+- spring/boot-condition-evaluation-report-debugging
 - spring/spring-configuration-vs-autoconfiguration-primer
 forbidden_neighbors: []
 expected_queries:
@@ -68,7 +68,6 @@ contextual_chunk_prefix: |
   같은 자연어 paraphrase를 후보 수집, 조건 평가, 최종 등록 순서라는
   구조적 mental model에 매핑한다.
 ---
-
 # Spring Boot 자동 구성 (Auto-configuration)
 
 > 한 줄 요약: Spring Boot 자동 구성은 애플리케이션 컨텍스트에 필요한 기본 빈을 조건부로 채워 넣어, 개발자가 반복 설정 대신 도메인 코드에 집중하게 만드는 장치다.

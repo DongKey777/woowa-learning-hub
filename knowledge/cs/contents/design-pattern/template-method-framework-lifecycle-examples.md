@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: '프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle'
+concept_id: design-pattern/template-method-framework-lifecycle-examples
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- framework-callback-skeleton
+- onceperrequestfilter-hook-bridge
+- template-method-ladder-middle
+aliases:
+- template method framework example
+- servlet lifecycle template method
+- httpservlet service doget dopost
+- onceperrequestfilter dofilterinternal shouldnotfilter
+- junit testcase runbare setup teardown
+- framework callback skeleton
+- dofilterinternal abstract step
+- shouldnotfilter hook
+- 처음 배우는데 framework template method
+- framework template method basics bridge
+- template method framework lifecycle examples basics
+- template method framework lifecycle examples beginner
+symptoms:
+- httpservlet이나 onceperrequestfilter가 왜 template method 예시인지 구조가 안 보여
+- callback 이름은 많은데 무엇이 필수 슬롯이고 무엇이 hook인지 헷갈려
+- 프레임워크 예시를 보다가 상속 구조와 실제 요청 체인을 같은 레벨로 섞고 있어
+intents:
+- definition
+- comparison
+prerequisites:
+- design-pattern/template-method-basics
+next_docs:
+- design-pattern/template-method-vs-filter-interceptor-chain
+- design-pattern/template-method
+- design-pattern/template-hook-smells
+linked_paths:
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method.md
+- contents/design-pattern/template-method-vs-strategy.md
+- contents/design-pattern/chain-of-responsibility-filters-interceptors.md
+- contents/design-pattern/template-method-vs-filter-interceptor-chain.md
+- contents/spring/spring-onceperrequestfilter-async-error-dispatch-traps.md
+- contents/design-pattern/junit5-callback-model-vs-classic-xunit-template-skeleton.md
+- contents/design-pattern/template-hook-smells.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+confusable_with:
+- design-pattern/template-method-vs-filter-interceptor-chain
+- design-pattern/chain-of-responsibility-filters-interceptors
+forbidden_neighbors: []
+expected_queries:
+- httpservlet이 왜 template method 예시예요
+- onceperrequestfilter의 dofilterinternal과 shouldnotfilter를 어떻게 읽어야 해요
+- framework callback을 abstract step과 hook으로 나눠 보고 싶어요
+- servlet filter test lifecycle에서 template method 공통 구조가 궁금해요
+- 처음 배우는데 framework 예시로 template method를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 template method basics 다음에 읽는 framework bridge다.
+  HttpServlet, OncePerRequestFilter, JUnit lifecycle 같은 콜백 구조를
+  skeleton owner와 extension slot으로 다시 읽게 하며, 필수 단계와 선택 hook을
+  프레임워크 API 이름에 끌리지 않고 식별하도록 돕는다.
+---
 # 프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle
 
 > 한 줄 요약: 프레임워크가 라이프사이클의 뼈대를 고정하고, 애플리케이션은 `doGet`, `doFilterInternal`, `setUp` 같은 슬롯만 채운다.

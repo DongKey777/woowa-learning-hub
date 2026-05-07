@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Semi-Join, LooseScan, FirstMatch, DuplicateWeedout
+concept_id: database/semijoin-loosescan-firstmatch-duplicateweedout
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- optimizer
+- semijoin
+- loosescan
+- subquery
+- explain
+aliases:
+- semijoin
+- LooseScan
+- FirstMatch
+- DuplicateWeedout
+- semi-join transformation
+- optimizer_switch
+- subquery optimization
+- loose index scan
+- IN subquery optimization
+- EXISTS semi join
+symptoms:
+- IN subquery나 EXISTS가 느려졌을 때 MySQL optimizer가 semi-join으로 변환했는지 확인해야 해
+- LooseScan, FirstMatch, DuplicateWeedout, Materialization 전략 이름이 EXPLAIN에서 헷갈려
+- 인덱스는 있는데 LooseScan이 선택되지 않는 이유를 인덱스 순서와 중복 제거 패턴으로 설명해야 해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/sql-joins-and-query-order
+- database/index-and-explain
+next_docs:
+- database/hash-join-materialization-join-buffer
+- database/mysql-optimizer-hints-index-merge
+- database/statistics-histograms-cardinality-estimation
+linked_paths:
+- contents/database/hash-join-materialization-join-buffer.md
+- contents/database/mysql-optimizer-hints-index-merge.md
+- contents/database/sql-joins-and-query-order.md
+- contents/database/index-and-explain.md
+- contents/database/statistics-histograms-cardinality-estimation.md
+confusable_with:
+- database/hash-join-materialization-join-buffer
+- database/mysql-optimizer-hints-index-merge
+- database/sql-joins-and-query-order
+forbidden_neighbors: []
+expected_queries:
+- MySQL IN subquery와 EXISTS는 semi-join으로 어떻게 변환되고 FirstMatch LooseScan DuplicateWeedout은 뭐가 달라?
+- LooseScan은 어떤 인덱스 정렬성과 중복 제거 패턴에서 유리한 optimizer 전략이야?
+- IN subquery가 갑자기 느려졌을 때 EXPLAIN에서 semi-join strategy를 어떻게 확인해?
+- FirstMatch는 한 번 찾고 멈추고 DuplicateWeedout은 중복을 나중에 거른다는 차이를 설명해줘
+- optimizer_switch에서 semijoin, loosescan, firstmatch를 켜고 끄면 무엇을 비교할 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 MySQL semi-join transformation을 LooseScan, FirstMatch, DuplicateWeedout, Materialization, optimizer_switch 관점으로 설명하는 advanced deep dive다.
+  IN subquery optimization, EXISTS semi join, loose index scan, semijoin strategy 질문이 본 문서에 매핑된다.
+---
 # Semi-Join, LooseScan, FirstMatch, DuplicateWeedout
 
 > 한 줄 요약: `IN`과 `EXISTS`는 문법 차이보다 semi-join으로 어떻게 변환되느냐가 더 중요하고, 그중 LooseScan은 특정 인덱스 패턴에서 강력하다.

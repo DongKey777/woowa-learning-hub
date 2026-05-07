@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Mutable Keys in HashMap and TreeMap
+concept_id: language/hashmap-treemap-mutable-key-lookup-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- mutable-key
+- map-lookup-debug
+- hashmap-treemap
+aliases:
+- mutable keys in maps primer
+- HashMap mutable key lookup bug
+- TreeMap mutable key lookup bug
+- mutate key after put
+- same object containsKey false
+- map key mutation primer
+- 자바 Map key 불변
+symptoms:
+- Map에 넣은 key 객체의 equals/hashCode/compareTo 기준 필드를 바꿔도 map이 entry를 자동으로 다시 배치한다고 기대해
+- 같은 객체 reference를 넘겼는데 containsKey나 get이 실패하는 이유를 hash bucket 또는 tree path 기준 변경으로 설명하지 못해
+- HashMap/LinkedHashMap은 hash/equality 기준, TreeMap은 comparator 기준 필드를 넣은 뒤 안정적으로 유지해야 한다는 규칙을 놓쳐
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- language/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge
+next_docs:
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/java-immutable-object-basics
+linked_paths:
+- contents/language/java/hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md
+- contents/language/java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/stable-id-map-key-primer.md
+- contents/language/java/mutable-hash-keys-hashset-hashmap-bridge.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md
+- contents/language/java/java-immutable-object-basics.md
+confusable_with:
+- language/mutable-hash-keys-hashset-hashmap-bridge
+- language/treeset-treemap-mutable-comparator-fields-primer
+- language/stable-id-map-key-primer
+forbidden_neighbors: []
+expected_queries:
+- HashMap에 넣은 key 필드를 바꿨더니 같은 객체인데 get이 null인 이유를 알려줘
+- TreeMap key의 compareTo 기준 필드를 바꾸면 containsKey가 왜 실패할 수 있어?
+- Map은 key 상태가 바뀌면 entry를 자동으로 다시 배치해 주는지 설명해줘
+- HashMap mutable key와 TreeMap mutable key lookup bug를 비교해줘
+- Map key는 왜 equals hashCode compareTo 기준 필드가 불변이어야 해?
+contextual_chunk_prefix: |
+  이 문서는 HashMap/LinkedHashMap과 TreeMap에서 mutable key가 lookup failure를 만드는 이유를 equals/hashCode bucket과 compareTo/Comparator tree path 기준으로 설명하는 beginner primer다.
+  mutable key, HashMap get null, TreeMap containsKey false, mutate key after put, immutable key 질문이 본 문서에 매핑된다.
+---
 # Mutable Keys in HashMap and TreeMap
 
 > 한 줄 요약: `HashMap`/`TreeMap`에 넣은 뒤 key의 `equals()`/`hashCode()`/`compareTo()` 기준 필드를 바꾸면, map은 key를 자동으로 옮겨 주지 않아서 `get`/`containsKey`/`remove`가 실패할 수 있다.

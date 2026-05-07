@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Autovacuum Freeze Debt, XID Age, and Wraparound Playbook
+concept_id: database/autovacuum-freeze-debt-wraparound-playbook
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- autovacuum-freeze-debt
+- xid-age-wraparound-risk
+- postgres-vacuum-runbook-routing
+aliases:
+- autovacuum freeze debt
+- xid age
+- wraparound prevention
+- anti-wraparound vacuum
+- freeze vacuum backlog
+- relfrozenxid age
+- vacuum freeze risk
+- pg freeze debt
+- wraparound 방지
+- autovacuum freeze 부채
+symptoms:
+- PostgreSQL XID age가 계속 커지는데 일반 vacuum debt와 같은 문제로 봐도 되는지 모르겠어
+- autovacuum freeze가 밀려 wraparound 위험이 가용성 사고로 번질까 걱정돼
+- 큰 cold table의 relfrozenxid age가 높아졌을 때 수동 vacuum freeze가 필요한지 판단해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/mvcc-replication-sharding
+next_docs:
+- database/vacuum-purge-freeze-risk-runbook-routing
+- database/mvcc-history-list-snapshot-too-old
+- database/slow-query-analysis-playbook
+linked_paths:
+- contents/database/vacuum-purge-freeze-risk-runbook-routing.md
+- contents/database/vacuum-purge-debt-forensics-symptom-map.md
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/covering-index-vs-index-only-scan.md
+- contents/database/slow-query-analysis-playbook.md
+confusable_with:
+- database/vacuum-purge-debt-forensics-symptom-map
+- database/mvcc-history-list-snapshot-too-old
+- database/slow-query-analysis-playbook
+forbidden_neighbors: []
+expected_queries:
+- autovacuum freeze debt와 일반 vacuum debt는 운영 위험이 어떻게 달라?
+- PostgreSQL XID age가 wraparound 위험에 가까워질 때 무엇을 먼저 확인해야 해?
+- relfrozenxid age가 높은 큰 테이블은 어떤 순서로 triage해야 해?
+- anti-wraparound vacuum이 가용성 사고로 번지기 전에 어떤 runbook을 따라야 해?
+- freeze debt가 높을 때 성능보다 safety를 우선해야 하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL autovacuum freeze debt, XID age, relfrozenxid, anti-wraparound vacuum 위험을 운영 runbook으로 분리하는 advanced playbook이다.
+  autovacuum freeze debt, xid age, wraparound prevention, vacuum freeze backlog 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Autovacuum Freeze Debt, XID Age, and Wraparound Playbook
 
 > 한 줄 요약: autovacuum freeze debt는 단순 청소 지연이 아니라 transaction ID age가 임계치로 다가오는 문제이며, 늦게 보면 bloat 문제가 아니라 가용성 사고로 번질 수 있다.

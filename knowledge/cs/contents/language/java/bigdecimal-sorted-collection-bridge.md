@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap
+concept_id: language/bigdecimal-sorted-collection-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-equals-compareto
+- sorted-collection-surprise
+- collection-key-policy
+aliases:
+- BigDecimal compareTo equals
+- BigDecimal HashSet TreeSet TreeMap
+- BigDecimal sorted collection bridge
+- BigDecimal 1.0 1.00 difference
+- BigDecimal equals scale compareTo scale ignored
+- 자바 BigDecimal 컬렉션 기준
+symptoms:
+- BigDecimal에는 숫자값 기준 compareTo와 표현 scale까지 보는 equals가 모두 있다는 점을 모르고 컬렉션 결과를 예측해
+- TreeSet에서 원소가 사라지거나 TreeMap에서 value가 덮이는 현상을 compareTo 0 같은 자리 판정으로 설명하지 못해
+- 도메인에서 1.0과 1.00을 같은 값으로 볼지 먼저 정하지 않고 HashSet TreeSet TreeMap을 선택해
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- language/java-collections-basics
+- language/java-comparable-comparator-basics
+next_docs:
+- language/bigdecimal-1-0-vs-1-00-collections-mini-drill
+- language/bigdecimal-hashset-treeset-contains-mini-drill
+- language/bigdecimal-hashmap-treemap-lookup-mini-drill
+- language/bigdecimal-comparator-tie-breaker-mini-drill
+linked_paths:
+- contents/language/java/java-collections-basics.md
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/hashset-vs-treeset-duplicate-semantics.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+- contents/language/java/bigdecimal-hashset-treeset-contains-mini-drill.md
+- contents/language/java/treeset-treemap-comparator-tie-breaker-basics.md
+- contents/language/java/bigdecimal-comparator-tie-breaker-mini-drill.md
+- contents/language/java/bigdecimal-key-policy-30-second-checklist.md
+- contents/language/java/bigdecimal-striptrailingzeros-input-boundary-bridge.md
+- contents/language/java/bigdecimal-hashmap-treemap-lookup-mini-drill.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+confusable_with:
+- language/hashset-vs-treeset-duplicate-semantics
+- language/treeset-treemap-natural-ordering-compareto-bridge
+- language/bigdecimal-comparator-tie-breaker-mini-drill
+forbidden_neighbors: []
+expected_queries:
+- BigDecimal equals와 compareTo 차이가 HashSet TreeSet TreeMap에서 어떻게 다르게 나타나?
+- BigDecimal 1.0과 1.00이 HashSet에는 둘 다 남고 TreeSet에는 하나만 남을 수 있는 이유가 뭐야?
+- TreeMap BigDecimal key가 compareTo 0이면 value를 덮어쓰는 이유를 설명해줘
+- BigDecimal을 collection key로 쓰기 전에 도메인의 같음 기준을 어떻게 정해야 해?
+- BigDecimal sorted collection surprise를 초보자에게 예제로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 BigDecimal compareTo vs equals 차이를 HashSet, TreeSet, TreeMap collection behavior와 key policy로 설명하는 beginner primer다.
+  BigDecimal 1.0 vs 1.00, equals scale, compareTo scale ignored, sorted set duplicate, TreeMap overwrite, HashMap lookup 질문이 본 문서에 매핑된다.
+---
 # BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap
 
 > 한 줄 요약: `BigDecimal`은 "숫자로 같은가"와 "표현까지 같은가"를 다르게 다루므로, `1.0`과 `1.00`이 `HashSet`에서는 둘 다 남고 `TreeSet`/`TreeMap`에서는 같은 자리처럼 보일 수 있다.

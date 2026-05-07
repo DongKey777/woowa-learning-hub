@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: TreeMap firstKey/firstEntry and floorKey/floorEntry Return-Shape Card
+concept_id: data-structure/treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- treemap-return-shape
+- firstkey-firstentry
+- floorkey-floorentry
+aliases:
+- TreeMap firstKey vs firstEntry
+- TreeMap floorKey vs floorEntry
+- key entry return shape
+- firstEntry null firstKey exception
+- floorEntry returns value
+- ordered map beginner
+- TreeMap entry value read
+symptoms:
+- firstKey와 firstEntry가 같은 맨 앞 후보를 보지만 key-only와 Entry 반환 shape가 다르다는 점을 섞는다
+- floorKey와 floorEntry가 같은 기준 이하 후보를 찾지만 floorEntry만 value까지 준다는 점을 놓친다
+- firstKey empty exception, firstEntry null, floorEntry boundary null을 같은 실패 방식으로 오해한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/treemap-key-entry-strictness-bridge
+next_docs:
+- data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card
+- data-structure/treeset-treemap-null-boundary-quick-reference
+- data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill
+linked_paths:
+- contents/data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card.md
+- contents/data-structure/treeset-treemap-null-boundary-quick-reference.md
+- contents/data-structure/treemap-key-entry-strictness-bridge.md
+- contents/data-structure/treemap-floorentry-ceilingentry-value-read-micro-drill.md
+- contents/language/java/firstentry-lastentry-vs-firstkey-lastkey-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+confusable_with:
+- data-structure/treemap-ceilingkey-ceilingentry-return-shape-twin-card
+- data-structure/treeset-treemap-null-boundary-quick-reference
+- data-structure/treemap-key-entry-strictness-bridge
+forbidden_neighbors: []
+expected_queries:
+- TreeMap firstKey와 firstEntry는 empty map에서 실패 방식이 어떻게 달라?
+- floorKey와 floorEntry는 같은 위치를 찾지만 반환 shape가 어떻게 달라?
+- 이전 예약 시작만 필요하면 floorKey이고 end value까지 필요하면 floorEntry인 이유는?
+- firstKey firstEntry floorKey floorEntry를 key only와 entry return으로 정리해줘
+- firstEntry는 null인데 firstKey는 예외가 날 수 있다는 걸 초보자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 TreeMap firstKey/firstEntry와 floorKey/floorEntry를 key-only 반환과
+  Entry 반환으로 나누는 beginner bridge다. firstKey empty exception, firstEntry null,
+  floorEntry boundary null 같은 실패 방식을 함께 정리한다.
+---
 # TreeMap `firstKey` vs `firstEntry`, `floorKey` vs `floorEntry` Return-Shape Card
 
 > 한 줄 요약: `firstKey()`와 `floorKey()`는 key만 돌려주고, `firstEntry()`와 `floorEntry()`는 key+value를 함께 돌려준다. 다만 empty/경계 실패 방식은 `first` 쌍과 `floor` 쌍이 다르다.

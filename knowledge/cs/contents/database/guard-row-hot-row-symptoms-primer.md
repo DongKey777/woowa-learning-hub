@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Guard Row Hot-Row Symptoms Primer
+concept_id: database/guard-row-hot-row-symptoms-primer
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- guard-row-hot-row-symptoms
+- same-key-lock-wait
+- admission-surface-too-wide
+aliases:
+- guard row hotspot
+- guard row hot row
+- hot row symptoms primer
+- guard row contention beginner
+- hot key guard row
+- guard row lock wait
+- same key wait metrics
+- 재고는 있는데 timeout이 나요
+- 같은 날짜 예약만 느려요
+- 서버를 늘려도 처리량이 안 올라요
+symptoms:
+- 같은 room_type_id, stay_day, campaign_id 같은 guard key에 lock wait와 timeout이 반복해서 몰리고 있어
+- oversell이나 duplicate는 늘지 않았는데 p95/p99와 lock wait만 치솟고 있어
+- 앱 서버를 늘려도 single guard row가 throughput ceiling이 되어 처리량이 늘지 않아
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/guard-row-booking-timeline-card
+- database/guard-row-contention-observability-cheatsheet
+next_docs:
+- database/guard-row-dashboard-starter-card
+- database/striped-guard-row-budgeting
+- database/hot-row-contention-counter-sharding
+- database/hot-path-slot-arbitration-choices
+linked_paths:
+- contents/database/guard-row-contention-observability-cheatsheet.md
+- contents/database/guard-row-dashboard-starter-card.md
+- contents/database/striped-guard-row-budgeting-primer.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/unique-vs-slot-row-vs-guard-row-quick-chooser.md
+- contents/database/hot-path-slot-arbitration-choices.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/timeout-log-timeline-first-failure-checklist-card.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+confusable_with:
+- database/guard-row-contention-observability-cheatsheet
+- database/striped-guard-row-budgeting
+- database/hot-row-contention-counter-sharding
+forbidden_neighbors: []
+expected_queries:
+- guard row hot row는 어떤 로그와 metric으로 처음 의심해?
+- 같은 날짜 예약만 느리고 재고는 있는데 timeout이 나면 guard row hotspot을 봐야 해?
+- guard row가 correctness는 지키지만 한 줄 queue 때문에 p99를 밀어 올리는 상황을 설명해줘
+- 앱 서버를 늘려도 처리량이 안 늘면 single guard row throughput ceiling을 어떻게 확인해?
+- guard row contention을 striping, counter sharding, slot row로 바꿔야 하는 신호는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 guard row가 같은 admission surface에 writer를 모아 correctness를 지키지만 hot key에서 same-key lock wait, timeout, p99 지연을 만드는 증상을 라우팅하는 beginner symptom router다.
+  guard row hotspot, hot row, same key wait metrics, 재고는 있는데 timeout 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Guard Row Hot-Row Symptoms Primer
 
 > 한 줄 요약: guard row는 count/capacity를 정확하게 막는 좋은 admission gate지만, 같은 key에 요청이 몰리면 "정합성 문제"보다 "한 줄 대기열 문제"가 먼저 커지므로 striping, counter sharding, 또는 더 맞는 admission surface 전환 시점을 읽을 수 있어야 한다.

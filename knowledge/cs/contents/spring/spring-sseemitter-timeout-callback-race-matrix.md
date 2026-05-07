@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Spring SseEmitter Timeout Callback Race Matrix
+concept_id: spring/sseemitter-timeout-callback-race-matrix
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- sseemitter-timeout-callback
+- race
+- sseemitter-ontimeout-onerror
+- oncompletion
+aliases:
+- SseEmitter onTimeout onError onCompletion
+- completeWithError race
+- SseEmitter callback ordering
+- proxy idle timeout callback
+- client reconnect cleanup race
+- emitter ownership terminal signal
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/spring/spring-sse-replay-buffer-last-event-id-recovery-patterns.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-async-timeout-disconnect-decision-tree.md
+- contents/spring/spring-sse-disconnect-observability-patterns.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+confusable_with:
+- spring/sse-proxy-idle-timeout-matrix
+- spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+- spring/async-timeout-disconnect-decision-tree
+- spring/request-lifecycle-timeout-disconnect-cancellation-bridges
+symptoms:
+- onTimeout, onError, onCompletion이 서로 어떤 순서로 불릴지 가정해서 cleanup이 중복된다.
+- proxy idle timeout이나 client reconnect를 application-owned error처럼 completeWithError로 처리한다.
+- emitter registry에서 제거되는 시점과 재연결 등록 시점이 race를 만든다.
+expected_queries:
+- SseEmitter onTimeout onError onCompletion은 각각 어떤 종료 신호야?
+- completeWithError는 언제 호출해야 하고 proxy idle timeout에는 왜 조심해야 해?
+- client reconnect와 emitter cleanup race를 어떻게 줄여?
+- SseEmitter timeout callback을 이름이 아니라 ownership 기준으로 해석한다는 게 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 SseEmitter callback을 onTimeout, onError, onCompletion 이름만으로 해석하지 않고
+  app-owned termination, servlet async timeout, transport/container error, client reconnect ownership
+  기준으로 나누는 race matrix다.
+---
 # Spring `SseEmitter` Timeout Callback Race Matrix
 
 > 한 줄 요약: `onTimeout`은 Servlet async lifetime timeout, `onError`는 transport/container error signal, `onCompletion`은 어떤 종료 이유든 따라오는 terminal signal이며, `completeWithError(...)`는 app-owned 종료 원인을 선언할 때만 써야 하므로 proxy idle timeout, client reconnect, scheduler cleanup을 callback 이름이 아니라 emitter ownership 기준으로 해석해야 race를 줄일 수 있다.

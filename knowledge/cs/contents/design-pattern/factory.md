@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: 팩토리 디자인 패턴
+concept_id: design-pattern/factory-deep-dive
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- factory-creation-responsibility
+- factory-vs-static-factory-builder-registry
+- factory-overuse-smell
+aliases:
+- factory pattern deep dive
+- 팩토리 디자인 패턴
+- Factory pattern
+- object creation boundary
+- factory vs constructor
+- factory vs static factory method
+- factory vs builder
+- switch factory smell
+symptoms:
+- new를 보면 무조건 Factory로 감싸야 한다고 생각하고 있어
+- 정적 팩토리 메서드와 Factory 패턴, Builder, Registry를 같은 생성 패턴으로 뭉뚱그리고 있어
+- 생성 책임보다 선택/정책 판단이 핵심인 코드를 Factory라는 이름에 몰아넣고 있어
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- design-pattern/factory
+- software-engineering/oop-design-basics
+next_docs:
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- design-pattern/factory-misnaming-checklist
+- design-pattern/factory-vs-abstract-factory-vs-builder
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+linked_paths:
+- contents/design-pattern/factory-basics.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
+- contents/design-pattern/factory-misnaming-checklist.md
+- contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md
+- contents/design-pattern/factory-vs-abstract-factory-vs-builder.md
+- contents/design-pattern/builder-pattern.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+confusable_with:
+- design-pattern/factory
+- design-pattern/constructor-vs-static-factory-vs-factory-pattern
+- design-pattern/factory-vs-abstract-factory-vs-builder
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+forbidden_neighbors: []
+expected_queries:
+- Factory 패턴은 단순히 new를 없애는 게 아니라 어떤 생성 책임을 숨기는 거야?
+- 정적 팩토리 메서드와 Factory 패턴은 역할이 어떻게 달라?
+- Builder, Registry, DI container가 Factory보다 더 맞는 상황은 언제야?
+- switch 기반 Factory가 커질 때 Strategy나 Registry로 나눠야 하는 신호는 뭐야?
+- 단순 DTO 생성까지 Factory로 감싸면 왜 구조만 늘어날 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Factory pattern follow-up bridge로, creation responsibility, constructor vs static factory method, Factory vs Builder/Registry/DI container, switch factory smell, creation vs selection responsibility를 설명한다.
+  팩토리 패턴, new 대신 factory, static factory method 차이, Builder와 Factory, Factory 과용 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # 팩토리 (Factory) 디자인 패턴
 
 > 작성자 : [서그림](https://github.com/Seogeurim)

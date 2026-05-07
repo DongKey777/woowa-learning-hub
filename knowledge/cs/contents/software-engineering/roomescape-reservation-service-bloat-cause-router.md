@@ -49,11 +49,7 @@ confusable_with:
 - software-engineering/roomescape-reservation-flow-service-layer-bridge
 - software-engineering/roomescape-validation-vs-domain-rule-bridge
 - software-engineering/roomescape-dao-vs-repository-bridge
-forbidden_neighbors:
-- contents/software-engineering/roomescape-reservation-flow-service-layer-bridge.md
-- contents/software-engineering/roomescape-validation-vs-domain-rule-bridge.md
-- contents/software-engineering/roomescape-dao-vs-repository-bridge.md
-- contents/spring/roomescape-transactional-boundary-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - roomescape ReservationService가 너무 커졌다는 리뷰를 받으면 먼저 어떤 책임부터 나눠 봐야 해?
 - 예약 생성 서비스에 검증, 저장, 응답 조립이 다 있으면 어디가 섞였다고 읽어야 해?

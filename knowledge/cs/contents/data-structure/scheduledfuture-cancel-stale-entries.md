@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: ScheduledFuture Cancellation Bridge
+concept_id: data-structure/scheduledfuture-cancel-stale-entries
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- scheduledfuture-cancel
+- stale-timer-entry
+- remove-on-cancel-policy
+aliases:
+- ScheduledFuture cancel stale entry
+- ScheduledFuture cancellation bridge
+- scheduled executor cancelled task retention
+- removeOnCancelPolicy
+- cancel true queue size same
+- stale timeout ticket
+- DelayQueue invalidation
+symptoms:
+- ScheduledFuture.cancel true를 queue entry가 즉시 물리 제거됐다는 뜻으로 오해한다
+- cancelled delayed task가 stale entry로 남아 queue.size가 바로 줄지 않는 현상을 취소 실패로 해석한다
+- removeOnCancelPolicy true false 차이를 correctness가 아니라 cleanup 시점과 hot-path 비용 차이로 보지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+- data-structure/delayqueue-delayed-contract-primer
+next_docs:
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+- data-structure/delayqueue-remove-cost-primer
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+linked_paths:
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/periodic-task-cancellation-bridge.md
+- contents/data-structure/delayqueue-remove-cost-primer.md
+- contents/data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md
+- contents/data-structure/timer-cancellation-reschedule-stale-entry-primer.md
+- contents/data-structure/delayqueue-vs-priorityqueue-timer-pitfalls.md
+- contents/data-structure/priorityblockingqueue-timer-misuse-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/algorithm/amortized-analysis-pitfalls.md
+confusable_with:
+- data-structure/delayqueue-handle-vs-equality-cancel-guide
+- data-structure/cancelled-task-cleanup-purge-vs-removeoncancelpolicy
+- data-structure/timer-cancellation-reschedule-stale-entry-primer
+- data-structure/delayqueue-remove-cost-primer
+forbidden_neighbors: []
+expected_queries:
+- ScheduledFuture cancel true인데 ScheduledThreadPoolExecutor queue size가 그대로인 이유는?
+- ScheduledFuture.cancel은 DelayQueue stale ticket 관점에서 어떻게 이해해야 해?
+- removeOnCancelPolicy true를 켜면 cancelled task cleanup 시점과 비용이 어떻게 달라져?
+- scheduled executor에서 cancel 성공과 queue entry 물리 제거는 왜 다른 사건이야?
+- timeout 예약을 취소했는데 stale entry가 남는 문제를 초보자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 ScheduledFuture.cancel을 실행 금지 상태 전환과 queue cleanup 시점으로
+  분리해 설명한다. cancelled delayed task retention, stale ticket, removeOnCancelPolicy,
+  DelayQueue-style invalidation을 beginner bridge로 연결한다.
+---
 # ScheduledFuture Cancellation Bridge
 
 > 한 줄 요약: `ScheduledFuture.cancel()`의 사용자-facing 의미는 "이 예약은 더 이상 실행하지 말라"이고, 내부 자료구조 mental model로는 "ticket을 stale로 만들고 나중에 버리거나, `removeOnCancelPolicy`로 즉시 치울 수 있다"로 이어서 보면 된다.

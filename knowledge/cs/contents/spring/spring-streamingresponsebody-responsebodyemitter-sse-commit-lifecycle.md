@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: Spring StreamingResponseBody ResponseBodyEmitter SseEmitter Commit Lifecycle
+concept_id: spring/streamingresponsebody-responsebodyemitter-sse-commit-lifecycle
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- streamingresponsebody-responsebodyemitter-sse
+- commit-lifecycle
+- streamingresponsebody-responsebodyemitter-sseemitter
+- mvc-streaming-commit
+aliases:
+- StreamingResponseBody ResponseBodyEmitter SseEmitter
+- Spring MVC streaming commit lifecycle
+- first byte response commit
+- streaming flush timeout disconnect
+- SseEmitter lifecycle
+- ResponseBodyEmitter commit timing
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+linked_paths:
+- contents/spring/spring-problemdetail-before-after-commit-matrix.md
+- contents/spring/spring-async-timeout-disconnect-decision-tree.md
+- contents/spring/spring-mvc-async-deferredresult-callable-dispatch.md
+- contents/spring/spring-handlermethodreturnvaluehandler-chain.md
+- contents/spring/spring-responsebodyadvice-streaming-types.md
+- contents/spring/spring-responsebodyemitter-media-type-boundaries.md
+- contents/spring/spring-sseemitter-timeout-callback-race-matrix.md
+- contents/spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md
+expected_queries:
+- StreamingResponseBody ResponseBodyEmitter SseEmitter는 commit lifecycle이 어떻게 달라?
+- Spring MVC streaming 응답에서 첫 바이트가 commit되면 예외 응답은 어떻게 돼?
+- flush timeout disconnect가 streaming type별로 어떤 callback과 예외로 드러나?
+- SseEmitter와 ResponseBodyEmitter를 같은 스트리밍 응답으로 보면 왜 운영 해석이 틀려?
+contextual_chunk_prefix: |
+  이 문서는 Spring MVC streaming return type인 StreamingResponseBody, ResponseBodyEmitter,
+  SseEmitter가 모두 async 기반이지만 first byte commit, flush cadence, timeout/disconnect
+  signal, callback ownership이 다르다는 점을 비교한다.
+---
 # Spring `StreamingResponseBody` / `ResponseBodyEmitter` / `SseEmitter` Commit Lifecycle
 
 > 한 줄 요약: 셋 다 Spring MVC async 위에서 동작하지만, 첫 바이트가 언제 commit되는지, flush가 어떤 주기로 일어나는지, timeout/disconnect가 어느 콜백과 예외로 드러나는지가 다르므로 같은 "스트리밍 응답"으로 뭉뚱그리면 운영 해석이 쉽게 틀어진다.

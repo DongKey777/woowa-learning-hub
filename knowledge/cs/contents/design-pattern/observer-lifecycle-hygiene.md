@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Observer Lifecycle Hygiene
+concept_id: design-pattern/observer-lifecycle-hygiene
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- observer-lifecycle
+- unsubscribe-contract
+- duplicate-listener-guard
+aliases:
+- observer lifecycle hygiene
+- unsubscribe pattern
+- duplicate listener registration
+- listener cleanup
+- event listener leak
+- UI listener lifecycle
+- plugin listener lifecycle
+- long lived process observer leak
+- event emitter cleanup
+- register once unsubscribe always
+symptoms:
+- 화면 remount, plugin re-enable, reconnect 이후 같은 이벤트가 두 번씩 처리되어 중복 요청이나 중복 알림이 발생한다
+- subscribe API는 있는데 unsubscribe handle이나 owner lifecycle이 없어 stale listener가 오래 살아남는다
+- 중복 등록 방지를 호출자 습관에 맡겨 retry, reload, reconnect 경로에서 listener가 계속 누적된다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/observer
+- design-pattern/observer-pubsub-application-events
+- design-pattern/mediator-vs-observer-vs-pubsub
+next_docs:
+- design-pattern/plugin-architecture-pattern-language
+- design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing
+- software-engineering/cache-message-observability
+linked_paths:
+- contents/design-pattern/observer.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/mediator-vs-observer-vs-pubsub.md
+- contents/design-pattern/plugin-architecture-pattern-language.md
+- contents/design-pattern/spring-eventlistener-vs-transactionaleventlistener-timing.md
+- contents/software-engineering/cache-message-observability.md
+confusable_with:
+- design-pattern/observer
+- design-pattern/observer-pubsub-application-events
+- design-pattern/plugin-architecture-pattern-language
+- design-pattern/mediator-vs-observer-vs-pubsub
+forbidden_neighbors: []
+expected_queries:
+- Observer에서 unsubscribe를 빼먹으면 왜 메모리 누수보다 중복 실행이 먼저 보일 수 있어?
+- UI remount나 plugin re-enable 때 duplicate listener registration을 막으려면 API가 어떤 계약을 가져야 해?
+- subscribe가 Disposable이나 unsubscribe handle을 반환해야 하는 이유가 뭐야?
+- listener lifecycle을 owner lifecycle과 맞추지 않으면 stale closure와 hidden side effect가 생기는 이유가 뭐야?
+- long lived process에서 active listener count와 teardown test를 왜 운영 지표로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Observer Lifecycle Hygiene playbook으로, UI, plugin, daemon, long-lived
+  session에서 observer listener가 중복 등록되거나 해제되지 않아 duplicate effect, stale closure,
+  memory leak가 생기는 문제를 unsubscribe handle, owner-scoped registry, duplicate guard,
+  deterministic teardown으로 막는 방법을 설명한다.
+---
 # Observer Lifecycle Hygiene
 
 > 한 줄 요약: 옵저버는 등록보다 해제가 어렵다. UI, plugin, long-lived process에서는 `unsubscribe`, 중복 등록 방지, listener 소유권을 코드 계약으로 고정해야 누수와 중복 실행을 막을 수 있다.
@@ -33,6 +101,8 @@ retrieval-anchor-keywords: observer lifecycle hygiene, unsubscribe pattern, dupl
 짧게 말하면:
 
 **subscribe는 생성/활성화 경계에서, unsubscribe는 종료/비활성화 경계에서, duplicate guard는 registration API 자체에서 강제해야 한다.**
+
+이 규칙은 단순 코드 스타일이 아니라 운영 안전장치다. listener가 남아 있으면 메모리보다 먼저 중복 실행, 오래된 session context, 닫힌 화면 state 접근 같은 기능 이상으로 드러난다.
 
 ## 왜 UI, plugin, long-lived process에서 더 위험한가
 

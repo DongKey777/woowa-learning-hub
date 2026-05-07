@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "LB Connection Draining, Deployment Safe Close"
+concept_id: network/lb-connection-draining-deployment-safe-close
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- connection-draining
+- graceful-shutdown
+- deployment-reset
+aliases:
+- connection draining
+- deployment safe close
+- graceful shutdown drain
+- deregistration delay
+- scale-in preStop
+- load balancer draining
+symptoms:
+- 배포 직후 502나 connection reset이 늘어난다
+- scale-in 때 기존 keep-alive나 streaming 요청이 중간에 끊긴다
+- readiness false 이후에도 기존 연결 정리 순서를 모른다
+- drain timeout을 짧게 잡아 WebSocket이나 long request가 깨진다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- network/load-balancer-healthcheck-failure-patterns
+- network/connection-keepalive-loadbalancing-circuit-breaker
+next_docs:
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/fin-rst-half-close-eof-semantics
+- network/api-gateway-reverse-proxy-operational-points
+- network/http-keepalive-timeout-mismatch-deeper-cases
+linked_paths:
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/fin-rst-half-close-eof-semantics.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/http-keepalive-timeout-mismatch-deeper-cases.md
+confusable_with:
+- network/load-balancer-healthcheck-failure-patterns
+- network/idle-timeout-mismatch-lb-proxy-app
+- network/connection-draining-vs-fin-rst-graceful-close
+- network/fin-rst-half-close-eof-semantics
+forbidden_neighbors: []
+expected_queries:
+- "배포 직후 502와 reset이 늘면 connection draining을 어떻게 확인해?"
+- "LB deregistration delay와 Kubernetes preStop 순서를 어떻게 맞춰?"
+- "scale-in 중 기존 keep-alive 요청을 안전하게 마무리하는 방법은?"
+- "graceful shutdown과 readiness false만으로 충분하지 않은 이유는?"
+- "WebSocket이나 streaming 서비스 배포 때 drain timeout을 어떻게 잡아?"
+contextual_chunk_prefix: |
+  이 문서는 load balancer connection draining, graceful shutdown,
+  deregistration delay, Kubernetes preStop, 배포/scale-in 중 기존 연결
+  safe close를 다루는 advanced playbook이다.
+---
 # LB Connection Draining, Deployment Safe Close
 
 > 한 줄 요약: connection draining은 배포나 scale-in 중에 기존 연결을 갑자기 자르지 않고 마무리하게 만들어, 불필요한 502와 reset을 줄인다.

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Alt-Svc Cache Lifecycle Basics
+concept_id: network/alt-svc-cache-lifecycle-basics
+canonical: false
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- alt-svc-cache
+- http3-discovery
+- browser-protocol-selection
+aliases:
+- Alt-Svc cache lifecycle
+- Alt-Svc cache warming
+- first request h2 next request h3
+- Alt-Svc expiry
+- Alt-Svc stale hint
+- Alt-Svc ma max age
+- browser Alt-Svc cache
+symptoms:
+- Alt-Svc를 받은 첫 응답이 즉시 HTTP/3로 바뀐다고 오해해 첫 방문 h2와 다음 새 connection h3 차이를 설명하지 못한다
+- Alt-Svc cache를 HTTP response cache나 existing connection reuse와 섞어 memory cache, 304, h3 선택을 한 현상으로 본다
+- ma 값을 H3 connection 유지 시간으로 오해하고 hint TTL, origin scope, stale recovery를 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/alt-svc-header-reading-micro-note
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+next_docs:
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+linked_paths:
+- contents/network/alt-svc-to-421-timeline-bridge.md
+- contents/network/alt-svc-header-reading-micro-note.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/alt-svc-vs-https-rr-freshness-bridge.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/http2-http3-downgrade-attribution-alt-svc-udp-block.md
+- contents/network/http3-cross-origin-reuse-guardrails-primer.md
+confusable_with:
+- network/alt-svc-header-reading-micro-note
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+- network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer
+forbidden_neighbors: []
+expected_queries:
+- Alt-Svc cache lifecycle에서 첫 요청은 h2이고 다음 새 connection은 h3가 될 수 있는 이유는?
+- Alt-Svc cache와 HTTP response cache와 connection reuse를 어떻게 구분해?
+- Alt-Svc ma는 H3 connection 유지 시간이 아니라 hint TTL이라는 걸 설명해줘
+- 브라우저가 Alt-Svc를 warm cache로 기억했다가 expired stale 상태로 바뀌는 흐름은?
+- Alt-Svc를 처음 배우는 사람에게 h3=\":443\" 힌트가 다음 연결 후보라는 걸 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Alt-Svc cache lifecycle을 first visit, warm cache, expiry, stale hint로 설명하는
+  beginner primer다. Alt-Svc cache, HTTP response cache, existing connection reuse를 분리하고
+  H3 discovery, ma TTL, 421 recovery 문서로 이어 준다.
+---
 # Alt-Svc Cache Lifecycle Basics
 
 

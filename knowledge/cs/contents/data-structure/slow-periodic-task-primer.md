@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Slow Periodic Task Primer
+concept_id: data-structure/slow-periodic-task-primer
+canonical: false
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- slow-periodic-task
+- fixed-rate-vs-fixed-delay
+- scheduled-executor-overrun
+aliases:
+- slow periodic task
+- fixed-rate vs fixed-delay overrun
+- scheduleAtFixedRate slow task
+- scheduleWithFixedDelay slow task
+- task runtime longer than period
+- overdue deadline
+- periodic task catch up
+symptoms:
+- fixed-rate period를 실행 후 휴식 시간으로 오해해 runtime이 period보다 길 때 끝나자마자 재실행되는 이유를 이해하지 못한다
+- fixed-delay가 이번 실행 종료 시각 기준으로 다음 deadline을 잡아 breathing room을 보장한다는 점을 놓친다
+- 느린 periodic task가 겹쳐 실행되는지, overdue deadline으로 연속 실행되는지, worker starvation인지 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge
+- data-structure/scheduledexecutorservice-vs-delayqueue-bridge
+next_docs:
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- data-structure/ready-queue-starvation-primer
+linked_paths:
+- contents/data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge.md
+- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+- contents/data-structure/fixed-rate-vs-fixed-delay-overrun-primer.md
+- contents/data-structure/delayqueue-repeating-task-primer.md
+- contents/data-structure/periodic-scheduling-drift-vs-backlog-primer.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/timing-wheel-vs-delay-queue.md
+- contents/data-structure/ready-queue-starvation-primer.md
+confusable_with:
+- data-structure/fixed-rate-vs-fixed-delay-overrun-primer
+- data-structure/periodic-scheduling-drift-vs-backlog-primer
+- data-structure/delayqueue-repeating-task-primer
+- data-structure/ready-queue-starvation-primer
+forbidden_neighbors: []
+expected_queries:
+- task runtime이 period보다 길 때 fixed-rate는 왜 끝나자마자 다시 실행돼?
+- fixed-delay는 느린 periodic task에서 왜 실행 사이에 숨 고를 시간을 보장해?
+- scheduleAtFixedRate와 scheduleWithFixedDelay를 deadline ticket 관점으로 설명해줘
+- 느린 scheduled task가 겹쳐 실행되는 건지 overdue deadline을 따라잡는 건지 어떻게 구분해?
+- periodic overrun에서 drift backlog worker starvation을 초보자에게 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 runtime이 period보다 긴 periodic task에서 fixed-rate와 fixed-delay를
+  deadline ticket 관점으로 설명한다. overdue deadline, catch-up execution,
+  breathing room, worker starvation 가능성을 beginner primer로 분리한다.
+---
 # Slow Periodic Task Primer
 
 > 한 줄 요약: 주기보다 실행 시간이 더 긴 작업에서는 `fixed-rate`가 "원래 deadline 박자"를 따라잡으려 하면서 **끝나자마자 다시 실행될 수 있고**, `fixed-delay`는 "이번 실행이 끝난 뒤 쉬는 간격"을 지켜서 항상 숨 고를 틈을 만든다.

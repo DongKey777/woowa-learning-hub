@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Ownership Metadata Quality
+concept_id: software-engineering/ownership-metadata-quality
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- ownership
+- metadata
+- service-catalog
+- operability
+aliases:
+- Ownership Metadata Quality
+- ownership metadata
+- stale ownership metadata
+- service catalog metadata quality
+- source of truth ownership
+- 운영 소유권 메타데이터 품질
+symptoms:
+- service catalog에 owner, backup owner, on-call, ADR, approver, updated_at이 없거나 서로 다른 문서에서 달라 incident와 migration 대응이 늦어져
+- 오래된 팀명, dead link, 바뀐 on-call channel, 끊어진 ADR 링크가 남아 source of truth가 신뢰되지 않아
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/on-call-ownership-boundaries
+next_docs:
+- software-engineering/service-portfolio-lifecycle-governance
+- software-engineering/production-readiness-review
+- software-engineering/contract-registry-governance
+linked_paths:
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/on-call-ownership-boundaries.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/contract-registry-governance.md
+- contents/software-engineering/api-lifecycle-stage-model.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+- contents/software-engineering/production-readiness-review.md
+confusable_with:
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/on-call-ownership-boundaries
+- software-engineering/change-ownership-handoff
+forbidden_neighbors: []
+expected_queries:
+- ownership metadata quality를 freshness, completeness, consistency 기준으로 어떻게 점검해?
+- service catalog에서 owner, backup owner, on-call, ADR, approver, updated_at 필드가 왜 운영 대응에 필요해?
+- stale owner나 dead link, cross-system mismatch를 자동 점검하려면 어떤 guardrail을 둬야 해?
+- ownership metadata quality가 낮은 것은 입력 오류가 아니라 책임 구조 문제일 수 있다는 뜻을 설명해줘
+- PRR, migration checklist, deprecation communication에서 같은 ownership metadata source of truth를 써야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 service ownership metadata의 freshness, completeness, consistency를 유지해 incident, PRR, migration, deprecation 대응 가능성을 보장하는 advanced playbook이다.
+---
 # Ownership Metadata Quality
 
 > 한 줄 요약: ownership metadata quality는 서비스 이름이 아니라, 누가 소유하고 어떻게 운영하는지를 정확히 찾을 수 있는 메타데이터의 신뢰도를 말한다.

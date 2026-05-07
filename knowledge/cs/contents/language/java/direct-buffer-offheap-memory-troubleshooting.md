@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Direct Buffer Off-Heap Memory Troubleshooting
+concept_id: language/direct-buffer-offheap-memory-troubleshooting
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- off-heap-memory
+- direct-buffer
+- rss-debugging
+aliases:
+- Direct Buffer Off-Heap Memory Troubleshooting
+- ByteBuffer.allocateDirect
+- Direct buffer memory OOM
+- Java off-heap native memory
+- NMT direct buffer
+- mmap MappedByteBuffer
+- RSS heap mismatch
+symptoms:
+- heap dump와 GC 로그는 깨끗한데 RSS가 계속 증가하거나 container OOM killer가 발생해
+- OutOfMemoryError Direct buffer memory가 나는데 -Xmx만 보고 heap 여유를 확인해 원인을 놓쳐
+- ByteBuffer.allocateDirect와 FileChannel.map이 native memory, mmap, Cleaner release timing에 의존한다는 점을 고려하지 않아
+intents:
+- troubleshooting
+- deep_dive
+prerequisites:
+- language/io-nio-serialization
+next_docs:
+- language/cleaner-vs-finalize-deprecation
+- language/oom-heap-dump-playbook
+- operating-system/oom-killer-cgroup-memory-pressure
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/mmap-sendfile-splice-zero-copy.md
+- contents/language/java/cleaner-vs-finalize-deprecation.md
+- contents/language/java/jcmd-diagnostic-command-cheatsheet.md
+confusable_with:
+- language/oom-heap-dump-playbook
+- operating-system/oom-killer-cgroup-memory-pressure
+- language/cleaner-vs-finalize-deprecation
+forbidden_neighbors: []
+expected_queries:
+- Java heap은 여유 있는데 RSS가 오르고 Direct buffer memory OOM이 나는 원인을 어떻게 찾지?
+- ByteBuffer.allocateDirect가 heap 밖 native memory를 쓰기 때문에 heap dump에 작게 보이는 이유가 뭐야?
+- MappedByteBuffer와 mmap memory가 cgroup OOM pressure에 영향을 주는 경로를 설명해줘
+- Native Memory Tracking으로 direct buffer off-heap 사용량을 어떻게 확인해?
+- direct buffer를 요청마다 할당하면 allocation churn과 Cleaner release delay가 왜 문제가 돼?
+contextual_chunk_prefix: |
+  이 문서는 Direct Buffer off-heap memory 문제를 ByteBuffer.allocateDirect, native memory, mmap, RSS, NMT, OOM killer, Cleaner release timing 관점으로 진단하는 advanced playbook이다.
+  Direct buffer memory OOM, heap clean but RSS high, off-heap, MappedByteBuffer, NMT, container memory 질문이 본 문서에 매핑된다.
+---
 # Direct Buffer Off-Heap Memory Troubleshooting
 
 > 한 줄 요약: heap은 멀쩡한데 RSS가 계속 오르거나 `OutOfMemoryError: Direct buffer memory`가 난다면, direct buffer와 mmap이 쓰는 native memory 경로를 먼저 의심해야 한다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Migration Carrying Cost and Cost of Delay
+concept_id: software-engineering/migration-carrying-cost-delay
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- migration
+- cost-of-delay
+- carrying-cost
+- modernization
+aliases:
+- Migration Carrying Cost and Cost of Delay
+- migration carrying cost
+- cost of delay migration
+- dual-run cost legacy tax
+- modernization carrying cost
+- transition tax economics
+symptoms:
+- migration 구현 비용만 비교하고 dual-run infra, legacy on-call, roadmap drag, support burden처럼 미루는 동안 누적되는 비용을 계산하지 않아
+- lagging consumer나 repeated exception 때문에 dual-run이 계속되는데 유지 1개월의 carrying cost와 wave별 절감 효과를 숫자로 보지 않아
+intents:
+- deep_dive
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/migration-funding-model
+- software-engineering/architectural-debt-interest
+next_docs:
+- software-engineering/migration-stop-loss-governance
+- software-engineering/migration-wave-governance
+- software-engineering/build-vs-buy-governance
+linked_paths:
+- contents/software-engineering/migration-funding-model.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/architectural-debt-interest-model.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/build-vs-buy-exit-cost-governance.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+- contents/software-engineering/migration-scorecards.md
+confusable_with:
+- software-engineering/migration-funding-model
+- software-engineering/migration-stop-loss-governance
+- software-engineering/architectural-debt-interest
+forbidden_neighbors: []
+expected_queries:
+- migration carrying cost와 cost of delay를 dual-run, legacy tax, roadmap drag 관점에서 계산하는 방법을 알려줘
+- 전환을 미루는 비용이 단순 구현 비용보다 의사결정에 더 중요한 이유는 뭐야?
+- lagging consumer 한 팀 때문에 dual-run을 3개월 더 유지할 가치가 있는지 어떻게 판단해?
+- migration wave가 끝날 때 carrying cost가 실제로 얼마나 줄었는지 어떤 항목으로 봐야 해?
+- migration economics를 product roadmap flexibility와 incident reduction까지 포함해 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 migration을 미룰 때 누적되는 dual-run, legacy tax, roadmap drag, cost of delay를 wave decision과 stop-loss 판단에 연결하는 advanced bridge이다.
+---
 # Migration Carrying Cost and Cost of Delay
 
 > 한 줄 요약: migration economics의 핵심은 "얼마 들까"보다, 지금 전환하지 않을 때 legacy와 dual-run과 org drag가 매주 얼마씩 비용을 쌓는지 보이는 carrying cost와 cost of delay를 계산하는 것이다.

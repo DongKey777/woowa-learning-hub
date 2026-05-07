@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Count-Min Sketch
+concept_id: data-structure/count-min-sketch
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- count-min-sketch
+- approximate-frequency
+- hot-key-observability
+aliases:
+- Count-Min Sketch
+- CMS frequency sketch
+- approximate frequency
+- frequency sketch
+- overestimation sketch
+- hot key counting
+- hash rows count table
+symptoms:
+- high-cardinality stream의 frequency를 exact map으로 모두 세려다가 memory와 eviction 비용이 커진다
+- Count-Min Sketch 조회가 여러 hash row의 최솟값을 쓰는 이유와 과대 추정 성향을 설명하지 못한다
+- Bloom Filter처럼 membership을 묻는 구조와 Count-Min Sketch처럼 frequency를 묻는 구조를 섞어 쓴다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/hash-table-basics
+next_docs:
+- data-structure/approximate-counting-rate-limiting-observability
+- data-structure/count-min-vs-hyperloglog
+- data-structure/space-saving-heavy-hitters
+- data-structure/sketch-filter-selection-playbook
+linked_paths:
+- contents/data-structure/applied-data-structures-overview.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+- contents/data-structure/count-min-vs-hyperloglog.md
+- contents/data-structure/space-saving-heavy-hitters.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+- contents/data-structure/hyperloglog.md
+confusable_with:
+- data-structure/count-min-vs-hyperloglog
+- data-structure/bloom-filter
+- data-structure/hyperloglog
+- data-structure/space-saving-heavy-hitters
+forbidden_neighbors: []
+expected_queries:
+- Count-Min Sketch는 왜 여러 hash row의 최솟값을 frequency로 봐?
+- approximate frequency에서 Count-Min Sketch가 과대 추정만 하는 이유는?
+- hot key observability와 rate limiting에서 Count-Min Sketch를 어떻게 써?
+- Bloom Filter와 Count-Min Sketch는 membership과 frequency 중 무엇이 달라?
+- high-cardinality stream에서 exact counter 대신 CMS를 쓰는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 Count-Min Sketch를 고정 메모리 hash row count table로 frequency를
+  근사하는 자료구조로 설명한다. min query, overestimation, collision,
+  hot key, heavy hitter, rate limiting, observability, Bloom Filter와의
+  membership/frequency 차이를 다룬다.
+---
 # Count-Min Sketch
 
 > 한 줄 요약: Count-Min Sketch는 적은 메모리로 스트림의 빈도를 근사하고, 과대 추정만 허용하는 확률적 카운팅 자료구조다.

@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Decision Revalidation and Supersession Lifecycle
+concept_id: software-engineering/decision-revalidation-lifecycle
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- adr
+- decision-governance
+- revalidation
+- architecture-lifecycle
+aliases:
+- Decision Revalidation and Supersession Lifecycle
+- ADR revalidation lifecycle
+- superseded decision record flow
+- architecture decision revisit trigger
+- decision sunset governance
+- assumption expiry review
+symptoms:
+- ADR은 accepted 상태로 쌓이는데 트래픽, 팀 구조, 비용, incident 패턴이 바뀌어도 다시 보는 trigger가 없어
+- 오래된 결정을 수정할지 supersede할지 retire할지 exception으로 둘지 기준이 없어 decision history가 흐려져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/adr-decision-records
+- software-engineering/rfc-vs-adr-decision-flow
+next_docs:
+- software-engineering/architecture-exception-process
+- software-engineering/technology-radar-adoption-governance
+- software-engineering/incident-review-learning-loop
+linked_paths:
+- contents/software-engineering/rfc-vs-adr-decision-flow.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/architecture-exception-process.md
+- contents/software-engineering/technology-radar-adoption-governance.md
+- contents/software-engineering/incident-review-learning-loop-architecture.md
+- contents/software-engineering/architectural-governance-operating-model.md
+confusable_with:
+- software-engineering/adr-decision-records
+- software-engineering/architecture-exception-process
+- software-engineering/technology-radar-adoption-governance
+forbidden_neighbors: []
+expected_queries:
+- ADR을 accepted로 끝내지 않고 revalidation trigger와 supersede lifecycle로 관리하려면 어떻게 해야 해?
+- 아키텍처 결정의 전제 조건이 만료됐는지 확인하는 신호에는 뭐가 있어?
+- 오래된 ADR을 amend, supersede, retire, exception 중 무엇으로 처리할지 기준을 알려줘
+- 반복 incident나 SLO 위반을 architecture decision 재검토로 연결하려면 어떤 필드를 남겨야 해?
+- decision record가 실제 policy, template, rollout gate까지 반영되게 만드는 방법은 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 ADR과 architecture decision을 accepted 이후에도 trigger, review_by, supersede, retire, exception 상태로 재검증하는 advanced playbook이다.
+---
 # Decision Revalidation and Supersession Lifecycle
 
 > 한 줄 요약: 좋은 architecture decision flow는 ADR을 작성하는 순간 끝나지 않고, 어떤 신호가 오면 결정을 다시 검토하며, supersede/retire/exception 중 어떤 경로로 바꿀지까지 포함하는 lifecycle이어야 한다.

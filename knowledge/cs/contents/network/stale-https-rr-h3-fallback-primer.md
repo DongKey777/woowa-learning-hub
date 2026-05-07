@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "Stale HTTPS RR H3 Fallback Primer"
+concept_id: network/stale-https-rr-h3-fallback-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- https-rr
+- h3-fallback
+- stale-dns-hint
+aliases:
+- stale HTTPS RR H3 fallback
+- stale SVCB no 421
+- cached HTTPS RR outdated H3 path
+- stale DNS H3 hint
+- QUIC fail before 421
+- no 421 silent fallback
+- old H3 endpoint DNS cache
+symptoms:
+- HTTPS RR/SVCB가 stale하면 항상 421이 보여야 한다고 생각한다
+- QUIC handshake 전 실패와 HTTP layer wrong connection recovery를 섞는다
+- 최종 Protocol=h2만 보고 stale DNS H3 hint 가능성을 놓친다
+- Alt-Svc stale 421 recovery와 HTTPS RR stale silent fallback을 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/h3-fallback-trace-bridge
+next_docs:
+- network/alt-svc-vs-https-rr-freshness-bridge
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/https-rr-resolver-drift-primer
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+linked_paths:
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/alt-svc-vs-https-rr-freshness-bridge.md
+- contents/network/h3-fallback-trace-bridge.md
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/https-rr-resolver-drift-primer.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+confusable_with:
+- network/h3-stale-alt-svc-421-recovery-primer
+- network/h3-fallback-trace-bridge
+- network/alt-svc-vs-https-rr-freshness-bridge
+- network/https-rr-resolver-drift-primer
+forbidden_neighbors: []
+expected_queries:
+- "stale HTTPS RR 때문에 H3가 실패해도 왜 421이 안 보일 수 있어?"
+- "cached SVCB H3 path가 낡았을 때 브라우저는 어떻게 H2로 fallback해?"
+- "Alt-Svc stale 421 recovery와 HTTPS RR stale silent fallback 차이는?"
+- "QUIC fail before 421이라는 말이 무슨 뜻이야?"
+- "DevTools 최종 h2만 보일 때 stale DNS H3 hint를 어떻게 의심해?"
+contextual_chunk_prefix: |
+  이 문서는 network 카테고리에서 Stale HTTPS RR H3 Fallback Primer를 다루는 primer 문서다. stale HTTPS RR H3 fallback, stale SVCB no 421, cached HTTPS RR outdated H3 path, stale DNS H3 hint, QUIC fail before 421 같은 lexical 표현과 stale HTTPS RR ëë¬¸ì H3ê° ì¤í¨í´ë ì 421ì´ ì ë³´ì¼ ì ìì´?, cached SVCB H3 pathê° ë¡ìì ë ë¸ë¼ì°ì ë ì´ë»ê² H2ë¡ fallbackí´? 같은 자연어 질문을 같은 개념으로 묶어, 학습자가 증상, 비교, 설계 판단, 코드리뷰 맥락 중 어디에서 들어오더라도 본문의 핵심 분기와 다음 문서로 안정적으로 이어지게 한다.
+---
 # Stale HTTPS RR H3 Fallback Primer
 
 

@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring Template Classes Beginner Primer
+concept_id: spring/template-classes-beginner-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- template-classes
+- jdbctemplate-resttemplate-transactiontemplate
+- template-callback
+- framework-handles-setup
+aliases:
+- Spring Template classes
+- JdbcTemplate RestTemplate TransactionTemplate
+- template callback pattern
+- framework handles setup cleanup
+- Spring template method mental model
+intents:
+- definition
+- comparison
+linked_paths:
+- contents/spring/spring-jdbctemplate-sqlexception-translation.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-aop-basics.md
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+expected_queries:
+- Spring의 JdbcTemplate RestTemplate TransactionTemplate은 왜 Template이라는 이름이야?
+- Template 클래스는 반복되는 준비 정리 예외 처리를 어떻게 감춰줘?
+- Spring template과 template method pattern의 관계를 초급자에게 설명해줘
+- JdbcTemplate과 TransactionTemplate을 같은 mental model로 묶을 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 Spring ...Template 클래스가 반복되는 setup, cleanup, exception translation 같은
+  흐름은 framework가 맡고 사용자는 핵심 callback이나 API 호출만 제공하는 도구라는 mental
+  model을 초급자에게 제공한다.
+---
 # Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림
 
 > 한 줄 요약: Spring의 `...Template` 클래스는 "반복되는 준비/정리/예외 처리 흐름은 프레임워크가 맡고, 내가 바꾸고 싶은 핵심 한 조각만 콜백이나 API 호출로 넣는" 도구다.

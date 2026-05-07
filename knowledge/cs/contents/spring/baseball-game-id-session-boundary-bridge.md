@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > baseball를 웹으로 옮기면 게임 한 판은 메모리 객체 하나보다 `gameId`로 식별되는 긴 수명의 상태가 된다. 그래서 다음 추측 요청은 `currentGame` 필드를 공유하기보다 "어느 게임에 대한 요청인가"를 식별자로 다시 말해 주는 편이 Spring의 요청 모델과 맞다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "게임 시작 다음 추측이 방금 만든 게임인지 어떻게 연결돼요?" | `POST /games` 뒤 `POST /games/{gameId}/guesses` 계약이 없는 API | 다음 요청이 같은 게임임을 식별자로 다시 전달하게 한다 |
+| "세션에 `Game` 객체를 통째로 넣으면 편하지 않나요?" | session을 상태 원천처럼 쓰고 path/body에는 gameId가 없는 구조 | 세션은 작은 참조를 보관하고 실제 게임 상태는 저장소에서 찾는 경계를 본다 |
+| "`currentGame` 필드를 없애면 현재 게임을 어디서 찾죠?" | Bean field 공유를 제거한 뒤 lookup 경로가 불명확한 service | gameId propagation과 state store 조회를 한 흐름으로 묶는다 |
+
 ## 미션 시나리오
 
 콘솔 baseball에서는 `Game game = new Game()` 한 객체를 계속 붙잡고 `while` 루프 안에서 추측을 반복하면 된다. 하지만 웹에서는 `POST /games`로 게임을 시작하고, 그다음 `POST /games/{gameId}/guesses`로 추측을 보내며, 필요하면 `POST /games/{gameId}/restart`로 다음 라운드를 연다. 요청이 나뉘는 순간 서버는 "이 추측이 방금 만든 그 게임의 다음 턴인가"를 매번 다시 알아야 한다.

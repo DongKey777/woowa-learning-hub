@@ -22,8 +22,8 @@ aliases:
 - mapping error vs di error
 - request mapping vs bean wiring
 - 404 bean 헷갈려요
-- 왜 404인데 bean 문제 아니에요
-- spring 405 뭐예요
+- request failure vs bean creation
+- http status vs di exception
 - beginner spring troubleshooting order
 - spring first check order 404 bean
 - spring mvc mapping error before di
@@ -41,8 +41,8 @@ prerequisites:
 - spring/request-pipeline-bean-container
 - spring/mvc-controller-basics
 next_docs:
-- spring/spring-mvc-request-lifecycle
-- spring/spring-di-exception-quick-triage
+- spring/mvc-request-lifecycle
+- spring/di-exception-quick-triage
 - spring/component-scan-failure-patterns
 linked_paths:
 - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
@@ -52,17 +52,18 @@ linked_paths:
 - contents/spring/spring-primary-qualifier-collection-injection-decision-guide.md
 - contents/network/http-status-codes-basics.md
 confusable_with:
-- spring/spring-mvc-request-lifecycle
-- spring/spring-di-exception-quick-triage
+- spring/mvc-request-lifecycle
+- spring/di-exception-quick-triage
 - spring/component-scan-failure-patterns
-forbidden_neighbors:
-- contents/spring/spring-di-exception-quick-triage.md
+forbidden_neighbors: []
 expected_queries:
 - Spring에서 404나 405가 났을 때 왜 DI 예외랑 먼저 분리해서 봐야 해?
 - 서버는 켜졌는데 특정 요청만 실패하면 매핑 문제와 bean 주입 문제를 어떻게 가르지?
 - No handler found랑 No qualifying bean of type은 어디서 갈리는 에러야?
 - 요청 경로 문제인지 Bean 등록 문제인지 초급자가 처음 보는 순서를 알려줘
 - 405 Method Not Allowed가 떴는데 @Qualifier 같은 주입 설정을 볼 상황인지 판단하고 싶어
+- 왜 404인데 bean wiring 문제부터 보면 안 돼?
+- spring 405는 handler mapping 단계에서 먼저 봐야 해?
 contextual_chunk_prefix: |
   이 문서는 Spring 초급자가 요청 실패와 객체 조립 실패를 한 덩어리로 보지
   않도록 404·405와 bean 주입 예외를 먼저 갈라 주는 chooser다. 앱은 떴는데

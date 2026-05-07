@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Alt-Svc vs HTTPS RR Freshness Bridge
+concept_id: network/alt-svc-vs-https-rr-freshness-bridge
+canonical: false
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: ko
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- alt-svc-https-rr-freshness
+- dns-ttl-vs-alt-svc-ma
+- h3-first-repeat-visit
+aliases:
+- Alt-Svc vs HTTPS RR freshness
+- HTTPS RR TTL vs Alt-Svc ma
+- DNS hint lifetime vs HTTP hint lifetime
+- first visit DNS repeat visit Alt-Svc
+- stale Alt-Svc fresh DNS
+- fresh Alt-Svc stale DNS
+- H3 selection time axis
+symptoms:
+- DNS HTTPS RR TTL과 Alt-Svc ma를 같은 cache lifetime으로 보고 first visit과 repeat visit H3 차이를 설명하지 못한다
+- 반복 방문이라는 말만 보고 새 connection에서 H3를 다시 고른 것인지 existing connection reuse인지 분리하지 않는다
+- DNS answer는 새 현실인데 browser Alt-Svc cache는 옛 endpoint를 들고 있는 어긋난 상태를 하나의 힌트로만 해석한다
+intents:
+- comparison
+- troubleshooting
+prerequisites:
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/alt-svc-cache-lifecycle-basics
+next_docs:
+- network/h3-discovery-observability-primer
+- network/stale-https-rr-h3-fallback-primer
+- network/https-rr-resolver-drift-primer
+linked_paths:
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/alt-svc-cache-lifecycle-basics.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/stale-https-rr-h3-fallback-primer.md
+- contents/network/https-rr-resolver-drift-primer.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+confusable_with:
+- network/alt-svc-cache-lifecycle-basics
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/stale-https-rr-h3-fallback-primer
+- network/https-rr-resolver-drift-primer
+- network/dns-ttl-cache-failure-patterns
+forbidden_neighbors: []
+expected_queries:
+- DNS HTTPS RR TTL과 Alt-Svc ma는 왜 서로 다른 H3 freshness time axis야?
+- 첫 방문 H3는 DNS HTTPS RR 쪽, 반복 방문 H3는 warm Alt-Svc 쪽 설명력이 큰 이유는?
+- DNS는 fresh인데 browser Alt-Svc가 stale이면 H3 endpoint 선택이 어떻게 달라질 수 있어?
+- Alt-Svc가 만료돼도 DNS HTTPS RR이 남아 있으면 첫 요청부터 H3 시도 근거가 있을 수 있지?
+- H3 first visit repeat visit freshness를 DNS hint lifetime과 HTTP hint lifetime으로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 DNS HTTPS RR TTL과 HTTP Alt-Svc ma가 서로 다른 H3 discovery freshness
+  time axis임을 설명한다. first visit은 DNS hint, repeat visit은 browser Alt-Svc memory가
+  더 설명력 있을 수 있으며 connection reuse와도 분리해서 본다.
+---
 # Alt-Svc vs HTTPS RR Freshness Bridge
 
 

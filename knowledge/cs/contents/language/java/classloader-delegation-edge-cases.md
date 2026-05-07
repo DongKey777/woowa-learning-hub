@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: ClassLoader Delegation Edge Cases
+concept_id: language/classloader-delegation-edge-cases
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- classloader
+- runtime-boundary
+- service-loader
+aliases:
+- ClassLoader delegation edge cases
+- parent delegation
+- child-first classloader
+- context class loader
+- webapp classloader
+- ServiceLoader classloader
+- Java classloader delegation
+symptoms:
+- parent delegation을 항상 부모 우선으로만 외우고 webapp/plugin child-first나 local-first loader 예외를 설명하지 못해
+- ServiceLoader나 SPI가 context classloader에 따라 다른 결과를 낸다는 점을 놓쳐
+- 같은 클래스 이름 다른 버전, redeploy 이상 동작, class loading deadlock을 delegation boundary와 연결하지 못해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/class-initialization-ordering
+next_docs:
+- language/classloader-memory-leak-playbook
+- language/java-module-system-runtime-boundaries
+- language/java-binary-compatibility-linkage-errors
+linked_paths:
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/java-module-system-runtime-boundaries.md
+- contents/language/java/java-agent-instrumentation-basics.md
+- contents/language/java/class-initialization-ordering.md
+confusable_with:
+- language/classloader-memory-leak-playbook
+- language/java-module-system-runtime-boundaries
+- language/java-binary-compatibility-linkage-errors
+forbidden_neighbors: []
+expected_queries:
+- Java parent delegation model이 webapp이나 plugin child-first loader에서 어떻게 달라져?
+- ServiceLoader가 context classloader 때문에 SPI를 못 찾는 문제를 설명해줘
+- 같은 클래스 이름 다른 버전이 로딩될 때 classloader delegation을 어떻게 진단해?
+- classloader deadlock이나 loadClass findClass edge case를 실무 관점으로 알려줘
+- bootstrap platform application loader와 child-first loader 차이를 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 Java ClassLoader delegation edge cases를 parent delegation, child-first loader, context classloader, ServiceLoader, webapp/plugin isolation, deadlock 관점으로 설명하는 advanced deep dive다.
+  classloader delegation, parent-first, child-first, context classloader, SPI, webapp loader 질문이 본 문서에 매핑된다.
+---
 # ClassLoader Delegation Edge Cases
 
 > 한 줄 요약: parent delegation은 기본 원칙이지만 webapp classloader, child-first loaders, service loading, deadlock avoidance 같은 edge case에서는 delegation 순서와 lookup scope가 결과를 크게 바꾼다.

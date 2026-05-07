@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Controller Entity Return vs DTO Return Primer
+concept_id: spring/controller-entity-return-vs-dto-return-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- controller-entity-return
+- vs-dto-return
+- dto-return
+- entity-direct-return
+aliases:
+- controller entity return
+- DTO return
+- entity direct return Jackson
+- lazy loading during JSON serialization
+- LazyInitializationException controller response
+- OSIV entity return
+- response DTO mapping
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-lazy-loading-dto-mapping-checklist.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- contents/spring/spring-lazyinitializationexception-debug-sequence.md
+- contents/spring/spring-open-session-in-view-tradeoffs.md
+- contents/spring/spring-dto-projection-vs-entity-loading-readonly-response-mini-card.md
+- contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
+- contents/spring/spring-mvc-controller-basics.md
+- contents/database/n-plus-one-query-detection-solutions.md
+expected_queries:
+- Spring controller에서 엔티티를 그대로 반환하면 왜 위험해?
+- DTO로 변환해서 반환해야 하는 이유가 뭐야?
+- JSON 직렬화 중 lazy loading이나 N+1이 생기는 이유는?
+- OSIV가 켜져 있어도 응답 DTO가 필요한 이유는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 @RestController가 entity를 직접 반환할 때 Jackson JSON 직렬화가
+  lazy getter를 호출하면서 SQL, LazyInitializationException, hidden N+1,
+  순환 참조, 응답 shape 불안정을 만드는 문제를 beginner 관점에서 설명한다.
+  service 안에서 DTO로 응답 경계를 닫는 기본값으로 라우팅한다.
+---
 # Controller Entity Return vs DTO Return Primer
 
 > 한 줄 요약: controller가 엔티티를 그대로 반환하면 Jackson 직렬화가 lazy 연관 getter를 건드리면서 응답 생성 중 SQL이 나가거나 `LazyInitializationException`이 날 수 있어서, 초급자 기본값은 service 안에서 DTO로 닫아 반환하는 것이다.

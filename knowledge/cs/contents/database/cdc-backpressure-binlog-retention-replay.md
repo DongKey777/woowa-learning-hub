@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: CDC Backpressure, Binlog/WAL Retention, and Replay Safety
+concept_id: database/cdc-backpressure-binlog-retention-replay
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cdc-backpressure
+- binlog-retention
+- wal-retention
+- replay-safety
+aliases:
+- cdc backpressure
+- binlog retention
+- wal retention
+- replication slot lag
+- debezium lag
+- replay window
+- log retention pressure
+- cdc recovery
+- gap repair
+- CDC lag retention
+symptoms:
+- CDC consumer가 느려져 downstream 반영만 늦는다고 봤지만 source DB binlog/WAL retention pressure가 커진다
+- replication slot lag나 binlog purge window 때문에 replay 가능한 시간이 줄어들고 snapshot fallback 위험이 커진다
+- connector lag만 보고 sink idempotency, heartbeat, replay-safe consumer, estimated time-to-log-loss를 같이 보지 않는다
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- database/cdc-debezium-outbox-binlog
+- database/idempotent-transaction-retry-envelopes
+next_docs:
+- database/cdc-gap-repair-reconciliation-playbook
+- database/cdc-replay-verification-idempotency-runbook
+- system-design/historical-backfill-replay-platform-design
+linked_paths:
+- contents/database/cdc-debezium-outbox-binlog.md
+- contents/database/cdc-gap-repair-reconciliation-playbook.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/group-commit-binlog-fsync-durability.md
+- contents/database/online-backfill-consistency.md
+- contents/database/idempotent-transaction-retry-envelopes.md
+- contents/system-design/historical-backfill-replay-platform-design.md
+confusable_with:
+- database/cdc-gap-repair-reconciliation-playbook
+- database/cdc-replay-verification-idempotency-runbook
+- database/replica-lag-observability-routing-slo
+- system-design/change-data-capture-outbox-relay-design
+forbidden_neighbors: []
+expected_queries:
+- CDC lag가 커지면 downstream 지연뿐 아니라 binlog WAL retention pressure와 replay window 축소가 생기는 이유가 뭐야?
+- Debezium consumer가 늦을 때 estimated time-to-log-loss와 log retention window를 어떻게 봐야 해?
+- PostgreSQL replication slot lag가 WAL 삭제를 막아 source DB storage pressure로 번지는 현상을 설명해줘
+- CDC backpressure 상황에서 heartbeat, connector offset, sink idempotency를 같이 봐야 하는 이유가 뭐야?
+- binlog retention을 놓치면 snapshot fallback이나 rebuild가 필요한 이유와 replay-safe consumer 조건을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 CDC Backpressure, Binlog/WAL Retention, and Replay Safety playbook으로,
+  Debezium/binlog/WAL consumer lag가 downstream staleness를 넘어 source log retention, replay window,
+  replication slot storage pressure, snapshot fallback risk로 번지는 운영 대응 기준을 설명한다.
+---
 # CDC Backpressure, Binlog/WAL Retention, and Replay Safety
 
 > 한 줄 요약: CDC 소비가 느려지면 문제는 단순 지연이 아니라, binlog/WAL 보존 기간과 replay 가능 시간이 같이 줄어드는 운영 사고로 번진다.

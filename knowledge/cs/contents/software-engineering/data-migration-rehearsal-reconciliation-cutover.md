@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Data Migration Rehearsal Reconciliation Cutover
+concept_id: software-engineering/data-migration-cutover
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- data-migration
+- reconciliation
+- cutover
+aliases:
+- Data Migration Rehearsal Reconciliation Cutover
+- data migration rehearsal
+- reconciliation cutover
+- backfill validation
+- dual write cutover
+- data correctness migration
+symptoms:
+- 데이터 마이그레이션을 라우팅 전환처럼 보고 rehearsal, reconciliation, write authority cutover, rollback window를 별도로 설계하지 않아
+- backfill 속도만 보고 누락 유형, 변환 예외, 재실행 가능성, 중간 실패 후 resume 같은 failure mode를 리허설하지 않아
+- source와 target 차이를 모두 0으로 맞추려 하거나 허용 가능한 timestamp precision/ordering 차이와 장애인 금액/상태 차이를 구분하지 못해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/migration-scorecards
+next_docs:
+- software-engineering/schema-contract-evolution-cross-service
+- software-engineering/deployment-rollout-strategy
+- database/online-backfill-consistency
+linked_paths:
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/migration-scorecards.md
+- contents/software-engineering/consumer-migration-playbook-contract-adoption.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/database/online-backfill-consistency.md
+- contents/database/online-backfill-verification-cutover-gates.md
+confusable_with:
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/migration-scorecards
+- database/online-backfill-consistency
+forbidden_neighbors: []
+expected_queries:
+- data migration에서 rehearsal, reconciliation, cutover는 각각 무엇을 검증하고 언제 진행해?
+- backfill rehearsal은 시간 측정보다 누락 데이터, 변환 예외, resume 가능성 같은 failure mode를 왜 먼저 찾는 거야?
+- reconciliation은 source와 target이 완전히 같은지보다 어떤 차이가 허용되는지 정의하는 계약이라는 뜻이 뭐야?
+- data cutover에서 read traffic보다 write authority와 dual write 종료가 더 위험할 수 있는 이유를 알려줘
+- 데이터 마이그레이션은 rollback이 항상 가능하지 않으니 reversible window와 cleanup을 어떻게 계획해야 해?
+contextual_chunk_prefix: |
+  이 문서는 data migration을 rehearsal, reconciliation, write authority cutover, rollback window, cleanup까지 포함한 correctness-focused 운영 프로그램으로 다루는 advanced playbook이다.
+---
 # Data Migration Rehearsal, Reconciliation, Cutover
 
 > 한 줄 요약: 데이터 마이그레이션은 트래픽 전환보다 어렵기 때문에, rehearsal로 시간과 실패 모드를 확인하고 reconciliation으로 두 시스템의 차이를 설명한 뒤 cutover를 해야 실제 전환이 안전해진다.

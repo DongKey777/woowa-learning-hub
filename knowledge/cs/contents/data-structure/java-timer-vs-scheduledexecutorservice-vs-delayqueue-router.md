@@ -56,8 +56,7 @@ confusable_with:
 - data-structure/scheduledexecutorservice-vs-delayqueue-bridge
 - data-structure/delayqueue-delayed-contract-primer
 - data-structure/priorityblockingqueue-timer-misuse-primer
-forbidden_neighbors:
-- contents/data-structure/scheduledexecutorservice-vs-delayqueue-bridge.md
+forbidden_neighbors: []
 expected_queries:
 - 자바에서 몇 초 뒤 작업 실행할 때 Timer, ScheduledExecutorService, DelayQueue를 어디서부터 갈라야 해?
 - 새 코드 기본값으로 ScheduledExecutorService를 먼저 보는 이유를 증상 기준으로 설명해줘

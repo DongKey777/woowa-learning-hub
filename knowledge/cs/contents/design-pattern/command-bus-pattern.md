@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Command Bus Pattern
+concept_id: design-pattern/command-bus-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- command-bus
+- handler-routing
+- command-dispatch
+aliases:
+- command bus pattern
+- command bus
+- command dispatch
+- handler routing
+- request bus
+- command side bus
+- command middleware
+- command handler registry
+- 커맨드 버스
+- 핸들러 라우팅
+symptoms:
+- Command Handler와 Command Bus를 같은 개념으로 보고 실행 로직과 라우팅 책임을 구분하지 못한다
+- command type별 handler 연결이 여러 controller/service에 흩어져 cross-cutting middleware를 붙이기 어렵다
+- bus를 도입했지만 dispatch 흐름이 과하게 숨겨져 디버깅과 tracing이 어려워진다
+intents:
+- deep_dive
+- comparison
+- design
+prerequisites:
+- design-pattern/command-handler-pattern
+- design-pattern/registry-pattern
+- design-pattern/cqrs-command-query-separation-pattern-language
+next_docs:
+- design-pattern/plugin-architecture-pattern-language
+- design-pattern/command-pattern-undo-queue
+- design-pattern/cqrs-command-query-separation-pattern-language
+linked_paths:
+- contents/design-pattern/command-handler-pattern.md
+- contents/design-pattern/cqrs-command-query-separation-pattern-language.md
+- contents/design-pattern/registry-pattern.md
+- contents/design-pattern/plugin-architecture-pattern-language.md
+confusable_with:
+- design-pattern/command-handler-pattern
+- design-pattern/registry-pattern
+- design-pattern/command-pattern-undo-queue
+- design-pattern/cqrs-command-query-separation-pattern-language
+forbidden_neighbors: []
+expected_queries:
+- Command Bus와 Command Handler는 command 실행과 routing 책임이 어떻게 달라?
+- command type으로 handler를 찾는 registry map은 Command Bus에서 어떤 역할을 해?
+- validation, transaction, logging middleware를 command bus 주변에 붙이는 이유가 뭐야?
+- command가 많아질 때 직접 handler 호출보다 중앙 dispatch bus가 유리한 경우는 언제야?
+- Command Bus를 과하게 숨기면 tracing과 디버깅이 어려워지는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Command Bus Pattern deep dive로, command 자체를 실행하는 handler와
+  command type을 handler로 dispatch/routing하는 bus 책임을 구분하고, registry와
+  middleware를 통해 command side usecase를 중앙 라우팅하는 구조를 설명한다.
+---
 # Command Bus Pattern: 커맨드를 핸들러로 라우팅하기
 
 > 한 줄 요약: Command Bus는 들어온 명령을 알맞은 handler로 라우팅해, command side 유스케이스를 중앙에서 연결한다.
@@ -134,4 +199,3 @@ Bus는 command side를 깔끔하게 라우팅한다.
 ## 한 줄 정리
 
 Command Bus는 command side 유스케이스를 handler로 라우팅하는 중앙 디스패치 구조다.
-

@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: Notification 시스템 설계
+concept_id: system-design/notification-system-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- notification system design
+- notification architecture
+- 알림 시스템 설계
+- 알림 시스템 뭐예요
+aliases:
+- notification system design
+- notification architecture
+- 알림 시스템 설계
+- 알림 시스템 뭐예요
+- notification system basics
+- 처음 배우는데 알림 시스템
+- 알림 큰 그림
+- push email sms in-app 차이
+- 알림 채널 언제 나누나요
+- notification queue
+- notification retry backoff
+- 알림 중복 왜 생기나요
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/message-queue-basics.md
+- contents/system-design/consistency-idempotency-async-workflow-foundations.md
+- contents/system-design/email-delivery-platform-design.md
+- contents/system-design/webhook-delivery-platform-design.md
+- contents/system-design/rate-limiter-design.md
+- contents/network/timeout-retry-backoff-practical.md
+- contents/database/duplicate-suppression-windows.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Notification 시스템 설계 설계 핵심을 설명해줘
+- notification system design가 왜 필요한지 알려줘
+- Notification 시스템 설계 실무 트레이드오프는 뭐야?
+- notification system design 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Notification 시스템 설계를 다루는 deep_dive 문서다. 알림 시스템은 이벤트를 여러 채널로 전달하면서 중복, 순서, 우선순위, 재시도를 함께 다루는 분산 메시징 설계다. 검색 질의가 notification system design, notification architecture, 알림 시스템 설계, 알림 시스템 뭐예요처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Notification 시스템 설계
 
 > 한 줄 요약: 알림 시스템은 이벤트를 여러 채널로 전달하면서 중복, 순서, 우선순위, 재시도를 함께 다루는 분산 메시징 설계다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "FIN, RST, Half-Close, EOF"
+concept_id: network/fin-rst-half-close-eof-semantics
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- tcp-close-semantics
+- fin-rst-eof
+- socket-lifecycle
+aliases:
+- FIN RST half-close EOF
+- TCP graceful close
+- ECONNRESET EPIPE
+- CLOSE_WAIT TIME_WAIT
+- shutdown SHUT_WR
+- SO_LINGER reset
+symptoms:
+- EOF와 connection reset by peer와 broken pipe를 모두 같은 connection closed로 처리한다
+- FIN 정상 종료와 RST 강제 종료를 로그와 tcpdump에서 구분하지 못한다
+- CLOSE_WAIT 누적을 네트워크 문제로만 보고 application socket close 누락을 보지 않는다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/timeout-types-connect-read-write
+next_docs:
+- network/connection-draining-vs-fin-rst-graceful-close
+- network/tls-close-notify-fin-rst-truncation
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/idle-timeout-mismatch-lb-proxy-app
+linked_paths:
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/idle-timeout-mismatch-lb-proxy-app.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/grpc-deadlines-cancellation-propagation.md
+- contents/network/tls-close-notify-fin-rst-truncation.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- network/connection-draining-vs-fin-rst-graceful-close
+- network/client-disconnect-499-broken-pipe-cancellation-proxy-chain
+- network/tls-close-notify-fin-rst-truncation
+- network/idle-timeout-mismatch-lb-proxy-app
+forbidden_neighbors: []
+expected_queries:
+- "FIN RST Half-Close EOF 차이를 TCP 종료 의미로 설명해줘"
+- "ECONNRESET과 EPIPE와 EOF는 각각 어떤 종료 장면에서 보이나?"
+- "CLOSE_WAIT가 길어지면 애플리케이션 socket close 누락을 의심해야 하는 이유는?"
+- "TIME_WAIT은 왜 active closer에 남고 keep-alive와 어떤 관계가 있어?"
+- "SO_LINGER 설정이 RST를 만들 수 있는 흐름을 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 TCP FIN, RST, half-close, EOF, ECONNRESET, EPIPE,
+  CLOSE_WAIT, TIME_WAIT, SO_LINGER, shutdown(SHUT_WR)을 socket lifecycle
+  관점으로 설명하는 advanced deep dive다.
+---
 # FIN, RST, Half-Close, EOF
 
 > 한 줄 요약: FIN은 "이제 더 안 보낸다"이고, RST는 "이 연결을 바로 버린다"에 가깝다. 둘을 구분해야 EOF와 에러를 정확히 해석할 수 있다.

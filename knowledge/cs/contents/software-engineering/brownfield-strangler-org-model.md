@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Brownfield Strangler Org Model
+concept_id: software-engineering/brownfield-strangler-org
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- brownfield
+- strangler-fig
+- ownership-model
+aliases:
+- Brownfield Strangler Org Model
+- strangler org model
+- brownfield transformation team
+- dual operating model
+- migration squad
+- legacy ownership split
+symptoms:
+- Strangler 전환을 코드 cutover 문제로만 보고 legacy 유지, new service 개발, migration, operations 책임을 나누지 않아
+- transition squad가 일시 조직인지 product/platform으로 ownership을 넘길 종료 조건이 있는지 정하지 않아 전환팀이 영구화돼
+- legacy bug, new contract failure, rollback 판단, cutover ownership이 회색지대로 남아 전환 속도가 느려져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/brownfield-modularization
+- software-engineering/strangler-fig-migration-contract-cutover
+next_docs:
+- software-engineering/strangler-verification-shadow-traffic-metrics
+- software-engineering/service-ownership-catalog-boundaries
+- software-engineering/platform-product-capability-boundaries
+linked_paths:
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/strangler-verification-shadow-traffic-metrics.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+confusable_with:
+- software-engineering/brownfield-modularization
+- software-engineering/strangler-fig-migration-contract-cutover
+- software-engineering/platform-product-capability-boundaries
+forbidden_neighbors: []
+expected_queries:
+- brownfield strangler migration에서 legacy team, migration squad, product team 책임을 어떻게 나눠야 해?
+- Strangler 전환이 코드보다 조직 ownership 때문에 실패하는 경우를 설명해줘
+- transition squad는 어떤 역할을 하고 언제 소멸하거나 ownership을 넘겨야 해?
+- legacy bug, new contract failure, rollback 판단은 전환 중 누가 책임져야 해?
+- legacy call ratio, shadow diff rate, migrated consumer count 같은 migration KPI를 org model에 어떻게 붙여?
+contextual_chunk_prefix: |
+  이 문서는 brownfield Strangler Fig migration을 legacy team, migration squad, product/platform owner, dual operating model, cutover ownership 관점에서 설계하는 advanced playbook이다.
+---
 # Brownfield Strangler Org Model
 
 > 한 줄 요약: brownfield strangler는 코드 전환만이 아니라, 레거시와 신규를 동시에 운영할 조직 구조와 책임 분리를 함께 바꿔야 성공한다.

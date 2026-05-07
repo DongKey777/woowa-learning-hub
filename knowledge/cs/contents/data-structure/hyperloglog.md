@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: HyperLogLog
+concept_id: data-structure/hyperloglog
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- hyperloglog
+- approximate-cardinality
+- distinct-count-observability
+aliases:
+- HyperLogLog
+- HLL
+- cardinality estimation
+- distinct count
+- approximate distinct
+- leading zeros register
+- unique visitors sketch
+symptoms:
+- distinct user나 unique tenant 수를 정확한 set으로 모두 들고 있으려다 memory가 먼저 커진다
+- HyperLogLog가 frequency가 아니라 cardinality를 추정한다는 점을 Count-Min Sketch와 섞는다
+- hash leading zeros와 register가 고유 원소 수의 통계적 흔적을 저장한다는 모델을 이해하지 못한다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/count-min-vs-hyperloglog
+next_docs:
+- data-structure/sketch-filter-selection-playbook
+- data-structure/approximate-counting-rate-limiting-observability
+- data-structure/count-min-sketch
+linked_paths:
+- contents/data-structure/count-min-vs-hyperloglog.md
+- contents/data-structure/approximate-counting-rate-limiting-observability.md
+- contents/data-structure/hdr-histogram.md
+- contents/data-structure/sketch-filter-selection-playbook.md
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/count-min-sketch.md
+confusable_with:
+- data-structure/count-min-vs-hyperloglog
+- data-structure/count-min-sketch
+- data-structure/bloom-filter
+- data-structure/hdr-histogram
+forbidden_neighbors: []
+expected_queries:
+- HyperLogLog는 서로 다른 원소 수를 어떻게 적은 메모리로 추정해?
+- HLL에서 leading zeros와 register가 cardinality 추정에 쓰이는 이유는?
+- unique visitors나 distinct tenant 수에는 HyperLogLog가 맞고 frequency에는 Count-Min Sketch가 맞는 이유는?
+- approximate distinct count를 exact set 없이 관측하는 방법을 알려줘
+- HyperLogLog를 observability dashboard에서 어떻게 merge해서 쓸 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 HyperLogLog를 streaming cardinality estimation과 approximate
+  distinct count를 위한 primer로 설명한다. hash leading zeros, registers,
+  unique visitors, distinct tenant, Count-Min Sketch와의 frequency vs
+  cardinality 차이를 다룬다.
+---
 # HyperLogLog
 
 > 한 줄 요약: HyperLogLog는 스트림에서 서로 다른 원소 수를 매우 적은 메모리로 근사하는 cardinality 추정 구조다.

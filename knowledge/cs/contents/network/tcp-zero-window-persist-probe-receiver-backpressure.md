@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "TCP Zero Window, Persist Probe, Receiver Backpressure"
+concept_id: network/tcp-zero-window-persist-probe-receiver-backpressure
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tcp-zero-window
+- receiver-backpressure
+- write-stall
+aliases:
+- TCP zero window
+- persist probe
+- receiver window
+- rwnd
+- receiver backpressure
+- write stall
+- slow consumer
+- zero window probe
+symptoms:
+- TCP 전송 멈춤을 항상 congestion이나 packet loss로 본다
+- rwnd=0 receiver-side stall과 cwnd congestion 병목을 구분하지 못한다
+- WebSocket heartbeat는 되는데 payload write만 막히는 현상을 네트워크 장애로만 본다
+- proxy buffering 때문에 실제 backend zero window 병목을 client에서 바로 못 보는 상황을 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tcp-congestion-control
+- network/timeout-types-connect-read-write
+next_docs:
+- network/http2-flow-control-window-update-stalls
+- network/websocket-heartbeat-backpressure-reconnect
+- network/packet-loss-jitter-reordering-diagnostics
+- network/websocket-proxy-buffering-streaming-latency
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/timeout-types-connect-read-write.md
+- contents/network/http2-flow-control-window-update-stalls.md
+- contents/network/websocket-heartbeat-backpressure-reconnect.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+confusable_with:
+- network/tcp-congestion-control
+- network/http2-flow-control-window-update-stalls
+- network/websocket-heartbeat-backpressure-reconnect
+- network/packet-loss-jitter-reordering-diagnostics
+forbidden_neighbors: []
+expected_queries:
+- "TCP zero window와 persist probe가 보이면 무엇을 의미해?"
+- "rwnd=0 receiver backpressure와 cwnd congestion을 어떻게 구분해?"
+- "write timeout이 packet loss가 아니라 상대 앱이 못 읽는 문제일 수 있는 이유는?"
+- "WebSocket heartbeat는 되는데 payload만 늦는 zero window 패턴을 설명해줘"
+- "HTTP/2 flow control stall과 TCP zero window는 계층이 어떻게 달라?"
+contextual_chunk_prefix: |
+  이 문서는 TCP receiver window rwnd=0, zero window, persist probe,
+  receiver-side backpressure, slow consumer, write stall과 congestion 구분을
+  다루는 advanced playbook이다.
+---
 # TCP Zero Window, Persist Probe, Receiver Backpressure
 
 > 한 줄 요약: TCP 전송이 멈췄다고 해서 항상 혼잡인 것은 아니다. 수신 측이 더 못 받겠다고 `rwnd=0`을 광고하면 sender는 `persist probe`만 보내며 멈추고, 운영자는 이를 네트워크 장애나 write timeout 문제로 오해하기 쉽다.

@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Algorithm Category Index
+concept_id: algorithm/algorithm-index
+canonical: true
+category: algorithm
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- algorithm-index
+- beginner-algorithm-routing
+- graph-bfs-queue-map-split
+- problem-signal-router
+aliases:
+- algorithm readme
+- algorithm category index
+- beginner algorithm routing
+- algorithm starter route
+- graph problem router
+- queue vs bfs basics
+- bfs queue map split
+- 처음 알고리즘 뭐부터
+- 알고리즘 입구
+- 알고리즘 README
+symptoms:
+- 문제 문장에서 무엇을 세는지, 어떤 순서로 확장하는지, 어떤 규칙으로 범위를 줄이는지부터 자르지 못한다
+- BFS, queue, map, graph, shortest path를 한 단어처럼 섞어 첫 문서 선택을 잘못한다
+- 알고리즘보다 자료구조나 Java 라이브러리 전제가 먼저 막혔는데도 deep dive로 바로 내려간다
+intents:
+- definition
+- comparison
+- drill
+prerequisites:
+- algorithm/time-complexity-intro
+- data-structure/graph-basics
+next_docs:
+- algorithm/problem-signal-to-pattern-router-beginner
+- algorithm/backend-algorithm-starter-pack
+- algorithm/dfs-bfs-intro
+- algorithm/binary-search-intro
+- algorithm/two-pointer-intro
+- algorithm/dp-intro
+linked_paths:
+- contents/algorithm/problem-signal-to-pattern-router-beginner.md
+- contents/algorithm/backend-algorithm-starter-pack.md
+- contents/algorithm/time-complexity-intro.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/algorithm/binary-search-intro.md
+- contents/algorithm/two-pointer-intro.md
+- contents/algorithm/dp-intro.md
+- contents/data-structure/graph-basics.md
+- contents/data-structure/queue-bfs-priorityqueue-map-lookup-micro-drill.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/data-structure/queue-basics.md
+confusable_with:
+- algorithm/problem-signal-to-pattern-router-beginner
+- algorithm/backend-algorithm-starter-pack
+- data-structure/backend-data-structure-starter-pack
+- data-structure/queue-bfs-priorityqueue-map-lookup-micro-drill
+forbidden_neighbors: []
+expected_queries:
+- 알고리즘 문제를 처음 볼 때 무엇을 세는지 어떤 순서로 확장하는지 어떤 규칙으로 줄이는지부터 어떻게 나눠?
+- BFS, queue, map, graph가 같이 보일 때 queue는 도구이고 BFS는 탐색 규칙이라는 차이를 설명해줘
+- 처음 알고리즘 카테고리에서 time complexity, DFS BFS, binary search, two pointer, DP를 어떤 순서로 읽으면 좋아?
+- graph 문제에서 갈 수 있나, 아무 경로 하나, 최소 이동 횟수, 비용 합 최소를 어떻게 구분해?
+- 알고리즘보다 자료구조 선택이 먼저 막힐 때 data-structure 문서로 갔다가 어디로 돌아오면 돼?
+contextual_chunk_prefix: |
+  이 문서는 Algorithm Category Index primer로, beginner가 알고리즘 이름을 먼저 외우기 전에
+  answer shape, traversal order, range reduction, data-structure prerequisite를 나눠 BFS, queue,
+  map, graph, binary search, two pointer, DP로 안전하게 라우팅하는 입구 역할을 한다.
+---
 # Algorithm (알고리즘)
 
 > 한 줄 요약: 알고리즘 README는 백엔드 주니어가 문제를 읽었을 때 `무엇을 세는가`, `어떤 순서로 확장하는가`, `어떤 규칙으로 범위를 줄이는가`를 먼저 분리하게 돕는 입구 문서다.

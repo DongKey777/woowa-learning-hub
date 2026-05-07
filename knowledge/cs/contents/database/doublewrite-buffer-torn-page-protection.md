@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Doublewrite Buffer and Torn Page Protection
+concept_id: database/doublewrite-buffer-torn-page-protection
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- doublewrite-buffer-torn-page
+- physical-page-integrity
+- crash-recovery-durability
+aliases:
+- doublewrite buffer
+- torn page protection
+- torn page
+- page corruption
+- innodb doublewrite
+- page atomicity
+- checksum error after crash
+- doublewrite buffer 성능 비용
+- 찢어진 페이지
+- page checksum 오류
+symptoms:
+- redo log가 있으면 torn page나 page corruption도 자동으로 복구된다고 오해하고 있어
+- crash 이후 page checksum 오류가 났을 때 doublewrite buffer의 역할을 설명해야 해
+- 쓰기 성능 최적화 때문에 innodb_doublewrite를 끄는 것이 안전한지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/redo-undo-checkpoint-crash-recovery
+- database/group-commit-binlog-fsync-durability
+next_docs:
+- database/checkpoint-age-flush-storms
+- database/page-split-merge-fill-factor
+- database/group-commit-binlog-fsync-durability
+linked_paths:
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/group-commit-binlog-fsync-durability.md
+- contents/database/checkpoint-age-flush-storms.md
+- contents/database/page-split-merge-fill-factor.md
+confusable_with:
+- database/redo-undo-checkpoint-crash-recovery
+- database/group-commit-binlog-fsync-durability
+- database/checkpoint-age-flush-storms
+forbidden_neighbors: []
+expected_queries:
+- doublewrite buffer는 redo log와 어떤 역할이 달라?
+- torn page는 왜 생기고 InnoDB doublewrite buffer가 어떻게 막아?
+- crash 후 page checksum 오류가 나면 doublewrite copy가 어떤 식으로 도움이 돼?
+- innodb_doublewrite를 끄면 어떤 durability risk와 write 성능 tradeoff가 생겨?
+- logical recovery와 physical page integrity를 구분해서 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 InnoDB doublewrite buffer가 crash 중 torn page와 page corruption을 줄이는 물리 페이지 무결성 장치임을 설명하는 advanced deep dive다.
+  doublewrite buffer, torn page, page corruption, checksum error, innodb_doublewrite 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Doublewrite Buffer and Torn Page Protection
 
 > 한 줄 요약: doublewrite buffer는 페이지를 두 번 쓰는 낭비가 아니라, crash 중간에 페이지가 찢어지는 torn page를 막는 보험이다.

@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Query Model Separation for Read-Heavy APIs
+concept_id: software-engineering/query-model-separation-read-heavy
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- query-model
+- read-model
+- cqrs-lite
+- repository
+aliases:
+- Query Model Separation for Read-Heavy APIs
+- query model separation
+- read-heavy API query repository
+- CQRS-lite read model
+- 목록 조회용 repository
+- query model 뭐예요
+symptoms:
+- 목록/상세 화면 요구가 늘어나 write entity나 aggregate에 itemCount, memberName, totalPrice 같은 조회 전용 값이 붙고 repository가 화면별 메서드 창고가 돼
+- fetch join과 projection 선택, list/detail response shape가 도메인 규칙보다 더 큰 설계 압력이 되어 write model을 망가뜨려
+intents:
+- definition
+- troubleshooting
+- design
+prerequisites:
+- software-engineering/dao-vs-query-model
+- software-engineering/persistence-model-leakage
+next_docs:
+- software-engineering/same-db-query-repository-vs-separate-read-store
+- software-engineering/helper-snapshot-response-dto-separation
+- software-engineering/pageable-query-model-pagination
+linked_paths:
+- contents/software-engineering/dao-vs-query-model-entrypoint-primer.md
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/helper-snapshot-bloat-vs-response-dto-separation.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/event-sourcing-cqrs-adoption-criteria.md
+- contents/language/java/record-value-object-equality-basics.md
+confusable_with:
+- software-engineering/dao-vs-query-model
+- software-engineering/helper-snapshot-response-dto-separation
+- software-engineering/pageable-query-model-pagination
+forbidden_neighbors: []
+expected_queries:
+- query model이 뭐고 read-heavy API에서 write model과 response model을 왜 분리해야 해?
+- 목록 조회용 repository나 query repository는 DAO와 어떻게 다르고 언제 꺼내야 해?
+- 같은 DB 위에서도 CQRS-lite로 read model만 분리할 수 있다는 뜻을 초심자에게 설명해줘
+- 목록 화면 때문에 entity가 커지고 fetch join이 늘어날 때 query model separation으로 어떻게 정리해?
+- query model과 response DTO는 모양이 비슷해도 왜 개념적으로 구분해야 해?
+contextual_chunk_prefix: |
+  이 문서는 read-heavy API에서 write model, query model, response model을 나누어 같은 DB 위의 CQRS-lite query repository를 도입하는 beginner playbook이다.
+---
 # Query Model Separation for Read-Heavy APIs
 
 > 한 줄 요약: 목록/상세 화면이 많아질수록 write entity나 aggregate 하나로 모든 읽기 요구를 버티기보다, 같은 DB 위에서도 query repository와 response model을 따로 두는 CQRS-lite가 더 단순할 때가 많다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Phantom Weak and Soft References
+concept_id: language/phantom-weak-soft-references
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- gc
+- reference
+- memory-leak
+aliases:
+- Phantom Weak and Soft References
+- Java weak soft phantom reference
+- ReferenceQueue reachability
+- weakly softly phantom reachable
+- soft reference cache eviction myth
+- 자바 Weak Soft Phantom Reference
+symptoms:
+- WeakReference SoftReference PhantomReference를 모두 GC가 알아서 메모리를 줄여주는 캐시 도구로 오해해 reachability 의미 차이를 놓쳐
+- SoftReference를 운영 캐시로 쓰면 메모리 압박과 GC 정책에 eviction이 묶여 예측 가능성이 낮아질 수 있다는 점을 고려하지 않아
+- PhantomReference에서 referent를 get으로 다시 꺼낼 수 있다고 생각하거나 ReferenceQueue cleanup이 즉시 실행된다고 오해해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/oom-heap-dump-playbook
+- language/classloader-memory-leak-playbook
+- language/direct-buffer-offheap-memory-troubleshooting
+next_docs:
+- language/reachability-fences
+- language/cleaner-vs-finalize-deprecation
+- language/try-with-resources-suppressed-exceptions
+linked_paths:
+- contents/language/java/oom-heap-dump-playbook.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/direct-buffer-offheap-memory-troubleshooting.md
+- contents/language/java/try-with-resources-suppressed-exceptions.md
+confusable_with:
+- language/reachability-fences
+- language/cleaner-vs-finalize-deprecation
+- language/direct-buffer-offheap-memory-troubleshooting
+forbidden_neighbors: []
+expected_queries:
+- WeakReference SoftReference PhantomReference는 GC reachability 관점에서 어떻게 달라?
+- SoftReference를 cache로 쓰는 것이 왜 size TTL eviction policy보다 예측 가능성이 낮을 수 있어?
+- PhantomReference와 ReferenceQueue는 post-mortem cleanup에 어떻게 쓰이고 referent를 왜 직접 얻을 수 없어?
+- weak reference를 썼는데도 강한 참조가 남아 있으면 왜 객체가 회수되지 않아?
+- finalization 대신 reference 기반 cleanup을 쓰더라도 try-with-resources가 더 나은 경우를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 Java WeakReference, SoftReference, PhantomReference를 reachability, ReferenceQueue, cache, cleanup 관점에서 비교하는 advanced deep dive다.
+  weak reference, soft reference, phantom reference, ReferenceQueue, reachability, GC cleanup 질문이 본 문서에 매핑된다.
+---
 # Phantom, Weak, and Soft References
 
 > 한 줄 요약: weak, soft, phantom references는 모두 GC reachability를 조절하지만, 의미가 다르므로 캐시, cleanup, 메모리 회수 타이밍을 같은 도구로 보면 안 된다.

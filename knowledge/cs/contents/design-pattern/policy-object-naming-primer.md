@@ -41,7 +41,7 @@ intents:
 - comparison
 - design
 prerequisites:
-- design-pattern/factory-basics
+- design-pattern/factory
 - design-pattern/strategy-pattern-basics
 next_docs:
 - design-pattern/strategy-policy-selector-naming

@@ -71,6 +71,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart의 미결제 주문 만료는 "30분 뒤 작업 하나 실행"보다 `PENDING_PAYMENT` 상태와 deadline을 함께 소유한 workflow owner가 늦은 timeout까지 해석하는 문제라서, 단순 scheduler callback보다 Process Manager 관점이 더 안전하다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제 안 된 주문을 30분 뒤 자동 취소하려는데 어디가 이 흐름을 가져야 하나요?" | pending payment order timeout 설계 | 단순 scheduler가 아니라 deadline을 소유한 workflow owner를 둔다 |
+| "결제는 성공했는데 늦게 온 만료 스케줄러가 주문을 취소할까 봐 불안해요" | timeout과 payment success race | timeout 신호가 최신 deadline과 현재 상태에 유효한지 확인한다 |
+| "주문 서비스, 결제 서비스, 스케줄러가 timeout 규칙을 조금씩 알고 있어요" | 만료 정책이 여러 컴포넌트로 흩어진 구조 | participant는 사실을 보내고 owner가 confirm/expire 전이를 해석한다 |
+
 ## 미션 시나리오
 
 shopping-cart 미션에서 결제 전 주문을 먼저 만들면 곧 "30분 안에 결제가 없으면 자동 취소" 요구가 붙는다. 초반 구현은 주문 생성 시 `scheduleCancel(orderId, now + 30m)`를 걸고, 시간이 되면 스케줄러가 주문 상태를 바로 `EXPIRED`로 바꾸는 식으로 자주 시작한다. 처음엔 단순해 보이지만, 리뷰에서는 "결제 성공 직후 늦게 도착한 timeout은 어떻게 막을 건가", "주문 만료 정책을 누가 소유하나"라는 질문이 붙기 쉽다.

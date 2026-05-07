@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Permission Model Drift / AuthZ Graph Design
+concept_id: security/permission-model-drift-authz-graph-design
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- permission drift
+- authz graph
+- policy version
+- entitlement
+aliases:
+- permission drift
+- authz graph
+- policy version
+- entitlement
+- role explosion
+- relationship-based access control
+- RBAC
+- ABAC
+- decision graph
+- policy engine
+- source of truth
+- authorization graph cache
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/pdp-pep-boundaries-design.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/delegated-admin-tenant-rbac.md
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/idor-bola-patterns-and-fixes.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Permission Model Drift / AuthZ Graph Design 핵심 개념을 설명해줘
+- permission drift가 왜 필요한지 알려줘
+- Permission Model Drift / AuthZ Graph Design 실무 설계 포인트는 뭐야?
+- permission drift에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Permission Model Drift / AuthZ Graph Design를 다루는 deep_dive 문서다. permission model drift는 코드, DB, 캐시, 정책 엔진, UI가 서로 다른 권한 진실을 갖게 될 때 생긴다. 이를 막으려면 권한 그래프와 정책 버전을 명시적으로 관리해야 한다. 검색 질의가 permission drift, authz graph, policy version, entitlement처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Permission Model Drift / AuthZ Graph Design
 
 > 한 줄 요약: permission model drift는 코드, DB, 캐시, 정책 엔진, UI가 서로 다른 권한 진실을 갖게 될 때 생긴다. 이를 막으려면 권한 그래프와 정책 버전을 명시적으로 관리해야 한다.

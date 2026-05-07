@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "HTTPS RR Resolver Drift Primer"
+concept_id: network/https-rr-resolver-drift-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- https-rr
+- resolver-drift
+- browser-doh
+aliases:
+- HTTPS RR resolver drift
+- browser DoH vs dig
+- OS resolver vs browser resolver
+- resolver path drift
+- HTTPS RR SVCB mismatch
+- Secure DNS vs system DNS
+- split horizon HTTPS RR
+symptoms:
+- browser가 본 HTTPS RR/SVCB와 terminal dig 결과가 같아야 한다고 생각한다
+- browser DoH, OS resolver, dig의 질의 대상과 cache 상태를 분리하지 못한다
+- split-horizon이나 VPN view 차이를 DNS 오류로만 본다
+- HTTPS RR이 없다고 dig 한 번으로 H3 discovery를 단정한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/dns-basics
+- network/h3-discovery-observability-primer
+next_docs:
+- network/alt-svc-https-rr-h3-discovery-coalescing-bridge
+- network/dns-over-https-operational-tradeoffs
+- network/dns-split-horizon-behavior
+- network/dns-ttl-cache-failure-patterns
+linked_paths:
+- contents/network/h3-discovery-observability-primer.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/dns-over-https-operational-tradeoffs.md
+- contents/network/dns-split-horizon-behavior.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/dns-basics.md
+confusable_with:
+- network/dns-over-https-operational-tradeoffs
+- network/dns-split-horizon-behavior
+- network/dns-ttl-cache-failure-patterns
+- network/h3-discovery-observability-primer
+forbidden_neighbors: []
+expected_queries:
+- "브라우저 DoH와 dig HTTPS RR 결과가 왜 다를 수 있어?"
+- "HTTPS RR resolver drift를 초보자에게 설명해줘"
+- "browser secure DNS와 OS resolver가 다른 답을 줄 때 무엇을 확인해?"
+- "split horizon 환경에서 HTTPS RR SVCB가 다르게 보이는 이유는?"
+- "dig 결과만 보고 브라우저 H3 discovery가 없다고 말하면 안 되는 이유는?"
+contextual_chunk_prefix: |
+  이 문서는 HTTPS RR/SVCB 관측에서 browser DoH, OS resolver, terminal dig,
+  split-horizon/VPN view, resolver cache 시점 차이를 설명하는 beginner primer다.
+---
 # HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나
 
 

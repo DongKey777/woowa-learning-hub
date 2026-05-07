@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: API Gateway Control Plane 설계
+concept_id: system-design/api-gateway-control-plane-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- api gateway control plane
+- routing policy
+- authz
+- mTLS
+aliases:
+- api gateway control plane
+- routing policy
+- authz
+- mTLS
+- rate limit
+- request transform
+- canary
+- api versioning
+- plugin policy
+- edge config
+- service discovery
+- edge observability
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/system-design-framework.md
+- contents/system-design/back-of-envelope-estimation.md
+- contents/system-design/rate-limiter-design.md
+- contents/system-design/config-distribution-system-design.md
+- contents/system-design/feature-flag-control-plane-design.md
+- contents/system-design/multi-region-active-active-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- API Gateway Control Plane 설계 설계 핵심을 설명해줘
+- api gateway control plane가 왜 필요한지 알려줘
+- API Gateway Control Plane 설계 실무 트레이드오프는 뭐야?
+- api gateway control plane 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 API Gateway Control Plane 설계를 다루는 deep_dive 문서다. API gateway control plane은 라우팅, 인증, rate limit, observability, 정책 배포를 중앙에서 관리하는 엣지 제어 시스템이다. 검색 질의가 api gateway control plane, routing policy, authz, mTLS처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # API Gateway Control Plane 설계
 
 > 한 줄 요약: API gateway control plane은 라우팅, 인증, rate limit, observability, 정책 배포를 중앙에서 관리하는 엣지 제어 시스템이다.

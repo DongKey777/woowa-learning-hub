@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: State Pattern vs State Machine Library vs Workflow Engine
+concept_id: design-pattern/state-machine-library-vs-state-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- state-machine-choice
+- workflow-engine-boundary
+- durable-orchestration
+aliases:
+- state pattern vs state machine library
+- state machine library vs workflow engine
+- workflow engine when
+- state machine library when
+- in process state machine
+- durable workflow orchestration
+- transition table guard action
+- long running workflow
+- state pattern enough
+- workflow engine 도입 기준
+symptoms:
+- 상태 수가 많다는 이유만으로 workflow engine을 도입하려 하지만 실제 문제는 로컬 전이 표 관리일 뿐이다
+- state machine library가 있으면 timer persistence, crash resume, human task queue까지 해결된다고 오해한다
+- process manager나 workflow engine이 전체 실행을 맡으면 aggregate 내부 상태 규칙은 없어도 된다고 착각한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/process-manager-deadlines-timeouts
+next_docs:
+- design-pattern/workflow-owner-vs-participant-context
+- design-pattern/human-approval-manual-review-workflow-pattern
+- design-pattern/process-manager-state-store-recovery
+linked_paths:
+- contents/design-pattern/state-pattern-workflow-payment.md
+- contents/design-pattern/strategy-vs-state-vs-policy-object.md
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/human-approval-manual-review-workflow-pattern.md
+- contents/design-pattern/workflow-owner-vs-participant-context.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/process-manager-state-store-recovery.md
+confusable_with:
+- design-pattern/state-pattern-workflow-payment
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/saga-coordinator-pattern-language
+- design-pattern/process-manager-state-store-recovery
+forbidden_neighbors: []
+expected_queries:
+- State Pattern, State Machine Library, Workflow Engine은 각각 언제 선택해야 해?
+- 상태가 많다는 이유만으로 workflow engine을 도입하면 과한 이유가 뭐야?
+- state machine library는 전이 표를 관리하지만 durable timer와 crash resume은 왜 별도 설계가 필요해?
+- human approval, timeout, retry later, wait for callback이 있으면 workflow engine 쪽으로 보는 이유가 뭐야?
+- workflow engine을 써도 aggregate 내부 State Pattern이나 invariant guard가 남는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 State Pattern vs State Machine Library vs Workflow Engine chooser로,
+  한 aggregate의 로컬 전이 규칙, 한 프로세스 안의 전이 table/guard/action 관리,
+  그리고 장기 실행, timer, retry, human approval, crash resume을 가진 durable workflow runtime을
+  구분해 어떤 도구를 선택할지 설명한다.
+---
 # State Pattern vs State Machine Library vs Workflow Engine
 
 > 한 줄 요약: State Pattern은 한 객체나 aggregate의 전이를 코드로 응집시키고, State Machine Library는 한 프로세스 안의 복잡한 전이 표를 관리하며, Workflow Engine은 장기·분산 흐름의 durable 실행을 맡는다.
@@ -25,6 +96,8 @@
 - Workflow Engine: 서비스 경계를 넘거나 오래 걸리는 흐름의 **durable 실행, 타이머, 재시도, 감사 추적**을 맡는다
 
 핵심 질문은 "상태가 몇 개냐"가 아니라, **누가 실행을 소유하고 중단 후 어떻게 재개하며 시간이 어디서 흐르느냐**다.
+
+그래서 선택의 첫 질문은 "상태 이름이 몇 개인가"가 아니라 "이 상태 전이가 같은 프로세스 안에서 즉시 끝나는가, 아니면 나중에 다시 깨어나 실행을 이어 가야 하는가"다.
 
 ### Retrieval Anchors
 

@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Roaring Run Formation and Row Ordering
+concept_id: data-structure/roaring-run-formation-and-row-ordering
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- roaring-row-ordering
+- run-formation
+- bitmap-id-locality
+aliases:
+- Roaring run formation
+- Roaring row ordering
+- sorted ingest Roaring
+- bitmap id locality
+- active chunk count
+- run count locality
+- Roaring vs WAH break even
+symptoms:
+- 값 정렬 자체가 아니라 최종 row ID의 인접성이 Roaring run formation을 결정한다는 점을 놓친다
+- row ordering이 cardinality보다 active chunk 수와 chunk별 run 수를 더 크게 흔든다는 비용 모델을 보지 않는다
+- Roaring은 chunk-local run, WAH/EWAH는 whole bitmap run stream을 본다는 break-even 차이를 구분하지 못한다
+intents:
+- deep_dive
+- design
+prerequisites:
+- data-structure/roaring-bitmap
+- data-structure/row-ordering-and-bitmap-compression-playbook
+next_docs:
+- data-structure/roaring-production-profiling-checklist
+- data-structure/roaring-run-churn-observability-guide
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/bit-sliced-bitmap-index
+linked_paths:
+- contents/data-structure/roaring-bitmap.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/chunk-boundary-pathologies-in-roaring.md
+- contents/data-structure/roaring-lazy-union-and-repair-costs.md
+- contents/data-structure/row-ordering-and-bitmap-compression-playbook.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+confusable_with:
+- data-structure/row-ordering-and-bitmap-compression-playbook
+- data-structure/chunk-boundary-pathologies-in-roaring
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/roaring-container-transition-heuristics
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap에서 sorted ingest와 row ordering이 active chunk 수와 run 수를 어떻게 바꿔?
+- 값이 정렬됐는지보다 최종 row ID locality가 중요한 이유는?
+- Roaring run formation과 WAH EWAH whole bitmap run compression의 break-even은 어떻게 달라?
+- warehouse bitmap sort key가 Roaring container 비용에 미치는 영향을 설명해줘
+- row ordering drift가 run fragmentation과 active high key 증가로 보이는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap에서 row ordering과 sorted ingest가 active high key
+  count와 per-container run count를 바꿔 run formation과 WAH/EWAH break-even을
+  이동시키는 deep dive다.
+---
 # Roaring Run Formation and Row Ordering
 
 > 한 줄 요약: sorted ingest와 row ordering은 Roaring에서 단순히 압축률을 조금 높이는 정도가 아니라, active chunk 수와 chunk별 run 수를 바꿔 `Roaring vs WAH/EWAH`의 break-even 자체를 이동시킨다.

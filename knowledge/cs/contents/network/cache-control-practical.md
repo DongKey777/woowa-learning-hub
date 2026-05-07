@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Cache-Control 실전
+concept_id: network/cache-control-practical
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- cache-control-policy
+- browser-vs-cdn-cache
+- stale-revalidation-contract
+aliases:
+- Cache-Control practical
+- Cache-Control
+- max-age no-store no-cache
+- stale-while-revalidate
+- immutable cache
+- shared cache browser cache CDN cache
+- HTTP caching policy
+- 캐시 정책 실전
+- no-cache는 캐시 금지가 아님
+symptoms:
+- Cache-Control을 캐시를 켜고 끄는 단일 스위치로 보고 browser cache와 CDN shared cache 정책 차이를 놓친다
+- no-cache를 저장 금지로 오해해 no-store와 재검증 계약을 구분하지 못한다
+- 개인화 응답이나 Authorization 응답에 public cache 정책을 잘못 붙여 stale 또는 data leak 위험을 만든다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- network/http-caching-conditional-request-basics
+- network/http-semantics-caching-first-principles
+next_docs:
+- network/cdn-cache-key-invalidation
+- network/compression-cache-vary-accept-encoding-personalization
+- network/cache-vary-accept-encoding-edge-case
+- system-design/cache-invalidation-patterns-primer
+linked_paths:
+- contents/network/cdn-cache-key-invalidation.md
+- contents/network/http-state-session-cache.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/http-methods-rest-idempotency.md
+- contents/network/compression-cache-vary-accept-encoding-personalization.md
+- contents/network/cache-vary-accept-encoding-edge-case-playbook.md
+- contents/network/http-semantics-caching-first-principles.md
+confusable_with:
+- network/http-caching-conditional-request-basics
+- network/http-semantics-caching-first-principles
+- network/cdn-cache-key-invalidation
+- network/compression-cache-vary-accept-encoding-personalization
+- system-design/cache-invalidation-patterns-primer
+forbidden_neighbors: []
+expected_queries:
+- Cache-Control에서 no-store와 no-cache와 max-age는 각각 무엇을 의미해?
+- no-cache는 캐시 금지가 아니라 재검증이라는 말을 예시로 설명해줘
+- browser cache와 CDN shared cache는 Cache-Control 지시어를 어떻게 다르게 읽어?
+- stale-while-revalidate와 immutable은 어떤 응답에 조심해서 써야 해?
+- 개인화 응답이나 Authorization 응답에 public cache를 잘못 쓰면 어떤 위험이 있어?
+contextual_chunk_prefix: |
+  이 문서는 Cache-Control practical playbook으로, max-age, no-store, no-cache,
+  public, private, stale-while-revalidate, immutable, browser cache, shared cache,
+  CDN cache를 응답 정확성 계약과 data leak 방지 관점에서 설명한다.
+---
 # Cache-Control 실전
 
 **난이도: 🔴 Advanced**

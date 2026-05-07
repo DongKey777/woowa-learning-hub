@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Namespace Crossings proc Visibility
+concept_id: operating-system/namespace-crossings-proc-visibility
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- namespace-crossings-proc
+- visibility
+- namespace-crossing-proc
+- container-proc-view
+aliases:
+- namespace crossing proc visibility
+- container proc view
+- PID namespace visibility
+- host vs container proc
+- nsenter diagnostics
+- process identity namespace
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/pid-namespace-init-semantics.md
+- contents/operating-system/pid-limit-process-table-exhaustion.md
+- contents/operating-system/fd-exhaustion-ulimit-diagnostics.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/container-pid-1-sigterm-zombie-reaping-basics.md
+symptoms:
+- host와 container 안에서 같은 process의 PID나 /proc path가 다르게 보인다.
+- nsenter나 kubectl exec 위치에 따라 fd, signal, process visibility가 달라진다.
+- 진단 명령을 어디서 실행했는지 고정하지 않아 서로 다른 관측을 섞는다.
+expected_queries:
+- namespace를 넘나들면 /proc visibility와 PID가 왜 다르게 보여?
+- container 안과 host에서 같은 process를 진단할 때 무엇을 먼저 고정해야 해?
+- nsenter로 들어간 namespace에 따라 fd, signal, process table이 어떻게 달라져?
+- PID namespace와 /proc visibility를 runtime debugging에서 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 namespace crossing 상황에서 같은 process와 /proc path가 host, container,
+  target namespace에 따라 다르게 보일 수 있으므로 진단의 첫 질문은 어디서 보고 있는가를
+  고정하는 것이라고 설명한다.
+---
 # Namespace Crossings, /proc Visibility
 
 > 한 줄 요약: namespace를 넘나들면 같은 프로세스와 /proc 경로가 다르게 보이므로, 진단은 "어디서 보고 있나"를 먼저 고정해야 한다.

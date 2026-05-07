@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: HikariCP 튜닝
+concept_id: database/hikari-connection-pool-tuning
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- hikari-connection-pool-tuning
+- pool-exhaustion-vs-query-timeout
+- transaction-boundary-connection-hold
+aliases:
+- hikaricp tuning
+- hikari connection pool
+- maximumPoolSize tuning
+- connectionTimeout borrow timeout
+- connection is not available
+- pool exhausted
+- leakDetectionThreshold
+- active connections idle zero
+- 커넥션 풀 고갈
+- hikari 설정
+symptoms:
+- maximumPoolSize를 크게 잡으면 DB 접근이 무조건 빨라진다고 생각해 DB max connections와 인스턴스 수를 같이 보지 않는다
+- connectionTimeout을 쿼리 실행 시간 제한으로 오해해 getConnection borrow 대기 실패와 섞어 본다
+- leakDetectionThreshold 경고를 반환 누락 확정으로만 보고 긴 트랜잭션이나 lock wait로 인한 오래 점유를 확인하지 않는다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/connection-pool-transaction-propagation-bulk-write
+- database/transaction-basics
+next_docs:
+- database/transaction-boundary-isolation-locking-framework
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/query-tuning-checklist
+- language/jdbc-network-timeout-driver-socket-timeout-pool-eviction
+linked_paths:
+- contents/database/connection-pool-transaction-propagation-bulk-write.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/query-tuning-checklist.md
+- contents/database/slow-query-analysis-playbook.md
+- contents/language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md
+- contents/spring/spring-bean-lifecycle-scope-traps.md
+- contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md
+confusable_with:
+- database/connection-timeout-vs-lock-timeout-card
+- database/connection-pool-transaction-propagation-bulk-write
+- database/lock-wait-deadlock-latch-triage-playbook
+- language/jdbc-network-timeout-driver-socket-timeout-pool-eviction
+forbidden_neighbors: []
+expected_queries:
+- Hikari maximumPoolSize는 왜 크게 잡는다고 항상 빨라지지 않아?
+- connectionTimeout은 query timeout이 아니라 getConnection borrow timeout이라는 뜻이야?
+- Connection is not available 오류가 나면 pool size보다 transaction 길이와 DB lock을 왜 같이 봐야 해?
+- leakDetectionThreshold 경고가 connection leak 확정이 아닐 수 있는 이유가 뭐야?
+- 앱 인스턴스 수와 pool size와 DB max connections를 함께 계산하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 HikariCP tuning playbook으로, maximumPoolSize, minimumIdle,
+  connectionTimeout, maxLifetime, leakDetectionThreshold, keepaliveTime을
+  DB connection budget, transaction length, query time, lock wait, external I/O
+  inside transaction과 함께 해석한다.
+---
 # HikariCP 튜닝
 
 > 한 줄 요약: HikariCP는 크게 잡는다고 빨라지지 않는다. DB 용량, 트랜잭션 길이, 커넥션 점유 시간을 같이 봐야 한다.

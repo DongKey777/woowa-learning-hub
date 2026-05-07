@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Roaring Bitmap
+concept_id: data-structure/roaring-bitmap
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- roaring-bitmap
+- compressed-integer-set
+- exact-set-algebra
+aliases:
+- Roaring Bitmap
+- compressed bitmap
+- array bitmap run container
+- exact integer set algebra
+- bitmap index
+- mixed density bitmap
+- 16-bit container bitmap
+symptoms:
+- 넓은 integer id space에서 BitSet은 너무 크고 HashSet은 boxing/hash overhead가 큰 상황을 보고도 compressed exact set 구조를 고려하지 않는다
+- Roaring이 상위 16-bit chunk와 하위 container로 나누어 sparse/dense/run 구간을 다르게 저장한다는 핵심을 놓친다
+- container threshold, chunk boundary, lazy repair, runOptimize 같은 운영 비용을 모른 채 Roaring을 단순 압축 BitSet으로만 본다
+intents:
+- definition
+- deep_dive
+prerequisites:
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+next_docs:
+- data-structure/roaring-bitmap-selection-playbook
+- data-structure/roaring-container-transition-heuristics
+- data-structure/roaring-set-op-result-heuristics
+- data-structure/roaring-run-formation-and-row-ordering
+linked_paths:
+- contents/data-structure/bloom-filter.md
+- contents/data-structure/roaring-container-transition-heuristics.md
+- contents/data-structure/chunk-boundary-pathologies-in-roaring.md
+- contents/data-structure/roaring-set-op-result-heuristics.md
+- contents/data-structure/roaring-bitmap-wide-lazy-union-pipeline.md
+- contents/data-structure/roaring-andnot-result-heuristics.md
+- contents/data-structure/roaring-run-formation-and-row-ordering.md
+- contents/data-structure/roaring-production-profiling-checklist.md
+- contents/data-structure/roaring-run-churn-observability-guide.md
+- contents/data-structure/roaring-bitmap-selection-playbook.md
+- contents/data-structure/compressed-bitmap-families-wah-ewah-concise.md
+- contents/data-structure/bit-sliced-bitmap-index.md
+- contents/data-structure/elias-fano-encoded-posting-list.md
+- contents/data-structure/succinct-bitvector-rank-select.md
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/hyperloglog.md
+confusable_with:
+- data-structure/plain-bitset-vs-compressed-bitmap-decision-card
+- data-structure/roaring-bitmap-selection-playbook
+- data-structure/compressed-bitmap-families-wah-ewah-concise
+- data-structure/elias-fano-encoded-posting-list
+- data-structure/bloom-filter
+forbidden_neighbors: []
+expected_queries:
+- Roaring Bitmap은 BitSet이나 HashSet보다 어떤 integer set workload에 맞아?
+- Roaring의 상위 16-bit chunk와 array bitmap run container 구조를 설명해줘
+- sparse dense mixed id 집합에서 Roaring이 exact set algebra를 빠르게 하는 이유는?
+- Roaring container threshold와 chunk boundary가 운영 성능에 미치는 영향은?
+- compressed bitmap을 처음 배우는데 Roaring Bitmap의 핵심 개념을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Roaring Bitmap을 32-bit integer set을 high-key chunk와 array/bitmap/run
+  container로 나누어 저장하는 exact compressed bitmap primer로 설명한다.
+  BitSet, HashSet, Bloom Filter, Elias-Fano, WAH/EWAH, container transition과
+  set operation 비용을 연결한다.
+---
 # Roaring Bitmap
 
 > 한 줄 요약: Roaring Bitmap은 정수 집합을 chunk와 container로 나눠 저장해, BitSet보다 훨씬 압축적이면서도 교집합 같은 집합 연산을 빠르게 수행하는 exact set 자료구조다.

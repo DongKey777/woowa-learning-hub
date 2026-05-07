@@ -1,11 +1,81 @@
+---
+schema_version: 3
+title: Role vs Scope vs Ownership Primer
+concept_id: security/role-vs-scope-vs-ownership-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/spring-roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- role-vs-scope
+- vs-ownership
+- role-check-vs
+- scope-check
+aliases:
+- role vs scope vs ownership
+- role scope ownership 차이
+- role check vs scope check
+- scope is not ownership
+- object ownership primer
+- 로그인 됐는데 왜 403
+- 유효한 토큰인데 왜 403
+- scope 있는데 남의 주문 못 봄
+intents:
+- definition
+- comparison
+- troubleshooting
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/resource-level-authz-decision-practice.md
+- contents/security/jwt-claims-roles-authorities-permissions-mapping.md
+- contents/security/oauth-scope-vs-api-audience-vs-application-permission.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/idor-bola-patterns-and-fixes.md
+confusable_with:
+- security/permission-model-bridge-authn-to-role-scope-ownership
+- security/oauth-scope-vs-api-audience-vs-application-permission
+- security/jwt-claims-roles-authorities-permissions-mapping
+forbidden_neighbors: []
+expected_queries:
+- role과 scope와 ownership은 어떻게 달라?
+- 로그인은 됐는데 왜 403이 나오는지 role scope ownership으로 나눠 설명해줘
+- scope=orders.read가 있는데 왜 남의 주문은 못 봐?
+- 유효한 토큰인데 403이면 인증 문제야 인가 문제야?
+- role check와 resource ownership check를 한 요청에서 어떤 순서로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 authz beginner가 role, OAuth scope, resource ownership을 같은 권한
+  말로 뭉개지 않도록 가르는 primer다. 로그인 됐는데 403, 유효한 토큰인데
+  API 거부, scope는 있는데 남의 주문은 못 봄, role/authority와 application
+  permission과 object ownership 순서를 헷갈리는 query를 인증/인가, scope,
+  resource-level authz, IDOR/BOLA 학습 경로로 연결한다.
+---
 # Role vs Scope vs Ownership Primer
 
 > 한 줄 요약: `role check`, OAuth `scope check`, `ownership check`는 모두 인가에 속하지만 서로 다른 질문에 답한다. 셋을 분리해야 `유효한 토큰인데 왜 403인지`, `scope=orders.read`인데 왜 남의 주문은 거부되는지를 같은 어휘로 설명할 수 있다.
 
 **난이도: 🟢 Beginner**
 
+## 미션 진입 증상
+
+| permission 장면 | 먼저 볼 축 |
+|---|---|
+| admin 화면은 role이 있어야 한다 | role/authority check |
+| OAuth token에 `orders.read`가 있다 | API delegation scope |
+| 내 주문은 되지만 남의 주문은 막아야 한다 | resource ownership |
+| 같은 role인데 tenant가 다르다 | tenant/context boundary |
+
 관련 문서:
 
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [인증과 인가의 차이](./authentication-vs-authorization.md)
 - [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
 - [리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant](./resource-level-authz-decision-practice.md)
@@ -16,7 +86,9 @@
 - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 - [System Design: Auth Session Troubleshooting Bridge](../system-design/README.md#system-design-auth-session-troubleshooting-bridge)
 
-retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scope check vs ownership check, scope is not ownership, object ownership primer, ownership test template, list endpoint ownership test, detail endpoint ownership test, multi-tenant ownership check, same user different tenant, tenant negative test, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 남의 주문 못 봄, 내 것만 되는데 남의 것은 안 됨, role vs scope vs ownership primer basics
+> 문서 역할: 이 문서는 security 카테고리의 beginner `primer`다. `로그인 됐는데 왜 403이지?`, `유효한 토큰인데 왜 남의 주문은 못 보지?`처럼 authz 축이 섞인 질문을 role, scope, ownership으로 먼저 자르고, 실제 endpoint 판단 연습은 [리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant](./resource-level-authz-decision-practice.md)로 넘겨 주는 entrypoint다.
+
+retrieval-anchor-keywords: role vs scope vs ownership primer, role scope ownership 차이, role scope ownership 처음, role scope ownership 헷갈려요, role check vs scope check vs ownership check, scope is not ownership, object ownership primer, list endpoint ownership test, detail endpoint ownership test, multi-tenant ownership check, 로그인 됐는데 왜 403, 유효한 토큰인데 왜 403, scope 있는데 왜 남의 주문 못 봄, 내 것만 되는데 남의 것은 안 됨, role vs scope vs ownership basics
 
 ## 먼저 고정할 첫 질문
 

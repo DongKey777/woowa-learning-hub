@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: PostgreSQL Buffers Shared Hit Read Dirtied Written Mini Card
+concept_id: database/postgresql-buffers-hit-read-dirtied-written-mini-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- postgresql-explain
+- buffers
+- page-cache
+- plan-reading
+aliases:
+- postgresql buffers shared hit read dirtied written
+- explain analyze buffers meaning
+- shared hit 뭐예요
+- shared read 뭐예요
+- dirtied written 차이
+- buffers 처음 헷갈려요
+- postgresql buffer counters
+- why shared hit high
+- why shared read high
+- PostgreSQL Buffers 뜻
+symptoms:
+- EXPLAIN ANALYZE Buffers 줄의 shared hit, shared read, dirtied, written을 row count처럼 더해서 해석하고 있어
+- shared read는 그대로인데 shared hit만 늘어 실행 시간이 늘어난 이유를 memory page touch 관점에서 봐야 해
+- dirtied와 written을 같은 쓰기 완료나 fsync durability 신호로 오해하고 있어
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- database/postgresql-explain-analyze-terms-mini-bridge
+- database/mysql-postgresql-index-storage-bridge
+next_docs:
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- database/postgresql-visibility-map-all-visible-beginner-card
+- operating-system/page-cache-dirty-writeback-fsync
+linked_paths:
+- contents/database/postgresql-explain-analyze-terms-mini-bridge.md
+- contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md
+- contents/database/postgresql-visibility-map-all-visible-beginner-card.md
+- contents/database/mysql-postgresql-index-storage-bridge.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+confusable_with:
+- database/postgresql-explain-analyze-terms-mini-bridge
+- database/postgresql-index-only-scan-heap-fetches-beginner-card
+- operating-system/page-cache-dirty-writeback-fsync
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL EXPLAIN ANALYZE Buffers의 shared hit, shared read, dirtied, written은 각각 뭐야?
+- shared hit가 높으면 공짜인지 memory touch 비용이 남는지 설명해줘
+- shared read가 row 수가 아니라 page read counter인 이유를 알려줘
+- dirtied와 written이 dirty page와 writeback 시점에서 어떻게 다른지 설명해줘
+- Buffers 숫자를 actual rows와 heap fetches 옆에 어떻게 붙여 읽어?
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL EXPLAIN ANALYZE Buffers의 shared hit, shared read, dirtied, written을 page touch, cache hit, dirty page, writeback 관점으로 읽는 beginner symptom router다.
+  Buffers 뜻, shared hit 뭐예요, dirtied written 차이 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `Buffers: shared hit/read/dirtied/written`는 뭐예요?
 
 > 한 줄 요약: PostgreSQL `EXPLAIN ANALYZE`의 `Buffers`는 row 수가 아니라 page를 얼마나 만졌는지 보여 주고, `shared hit`, `shared read`, `dirtied`, `written`은 그 page가 캐시에 있었는지, 새로 읽었는지, 더러워졌는지, 실제로 밀려나갔는지를 나눠 보여 준다.

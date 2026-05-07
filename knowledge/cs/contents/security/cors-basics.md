@@ -1,8 +1,88 @@
+---
+schema_version: 3
+title: CORS 기초
+concept_id: security/cors-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/spring-roomescape
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- cors-response-read-vs-cookie-send
+- preflight-options-first
+- credentials-allow-origin-boundary
+aliases:
+- cors basics
+- CORS 기초
+- cors가 뭐예요
+- cross origin 오류
+- cors 에러 브라우저
+- preflight란 무엇인가
+- access-control-allow-origin
+- same origin policy beginner
+- cors allow headers
+- credentials include cookie not sent
+- access-control-allow-credentials beginner
+- fetch credentials vs cors
+symptoms:
+- 브라우저 콘솔에는 CORS 에러가 뜨는데 서버 로그는 정상이라 헷갈려
+- OPTIONS만 보이고 실제 GET이나 POST가 안 나가는 이유가 궁금해
+- cookie가 안 붙은 문제와 CORS 응답 읽기 문제가 섞여 보여
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/http-https-basics
+next_docs:
+- security/preflight-debug-checklist
+- security/error-path-cors-primer
+- security/fetch-credentials-vs-cookie-scope
+- security/cors-samesite-preflight
+- network/cross-origin-cookie-credentials-cors-primer
+linked_paths:
+- contents/network/cross-origin-cookie-credentials-cors-primer.md
+- contents/security/preflight-debug-checklist.md
+- contents/security/error-path-cors-primer.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cors-samesite-preflight.md
+- contents/security/api-security-headers-beyond-csp.md
+- contents/network/http-https-basics.md
+confusable_with:
+- security/preflight-debug-checklist
+- security/error-path-cors-primer
+- security/fetch-credentials-vs-cookie-scope
+- network/cross-origin-cookie-credentials-cors-primer
+forbidden_neighbors: []
+expected_queries:
+- CORS는 서버가 응답했는데도 브라우저 JS가 왜 못 읽게 막는 거야?
+- OPTIONS preflight만 있고 actual request가 없으면 무엇을 봐야 해?
+- request Cookie가 비어 있는 문제와 CORS response header 문제를 어떻게 구분해?
+- Access-Control-Allow-Origin과 Allow-Credentials를 왜 서버가 내려줘야 해?
+- Postman에서는 되는데 브라우저에서 CORS 에러가 나는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 CORS를 브라우저 same-origin policy와 서버의 Access-Control-Allow-Origin 허용 응답으로 설명하고, preflight OPTIONS, actual request, request Cookie header, response read blocking을 구분하는 beginner primer다.
+  Postman에서는 되는데 browser만 실패, OPTIONS-only, credentials include, cookie not sent, error response CORS header missing 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # CORS 기초
 
 > 한 줄 요약: CORS는 브라우저가 "다른 출처의 리소스를 요청해도 되는가"를 서버에게 물어보는 메커니즘이고, 서버가 허용 응답 헤더를 내려줘야 브라우저가 응답을 자바스크립트에 넘긴다.
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| browser/API 장면 | 먼저 볼 증거 |
+|---|---|
+| OPTIONS만 보이고 실제 GET/POST가 없다 | preflight에서 막혔는가 |
+| actual request는 갔는데 JS가 응답을 못 읽는다 | CORS response header가 맞는가 |
+| request Cookie header가 비어 있다 | CORS보다 credentials/cookie scope 문제인가 |
+| Postman은 되는데 브라우저만 실패한다 | browser same-origin policy 경계인가 |
 
 관련 문서:
 

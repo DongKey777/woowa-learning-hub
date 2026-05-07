@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Commit Horizon After Failover, Loss Boundaries, and Verification
+concept_id: database/commit-horizon-after-failover-verification
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- failover-commit-horizon
+- promotion-loss-boundary
+- post-failover-verification
+aliases:
+- commit horizon after failover
+- failover loss boundary
+- promotion verification
+- last applied position
+- write loss audit
+- failover verification
+- commit horizon gap
+- failover 뒤 유실 구간
+- 새 primary commit horizon
+symptoms:
+- failover 뒤 새 primary가 어디까지 commit을 포함했는지 확인하지 못하고 있어
+- 외부 결제나 outbox side effect는 나갔는데 새 primary에 row가 없는지 검증해야 해
+- 방금 쓴 값이 안 보이는 문제가 replica lag인지 실제 write loss인지 분리해야 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/replication-failover-split-brain
+- database/primary-switch-write-fencing
+next_docs:
+- database/failover-promotion-read-divergence
+- database/failover-visibility-window-topology-cache-playbook
+- database/read-repair-reconciliation-after-failover
+- database/replication-lag-forensics-root-cause-playbook
+linked_paths:
+- contents/database/replication-failover-split-brain.md
+- contents/database/primary-switch-write-fencing.md
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/read-repair-reconciliation-after-failover.md
+- contents/database/replication-lag-forensics-root-cause-playbook.md
+confusable_with:
+- database/failover-promotion-read-divergence
+- database/failover-visibility-window-topology-cache-playbook
+- database/read-repair-reconciliation-after-failover
+forbidden_neighbors: []
+expected_queries:
+- failover 후 새 primary의 commit horizon과 loss boundary를 어떻게 확인해?
+- last applied position 이후 구간에 write loss가 있는지 어떤 순서로 감사해야 해?
+- 외부 결제는 성공했는데 failover 후 payment row가 없으면 어떤 verification을 해야 해?
+- failover visibility window와 실제 write loss horizon gap을 어떻게 구분해?
+- post-failover reconciliation 범위를 commit horizon 기준으로 어떻게 자르면 돼?
+contextual_chunk_prefix: |
+  이 문서는 failover 뒤 새 primary가 포함한 last applied position, commit horizon, loss boundary를 기준으로 write loss와 reconciliation 범위를 검증하는 advanced playbook이다.
+  commit horizon after failover, failover loss boundary, promotion verification, write loss audit 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # Commit Horizon After Failover, Loss Boundaries, and Verification
 
 > 한 줄 요약: failover 뒤 가장 중요한 질문은 "누가 primary인가"보다, 새 primary가 어디까지의 commit horizon을 포함하고 있고 어느 구간부터는 유실 또는 재검증 대상이 되는가다.

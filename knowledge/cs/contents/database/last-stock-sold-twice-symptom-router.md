@@ -33,10 +33,10 @@ intents:
 - mission_bridge
 prerequisites:
 - database/transaction-basics
-- database/sql-reading-relational-modeling-primer
+- database/sql-relational-modeling-basics
 next_docs:
 - database/lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge
-- database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision-card
+- database/single-counter-vs-ledger-vs-slot-inventory-oversell-decision
 - database/shopping-cart-payment-idempotency-stock-bridge
 - database/guard-row-scope-design-multi-day-bookings
 linked_paths:
@@ -67,7 +67,6 @@ contextual_chunk_prefix: |
   예약 row는 멀쩡한데 총량만 넘침 같은 자연어 표현이 oversell 진단 분기에
   매핑된다.
 ---
-
 # 마지막 재고가 두 번 팔려요 원인 라우터
 
 ## 한 줄 요약

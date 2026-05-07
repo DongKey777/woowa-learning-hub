@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Aggregate Version and Optimistic Concurrency Pattern
+concept_id: design-pattern/aggregate-version-optimistic-concurrency-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- aggregate-version
+- optimistic-concurrency
+- stale-command-detection
+aliases:
+- aggregate version
+- optimistic concurrency
+- optimistic locking aggregate
+- stale command detection
+- expected version
+- lost update prevention
+- aggregate @Version
+- semantic lock
+- 낙관적 락
+- stale write 감지
+symptoms:
+- @Version 컬럼을 붙이면 충돌 해석과 사용자 재시도 정책까지 자동으로 해결된다고 생각한다
+- optimistic concurrency를 lock이 전혀 없는 방식으로 이해해 commit 시점 원자적 version 비교를 놓친다
+- stale command 충돌이 났을 때 무조건 자동 재시도해 side effect 중복이나 최신 상태 기준 의미 변화를 만든다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/aggregate-root-vs-unit-of-work
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/command-handler-pattern
+next_docs:
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/aggregate-invariant-guard-pattern
+- design-pattern/repository-boundary-aggregate-vs-read-model
+linked_paths:
+- contents/design-pattern/aggregate-root-vs-unit-of-work.md
+- contents/design-pattern/aggregate-boundary-vs-transaction-boundary.md
+- contents/design-pattern/aggregate-invariant-guard-pattern.md
+- contents/design-pattern/semantic-lock-pending-state-pattern.md
+- contents/design-pattern/repository-boundary-aggregate-vs-read-model.md
+- contents/design-pattern/command-handler-pattern.md
+confusable_with:
+- design-pattern/semantic-lock-pending-state-pattern
+- design-pattern/aggregate-boundary-vs-transaction-boundary
+- design-pattern/repository-boundary-aggregate-vs-read-model
+- design-pattern/command-handler-pattern
+forbidden_neighbors: []
+expected_queries:
+- Aggregate version과 optimistic concurrency는 stale command를 expectedVersion으로 어떻게 감지해?
+- @Version은 충돌 감지만 해주고 resolution policy는 왜 별도로 설계해야 해?
+- optimistic concurrency는 lock-free가 아니라 commit 시점 version compare가 필요한 이유가 뭐야?
+- stale write 충돌 후 자동 재시도를 하기 전에 command idempotency와 side effect를 왜 봐야 해?
+- last-writer-wins와 optimistic locking은 lost update 예방 관점에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Aggregate Version and Optimistic Concurrency Pattern playbook으로,
+  aggregate version과 expectedVersion 비교로 stale command와 lost update를 감지하고,
+  충돌 후 retry, merge, 사용자 재확인 정책을 별도로 설계해야 함을 설명한다.
+---
 # Aggregate Version and Optimistic Concurrency Pattern
 
 > 한 줄 요약: aggregate에 version을 두고 optimistic concurrency를 적용하면 긴 잠금 없이 stale command를 감지할 수 있지만, 충돌 이후 재시도와 사용자 의미를 어디서 처리할지는 별도 패턴으로 설계해야 한다.

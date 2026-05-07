@@ -1,3 +1,61 @@
+---
+schema_version: 3
+title: Feature Flag Cleanup and Expiration
+concept_id: software-engineering/feature-flag-cleanup-expiration
+canonical: true
+category: software-engineering
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: mixed
+source_priority: 80
+mission_ids: []
+review_feedback_tags:
+- feature-flag
+- flag-debt
+- cleanup
+- technical-debt
+aliases:
+- Feature Flag Cleanup and Expiration
+- feature flag cleanup
+- feature flag expiration
+- flag debt cleanup
+- stale toggle removal
+- 피처 플래그 정리 만료
+symptoms:
+- release flag, experiment flag, ops flag가 출시 후에도 제거되지 않아 조건문과 테스트 조합이 계속 늘어나
+- new path가 이미 전체 트래픽에 안정화됐는데 legacy branch와 stale toggle이 코드에 남아 다음 변경을 어렵게 해
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/deployment-rollout-strategy
+next_docs:
+- software-engineering/technical-debt-refactoring-timing
+- software-engineering/release-policy-error-budget
+- software-engineering/kill-switch-fast-fail
+linked_paths:
+- contents/software-engineering/feature-flags-rollout-dependency-management.md
+- contents/software-engineering/deployment-rollout-rollback-canary-blue-green.md
+- contents/software-engineering/technical-debt-refactoring-timing.md
+- contents/software-engineering/release-policy-change-freeze-error-budget-coupling.md
+- contents/software-engineering/kill-switch-fast-fail-ops.md
+confusable_with:
+- software-engineering/feature-flag-dependency-management
+- software-engineering/technical-debt-refactoring-timing
+- software-engineering/kill-switch-fast-fail
+forbidden_neighbors: []
+expected_queries:
+- feature flag를 만들 때 owner, expiry, removal condition을 같이 정해야 하는 이유가 뭐야?
+- stale toggle과 dead branch가 기술 부채가 되는 신호를 알려줘
+- release flag, ops flag, experiment flag는 수명과 cleanup 정책이 어떻게 달라?
+- 피처 플래그 조합이 늘어나 테스트 상태공간이 폭발할 때 어떻게 정리해야 해?
+- 전체 트래픽이 새 경로로 안정화된 뒤 legacy branch를 제거하는 기준을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 feature flag를 배포 안전장치로 쓰되 owner, expiry, removal condition, stale toggle cleanup으로 flag debt를 회수하는 intermediate playbook이다.
+---
 # Feature Flag Cleanup and Expiration
 
 > 한 줄 요약: 피처 플래그는 배포를 안전하게 만들지만, 정리하지 않으면 기술 부채가 된다.

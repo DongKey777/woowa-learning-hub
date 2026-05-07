@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: LRU Cache Design
+concept_id: data-structure/lru-cache-design
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: ko
+source_priority: 85
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- lru-cache-design
+- hashmap-doubly-linked-list
+- linkedhashmap-access-order
+aliases:
+- LRU cache
+- Least Recently Used cache
+- HashMap doubly linked list
+- cache eviction policy
+- access order cache
+- LinkedHashMap LRU
+- bounded local cache
+symptoms:
+- 캐시 조회는 O(1)이어야 하고 최근 사용 순서도 O(1)로 갱신해야 한다는 두 요구를 분리하지 못한다
+- HashMap만으로 key lookup은 되지만 evict-tail을 빠르게 하기 어렵고, list만으로는 key lookup이 느리다는 조합 이유를 놓친다
+- 단순 local cache는 LinkedHashMap accessOrder로 충분한데 TTL, eviction reason, concurrency 요구가 있어도 같은 구현을 고집한다
+intents:
+- definition
+- design
+prerequisites:
+- data-structure/hashmap-internals
+- data-structure/linkedhashmap-access-order-mini-primer
+next_docs:
+- data-structure/lru-cache-basics
+- data-structure/linkedhashmap-access-order-mini-primer
+- system-design/distributed-cache-design
+linked_paths:
+- contents/data-structure/hashmap-internals.md
+- contents/data-structure/treemap-vs-hashmap-vs-linkedhashmap.md
+- contents/data-structure/bloom-filter.md
+- contents/system-design/distributed-cache-design.md
+confusable_with:
+- data-structure/lru-cache-basics
+- data-structure/linkedhashmap-access-order-mini-primer
+- data-structure/hashmap-internals
+- system-design/distributed-cache-design
+forbidden_neighbors: []
+expected_queries:
+- LRU Cache는 왜 HashMap과 doubly linked list를 같이 써?
+- get put move-to-front evict-tail을 O(1)로 만들려면 어떤 구조가 필요해?
+- Java LinkedHashMap accessOrder로 작은 LRU를 구현할 수 있는 이유는?
+- TTL이나 eviction reason metrics가 필요하면 직접 LRU 구현이 필요한 경우는?
+- local cache eviction policy로 LRU가 맞는지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 LRU Cache를 key lookup은 HashMap, recency order update와 evict-tail은
+  doubly linked list 또는 LinkedHashMap access-order로 처리하는 primer다.
+  bounded local cache, eviction policy, TTL/concurrency 확장 기준을 다룬다.
+---
 # LRU Cache Design
 
 > 한 줄 요약: 가장 오래 안 쓴 항목부터 버리는 캐시 정책으로, `HashMap`과 이중 연결 리스트 조합이 정석이다.

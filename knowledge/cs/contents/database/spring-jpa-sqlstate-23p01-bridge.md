@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Spring/JPA SQLSTATE 23P01 Bridge
+concept_id: database/spring-jpa-sqlstate-23p01-bridge
+canonical: true
+category: database
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- spring
+- jpa
+- postgresql
+- sqlstate
+- exclusion-constraint
+aliases:
+- Spring JPA SQLSTATE 23P01 bridge
+- DataIntegrityViolationException 23P01
+- Spring exception wrapper SQLSTATE extract
+- JPA ConstraintViolationException PSQLException
+- PostgreSQL overlap conflict Spring mapping
+- SQLSTATE 23P01
+- booking overlap 409 problem detail
+- raw DB message leak prevention
+- SQLSTATE extractor
+- exclusion constraint conflict
+symptoms:
+- DataIntegrityViolationException 같은 wrapper 예외 안에 감긴 SQLSTATE 23P01을 꺼내야 해
+- PostgreSQL exclusion constraint conflict를 raw DB 메시지가 아니라 BOOKING_OVERLAP 제품 문장으로 번역해야 해
+- 23P01과 23505를 둘 다 409로 낼 수 있지만 제품 의미가 다르다는 점을 설명해야 해
+intents:
+- definition
+- troubleshooting
+- design
+prerequisites:
+- database/postgresql-23p01-handling-note
+- database/db-signal-service-result-http-bridge
+next_docs:
+- database/postgresql-23p01-vs-23505-product-language-card
+- spring/problemdetail-error-response-design
+- spring/jdbctemplate-sqlexception-translation
+linked_paths:
+- contents/database/postgresql-23p01-handling-note.md
+- contents/database/postgresql-23p01-vs-23505-product-language-card.md
+- contents/database/db-signal-service-result-http-bridge.md
+- contents/spring/spring-jdbctemplate-sqlexception-translation.md
+- contents/spring/spring-problemdetail-error-response-design.md
+confusable_with:
+- database/postgresql-23p01-vs-23505-product-language-card
+- database/db-signal-service-result-http-bridge
+- database/spring-cannotacquirelockexception-root-sql-code
+forbidden_neighbors: []
+expected_queries:
+- Spring/JPA DataIntegrityViolationException 안에서 PostgreSQL SQLSTATE 23P01을 어떻게 꺼내?
+- exclusion constraint conflict 23P01을 raw DB message 대신 BOOKING_OVERLAP 409 ProblemDetail로 번역하는 흐름을 알려줘
+- SQLSTATE 23P01과 23505는 둘 다 conflict처럼 보이지만 제품 언어가 어떻게 달라?
+- JPA ConstraintViolationException, PersistenceException, PSQLException wrapper를 cause chain으로 따라가야 하는 이유는?
+- SQLSTATE extractor helper로 root SQLException getSQLState를 읽는 beginner 패턴을 보여줘
+contextual_chunk_prefix: |
+  이 문서는 Spring/JPA wrapper exception 안의 PostgreSQL SQLSTATE 23P01을 추출해 booking overlap 409 product language로 번역하는 beginner bridge다.
+  DataIntegrityViolationException 23P01, exclusion constraint conflict, SQLSTATE extractor, raw DB message leak prevention 질문이 본 문서에 매핑된다.
+---
 # Spring/JPA 예외 래퍼에서 `SQLSTATE 23P01` 꺼내는 브리지
 
 > 한 줄 요약: Spring/JPA에서는 `23P01`이 `DataIntegrityViolationException` 같은 바깥 예외 안에 감겨 올라오기 쉬우므로, 초보자는 **wrapper 예외 이름에서 멈추지 말고 안쪽 `SQLException`의 `SQLSTATE`를 읽은 뒤 제품용 conflict 문장으로 번역**하면 된다.

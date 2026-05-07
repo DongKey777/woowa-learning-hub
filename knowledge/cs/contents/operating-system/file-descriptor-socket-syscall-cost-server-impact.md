@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: File Descriptor Socket Syscall Cost and Server Impact
+concept_id: operating-system/file-descriptor-socket-syscall-cost-server-impact
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+review_feedback_tags:
+- file-descriptor-socket
+- syscall-cost-server
+- impact
+- syscall-cost
+aliases:
+- file descriptor socket syscall cost
+- server FD impact
+- socket fd lifecycle
+- open file description
+- syscall overhead server
+- proc pid fdinfo debugging
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/pipe-socketpair-eventfd-memfd-ipc-selection.md
+- contents/operating-system/unix-domain-socket-fd-passing-credentials.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/deleted-open-file-space-leak-log-rotation.md
+- contents/operating-system/proc-pid-fdinfo-epoll-runtime-debugging.md
+- contents/operating-system/eventfd-signalfd-epoll-control-plane-integration.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+expected_queries:
+- file descriptor와 socket syscall cost가 서버 성능에 어떤 영향을 줘?
+- open file description, fd table, socket lifecycle을 어떻게 구분해?
+- /proc/pid/fdinfo로 epoll이나 socket 상태를 디버깅하는 기준은?
+- FD inheritance leak, deleted open file, UNIX domain FD passing을 한 mental model로 묶어줘
+contextual_chunk_prefix: |
+  이 문서는 file descriptor를 단순 정수 handle이 아니라 process fd table, open file description,
+  socket, syscall cost, inheritance, fdinfo debugging으로 연결해 server impact를 설명한다.
+---
 # File Descriptor, Socket, Syscall Cost, and Server Impact
 
 **난이도: 🔴 Advanced**

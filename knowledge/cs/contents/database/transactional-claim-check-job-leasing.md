@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Transactional Claim-Check and Job Leasing
+concept_id: database/transactional-claim-check-job-leasing
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- claim-check
+- job-lease
+- queue
+- fencing
+- idempotency
+aliases:
+- transactional claim-check
+- job leasing
+- claim-check
+- payload reference
+- work claim
+- lease row
+- skip locked
+- job ownership
+- payload ref worker
+- claim row takeover
+symptoms:
+- 큰 payload를 queue에 직접 넣지 않고 DB나 object storage에 저장한 뒤 참조만 넘기고 싶어
+- 여러 worker가 같은 job을 동시에 처리하지 않도록 lease row와 ownership을 관리해야 해
+- lease 만료 후 takeover가 가능하지만 stale worker write를 막기 위해 fencing이 필요해
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- database/db-lease-fencing-coordination
+- database/transactional-inbox-dedup-design
+next_docs:
+- database/stale-lease-renewal-failure-fencing
+- database/queue-claim-skip-locked-fairness
+- database/exactly-once-myths-db-queue
+linked_paths:
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/transactional-inbox-dedup-design.md
+- contents/database/exactly-once-myths-db-queue.md
+- contents/database/queue-claim-skip-locked-fairness.md
+- contents/database/stale-lease-renewal-failure-fencing.md
+confusable_with:
+- database/transactional-inbox-dedup-design
+- database/db-lease-fencing-coordination
+- database/queue-claim-skip-locked-fairness
+forbidden_neighbors: []
+expected_queries:
+- claim-check와 job leasing은 각각 payload 분리와 worker ownership 문제를 어떻게 나눠 해결해?
+- 큰 메시지 본문을 queue에 직접 넣지 않고 payload_ref만 넘기는 transactional claim-check 패턴을 설명해줘
+- lease row를 선점한 worker만 job을 처리하게 하려면 어떤 컬럼과 상태 전이가 필요해?
+- lease가 만료되어 다른 worker가 takeover할 때 stale worker write를 fencing으로 어떻게 막아?
+- claim-check를 쓰면 큐 중복이 사라지는 것이 아니라 leasing과 inbox dedup이 추가로 필요한 이유는?
+contextual_chunk_prefix: |
+  이 문서는 transactional claim-check와 job leasing을 payload reference, lease row, work claim, worker ownership, takeover/fencing 관점으로 설명하는 advanced playbook이다.
+  claim-check, job leasing, payload_ref, skip locked claim, stale worker 질문이 본 문서에 매핑된다.
+---
 # Transactional Claim-Check와 Job Leasing
 
 > 한 줄 요약: claim-check는 큰 작업 본문을 안전하게 분리해 두고, job leasing은 그 작업을 한 worker만 처리하게 만든다.

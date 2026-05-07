@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Authorization Graph Cache / Relationship Cache Primer
+concept_id: security/authorization-graph-cache-relationship-cache-primer
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- authz-graph-cache-entrypoint
+- stale-deny-routing
+- next-doc-ladder
+aliases:
+- authorization graph cache primer
+- relationship cache primer
+- graph cache primer
+- authz graph cache primer
+- relationship edge cache primer
+- path cache primer
+- graph snapshot primer
+- graph cache beginner route
+- relationship cache beginner route
+- graph cache next step
+- grant 했는데 403
+- stale deny why
+- cache 가 왜 안 바뀌죠
+- relationship cache 뭐예요
+- 401 403 404 헷갈려요
+symptoms:
+- 권한을 방금 줬는데 still 403이라 graph cache부터 봐야 하는지 헷갈려요
+- relationship cache와 graph cache를 경쟁 개념처럼 이해하고 있어요
+- auth failure 응답 의미와 stale deny 원인 분기가 아직 섞여 있어요
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- security/authentication-vs-authorization
+- security/role-vs-scope-vs-ownership-primer
+next_docs:
+- security/grant-path-freshness-stale-deny-basics
+- security/authorization-caching-staleness
+- security/authorization-graph-caching
+linked_paths:
+- contents/security/grant-path-freshness-stale-deny-basics.md
+- contents/security/authorization-caching-staleness.md
+- contents/security/authorization-graph-caching.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/role-vs-scope-vs-ownership-primer.md
+- contents/security/permission-model-drift-authz-graph-design.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+confusable_with:
+- security/authorization-caching-staleness
+- security/permission-model-drift-authz-graph-design
+- security/auth-failure-response-401-403-404
+forbidden_neighbors: []
+expected_queries:
+- authorization graph cache가 뭐예요
+- relationship cache랑 graph cache 차이를 처음부터 설명해줘
+- grant 했는데 왜 아직 403인데 graph cache를 의심하라는 거야
+- stale deny를 보기 전에 response 의미부터 왜 나눠야 해
+- graph cache deep dive 전에 어떤 문서 순서로 들어가야 해
+contextual_chunk_prefix: |
+  이 문서는 authorization graph cache와 relationship cache를 처음 듣는
+  학습자가 grant 뒤에도 403이 남을 때 stale deny를 어디서 잘라 봐야
+  하는지 기초를 잡는 primer다. 권한을 줬는데 왜 아직 막히나, graph
+  cache와 relationship cache 차이가 뭐냐, 401 403 404가 왜 같이
+  헷갈리나, 먼저 어느 문서로 가야 하나 같은 자연어 paraphrase가 본
+  문서의 첫 분기와 learning path에 매핑된다.
+---
 # Authorization Graph Cache / Relationship Cache Primer
 
 > 한 줄 요약: `authorization graph cache`와 `relationship cache`는 "권한 결정 계산을 빨리하려는 캐시"라는 한 묶음이며, 먼저 "어느 계층이 stale인지"를 나눠야 deep dive를 덜 헤맨다.

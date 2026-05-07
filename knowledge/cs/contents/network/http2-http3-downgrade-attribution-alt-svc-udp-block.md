@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block"
+concept_id: network/http2-http3-downgrade-attribution-alt-svc-udp-block
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- http3-downgrade
+- udp-block
+- alt-svc
+aliases:
+- HTTP/3 downgrade
+- H3 fallback
+- H2 fallback
+- Alt-Svc downgrade attribution
+- UDP block
+- browser alt-svc cache
+- ALPN fallback
+symptoms:
+- HTTP/3가 안 붙는데 요청은 성공해서 protocol downgrade를 놓친다
+- Alt-Svc 광고, browser cache, UDP block, CDN policy 중 원인 주체를 가르지 못한다
+- synthetic test는 H3 성공인데 실제 사용자망에서는 H2로 조용히 fallback된다
+- Protocol=h2 결과만 보고 QUIC version negotiation 문제로 단정한다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/browser-http-version-selection-alpn-alt-svc-fallback
+- network/h3-fallback-trace-bridge
+next_docs:
+- network/http3-quic-practical-tradeoffs
+- network/quic-version-negotiation-fallback
+- network/alpn-negotiation-failure-routing-mismatch
+- network/http2-http3-connection-reuse-coalescing
+linked_paths:
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/h3-fallback-trace-bridge.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/quic-version-negotiation-fallback.md
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/proxy-local-reply-vs-upstream-error-attribution.md
+confusable_with:
+- network/h3-fallback-trace-bridge
+- network/quic-version-negotiation-fallback
+- network/alpn-negotiation-failure-routing-mismatch
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/3가 조용히 H2로 downgrade되는 원인을 어떻게 attribution해?"
+- "Alt-Svc는 있는데 특정 회사망에서만 H3가 안 붙으면 UDP block을 어떻게 확인해?"
+- "browser Alt-Svc cache와 CDN H3 policy가 downgrade에 미치는 영향은?"
+- "Protocol=h2 결과만으로 HTTP/3 fallback 원인을 단정하면 안 되는 이유는?"
+- "H3 attempted ratio와 success ratio를 어떤 지표로 봐야 해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/3 to HTTP/2 downgrade attribution, Alt-Svc cache,
+  UDP/QUIC block, ALPN fallback, CDN/proxy/browser policy를 다루는 advanced
+  playbook이다.
+---
 # HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block
 
 > 한 줄 요약: 사용자가 "HTTP/3가 안 붙고 느리다"고 느낄 때 원인은 QUIC 버전 협상 하나가 아니다. `Alt-Svc` 광고, UDP 차단, ALPN, proxy/CDN policy, browser cache가 겹치며 조용한 downgrade가 일어난다.

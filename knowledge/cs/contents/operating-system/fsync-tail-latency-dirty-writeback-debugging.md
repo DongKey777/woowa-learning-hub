@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Fsync Tail Latency Dirty Writeback Backend Debugging
+concept_id: operating-system/fsync-tail-latency-dirty-writeback-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- fsync-tail-latency
+- dirty-writeback
+- dirty-writeback-backend
+- journal-commit-latency
+aliases:
+- fsync tail latency
+- dirty writeback backend debugging
+- journal commit latency
+- write debt fsync
+- writer throttling fsync
+- backend p99 fsync
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/dirty-page-ratios-writeback-tuning.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/fsync-batching-semantics.md
+- contents/operating-system/io-scheduler-blk-mq-basics.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/operating-system/blk-mq-cgroup-io-writeback-timeline-debugging.md
+symptoms:
+- backend service에서 fsync가 느려 보이지만 storage 자체보다 dirty writeback debt가 원인이다.
+- journal commit, writer throttling, background flush가 서로 다른 시점에 p99로 나타난다.
+- fsync latency와 dirty page ratio, blk-mq queue, cgroup IO limit을 함께 봐야 한다.
+expected_queries:
+- fsync tail latency가 storage 자체가 아니라 dirty writeback debt 때문일 수 있어?
+- page cache, journal commit, writer throttling을 fsync debugging에서 어떻게 구분해?
+- backend p99가 fsync 때문에 튈 때 eBPF perf strace로 어디를 봐야 해?
+- dirty page tuning과 fsync batching은 tail latency에 어떤 영향을 줘?
+contextual_chunk_prefix: |
+  이 문서는 backend fsync latency를 storage device 하나의 문제로 보지 않고 page cache write debt,
+  dirty writeback, journal commit, writer throttling, blk-mq queue가 서로 다른 시점에
+  tail latency로 드러나는 playbook으로 설명한다.
+---
 # Fsync Tail Latency, Dirty Writeback, Backend Debugging
 
 > 한 줄 요약: 백엔드 서비스에서 `fsync()`가 느려 보일 때, 진짜 원인은 storage 자체보다 page cache에 쌓인 write debt, dirty writeback, journal commit, writer throttling이 서로 다른 시점에 드러나는 데 있는 경우가 많다.

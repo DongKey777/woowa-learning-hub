@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Fork, Exec, Copy-on-Write Behavior
+concept_id: operating-system/fork-exec-copy-on-write-behavior
+canonical: true
+category: operating-system
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- fork-exec-cow-basics
+- process-spawn-cost
+- file-descriptor-inheritance
+aliases:
+- fork exec copy on write
+- fork copy-on-write behavior
+- execve address space replacement
+- child process first write penalty
+- pre fork server memory cost
+- close on exec leak
+- fork는 싸지만 첫 write는 비싸다
+- 프로세스 생성 COW
+symptoms:
+- fork가 부모 메모리를 즉시 전부 복사한다고 이해해 COW와 첫 write 비용을 놓친다
+- exec가 새 프로세스를 만든다고만 생각해 현재 PID의 주소 공간 교체라는 점을 놓친다
+- file descriptor가 exec 뒤에도 남을 수 있다는 close-on-exec 누락을 추적하지 못한다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- operating-system/process-lifecycle-and-ipc-basics
+- operating-system/demand-paging-page-fault-primer
+next_docs:
+- operating-system/process-spawn-api-comparison
+- operating-system/major-minor-page-faults-runtime-diagnostics
+- operating-system/o-cloexec-fd-inheritance-exec-leaks
+- operating-system/pid-limit-process-table-exhaustion
+linked_paths:
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/process-spawn-api-comparison.md
+- contents/operating-system/demand-paging-page-fault-primer.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/pid-limit-process-table-exhaustion.md
+- contents/operating-system/linux-process-state-zombie-orphan.md
+- contents/operating-system/container-cgroup-namespace.md
+- contents/operating-system/open-file-description-dup-fork-shared-offsets.md
+- contents/operating-system/o-cloexec-fd-inheritance-exec-leaks.md
+- contents/operating-system/syscall-user-kernel-boundary.md
+confusable_with:
+- operating-system/process-spawn-api-comparison
+- operating-system/demand-paging-page-fault-primer
+- operating-system/o-cloexec-fd-inheritance-exec-leaks
+- operating-system/linux-process-state-zombie-orphan
+forbidden_neighbors: []
+expected_queries:
+- fork는 메모리를 바로 복사하지 않는다는데 copy-on-write는 어떻게 동작해?
+- fork 뒤 첫 write가 느린 이유를 page fault와 연결해서 설명해줘
+- execve는 새 프로세스를 만드는 것과 주소 공간을 교체하는 것 중 어느 쪽이야?
+- close-on-exec를 안 걸면 자식 프로세스에 file descriptor가 왜 새어 나가?
+- pre-fork 서버에서 큰 heap을 가진 부모가 worker를 만들 때 어떤 비용을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 fork, execve, copy-on-write를 process lifecycle과 page fault
+  관점에서 연결한다. fork는 처음엔 page table과 mapping을 공유하지만 첫
+  write에서 COW 비용이 발생하고, exec는 PID 관계를 유지한 채 주소 공간을
+  새 프로그램으로 교체한다.
+---
 # Fork, Exec, Copy-on-Write Behavior
 
 > 한 줄 요약: fork는 처음엔 싸지만 copy-on-write 때문에 첫 write가 비싸질 수 있고, exec는 새 주소 공간으로 갈아타면서 이전 상태를 버린다.

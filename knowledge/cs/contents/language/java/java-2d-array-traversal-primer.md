@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Java 2D Array Traversal Primer
+concept_id: language/java-2d-array-traversal-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 93
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- array-traversal
+- off-by-one
+- row-column
+aliases:
+- Java 2차원 배열 순회 입문
+- java 2d array traversal primer
+- arr.length vs arr row length
+- jagged array traversal Java
+- row column index confusion
+- 자바 2차원 배열 row col for문
+symptoms:
+- arr.length를 column 개수로 착각해 안쪽 loop 조건에도 그대로 쓰다가 rectangular가 아닌 배열에서 터져
+- board[row][col]에서 row와 col 순서를 좌표계처럼만 외워 Java의 배열 안의 배열 구조를 놓쳐
+- jagged array도 항상 모든 row 길이가 같다고 가정해 ArrayIndexOutOfBoundsException을 만든다
+intents:
+- definition
+- troubleshooting
+- drill
+prerequisites:
+- language/java-language-basics
+- language/java-loop-control-scope-follow-up-primer
+- language/java-array-common-confusion-checklist
+next_docs:
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+- language/java-array-debug-printing-basics
+- language/java-array-copy-clone-basics
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-loop-control-scope-follow-up-primer.md
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/java-array-copy-clone-basics.md
+- contents/language/java/java-2d-array-deeptostring-deepequals-shallow-copy-bridge.md
+- contents/data-structure/array-vs-linked-list.md
+confusable_with:
+- language/java-array-common-confusion-checklist
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+- language/java-loop-control-scope-follow-up-primer
+forbidden_neighbors: []
+expected_queries:
+- Java 2차원 배열에서 arr.length와 arr[row].length 차이를 설명해줘
+- jagged array를 안전하게 순회하는 중첩 for문을 보여줘
+- board[row][col]에서 row와 col을 어떻게 읽어야 덜 헷갈려?
+- 2차원 배열 순회에서 ArrayIndexOutOfBoundsException이 나는 흔한 이유가 뭐야?
+- Java 2차원 배열은 왜 표 하나보다 배열 안의 배열로 이해해야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java 2D array traversal을 arr.length, arr[row].length, row/column index, jagged array 관점으로 설명하는 beginner primer다.
+  2차원 배열 순회, row col, arr.length vs arr[i].length, jagged array, ArrayIndexOutOfBoundsException 질문이 본 문서에 매핑된다.
+---
 # Java 2차원 배열 순회 입문
 
 > 한 줄 요약: Java의 2차원 배열은 "표 하나"라기보다 "row 배열 안에 row 배열이 들어 있는 구조"라서, 바깥 길이는 `arr.length`, 안쪽 길이는 매 row마다 `arr[row].length`로 읽어야 jagged array 혼동을 줄일 수 있다.

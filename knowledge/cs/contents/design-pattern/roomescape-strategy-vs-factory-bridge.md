@@ -29,13 +29,25 @@ prerequisites:
 linked_paths:
 - contents/design-pattern/strategy-pattern-basics.md
 - contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/factory-misnaming-checklist.md
 forbidden_neighbors:
 - contents/design-pattern/factory-misnaming-checklist.md
+confusable_with:
+- design-pattern/strategy-pattern-basics
+- design-pattern/bridge-strategy-vs-factory-runtime-selection
+- design-pattern/factory-vs-di-container-wiring
+- design-pattern/factory-misnaming-checklist
 expected_queries:
 - 룸이스케이프 검증 로직에 Strategy 패턴이 어울려?
 - 예약 검증 규칙을 분기할 때 Factory를 써?
 - Strategy랑 Factory 중에 미션에서 뭐가 맞아?
 - 시간 슬롯 결정에 어떤 패턴이 자연스러워?
+contextual_chunk_prefix: |
+  이 문서는 roomescape 미션에서 예약 검증 규칙은 Strategy로, 시간 슬롯이나
+  객체 생성 문제는 Factory로 바라봐야 하는 경계를 설명하는 mission_bridge다.
+  룸이스케이프 Strategy, Factory, 예약 검증 규칙, 런타임 행동 교체와 객체
+  생성 추상화 차이를 묻는 질의를 패턴 선택 기준으로 연결한다.
 ---
 
 # roomescape에서 예약 검증/시간 슬롯 결정에 Strategy vs Factory 어떤 게 맞나
@@ -45,6 +57,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: spring-roomescape-admin (Woowa Spring 트랙)
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "예약 검증 규칙이 많아지면 Factory로 빼면 되나요?" | 과거 예약 금지, 중복 예약 금지, 권한 검사를 생성 패턴 이름으로 뭉치는 코드 | 바뀌는 것이 행동이면 Strategy 후보로 본다 |
+| "시간 슬롯 타입별 객체 생성이랑 검증 전략이 둘 다 분기라 헷갈려요" | `ReservationTime` 생성 분기와 `ReservationValidator` 적용 분기가 같은 service에 섞인 장면 | 객체 생성 분기와 런타임 행동 교체 분기를 다른 축으로 자른다 |
+| "패턴을 넣으라는 리뷰가 정확히 어떤 냄새를 말하나요?" | service if 문이 규칙 추가마다 길어지는 roomescape 예약 생성 흐름 | 패턴 이름보다 변경 이유가 생성인지 검증 행동인지 먼저 확인한다 |
 
 관련 문서:
 

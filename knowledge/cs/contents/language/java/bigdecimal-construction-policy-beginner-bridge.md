@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: BigDecimal 생성 정책 입문 브리지
+concept_id: language/bigdecimal-construction-policy-beginner-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- bigdecimal-input-boundary
+- floating-point-precision
+- value-object-policy
+aliases:
+- BigDecimal construction policy
+- new BigDecimal double pitfall
+- BigDecimal valueOf vs string constructor
+- BigDecimal input boundary
+- 자바 BigDecimal 생성 정책
+- BigDecimal double 생성자 피하기
+symptoms:
+- new BigDecimal(double)을 기본 선택지로 골라 화면에 보인 십진수와 다른 긴 근사값을 만들 수 있어
+- BigDecimal 생성 정책, setScale 자릿수 정책, stripTrailingZeros 정규화 정책을 한꺼번에 섞어 판단해
+- 문자열 입력과 이미 double로 들어온 값의 안전한 처리 경계를 구분하지 못해
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/floating-point-precision-nan-infinity-serialization-pitfalls
+next_docs:
+- language/bigdecimal-setscale-unnecessary-validation-primer
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+- language/bigdecimal-sorted-collection-bridge
+linked_paths:
+- contents/language/java/bigdecimal-setscale-unnecessary-validation-primer.md
+- contents/language/java/bigdecimal-striptrailingzeros-input-boundary-bridge.md
+- contents/language/java/bigdecimal-sorted-collection-bridge.md
+- contents/language/java/floating-point-precision-nan-infinity-serialization-pitfalls.md
+- contents/language/java/value-object-invariants-canonicalization-boundary-design.md
+confusable_with:
+- language/floating-point-precision-nan-infinity-serialization-pitfalls
+- language/bigdecimal-setscale-unnecessary-validation-primer
+- language/bigdecimal-striptrailingzeros-input-boundary-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java BigDecimal은 왜 new BigDecimal double 생성자를 피하고 문자열이나 valueOf를 쓰라고 해?
+- BigDecimal.valueOf와 new BigDecimal(\"19.99\")를 입력 경계 관점으로 비교해줘
+- BigDecimal 생성 정책과 setScale 반올림 정책은 어떻게 달라?
+- 문자열 금액 입력을 BigDecimal로 만들 때 초보자가 지킬 규칙을 알려줘
+- 이미 double 값만 있을 때 BigDecimal.valueOf가 new BigDecimal(double)보다 덜 놀라운 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java BigDecimal 생성 정책을 string constructor, BigDecimal.valueOf(double), new BigDecimal(double) pitfall, input boundary 관점으로 설명하는 beginner primer다.
+  BigDecimal double 생성자, valueOf vs string, floating point precision, setScale, stripTrailingZeros 질문이 본 문서에 매핑된다.
+---
 # BigDecimal 생성 정책 입문 브리지
 
 > 한 줄 요약: 초급자 기준으로는 "`new BigDecimal(double)`은 기본 선택지에서 빼고, 문자열 입력이면 문자열 생성자, 이미 `double`이면 `BigDecimal.valueOf(double)`"만 먼저 고정해도 입력 흔들림을 크게 줄일 수 있다.

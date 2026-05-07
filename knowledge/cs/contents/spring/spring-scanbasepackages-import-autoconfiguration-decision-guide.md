@@ -10,7 +10,11 @@ level: beginner
 language: mixed
 source_priority: 88
 mission_ids: []
-review_feedback_tags: []
+review_feedback_tags:
+- scanbasepackages-import-autoconfiguration
+- shared-module-registration
+- choice
+- scanbasepackages-vs-import
 aliases:
   - spring shared module registration choice
   - scanbasepackages vs import vs auto configuration
@@ -61,7 +65,6 @@ contextual_chunk_prefix: |
   조건부 기본값을 줄지, JPA scan 문제와 shared module 등록 문제를 같은
   축으로 착각하는 질문을 세 갈래 결정표로 연결한다.
 ---
-
 # Spring shared module 연결 결정 가이드: `scanBasePackages` vs `@Import` vs Boot Auto-configuration
 
 ## 한 줄 요약

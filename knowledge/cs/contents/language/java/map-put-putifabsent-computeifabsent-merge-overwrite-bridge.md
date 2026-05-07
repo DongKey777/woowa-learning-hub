@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Map put putIfAbsent computeIfAbsent merge Overwrite Bridge
+concept_id: language/map-put-putifabsent-computeifabsent-merge-overwrite-bridge
+canonical: true
+category: language
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- map-api
+- overwrite-policy
+- computeifabsent
+aliases:
+- Map put putIfAbsent computeIfAbsent merge overwrite bridge
+- Java Map overwrite policy chooser
+- putIfAbsent vs computeIfAbsent vs merge
+- HashMap TreeMap put overwrite
+- Map merge accumulate value
+- 자바 Map 갱신 API 선택
+symptoms:
+- HashMap과 TreeMap 구현체 선택을 put과 putIfAbsent의 overwrite policy 선택과 섞어 정렬 Map이면 덮어쓰지 않는다고 오해해
+- computeIfAbsent를 단순 put처럼 써서 이미 값이 있을 때 mapping function이 호출되지 않는 점을 놓쳐
+- merge를 항상 append나 plus로만 이해해 remapping function이 기존 값과 새 값을 어떻게 합쳐 다시 저장하는지 설명하지 못해
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- language/map-put-get-remove-containskey-return-cheat-sheet
+- language/map-get-null-containskey-getordefault-primer
+- language/hashmap-vs-treemap-beginner-selection-bridge
+next_docs:
+- language/map-value-shape-drill
+- language/map-put-null-containskey-distinction-bridge
+- data-structure/hash-table-basics
+linked_paths:
+- contents/language/java/map-put-get-remove-containskey-return-cheat-sheet.md
+- contents/language/java/hashmap-vs-treemap-beginner-selection-bridge.md
+- contents/language/java/treemap-put-return-value-overwrite-bridge.md
+- contents/language/java/map-put-null-containskey-distinction-bridge.md
+- contents/language/java/map-get-null-containskey-getordefault-primer.md
+- contents/language/java/map-value-shape-drill.md
+- contents/language/java/java-collections-basics.md
+- contents/data-structure/hash-table-basics.md
+confusable_with:
+- language/map-put-get-remove-containskey-return-cheat-sheet
+- language/map-value-shape-drill
+- language/map-put-null-containskey-distinction-bridge
+forbidden_neighbors: []
+expected_queries:
+- Map put putIfAbsent computeIfAbsent merge는 기존 값이 있을 때 어떻게 달라?
+- putIfAbsent와 computeIfAbsent는 둘 다 없을 때만 넣는데 언제 무엇을 골라야 해?
+- merge는 기존 값과 새 값을 어떻게 합쳐서 다시 저장하는지 예제로 보여줘
+- HashMap put과 TreeMap put은 구현체가 달라도 overwrite 정책은 같은지 알려줘
+- key가 있고 value가 null일 때 putIfAbsent computeIfAbsent merge 동작이 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 Map update API를 put, putIfAbsent, computeIfAbsent, merge의 overwrite policy로 비교하는 beginner chooser다.
+  Map overwrite, putIfAbsent, computeIfAbsent, merge, HashMap TreeMap put 질문이 본 문서에 매핑된다.
+---
 # Map 조회/갱신 API 미니 브리지: `put()` vs `putIfAbsent()` vs `computeIfAbsent()` vs `merge()`
 
 > 한 줄 요약: `HashMap.put`, `TreeMap.put`, `putIfAbsent()`를 한 카드에 놓고 보면 "구현체 선택"과 "덮어쓰기 정책 선택"이 다른 축이라는 점이 보이고, `put()`과 `putIfAbsent()`의 반환값과 호출 뒤 현재 상태까지 같이 보면 `Map` 갱신 API 전체가 덜 헷갈린다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Thread Dump State Interpretation
+concept_id: language/thread-dump-state-interpretation
+canonical: false
+category: language
+difficulty: intermediate
+doc_role: primer
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- thread-dump-state-reading
+- runnable-vs-waiting
+- lock-owner-triage
+aliases:
+- thread dump state interpretation
+- Java thread dump 읽기
+- RUNNABLE BLOCKED WAITING TIMED_WAITING
+- jstack state meaning
+- parked thread meaning
+- blocked thread owner
+- thread dump latency triage
+symptoms:
+- thread dump에 RUNNABLE, BLOCKED, WAITING, TIMED_WAITING이 섞여 있는데 어떤 상태가 진짜 병목인지 모르겠다
+- CPU는 낮은데 worker thread가 WAITING이나 TIMED_WAITING에 많이 보여 이게 정상 대기인지 장애인지 헷갈린다
+- lock owner, monitor, parked thread, native socket read가 한 dump에 같이 보여 어디부터 읽어야 할지 모르겠다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- operating-system/process-thread-memory-state-classification-practice-drill
+linked_paths:
+- contents/language/java/safepoint-stop-the-world-diagnostics.md
+- contents/language/java/jfr-event-interpretation.md
+- contents/language/java/jfr-jmc-performance-playbook.md
+- contents/language/java/executor-sizing-queue-rejection-policy.md
+- contents/language/java/wait-notify-condition-spurious-wakeup-lost-signal.md
+- contents/language/java/locksupport-park-unpark-permit-semantics.md
+- contents/operating-system/blocking-io-thread-pool-backpressure-primer.md
+confusable_with:
+- language/jfr-event-interpretation
+- language/safepoint-stop-the-world-diagnostics
+- operating-system/blocking-io-thread-pool-backpressure-primer
+forbidden_neighbors: []
+expected_queries:
+- Java thread dump에서 RUNNABLE BLOCKED WAITING TIMED_WAITING을 어떻게 읽어야 해?
+- CPU는 낮은데 thread dump에 WAITING이 많으면 장애야 정상 대기야?
+- jstack에서 blocked thread와 lock owner를 처음에 어떻게 찾는지 알려줘
+- parked thread와 socket read waiting을 latency triage에서 어떻게 구분해?
+- thread dump 상태 이름만 보고 병목을 단정하면 안 되는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java thread dump에서 RUNNABLE, BLOCKED, WAITING,
+  TIMED_WAITING, in native, parked thread, monitor owner를 읽는 primer다.
+  CPU는 낮지만 API가 느림, worker가 blocked/waiting으로 보임, lock owner를
+  찾아야 함, jstack 상태 이름을 병목으로 오해함 같은 질문을 상태 이름보다
+  stack trace와 wait owner를 함께 읽는 방식으로 안내한다.
+---
+
 # Thread Dump State Interpretation
 
 > 한 줄 요약: thread dump의 `RUNNABLE`, `BLOCKED`, `WAITING`, `TIMED_WAITING`, `in native` 같은 상태는 "지금 무엇을 기다리는가"를 보여주며, 진짜 병목은 상태 이름보다 그 상태에 들어간 이유와 소유자다.

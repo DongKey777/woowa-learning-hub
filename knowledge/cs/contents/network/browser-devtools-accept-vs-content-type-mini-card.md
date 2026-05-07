@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: "Browser DevTools `Accept` vs Response `Content-Type` 미니 카드"
+concept_id: network/browser-devtools-accept-vs-content-type-mini-card
+canonical: false
+category: network
+difficulty: beginner
+doc_role: drill
+level: beginner
+language: mixed
+source_priority: 75
+mission_ids: []
+review_feedback_tags:
+- accept-before-body-preview
+- html-vs-json-surface
+- final-url-header-crosscheck
+aliases:
+- accept vs content-type devtools
+- accept star star devtools
+- accept */* meaning browser
+- request accept response content-type
+- json 대신 html 와요
+- api got html instead of json
+- devtools accept header beginner
+- devtools content-type first check
+- response body preview before open
+- accept 뭐예요
+- accept */* 왜 떠요
+- content-type 뭐예요
+- json html confusion first pass
+- why api returns html
+- beginner network headers
+symptoms:
+- API 호출이라고 생각했는데 DevTools 헤더를 보니 HTML이 와서 login page인지 app 응답인지 헷갈린다
+- "`Accept`는 `application/json`인데 response `Content-Type`은 `text/html`이라 어디서 해석이 갈리는지 모르겠다"
+- body preview를 열기 전에 JSON 기대와 실제 HTML 도착을 빨리 가르는 기준이 필요하다
+intents:
+- drill
+prerequisites:
+- network/http-request-response-headers-basics
+- network/ssr-view-render-vs-json-api-response-basics
+next_docs:
+- network/json-expected-but-html-response-symptom-router
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- network/browser-devtools-response-body-ownership-checklist
+linked_paths:
+- contents/network/http-request-response-headers-basics.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/spring/spring-requestbody-415-unsupported-media-type-primer.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- network/json-expected-but-html-response-symptom-router
+- network/fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser
+- network/browser-devtools-response-body-ownership-checklist
+forbidden_neighbors:
+- contents/network/http-request-response-headers-basics.md
+expected_queries:
+- "`Accept`는 `application/json`인데 왜 응답은 `text/html`이야?"
+- "JSON API 호출에서 HTML이 오면 헤더 두 칸 중 무엇부터 봐야 해?"
+- "body를 열기 전에 login HTML인지 app JSON 실패인지 어떻게 구분해?"
+- "DevTools에서 `Accept`와 `Content-Type`이 어긋날 때 첫 판단 기준이 뭐야?"
+- "`Accept: */*`인데 HTML 응답이 오면 어디까지를 단서로 믿어야 해?"
+contextual_chunk_prefix: |
+  이 문서는 학습자가 DevTools에서 request `Accept`와 response
+  `Content-Type`을 비교해 JSON 기대와 실제 HTML/JSON 도착을 빠르게
+  분리하도록 돕는 network drill이다. json 대신 html이 와요, accept는
+  json인데 content-type은 html이에요, login page인지 app 응답인지
+  모르겠어요 같은 자연어 표현이 헤더 두 칸 비교와 다음 분기 문서로
+  직접 이어지도록 설계했다.
+---
 # Browser DevTools `Accept` vs Response `Content-Type` 미니 카드
 
 > 한 줄 요약: DevTools에서 body preview를 열기 전에도 `Request Headers`의 `Accept`와 `Response Headers`의 `Content-Type` 두 칸만 보면 "나는 JSON을 기대했는지, 서버는 실제로 HTML/JSON 중 무엇을 보냈는지"를 빠르게 분리할 수 있다.

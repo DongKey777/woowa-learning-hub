@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Insert Hotspot Page Contention
+concept_id: database/insert-hotspot-page-contention
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- insert-hotspot-page-contention
+- last-leaf-page-latch
+- auto-increment-hotspot
+aliases:
+- insert hotspot
+- last leaf page
+- page contention
+- auto-increment hotspot
+- clustered index insert
+- page split
+- latch contention
+- hot page
+- insert page hotspot
+- 마지막 leaf page 경합
+symptoms:
+- 증가형 PK나 시간순 key에 insert가 몰려 마지막 leaf page latch contention이 병목처럼 보여
+- row lock이 아닌 page latch와 page split 비용 때문에 append-only 테이블 insert TPS가 평평해지고 있어
+- random PK로 hotspot을 줄이면 locality와 page split 비용이 어떻게 바뀌는지 판단해야 해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- database/btree-latch-contention-hot-pages
+- database/page-split-merge-fill-factor
+next_docs:
+- database/hot-update-secondary-index-churn
+- database/secondary-index-maintenance-statistics-skew
+- database/clustered-index-locality
+linked_paths:
+- contents/database/btree-latch-contention-hot-pages.md
+- contents/database/clustered-index-locality.md
+- contents/database/page-split-merge-fill-factor.md
+- contents/database/secondary-index-maintenance-cost-analyze-skew.md
+- contents/database/hot-update-secondary-index-churn.md
+- contents/database/hot-row-contention-counter-sharding.md
+confusable_with:
+- database/btree-latch-contention-hot-pages
+- database/page-split-merge-fill-factor
+- database/hot-update-secondary-index-churn
+forbidden_neighbors: []
+expected_queries:
+- auto-increment PK insert가 많으면 왜 마지막 leaf page가 hot page가 될 수 있어?
+- insert hotspot은 row lock이 아니라 page latch와 page split 병목이라는 뜻이야?
+- append-only 로그 테이블인데도 last leaf page contention 때문에 느릴 수 있어?
+- random PK는 insert hotspot을 줄이지만 locality와 page split 비용을 왜 늘릴 수 있어?
+- shard_id를 primary key 앞에 넣으면 insert 위치 분산과 읽기 복잡도가 어떻게 바뀌어?
+contextual_chunk_prefix: |
+  이 문서는 증가형 PK나 시간순 key insert가 마지막 B-Tree leaf page에 몰려 page latch, page split, hot page contention을 만드는 원리를 설명하는 advanced deep dive다.
+  insert hotspot, auto-increment hotspot, last leaf page, page contention 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Insert Hotspot Page Contention
 
 > 한 줄 요약: insert hotspot은 row 하나가 아니라 마지막 leaf page 하나에 쓰기가 몰리면서 page latch와 split 비용을 터뜨리는 현상이다.

@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Modular Monolith Boundary Enforcement
+concept_id: software-engineering/modular-monolith-boundary-enforcement
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 87
+mission_ids: []
+review_feedback_tags:
+- modular-monolith
+- boundary-enforcement
+- architecture-test
+- module-api
+aliases:
+- Modular Monolith Boundary Enforcement
+- modular monolith starter guide
+- public API internal package boundary
+- ArchUnit module boundary test
+- no internal package access
+- 모듈러 모놀리스 경계 강제
+symptoms:
+- 기능별 폴더는 나눴지만 다른 모듈이 internal domain, repository, service 구현을 직접 import해 모듈 경계가 리뷰 합의에만 의존해
+- shared/common 패키지에 비즈니스 규칙이 쌓이고 module API 대신 JPA Entity나 aggregate가 모듈 밖으로 노출돼
+intents:
+- design
+- troubleshooting
+- definition
+prerequisites:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/module-api-dto-patterns
+next_docs:
+- software-engineering/shared-module-guardrails
+- software-engineering/architectural-fitness-functions
+- software-engineering/policy-as-code
+linked_paths:
+- contents/software-engineering/module-api-dto-patterns.md
+- contents/software-engineering/shared-module-guardrails.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/brownfield-modularization-strategy.md
+- contents/software-engineering/ddd-bounded-context-failure-patterns.md
+confusable_with:
+- software-engineering/module-api-dto-patterns
+- software-engineering/shared-module-guardrails
+- software-engineering/clean-architecture-layered-modular-monolith
+forbidden_neighbors: []
+expected_queries:
+- modular monolith에서 public api 패키지와 internal 패키지 경계를 어떻게 강제해야 해?
+- 다른 모듈이 order.internal.domain.Order를 import하지 못하게 ArchUnit 같은 architecture test를 두는 방법을 알려줘
+- 모듈러 모놀리스는 폴더를 나누는 구조가 아니라 boundary enforcement 운영 방식이라는 뜻을 설명해줘
+- shared/common 모듈이 비즈니스 규칙 쓰레기통이 되는 신호와 guardrail은 뭐야?
+- 모듈 API에는 Entity 대신 command, query, result DTO를 공개해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 modular monolith를 public API, internal package, shared guardrail, architecture test로 경계를 계속 강제하는 beginner playbook이다.
+---
 # Modular Monolith Boundary Enforcement
 
 > 한 줄 요약: 모듈러 모놀리스는 폴더를 나누는 구조가 아니라, `public API + internal 패키지 + 가벼운 아키텍처 테스트`로 경계를 계속 지키게 만드는 운영 방식이다.

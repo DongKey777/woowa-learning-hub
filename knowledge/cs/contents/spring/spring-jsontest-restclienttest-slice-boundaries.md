@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring JsonTest and RestClientTest Slice Boundaries
+concept_id: spring/jsontest-restclienttest-slice-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 80
+review_feedback_tags:
+- jsontest-restclienttest-slice
+- boundaries
+- jsontest
+- restclienttest
+aliases:
+- @JsonTest
+- @RestClientTest
+- Jackson slice test
+- MockRestServiceServer
+- JsonContent
+- outbound HTTP slice test
+- serialization contract test
+- RestClient.Builder test
+intents:
+- troubleshooting
+- design
+symptoms:
+- JSON 직렬화 계약만 확인하려는 테스트에 service/security/full app 설정을 기대한다.
+- outbound HTTP client 계약을 검증하려다 전체 SpringBootTest로 너무 넓게 올린다.
+- slice test에 @Import나 TestConfiguration을 과하게 넣어 무엇을 검증하는지 흐려진다.
+linked_paths:
+- contents/spring/spring-test-slices-context-caching.md
+- contents/spring/spring-test-slice-import-testconfiguration-boundaries.md
+- contents/spring/spring-webclient-vs-resttemplate.md
+- contents/spring/spring-restclient-vs-webclient-lifecycle-boundaries.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+expected_queries:
+- @JsonTest와 @RestClientTest는 어떤 계약을 좁게 검증해?
+- JSON 직렬화 모양을 controller test와 별도로 고정하려면 무엇을 써?
+- RestClient outbound HTTP 요청/응답 계약은 @RestClientTest로 어떻게 검증해?
+- slice test 경계를 넘기 시작하면 왜 반쪽 통합 테스트가 돼?
+contextual_chunk_prefix: |
+  이 문서는 @JsonTest가 Jackson serialization/deserialization contract를,
+  @RestClientTest가 RestTemplate/RestClient outbound HTTP client contract를 좁게
+  검증한다는 점을 다룬다. MockRestServiceServer, JsonContent, ObjectMapper,
+  Test slice boundary leak과 full SpringBootTest 오용을 진단하는 playbook이다.
+---
 # Spring `@JsonTest` and `@RestClientTest` Slice Boundaries
 
 > 한 줄 요약: `@JsonTest`와 `@RestClientTest`는 각각 직렬화 계약과 outbound HTTP 계약을 빠르게 검증하는 좋은 slice지만, 애플리케이션 전체 설정을 기대하기 시작하면 계약 테스트가 아니라 모호한 반쪽 통합 테스트가 된다.

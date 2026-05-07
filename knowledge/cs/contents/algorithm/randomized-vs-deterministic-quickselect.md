@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Randomized vs Deterministic Quickselect
+concept_id: algorithm/randomized-vs-deterministic-quickselect
+canonical: true
+category: algorithm
+difficulty: advanced
+doc_role: bridge
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- quickselect-selection
+- randomized-vs-deterministic
+- kth-element-threshold
+aliases:
+- quickselect
+- randomized quickselect
+- deterministic quickselect
+- median of medians
+- kth element selection
+- expected linear time
+- worst case linear time
+- pivot selection
+- k번째 원소 찾기
+symptoms:
+- k번째 원소만 필요한데 전체 정렬을 수행해 불필요한 O(n log n) 비용을 쓴다
+- quicksort와 quickselect를 둘 다 pivot partition으로만 보고 양쪽 재귀와 한쪽 추적의 차이를 설명하지 못한다
+- randomized expected linear와 deterministic worst-case linear의 tradeoff를 구현 복잡도 기준으로 나누지 못한다
+intents:
+- comparison
+- definition
+- design
+prerequisites:
+- algorithm/sort
+- algorithm/binary-search-patterns
+next_docs:
+- algorithm/top-k-streaming-heavy-hitters
+- data-structure/heap-variants
+- algorithm/amortized-analysis-pitfalls
+linked_paths:
+- contents/algorithm/sort.md
+- contents/algorithm/binary-search-patterns.md
+- contents/algorithm/greedy.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+confusable_with:
+- algorithm/sort
+- data-structure/heap-variants
+- algorithm/top-k-streaming-heavy-hitters
+- algorithm/binary-search-patterns
+forbidden_neighbors: []
+expected_queries:
+- Quickselect는 전체 정렬 없이 k번째 원소를 어떻게 찾는 selection algorithm이야?
+- Quicksort는 양쪽을 정렬하고 Quickselect는 한쪽만 따라간다는 차이를 설명해줘
+- randomized quickselect의 expected linear time과 worst case 위험은 무엇이야?
+- median of medians deterministic selection은 왜 최악 보장을 노리지만 구현 상수가 커?
+- top-k 경계값이나 percentile threshold를 찾을 때 quickselect를 언제 쓰면 좋아?
+contextual_chunk_prefix: |
+  이 문서는 Randomized vs Deterministic Quickselect bridge로, kth element selection에서
+  전체 sort가 아니라 pivot partition 뒤 필요한 한쪽만 따라가며, randomized는
+  expected linear time, deterministic median-of-medians는 worst-case 보장을 노린다.
+---
 # Randomized vs Deterministic Quickselect
 
 > 한 줄 요약: Quickselect는 k번째 원소를 찾는 선택 알고리즘이고, randomized는 평균 성능이 좋고 deterministic은 최악 보장을 노린다.

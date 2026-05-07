@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: tcp_abort_on_overflow Backlog Buffering Fast Fail Policy
+concept_id: operating-system/tcp-abort-on-overflow-fast-fail-policy
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- tcp-abort-on
+- overflow-fast-fail
+- policy
+- overflow
+aliases:
+- tcp_abort_on_overflow
+- backlog overflow fast fail
+- immediate post-accept rejection
+- accept queue failure boundary
+- RST on overflow
+- session init saturation
+intents:
+- comparison
+- troubleshooting
+- design
+linked_paths:
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/reuseport-shard-watermark-tuning.md
+- contents/operating-system/listener-overload-thresholds-accept-pause-policy.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+confusable_with:
+- operating-system/tcp-backlog-somaxconn-listen-queue
+- operating-system/reuseport-shard-watermark-tuning
+- operating-system/listener-overload-thresholds-accept-pause-policy
+expected_queries:
+- tcp_abort_on_overflow를 켜서 overflow 시점에 RST로 빠르게 실패시켜도 돼?
+- listen backlog를 burst buffer로 둘지 fast fail boundary를 어디에 둘지 어떻게 결정해?
+- accept 직후 user space에서 빠르게 reject하는 정책과 kernel overflow RST는 어떻게 달라?
+- session-init가 계속 포화될 때 backlog buffering과 immediate rejection을 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 listen backlog를 짧고 회복 가능한 burst를 흡수하는 buffer로 보되, session-init가
+  계속 포화되면 kernel accept queue에서 기다리게 할지, tcp_abort_on_overflow로 overflow 시 RST할지,
+  accept 직후 user-space에서 fast reject할지 failure boundary를 결정하는 chooser다.
+---
 # `tcp_abort_on_overflow`, Backlog Buffering, and Immediate Post-Accept Rejection
 
 > 한 줄 요약: `listen` backlog는 짧고 회복 가능한 burst를 흡수하는 완충재다. 하지만 session-init가 계속 포화되면, 기다림을 kernel accept queue에 남길지, `tcp_abort_on_overflow`로 overflow 시점에 바로 RST할지, `accept()` 직후 user space에서 빠르게 거절할지 failure boundary를 다시 정해야 한다.

@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Tenant-aware Search Architecture 설계
+concept_id: system-design/tenant-aware-search-architecture-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- tenant-aware search
+- search isolation
+- permission filter
+- per-tenant index
+aliases:
+- tenant-aware search
+- search isolation
+- permission filter
+- per-tenant index
+- ACL filtering
+- query routing
+- multi-tenant search
+- row-level security
+- ranking override
+- data residency
+- Tenant-aware Search Architecture 설계
+- tenant aware search architecture design
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/search-system-design.md
+- contents/system-design/search-indexing-pipeline-design.md
+- contents/system-design/multi-tenant-saas-isolation-design.md
+- contents/system-design/distributed-cache-design.md
+- contents/system-design/consistent-hashing-hot-key-strategies.md
+- contents/system-design/api-gateway-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Tenant-aware Search Architecture 설계 설계 핵심을 설명해줘
+- tenant-aware search가 왜 필요한지 알려줘
+- Tenant-aware Search Architecture 설계 실무 트레이드오프는 뭐야?
+- tenant-aware search 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Tenant-aware Search Architecture 설계를 다루는 deep_dive 문서다. tenant-aware search architecture는 테넌트별 데이터 경계, 권한 필터, 색인 분리, 랭킹 정책을 검색 계층에 반영하는 설계다. 검색 질의가 tenant-aware search, search isolation, permission filter, per-tenant index처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Tenant-aware Search Architecture 설계
 
 > 한 줄 요약: tenant-aware search architecture는 테넌트별 데이터 경계, 권한 필터, 색인 분리, 랭킹 정책을 검색 계층에 반영하는 설계다.

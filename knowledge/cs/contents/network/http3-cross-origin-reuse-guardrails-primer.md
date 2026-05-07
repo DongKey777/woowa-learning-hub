@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: "HTTP/3 Cross-Origin Reuse Guardrails Primer"
+concept_id: network/http3-cross-origin-reuse-guardrails-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- http3-coalescing
+- cross-origin-reuse
+- 421-recovery
+aliases:
+- HTTP/3 cross-origin reuse
+- H3 no ORIGIN frame
+- H3 coalescing without ORIGIN
+- Alt-Svc endpoint authority
+- certificate SAN reuse
+- QUIC endpoint authority
+- 421 Misdirected Request H3
+symptoms:
+- certificate가 여러 hostname을 덮으면 H3 connection reuse가 자동 허가된다고 본다
+- Alt-Svc cache scope와 cross-origin reuse guardrail을 같은 개념으로 섞는다
+- HTTP/3에는 H2 ORIGIN frame과 같은 방식의 allow-list가 있다고 오해한다
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites:
+- network/http2-http3-connection-reuse-coalescing
+- network/http2-origin-frame-421-primer
+next_docs:
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+- network/http2-http3-421-retry-after-wrong-coalescing
+- network/http3-421-observability-primer
+- network/http-421-non-idempotent-retry-guardrail-primer
+linked_paths:
+- contents/network/http2-http3-connection-reuse-coalescing.md
+- contents/network/wildcard-cert-routing-boundary-primer.md
+- contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md
+- contents/network/h3-stale-alt-svc-421-recovery-primer.md
+- contents/network/alt-svc-https-rr-h3-discovery-coalescing-bridge.md
+- contents/network/http2-origin-frame-421-primer.md
+- contents/network/http-421-troubleshooting-trace-examples.md
+- contents/network/http3-421-observability-primer.md
+- contents/network/http2-http3-421-retry-after-wrong-coalescing.md
+- contents/network/browser-http-version-selection-alpn-alt-svc-fallback.md
+- contents/network/sni-routing-mismatch-hostname-failure.md
+confusable_with:
+- network/http2-origin-frame-421-primer
+- network/alt-svc-ma-cache-scope-421-reuse-primer
+- network/wildcard-cert-routing-boundary-primer
+- network/http2-http3-421-retry-after-wrong-coalescing
+forbidden_neighbors: []
+expected_queries:
+- "HTTP/3에는 H2 ORIGIN frame 없이 cross-origin reuse를 어떻게 판단해?"
+- "certificate SAN이 맞으면 H3 connection coalescing이 항상 가능한가?"
+- "Alt-Svc endpoint authority와 cache scope는 어떻게 달라?"
+- "HTTP/3 wrong connection에서 421 recovery가 필요한 이유는?"
+- "H3 cross-origin reuse guardrail을 certificate scope endpoint authority 421로 설명해줘"
+contextual_chunk_prefix: |
+  이 문서는 HTTP/3 cross-origin connection reuse에서 H2 ORIGIN frame 없이
+  certificate scope, Alt-Svc endpoint authority, 421 Misdirected Request
+  recovery로 guardrail을 세우는 beginner primer다.
+---
 # HTTP/3 Cross-Origin Reuse Guardrails Primer
 
 

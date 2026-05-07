@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Transaction Retry and Serialization Failure Patterns
+concept_id: database/transaction-retry-serialization-failure-patterns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- transaction-retry
+- serialization-failure
+- deadlock
+- idempotency
+- spring-retry
+aliases:
+- transaction retry
+- serialization failure
+- deadlock retry
+- retry whole transaction
+- sqlstate 40001
+- sqlstate 40P01
+- SSI retry
+- retry budget
+- idempotent retry
+- spring retry transaction boundary
+symptoms:
+- serialization failure나 deadlock victim을 SQL 한 줄이 아니라 전체 transaction attempt로 재시도해야 해
+- retry를 넣었지만 외부 side effect나 중복 write 때문에 더 큰 사고가 날 수 있어
+- backoff, jitter, max attempts, idempotency key, retry boundary를 함께 설계해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/transaction-isolation-locking
+- database/idempotency-key-and-deduplication
+next_docs:
+- database/postgresql-serializable-retry-playbook
+- database/idempotent-transaction-retry-envelopes
+- database/serializable-retry-telemetry-set-invariants
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/deadlock-case-study.md
+- contents/database/version-column-retry-walkthrough.md
+- contents/database/spring-retry-proxy-boundary-pitfalls.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/serializable-retry-telemetry-set-invariants.md
+- contents/database/spring-jpa-locking-example-guide.md
+confusable_with:
+- database/postgresql-serializable-retry-playbook
+- database/idempotent-transaction-retry-envelopes
+- database/three-bucket-decision-tree
+forbidden_neighbors: []
+expected_queries:
+- serialization failure나 deadlock은 왜 SQL 한 줄 재실행이 아니라 전체 transaction retry가 필요해?
+- retry는 실패를 지우는 장치가 아니라 같은 실패를 안전하게 다시 만나는 설계라는 뜻이 뭐야?
+- duplicate key나 business validation failure는 retry하면 안 되고 winner read나 domain reject로 가야 하는 이유는?
+- backoff와 jitter 없이 즉시 재시도하면 경합과 connection pool 사용량이 왜 더 나빠져?
+- Spring @Retryable과 @Transactional 경계가 잘못되면 retry가 같은 transaction 안에서 도는 문제를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 transaction retry, serialization failure, deadlock retry를 whole transaction attempt, retry budget, backoff/jitter, idempotency로 다루는 advanced playbook이다.
+  SQLSTATE 40001, 40P01, retry whole transaction, spring retry boundary 질문이 본 문서에 매핑된다.
+---
 # Transaction Retry와 Serialization Failure 패턴
 
 > 한 줄 요약: 재시도는 실패를 지우는 장치가 아니라, 같은 실패를 안전하게 다시 만나는 방법을 설계하는 일이다.

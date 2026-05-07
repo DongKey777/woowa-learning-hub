@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: NUMA Page Replacement Thrashing
+concept_id: operating-system/memory-management-numa-page-replacement-thrashing
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- memory-management-numa
+- page-replacement-thrashing
+- numa-page-replacement
+- thrashing
+aliases:
+- NUMA page replacement thrashing
+- remote memory thrashing
+- page replacement locality
+- memory management NUMA
+- reclaim page fault locality
+intents:
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/virtual-memory-basics.md
+- contents/operating-system/memory-management-basics.md
+- contents/operating-system/page-replacement-clock-vs-lru.md
+- contents/operating-system/numa-first-touch-remote-memory-locality-debugging.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/language/java/java-execution-object-memory-mental-model-primer.md
+expected_queries:
+- NUMA, page replacement, thrashing은 runtime latency에서 어떻게 연결돼?
+- remote memory access와 page replacement가 같이 생기면 왜 tail latency가 커져?
+- page fault와 reclaim, NUMA locality를 한 mental model로 설명해줘
+- Java heap memory와 OS page replacement NUMA를 같이 봐야 하는 상황은?
+contextual_chunk_prefix: |
+  이 문서는 NUMA locality, page replacement, thrashing을 연결해 memory pressure가 단순 free memory
+  부족이 아니라 remote access, page fault, reclaim, working set churn으로 latency를 만드는 과정을
+  설명한다.
+---
 # NUMA, Page Replacement, Thrashing
 
 **난이도: 🔴 Advanced**

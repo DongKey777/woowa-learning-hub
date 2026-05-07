@@ -1,3 +1,57 @@
+---
+schema_version: 3
+title: Spring Authority Mapping Pitfalls
+concept_id: security/spring-authority-mapping-pitfalls
+canonical: false
+category: security
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- spring authority mapping pitfalls
+- spring security authority mapping
+- spring security confusing 403
+- spring security valid jwt but 403
+aliases:
+- spring authority mapping pitfalls
+- spring security authority mapping
+- spring security confusing 403
+- spring security valid jwt but 403
+- jwt authenticated but forbidden
+- jwt claim to authority mapping
+- jwtauthenticationconverter 403
+- jwtgrantedauthoritiesconverter 403
+- authorities claim mapping mismatch
+- scope claim mapping mismatch
+- roles claim mapping mismatch
+- groups claim mapping mismatch
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/security/jwt-claims-roles-authorities-permissions-mapping.md
+- contents/security/authentication-vs-authorization.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/oauth-scope-vs-api-audience-vs-application-permission.md
+- contents/security/role-change-session-freshness-basics.md
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-security-filter-chain.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Spring Authority Mapping Pitfalls 핵심 개념을 설명해줘
+- spring authority mapping pitfalls가 왜 필요한지 알려줘
+- Spring Authority Mapping Pitfalls 실무 설계 포인트는 뭐야?
+- spring authority mapping pitfalls에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Spring Authority Mapping Pitfalls를 다루는 deep_dive 문서다. Spring Security에서 JWT 검증은 성공했는데 `403`이 뜬다면, 대개 `claim은 있는데 authority가 비어 있음` 또는 `ROLE_/SCOPE_ mismatch`처럼 `claim -> GrantedAuthority` 매핑과 `hasRole` / `hasAuthority` 문자열 계약이 어긋난 것이다. 검색 질의가 spring authority mapping pitfalls, spring security authority mapping, spring security confusing 403, spring security valid jwt but 403처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Spring Authority Mapping Pitfalls
 
 > 한 줄 요약: Spring Security에서 JWT 검증은 성공했는데 `403`이 뜬다면, 대개 `claim은 있는데 authority가 비어 있음` 또는 `ROLE_/SCOPE_ mismatch`처럼 `claim -> GrantedAuthority` 매핑과 `hasRole` / `hasAuthority` 문자열 계약이 어긋난 것이다.

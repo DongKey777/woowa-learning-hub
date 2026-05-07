@@ -1,3 +1,55 @@
+---
+schema_version: 3
+title: Background Job Auth Context / Revalidation
+concept_id: security/background-job-auth-context-revalidation
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- background job authorization
+- async auth context
+- permission revalidation
+- snapshot authorization
+aliases:
+- background job authorization
+- async auth context
+- permission revalidation
+- snapshot authorization
+- tenant context in jobs
+- stale claims
+- delayed job security
+- queued authorization
+- delegated authority
+- export job auth
+- Background Job Auth Context / Revalidation
+- background job auth context revalidation
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/tenant-isolation-authz-testing.md
+- contents/security/token-exchange-impersonation-risks.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/authorization-caching-staleness.md
+- contents/spring/spring-securitycontext-propagation-async-reactive-boundaries.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Background Job Auth Context / Revalidation 핵심 개념을 설명해줘
+- background job authorization가 왜 필요한지 알려줘
+- Background Job Auth Context / Revalidation 실무 설계 포인트는 뭐야?
+- background job authorization에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Background Job Auth Context / Revalidation를 다루는 deep_dive 문서다. 비동기 job은 요청 시점의 인증 결과를 몇 초 뒤, 몇 분 뒤, 심지어 몇 시간 뒤에 재사용하는 경계이므로, 사용자 권한을 그대로 들고 가기보다 snapshot과 re-check 정책을 명시적으로 선택해야 한다. 검색 질의가 background job authorization, async auth context, permission revalidation, snapshot authorization처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Background Job Auth Context / Revalidation
 
 > 한 줄 요약: 비동기 job은 요청 시점의 인증 결과를 몇 초 뒤, 몇 분 뒤, 심지어 몇 시간 뒤에 재사용하는 경계이므로, 사용자 권한을 그대로 들고 가기보다 snapshot과 re-check 정책을 명시적으로 선택해야 한다.

@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: Anti-Automation / Device Fingerprint Caveats
+concept_id: security/anti-automation-device-fingerprint-caveats
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- device fingerprint
+- anti-automation
+- bot detection
+- browser fingerprint
+aliases:
+- device fingerprint
+- anti-automation
+- bot detection
+- browser fingerprint
+- privacy
+- spoofing
+- entropy
+- velocity check
+- risk scoring
+- login abuse
+- Anti-Automation / Device Fingerprint Caveats
+- anti automation device fingerprint caveats
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/rate-limiting-vs-brute-force-defense.md
+- contents/security/password-reset-threat-modeling.md
+- contents/security/mfa-step-up-auth-design.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/cors-credential-pitfalls-allowlist.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Anti-Automation / Device Fingerprint Caveats 핵심 개념을 설명해줘
+- device fingerprint가 왜 필요한지 알려줘
+- Anti-Automation / Device Fingerprint Caveats 실무 설계 포인트는 뭐야?
+- device fingerprint에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 security 카테고리에서 Anti-Automation / Device Fingerprint Caveats를 다루는 deep_dive 문서다. device fingerprint는 봇 방어에 도움은 되지만 신뢰할 수 있는 신원 증명이 아니며, 프라이버시와 우회 가능성을 함께 봐야 한다. 검색 질의가 device fingerprint, anti-automation, bot detection, browser fingerprint처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.
+---
 # Anti-Automation / Device Fingerprint Caveats
 
 > 한 줄 요약: device fingerprint는 봇 방어에 도움은 되지만 신뢰할 수 있는 신원 증명이 아니며, 프라이버시와 우회 가능성을 함께 봐야 한다.

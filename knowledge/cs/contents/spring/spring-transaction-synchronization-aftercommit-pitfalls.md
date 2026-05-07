@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring TransactionSynchronization AfterCommit Pitfalls
+concept_id: spring/transaction-synchronization-aftercommit-pitfalls
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- transaction-synchronization-aftercommit
+- pitfalls
+- transactionsynchronization-aftercommit
+- aftercommit-pitfall
+aliases:
+- TransactionSynchronization afterCommit
+- afterCommit pitfall
+- transaction synchronization callbacks
+- after commit outside transaction
+- resource binding suspend resume
+- outbox after commit
+intents:
+- deep_dive
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-eventlistener-transaction-phase-outbox.md
+- contents/spring/spring-transactionsynchronization-ordering-suspend-resume-resource-binding.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/spring-delivery-reliability-retryable-resilience4j-outbox-relay.md
+- contents/spring/spring-service-layer-external-io-after-commit-outbox-primer.md
+symptoms:
+- afterCommit 안에서 DB 작업을 같은 transaction의 연장처럼 생각했다가 일관성이 깨진다.
+- 커밋 성공 후 외부 전송 실패를 rollback으로 되돌릴 수 있다고 착각한다.
+- 여러 synchronization callback의 ordering과 resource binding 해제 시점이 헷갈린다.
+expected_queries:
+- TransactionSynchronization afterCommit은 같은 transaction 안에서 실행돼?
+- afterCommit에서 외부 API 호출이나 메시지 발행을 하면 어떤 pitfall이 있어?
+- afterCommit과 outbox는 전달 보장 관점에서 어떻게 달라?
+- transaction synchronization callback ordering과 resource binding을 어떻게 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 TransactionSynchronization afterCommit이 commit 성공 이후 hook이지만 이미 원래
+  transaction 밖의 후속 작업이라는 점을 설명한다. rollback 불가능한 side effect, outbox,
+  ordering, suspend/resume, resource binding pitfall을 다룬다.
+---
 # Spring Transaction Synchronization Callbacks and `afterCommit` Pitfalls
 
 > 한 줄 요약: `TransactionSynchronization`는 커밋 전후 훅을 제공하지만, `afterCommit`은 이미 성공한 트랜잭션 밖에서 실행되므로 같은 트랜잭션처럼 다루면 사고가 난다.

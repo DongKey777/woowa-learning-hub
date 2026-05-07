@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Strict Pagination Fallback Contracts
+concept_id: design-pattern/strict-pagination-fallback-contracts
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- strict-pagination-fallback
+- cursor-world-boundary
+- page-depth-fallback
+aliases:
+- strict pagination fallback contract
+- strict list fallback
+- list endpoint fallback boundaries
+- first page only fallback
+- later page rejection contract
+- next page continuation contract
+- legacy cursor rejection contract
+- cursor invalidation fallback
+- page depth fallback scope
+- actor owned strict list
+symptoms:
+- strict list fallback을 endpoint 전체 우회로 이해해 actor, query fingerprint, page depth, TTL scope 없이 old path를 넓게 연다
+- page1 fallback은 성공했지만 next cursor가 old/new cursor world를 섞어 page2 duplicate/gap을 만든다
+- first-page visibility, next-page continuity, legacy cursor rejection을 하나의 fallback 성공으로 뭉개 cutover parity가 흐려진다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/cursor-pagination-sort-stability-pattern
+- design-pattern/cursor-pagination-parity-read-model-migration
+next_docs:
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/legacy-cursor-reissue-api-surface
+- design-pattern/fallback-capacity-and-headroom-contracts
+linked_paths:
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/fallback-capacity-and-headroom-contracts.md
+- contents/design-pattern/pinned-legacy-chain-risk-budget.md
+- contents/design-pattern/cursor-pagination-sort-stability-pattern.md
+- contents/design-pattern/cursor-pagination-parity-read-model-migration.md
+- contents/design-pattern/cursor-compatibility-sampling-cutover.md
+- contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/system-design/dual-read-comparison-verification-platform-design.md
+confusable_with:
+- design-pattern/strict-read-fallback-contracts
+- design-pattern/pinned-legacy-chain-risk-budget
+- design-pattern/cursor-pagination-parity-read-model-migration
+- design-pattern/legacy-cursor-reissue-api-surface
+forbidden_neighbors: []
+expected_queries:
+- Strict pagination fallback은 endpoint 전체 fallback이 아니라 actor, query fingerprint, page depth, cursor policy를 함께 고정해야 하는 이유가 뭐야?
+- page1-only fallback은 visibility 계약이고 page2 continuation은 별도 continuity 계약이라는 차이가 뭐야?
+- fallback source가 page1을 serve했을 때 next cursor를 ACCEPT, REISSUE, REJECT 중 무엇으로 처리할지 문서화해야 하는 이유가 뭐야?
+- mixed cursor world를 REJECT하지 않으면 old/new boundary row가 섞여 duplicate/gap이 생기는 이유가 뭐야?
+- pinned chain ACCEPT는 왜 fallback capacity, TTL, rollback zero ttl을 가진 예외 계약이어야 해?
+contextual_chunk_prefix: |
+  이 문서는 Strict Pagination Fallback Contracts playbook으로, list/cursor endpoint의
+  strict fallback을 actor scope, normalized query fingerprint, page depth, TTL, cursor source,
+  ACCEPT/REISSUE/REJECT verdict, mixed cursor rejection, page1-only visibility와 page2 continuity
+  경계로 나누어 설계하는 방법을 설명한다.
+---
 # Strict Pagination Fallback Contracts
 
 > 한 줄 요약: cursor/list endpoint의 strict fallback은 endpoint 전체를 old path로 되돌리는 우회가 아니라 actor, query fingerprint, page depth, cursor policy를 함께 고정한 계약이어야 하며, 특히 `first-page fallback`, `next-page continuation`, `legacy-cursor rejection`을 서로 다른 경계로 분리해 적어야 cutover 중에도 pagination parity가 깨지지 않는다.

@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring SecurityContext Propagation Across Async and Reactive Boundaries
+concept_id: spring/securitycontext-propagation-async-reactive-boundaries
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 87
+review_feedback_tags:
+- securitycontext-propagation-async
+- reactive-boundaries
+- securitycontext-propagation
+- async-securitycontext-lost
+aliases:
+- SecurityContext propagation
+- async SecurityContext lost
+- reactive SecurityContext boundary
+- DelegatingSecurityContextAsyncTaskExecutor
+- Reactor context authentication
+- ThreadLocal security context
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-security-architecture.md
+- contents/spring/spring-async-context-propagation-restclient-http-interface-clients.md
+- contents/spring/spring-requestcontextholder-threadlocal-leakage-async-pools.md
+- contents/spring/spring-reactive-blocking-bridge-boundedelastic-block-traps.md
+- contents/spring/spring-webflux-vs-mvc.md
+- contents/spring/spring-security-method-security-deep-dive.md
+- contents/spring/spring-scheduler-async-boundaries.md
+symptoms:
+- @Async 작업 안에서 Authentication이 null로 보인다.
+- Reactor pipeline에서 SecurityContext가 ThreadLocal처럼 자동 보존될 거라 기대했다가 깨진다.
+- thread pool 재사용 뒤 이전 사용자의 security context가 남을까 봐 cleanup 경계가 불명확하다.
+expected_queries:
+- Spring SecurityContext는 @Async나 reactive boundary에서 자동 전파돼?
+- DelegatingSecurityContextAsyncTaskExecutor는 어떤 문제를 해결해?
+- Reactor context와 ThreadLocal SecurityContext는 어떻게 달라?
+- SecurityContext propagation을 할 때 누수와 cleanup은 어디서 보장해야 해?
+contextual_chunk_prefix: |
+  이 문서는 SecurityContext가 Servlet request thread에서는 ThreadLocal 기반으로 보이지만
+  @Async, custom executor, Reactor boundary를 넘으면 자동 보존되지 않는다는 점을 설명한다.
+  propagation wrapper, Reactor context, cleanup, method security 영향까지 연결한다.
+---
 # Spring SecurityContext Propagation Across Async and Reactive Boundaries
 
 > 한 줄 요약: `SecurityContext`는 스레드와 리액티브 컨텍스트 사이에서 자동으로 보존되지 않으므로, async와 reactive boundary를 넘을 때는 별도 전파 전략이 필요하다.

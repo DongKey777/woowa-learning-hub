@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > blackjack에서 `hit` 한 번은 카드 한 장 추가라는 사건 하나여야 한다. 웹 요청이 재전송될 수 있다면 "이미 처리했는가?"를 읽고 판단하기보다, 같은 action identity를 DB가 한 번만 통과시키고 나머지는 기존 결과를 다시 읽게 만드는 편이 덜 흔들린다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "hit 버튼을 두 번 누르면 카드가 두 장 들어가요" | 같은 action POST가 더블클릭이나 retry로 두 번 처리되는 blackjack API | action identity를 DB가 한 번만 통과시키게 한다 |
+| "이미 진행 중인지 service if문으로 확인하면 안 되나요?" | 두 요청이 같은 현재 상태를 보고 모두 hit 가능하다고 판단하는 코드 | 도메인 상태 검사와 HTTP 재전송 dedup을 다른 축으로 본다 |
+| "stand 두 번이면 그냥 두 번째는 무시하면 되나요?" | 종료 action replay를 결과 재사용 없이 예외나 중복 처리로 끝내는 구조 | duplicate key 뒤 기존 action 결과를 fresh read/replay할 수 있게 한다 |
+
 ## 미션 시나리오
 
 콘솔 blackjack에서는 사용자가 Enter를 한 번 치면 `hit`도 한 번만 실행된다.

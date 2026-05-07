@@ -70,6 +70,14 @@ contextual_chunk_prefix: |
 
 > shopping-cart에서 결제수단마다 다른 PG client를 타야 한다면, `@Qualifier`는 "이 서비스에 항상 같은 구현체를 꽂는다"는 고정 wiring용이고, `paymentMethod` 같은 요청값으로 매번 달라지는 선택은 router 계층에서 푸는 편이 맞다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "결제수단마다 다른 `PaymentClient`를 어디서 골라야 할지 모르겠어요" | 카드/간편결제/PG별 checkout 분기 | 고정 DI 후보 선택과 요청별 runtime routing을 분리한다 |
+| "`@Qualifier`로 나누려는데 요청마다 값이 달라져서 꼬여요" | `paymentMethod`가 request마다 달라지는 결제 승인 | `@Qualifier`는 앱 시작 시점 wiring이고, runtime 선택은 router 책임임을 본다 |
+| "PG 코드 문자열을 bean 이름에 바로 붙여도 되나요?" | 외부 API 값과 Spring bean 이름이 결합된 구조 | 외부 문자열을 domain key로 정규화한 뒤 registry/router에 태운다 |
+
 ## 미션 시나리오
 
 shopping-cart checkout을 붙이다 보면 `CardPaymentClient`, `KakaoPayClient`, `TossPaymentClient` 같은 구현체가 생긴다. 초반 구현에서는 서비스 안에서 `if (paymentMethod == KAKAO_PAY)`처럼 분기하거나, 반대로 생성자에 `@Qualifier("kakaoPaymentClient")`를 꽂아 두고 "나중에 바꾸면 되겠지"라고 시작하기 쉽다. 하지만 리뷰에서는 "요청마다 달라지는 선택을 고정 주입으로 풀고 있다", "외부 API 값과 bean 이름이 직접 묶였다"는 코멘트가 자주 나온다.

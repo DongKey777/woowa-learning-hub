@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: descendingSet / descendingMap View Mental Model
+concept_id: language/descending-view-mental-model
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- navigablemap
+- ordered-map
+- descending-view
+aliases:
+- descendingSet descendingMap mental model
+- descendingMap view not copy
+- Java descending view basics
+- descendingMap floor ceiling confusion
+- reverse order view lookup
+- 같은 데이터 반대 순서 view
+- TreeMap 내림차순 view
+symptoms:
+- descendingSet이나 descendingMap을 원본 데이터를 복사한 새 컬렉션으로 오해해 view mutation과 backing data 공유를 놓쳐
+- floor ceiling lower higher를 원본 natural order 기준으로만 해석해 descending view에서 결과가 뒤집혀 보인다
+- descending view와 Comparator.reversed로 새 정렬 기준을 만드는 것을 같은 문제로 섞어 읽어
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/navigablemap-navigableset-mental-model
+next_docs:
+- language/pollfirst-polllast-view-semantics-primer
+- language/descendingkeyset-vs-descendingmap-bridge
+- language/submap-boundaries-primer
+linked_paths:
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/language/java/navigablemap-navigableset-mental-model.md
+- contents/language/java/pollfirst-polllast-view-semantics-primer.md
+- contents/language/java/descendingkeyset-vs-descendingmap-bridge.md
+- contents/language/java/submap-boundaries-primer.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/treeset-treemap-natural-ordering-compareto-bridge.md
+confusable_with:
+- language/descendingkeyset-vs-descendingmap-bridge
+- language/comparator-reversed-scope-primer
+- language/navigablemap-navigableset-mental-model
+forbidden_neighbors: []
+expected_queries:
+- descendingSet과 descendingMap은 복사본이 아니라 원본을 반대 순서로 보는 view라는 뜻이야?
+- descendingMap에서 floor(25)가 원본보다 큰 값처럼 보이는 이유를 설명해줘
+- TreeSet descending view에서 first last lower higher ceiling을 어떻게 해석해야 해?
+- descending view와 Comparator.reversed로 새 정렬을 만드는 차이를 알려줘
+- 원본 NavigableMap과 descendingMap이 같은 backing data를 공유하는 예제를 보여줘
+contextual_chunk_prefix: |
+  이 문서는 descendingSet/descendingMap을 same backing data를 반대 순서로 읽는 view로 설명하고 floor/ceiling/lower/higher navigation semantics를 view order 기준으로 재해석하는 beginner primer다.
+  descendingMap view, descendingSet, floor ceiling confusion, reverse order view, NavigableMap descending 질문이 본 문서에 매핑된다.
+---
 # `descendingSet()` / `descendingMap()` View Mental Model
 
 > 한 줄 요약: `descendingSet()`과 `descendingMap()`은 데이터를 거꾸로 복사한 새 컬렉션이 아니라, **같은 데이터를 반대 순서로 읽는 view**이고, 그래서 `floor`/`ceiling` 같은 navigation 결과도 그 반대 순서를 기준으로 다시 해석된다.

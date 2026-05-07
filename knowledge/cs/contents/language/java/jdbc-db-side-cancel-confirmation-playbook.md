@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: DB-Side Cancel Confirmation Playbook
+concept_id: language/jdbc-db-side-cancel-confirmation-playbook
+canonical: true
+category: language
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- jdbc-cancel
+- db-observability
+- lock-cleanup
+aliases:
+- DB-Side Cancel Confirmation Playbook
+- JDBC cancel confirmation
+- PostgreSQL pg_stat_activity cancel verification
+- MySQL KILL QUERY performance_schema
+- SQL Server attention event query timeout
+- DB 서버에서 쿼리 취소 확인
+symptoms:
+- SQLTimeoutException이나 Statement.cancel 로그만 보고 DB 서버에서 query가 실제로 멈췄다고 결론 내려
+- JDBC session id를 남기지 않아 PostgreSQL pid, MySQL connection_id, SQL Server SPID와 app trace를 매칭하지 못해
+- statement는 멈췄지만 transaction rollback, idle in transaction aborted, lock cleanup이 남은 상태를 놓쳐 orphan 영향이 없다고 오판해
+intents:
+- troubleshooting
+- deep_dive
+- design
+prerequisites:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/jdbc-observability-under-virtual-threads
+- database/lock-wait-deadlock-latch-triage-playbook
+next_docs:
+- language/jdbc-network-timeout-driver-socket-timeout-pool-eviction
+- language/jdbc-cursor-cleanup-download-abort
+- database/transaction-boundary-isolation-locking-framework
+linked_paths:
+- contents/language/java/virtual-thread-jdbc-cancel-semantics.md
+- contents/language/java/jdbc-observability-under-virtual-threads.md
+- contents/language/java/spring-jdbc-timeout-propagation-boundaries.md
+- contents/language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md
+- contents/language/java/jdbc-cursor-cleanup-download-abort.md
+- contents/language/java/servlet-async-timeout-downstream-deadline-propagation.md
+- contents/language/java/servlet-container-timeout-cancellation-boundaries-spring-mvc-virtual-threads.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md
+confusable_with:
+- language/virtual-thread-jdbc-cancel-semantics
+- language/jdbc-observability-under-virtual-threads
+- database/lock-wait-deadlock-latch-triage-playbook
+forbidden_neighbors: []
+expected_queries:
+- JDBC Statement.cancel이 DB 서버에서 실제로 적용됐는지 PostgreSQL MySQL SQL Server에서 어떻게 확인해?
+- SQLTimeoutException 로그만으로 query cancel 성공이라고 말하면 왜 위험해?
+- PostgreSQL pg_stat_activity에서 cancel 후 idle in transaction aborted를 어떻게 해석해야 해?
+- MySQL connection_id와 performance_schema로 KILL QUERY 효과를 확인하는 방법을 알려줘
+- statement는 멈췄지만 transaction과 lock cleanup이 남았는지 확인하는 체크리스트를 줘
+contextual_chunk_prefix: |
+  이 문서는 JDBC cancel 의도와 DB-side current statement stop, transaction/lock cleanup evidence를 분리해 확인하는 advanced playbook이다.
+  DB cancel confirmation, pg_stat_activity, MySQL KILL QUERY, SQL Server attention, SQLTimeoutException 질문이 본 문서에 매핑된다.
+---
 # DB-Side Cancel Confirmation Playbook
 
 > 한 줄 요약: `SQLTimeoutException`, `Statement.cancel()`, request timeout 로그는 cancel 의도만 보여 준다. 실제 전파를 확인하려면 같은 JDBC session을 PostgreSQL, MySQL, SQL Server의 서버-side 관측 화면에 매칭해서 "현재 statement가 멈췄는지"와 "transaction/lock cleanup이 남았는지"를 따로 봐야 한다.

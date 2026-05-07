@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Visitor Pattern Trade-offs
+concept_id: design-pattern/visitor-pattern-tradeoffs
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- visitor-pattern
+- operation-vs-structure
+- double-dispatch
+aliases:
+- visitor pattern trade-offs
+- double dispatch
+- object structure traversal
+- open closed on operations
+- entity model evolution
+- visitor vs strategy
+- visitor vs specification
+- ast visitor
+- rule tree visitor
+- visitor pattern caveat
+symptoms:
+- backend entity 타입이 자주 바뀌는데 Visitor를 도입해 새 타입 추가 때 모든 visitor를 수정해야 한다
+- AST나 rule tree처럼 구조는 안정적이고 검사/리포트 연산이 자주 추가되는 경우와 일반 도메인 entity를 구분하지 못한다
+- 비즈니스 규칙을 Visitor로 외부화해 entity invariant, specification, policy object 경계가 흐려진다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/composition-over-inheritance-practical
+- design-pattern/strategy-pattern
+- design-pattern/specification-pattern
+next_docs:
+- design-pattern/policy-object-pattern
+- design-pattern/dsl-object-model-pattern
+- design-pattern/composite-query-rule-trees
+linked_paths:
+- contents/design-pattern/composition-over-inheritance-practical.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/pattern-selection.md
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/policy-object-pattern.md
+- contents/design-pattern/composite-query-rule-trees.md
+confusable_with:
+- design-pattern/strategy-pattern
+- design-pattern/specification-pattern
+- design-pattern/policy-object-pattern
+- design-pattern/composite-query-rule-trees
+forbidden_neighbors: []
+expected_queries:
+- Visitor Pattern은 객체 구조는 고정하고 연산을 자주 추가할 때 유리한 패턴이야?
+- Visitor는 연산 추가에는 강하지만 새 타입 추가에는 모든 visitor를 수정해야 해서 backend entity에 과할 수 있는 이유가 뭐야?
+- AST나 rule tree 검사에는 Visitor가 맞고 주문/회원 같은 진화하는 entity에는 Specification이나 Policy Object가 더 자연스러운 기준은 뭐야?
+- Visitor와 Strategy는 구조 순회 연산 분리와 행동 교체 관점에서 어떻게 달라?
+- double dispatch가 필요한 상황과 단순 if switch나 policy object로 충분한 상황을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Visitor Pattern Trade-offs chooser로, 객체 구조가 안정적이고 validation/reporting 같은
+  연산이 자주 추가되는 AST/rule tree에서는 Visitor가 유리하지만, 타입이 자주 바뀌는 backend
+  entity에서는 Specification, Policy Object, State가 더 자연스러울 수 있음을 설명한다.
+---
 # Visitor Pattern Trade-offs: 구조는 남기고 연산을 바꾸기
 
 > 한 줄 요약: Visitor 패턴은 객체 구조는 고정하고 연산을 외부로 분리하지만, 구조가 자주 바뀌는 도메인에서는 오히려 비용이 커진다.
@@ -177,4 +245,3 @@ public class OrderPolicy {
 ## 한 줄 정리
 
 Visitor 패턴은 구조는 고정하고 연산을 늘릴 때 유용하지만, 타입이 자주 바뀌는 backend 모델에서는 유지비가 빠르게 커진다.
-

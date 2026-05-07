@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: HTTP Keep-Alive와 커넥션 재사용 기초
+concept_id: network/keepalive-connection-reuse-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- http-keepalive-basics
+- connection-reuse-handshake-cost
+- stale-idle-connection-handoff
+aliases:
+- keepalive connection reuse basics
+- HTTP keep-alive basics
+- connection reuse
+- persistent connection
+- keep-alive 뭐예요
+- tcp 연결 재사용
+- HTTP 연결 유지
+- keepalive와 로그인 유지 차이
+- keepalive랑 tcp keepalive 헷갈려요
+symptoms:
+- HTTP Keep-Alive를 로그인 세션 유지나 TCP keepalive probe와 같은 개념으로 섞어 이해한다
+- 연결 재사용이 동시에 여러 요청을 처리한다는 뜻으로 오해해 HTTP/2 multiplexing과 구분하지 못한다
+- idle 뒤 첫 요청 실패를 Keep-Alive가 꺼진 문제로만 보고 stale idle connection 재사용을 확인하지 않는다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/tcp-three-way-handshake-basics
+- network/http-https-basics
+next_docs:
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/keepalive-reuse-stale-idle-connection-primer
+- network/connection-keepalive-loadbalancing-circuit-breaker
+- network/devtools-waterfall-primer
+linked_paths:
+- contents/network/keepalive-reuse-stale-idle-connection-primer.md
+- contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md
+- contents/network/tcp-three-way-handshake-basics.md
+- contents/network/http-https-basics.md
+- contents/network/browser-devtools-waterfall-primer.md
+- contents/database/connection-pool-basics.md
+confusable_with:
+- network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer
+- network/keepalive-reuse-stale-idle-connection-primer
+- network/tcp-three-way-handshake-basics
+- database/connection-pool
+forbidden_neighbors: []
+expected_queries:
+- HTTP Keep-Alive는 TCP 연결을 어떻게 재사용해서 handshake 비용을 줄여?
+- keepalive는 로그인 유지가 아니라 connection reuse라는 뜻이야?
+- HTTP Keep-Alive와 TCP keepalive는 왜 다른 개념이야?
+- 한참 쉬었다가 첫 요청만 connection reset이 나면 stale idle connection을 의심해야 해?
+- 브라우저 DevTools에서 두 번째 요청의 dns connect ssl 시간이 사라지는 이유가 연결 재사용 때문일 수 있어?
+contextual_chunk_prefix: |
+  이 문서는 HTTP Keep-Alive beginner primer로, 요청마다 TCP/TLS handshake를
+  새로 만들지 않고 같은 connection을 재사용하는 persistent connection
+  개념을 설명한다. TCP keepalive, idle timeout, heartbeat, stale idle
+  connection과 혼동되는 질문을 다음 문서로 라우팅한다.
+---
 # HTTP Keep-Alive와 커넥션 재사용 기초
 
 > 한 줄 요약: Keep-Alive는 TCP 연결을 요청마다 끊지 않고 여러 요청에 걸쳐 재사용하는 기능이고, 이를 통해 매 요청마다 발생하는 핸드셰이크 비용을 아낄 수 있다.

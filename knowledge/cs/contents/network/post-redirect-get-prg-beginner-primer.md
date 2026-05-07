@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Post Redirect Get PRG 패턴 입문
+concept_id: network/post-redirect-get-prg-beginner-primer
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- form-submit-refresh-safety
+- redirect-after-post
+- browser-request-lifecycle
+aliases:
+- post redirect get
+- PRG pattern
+- POST Redirect GET 패턴
+- redirect after post
+- 303 See Other
+- 폼 제출 후 새로고침
+- 왜 POST 다음 GET
+- 새로고침 중복 제출
+symptoms:
+- 폼 제출 뒤 Network 탭에 POST 다음 GET이 보여서 실패인지 헷갈려
+- 성공 화면에서 새로고침하면 같은 제출이 다시 갈까 불안해
+- 201 Created와 303 See Other를 같은 생성 성공 응답처럼 섞어 읽고 있어
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/http-status-codes-basics
+- network/http-methods-rest-idempotency-basics
+next_docs:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/browser-302-304-401-reload-decision-table-primer
+- network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge
+- spring/mvc-controller-basics
+linked_paths:
+- contents/network/http-status-codes-basics.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/ssr-view-render-vs-json-api-response-basics.md
+- contents/network/cookie-session-jwt-browser-flow-primer.md
+- contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+- contents/network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- network/redirect-vs-forward-vs-spa-navigation-basics
+- network/browser-302-304-401-reload-decision-table-primer
+- network/http-caching-conditional-request-basics
+- network/ssr-view-render-vs-json-api-response-basics
+forbidden_neighbors: []
+expected_queries:
+- 왜 폼 제출 후 POST 다음에 GET 요청이 한 번 더 보여?
+- PRG 패턴은 새로고침 중복 제출 문제를 어떻게 줄여?
+- 303 See Other와 201 Created는 언제 다르게 써?
+- POST 이후 redirect가 실패가 아니라 정상 흐름일 수 있는 이유가 뭐야?
+- PRG와 그냥 redirect는 어떤 질문 축이 달라?
+contextual_chunk_prefix: |
+  이 문서는 PRG beginner primer로, form submit을 POST -> 303 redirect -> GET 결과 화면으로 마무리해서 브라우저의 마지막 요청 기억을 GET으로 바꾸는 패턴을 설명한다.
+  왜 POST 다음 GET이 보이는지, 303 vs 201, refresh duplicate submit, redirect after post 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Post/Redirect/Get(PRG) 패턴 입문
 
 > 한 줄 요약: PRG는 폼 제출을 `POST -> redirect -> GET`으로 끝내서 "`왜 POST 다음에 GET이 보여요?`", "`왜 새로고침이 덜 무섭죠?`"를 beginner 기준으로 풀어 주는 브라우저 패턴이다.

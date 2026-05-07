@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Java String 기초
+concept_id: language/java-string-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- java-string-equals
+- string-immutability
+- dto-string-enum-boundary
+aliases:
+- java string basics
+- java string equals
+- string comparison beginner
+- 문자열 비교 방법
+- 자바 문자열 비교 equals
+- string == false
+- StringBuilder 반복 연결
+- string immutability
+- 문자열 불변 객체
+- enum vs string boundary
+- DTO string to enum
+symptoms:
+- 문자열 내용이 같은데 ==가 false인 이유를 모른 채 String 비교를 identity 비교로 처리한다
+- String이 불변이라 반복 + 연결에서 새 객체가 계속 생기는 비용을 놓친다
+- DTO의 상태 문자열을 enum boundary로 올릴지 단순 문자열 비교로 둘지 구분하지 못한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- language/java-equality-identity-basics
+- language/java-language-basics
+next_docs:
+- language/string-intern-pool-pitfalls
+- language/equalsignorecase-vs-case-insensitive-order-bridge
+- language/enum-string-boundary-bridge
+- language/java-immutable-object-basics
+linked_paths:
+- contents/language/java/java-equality-identity-basics.md
+- contents/language/java/string-intern-pool-pitfalls.md
+- contents/language/java/equalsignorecase-vs-case-insensitive-order-bridge.md
+- contents/language/java/nullable-string-comparator-bridge.md
+- contents/language/java/enum-string-boundary-bridge.md
+- contents/language/java/java-immutable-object-basics.md
+- contents/data-structure/hash-table-basics.md
+confusable_with:
+- language/java-equality-identity-basics
+- language/string-intern-pool-pitfalls
+- language/enum-string-boundary-bridge
+forbidden_neighbors: []
+expected_queries:
+- Java String에서 내용은 같은데 ==가 false로 나오는 이유와 equals를 써야 하는 기준을 알려줘
+- 문자열 리터럴끼리는 ==가 맞아 보이는데 왜 외부 입력이나 new String에서는 깨질 수 있어?
+- String은 불변 객체라서 반복문에서 +로 이어 붙이면 왜 StringBuilder가 필요한지 설명해줘
+- DTO에서 받은 PAID 같은 상태 문자열을 바로 비교하지 말고 enum으로 올리는 경계는 어디야?
+- equalsIgnoreCase와 대소문자 무시 정렬은 같은 문제인지 다른 문제인지 String 기준으로 구분해줘
+contextual_chunk_prefix: |
+  이 문서는 Java String의 불변성, 내용 비교, identity 비교, 반복 연결 비용을 잡는 beginner primer다.
+  String == vs equals, String Pool, intern, StringBuilder, equalsIgnoreCase, nullable string comparator, DTO status string to enum boundary, hash 기반 비교와의 연결을 다룬다.
+---
 # Java String 기초
 
 > 한 줄 요약: String은 불변 객체라서 값이 같아 보여도 `==`는 객체 비교가 되고, 문자열 내용 비교는 `equals()`로 해야 하며, 반복 연결에는 `StringBuilder`가 기본 선택이다.

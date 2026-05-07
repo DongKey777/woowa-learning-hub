@@ -1,8 +1,77 @@
+---
+schema_version: 3
+title: Interpreter Pattern Rules
+concept_id: design-pattern/interpreter-pattern-rules
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- interpreter-pattern
+- rule-expression
+- mini-language
+- specification-vs-interpreter
+aliases:
+- interpreter pattern rules
+- interpreter pattern
+- rule expression tree
+- mini language
+- domain specific language
+- boolean grammar
+- policy expression
+- rule interpreter
+- 인터프리터 패턴
+- 규칙 언어 해석
+symptoms:
+- 조건을 조합하려는 문제인지, 운영자가 읽을 작은 문법을 해석하려는 문제인지 구분하지 못한다
+- 작은 규칙 DSL로 충분한 문제를 직접 SQL 같은 큰 언어로 키워 parser, optimizer, security 비용을 만든다
+- Specification으로 충분한 predicate 조합에도 Interpreter 객체를 과하게 늘린다
+intents:
+- comparison
+- design
+- deep_dive
+prerequisites:
+- design-pattern/specification-pattern
+- design-pattern/strategy-pattern
+- design-pattern/pattern-selection
+next_docs:
+- design-pattern/dsl-object-model-pattern
+- design-pattern/composite-query-rule-trees
+- design-pattern/visitor-pattern-tradeoffs
+linked_paths:
+- contents/design-pattern/specification-pattern.md
+- contents/design-pattern/strategy-pattern.md
+- contents/design-pattern/anti-pattern.md
+- contents/design-pattern/pattern-selection.md
+- contents/design-pattern/dsl-object-model-pattern.md
+- contents/design-pattern/composite-query-rule-trees.md
+- contents/design-pattern/visitor-pattern-tradeoffs.md
+confusable_with:
+- design-pattern/specification-pattern
+- design-pattern/dsl-object-model-pattern
+- design-pattern/composite-query-rule-trees
+- design-pattern/strategy-pattern
+forbidden_neighbors: []
+expected_queries:
+- Interpreter Pattern은 작은 규칙 언어를 expression tree로 해석할 때 쓰고 Specification과 어떻게 달라?
+- 할인 규칙이나 승인 정책 DSL이 문법을 가져야 할 때 Interpreter를 검토하는 기준은 뭐야?
+- Specification predicate 조합으로 충분한데 Interpreter를 만들면 과설계가 되는 이유가 뭐야?
+- mini language가 커지면 parser version security error message 비용이 생기는 이유가 뭐야?
+- Interpreter와 DSL Object Model은 작은 규칙식을 실행하는 방식과 저장 모델 관점에서 어떻게 이어져?
+contextual_chunk_prefix: |
+  이 문서는 Interpreter Pattern Rules chooser로, 작은 domain-specific rule language를
+  expression tree와 evaluator로 해석하는 경우와 Specification predicate composition, Composite
+  rule tree, DSL Object Model을 선택하는 기준을 설명한다.
+---
 # Interpreter Pattern: 규칙 언어를 코드로 해석하기
 
 > 한 줄 요약: Interpreter 패턴은 작은 문법과 해석 규칙을 객체로 표현해, 정책식이나 필터식을 코드 안에서 조합 가능하게 만든다.
 
-**난이도: 🔴 Expert**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Specification Pattern](./specification-pattern.md)
@@ -67,6 +136,16 @@ Interpreter는 "조건식을 어떻게 읽고 계산할 것인가"에 더 가깝
 - 최적화
 
 이쯤 되면 외부 DSL이나 규칙 엔진을 검토하는 편이 낫다.
+
+### 4. parser와 evaluator를 분리하면 테스트가 쉬워진다
+
+문자열 입력이 있다면 두 문제를 섞지 않는 편이 낫다.
+
+- parser: 문자열을 expression tree로 바꾼다
+- validator: 지원하지 않는 field/operator/version을 걸러낸다
+- evaluator: 검증된 expression tree를 context에 대해 실행한다
+
+이렇게 나누면 문법 오류, 규칙 호환성, 실행 결과를 각각 테스트할 수 있다.
 
 ---
 
@@ -176,4 +255,3 @@ Specification<RuleContext> rule =
 ## 한 줄 정리
 
 Interpreter 패턴은 작은 규칙 언어를 객체로 해석하는 방법이지만, 문법이 커지면 빠르게 비용이 커진다.
-

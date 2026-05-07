@@ -1,3 +1,52 @@
+---
+schema_version: 3
+title: Spring Transaction Debugging Playbook
+concept_id: spring/transaction-debugging-playbook
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 92
+review_feedback_tags:
+- transaction
+- transactional-not-working
+- transaction-proxy-propagation
+- rollback-commit
+aliases:
+- Spring transaction debugging
+- @Transactional not working
+- transaction proxy propagation rollback commit
+- rollback only debugging
+- transaction boundary troubleshooting
+- commit timing problem
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-unexpectedrollbackexception-mini-debugging-card.md
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- contents/spring/spring-service-layer-transaction-boundary-patterns.md
+- contents/spring/spring-transaction-isolation-readonly-pitfalls.md
+- contents/spring/spring-transaction-synchronization-aftercommit-pitfalls.md
+- contents/spring/transactional-deep-dive.md
+symptoms:
+- @Transactional이 붙어 있는데 commit rollback이 기대와 다르게 동작한다.
+- self invocation, propagation, rollback rule, commit timing 중 어디가 문제인지 모른다.
+- UnexpectedRollbackException이나 checked exception commit surprise가 섞여 보인다.
+expected_queries:
+- Spring transaction 문제가 있을 때 proxy propagation rollback commit 중 어디부터 봐야 해?
+- @Transactional이 안 먹는 것처럼 보이는 원인을 디버깅 playbook으로 정리해줘
+- rollback-only와 checked exception rollback rule을 한 흐름에서 구분하고 싶어
+- transaction boundary가 service layer에서 어긋났는지 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 Spring transaction 장애를 안 된다로 뭉뚱그리지 않고 proxy 적용,
+  propagation, rollback rule, rollback-only marker, commit timing, afterCommit, service boundary
+  중 어디서 어긋났는지 찾는 debugging entrypoint다.
+---
 # Spring Transaction Debugging Playbook
 
 > 한 줄 요약: 트랜잭션 문제는 "안 된다"가 아니라, 프록시, 전파, 롤백, 커밋 시점 중 어디서 어긋났는지 찾아야 해결된다.

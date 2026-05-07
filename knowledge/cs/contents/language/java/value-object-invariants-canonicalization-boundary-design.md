@@ -63,11 +63,13 @@ expected_queries:
 - invalid state가 역직렬화로 다시 들어오는 문제를 value object 관점에서 설명해줘
 - 캐시 키와 중복 제거가 깨질 때 값 객체 경계를 어떻게 다시 잡아야 하는지 알고 싶어
 - 불변 객체와 진짜 value object의 차이를 invariant 관점으로 정리한 글이 필요해
-contextual_chunk_prefix: 이 문서는 Java 학습자가 value object를 단순 불변 DTO가 아니라
-  생성 시점 불변식과 canonicalization을 잠그는 도메인 경계로 이해하도록 돕는 advanced
-  primer다. 비교 기준, 캐시 키, 중복 제거, 직렬화 이후에도 같은 의미를 유지하는 설계와
-  raw String이나 BigDecimal을 언제 값 객체로 올릴지 같은 질문이 이 문서의 핵심 개념에
-  매핑된다.
+contextual_chunk_prefix: |
+  이 문서는 Java 학습자가 value object를 단순 불변 DTO가 아니라
+  생성 시점 invariant와 canonicalization을 잠그는 도메인 경계로
+  이해하도록 기초를 잡는 advanced primer다. 비교 기준 흔들림, 캐시
+  키 불일치, 중복 제거 실패, 역직렬화 뒤 invalid state, raw String이나
+  BigDecimal을 언제 값 객체로 올릴지 같은 자연어 paraphrase가 본
+  문서의 핵심 설계 판단에 매핑된다.
 ---
 # Value Object Invariants, Canonicalization, and Boundary Design
 

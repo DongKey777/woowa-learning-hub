@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Escape Analysis, Stack Allocation, Benchmarking, and Object Reuse Misconceptions
+concept_id: language/escape-analysis-stack-allocation-benchmark-misconceptions
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- jit-optimization
+- benchmark-pitfall
+- object-reuse
+aliases:
+- escape analysis misconception
+- stack allocation myth
+- object reuse myth
+- object pooling myth
+- benchmark allocation illusion
+- no escape stack allocation
+- production vs benchmark
+symptoms:
+- escape analysis를 객체가 스택에 간다는 말로만 이해해 실제로는 allocation elimination이나 scalar replacement가 핵심이라는 점을 놓쳐
+- 작은 DTO를 pool에 넣는 식의 object reuse가 mutable state 오염, thread confinement, synchronization 비용을 늘릴 수 있다는 점을 보지 않아
+- JMH에서 allocation이 0처럼 보인 결과를 production behavior로 일반화해 fragile한 최적화를 설계한다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- language/escape-analysis-scalar-replacement
+- language/jmh-benchmarking-pitfalls
+next_docs:
+- language/object-pooling-myths-modern-jvm
+- language/stack-vs-heap-escape-intuition
+- language/jit-warmup-deoptimization
+linked_paths:
+- contents/language/java/escape-analysis-scalar-replacement.md
+- contents/language/java/stack-vs-heap-escape-intuition.md
+- contents/language/java/jmh-benchmarking-pitfalls.md
+- contents/language/java/object-pooling-myths-modern-jvm.md
+confusable_with:
+- language/escape-analysis-scalar-replacement
+- language/jmh-benchmarking-pitfalls
+- language/object-pooling-myths-modern-jvm
+forbidden_neighbors: []
+expected_queries:
+- escape analysis를 stack allocation으로만 설명하면 왜 오해가 생기는지 알려줘
+- 작은 객체를 재사용하려고 object pool을 만들면 modern JVM에서 오히려 문제가 될 수 있어?
+- JMH benchmark에서 allocation이 없어 보이는 결과를 production에 그대로 믿으면 왜 위험해?
+- no escape 객체가 항상 스택에 할당된다는 말이 정확하지 않은 이유를 설명해줘
+- allocation elimination과 object reuse tradeoff를 HotSpot 관점으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 escape analysis 관련 stack allocation myth, object reuse myth, object pooling misconception, JMH benchmark illusion을 production reasoning과 구분하는 advanced deep dive다.
+  stack allocation myth, object reuse, allocation elimination benchmark, no escape, object pooling 질문이 본 문서에 매핑된다.
+---
 # Escape Analysis, Stack Allocation, Benchmarking, and Object Reuse Misconceptions
 
 > 한 줄 요약: escape analysis를 "객체가 스택에 간다"로 이해하거나, 작은 객체를 무조건 재사용해야 한다고 믿으면 오히려 코드를 망치기 쉽다. HotSpot 최적화는 보수적이고 상황 의존적이어서, benchmark와 production reasoning을 분리해야 한다.

@@ -1,3 +1,44 @@
+---
+schema_version: 3
+title: proc pid status Signal Fields Debugging Primer
+concept_id: operating-system/proc-pid-status-signal-fields-debugging-primer
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 73
+review_feedback_tags:
+- proc-pid-status
+- signal-fields
+- sigblk-sigign-sigcgt
+- sigpnd
+aliases:
+- /proc pid status signal fields
+- SigBlk SigIgn SigCgt SigPnd
+- signal blocked ignored caught pending
+- signal debugging primer
+- proc status SIGINT not working
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/operating-system/signal-mask-vs-disposition-fork-exec-posix-spawn.md
+- contents/operating-system/signals-process-supervision.md
+- contents/operating-system/posix-spawn-attributes-primer.md
+- contents/operating-system/pidfd-basics-race-free-process-handles.md
+- contents/operating-system/session-vs-process-group-primer.md
+expected_queries:
+- /proc/<pid>/status의 SigBlk SigIgn SigCgt SigPnd는 무엇을 보여줘?
+- SIGINT가 안 먹을 때 block ignore handler pending 중 어디를 봐야 해?
+- signal mask와 disposition을 proc status로 빠르게 구분하는 법은?
+- posix_spawn attrs나 fork exec 뒤 signal state를 확인하려면?
+contextual_chunk_prefix: |
+  이 문서는 /proc/<pid>/status의 SigBlk, SigIgn, SigCgt, SigPnd를 signal이 막혔는지,
+  무시되는지, handler가 잡혔는지, pending인지 빠르게 분기하는 beginner debugging primer로
+  설명한다.
+---
 # `/proc/<pid>/status` Signal Fields Debugging Primer
 
 > 한 줄 요약: `/proc/<pid>/status`의 `SigBlk`, `SigIgn`, `SigCgt`, `SigPnd`는 "이 프로세스가 signal을 막고 있는지, 무시하는지, handler를 잡았는지, 아직 처리되지 않은 signal이 있는지"를 한 번에 좁혀 주는 1차 현장 디버깅 표지판이다.

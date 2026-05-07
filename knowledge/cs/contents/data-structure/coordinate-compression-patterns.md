@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Coordinate Compression Patterns
+concept_id: data-structure/coordinate-compression-patterns
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: ko
+source_priority: 83
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- coordinate-compression
+- sparse-value-indexing
+- range-query-prep
+aliases:
+- coordinate compression
+- value compression
+- rank compression
+- discrete coordinates
+- compressed indexing
+- sparse values to array index
+- 좌표 압축
+symptoms:
+- 값 범위가 너무 커서 배열 기반 Fenwick Tree나 Segment Tree를 못 쓰는 상황을 보고도 순서만 보존하면 되는지 판단하지 못한다
+- coordinate compression이 값의 실제 거리까지 보존한다고 착각해 gap 크기가 의미 있는 문제에 잘못 적용한다
+- sort unique rank 매핑 후에도 range query에서 inclusive boundary와 원래 값 복원이 섞여 off-by-one을 만든다
+intents:
+- troubleshooting
+- design
+prerequisites:
+- algorithm/time-complexity-intro
+next_docs:
+- data-structure/fenwick-tree
+- data-structure/sparse-table
+- algorithm/meet-in-the-middle
+linked_paths:
+- contents/data-structure/fenwick-tree.md
+- contents/data-structure/sparse-table.md
+- contents/algorithm/meet-in-the-middle.md
+confusable_with:
+- data-structure/fenwick-tree
+- data-structure/sparse-table
+- algorithm/meet-in-the-middle
+forbidden_neighbors: []
+expected_queries:
+- Coordinate compression은 큰 좌표를 어떻게 작은 배열 index로 바꿔?
+- 좌표 압축이 순서는 보존하지만 실제 거리 차이는 보존하지 않는다는 뜻은?
+- sparse value range에서 Fenwick Tree나 Segment Tree를 쓰려면 어떻게 압축해?
+- sort unique rank mapping을 구현할 때 off-by-one을 어떻게 피해야 해?
+- 구간 통계 문제에서 coordinate compression을 적용해도 되는 기준은?
+contextual_chunk_prefix: |
+  이 문서는 큰 정수 좌표나 sparse value space를 sort unique rank로 작은
+  index에 매핑해 Fenwick Tree, Segment Tree, sweep line 같은 배열 기반
+  구조를 쓰게 하는 coordinate compression playbook이다. 순서 보존과 거리
+  비보존, boundary mapping, 복원 오해를 다룬다.
+---
 # Coordinate Compression Patterns
 
 > 한 줄 요약: Coordinate compression은 큰 값의 상대적 순서만 남겨 인덱스를 줄이고, 배열 기반 자료구조를 적용 가능하게 만든다.

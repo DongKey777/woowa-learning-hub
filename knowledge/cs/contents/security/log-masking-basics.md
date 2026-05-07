@@ -1,3 +1,54 @@
+---
+schema_version: 3
+title: '로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나'
+concept_id: security/log-masking-basics
+canonical: true
+category: security
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 70
+mission_ids: []
+review_feedback_tags:
+- log masking basics
+- authorization header masking
+- bearer token masking
+- error log masking
+aliases:
+- log masking basics
+- authorization header masking
+- bearer token masking
+- error log masking
+- log redaction primer
+- before after masking example
+- authorization header before after
+- exception log redaction
+- credential leak in logs
+- beginner security logging
+- token redaction
+- secret redaction
+symptoms: []
+intents:
+- definition
+- deep_dive
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/secrets-management-basics.md
+- contents/security/api-key-basics.md
+- contents/security/secret-scanning-credential-leak-response.md
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/auth-observability-primer-bridge.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- '로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나 핵심 개념을 설명해줘'
+- log masking basics가 왜 필요한지 알려줘
+- '로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나 실무 설계 포인트는 뭐야?'
+- log masking basics에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나를 다루는 primer 문서다. 로그 마스킹의 핵심은 "문제 재현에 필요한 최소 정보만 남기고, 재사용 가능한 비밀은 남기지 않는 것"이다. 검색 질의가 log masking basics, authorization header masking, bearer token masking, error log masking처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # 로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나
 
 > 한 줄 요약: 로그 마스킹의 핵심은 "문제 재현에 필요한 최소 정보만 남기고, 재사용 가능한 비밀은 남기지 않는 것"이다.

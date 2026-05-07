@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "SNI, Routing Mismatch, Hostname Failure"
+concept_id: network/sni-routing-mismatch-hostname-failure
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- sni-routing
+- tls-hostname
+- ingress-mismatch
+aliases:
+- SNI routing mismatch
+- hostname routing
+- virtual host
+- certificate mismatch
+- Host header mismatch
+- TLS termination routing
+- multi-tenant ingress
+symptoms:
+- 같은 IP/LB인데 특정 hostname만 certificate mismatch나 default backend로 빠진다
+- SNI, Host header, path routing을 같은 계층의 신호로 본다
+- health check는 통과하지만 실제 고객 hostname만 실패하는 이유를 놓친다
+- 내부 클라이언트가 SNI를 안 보내 브라우저와 다른 결과를 본다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tls-loadbalancing-proxy
+- network/api-gateway-reverse-proxy-operational-points
+next_docs:
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/alpn-negotiation-failure-routing-mismatch
+- network/load-balancer-healthcheck-failure-patterns
+- network/http2-http3-connection-reuse-coalescing
+linked_paths:
+- contents/network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md
+- contents/network/tls-certificate-chain-ocsp-stapling-failure-modes.md
+- contents/network/alpn-negotiation-failure-routing-mismatch.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+confusable_with:
+- network/alpn-negotiation-failure-routing-mismatch
+- network/tls-certificate-chain-ocsp-stapling-failure-modes
+- network/http2-http3-connection-reuse-coalescing
+- network/proxy-header-normalization-chain-trust-boundary
+forbidden_neighbors: []
+expected_queries:
+- "SNI routing mismatch 때문에 같은 IP에서 다른 서비스처럼 보이는 이유는?"
+- "SNI와 Host header와 path routing은 각각 어느 단계 신호야?"
+- "health check는 통과하는데 특정 hostname만 certificate mismatch가 나는 원인은?"
+- "브라우저는 되는데 내부 클라이언트만 TLS/SNI 실패하는 패턴을 설명해줘"
+- "multi-tenant ingress에서 SNI hostname backend 매칭을 어떻게 디버깅해?"
+contextual_chunk_prefix: |
+  이 문서는 SNI Server Name Indication, TLS certificate selection,
+  Host header routing, virtual host, multi-tenant ingress의 hostname routing
+  mismatch를 다루는 advanced playbook이다.
+---
 # SNI, Routing Mismatch, Hostname Failure
 
 > 한 줄 요약: SNI는 TLS 단계에서 어떤 인증서와 라우팅을 쓸지 정하는 신호라서, hostname과 backend 매칭이 어긋나면 같은 IP에서도 전혀 다른 서비스처럼 보일 수 있다.

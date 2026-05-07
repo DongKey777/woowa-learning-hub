@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: Contract Registry Governance
+concept_id: software-engineering/contract-registry-governance
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- contract-registry
+- contract-governance
+- ownership
+aliases:
+- Contract Registry Governance
+- contract registry
+- consumer registry
+- contract governance workflow
+- supported version range
+- hidden consumer detection
+symptoms:
+- API, event, data contract 정보가 문서/코드/슬랙에 흩어져 어떤 consumer가 어떤 version을 쓰는지 영향 범위를 추적하지 못해
+- contract registry가 단순 목록으로만 남고 stage, owner, consumers, supported version range, deprecation/sunset 정보가 없어 governance가 작동하지 않아
+- retired/deprecated 계약의 실제 runtime usage나 stale consumer list를 잡지 못해 registry 신뢰도가 낮아져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/data-contract-lifecycle
+- software-engineering/api-lifecycle-stage
+next_docs:
+- software-engineering/contract-drift-governance
+- software-engineering/backward-compatibility-gates
+- software-engineering/service-ownership-catalog-boundaries
+linked_paths:
+- contents/software-engineering/data-contract-ownership-lifecycle.md
+- contents/software-engineering/schema-contract-evolution-cross-service.md
+- contents/software-engineering/event-schema-versioning-compatibility.md
+- contents/software-engineering/api-lifecycle-stage-model.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/contract-drift-detection-rollout-governance.md
+confusable_with:
+- software-engineering/data-contract-lifecycle
+- software-engineering/api-lifecycle-stage
+- software-engineering/contract-drift-governance
+forbidden_neighbors: []
+expected_queries:
+- contract registry는 계약 목록이 아니라 stage owner consumers supported versions change history를 관리하는 운영 레지스트리라는 뜻이 뭐야?
+- hidden consumer와 deprecated contract usage를 registry와 telemetry로 어떻게 잡아야 해?
+- draft active deprecated sunset retired lifecycle이 contract registry governance와 어떻게 연결돼?
+- contract 변경 approval에는 owner 승인, consumer impact, compatibility gate, communication 준비가 왜 필요해?
+- registry가 release gate, deprecation notice, migration checklist, ownership catalog와 연결돼야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 contract registry를 contract id, lifecycle stage, owner/steward, consumers, supported versions, deprecation/sunset, change history를 통제하는 governance source of truth로 다룬다.
+---
 # Contract Registry Governance
 
 > 한 줄 요약: contract registry는 계약의 목록이 아니라, 계약의 상태, 소유권, 소비자, 변경 이력을 통제하는 운영 레지스트리다.

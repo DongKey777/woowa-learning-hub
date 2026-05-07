@@ -1,3 +1,62 @@
+---
+schema_version: 3
+title: RunSummary Fixture Naming Mini Primer
+concept_id: software-engineering/runsummary-fixture-naming
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/backend
+review_feedback_tags:
+- batch-testing
+- fixture
+- naming
+- readability
+aliases:
+- RunSummary fixture naming
+- run summary fixture name
+- status test fixture naming
+- green path partial failure duplicate start fixture
+- readable batch fixture naming
+- RunSummary 테스트 fixture 이름
+symptoms:
+- RunSummary fixture 이름이 summary1, failureCase, duplicateCase처럼 장면을 말하지 않아 status assertion 의미를 다시 본문에서 해석해야 해
+- partial failure, terminal failure, duplicate start가 fixture 이름에서 구분되지 않아 테스트가 어떤 run 장면을 다루는지 흐려져
+intents:
+- definition
+- design
+- drill
+prerequisites:
+- software-engineering/batch-result-modeling
+- software-engineering/batch-result-fixtures
+next_docs:
+- software-engineering/batch-result-testing
+- software-engineering/retry-queue-assertions
+- spring/mvc-controller-basics
+linked_paths:
+- contents/software-engineering/batch-run-result-modeling-examples.md
+- contents/software-engineering/batch-result-fixture-design-primer.md
+- contents/software-engineering/batch-result-testing-checklist.md
+- contents/software-engineering/batch-partial-failure-policies-primer.md
+- contents/spring/spring-mvc-controller-basics.md
+confusable_with:
+- software-engineering/batch-result-fixtures
+- software-engineering/batch-result-testing
+- software-engineering/batch-result-modeling
+forbidden_neighbors: []
+expected_queries:
+- RunSummary fixture 이름은 왜 count보다 green path, partial failure, duplicate start 장면을 먼저 말해야 해?
+- completedProductSyncRunSummary와 runSummaryWithZeroFailures 중 어떤 이름이 beginner status test에 더 읽기 좋아?
+- partial failure fixture를 failedSummary라고 부르면 run 중단과 후속 조치가 어떻게 헷갈려?
+- duplicate start 상태 테스트에서 alreadyStartedProductSyncRunSummary 같은 이름을 쓰는 이유는?
+- batch status assertion이 짧을수록 fixture 이름이 설명 책임을 갖는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 RunSummary status 테스트에서 fixture 이름을 green path, partial failure, duplicate start 같은 run 장면 이름으로 붙이게 하는 beginner primer이다.
+---
 # RunSummary Fixture Naming Mini Primer
 
 > 한 줄 요약: `RunSummary` fixture 이름은 "이번 run이 어떤 장면인가"를 먼저 말해야 해서, 초심자 기준으로는 `green`, `partial-failure`, `duplicate-start`를 장면 이름으로 고정해 두는 편이 status 테스트를 가장 읽기 쉽게 만든다.

@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Ephemeral Ports TIME_WAIT Reuse Recovery
+concept_id: operating-system/ephemeral-ports-time-wait-reuse-recovery
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- ephemeral-ports-time
+- wait-reuse-recovery
+- ephemeral-port-exhaustion
+- time-wait-reuse
+aliases:
+- ephemeral port exhaustion
+- TIME_WAIT reuse
+- ip_local_port_range
+- tcp_tw_reuse
+- outbound connection port exhaustion
+- 4-tuple reuse risk
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/file-descriptor-socket-syscall-cost-server-impact.md
+- contents/operating-system/tcp-backlog-somaxconn-listen-queue.md
+- contents/operating-system/thundering-herd-accept-wakeup.md
+- contents/operating-system/socket-buffer-autotuning-backpressure.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+- contents/network/connection-keepalive-loadbalancing-circuit-breaker.md
+symptoms:
+- outbound connection이 많아 ephemeral port range와 TIME_WAIT가 병목이 된다.
+- port reuse를 켰다가 4-tuple 충돌이나 stale packet 위험을 제대로 평가하지 못한다.
+- connection pooling 없이 짧은 TCP 연결을 대량 생성해 latency와 실패율이 증가한다.
+expected_queries:
+- ephemeral port exhaustion과 TIME_WAIT는 outbound connection에서 어떻게 병목이 돼?
+- tcp_tw_reuse나 port reuse는 언제 위험하고 언제 도움이 돼?
+- ip_local_port_range, connection pooling, keepalive로 recovery를 어떻게 설계해?
+- 4-tuple 재사용과 stale packet 위험을 어떻게 설명해야 해?
+contextual_chunk_prefix: |
+  이 문서는 outbound connection이 많을 때 ephemeral port range와 TIME_WAIT가 병목이 될 수 있고,
+  port reuse는 편하지만 4-tuple collision, stale packet, correctness risk를 함께 평가해야
+  한다는 recovery playbook이다.
+---
 # Ephemeral Ports, TIME_WAIT, Reuse Recovery
 
 > 한 줄 요약: outbound 연결이 많으면 ephemeral port와 TIME_WAIT가 병목이 될 수 있고, port reuse는 편하지만 잘못 다루면 충돌과 유실 위험이 생긴다.

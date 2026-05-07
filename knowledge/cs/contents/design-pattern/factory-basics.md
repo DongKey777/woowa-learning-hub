@@ -9,6 +9,11 @@ doc_role: primer
 level: beginner
 language: ko
 source_priority: 90
+review_feedback_tags:
+- factory
+- creation-vs-selection
+- factory-method-vs
+- builder
 aliases:
   - factory pattern
   - 팩토리 패턴
@@ -19,23 +24,28 @@ aliases:
   - new 대신 팩토리
   - creation vs selection
   - 생성 vs 선택
+  - factory method vs builder
+  - Factory 메서드랑 Builder 차이
+  - 객체 생성 패턴 갈래
+  - 생성 책임 vs 단계별 조립
 intents:
   - definition
   - design
+  - comparison
 prerequisites:
   - software-engineering/oop-design-basics
 next_docs:
-  - design-pattern/factory-vs-static-factory
-  - design-pattern/factory-vs-abstract-factory
+  - design-pattern/factory
+  - design-pattern/factory-vs-abstract-factory-vs-builder
 linked_paths:
   - contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
   - contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
   - contents/design-pattern/factory-vs-di-container-wiring.md
   - contents/design-pattern/factory.md
 confusable_with:
-  - design-pattern/strategy
-  - design-pattern/abstract-factory
-  - design-pattern/builder
+  - design-pattern/strategy-pattern-basics
+  - design-pattern/factory-vs-abstract-factory-vs-builder
+  - design-pattern/builder-pattern-basics
 forbidden_neighbors:
   - contents/design-pattern/factory-misnaming-checklist.md
   - contents/design-pattern/factory-switch-registry-smell.md
@@ -46,14 +56,16 @@ expected_queries:
   - 객체 생성 책임을 다른 클래스로 옮기는 방식 뭐 있어?
   - 팩토리는 언제 써?
   - new 대신 팩토리 쓰는 이유?
+  - Factory 메서드랑 Builder는 어떤 상황에서 갈리는 거야?
 contextual_chunk_prefix: |
   이 문서는 OOP 기초를 배운 학습자가 "객체를 누가 어떻게 만드는가"라는 생성 책임
   분리 감각을 처음 잡을 때 참고하는 primer다. 본 문서의 chunk는 호출 측에서 객체
   타입을 직접 결정하는 방식 vs 생성 책임을 분리한 방식의 비교 또는 Factory의 큰
   그림을 설명한다. 더 정밀한 비교(Static Factory Method, Abstract Factory,
-  Builder)는 후속 bridge 문서들이 다룬다.
+  Builder)는 후속 bridge 문서들이 다룬다. 특히 "Factory method랑 Builder는
+  언제 갈리는가"라는 질문은 생성할 타입/구현체 선택이 중심이면 Factory, 여러
+  선택 파라미터를 단계적으로 조립하는 과정이 중심이면 Builder로 나눈다.
 ---
-
 # 팩토리 패턴 기초 (Factory Pattern Basics)
 
 > 한 줄 요약: 팩토리 패턴은 객체를 어떻게 만들지를 호출자로부터 숨기고, 생성 책임을 한 곳에 모아 변경이 생겨도 호출 측 코드를 건드리지 않게 해준다.

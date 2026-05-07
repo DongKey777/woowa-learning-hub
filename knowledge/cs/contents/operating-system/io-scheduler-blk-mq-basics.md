@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: IO Scheduler blk-mq Basics
+concept_id: operating-system/io-scheduler-blk-mq-basics
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: mixed
+source_priority: 83
+review_feedback_tags:
+- io-scheduler-blk
+- linux-block-multi
+- queue
+- storage-request-queue
+aliases:
+- IO scheduler blk-mq
+- Linux block multi queue
+- storage request queue
+- mq-deadline none kyber
+- block layer basics
+- device queue depth
+intents:
+- definition
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/page-cache-thrash-vs-direct-io.md
+- contents/operating-system/blk-mq-cgroup-io-writeback-timeline-debugging.md
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/psi-pressure-stall-information-runtime-debugging.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+expected_queries:
+- Linux blk-mq와 I/O scheduler는 storage request를 어떻게 처리해?
+- modern Linux storage가 단순 FIFO가 아니라는 말은 무슨 뜻이야?
+- device queue depth와 request characteristic이 latency에 어떤 영향을 줘?
+- page cache dirty writeback과 block layer queue를 함께 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 modern Linux storage path가 단순 FIFO가 아니라 blk-mq multi-queue block layer와
+  I/O scheduler, device queue depth, request pattern의 조합으로 동작한다는 기본 모델을 설명한다.
+---
 # I/O Scheduler, blk-mq Basics
 
 > 한 줄 요약: modern Linux storage는 단순한 FIFO가 아니라 blk-mq와 I/O scheduler의 조합으로 동작하며, 장치 큐와 요청 특성이 성능을 좌우한다.

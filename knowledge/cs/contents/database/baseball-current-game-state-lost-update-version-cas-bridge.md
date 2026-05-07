@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > baseball 웹 버전에서 같은 `game_id`에 대한 두 추측 요청이 겹치면, 문제는 "같은 row를 누가 최신 상태로 확정하나"에 가깝다. 이 장면은 `UNIQUE`보다 `version` column 기반 CAS나 상태 전이 precondition으로 읽는 편이 맞다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "두 탭에서 추측했더니 마지막 저장만 남아요" | 같은 games row를 두 요청이 읽고 각자 update해 lost update가 난 흐름 | duplicate insert가 아니라 stale current-state update 문제로 본다 |
+| "guess_history는 두 줄인데 현재 상태는 한쪽 결과예요" | history append는 됐지만 games snapshot이 last writer로 덮인 상태 | history identity와 current snapshot CAS를 다른 보호로 둔다 |
+| "이미 끝난 게임에 늦은 요청이 finished를 다시 바꿔요" | stale screen에서 온 update가 최신 상태 precondition 없이 성공하는 코드 | version column이나 상태 precondition으로 읽은 상태가 최신인지 확인한다 |
+
 ## 미션 시나리오
 
 콘솔 baseball는 한 번에 한 입력만 처리하니 현재 게임 상태가 겹쳐서 저장될 일이 거의 없다. 하지만 웹으로 옮기면 같은 사용자가 두 탭을 열어 두거나, 느린 네트워크에서 연속 제출한 요청이 거의 동시에 `POST /games/{id}/guesses`에 도착할 수 있다. 두 요청이 모두 "`아직 7회차이고 finished=false`"를 본 뒤 각자 판정 결과를 계산하면, 추측 이력은 두 줄 다 남더라도 `games` 현재 상태 row는 마지막 저장이 우연히 덮어쓰게 된다.

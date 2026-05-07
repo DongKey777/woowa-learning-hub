@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Anycast Routing Trade-offs, Edge Failover
+concept_id: network/anycast-routing-tradeoffs-edge-failover
+canonical: false
+category: network
+difficulty: advanced
+doc_role: primer
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- anycast-routing
+- edge-failover
+- bgp-convergence
+aliases:
+- Anycast routing
+- edge failover
+- BGP route convergence
+- nearest edge
+- path asymmetry
+- global load balancing
+- failover blast radius
+symptoms:
+- anycast가 가장 가까운 edge를 고르므로 항상 가장 안정적인 path를 준다고 오해한다
+- PoP 장애 후 일부 사용자만 계속 옛 경로를 보는 현상을 BGP convergence, DNS cache, route stability로 나눠 보지 않는다
+- long-lived connection과 session 이동성이 필요한 서비스를 anycast failover만으로 해결하려 한다
+intents:
+- definition
+- troubleshooting
+prerequisites:
+- network/dns-cdn-websocket-http2-http3
+- network/load-balancer-healthcheck-failure-patterns
+next_docs:
+- network/dns-ttl-cache-failure-patterns
+- network/quic-connection-migration-path-change
+- network/http3-quic-practical-tradeoffs
+linked_paths:
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/dns-ttl-cache-failure-patterns.md
+- contents/network/load-balancer-healthcheck-failure-patterns.md
+- contents/network/quic-connection-migration-path-change.md
+- contents/network/http3-quic-practical-tradeoffs.md
+confusable_with:
+- network/dns-ttl-cache-failure-patterns
+- network/load-balancer-healthcheck-failure-patterns
+- network/quic-connection-migration-path-change
+- network/http3-quic-practical-tradeoffs
+forbidden_neighbors: []
+expected_queries:
+- Anycast는 같은 IP로 가까운 edge에 붙게 하지만 안정성을 항상 보장하지 않는 이유는?
+- Edge failover 후 일부 사용자만 오래된 PoP 경로를 계속 보는 원인은?
+- BGP route convergence와 path asymmetry가 anycast 운영에서 왜 중요해?
+- Anycast와 QUIC connection migration은 edge path change 관점에서 어떻게 같이 봐?
+- 한 지역만 느린 글로벌 서비스에서 anycast PoP congestion을 어떻게 의심해?
+contextual_chunk_prefix: |
+  이 문서는 Anycast routing을 같은 IP를 여러 PoP에서 광고해 가까운 edge로 보내는 전략으로
+  설명하되, BGP convergence, path asymmetry, edge failover blast radius, long-lived connection
+  추적성을 함께 보는 advanced primer다.
+---
 # Anycast Routing Trade-offs, Edge Failover
 
 > 한 줄 요약: Anycast는 같은 IP로 가장 가까운 edge에 붙게 하지만, 경로의 "가까움"이 곧 "안정성"은 아니라는 점이 운영의 핵심이다.

@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Java Module System Runtime Boundaries
+concept_id: language/java-module-system-runtime-boundaries
+canonical: true
+category: language
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 84
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- module-system
+- reflection
+- runtime-boundary
+aliases:
+- Java Module System Runtime Boundaries
+- JPMS exports opens add-opens
+- Java strong encapsulation reflection boundary
+- unnamed module module path boundary
+- illegal reflective access add-opens
+- 자바 모듈 시스템 런타임 경계
+symptoms:
+- exports와 opens를 모두 public API 노출로 이해해 reflection deep access가 왜 별도 경계인지 설명하지 못해
+- JDK 업그레이드 후 illegal reflective access나 private field 접근 실패가 났는데 module boundary와 add-opens를 확인하지 못해
+- classpath unnamed module과 module path named module의 캡슐화 차이를 배포 경계에서 구분하지 못해
+intents:
+- deep_dive
+- troubleshooting
+- design
+prerequisites:
+- language/reflection-cost-and-alternatives
+- language/classloader-delegation-edge-cases
+- language/java-binary-compatibility-linkage-errors
+next_docs:
+- language/java-agent-instrumentation-basics
+- language/classloader-memory-leak-playbook
+- language/class-initialization-ordering
+linked_paths:
+- contents/language/java/java-agent-instrumentation-basics.md
+- contents/language/java/reflection-cost-and-alternatives.md
+- contents/language/java/class-initialization-ordering.md
+- contents/language/java/classloader-memory-leak-playbook.md
+- contents/language/java/classloader-delegation-edge-cases.md
+- contents/language/java/java-binary-compatibility-linkage-errors.md
+confusable_with:
+- language/reflection-cost-and-alternatives
+- language/classloader-delegation-edge-cases
+- language/java-binary-compatibility-linkage-errors
+forbidden_neighbors: []
+expected_queries:
+- Java module system에서 exports와 opens 차이를 reflection 관점으로 설명해줘
+- --add-opens는 언제 쓰고 왜 남용하면 runtime boundary가 흐려져?
+- illegal reflective access가 JDK 업그레이드 후 깨졌을 때 무엇을 확인해야 해?
+- unnamed module과 named module은 classpath module path에서 어떻게 달라?
+- JPMS를 단순 패키징이 아니라 runtime access boundary로 봐야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Java module system의 exports, opens, --add-opens, named/unnamed module을 runtime access boundary 관점에서 설명하는 advanced deep dive다.
+  JPMS, module-info, reflection boundary, illegal reflective access, add-opens 질문이 본 문서에 매핑된다.
+---
 # Java Module System Runtime Boundaries
 
 > 한 줄 요약: Java module system은 package export와 opens로 런타임 경계를 명시하고, reflection과 deep access는 `--add-opens` 같은 예외를 통해서만 제한적으로 허용된다.

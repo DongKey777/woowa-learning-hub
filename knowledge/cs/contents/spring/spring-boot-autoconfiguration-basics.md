@@ -23,6 +23,9 @@ aliases:
 - spring boot autoconfiguration
 - spring boot automatic configuration
 - spring boot starter default wiring
+- 스프링 부트 자동 구성
+- starter 넣으면 빈 자동 등록
+- 조건부 빈 자동 설정
 symptoms:
 - starter만 추가했는데 bean이 왜 바로 생기는지 감이 안 와요
 - 내가 설정 클래스를 안 만들었는데 DataSource나 ObjectMapper가 보여서 누가 등록했는지 모르겠어요
@@ -34,22 +37,31 @@ prerequisites:
 - spring/ioc-di-basics
 next_docs:
 - spring/boot-autoconfiguration-internals
+- spring/spring-configuration-vs-autoconfiguration-primer
+- spring/primary-conditionalonmissingbean-bean-override-decision-guide
 linked_paths:
 - contents/spring/spring-boot-autoconfiguration.md
 - contents/spring/spring-boot-condition-evaluation-report-first-debug-checklist.md
 - contents/spring/spring-configuration-vs-autoconfiguration-primer.md
 - contents/spring/spring-conditionalonmissingbean-vs-primary-primer.md
+- contents/spring/spring-boot-properties-vs-customizer-vs-bean-replacement-primer.md
+- contents/spring/spring-starter-dependency-map-primer.md
 confusable_with:
 - spring/boot-autoconfiguration-internals
 - spring/spring-configuration-vs-autoconfiguration-primer
 - spring/spring-conditionalonmissingbean-vs-primary-primer
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/spring/spring-boot-autoconfiguration.md
+- contents/spring/spring-primary-conditionalonmissingbean-bean-override-decision-guide.md
 expected_queries:
 - spring boot 자동구성이 뭐예요?
 - starter 추가했는데 왜 bean이 바로 생겨요?
 - 설정 안 했는데 spring boot가 bean을 왜 만들어요?
 - auto-configuration이랑 configuration은 뭐가 달라요?
 - 처음 배우는데 spring boot starter가 왜 동작하는지 모르겠어요
+- starter dependency만 넣었는데 datasource가 왜 자동 등록돼요?
+- spring boot가 classpath 보고 bean 만든다는 말이 무슨 뜻이야?
+- auto-configuration이 기본값 덧씌우기랑 bean 교체랑 어떻게 이어져?
 contextual_chunk_prefix: |
   이 문서는 Spring Boot starter를 추가했는데 왜 bean이 바로 생기는지,
   auto-configuration이 뭐인지, configuration과는 뭐가 다른지 처음 묻는

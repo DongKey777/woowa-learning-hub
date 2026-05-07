@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Stale Lease Renewal Failure and Fencing
+concept_id: database/stale-lease-renewal-failure-fencing
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- lease
+- fencing
+- renewal-failure
+- stale-worker
+- coordination
+aliases:
+- stale lease
+- lease renewal failure
+- fencing
+- fencing token
+- renewal drift
+- stale worker
+- clock skew
+- lease lost
+- stale write protection
+- lease heartbeat failure
+symptoms:
+- lease renewal이 실패했는데 worker가 자신이 여전히 owner라고 믿고 write를 계속할 수 있어
+- GC pause나 네트워크 지연으로 heartbeat가 늦어져 renewal drift가 발생해
+- stale worker의 늦은 commit이 새 owner 결과를 덮지 못하게 fencing token이 필요해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/db-lease-fencing-coordination
+- database/transactional-claim-check-job-leasing
+next_docs:
+- database/ghost-reads-mixed-routing-write-fence-tokens
+- database/replication-failover-split-brain
+- database/db-lease-fencing-coordination
+linked_paths:
+- contents/database/db-lease-fencing-coordination.md
+- contents/database/replication-failover-split-brain.md
+- contents/database/ghost-reads-mixed-routing-write-fence-tokens.md
+- contents/database/transactional-claim-check-job-leasing.md
+confusable_with:
+- database/db-lease-fencing-coordination
+- database/transactional-claim-check-job-leasing
+- database/replication-failover-split-brain
+forbidden_neighbors: []
+expected_queries:
+- lease renewal failure가 단순 만료보다 위험한 이유와 stale worker 문제를 설명해줘
+- fencing token은 lease를 잃은 오래된 worker의 write를 어떻게 막아?
+- heartbeat renew 주기를 너무 짧게 잡으면 renewal drift와 오탐이 왜 늘어?
+- GC pause나 네트워크 지연 때문에 lease lost가 났을 때 worker는 어떤 순서로 중단해야 해?
+- stale worker late commit이 새 owner 결과를 덮는 것을 DB write side에서 어떻게 차단해?
+contextual_chunk_prefix: |
+  이 문서는 stale lease renewal failure, renewal drift, stale worker, fencing token을 distributed job ownership과 write-side fencing 관점으로 설명하는 advanced playbook이다.
+  lease heartbeat failure, lease lost, stale write protection, fencing token 질문이 본 문서에 매핑된다.
+---
 # Stale Lease Renewal Failure와 Fencing
 
 > 한 줄 요약: lease 갱신이 실패하면 단순 만료보다 더 위험한데, 오래된 worker가 자신이 여전히 주인이라고 착각할 수 있기 때문이다.

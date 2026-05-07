@@ -1,3 +1,58 @@
+---
+schema_version: 3
+title: Edge Verifier Claim-Skew Fallback 설계
+concept_id: system-design/edge-verifier-claim-skew-fallback-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- edge verifier claim skew fallback
+- unknown claim handling
+- origin introspection fallback
+- token validator overlap
+aliases:
+- edge verifier claim skew fallback
+- unknown claim handling
+- origin introspection fallback
+- token validator overlap
+- edge validator compatibility
+- claim schema overlap window
+- unknown mandatory claim
+- trusted but unknown token
+- introspection decision cache
+- fallback storm
+- bounded latency fallback
+- verifier overlap soak
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/edge-authorization-service-design.md
+- contents/system-design/session-store-claim-version-cutover-design.md
+- contents/system-design/verifier-overlap-hard-reject-retirement-gates-design.md
+- contents/system-design/capability-negotiation-feature-gating-design.md
+- contents/system-design/database-security-identity-bridge-cutover-design.md
+- contents/system-design/protocol-version-skew-compatibility-design.md
+- contents/system-design/traffic-shadowing-progressive-cutover-design.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Edge Verifier Claim-Skew Fallback 설계 설계 핵심을 설명해줘
+- edge verifier claim skew fallback가 왜 필요한지 알려줘
+- Edge Verifier Claim-Skew Fallback 설계 실무 트레이드오프는 뭐야?
+- edge verifier claim skew fallback 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Edge Verifier Claim-Skew Fallback 설계를 다루는 deep_dive 문서다. edge verifier claim-skew fallback 설계는 edge validator가 새 claim semantic을 아직 이해하지 못하는 overlap window 동안 unknown claim을 곧바로 hard reject하지 않고, origin introspection fallback과 bounded-latency guardrail로 안전하게 흡수하는 운영 설계다. 검색 질의가 edge verifier claim skew fallback, unknown claim handling, origin introspection fallback, token validator overlap처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Edge Verifier Claim-Skew Fallback 설계
 
 > 한 줄 요약: edge verifier claim-skew fallback 설계는 edge validator가 새 claim semantic을 아직 이해하지 못하는 overlap window 동안 unknown claim을 곧바로 hard reject하지 않고, origin introspection fallback과 bounded-latency guardrail로 안전하게 흡수하는 운영 설계다.

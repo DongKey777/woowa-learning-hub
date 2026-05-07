@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Guard-Row Scope Design for Multi-Day Bookings
+concept_id: database/guard-row-scope-design-multi-day-bookings
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- guard-row-scope-design
+- multi-day-booking-lock-order
+- canonical-guard-key-ordering
+aliases:
+- guard row scope
+- multi-day booking guard row
+- canonical lock ordering
+- guard-row granularity
+- room day guard
+- multi-resource reservation lock
+- reservation guard set
+- booking reschedule deadlock
+- guard row scope design
+- multi-day 예약 guard row
+symptoms:
+- multi-day 예약 하나가 여러 guard key를 잠글 때 deadlock 없이 어떤 순서로 잡을지 설계해야 해
+- guard scope가 너무 커서 hot row가 되거나 너무 작아서 실제 충돌 예약이 만나지 않는 문제가 있어
+- reschedule, extend, cancel에서 old scope와 new scope lock 순서가 달라 deadlock이 나고 있어
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/guard-row-scope-quick-examples
+- database/guard-row-booking-timeline-card
+next_docs:
+- database/hot-path-slot-arbitration-choices
+- database/ordered-guard-row-upsert-patterns-postgresql-mysql
+- database/engine-fallbacks-overlap-enforcement
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+linked_paths:
+- contents/database/guard-row-scope-quick-examples.md
+- contents/database/hot-path-slot-arbitration-choices.md
+- contents/database/reservation-reschedule-cancellation-transition-patterns.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/guard-row-vs-serializable-vs-reconciliation-set-invariants.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/shared-pool-guard-design-room-type-inventory.md
+- contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md
+- contents/database/mysql-gap-lock-blind-spots-read-committed.md
+- contents/database/deadlock-case-study.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+confusable_with:
+- database/guard-row-scope-quick-examples
+- database/guard-row-vs-serializable-vs-reconciliation-set-invariants
+- database/engine-fallbacks-overlap-enforcement
+forbidden_neighbors: []
+expected_queries:
+- multi-day booking에서 guard row scope를 resource, resource-day, pooled inventory 중 어떻게 정해?
+- guard-key 집합을 canonical order로 잠그지 않으면 reschedule deadlock이 왜 생겨?
+- 서로 충돌 가능한 예약이 반드시 같은 guard key를 공유하게 하려면 어떤 granularity가 필요해?
+- resource-day guard row는 안전하지만 lock fan-out과 hot key 사이에서 어떤 tradeoff가 있어?
+- WHERE key IN (...) FOR UPDATE가 lock order를 보장한다고 믿으면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 multi-day, multi-resource booking에서 guard-key set, granularity, canonical lock ordering, bounded retry를 설계하는 advanced playbook이다.
+  guard row scope, multi-day booking, canonical lock ordering, room day guard, booking reschedule deadlock 같은 자연어 설계 질문이 본 문서에 매핑된다.
+---
 # Guard-Row Scope Design for Multi-Day Bookings
 
 > 한 줄 요약: multi-day 또는 multi-resource 예약에서 guard row는 "락 하나를 쓴다"가 아니라 어떤 guard-key 집합으로 경쟁을 직렬화할지 정하는 문제이며, granularity·canonical ordering·bounded retry를 함께 설계해야 deadlock 없이 운영된다.

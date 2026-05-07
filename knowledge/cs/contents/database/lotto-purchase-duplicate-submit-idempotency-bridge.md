@@ -69,6 +69,14 @@ contextual_chunk_prefix: |
 
 > lotto 구매 한 번은 "금액을 내고 여러 티켓 묶음을 확정한 요청"이다. 웹으로 옮기면 같은 요청이 재전송될 수 있으므로, `exists` 확인 뒤 저장하기보다 `idempotency_key`나 구매 요청 키를 `UNIQUE`로 잠가 DB가 한 번만 승자를 정하게 하는 편이 덜 흔들린다.
 
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "구매 버튼을 두 번 누르면 같은 티켓 묶음이 두 번 저장돼요" | 웹 lotto 구매 POST가 더블클릭/timeout retry로 재전송되는 흐름 | 같은 purchase intent를 idempotency key로 한 번만 인정한다 |
+| "`exists` 확인 후 save면 중복 구매 방지가 끝나지 않나요?" | 두 요청이 동시에 비어 있는 상태를 보고 모두 purchase/ticket을 저장하는 코드 | 읽기 기반 precheck보다 insert-first unique arbitration을 먼저 본다 |
+| "PRG와 transaction이 있는데 왜 멱등성이 또 필요하죠?" | 브라우저 새로고침, 원자성, 중복 요청 방어를 한 방어선으로 보는 상황 | PRG, transaction, idempotency의 책임 축을 분리한다 |
+
 ## 미션 시나리오
 
 콘솔 lotto에서는 사용자가 Enter를 한 번 치면 구매 흐름도 한 번 끝난다. 하지만 웹으로 확장하면 구매 버튼 더블클릭, timeout 뒤 재시도, 새로고침 재전송 때문에 같은 "10,000원 구매" 요청이 두 번 들어올 수 있다. 이때 서비스가 먼저 "`이미 구매했나?`"를 조회하고 없으면 `purchase`와 `ticket`을 저장하는 식이면, 두 요청이 같은 빈 상태를 보고 둘 다 통과할 수 있다.

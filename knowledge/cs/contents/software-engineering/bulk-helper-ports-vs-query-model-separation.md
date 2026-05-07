@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: Bulk Helper Ports vs Query Model Separation
+concept_id: software-engineering/bulk-helper-vs-query-model
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: ko
+source_priority: 91
+mission_ids:
+- missions/payment
+review_feedback_tags:
+- query-model
+- bulk-helper-port
+- cqrs-lite
+aliases:
+- Bulk Helper Ports vs Query Model Separation
+- findByIds helper port
+- helper port vs query repository
+- bulk helper port vs read model
+- CQRS lite beginner boundary
+- query model 분리 기준
+symptoms:
+- findByIds 같은 command support lookup과 관리자 목록/검색 화면용 query repository를 모두 조회라는 이유로 같은 경계에 넣어
+- helper port가 점점 pagination, sort, filter, screen DTO를 반환하게 되는데도 dedicated read model로 분리하지 않아
+- bulk helper port를 만들었다는 이유로 이미 CQRS-lite를 도입한 것처럼 오해해 command decision과 read product responsibility를 섞어
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/repository-dao-entity
+next_docs:
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/helper-snapshot-response-dto-separation
+- software-engineering/pageable-query-model-pagination
+linked_paths:
+- contents/software-engineering/bulk-port-vs-per-item-use-case-tradeoffs.md
+- contents/software-engineering/adapter-bulk-optimization-without-port-leakage.md
+- contents/software-engineering/saveall-sendall-port-smells-safer-alternatives.md
+- contents/software-engineering/query-model-separation-read-heavy-apis.md
+- contents/software-engineering/helper-snapshot-bloat-vs-response-dto-separation.md
+- contents/software-engineering/persistence-model-leakage-anti-patterns.md
+- contents/software-engineering/jpa-lazy-loading-n-plus-one-boundary-smells.md
+- contents/software-engineering/repository-dao-entity.md
+confusable_with:
+- software-engineering/bulk-port-tradeoffs
+- software-engineering/query-model-separation-read-heavy
+- software-engineering/helper-snapshot-response-dto-separation
+forbidden_neighbors: []
+expected_queries:
+- findByIds helper port와 dedicated query repository read model은 모두 조회인데 어떤 기준으로 나눠?
+- 이미 ID를 알고 command 판단 재료를 모으는 lookup이면 bulk helper port로 충분한 이유가 뭐야?
+- 관리자 목록처럼 어떤 ID를 보여줄지부터 query condition pageable이 정하면 query model로 분리해야 하는 이유는?
+- helper port가 screen DTO pagination sort filter를 반환하기 시작하면 어떤 smell이야?
+- CQRS-lite를 도입하기 전 bulk helper port와 query repository의 중간 경계를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 findByIds bulk helper port와 dedicated query repository/read model을 command support lookup vs screen/search/list query responsibility 기준으로 고르는 beginner chooser다.
+---
 # Bulk Helper Ports vs Query Model Separation
 
 > 한 줄 요약: `findByIds` helper port는 "하나의 command/use case가 판단 재료를 한 번에 모으는" 도구이고, dedicated query repository/read model은 "읽기 화면 자체가 별도 제품"이 되었을 때 꺼내는 더 안전한 다음 단계다.

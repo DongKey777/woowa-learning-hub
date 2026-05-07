@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: "HTTP Semantics and Caching First Principles"
+concept_id: network/http-semantics-caching-first-principles
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- http-semantics
+- caching-basics
+- idempotency
+aliases:
+- HTTP semantics
+- HTTP caching first principles
+- safe vs idempotent
+- Cache-Control primer
+- conditional request basics
+- browser cache vs shared cache
+- GET POST cache semantics
+symptoms:
+- HTTP method 의미와 cache/retry 가능성을 따로 외워 연결하지 못한다
+- GET, POST, PUT, DELETE의 safe/idempotent 차이를 캐시와 재시도에 적용하지 못한다
+- browser cache, CDN/shared cache, server-side cache를 같은 캐시로 뭉갠다
+- Cache-Control freshness와 ETag validator 역할을 혼동한다
+intents:
+- definition
+- comparison
+- deep_dive
+prerequisites:
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+- network/http-status-codes-basics
+next_docs:
+- network/http-methods-rest-idempotency-basics
+- network/http-caching-conditional-request-basics
+- network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer
+- network/browser-devtools-cache-trace-primer
+linked_paths:
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-methods-rest-idempotency-basics.md
+- contents/network/http-status-codes-basics.md
+- contents/network/http-caching-conditional-request-basics.md
+- contents/network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md
+- contents/network/proxy-reverse-proxy-basics.md
+- contents/network/browser-devtools-cache-trace-primer.md
+confusable_with:
+- network/http-methods-rest-idempotency-basics
+- network/http-caching-conditional-request-basics
+- network/http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer
+- network/proxy-reverse-proxy-basics
+forbidden_neighbors: []
+expected_queries:
+- "HTTP semantics와 caching first principles를 초보자에게 설명해줘"
+- "safe와 idempotent가 HTTP 캐시와 재시도에 왜 중요해?"
+- "Cache-Control freshness와 ETag validator는 어떻게 역할이 달라?"
+- "browser cache CDN cache server-side cache를 어떻게 구분해?"
+- "GET POST PUT DELETE 의미가 캐시 가능성과 어떻게 연결돼?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP method semantics, safe/idempotent, Cache-Control freshness,
+  ETag/Last-Modified conditional request, browser/shared/server-side cache의
+  첫 원리를 설명하는 beginner primer다.
+---
 # HTTP 의미론과 캐싱 첫 원리 입문
 
 > 한 줄 요약: HTTP는 "이 요청이 무슨 뜻인가"를 메서드로 표현하고, "이 응답 사본을 어디서 얼마나 다시 써도 되는가"를 캐시 헤더로 표현하는 계약이다.

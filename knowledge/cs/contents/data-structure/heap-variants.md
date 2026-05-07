@@ -1,3 +1,74 @@
+---
+schema_version: 3
+title: Heap Variants
+concept_id: data-structure/heap-variants
+canonical: false
+category: data-structure
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 86
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- heap-variant-choice
+- priority-queue-vs-ordered-map
+- scheduler-topk-decreasekey
+aliases:
+- heap variants
+- binary heap
+- d-ary heap
+- pairing heap
+- radix heap
+- decrease-key heap
+- top-k heap
+symptoms:
+- heap을 완전히 정렬된 구조로 오해해 floor ceiling range query 같은 ordered map 요구까지 heap으로 풀려 한다
+- top-1 반복 추출, top-k 유지, timer scheduler, Dijkstra open set에서 heap 변형의 insert/delete/update 균형을 구분하지 못한다
+- 특별한 이유 없이 binary heap 대신 복잡한 heap 변형을 먼저 고르거나 decrease-key 요구를 무시한다
+intents:
+- comparison
+- design
+prerequisites:
+- data-structure/heap-basics
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+next_docs:
+- data-structure/top-k-heap-direction-patterns
+- data-structure/hierarchical-timing-wheel
+- data-structure/calendar-queue
+- data-structure/radix-heap
+linked_paths:
+- contents/data-structure/heap-basics.md
+- contents/data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md
+- contents/data-structure/top-k-heap-direction-patterns.md
+- contents/data-structure/applied-data-structures-overview.md
+- contents/algorithm/sort.md
+- contents/algorithm/greedy.md
+- contents/data-structure/lru-cache-design.md
+- contents/data-structure/hierarchical-timing-wheel.md
+- contents/data-structure/calendar-queue.md
+- contents/data-structure/radix-heap.md
+- contents/data-structure/timing-wheel-variants-and-selection.md
+- contents/data-structure/work-stealing-deque.md
+confusable_with:
+- data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge
+- data-structure/top-k-heap-direction-patterns
+- data-structure/hierarchical-timing-wheel
+- data-structure/calendar-queue
+- data-structure/radix-heap
+forbidden_neighbors: []
+expected_queries:
+- Heap variant는 binary heap d-ary heap pairing heap radix heap 중 언제 골라?
+- top-1을 반복 추출하면 heap이고 floor ceiling이면 ordered map이라는 기준을 설명해줘
+- Dijkstra open set에서 decrease-key가 필요하면 어떤 heap trade-off를 봐야 해?
+- scheduler timer top-k workload에서 heap 변형 선택 기준은?
+- 특별한 이유가 없으면 binary heap부터 시작하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 heap을 가장 우선순위 높은 값을 반복 추출하는 구조로 보고
+  binary heap, d-ary heap, pairing heap, radix heap, top-k heap, scheduler
+  queue를 비교하는 chooser다. ordered map과 floor/ceiling 요구를 분리한다.
+---
 # Heap Variants
 
 > 한 줄 요약: Heap은 "가장 큰 것" 또는 "가장 작은 것"을 빨리 꺼내는 구조이고, 변형마다 삽입·삭제·갱신의 균형이 다르다.

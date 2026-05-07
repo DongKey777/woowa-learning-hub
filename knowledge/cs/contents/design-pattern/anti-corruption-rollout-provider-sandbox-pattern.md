@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Anti-Corruption Rollout and Provider Sandbox Pattern
+concept_id: design-pattern/anti-corruption-rollout-provider-sandbox-pattern
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- acl-rollout-governance
+- provider-sandbox-parity
+- shadow-translation-canary
+aliases:
+- anti corruption rollout provider sandbox
+- ACL rollout governance
+- provider sandbox parity
+- provider sandbox gap
+- contract test gate
+- shadow translation diff
+- integration canary policy
+- translator rollback switch
+- fallback governance
+- sandbox production gap
+symptoms:
+- provider sandbox를 통과했다는 이유만으로 production payload rare enum, callback 순서, rate-limit 차이를 검증했다고 본다
+- ACL mapping table 변경을 작은 코드 diff로만 보고 shadow/canary/rollback window 없이 primary로 전환한다
+- fallback을 하나로 뭉뚱그려 rollback, degraded result, quarantine, route block을 운영상 구분하지 못한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/anti-corruption-translation-map-pattern
+next_docs:
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/fallback-capacity-and-headroom-contracts
+- design-pattern/read-model-cutover-guardrails
+linked_paths:
+- contents/design-pattern/anti-corruption-layer-operational-pattern.md
+- contents/design-pattern/anti-corruption-contract-test-pattern.md
+- contents/design-pattern/anti-corruption-translation-map-pattern.md
+- contents/design-pattern/anti-corruption-adapter-layering.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/read-model-cutover-guardrails.md
+confusable_with:
+- design-pattern/anti-corruption-layer-operational-pattern
+- design-pattern/anti-corruption-contract-test-pattern
+- design-pattern/canary-promotion-thresholds-projection-cutover
+- design-pattern/fallback-capacity-and-headroom-contracts
+forbidden_neighbors: []
+expected_queries:
+- ACL rollout에서 provider sandbox는 production parity를 보장하지 않으므로 어떤 gap을 별도 guardrail로 메워야 해?
+- mapping table 변경도 semantic contract rollout으로 보고 shadow translation diff와 canary를 거쳐야 하는 이유가 뭐야?
+- contract test baseline, sandbox smoke, prod shadow, canary는 ACL rollout에서 각각 어떤 역할을 해?
+- fallback governance에서 rollback, degrade, quarantine, provider route block을 왜 분리해야 해?
+- old translator나 mapping snapshot을 rollback window 동안 유지해야 하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Anti-Corruption Rollout and Provider Sandbox Pattern playbook으로,
+  ACL 변경을 단순 배포가 아니라 translation contract rollout으로 보고 provider
+  sandbox parity gap, fixture contract test, semantic shadow diff, staged canary,
+  rollback/degrade/quarantine governance를 설계하는 방법을 설명한다.
+---
 # Anti-Corruption Rollout and Provider Sandbox Pattern
 
 > 한 줄 요약: ACL 변경은 코드 배포가 아니라 계약 변경 rollout에 가깝기 때문에, provider sandbox 한계 인식, contract-test gate, shadow/canary, fallback governance를 함께 설계해야 안전하다.

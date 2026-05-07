@@ -1,3 +1,75 @@
+---
+schema_version: 3
+title: Canary Promotion Thresholds for Projection Cutover
+concept_id: design-pattern/canary-promotion-thresholds-projection-cutover
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- projection-canary
+- promotion-thresholds
+- rollback-triggers
+aliases:
+- projection canary promotion threshold
+- projection cutover promotion ladder
+- canary sample size
+- canary dwell time
+- projection rollback trigger threshold
+- canary to primary promotion
+- post-readiness canary gate
+- cursor parity sample floor
+- pagination stage gate
+- strict list canary metrics
+symptoms:
+- projection readiness approval을 바로 primary 승격 승인으로 오해해 canary sample floor와 dwell time 없이 전량 전환한다
+- canary stage를 traffic percentage 하나로만 정의해 strict path, fingerprint bucket, cursor chain coverage가 부족한 상태로 승격한다
+- hard rollback, hold/freeze, budget stop, observability stop trigger를 구분하지 않아 너무 늦거나 너무 과하게 rollback한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/projection-rebuild-backfill-cutover-pattern
+- design-pattern/projection-freshness-slo-pattern
+next_docs:
+- design-pattern/projection-rollback-window-exit-criteria
+- design-pattern/projection-canary-cohort-selection
+- design-pattern/strict-list-canary-metrics-rollback-triggers
+linked_paths:
+- contents/design-pattern/read-model-cutover-guardrails.md
+- contents/design-pattern/projection-canary-cohort-selection.md
+- contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+- contents/design-pattern/projection-rollback-window-exit-criteria.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/design-pattern/strict-pagination-fallback-contracts.md
+- contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md
+- contents/design-pattern/dual-read-pagination-parity-sample-packet-schema.md
+confusable_with:
+- design-pattern/read-model-cutover-guardrails
+- design-pattern/projection-rollback-window-exit-criteria
+- design-pattern/projection-canary-cohort-selection
+- design-pattern/strict-list-canary-metrics-rollback-triggers
+forbidden_neighbors: []
+expected_queries:
+- Projection cutover에서 readiness approval은 canary admission gate이고 primary promotion은 별도 ladder인 이유가 뭐야?
+- canary stage를 traffic share뿐 아니라 sample floor, dwell time, rollback trigger로 정의해야 하는 이유가 뭐야?
+- strict screen, query fingerprint bucket, cursor chain floor를 stage별 승격 조건으로 둬야 하는 이유가 뭐야?
+- paginated endpoint canary에서 first-page parity, second-page continuity, cursor-verdict floor를 따로 보는 이유가 뭐야?
+- hard rollback과 hold freeze와 budget stop과 observability stop trigger는 어떻게 다르게 운영해?
+contextual_chunk_prefix: |
+  이 문서는 Canary Promotion Thresholds for Projection Cutover playbook으로,
+  projection readiness approval 이후 바로 primary로 올리지 않고 stage별 traffic slice,
+  sample floor, dwell time, strict path/fingerprint/cursor coverage, rollback/freeze/budget stop
+  trigger를 promotion ladder로 고정해 canary에서 primary까지 안전하게 승격하는 방법을 설명한다.
+---
 # Canary Promotion Thresholds for Projection Cutover
 
 > 한 줄 요약: readiness approval 뒤의 projection cutover는 "canary를 열 수 있다"와 "primary로 승격할 수 있다"를 분리하고, stage별 traffic slice, 최소 sample size, dwell time, rollback trigger를 고정한 promotion ladder로 운영해야 안전하다.

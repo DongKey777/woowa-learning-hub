@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Spring JpaTransactionManager Savepoint Expectations Mini Card
+concept_id: spring/jpatransactionmanager-savepoint-expectations-mini-card
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- jpatransactionmanager-savepoint-expectations
+- jpatransactionmanager-nested
+- jpa-nested-savepoint
+- nestedtransactionallowed
+aliases:
+- JpaTransactionManager NESTED
+- JPA nested savepoint
+- nestedTransactionAllowed
+- persistence context savepoint mismatch
+- JPA nested rollback misconception
+- JDBC savepoint
+- NESTED propagation JPA caveat
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-transactional-basics.md
+- contents/database/savepoint-partial-rollback.md
+- contents/database/jdbc-jpa-mybatis.md
+expected_queries:
+- JpaTransactionManager에서 NESTED propagation은 JPA 중첩 트랜잭션이야?
+- JPA에서 savepoint rollback 후 persistence context 상태가 왜 그대로일 수 있어?
+- nestedTransactionAllowed 기본값과 JDBC savepoint 기대를 어떻게 봐야 해?
+- @Transactional NESTED와 REQUIRES_NEW를 beginner 관점으로 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 JpaTransactionManager에서 Propagation.NESTED를 JPA nested transaction이
+  아니라 조건부 JDBC savepoint 기대에 가깝게 봐야 한다는 beginner mini card다.
+  nestedTransactionAllowed, JDBC Connection savepoint, persistence context cached
+  entity state, partial rollback misconception을 분리한다.
+---
 # Spring Mini Card: `JpaTransactionManager`에서 `NESTED` 기대가 자주 깨지는 이유
 
 > 한 줄 요약: `JpaTransactionManager`에서 `NESTED`를 봤을 때 초급자가 먼저 기억할 문장은 "`JPA 중첩 트랜잭션`이 아니라, 조건부 JDBC savepoint일 뿐"이다.

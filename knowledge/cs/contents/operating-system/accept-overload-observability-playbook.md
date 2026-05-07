@@ -9,7 +9,10 @@ doc_role: playbook
 level: advanced
 language: mixed
 source_priority: 78
-mission_ids: []
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
 review_feedback_tags:
 - backlog-vs-cq-backlog
 - reuseport-hot-shard

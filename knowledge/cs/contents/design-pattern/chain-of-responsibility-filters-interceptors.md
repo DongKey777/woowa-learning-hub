@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Chain of Responsibility: Filters and Interceptors
+concept_id: design-pattern/chain-of-responsibility-filters-interceptors
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- chain-of-responsibility
+- servlet-filter-chain
+- handler-interceptor-chain
+aliases:
+- chain of responsibility filter interceptor
+- servlet filter chain
+- handlerinterceptor chain
+- request short circuit
+- authentication authorization logging pipeline
+- filter vs interceptor beginner
+- spring filter interceptor chain
+- onceperrequestfilter chain wrapper
+- request pipeline pattern
+- 책임 연쇄 패턴
+symptoms:
+- 인증, 인가, 로깅, 검증을 하나의 service method에 몰아넣어 실패 시 어느 단계에서 막혔는지 추적하기 어렵다
+- Servlet Filter와 Spring HandlerInterceptor와 OncePerRequestFilter를 같은 레벨의 체인으로 혼동한다
+- 요청을 현재 흐름에서 막아야 하는 책임 연쇄 문제와 이미 일어난 일을 알리는 이벤트 문제를 구분하지 못한다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge
+- design-pattern/template-method-vs-filter-interceptor-chain
+- design-pattern/pattern-selection
+next_docs:
+- design-pattern/pipeline-vs-chain-of-responsibility
+- design-pattern/middleware-pattern-language
+- design-pattern/observer-pubsub-application-events
+linked_paths:
+- contents/software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge.md
+- contents/design-pattern/template-method-vs-filter-interceptor-chain.md
+- contents/design-pattern/template-method-framework-lifecycle-examples.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/observer-pubsub-application-events.md
+- contents/design-pattern/pattern-selection.md
+- contents/design-pattern/anti-pattern.md
+confusable_with:
+- design-pattern/pipeline-vs-chain-of-responsibility
+- design-pattern/middleware-pattern-language
+- design-pattern/observer-pubsub-application-events
+- design-pattern/template-method-vs-filter-interceptor-chain
+forbidden_neighbors: []
+expected_queries:
+- Chain of Responsibility는 request를 여러 handler에 순서대로 넘기며 인증 검증 로깅을 어떻게 분리해?
+- Servlet Filter와 HandlerInterceptor는 요청 전역과 controller 전후 시점에서 어떻게 달라?
+- OncePerRequestFilter는 별도 체인이 아니라 Filter 구현용 Template Method base class라는 말은 무슨 뜻이야?
+- 책임 연쇄와 이벤트는 현재 요청을 막는 흐름 제어와 이미 일어난 일을 알리는 통지 관점에서 어떻게 달라?
+- filter chain이 길어질 때 어느 단계에서 short-circuit 되었는지 tracing이 필요한 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Chain of Responsibility filters/interceptors deep dive로, request를
+  인증, 인가, 검증, 로깅 같은 handler chain에 순서대로 통과시키며 각 단계가 next로 넘기거나
+  short-circuit할 수 있는 구조를 설명하고, Servlet Filter, Spring HandlerInterceptor,
+  OncePerRequestFilter, event notification과의 차이를 다룬다.
+---
 # 책임 연쇄 패턴: 필터와 인터셉터로 요청 파이프라인 만들기
 
 > 한 줄 요약: 책임 연쇄 패턴은 요청을 여러 처리자에 통과시키며, 인증·로깅·검증·차단 같은 공통 관심사를 파이프라인으로 분리한다.

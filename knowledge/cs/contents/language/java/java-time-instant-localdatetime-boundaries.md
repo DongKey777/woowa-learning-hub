@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Instant LocalDateTime OffsetDateTime ZonedDateTime Boundary Design
+concept_id: language/java-time-instant-localdatetime-boundaries
+canonical: true
+category: language
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/payment
+- missions/racingcar
+review_feedback_tags:
+- time-boundary
+- serialization
+- scheduling
+aliases:
+- Java time boundary design
+- Instant vs LocalDateTime vs OffsetDateTime vs ZonedDateTime
+- LocalDateTime audit timestamp pitfall
+- OffsetDateTime ZonedDateTime DST schedule
+- monotonic clock timeout deadline Java
+- 자바 시간 타입 선택 경계 설계
+symptoms:
+- createdAt 같은 절대 발생 시각을 LocalDateTime으로 저장해 timezone, DB session, multi-region ordering 문제를 만든다
+- 반복 스케줄을 Instant 하나로만 저장해 사용자의 ZoneId와 DST gap/overlap 정책을 잃어버려
+- timeout이나 elapsed time을 wall clock 기준으로만 계산해 NTP 보정이나 시각 변경에 흔들리는 문제를 놓쳐
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- operating-system/monotonic-clock-wall-clock-timeout-deadline
+- language/io-nio-serialization
+- system-design/distributed-scheduler-design
+next_docs:
+- language/record-serialization-evolution
+- language/json-null-missing-unknown-field-schema-evolution
+- system-design/distributed-scheduler-design
+linked_paths:
+- contents/language/java/io-nio-serialization.md
+- contents/language/java/record-serialization-evolution.md
+- contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md
+- contents/operating-system/monotonic-clock-wall-clock-timeout-deadline.md
+- contents/system-design/distributed-scheduler-design.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+confusable_with:
+- operating-system/monotonic-clock-wall-clock-timeout-deadline
+- system-design/distributed-scheduler-design
+- language/io-nio-serialization
+forbidden_neighbors: []
+expected_queries:
+- Instant LocalDateTime OffsetDateTime ZonedDateTime 차이를 API와 DB 경계 기준으로 비교해줘
+- createdAt은 왜 LocalDateTime보다 Instant가 더 안전한 경우가 많아?
+- 반복 스케줄에서 ZoneId와 ZonedDateTime이 DST 때문에 필요한 이유를 설명해줘
+- API 요청 시간은 OffsetDateTime으로 받고 저장은 Instant로 바꾸는 기준을 알려줘
+- timeout과 deadline 계산에는 왜 wall clock보다 monotonic clock을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 Java time API 타입을 absolute time, wall clock, offset, zone rule, monotonic elapsed time 경계로 비교하는 advanced chooser다.
+  Instant vs LocalDateTime, OffsetDateTime, ZonedDateTime, DST schedule, timeout deadline 질문이 본 문서에 매핑된다.
+---
 # `Instant`, `LocalDateTime`, `OffsetDateTime`, `ZonedDateTime` Boundary Design
 
 > 한 줄 요약: Java time API 타입은 "시간"을 하나로 표현하지 않는다. 절대 시각, 지역 벽시계 시간, 고정 offset, 지역 시간대 규칙을 다른 타입으로 나누며, 이 구분을 API/DB/스케줄링 경계에서 흐리면 DST, 정렬, 재처리 버그가 생긴다.

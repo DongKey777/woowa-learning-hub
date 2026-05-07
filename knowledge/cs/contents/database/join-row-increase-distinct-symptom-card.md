@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: JOIN 뒤 row가 늘었을 때 DISTINCT로 덮으면 안 되는 이유 카드
+concept_id: database/join-row-increase-distinct-symptom-card
+canonical: true
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- join-row-increase-distinct
+- result-row-explosion
+- join-cardinality-debug
+aliases:
+- join duplicates distinct
+- join 뒤 row 증가
+- join result too many rows
+- duplicated rows after join
+- distinct 붙이면 되나요
+- join row explosion symptom
+- group by id로 줄이면 되나요
+- sql join beginner distinct
+- DISTINCT로 덮지 말기
+- join 중복처럼 보여요
+symptoms:
+- JOIN 뒤 부모 row가 여러 줄로 보이자 바로 DISTINCT나 GROUP BY id로 덮으려 하고 있어
+- 정상적인 1:N 펼침과 잘못된 join key, 중복 데이터, 결과 단위 착각을 구분하지 못하고 있어
+- 고객 한 줄, 주문 한 건, 최신 주문 한 건 같은 결과 row 단위를 먼저 정하지 않았어
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/sql-join-basics
+- database/distinct-vs-group-by-beginner-card
+next_docs:
+- database/result-row-explosion-debugging
+- database/left-join-filter-placement-primer
+- database/sql-joins-and-query-order
+linked_paths:
+- contents/database/result-row-explosion-debugging-checklist.md
+- contents/database/sql-join-basics.md
+- contents/database/distinct-vs-group-by-beginner-card.md
+- contents/database/left-join-filter-placement-primer.md
+- contents/database/sql-joins-and-query-order.md
+- contents/spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md
+confusable_with:
+- database/result-row-explosion-debugging
+- database/distinct-vs-group-by-beginner-card
+- database/left-join-filter-placement-primer
+forbidden_neighbors: []
+expected_queries:
+- JOIN 뒤 row가 갑자기 늘었을 때 DISTINCT를 바로 붙이면 왜 위험해?
+- 부모 row가 중복처럼 보일 때 정상적인 1:N 펼침인지 잘못된 join key인지 어떻게 구분해?
+- 고객별 주문 수가 필요한지 고객 목록이 필요한지 결과 row 단위를 먼저 정해야 하는 이유는 뭐야?
+- GROUP BY id로 줄이면 다른 컬럼 의미가 깨질 수 있다는 점을 설명해줘
+- join row explosion을 디버깅할 때 어떤 테이블에서 몇 배가 붙는지 어떻게 확인해?
+contextual_chunk_prefix: |
+  이 문서는 JOIN 뒤 row가 늘었을 때 DISTINCT로 출력만 줄이지 않고 관계 cardinality, 결과 row 단위, join key uniqueness를 먼저 확인하게 하는 beginner symptom router다.
+  join duplicates distinct, join row explosion, DISTINCT로 덮지 말기 같은 자연어 증상 질문이 본 문서에 매핑된다.
+---
 # JOIN 뒤 row가 늘었을 때 DISTINCT로 덮으면 안 되는 이유 카드
 
 > 한 줄 요약: JOIN 뒤 결과가 갑자기 많아졌을 때 `DISTINCT`를 바로 붙이면 증상은 잠깐 가려질 수 있지만, 잘못된 조인 키, 1:N 관계, 결과 단위 착각 같은 원인을 놓치기 쉽다.

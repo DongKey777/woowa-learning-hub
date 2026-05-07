@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Workflow Owner vs Participant Context
+concept_id: design-pattern/workflow-owner-vs-participant-context
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- workflow-owner
+- participant-context
+- ownership-boundary
+aliases:
+- workflow owner
+- participant context
+- workflow owner vs participant context
+- long running workflow ownership
+- handoff policy
+- time boundary ownership
+- orchestration owner
+- review queue ownership
+- owner context
+- participant service
+symptoms:
+- 여러 bounded context가 흐름에 참여할 때 전체 상태, timeout 정책, handoff 결정을 누가 소유하는지 정하지 않는다
+- participant service가 자기 일 이후 다음 participant를 직접 호출해 숨은 orchestration owner가 늘어난다
+- 반대로 owner context가 participant의 결제 한도, 재고 할당, 배송 라우팅 같은 로컬 규칙까지 가져가 God Coordinator가 된다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/process-manager-deadlines-timeouts
+- design-pattern/bounded-context-relationship-patterns
+next_docs:
+- design-pattern/human-approval-manual-review-workflow-pattern
+- design-pattern/escalation-reassignment-queue-ownership-pattern
+- design-pattern/reservation-hold-expiry-consistency-seam
+linked_paths:
+- contents/design-pattern/process-manager-vs-saga-coordinator.md
+- contents/design-pattern/process-manager-deadlines-timeouts.md
+- contents/design-pattern/human-approval-manual-review-workflow-pattern.md
+- contents/design-pattern/escalation-reassignment-queue-ownership-pattern.md
+- contents/design-pattern/reservation-hold-expiry-consistency-seam.md
+- contents/design-pattern/saga-coordinator-pattern-language.md
+- contents/design-pattern/bounded-context-relationship-patterns.md
+confusable_with:
+- design-pattern/process-manager-vs-saga-coordinator
+- design-pattern/orchestration-vs-choreography-failure-handling
+- design-pattern/bounded-context-relationship-patterns
+- design-pattern/human-approval-manual-review-workflow-pattern
+forbidden_neighbors: []
+expected_queries:
+- Workflow owner와 participant context는 전체 상태/시간 정책과 로컬 도메인 규칙 소유권을 어떻게 나눠?
+- participant가 다음 participant를 직접 호출하면 hidden orchestration이 늘어나는 이유가 뭐야?
+- timeout, deadline, reminder cadence는 보통 workflow owner context가 가져야 하는 이유가 뭐야?
+- owner가 모든 participant 세부 규칙까지 가져가면 God Coordinator가 되는 이유가 뭐야?
+- owner와 participant 사이의 command, response, failure interpretation 계약은 어떻게 명시해?
+contextual_chunk_prefix: |
+  이 문서는 Workflow Owner vs Participant Context chooser로, long-running workflow에서
+  owner context는 전체 진행 상태, time boundary, handoff policy, failure interpretation을 소유하고,
+  participant context는 자기 로컬 규칙과 domain fact response만 책임지는 경계 기준을 설명한다.
+---
 # Workflow Owner vs Participant Context
 
 > 한 줄 요약: long-running workflow에서는 모든 서비스가 흐름을 함께 소유하는 게 아니라, owner context가 상태와 시간 정책을 가지고 participant context는 자기 로컬 규칙과 응답만 책임지는 편이 안전하다.

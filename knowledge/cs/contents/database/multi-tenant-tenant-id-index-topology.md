@@ -1,3 +1,70 @@
+---
+schema_version: 3
+title: Multi-Tenant Table Design, Tenant-First Indexing, and Hotspot Control
+concept_id: database/multi-tenant-tenant-id-index-topology
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 91
+mission_ids: []
+review_feedback_tags:
+- multi-tenant
+- tenant-first-index
+- shared-table-design
+- noisy-neighbor
+aliases:
+- multi tenant table design
+- tenant_id index
+- tenant-first composite key
+- shared schema isolation
+- tenant hotspot
+- tenant scoped migration
+- tenant routing registry
+- hot tenant split out
+- tenant_id를 인덱스 앞에 둬야 하나요
+- 멀티테넌트 shared table 설계
+symptoms:
+- shared-table 멀티테넌시에서 tenant_id를 빠뜨린 access path 때문에 다른 tenant row까지 넓게 scan하고 있어
+- 큰 tenant 하나가 buffer pool, batch, purge, query plan까지 흔드는 noisy neighbor가 되었어
+- VIP tenant를 나중에 분리하려는데 PK, FK, backfill, routing registry가 tenant boundary로 정리되어 있지 않아
+intents:
+- design
+- troubleshooting
+prerequisites:
+- database/index-basics
+- database/clustered-index-locality
+next_docs:
+- database/multi-tenant-stats-skew-plan-isolation
+- database/tenant-split-out-routing-cutover
+- database/partition-pruning-hot-cold-data
+linked_paths:
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/database/partition-pruning-hot-cold-data.md
+- contents/database/insert-hotspot-page-contention.md
+- contents/database/hot-row-contention-counter-sharding.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/multi-tenant-stats-skew-plan-isolation.md
+- contents/database/tenant-split-out-routing-cutover-playbook.md
+- contents/database/clustered-index-locality.md
+- contents/database/index-maintenance-window-rollout-playbook.md
+confusable_with:
+- database/multi-tenant-stats-skew-plan-isolation
+- database/partition-pruning-hot-cold-data
+- database/tenant-split-out-routing-cutover
+forbidden_neighbors: []
+expected_queries:
+- shared table 멀티테넌시에서 tenant_id를 composite index 앞쪽에 둬야 하는 이유가 뭐야?
+- tenant-first primary key와 global id plus secondary index의 장단점을 비교해줘
+- noisy neighbor tenant가 생겼을 때 index, queue, shard 분리 순서로 어떻게 대응해?
+- 나중에 VIP tenant를 별도 DB로 옮기려면 처음부터 어떤 tenant boundary를 남겨야 해?
+- tenant 단위 backfill이나 purge가 전체 테이블을 흔들지 않게 설계하는 방법을 알려줘
+contextual_chunk_prefix: |
+  이 문서는 shared-table 멀티테넌시에서 tenant_id를 보안 필터이자 물리 locality, composite key, batch boundary로 설계하는 advanced playbook이다.
+  tenant-first index, noisy neighbor, tenant scoped migration, hot tenant split out 준비 질문이 본 문서에 매핑된다.
+---
 # Multi-Tenant Table Design, Tenant-First Indexing, and Hotspot Control
 
 > 한 줄 요약: shared-table 멀티테넌시는 `tenant_id`를 붙이는 것으로 끝나지 않고, primary key·secondary index·배치 범위를 tenant 경계에 맞춰야 오래 버틴다.

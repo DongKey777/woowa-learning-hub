@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: TCP와 UDP 기초
+concept_id: network/tcp-udp-basics
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 91
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- tcp-vs-udp
+- transport-layer-reliability
+- http3-quic-udp
+aliases:
+- tcp udp basics
+- TCP vs UDP
+- TCP 신뢰성
+- UDP 빠른 전송
+- TCP 연결 지향
+- UDP 비연결
+- packet order guarantee
+- retransmission guarantee
+- QUIC UDP
+- transport layer basics
+- 패킷 순서 보장
+symptoms:
+- TCP는 느리고 UDP는 빠르다는 말만 외워 연결, 재전송, 순서 보장, 혼잡 제어 비용을 설명하지 못한다
+- DNS, 스트리밍, 게임, QUIC 같은 UDP 사용 사례에서 신뢰성을 애플리케이션이나 상위 프로토콜이 맡는다는 점을 놓친다
+- HTTP/3가 UDP 위에서 QUIC으로 신뢰성과 멀티플렉싱을 다시 구현한다는 구조를 TCP/UDP 차이와 연결하지 못한다
+intents:
+- definition
+- comparison
+prerequisites:
+- network/ip-address-port-basics
+next_docs:
+- network/tcp-three-way-handshake-basics
+- network/tcp-congestion-control
+- network/http3-quic-practical-tradeoffs
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+linked_paths:
+- contents/network/tcp-three-way-handshake-basics.md
+- contents/network/tcp-congestion-control.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/dns-basics.md
+confusable_with:
+- network/tcp-three-way-handshake-basics
+- network/http3-quic-practical-tradeoffs
+- network/tcp-keepalive-vs-app-heartbeat
+forbidden_neighbors: []
+expected_queries:
+- TCP와 UDP 차이를 연결 지향, 순서 보장, 재전송, 혼잡 제어 기준으로 설명해줘
+- UDP는 왜 빠르지만 신뢰성 보장은 애플리케이션이나 QUIC 같은 상위 계층이 맡아야 해?
+- DNS는 왜 보통 UDP를 쓰고 HTTP나 DB 접속은 왜 TCP를 쓰는지 비교해줘
+- HTTP/3는 UDP를 쓰는데 QUIC이 어떤 신뢰성과 멀티플렉싱을 다시 제공하는지 알려줘
+- TCP가 느리다는 말이 대역폭이 아니라 handshake와 latency 비용이라는 뜻인지 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 TCP와 UDP를 전송 계층의 연결/신뢰성 설계 차이로 설명하는 beginner primer다.
+  TCP connection, ordering, retransmission, flow control, congestion control, UDP datagram, DNS, streaming, QUIC, HTTP/3, latency와 reliability trade-off를 다룬다.
+---
 # TCP와 UDP 기초
 
 > 한 줄 요약: TCP는 연결을 맺고 순서와 재전송을 보장하며, UDP는 연결 없이 빠르게 보내고 신뢰성 보장은 애플리케이션 몫으로 남긴다.

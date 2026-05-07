@@ -1,3 +1,43 @@
+---
+schema_version: 3
+title: System Call Basics
+concept_id: operating-system/syscall-basics
+canonical: true
+category: operating-system
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 74
+review_feedback_tags:
+- syscall
+- system-call
+- kernel-privileged-operation
+- user-program-requests
+aliases:
+- system call basics
+- syscall basics
+- kernel privileged operation
+- user program requests OS
+- file read write process creation syscall
+intents:
+- definition
+- deep_dive
+linked_paths:
+- contents/operating-system/syscall-user-kernel-boundary.md
+- contents/operating-system/file-descriptor-basics.md
+- contents/operating-system/process-lifecycle-and-ipc-basics.md
+- contents/operating-system/interrupt-basics.md
+- contents/operating-system/ebpf-perf-strace-production-tracing.md
+expected_queries:
+- system call은 program이 OS kernel에게 특권 작업을 요청하는 정식 경로야?
+- file read write process creation 같은 작업은 왜 syscall을 거쳐야 해?
+- user program과 kernel이 만나는 초급 mental model을 설명해줘
+- syscall basics 다음에 user-kernel boundary를 어떻게 이어서 보면 돼?
+contextual_chunk_prefix: |
+  이 문서는 system call을 application이 file I/O, socket I/O, process creation, memory mapping 같은
+  privileged operation을 OS kernel에 요청하는 formal entrypoint로 설명하는 beginner primer다.
+---
 # 시스템 콜 기초
 
 > 한 줄 요약: 시스템 콜은 프로그램이 OS 커널에게 파일 읽기·쓰기·프로세스 생성 같은 특권 작업을 요청하는 유일한 정식 경로다.

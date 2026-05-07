@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Lost Update Detection Patterns
+concept_id: database/lost-update-detection-patterns
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- lost-update-detection
+- optimistic-lock-version-check
+- same-row-overwrite
+aliases:
+- lost update
+- version check
+- optimistic locking
+- compare and swap
+- atomic update
+- same row overwrite
+- lost update vs write skew
+- update where version
+- lost update detection
+- 조용히 덮어쓰기
+symptoms:
+- 같은 row를 두 요청이 읽고 마지막 저장이 앞선 변경을 조용히 덮어쓰는 lost update가 의심돼
+- version column, updated_at, 조건부 update row count로 저장 시점 충돌을 감지해야 해
+- 낙관적 락 후 재시도하려는데 idempotency와 side effect 분리 없이 반복 실행하려 해
+intents:
+- troubleshooting
+- design
+prerequisites:
+- database/transaction-isolation-locking
+- database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+next_docs:
+- database/compare-and-set-version-columns
+- database/compare-and-swap-vs-pessimistic-locks
+- database/idempotent-transaction-retry-envelopes
+linked_paths:
+- contents/database/transaction-isolation-locking.md
+- contents/database/lost-update-vs-write-skew-vs-phantom-timeline-guide.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/compare-and-swap-vs-pessimistic-locks.md
+- contents/database/isolation-anomaly-cheat-sheet.md
+confusable_with:
+- database/lost-update-vs-write-skew-vs-phantom-timeline-guide
+- database/compare-and-set-version-columns
+- database/compare-and-swap-vs-pessimistic-locks
+forbidden_neighbors: []
+expected_queries:
+- lost update는 같은 row overwrite 문제이고 version check로 어떻게 감지해?
+- UPDATE ... WHERE version = ? 결과 row count가 0이면 concurrent modification으로 보는 이유는 뭐야?
+- stock = stock - 1 같은 atomic update가 read-modify-write lost update를 줄이는 이유는 뭐야?
+- optimistic locking 후 retry하려면 idempotency와 external side effect 분리가 왜 필요해?
+- lost update와 dirty read는 왜 같은 문제가 아니야?
+contextual_chunk_prefix: |
+  이 문서는 lost update를 같은 row를 읽고 나중 저장이 앞선 변경을 덮는 문제로 보고 version check, CAS, atomic update, row lock으로 감지/방지하는 advanced playbook이다.
+  lost update, optimistic locking, version check, same row overwrite 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Lost Update Detection Patterns
 
 > 한 줄 요약: lost update는 “마지막 저장이 앞선 변경을 덮어버리는” 문제이고, 버전 검증이나 원자적 갱신으로 막아야 한다.

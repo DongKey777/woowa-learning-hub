@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Gateway JSON vs App JSON Tiny Card
+concept_id: network/gateway-json-vs-app-json-tiny-card
+canonical: false
+category: network
+difficulty: beginner
+doc_role: chooser
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- gateway-json-vs
+- app-json-tiny
+- app-json
+- problem-json-owner
+aliases:
+- gateway json vs app json
+- problem+json owner
+- RFC 7807 beginner
+- Spring ProblemDetail vs gateway
+- 502 JSON 누구 응답
+- 504 problem json
+- app error envelope vs gateway reply
+- title detail status 누구 거야
+intents:
+- comparison
+- troubleshooting
+- definition
+linked_paths:
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/spring-404-problemdetail-framework-vs-domain-bridge.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md
+confusable_with:
+- network/browser-devtools-response-body-ownership-checklist
+- network/browser-devtools-gateway-error-header-clue-card
+- spring/custom-error-dto-to-problemdetail-handoff-primer
+forbidden_neighbors: []
+expected_queries:
+- problem+json이면 무조건 Spring app이 만든 응답이야?
+- 502 JSON과 app JSON을 body shape만으로 구분할 수 있어?
+- Gateway Timeout problem+json이 보일 때 누가 만든 응답인지 어떻게 확인해?
+- title detail status 필드가 있으면 gateway JSON인지 app ProblemDetail인지 어떻게 나눠?
+- app errorCode JSON과 gateway local reply JSON을 초급자 기준으로 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 application/problem+json, title/detail/status, errorCode/message 같은
+  JSON body가 보일 때 gateway/proxy local reply인지 Spring app-owned JSON인지
+  가르는 chooser다. 502/504 JSON, ProblemDetail과 RFC 7807 혼동, gateway도
+  JSON을 줄 수 있는지, body owner를 status/header/trace로 확인하는 query를
+  network troubleshooting 경로에 연결한다.
+---
 # Gateway JSON vs App JSON Tiny Card
 
 > 한 줄 요약: gateway와 Spring app은 둘 다 RFC 7807 계열 `problem+json` 모양을 낼 수 있으므로, "`같은 `title/detail/status`인데 이거 누가 만든 거예요?`"라는 beginner 질문에는 body shape보다 status, header, trace 단서로 owner를 가르는 bridge가 먼저 필요하다.
@@ -13,7 +66,7 @@
 - [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](../spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: gateway problem+json vs spring problemdetail, rfc 7807 gateway vs app, spring problemdetail ownership beginner, same title detail status who made this, 502 problem json vs app error, gateway local reply json, problemdetail 뭐예요 gateway도 쓰나요, json이면 다 앱 에러인가요, devtools problem json why, 처음 gateway json 헷갈려요, app owned json basics, browser response owner clue, what is problem+json owner
+retrieval-anchor-keywords: gateway json vs app json, problem+json owner, rfc 7807 beginner, spring problemdetail vs gateway, 502 json 누구 응답, 504 problem json, title detail status 누구 거예요, json owner first check, app error envelope vs gateway reply, 왜 같은 json 모양이에요, problemdetail basics, gateway local reply json
 
 ## 핵심 개념
 

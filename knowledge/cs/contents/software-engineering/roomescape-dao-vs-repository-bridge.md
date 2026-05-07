@@ -29,13 +29,23 @@ prerequisites:
 linked_paths:
 - contents/software-engineering/repository-dao-entity.md
 - contents/software-engineering/dao-vs-query-model-entrypoint-primer.md
+- contents/software-engineering/repository-interface-contract-primer.md
 forbidden_neighbors:
 - contents/software-engineering/repository-naming-smells-primer.md
+confusable_with:
+- software-engineering/repository-dao-entity
+- software-engineering/dao-vs-query-model
+- software-engineering/repository-interface-contract
 expected_queries:
 - 룸이스케이프 4단계에서 DAO랑 Repository 둘 다 만들어야 해?
 - ReservationDao를 ReservationRepository로 바꿔도 돼?
 - 미션에서 JdbcTemplate 코드를 어디 클래스에 두는 게 맞아?
 - 계층 분리할 때 DAO와 Repository 차이가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 roomescape 4단계 계층 분리에서 DAO와 Repository 이름, 인터페이스,
+  JDBC 구현 경계를 어떻게 나눌지 설명하는 mission_bridge다. ReservationDao,
+  JdbcReservationRepository, Service가 보는 영속화 인터페이스, JdbcTemplate
+  위치 같은 질의를 레이어링과 의존성 방향 판단으로 연결한다.
 ---
 
 # roomescape 4단계 계층 분리에서 DAO와 Repository 어떻게 나누나
@@ -45,6 +55,14 @@ expected_queries:
 **난이도: 🟢 Beginner**
 
 **미션 컨텍스트**: spring-roomescape-admin (Woowa Spring 트랙) — 4단계 계층 분리
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "룸이스케이프 4단계에서 DAO랑 Repository 둘 다 만들어야 하나요?" | `ReservationDao`, `ReservationRepository`, JDBC 구현 이름 선택 | Service가 보는 영속화 계약과 JDBC 실행 구현을 나눈다 |
+| "`ReservationDao`를 `ReservationRepository`로 바꿔도 되나요?" | DAO 이름을 Repository 인터페이스/구현으로 재정리하는 단계 | DB 중심 이름과 도메인 저장 창구 이름의 차이를 본다 |
+| "`JdbcTemplate` 코드를 어디 클래스에 두는 게 맞나요?" | Controller/Service에 JDBC 세부가 새는 코드 | `JdbcReservationRepository` 같은 persistence adapter에 숨긴다 |
 
 관련 문서:
 

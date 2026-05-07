@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Spring DataJpaTest Bulk Update Stale-State Mini Guide
+concept_id: spring/datajpatest-bulk-update-stale-state-mini-guide
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- datajpatest-bulk-update
+- stale-state
+- jpql-bulk-update
+- clear
+aliases:
+- DataJpaTest bulk update stale state
+- JPQL bulk update clear
+- persistence context stale entity
+- TestEntityManager clear
+- @Modifying clearAutomatically
+- bulk update old value after findById
+- JPA bulk update bypass persistence context
+intents:
+- troubleshooting
+- definition
+linked_paths:
+- contents/spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md
+- contents/spring/spring-persistence-context-flush-clear-detach-boundaries.md
+- contents/spring/spring-data-jpa-save-persist-merge-state-transitions.md
+expected_queries:
+- @DataJpaTest에서 bulk update 후 다시 조회했는데 왜 옛값이 보여?
+- JPQL bulk update는 persistence context를 자동으로 갱신해?
+- @Modifying clearAutomatically는 언제 필요해?
+- bulk update 테스트에서 flush와 clear를 왜 명시해야 해?
+contextual_chunk_prefix: |
+  이 문서는 @DataJpaTest 안에서 JPQL bulk update가 DB는 바로 바꾸지만 현재
+  persistence context의 managed entity는 stale state로 남을 수 있다는 착시를
+  beginner 관점에서 설명한다. clear(), 재조회, @Modifying(clearAutomatically),
+  flush/clear 경계를 통해 bulk update 결과를 검증하는 mini guide다.
+---
 # Spring `@DataJpaTest` Bulk Update Stale-State Mini Guide
 
 > 한 줄 요약: JPQL bulk update는 DB를 바로 바꾸지만 현재 persistence context 안의 엔티티는 그대로일 수 있어서, `@DataJpaTest`에서는 `clear()`나 재조회 경계를 의도적으로 드러내야 "왜 값이 안 바뀐 것처럼 보이지?" 착시를 줄일 수 있다.

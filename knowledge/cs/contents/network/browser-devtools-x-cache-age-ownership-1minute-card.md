@@ -1,3 +1,65 @@
+---
+schema_version: 3
+title: "Browser DevTools `X-Cache` / `Age` 1분 헤더 카드"
+concept_id: network/browser-devtools-x-cache-age-ownership-1minute-card
+canonical: true
+category: network
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- cdn-cache-header-ownership
+- x-cache-age-devtools
+- browser-cache-vs-edge-cache
+aliases:
+- x-cache age header
+- cf-cache-status hit
+- devtools cache ownership
+- cdn cache ownership
+- browser cache vs cdn cache
+- age header meaning
+symptoms:
+- X-Cache Hit나 Age가 있는데도 app이 이번 요청을 실시간 계산했다고 단정한다
+- 304/from disk cache와 X-Cache/Age를 같은 browser cache 신호로 섞어 읽는다
+- X-Cache Miss를 보자마자 origin app owner라고 확정한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- network/browser-devtools-gateway-error-header-clue-card
+- network/browser-devtools-cache-trace-primer
+next_docs:
+- network/cdn-vendor-header-crosswalk-cloudfront-cloudflare-mini-card
+- network/browser-devtools-response-body-ownership-checklist
+- network/browser-devtools-cache-trace-primer
+- system-design/cdn-basics
+linked_paths:
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/cdn-vendor-header-crosswalk-cloudfront-cloudflare-mini-card.md
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/browser-devtools-cache-trace-primer.md
+- contents/system-design/cdn-basics.md
+confusable_with:
+- network/browser-devtools-cache-trace-primer
+- network/browser-devtools-gateway-error-header-clue-card
+- network/cdn-vendor-header-crosswalk-cloudfront-cloudflare-mini-card
+- system-design/cdn-basics
+forbidden_neighbors: []
+expected_queries:
+- "DevTools X-Cache와 Age 헤더를 보면 이번 응답 owner를 어떻게 읽어?"
+- "X-Cache Hit와 304 Not Modified는 둘 다 cache인데 층이 어떻게 달라?"
+- "CF-Cache-Status HIT가 보이면 app이 이번 요청을 직접 처리하지 않았다고 봐도 돼?"
+- "X-Cache Miss는 cache 계층 경유와 origin owner 중 무엇을 말해?"
+- "브라우저 cache와 CDN edge cache 단서를 Network 탭에서 구분해줘"
+contextual_chunk_prefix: |
+  이 문서는 DevTools response headers의 X-Cache, Age, CF-Cache-Status를
+  edge/CDN/shared cache ownership 단서로 읽고, 304/from disk cache 같은
+  browser HTTP cache signal과 분리하는 beginner primer다.
+---
 # Browser DevTools `X-Cache` / `Age` 1분 헤더 카드
 
 > 한 줄 요약: DevTools 응답 헤더에서 `X-Cache`, `Age`, `CF-Cache-Status` 같은 cache 단서가 보이면 초급자는 먼저 "이번 body가 app 실시간 계산보다 CDN/cache 재사용 후보인가"를 읽고, app ownership 확정은 잠시 보류하는 편이 안전하다.

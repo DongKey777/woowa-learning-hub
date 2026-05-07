@@ -9,6 +9,14 @@ doc_role: primer
 level: beginner
 language: mixed
 source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- mvc-controller
+- mvc
+- controller
+- restcontroller
 aliases:
 - Spring MVC
 - Controller
@@ -19,6 +27,8 @@ intents:
 linked_paths:
 - contents/spring/spring-mvc-request-lifecycle-basics.md
 - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- contents/spring/spring-controller-entity-return-vs-dto-return-primer.md
+- contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md
 expected_queries:
 - Spring MVC가 뭐야?
 - Controller는 요청을 어떻게 받아?
@@ -32,10 +42,17 @@ contextual_chunk_prefix: |
   클래스, RestController vs Controller, @RequestMapping 자연어 paraphrase가
   본 문서의 큰 그림에 매핑된다.
 ---
-
 # Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름
 
 > 한 줄 요약: 처음 배우는데 Spring MVC 큰 그림이 헷갈리면, HTTP 요청을 `DispatcherServlet`이 받아 컨트롤러를 찾고 실행해 응답으로 돌려주는 흐름만 먼저 잡으면 된다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "Controller가 요청을 어떻게 받아요?" | roomescape 예약 생성 API에서 URL, HTTP method, request body를 method에 묶는 첫 구현 | DispatcherServlet이 handler method를 찾아 실행하는 흐름을 잡는다 |
+| "`@Controller`랑 `@RestController` 차이가 뭐예요?" | shopping-cart API가 HTML view가 아니라 JSON response를 돌려줘야 하는 상황 | view rendering과 response body 직렬화 경계를 나눈다 |
+| "컨트롤러가 service를 어디까지 불러야 해요?" | endpoint method 안에서 validation, use case 호출, response mapping이 섞이는 코드 | controller는 웹 입구이고 business 흐름은 service로 넘기는 구조를 본다 |
 
 **난이도: 🟢 Beginner**
 

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: DDD Bounded Context Failure Patterns
+concept_id: software-engineering/bounded-context-failure-patterns
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- ddd
+- bounded-context
+- domain-boundary
+- distributed-monolith
+aliases:
+- DDD Bounded Context Failure Patterns
+- bounded context failure smells
+- domain boundary failure patterns
+- ubiquitous language drift
+- distributed monolith from wrong context split
+- shared kernel overuse smell
+symptoms:
+- 같은 Order, Member, Payment 같은 이름이 팀마다 다른 의미로 쓰이는데 하나의 모델이나 shared kernel로 계속 합치려 해
+- 결제, 배송, 정산 규칙 변경이 하나의 도메인 객체와 서비스에 몰려 테스트와 배포 범위가 계속 커져
+- 외부 API, 레거시 DB, 파트너 상태값이 ACL 없이 내부 도메인 언어와 상태 전이를 오염시켜
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/anti-corruption-layer
+next_docs:
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/outbox-inbox-domain-events
+- software-engineering/consistency-boundary
+linked_paths:
+- contents/software-engineering/ddd-hexagonal-consistency.md
+- contents/software-engineering/outbox-inbox-domain-events.md
+- contents/software-engineering/clean-architecture-layered-modular-monolith.md
+- contents/software-engineering/modular-monolith-boundary-enforcement.md
+- contents/software-engineering/anti-corruption-layer-integration-patterns.md
+- contents/software-engineering/consistency-boundary-patterns.md
+- contents/software-engineering/aggregate-persistence-mapping-pitfalls.md
+confusable_with:
+- software-engineering/ddd-hexagonal-consistency
+- software-engineering/modular-monolith-boundary-enforcement
+- software-engineering/clean-architecture-layered-modular-monolith
+forbidden_neighbors: []
+expected_queries:
+- 바운디드 컨텍스트를 잘못 나누면 왜 분산 모놀리스가 되는지 실패 신호로 설명해줘
+- 같은 Order 모델을 여러 팀이 공유할 때 ubiquitous language가 어떻게 깨지는지 알려줘
+- shared kernel을 많이 쓰면 bounded context 경계가 왜 약해지는지 사례로 설명해줘
+- ACL 없이 외부 배송사나 결제사 모델을 내부 도메인에 넣으면 어떤 문제가 생겨?
+- 도메인 경계를 팀 경계와 모델 의미 기준으로 다시 나누려면 어떤 증상을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 DDD bounded context가 잘못 나뉠 때 나타나는 ubiquitous language drift, shared kernel overuse, ACL 부재, distributed monolith 증상을 진단하는 advanced symptom router이다.
+---
 # DDD Bounded Context Failure Patterns
 
 > 한 줄 요약: 바운디드 컨텍스트는 이름을 나누는 기술이 아니라, 변화와 책임을 분리하는 장치다. 잘못 나누면 분산 모놀리스가 된다.

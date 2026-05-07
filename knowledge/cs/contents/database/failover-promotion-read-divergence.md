@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: Failover Promotion과 Read Divergence
+concept_id: database/failover-promotion-read-divergence
+canonical: true
+category: database
+difficulty: intermediate
+doc_role: symptom_router
+level: intermediate
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- failover-promotion-read-divergence
+- topology-cache-stale-read
+- post-promotion-freshness-split
+aliases:
+- failover promotion read divergence
+- promotion read divergence
+- stale primary read
+- topology cache
+- visibility window
+- post promotion stale read
+- old primary still serving reads
+- some pods old some new
+- failover 후 읽기 결과 다름
+- 승격 후 stale read
+symptoms:
+- failover 직후 어떤 화면은 새 값, 어떤 화면은 옛 값을 보여 read authority가 갈라져 있어
+- 새 primary 승격은 됐는데 일부 app instance가 old primary나 stale replica를 계속 읽고 있어
+- lag metric은 정상인데 topology cache나 DNS TTL 때문에 stale read가 이어지는 것 같아
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/replication-failover-split-brain
+- database/replica-lag-read-after-write-strategies
+next_docs:
+- database/failover-visibility-window-topology-cache-playbook
+- database/commit-horizon-after-failover-verification
+- database/replica-lag-observability-routing-slo
+- database/replica-read-routing-anomalies
+linked_paths:
+- contents/database/replication-failover-split-brain.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/commit-horizon-after-failover-verification.md
+- contents/database/primary-switch-write-fencing.md
+confusable_with:
+- database/failover-visibility-window-topology-cache-playbook
+- database/commit-horizon-after-failover-verification
+- database/replica-lag-observability-routing-slo
+forbidden_neighbors: []
+expected_queries:
+- failover promotion 후 read divergence가 생기는 이유를 old primary, new primary, topology cache 관점에서 설명해줘
+- 새 primary 승격 후 일부 요청만 옛 값을 읽으면 replication lag와 topology cache stale을 어떻게 구분해?
+- some pods old some new 상태에서 read authority를 하나로 모으려면 무엇을 봐야 해?
+- failover 직후 stale primary가 읽기 경로에 남으면 어떤 사용자 증상이 생겨?
+- promotion read divergence와 commit horizon write loss는 어떻게 다르게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 failover promotion 뒤 old primary, new primary, stale replica, topology cache 때문에 read authority가 갈라지는 read divergence 증상을 라우팅하는 intermediate symptom router다.
+  failover promotion, read divergence, stale primary, topology cache, post promotion stale read 같은 자연어 질문이 본 문서에 매핑된다.
+---
 # Failover Promotion과 Read Divergence
 
 > 한 줄 요약: failover가 끝나도 읽기 결과가 바로 하나로 모이지 않으면, 사용자는 같은 데이터베이스를 두 개의 진실로 경험한다.

@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: "ECN, Congestion Signal, Tail Latency"
+concept_id: network/ecn-congestion-signal-tail-latency
+canonical: true
+category: network
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 79
+mission_ids: []
+review_feedback_tags:
+- congestion-control-signals
+- ecn-tail-latency
+- queue-buildup-diagnostics
+aliases:
+- ECN congestion signal
+- Explicit Congestion Notification
+- tail latency queue buildup
+- CWR ECE flags
+- AQM RED congestion
+- lossless congestion signal
+symptoms:
+- packet loss는 적은데 p95 p99 latency가 계속 튀는 원인을 queue buildup과 연결하지 못한다
+- ECN marking을 loss나 retransmission과 같은 늦은 혼잡 신호로 오해한다
+- TCP와 QUIC 경로에서 congestion signal 처리 차이를 tail latency 관점으로 보지 못한다
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- network/tcp-congestion-control
+- network/packet-loss-jitter-reordering-diagnostics
+next_docs:
+- network/http3-quic-practical-tradeoffs
+- network/http2-multiplexing-hol-blocking
+- network/timeout-retry-backoff-practical
+linked_paths:
+- contents/network/tcp-congestion-control.md
+- contents/network/packet-loss-jitter-reordering-diagnostics.md
+- contents/network/http2-multiplexing-hol-blocking.md
+- contents/network/http3-quic-practical-tradeoffs.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- network/tcp-congestion-control
+- network/packet-loss-jitter-reordering-diagnostics
+- network/http3-quic-practical-tradeoffs
+- network/timeout-retry-backoff-practical
+forbidden_neighbors: []
+expected_queries:
+- "ECN은 packet loss 전에 혼잡을 어떻게 알리고 tail latency를 줄여?"
+- "loss는 적은데 p99 latency가 튀면 queue buildup과 ECN을 어떻게 의심해?"
+- "TCP ECE CWR 플래그와 Explicit Congestion Notification 흐름을 설명해줘"
+- "AQM RED 같은 장치와 ECN marking은 어떤 관계야?"
+- "QUIC과 TCP가 congestion signal을 다르게 처리하면 latency 관찰이 어떻게 달라져?"
+contextual_chunk_prefix: |
+  이 문서는 ECN Explicit Congestion Notification, ECE/CWR flags,
+  active queue management, queue buildup, packet loss before/after signal,
+  p95/p99 tail latency를 연결하는 advanced congestion-control deep dive다.
+---
 # ECN, Congestion Signal, Tail Latency
 
 > 한 줄 요약: ECN은 패킷을 버리기 전에 혼잡을 먼저 알리는 신호라서, 손실보다 부드럽게 지연 악화를 줄이는 데 쓰인다.

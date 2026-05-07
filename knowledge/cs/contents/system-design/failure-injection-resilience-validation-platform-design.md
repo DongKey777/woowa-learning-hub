@@ -1,3 +1,56 @@
+---
+schema_version: 3
+title: Failure Injection / Resilience Validation Platform 설계
+concept_id: system-design/failure-injection-resilience-validation-platform-design
+canonical: false
+category: system-design
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- failure injection
+- resilience validation
+- chaos engineering platform
+- fault injection
+aliases:
+- failure injection
+- resilience validation
+- chaos engineering platform
+- fault injection
+- dependency latency
+- zonal outage simulation
+- steady state hypothesis
+- blast radius budget
+- resilience experiment
+- recovery validation
+- global failover drill
+- Failure Injection / Resilience Validation Platform 설계
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/system-design/backup-restore-disaster-recovery-drill-design.md
+- contents/system-design/automated-canary-analysis-rollback-platform-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/service-discovery-health-routing-design.md
+- contents/system-design/distributed-tracing-pipeline-design.md
+- contents/system-design/stateful-workload-placement-failover-control-plane-design.md
+- contents/system-design/global-traffic-failover-control-plane-design.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- Failure Injection / Resilience Validation Platform 설계 설계 핵심을 설명해줘
+- failure injection가 왜 필요한지 알려줘
+- Failure Injection / Resilience Validation Platform 설계 실무 트레이드오프는 뭐야?
+- failure injection 설계에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: 이 문서는 system-design 카테고리에서 Failure Injection / Resilience Validation Platform 설계를 다루는 deep_dive 문서다. failure injection과 resilience validation 플랫폼은 timeout, partial outage, dependency slowness, zone loss 같은 장애 조건을 통제된 방식으로 주입하고, 시스템의 복원력과 runbook의 실제 유효성을 검증하는 운영 검증 시스템이다. 검색 질의가 failure injection, resilience validation, chaos engineering platform, fault injection처럼 들어오면 확장성, 일관성, 장애 격리, 운영 검증 관점으로 연결한다.
+---
 # Failure Injection / Resilience Validation Platform 설계
 
 > 한 줄 요약: failure injection과 resilience validation 플랫폼은 timeout, partial outage, dependency slowness, zone loss 같은 장애 조건을 통제된 방식으로 주입하고, 시스템의 복원력과 runbook의 실제 유효성을 검증하는 운영 검증 시스템이다.

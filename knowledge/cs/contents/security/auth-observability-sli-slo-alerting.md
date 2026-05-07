@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: 'Auth Observability: SLI / SLO / Alerting'
+concept_id: security/auth-observability-sli-slo-alerting
+canonical: false
+category: security
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 82
+mission_ids: []
+review_feedback_tags:
+- auth observability
+- authentication SLI
+- authorization telemetry
+- auth SLO
+aliases:
+- auth observability
+- authentication SLI
+- authorization telemetry
+- auth SLO
+- JWKS metrics
+- token verification metrics
+- 401 spike alerting
+- revocation lag
+- auth dashboards
+- security telemetry
+- decision metrics
+- identity error budget
+symptoms: []
+intents:
+- deep_dive
+- design
+prerequisites: []
+next_docs: []
+linked_paths:
+- contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/authz-decision-logging-design.md
+- contents/security/emergency-grant-cleanup-metrics.md
+- contents/security/jwt-signature-verification-failure-playbook.md
+- contents/security/jwt-jwks-outage-recovery-failover-drills.md
+- contents/security/authorization-runtime-signals-shadow-evaluation.md
+- contents/security/trust-boundary-bypass-detection-signals.md
+- contents/security/session-revocation-at-scale.md
+- contents/security/revocation-propagation-lag-debugging.md
+- contents/security/token-misuse-detection-replay-containment.md
+confusable_with: []
+forbidden_neighbors: []
+expected_queries:
+- 'Auth Observability: SLI / SLO / Alerting 핵심 개념을 설명해줘'
+- auth observability가 왜 필요한지 알려줘
+- 'Auth Observability: SLI / SLO / Alerting 실무 설계 포인트는 뭐야?'
+- auth observability에서 흔한 실수는 무엇이야?
+contextual_chunk_prefix: '이 문서는 security 카테고리에서 Auth Observability: SLI / SLO / Alerting를 다루는 deep_dive 문서다. 인증과 인가의 운영 품질은 단순 401 카운트가 아니라, login, token issuance, verification, JWKS refresh, revocation, decision logging을 단계별로 계측하고 bucketed failure와 propagation lag를 함께 보는 observability 설계로 결정된다. 검색 질의가 auth observability, authentication SLI, authorization telemetry, auth SLO처럼 들어오면 인증/인가 보안 설계, 운영 진단, 사고 대응 관점으로 연결한다.'
+---
 # Auth Observability: SLI / SLO / Alerting
 
 > 한 줄 요약: 인증과 인가의 운영 품질은 단순 401 카운트가 아니라, login, token issuance, verification, JWKS refresh, revocation, decision logging을 단계별로 계측하고 bucketed failure와 propagation lag를 함께 보는 observability 설계로 결정된다.

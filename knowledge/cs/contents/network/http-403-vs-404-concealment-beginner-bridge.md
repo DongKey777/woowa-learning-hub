@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: "403 vs 404 Concealment Beginner Bridge"
+concept_id: network/http-403-vs-404-concealment-beginner-bridge
+canonical: true
+category: network
+difficulty: beginner
+doc_role: bridge
+level: beginner
+language: mixed
+source_priority: 83
+mission_ids: []
+review_feedback_tags:
+- status-code-semantics
+- authz-concealment
+- beginner-http
+aliases:
+- 403 vs 404 concealment
+- intentional 404
+- hidden 404 basics
+- forbidden vs not found auth
+- resource concealment intro
+- 남의 주문인데 왜 404
+symptoms:
+- 권한 실패는 무조건 403이고 404는 URL 오타라고만 해석한다
+- user-owned resource나 tenant 자원에서 존재 노출 위험을 놓친다
+- concealment 404와 진짜 missing 404를 같은 내부 의미로 뭉갠다
+intents:
+- definition
+- comparison
+- troubleshooting
+prerequisites:
+- network/http-status-codes-basics
+- network/http-request-response-basics-url-dns-tcp-tls-keepalive
+next_docs:
+- security/auth-failure-response-401-403-404
+- security/concealment-404-entry-cues
+- network/http-request-response-headers-basics
+linked_paths:
+- contents/network/http-status-codes-basics.md
+- contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md
+- contents/network/http-request-response-headers-basics.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/concealment-404-entry-cues.md
+confusable_with:
+- network/http-status-codes-basics
+- security/auth-failure-response-401-403-404
+- security/concealment-404-entry-cues
+forbidden_neighbors: []
+expected_queries:
+- "권한이 없는데 왜 403 대신 404를 줄 수 있어?"
+- "남의 주문 상세를 요청했을 때 404 concealment를 쓰는 이유는?"
+- "403과 의도적 404는 HTTP 계약상 어떻게 달라?"
+- "404가 URL 오타인지 존재 숨김인지 초보자는 어떻게 구분해?"
+- "tenant 자원에서 resource concealment를 어떻게 설명해야 해?"
+contextual_chunk_prefix: |
+  이 문서는 HTTP 403 Forbidden, 404 Not Found, intentional concealment 404,
+  user-owned/tenant resource의 존재 노출 정책을 beginner 관점에서 연결하는
+  bridge 문서다.
+---
 # `403` vs `404` Concealment: 존재를 숨길 때 초보자가 읽는 법
 
 > 한 줄 요약: `403`은 "리소스는 맞지만 너에게 허용되지 않음"을 드러내는 응답이고, 의도적 `404`는 같은 인가 실패라도 리소스 존재를 숨기기 위해 바깥 계약을 더 보수적으로 고른 경우다.

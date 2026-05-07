@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Hot Tenant Split-Out, Routing, and Cutover Playbook
+concept_id: database/tenant-split-out-routing-cutover
+canonical: true
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- multi-tenant
+- tenant-split
+- routing-cutover
+- backfill
+- fencing
+aliases:
+- hot tenant split out
+- tenant routing cutover
+- tenant migration playbook
+- shared table to dedicated shard
+- dual write tenant move
+- tenant-specific backfill
+- noisy neighbor isolation
+- tenant routing registry
+- write fence cutover
+- dedicated tenant shard
+symptoms:
+- shared-table에서 특정 tenant가 전체 p99나 buffer pool을 흔들어 dedicated shard로 분리해야 해
+- tenant split-out 중 일부 API는 새 DB, 일부 job은 옛 DB를 보는 routing split brain을 막아야 해
+- snapshot backfill 이후 catch-up, write fence, routing flip 순서를 설계해야 해
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- database/multi-tenant-tenant-id-index-topology
+- database/online-backfill-consistency
+next_docs:
+- database/schema-migration-partitioning-cdc-cqrs
+- database/read-your-writes-session-pinning
+- database/application-level-fencing-token-propagation
+linked_paths:
+- contents/database/multi-tenant-tenant-id-index-topology.md
+- contents/database/online-backfill-consistency.md
+- contents/database/schema-migration-partitioning-cdc-cqrs.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/application-level-fencing-token-propagation.md
+- contents/database/multi-tenant-stats-skew-plan-isolation.md
+confusable_with:
+- database/multi-tenant-tenant-id-index-topology
+- database/online-backfill-consistency
+- database/schema-migration-partitioning-cdc-cqrs
+forbidden_neighbors: []
+expected_queries:
+- hot tenant를 shared table에서 dedicated shard로 split out할 때 routing cutover 순서를 알려줘
+- tenant migration에서 데이터 복사보다 routing registry와 write fence가 더 어려운 이유가 뭐야?
+- snapshot backfill, catch-up, final delta, routing flip, source tombstone 순서를 어떻게 설계해?
+- 일부 API는 새 DB를 보고 background job은 옛 DB를 보는 tenant split brain을 어떻게 막아?
+- dual write tenant move는 왜 위험하고 CDC catch-up과 짧은 transition으로 제한하는 편이 나아?
+contextual_chunk_prefix: |
+  이 문서는 hot tenant split-out을 shared table to dedicated shard, tenant routing registry, backfill catch-up, write fence, routing cutover 관점으로 다루는 advanced playbook이다.
+  tenant migration, noisy neighbor isolation, dual write tenant move, routing split brain 질문이 본 문서에 매핑된다.
+---
 # Hot Tenant Split-Out, Routing, and Cutover Playbook
 
 > 한 줄 요약: shared-table에서 hot tenant를 분리하는 일은 데이터 복사보다, 어떤 요청부터 어디로 보낼지와 dual-run 구간을 어떻게 안전하게 관리할지가 더 어렵다.

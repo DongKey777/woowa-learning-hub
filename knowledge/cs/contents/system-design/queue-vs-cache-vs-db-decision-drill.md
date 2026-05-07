@@ -53,7 +53,9 @@ confusable_with:
 - system-design/caching-basics
 - system-design/message-queue-basics
 - system-design/per-key-queue-vs-direct-api-primer
-forbidden_neighbors: []
+forbidden_neighbors:
+- contents/system-design/job-queue-design.md
+- contents/system-design/distributed-cache-design.md
 expected_queries:
 - 저장은 해야 하고 메일은 나중에 보내고 싶은데 DB랑 queue를 어떻게 나눠?
 - 조회 속도 문제인지 비동기 처리 문제인지 구분하는 가장 쉬운 기준이 뭐야?

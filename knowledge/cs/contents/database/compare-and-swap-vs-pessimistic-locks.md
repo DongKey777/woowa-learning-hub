@@ -1,3 +1,71 @@
+---
+schema_version: 3
+title: Compare-and-Swap vs Pessimistic Locks
+concept_id: database/compare-and-swap-vs-pessimistic-locks
+canonical: true
+category: database
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- cas-vs-pessimistic-lock
+- optimistic-lock
+- select-for-update
+- conflict-control
+aliases:
+- compare and swap vs pessimistic locks
+- compare and swap
+- pessimistic lock
+- optimistic lock vs pessimistic lock
+- version column vs select for update
+- CAS vs pessimistic locking
+- lock first or retry later
+- lost update prevention
+- 비관적 락 CAS
+- 낙관적 락 비관적 락
+symptoms:
+- 충돌이 낮은 작업에도 SELECT FOR UPDATE로 먼저 잠가 대기와 deadlock 가능성을 키운다
+- 충돌이 높은 재고/예약 경로에 CAS만 걸어 retry 폭증과 사용자 실패율을 키운다
+- CAS는 나중에 충돌 감지, pessimistic lock은 먼저 충돌 예방이라는 철학 차이를 구분하지 못한다
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- database/transaction-boundary-isolation-locking-framework
+- database/compare-and-set-version-columns
+- database/lost-update-detection-patterns
+next_docs:
+- database/advisory-locks-vs-row-locks
+- database/queue-claim-skip-locked-fairness
+- database/spring-jpa-locking-example-guide
+linked_paths:
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/compare-and-set-version-columns.md
+- contents/database/lost-update-detection-patterns.md
+- contents/database/advisory-locks-vs-row-locks.md
+- contents/database/queue-claim-skip-locked-fairness.md
+- contents/database/spring-jpa-locking-example-guide.md
+confusable_with:
+- database/compare-and-set-version-columns
+- database/advisory-locks-vs-row-locks
+- database/transaction-boundary-isolation-locking-framework
+- database/queue-claim-skip-locked-fairness
+forbidden_neighbors: []
+expected_queries:
+- CAS와 pessimistic lock은 충돌을 나중에 감지하는 방식과 미리 막는 방식으로 어떻게 달라?
+- 충돌이 낮고 재시도가 쉬운 프로필 수정은 version CAS가 나은 이유가 뭐야?
+- 재고 1개 구매나 예약처럼 충돌이 높고 중복이 치명적인 경우 SELECT FOR UPDATE를 검토하는 이유가 뭐야?
+- CAS retry가 늘어날 때 비관적 락이나 hybrid로 바꿔야 하는 기준을 알려줘
+- pessimistic lock을 외부 API가 섞인 긴 transaction에 쓰면 대기와 deadlock이 커지는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Compare-and-Swap vs Pessimistic Locks chooser로, version/CAS optimistic conflict detection과
+  SELECT FOR UPDATE pessimistic conflict prevention을 conflict rate, retry cost, wait/deadlock risk, invariant criticality
+  기준으로 선택하는 방법을 설명한다.
+---
 # Compare-and-Swap과 Pessimistic Locks
 
 > 한 줄 요약: CAS는 충돌을 나중에 감지하고, pessimistic lock은 충돌을 미리 막는다.

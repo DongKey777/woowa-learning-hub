@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Java Array Copy and Clone Basics
+concept_id: language/java-array-copy-clone-basics
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 94
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- array-copy
+- aliasing
+- shallow-copy
+aliases:
+- Java Array Copy and Clone Basics
+- 배열 대입 복사 차이
+- array assignment alias vs copy
+- clone vs Arrays.copyOf beginner
+- nested array shallow copy
+- 한쪽 바꾸면 다른 쪽도 같이 바뀜 배열
+symptoms:
+- copied = original을 복사라고 생각해 두 변수가 같은 배열을 가리키는 alias 상태임을 놓쳐
+- clone과 Arrays.copyOf가 중첩 배열 안쪽 row까지 복사한다고 오해해 2차원 배열 수정 전파 문제를 만든다
+- 값 비교 false 문제와 같은 배열 공유 문제를 구분하지 못해 equality 도구를 써야 할지 copy 도구를 써야 할지 헷갈려
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- language/java-array-common-confusion-checklist
+- language/java-array-debug-printing-basics
+- language/java-array-equality-basics
+next_docs:
+- language/java-2d-array-deeptostring-deepequals-shallow-copy-bridge
+- language/immutable-objects-and-defensive-copying
+- language/array-to-list-conversion-entrypoint-primer
+linked_paths:
+- contents/language/java/java-language-basics.md
+- contents/language/java/java-parameter-passing-pass-by-value-side-effects-primer.md
+- contents/language/java/java-array-debug-printing-basics.md
+- contents/language/java/java-arrays-method-choice-30-second-card.md
+- contents/language/java/java-array-common-confusion-checklist.md
+- contents/language/java/java-array-equality-basics.md
+- contents/language/java/immutable-objects-and-defensive-copying.md
+- contents/language/java/array-to-list-conversion-entrypoint-primer.md
+- contents/language/java/java-2d-array-deeptostring-deepequals-shallow-copy-bridge.md
+confusable_with:
+- language/java-array-equality-basics
+- language/java-array-debug-printing-basics
+- language/immutable-objects-and-defensive-copying
+forbidden_neighbors: []
+expected_queries:
+- Java 배열에서 대입과 clone과 Arrays.copyOf 차이를 설명해줘
+- 배열 한쪽을 바꾸면 다른 쪽도 같이 바뀌는 이유가 뭐야?
+- int[][] clone이 shallow copy라서 row가 공유되는 예제를 보여줘
+- clone과 Arrays.copyOf 중 언제 어떤 것을 써야 해?
+- 배열 copy 문제와 equality 문제를 증상으로 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 Java array assignment alias, clone, Arrays.copyOf, shallow copy, nested array row sharing을 설명하는 beginner primer다.
+  배열 복사, clone vs copyOf, copied = original, shallow copy, 한쪽 바꾸면 같이 바뀜 질문이 본 문서에 매핑된다.
+---
 # Java Array Copy and Clone Basics
 
 > 한 줄 요약: 배열 변수 대입은 copy가 아니라 alias를 만들고, `clone()`과 `Arrays.copyOf()`는 새 바깥 배열을 만들지만 중첩 배열에서는 둘 다 shallow copy라서 안쪽 배열은 공유한다.

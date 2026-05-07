@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Prototype, Spike, and Productionization Boundaries
+concept_id: software-engineering/prototype-spike-productionization
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- prototype
+- spike
+- productionization
+- lifecycle
+aliases:
+- Prototype Spike Productionization Boundaries
+- prototype to production boundary
+- spike vs prototype vs productionization
+- experiment to production hardening
+- graduation criteria prototype
+- endless pilot
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/production-readiness-review
+next_docs:
+- software-engineering/service-bootstrap-governance
+- software-engineering/technology-radar-adoption-governance
+- software-engineering/service-portfolio-lifecycle-governance
+linked_paths:
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+- contents/software-engineering/service-bootstrap-governance.md
+- contents/software-engineering/production-readiness-review.md
+- contents/software-engineering/technology-radar-adoption-governance.md
+- contents/software-engineering/architecture-runway-refactoring-window.md
+- contents/software-engineering/service-portfolio-lifecycle-governance.md
+confusable_with:
+- software-engineering/production-readiness-review
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/service-bootstrap-governance
+forbidden_neighbors: []
+expected_queries:
+- spike, prototype, productionization은 각각 학습, 사용자 검증, 운영 가능성 확보로 어떻게 다른지 비교해줘
+- prototype이 성공했다고 바로 production ready는 아닌 이유와 hardening backlog를 알려줘
+- 임시 배치 스크립트나 admin tool이 운영 경로에 들어가면 언제 productionization 대상으로 봐야 해?
+- prototype path에 owner, user_scope, expires_at, graduation requirements를 붙여야 하는 이유는?
+- graduation criteria 없이 일단 운영이 되면 어떤 보안, observability, on-call, rollback 부채가 생겨?
+contextual_chunk_prefix: |
+  이 문서는 spike, prototype, PoC와 productionization의 경계를 구분하고 임시 산출물이 운영 시스템으로 굳기 전 graduation criteria를 정하는 advanced chooser이다.
+---
 # Prototype, Spike, and Productionization Boundaries
 
 > 한 줄 요약: spike와 prototype은 학습을 위한 산출물이고 productionization은 별도의 작업인데, 이 경계를 흐리게 두면 임시 코드가 운영 책임과 규제를 떠안는 시스템으로 조용히 굳어 버린다.

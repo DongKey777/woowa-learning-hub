@@ -1,3 +1,64 @@
+---
+schema_version: 3
+title: Consumer Migration Playbook and Contract Adoption
+concept_id: software-engineering/consumer-migration-playbook
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 89
+mission_ids: []
+review_feedback_tags:
+- consumer-migration
+- contract-adoption
+- rollout
+aliases:
+- Consumer Migration Playbook and Contract Adoption
+- consumer migration playbook
+- contract adoption
+- consumer registry rollout order
+- dual run migration verification
+- 소비자 계약 전환 순서
+symptoms:
+- 새 API나 이벤트 계약을 만들고도 어떤 consumer를 어떤 순서로 옮길지, 늦는 팀을 어떻게 처리할지 adoption plan이 없어
+- consumer registry, dual run, migration verification, fallback 조건 없이 old contract를 끊어 lagging consumer를 장애로 만들어
+- migration 실패 시 계약 자체 rollback과 특정 consumer rollout pause를 구분하지 못해 복구 범위가 과하게 커져
+intents:
+- design
+- troubleshooting
+- deep_dive
+prerequisites:
+- software-engineering/api-versioning-contracts-acl
+- software-engineering/api-contract-testing
+next_docs:
+- software-engineering/migration-wave-governance
+- software-engineering/migration-scorecards
+- software-engineering/migration-stop-loss-governance
+linked_paths:
+- contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md
+- contents/software-engineering/api-contract-testing-consumer-driven.md
+- contents/software-engineering/strangler-fig-migration-contract-cutover.md
+- contents/software-engineering/service-deprecation-sunset-lifecycle.md
+- contents/software-engineering/change-ownership-handoff-boundaries.md
+- contents/software-engineering/migration-wave-governance-decision-rights.md
+- contents/software-engineering/migration-scorecards.md
+- contents/software-engineering/migration-stop-loss-scope-reduction-governance.md
+confusable_with:
+- software-engineering/migration-wave-governance
+- software-engineering/migration-scorecards
+- software-engineering/compatibility-waiver-governance
+forbidden_neighbors: []
+expected_queries:
+- consumer migration playbook은 새 계약을 누가 언제 어떤 순서로 채택하는지 어떻게 설계해?
+- 내부 서비스, 모바일 앱, 외부 파트너 consumer를 어떤 순서로 contract adoption rollout해야 해?
+- dual run과 shadow compare를 consumer migration 검증에 어디에 넣어야 해?
+- lagging consumer가 있으면 deprecation timeline 연장, old contract 유지, scope reduction을 어떻게 판단해?
+- migration 실패 시 전체 contract rollback과 특정 consumer pause를 어떻게 분리해?
+contextual_chunk_prefix: |
+  이 문서는 consumer migration과 contract adoption을 consumer registry, rollout order, dual run, migration verification, fallback, lagging consumer handling으로 운영하는 advanced playbook이다.
+---
 # Consumer Migration Playbook and Contract Adoption
 
 > 한 줄 요약: `consumer를 어떤 순서로 옮기고, 늦는 팀은 어떻게 다루죠?`처럼 adoption 실행 질문이 먼저일 때 보는 문서로, 새 API를 만드는 일보다 소비자별 전환 순서와 실패 복구를 설계해 계약 adoption을 안전하게 끝내는 방법을 정리한다.

@@ -1,3 +1,68 @@
+---
+schema_version: 3
+title: "Browser DevTools Waterfall -> Server Log Timing 브리지"
+concept_id: network/browser-devtools-waterfall-server-log-timing-bridge
+canonical: true
+category: network
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: ko
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- devtools-to-access-log-timing
+- proxy-upstream-response-time
+- request-sent-waiting-log-correlation
+aliases:
+- devtools waiting proxy log
+- waterfall server log timing
+- upstream response time ttfb
+- request sent proxy field
+- request time vs waiting
+- browser waterfall nginx log
+symptoms:
+- DevTools request sent 시간을 proxy request_length와 같은 시간값으로 비교한다
+- upstream_response_time을 브라우저 waiting과 완전히 같은 app 실행 시간으로 단정한다
+- waiting이 길면 app이 반드시 요청을 받았다고 보고 proxy local reply 가능성을 놓친다
+intents:
+- troubleshooting
+- comparison
+- deep_dive
+prerequisites:
+- network/browser-devtools-request-sent-vs-waiting-mini-card
+- network/browser-devtools-waiting-vs-content-download-mini-card
+next_docs:
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+- network/access-log-correlation-recipes-tomcat-jetty-undertow
+- network/x-request-id-gateway-app-log-trace-beginner-bridge
+- network/proxy-local-reply-vs-upstream-error-attribution
+linked_paths:
+- contents/network/browser-devtools-request-sent-vs-waiting-mini-card.md
+- contents/network/browser-devtools-waiting-vs-content-download-mini-card.md
+- contents/network/x-request-id-gateway-app-log-trace-beginner-bridge.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+- contents/network/access-log-correlation-recipes-tomcat-jetty-undertow.md
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+confusable_with:
+- network/browser-devtools-request-sent-vs-waiting-mini-card
+- network/browser-devtools-waiting-vs-content-download-mini-card
+- network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb
+- network/access-log-correlation-recipes-tomcat-jetty-undertow
+- network/proxy-local-reply-vs-upstream-error-attribution
+forbidden_neighbors: []
+expected_queries:
+- "DevTools waiting이 긴데 nginx upstream_response_time과 어떻게 연결해서 봐?"
+- "request_length와 request sent를 같은 시간값으로 보면 안 되는 이유가 뭐야?"
+- "browser waterfall과 proxy access log timing을 1:1로 맞추면 왜 위험해?"
+- "upstream_status가 비어 있으면 app 지연보다 proxy local reply를 먼저 봐야 해?"
+- "X-Request-Id로 DevTools row와 gateway app log timing을 연결하는 순서를 알려줘"
+contextual_chunk_prefix: |
+  이 문서는 Browser DevTools waterfall의 request sent, waiting, content
+  download를 proxy/access log의 request_length, bytes_received, request_time,
+  upstream_response_time, local reply 흔적과 조심스럽게 연결하는 intermediate
+  timing bridge다.
+---
 # Browser DevTools Waterfall -> Server Log Timing 브리지
 
 > 한 줄 요약: DevTools의 `request sent`와 `waiting`은 브라우저 시간표이고, proxy의 `request_length`·`bytes_received`·`request_time`·`upstream_response_time` 같은 필드는 서버 쪽 흔적이므로 둘을 1:1 동치로 보지 말고 "upload 쪽 시간인가, first-byte 전 대기인가"를 먼저 연결해야 한다.

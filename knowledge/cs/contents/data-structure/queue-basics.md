@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: 큐 기초 (Queue Basics)
+concept_id: data-structure/queue-basics
+canonical: true
+category: data-structure
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+mission_ids:
+- missions/baseball
+- missions/lotto
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- bfs-vs-queue-split
+- work-queue-vs-structure
+- fifo-vs-priority-selection
+aliases:
+- queue basics
+- fifo
+- 큐 입문
+- 큐가 뭐예요
+- queue enqueue dequeue
+- queue vs bfs beginner
+- bfs queue difference
+- queue는 fifo 순서를 만드는 도구
+- bfs는 level-order 레벨 순서 탐색
+- bfs level order basics
+- bfs visited set basics
+- queue만 쓰면 되나요
+- 처음 bfs visited 헷갈림
+- queue가 worker handoff인지 bfs인지 헷갈려요
+- 받은 순서대로 처리 vs 최소 이동 횟수
+symptoms:
+- FIFO는 알겠는데 BFS에서 나오는 queue와 서비스 작업 큐를 어떻게 나눠야 할지 모르겠어
+- 먼저 들어온 순서와 가장 급한 작업을 먼저 처리하는 상황을 자꾸 같은 걸로 본다
+- enqueue dequeue는 외웠는데 언제 그냥 queue고 언제 deque나 priority queue로 가야 하는지 헷갈려
+intents:
+- definition
+prerequisites:
+- data-structure/basic
+next_docs:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- algorithm/dfs-bfs-intro
+- data-structure/arraydeque-vs-blockingqueue-service-handoff-primer
+linked_paths:
+- contents/data-structure/backend-data-structure-starter-pack.md
+- contents/data-structure/basic.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md
+- contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md
+- contents/algorithm/dfs-bfs-intro.md
+- contents/software-engineering/service-layer-basics.md
+- contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md
+confusable_with:
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+- algorithm/dfs-bfs-intro
+- data-structure/arraydeque-vs-blockingqueue-service-handoff-primer
+forbidden_neighbors:
+- contents/data-structure/bounded-mpmc-queue.md
+- contents/data-structure/lock-free-mpsc-queue.md
+- contents/data-structure/work-stealing-deque.md
+expected_queries:
+- 선입선출 구조를 문제 풀이 말투로 처음 설명해줘
+- 가까운 칸부터 탐색하는 상황과 요청을 순서대로 처리하는 상황을 어떻게 구분해
+- FIFO 자료구조를 입문자 기준으로 이해하고 싶어
+- 넣는 쪽과 빼는 쪽이 다른 선형 구조를 예시로 배워 보고 싶어
+- BFS 구현 도구로 쓰는 경우와 일반 대기열로 쓰는 경우를 나눠서 설명해줘
+- deque나 priority queue로 넘어가기 전에 기본 큐 감각을 잡고 싶어
+contextual_chunk_prefix: |
+  이 문서는 자료구조 입문자가 queue를 FIFO 도구로 이해하고, 같은 queue라는 단어가 BFS 구현 도구인지 서비스 handoff 대기열인지 처음 구분해 잡는 primer다. 먼저 온 요청부터 처리, 가까운 칸부터 넓히기, worker에게 넘기는 대기열, 맨 앞에서 꺼내기, 급한 작업 우선은 아님 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
+---
 # 큐 기초 (Queue Basics)
 
 > 한 줄 요약: 큐는 먼저 들어온 것이 먼저 나오는 FIFO 구조이고, `가까운 칸부터` 같은 BFS 문장에서는 beginner 답안을 `queue + visited`까지 같이 붙여 두는 편이 안전하다.
@@ -17,6 +92,14 @@
 - [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 
 retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, queue vs bfs beginner, bfs queue difference, queue는 fifo 순서를 만드는 도구, bfs는 level-order 레벨 순서 탐색, bfs level order basics, bfs visited set basics, queue만 쓰면 되나요, 처음 bfs visited 헷갈림, queue가 worker handoff인지 bfs인지 헷갈려요, 받은 순서대로 처리 vs 최소 이동 횟수
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "queue가 보이면 BFS랑 같은 건가요?" | 알고리즘 풀이의 level-order 탐색과 서비스 작업 대기열이 같은 단어로 보이는 상황 | queue는 FIFO 도구이고 BFS는 그 도구를 쓰는 탐색 전략이라는 점을 나눈다 |
+| "먼저 들어온 요청부터 처리하면 PriorityQueue인가요?" | 요청 순서 처리와 급한 작업 우선 처리를 같은 구조로 보는 코드 | FIFO 순서와 우선순위 정렬 순서를 다른 자료구조 요구사항으로 본다 |
+| "worker에게 넘기는 큐도 자료구조 queue 기초만 보면 되나요?" | producer/consumer handoff를 단순 로컬 queue처럼 구현하려는 백엔드 코드 | 같은 스레드 로컬 FIFO인지, thread handoff 계약인지 먼저 가른다 |
 
 ## README 복귀 가이드
 

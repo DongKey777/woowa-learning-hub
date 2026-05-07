@@ -1,3 +1,72 @@
+---
+schema_version: 3
+title: Replica Read Routing Anomalies and Session Consistency
+concept_id: database/replica-read-routing-anomalies
+canonical: true
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- replica-routing
+- session-consistency
+- monotonic-read
+- read-after-write
+- failover
+aliases:
+- replica read routing anomaly
+- read routing anomaly
+- inconsistent replica read
+- different replica different results
+- stale read after retry
+- monotonic read broken
+- read goes backward
+- refresh old then new
+- session affinity
+- GTID based routing
+symptoms:
+- 새로고침할 때마다 어떤 때는 최신값이고 어떤 때는 옛값이 보여
+- timeout 재시도 후 같은 조회가 다른 replica로 가면서 결과가 뒤로 돌아가
+- 페이지네이션 중간에 replica가 바뀌어 중복이나 누락이 생겨
+- write 직후 세션 안에서 read-after-write나 monotonic read를 보장해야 해
+- failover 직후 topology cache가 낡아 old primary나 stale replica를 읽는 것 같아
+intents:
+- symptom
+- troubleshooting
+- design
+prerequisites:
+- database/replica-lag-read-after-write-strategies
+- database/monotonic-reads-session-guarantees
+next_docs:
+- database/read-your-writes-session-pinning
+- database/monotonic-reads-session-guarantees
+- database/failover-promotion-read-divergence
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/database/monotonic-reads-session-guarantees.md
+- contents/database/causal-consistency-intuition.md
+- contents/database/failover-promotion-read-divergence.md
+- contents/database/failover-visibility-window-topology-cache-playbook.md
+- contents/database/replication-failover-split-brain.md
+confusable_with:
+- database/replica-lag-observability-routing-slo
+- database/read-your-writes-session-pinning
+- database/failover-promotion-read-divergence
+forbidden_neighbors: []
+expected_queries:
+- replica lag는 낮은데 새로고침할 때 값이 old new로 번갈아 보이면 무엇을 의심해야 해?
+- retry나 connection pool 재선택 때문에 다른 replica를 읽으면 monotonic read가 왜 깨져?
+- write 직후 내 세션에서는 primary pinning이나 GTID routing을 언제 써야 해?
+- 페이지네이션이 replica A와 B를 번갈아 읽으면 중복 누락이 생기는 이유가 뭐야?
+- failover 이후 topology cache가 낡아서 stale primary를 읽는 증상과 일반 lag 증상을 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 replica read routing anomaly, session consistency, read-after-write, monotonic read, GTID/LSN routing을 stale read 증상별로 설명하는 advanced symptom router다.
+  새로고침 old/new 반복, retry returns older data, connection pool replica switch, session affinity 질문이 본 문서에 매핑된다.
+---
 # Replica Read Routing Anomalies와 세션 일관성
 
 > 한 줄 요약: replica lag만 막아서는 부족하고, 요청이 어떤 replica로 흘러가느냐 자체가 일관성을 깨뜨릴 수 있다.

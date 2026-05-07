@@ -1,3 +1,77 @@
+---
+schema_version: 3
+title: Read-After-Write Consistency Basics
+concept_id: system-design/read-after-write-consistency-basics
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/roomescape
+- missions/shopping-cart
+review_feedback_tags:
+- read-after-write-consistency
+- replica-lag-basics
+- primary-fallback-recent-write-routing
+aliases:
+- read after write consistency basics
+- replica lag basics
+- primary fallback beginner
+- recent write routing
+- stale read after write
+- 방금 저장했는데 안 보여요
+- 저장 직후 옛값
+- read your writes beginner
+symptoms:
+- 저장은 성공했는데 redirect 직후 화면에서 예전 값이 보여 replica lag와 cache stale을 구분하지 못한다
+- 모든 read를 primary로 보내야 한다고 생각해 protected flow와 relaxed flow를 나누지 못한다
+- session stickiness, primary fallback, recent-write routing을 같은 해결책으로 섞어 설명한다
+intents:
+- definition
+- troubleshooting
+- comparison
+prerequisites:
+- system-design/system-design-foundations
+- system-design/database-scaling-primer
+next_docs:
+- system-design/read-after-write-routing-primer
+- system-design/monotonic-reads-and-session-guarantees-primer
+- database/replica-lag-read-after-write-strategies
+- database/read-your-writes-session-pinning
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/database-scaling-primer.md
+- contents/system-design/caching-vs-read-replica-primer.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/system-design/monotonic-reads-and-session-guarantees-primer.md
+- contents/system-design/stateless-sessions-primer.md
+- contents/system-design/session-store-design-at-scale.md
+- contents/system-design/read-write-quorum-staleness-budget-design.md
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+confusable_with:
+- system-design/caching-vs-read-replica-primer
+- system-design/read-after-write-routing-primer
+- system-design/monotonic-reads-and-session-guarantees-primer
+- database/read-after-write-routing-decision-guide
+- database/cache-replica-split-read-inconsistency
+forbidden_neighbors: []
+expected_queries:
+- 방금 저장했는데 다음 화면에서 예전 값이 보이면 read-after-write 문제일까?
+- replica lag가 있으면 primary fallback을 언제 써야 해?
+- read-after-write consistency와 read-your-writes는 초보자 관점에서 어떻게 달라?
+- 모든 조회를 primary로 보내지 않고 저장 직후 화면만 보호하는 방법이 뭐야?
+- 주문이나 예약 생성 직후 stale read를 허용하면 안 되는 화면은 어떻게 나눠?
+contextual_chunk_prefix: |
+  이 문서는 방금 저장했는데 안 보임, 저장 직후 옛값, replica lag, primary
+  fallback, recent-write routing 같은 beginner 질문을 system-design 입문
+  수준에서 설명한다. 모든 읽기를 강하게 만드는 대신 보호할 화면과 완화해도
+  되는 화면을 나누는 것이 핵심이다.
+---
 # Read-After-Write Consistency Basics
 
 > 한 줄 요약: read-after-write consistency는 `방금 저장했는데 왜 바로 안 보여요?`를 설명하는 입문 주제이며, 먼저 replica lag와 보호할 화면을 구분한 뒤 더 깊은 라우팅 정책은 후속 문서로 넘기는 문서다.

@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: "TLS Certificate Chain, OCSP Stapling Failure Modes"
+concept_id: network/tls-certificate-chain-ocsp-stapling-failure-modes
+canonical: true
+category: network
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- tls-certificate
+- ocsp-stapling
+- handshake-failure
+aliases:
+- TLS certificate chain
+- OCSP stapling failure
+- intermediate certificate missing
+- certificate chain validation
+- stapled OCSP freshness
+- trust store mismatch
+- TLS handshake cert error
+symptoms:
+- leaf certificate만 보고 intermediate chain 누락이나 trust store 차이를 놓친다
+- OCSP stapling stale/expired가 일부 client handshake failure로 보이는 이유를 설명하지 못한다
+- SNI에 따라 다른 certificate chain이 나가는 문제를 hostname routing과 연결하지 않는다
+- certificate rotation 뒤 일부 edge나 pod만 old chain을 내보내는 문제를 놓친다
+intents:
+- troubleshooting
+- deep_dive
+- comparison
+prerequisites:
+- network/tls-loadbalancing-proxy
+- network/sni-routing-mismatch-hostname-failure
+next_docs:
+- network/ocsp-crl-revocation-tradeoffs
+- network/certificate-rotation-sni-blast-radius
+- network/mtls-handshake-failure-diagnosis
+- network/tls-session-resumption-0rtt-replay-risk
+linked_paths:
+- contents/network/tls-session-resumption-0rtt-replay-risk.md
+- contents/network/tls-loadbalancing-proxy.md
+- contents/network/api-gateway-reverse-proxy-operational-points.md
+- contents/network/dns-cdn-websocket-http2-http3.md
+- contents/network/timeout-types-connect-read-write.md
+confusable_with:
+- network/ocsp-crl-revocation-tradeoffs
+- network/certificate-rotation-sni-blast-radius
+- network/mtls-handshake-failure-diagnosis
+- network/sni-routing-mismatch-hostname-failure
+forbidden_neighbors: []
+expected_queries:
+- "TLS certificate chain failure를 leaf intermediate trust store 관점으로 진단해줘"
+- "OCSP stapling이 stale하면 어떤 handshake failure가 생겨?"
+- "SNI별 certificate chain mismatch를 어떻게 확인해?"
+- "certificate rotation 후 일부 edge만 old intermediate를 내보내는 문제는?"
+- "OCSP CRL revocation과 stapling failure는 어떻게 달라?"
+contextual_chunk_prefix: |
+  이 문서는 TLS certificate chain validation, intermediate certificate,
+  trust store, OCSP stapling freshness, SNI별 certificate mismatch와 rotation failure를
+  다루는 advanced playbook이다.
+---
 # TLS Certificate Chain, OCSP Stapling Failure Modes
 
 > 한 줄 요약: TLS 인증서는 "있다/없다"보다 체인 검증, 만료, 중간 인증서, revocation 확인이 함께 맞아야 살아난다.

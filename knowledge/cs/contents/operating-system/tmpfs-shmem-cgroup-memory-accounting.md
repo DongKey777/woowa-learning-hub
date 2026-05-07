@@ -1,3 +1,49 @@
+---
+schema_version: 3
+title: tmpfs shmem Cgroup Memory Accounting
+concept_id: operating-system/tmpfs-shmem-cgroup-memory-accounting
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 85
+review_feedback_tags:
+- tmpfs-shmem-cgroup
+- memory-accounting
+- dev-shm-memory
+- usage
+aliases:
+- tmpfs shmem cgroup memory accounting
+- /dev/shm memory usage
+- tmpfs not disk
+- shmem page cache swap
+- container shared memory limit
+- tmpfs OOM
+intents:
+- troubleshooting
+- deep_dive
+- design
+linked_paths:
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/memory-high-vs-memory-max-cgroup-behavior.md
+- contents/operating-system/cgroup-swap-controller-basics.md
+- contents/operating-system/deleted-open-file-space-leak-log-rotation.md
+- contents/operating-system/overlayfs-copy-up-container-layering-debugging.md
+symptoms:
+- /dev/shm이나 tmpfs 사용량이 disk가 아니라 cgroup memory limit을 압박한다.
+- tmpfs file을 삭제했지만 open fd 때문에 memory accounting이 남는다.
+- page cache와 swap policy를 함께 타는 memory-backed filesystem으로 해석해야 한다.
+expected_queries:
+- tmpfs는 디스크 대신 RAM이라는 말보다 cgroup memory accounting을 어떻게 봐야 해?
+- /dev/shm 사용량이 container memory limit과 OOM에 영향을 줄 수 있어?
+- tmpfs deleted-open file은 왜 memory pressure로 남을 수 있어?
+- shmem, page cache, swap policy가 tmpfs에서 어떻게 연결돼?
+contextual_chunk_prefix: |
+  이 문서는 tmpfs를 단순 RAM disk가 아니라 cgroup memory limit 안에서 page cache와 swap policy를
+  함께 타는 memory-backed filesystem으로 설명한다. /dev/shm, shmem, OOM, deleted-open file을 연결한다.
+---
 # tmpfs, shmem, /dev/shm, Cgroup Memory Accounting
 
 > 한 줄 요약: tmpfs는 "디스크 대신 RAM" 정도로 끝나는 기능이 아니라, cgroup 메모리 한도 안에서 page cache와 swap 정책을 함께 타는 메모리성 파일 시스템이다.

@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: PSI Pressure Stall Information Runtime Debugging
+concept_id: operating-system/psi-pressure-stall-information-runtime-debugging
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 90
+review_feedback_tags:
+- psi-pressure-stall
+- information
+- cpu-memory-io
+- stall
+aliases:
+- PSI pressure stall information
+- CPU memory IO stall
+- pressure runtime debugging
+- process cannot move
+- resource busy vs stalled
+- some full PSI
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/operating-system/oom-killer-cgroup-memory-pressure.md
+- contents/operating-system/run-queue-load-average-cpu-saturation.md
+- contents/operating-system/scheduler-wakeup-latency-runqlat-debugging.md
+- contents/operating-system/kswapd-vs-direct-reclaim-latency.md
+- contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md
+- contents/operating-system/load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md
+symptoms:
+- 자원이 얼마나 busy인지보다 process가 얼마나 오래 움직이지 못했는지 알고 싶다.
+- CPU, memory, I/O pressure가 request p99로 어떻게 드러나는지 분리해야 한다.
+- load average나 utilization만으로는 stall 시간을 설명하지 못한다.
+expected_queries:
+- PSI는 resource가 얼마나 busy한가보다 process가 얼마나 오래 못 움직였는지를 보여줘?
+- CPU memory IO some full pressure를 runtime debugging에서 어떻게 해석해?
+- load average나 utilization보다 PSI가 p99 latency에 더 직접적인 이유는?
+- memory reclaim, dirty throttling, CPU saturation을 PSI로 어떻게 비교해?
+contextual_chunk_prefix: |
+  이 문서는 PSI를 자원이 얼마나 바쁜가가 아니라 runnable 또는 blocked process가 CPU, memory,
+  I/O resource를 기다리느라 얼마나 오래 움직이지 못했는지를 보여주는 runtime debugging signal로
+  설명한다.
+---
 # PSI, Pressure Stall Information, Runtime Debugging
 
 > 한 줄 요약: PSI는 "자원이 얼마나 바쁜가"보다 "프로세스가 얼마나 오래 못 움직였는가"를 보여주는 지표다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: PostgreSQL 23P01 Handling Note
+concept_id: database/postgresql-23p01-handling-note
+canonical: true
+category: database
+difficulty: beginner
+doc_role: playbook
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids: []
+review_feedback_tags:
+- postgresql
+- exclusion-constraint
+- product-error-language
+- retry-policy
+aliases:
+- postgresql 23p01 handling note
+- sqlstate 23P01 beginner
+- exclusion constraint error mapping
+- exclusion violation not retryable
+- postgres overlap conflict product error
+- already booked 23p01
+- 23P01 conflict response
+- postgres reservation overlap conflict
+- 23P01 retryable 아님
+- exclusion constraint conflict
+symptoms:
+- PostgreSQL 23P01 exclusion violation을 40001이나 40P01처럼 generic retryable failure로 처리하려 해
+- 겹치는 예약이나 active policy window가 이미 있는데 blind retry를 붙여 같은 conflict를 반복하고 있어
+- SQLSTATE 23P01을 사용자에게 DB 오류 대신 product conflict 문장으로 번역해야 해
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- database/exclusion-constraint-vs-slot-row-quick-chooser
+- database/postgresql-23p01-vs-23505-product-language-card
+next_docs:
+- database/booking-error-language-card
+- database/db-signal-service-result-http-bridge
+- database/postgresql-serializable-retry-playbook
+linked_paths:
+- contents/database/spring-jpa-sqlstate-23p01-bridge.md
+- contents/database/postgresql-23p01-vs-23505-product-language-card.md
+- contents/database/exclusion-constraint-vs-slot-row-quick-chooser.md
+- contents/database/exclusion-constraint-overlap-case-studies.md
+- contents/database/db-error-signal-beginner-result-language-mini-card.md
+- contents/database/insert-if-absent-retry-outcome-guide.md
+- contents/database/postgresql-serializable-retry-playbook.md
+- contents/database/transaction-retry-serialization-failure-patterns.md
+confusable_with:
+- database/postgresql-serializable-retry-playbook
+- database/postgresql-23p01-vs-23505-product-language-card
+- database/exclusion-constraint-overlap-case-studies
+forbidden_neighbors: []
+expected_queries:
+- PostgreSQL 23P01 exclusion constraint violation을 retryable이 아니라 conflict로 번역해야 하는 이유가 뭐야?
+- 예약 overlap에서 23P01을 사용자에게 어떤 product error message로 보여줘야 해?
+- 23P01과 40001, 40P01, 55P03의 retry 정책 차이를 초보자용으로 설명해줘
+- exclusion constraint conflict를 SQLSTATE 그대로 노출하지 않고 409 Conflict로 바꾸는 기준을 알려줘
+- 23P01은 같은 입력을 blind retry해도 왜 보통 성공하지 않아?
+contextual_chunk_prefix: |
+  이 문서는 PostgreSQL SQLSTATE 23P01 exclusion constraint violation을 retryable failure가 아니라 already booked, overlap conflict, product 409로 번역하는 beginner playbook이다.
+  23P01 retryable 아님, exclusion violation not retryable, already booked 23P01 질문이 본 문서에 매핑된다.
+---
 # PostgreSQL `23P01` Handling Note
 
 > 한 줄 요약: PostgreSQL `23P01`은 "이번 시도를 다시 해 보라"보다 "이미 다른 예약/구간이 먼저 자리를 차지했다"에 가까운 신호라서, 초보자는 generic retryable failure가 아니라 **제품의 conflict/이미 점유됨 오류**로 먼저 번역해야 한다.

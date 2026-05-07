@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: Spring SSE Buffering Compression Checklist
+concept_id: spring/sse-buffering-compression-checklist
+canonical: true
+category: spring
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- sse-buffering-compression
+- text-event-stream
+- proxy-buffering
+- nginx-buffering-sse
+aliases:
+- SSE buffering compression
+- text/event-stream proxy buffering
+- Nginx buffering SSE
+- gzip brotli SSE latency
+- heartbeat cadence buffered
+- CDN body transform streaming
+intents:
+- troubleshooting
+- deep_dive
+linked_paths:
+- contents/spring/spring-sse-proxy-idle-timeout-matrix.md
+- contents/spring/spring-sse-disconnect-observability-patterns.md
+- contents/spring/spring-streamingresponsebody-responsebodyemitter-sse-commit-lifecycle.md
+- contents/spring/spring-async-mvc-streaming-observability-playbook.md
+- contents/spring/spring-partial-response-access-log-interpretation.md
+- contents/network/http-response-compression-buffering-streaming-tradeoffs.md
+- contents/network/tls-record-sizing-flush-streaming-latency.md
+symptoms:
+- 서버 로그상 flush는 됐는데 브라우저 EventSource에는 이벤트가 늦게 몰려 도착한다.
+- Nginx, CDN, gzip, brotli 적용 후 heartbeat가 idle timeout을 막지 못한다.
+- access log와 application log의 write timing이 서로 맞지 않는다.
+expected_queries:
+- Spring SSE가 Nginx나 CDN buffering 때문에 이벤트가 한꺼번에 도착할 수 있어?
+- text/event-stream에 gzip compression을 켜면 heartbeat latency가 달라져?
+- 서버가 flush한 것과 브라우저가 blank line을 받은 것은 왜 다를 수 있어?
+- SSE buffering compression 문제를 어떤 체크리스트로 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 SSE에서 서버가 바이트를 쓴 시점보다 browser가 event blank line까지 받은 시점이
+  중요하다는 점을 설명한다. proxy buffering, CDN body transform, gzip/brotli compression,
+  TLS record, heartbeat cadence를 함께 점검한다.
+---
 # Spring SSE Buffering / Compression Checklist
 
 > 한 줄 요약: `text/event-stream`은 "서버가 바이트를 썼다"보다 "브라우저가 blank line까지 즉시 받았다"가 더 중요하므로, Nginx/CDN buffering, gzip/brotli, body transform이 있으면 heartbeat cadence와 observability 해석이 쉽게 어긋난다.

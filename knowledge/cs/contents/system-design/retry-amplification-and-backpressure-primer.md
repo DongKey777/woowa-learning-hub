@@ -1,3 +1,78 @@
+---
+schema_version: 3
+title: Retry Amplification and Backpressure Primer
+concept_id: system-design/retry-amplification-and-backpressure-primer
+canonical: true
+category: system-design
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+mission_ids:
+- missions/payment
+- missions/shopping-cart
+- missions/backend
+review_feedback_tags:
+- retry-storm-containment
+- bounded-queue-backpressure
+- deadline-aware-retry-budget
+aliases:
+- retry amplification primer
+- retry storm basics
+- retry budget
+- bounded queue
+- queue backlog
+- queue age limit
+- load shedding
+- overload containment
+- backpressure basics
+- 재시도 폭증 뭐예요
+- 왜 재시도가 장애를 키워요
+- bounded queue 왜 필요해요
+- queue가 쌓이는데 왜 더 retry해요
+symptoms:
+- 실패해서 재시도했을 뿐인데 왜 장애가 더 커지는지 모르겠어
+- queue backlog가 쌓이는데 계속 받아도 되는지 판단이 안 돼
+- timeout 이후 retry를 어디서 몇 번 해야 할지 헷갈려
+intents:
+- troubleshooting
+- definition
+prerequisites:
+- system-design/request-path-failure-modes-primer
+- system-design/request-deadline-timeout-budget-primer
+next_docs:
+- system-design/read-only-and-graceful-degradation-patterns
+- system-design/backpressure-and-load-shedding-design
+- system-design/job-queue-design
+- system-design/idempotency-key-store-dedup-window-replay-safe-retry-design
+- network/timeout-retry-backoff-practical
+linked_paths:
+- contents/system-design/system-design-foundations.md
+- contents/system-design/request-path-failure-modes-primer.md
+- contents/system-design/request-deadline-timeout-budget-primer.md
+- contents/system-design/read-only-and-graceful-degradation-patterns.md
+- contents/system-design/job-queue-design.md
+- contents/system-design/backpressure-and-load-shedding-design.md
+- contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md
+- contents/system-design/message-queue-basics.md
+- contents/network/timeout-retry-backoff-practical.md
+confusable_with:
+- system-design/request-deadline-timeout-budget-primer
+- system-design/request-path-failure-modes-primer
+- system-design/message-queue-basics
+- system-design/job-queue-design
+forbidden_neighbors: []
+expected_queries:
+- 왜 retry를 많이 하면 장애 복구가 아니라 retry storm이 될 수 있어?
+- client, app, worker가 각각 retry하면 logical request가 몇 개 attempt로 늘어나?
+- bounded queue와 load shedding이 retry amplification을 어떻게 줄여?
+- queue depth와 oldest job age가 높으면 어떤 work를 버려야 해?
+- timeout budget 없이 blind retry를 하면 왜 in-flight 요청이 겹쳐?
+contextual_chunk_prefix: |
+  이 문서는 client, gateway, app, worker가 각자 재시도하면서 logical request 하나가 여러 attempt로 증폭되는 retry amplification과 이를 막는 backpressure, bounded queue, load shedding을 설명하는 beginner primer다.
+  retry storm, queue backlog, oldest job age, in-flight attempts, retry budget, deadline-aware retry, overload containment 같은 자연어 증상과 대응 질문이 본 문서에 매핑된다.
+---
 # Retry Amplification and Backpressure Primer
 
 > 한 줄 요약: client, app, worker가 각자 재시도를 시작하면 하나의 느린 장애가 여러 겹의 동시 시도로 증폭되고, bounded queue와 load shedding은 "왜 재시도가 장애를 더 키우지?"라는 질문에 대한 첫 containment 답이 된다.
@@ -5,6 +80,15 @@
 retrieval-anchor-keywords: retry amplification primer, retry storm basics, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, 재시도 폭증 뭐예요, 왜 재시도가 장애를 키워요, queue가 쌓이는데 왜 더 retry해요, 처음 retry storm 뭐예요, bounded queue 왜 필요해요
 
 **난이도: 🟢 Beginner**
+
+## 미션 진입 증상
+
+| backend/payment 장면 | 먼저 볼 containment |
+|---|---|
+| timeout 뒤 client와 app이 각각 retry한다 | logical request가 몇 attempt로 늘었는가 |
+| worker queue backlog가 계속 증가한다 | bounded queue와 oldest age를 보고 있는가 |
+| write 요청 retry가 주문/결제를 두 번 만들 수 있다 | idempotency key가 있는가 |
+| 장애 중에도 모든 기능을 계속 받는다 | load shedding/degrade 후보인가 |
 
 관련 문서:
 

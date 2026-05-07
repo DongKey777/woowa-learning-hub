@@ -42,8 +42,8 @@ prerequisites:
 - spring/spring-mvc-request-lifecycle-basics
 - spring/valid-400-vs-message-conversion-400-primer
 next_docs:
-- spring/spring-custom-error-dto-to-problemdetail-handoff-primer
-- spring/spring-mvc-exception-resolver-chain-contract
+- spring/custom-error-dto-to-problemdetail-handoff-primer
+- spring/mvc-exception-resolver-chain-contract
 - spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
 linked_paths:
 - contents/spring/spring-mvc-request-lifecycle-basics.md
@@ -58,7 +58,7 @@ linked_paths:
 - contents/software-engineering/api-design-error-handling.md
 confusable_with:
 - spring/spring-bindingresult-local-validation-400-primer
-- spring/spring-custom-error-dto-to-problemdetail-handoff-primer
+- spring/custom-error-dto-to-problemdetail-handoff-primer
 - spring/requestbody-400-before-controller-primer
 forbidden_neighbors:
 - contents/spring/spring-requestbody-400-before-controller-primer.md

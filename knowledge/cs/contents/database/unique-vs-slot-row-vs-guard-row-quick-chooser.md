@@ -49,6 +49,9 @@ confusable_with:
 - database/overlapping-bookings-both-succeed-symptom-router
 - database/unique-vs-version-cas-vs-for-update-chooser
 forbidden_neighbors:
+- contents/database/exact-key-pre-check-decision-card.md
+- contents/database/idempotency-key-and-deduplication.md
+- contents/database/unique-vs-locking-read-duplicate-primer.md
 expected_queries:
 - unique, slot row, guard row는 언제 골라?
 - insert if absent 문제에서 guard row가 필요한 경우가 뭐야?
@@ -57,12 +60,12 @@ expected_queries:
 - duplicate key 로 빨리 실패시키는 쪽과 lock queue 로 줄 세우는 쪽을 어떻게 나눠?
 - idempotency key 같은 exact key 문제와 예약 overlap 문제를 같은 방식으로 보면 안 되는 이유가 뭐야?
 contextual_chunk_prefix: |
-  이 문서는 없으면 insert 경쟁에서 exact key dedup, 시간 칸으로 쪼개는 방식,
-  대표 행으로 줄 세우는 방식 중 무엇을 골라야 하는지 빠르게 결정하게 돕는
-  beginner chooser다. 쿠폰 한 번만 만들기, 재시도 키 중복 막기, 시간대별 선점,
-  범위 예약 직렬화, 바로 중복 오류로 끝낼지 잠깐 기다렸다 재확인할지, 겹침 검사를
-  어떤 도구로 막을지 같은 자연어 paraphrase가 UNIQUE·slot row·guard row 선택
-  기준에 매핑된다.
+  이 문서는 없으면 insert 경쟁에서 exact key 하나로 끝낼지, 시간 칸 단위로
+  부딪치게 만들지, 대표 행 앞에 줄을 세울지 빠르게 고르게 돕는 beginner
+  chooser다. 쿠폰 한 번만 발급, 같은 요청 키 재삽입 막기, 시간대별 자리
+  선점, 범위 예약 직렬화, 바로 duplicate key로 끝낼지 잠깐 기다렸다
+  재검사할지, 겹침 규칙을 어느 단위에 둘지 같은 자연어 paraphrase가 이
+  문서의 선택 기준에 매핑된다.
 ---
 
 # UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드
@@ -83,6 +86,14 @@ contextual_chunk_prefix: |
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 
 retrieval-anchor-keywords: unique vs guard row, slot row primer, insert if absent, insert-if-absent pattern, duplicate insert race, unique constraint chooser, guard row chooser, slot row vs unique, exact key conflict, absence check beginner, 중복 insert 막기, 없으면 insert 어떻게, beginner insert race, unique vs slot row vs guard row quick chooser basics, unique vs slot row vs guard row quick chooser beginner
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "roomescape 예약 중복은 unique 하나로 충분한가요?" | 날짜+시간처럼 exact slot으로 떨어지는 예약과 시간 범위 overlap이 섞인 설계 | 충돌 단위가 하나의 exact key인지, 여러 slot/범위인지 먼저 본다 |
+| "없는지 조회하고 insert하면 왜 race가 생겨요?" | 두 요청이 동시에 같은 absence를 보고 모두 insert하려는 코드 | 두 요청이 반드시 부딪힐 저장소 문을 먼저 만든다 |
+| "guard row는 언제까지 필요한 건가요?" | slot으로 쪼개기 어렵거나 변경/취소 전이를 한 줄에 세워야 하는 예약 흐름 | exact key로 못 내리면 대표 row lock queue를 후보로 본다 |
 
 ## 핵심 개념
 

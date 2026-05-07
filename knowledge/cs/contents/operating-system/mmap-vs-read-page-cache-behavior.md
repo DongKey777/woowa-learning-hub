@@ -1,3 +1,51 @@
+---
+schema_version: 3
+title: mmap vs read Page Cache Behavior
+concept_id: operating-system/mmap-vs-read-page-cache-behavior
+canonical: true
+category: operating-system
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- mmap-vs-read
+- page-cache-behavior
+- page-cache
+- file-mapping-page
+aliases:
+- mmap vs read page cache
+- file mapping page fault
+- read buffer copy
+- page cache behavior mmap
+- fault vs syscall copy
+- mmap failure mode
+intents:
+- comparison
+- deep_dive
+- troubleshooting
+linked_paths:
+- contents/operating-system/demand-paging-page-fault-primer.md
+- contents/operating-system/mmap-map-shared-vs-map-private-write-semantics.md
+- contents/operating-system/mmap-sendfile-splice-zero-copy.md
+- contents/operating-system/major-minor-page-faults-runtime-diagnostics.md
+- contents/operating-system/page-cache-dirty-writeback-fsync.md
+- contents/operating-system/mmap-shared-truncate-sigbus-coherency-pitfalls.md
+confusable_with:
+- operating-system/mmap-map-shared-vs-map-private-write-semantics
+- operating-system/mmap-sendfile-splice-zero-copy
+- operating-system/demand-paging-page-fault-primer
+expected_queries:
+- mmap과 read는 둘 다 page cache를 쓰는데 fault와 copy 위치가 어떻게 달라?
+- file 읽기에서 mmap이 read보다 항상 빠른 건 아니야?
+- mmap은 page fault와 SIGBUS failure mode가 read와 어떻게 달라?
+- page cache behavior를 mmap vs read 관점에서 비교해줘
+contextual_chunk_prefix: |
+  이 문서는 mmap과 read가 둘 다 page cache를 쓰지만 mmap은 page fault로 mapping을 demand-load하고,
+  read는 kernel에서 user buffer로 copy하는 path라서 latency surface와 failure mode가 다르다는
+  점을 비교한다.
+---
 # mmap vs read, Page Cache Behavior
 
 > 한 줄 요약: `mmap()`과 `read()`는 둘 다 page cache를 쓰지만, fault와 버퍼 복사의 위치가 달라서 서버 체감과 실패 모드가 다르게 나온다.

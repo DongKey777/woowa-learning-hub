@@ -1,3 +1,46 @@
+---
+schema_version: 3
+title: Spring allow-bean-definition-overriding Test Boundaries Primer
+concept_id: spring/allow-bean-definition-overriding-test-boundaries-primer
+canonical: true
+category: spring
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 86
+review_feedback_tags:
+- allow-bean-definition
+- overriding-test-boundaries
+- main-allow-bean
+- definition-overriding
+aliases:
+- spring.main.allow-bean-definition-overriding
+- allow bean definition overriding test
+- bean override test only
+- production bean override risk
+- duplicate bean name Spring Boot
+- test fake bean same name
+intents:
+- definition
+- troubleshooting
+linked_paths:
+- contents/spring/spring-primary-vs-bean-override-primer.md
+- contents/spring/spring-beandefinitionoverrideexception-quick-triage.md
+- contents/spring/spring-test-property-override-boundaries-primer.md
+- contents/spring/spring-boot-properties-vs-customizer-vs-bean-replacement-primer.md
+- contents/spring/spring-starter-added-but-bean-missing-faq.md
+expected_queries:
+- spring.main.allow-bean-definition-overriding은 언제 켜도 돼?
+- 테스트에서 bean override와 운영 bean override는 왜 다르게 봐야 해?
+- overriding is disabled 에러를 allow 설정으로 해결해도 돼?
+- @Primary와 allow bean definition overriding은 뭐가 달라?
+contextual_chunk_prefix: |
+  이 문서는 spring.main.allow-bean-definition-overriding=true를 테스트 fake 교체와
+  운영 duplicate bean name 숨기기로 분리한다. @Primary, @MockBean,
+  @ConditionalOnMissingBean, test property override와 비교하면서 같은 이름 bean
+  충돌을 우회 스위치로 덮어도 되는 범위를 beginner 관점에서 설명한다.
+---
 # Spring `spring.main.allow-bean-definition-overriding` Boundaries Primer: 테스트에서는 언제 괜찮고, 운영 기본값으로는 왜 위험한가
 
 > 한 줄 요약: `spring.main.allow-bean-definition-overriding=true`는 "같은 이름 bean 충돌을 그냥 통과시키는 스위치"이므로, 테스트에서 의도한 대체를 짧게 표현할 때만 제한적으로 쓰고 운영 기본값 문제를 덮는 만능 해법으로 쓰면 안 된다.

@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: Gateway Default HTML First-Line Card
+concept_id: network/gateway-default-html-first-line-card
+canonical: false
+category: network
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: mixed
+source_priority: 84
+review_feedback_tags:
+- gateway-default-html
+- first-line
+- bad-gateway-html
+- gateway-timeout-html
+aliases:
+- bad gateway html first line
+- gateway timeout html clue
+- default proxy error page
+- nginx bad gateway html
+- envoy upstream connect error
+- generic gateway html
+- 503 service unavailable html
+- Bad Gateway만 보여요
+symptoms:
+- DevTools Response body 첫 줄이 `Bad Gateway`나 `Gateway Timeout`만 보여 app 에러인지 gateway 기본 페이지인지 헷갈린다
+- "`503 Service Unavailable` HTML이 브랜드 없이 짧게 내려와 CDN/WAF 페이지와 구분이 안 된다"
+- Envoy/Nginx/ALB 앞단에서 짧은 기본 에러 문구가 보여 upstream 문제인지 app HTML인지 먼저 나누고 싶다
+intents:
+- symptom
+- troubleshooting
+linked_paths:
+- contents/network/browser-devtools-response-body-ownership-checklist.md
+- contents/network/cdn-error-html-vs-app-json-decision-card.md
+- contents/network/browser-devtools-502-504-app-500-decision-card.md
+- contents/network/browser-devtools-gateway-error-header-clue-card.md
+- contents/network/vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md
+- contents/system-design/cdn-basics.md
+confusable_with:
+- network/cdn-error-html-vs-app-json-decision-card
+- network/browser-devtools-response-body-ownership-checklist
+- network/browser-devtools-502-504-app-500-decision-card
+forbidden_neighbors: []
+expected_queries:
+- DevTools body 첫 줄이 Bad Gateway만 나오면 app 에러야 gateway 에러야?
+- Gateway Timeout HTML이 짧게 보일 때 CDN 페이지와 proxy 기본 페이지를 어떻게 구분해?
+- Nginx 502 Bad Gateway HTML이면 무엇부터 확인해야 해?
+- Envoy upstream connect error 문구가 response body에 보이면 어느 문서로 가야 해?
+- 503 Service Unavailable HTML이 브랜드 없이 보일 때 owner를 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 response body 첫 줄이 Bad Gateway, Gateway Timeout,
+  503 Service Unavailable, upstream connect error처럼 짧은 기본 문구로 보일 때
+  app HTML보다 gateway/proxy default page 후보를 먼저 여는 symptom_router다.
+  CDN branded page와 generic proxy page를 나누고 Server/Via/header와 status를
+  묶어 owner를 확인하는 beginner network troubleshooting 표면을 제공한다.
+---
 # Gateway Default HTML First-Line Card
 
 > 한 줄 요약: DevTools body 첫 줄이 `Bad Gateway`, `Gateway Timeout`, `503 Service Unavailable`처럼 짧고 브랜드가 거의 없으면 CDN branded page보다 gateway/proxy 기본 에러 페이지 후보를 먼저 열어 두는 편이 초급자 첫 분기를 더 안전하게 만든다.
@@ -14,7 +71,7 @@
 - [CDN 기초 (CDN Basics)](../system-design/cdn-basics.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: gateway default html first line, nginx bad gateway html, nginx gateway timeout html, envoy upstream connect error, envoy default local reply, alb generic error page, proxy error html beginner, generic proxy page vs cdn brand, why api returns bad gateway html, why html instead of json gateway, bad gateway first line clue, gateway timeout first line, 처음 bad gateway html, envoy error body 뭐예요, alb 502 html basics
+retrieval-anchor-keywords: bad gateway html first line, gateway timeout html clue, default proxy error page, nginx bad gateway html, envoy upstream connect error, generic gateway html, cdn branded page vs proxy page, 왜 bad gateway 만 보여요, html first line owner, gateway default page basics, 처음 proxy html 헷갈려요, 503 service unavailable html
 
 ## 핵심 개념
 

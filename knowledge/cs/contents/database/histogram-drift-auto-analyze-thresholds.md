@@ -35,7 +35,7 @@ prerequisites:
 - database/index-and-explain
 - database/statistics-histograms-cardinality-estimation
 next_docs:
-- database/secondary-index-maintenance-cost-analyze-skew
+- database/secondary-index-maintenance-statistics-skew
 - database/slow-query-analysis-playbook
 - database/mysql-optimizer-hints-index-merge
 linked_paths:
@@ -55,13 +55,13 @@ expected_queries:
 - auto analyze threshold를 믿어도 되는지 알고 싶어
 - rows 추정치가 실제와 크게 다를 때 histogram을 먼저 봐야 하나?
 contextual_chunk_prefix: |
-  이 문서는 배포 후 같은 SQL인데 실행 계획이 바뀌거나 rows 추정치가 실제와
-  어긋날 때, histogram drift와 auto-analyze 지연이 왜 plan drift로 이어지는지
-  설명하는 deep_dive다. stale statistics, distribution shift, analyze table
-  timing, rows estimate mismatch, why plan changed after deploy 같은 학습자
-  질문을 통계 갱신 타이밍과 cardinality estimation 맥락으로 연결한다.
+  이 문서는 "배포 후 같은 SQL인데 plan이 바뀌었다", "EXPLAIN rows 추정치가 실제와
+  너무 다르다", "ANALYZE를 지금 돌려야 하나 auto analyze를 기다려도 되나" 같은
+  질문을 histogram drift, stale statistics, distribution shift, cardinality
+  estimation, auto-analyze threshold로 연결하는 advanced deep dive다. why plan
+  changed after deploy, rows estimate mismatch, analyze table timing 같은 검색을
+  통계 갱신 지연과 옵티마이저 misestimate가 만나는 지점으로 매핑한다.
 ---
-
 # Histogram Drift and Auto-Analyze Thresholds
 
 > 한 줄 요약: histogram은 한 번 만들고 끝나는 정보가 아니라, 데이터 분포가 바뀌면 흐려지고 다시 분석해야 하는 옵티마이저 자산이다.

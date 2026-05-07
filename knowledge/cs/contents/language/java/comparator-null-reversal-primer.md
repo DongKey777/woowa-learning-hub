@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Comparator Null Reversal Primer
+concept_id: language/comparator-null-reversal-primer
+canonical: true
+category: language
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 88
+mission_ids:
+- missions/baseball
+- missions/lotto
+review_feedback_tags:
+- comparator-null
+- reversed-scope
+- nullable-sort
+aliases:
+- Comparator null reversal primer
+- nullsLast reversed 차이
+- nullsFirst reversed 차이
+- reverseOrder vs reversed null
+- comparator null position
+- nullable comparator descending null last
+- 자바 comparator null 위치 뒤집힘
+symptoms:
+- Comparator.nullsLast(naturalOrder()).reversed()가 null 자리까지 앞으로 뒤집는다는 점을 예상하지 못해
+- 값만 내림차순으로 만들고 null 위치는 유지하려면 nullsLast(reverseOrder())처럼 안쪽 value comparator를 뒤집어야 한다는 경계를 놓쳐
+- null policy와 non-null value order를 하나의 comparator 방향으로 섞어 읽어 정렬 결과가 반대로 나온다
+intents:
+- troubleshooting
+- definition
+- comparison
+prerequisites:
+- language/java-comparable-comparator-basics
+- language/comparator-reversed-scope-primer
+next_docs:
+- language/nullable-wrapper-comparator-bridge
+- language/nullable-string-comparator-bridge
+- language/binarysearch-nullable-wrapper-sort-keys
+linked_paths:
+- contents/language/java/java-comparable-comparator-basics.md
+- contents/language/java/java-comparator-utility-patterns.md
+- contents/language/java/comparator-reversed-scope-primer.md
+- contents/language/java/nullable-wrapper-comparator-bridge.md
+- contents/language/java/nullable-string-comparator-bridge.md
+- contents/language/java/binarysearch-nullable-wrapper-sort-keys.md
+confusable_with:
+- language/comparator-reversed-scope-primer
+- language/nullable-wrapper-comparator-bridge
+- language/binarysearch-nullable-wrapper-sort-keys
+forbidden_neighbors: []
+expected_queries:
+- Comparator.nullsLast(naturalOrder()).reversed()와 nullsLast(reverseOrder()) 차이를 설명해줘
+- Java comparator에서 null 위치는 뒤로 유지하고 값만 내림차순으로 정렬하려면 어떻게 해?
+- reversed가 comparator 전체를 뒤집으면 nullsFirst nullsLast 정책도 바뀌는 이유가 뭐야?
+- null policy와 value order를 comparator에서 어떻게 분리해서 읽어야 해?
+- nullable comparator에서 null이 왜 앞으로 오는지 초보자 예제로 알려줘
+contextual_chunk_prefix: |
+  이 문서는 Java Comparator nullsFirst/nullsLast와 reversed/reverseOrder 차이를 outer null policy와 inner value order로 설명하는 beginner primer다.
+  nullsLast reversed, null position, reverseOrder, nullable comparator, descending null last 질문이 본 문서에 매핑된다.
+---
 # Comparator Null Reversal Primer
 
 > 한 줄 요약: `nullsFirst(...)`와 `nullsLast(...)`는 "값 비교기" 바깥에 있는 `null` 자리 규칙이다. 그래서 comparator 전체를 `reversed()` 하면 `null` 자리도 같이 바뀌고, 안쪽 값 비교기만 `reverseOrder()`나 `.reversed()`로 바꾸면 `null` 자리는 그대로 남는다.

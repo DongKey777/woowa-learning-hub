@@ -1,3 +1,66 @@
+---
+schema_version: 3
+title: Top-K Heap Direction Patterns
+concept_id: data-structure/top-k-heap-direction-patterns
+canonical: false
+category: data-structure
+difficulty: intermediate
+doc_role: playbook
+level: intermediate
+language: ko
+source_priority: 88
+mission_ids:
+- missions/lotto
+review_feedback_tags:
+- heap-direction
+- top-k-pattern
+- priorityqueue-boundary
+aliases:
+- top-k heap direction
+- kth largest min heap
+- streaming top-k heap
+- median two heaps
+- Java PriorityQueue direction
+- top-k largest min heap
+- boundary heap pattern
+symptoms:
+- kth-largest라는 이름만 보고 max-heap을 고르며 top-k 집합의 가장 약한 boundary를 root에 둬야 한다는 점을 놓친다
+- 결과 출력 순서와 유지용 heap direction을 섞어 streaming top-k에서 min-heap과 final sorting 역할을 구분하지 못한다
+- median 문제를 heap 하나로 풀려 하거나 lower half max-heap, upper half min-heap의 boundary 의미를 설명하지 못한다
+intents:
+- design
+- troubleshooting
+prerequisites:
+- data-structure/heap-basics
+- data-structure/queue-vs-deque-vs-priority-queue-primer
+next_docs:
+- data-structure/java-priorityqueue-pitfalls
+- algorithm/top-k-streaming-heavy-hitters
+- data-structure/space-saving-heavy-hitters
+linked_paths:
+- contents/data-structure/heap-basics.md
+- contents/data-structure/java-priorityqueue-pitfalls.md
+- contents/data-structure/heap-variants.md
+- contents/data-structure/queue-vs-deque-vs-priority-queue-primer.md
+- contents/algorithm/top-k-streaming-heavy-hitters.md
+- contents/data-structure/space-saving-heavy-hitters.md
+confusable_with:
+- data-structure/heap-basics
+- data-structure/heap-variants
+- algorithm/top-k-streaming-heavy-hitters
+- data-structure/space-saving-heavy-hitters
+forbidden_neighbors: []
+expected_queries:
+- kth largest 문제는 왜 max heap이 아니라 크기 k min heap을 쓰는 게 자연스러워?
+- streaming top-k largest에서 heap root가 현재 top-k의 가장 약한 경계여야 하는 이유는?
+- Java PriorityQueue로 median을 구할 때 lower max heap upper min heap을 어떻게 나눠?
+- top-k frequent items에서 min heap 방향과 count comparator를 어떻게 잡아야 해?
+- 결과는 큰 순서로 출력하지만 유지용 heap은 min heap일 수 있다는 걸 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 top-k, kth-largest, streaming top-k, median 문제에서 heap 방향을
+  루트가 대표해야 하는 boundary value로 고르는 playbook이다. Java PriorityQueue의
+  min-heap 기본값, reverseOrder max-heap, two-heap median pattern을 함께 다룬다.
+---
 # Top-K Heap Direction Patterns
 
 > 한 줄 요약: Java에서 `kth-largest`, `streaming top-k`, `median` 문제는 "루트가 무엇을 대표해야 하느냐"를 먼저 정하면 min-heap / max-heap 방향이 자연스럽게 나온다.

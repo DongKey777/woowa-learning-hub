@@ -11,6 +11,7 @@ language: ko
 source_priority: 78
 mission_ids:
 - missions/roomescape
+- missions/spring-roomescape
 review_feedback_tags:
 - duplicate-key-to-conflict
 - sqlexception-translation
@@ -31,11 +32,11 @@ intents:
 - troubleshooting
 prerequisites:
 - database/roomescape-reservation-concurrency-bridge
-- spring/spring-jdbctemplate-sqlexception-translation
+- spring/jdbctemplate-sqlexception-translation
 - spring/roomescape-reservation-request-validation-binding-bridge
 next_docs:
 - database/roomescape-reservation-concurrency-bridge
-- spring/spring-jdbctemplate-sqlexception-translation
+- spring/jdbctemplate-sqlexception-translation
 - spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
 - software-engineering/http-409-vs-422-selection-guide
 linked_paths:
@@ -45,7 +46,7 @@ linked_paths:
 - contents/software-engineering/http-409-vs-422-selection-guide.md
 confusable_with:
 - database/roomescape-reservation-concurrency-bridge
-- spring/spring-jdbctemplate-sqlexception-translation
+- spring/jdbctemplate-sqlexception-translation
 - spring/roomescape-transactional-boundary-bridge
 - spring/spring-roomescape-validation-400-vs-business-conflict-409-primer
 forbidden_neighbors: []
@@ -63,12 +64,19 @@ contextual_chunk_prefix: |
   JdbcTemplate 저장 실패를 도메인 conflict로 번역하는 계층 경계가 이 문서의 핵심
   검색 표면이다.
 ---
-
 # roomescape 중복 예약 충돌 ↔ Spring SQLException 번역 브릿지
 
 ## 한 줄 요약
 
 > roomescape에서 같은 시간 예약이 유니크 제약에 걸릴 때 핵심은 DB 메시지 문구를 읽는 것이 아니라, Spring이 그 실패를 `DuplicateKeyException`이나 `DataIntegrityViolationException`으로 번역한 뒤 "이미 선점된 슬롯"이라는 도메인 충돌과 HTTP `409`로 이어 주는 것이다.
+
+## 미션 진입 증상
+
+| 학습자 발화 | 미션 장면 | 이 문서에서 먼저 잡을 것 |
+|---|---|---|
+| "같은 시간 예약이 겹치면 `SQLException`을 그대로 던져도 되나요?" | 유니크 제약으로 중복 예약을 막은 뒤 API 응답을 정하는 단계 | raw DB 예외를 Spring 예외 타입과 도메인 conflict로 번역한다 |
+| "`DuplicateKeyException`을 service에서 잡아야 하는지 controller까지 올려야 하는지 모르겠어요" | 중복 슬롯을 500이 아니라 409로 바꾸는 흐름 | 저장 실패 신호를 잃지 않고 API 계약으로 연결한다 |
+| "DB 에러 문자열을 비교하지 말라는 리뷰가 이해가 안 돼요" | MySQL 메시지에 의존한 분기 | vendor 문구보다 `DataAccessException` 계층을 기준으로 본다 |
 
 ## 미션 시나리오
 

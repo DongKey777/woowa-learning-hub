@@ -1,3 +1,73 @@
+---
+schema_version: 3
+title: Event Upcaster Compatibility Patterns
+concept_id: design-pattern/event-upcaster-compatibility-patterns
+canonical: true
+category: design-pattern
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: ko
+source_priority: 84
+mission_ids: []
+review_feedback_tags:
+- event-upcaster
+- event-schema-evolution
+- legacy-replay-compatibility
+aliases:
+- event upcaster
+- event compatibility layer
+- legacy event replay
+- event schema evolution
+- semantic versioned event
+- upcast chain
+- replay resume gate
+- old event compatibility
+- 이벤트 업캐스터
+- 과거 이벤트 호환
+symptoms:
+- 오래된 outbox/event store record를 replay할 때 현재 consumer가 legacy schema를 해석하지 못한다
+- 필드 rename 같은 구조 변화와 totalAmount 의미 변경 같은 semantic change를 같은 난이도로 취급한다
+- legacy field가 없을 때 null이나 0을 묵시적으로 넣어 과거 데이터의 의미를 현재 모델에 왜곡한다
+intents:
+- troubleshooting
+- design
+- deep_dive
+prerequisites:
+- design-pattern/domain-event-translation-pipeline
+- design-pattern/event-envelope-pattern
+- design-pattern/tolerant-reader-event-contract-pattern
+next_docs:
+- design-pattern/event-contract-drift-triage-rebuilds
+- design-pattern/snapshot-versioning-compatibility-pattern
+- design-pattern/checkpoint-snapshot-pattern
+linked_paths:
+- contents/design-pattern/domain-event-translation-pipeline.md
+- contents/design-pattern/domain-events-vs-integration-events.md
+- contents/design-pattern/event-contract-drift-triage-rebuilds.md
+- contents/design-pattern/snapshot-versioning-compatibility-pattern.md
+- contents/design-pattern/tolerant-reader-event-contract-pattern.md
+- contents/design-pattern/event-envelope-pattern.md
+- contents/design-pattern/checkpoint-snapshot-pattern.md
+- contents/language/java/json-null-missing-unknown-field-schema-evolution.md
+confusable_with:
+- design-pattern/tolerant-reader-event-contract-pattern
+- design-pattern/snapshot-versioning-compatibility-pattern
+- design-pattern/event-contract-drift-triage-rebuilds
+- design-pattern/domain-event-translation-pipeline
+forbidden_neighbors: []
+expected_queries:
+- Event Upcaster는 OrderPlacedV1 같은 과거 이벤트를 현재 V2 모델로 어떻게 끌어올려?
+- event schema evolution에서 구조 변화와 의미 변화는 upcaster 난이도가 어떻게 달라?
+- legacy field가 없을 때 UNKNOWN이나 LEGACY_MIGRATED 같은 명시 값을 쓰는 이유가 뭐야?
+- replay 전에 upcaster chain과 legacy fixture test를 준비해야 하는 이유는 뭐야?
+- 오래된 이벤트를 일괄 migration할지 runtime upcaster로 호환할지 어떤 trade-off가 있어?
+contextual_chunk_prefix: |
+  이 문서는 Event Upcaster Compatibility Patterns playbook으로, 저장된 legacy event를
+  현재 consumer가 해석할 수 있는 schema/version으로 변환하며, 구조 변화와 semantic
+  change를 구분하고 UNKNOWN/LEGACY 같은 명시적 compatibility policy와 replay fixture
+  test를 설계하는 방법을 설명한다.
+---
 # Event Upcaster Compatibility Patterns
 
 > 한 줄 요약: Event Upcaster는 과거 이벤트를 현재 해석 가능한 계약으로 끌어올리는 호환 계층이고, 구조 변화보다 의미 변화가 더 클수록 버전 전략과 테스트가 중요해진다.

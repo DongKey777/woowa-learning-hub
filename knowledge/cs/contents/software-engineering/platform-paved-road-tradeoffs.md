@@ -1,3 +1,63 @@
+---
+schema_version: 3
+title: Platform Paved Road Trade-offs
+concept_id: software-engineering/platform-paved-road
+canonical: true
+category: software-engineering
+difficulty: advanced
+doc_role: chooser
+level: advanced
+language: mixed
+source_priority: 85
+mission_ids: []
+review_feedback_tags:
+- platform
+- paved-road
+- developer-experience
+- guardrail
+aliases:
+- Platform Paved Road Trade-offs
+- paved road platform
+- golden path trade-off
+- platform opinionation
+- self-service platform guardrail
+- platform paved road
+symptoms: []
+intents:
+- comparison
+- design
+- troubleshooting
+prerequisites:
+- software-engineering/platform-product-capability-boundaries
+- software-engineering/service-ownership-catalog-boundaries
+next_docs:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/platform-control-plane-delegation
+- software-engineering/platform-scorecards
+linked_paths:
+- contents/software-engineering/platform-team-product-team-capability-boundaries.md
+- contents/software-engineering/service-ownership-catalog-boundaries.md
+- contents/software-engineering/policy-as-code-architecture-linting.md
+- contents/software-engineering/adr-decision-records-at-scale.md
+- contents/software-engineering/architectural-fitness-functions.md
+- contents/software-engineering/technology-radar-adoption-governance.md
+- contents/software-engineering/configuration-governance-runtime-safety.md
+- contents/software-engineering/platform-control-plane-delegation-boundaries.md
+- contents/software-engineering/golden-path-escape-hatch-policy.md
+confusable_with:
+- software-engineering/golden-path-escape-hatch-policy
+- software-engineering/platform-control-plane-delegation
+- software-engineering/policy-as-code
+forbidden_neighbors: []
+expected_queries:
+- platform paved road와 golden path, guardrail, escape hatch는 각각 어떻게 다른지 비교해줘
+- paved road는 표준화 자체가 아니라 developer productivity를 위한 기본 경로라는 뜻을 설명해줘
+- 플랫폼 opinionation이 너무 강하면 shadow infra와 정책 우회가 생기는 이유가 뭐야?
+- paved road 예외를 ADR과 escape hatch로 관리하면서도 guardrail을 유지하려면 어떻게 해?
+- 플랫폼 제품의 채택률, 우회 경로 비율, 배포 실패율, 개발자 만족도를 scorecard로 봐야 하는 이유는?
+contextual_chunk_prefix: |
+  이 문서는 platform paved road를 developer experience와 safe default를 제공하는 기본 경로로 보되, guardrail과 escape hatch trade-off를 고르는 advanced chooser이다.
+---
 # Platform Paved Road Trade-offs
 
 > 한 줄 요약: platform paved road는 개발 속도를 높이는 기본 경로지만, 모든 팀을 같은 길로 몰아넣으면 유연성과 제품 요구를 잃을 수 있다.

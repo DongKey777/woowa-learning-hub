@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Savepoint Rollback, Lock Retention, and Escalation Edge Cases
+concept_id: database/savepoint-lock-retention-edge-cases
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 88
+mission_ids: []
+review_feedback_tags:
+- savepoint
+- lock-retention
+- partial-rollback
+- gap-lock
+- lock-wait
+aliases:
+- savepoint lock retention
+- rollback to savepoint locks
+- partial rollback edge case
+- gap lock after rollback
+- lock footprint persistence
+- savepoint lock wait
+- escalation misconception
+- partial retry transaction
+- rollback did not release lock
+- savepoint 이후 락 유지
+symptoms:
+- ROLLBACK TO SAVEPOINT 이후에도 lock wait timeout이나 blocker가 계속 남아 있어
+- 부분 롤백했으니 gap lock이나 range lock도 풀렸다고 오해하고 있어
+- queue claim이나 range FOR UPDATE를 savepoint로 되돌린 뒤 insert starvation이 계속 발생해
+intents:
+- deep_dive
+- troubleshooting
+- comparison
+prerequisites:
+- database/savepoint-partial-rollback
+- database/gap-lock-next-key-lock
+next_docs:
+- database/savepoint-lock-retention-incidents
+- database/lock-wait-deadlock-latch-triage-playbook
+- database/lock-escalation-misconceptions
+linked_paths:
+- contents/database/savepoint-partial-rollback.md
+- contents/database/lock-escalation-misconceptions.md
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/savepoint-lock-retention-incident-scenarios.md
+confusable_with:
+- database/savepoint-partial-rollback
+- database/savepoint-lock-retention-incidents
+- database/lock-escalation-misconceptions
+forbidden_neighbors: []
+expected_queries:
+- ROLLBACK TO SAVEPOINT를 했는데 왜 lock wait timeout이 계속 발생할 수 있어?
+- savepoint partial rollback이 데이터 변경은 되돌려도 lock footprint를 줄이지 못하는 이유가 뭐야?
+- gap lock이나 next-key lock이 있는 range query를 savepoint로 되돌리면 insert starvation이 바로 풀려?
+- lock escalation처럼 보이지만 실제로는 넓은 range lock과 장기 transaction일 수 있다는 뜻이 뭐야?
+- savepoint를 쓰는 partial retry 패턴에서 transaction을 짧게 끝내야 하는 이유를 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 savepoint rollback, lock retention, partial rollback, gap/next-key lock, lock footprint persistence를 advanced edge case로 설명하는 deep dive다.
+  ROLLBACK TO SAVEPOINT 이후 lock wait, blocker 유지, partial retry transaction, escalation misconception 질문이 본 문서에 매핑된다.
+---
 # Savepoint Rollback, Lock Retention, and Escalation Edge Cases
 
 > 한 줄 요약: savepoint로 부분 롤백해도 이미 잡은 락과 넓어진 잠금 범위가 자동으로 줄어들지 않는 경우가 많아서, "부분 실패만 되돌렸으니 경합도 사라졌겠지"라고 생각하면 운영 판단이 틀어진다.

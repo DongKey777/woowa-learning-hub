@@ -1,3 +1,67 @@
+---
+schema_version: 3
+title: Beginner Primer Template
+concept_id: design-pattern/beginner-primer-template
+canonical: false
+category: design-pattern
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 20
+mission_ids: []
+review_feedback_tags:
+- beginner-primer-template
+- corpus-authoring
+- primer-scope
+- doc-template
+aliases:
+- beginner primer template
+- design pattern beginner primer template
+- quick check skeleton
+- confusion box skeleton
+- beginner bridge template
+- primer writing guide
+- beginner doc checklist
+- pattern primer skeleton
+- 30초 비교표 템플릿
+- 1분 예시 템플릿
+symptoms:
+- beginner primer를 새로 쓸 때 정의부터 길게 풀어 첫 독해 리듬이 무너진다
+- Quick-Check, Confusion Box, 1분 예시 같은 primer 섹션 이름과 순서가 문서마다 달라진다
+- template나 manifest 같은 지원 문서와 실제 CS primer를 같은 검색 우선순위로 다룬다
+intents:
+- definition
+- design
+prerequisites:
+- design-pattern/primer-scope-manifest
+- design-pattern/object-oriented-design-pattern-basics
+next_docs:
+- design-pattern/primer-scope-manifest
+- design-pattern/factory-selector-resolver-beginner-entrypoint
+- design-pattern/policy-object-vs-strategy-map-beginner-bridge
+linked_paths:
+- contents/design-pattern/primer-scope-manifest.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/design-pattern/template-method-query-router-beginner.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/policy-object-vs-strategy-map-beginner-bridge.md
+confusable_with:
+- design-pattern/primer-scope-manifest
+- design-pattern/design-pattern-index
+- design-pattern/object-oriented-design-pattern-basics
+forbidden_neighbors: []
+expected_queries:
+- beginner primer template에서 30초 비교표 Quick-Check Confusion Box 1분 예시를 어떤 순서로 배치해?
+- 새 design pattern primer를 쓸 때 첫 독해 리듬과 섹션 제목 톤을 어떻게 맞추면 좋아?
+- 초보자용 문서에서 정의보다 문제 그림과 혼동 교정을 먼저 주는 이유가 뭐야?
+- support-template 문서는 실제 CS 개념 문서보다 낮은 priority로 두는 게 맞아?
+- primer 작성 체크리스트와 scope marker를 어디에 넣어야 해?
+contextual_chunk_prefix: |
+  이 문서는 Beginner Primer Template support document로, design-pattern beginner primer를 쓸 때
+  10초 질문, 30초 비교표, Quick-Check, Confusion Box, 1분 예시, 다음 읽기 순서를 고정해
+  첫 독해 리듬과 corpus authoring consistency를 맞추는 기준을 설명한다.
+---
 # Beginner Primer 작성 템플릿: 30초 비교표 + 1분 예시 박스 스켈레톤
 
 > 한 줄 요약: 새 beginner primer를 쓸 때는 "큰 그림 2~3문장 -> 30초 비교표 -> Quick-Check -> Confusion Box -> 1분 예시 -> 다음 문서" 순서와 제목 톤을 고정해 두면 첫 독해 리듬이 안정된다.

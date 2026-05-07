@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: MySQL Gap-Lock Blind Spots Under READ COMMITTED
+concept_id: database/mysql-gap-lock-blind-spots-read-committed
+canonical: true
+category: database
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+language: mixed
+source_priority: 92
+mission_ids: []
+review_feedback_tags:
+- gap-lock
+- read-committed
+- phantom-read
+- overlap-check
+aliases:
+- mysql read committed gap lock blind spot
+- overlap phantom under read committed
+- next-key lock disabled read committed
+- locking nonexistence mysql
+- select for update empty result phantom
+- booking overlap race mysql
+- read committed overlap mitigation
+- READ COMMITTED에서 gap lock 빠짐
+- RC에서 중복 예약 생김
+symptoms:
+- REPEATABLE READ에서 버티던 overlap SELECT FOR UPDATE 코드가 READ COMMITTED 전환 뒤 phantom insert를 허용해
+- empty-result probe가 nonexistence를 잠그지 못해 두 트랜잭션이 모두 겹치는 예약을 insert하고 있어
+- duplicate-key와 foreign-key gap lock 예외를 continuous overlap predicate에도 적용하려고 해
+intents:
+- deep_dive
+- troubleshooting
+prerequisites:
+- database/gap-lock-next-key-lock
+- database/mysql-empty-result-locking-reads
+next_docs:
+- database/engine-fallbacks-overlap-enforcement
+- database/range-invariant-enforcement-write-skew-phantom
+- database/overlap-predicate-index-design-booking-tables
+linked_paths:
+- contents/database/gap-lock-next-key-lock.md
+- contents/database/read-committed-vs-repeatable-read-anomalies.md
+- contents/database/write-skew-phantom-read-case-studies.md
+- contents/database/overlap-predicate-index-design-booking-tables.md
+- contents/database/range-invariant-enforcement-write-skew-phantom.md
+- contents/database/engine-fallbacks-overlap-enforcement.md
+- contents/database/transaction-boundary-isolation-locking-decision-framework.md
+- contents/database/mysql-empty-result-locking-reads.md
+- contents/database/mysql-repeatable-read-safe-range-checklist.md
+confusable_with:
+- database/mysql-empty-result-locking-reads
+- database/gap-lock-next-key-lock
+- database/read-committed-repeatable-read-anomalies
+forbidden_neighbors: []
+expected_queries:
+- MySQL READ COMMITTED로 내리면 gap lock과 next-key lock 의존 overlap check가 왜 깨져?
+- RR에서 잘 되던 SELECT FOR UPDATE if none then INSERT가 RC에서 phantom insert를 허용하는 흐름을 설명해줘
+- duplicate-key gap lock 예외와 continuous overlap predicate를 혼동하면 왜 위험해?
+- 회의실 예약 overlap check를 READ COMMITTED에서 안전하게 만들려면 어떤 fallback이 필요해?
+- empty result probe가 RC에서 nonexistence serialization을 못 하는 이유를 알려줘
+contextual_chunk_prefix: |
+  이 문서는 MySQL READ COMMITTED에서 search gap lock과 next-key lock 의존이 사라져 overlap check, empty-result FOR UPDATE, booking race가 깨지는 advanced deep dive다.
+  RR에서는 됐는데 RC에서 phantom insert, gap lock blind spot, read committed overlap mitigation 질문이 본 문서에 매핑된다.
+---
 # MySQL Gap-Lock Blind Spots Under READ COMMITTED
 
 > 한 줄 요약: `REPEATABLE READ`에서 next-key/gap lock에 기대던 MySQL overlap check는 `READ COMMITTED`로 내리면 "비어 있는 범위"를 더 이상 잠그지 못해 phantom insert가 다시 열린다.

@@ -1,3 +1,69 @@
+---
+schema_version: 3
+title: Adapter Pattern
+concept_id: design-pattern/adapter
+canonical: true
+category: design-pattern
+difficulty: intermediate
+doc_role: bridge
+level: intermediate
+language: mixed
+source_priority: 86
+mission_ids: []
+review_feedback_tags:
+- adapter-pattern
+- interface-translation
+- legacy-sdk-wrapper
+aliases:
+- adapter pattern
+- gof adapter
+- classic adapter
+- object adapter
+- class adapter
+- interface translation layer
+- signature mismatch wrapper
+- legacy sdk wrapper
+- 어댑터 패턴
+- 인터페이스 변환 래퍼
+symptoms:
+- 외부 SDK나 레거시 클래스의 메서드 시그니처가 우리 Target interface와 맞지 않아 호출부마다 변환 코드를 넣는다
+- GoF Adapter와 hexagonal architecture의 inbound/outbound adapter를 같은 개념으로 섞어 설명한다
+- Adapter, Facade, Proxy, Bridge를 모두 wrapper라고만 보고 선택 기준을 세우지 못한다
+intents:
+- definition
+- comparison
+- design
+prerequisites:
+- software-engineering/oop-design-basics
+- design-pattern/adapter-basics
+- design-pattern/facade-vs-adapter-vs-proxy-decision-guide
+next_docs:
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/bridge-storage-provider-abstractions
+- design-pattern/facade-anti-corruption-seam
+linked_paths:
+- contents/design-pattern/adapter-basics.md
+- contents/design-pattern/facade-vs-adapter-vs-proxy.md
+- contents/design-pattern/ports-and-adapters-vs-classic-patterns.md
+- contents/design-pattern/bridge-storage-provider-abstractions.md
+- contents/design-pattern/facade-anti-corruption-seam.md
+confusable_with:
+- design-pattern/adapter-basics
+- design-pattern/facade-vs-adapter-vs-proxy-decision-guide
+- design-pattern/ports-and-adapters-vs-classic-patterns
+- design-pattern/bridge-storage-provider-abstractions
+forbidden_neighbors: []
+expected_queries:
+- Adapter pattern은 Target interface와 Adaptee signature가 다를 때 어떻게 번역해?
+- GoF Adapter와 hexagonal architecture의 inbound outbound adapter는 어떻게 달라?
+- 외부 SDK wrapper에서 변환 로직을 호출부마다 두지 않고 Adapter에 모으는 이유가 뭐야?
+- Adapter와 Facade와 Proxy는 wrapper처럼 보여도 목적이 어떻게 달라?
+- Java에서 class adapter보다 object adapter를 보통 선택하는 이유가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Adapter Pattern bridge로, GoF Adapter가 incompatible interface를
+  Target interface로 번역하는 wrapper이며, hexagonal adapter, facade, proxy,
+  bridge와 목적이 어떻게 다른지 설명한다.
+---
 # Adapter (어댑터) 패턴 🟢 Basic
 
 
