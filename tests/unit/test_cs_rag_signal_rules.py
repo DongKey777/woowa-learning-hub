@@ -7921,5 +7921,34 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("reconciliation", expanded)
 
 
+class ValidationBoundarySignalTests(unittest.TestCase):
+    def test_dto_validation_vs_domain_invariant_prefers_validation_boundary(self) -> None:
+        prompt = "DTO validation vs domain invariant"
+
+        signals = signal_rules.detect_signals(prompt)
+        self.assertTrue(signals)
+        self.assertEqual(signals[0]["tag"], "validation_boundary")
+        self.assertEqual(signals[0]["category"], "software-engineering")
+        tags = [signal["tag"] for signal in signals]
+        self.assertNotIn("api_boundary", tags)
+        self.assertNotIn("java_value_canonicalization", tags)
+
+    def test_korean_domain_invariant_question_prefers_validation_boundary(self) -> None:
+        prompt = "도메인 불변식은 어디서 검증해야 해? DTO validation vs domain invariant"
+
+        signals = signal_rules.detect_signals(prompt)
+        self.assertTrue(signals)
+        self.assertEqual(signals[0]["tag"], "validation_boundary")
+        self.assertEqual(signals[0]["category"], "software-engineering")
+        self.assertNotIn("api_boundary", [signal["tag"] for signal in signals])
+
+    def test_validation_boundary_expansion_contains_domain_terms(self) -> None:
+        expanded = signal_rules.expand_query("형식 검증 vs 도메인 불변식")
+
+        self.assertIn("validation boundary", expanded)
+        self.assertIn("input validation vs domain invariant", expanded)
+        self.assertIn("domain invariants as contracts", expanded)
+
+
 if __name__ == "__main__":
     unittest.main()
