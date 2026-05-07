@@ -226,8 +226,50 @@ _RULES: list[Rule] = [
     },
     {
         "tag": "db_modeling",
-        "triggers": {"schema", "스키마", "정규화", "normalization", "table", "index", "인덱스"},
-        "expand": ["schema design", "normalization", "index", "primary key"],
+        "triggers": {
+            "db",
+            "database",
+            "database design",
+            "db design",
+            "db schema",
+            "schema",
+            "schema design",
+            "table",
+            "table design",
+            "primary key",
+            "foreign key",
+            "pk",
+            "fk",
+            "pk/fk",
+            "unique constraint",
+            "referential integrity",
+            "normalization",
+            "index",
+            "db 설계",
+            "DB 설계",
+            "데이터베이스",
+            "데이터베이스 설계",
+            "스키마",
+            "스키마 설계",
+            "테이블",
+            "테이블 설계",
+            "기본키",
+            "외래키",
+            "제약조건",
+            "제약 조건",
+            "참조 무결성",
+            "정규화",
+            "인덱스",
+        },
+        "expand": [
+            "schema design",
+            "normalization",
+            "index",
+            "primary key",
+            "foreign key",
+            "unique constraint",
+            "referential integrity",
+        ],
         "category": "database",
     },
     {
@@ -1954,6 +1996,12 @@ _SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES = {
 _BEGINNER_INTENT_PHRASES = {
     "처음 배우",
     "처음 보",
+    "공부",
+    "공부하고 싶",
+    "학습",
+    "학습하고 싶",
+    "배우고 싶",
+    "배워보고 싶",
     "입문자",
     "입문용",
     "입문 관점",
@@ -2146,9 +2194,28 @@ _WOOWA_BACKEND_FOUNDATION_TOPIC_CUES = {
 }
 
 _DATABASE_MODELING_BEGINNER_TOPIC_CUES = {
+    "db",
+    "database",
+    "database design",
+    "db design",
+    "db 설계",
+    "데이터베이스",
+    "데이터베이스 설계",
     "schema",
     "스키마",
+    "schema design",
+    "스키마 설계",
     "table",
+    "table design",
+    "테이블",
+    "테이블 설계",
+    "primary key",
+    "foreign key",
+    "pk/fk",
+    "기본키",
+    "외래키",
+    "referential integrity",
+    "참조 무결성",
     "normalization",
     "정규화",
     "index",
@@ -3530,7 +3597,15 @@ def _db_modeling_expand(
     beginner_intent: bool = False,
 ) -> list[str]:
     del haystack, tokens
-    expand = ["schema design", "normalization", "index", "primary key"]
+    expand = [
+        "schema design",
+        "normalization",
+        "index",
+        "primary key",
+        "foreign key",
+        "unique constraint",
+        "referential integrity",
+    ]
 
     if not beginner_intent:
         return expand
@@ -3544,6 +3619,58 @@ def _db_modeling_expand(
                 "1nf 2nf 3nf",
                 "정규화 기초",
                 "정규화 큰 그림",
+            ]
+        )
+    if matched_triggers & {
+        "db",
+        "database",
+        "database design",
+        "db design",
+        "db 설계",
+        "DB 설계",
+        "데이터베이스",
+        "데이터베이스 설계",
+        "schema design",
+        "스키마 설계",
+        "table design",
+        "테이블 설계",
+    }:
+        beginner_expand.extend(
+            [
+                "database schema design basics",
+                "relational modeling beginner",
+                "table relationship basics",
+                "pk fk relationship",
+                "스키마 설계 기초",
+                "테이블 관계 큰 그림",
+            ]
+        )
+    if matched_triggers & {
+        "primary key",
+        "foreign key",
+        "pk",
+        "fk",
+        "pk/fk",
+        "기본키",
+        "외래키",
+        "referential integrity",
+        "참조 무결성",
+    }:
+        beginner_expand.extend(
+            [
+                "primary key foreign key basics",
+                "referential integrity basics",
+                "pk fk relationship",
+                "기본키 외래키 기초",
+            ]
+        )
+    if matched_triggers & {"unique constraint", "제약조건", "제약 조건"}:
+        beginner_expand.extend(
+            [
+                "database constraint basics",
+                "unique constraint basics",
+                "business invariant database constraint",
+                "제약조건 기초",
             ]
         )
     if matched_triggers & {"index", "인덱스"}:

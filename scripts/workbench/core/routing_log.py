@@ -28,8 +28,10 @@ One JSONL row per classify call::
       "matched_tokens": {
         "definition": ["뭐야"],
         "depth": [],
+        "study_intent": [],
         "cs_domain": [],
         "learning_concept": ["bean"],
+        "corpus_signal": [],
         "coach_request": [],
         "tool": [],
         "override": null
@@ -65,6 +67,7 @@ from pathlib import Path
 from typing import Iterable
 
 from . import lexicon
+from .corpus_signal_bridge import detect_corpus_signal_tags
 
 
 SCHEMA_ID = "routing-log-v1"
@@ -97,8 +100,10 @@ def collect_matched_tokens(prompt: str) -> dict[str, list[str] | str | None]:
     return {
         "definition": _matched_tokens(prompt, lexicon.DEFINITION_SIGNALS),
         "depth": _matched_tokens(prompt, lexicon.DEPTH_SIGNALS),
+        "study_intent": _matched_tokens(prompt, lexicon.STUDY_INTENT_SIGNALS),
         "cs_domain": _matched_tokens(prompt, lexicon.CS_DOMAIN_TOKENS),
         "learning_concept": _matched_tokens(prompt, lexicon.LEARNING_CONCEPT_TOKENS),
+        "corpus_signal": detect_corpus_signal_tags(prompt),
         "coach_request": _matched_tokens(prompt, lexicon.COACH_REQUEST_TOKENS),
         "tool": _matched_tokens(prompt, lexicon.TOOL_TOKENS),
         "override": _matched_override(prompt),

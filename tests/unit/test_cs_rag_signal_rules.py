@@ -5555,6 +5555,30 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("db modeling beginner", expanded)
         self.assertIn("큰 그림", expanded)
 
+    def test_db_design_study_query_maps_to_db_modeling(self) -> None:
+        prompt = "우리 DB 설계에 대해서 공부하고 싶어"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "db_modeling",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("database schema design basics", expanded)
+        self.assertIn("primary key", expanded)
+        self.assertIn("foreign key", expanded)
+        self.assertIn("unique constraint", expanded)
+
+    def test_pk_fk_study_query_adds_relational_modeling_vocabulary(self) -> None:
+        prompt = "PK/FK랑 참조 무결성 기초부터 배우고 싶어"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "db_modeling",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("primary key foreign key basics", expanded)
+        self.assertIn("referential integrity basics", expanded)
+
     def test_schema_shortform_query_ranks_primer_ahead_of_schema_evolution_deep_dive(self) -> None:
         hits = self._search("스키마가 뭐야?", top_k=8)
 
