@@ -75,3 +75,24 @@ def classify_drill_answer(
     if signals["token_overlap"] >= 0.2:
         satisfied += 1
     return satisfied >= 3, signals
+
+
+def classify_self_assessment_response(
+    prompt: str,
+    pending_trigger: dict | None,
+) -> tuple[bool, dict]:
+    """Detect a self-assessment score response for a pending trigger."""
+    try:
+        from scripts.learning.self_assessment import parse_response  # noqa: WPS433
+    except Exception:
+        return False, {"has_pending": pending_trigger is not None, "parse_error": True}
+    parsed = parse_response(prompt, pending_trigger)
+    if parsed is None:
+        return False, {"has_pending": pending_trigger is not None, "score": None}
+    return True, {
+        "has_pending": True,
+        "score": parsed.get("score"),
+        "concept_ids": parsed.get("concept_ids") or [],
+        "trigger_session_id": parsed.get("trigger_session_id"),
+        "free_text": parsed.get("free_text"),
+    }

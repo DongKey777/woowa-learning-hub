@@ -488,12 +488,6 @@ def _pre_augment_phase(
     ]
     topic_hints = [t for t in (session_payload.get("primary_topic"),) if t]
 
-    pre_result = intent_pre_decide(
-        prompt or "",
-        history=None,
-        pending_drill=pending_drill if drill_result is None else None,
-        learner_state=learner_state_full,
-    )
     try:
         from .concept_catalog import load_catalog  # noqa: WPS433
         concept_catalog = load_catalog()
@@ -501,9 +495,31 @@ def _pre_augment_phase(
         concept_catalog = {}
     learner_context = _load_cross_learner_context(
         prompt or "",
+        {},
+        concept_catalog,
+    )
+    try:
+        from .cognitive_trigger import load_pending_triggers  # noqa: WPS433
+        pending_triggers = load_pending_triggers()
+    except Exception:
+        pending_triggers = {}
+
+    pre_result = intent_pre_decide(
+        prompt or "",
+        history=None,
+        pending_drill=pending_drill if drill_result is None else None,
+        learner_state=learner_state_full,
+        reformulated_query=reformulated_query,
+        learner_context=learner_context,
+        pending_triggers=pending_triggers,
+    )
+    refined_learner_context = _load_cross_learner_context(
+        prompt or "",
         pre_result,
         concept_catalog,
     )
+    if refined_learner_context is not None:
+        learner_context = refined_learner_context
 
     cs_readiness = _check_cs_readiness()
     cs_search_mode = pre_result.get("cs_search_mode", "skip")

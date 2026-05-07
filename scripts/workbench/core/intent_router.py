@@ -29,7 +29,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from .answer_classifier import classify_drill_answer as _looks_like_drill_answer
+from .answer_classifier import (
+    classify_drill_answer as _looks_like_drill_answer,
+    classify_self_assessment_response as _looks_like_self_assessment_response,
+)
 from .intent_tokens import CS_TOKENS as _CS_TOKENS
 from .intent_tokens import MISSION_TOKENS as _MISSION_TOKENS
 
@@ -69,6 +72,9 @@ def pre_decide(
     history: list[dict] | None = None,
     pending_drill: dict | None = None,
     learner_state: dict | None = None,
+    reformulated_query: str | None = None,
+    learner_context: dict | None = None,
+    pending_triggers: dict | None = None,
 ) -> dict[str, Any]:
     """Classify a turn before CS augment.
 
@@ -90,12 +96,38 @@ def pre_decide(
         )
 
     drill_is_answer, drill_signals = _looks_like_drill_answer(prompt, pending_drill)
+    self_assessment_pending = (pending_triggers or {}).get("self_assessment")
+    self_assessment_is_response, self_assessment_signals = (
+        _looks_like_self_assessment_response(prompt, self_assessment_pending)
+    )
+    try:
+        from scripts.learning.rag.r3.anaphora import detect_follow_up  # noqa: WPS433
+        follow_up_decision = detect_follow_up(
+            prompt=prompt,
+            reformulated_query=reformulated_query,
+            learner_context=learner_context,
+        )
+        r3_follow_up = {
+            "is_follow_up": follow_up_decision.is_follow_up,
+            "detected_via": follow_up_decision.detected_via,
+            "prior_topics": list(follow_up_decision.prior_topics),
+            "augmented_semantic_query": follow_up_decision.augmented_semantic_query,
+        }
+    except Exception:
+        r3_follow_up = {
+            "is_follow_up": False,
+            "detected_via": "unavailable",
+            "prior_topics": [],
+            "augmented_semantic_query": prompt,
+        }
 
     signals = {
         "mission_score": mission_score,
         "cs_score": cs_score,
         "unresolved_thread_count": ls_unresolved,
         "drill_signals": drill_signals,
+        "r3_follow_up": r3_follow_up,
+        "self_assessment_response": self_assessment_signals,
     }
 
     # Drill-answer path
@@ -105,6 +137,9 @@ def pre_decide(
         else:
             pre_intent = DRILL_ANSWER
         return {"pre_intent": pre_intent, "cs_search_mode": "cheap", "signals": signals}
+
+    if self_assessment_is_response:
+        return {"pre_intent": UNKNOWN, "cs_search_mode": "skip", "signals": signals}
 
     if mission_score == 0 and cs_score == 0:
         # No strong signal. Lean mission-only if there are unresolved
