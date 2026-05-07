@@ -32,6 +32,8 @@ def test_build_feedback_row_minimal():
         prompt="스프링 빈?",
         signal="helpful",
         hits=[{"path": "knowledge/cs/contents/spring/bean.md"}],
+        source_event_id="event-1234",
+        turn_id="turn-event-1234",
         now=datetime(2026, 4, 30, 12, 0, 0, tzinfo=timezone.utc),
     )
     assert row["schema_id"] == "rag-feedback-v1"
@@ -39,6 +41,8 @@ def test_build_feedback_row_minimal():
     assert row["prompt"] == "스프링 빈?"
     assert len(row["prompt_hash"]) == 40
     assert row["repo"] == ""
+    assert row["source_event_id"] == "event-1234"
+    assert row["turn_id"] == "turn-event-1234"
     assert row["note"] == ""
     assert row["hits"] == [{"path": "knowledge/cs/contents/spring/bean.md"}]
 

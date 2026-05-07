@@ -33,6 +33,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--note", default=None)
     parser.add_argument("--repo", default=None)
+    parser.add_argument("--source-event-id", default=None)
+    parser.add_argument("--turn-id", default=None)
     args = parser.parse_args(argv)
 
     sys.path.insert(0, str(repo_root))
@@ -50,6 +52,8 @@ def main(argv: list[str] | None = None) -> int:
             repo=args.repo,
             repo_root=repo_root,
             note=args.note,
+            source_event_id=args.source_event_id,
+            turn_id=args.turn_id,
         )
     except ValueError as exc:
         print(f"[learn-feedback] {exc}", file=sys.stderr)

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Assistant Response Quality Telemetry",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "logged_at",
+    "source_event_id",
+    "response_summary",
+    "response_excerpt",
+    "response_length_chars",
+    "citation_paths_expected",
+    "citation_paths_declared",
+    "quality_flags",
+    "contract_flags",
+    "redaction_applied"
+  ],
+  "properties": {
+    "schema_id": { "const": "assistant-response-quality-v1" },
+    "logged_at": { "type": "string", "minLength": 16 },
+    "source_event_id": { "type": "string", "minLength": 8 },
+    "turn_id": { "type": ["string", "null"] },
+    "repo": { "type": "string" },
+    "model_runtime": { "type": "string" },
+    "prompt": { "type": ["string", "null"] },
+    "prompt_hash": { "type": ["string", "null"] },
+    "response_summary": { "type": "string", "minLength": 1 },
+    "response_excerpt": { "type": "string" },
+    "response_hash": { "type": ["string", "null"] },
+    "response_length_chars": { "type": "integer", "minimum": 0 },
+    "answer_strategy": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "citation_paths_expected": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "citation_paths_declared": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "quality_flags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "contract_flags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "note": { "type": "string" },
+    "redaction_applied": { "type": "boolean" }
+  }
+}

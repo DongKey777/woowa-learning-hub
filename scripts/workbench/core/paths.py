@@ -108,3 +108,7 @@ def learner_identity_path() -> Path:
 
 def learner_drill_pending_path() -> Path:
     return LEARNER_DIR / "drill-pending.json"
+
+
+def learner_response_quality_path() -> Path:
+    return LEARNER_DIR / "response-quality.jsonl"

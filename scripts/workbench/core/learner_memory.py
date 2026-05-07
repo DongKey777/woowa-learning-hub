@@ -41,6 +41,7 @@ from .concept_catalog import (
 )
 from .memory import _append_with_lock, _atomic_write, _question_fingerprint
 from .paths import (
+    STATE_DIR,
     ensure_learner_layout,
     learner_history_path,
     learner_identity_path,
@@ -217,6 +218,16 @@ def _deterministic_event_id(event: dict) -> str:
     return digest[:16]
 
 
+def _turn_id_for_event(event: dict) -> str:
+    """Stable per-turn join key for telemetry logs.
+
+    The learner event stays the source of truth; routing, feedback, and
+    response-quality logs use this id to join without reparsing prompts.
+    """
+    event_id = event.get("event_id") or _deterministic_event_id(event)
+    return f"turn-{event_id}"
+
+
 # === Schema validation ====================================================
 def validate_learner_event(event: dict) -> None:
     """Per-event-type required-field enforcement.
@@ -254,10 +265,30 @@ def append_learner_event(event: dict[str, Any]) -> dict:
         event["ts"] = _now_iso()
     if "event_id" not in event:
         event["event_id"] = _deterministic_event_id(event)
+    if "turn_id" not in event:
+        event["turn_id"] = _turn_id_for_event(event)
     validate_learner_event(event)
     line = json.dumps(event, ensure_ascii=False) + "\n"
     _append_with_lock(learner_history_path(), line)
     return event
+
+
+def _learner_telemetry_paths() -> list[Path]:
+    """Prompt-bearing telemetry files controlled by learner privacy commands."""
+    paths = [
+        LEARNER_DIR / "response-quality.jsonl",
+        STATE_DIR / "cs_rag" / "feedback.jsonl",
+        STATE_DIR / "cs_rag" / "logs" / "routing.jsonl",
+    ]
+    repos_dir = STATE_DIR / "repos"
+    if repos_dir.exists():
+        for logs_dir in repos_dir.glob("*/logs"):
+            paths.extend([
+                logs_dir / "routing.jsonl",
+                logs_dir / "rag_feedback.jsonl",
+                logs_dir / "response_quality.jsonl",
+            ])
+    return paths
 
 
 def _load_history(*, limit: int | None = None) -> list[dict]:
@@ -320,7 +351,7 @@ def recompute_learner_profile() -> dict:
 
 
 def clear_learner_state() -> dict:
-    """Privacy reset — wipe the entire `state/learner/` directory."""
+    """Privacy reset — wipe learner memory and learner-linked telemetry logs."""
     deleted: list[str] = []
     if LEARNER_DIR.exists():
         for child in sorted(LEARNER_DIR.iterdir()):
@@ -335,16 +366,19 @@ def clear_learner_state() -> dict:
                 deleted.append(child.name)
             except OSError:
                 pass
+    for path in _learner_telemetry_paths():
+        if path.exists():
+            try:
+                path.unlink()
+                deleted.append(str(path.relative_to(STATE_DIR.parent)))
+            except OSError:
+                pass
     return {"cleared": deleted}
 
 
-def redact_substring(needle: str) -> dict:
-    """Drop every history entry containing `needle`. Returns counts."""
-    if not needle:
-        return {"removed": 0, "kept": 0}
-    path = learner_history_path()
+def _redact_file_lines(path: Path, needle: str) -> dict:
     if not path.exists():
-        return {"removed": 0, "kept": 0}
+        return {"path": str(path), "removed": 0, "kept": 0}
     kept_lines: list[str] = []
     removed = 0
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -355,8 +389,72 @@ def redact_substring(needle: str) -> dict:
             continue
         kept_lines.append(line)
     _atomic_write(path, "\n".join(kept_lines) + ("\n" if kept_lines else ""))
-    recompute_learner_profile()
-    return {"removed": removed, "kept": len(kept_lines)}
+    return {"path": str(path), "removed": removed, "kept": len(kept_lines)}
+
+
+def redact_substring(needle: str) -> dict:
+    """Drop every learner/telemetry line containing `needle`. Returns counts."""
+    if not needle:
+        return {"removed": 0, "kept": 0}
+    path = learner_history_path()
+    files = [_redact_file_lines(path, needle)]
+    for telemetry_path in _learner_telemetry_paths():
+        if telemetry_path == path:
+            continue
+        result = _redact_file_lines(telemetry_path, needle)
+        if result["removed"] or result["kept"]:
+            files.append(result)
+    if path.exists():
+        recompute_learner_profile()
+    removed = sum(item["removed"] for item in files)
+    kept = sum(item["kept"] for item in files)
+    return {"removed": removed, "kept": kept, "files": files}
+
+
+def _infer_question_intent(prompt: str, tier: int, mode: str | None) -> str:
+    text = prompt.lower()
+    if tier == 3:
+        return "mission_coaching"
+    if "vs" in text or "차이" in prompt or "비교" in prompt:
+        return "concept_comparison"
+    if any(token in prompt for token in ("왜", "원인", "안 돼", "문제", "에러")):
+        return "cause_analysis"
+    if any(token in prompt for token in ("어떻게", "방법", "개선", "설계")):
+        return "design_or_howto"
+    if mode == "full":
+        return "deep_concept_explanation"
+    if any(token in prompt for token in ("뭐야", "무엇", "알려줘", "설명")):
+        return "concept_explanation"
+    return "unknown"
+
+
+def _infer_question_shape(prompt: str) -> str:
+    text = prompt.lower()
+    if len(prompt.strip()) <= 20 and any(token in prompt for token in ("그럼", "이건", "왜", "뭐야")):
+        return "follow_up_short"
+    if "vs" in text or "차이" in prompt:
+        return "comparison"
+    if any(token in prompt for token in ("에러", "실패", "안 돼", "터져")):
+        return "debugging"
+    if any(token in prompt for token in ("설계", "구조", "아키텍처")):
+        return "design"
+    if any(token in prompt for token in ("뭐야", "무엇")):
+        return "definition"
+    return "open_question"
+
+
+def _context_folded(reformulated_query: str | None) -> bool:
+    if not reformulated_query:
+        return False
+    return any(token in reformulated_query for token in ("이전 맥락", "직전", "previous context"))
+
+
+def _fallback_reason_for(tier: int, blocked: bool, decision_reason: str | None) -> str | None:
+    if blocked or tier == 0:
+        return decision_reason
+    return None
+
+
 
 
 # === Event builders =======================================================
@@ -373,8 +471,12 @@ def build_rag_ask_event(
     learner_id: str,
     blocked: bool,
     catalog: dict,
+    decision_reason: str | None = None,
+    router_confidence: float | None = None,
+    latency_ms: int | None = None,
 ) -> dict:
     redacted_prompt = _redact_text(prompt) or ""
+    redacted_reformulated = _redact_text(reformulated_query) if reformulated_query is not None else None
     event = {
         "event_type": "rag_ask",
         "ts": _now_iso(),
@@ -384,6 +486,12 @@ def build_rag_ask_event(
         "concept_ids": extract_concept_ids(prompt, catalog),
         "prompt": redacted_prompt,
         "question_fingerprint": _question_fingerprint(redacted_prompt),
+        "question_intent": _infer_question_intent(redacted_prompt, int(tier), mode),
+        "question_shape": _infer_question_shape(redacted_prompt),
+        "context_folded": _context_folded(redacted_reformulated),
+        "fallback_reason": _fallback_reason_for(int(tier), bool(blocked), decision_reason),
+        "router_confidence": router_confidence,
+        "latency_ms": latency_ms,
         "tier": int(tier),
         "rag_mode": mode,
         "experience_level_inferred": experience_level,
@@ -392,8 +500,8 @@ def build_rag_ask_event(
         "rag_ready": _extract_rag_ready(rag_result),
         "blocked": bool(blocked),
     }
-    if reformulated_query is not None:
-        event["reformulated_query"] = _redact_text(reformulated_query)
+    if redacted_reformulated is not None:
+        event["reformulated_query"] = redacted_reformulated
     return event
 
 

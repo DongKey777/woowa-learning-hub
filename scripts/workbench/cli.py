@@ -6,6 +6,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 CURRENT_DIR = Path(__file__).resolve().parent
@@ -722,6 +723,7 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
     from dataclasses import asdict
 
     from core.interactive_rag_router import classify  # type: ignore
+    started = time.monotonic()
     try:
         from core.learner_memory import (  # type: ignore
             build_learner_context,
@@ -822,9 +824,19 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
             f" --prompt {shlex.quote(args.prompt)}"
         )
 
-    _record_rag_ask_event(args, decision, out)
-    _record_routing_log(args, decision)
+    latency_ms = int((time.monotonic() - started) * 1000)
+    final_decision = out.get("decision") if isinstance(out.get("decision"), dict) else asdict(decision)
+    telemetry_event = _record_rag_ask_event(args, final_decision, out, latency_ms=latency_ms)
+    if telemetry_event:
+        out["telemetry"] = {
+            "turn_id": telemetry_event.get("turn_id"),
+            "source_event_id": telemetry_event.get("event_id"),
+        }
+    else:
+        out["telemetry"] = None
+    _record_routing_log(args, final_decision, out, telemetry_event)
     out["feedback_hint"] = _build_feedback_hint(args, out)
+    out["response_quality_hint"] = _build_response_quality_hint(args, out)
     return out
 
 
@@ -904,6 +916,15 @@ def _build_feedback_hint(args: argparse.Namespace, out: dict) -> dict | None:
     learn_feedback = str(ROOT / "bin" / "learn-feedback")
     qprompt = shlex.quote(args.prompt)
     qrepo = ("--repo " + shlex.quote(args.repo)) if args.repo else ""
+    telemetry = out.get("telemetry") if isinstance(out.get("telemetry"), dict) else {}
+    source_event_id = telemetry.get("source_event_id")
+    turn_id = telemetry.get("turn_id")
+    qsource = (
+        (" --source-event-id " + shlex.quote(str(source_event_id)))
+        if source_event_id
+        else ""
+    )
+    qturn = (" --turn-id " + shlex.quote(str(turn_id))) if turn_id else ""
     hit_args = " ".join(f"--hit {shlex.quote(p)}" for p in paths)
     return {
         "instructions": (
@@ -913,48 +934,157 @@ def _build_feedback_hint(args: argparse.Namespace, out: dict) -> dict | None:
         "commands": {
             "helpful": (
                 f"{learn_feedback} {qprompt} --signal helpful "
-                f"{hit_args} {qrepo}".strip()
+                f"{hit_args} {qrepo}{qsource}{qturn}".strip()
             ),
             "not_helpful": (
                 f"{learn_feedback} {qprompt} --signal not_helpful "
-                f"{hit_args} {qrepo}".strip()
+                f"{hit_args} {qrepo}{qsource}{qturn}".strip()
             ),
             "unclear": (
-                f"{learn_feedback} {qprompt} --signal unclear {qrepo}".strip()
+                f"{learn_feedback} {qprompt} --signal unclear {qrepo}{qsource}{qturn}".strip()
             ),
         },
     }
 
 
-def _record_routing_log(args: argparse.Namespace, decision) -> None:
+def _build_response_quality_hint(args: argparse.Namespace, out: dict) -> dict | None:
+    """Return a ready-to-use command skeleton for AI answer telemetry.
+
+    The learner never sees or runs this command. It lets Claude/Codex/Gemini
+    record compact response evidence after drafting an answer, without storing
+    full answer text by default.
+    """
+    import shlex
+    telemetry = out.get("telemetry") if isinstance(out.get("telemetry"), dict) else None
+    if not telemetry or not telemetry.get("source_event_id"):
+        return None
+    expected_paths: list[str] = []
+    hints = out.get("response_hints")
+    if isinstance(hints, dict):
+        for path in hints.get("citation_paths") or []:
+            if path and path not in expected_paths:
+                expected_paths.append(str(path))
+    if not expected_paths and isinstance(out.get("hits"), dict):
+        for path in _hit_paths(out["hits"]):
+            if path not in expected_paths:
+                expected_paths.append(path)
+            if len(expected_paths) >= 3:
+                break
+    learn_response = str(ROOT / "bin" / "learn-response-quality")
+    cmd_parts = [
+        shlex.quote(learn_response),
+        "--source-event-id",
+        shlex.quote(str(telemetry["source_event_id"])),
+    ]
+    if telemetry.get("turn_id"):
+        cmd_parts.extend(["--turn-id", shlex.quote(str(telemetry["turn_id"]))])
+    if args.repo:
+        cmd_parts.extend(["--repo", shlex.quote(args.repo)])
+    cmd_parts.extend(["--prompt", shlex.quote(args.prompt)])
+    for path in expected_paths:
+        cmd_parts.extend(["--expected-citation", shlex.quote(path)])
+    cmd_parts.extend([
+        "--response-summary",
+        "'<one-line-summary>'",
+        "--response-file",
+        "-",
+        "--silent",
+    ])
+    return {
+        "instructions": (
+            "AI session only: after drafting the learner-facing answer, pipe the "
+            "answer text to this command and replace <one-line-summary>. "
+            "Add --declared-citation for the actual 참고 paths and "
+            "--quality-flag when a known issue is noticed."
+        ),
+        "command_template": " ".join(cmd_parts),
+        "expected_citation_paths": expected_paths,
+    }
+
+
+def _hit_paths(hits: dict) -> list[str]:
+    paths: list[str] = []
+    seen: set[str] = set()
+    for bucket_key in ("by_learning_point", "by_fallback_key"):
+        bucket = hits.get(bucket_key)
+        if not isinstance(bucket, dict):
+            continue
+        for entries in bucket.values():
+            if not isinstance(entries, list):
+                continue
+            for hit in entries:
+                if not isinstance(hit, dict):
+                    continue
+                path = hit.get("path")
+                if path and path not in seen:
+                    seen.add(path)
+                    paths.append(path)
+    return paths
+
+
+def _record_routing_log(
+    args: argparse.Namespace,
+    decision,
+    out: dict,
+    telemetry_event: dict | None,
+) -> None:
     """Append the classify decision to state/repos/<repo>/logs/routing.jsonl
     (plan §P5.2). Best-effort — never breaks the primary CLI."""
     try:
         from core.routing_log import record_routing_decision  # type: ignore
+        rag_result = out.get("hits") if isinstance(out.get("hits"), dict) else None
         record_routing_decision(
             prompt=args.prompt,
             decision=decision,
             repo=args.repo or None,
             repo_root=ROOT,
+            source_event_id=(telemetry_event or {}).get("event_id"),
+            turn_id=(telemetry_event or {}).get("turn_id"),
+            reformulated_query=getattr(args, "reformulated_query", None),
+            rag_result=rag_result,
         )
     except Exception:
         pass
 
 
 def _record_rag_ask_event(
-    args: argparse.Namespace, decision, out: dict
-) -> None:
+    args: argparse.Namespace,
+    decision,
+    out: dict,
+    *,
+    latency_ms: int | None = None,
+) -> dict | None:
     """Append a learner event for every rag-ask outcome.
 
     Catches any exception so a learner-memory hiccup never breaks the
     primary CLI contract — `bin/rag-ask` must always produce its JSON.
     """
     try:
+        from dataclasses import asdict, is_dataclass
         from core.concept_catalog import load_catalog  # type: ignore
         from core.learner_memory import (  # type: ignore
             _resolve_learner_id,
             append_learner_event,
             build_rag_ask_event,
+        )
+        from core import routing_confidence, routing_log  # type: ignore
+        decision_dict = (
+            asdict(decision)
+            if is_dataclass(decision)
+            else dict(decision)
+            if isinstance(decision, dict)
+            else {
+                "tier": getattr(decision, "tier", None),
+                "mode": getattr(decision, "mode", None),
+                "reason": getattr(decision, "reason", None),
+                "experience_level": getattr(decision, "experience_level", None),
+                "blocked": getattr(decision, "blocked", False),
+            }
+        )
+        matched = routing_log.collect_matched_tokens(args.prompt)
+        confidence = routing_confidence.score_decision(
+            decision=decision_dict,
+            matched_tokens=matched,
         )
         rag_result = (
             out["hits"]
@@ -964,19 +1094,23 @@ def _record_rag_ask_event(
         event = build_rag_ask_event(
             prompt=args.prompt,
             reformulated_query=getattr(args, "reformulated_query", None),
-            tier=decision.tier,
-            mode=decision.mode,
-            experience_level=decision.experience_level,
+            tier=int(decision_dict.get("tier") or 0),
+            mode=decision_dict.get("mode"),
+            experience_level=decision_dict.get("experience_level"),
             rag_result=rag_result,
             repo=getattr(args, "repo", None),
             module=getattr(args, "module", None),
             learner_id=_resolve_learner_id(),
-            blocked=decision.blocked,
+            blocked=bool(decision_dict.get("blocked", False)),
             catalog=load_catalog(),
+            decision_reason=decision_dict.get("reason"),
+            router_confidence=confidence.score,
+            latency_ms=latency_ms,
         )
-        append_learner_event(event)
+        return append_learner_event(event)
     except Exception as exc:  # noqa: BLE001
         sys.stderr.write(f"[learner-memory] rag-ask event append failed: {exc}\n")
+        return None
 
 
 def cmd_learn_test(args: argparse.Namespace) -> int:

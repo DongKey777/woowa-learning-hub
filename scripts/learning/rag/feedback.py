@@ -96,6 +96,8 @@ def build_feedback_row(
     hits: Iterable[FeedbackHit | dict],
     repo: str | None = None,
     note: str | None = None,
+    source_event_id: str | None = None,
+    turn_id: str | None = None,
     now: datetime | None = None,
 ) -> dict:
     if signal not in VALID_SIGNALS:
@@ -121,6 +123,8 @@ def build_feedback_row(
         "schema_id": SCHEMA_ID,
         "logged_at": (now or datetime.now(timezone.utc)).isoformat(),
         "repo": repo or "",
+        "source_event_id": source_event_id,
+        "turn_id": turn_id,
         "prompt": prompt,
         "prompt_hash": compute_prompt_hash(prompt),
         "signal": signal,
@@ -154,13 +158,16 @@ def append_feedback(
     repo: str | None,
     repo_root: Path,
     note: str | None = None,
+    source_event_id: str | None = None,
+    turn_id: str | None = None,
     now: datetime | None = None,
 ) -> list[Path]:
     """Append the row to all relevant log files. Returns the list of
     paths written. Best-effort — IO exceptions bubble up."""
     row = build_feedback_row(
         prompt=prompt, signal=signal, hits=hits,
-        repo=repo, note=note, now=now,
+        repo=repo, note=note, source_event_id=source_event_id,
+        turn_id=turn_id, now=now,
     )
     written: list[Path] = []
     for path in resolve_log_paths(repo=repo, repo_root=repo_root):

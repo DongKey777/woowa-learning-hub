@@ -61,6 +61,7 @@ is *aggregate* analysis, not per-row correctness.
 from __future__ import annotations
 
 import json
+import hashlib
 from dataclasses import asdict, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -135,6 +136,10 @@ def build_log_row(
     decision,
     repo: str | None,
     ai_unavailable: bool = False,
+    source_event_id: str | None = None,
+    turn_id: str | None = None,
+    reformulated_query: str | None = None,
+    rag_result: dict | None = None,
     now: datetime | None = None,
 ) -> dict:
     """Build a single JSONL row from a classify() decision.
@@ -164,11 +169,20 @@ def build_log_row(
     # heuristic uncertainty with AI fallback usage (P4.4).
     from . import routing_confidence as _conf  # local import to avoid cycle
     conf = _conf.score_decision(decision=d, matched_tokens=matched)
-    return {
+    row = {
         "schema_id": SCHEMA_ID,
         "logged_at": (now or datetime.now(timezone.utc)).isoformat(),
         "repo": repo or "",
+        "source_event_id": source_event_id,
+        "turn_id": turn_id,
         "prompt": prompt,
+        "prompt_hash": hashlib.sha1(prompt.strip().encode("utf-8")).hexdigest(),
+        "reformulated_query": reformulated_query,
+        "reformulated_query_hash": (
+            hashlib.sha1(reformulated_query.strip().encode("utf-8")).hexdigest()
+            if reformulated_query
+            else None
+        ),
         "tier": d.get("tier"),
         "mode": d.get("mode"),
         "reason": d.get("reason"),
@@ -180,8 +194,12 @@ def build_log_row(
         "confidence": conf.score,
         "confidence_rationale": conf.rationale,
         "should_fallback": conf.should_fallback,
+        "retrieval_attempted": isinstance(rag_result, dict),
+        "top_candidate_scores": _extract_candidate_scores(rag_result),
+        "downgrade_reason": _extract_downgrade_reason(rag_result),
         "ai_unavailable": bool(ai_unavailable),
     }
+    return row
 
 
 def record_routing_decision(
@@ -191,6 +209,10 @@ def record_routing_decision(
     repo: str | None,
     repo_root: Path,
     ai_unavailable: bool = False,
+    source_event_id: str | None = None,
+    turn_id: str | None = None,
+    reformulated_query: str | None = None,
+    rag_result: dict | None = None,
     now: datetime | None = None,
 ) -> Path:
     """Append a row to the routing JSONL log. Returns the path written.
@@ -203,6 +225,10 @@ def record_routing_decision(
         decision=decision,
         repo=repo,
         ai_unavailable=ai_unavailable,
+        source_event_id=source_event_id,
+        turn_id=turn_id,
+        reformulated_query=reformulated_query,
+        rag_result=rag_result,
         now=now,
     )
     path = resolve_log_path(repo=repo, repo_root=repo_root)
@@ -211,6 +237,53 @@ def record_routing_decision(
         fh.write(json.dumps(row, ensure_ascii=False))
         fh.write("\n")
     return path
+
+
+def _extract_candidate_scores(rag_result: dict | None, *, limit: int = 5) -> list[dict]:
+    if not isinstance(rag_result, dict):
+        return []
+    out: list[dict] = []
+    seen: set[str] = set()
+    for bucket_key in ("by_learning_point", "by_fallback_key"):
+        bucket = rag_result.get(bucket_key)
+        if not isinstance(bucket, dict):
+            continue
+        for entries in bucket.values():
+            if not isinstance(entries, list):
+                continue
+            for hit in entries:
+                if not isinstance(hit, dict):
+                    continue
+                path = hit.get("path")
+                if not path or path in seen:
+                    continue
+                seen.add(path)
+                score = (
+                    hit.get("cross_encoder_score")
+                    or hit.get("rerank_score")
+                    or hit.get("score")
+                    or hit.get("combined_score")
+                )
+                item: dict = {"path": path}
+                if isinstance(score, (int, float)):
+                    item["score"] = float(score)
+                if hit.get("section_title"):
+                    item["section_title"] = hit.get("section_title")
+                out.append(item)
+                if len(out) >= limit:
+                    return out
+    return out
+
+
+def _extract_downgrade_reason(rag_result: dict | None) -> str | None:
+    if not isinstance(rag_result, dict):
+        return None
+    hints = rag_result.get("response_hints")
+    if isinstance(hints, dict):
+        downgrade = hints.get("tier_downgrade")
+        if downgrade:
+            return str(downgrade)
+    return None
 
 
 # ---------------------------------------------------------------------------

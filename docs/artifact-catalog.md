@@ -461,6 +461,43 @@ Lifecycle:
 
 Random self scores without a matching pending trigger are rejected.
 
+### `state/learner/response-quality.jsonl` (optional, append-only)
+
+Role:
+
+- assistant response-quality telemetry for RAG learning turns
+- analysis-only; not used to compute mastery or normal learner personalization
+- joins to `state/learner/history.jsonl` through `source_event_id` and `turn_id`
+
+Each line:
+
+- `schema_id="assistant-response-quality-v1"`
+- `source_event_id` (`rag_ask.event_id`)
+- `turn_id` (`turn-<event_id>`)
+- redacted `prompt`
+- `response_summary`
+- capped `response_excerpt`
+- `response_length_chars`, `response_hash`
+- `answer_strategy`
+- `citation_paths_expected`, `citation_paths_declared`
+- `quality_flags` (`citation_mismatch`, `missing_citation`, `missing_rag_header`, `duplicate_text`, `overlong_answer`, ...)
+- `contract_flags`
+
+Writer:
+
+- `bin/learn-response-quality --silent ...`
+- AI sessions call it after drafting learner-facing RAG answers, using
+  `bin/rag-ask`'s `response_quality_hint`. The learner does not run it.
+
+Analyzer:
+
+- `bin/response-quality-mine`
+- reports quality flag distribution and citation mismatch candidates for later
+  agent-contract / corpus / router improvement work.
+
+Do not use this artifact as a substitute for learner understanding. It says
+something about answer quality, not whether the learner mastered a concept.
+
 ## Context Layer — CS Sidecar
 
 ### `contexts/cs-augmentation.json` (optional)
