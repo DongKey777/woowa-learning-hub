@@ -208,11 +208,14 @@ bin/rag-ask "내 PR 리뷰해줘" --repo spring-roomescape-admin
 2. **Study intent signal** — `공부하고 싶어`, `학습`, `배우고 싶어`, `로드맵`,
    `기초부터` 같은 자연스러운 학습 요청을 별도 bucket으로 잡는다. domain이
    없으면 여전히 Tier 0이다.
-3. **Corpus signal bridge** — 수동 lexicon에 없는 세부 용어는
-   `scripts/learning/rag/signal_rules.py`의 corpus-owned triggers를 재사용한다.
-   예를 들어 `projection freshness 공부하고 싶어`, `expand contract 공부하고
-   싶어`는 라우터 lexicon에 해당 용어가 없어도 corpus signal이 domain 증거가
-   되어 Tier 1로 올라간다.
+3. **Corpus vocabulary bridge** — 수동 lexicon에 없는 세부 용어는
+   `scripts/learning/rag/signal_rules.py`의 corpus-owned triggers를 먼저
+   재사용하고, 그래도 없으면 corpus frontmatter의 `title`, `concept_id`,
+   `aliases`, `symptoms`, `expected_queries`, `review_feedback_tags`를 cached
+   phrase dictionary로 사용한다. 예를 들어 `projection freshness 공부하고
+   싶어`, `expand contract 공부하고 싶어`, `XA 공부하고 싶어`, `2PC 공부하고
+   싶어`는 라우터 lexicon에 해당 용어가 없어도 corpus vocabulary가 domain
+   증거가 되어 Tier 1로 올라간다.
 
 이 구조의 목표는 "모든 단어를 static list에 넣기"가 아니라, 코퍼스가 가진
 어휘 확장 규칙을 라우터 1차 관문에서도 재사용해 Tier 0 false negative를 줄이는
