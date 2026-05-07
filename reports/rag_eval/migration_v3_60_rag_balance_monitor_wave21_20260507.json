@@ -1,0 +1,56 @@
+{
+  "wave_id": "migration-v3-60-rag-balance-monitor-00021",
+  "generated_at": "2026-05-07T00:00:00Z",
+  "scope": "balance/monitor/drift/saturation/alarm cohort blocker attribution refresh after the strict-v3 regression narrowed",
+  "learner_facing_quality_improvement": "This wave reduces learner-facing migration churn by confirming that the balance-monitor cohort is still not part of the live strict-v3 blocker set even after the global regression count dropped, so follow-up work can target the real schema debt instead of re-auditing safe drift/saturation docs.",
+  "cohort_snapshot": {
+    "total_docs": 27,
+    "pilot_locked_docs": 0,
+    "non_pilot_docs": 27,
+    "frontmatter_present": 7,
+    "frontmatter_missing": 20,
+    "missing_by_category": {
+      "data-structure": 2,
+      "database": 6,
+      "design-pattern": 1,
+      "network": 4,
+      "operating-system": 5,
+      "security": 4,
+      "software-engineering": 2,
+      "spring": 1,
+      "system-design": 2
+    }
+  },
+  "verification": {
+    "frontmatter_scan_command": "python - <<'PY' ... filename contains balance|rebalance|monitor|drift|saturation|alarm, excluding Pilot lock ... PY",
+    "lint_probe_command": "python scripts/lint_cs_authoring.py knowledge/cs/contents/data-structure/balanced-bst-vs-unbalanced-bst-primer.md knowledge/cs/contents/database/striped-guard-row-rebalance-basics.md knowledge/cs/contents/network/load-balancer-healthcheck-failure-patterns.md knowledge/cs/contents/operating-system/dirty-throttling-balance-dirty-pages-writeback-stalls.md knowledge/cs/contents/operating-system/semaphore-monitor-basics.md knowledge/cs/contents/database/histogram-drift-auto-analyze-thresholds.md knowledge/cs/contents/database/summary-drift-detection-bounded-rebuild.md knowledge/cs/contents/network/http2-max-concurrent-streams-pending-queue-saturation.md knowledge/cs/contents/network/queue-saturation-attribution-metrics-runbook.md knowledge/cs/contents/security/absolute-redirect-url-behind-load-balancer-guide.md knowledge/cs/contents/system-design/load-balancer-basics.md knowledge/cs/contents/system-design/load-balancer-drain-and-affinity-primer.md",
+    "global_gate_command": "python -m scripts.learning.rag.corpus_lint --strict --strict-v3 --corpus knowledge/cs/contents",
+    "retrieval_probe_command": "rg -n \"anti-corruption-mapping-drift|semaphore-monitor-basics|permission-model-drift-authz-graph-design|revocation-bus-regional-lag-recovery-design|authority-transfer-vs-revoke-lag-primer-bridge|load-balancer-healthcheck-failure-patterns|queue-saturation-attribution-metrics-runbook\" reports/rag_eval state/orchestrator",
+    "lint_probe_result": "the sampled cohort still splits cleanly: all five frontmatter-missing docs in the probe pass the current H1-first authoring lint, while all seven frontmatter-present docs still fail with `first non-empty line must be an H1 (`# ...`)`.",
+    "global_gate_result": "the live strict-v3 regression narrowed but remains external to this lane's active cohort: `[corpus-lint] scanned 2479 files` and reported 100 `corpus_v3_frontmatter` violations, dominated by 64 `forbidden_neighbors`/`confusable_with` overlap errors and 26 `linked_paths ... does not match corpus path pattern` errors.",
+    "cohort_gate_intersection_result": "none of the 27 non-Pilot balance-monitor cohort docs appear in the current strict-v3 violation output, so this lane should not spend another wave re-blaming drift/saturation content for the shared schema gate.",
+    "retrieval_probe_result": "eval and archive artifacts still reference `anti-corruption-mapping-drift`, `semaphore-monitor-basics`, `permission-model-drift-authz-graph-design`, `revocation-bus-regional-lag-recovery-design`, `authority-transfer-vs-revoke-lag-primer-bridge`, `load-balancer-healthcheck-failure-patterns`, and `queue-saturation-attribution-metrics-runbook`, confirming that learner-facing demand remains real across the cohort."
+  },
+  "priority_non_pilot_targets": [
+    {
+      "path": "knowledge/cs/contents/security/scim-drift-reconciliation.md",
+      "target_query_shape": "SCIM 동기화 drift 뭐예요, 권한이 원본이랑 안 맞아요, identity reconciliation 언제 필요해요",
+      "why_now": "It stays inside the active drift cohort, supports an underrepresented security intermediate path, and gives the next wave a different learner-facing angle than the already-referenced authz graph doc."
+    },
+    {
+      "path": "knowledge/cs/contents/system-design/revocation-bus-regional-lag-recovery-design.md",
+      "target_query_shape": "권한 revoke 했는데 지역별로 늦게 풀려요, regional lag recovery 어떻게 설계해요, revoke propagation drift",
+      "why_now": "It is a cross-category recovery design bridge with retrieval evidence and helps the system-design intermediate gap without creating another beginner primer."
+    },
+    {
+      "path": "knowledge/cs/contents/operating-system/semaphore-monitor-basics.md",
+      "target_query_shape": "세마포어랑 모니터 차이 뭐예요, monitor 뭐예요, synchronized랑 semaphore 언제 달라요",
+      "why_now": "It remains the clearest beginner operating-system entrypoint in this cohort and still has direct eval visibility, so it should stay in restart priority after the shared schema blockers are cleared."
+    }
+  ],
+  "guardrails": [
+    "No Pilot-locked corpus file was modified.",
+    "No corpus doc was edited because this QA/RAG wave only refreshed blocker attribution and restart priority.",
+    "No out-of-scope script or test change was attempted in this lane."
+  ]
+}

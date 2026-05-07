@@ -1,0 +1,22 @@
+{
+  "wave_id": "migration-v3-60-rag-cohort-eval-gate-00026",
+  "generated_at": "2026-05-07",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "baseline_report": "reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json",
+  "scope": "manifest parity after the real-qrel concept-id refresh",
+  "learner_facing_quality_improvement": "The cohort gate now follows the current 200-query real fixture again, so learner-facing regression checks do not fail on stale manifest metadata after the repository and lock-timeout concept-id refresh.",
+  "verification": {
+    "pytest_command": "python -m pytest tests/unit/test_verify_real_qrels.py -q",
+    "verify_real_qrels_baseline_command": "python -m scripts.learning.rag.r3.eval.verify_real_qrels --qrels tests/fixtures/r3_qrels_real_v1.json --report reports/rag_eval/migration_v3_60_baseline_migration_v3_60-cycle-20260505T041313Z.json --min-report-pass-rate 0.94 --manifest state/cs_rag/manifest.json",
+    "unit_test_status": "pass",
+    "baseline_verify_status": "pass"
+  },
+  "changes": {
+    "manifest_qrels_sha_aligned": 1,
+    "pilot_locked_docs_touched": 0
+  },
+  "notes": [
+    "The active fixture sha256 is f5fdb48d3f0bd32adca07fb088e77d197e630c03773c7db10518f06709567bb1.",
+    "This wave stayed inside lane-local state and report artifacts."
+  ]
+}

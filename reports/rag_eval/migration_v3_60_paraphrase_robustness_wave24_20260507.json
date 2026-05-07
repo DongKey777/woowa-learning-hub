@@ -1,0 +1,27 @@
+{
+  "wave_id": "migration-v3-60-rag-paraphrase-robustness-00001",
+  "generated_at": "2026-05-07",
+  "target_fixture": "tests/fixtures/r3_qrels_real_v1.json",
+  "scope": "qrel expected_concept catalog alignment for paraphrase and symptom cohorts",
+  "learner_facing_quality_improvement": "Paraphrase and outage-triage eval rows now point at the live concept IDs that the retriever actually indexes, so learner questions are graded against the intended concept instead of failing on stale catalog names.",
+  "changes": {
+    "fixture_rows_changed": 3,
+    "reports_added": 1,
+    "pilot_locked_docs_touched": 0
+  },
+  "repaired_query_ids": [
+    "paraphrase_human:repository_pattern:001",
+    "symptom_to_cause:lock_timeout_outage:001",
+    "forbidden_neighbor:repository_must_not_return_fake_design:001"
+  ],
+  "verification": {
+    "pytest_command": "python -m pytest -q tests/unit/test_qrels_schema.py tests/unit/test_verify_real_qrels.py",
+    "pytest_status": "pass",
+    "catalog_audit": "python ad-hoc audit: expected_concepts now match the frontmatter concept_id values in the referenced corpus docs",
+    "catalog_audit_status": "pass"
+  },
+  "notes": [
+    "This wave stayed inside the fixture/report lane and did not touch Pilot-locked corpus docs.",
+    "The remaining verify_real_qrels manifest hash mismatch lives outside this worker's write scope."
+  ]
+}
