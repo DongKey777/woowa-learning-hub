@@ -4,6 +4,7 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 @./AGENTS.md
 @./docs/artifact-catalog.md
+@./docs/learning-system-v4.md
 
 ## Claude-Specific Notes
 
@@ -30,6 +31,18 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 - `coach-run.json.cs_readiness.state != "ready"` + `intent_decision.detected_intent == "cs_only"` → **AI는 1차 payload를 학습자에게 사용하지 말고** `bin/cs-index-build` 실행 후 coach-run 재호출, 2차 payload만 사용한다.
 - `mission_only`면 인덱스 없이도 peer-only 응답 가능 (rebuild 생략).
 - `mixed` / `drill_answer`는 AI 판단.
+
+## Learning System v4-MVP (0.2.0)
+
+Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessions must follow the same v4 contract as Codex/Gemini:
+
+- `coach-run.json` includes `learner_context`, `cognitive_trigger`, and `response_contract.cognitive_block`.
+- Include `cognitive_block.markdown` when `applicability_hint != "omit"`.
+- Do not also surface `follow_up_block` when `cognitive_block.trigger_type` is `self_assessment`, `review_drill`, or `follow_up`.
+- If the learner answers a pending self-assessment prompt, run `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"` automatically. Random scores without a pending trigger are ignored.
+- Treat self-assessment as calibration only, not mastery.
+- Review drills persist through `memory/drill-pending.json`; self-assessment pending state lives in `state/learner/pending_triggers.json`.
+- Surface `cs_block.grounding_check.severity == "warn"` as a grounding caveat instead of overstating unverified CS source paths.
 
 ## Interactive Learning RAG Routing
 

@@ -277,9 +277,11 @@ Contains:
 - session summary
 - `memory` (authoritative embedded snapshot: summary + profile, optionally with `cs_view` / `drill_history` / `reconciled`)
 - `cs_readiness`: `{state: ready|missing|stale, next_command, reason, corpus_hash, index_manifest_hash}`. **Separate from `execution_status`** — missing/stale indexes never downgrade `execution_status`. AI decides whether to rebuild via `bin/cs-index-build`. `execution_status=blocked` remains archive-only.
-- `cs_augmentation`: compact `{by_learning_point | by_fallback_key, cs_categories_hit, sidecar_path, meta}`. Raw document bodies live in `contexts/cs-augmentation.json`. When `fallback_reason` is set, `by_fallback_key` renders primary; otherwise `by_learning_point` renders primary.
-- `intent_decision`: `{detected_intent, signals, block_plan, cs_search_mode}`. Two-stage (`pre_decide` before augment → `finalize` after). `block_plan.{snapshot_block, cs_block, verification, drill_block, drill_result_block}` ∈ `{primary, supporting, omit}` is advisory guidance, not runtime-enforced.
+- `cs_augmentation`: compact `{by_learning_point | by_fallback_key, cs_categories_hit, sidecar_path, verifier_hits, citation_paths, meta}`. Raw document bodies live in `contexts/cs-augmentation.json`. When `fallback_reason` is set, `by_fallback_key` renders primary; otherwise `by_learning_point` renders primary. `verifier_hits` and `citation_paths` are the allowed source set for CS citation grounding.
+- `intent_decision`: `{detected_intent, signals, block_plan, cs_search_mode}`. Two-stage (`pre_decide` before augment → `finalize` after). `block_plan.{snapshot_block, cs_block, verification, drill_block}` ∈ `{primary, supporting, omit}` is advisory guidance, not runtime-enforced.
 - `unified_profile`: per-turn compact projection of `memory/profile.json` — `{coach_view, cs_view, reconciled}`. **profile.json is source of truth**; `unified_profile` is a derived view and must not be written back.
+- `learner_context`: per-turn learner projection used by adaptive RAG/coach behavior.
+- `cognitive_trigger`: single selected cognitive prompt for the turn — `self_assessment`, `review_drill`, `follow_up`, or `none`.
 - reference coach reply markdown
 - `response_contract` — pre-rendered Response Contract fragments (see below)
 - `error_detail` and `canonical_write_failed` when `execution_status=error`
@@ -298,11 +300,12 @@ This is the preferred first artifact to read. See [error-recovery.md](../docs/er
   - `thread_refs` — deterministic list of `{thread_id, path, line, classification, classification_reason}` sorted by `(ambiguous first, then likely-fixed) → path → line`.
   - `stub_markdown` — paste-ready `## 수동 확인 필요` block listing every `thread_refs` entry. Null when `required_count == 0`.
 
-AI usage rule: copy `snapshot_block.markdown` verbatim at the top of the reply; for each entry in `verification.thread_refs`, either run `git show <head_sha>:<path>` in the same turn and promote inside `## 이 턴에 직접 확인`, or paste `verification.stub_markdown` into a `## 수동 확인 필요` section. See [agent-operating-contract.md](../docs/agent-operating-contract.md) Response Contract.
+AI usage rule: copy `snapshot_block.markdown` verbatim at the top of the reply; for each entry in `verification.thread_refs`, either run `git show <head_sha>:<path>` in the same turn and promote inside `## 이 턴에 직접 확인`, or paste `verification.stub_markdown` into a `## 수동 확인 필요` section. Include `cognitive_block.markdown` when its `applicability_hint` is not `omit`, and do not also surface `follow_up_block` when a cognitive trigger is selected. See [agent-operating-contract.md](../docs/agent-operating-contract.md) Response Contract.
 
 - `cs_block` (CS/theory evidence)
   - `markdown` — rendered `## 이번 질문의 CS 근거` block listing hits as `- [category] path — preview`. Null when `cs_readiness != ready`, `cs_search_mode == skip`, or there are no hits.
-  - `sources` — `[{path, category, section}, ...]`. Each entry must exist inside `cs_augmentation` (the source of truth). If the two drift, trust `cs_augmentation` and re-render.
+  - `sources` — `[{path, category, section}, ...]`. Each entry must be grounded by `cs_augmentation.verifier_hits[].path` or `cs_augmentation.citation_paths`. If the two drift, trust `cs_augmentation` and re-render.
+  - `grounding_check` — `{ok, severity, ungrounded_paths}`. `severity="warn"` means rendered paths are not fully verifier-grounded; surface a caveat but do not block the whole reply.
   - `reason` — `ready` | `rag_skip` | `rag_not_ready` | `no_hits` | `no_augmentation`.
   - `applicability_hint` ∈ `{primary, supporting, omit}`. Advisory — AI selects which blocks to include in the learner reply based on the detected intent.
 
@@ -316,7 +319,17 @@ AI usage rule: copy `snapshot_block.markdown` verbatim at the top of the reply; 
   - `reason` — `result_from_previous` | `none`.
   - `applicability_hint` — `supporting` typically; the main reply focus stays on the learner's current question.
 
-cs_block ↔ cs_augmentation contract: `cs_augmentation` is source of truth. `cs_block` is a render view. Tests (`test_cs_block_is_view_of_augmentation.py`) assert every `cs_block.sources` entry exists in `cs_augmentation`.
+- `cognitive_block` (single cognitive trigger view, v4)
+  - `markdown` — ready-to-paste prompt for `self_assessment`, `review_drill`, or `follow_up`; null for `none`.
+  - `trigger_type` — `self_assessment` | `review_drill` | `follow_up` | `none`.
+  - `trigger_session_id` — required when a self-assessment or review trigger needs later matching.
+  - `payload`, `evidence`, `reason`, `competed_against`.
+  - `applicability_hint` — include when not `omit`.
+
+- `follow_up_block` (legacy follow-up queue view)
+  - Suppressed with `applicability_hint="omit"` when `cognitive_block` surfaces `self_assessment`, `review_drill`, or `follow_up`.
+
+cs_block ↔ cs_augmentation contract: `cs_augmentation` is source of truth. `cs_block` is a render view. Tests assert every `cs_block.sources` path is in `cs_augmentation.verifier_hits[].path ∪ cs_augmentation.citation_paths`; drift is reported through `grounding_check`.
 
 ### `actions/coach-run.error.json`
 
@@ -401,12 +414,14 @@ Role:
 Contains:
 
 - `drill_session_id`, `question`, `linked_learning_point`, `source_doc`, `expected_terms`, `created_at`, `ttl_turns`
+- optional review fields: `review_of_session_id`, `review_count`, `review_due_at`
 
 Lifecycle:
 
 1. `drill.build_offer_if_due` creates it after `unified_profile.reconciled` is computed
-2. Next turn: `drill.decrement_ttl` → `route_answer` → on answer, `score_pending_answer` → append to `drill-history.jsonl` → clear file
-3. If TTL hits zero without an answer, file is cleared
+2. `drill.build_review_offer_if_due` may create it from a due `drill-history.jsonl` entry; review drills still use this same pending file
+3. Next turn: `drill.decrement_ttl` → `route_answer` → on answer, `score_pending_answer` → append to `drill-history.jsonl` → clear file
+4. If TTL hits zero without an answer, file is cleared
 
 Missing is normal — `validate-state` reports `status: not_applicable`.
 
@@ -420,8 +435,31 @@ Role:
 Each line:
 
 - `drill_session_id`, `scored_at`, `linked_learning_point`, `question`, `answer`, `total_score`, `level`, `dimensions`, `weak_tags`, `improvement_notes`, `source_doc`
+- spaced review fields: `due_at`, `review_of_session_id`, `review_count`, `last_outcome`
 
 Missing is normal (no drills yet). If the file exists, `validate-state` validates every line strictly.
+
+### `state/learner/pending_triggers.json` (optional)
+
+Role:
+
+- learner-level pending cognitive triggers that are not drill answers
+- currently used for `self_assessment`
+
+Contains:
+
+- `self_assessment.trigger_session_id`
+- `self_assessment.payload.concept_ids`
+- `issued_at`, `expires_at`
+
+Lifecycle:
+
+1. `cognitive_trigger.select_cognitive_trigger` chooses a self-assessment prompt without side effects
+2. after canonical `coach-run.json` write succeeds, `coach_run` persists the pending trigger
+3. if the learner answers, the AI session runs `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"`
+4. `learn-self-assess` appends a `self_assessment` learner event and clears the pending trigger
+
+Random self scores without a matching pending trigger are rejected.
 
 ## Context Layer — CS Sidecar
 

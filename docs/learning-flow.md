@@ -19,13 +19,16 @@ learner prompt (Korean, via AI session)
 │ PRE-AUGMENT PHASE (coach_run._pre_augment_phase)        │
 │                                                         │
 │ a. drill.load_pending → decrement_ttl                   │
-│ b. intent_router.pre_decide(prompt, history,            │
+│ b. load cross-learner context + pending cognitive       │
+│    triggers from state/learner                          │
+│ c. intent_router.pre_decide(prompt, history,            │
 │       pending_drill, learner_state)                     │
 │       → {pre_intent, cs_search_mode}                    │
-│ c. cs_readiness check (filesystem + manifest only)      │
-│ d. learning.integration.augment(..., cs_search_mode)    │
+│ d. cs_readiness check (filesystem + manifest only)      │
+│ e. learning.integration.augment(..., cs_search_mode)    │
 │       → compact cs_augmentation + sidecar               │
-│ e. if pending drill + prompt is answer:                 │
+│       (+ verifier_hits / citation_paths)                │
+│ f. if pending drill + prompt is answer:                 │
 │       drill.route_answer → scoring.score_pending_answer │
 │       → drill_result                                    │
 └─────────────────────────────────────────────────────────┘
@@ -41,34 +44,42 @@ learner prompt (Korean, via AI session)
 ┌─────────────────────────────────────────────────────────┐
 │ 10. profile_merge.unify(coach_profile, drill_history)   │
 │     → unified_profile {coach_view, cs_view, reconciled} │
-│ 11. drill.build_offer_if_due(unified_profile,           │
+│ 11. drill.build_review_offer_if_due(drill_history,      │
+│          pending) → review drill offer or None          │
+│ 12. drill.build_offer_if_due(unified_profile,           │
 │          pre_intent, pending)                           │
 │     → drill_offer or None                               │
 │     (refuses on drill_answer turn — no stacking)        │
-│ 12. intent_router.finalize(pre_intent, augment_result,  │
+│ 13. cognitive_trigger.select_cognitive_trigger(...)     │
+│     → one of self_assessment / review_drill /           │
+│       follow_up / none                                  │
+│ 14. intent_router.finalize(pre_intent, augment_result,  │
 │          drill_offer, drill_result)                     │
 │     → intent_decision {detected_intent, block_plan}     │
 └─────────────────────────────────────────────────────────┘
   │
   ▼
 ┌─────────────────────────────────────────────────────────┐
-│ 13. response_contract.build(snapshot, augment_result,   │
+│ 15. response_contract.build(snapshot, augment_result,   │
 │          intent_decision, drill_offer, drill_result)    │
 │     → snapshot_block / verification /                   │
 │       cs_block / drill_block / drill_result_block       │
+│       / cognitive_block / follow_up_block               │
 │     (each with applicability_hint ∈ {primary,           │
 │      supporting, omit} — advisory, not enforced)        │
-│ 14. artifact_budget.enforce_budget(payload)             │
+│ 16. artifact_budget.enforce_budget(payload)             │
 │     → fixed shrink ladder if > 182KB                    │
 └─────────────────────────────────────────────────────────┘
   │
   ▼
 ┌─────────────────────────────────────────────────────────┐
-│ 15. Phase 2 writes (sequential, failure → error):       │
+│ 17. Phase 2 writes (sequential, failure → error):       │
 │     history.jsonl → coach-run.json → cs-augmentation    │
-│     sidecar → summary.json → profile.json → drill       │
+│     sidecar → summary.json → profile.json → learner     │
+│     event hook → drill                                  │
 │     persistence (append history, clear consumed         │
-│     pending, save new offer OR re-save decremented)     │
+│     pending, save new offer OR re-save decremented) →   │
+│     self-assessment pending trigger persistence         │
 └─────────────────────────────────────────────────────────┘
   │
   ▼
@@ -87,6 +98,7 @@ The same code runs for every turn, but `cs_search_mode` and `block_plan` shape w
 - `cs_readiness != ready` is ignored (advisory only)
 - `block_plan`: `snapshot_block=primary`, `verification=primary`, `cs_block=omit`, `drill_block=omit`
 - Reply shape is pure peer coaching (inherited from `woowa-mission-coach`): snapshot + verification + dual-axis narrative
+- A non-omitted `cognitive_block` may still appear if the learner profile says a self-assessment, review drill, or follow-up is due.
 
 ### `cs_only` — pure theory question
 
@@ -112,6 +124,15 @@ The same code runs for every turn, but `cs_search_mode` and `block_plan` shape w
 - `drill.score_pending_answer` runs, producing `drill_result`
 - `drill.build_offer_if_due` **refuses** to generate a new offer this turn (no stacking)
 - `block_plan`: `drill_result_block=primary`, other blocks supporting; AI acknowledges the grade briefly then re-centers on the learner's next question
+- Cognitive triggers are suppressed while the pending drill is being answered.
+
+### `self_assessment` response — learner answers a v4 cognitive trigger
+
+- Gated by `state/learner/pending_triggers.json` and a matching `trigger_session_id`
+- The AI session runs `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"`
+- Appends a `self_assessment` event to `state/learner/history.jsonl`
+- Clears the pending self-assessment trigger
+- Does not count toward mastery; updates calibration only
 
 ## Failure Modes and Degradation
 
@@ -122,14 +143,18 @@ The same code runs for every turn, but `cs_search_mode` and `block_plan` shape w
 | Corpus changed | `cs_readiness={state:stale, reason:corpus_changed}` | `ready` | same as missing |
 | Archive bootstrap incomplete | (unchanged) | `blocked` | no coaching; AI explains bootstrap need |
 | Canonical write fails | (unchanged) | `error` + `canonical_write_failed=true` | read `coach-run.error.json` |
+| Self-assessment answer without pending trigger | `learn-self-assess` exits non-zero | n/a | ignore as calibration input; continue normal answer |
+| Rendered CS source not verifier-grounded | `cs_block.grounding_check.severity=warn` | `ready` | surface caveat; do not block response |
 
 The `blocked` lane remains exclusive to archive/bootstrap shortfalls. CS-side degradation never downgrades `execution_status` — this separation lets peer-only coaching keep working when the CS index isn't ready.
 
 ## Source of Truth Invariants
 
 - `memory/profile.json` = persisted truth. `coach-run.json.unified_profile` = per-turn derived projection. Never write back.
-- `cs_augmentation` = source of truth. `response_contract.cs_block` = rendered view. On drift, trust `cs_augmentation` and re-render.
+- `cs_augmentation` = source of truth. `response_contract.cs_block` = rendered view. On drift, trust `cs_augmentation` and re-render; `grounding_check` tells the AI if rendered paths are not backed by `verifier_hits` / `citation_paths`.
 - `memory/drill-history.jsonl` = append-only authoritative drill record. `profile.json.cs_view` / `unified_profile.cs_view` are derivations.
+- `state/learner/history.jsonl` = cross-repo learner event truth. `profile.json.calibration_status` and `recent_code_changes_24h` are derived from it.
+- `state/learner/pending_triggers.json` = learner-level self-assessment pending state only. Review drills use `memory/drill-pending.json`.
 
 ## Related
 
@@ -137,3 +162,4 @@ The `blocked` lane remains exclusive to archive/bootstrap shortfalls. CS-side de
 - [cs-rag-internals.md](cs-rag-internals.md) — RAG indexer/searcher/reranker internals + readiness contract
 - [artifact-catalog.md](artifact-catalog.md) — per-artifact field reference
 - [agent-operating-contract.md](agent-operating-contract.md) — AI session rules (CS recovery + drill UX)
+- [learning-system-v4.md](learning-system-v4.md) — v4 cognitive trigger, self-assessment, review drill, and grounding contract

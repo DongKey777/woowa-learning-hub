@@ -6,6 +6,11 @@
 > 한 줄만 던지면 됩니다.
 >
 > 이 파일 자체는 fleet 작업의 일부 — 실행 흐름이 바뀌면 같이 갱신.
+>
+> **Status note (2026-05-07)**: cycle3 production path is closed on `main`.
+> Current learner-facing baseline is 92.7% and personalization is wrapper-default
+> ON after `c12a0f5`. Use this handoff only for future large corpus waves or
+> explicit `migration_v3_60` operations, not for the normal learner path.
 
 ---
 
@@ -22,7 +27,9 @@ fleet 운영자**다. 한국어 -습니다 톤으로 짧게 응답한다 (필요
   동작)
 - 미션: **2,286 docs 코퍼스를 R3 v3 frontmatter contract로 자동 변환
   + Wave C로 cohort_eval 약점 보강**
-- 현재 baseline: post-9.3 active 측정 OVERALL **94.0%**
+- 현재 learner-facing baseline: cycle3 active 5-cohort 평균 **92.7%**
+  (`reports/rag_eval/cycle3_closing_report.md`)
+- historical baseline: post-9.3 active 측정 OVERALL **94.0%**
   (`reports/rag_eval/post_phase_9_3_active.json`)
 - 약점 cohort: mission_bridge 83.3%, confusable_pairs 90%,
   symptom_to_cause 93.3%

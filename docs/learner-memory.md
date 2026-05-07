@@ -14,19 +14,24 @@ verdict, and tier promotion can be re-built by replaying
 
 ```
 state/learner/
-├── history.jsonl     # append-only event stream (5 event_types)
+├── history.jsonl     # append-only event stream (6 event_types)
 ├── profile.json      # derived view (concepts, activity, recommendations)
 ├── summary.json      # cumulative counts (derived)
+├── pending_triggers.json # optional cognitive trigger state
 └── identity.json     # cached learner_id (one-time)
 ```
 
 `state/` is git-ignored. Nothing under `state/learner/` is ever pushed.
 
+`pending_triggers.json` is optional. It currently stores only learner-level
+self-assessment prompts that need a later response match. Drill answers and
+review drills continue to use per-repo `memory/drill-pending.json`.
+
 ## Event types
 
 Every line in `history.jsonl` is one JSON object with a discriminator
 `event_type` ∈ `{rag_ask, coach_run, drill_answer, test_result,
-code_attempt}`. Common fields: `event_type`, `event_id`, `ts`,
+code_attempt, self_assessment}`. Common fields: `event_type`, `event_id`, `ts`,
 `learner_id`, `concept_ids`, `repo_context`, `module_context`. Per-type
 required fields are enforced by
 `learner_memory.validate_learner_event()` — see the `EVENT_REQUIRED_FIELDS`
@@ -39,6 +44,9 @@ Recorded for **every** Tier 0 / 1 / 2 / 3 (including blocked) outcome of
 level, the matched CS categories, the top retrieved doc paths, and
 whether the request was blocked (Tier 3 missing PR/repo).
 
+When the AI session supplies `--reformulated-query`, the redacted value is
+stored as optional `reformulated_query`.
+
 ### `coach_run`
 
 Recorded after a successful canonical write of
@@ -46,6 +54,9 @@ Recorded after a successful canonical write of
 `primary_learning_points`, a digest of
 `learning_point_recommendations`, and a derived
 `had_negative_feedback` flag (used to block mastery).
+
+When `coach-run` receives a reformulated query, the event stores optional
+`reformulated_query` so retrieval context can be audited later.
 
 ### `drill_answer`
 
@@ -66,6 +77,16 @@ Recorded when the AI session helps the learner write or modify code.
 Captures the file path, a redacted summary of the diff (≤500 chars),
 and lines added/removed.
 
+### `self_assessment`
+
+Recorded only after a matching pending `self_assessment` cognitive trigger.
+Captures `score` (1-10), `free_text`, `confidence_band`,
+`trigger_session_id`, `source_event_id`, and the related `concept_ids`.
+
+Self-assessment is a calibration signal. It contributes to
+`profile.calibration_status`, but it does **not** count as drill mastery and
+must not inflate `concepts.mastered`.
+
 ## Profile (`profile.json`)
 
 Schema `v3`. Top-level fields:
@@ -79,6 +100,11 @@ Schema `v3`. Top-level fields:
 * `next_recommendations` — populated in Phase 4 (`bin/learner-profile
   suggest`).
 * `preferences` — explicit overrides set via `bin/learner-profile set`.
+* `recent_code_changes_24h` — compact recent code-attempt signals used to
+  decide whether self-assessment is due.
+* `calibration_status` — recent self-assessments plus calibrated /
+  miscalibrated concept summaries. Calibration is advisory and separate from
+  mastery.
 
 Profile is rebuilt lazily: if `history.jsonl` is newer than
 `profile.json`, the next read triggers a recompute.
@@ -110,6 +136,7 @@ re-canonicalize the alias ordering.
 | `bin/learner-profile set --experience-level <lvl>` | explicit preferences override |
 | `bin/learner-profile migrate-from-repos` | (Phase 2) merge per-repo `memory/` history |
 | `bin/learner-profile suggest` | (Phase 4) next-step recommendations |
+| `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"` | append a `self_assessment` event for a pending cognitive trigger |
 
 ## Privacy
 
@@ -132,7 +159,7 @@ learner has explicitly removed.
   inference, cross-mapping (21 tests).
 * `tests/unit/test_learner_memory.py` — append/validation, builders,
   privacy redaction, recompute aggregation, mastery/uncertainty rules,
-  streak, deterministic event_id (26 tests).
+  self-assessment calibration, streak, deterministic event_id.
 
 Both suites use disk-isolated temp directories, so they never pollute
 `state/learner/` on the developer machine.

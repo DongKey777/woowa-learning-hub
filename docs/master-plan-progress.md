@@ -8,25 +8,21 @@
 > When this drifts out of date, fix it before working on plan items —
 > a stale progress doc is worse than no progress doc.
 >
-> Last updated: 2026-05-05 (Phase 9 closed loops + Phase 8 fleet built).
+> Last updated: 2026-05-07 (cycle3 production baseline + v4-MVP doc sync).
 
 ## Headline
 
-**Pilot baseline OVERALL 95.5%** on 200q × 6 cohort under the
-pre-9.3-active metric (corpus_gap_probe auto-passed without measuring
-actual refusal). With Phase 9.3 sentinel activated (threshold 0.10
-calibrated), **honest OVERALL is 94.0%** — corpus_gap_probe drops to
-95% (19/20 tier_downgraded, 1 silent_failure), other cohorts mostly
-unchanged, sentinel false-positive across non-refusal cohorts is 0.
-Three cohorts still at 100% (paraphrase_human, forbidden_neighbor —
-+1 cohort vs pre: corpus_gap_probe shifted from sham 100% to
-honest 95%).
+**Current learner-facing production baseline is 92.7%** across the active
+5-cohort cycle3 measurement (`c12a0f5`, M2 production). The older Pilot
+baseline **95.5%** and honest 9.3 measurement **94.0%** remain historical
+references only because their measurement conditions differ.
 
-Retrieval is locally production-runnable (state/cs_rag/), distribution
-to other learners is wired through GitHub Releases, query
-reformulation + forbidden filter + 9.3 refusal sentinel + 9.4 citation
-block + 9.1 anaphora all run end-to-end through `bin/rag-ask`, daemon
-mode is the default so warm latency holds at ~1.3s.
+Retrieval is locally production-runnable (`state/cs_rag/`), distribution
+to other learners is wired through GitHub Releases, and reformulation,
+forbidden filter, 9.3 tier downgrade, 9.4 citation block, 9.1 anaphora,
+cycle3 personalization, and v4 citation grounding all run end-to-end through
+`bin/rag-ask` / `bin/coach-run`. Daemon mode is the default so warm latency
+holds at ~1.3s.
 
 The original Pilot target was 0.85.
 
@@ -42,8 +38,8 @@ The original Pilot target was 0.85.
 | 5 | System implementation alignment | ✅ done | corpus_loader v3 + indexer + R3 retrievers (lexical / dense / sparse / signal / mission_bridge / symptom_router) + post-rerank forbidden_filter |
 | 6 | Pilot baseline measurement | ✅ done | `reports/rag_eval/r3_phase4_6_closing_report.md` — OVERALL 95.5% |
 | 7 | Frontier model A/B (Qwen3 / gte-multilingual) | ⏳ deferred | user-flagged as "do this last after everything else"; load-bearing only if Phase 8 corpus expansion reveals encoder-bound limits |
-| 8 | Whole-corpus wave migration (51 → ~500 docs) | 🟡 fleet built, unstarted | 30-worker `migration_v3` fleet + Pilot lock + corpus_lint --strict-v3 gate shipped (commits `e29ec9e`, `df7304f`, `c4c1639`). Fleet execution gated on token budget. Real corpus scale = 2,286 docs (2,217 unfrontmattered) — see Phase 8 plan in `~/.claude/plans/abundant-humming-lovelace.md`. |
-| 9 | Multi-turn / personalization / safety | ✅ closed | 4-loop closure: 9.4 citation block (`2a79548`), 9.3 refusal-as-tier-downgrade (`9c8dc33`, `52e0155`, `9199c06`), 9.1 anaphora in production R3 (`d2c6471`), 9.2 personalization-aware ranking default-off (`39b95de`). 62 new unit tests added; full regression 2395 pass. |
+| 8 | Whole-corpus wave migration (51 → ~500 docs) | ✅ cycle3 closed | v3 corpus migration reached 99% concept_id mapping by `c12a0f5`; current local index manifest reports 28,773 rows. Historical fleet tooling remains in the runbook. |
+| 9 | Multi-turn / personalization / safety | ✅ closed | 4-loop closure: 9.4 citation block (`2a79548`), 9.3 refusal-as-tier-downgrade (`9c8dc33`, `52e0155`, `9199c06`), 9.1 anaphora in production R3 (`d2c6471`), 9.2 personalization-aware ranking (`39b95de`, wrapper default ON after `c12a0f5`). |
 | 10 | Production hardening + cutover | ✅ done | this cycle's Phase A items below |
 
 ## Phase A — production transfer hardening (this cycle)
@@ -67,14 +63,14 @@ The original Pilot target was 0.85.
 | 9.3-CD | augment detects sentinel + rag-ask forces tier 0 | ✅ done | `52e0155` `feat(rag-9.3): tier_downgrade contract — augment detects sentinel + rag-ask forces tier 0` |
 | 9.3-EF | cohort_eval reform + calibration script + agent docs | ✅ done | `9199c06` `feat(rag-9.3): cohort_eval reform (tier_downgraded vs silent_failure) + calibration script + agent docs` |
 | 9.1 | production R3 anaphora — reformulation primary, regex fallback | ✅ done | `d2c6471` `feat(rag-9.1): production R3 anaphora — reformulation primary, regex fallback` |
-| 9.2 | personalization-aware fusion-stage ranking (default off) | ✅ done | `39b95de` `feat(rag-9.2): personalization-aware fusion-stage ranking (default off)` |
+| 9.2 | personalization-aware fusion-stage ranking (initially default off; wrapper default ON after c12a0f5) | ✅ done | `39b95de` `feat(rag-9.2): personalization-aware fusion-stage ranking (default off)` |
 | 9.3-active | calibration → threshold=0.10 활성화 + honest cohort_eval | ✅ done | `1b593d8` `feat(rag-9.3): activate refusal threshold (calibrated 0.10) + honest cohort_eval` — F1=0.974 at threshold 0.10, OVERALL 95.5%(sham)→94.0%(honest), corpus_gap_probe 19 tier_downgraded + 1 silent_failure, 다른 cohort에 sentinel false-positive 0 |
 
-Activation knobs (default off — ship safe, opt in):
-- `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` — calibrate first via `python -m scripts.learning.rag.r3.eval.calibrate_refusal_threshold`
-- `WOOWA_RAG_PERSONALIZATION_ENABLED=1` — flip on after Phase 8 corpus migration brings v3 concept_id coverage above ~30%
+Current runtime defaults (2026-05-07, cycle3/v4):
+- `WOOWA_RAG_REFUSAL_THRESHOLD=off` in learner-facing wrappers. Evaluation mode may set a calibrated threshold, but production favors best-effort answers over refusal.
+- `WOOWA_RAG_PERSONALIZATION_ENABLED=1` in wrappers after cycle3 concept_id mapping reached 99%.
 
-## Phase 8 — migration fleet (built, unstarted, this cycle)
+## Phase 8 — migration fleet (historical tooling; cycle3 closed)
 
 | Step | Goal | Status | Commit |
 |---|---|---|---|
@@ -82,19 +78,23 @@ Activation knobs (default off — ship safe, opt in):
 | 8-fleet | 30-worker `migration_v3` fleet + Pilot lock gate + corpus_lint --strict-v3 branch | ✅ done | `df7304f` `feat(rag-r3): Phase 8 v3 migration worker fleet + Pilot lock gate` |
 | 8-tests | regression coverage (40 cases) | ✅ done | `c4c1639` `test(rag-r3): Phase 8 v3 migration regression coverage` |
 
-Fleet is callable via `bin/orchestrator fleet-start --profile migration_v3` but **must not run** until token budget allows. Phase 9.2 personalization activation is gated on this fleet's execution.
+Fleet tooling remains callable for future corpus waves, but the cycle3
+production path is already closed. Personalization is now wrapper-default ON
+after `c12a0f5` because concept_id coverage reached 99%.
 
 ## What's locked in
 
-- **Production index** (`state/cs_rag/`) — 27,238 chunks, FTS + dense
-  + sparse, BGE-M3 1024-dim, built from corpus@`029ec00`. Released as
-  `index-v1.0.0-corpus@029ec00` on GitHub Releases (sha256
-  `fce0d36685fd0d1b08d1bc991aaca29a4a41a3f21b6478cd3a812927e5256c51`,
-  129 MB).
+- **Production index** (`state/cs_rag/`) — current local manifest after v4
+  merge reports 28,773 rows, FTS + dense + sparse, BGE-M3 1024-dim, LanceDB v3.
+  The cycle3 release reference is `index-v1.0.0-corpus@c12a0f5`; see
+  `reports/rag_eval/cycle3_closing_report.md` and
+  `docs/runbooks/rag-perf-loop.md`.
 - **Runtime config** — `WOOWA_RAG_R3_ENABLED=1`,
   `WOOWA_RAG_R3_RERANK_POLICY=always`,
-  `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1` enforced by
-  `bin/_rag_env.sh` sourced from every wrapper.
+  `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`,
+  `WOOWA_RAG_REFUSAL_THRESHOLD=off`, and
+  `WOOWA_RAG_PERSONALIZATION_ENABLED=1` enforced by `bin/_rag_env.sh` sourced
+  from every wrapper.
 - **Query side lever** — `reformulated_query` flows through
   `bin/rag-ask` → `cli.py` → `integration.augment` → `searcher.search`
   → `r3.search.search`. Daemon path forwards it via the HTTP payload.

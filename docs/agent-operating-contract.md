@@ -12,6 +12,8 @@ This is the canonical operating contract for agents working in `woowa-learning-h
 - Treat score as retrieval support only, not as final truth.
 - Prefer grounded review evidence over generic PR body text.
 - If memory confidence is low, current evidence should dominate.
+- Follow the v4 cognitive-trigger and citation-grounding rules in
+  [learning-system-v4.md](./learning-system-v4.md).
 
 ## First-Run Protocol
 
@@ -218,6 +220,25 @@ No thread may be narrated as `이미 반영됨` or `아직 남아있음` in the 
 
 After the 상태 요약 + (optional) 이 턴에 직접 확인 blocks, proceed with the normal narrative: current situation, strongest peer evidence, smallest useful next actions, what not to change yet. Distinguish repeated learning point to deepen from underexplored learning point to broaden.
 
+### Cognitive block (v4)
+
+`coach-run.json.response_contract.cognitive_block` is the single selected
+cognitive trigger for the turn. It replaces ad hoc follow-up prompting.
+
+- If `cognitive_block.applicability_hint != "omit"`, include
+  `cognitive_block.markdown` naturally after the required snapshot /
+  verification blocks and before optional next actions.
+- Do not surface `follow_up_block` when `cognitive_block.trigger_type` is
+  `self_assessment`, `review_drill`, or `follow_up`.
+- `self_assessment` asks the learner to rate their understanding of a recent
+  code change. If they answer that prompt, run
+  `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"`
+  automatically. A self score without a matching pending trigger is ignored.
+- `review_drill` is a spaced-repetition prompt backed by
+  `memory/drill-pending.json`; treat it like a normal optional drill answer on
+  the next turn.
+- Self-assessment is calibration only. Never narrate it as mastery evidence.
+
 ## Standard Operating Flow
 
 1. Resolve repo from path or registry.
@@ -231,16 +252,18 @@ After the 상태 요약 + (optional) 이 턴에 직접 확인 blocks, proceed wi
    - `bootstrapping` → explain that the learner can continue, but the current answer is based on limited evidence.
    - `ready` → proceed normally.
 4. Read `coach-run.json` first. Its embedded `memory` field is the authoritative snapshot for the current session.
-5. Read `analysis/mission-map.json` to understand the learner repo itself.
-6. Do **not** re-read `memory/profile.json` or `memory/summary.json` by default. They are the next-session initial context, not a primary source. Open them only when the embedded snapshot is missing a field you specifically need.
-7. Read `coach-candidate-interpretation.json` and `coach-focus.json` if you need stronger peer evidence.
-8. Read `coach-response.json` only as a reference artifact.
-9. Drill into lower-level packet artifacts only if needed. Consult `docs/token-budget.md` before opening packet files.
-10. Answer with:
+5. Read `response_contract` inside `coach-run.json`: snapshot, verification, CS block, drill block, drill result, cognitive block, follow-up block.
+6. Read `analysis/mission-map.json` to understand the learner repo itself.
+7. Do **not** re-read `memory/profile.json` or `memory/summary.json` by default. They are the next-session initial context, not a primary source. Open them only when the embedded snapshot is missing a field you specifically need.
+8. Read `coach-candidate-interpretation.json` and `coach-focus.json` if you need stronger peer evidence.
+9. Read `coach-response.json` only as a reference artifact.
+10. Drill into lower-level packet artifacts only if needed. Consult `docs/token-budget.md` before opening packet files.
+11. Answer with:
    - current situation
    - strongest evidence
    - immediate next actions
    - what not to change yet
+   - any non-omitted cognitive block, without duplicating follow-up prompts
 
 ## Coach-Run Contract
 
@@ -324,13 +347,16 @@ See:
 - On `intent_decision.detected_intent == "cs_only"` with `cs_readiness.state != "ready"`: the 1st `coach-run` payload is a diagnostic, **not** learner-facing. Dispatch by `cs_readiness.reason` — `deps_missing` → `pip install -e .`, otherwise → `bin/cs-index-build`. The right command is always in `cs_readiness.next_command`. Re-invoke `coach-run` and compose the learner reply from the 2nd payload only. If the 2nd attempt still fails, report the failure in Korean and degrade to peer-only.
 - On `mission_only`: rebuild is advisory. Use the 1st payload directly.
 - On `mixed` / `drill_answer`: rebuild is advisory; AI decides based on `cs_augmentation` completeness.
-- `response_contract.{cs_block, drill_block, drill_result_block}` each carry an `applicability_hint ∈ {primary, supporting, omit}`. This is advisory — include the `primary` and `supporting` blocks, skip `omit`. AI may reinterpret based on the learner's question.
+- `response_contract.{cs_block, drill_block, drill_result_block, cognitive_block, follow_up_block}` each carry an `applicability_hint ∈ {primary, supporting, omit}`. This is advisory — include the `primary` and `supporting` blocks, skip `omit`. AI may reinterpret based on the learner's question.
 - `cs_block` is a rendered view of `cs_augmentation`. If they disagree, trust `cs_augmentation` and re-render.
+- `cs_block.grounding_check` validates rendered paths against `cs_augmentation.verifier_hits[].path ∪ cs_augmentation.citation_paths`. If `severity="warn"`, mention the grounding caveat and avoid overstating ungrounded paths. Do not block the response solely because of a warning.
 
 ## Drill UX Rules
 
 - Drill offers are optional. Learners may ignore or decline with no penalty.
 - Only one drill is active at a time. `drill.build_offer_if_due` refuses a new offer while a pending drill exists in `memory/drill-pending.json`; the learner must either answer it or let its TTL (`DEFAULT_TTL_TURNS=3`) expire before another offer can be generated.
+- Spaced repetition reviews are normal drill offers created by `drill.build_review_offer_if_due` from `memory/drill-history.jsonl.due_at`. They persist to the same `memory/drill-pending.json` file and are answered through the same drill-answer path.
+- Review spacing is controlled by `WOOWA_SPACED_REPETITION_BANDS` with runtime defaults in `scripts/learning/drill.py`.
 - `drill_block.markdown` should be copied as-is into the reply when `applicability_hint != "omit"`, but wording should make opt-out trivial.
 - When `drill_result_block` is present, acknowledge the previous drill briefly but keep the main focus on the learner's current question.
 - A turn classified as `drill_answer` never produces a new drill offer — `build_offer_if_due` refuses to avoid stacking feedback loops.

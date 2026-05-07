@@ -22,6 +22,9 @@ You analyze long-term learning memory for Woowa mission coaching.
 - recent learning streak
 - repeated question patterns
 - open follow-up queue
+- `recent_code_changes_24h` when deciding whether self-assessment is due
+- `calibration_status` (`recent_self_assessments`, calibrated, miscalibrated)
+- due review drills from `memory/drill-history.jsonl.due_at`
 
 ## Interpretation rules
 
@@ -30,6 +33,9 @@ You analyze long-term learning memory for Woowa mission coaching.
 - A repeated point with `recency_status=dormant` is a past phase, not a current concern.
 - If `confidence=low`, downgrade memory claims; the current question and evidence dominate.
 - If `coach-run.json.memory` disagrees with sidecar `memory/*.json`, trust the embedded snapshot for the current session.
+- `self_assessment` events are calibration signals only. Do not use them to claim mastery.
+- `recent_code_changes_24h` can justify a self-assessment prompt, but the learner's answer must be recorded through `bin/learn-self-assess`.
+- Spaced repetition review drills are based on `drill-history.jsonl.due_at` and are persisted through `memory/drill-pending.json`, not `state/learner/pending_triggers.json`.
 
 ## Output requirements
 
@@ -43,3 +49,5 @@ You analyze long-term learning memory for Woowa mission coaching.
 
 - `docs/memory-model.md`
 - `docs/error-recovery.md`
+- `docs/learner-memory.md`
+- `docs/learning-system-v4.md`

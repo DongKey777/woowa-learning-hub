@@ -42,6 +42,7 @@ Agent-family-specific entry files should stay thin.
 Shared operational truth should live in:
 
 - [AGENTS.md](../AGENTS.md)
+- [learning-system-v4.md](../docs/learning-system-v4.md)
 - [external-ai-operating-guide.md](../docs/external-ai-operating-guide.md)
 - [agent-operating-contract.md](../docs/agent-operating-contract.md)
 - [artifact-catalog.md](../docs/artifact-catalog.md)
