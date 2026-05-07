@@ -10,7 +10,8 @@ from scripts.workbench.core import routing_confidence as RC
 def _matched(**kwargs) -> dict:
     """Build a matched_tokens snapshot with explicit overrides."""
     base = {
-        "definition": [], "depth": [], "cs_domain": [], "learning_concept": [],
+        "definition": [], "depth": [], "study_intent": [],
+        "cs_domain": [], "learning_concept": [], "corpus_signal": [],
         "coach_request": [], "tool": [], "override": None,
     }
     base.update(kwargs)
@@ -120,6 +121,27 @@ def test_tier1_definition_and_domain():
         matched_tokens=_matched(definition=["뭐야"], cs_domain=["스레드"]),
     )
     assert 0.7 <= res.score <= 0.8
+
+
+def test_tier1_study_intent_and_domain():
+    res = RC.score_decision(
+        decision=_decision(tier=1, mode="cheap"),
+        matched_tokens=_matched(study_intent=["공부"], cs_domain=["운영체제"]),
+    )
+    assert 0.7 <= res.score <= 0.8
+    assert res.should_fallback is False
+
+
+def test_tier1_study_intent_and_corpus_signal_domain():
+    res = RC.score_decision(
+        decision=_decision(tier=1, mode="cheap"),
+        matched_tokens=_matched(
+            study_intent=["공부"],
+            corpus_signal=["database:transaction_isolation"],
+        ),
+    )
+    assert 0.7 <= res.score <= 0.8
+    assert res.should_fallback is False
 
 
 def test_tier1_weak_signal_falls_back():

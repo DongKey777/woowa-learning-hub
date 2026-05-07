@@ -37,12 +37,24 @@ def test_collect_matched_tokens_for_compose_question():
     assert "di" in snap["learning_concept"] or "ioc" in snap["learning_concept"]
 
 
+def test_collect_matched_tokens_for_study_intent_question():
+    snap = routing_log.collect_matched_tokens("DB 설계 공부하고 싶어")
+    assert "공부" in snap["study_intent"] or "공부하고 싶어" in snap["study_intent"]
+    assert snap["cs_domain"]
+
+
+def test_collect_matched_tokens_includes_corpus_signal_tags():
+    snap = routing_log.collect_matched_tokens("projection freshness 공부하고 싶어")
+    assert "공부" in snap["study_intent"] or "공부하고 싶어" in snap["study_intent"]
+    assert "design-pattern:projection_freshness" in snap["corpus_signal"]
+
+
 def test_collect_matched_tokens_returns_sorted_lists():
     """Determinism — same prompt always produces the same snapshot."""
     s1 = routing_log.collect_matched_tokens("transaction isolation 격리수준 캐시 vs index")
     s2 = routing_log.collect_matched_tokens("transaction isolation 격리수준 캐시 vs index")
     assert s1 == s2
-    for bucket in ("definition", "depth", "cs_domain", "learning_concept", "coach_request", "tool"):
+    for bucket in ("definition", "depth", "study_intent", "cs_domain", "learning_concept", "corpus_signal", "coach_request", "tool"):
         assert s1[bucket] == sorted(s1[bucket])
 
 

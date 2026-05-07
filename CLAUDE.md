@@ -87,7 +87,7 @@ Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessi
 - `bin/rag-ask "$prompt" --reformulated-query "$ref"` 형식
 - `$ref` 작성 규칙 + 적용/미적용 분기 + 이전 turn context fold-in: `docs/agent-query-reformulation-contract.md` (필수)
 - 적용 안 하면 graceful degradation — Pilot baseline 95.5% → 90.5%
-- raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition 감지는 reformulated query도 함께 본다. 좋은 reformulation은 raw prompt가 모호해서 Tier 0으로 떨어지는 것을 구제할 수 있다.
+- raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition/study-intent 감지는 reformulated query도 함께 본다. 라우터는 `signal_rules.py`의 corpus-owned vocabulary도 domain bridge로 사용하므로 수동 lexicon에 없는 세부 용어도 corpus signal이 있으면 Tier 1+로 올라갈 수 있다.
 
 요지: AI 세션이 `bin/rag-ask` 호출 직전에 학습자 자연어 ↔ corpus 어휘 통역 한 번 emit. 학습자에게 보이는 답변 톤은 raw prompt 기준 유지.
 

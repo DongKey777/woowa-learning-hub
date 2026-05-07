@@ -193,8 +193,31 @@ bin/rag-ask "내 PR 리뷰해줘" --repo spring-roomescape-admin
 - `hits`는 Tier 1/2일 때만 채워짐
 - `next_command`는 Tier 3 ready일 때만 채워짐 (`bin/coach-run` 호출 명령)
 - `--reformulated-query`는 검색 품질뿐 아니라 routing rescue에도 사용됨.
-  raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition
-  감지는 raw prompt와 reformulated query를 함께 본다.
+  raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition/
+  study-intent 감지는 raw prompt와 reformulated query를 함께 본다.
+
+## Router Vocabulary Model
+
+`interactive_rag_router`는 모든 CS 어휘를 손으로 나열하지 않는다. 수백/수천 개
+용어를 static token set에 복사하면 누락과 false positive가 동시에 늘어나기
+때문이다. 현재 라우터는 3층으로 판정한다.
+
+1. **Safety lexicon** — `lexicon.py`의 보수적 domain/depth/definition/study
+   token. `DB 설계`, `운영체제`, `보안`, `시스템 설계`, `자료구조`처럼 범주를
+   여는 대표 표현을 잡는다.
+2. **Study intent signal** — `공부하고 싶어`, `학습`, `배우고 싶어`, `로드맵`,
+   `기초부터` 같은 자연스러운 학습 요청을 별도 bucket으로 잡는다. domain이
+   없으면 여전히 Tier 0이다.
+3. **Corpus signal bridge** — 수동 lexicon에 없는 세부 용어는
+   `scripts/learning/rag/signal_rules.py`의 corpus-owned triggers를 재사용한다.
+   예를 들어 `projection freshness 공부하고 싶어`, `expand contract 공부하고
+   싶어`는 라우터 lexicon에 해당 용어가 없어도 corpus signal이 domain 증거가
+   되어 Tier 1로 올라간다.
+
+이 구조의 목표는 "모든 단어를 static list에 넣기"가 아니라, 코퍼스가 가진
+어휘 확장 규칙을 라우터 1차 관문에서도 재사용해 Tier 0 false negative를 줄이는
+것이다. signal-only prompt는 계속 차단된다. 예: `그냥 공부하고 싶어`,
+`우리 인테리어 설계 공부하고 싶어`는 CS domain 증거가 없어 Tier 0이다.
 
 ## Tier 분류 빠른 참조
 
@@ -202,7 +225,9 @@ bin/rag-ask "내 PR 리뷰해줘" --repo spring-roomescape-admin
 |-----------|------|------|------|
 | 도구/빌드 키워드 | "Gradle 멀티 프로젝트 어떻게?" | 0 | (없음) |
 | CS/학습 도메인 + 정의 시그널 | "Spring Bean이 뭐야?" | 1 | `augment(cheap)` |
+| CS/학습 도메인 + 학습 의도 시그널 | "운영체제 스케줄링 공부하고 싶어" | 1 | `augment(cheap)` |
 | CS/학습 도메인 + 깊이 시그널 | "DI vs Service Locator 차이" | 2 | `augment(full)` |
+| CS/학습 도메인 + 설계/관점 시그널 | "우리 DB 설계에 대해서 공부하고 싶어" | 2 | `augment(full)` |
 | 코칭 요청 (multi-word) + repo ready | "내 PR 리뷰해줘" + onboarded | 3 | `bin/coach-run` |
 | 도메인 매치 없음 | "오늘 점심 왜 없어?" | 0 | (없음) |
 

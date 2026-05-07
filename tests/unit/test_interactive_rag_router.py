@@ -265,6 +265,111 @@ class DomainInvariantRoutingTests(unittest.TestCase):
         self.assertEqual(d.tier, 2)
 
 
+class BroadDomainStudyIntentRoutingTests(unittest.TestCase):
+    """Broad learner study requests should route across corpus categories.
+
+    These are not one-off DB tokens. The router must understand the pattern:
+    concrete CS domain phrase + "공부/학습/배우고 싶어" style intent.
+    """
+
+    def test_db_schema_study_request_routes_to_tier2(self) -> None:
+        d = classify("우리 DB 설계에 대해서 공부하고 싶어")
+        self.assertEqual(d.tier, 2)
+        self.assertEqual(d.mode, "full")
+        self.assertIn("depth", d.reason)
+
+    def test_db_identity_separation_routes_with_reformulation(self) -> None:
+        d = classify(
+            "정규화 / 식별자 분리 관점에서 예약 DB 설계를 공부하고 싶어",
+            reformulated_query=(
+                "database normalization entity identity separation member "
+                "reservation user_name foreign key schema design"
+            ),
+        )
+        self.assertEqual(d.tier, 2)
+        self.assertEqual(d.mode, "full")
+
+    def test_domain_from_reformulation_combines_with_raw_study_intent(self) -> None:
+        d = classify(
+            "공부하고 싶어",
+            reformulated_query="database schema design normalization primary key",
+        )
+        self.assertEqual(d.tier, 2)
+
+    def test_operating_system_study_request_routes_to_tier1(self) -> None:
+        d = classify("운영체제 스케줄링 공부하고 싶어")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+        self.assertIn("study intent", d.reason)
+
+    def test_network_flow_learning_request_routes_to_tier2(self) -> None:
+        d = classify("네트워크 TLS 흐름을 학습하고 싶어")
+        self.assertEqual(d.tier, 2)
+
+    def test_security_beginner_learning_request_routes_to_tier1(self) -> None:
+        d = classify("보안 인증 인가 기초부터 배우고 싶어")
+        self.assertEqual(d.tier, 1)
+
+    def test_data_structure_learning_request_routes_to_tier1(self) -> None:
+        d = classify("자료구조 해시맵 공부하고 싶어")
+        self.assertEqual(d.tier, 1)
+
+    def test_system_design_roadmap_request_routes_to_tier2(self) -> None:
+        d = classify("시스템 설계 로드맵 알려줘")
+        self.assertEqual(d.tier, 2)
+
+    def test_corpus_signal_vocabulary_routes_without_manual_domain_token(self) -> None:
+        d = classify("projection freshness 공부하고 싶어")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+
+    def test_storage_contract_corpus_signal_routes_without_manual_domain_token(self) -> None:
+        d = classify("expand contract 공부하고 싶어")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+
+    def test_study_intent_without_domain_stays_tier0(self) -> None:
+        d = classify("그냥 공부하고 싶어")
+        self.assertEqual(d.tier, 0)
+
+    def test_non_cs_design_study_request_stays_tier0(self) -> None:
+        d = classify("우리 인테리어 설계 공부하고 싶어")
+        self.assertEqual(d.tier, 0)
+
+
+class CorpusCategoryCoverageRoutingTests(unittest.TestCase):
+    """Every current CS corpus category gets at least one broad study entrypoint."""
+
+    CATEGORY_PROMPTS = {
+        "algorithm": "알고리즘 정렬 탐색 공부하고 싶어",
+        "data-structure": "자료구조 해시맵 공부하고 싶어",
+        "database": "우리 DB 설계에 대해서 공부하고 싶어",
+        "design-pattern": "디자인 패턴 전략 패턴 공부하고 싶어",
+        "language": "Java 제네릭과 객체지향 공부하고 싶어",
+        "network": "네트워크 TCP TLS 흐름을 학습하고 싶어",
+        "operating-system": "운영체제 프로세스 스케줄링 공부하고 싶어",
+        "security": "보안 인증 인가 기초부터 배우고 싶어",
+        "software-engineering": "리팩터링 결합도 응집도 공부하고 싶어",
+        "spring": "스프링 Bean 의존성 주입 학습하고 싶어",
+        "system-design": "시스템 설계 샤딩 가용성 공부하고 싶어",
+    }
+
+    def test_category_prompt_fixture_covers_all_current_corpus_categories(self) -> None:
+        categories = {
+            path.name
+            for path in (ROOT / "knowledge" / "cs" / "contents").iterdir()
+            if path.is_dir()
+        }
+        self.assertEqual(set(self.CATEGORY_PROMPTS), categories)
+
+    def test_all_current_corpus_categories_route_above_tier0(self) -> None:
+        for category, prompt in self.CATEGORY_PROMPTS.items():
+            with self.subTest(category=category):
+                d = classify(prompt)
+                self.assertIn(d.tier, {1, 2})
+                self.assertIn(d.mode, {"cheap", "full"})
+
+
 class KoreanConceptPhraseAndColloquialSignalTests(unittest.TestCase):
     """학습자가 한글 phrase + 구어체 정의 시그널로 물을 때 router가
     매치하도록 보강한 회귀.

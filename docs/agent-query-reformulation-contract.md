@@ -78,9 +78,13 @@ rerank.
 
 The interactive Tier router also receives the reformulated query. User
 overrides (`그냥 답해`, `RAG로 깊게`, `코치 모드`) and tool-only guards are still
-decided from the raw prompt, but domain/depth/definition detection uses
-`raw + reformulated`. This lets a corpus-friendly reformulation rescue a
-learner prompt that would otherwise look too vague and fall to Tier 0.
+decided from the raw prompt, but domain/depth/definition/study-intent
+detection uses `raw + reformulated`. The router also consults the
+corpus-owned `signal_rules` vocabulary as a domain bridge, so specific terms
+that are not hand-listed in `lexicon.py` can still pass the first gate when
+the learner expresses a study intent. This lets a corpus-friendly
+reformulation rescue a learner prompt that would otherwise look too vague and
+fall to Tier 0.
 
 ## How to write a reformulation
 

@@ -98,6 +98,7 @@ missions/            학습자 미션 저장소 (gitignored)
     ▼
 [scripts/workbench/cli.py]
     │   ├─ interactive_rag_router  → Tier 0~3 분류
+    │   │   (safe lexicon + study-intent + corpus signal_rules bridge)
     │   ├─ integration.augment     → CS RAG (state/cs_rag)
     │   └─ coach_run               → PR 코칭 파이프라인
     │

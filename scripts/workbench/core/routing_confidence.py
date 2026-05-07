@@ -23,8 +23,9 @@ clamped to ``[0, 1]``, with category-specific tuning:
   AI can't fix the gap, just confirm).
 - **Tier 2 with depth signal AND domain match** → 0.85 (both
   conditions together is strong).
-- **Tier 1 with definition signal AND domain match** → 0.75 (clear
-  but slightly weaker than depth).
+- **Tier 1 with definition/study intent signal AND domain match** → 0.75
+  for definition, 0.72 for broad study intent (clear but slightly weaker
+  than depth).
 - **Tier 1 promoted by profile** → 0.7 (profile evidence layered
   over a Tier 1 → Tier 2 promotion is a soft call).
 - **Tier 0 with tool token but no domain** → 0.85 (tool-only
@@ -94,7 +95,8 @@ def score_decision(
 
     n_definition = _sum_lengths(matched_tokens, "definition")
     n_depth = _sum_lengths(matched_tokens, "depth")
-    n_domain = _sum_lengths(matched_tokens, "cs_domain", "learning_concept")
+    n_study = _sum_lengths(matched_tokens, "study_intent")
+    n_domain = _sum_lengths(matched_tokens, "cs_domain", "learning_concept", "corpus_signal")
     n_coach = _sum_lengths(matched_tokens, "coach_request")
     n_tool = _sum_lengths(matched_tokens, "tool")
 
@@ -117,7 +119,7 @@ def score_decision(
             # learning_concept both count as "domain" for the classifier
             # so they're never an ambiguity source on their own.
             if _ambiguity_penalty(
-                matched_tokens, expected={"depth", "cs_domain", "learning_concept"},
+                matched_tokens, expected={"depth", "cs_domain", "learning_concept", "corpus_signal"},
             ) > 0:
                 base -= 0.05
             return _result(base, "tier2 depth + domain", threshold)
@@ -127,15 +129,17 @@ def score_decision(
     if tier == 1:
         if n_definition >= 1 and n_domain >= 1:
             return _result(0.75, "tier1 definition + domain", threshold)
+        if n_study >= 1 and n_domain >= 1:
+            return _result(0.72, "tier1 study intent + domain", threshold)
         if promoted:
             return _result(0.7, "tier1 promoted by profile", threshold)
         return _result(0.5, "tier1 selected with weak signals", threshold)
 
     # Tier 0
     if tier == 0:
-        if n_tool >= 1 and n_domain == 0 and n_definition == 0 and n_depth == 0:
+        if n_tool >= 1 and n_domain == 0 and n_definition == 0 and n_depth == 0 and n_study == 0:
             return _result(0.85, "tier0 tool/build question, no domain", threshold)
-        if n_domain == 0 and n_definition == 0 and n_depth == 0 and n_coach == 0:
+        if n_domain == 0 and n_definition == 0 and n_depth == 0 and n_study == 0 and n_coach == 0:
             return _result(0.6, "tier0 off-topic — no retrieval signal", threshold)
         # Tier 0 *despite* some signal count is the suspicious case.
         # E.g. domain matched but classifier punted because tool also
@@ -150,8 +154,8 @@ def _ambiguity_penalty(matched_tokens: dict, *, expected: set[str]) -> int:
     on. A high count indicates the prompt straddles intents (e.g.
     domain + tool + definition all matched) and is more likely to
     benefit from AI re-classification."""
-    extra = {"definition", "depth", "cs_domain", "learning_concept",
-             "coach_request", "tool"} - expected - {"override"}
+    extra = {"definition", "depth", "study_intent", "cs_domain", "learning_concept",
+             "corpus_signal", "coach_request", "tool"} - expected - {"override"}
     score = 0
     for k in extra:
         if _sum_lengths(matched_tokens, k) > 0:

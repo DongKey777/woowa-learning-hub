@@ -24,8 +24,9 @@ from scripts.workbench.core import intent_tokens, interactive_rag_router, lexico
 
 @pytest.mark.parametrize("name", [
     "DEFINITION_SIGNALS", "DEPTH_SIGNALS", "CS_DOMAIN_TOKENS",
-    "LEARNING_CONCEPT_TOKENS", "COACH_REQUEST_TOKENS", "TOOL_TOKENS",
-    "BEGINNER_HINTS", "ADVANCED_HINTS", "OVERRIDE_TOKENS",
+    "STUDY_INTENT_SIGNALS", "LEARNING_CONCEPT_TOKENS",
+    "COACH_REQUEST_TOKENS", "TOOL_TOKENS", "BEGINNER_HINTS",
+    "ADVANCED_HINTS", "OVERRIDE_TOKENS",
 ])
 def test_router_reexports_lexicon_identity(name):
     """The router module must use the *same* object from lexicon — not
@@ -46,6 +47,7 @@ def test_intent_tokens_reexports_lexicon_identity(name):
 @pytest.mark.parametrize("name,tokens", [
     ("DEFINITION_SIGNALS", lexicon.DEFINITION_SIGNALS),
     ("DEPTH_SIGNALS", lexicon.DEPTH_SIGNALS),
+    ("STUDY_INTENT_SIGNALS", lexicon.STUDY_INTENT_SIGNALS),
     ("CS_DOMAIN_TOKENS", lexicon.CS_DOMAIN_TOKENS),
     ("LEARNING_CONCEPT_TOKENS", lexicon.LEARNING_CONCEPT_TOKENS),
     ("COACH_REQUEST_TOKENS", lexicon.COACH_REQUEST_TOKENS),
@@ -65,8 +67,9 @@ def test_no_empty_or_whitespace_only_tokens(name, tokens):
 def test_lexicon_sets_are_non_empty():
     for name in (
         "DEFINITION_SIGNALS", "DEPTH_SIGNALS", "CS_DOMAIN_TOKENS",
-        "LEARNING_CONCEPT_TOKENS", "COACH_REQUEST_TOKENS", "TOOL_TOKENS",
-        "BEGINNER_HINTS", "ADVANCED_HINTS",
+        "STUDY_INTENT_SIGNALS", "LEARNING_CONCEPT_TOKENS",
+        "COACH_REQUEST_TOKENS", "TOOL_TOKENS", "BEGINNER_HINTS",
+        "ADVANCED_HINTS",
         "MISSION_TOKENS", "CS_TOKENS", "DRILL_ANSWER_NEGATIVE_KEYWORDS",
     ):
         assert len(getattr(lexicon, name)) > 0, name
@@ -101,6 +104,12 @@ def test_word_boundary_caseinsensitive():
 def test_match_word_boundary_iterates():
     assert lexicon.match_word_boundary("MVCC vs 격리수준", lexicon.DEPTH_SIGNALS) is True
     assert lexicon.match_word_boundary("그냥 잡담", lexicon.DEPTH_SIGNALS) is False
+
+
+def test_study_intent_signals_are_separate_from_domain():
+    assert lexicon.match_word_boundary("DB 설계 공부하고 싶어", lexicon.STUDY_INTENT_SIGNALS) is True
+    assert lexicon.match_word_boundary("DB 설계 공부하고 싶어", lexicon.CS_DOMAIN_TOKENS) is True
+    assert lexicon.match_word_boundary("그냥 공부하고 싶어", lexicon.CS_DOMAIN_TOKENS) is False
 
 
 # ---------------------------------------------------------------------------

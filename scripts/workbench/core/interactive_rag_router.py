@@ -18,14 +18,16 @@ Token matching:
 - Korean (or mixed Korean+ASCII) tokens use casefold() substring match.
 
 False-positive guard: Tier 1/2 require BOTH a domain match (CS_DOMAIN_TOKENS
-or LEARNING_CONCEPT_TOKENS) AND a signal match (DEFINITION_SIGNALS or
-DEPTH_SIGNALS). Signal-only prompts like "오늘 점심 왜 없어?" stay Tier 0.
+or LEARNING_CONCEPT_TOKENS) AND a learner intent signal
+(DEFINITION_SIGNALS, DEPTH_SIGNALS, or STUDY_INTENT_SIGNALS). Signal-only
+prompts like "오늘 점심 왜 없어?" stay Tier 0.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .corpus_signal_bridge import has_corpus_signal
 # Token vocabularies + match helper now live in scripts/workbench/core/
 # lexicon.py — single source of truth (plan §P5.1). Re-exported under
 # their previous names so callers that did `from interactive_rag_router
@@ -39,6 +41,7 @@ from .lexicon import (  # noqa: F401 — re-exports (used by tests + cli)
     DEPTH_SIGNALS,
     LEARNING_CONCEPT_TOKENS,
     OVERRIDE_TOKENS,
+    STUDY_INTENT_SIGNALS,
     TOOL_TOKENS,
     match_word_boundary_one as _match_token,
 )
@@ -184,9 +187,13 @@ def classify(
     has_tool = _any_match(prompt, TOOL_TOKENS)
     has_cs_domain = _any_match(signal_prompt, CS_DOMAIN_TOKENS)
     has_learning = _any_match(signal_prompt, LEARNING_CONCEPT_TOKENS)
-    has_domain = has_cs_domain or has_learning
+    has_corpus_domain = False
+    if not (has_cs_domain or has_learning):
+        has_corpus_domain = has_corpus_signal(signal_prompt)
+    has_domain = has_cs_domain or has_learning or has_corpus_domain
     has_definition = _any_match(signal_prompt, DEFINITION_SIGNALS)
     has_depth = _any_match(signal_prompt, DEPTH_SIGNALS)
+    has_study_intent = _any_match(signal_prompt, STUDY_INTENT_SIGNALS)
 
     # --- Stage 3: Tier 3 (PR coaching) ---
     if has_coach_req:
@@ -217,20 +224,25 @@ def classify(
             experience_level=level, override_active=False,
         )
 
-    # --- Stage 6: Tier 1 (definition + domain) ---
-    if has_domain and has_definition:
+    # --- Stage 6: Tier 1 (definition/study intent + domain) ---
+    if has_domain and (has_definition or has_study_intent):
         # v3 closed-loop: if the learner has been asking about a concept
         # mentioned here ≥3 times in the last 7 days (uncertain), promote
         # to Tier 2 so the answer goes deeper.
         if _profile_concept_repeated(learner_profile, signal_prompt):
             return RouterDecision(
                 tier=2, mode="full",
-                reason="domain + definition signal · profile uncertain (repeated 7d)",
+                reason="domain + learning intent signal · profile uncertain (repeated 7d)",
                 experience_level=level, override_active=False,
                 promoted_by_profile=True,
             )
+        reason = (
+            "domain + definition signal"
+            if has_definition
+            else "domain + study intent signal"
+        )
         return RouterDecision(
-            tier=1, mode="cheap", reason="domain + definition signal",
+            tier=1, mode="cheap", reason=reason,
             experience_level=level, override_active=False,
         )
 
