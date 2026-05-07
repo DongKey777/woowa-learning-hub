@@ -1,0 +1,111 @@
+name: rag-perf-loop
+
+# Light CI checks for the RAG performance closed loop. Per
+# docs/runbooks/rag-perf-loop.md, the heavy measurements (cohort_eval,
+# threshold sweep) need GPU and run on RunPod separately. These jobs
+# catch the cheap-but-deadly regressions: fixture paths drifting away
+# from the corpus, frontmatter / concept_id coverage falling below
+# the threshold that activates personalization.
+
+on:
+  pull_request:
+    paths:
+      - 'knowledge/cs/contents/**'
+      - 'tests/fixtures/r3_qrels_real_*.json'
+      - 'config/rag_models.json'
+      - '.github/workflows/rag-perf-loop.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'knowledge/cs/contents/**'
+      - 'tests/fixtures/r3_qrels_real_*.json'
+
+jobs:
+  fixture-corpus-drift:
+    name: fixture path resolves in corpus
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit every fixture path against the live corpus
+        run: |
+          python3 - <<'PY'
+          import json, sys, glob
+          from pathlib import Path
+          drift = []
+          total_q = 0
+          for fixture_path in glob.glob('tests/fixtures/r3_qrels_real_*.json'):
+              fixture = json.load(open(fixture_path))
+              queries = fixture.get('queries') or fixture.get('per_query') or []
+              for q in queries:
+                  total_q += 1
+                  for key in ('primary_paths', 'acceptable_paths', 'forbidden_paths'):
+                      for p in q.get(key) or []:
+                          full = Path('knowledge/cs') / p
+                          if not full.exists():
+                              drift.append((fixture_path, q.get('query_id', '?'), key, p))
+          if drift:
+              for fx, qid, key, p in drift[:50]:
+                  print(f"::warning file=knowledge/cs/{p}::fixture {fx} → {qid} {key}: path missing")
+              print(f"::error::{len(drift)} fixture path(s) drift away from corpus across {total_q} queries")
+              sys.exit(1)
+          print(f"✓ all fixture paths resolve in corpus ({total_q} queries audited)")
+          PY
+
+  frontmatter-coverage:
+    name: schema_version=3 + concept_id coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Coverage thresholds
+        run: |
+          total=$(find knowledge/cs/contents -name "*.md" -type f | wc -l | tr -d ' ')
+          v3=$(grep -rlE "^schema_version: 3$" knowledge/cs/contents 2>/dev/null | wc -l | tr -d ' ')
+          concept=$(grep -rlE "^concept_id: [a-z0-9]" knowledge/cs/contents 2>/dev/null | wc -l | tr -d ' ')
+          pct_v3=$(( v3 * 100 / total ))
+          pct_concept=$(( concept * 100 / total ))
+          echo "v3 coverage: $v3 / $total ($pct_v3%)"
+          echo "concept_id coverage: $concept / $total ($pct_concept%)"
+          {
+            echo "## Corpus coverage"
+            echo "- v3 frontmatter: $v3 / $total ($pct_v3%)"
+            echo "- concept_id: $concept / $total ($pct_concept%)"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$pct_v3" -lt 95 ]; then
+            echo "::warning::v3 frontmatter coverage $pct_v3% (target ≥95%)"
+          fi
+          if [ "$pct_concept" -lt 30 ]; then
+            echo "::error::concept_id coverage $pct_concept% — below the 30% bar that activates Phase 9.2 personalization"
+            exit 1
+          fi
+
+  rag-models-config-coherence:
+    name: config/rag_models.json release ↔ index ↔ sidecar coherence
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cross-check corpus_hash and row_count
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          d = json.load(open('config/rag_models.json'))
+          idx = d.get('index', {})
+          lex = ((idx.get('r3_sidecars') or {}).get('lexical') or {})
+          rel = d.get('release', {})
+          mismatches = []
+          if idx.get('corpus_hash') != lex.get('corpus_hash'):
+              mismatches.append(f"index.corpus_hash {idx.get('corpus_hash')} != r3_sidecars.lexical.corpus_hash {lex.get('corpus_hash')}")
+          if idx.get('row_count') != lex.get('row_count'):
+              mismatches.append(f"index.row_count {idx.get('row_count')} != r3_sidecars.lexical.row_count {lex.get('row_count')}")
+          if rel.get('corpus_commit') and idx.get('corpus_hash'):
+              # release_lock corpus_commit doesn't directly equal corpus_hash but should not be empty
+              if not rel.get('archive_sha256'):
+                  mismatches.append("release.archive_sha256 is empty")
+          if mismatches:
+              for m in mismatches:
+                  print(f"::error::{m}")
+              sys.exit(1)
+          print(f"✓ index ↔ sidecar ↔ release_lock coherent (corpus_hash {idx.get('corpus_hash')[:16]}…, row_count {idx.get('row_count')})")
+          PY
