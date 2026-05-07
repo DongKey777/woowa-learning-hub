@@ -102,7 +102,22 @@ it does not block the whole response.
 
 When an AI session supplies `--reformulated-query`, the value is persisted on
 `rag_ask` and `coach_run` learner events. This preserves the corpus-friendly
-query used for retrieval without changing the learner-facing wording.
+query used for retrieval without changing the learner-facing wording. The
+interactive router also receives this reformulation for domain/depth/definition
+detection, while raw prompt overrides and tool-only guards remain raw-only.
+
+## Runtime Hardening Notes
+
+`bin/rag-ask` defaults to the daemon path. The daemon records a startup
+`runtime_fingerprint` in state and health responses; wrapper ensure compares it
+with the current checkout and restarts stale processes automatically. The
+documented `WOOWA_RAG_NO_DAEMON=1` path remains the direct debug/CI fallback.
+
+Learner personalization is query-scoped at response-hint level:
+`next_recommendation` can remain visible in context, but
+`must_offer_next_action` is emitted only when the current prompt concept
+overlaps the recommendation. R3 concept matching reads both top-level
+`concept_id` and nested retriever `document.concept_id`.
 
 ## AI Session Rules
 

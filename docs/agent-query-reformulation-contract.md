@@ -76,6 +76,12 @@ prompt** (so the learner's natural-language tokens still surface) and
 sends the **reformulated query** to dense BGE-M3 + cross-encoder
 rerank.
 
+The interactive Tier router also receives the reformulated query. User
+overrides (`그냥 답해`, `RAG로 깊게`, `코치 모드`) and tool-only guards are still
+decided from the raw prompt, but domain/depth/definition detection uses
+`raw + reformulated`. This lets a corpus-friendly reformulation rescue a
+learner prompt that would otherwise look too vague and fall to Tier 0.
+
 ## How to write a reformulation
 
 A good reformulation:

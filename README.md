@@ -44,6 +44,8 @@ cd woowa-learning-hub
 **CS RAG 응답** — `knowledge/cs/` 안의 markdown 문서에서 BGE-M3 dense +
 sparse + cross-encoder 재랭크로 답을 찾습니다. 문서에 없는 주제는 일반
 지식으로 답하되 코퍼스 출처가 아니라는 표시(`tier_downgrade`)를 붙입니다.
+`bin/rag-ask`는 daemon warm service를 기본 사용하고, checkout fingerprint가
+바뀌면 stale daemon을 자동 재시작합니다.
 
 **학습 테스트** — `spring-learning-test` 모듈을 자동 클론합니다. JUnit XML을
 파싱해 모듈별 통과율을 누적합니다.
@@ -52,7 +54,8 @@ sparse + cross-encoder 재랭크로 답을 찾습니다. 문서에 없는 주제
 0-10점 채점, 평균 8점 이상 ×2회 + 학습 테스트 통과 시 mastered 표시.
 
 **프로필 누적** — 같은 개념을 7일 내 3회 이상 질문하면 응답이 더 깊어지고,
-mastered 처리된 개념은 기본 정의를 생략합니다.
+mastered 처리된 개념은 기본 정의를 생략합니다. 다음 행동 제안은 현재 질문의
+개념과 겹칠 때만 강제 hint로 올라와 무관한 drill이 섞이지 않게 합니다.
 
 **v4 인지 트리거** — `coach-run`이 한 턴에 하나만 자기점검, 복습 드릴,
 후속 질문 중 선택합니다. 자기점검은 calibration으로만 기록되고, 복습 드릴은
