@@ -304,6 +304,9 @@ def _reranker_decision(
 
 def _hit_from_candidate(candidate) -> dict:
     document_metadata = candidate.metadata.get("document") or {}
+    concept_id = candidate.metadata.get("concept_id") or document_metadata.get(
+        "concept_id"
+    )
     return {
         "row_id": None,
         "doc_id": None,
@@ -321,7 +324,7 @@ def _hit_from_candidate(candidate) -> dict:
         # consumers (and downstream tooling) can map hits back to
         # learner profile entries. None when the corpus chunk
         # carries no concept_id (pre-Phase-8 v3 migration docs).
-        "concept_id": candidate.metadata.get("concept_id"),
+        "concept_id": concept_id,
         # Phase 9.3 — surface cross_encoder_score (the raw reranker
         # logit) separately from the fused/hybrid `score`. Calibration
         # and the refusal sentinel both compare against this raw

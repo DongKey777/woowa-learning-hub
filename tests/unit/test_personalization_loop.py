@@ -175,6 +175,42 @@ class LearnerContextTests(unittest.TestCase):
         self.assertTrue(any("4번째 질문" in p for p in phrases))
         self.assertEqual(ctx["response_hints"]["must_offer_next_action"], "drill:concept:spring/di")
 
+    def test_global_next_recommendation_not_mandatory_without_prompt_overlap(self) -> None:
+        prof = _profile(
+            next_recommendations=[{
+                "type": "drill",
+                "value": "concept:spring/bean",
+                "reason": "asked frequently",
+                "priority": 0.85,
+            }],
+        )
+
+        ctx = build_learner_context(
+            prof,
+            prompt="도메인 불변식은 어디서 검증해야 해?",
+        )
+
+        self.assertEqual(ctx["next_recommendation"]["value"], "concept:spring/bean")
+        self.assertIsNone(ctx["turn_next_recommendation"])
+        self.assertIsNone(ctx["response_hints"]["must_offer_next_action"])
+
+    def test_global_next_recommendation_offered_when_prompt_matches(self) -> None:
+        prof = _profile(
+            next_recommendations=[{
+                "type": "drill",
+                "value": "concept:spring/bean",
+                "reason": "asked frequently",
+                "priority": 0.85,
+            }],
+        )
+
+        ctx = build_learner_context(prof, prompt="Bean이 뭐야?")
+
+        self.assertEqual(
+            ctx["response_hints"]["must_offer_next_action"],
+            "drill:concept:spring/bean",
+        )
+
     def test_underexplored_surfaces_in_context(self) -> None:
         prof = _profile(
             underexplored=[{

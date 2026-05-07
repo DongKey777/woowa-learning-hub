@@ -1384,6 +1384,18 @@ def suggest_next(
 
 
 # === Adaptive Response — learner_context (v3 closed loop) =================
+def _recommendation_matches_prompt(
+    recommendation: dict | None,
+    prompt_concepts: set[str],
+) -> bool:
+    if not recommendation or not prompt_concepts:
+        return False
+    if recommendation.get("type") not in {"concept", "drill"}:
+        return False
+    value = str(recommendation.get("value") or "").strip()
+    return value in prompt_concepts
+
+
 def build_learner_context(
     profile: dict | None,
     *,
@@ -1438,14 +1450,17 @@ def build_learner_context(
         suggested_depth = "shallow"
 
     next_recommendations = list(profile.get("next_recommendations") or [])
-    next_rec = next_recommendations[0] if next_recommendations else None
-    if next_rec is None and deepen_for:
-        next_rec = {
+    global_next_rec = next_recommendations[0] if next_recommendations else None
+    turn_next_rec = None
+    if deepen_for:
+        turn_next_rec = {
             "type": "drill",
             "value": deepen_for[0],
             "reason": "uncertain — drill recommended",
             "priority": 0.85,
         }
+    elif _recommendation_matches_prompt(global_next_rec, prompt_concepts):
+        turn_next_rec = global_next_rec
 
     must_include_phrases: list[str] = []
     for cid in deepen_for:
@@ -1467,7 +1482,9 @@ def build_learner_context(
             "deepen(" + ",".join(c.split("/")[-1] for c in deepen_for) + ")"
         )
     must_offer_next_action = (
-        f"{next_rec['type']}:{next_rec['value']}" if next_rec else None
+        f"{turn_next_rec['type']}:{turn_next_rec['value']}"
+        if turn_next_rec
+        else None
     )
 
     return {
@@ -1497,7 +1514,8 @@ def build_learner_context(
         "deepen_for": deepen_for,
         "tie_to_module": current_module,
         "suggested_depth": suggested_depth,
-        "next_recommendation": next_rec,
+        "next_recommendation": global_next_rec or turn_next_rec,
+        "turn_next_recommendation": turn_next_rec,
         "response_hints": {
             "must_include_phrases": must_include_phrases,
             "must_skip_explanations_of": must_skip_explanations_of,

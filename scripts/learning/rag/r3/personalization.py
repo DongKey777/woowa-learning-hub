@@ -75,6 +75,35 @@ def _concept_set(items: Iterable[dict] | None) -> set[str]:
     return out
 
 
+def _candidate_concept_id(candidate: Candidate) -> str | None:
+    cid = _normalize_concept_id(candidate.metadata.get("concept_id"))
+    if cid:
+        return cid
+    document = candidate.metadata.get("document")
+    if isinstance(document, dict):
+        return _normalize_concept_id(document.get("concept_id"))
+    return None
+
+
+def _same_concept_family(profile_concept_id: str, candidate_concept_id: str) -> bool:
+    profile_cid = _normalize_concept_id(profile_concept_id)
+    candidate_cid = _normalize_concept_id(candidate_concept_id)
+    if not profile_cid or not candidate_cid:
+        return False
+    if profile_cid == candidate_cid:
+        return True
+    if "/" not in profile_cid or "/" not in candidate_cid:
+        return False
+    profile_category, profile_slug = profile_cid.split("/", 1)
+    candidate_category, candidate_slug = candidate_cid.split("/", 1)
+    if profile_category != candidate_category:
+        return False
+    return (
+        candidate_slug.startswith(f"{profile_slug}-")
+        or profile_slug.startswith(f"{candidate_slug}-")
+    )
+
+
 def compute_score_adjustments(
     *,
     candidates: Sequence[Candidate],
@@ -107,12 +136,12 @@ def compute_score_adjustments(
 
     adjustments: dict[int, float] = {}
     for idx, cand in enumerate(candidates):
-        cid = _normalize_concept_id(cand.metadata.get("concept_id"))
+        cid = _candidate_concept_id(cand)
         if cid is None:
             continue
-        if cid in mastered:
+        if any(_same_concept_family(mastered_id, cid) for mastered_id in mastered):
             adjustments[idx] = -float(mastered_demote)
-        elif cid in weak:
+        elif any(_same_concept_family(weak_id, cid) for weak_id in weak):
             adjustments[idx] = +float(weak_boost)
     return adjustments
 

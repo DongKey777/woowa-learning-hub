@@ -42,6 +42,23 @@ def _candidate(
     )
 
 
+def _candidate_with_document_concept(
+    path: str,
+    *,
+    concept_id: str,
+    score: float = 0.5,
+    rank: int = 1,
+) -> Candidate:
+    return Candidate(
+        path=path,
+        retriever="test",
+        rank=rank,
+        score=score,
+        chunk_id=f"{path}#0",
+        metadata={"document": {"concept_id": concept_id}},
+    )
+
+
 # ---------------------------------------------------------------------------
 # Disabled-by-default contract (Phase 8 dependency)
 # ---------------------------------------------------------------------------
@@ -111,6 +128,39 @@ class MasteredDemoteTest(unittest.TestCase):
             },
             enabled=True,
         )
+        self.assertEqual(adjustments, {})
+
+    def test_matches_nested_document_concept_id(self):
+        adjustments = personalization.compute_score_adjustments(
+            candidates=[
+                _candidate_with_document_concept(
+                    "k/c/spring/bean-di-basics.md",
+                    concept_id="spring/bean-di-basics",
+                )
+            ],
+            learner_context={
+                "mastered_concepts": [{"id": "concept:spring/bean"}],
+            },
+            enabled=True,
+        )
+
+        self.assertEqual(len(adjustments), 1)
+        self.assertLess(list(adjustments.values())[0], 0)
+
+    def test_slug_family_match_does_not_match_partial_prefix_words(self):
+        adjustments = personalization.compute_score_adjustments(
+            candidates=[
+                _candidate_with_document_concept(
+                    "k/c/spring/dispatcher-servlet.md",
+                    concept_id="spring/dispatcher-servlet",
+                )
+            ],
+            learner_context={
+                "mastered_concepts": [{"id": "concept:spring/di"}],
+            },
+            enabled=True,
+        )
+
         self.assertEqual(adjustments, {})
 
     def test_apply_demotes_score(self):
@@ -204,6 +254,15 @@ class HitConceptIdExposureTest(unittest.TestCase):
         cand = _candidate("k/c/spring/x.md")  # no concept_id
         hit = r3_search._hit_from_candidate(cand)
         self.assertIsNone(hit.get("concept_id"))
+
+    def test_hit_uses_nested_document_concept_id(self):
+        from scripts.learning.rag.r3 import search as r3_search
+        cand = _candidate_with_document_concept(
+            "k/c/spring/bean-di-basics.md",
+            concept_id="spring/bean-di-basics",
+        )
+        hit = r3_search._hit_from_candidate(cand)
+        self.assertEqual(hit.get("concept_id"), "spring/bean-di-basics")
 
 
 if __name__ == "__main__":
