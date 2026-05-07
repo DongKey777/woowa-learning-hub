@@ -3,11 +3,17 @@
 > 이 문서는 사용자가 codex CLI에서 `migration_v3_60 시작해`처럼 한국어
 > 의도를 던졌을 때 AI 세션이 따라가는 절차다. 학습자 production은
 > 영향받지 않는 무중단 흐름.
+>
+> **Status note (2026-05-07)**: cycle3 production path is closed on `main`.
+> Current learner-facing baseline is 92.7% and personalization is wrapper-default
+> ON after `c12a0f5`. This runbook remains available for future large corpus
+> waves or explicit `migration_v3_60` operations.
 
 ## 목적
 
-post-9.3 cohort_eval (2026-05-05) 결과에서 가장 약한 cohort 3개를 직접
-공략한다.
+Historical post-9.3 cohort_eval (2026-05-05) 결과에서 가장 약했던 cohort
+3개를 직접 공략하는 fleet profile이다. Current production baseline은
+`reports/rag_eval/cycle3_closing_report.md`를 기준으로 본다.
 
 | Cohort | post-9.3 pass | 전략 | 워커 수 |
 |---|---:|---|---:|
@@ -44,7 +50,7 @@ bin/migration-v3-60-start
 
 1. **branch 격리** — `migration_v3_60-cycle-<UTCYYYYMMDDTHHMMSSZ>` 생성, `origin/main`에서 분기. main 그대로 보전.
 2. **preflight 회귀** — topology + prompt rendering + Pilot lock + workers_topology 4 테스트.
-3. **baseline cohort_eval** — 시작점 OVERALL 기록 (현재 측정 95.5% / 9.3 active 후 94.0%).
+3. **baseline cohort_eval** — 시작점 OVERALL 기록. 현재 production 비교 기준은 cycle3 92.7%; 95.5% / 94.0%는 historical reference.
 4. **fleet-start** — `bin/orchestrator fleet-start --profile migration_v3_60` 호출.
 
 ## 워커 토폴로지

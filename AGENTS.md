@@ -33,11 +33,12 @@ Role:
 
 1. [docs/agent-operating-contract.md](docs/agent-operating-contract.md)
 2. [docs/artifact-catalog.md](docs/artifact-catalog.md)
-3. [docs/memory-model.md](docs/memory-model.md)
-4. [docs/evidence-roles.md](docs/evidence-roles.md)
-5. [docs/error-recovery.md](docs/error-recovery.md)
-6. [docs/token-budget.md](docs/token-budget.md)
-7. [docs/agent-entrypoints.md](docs/agent-entrypoints.md)
+3. [docs/learning-system-v4.md](docs/learning-system-v4.md)
+4. [docs/memory-model.md](docs/memory-model.md)
+5. [docs/evidence-roles.md](docs/evidence-roles.md)
+6. [docs/error-recovery.md](docs/error-recovery.md)
+7. [docs/token-budget.md](docs/token-budget.md)
+8. [docs/agent-entrypoints.md](docs/agent-entrypoints.md)
 
 ## Cross-Platform 명령 호출 (Windows native 지원)
 
@@ -57,6 +58,22 @@ Role:
 - never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.
 - if the repo is new or bootstrap state is unclear, run `repo-readiness` before `coach-run`
 - honor the default reading path; escalate to packet drilldown only when the question demands it
+
+## Learning System v4-MVP (0.2.0)
+
+`main` includes v4-MVP through PR #1. Release tag: `learning-system-v4-mvp-v0.2.0`. Rollback tag: `before-learning-system-v4-2026-05-07`. Existing local state was migrated after backup `state/backups/pre-v4-state-migration-20260507T111922Z.tgz`.
+
+`coach-run.json` now includes `learner_context`, `cognitive_trigger`, and `response_contract.cognitive_block` / `follow_up_block` in addition to the existing snapshot, verification, CS, and drill blocks.
+
+- At most one cognitive trigger may be learner-facing in a turn: `self_assessment`, `review_drill`, `follow_up`, or `none`.
+- If `response_contract.cognitive_block.applicability_hint != "omit"`, include its `markdown` naturally in the reply.
+- Do not also surface `follow_up_block` when `cognitive_block.trigger_type ∈ {self_assessment, review_drill, follow_up}`.
+- Self-assessment answers are accepted only when `state/learner/pending_triggers.json` contains a matching `self_assessment` trigger. Then the AI session runs `bin/learn-self-assess --silent --trigger-session-id <id> "<learner response>"`; the learner never runs it.
+- Self-assessment is calibration data only. It must not be narrated as mastery or used to inflate mastery.
+- Spaced review drills reuse `memory/drill-pending.json`; do not create a parallel pending review store in `pending_triggers.json`.
+- If `response_contract.cs_block.grounding_check.severity == "warn"`, mention that some rendered CS source paths were not verifier-grounded and avoid overstating those paths. This warning does not block the whole response.
+
+Detailed v4 contract: `docs/learning-system-v4.md`.
 
 ## Interactive Learning RAG Routing
 

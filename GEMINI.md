@@ -50,9 +50,11 @@ Do not operate as a generic coding assistant.
 - apply evidence role rules from `docs/evidence-roles.md`
 - apply error recovery rules from `docs/error-recovery.md`
 - follow the **Response Contract** in `docs/agent-operating-contract.md` for every learner-facing reply (snapshot `## 상태 요약` block, separate in-turn verification block, dual-axis per-item narrative, `ambiguous`/`likely-fixed` must be `git show`-verified, first-response direct-observation gate) — canonical across Claude / Codex / Gemini
+- follow the **Learning System v4-MVP** contract in `docs/learning-system-v4.md` (`cognitive_trigger`, self-assessment, spaced review drill, CS citation grounding)
 
 @./AGENTS.md
 @./docs/artifact-catalog.md
+@./docs/learning-system-v4.md
 @./gemini-skills/mission-coach.md
 @./gemini-skills/peer-analysis.md
 @./gemini-skills/learning-memory.md
@@ -101,7 +103,19 @@ Learners use Gemini CLI on the **free tier or Google AI Pro ($20/mo) subscriptio
 
 ### Production R3 env defaults
 
-`bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` wrapper는 `bin/_rag_env.sh`를 source해서 `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1` 4개 default 강제. silent degradation 방지.
+`bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` / `bin/cohort-eval` wrapper는 `bin/_rag_env.sh`를 source해서 6개 env var를 default로 강제한다: `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`, `WOOWA_RAG_REFUSAL_THRESHOLD=off`, `WOOWA_RAG_PERSONALIZATION_ENABLED=1`. silent degradation 방지.
+
+## Learning System v4-MVP (0.2.0)
+
+AGENTS.md / CLAUDE.md와 의미적으로 동일 — 어느 AI를 써도 같은 응답 규약.
+
+- `coach-run.json` includes `learner_context`, `cognitive_trigger`, and `response_contract.cognitive_block`.
+- Include `cognitive_block.markdown` when `applicability_hint != "omit"`.
+- Do not also surface `follow_up_block` when `cognitive_block.trigger_type` is `self_assessment`, `review_drill`, or `follow_up`.
+- If the learner answers a pending self-assessment prompt, run `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"` automatically. Random scores without a pending trigger are ignored.
+- Treat self-assessment as calibration only, not mastery.
+- Review drills persist through `memory/drill-pending.json`; self-assessment pending state lives in `state/learner/pending_triggers.json`.
+- Surface `cs_block.grounding_check.severity == "warn"` as a grounding caveat instead of overstating unverified CS source paths.
 
 ## Adaptive Response (v3 closed loop)
 

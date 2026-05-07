@@ -52,6 +52,16 @@ Read `coach-run.json` first and branch on `execution_status`:
 - Read `recency_status` to decide whether a repeated learning point is still active, cooling, or dormant.
 - If `coach-run.json.memory` and the sidecar `memory/profile.json` disagree, trust the embedded snapshot in `coach-run.json` for the current session.
 
+## v4 cognitive trigger handling
+
+- Read `coach-run.json.cognitive_trigger` and `response_contract.cognitive_block`.
+- Include `cognitive_block.markdown` when `applicability_hint != "omit"`.
+- Do not also surface `follow_up_block` when `cognitive_block.trigger_type` is `self_assessment`, `review_drill`, or `follow_up`.
+- If the learner answers a pending self-assessment prompt, run `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"` automatically. Random scores without a pending trigger are ignored.
+- Treat self-assessment as calibration only, not mastery.
+- Review drills use `memory/drill-pending.json` and the normal drill-answer path.
+- If `cs_block.grounding_check.severity == "warn"`, surface the grounding caveat and do not overstate ungrounded CS source paths.
+
 ## Response Contract
 
 Every learner-facing reply must follow the canonical **Response Contract** in `docs/agent-operating-contract.md`. It defines — identically across Claude / Codex / Gemini:
@@ -77,3 +87,4 @@ Narrative body (after the contract blocks): current situation, evidence tied bac
 - `docs/error-recovery.md`
 - `docs/token-budget.md`
 - `docs/memory-model.md`
+- `docs/learning-system-v4.md`

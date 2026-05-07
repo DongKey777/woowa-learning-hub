@@ -54,6 +54,13 @@ sparse + cross-encoder 재랭크로 답을 찾습니다. 문서에 없는 주제
 **프로필 누적** — 같은 개념을 7일 내 3회 이상 질문하면 응답이 더 깊어지고,
 mastered 처리된 개념은 기본 정의를 생략합니다.
 
+**v4 인지 트리거** — `coach-run`이 한 턴에 하나만 자기점검, 복습 드릴,
+후속 질문 중 선택합니다. 자기점검은 calibration으로만 기록되고, 복습 드릴은
+spaced repetition 일정에 따라 다시 제안됩니다.
+
+**출처 grounding** — CS 근거 블록의 source path가 실제 RAG verifier hit 또는
+citation path에 있는지 검사하고, 어긋나면 응답에 경고로 드러냅니다.
+
 ## 디렉터리
 
 ```
@@ -62,6 +69,7 @@ bin/                 명령 래퍼 (AI 호출용)
   coach-run            PR 코칭 (peer 분석 + 멘토 맥락)
   learn-test           JUnit XML → test_result event
   learn-drill          4축 drill (offer / answer / status)
+  learn-self-assess    pending 자기점검 답변 → self_assessment event
   cs-index-build       CS 인덱스 빌드 (첫 세션 자동)
   doctor               환경 점검
 scripts/workbench/   파이프라인 엔진
@@ -92,9 +100,9 @@ missions/            학습자 미션 저장소 (gitignored)
     │
     ▼
 [데이터 백엔드]
-    state/cs_rag/         LanceDB 인덱스 (BGE-M3 dense + sparse 27,238 chunk)
+    state/cs_rag/         LanceDB 인덱스 (BGE-M3 dense + sparse 28,773 row)
     state/repos/<repo>/   archive/prs.sqlite3, packets/*.json, contexts/*.json
-    state/learner/        events.jsonl, profile.json, drill-history.jsonl
+    state/learner/        history.jsonl, profile.json, pending_triggers.json
 ```
 
 핵심 외부 의존:
@@ -137,6 +145,7 @@ bin/learner-profile clear --yes     # 학습 데이터 초기화
 - [`docs/onboarding.md`](docs/onboarding.md) — 학습 흐름 7단계
 - [`docs/rag-runtime.md`](docs/rag-runtime.md) — Tier 분류 + RAG 런타임
 - [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) — Response Contract, First-Run Protocol
+- [`docs/learning-system-v4.md`](docs/learning-system-v4.md) — v4 인지 트리거, 자기점검, 복습 drill, citation grounding
 - [`docs/architecture.md`](docs/architecture.md) — 파이프라인 구조
 
 ## 라이선스
