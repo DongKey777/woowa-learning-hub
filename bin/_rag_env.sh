@@ -27,3 +27,14 @@ export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-1}"
 # See reports/rag_eval/refusal_threshold_calibration.json.
 # Override: WOOWA_RAG_REFUSAL_THRESHOLD=<float> to opt in, or `off`.
 export WOOWA_RAG_REFUSAL_THRESHOLD="${WOOWA_RAG_REFUSAL_THRESHOLD:-off}"
+
+# Phase 9.2 — personalization-aware ranking. Activates concept_id-based
+# score adjustment (mastered_concepts demote -0.15, uncertain/underexplored
+# boost +0.10) in R3 fusion before reranker. Originally default off because
+# v3 corpus migration was sparse (~3% concept_id coverage). After 2026-05-07
+# corpus cycle (commit c12a0f5 + index-v1.0.0-corpus@c12a0f5 release),
+# concept_id coverage = 99% (2547/2560 docs), comfortably above the ≥30%
+# activation threshold the original Phase 9.2 spec required. Personalization
+# now adds measurable retrieval lift on the learner-profile-aware path.
+# Override: WOOWA_RAG_PERSONALIZATION_ENABLED=0 to disable.
+export WOOWA_RAG_PERSONALIZATION_ENABLED="${WOOWA_RAG_PERSONALIZATION_ENABLED:-1}"

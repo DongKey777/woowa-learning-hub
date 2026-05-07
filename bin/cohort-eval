@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# cohort-eval — production-vs-eval mode RAG measurement wrapper
+#
+# Why a wrapper: cohort_eval CLI (scripts.learning.rag.r3.eval.cohort_eval)
+# does NOT auto-source bin/_rag_env.sh — invoking it bare gives a broken
+# 0%-pass measurement (no env vars, no reformulated_query). This wrapper
+# enforces the env contract and exposes the two measurement modes used
+# in the closed-loop pipeline (docs/runbooks/rag-perf-loop.md).
+#
+# Modes:
+#   --mode production  (default)  Learner-facing env. WOOWA_RAG_REFUSAL_THRESHOLD=off.
+#                                 corpus_gap_probe will silent_failure (intentional —
+#                                 learner gets a best-effort answer instead of refusal).
+#                                 Compares against M2 production baseline.
+#
+#   --mode eval                   Measurement env. WOOWA_RAG_REFUSAL_THRESHOLD=0.4.
+#                                 corpus_gap_probe uses sentinel emit (refusal_clean).
+#                                 Compares against historical baseline 91.5% (eval-mode).
+#
+# Both modes use --use-reformulated-query (matches AI session contract).
+#
+# Usage:
+#   bin/cohort-eval --mode production
+#   bin/cohort-eval --mode eval
+#   bin/cohort-eval --mode eval --out custom-path.json --top-k 10
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
+# Source production env defaults first.
+# shellcheck disable=SC1091
+source "$REPO_ROOT/bin/_rag_env.sh"
+
+MODE="production"
+QRELS="tests/fixtures/r3_qrels_real_v1.json"
+OUT=""
+TOP_K=5
+EVAL_MODE_ARG="full"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mode)
+      MODE="$2"; shift 2 ;;
+    --qrels)
+      QRELS="$2"; shift 2 ;;
+    --out)
+      OUT="$2"; shift 2 ;;
+    --top-k)
+      TOP_K="$2"; shift 2 ;;
+    --search-mode)
+      EVAL_MODE_ARG="$2"; shift 2 ;;
+    -h|--help)
+      grep '^#' "$0" | head -40 | sed 's/^# \?//'
+      exit 0 ;;
+    *)
+      echo "unknown arg: $1" >&2; exit 2 ;;
+  esac
+done
+
+case "$MODE" in
+  production)
+    export WOOWA_RAG_REFUSAL_THRESHOLD="off"
+    ;;
+  eval)
+    export WOOWA_RAG_REFUSAL_THRESHOLD="0.4"
+    ;;
+  *)
+    echo "invalid --mode: $MODE (must be production|eval)" >&2
+    exit 2 ;;
+esac
+
+if [[ -z "$OUT" ]]; then
+  TS="$(date +%Y%m%dT%H%M%S)"
+  OUT="reports/rag_eval/cohort_${MODE}_${TS}.json"
+fi
+
+mkdir -p "$(dirname "$OUT")"
+
+echo "[cohort-eval] mode=$MODE qrels=$QRELS out=$OUT top_k=$TOP_K"
+echo "[cohort-eval] env:"
+echo "  WOOWA_RAG_R3_ENABLED=$WOOWA_RAG_R3_ENABLED"
+echo "  WOOWA_RAG_R3_RERANK_POLICY=$WOOWA_RAG_R3_RERANK_POLICY"
+echo "  WOOWA_RAG_R3_FORBIDDEN_FILTER=$WOOWA_RAG_R3_FORBIDDEN_FILTER"
+echo "  WOOWA_RAG_REFUSAL_THRESHOLD=$WOOWA_RAG_REFUSAL_THRESHOLD"
+echo "  WOOWA_RAG_PERSONALIZATION_ENABLED=$WOOWA_RAG_PERSONALIZATION_ENABLED"
+
+exec python3 -m scripts.learning.rag.r3.eval.cohort_eval \
+  --qrels "$QRELS" \
+  --out "$OUT" \
+  --top-k "$TOP_K" \
+  --mode "$EVAL_MODE_ARG" \
+  --use-reformulated-query \
+  --index-root state/cs_rag
