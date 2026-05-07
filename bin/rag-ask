@@ -27,9 +27,9 @@ fi
 # shellcheck disable=SC1091
 source "$ROOT/bin/_rag_env.sh"
 
-DAEMON_ARGS=()
+CMD=("$PY" "$ROOT/scripts/workbench/cli.py" "rag-ask")
 if [[ "${WOOWA_RAG_NO_DAEMON:-0}" != "1" ]]; then
-  DAEMON_ARGS+=("--via-daemon")
+  CMD+=("--via-daemon")
 fi
 
-exec "$PY" "$ROOT/scripts/workbench/cli.py" rag-ask "${DAEMON_ARGS[@]}" "$@"
+exec "${CMD[@]}" "$@"

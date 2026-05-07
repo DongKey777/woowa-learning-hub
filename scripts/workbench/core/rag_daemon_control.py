@@ -10,6 +10,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +20,14 @@ RAG_DAEMON_STATE = STATE_DIR / "rag-daemon.json"
 RAG_DAEMON_LOG = STATE_DIR / "rag-daemon.log"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 0
+RUNTIME_FINGERPRINT_SCHEMA = 1
+_FINGERPRINT_PATHS = (
+    "bin/_rag_env.sh",
+    "bin/rag-ask",
+    "scripts/workbench",
+    "scripts/learning/integration.py",
+    "scripts/learning/rag",
+)
 
 
 def _python_executable() -> str:
@@ -29,6 +38,71 @@ def _python_executable() -> str:
     if venv_python.exists():
         return str(venv_python)
     return sys.executable
+
+
+def _git_head() -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+        )
+    except Exception:
+        return None
+    if result.returncode != 0:
+        return None
+    head = result.stdout.strip()
+    return head or None
+
+
+def _iter_fingerprint_files() -> list[Path]:
+    files: list[Path] = []
+    for rel in _FINGERPRINT_PATHS:
+        path = ROOT / rel
+        if path.is_file():
+            files.append(path)
+            continue
+        if path.is_dir():
+            files.extend(
+                child
+                for child in path.rglob("*")
+                if child.is_file()
+                and child.suffix in {".py", ".sh", ".ps1", ".md"}
+                and "__pycache__" not in child.parts
+            )
+    return sorted(set(files), key=lambda item: item.relative_to(ROOT).as_posix())
+
+
+def current_runtime_fingerprint() -> dict[str, Any]:
+    """Fingerprint the code/config a long-lived daemon has imported.
+
+    The daemon captures this at startup and reports it through state/health.
+    Clients compare it with the current checkout before reusing a warm
+    process, preventing a healthy but stale daemon from serving old runtime
+    contracts after a merge or local source edit.
+    """
+    digest = hashlib.sha256()
+    file_count = 0
+    for path in _iter_fingerprint_files():
+        rel = path.relative_to(ROOT).as_posix()
+        try:
+            data = path.read_bytes()
+        except OSError:
+            continue
+        digest.update(rel.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(data)
+        digest.update(b"\0")
+        file_count += 1
+    return {
+        "schema_version": RUNTIME_FINGERPRINT_SCHEMA,
+        "git_head": _git_head(),
+        "source_hash": digest.hexdigest(),
+        "file_count": file_count,
+    }
 
 
 def _read_state() -> dict[str, Any] | None:
@@ -76,6 +150,14 @@ def _health(state: dict[str, Any], *, timeout_s: float = 0.5) -> dict[str, Any] 
         return None
 
 
+def _runtime_fingerprint_matches(status: dict[str, Any]) -> bool:
+    current = current_runtime_fingerprint()
+    health = status.get("health") if isinstance(status.get("health"), dict) else {}
+    state = status.get("state") if isinstance(status.get("state"), dict) else {}
+    daemon_fingerprint = health.get("runtime_fingerprint") or state.get("runtime_fingerprint")
+    return daemon_fingerprint == current
+
+
 def status_daemon() -> dict[str, Any]:
     state = _read_state()
     if state is None:
@@ -100,7 +182,9 @@ def status_daemon() -> dict[str, Any]:
 def start_daemon(*, timeout_s: float = 10.0) -> dict[str, Any]:
     status = status_daemon()
     if status["status"] == "running":
-        return status
+        if _runtime_fingerprint_matches(status):
+            return status
+        stop_daemon()
 
     ensure_global_layout()
     RAG_DAEMON_STATE.unlink(missing_ok=True)
@@ -157,7 +241,9 @@ def start_daemon(*, timeout_s: float = 10.0) -> dict[str, Any]:
 def ensure_daemon(*, timeout_s: float = 10.0) -> dict[str, Any]:
     status = status_daemon()
     if status["status"] == "running":
-        return status
+        if _runtime_fingerprint_matches(status):
+            return status
+        stop_daemon()
     return start_daemon(timeout_s=timeout_s)
 
 
@@ -190,10 +276,8 @@ def stop_daemon(*, timeout_s: float = 5.0) -> dict[str, Any]:
 
 
 def request_rag_ask(payload: dict[str, Any], *, timeout_s: float = 120.0) -> dict[str, Any]:
-    state = _read_state()
-    if state is None or _health(state) is None:
-        status = ensure_daemon()
-        state = status.get("state")
+    status = ensure_daemon()
+    state = status.get("state")
     if not isinstance(state, dict):
         raise RuntimeError("rag daemon is not running")
     try:

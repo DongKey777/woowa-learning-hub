@@ -117,6 +117,11 @@ def test_rag_daemon_control_ensure_reuses_running_daemon(monkeypatch):
     )
     monkeypatch.setattr(
         rag_daemon_control,
+        "_runtime_fingerprint_matches",
+        lambda status: True,
+    )
+    monkeypatch.setattr(
+        rag_daemon_control,
         "start_daemon",
         lambda **kwargs: (_ for _ in ()).throw(AssertionError("must not start")),
     )
@@ -126,3 +131,59 @@ def test_rag_daemon_control_ensure_reuses_running_daemon(monkeypatch):
     assert status["status"] == "running"
     assert status["state"] is state
     assert status["health"]["pid"] == 123
+
+
+def test_rag_daemon_control_ensure_restarts_stale_runtime(monkeypatch):
+    calls: list[str] = []
+    running = {
+        "status": "running",
+        "state": {"host": "127.0.0.1", "port": 9191},
+        "health": {"ok": True, "pid": 123},
+    }
+    restarted = {
+        "status": "running",
+        "state": {"host": "127.0.0.1", "port": 9292},
+        "health": {"ok": True, "pid": 456},
+    }
+    monkeypatch.setattr(rag_daemon_control, "status_daemon", lambda: running)
+    monkeypatch.setattr(
+        rag_daemon_control,
+        "_runtime_fingerprint_matches",
+        lambda status: False,
+    )
+    monkeypatch.setattr(
+        rag_daemon_control,
+        "stop_daemon",
+        lambda **kwargs: calls.append("stop") or {"status": "stopped"},
+    )
+    monkeypatch.setattr(
+        rag_daemon_control,
+        "start_daemon",
+        lambda **kwargs: calls.append("start") or restarted,
+    )
+
+    status = rag_daemon_control.ensure_daemon()
+
+    assert calls == ["stop", "start"]
+    assert status["health"]["pid"] == 456
+
+
+def test_rag_daemon_write_state_persists_runtime_fingerprint(tmp_path):
+    state_path = tmp_path / "rag-daemon.json"
+    fingerprint = {
+        "schema_version": 1,
+        "git_head": "abc123",
+        "source_hash": "def456",
+        "file_count": 7,
+    }
+
+    rag_daemon.write_state(
+        state_path,
+        host="127.0.0.1",
+        port=9191,
+        started_at=123.0,
+        runtime_fingerprint=fingerprint,
+    )
+
+    payload = __import__("json").loads(state_path.read_text(encoding="utf-8"))
+    assert payload["runtime_fingerprint"] == fingerprint

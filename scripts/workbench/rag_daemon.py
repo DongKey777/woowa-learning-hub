@@ -23,6 +23,7 @@ if str(CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(CURRENT_DIR))
 
 import cli as workbench_cli  # type: ignore  # noqa: E402
+from core.rag_daemon_control import current_runtime_fingerprint  # type: ignore  # noqa: E402
 
 _REQUEST_LOCK = threading.Lock()
 
@@ -78,6 +79,7 @@ class RagDaemonHandler(BaseHTTPRequestHandler):
                 "ok": True,
                 "pid": os.getpid(),
                 "uptime_s": round(time.time() - self.server.started_at, 3),  # type: ignore[attr-defined]
+                "runtime_fingerprint": self.server.runtime_fingerprint,  # type: ignore[attr-defined]
             },
         )
 
@@ -113,6 +115,7 @@ def write_state(
     host: str,
     port: int,
     started_at: float,
+    runtime_fingerprint: dict[str, Any],
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -122,17 +125,26 @@ def write_state(
         "port": port,
         "started_at": started_at,
         "root": str(Path(__file__).resolve().parents[2]),
+        "runtime_fingerprint": runtime_fingerprint,
     }
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def serve(args: argparse.Namespace) -> int:
     started_at = time.time()
+    runtime_fingerprint = current_runtime_fingerprint()
     server = LocalThreadingHTTPServer((args.host, args.port), RagDaemonHandler)
     server.started_at = started_at  # type: ignore[attr-defined]
+    server.runtime_fingerprint = runtime_fingerprint  # type: ignore[attr-defined]
     host, port = server.server_address[:2]
     state_path = Path(args.state_path)
-    write_state(state_path, host=str(host), port=int(port), started_at=started_at)
+    write_state(
+        state_path,
+        host=str(host),
+        port=int(port),
+        started_at=started_at,
+        runtime_fingerprint=runtime_fingerprint,
+    )
     try:
         server.serve_forever()
     finally:
