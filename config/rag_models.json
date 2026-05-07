@@ -31,8 +31,8 @@
     "backend": "r3",
     "storage_backend": "lance",
     "index_version": 3,
-    "row_count": 27238,
-    "corpus_hash": "34b9577555c1024c3a4fe92ddb218398e74367e1749979f2d2d7107bf26a9656",
+    "row_count": 28773,
+    "corpus_hash": "3bcf5ffdb9e2fc749df5efd61a8613c9307644a87cd760711b10dac1ee4dd233",
     "modalities": [
       "fts",
       "dense",
@@ -133,9 +133,9 @@
         "path": "r3_lexical_sidecar.json",
         "schema_version": 1,
         "artifact_kind": "r3_lexical_sidecar",
-        "corpus_hash": "34b9577555c1024c3a4fe92ddb218398e74367e1749979f2d2d7107bf26a9656",
-        "row_count": 27238,
-        "document_count": 27238,
+        "corpus_hash": "3bcf5ffdb9e2fc749df5efd61a8613c9307644a87cd760711b10dac1ee4dd233",
+        "row_count": 28773,
+        "document_count": 28773,
         "body_terms_included": false,
         "fields": [
           "title",
@@ -414,11 +414,11 @@
     "Profile forced BAAI/bge-reranker-v2-m3 on Korean/mixed hard cohorts when a ranking failure is observed."
   ],
   "release": {
-    "tag": "index-v1.0.0-corpus@029ec00",
-    "archive_url": "https://github.com/DongKey777/woowa-learning-hub/releases/download/index-v1.0.0-corpus@029ec00/cs_rag_index_root.tar.zst",
-    "archive_sha256": "fce0d36685fd0d1b08d1bc991aaca29a4a41a3f21b6478cd3a812927e5256c51",
-    "compressed_size_mb": 128.8,
-    "corpus_commit": "029ec009f4081b83592b8cf628798662399e7505",
-    "run_id": "r3-direct-029ec00-2026-05-04T0611Z"
+    "tag": "index-v1.0.0-corpus@c12a0f5",
+    "archive_url": "https://github.com/DongKey777/woowa-learning-hub/releases/download/index-v1.0.0-corpus@c12a0f5/cs_rag_index_root.tar.zst",
+    "archive_sha256": "0d83455b872adeed398a744421293158bd084ca7d1ba6e6c66a2901a3ece8441",
+    "compressed_size_mb": 142.65,
+    "corpus_commit": "c12a0f57698563490e26187dbeaede9d0856b351",
+    "run_id": "r3-c12a0f5-2026-05-07T0556"
   }
 }
