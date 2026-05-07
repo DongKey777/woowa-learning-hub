@@ -8,6 +8,20 @@
     "historical_reference_scope": "selection memo only; not an exhaustive lock list",
     "release_gate": "pilot_50_untouched"
   },
+  "guard_report": {
+    "reported_at": "2026-05-07T00:00:00Z",
+    "historical_memo_path_ref_count": 57,
+    "historical_memo_path_ref_count_semantics": "unique normalized refs; retained for backward compatibility",
+    "historical_memo_raw_path_match_count": 111,
+    "historical_memo_unique_path_ref_count": 57,
+    "historical_memo_concrete_doc_ref_count": 56,
+    "historical_memo_overlap_with_lock_count": 32,
+    "historical_memo_only_ref_count": 24,
+    "lock_only_vs_memo_count": 37,
+    "non_authoritative_placeholder_ref": "knowledge/cs/contents/<category>/<slug>.md",
+    "worker_rule": "Always check this manifest for Pilot lock status; never infer writability from the historical memo alone.",
+    "wave_4_note": "Use raw counts only for audit/debug output; use normalized unique concrete counts for lock drift decisions."
+  },
   "baseline": {
     "overall_pass_rate": 0.955,
     "cohort_eval_gate_min_pass_rate": 0.94,

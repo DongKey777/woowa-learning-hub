@@ -33,6 +33,31 @@
 
 Worker implication: lane workers should use this memo for Phase 4 selection context only, then consult the JSON manifest for every write/no-write decision so Pilot baseline guards stay deterministic.
 
+## Wave 3 Guard Report (2026-05-07)
+
+- Rechecked the historical memo against the live manifest before the curriculum `pilot-lock` wave. The memo still serves as planning context only; the JSON manifest remains the only writable-authority source for lock decisions.
+- A raw path scrape finds **57** `knowledge/cs/contents/**`-shaped references in this memo, but **1** is the template placeholder `knowledge/cs/contents/<category>/<slug>.md`. The concrete-doc count therefore stays **56**, matching the snapshot above.
+- Concrete drift remains unchanged: **32** memo references overlap the live lock list, **24** are memo-only planning references, and **37** live locked paths are absent from the memo because the manifest expanded after Phase 4 selection.
+- Retrieval/ops implication: any worker or script that tries to infer Pilot lock status from this memo can silently miss 37 baseline-critical docs. That is the failure mode this lane is guarding against.
+
+Wave 3 decision rule:
+1. Check `config/migration_v3/locked_pilot_paths.json` first for every candidate path.
+2. Treat any memo-only path as non-authoritative until the JSON manifest says otherwise.
+3. If a queue item cites this memo as the reason to edit a locked corpus doc, reject the write and return a lock-conflict summary instead of proposing the edit.
+
+## Wave 4 Guard Report (2026-05-07)
+
+- Tightened the counting language for this memo so lock-audit tooling does not confuse raw mention volume with unique writable candidates.
+- The memo contains **111 raw path-shaped mentions** once repeated examples and duplicated bucket references are counted literally.
+- After normalizing `contents/...` to `knowledge/cs/contents/...` and deduplicating, that drops to **57 unique references**.
+- Of those unique references, **1** is still the non-authoritative template placeholder `knowledge/cs/contents/<category>/<slug>.md`, leaving **56 concrete doc paths** for drift comparison.
+- Guard implication: use raw-counts only for audit/debug output, and use normalized unique concrete counts for lock drift checks against the JSON manifest.
+
+Wave 4 reporting rule:
+1. When citing memo coverage, spell out whether the number is `raw`, `unique`, or `unique concrete`.
+2. Keep `config/migration_v3/locked_pilot_paths.json` as the only authoritative lock source even when the memo count looks higher.
+3. If a future guard script surfaces `57` without a qualifier, treat that as ambiguous and fix the report before relying on it for queue decisions.
+
 ---
 
 ## Bucket A — Korean hard-regression cohort (10 docs, all exist)
