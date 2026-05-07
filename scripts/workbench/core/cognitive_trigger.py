@@ -158,8 +158,58 @@ def _disabled_candidate(**_: Any) -> dict[str, Any] | None:
     return None
 
 
+def _self_assessment_due_candidate(
+    *,
+    profile: dict[str, Any] | None,
+    pending_triggers: dict[str, Any] | None,
+    **_: Any,
+) -> dict[str, Any] | None:
+    if (pending_triggers or {}).get("self_assessment"):
+        return None
+    recent_changes = list((profile or {}).get("recent_code_changes_24h") or [])
+    if not recent_changes:
+        return None
+    assessed_concepts = {
+        concept_id
+        for item in ((profile or {}).get("calibration_status") or {}).get(
+            "recent_self_assessments",
+            [],
+        )
+        for concept_id in (item.get("concept_ids") or [])
+    }
+    for change in reversed(recent_changes):
+        concept_ids = [
+            concept_id
+            for concept_id in (change.get("concept_ids") or [])
+            if concept_id not in assessed_concepts
+        ]
+        if concept_ids:
+            file_path = change.get("file_path") or "최근 변경"
+            return {
+                "trigger_type": "self_assessment",
+                "trigger_session_id": str(uuid.uuid4()),
+                "markdown": (
+                    "## 자기 점검\n"
+                    f"- 방금 다룬 `{file_path}` 변경 기준으로 이해도를 1-10점으로 적어줘."
+                ),
+                "payload": {
+                    "concept_ids": concept_ids,
+                    "source_event_id": change.get("event_id"),
+                    "file_path": file_path,
+                },
+                "applicability_hint": "supporting",
+                "reason": "recent_code_attempt_without_self_assessment",
+                "evidence": {
+                    "source": "learner_profile.recent_code_changes_24h",
+                    "code_attempt_ts": change.get("ts"),
+                },
+                "competed_against": [],
+            }
+    return None
+
+
 _CANDIDATE_REGISTRY: dict[str, dict[str, Any]] = {
-    "self_assessment_due": {"enabled": False, "fn": _disabled_candidate},
+    "self_assessment_due": {"enabled": True, "fn": _self_assessment_due_candidate},
     "review_due": {"enabled": False, "fn": _disabled_candidate},
     "follow_up": {"enabled": True, "fn": _follow_up_candidate},
 }
@@ -210,4 +260,3 @@ def select_cognitive_trigger(
                 candidate["trigger_session_id"] = str(uuid.uuid4())
             return candidate
     return _empty_trigger(competed_against=competed_against)
-

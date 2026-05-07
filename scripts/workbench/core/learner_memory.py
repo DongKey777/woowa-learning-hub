@@ -1,8 +1,8 @@
 """Single-source-of-truth memory for the learner across all activities.
 
 History stream: `state/learner/history.jsonl` — append-only event log with
-five `event_type`s (rag_ask, coach_run, drill_answer, test_result,
-code_attempt).
+learning `event_type`s (rag_ask, coach_run, drill_answer, test_result,
+code_attempt, self_assessment).
 
 Profile: `state/learner/profile.json` — derived view (rolling experience
 level, concept mastery/uncertainty/encounter counts, activity stats, next
@@ -70,6 +70,7 @@ EVENT_REQUIRED_FIELDS: dict[str, list[str]] = {
     ],
     "test_result": ["module", "test_class", "test_method", "pass", "concept_ids"],
     "code_attempt": ["file_path", "diff_summary", "concept_ids"],
+    "self_assessment": ["score", "concept_ids", "trigger_session_id", "scored_at"],
 }
 
 VALID_EVENT_TYPES = frozenset(EVENT_REQUIRED_FIELDS)
@@ -568,6 +569,34 @@ def build_code_attempt_event(
     }
 
 
+def build_self_assessment_event(
+    *,
+    score: int,
+    free_text: str | None,
+    concept_ids: list[str],
+    trigger_session_id: str,
+    learner_id: str,
+    scored_at: str | None = None,
+) -> dict:
+    score_value = int(score)
+    if score_value < 1 or score_value > 10:
+        raise ValueError("self_assessment score must be between 1 and 10")
+    timestamp = scored_at or _now_iso()
+    return {
+        "event_type": "self_assessment",
+        "ts": timestamp,
+        "learner_id": learner_id,
+        "repo_context": None,
+        "module_context": None,
+        "concept_ids": list(concept_ids or []),
+        "score": score_value,
+        "free_text": _redact_text(free_text),
+        "trigger_session_id": trigger_session_id,
+        "scored_at": timestamp,
+        "confidence_band": "high" if score_value >= 8 else "low" if score_value <= 5 else "medium",
+    }
+
+
 # === Internal helpers for builders =======================================
 def _extract_categories(rag_result: dict | None) -> list[str]:
     if not isinstance(rag_result, dict):
@@ -923,6 +952,48 @@ def _is_mastered(concept_id: str, history: list[dict]) -> tuple[bool, dict]:
     }
 
 
+def _is_calibrated(
+    concept_id: str,
+    history: list[dict],
+    *,
+    window_days: int = 14,
+) -> tuple[bool, dict]:
+    concept_events = [
+        e
+        for e in _events_for_concept(history, concept_id)
+        if _within(e.get("ts"), days=window_days)
+    ]
+    self_assessments = [
+        e for e in concept_events if e.get("event_type") == "self_assessment"
+    ]
+    if not self_assessments:
+        return False, {"status": "insufficient", "reason": "no_self_assessment"}
+    latest = self_assessments[-1]
+    score = latest.get("score")
+    drills = [
+        e
+        for e in concept_events
+        if e.get("event_type") == "drill_answer" and e.get("total_score") is not None
+    ]
+    if not isinstance(score, (int, float)) or not drills:
+        return False, {
+            "status": "insufficient",
+            "reason": "missing_score_or_drill",
+            "self_score": score,
+        }
+    drill_avg = sum(float(e.get("total_score") or 0) for e in drills) / len(drills)
+    calibrated = (score >= 8 and drill_avg >= 7.0) or (score <= 5 and drill_avg <= 5.0)
+    miscalibrated = (score >= 8 and drill_avg < 5.0) or (score <= 5 and drill_avg >= 8.0)
+    status = "calibrated" if calibrated else "miscalibrated" if miscalibrated else "mixed"
+    return calibrated, {
+        "status": status,
+        "self_score": score,
+        "drill_avg": round(drill_avg, 2),
+        "drill_count": len(drills),
+        "trigger_session_id": latest.get("trigger_session_id"),
+    }
+
+
 def _is_uncertain(concept_id: str, history: list[dict]) -> tuple[bool, dict]:
     concept_events = _events_for_concept(history, concept_id)
     asks_7d = sum(
@@ -1031,6 +1102,59 @@ def _activity_view(history: list[dict]) -> dict:
     }
 
 
+def _recent_code_changes_24h(history: list[dict], *, limit: int = 5) -> list[dict]:
+    recent: list[dict] = []
+    for event in reversed(history):
+        if event.get("event_type") != "code_attempt":
+            continue
+        if not _within(event.get("ts"), days=1):
+            continue
+        recent.append(
+            {
+                "event_id": event.get("event_id"),
+                "ts": event.get("ts"),
+                "file_path": event.get("file_path"),
+                "diff_summary": event.get("diff_summary"),
+                "concept_ids": list(event.get("concept_ids") or []),
+            }
+        )
+        if len(recent) >= limit:
+            break
+    return list(reversed(recent))
+
+
+def _calibration_status(history: list[dict], concept_ids: Iterable[str]) -> dict:
+    calibrated: list[dict] = []
+    miscalibrated: list[dict] = []
+    mixed: list[dict] = []
+    recent_self_assessments = [
+        {
+            "ts": event.get("ts"),
+            "score": event.get("score"),
+            "concept_ids": list(event.get("concept_ids") or []),
+            "trigger_session_id": event.get("trigger_session_id"),
+        }
+        for event in history
+        if event.get("event_type") == "self_assessment" and _within(event.get("ts"), days=14)
+    ][-10:]
+    for concept_id in sorted(set(concept_ids)):
+        ok, evidence = _is_calibrated(concept_id, history)
+        status = evidence.get("status")
+        item = {"concept_id": concept_id, "evidence": evidence}
+        if ok:
+            calibrated.append(item)
+        elif status == "miscalibrated":
+            miscalibrated.append(item)
+        elif status == "mixed":
+            mixed.append(item)
+    return {
+        "calibrated": calibrated,
+        "miscalibrated": miscalibrated,
+        "mixed": mixed,
+        "recent_self_assessments": recent_self_assessments,
+    }
+
+
 def _streak_from_dates(dates: Iterable[str]) -> int:
     parsed = sorted(
         {datetime.strptime(d, "%Y-%m-%d").date() for d in dates if d},
@@ -1071,6 +1195,7 @@ def _build_learner_profile(history: list[dict], summary: dict) -> dict:
     for event in history:
         for cid in event.get("concept_ids") or []:
             encountered[cid] += 1
+    recent_code_changes_24h = _recent_code_changes_24h(history)
     mastered: list[dict] = []
     uncertain: list[dict] = []
     underexplored: list[dict] = []
@@ -1128,6 +1253,8 @@ def _build_learner_profile(history: list[dict], summary: dict) -> dict:
             "encountered_count": dict(encountered),
         },
         "activity": activity,
+        "recent_code_changes_24h": recent_code_changes_24h,
+        "calibration_status": _calibration_status(history, encountered.keys()),
         "next_recommendations": [],
         "preferences": {
             "experience_level": None,

@@ -32,16 +32,32 @@ class CognitiveTriggerTest(unittest.TestCase):
         self.assertEqual(trigger["trigger_type"], "none")
         self.assertIsNone(trigger["markdown"])
 
-    def test_only_follow_up_active_in_commit_1(self) -> None:
+    def test_self_assessment_due_wins_over_follow_up_when_recent_code(self) -> None:
         trigger = cognitive_trigger.select_cognitive_trigger(
-            history=[{"event_type": "code_attempt"}],
+            profile={
+                "recent_code_changes_24h": [
+                    {
+                        "event_id": "code-1",
+                        "file_path": "ReservationService.java",
+                        "concept_ids": ["concept:spring/transactional"],
+                    }
+                ],
+                "calibration_status": {"recent_self_assessments": []},
+                "open_follow_up_queue": [{"question": "트랜잭션 경계 다시 볼까?"}],
+            },
+            drill_history=[{"total_score": 4}],
+        )
+        self.assertEqual(trigger["trigger_type"], "self_assessment")
+        self.assertIn("ReservationService.java", trigger["markdown"])
+        self.assertEqual(trigger["payload"]["concept_ids"], ["concept:spring/transactional"])
+        self.assertIn("self_assessment_due", trigger["competed_against"])
+
+    def test_review_due_disabled_until_commit_5(self) -> None:
+        trigger = cognitive_trigger.select_cognitive_trigger(
             profile={"open_follow_up_queue": [{"question": "트랜잭션 경계 다시 볼까?"}]},
             drill_history=[{"total_score": 4}],
         )
         self.assertEqual(trigger["trigger_type"], "follow_up")
-        self.assertIn("트랜잭션", trigger["markdown"])
-        self.assertIn("follow_up", trigger["competed_against"])
-        self.assertNotIn("self_assessment_due", trigger["competed_against"])
         self.assertNotIn("review_due", trigger["competed_against"])
 
     def test_no_trigger_when_follow_up_queue_empty(self) -> None:
@@ -96,4 +112,3 @@ class CognitiveTriggerTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

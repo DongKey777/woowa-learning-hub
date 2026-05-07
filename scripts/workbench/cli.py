@@ -1355,6 +1355,57 @@ def cmd_learn_record_code(args: argparse.Namespace) -> int:
         return 2
 
 
+def cmd_learn_self_assess(args: argparse.Namespace) -> int:
+    """Record a pending self-assessment response as a learner event."""
+    response = args.response
+    if response is None:
+        response = sys.stdin.read()
+    response = (response or "").strip()
+    try:
+        from core.cognitive_trigger import (  # type: ignore
+            load_pending_triggers,
+            match_pending_trigger,
+            write_pending_triggers_atomic,
+        )
+        from core.learner_memory import (  # type: ignore
+            _resolve_learner_id,
+            append_learner_event,
+            build_self_assessment_event,
+            recompute_learner_profile,
+        )
+        from scripts.learning.self_assessment import parse_response
+
+        pending = load_pending_triggers()
+        matched_id = match_pending_trigger(
+            pending,
+            "self_assessment",
+            {"trigger_session_id": args.trigger_session_id},
+        )
+        if matched_id is None:
+            raise ValueError("pending self_assessment trigger 없음")
+        parsed = parse_response(response, pending.get("self_assessment"))
+        if parsed is None:
+            raise ValueError("self_assessment score를 찾지 못함")
+        event = build_self_assessment_event(
+            score=parsed["score"],
+            free_text=parsed.get("free_text"),
+            concept_ids=parsed.get("concept_ids") or [],
+            trigger_session_id=matched_id,
+            learner_id=_resolve_learner_id(),
+        )
+        append_learner_event(event)
+        recompute_learner_profile()
+        pending = load_pending_triggers()
+        pending.pop("self_assessment", None)
+        write_pending_triggers_atomic(pending)
+        if not getattr(args, "silent", False):
+            print(json.dumps({"recorded": True, "event_id": event["event_id"]}, ensure_ascii=False))
+        return 0
+    except Exception as exc:  # noqa: BLE001
+        sys.stderr.write(f"learn-self-assess: {exc}\n")
+        return 2
+
+
 def cmd_learner_profile(args: argparse.Namespace) -> int:
     """Subactions for state/learner/* (show / recompute / clear / redact / set / migrate-from-repos)."""
     from core.learner_memory import (  # type: ignore
@@ -2048,6 +2099,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Suppress stdout (event still recorded). Used by AI auto-invocation.",
     )
     learn_record_code_parser.set_defaults(func=cmd_learn_record_code)
+
+    learn_self_assess_parser = subparsers.add_parser(
+        "learn-self-assess",
+        help="Append a self_assessment event for a pending cognitive trigger.",
+    )
+    learn_self_assess_parser.add_argument("response", nargs="?", help="Response text (or pipe via stdin).")
+    learn_self_assess_parser.add_argument("--trigger-session-id", required=True)
+    learn_self_assess_parser.add_argument(
+        "--silent",
+        action="store_true",
+        help="Suppress stdout (event still recorded). Used by AI auto-invocation.",
+    )
+    learn_self_assess_parser.set_defaults(func=cmd_learn_self_assess)
 
     next_action_parser = subparsers.add_parser("next-action")
     next_action_parser.add_argument("--repo", required=True)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .archive import compute_archive_status, ensure_repo_archive, write_archive_status
@@ -1032,6 +1032,25 @@ def run_coach(
             elif pending_drill is not None and consumed_pending_id is None:
                 # TTL was decremented in memory — persist the new counter.
                 _drill.save_pending(repo["name"], pending_drill)
+        except Exception:
+            pass
+
+    if error_phase is None and cognitive_trigger.get("trigger_type") == "self_assessment":
+        try:
+            from .cognitive_trigger import (  # noqa: WPS433
+                expire_stale_triggers,
+                load_pending_triggers,
+                write_pending_triggers_atomic,
+            )
+            now = datetime.now(timezone.utc)
+            pending = expire_stale_triggers(load_pending_triggers(), now)
+            pending["self_assessment"] = {
+                "trigger_session_id": cognitive_trigger.get("trigger_session_id"),
+                "payload": cognitive_trigger.get("payload") or {},
+                "issued_at": now.isoformat(),
+                "expires_at": (now + timedelta(hours=24)).isoformat(),
+            }
+            write_pending_triggers_atomic(pending)
         except Exception:
             pass
 

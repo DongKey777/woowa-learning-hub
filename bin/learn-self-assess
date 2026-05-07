@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Usage: bin/learn-self-assess "8점이고 막힌 데는 ..." --trigger-session-id <id>
+# Appends a self_assessment event after an AI-surfaced cognitive trigger.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" learn-self-assess "$@"

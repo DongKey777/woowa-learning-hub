@@ -331,6 +331,20 @@ class BuilderTests(_DiskIsolated):
         self.assertLessEqual(len(event["diff_summary"]), 503)
         self.assertEqual(event["lines_added"], 10)
 
+    def test_self_assessment_event_appended_with_trigger_id(self) -> None:
+        event = learner_memory.build_self_assessment_event(
+            score=8,
+            free_text="8점이고 트랜잭션 경계가 막혀",
+            concept_ids=["concept:spring/transactional"],
+            trigger_session_id="sa-1",
+            learner_id="test-learner",
+        )
+        learner_memory.append_learner_event(event)
+        decoded = json.loads(learner_memory.learner_history_path().read_text(encoding="utf-8"))
+        self.assertEqual(decoded["event_type"], "self_assessment")
+        self.assertEqual(decoded["trigger_session_id"], "sa-1")
+        self.assertEqual(decoded["score"], 8)
+
 
 class PrivacyRedactionTests(unittest.TestCase):
     def test_email_redacted(self) -> None:
@@ -517,6 +531,90 @@ class RecomputeAggregationTests(_DiskIsolated):
         profile = learner_memory.recompute_learner_profile()
         mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
         self.assertNotIn("concept:spring/transactional", mastered)
+
+    def test_calibrated_when_score_matches_drill(self) -> None:
+        self._seed([
+            {
+                "event_type": "drill_answer",
+                "event_id": "d-cal",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/transactional"],
+                "drill_session_id": "d-cal",
+                "linked_learning_point": "transaction_consistency",
+                "total_score": 8,
+                "dimensions": {},
+                "weak_tags": [],
+            },
+            {
+                "event_type": "self_assessment",
+                "event_id": "sa-cal",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/transactional"],
+                "score": 8,
+                "free_text": "8점",
+                "trigger_session_id": "sa-1",
+                "scored_at": _iso(0),
+            },
+        ])
+        profile = learner_memory.recompute_learner_profile()
+        calibrated = {
+            item["concept_id"]
+            for item in profile["calibration_status"]["calibrated"]
+        }
+        self.assertIn("concept:spring/transactional", calibrated)
+
+    def test_miscalibrated_when_score_high_drill_low(self) -> None:
+        self._seed([
+            {
+                "event_type": "drill_answer",
+                "event_id": "d-mis",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/di"],
+                "drill_session_id": "d-mis",
+                "linked_learning_point": "dependency_injection",
+                "total_score": 4,
+                "dimensions": {},
+                "weak_tags": [],
+            },
+            {
+                "event_type": "self_assessment",
+                "event_id": "sa-mis",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/di"],
+                "score": 9,
+                "free_text": "9점",
+                "trigger_session_id": "sa-2",
+                "scored_at": _iso(0),
+            },
+        ])
+        profile = learner_memory.recompute_learner_profile()
+        miscalibrated = {
+            item["concept_id"]
+            for item in profile["calibration_status"]["miscalibrated"]
+        }
+        self.assertIn("concept:spring/di", miscalibrated)
+
+    def test_self_assessment_does_not_inflate_mastery(self) -> None:
+        self._seed([
+            {
+                "event_type": "self_assessment",
+                "event_id": "sa-only",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/bean"],
+                "score": 10,
+                "free_text": "10점",
+                "trigger_session_id": "sa-3",
+                "scored_at": _iso(0),
+            }
+        ])
+        profile = learner_memory.recompute_learner_profile()
+        mastered = {item["concept_id"] for item in profile["concepts"]["mastered"]}
+        self.assertNotIn("concept:spring/bean", mastered)
 
     def test_mastery_via_strict_test_pass_and_ask_decline_with_activity(self) -> None:
         # No drills. 1 strict test pass (+2) + ask decline + activity (+1) = 3 → mastered.
