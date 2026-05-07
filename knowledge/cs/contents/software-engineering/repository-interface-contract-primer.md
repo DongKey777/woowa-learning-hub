@@ -1,7 +1,7 @@
 ---
 schema_version: 3
 title: Repository Interface Contract Primer
-concept_id: software-engineering/repository-interface-contract
+concept_id: software-engineering/repository-interface-contract-primer
 canonical: true
 category: software-engineering
 difficulty: beginner

@@ -1,7 +1,7 @@
 ---
 schema_version: 3
 title: Lock Timeout 났을 때 blocker 먼저 보는 미니카드
-concept_id: database/lock-timeout-blocker-first-check
+concept_id: database/lock-timeout-blocker-first-check-mini-card
 canonical: false
 category: database
 difficulty: beginner
