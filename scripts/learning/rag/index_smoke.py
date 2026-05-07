@@ -282,21 +282,19 @@ def _rebuild_trigger_consistency(
     if not isinstance(trigger_diff, dict):
         mismatches.append("verification.indexed_corpus_diff_missing")
     elif indexed_corpus_diff.get("available") is True:
-        if (
-            trigger_diff.get("release_corpus_commit")
-            != indexed_corpus_diff.get("release_corpus_commit")
-        ):
-            mismatches.append("verification.release_corpus_commit")
-        if (
-            trigger_diff.get("current_head_commit")
-            != indexed_corpus_diff.get("current_head_commit")
-        ):
-            mismatches.append("verification.current_head_commit")
-        if (
-            trigger_diff.get("changed_path_count")
-            != indexed_corpus_diff.get("changed_path_count")
-        ):
-            mismatches.append("verification.changed_path_count")
+        compared_fields = (
+            "release_corpus_commit",
+            "current_head_commit",
+            "changed_path_count",
+            "commit_changed_path_count",
+            "working_tree_changed_path_count",
+            "untracked_path_count",
+            "sample_paths",
+            "sample_truncated",
+        )
+        for field in compared_fields:
+            if trigger_diff.get(field) != indexed_corpus_diff.get(field):
+                mismatches.append(f"verification.{field}")
 
     return {
         "status": "ok" if not mismatches else "stale",
@@ -359,7 +357,9 @@ def _synced_rebuild_trigger_payload(report: dict[str, Any]) -> dict[str, Any] | 
     verification = synced.get("verification")
     if not isinstance(verification, dict):
         verification = {}
-    verification["indexed_corpus_diff"] = report.get("indexed_corpus_diff")
+    indexed_corpus_diff = report.get("indexed_corpus_diff")
+    if isinstance(indexed_corpus_diff, dict):
+        verification["indexed_corpus_diff"] = indexed_corpus_diff
     synced["verification"] = verification
     return synced
 

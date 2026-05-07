@@ -1492,16 +1492,52 @@ _TOPIC_HINT_LABEL_PREFIX_RE = re.compile(
 _TOPIC_HINT_WRAPPER_PREFIX_RE = re.compile(
     r"^\s*(?:(?:[-*+]\s+)|(?:>\s*)|(?:\d+[.)]\s+)|(?:\[[ xX]\]\s+))+"
 )
+_TOPIC_HINT_FRONTMATTER_METADATA_FIELDS = (
+    "aliases",
+    "canonical",
+    "category",
+    "concept_id",
+    "confusable_with",
+    "contextual_chunk_prefix",
+    "difficulty",
+    "doc_id",
+    "doc_role",
+    "expected_queries",
+    "forbidden_neighbors",
+    "intents",
+    "language",
+    "level",
+    "linked_paths",
+    "mission_ids",
+    "next_docs",
+    "prerequisites",
+    "related_docs",
+    "retrieval_anchor_keywords",
+    "review_feedback_tags",
+    "schema_version",
+    "source_path",
+    "source_priority",
+    "symptoms",
+    "tags",
+    "title",
+)
+_TOPIC_HINT_FRONTMATTER_METADATA_KEYS_RE = "|".join(
+    re.escape(field) for field in _TOPIC_HINT_FRONTMATTER_METADATA_FIELDS
+)
 _TOPIC_HINT_FRONTMATTER_METADATA_KEY_RE = re.compile(
-    r"^(?:"
-    r"aliases|category|concept_id|difficulty|doc_id|expected_queries|"
-    r"related_docs|retrieval_anchor_keywords|source_path|tags|title"
-    r")\s*[:=]",
+    rf"^(?:{_TOPIC_HINT_FRONTMATTER_METADATA_KEYS_RE})\s*[:=]",
+    re.IGNORECASE,
+)
+_TOPIC_HINT_FRONTMATTER_METADATA_KEY_ANYWHERE_RE = re.compile(
+    rf'(?:"?(?:{_TOPIC_HINT_FRONTMATTER_METADATA_KEYS_RE})"?\s*[:=])',
     re.IGNORECASE,
 )
 _TOPIC_HINT_FRONTMATTER_INLINE_METADATA_SUFFIX_RE = re.compile(
-    r'(?P<prefix>.*?)(?:\s*[,\]}]\s*)?(?:"?(?:aliases|category|concept_id|difficulty|doc_id|'
-    r'expected_queries|related_docs|retrieval_anchor_keywords|source_path|tags|title)"?\s*[:=].*)$',
+    rf'(?P<prefix>.*?)(?:\s*(?:,|\]|\}})\s*)?(?:"?(?:{_TOPIC_HINT_FRONTMATTER_METADATA_KEYS_RE})"?\s*[:=].*)$',
+    re.IGNORECASE,
+)
+_TOPIC_HINT_INLINE_CONTEXTUAL_VALUE_RE = re.compile(
+    rf"{_TOPIC_HINT_QUOTED_LABEL_RE}\s*[:=]\s*(?:[|>][+-]?)?\s*(?P<rest>.*)$",
     re.IGNORECASE,
 )
 
@@ -3117,9 +3153,12 @@ def _normalize_topic_hint(hint: str) -> str:
         line = _strip_topic_hint_markdown_label(line).strip()
         if not line:
             continue
+        extracted_contextual_value = _extract_inline_contextual_topic_hint_value(line)
+        if extracted_contextual_value is not None:
+            line = extracted_contextual_value.strip()
         if _TOPIC_HINT_METADATA_LINE_RE.match(line):
             continue
-        if _TOPIC_HINT_FRONTMATTER_METADATA_KEY_RE.match(line):
+        if extracted_contextual_value is None and _TOPIC_HINT_FRONTMATTER_METADATA_KEY_RE.match(line):
             skip_metadata_block_indent = indent
             continue
         line = _TOPIC_HINT_LABEL_PREFIX_RE.sub("", line).strip()
@@ -3141,6 +3180,21 @@ def _strip_topic_hint_markdown_label(line: str) -> str:
                 f"{match.group('suffix')}{match.group('rest')}"
             )
     return line
+
+
+def _extract_inline_contextual_topic_hint_value(line: str) -> str | None:
+    if not (match := _TOPIC_HINT_INLINE_CONTEXTUAL_VALUE_RE.search(line)):
+        return None
+
+    prefix = line[: match.start()].strip()
+    if prefix:
+        normalized_prefix = prefix.lstrip("{[(").strip().rstrip(",")
+        if (
+            normalized_prefix
+            and not _TOPIC_HINT_FRONTMATTER_METADATA_KEY_ANYWHERE_RE.search(normalized_prefix)
+        ):
+            return None
+    return match.group("rest")
 
 
 def _trim_topic_hint_inline_metadata_suffix(line: str) -> str:

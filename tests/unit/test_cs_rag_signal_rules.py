@@ -4886,6 +4886,32 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("cutover", expanded)
         self.assertNotIn("rollback", expanded)
 
+    def test_projection_json_contextual_prefix_still_works_when_aliases_precede_contextual_key(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                '{"aliases": ["saved but still old data"], '
+                '"contextual_chunk_prefix": "projection freshness, read your writes, '
+                'read model cutover guardrails, rollback window", '
+                '"concept_id": "system-design/projection-freshness"}'
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("saved but still old data", expanded)
+        self.assertNotIn("aliases", expanded)
+        self.assertNotIn("concept", expanded)
+        self.assertNotIn("id", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
     def test_projection_backticked_contextual_prefix_label_does_not_leak_scaffolding_tokens(
         self,
     ) -> None:
@@ -5058,6 +5084,106 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("retrieval", expanded)
         self.assertNotIn("anchor", expanded)
         self.assertNotIn("keywords", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_contextual_prefix_multiline_v3_frontmatter_skips_wave2_metadata_blocks(
+        self,
+    ) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                "schema_version: 3\n"
+                "canonical: true\n"
+                "doc_role: primer\n"
+                "level: beginner\n"
+                "language: ko\n"
+                "source_priority: 90\n"
+                "mission_ids:\n"
+                "  - missions/roomescape\n"
+                "review_feedback_tags:\n"
+                "  - stale-read\n"
+                "symptoms:\n"
+                "  - saved but still old data\n"
+                "intents:\n"
+                "  - troubleshooting\n"
+                "prerequisites:\n"
+                "  - database/transaction-isolation\n"
+                "next_docs:\n"
+                "  - system-design/read-after-write-routing\n"
+                "linked_paths:\n"
+                "  - contents/system-design/read-after-write-routing-primer.md\n"
+                "confusable_with:\n"
+                "  - database/transaction-isolation\n"
+                "forbidden_neighbors:\n"
+                "  - contents/database/transaction-isolation-basics.md\n"
+                "contextual_chunk_prefix: |\n"
+                "  projection freshness, read your writes, "
+                "read model cutover guardrails, rollback window"
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        self.assertNotIn("db_modeling", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("schema", expanded)
+        self.assertNotIn("version", expanded)
+        self.assertNotIn("canonical", expanded)
+        self.assertNotIn("doc", expanded)
+        self.assertNotIn("role", expanded)
+        self.assertNotIn("mission", expanded)
+        self.assertNotIn("confusable", expanded)
+        self.assertNotIn("forbidden", expanded)
+        self.assertNotIn("database", expanded)
+        self.assertNotIn("transaction", expanded)
+        self.assertNotIn("cutover", expanded)
+        self.assertNotIn("rollback", expanded)
+
+    def test_projection_json_contextual_prefix_ignores_v3_inline_metadata_suffixes(self) -> None:
+        prompt = "saved 했는데 왜 예전 값이 보여?"
+        topic_hints = [
+            (
+                '{"schema_version": 3, "canonical": true, "doc_role": "primer", '
+                '"level": "beginner", "language": "ko", "source_priority": 90, '
+                '"contextual_chunk_prefix": "projection freshness, read your writes, '
+                'read model cutover guardrails, rollback window", '
+                '"mission_ids": ["missions/roomescape"], '
+                '"review_feedback_tags": ["stale-read"], '
+                '"symptoms": ["saved but still old data"], '
+                '"intents": ["troubleshooting"], '
+                '"prerequisites": ["database/transaction-isolation"], '
+                '"next_docs": ["system-design/read-after-write-routing"], '
+                '"linked_paths": ["contents/system-design/read-after-write-routing-primer.md"], '
+                '"confusable_with": ["database/transaction-isolation"], '
+                '"forbidden_neighbors": ["contents/database/transaction-isolation-basics.md"]}'
+            )
+        ]
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt, topic_hints),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt, topic_hints)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        self.assertNotIn("db_modeling", tags)
+        expanded = signal_rules.expand_query(prompt, topic_hints)
+        self.assertIn("read model staleness", expanded)
+        self.assertNotIn("schema", expanded)
+        self.assertNotIn("version", expanded)
+        self.assertNotIn("canonical", expanded)
+        self.assertNotIn("mission", expanded)
+        self.assertNotIn("confusable", expanded)
+        self.assertNotIn("forbidden", expanded)
+        self.assertNotIn("database", expanded)
+        self.assertNotIn("transaction", expanded)
         self.assertNotIn("cutover", expanded)
         self.assertNotIn("rollback", expanded)
 

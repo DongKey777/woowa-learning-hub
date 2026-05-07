@@ -287,6 +287,9 @@ class ReportAlignmentTest(VerifyRealQrelsTestCase):
                 },
             ],
         }
+        qrel_sha = sha256(
+            json.dumps(qrels_payload, ensure_ascii=False, indent=2).encode("utf-8")
+        ).hexdigest()
         report_payload = {
             "query_count": 1,
             "metadata": {
@@ -300,6 +303,7 @@ class ReportAlignmentTest(VerifyRealQrelsTestCase):
                     "corpus_gap_probe": 0,
                     "forbidden_neighbor": 0,
                 },
+                "qrel_sha256": qrel_sha,
             },
             "per_cohort": {
                 "paraphrase_human": {"total": 1},
@@ -365,6 +369,7 @@ class ReportAlignmentTest(VerifyRealQrelsTestCase):
                     "corpus_gap_probe": 0,
                     "forbidden_neighbor": 0,
                 },
+                "qrel_sha256": "stale-sha",
             },
             "per_cohort": {
                 "paraphrase_human": {"total": 2},
@@ -404,6 +409,11 @@ class ReportAlignmentTest(VerifyRealQrelsTestCase):
             errors,
         )
         self.assertIn("report.metadata.cohort_distribution_target mismatch", errors)
+        self.assertIn(
+            "report.metadata.qrel_sha256 mismatch: report 'stale-sha', qrels "
+            f"{sha256(json.dumps(qrels_payload, ensure_ascii=False, indent=2).encode('utf-8')).hexdigest()!r}",
+            errors,
+        )
         self.assertIn(
             "report.per_cohort.paraphrase_human.total mismatch: report 2, qrels 1",
             errors,
@@ -456,6 +466,9 @@ class ReportAlignmentTest(VerifyRealQrelsTestCase):
                     "corpus_gap_probe": 0,
                     "forbidden_neighbor": 0,
                 },
+                "qrel_sha256": sha256(
+                    json.dumps(qrels_payload, ensure_ascii=False, indent=2).encode("utf-8")
+                ).hexdigest(),
             },
             "per_cohort": {
                 "paraphrase_human": {"total": 1},
@@ -485,6 +498,32 @@ class ReportAlignmentTest(VerifyRealQrelsTestCase):
             "report.per_query cohort_tag mismatch for paraphrase_human:spring_di:001: "
             "report 'mission_bridge', qrels 'paraphrase_human'",
             errors,
+        )
+
+    def test_contract_shape_requires_qrel_sha_metadata(self):
+        report_payload = {
+            "query_count": 1,
+            "overall_pass_rate": 1.0,
+            "per_cohort": {},
+            "per_query": [],
+            "metadata": {
+                "fixture_id": "r3_qrels_real_v1",
+                "schema_version": 1,
+                "cohort_distribution_target": {},
+            },
+        }
+        with TemporaryDirectory() as td:
+            report = Path(td) / "report.json"
+            report.write_text(
+                json.dumps(report_payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            errors = _check_report_contract_shape(report)
+        self.assertEqual(
+            errors,
+            [
+                "report is not a cohort-eval baseline artifact: missing ['metadata.qrel_sha256']"
+            ],
         )
 
 

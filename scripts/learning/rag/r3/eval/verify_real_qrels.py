@@ -214,7 +214,12 @@ def _check_report_contract_shape(report_path: Path) -> list[str]:
     if not isinstance(metadata, dict):
         missing_metadata = ["metadata"]
     else:
-        required_metadata = ("fixture_id", "schema_version", "cohort_distribution_target")
+        required_metadata = (
+            "fixture_id",
+            "schema_version",
+            "cohort_distribution_target",
+            "qrel_sha256",
+        )
         missing_metadata = [
             f"metadata.{key}" for key in required_metadata if key not in metadata
         ]
@@ -288,6 +293,14 @@ def _check_report_alignment(qrel_path: Path, report_path: Path) -> list[str]:
     report_target = (report_blob.get("metadata") or {}).get("cohort_distribution_target")
     if qrel_target != report_target:
         errors.append("report.metadata.cohort_distribution_target mismatch")
+
+    qrel_sha = _sha256_file(qrel_path)
+    report_sha = (report_blob.get("metadata") or {}).get("qrel_sha256")
+    if report_sha != qrel_sha:
+        errors.append(
+            "report.metadata.qrel_sha256 mismatch: "
+            f"report {report_sha!r}, qrels {qrel_sha!r}"
+        )
 
     report_per_cohort = report_blob.get("per_cohort")
     if isinstance(report_per_cohort, dict):

@@ -22,6 +22,7 @@ CLI: ``python -m scripts.learning.rag.r3.eval.cohort_eval --qrels ...
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import time
 from dataclasses import asdict, dataclass, field
@@ -37,6 +38,15 @@ SearchFn = Callable[..., list[dict]]
 def _is_refusal_clean_outcome(actual_outcome: str) -> bool:
     """True when a corpus-gap query ended in an acceptable refusal path."""
     return actual_outcome in {"refusal_clean", "tier_downgraded"}
+
+
+def _qrel_sha256(qrel_path: str) -> str | None:
+    if not qrel_path:
+        return None
+    path = Path(qrel_path)
+    if not path.exists() or not path.is_file():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 # ---------------------------------------------------------------------------
@@ -389,6 +399,10 @@ def evaluate_suite(
 
     pass_total = sum(1 for r in per_query if r.pass_status)
     overall = pass_total / len(per_query) if per_query else 0.0
+    metadata = dict(suite.metadata)
+    qrel_sha = _qrel_sha256(qrel_path)
+    if qrel_sha is not None:
+        metadata["qrel_sha256"] = qrel_sha
     return CohortEvalReport(
         qrel_path=qrel_path,
         top_k=top_k,
@@ -396,7 +410,7 @@ def evaluate_suite(
         overall_pass_rate=overall,
         per_query=per_query,
         per_cohort=per_cohort,
-        metadata=dict(suite.metadata),
+        metadata=metadata,
     )
 
 

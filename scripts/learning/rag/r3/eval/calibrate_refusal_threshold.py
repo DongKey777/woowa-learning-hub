@@ -49,8 +49,8 @@ Output (JSON, written to ``--out``):
       "f1_optimal_coverage_over_max_negative": <float>
     },
     "boundary_diagnostics": {
-      "zero_spurious_negative_equal_count": <int>,
-      "zero_spurious_positive_equal_count": <int>,
+      "zero_spurious_candidate_negative_equal_count": <int>,
+      "zero_spurious_candidate_positive_equal_count": <int>,
       "f1_optimal_negative_equal_count": <int>,
       "f1_optimal_positive_equal_count": <int>
     },
@@ -397,10 +397,10 @@ def _boundary_diagnostics(
     f1_optimal_threshold: float,
 ) -> dict[str, int]:
     return {
-        "zero_spurious_negative_equal_count": sum(
+        "zero_spurious_candidate_negative_equal_count": sum(
             1 for score in negatives if score == recommended_threshold
         ),
-        "zero_spurious_positive_equal_count": sum(
+        "zero_spurious_candidate_positive_equal_count": sum(
             1 for score in positives if score == recommended_threshold
         ),
         "f1_optimal_negative_equal_count": sum(
@@ -622,9 +622,7 @@ def calibrate(
             positives=positives,
         )
     )
-    recommended_threshold_for_diagnostics = (
-        recommended if recommended is not None else 0.0
-    )
+    zero_spurious_candidate_threshold = zero_spurious_candidate_outcomes["threshold"]
     runtime_default_env_value, runtime_default_parse_status = _read_runtime_default_threshold()
     runtime_default_matches_recommendation = _runtime_default_matches_recommendation(
         runtime_default_env_value,
@@ -650,13 +648,13 @@ def calibrate(
     separation_diagnostics = _separation_diagnostics(
         negatives=negatives,
         positives=positives,
-        recommended_threshold=recommended_threshold_for_diagnostics,
+        recommended_threshold=zero_spurious_candidate_threshold,
         f1_optimal_threshold=f1_optimal,
     )
     boundary_diagnostics = _boundary_diagnostics(
         negatives=negatives,
         positives=positives,
-        recommended_threshold=recommended_threshold_for_diagnostics,
+        recommended_threshold=zero_spurious_candidate_threshold,
         f1_optimal_threshold=f1_optimal,
     )
 
@@ -753,9 +751,9 @@ def calibrate(
             f"delta versus the strongest negative. "
             f"Exact-boundary scores remain answerable because runtime uses "
             f"`score < threshold`: "
-            f"{boundary_diagnostics['zero_spurious_positive_equal_count']} positives/"
-            f"{boundary_diagnostics['zero_spurious_negative_equal_count']} negatives sit exactly "
-            f"on the shipped threshold, and "
+            f"{boundary_diagnostics['zero_spurious_candidate_positive_equal_count']} positives/"
+            f"{boundary_diagnostics['zero_spurious_candidate_negative_equal_count']} negatives sit exactly "
+            f"on the zero-spurious candidate threshold, and "
             f"{boundary_diagnostics['f1_optimal_positive_equal_count']} positives/"
             f"{boundary_diagnostics['f1_optimal_negative_equal_count']} negatives sit exactly "
             f"on the raw F1-optimal threshold. "

@@ -80,6 +80,7 @@ _KNOWN_CITATION_CATEGORIES = {
     "system-design",
 }
 _CITATION_BUCKET_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9/_-]*$")
+_CITATION_BUCKET_ALIAS_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 
 
 def _empty_response_hints() -> dict[str, Any]:
@@ -222,19 +223,38 @@ def _normalize_citation_bucket(value: Any) -> str | None:
         if prefix == "learning_point:":
             if ":" in suffix:
                 return None
-            if not _CITATION_BUCKET_SEGMENT_RE.fullmatch(suffix):
+            if not _is_valid_citation_bucket_alias(suffix):
                 return None
         elif suffix.count(":") != 1:
             return None
         else:
             category, alias = suffix.split(":", 1)
             if not (
-                _CITATION_BUCKET_SEGMENT_RE.fullmatch(category)
-                and _CITATION_BUCKET_SEGMENT_RE.fullmatch(alias)
+                _is_valid_citation_bucket_category(category)
+                and _is_valid_citation_bucket_alias(alias)
             ):
                 return None
         return bucket
     return None
+
+
+def _is_valid_citation_bucket_category(value: str) -> bool:
+    """Restrict fallback categories to the known retrieval namespace."""
+    return value == "general" or value in _KNOWN_CITATION_CATEGORIES
+
+
+def _is_valid_citation_bucket_alias(value: str) -> bool:
+    """Accept path-like aliases without overlap or traversal ambiguity."""
+    if not _CITATION_BUCKET_SEGMENT_RE.fullmatch(value):
+        return False
+    if value.startswith("/") or value.endswith("/") or "//" in value:
+        return False
+    parts = value.split("/")
+    return all(
+        part not in {"", ".", ".."}
+        and _CITATION_BUCKET_ALIAS_SEGMENT_RE.fullmatch(part)
+        for part in parts
+    )
 
 
 def _citation_bucket_priority(bucket: str | None) -> int:
