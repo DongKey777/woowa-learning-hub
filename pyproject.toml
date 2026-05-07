@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "woowa-learning-hub"
-version = "0.1.0"
+version = "0.2.0"
 description = "Woowa 미션 학습 AI 코치 (peer PR + CS RAG 통합)"
 requires-python = ">=3.10"
 dependencies = [

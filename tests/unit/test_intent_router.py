@@ -94,6 +94,53 @@ class PreDecideTest(unittest.TestCase):
         self.assertEqual(result["pre_intent"], intent_router.UNKNOWN)
         self.assertEqual(result["cs_search_mode"], "cheap")
 
+    def test_r3_follow_up_signal_propagates_to_intent(self) -> None:
+        result = intent_router.pre_decide(
+            "그럼 IoC는?",
+            learner_context={"recent_topics": ["spring/bean", "spring/di"]},
+        )
+        signal = result["signals"]["r3_follow_up"]
+        self.assertTrue(signal["is_follow_up"])
+        self.assertEqual(signal["detected_via"], "regex")
+        self.assertEqual(signal["prior_topics"], ["spring/bean", "spring/di"])
+        self.assertIn("이전 맥락", signal["augmented_semantic_query"])
+
+    def test_r3_follow_up_signal_uses_reformulated_query_suppression(self) -> None:
+        result = intent_router.pre_decide(
+            "그럼 IoC는?",
+            reformulated_query="Spring IoC inversion of control basics",
+            learner_context={"recent_topics": ["spring/bean"]},
+        )
+        signal = result["signals"]["r3_follow_up"]
+        self.assertFalse(signal["is_follow_up"])
+        self.assertEqual(signal["detected_via"], "reformulated_query")
+        self.assertEqual(
+            signal["augmented_semantic_query"],
+            "Spring IoC inversion of control basics",
+        )
+
+    def test_self_assessment_response_only_when_pending_trigger(self) -> None:
+        result = intent_router.pre_decide(
+            "8점이고 transaction 경계가 막혀",
+            pending_triggers={
+                "self_assessment": {
+                    "trigger_session_id": "sa-1",
+                    "payload": {"concept_ids": ["concept:spring/transactional"]},
+                }
+            },
+        )
+        self.assertEqual(result["pre_intent"], intent_router.UNKNOWN)
+        self.assertEqual(result["cs_search_mode"], "skip")
+        signal = result["signals"]["self_assessment_response"]
+        self.assertEqual(signal["score"], 8)
+        self.assertEqual(signal["trigger_session_id"], "sa-1")
+
+    def test_random_self_assessment_rejected_without_pending(self) -> None:
+        result = intent_router.pre_decide("8점이야")
+        signal = result["signals"]["self_assessment_response"]
+        self.assertIsNone(signal["score"])
+        self.assertEqual(result["cs_search_mode"], "cheap")
+
 
 class FinalizeTest(unittest.TestCase):
     def test_mission_only_plan(self) -> None:

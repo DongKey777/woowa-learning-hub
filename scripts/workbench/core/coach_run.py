@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .archive import compute_archive_status, ensure_repo_archive, write_archive_status
@@ -376,6 +376,22 @@ def _check_cs_readiness() -> dict:
     }
 
 
+def _load_cross_learner_context(
+    prompt: str,
+    decision: dict,
+    catalog: dict | None = None,
+) -> dict | None:
+    """Load cross-repo learner profile and derive a per-turn context block."""
+    try:
+        from .learner_memory import build_learner_context, load_learner_profile  # noqa: WPS433
+        profile = load_learner_profile()
+        if profile is None:
+            return None
+        return build_learner_context(profile, prompt=prompt, decision=decision, catalog=catalog)
+    except Exception:
+        return None
+
+
 def _build_learning_projection(
     *,
     repo_name: str,
@@ -438,6 +454,7 @@ def _build_unified_profile(memory_profile: dict | None) -> dict | None:
 def _pre_augment_phase(
     *,
     prompt: str | None,
+    reformulated_query: str | None = None,
     learner_state_full: dict | None,
     session_payload: dict,
     pending_drill: dict | None,
@@ -471,12 +488,38 @@ def _pre_augment_phase(
     ]
     topic_hints = [t for t in (session_payload.get("primary_topic"),) if t]
 
+    try:
+        from .concept_catalog import load_catalog  # noqa: WPS433
+        concept_catalog = load_catalog()
+    except Exception:
+        concept_catalog = {}
+    learner_context = _load_cross_learner_context(
+        prompt or "",
+        {},
+        concept_catalog,
+    )
+    try:
+        from .cognitive_trigger import load_pending_triggers  # noqa: WPS433
+        pending_triggers = load_pending_triggers()
+    except Exception:
+        pending_triggers = {}
+
     pre_result = intent_pre_decide(
         prompt or "",
         history=None,
         pending_drill=pending_drill if drill_result is None else None,
         learner_state=learner_state_full,
+        reformulated_query=reformulated_query,
+        learner_context=learner_context,
+        pending_triggers=pending_triggers,
     )
+    refined_learner_context = _load_cross_learner_context(
+        prompt or "",
+        pre_result,
+        concept_catalog,
+    )
+    if refined_learner_context is not None:
+        learner_context = refined_learner_context
 
     cs_readiness = _check_cs_readiness()
     cs_search_mode = pre_result.get("cs_search_mode", "skip")
@@ -494,10 +537,12 @@ def _pre_augment_phase(
             ).get("experience_level")
             augment_result = cs_augment(
                 prompt=prompt or "",
+                reformulated_query=reformulated_query,
                 learning_points=learning_points,
                 topic_hints=topic_hints,
                 cs_search_mode=cs_search_mode,
                 experience_level=learner_experience_level,
+                learner_context=learner_context,
             )
         except (ImportError, ModuleNotFoundError):
             # Defensive — find_spec said deps are present but an internal
@@ -516,6 +561,12 @@ def _pre_augment_phase(
     cs_augmentation_compact: dict | None = None
     if augment_result is not None:
         sidecar = augment_result.get("sidecar")
+        sidecar_payload = sidecar if isinstance(sidecar, dict) else {}
+        sidecar_hits = sidecar_payload.get("hits") or []
+        response_hints_raw = augment_result.get("response_hints") or {}
+        response_hints = response_hints_raw if isinstance(response_hints_raw, dict) else {}
+        citation_paths_raw = response_hints.get("citation_paths") or []
+        citation_paths = citation_paths_raw if isinstance(citation_paths_raw, list) else []
         cs_augmentation_compact = {
             "by_learning_point": augment_result.get("by_learning_point") or {},
             "by_fallback_key": augment_result.get("by_fallback_key") or {},
@@ -525,6 +576,12 @@ def _pre_augment_phase(
                 "contexts/cs-augmentation.json" if sidecar else None
             ),
             "meta": augment_result.get("meta") or {},
+            "verifier_hits": [
+                {"path": hit.get("path"), "title": hit.get("title")}
+                for hit in sidecar_hits
+                if isinstance(hit, dict)
+            ],
+            "citation_paths": [str(path) for path in citation_paths if path],
         }
 
     return {
@@ -535,6 +592,7 @@ def _pre_augment_phase(
         "drill_result": drill_result,
         "consumed_pending_id": consumed_pending_id,
         "route_signals": route_signals,
+        "learner_context": learner_context,
     }
 
 
@@ -577,6 +635,7 @@ def run_coach(
     repo_name: str | None = None,
     repo_path: str | None = None,
     prompt: str | None = None,
+    reformulated_query: str | None = None,
     pr_number: int | None = None,
     reviewer: str | None = None,
     context: str = "coach",
@@ -702,6 +761,8 @@ def run_coach(
         memory_context=previous_memory,
         archive_status=archive_status,
     )
+    if reformulated_query is not None:
+        session_payload["reformulated_query"] = reformulated_query
 
     # Learning pipeline phase A — route drill → pre_decide → readiness → augment.
     # verification_required_count is derived from the same learner-state full
@@ -719,6 +780,7 @@ def run_coach(
     pre_verification = build_verification_block(learner_state_full or {}, "ready")
     phase_a = _pre_augment_phase(
         prompt=prompt,
+        reformulated_query=reformulated_query,
         learner_state_full=learner_state_full,
         session_payload=session_payload,
         pending_drill=pending_drill,
@@ -729,6 +791,7 @@ def run_coach(
     cs_sidecar = phase_a["sidecar"]
     drill_result = phase_a["drill_result"]
     consumed_pending_id = phase_a["consumed_pending_id"]
+    learner_context = phase_a.get("learner_context")
 
     # Phase 1: compute everything in memory (no file writes).
     # Build learning_projection first so the persisted profile matches the
@@ -755,20 +818,72 @@ def run_coach(
 
     # Learning pipeline phase B — drill offer (after unified_profile) + finalize.
     drill_offer: dict | None = None
+    drill_history_for_offer: list[dict] = []
     if _drill is not None:
         # Skip the cooldown check when the same turn just consumed a pending
         # drill: the plan forbids chaining drill_answer → new offer in one turn.
         _pending_for_offer = pending_drill_raw if drill_result is None else {"just_consumed": True}
         try:
-            drill_offer = _drill.build_offer_if_due(
-                unified_profile,
-                pre_intent=pre_result.get("pre_intent"),
+            drill_history_for_offer = _drill.load_history(repo["name"], limit=10)
+        except Exception:
+            drill_history_for_offer = []
+        try:
+            drill_offer = _drill.build_review_offer_if_due(
+                drill_history_for_offer,
                 pending=_pending_for_offer,
-                drill_history=_drill.load_history(repo["name"], limit=10),
-                session_payload=session_payload,
             )
         except Exception:
             drill_offer = None
+        if drill_offer is None:
+            try:
+                drill_offer = _drill.build_offer_if_due(
+                    unified_profile,
+                    pre_intent=pre_result.get("pre_intent"),
+                    pending=_pending_for_offer,
+                    drill_history=drill_history_for_offer,
+                    session_payload=session_payload,
+                )
+            except Exception:
+                drill_offer = None
+
+    if drill_offer is not None:
+        cognitive_trigger = {
+            "trigger_type": "none",
+            "trigger_session_id": None,
+            "markdown": None,
+            "payload": {},
+            "applicability_hint": "omit",
+            "reason": "drill_offer_present",
+            "evidence": {"source": "drill_offer"},
+            "competed_against": [],
+        }
+    else:
+        try:
+            from .cognitive_trigger import (  # noqa: WPS433
+                load_pending_triggers,
+                select_cognitive_trigger,
+            )
+            cognitive_trigger = select_cognitive_trigger(
+                history=[],
+                profile=memory_profile,
+                drill_pending=pending_drill if drill_result is None else None,
+                drill_history=drill_history_for_offer,
+                intent=pre_result,
+                learner_context=learner_context,
+                pending_triggers=load_pending_triggers(),
+                input_signals=pre_result.get("signals") or {},
+            )
+        except Exception:
+            cognitive_trigger = {
+                "trigger_type": "none",
+                "trigger_session_id": None,
+                "markdown": None,
+                "payload": {},
+                "applicability_hint": "omit",
+                "reason": "selection_error",
+                "evidence": {},
+                "competed_against": [],
+            }
 
     intent_decision = intent_finalize(
         pre_result,
@@ -816,6 +931,7 @@ def run_coach(
             "mission_map_summary": session_payload.get("mission_map_summary", []),
             "primary_intent": session_payload.get("primary_intent"),
             "primary_topic": session_payload.get("primary_topic"),
+            "reformulated_query": session_payload.get("reformulated_query"),
             "topic_confidence": session_payload.get("topic_confidence", "low"),
             "reviewer": session_payload.get("reviewer"),
             "current_pr": session_payload.get("current_pr"),
@@ -841,6 +957,8 @@ def run_coach(
         "cs_augmentation": cs_augmentation_compact,
         "intent_decision": intent_decision,
         "unified_profile": unified_profile,
+        "learner_context": learner_context,
+        "cognitive_trigger": cognitive_trigger,
         "response_contract": build_response_contract(
             learner_state_full,
             "ready",
@@ -849,6 +967,8 @@ def run_coach(
             drill_offer=drill_offer,
             drill_result=drill_result,
             learning_profile=memory_profile,
+            cognitive_trigger=cognitive_trigger,
+            learner_context=learner_context,
         ),
     }
     _assert_response_contract(payload)
@@ -935,6 +1055,25 @@ def run_coach(
             elif pending_drill is not None and consumed_pending_id is None:
                 # TTL was decremented in memory — persist the new counter.
                 _drill.save_pending(repo["name"], pending_drill)
+        except Exception:
+            pass
+
+    if error_phase is None and cognitive_trigger.get("trigger_type") == "self_assessment":
+        try:
+            from .cognitive_trigger import (  # noqa: WPS433
+                expire_stale_triggers,
+                load_pending_triggers,
+                write_pending_triggers_atomic,
+            )
+            now = datetime.now(timezone.utc)
+            pending = expire_stale_triggers(load_pending_triggers(), now)
+            pending["self_assessment"] = {
+                "trigger_session_id": cognitive_trigger.get("trigger_session_id"),
+                "payload": cognitive_trigger.get("payload") or {},
+                "issued_at": now.isoformat(),
+                "expires_at": (now + timedelta(hours=24)).isoformat(),
+            }
+            write_pending_triggers_atomic(pending)
         except Exception:
             pass
 

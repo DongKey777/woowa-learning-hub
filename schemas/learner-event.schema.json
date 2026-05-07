@@ -6,7 +6,7 @@
   "properties": {
     "event_type": {
       "type": "string",
-      "enum": ["rag_ask", "coach_run", "drill_answer", "test_result", "code_attempt"]
+      "enum": ["rag_ask", "coach_run", "drill_answer", "test_result", "code_attempt", "self_assessment"]
     },
     "event_id": {"type": "string", "minLength": 8},
     "ts": {"type": "string", "minLength": 16},
@@ -22,6 +22,7 @@
       "enum": ["strict", "fallback", "none", "unknown", null]
     },
     "prompt": {"type": ["string", "null"]},
+    "reformulated_query": {"type": ["string", "null"]},
     "question_fingerprint": {"type": ["string", "null"]},
     "tier": {"type": ["integer", "null"]},
     "rag_mode": {"type": ["string", "null"]},
@@ -57,6 +58,11 @@
     "lines_added": {"type": ["integer", "null"]},
     "lines_removed": {"type": ["integer", "null"]},
     "linked_test": {"type": ["string", "null"]},
+    "score": {"type": ["integer", "null"], "minimum": 1, "maximum": 10},
+    "free_text": {"type": ["string", "null"]},
+    "trigger_session_id": {"type": ["string", "null"]},
+    "scored_at": {"type": ["string", "null"]},
+    "confidence_band": {"type": ["string", "null"]},
     "source_path": {"type": ["string", "null"]},
     "source_line": {"type": ["integer", "null"]},
     "source_event_id": {"type": ["string", "null"]}

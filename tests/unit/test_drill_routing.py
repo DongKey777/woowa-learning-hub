@@ -2,6 +2,7 @@
 
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
 
@@ -175,6 +176,94 @@ class ScorePendingAnswerTest(unittest.TestCase):
         self.assertEqual(result["linked_learning_point"], "repository_boundary")
         self.assertGreaterEqual(result["dimensions"]["accuracy"], 2)
         self.assertGreaterEqual(result["total_score"], 5)
+
+    def test_due_at_set_after_score(self) -> None:
+        result = drill.score_pending_answer("트랜잭션 경계는 application layer가 책임진다.", PENDING_FIXTURE)
+
+        scored_at = datetime.fromisoformat(result["scored_at"])
+        due_at = datetime.fromisoformat(result["due_at"])
+
+        self.assertEqual(due_at, scored_at + timedelta(days=3))
+        self.assertEqual(result["review_of_session_id"], "drill-test-1")
+        self.assertEqual(result["review_count"], 0)
+        self.assertEqual(result["last_outcome"], result["level"])
+
+    def test_env_adjustable_bands(self) -> None:
+        pending = dict(PENDING_FIXTURE, review_count=1)
+        with mock.patch.dict("os.environ", {"WOOWA_SPACED_REPETITION_BANDS": "1,2,4"}):
+            result = drill.score_pending_answer("트랜잭션 경계는 application layer가 책임진다.", pending)
+
+        scored_at = datetime.fromisoformat(result["scored_at"])
+        due_at = datetime.fromisoformat(result["due_at"])
+
+        self.assertEqual(due_at, scored_at + timedelta(days=2))
+
+
+class ReviewOfferTest(unittest.TestCase):
+    def test_review_offer_surfaces_when_due(self) -> None:
+        now = datetime(2026, 5, 7, tzinfo=timezone.utc)
+        history = [
+            {
+                "drill_session_id": "drill-old",
+                "question": "Repository 경계를 설명해 보세요.",
+                "linked_learning_point": "repository_boundary",
+                "source_doc": {"category": "database"},
+                "weak_tags": ["transaction_boundary"],
+                "due_at": (now - timedelta(minutes=1)).isoformat(),
+                "review_count": 0,
+            }
+        ]
+
+        offer = drill.build_review_offer_if_due(history, now=now)
+
+        self.assertIsNotNone(offer)
+        self.assertEqual(offer["question"], "Repository 경계를 설명해 보세요.")
+        self.assertEqual(offer["review_of_session_id"], "drill-old")
+        self.assertEqual(offer["review_count"], 1)
+        self.assertEqual(offer["expected_terms"], ["transaction_boundary"])
+
+    def test_review_offer_skipped_when_pending(self) -> None:
+        now = datetime(2026, 5, 7, tzinfo=timezone.utc)
+        history = [
+            {
+                "drill_session_id": "drill-old",
+                "question": "Repository 경계를 설명해 보세요.",
+                "due_at": (now - timedelta(days=1)).isoformat(),
+            }
+        ]
+
+        offer = drill.build_review_offer_if_due(
+            history,
+            pending={"drill_session_id": "open"},
+            now=now,
+        )
+
+        self.assertIsNone(offer)
+
+    def test_review_count_increments_on_consecutive_review(self) -> None:
+        pending = dict(
+            PENDING_FIXTURE,
+            drill_session_id="drill-review-1",
+            review_of_session_id="drill-original",
+            review_count=1,
+        )
+        result = drill.score_pending_answer(
+            "트랜잭션 경계는 application layer가 책임지고 repository는 영속성만 다룬다.",
+            pending,
+        )
+        scored_at = datetime.fromisoformat(result["scored_at"])
+        due_at = datetime.fromisoformat(result["due_at"])
+
+        self.assertEqual(result["review_of_session_id"], "drill-original")
+        self.assertEqual(result["review_count"], 1)
+        self.assertEqual(due_at, scored_at + timedelta(days=7))
+
+        now = due_at + timedelta(minutes=1)
+        next_offer = drill.build_review_offer_if_due([result], now=now)
+
+        self.assertIsNotNone(next_offer)
+        self.assertEqual(next_offer["review_of_session_id"], "drill-original")
+        self.assertEqual(next_offer["review_count"], 2)
 
 
 class PersistenceTest(unittest.TestCase):

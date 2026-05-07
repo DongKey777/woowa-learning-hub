@@ -50,6 +50,8 @@
         "current_stage": {"type": ["string", "null"]}
       }
     },
+    "recent_code_changes_24h": {"type": "array", "items": {"type": "object"}},
+    "calibration_status": {"type": "object"},
     "next_recommendations": {"type": "array"},
     "preferences": {
       "type": "object",

@@ -23,6 +23,10 @@
     },
     "weak_tags": { "type": "array", "items": { "type": "string" } },
     "improvement_notes": { "type": "array", "items": { "type": "string" } },
-    "source_doc": { "type": ["object", "null"] }
+    "source_doc": { "type": ["object", "null"] },
+    "due_at": { "type": ["string", "null"] },
+    "review_of_session_id": { "type": ["string", "null"] },
+    "review_count": { "type": ["integer", "null"], "minimum": 0 },
+    "last_outcome": { "type": ["string", "null"] }
   }
 }

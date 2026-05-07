@@ -81,6 +81,17 @@
         "fallback_reason": { "type": ["string", "null"] },
         "cs_categories_hit": { "type": "array", "items": { "type": "string" } },
         "sidecar_path": { "type": ["string", "null"] },
+        "verifier_hits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": ["string", "null"] },
+              "title": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "citation_paths": { "type": "array", "items": { "type": "string" } },
         "meta": {
           "type": "object",
           "properties": {
@@ -134,7 +145,18 @@
             "markdown": { "type": ["string", "null"] },
             "sources": { "type": "array" },
             "reason": { "type": ["string", "null"] },
-            "applicability_hint": { "enum": ["primary", "supporting", "omit"] }
+            "applicability_hint": { "enum": ["primary", "supporting", "omit"] },
+            "grounding_check": {
+              "type": "object",
+              "properties": {
+                "ok": { "type": "boolean" },
+                "ungrounded_paths": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "severity": { "enum": ["ok", "warn"] }
+              }
+            }
           }
         },
         "drill_block": {
@@ -149,6 +171,14 @@
         "drill_result_block": {
           "type": ["object", "null"],
           "description": "Scoring of a drill answer routed in this turn (Phase 4)."
+        },
+        "cognitive_block": {
+          "type": ["object", "null"],
+          "description": "Single selected cognitive trigger for this turn. Optional view; source selection is runtime policy."
+        },
+        "follow_up_block": {
+          "type": ["object", "null"],
+          "description": "Legacy follow-up queue view. May be suppressed when cognitive_block surfaces a trigger."
         },
         "snapshot_block": {
           "type": "object",

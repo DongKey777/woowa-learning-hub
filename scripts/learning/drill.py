@@ -23,8 +23,9 @@ top-level helpers — no direct path math. Pure stdlib.
 from __future__ import annotations
 
 import json
+import os
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +57,42 @@ def _history_path(repo_name: str) -> Path:
 
 def _timestamp() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _parse_timestamp(value: Any) -> datetime | None:
+    if not value:
+        return None
+    try:
+        text = str(value)
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
+def _spaced_repetition_bands() -> list[int]:
+    raw = os.environ.get("WOOWA_SPACED_REPETITION_BANDS", "3,7,14")
+    bands: list[int] = []
+    for chunk in raw.split(","):
+        try:
+            days = int(chunk.strip())
+        except ValueError:
+            return [3, 7, 14]
+        if days <= 0:
+            return [3, 7, 14]
+        bands.append(days)
+    return bands or [3, 7, 14]
+
+
+def _compute_due_at(scored_at: str | None = None, *, review_count: int = 0) -> str:
+    bands = _spaced_repetition_bands()
+    band_index = max(0, min(review_count, len(bands) - 1))
+    base = _parse_timestamp(scored_at) or datetime.now(timezone.utc)
+    return (base + timedelta(days=bands[band_index])).isoformat()
 
 
 # ---------------------------------------------------------------------------
@@ -124,9 +161,15 @@ def score_pending_answer(prompt: str, pending: dict) -> dict:
         category=category,
         expected_terms=list(expected_terms),
     )
+    scored_at = _timestamp()
+    try:
+        review_count = max(0, int(pending.get("review_count") or 0))
+    except (TypeError, ValueError):
+        review_count = 0
+    review_of_session_id = pending.get("review_of_session_id") or pending.get("drill_session_id")
     return {
         "drill_session_id": pending.get("drill_session_id"),
-        "scored_at": _timestamp(),
+        "scored_at": scored_at,
         "linked_learning_point": pending.get("linked_learning_point"),
         "question": pending.get("question"),
         "answer": prompt,
@@ -136,6 +179,10 @@ def score_pending_answer(prompt: str, pending: dict) -> dict:
         "weak_tags": scored["weak_tags"],
         "improvement_notes": scored["improvement_notes"],
         "source_doc": source_doc,
+        "due_at": _compute_due_at(scored_at, review_count=review_count),
+        "review_of_session_id": review_of_session_id,
+        "review_count": review_count,
+        "last_outcome": scored["level"],
     }
 
 
@@ -300,4 +347,49 @@ def build_offer_if_due(
         "expected_terms": expected_terms,
         "created_at": _timestamp(),
         "ttl_turns": DEFAULT_TTL_TURNS,
+    }
+
+
+def build_review_offer_if_due(
+    drill_history: list[dict] | None,
+    *,
+    pending: dict | None = None,
+    now: datetime | None = None,
+) -> dict | None:
+    """Return a spaced-repetition review offer when a prior drill is due."""
+    if pending is not None:
+        return None
+    reference = now or datetime.now(timezone.utc)
+    if reference.tzinfo is None:
+        reference = reference.replace(tzinfo=timezone.utc)
+
+    due_items: list[tuple[datetime, int, dict]] = []
+    for index, entry in enumerate(drill_history or []):
+        if not isinstance(entry, dict):
+            continue
+        question = (entry.get("question") or "").strip()
+        due_at = _parse_timestamp(entry.get("due_at"))
+        if not question or due_at is None or due_at > reference:
+            continue
+        due_items.append((due_at, index, entry))
+    if not due_items:
+        return None
+
+    _, _, entry = sorted(due_items, key=lambda item: (item[0], item[1]))[0]
+    try:
+        previous_review_count = max(0, int(entry.get("review_count") or 0))
+    except (TypeError, ValueError):
+        previous_review_count = 0
+    review_of_session_id = entry.get("review_of_session_id") or entry.get("drill_session_id")
+    return {
+        "drill_session_id": f"drill-{uuid.uuid4().hex[:12]}",
+        "question": entry.get("question"),
+        "linked_learning_point": entry.get("linked_learning_point"),
+        "source_doc": entry.get("source_doc"),
+        "expected_terms": list(entry.get("weak_tags") or []),
+        "created_at": _timestamp(),
+        "ttl_turns": DEFAULT_TTL_TURNS,
+        "review_of_session_id": review_of_session_id,
+        "review_count": previous_review_count + 1,
+        "review_due_at": entry.get("due_at"),
     }
