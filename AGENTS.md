@@ -87,11 +87,11 @@ Role:
 
 **Phase 8 v3 migration fleet** (60-worker, ChatGPT Pro 전용): 사용자가 *"migration_v3_60 시작해"* / *"v3 마이그레이션 시작"* 같은 의도를 표하면 `bin/migration-v3-60-start`를 호출한다. wrapper가 branch 격리(main 그대로, 학습자 production 무중단) + preflight 회귀 + baseline cohort_eval 측정 + fleet-start까지 한 번에 처리. ChatGPT Plus면 quota 한계로 30-worker `migration_v3` profile 권장. 상세 흐름은 `docs/migration-v3-runbook.md`.
 
-**Personalization-aware ranking** (Phase 9.2, default off): `WOOWA_RAG_PERSONALIZATION_ENABLED=1`로 켜면 R3가 fusion 단계 후 rerank 전에 score 조정을 적용한다.
+**Personalization-aware ranking** (Phase 9.2, wrapper default ON post-c12a0f5): R3가 fusion 단계 후 rerank 전에 score 조정.
 - learner_context.mastered_concepts에 있는 concept_id를 가진 candidate → score -0.15 (학습자가 이미 알고 있으니 demote).
 - learner_context.uncertain_concepts / underexplored_in_current_stage에 있으면 → score +0.10 (약한 영역 boost).
 - `concept:` 접두사(`concept:spring/bean`)는 자동 strip해서 v3 corpus `concept_id`(`spring/bean`)와 매칭.
-- Default off — Phase 8 코퍼스 migration이 v3 `concept_id`를 ≥30% 채울 때까지는 매핑이 sparse해 의미 없음 (현 3%).
+- Cycle3 (2026-05-07, c12a0f5) 이후 corpus concept_id 매핑률 99% 달성 → `bin/_rag_env.sh`가 `WOOWA_RAG_PERSONALIZATION_ENABLED=1`을 wrapper default로 export. 직접 호출(wrapper 우회)은 여전히 default off라 env 명시 필요.
 - R3 hit dict에 `concept_id` 필드 노출 (downstream 도구가 hit ↔ profile 매핑할 때 사용).
 
 회귀 테스트: `tests/unit/test_r3_personalization_ranking.py`.
@@ -121,7 +121,11 @@ Role:
 
 ### Production R3 env defaults (silent degradation 방지)
 
-`bin/rag-ask`, `bin/coach-run`, `bin/cs-index-build` wrapper는 `bin/_rag_env.sh`를 source해서 4 env var를 default로 export한다 — `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`. 이 값들이 닫혀 있으면 95.5% Pilot baseline → 90.5% 또는 그 이하로 silent 후퇴하므로 wrapper 진입 시점에 강제한다. 다른 값을 명시적으로 원할 때만 calling shell에서 export로 override.
+`bin/rag-ask`, `bin/coach-run`, `bin/cs-index-build`, `bin/cohort-eval` wrapper는 `bin/_rag_env.sh`를 source해서 6 env var를 default로 export — `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`, `WOOWA_RAG_REFUSAL_THRESHOLD=off` (production-safe), `WOOWA_RAG_PERSONALIZATION_ENABLED=1` (post-c12a0f5 활성). 닫혀 있으면 silent 후퇴이므로 wrapper 진입 시점에 강제. 다른 값을 명시 원하면 calling shell의 export로 override.
+
+### RAG performance closed loop (cycle3+)
+
+성능 측정·개선·릴리스 cycle은 `docs/runbooks/rag-perf-loop.md` 표준 9-step. 측정 wrapper `bin/cohort-eval --mode {production,eval}` — production은 학습자 정합 baseline, eval은 baseline-compare reference. **학습자 정합 baseline = active 5-cohort 평균 92.7%** (cycle3 c12a0f5, M2). cycle1 91.5%는 측정 환경 미공개라 historical reference만, 직접 비교 ❌. 상세: `reports/rag_eval/cycle3_closing_report.md`.
 
 ## Adaptive Response (v3 closed loop)
 

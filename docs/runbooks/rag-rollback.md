@@ -6,18 +6,27 @@ index or its runtime fails.
 The learner does not run these commands. An AI session runs them and reports
 one Korean status line per step.
 
-## Current production state (Pilot baseline 95.5%)
+## Current production state (cycle3 — c12a0f5)
 
 - `state/cs_rag/` — R3 LanceDB v3 production index
-  - 27,238 chunks, fts + dense + sparse modalities
-  - built from commit `029ec00` corpus (41 docs with v3 contextual_chunk_prefix,
-    180/200q reformulated, forbidden_neighbors declared)
-  - search runtime: `r3.search.search()` with reformulated_query argument
-    + post-rerank forbidden_filter (`WOOWA_RAG_R3_FORBIDDEN_FILTER=1`)
+  - **28,773 chunks**, fts + dense + sparse modalities (no ColBERT — learner-env-fit)
+  - built from commit `c12a0f5` corpus (1552 v3 frontmatter backfill +
+    88 new mission_bridge/drill/router docs, 99% concept_id coverage)
+  - GitHub release: `index-v1.0.0-corpus@c12a0f5` (142.65 MB tar.zst,
+    sha256 `0d83455b…e8441`)
+  - search runtime: `r3.search.search()` with reformulated_query
+    + post-rerank forbidden_filter + Phase 9.2 personalization
+    (wrapper default ON via `bin/_rag_env.sh`)
 - `state/cs_rag_archive/v2_current_20260502T1101Z` — legacy v2 fallback (sqlite
   + dense.npz, paraphrase-multilingual-MiniLM-L12-v2)
-- Pilot baseline: see `reports/rag_eval/r3_phase4_6_closing_report.md`
-  (200q × 6 cohort, OVERALL 95.5%)
+- **Learner baseline (M2 production)**: active 5-cohort weighted avg **92.7%**
+  (`reports/rag_eval/learner_baseline_c12a0f5_production.json`,
+  `reports/rag_eval/cycle3_closing_report.md`)
+  - corpus_gap_probe is intentional silent_failure in production env
+    (refusal threshold off — learner-safety preferred over refusal)
+- Historical reference: cycle1 fde6e49 91.5% — measurement env not recorded
+  in metadata, so do not direct-compare; eval-mode threshold pitfalls
+  documented in `feedback_rag_measurement_metrics` memory
 
 ## Preconditions
 
@@ -139,5 +148,9 @@ python -m scripts.learning.rag.r3.eval.cohort_eval \
   --use-reformulated-query
 ```
 
-Expected baseline: OVERALL ≥ 0.95 (closing report measured 0.955).
+Expected (cycle3 c12a0f5 production-mode): active 5-cohort weighted avg ≥ 0.92
+(M2 measured 0.927; corpus_gap_probe silent_failure is intentional in
+production env, exclude from active comparison). Use `bin/cohort-eval --mode production`
+for the standard learner-fit measurement; the explicit `python -m ...cohort_eval`
+form above is for emergency rebuild verification only.
 Significant deviation → corpus or code regression, not just rebuild noise.

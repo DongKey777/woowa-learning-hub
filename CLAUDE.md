@@ -55,11 +55,11 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 **Phase 8 v3 migration fleet** (60-worker, ChatGPT Pro): 학습자/사용자가 *"migration_v3_60 시작해"* / *"v3 마이그레이션 시작"* 같은 의도를 표하면 `bin/migration-v3-60-start` 자동 호출. wrapper가 branch 격리(main 보전, 학습자 production 무중단) + preflight 회귀 + baseline cohort_eval + fleet-start 처리. 상세: `docs/migration-v3-runbook.md`.
 
-**Phase 9.2 personalization-aware ranking** (default off): `WOOWA_RAG_PERSONALIZATION_ENABLED=1`로 켜면 R3가 fusion 후 rerank 전에 candidate score를 조정.
+**Phase 9.2 personalization-aware ranking** (wrapper default ON post-c12a0f5): R3가 fusion 후 rerank 전에 candidate score 조정.
 - `mastered_concepts`의 concept_id 매칭 → -0.15 (이미 mastered된 개념 demote).
 - `uncertain_concepts` / `underexplored_in_current_stage` 매칭 → +0.10 (약한 영역 boost).
 - `concept:spring/bean` 접두사는 자동 strip → `spring/bean`으로 v3 frontmatter 매칭.
-- Phase 8 corpus migration이 ≥30% concept_id 채울 때까지 default off (현 3%, sparse 매핑은 효과 미미).
+- Cycle3 (2026-05-07, c12a0f5) 이후 corpus concept_id 매핑률 99% 달성 → `bin/_rag_env.sh`가 `WOOWA_RAG_PERSONALIZATION_ENABLED=1`을 wrapper default로 export. 직접 호출(wrapper 우회)은 여전히 default off라 env 명시 필요.
 
 회귀 테스트: `tests/unit/test_r3_personalization_ranking.py`.
 
@@ -86,7 +86,11 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 ### Production R3 env defaults
 
-`bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` wrapper는 `bin/_rag_env.sh`를 source해서 4 env var를 default로 export — `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`. 닫혀 있으면 95.5% baseline → 90.5%로 silent 후퇴라 wrapper 진입 시점에 강제. override는 calling shell의 `export`로.
+`bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` / `bin/cohort-eval` wrapper는 `bin/_rag_env.sh`를 source해서 6 env var를 default로 export — `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`, `WOOWA_RAG_REFUSAL_THRESHOLD=off` (production-safe), `WOOWA_RAG_PERSONALIZATION_ENABLED=1` (post-c12a0f5). 닫혀 있으면 silent 후퇴 — wrapper 진입 시점에 강제. override는 calling shell의 `export`로.
+
+### RAG performance closed loop (cycle3+)
+
+성능 측정·개선·릴리스 cycle은 `docs/runbooks/rag-perf-loop.md` 표준화 9-step. 측정 wrapper는 `bin/cohort-eval --mode {production,eval}`. 학습자 정합 baseline은 **active 5-cohort 평균 92.7%** (cycle3 c12a0f5, M2 production). cycle1 91.5%는 측정 환경 미공개라 historical reference만, 직접 비교 ❌. 상세: `reports/rag_eval/cycle3_closing_report.md`.
 
 ## Adaptive Response (v3 closed loop)
 
