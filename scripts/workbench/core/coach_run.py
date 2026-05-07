@@ -561,6 +561,12 @@ def _pre_augment_phase(
     cs_augmentation_compact: dict | None = None
     if augment_result is not None:
         sidecar = augment_result.get("sidecar")
+        sidecar_payload = sidecar if isinstance(sidecar, dict) else {}
+        sidecar_hits = sidecar_payload.get("hits") or []
+        response_hints_raw = augment_result.get("response_hints") or {}
+        response_hints = response_hints_raw if isinstance(response_hints_raw, dict) else {}
+        citation_paths_raw = response_hints.get("citation_paths") or []
+        citation_paths = citation_paths_raw if isinstance(citation_paths_raw, list) else []
         cs_augmentation_compact = {
             "by_learning_point": augment_result.get("by_learning_point") or {},
             "by_fallback_key": augment_result.get("by_fallback_key") or {},
@@ -570,6 +576,12 @@ def _pre_augment_phase(
                 "contexts/cs-augmentation.json" if sidecar else None
             ),
             "meta": augment_result.get("meta") or {},
+            "verifier_hits": [
+                {"path": hit.get("path"), "title": hit.get("title")}
+                for hit in sidecar_hits
+                if isinstance(hit, dict)
+            ],
+            "citation_paths": [str(path) for path in citation_paths if path],
         }
 
     return {

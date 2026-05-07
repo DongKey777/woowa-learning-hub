@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from .citation_verifier import verify_citation_invariants
+
 
 CLASSIFICATION_BUCKETS = (
     "still-applies",
@@ -240,6 +242,10 @@ def _iter_cs_hits(augment_result: dict[str, Any]):
             yield key, hit
 
 
+def _has_citation_verifier_inputs(augment_result: dict[str, Any]) -> bool:
+    return "verifier_hits" in augment_result or "citation_paths" in augment_result
+
+
 def build_cs_block(
     augment_result: dict[str, Any] | None,
     *,
@@ -305,12 +311,29 @@ def build_cs_block(
             "score": hit.get("score"),
         })
 
-    return {
+    block = {
         "markdown": "\n".join(lines),
         "sources": sources,
         "reason": "ready",
         "applicability_hint": applicability_hint,
     }
+    if _has_citation_verifier_inputs(augment_result):
+        verifier_hits = augment_result.get("verifier_hits") or []
+        citation_paths = augment_result.get("citation_paths") or []
+        if not isinstance(verifier_hits, list):
+            verifier_hits = []
+        if not isinstance(citation_paths, list):
+            citation_paths = []
+        grounding_check = verify_citation_invariants(
+            block,
+            verifier_hits=verifier_hits,
+            citation_paths=citation_paths,
+        )
+        block["grounding_check"] = grounding_check
+        if not grounding_check["ok"]:
+            paths = ", ".join(grounding_check["ungrounded_paths"])
+            block["markdown"] += f"\n⚠️ 인용된 {paths} path는 출처 검증 안 됨"
+    return block
 
 
 def build_drill_block(
