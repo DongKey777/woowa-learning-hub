@@ -208,9 +208,56 @@ def _self_assessment_due_candidate(
     return None
 
 
+def _review_due_candidate(
+    *,
+    drill_history: list[dict[str, Any]] | None,
+    drill_pending: dict[str, Any] | None,
+    now: datetime | None = None,
+    **_: Any,
+) -> dict[str, Any] | None:
+    if drill_pending is not None:
+        return None
+    reference = now or datetime.now(timezone.utc)
+    if reference.tzinfo is None:
+        reference = reference.replace(tzinfo=timezone.utc)
+
+    due_items: list[tuple[datetime, int, dict[str, Any]]] = []
+    for index, entry in enumerate(drill_history or []):
+        if not isinstance(entry, dict):
+            continue
+        question = (entry.get("question") or "").strip()
+        due_at = _parse_iso(entry.get("due_at"))
+        if not question or due_at is None or due_at > reference:
+            continue
+        due_items.append((due_at, index, entry))
+    if not due_items:
+        return None
+
+    _, _, entry = sorted(due_items, key=lambda item: (item[0], item[1]))[0]
+    return {
+        "trigger_type": "review_drill",
+        "trigger_session_id": str(uuid.uuid4()),
+        "markdown": "## 복습 드릴\n" f"- 이전 드릴을 다시 풀어볼 차례야: {entry.get('question')}",
+        "payload": {
+            "review_of_session_id": entry.get("review_of_session_id")
+            or entry.get("drill_session_id"),
+            "linked_learning_point": entry.get("linked_learning_point"),
+            "due_at": entry.get("due_at"),
+        },
+        "applicability_hint": "supporting",
+        "reason": "spaced_repetition_due",
+        "evidence": {
+            "source": "drill_history.due_at",
+            "due_at": entry.get("due_at"),
+            "drill_session_id": entry.get("drill_session_id"),
+        },
+        "competed_against": [],
+    }
+
+
 _CANDIDATE_REGISTRY: dict[str, dict[str, Any]] = {
     "self_assessment_due": {"enabled": True, "fn": _self_assessment_due_candidate},
-    "review_due": {"enabled": False, "fn": _disabled_candidate},
+    "review_due": {"enabled": True, "fn": _review_due_candidate},
     "follow_up": {"enabled": True, "fn": _follow_up_candidate},
 }
 
@@ -228,7 +275,7 @@ def select_cognitive_trigger(
     now: datetime | None = None,
 ) -> dict[str, Any]:
     """Select at most one cognitive trigger for the current turn."""
-    del now  # Reserved for due-date candidates enabled in later commits.
+    reference = now or datetime.now(timezone.utc)
     competed_against: list[str] = []
     pre_intent = (intent or {}).get("pre_intent") or (intent or {}).get("detected_intent")
     if drill_pending is not None or pre_intent in {"drill_answer", "mixed_with_drill_answer"}:
@@ -243,6 +290,7 @@ def select_cognitive_trigger(
         "learner_context": learner_context,
         "pending_triggers": pending_triggers or {},
         "input_signals": input_signals or {},
+        "now": reference,
     }
     for name in ("self_assessment_due", "review_due", "follow_up"):
         spec = _CANDIDATE_REGISTRY.get(name) or {}

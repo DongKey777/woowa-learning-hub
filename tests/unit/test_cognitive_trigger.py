@@ -33,6 +33,7 @@ class CognitiveTriggerTest(unittest.TestCase):
         self.assertIsNone(trigger["markdown"])
 
     def test_self_assessment_due_wins_over_follow_up_when_recent_code(self) -> None:
+        now = datetime(2026, 5, 7, tzinfo=timezone.utc)
         trigger = cognitive_trigger.select_cognitive_trigger(
             profile={
                 "recent_code_changes_24h": [
@@ -45,20 +46,38 @@ class CognitiveTriggerTest(unittest.TestCase):
                 "calibration_status": {"recent_self_assessments": []},
                 "open_follow_up_queue": [{"question": "트랜잭션 경계 다시 볼까?"}],
             },
-            drill_history=[{"total_score": 4}],
+            drill_history=[
+                {
+                    "drill_session_id": "drill-old",
+                    "question": "트랜잭션 경계를 설명해 보세요.",
+                    "due_at": (now - timedelta(days=1)).isoformat(),
+                }
+            ],
+            now=now,
         )
         self.assertEqual(trigger["trigger_type"], "self_assessment")
         self.assertIn("ReservationService.java", trigger["markdown"])
         self.assertEqual(trigger["payload"]["concept_ids"], ["concept:spring/transactional"])
         self.assertIn("self_assessment_due", trigger["competed_against"])
 
-    def test_review_due_disabled_until_commit_5(self) -> None:
+    def test_review_due_candidate_enabled_in_commit_5(self) -> None:
+        now = datetime(2026, 5, 7, tzinfo=timezone.utc)
         trigger = cognitive_trigger.select_cognitive_trigger(
             profile={"open_follow_up_queue": [{"question": "트랜잭션 경계 다시 볼까?"}]},
-            drill_history=[{"total_score": 4}],
+            drill_history=[
+                {
+                    "drill_session_id": "drill-old",
+                    "question": "트랜잭션 경계를 설명해 보세요.",
+                    "linked_learning_point": "transaction_boundary",
+                    "due_at": (now - timedelta(minutes=5)).isoformat(),
+                }
+            ],
+            now=now,
         )
-        self.assertEqual(trigger["trigger_type"], "follow_up")
-        self.assertNotIn("review_due", trigger["competed_against"])
+        self.assertEqual(trigger["trigger_type"], "review_drill")
+        self.assertIn("트랜잭션 경계", trigger["markdown"])
+        self.assertEqual(trigger["payload"]["review_of_session_id"], "drill-old")
+        self.assertIn("review_due", trigger["competed_against"])
 
     def test_no_trigger_when_follow_up_queue_empty(self) -> None:
         trigger = cognitive_trigger.select_cognitive_trigger(

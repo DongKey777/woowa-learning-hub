@@ -806,20 +806,33 @@ def run_coach(
 
     # Learning pipeline phase B — drill offer (after unified_profile) + finalize.
     drill_offer: dict | None = None
+    drill_history_for_offer: list[dict] = []
     if _drill is not None:
         # Skip the cooldown check when the same turn just consumed a pending
         # drill: the plan forbids chaining drill_answer → new offer in one turn.
         _pending_for_offer = pending_drill_raw if drill_result is None else {"just_consumed": True}
         try:
-            drill_offer = _drill.build_offer_if_due(
-                unified_profile,
-                pre_intent=pre_result.get("pre_intent"),
+            drill_history_for_offer = _drill.load_history(repo["name"], limit=10)
+        except Exception:
+            drill_history_for_offer = []
+        try:
+            drill_offer = _drill.build_review_offer_if_due(
+                drill_history_for_offer,
                 pending=_pending_for_offer,
-                drill_history=_drill.load_history(repo["name"], limit=10),
-                session_payload=session_payload,
             )
         except Exception:
             drill_offer = None
+        if drill_offer is None:
+            try:
+                drill_offer = _drill.build_offer_if_due(
+                    unified_profile,
+                    pre_intent=pre_result.get("pre_intent"),
+                    pending=_pending_for_offer,
+                    drill_history=drill_history_for_offer,
+                    session_payload=session_payload,
+                )
+            except Exception:
+                drill_offer = None
 
     if drill_offer is not None:
         cognitive_trigger = {
@@ -842,9 +855,7 @@ def run_coach(
                 history=[],
                 profile=memory_profile,
                 drill_pending=pending_drill if drill_result is None else None,
-                drill_history=_drill.load_history(repo["name"], limit=10)
-                if _drill is not None
-                else [],
+                drill_history=drill_history_for_offer,
                 intent=pre_result,
                 learner_context=learner_context,
                 pending_triggers=load_pending_triggers(),

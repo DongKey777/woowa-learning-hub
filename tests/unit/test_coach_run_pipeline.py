@@ -272,6 +272,55 @@ class CoachRunPipelineTest(unittest.TestCase):
         # validate_payload runs after enforce_budget
         self.assertEqual(mocks["validate_payload"].call_count, 1)
 
+    def test_review_due_offer_is_persisted_as_drill_pending(self) -> None:
+        history = [{"drill_session_id": "drill-old", "question": "복습 질문"}]
+        review_offer = {
+            "drill_session_id": "drill-review",
+            "question": "복습 질문",
+            "ttl_turns": 3,
+            "review_of_session_id": "drill-old",
+            "review_count": 1,
+        }
+        with ExitStack() as stack:
+            mocks = _install_common_patches(
+                stack,
+                action_dir=self.action_dir,
+                context_dir=self.context_dir,
+                archive_status={"bootstrap_state": "ready",
+                                "data_confidence": "ready",
+                                "signals": {}, "thresholds": {}},
+            )
+            stack.enter_context(
+                mock.patch("scripts.learning.drill.load_pending", return_value=None)
+            )
+            stack.enter_context(
+                mock.patch("scripts.learning.drill.load_history", return_value=history)
+            )
+            build_review = stack.enter_context(
+                mock.patch(
+                    "scripts.learning.drill.build_review_offer_if_due",
+                    return_value=review_offer,
+                )
+            )
+            build_regular = stack.enter_context(
+                mock.patch("scripts.learning.drill.build_offer_if_due", return_value=None)
+            )
+            save_pending = stack.enter_context(
+                mock.patch("scripts.learning.drill.save_pending", return_value=None)
+            )
+
+            payload = cr.run_coach(repo_name="demo-repo", prompt="hi")
+
+        self.assertEqual(payload["execution_status"], "ready")
+        self.assertEqual(payload["cognitive_trigger"]["reason"], "drill_offer_present")
+        build_review.assert_called_once_with(history, pending=None)
+        build_regular.assert_not_called()
+        save_pending.assert_called_once_with("demo-repo", review_offer)
+        self.assertIs(
+            mocks["build_response_contract"].call_args.kwargs["drill_offer"],
+            review_offer,
+        )
+
     # ------------------------------------------------------------------
     # Scenario 2 — bootstrap_state=uninitialized → blocked branch
     # ------------------------------------------------------------------
