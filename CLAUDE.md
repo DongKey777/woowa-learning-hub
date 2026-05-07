@@ -80,6 +80,21 @@ Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessi
 
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
+### Response Quality Telemetry
+
+`bin/rag-ask` 출력에 `telemetry`와 `response_quality_hint`가 있으면, 학습자
+흐름을 끊지 말고 답변 작성 후 조용히 `bin/learn-response-quality --silent ...`
+를 호출한다. `source_event_id`/`turn_id`로 질문-라우팅-답변품질 로그를 묶고,
+실제 답변에서 붙인 `참고:` path를 `--declared-citation`으로 넘긴다.
+저장되는 것은 one-line summary, redacted excerpt, expected/declared citations,
+quality flags이며 답변 전문은 기본 저장하지 않는다.
+
+대표 `--quality-flag`: `citation_mismatch`, `missing_citation`,
+`missing_rag_header`, `duplicate_text`, `undefined_abbreviation`, `cwd_error`,
+`contract_violation`, `overlong_answer`, `not_mission_anchored`.
+분석은 `bin/response-quality-mine`. 이 로그는 시스템 개선용이며 mastery/profile
+근거로 직접 사용하지 않는다.
+
 ### Query Reformulation (Pilot baseline 95.5%의 +5pp 책임)
 
 학습자의 raw 자연어 prompt와 함께, AI 세션이 *corpus 친화적 표현으로 reformulate한 query*를 같이 넘기면 dense BGE-M3 + cross-encoder 매핑이 정확해진다. 200q × 6 cohort 측정에서 reformulation lever만으로 paraphrase 96 → 100%, symptom_to_cause 80 → 96.7%, OVERALL +5pp.

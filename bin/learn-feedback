@@ -2,7 +2,7 @@
 # Usage:
 #   bin/learn-feedback "<learner prompt>" --signal helpful|not_helpful|unclear \
 #       [--hit <doc-path>] [--hit <doc-path> ...] \
-#       [--note "<one-line note>"] \
+#       [--note "<one-line note>"] [--source-event-id <id>] [--turn-id <id>] \
 #       [--repo <repo-id>]
 #
 # Appends one row to state/cs_rag/feedback.jsonl (and to

@@ -77,6 +77,9 @@ def test_build_log_row_includes_required_fields():
         prompt="스프링 빈 뭐야?",
         decision=_decision(),
         repo="tobys-mission-1",
+        source_event_id="event-1234",
+        turn_id="turn-event-1234",
+        reformulated_query="Spring Bean definition",
         now=datetime(2026, 4, 30, 12, 0, 0, tzinfo=timezone.utc),
     )
     assert row["schema_id"] == "routing-log-v1"
@@ -85,6 +88,10 @@ def test_build_log_row_includes_required_fields():
     assert row["tier"] == 1
     assert row["mode"] == "cheap"
     assert row["logged_at"] == "2026-04-30T12:00:00+00:00"
+    assert row["source_event_id"] == "event-1234"
+    assert row["turn_id"] == "turn-event-1234"
+    assert row["prompt_hash"]
+    assert row["reformulated_query_hash"]
     assert row["override_active"] is False
     assert row["blocked"] is False
     assert "matched_tokens" in row
@@ -150,6 +157,36 @@ def test_build_log_row_accepts_dict_decision():
     )
     assert row["tier"] == 2
     assert row["repo"] == ""
+
+
+def test_build_log_row_records_candidate_scores_and_downgrade_reason():
+    row = routing_log.build_log_row(
+        prompt="AOP 프록시가 뭐야?",
+        decision=_decision(tier=2, mode="full"),
+        repo=None,
+        rag_result={
+            "by_fallback_key": {
+                "spring:spring_framework": [
+                    {
+                        "path": "contents/spring/aop-proxy-mechanism.md",
+                        "cross_encoder_score": 0.957,
+                        "section_title": "프록시",
+                    },
+                ],
+            },
+            "response_hints": {"tier_downgrade": "corpus_gap_no_confident_match"},
+        },
+    )
+
+    assert row["retrieval_attempted"] is True
+    assert row["top_candidate_scores"] == [
+        {
+            "path": "contents/spring/aop-proxy-mechanism.md",
+            "score": 0.957,
+            "section_title": "프록시",
+        },
+    ]
+    assert row["downgrade_reason"] == "corpus_gap_no_confident_match"
 
 
 # ---------------------------------------------------------------------------

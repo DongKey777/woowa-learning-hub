@@ -17,6 +17,7 @@ state/learner/
 ├── history.jsonl     # append-only event stream (6 event_types)
 ├── profile.json      # derived view (concepts, activity, recommendations)
 ├── summary.json      # cumulative counts (derived)
+├── response-quality.jsonl # assistant answer-quality telemetry (analysis-only)
 ├── pending_triggers.json # optional cognitive trigger state
 └── identity.json     # cached learner_id (one-time)
 ```
@@ -46,6 +47,12 @@ whether the request was blocked (Tier 3 missing PR/repo).
 
 When the AI session supplies `--reformulated-query`, the redacted value is
 stored as optional `reformulated_query`.
+
+New events also carry `turn_id` (`turn-<event_id>`) plus compact question
+diagnostics: `question_intent`, `question_shape`, `context_folded`,
+`fallback_reason`, `router_confidence`, and `latency_ms`. These fields let the
+improvement pipeline distinguish "learner keeps asking this" from "router
+misread this phrasing" without storing a full conversation transcript.
 
 ### `coach_run`
 
@@ -86,6 +93,46 @@ Captures `score` (1-10), `free_text`, `confidence_band`,
 Self-assessment is a calibration signal. It contributes to
 `profile.calibration_status`, but it does **not** count as drill mastery and
 must not inflate `concepts.mastered`.
+
+## Response Quality Telemetry
+
+`state/learner/response-quality.jsonl` is separate from `history.jsonl`.
+It is **not** used to compute mastery or personalize normal answers. It exists
+for offline system improvement: citation mismatches, missing RAG headers,
+duplicated answer text, unexplained abbreviations, and other answer-quality
+regressions.
+
+Each row uses schema `assistant-response-quality-v1` and joins back to the
+learner question through:
+
+* `source_event_id` — the `rag_ask.event_id`
+* `turn_id` — the shared turn key (`turn-<event_id>`)
+
+Stored fields are intentionally compact:
+
+* `response_summary` — one-line AI-authored answer summary
+* `response_excerpt` — redacted answer excerpt capped at 1000 chars
+* `response_length_chars` and `response_hash`
+* `citation_paths_expected` — paths RAG expected the AI to cite
+* `citation_paths_declared` — paths the AI actually cited
+* `quality_flags` — e.g. `citation_mismatch`, `missing_citation`,
+  `missing_rag_header`, `duplicate_text`, `overlong_answer`
+* `contract_flags` and `answer_strategy`
+
+The full assistant answer is **not** stored by default. AI sessions record this
+telemetry with `bin/learn-response-quality --silent ...` after drafting a RAG
+answer, using the `response_quality_hint` emitted by `bin/rag-ask`. The learner
+does not see or run the command.
+
+Mining command:
+
+```bash
+bin/response-quality-mine
+bin/response-quality-mine --repo spring-roomescape-member
+```
+
+The output surfaces top quality flags and citation mismatch candidates for the
+next RAG/corpus/agent-contract improvement pass.
 
 ## Profile (`profile.json`)
 
@@ -148,11 +195,13 @@ re-canonicalize the alias ordering.
 | `bin/learner-profile show` | dump `profile.json` (skeleton if no events) |
 | `bin/learner-profile recompute` | force history → profile rebuild |
 | `bin/learner-profile clear --yes` | wipe `state/learner/` (privacy reset) |
-| `bin/learner-profile redact <substring>` | drop history entries containing `<substring>`, then recompute |
+| `bin/learner-profile redact <substring>` | drop learner/telemetry lines containing `<substring>`, then recompute |
 | `bin/learner-profile set --experience-level <lvl>` | explicit preferences override |
 | `bin/learner-profile migrate-from-repos` | (Phase 2) merge per-repo `memory/` history |
 | `bin/learner-profile suggest` | (Phase 4) next-step recommendations |
 | `bin/learn-self-assess --silent --trigger-session-id <id> "<response>"` | append a `self_assessment` event for a pending cognitive trigger |
+| `bin/learn-response-quality --silent ...` | append assistant response-quality telemetry for a RAG turn |
+| `bin/response-quality-mine` | mine answer-quality flags and citation mismatch candidates |
 
 ## Privacy
 
@@ -164,10 +213,12 @@ Every event is redacted on append:
 * Stack traces capped at 5 lines / ≤1 KB
 * Diff summaries capped at 500 characters
 
-`bin/learner-profile redact <substring>` removes any history entry whose
-JSON serialization contains the literal substring. The profile is
-re-derived after the prune, so personalization never relies on data the
-learner has explicitly removed.
+`bin/learner-profile clear --yes` deletes `state/learner/` and prompt-bearing
+learner telemetry logs (`routing.jsonl`, `rag_feedback.jsonl`,
+`response_quality.jsonl`) without touching CS indexes. `bin/learner-profile
+redact <substring>` removes any learner/telemetry JSONL line whose serialization
+contains the literal substring. The profile is re-derived after the prune, so
+personalization never relies on data the learner has explicitly removed.
 
 ## Testing
 
@@ -176,6 +227,8 @@ learner has explicitly removed.
 * `tests/unit/test_learner_memory.py` — append/validation, builders,
   privacy redaction, recompute aggregation, mastery/uncertainty rules,
   self-assessment calibration, streak, deterministic event_id.
+* `tests/unit/test_response_quality.py` — response-quality row schema,
+  redaction, automatic flags, append/mirror, and mining helpers.
 
 Both suites use disk-isolated temp directories, so they never pollute
 `state/learner/` on the developer machine.

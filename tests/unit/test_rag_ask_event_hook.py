@@ -70,7 +70,14 @@ class _RagAskHookCase(unittest.TestCase):
         self.addCleanup(self._stdout_patch.stop)
 
     def _ask(self, prompt: str, *, repo: str | None = None, module: str | None = None) -> dict:
-        ns = argparse.Namespace(prompt=prompt, repo=repo, module=module)
+        ns = argparse.Namespace(
+            prompt=prompt,
+            repo=repo,
+            module=module,
+            rag_backend=None,
+            reformulated_query=None,
+            via_daemon=False,
+        )
         rc = workbench_cli.cmd_rag_ask(ns)
         self.assertEqual(rc, 0)
         line = self._stdout.getvalue().strip().splitlines()[-1]
@@ -96,6 +103,10 @@ class RecordsEveryTier(_RagAskHookCase):
         self.assertFalse(events[0]["blocked"])
         self.assertEqual(events[0]["module_context"], "spring-core-1")
         self.assertEqual(events[0]["concept_ids"], [])
+        self.assertTrue(events[0]["turn_id"].startswith("turn-"))
+        self.assertEqual(out["telemetry"]["source_event_id"], events[0]["event_id"])
+        self.assertEqual(out["telemetry"]["turn_id"], events[0]["turn_id"])
+        self.assertIn("response_quality_hint", out)
 
     def test_tier3_blocked_records_event(self) -> None:
         out = self._ask("내 PR 리뷰해줘")
@@ -105,6 +116,7 @@ class RecordsEveryTier(_RagAskHookCase):
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0]["tier"], 3)
         self.assertTrue(events[0]["blocked"])
+        self.assertEqual(events[0]["fallback_reason"], out["decision"]["reason"])
 
     def test_override_skip_records_tier0(self) -> None:
         out = self._ask("그냥 답해 Bean이 뭐야")
@@ -126,6 +138,7 @@ class RecordsEveryTier(_RagAskHookCase):
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0]["tier"], 1)
         self.assertIn("concept:spring/bean", events[0]["concept_ids"])
+        self.assertIn("question_intent", events[0])
 
 
 class FullWalkAggregatesTierDistribution(_RagAskHookCase):

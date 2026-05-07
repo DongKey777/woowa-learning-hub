@@ -184,7 +184,9 @@ bin/rag-ask "내 PR 리뷰해줘" --repo spring-roomescape-admin
   "decision": {"tier": 1, "mode": "cheap", "reason": "domain + definition signal",
                "experience_level": "beginner", "override_active": false, "blocked": false},
   "hits": { "by_fallback_key": {...}, "meta": {"latency_ms": 111} },
-  "next_command": null
+  "next_command": null,
+  "telemetry": {"turn_id": "turn-...", "source_event_id": "..."},
+  "response_quality_hint": {"command_template": "bin/learn-response-quality ..."}
 }
 ```
 
@@ -192,9 +194,63 @@ bin/rag-ask "내 PR 리뷰해줘" --repo spring-roomescape-admin
 - `decision.blocked=true`면 코칭 요청이 repo/PR 부재로 실행 불가
 - `hits`는 Tier 1/2일 때만 채워짐
 - `next_command`는 Tier 3 ready일 때만 채워짐 (`bin/coach-run` 호출 명령)
+- `telemetry.source_event_id`는 `state/learner/history.jsonl`의 `rag_ask`
+  이벤트 id이며, `turn_id`는 routing/feedback/response-quality 로그를 한
+  턴으로 묶는 join key다.
+- `response_quality_hint`는 AI 세션 전용 명령 skeleton이다. 학습자에게 보이지
+  않게, 답변을 작성한 뒤 `bin/learn-response-quality --silent ...`로
+  citation/중복/규약 위반 같은 품질 흔적을 남길 때 사용한다. 답변 전문은
+  기본 저장하지 않고 redacted excerpt + summary만 저장한다.
 - `--reformulated-query`는 검색 품질뿐 아니라 routing rescue에도 사용됨.
   raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition/
   study-intent 감지는 raw prompt와 reformulated query를 함께 본다.
+
+## Turn Telemetry Closed Loop
+
+대화형 학습은 자연스럽게 진행되어야 하므로, 학습자에게 매 턴 피드백을 강요하지
+않는다. 대신 `bin/rag-ask`가 조용히 네 가지 로그를 연결한다.
+
+| 로그 | 목적 | profile 재계산 사용 |
+|---|---|---|
+| `state/learner/history.jsonl` | 장기 학습 메모리 (`rag_ask`, drill, test, code) | 예 |
+| `state/cs_rag/logs/routing.jsonl` | 라우터/검색 판단 개선 (`matched_tokens`, confidence, candidate scores) | 아니오 |
+| `state/cs_rag/feedback.jsonl` | 명시적 helpful/not_helpful 신호 | 아니오 |
+| `state/learner/response-quality.jsonl` | AI 답변 품질 분석 (`quality_flags`, citations, excerpt) | 아니오 |
+
+모든 로그는 가능한 경우 `source_event_id`와 `turn_id`를 공유한다. 이 덕분에
+나중에 "DB 설계"가 왜 Tier 0로 떨어졌는지, 어떤 문서가 검색됐고 실제 답변에
+어떤 citation이 붙었는지, 사용자가 바로 clarification을 던진 원인이 답변 품질
+문제인지 학습 심화인지 분석할 수 있다.
+
+품질 로그는 AI 세션이 `response_quality_hint.command_template`을 참고해
+기록한다. 최소 기록 단위:
+
+```bash
+bin/learn-response-quality \
+  --source-event-id <rag_ask.event_id> \
+  --turn-id <turn_id> \
+  --response-summary "<one-line>" \
+  --expected-citation contents/spring/aop-proxy-mechanism.md \
+  --declared-citation contents/spring/aop-proxy-mechanism.md \
+  --response-file - \
+  --silent
+```
+
+자동 감지되는 대표 flag:
+
+- `missing_citation`
+- `citation_mismatch`
+- `missing_rag_header`
+- `duplicate_text`
+- `overlong_answer`
+
+분석:
+
+```bash
+bin/response-quality-mine
+bin/routing-analyze
+bin/feedback-mine
+```
 
 ## Router Vocabulary Model
 

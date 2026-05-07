@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/learn-response-quality --source-event-id <id> --response-summary "..." \
+#       [--response-file -] [--expected-citation <path>] [--declared-citation <path>] \
+#       [--quality-flag <flag>] [--repo <repo-id>] [--silent]
+#
+# Appends compact assistant response-quality telemetry to
+# state/learner/response-quality.jsonl (and mirrors per-repo when --repo is set).
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_learn_response_quality.py" "$@"

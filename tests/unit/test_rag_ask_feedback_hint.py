@@ -71,7 +71,7 @@ def test_feedback_hint_built_from_by_learning_point():
             ],
         },
         "by_fallback_key": {},
-    }}
+    }, "telemetry": {"source_event_id": "event-1234", "turn_id": "turn-event-1234"}}
     hint = cli._build_feedback_hint(_args(), out)
     assert hint is not None
     cmds = hint["commands"]
@@ -79,6 +79,8 @@ def test_feedback_hint_built_from_by_learning_point():
     # Both paths should be in the helpful command
     assert "knowledge/cs/contents/spring/bean.md" in cmds["helpful"]
     assert "knowledge/cs/contents/spring/component-scan.md" in cmds["helpful"]
+    assert "--source-event-id event-1234" in cmds["helpful"]
+    assert "--turn-id turn-event-1234" in cmds["helpful"]
     # Korean instructions present
     assert "한 줄" in hint["instructions"] or "신호" in hint["instructions"]
 
@@ -148,6 +150,33 @@ def test_feedback_hint_unclear_signal_does_not_include_hits():
     # But helpful/not_helpful do include hit args
     assert "--hit" in hint["commands"]["helpful"]
     assert "--hit" in hint["commands"]["not_helpful"]
+
+
+def test_response_quality_hint_uses_telemetry_and_expected_citations():
+    cli = _import_cli()
+    out = {
+        "telemetry": {"source_event_id": "event-1234", "turn_id": "turn-event-1234"},
+        "response_hints": {
+            "citation_paths": [
+                "contents/spring/aop-proxy-mechanism.md",
+                "contents/spring/README.md",
+            ],
+        },
+        "hits": None,
+    }
+
+    hint = cli._build_response_quality_hint(_args(prompt="AOP 프록시가 뭐야?"), out)
+
+    assert hint is not None
+    cmd = hint["command_template"]
+    assert "--source-event-id event-1234" in cmd
+    assert "--turn-id turn-event-1234" in cmd
+    assert "--expected-citation contents/spring/aop-proxy-mechanism.md" in cmd
+    assert "--response-file -" in cmd
+    assert hint["expected_citation_paths"] == [
+        "contents/spring/aop-proxy-mechanism.md",
+        "contents/spring/README.md",
+    ]
 
 
 def test_cmd_rag_ask_passes_learner_context_to_augment(monkeypatch, capsys):

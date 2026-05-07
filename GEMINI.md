@@ -107,6 +107,21 @@ Learners use Gemini CLI on the **free tier or Google AI Pro ($20/mo) subscriptio
 
 `bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` / `bin/cohort-eval` wrapper는 `bin/_rag_env.sh`를 source해서 6개 env var를 default로 강제한다: `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`, `WOOWA_RAG_REFUSAL_THRESHOLD=off`, `WOOWA_RAG_PERSONALIZATION_ENABLED=1`. silent degradation 방지.
 
+### Response Quality Telemetry
+
+`bin/rag-ask` 출력에 `telemetry`와 `response_quality_hint`가 있으면, 학습자에게
+별도 피드백을 강요하지 말고 답변 작성 후 조용히
+`bin/learn-response-quality --silent ...`를 호출한다. 실제 답변에 붙인 `참고:`
+path는 `--declared-citation`, RAG가 기대한 path는 `--expected-citation`이다.
+기본 저장은 one-line summary, redacted excerpt, citation paths, quality flags만
+하며 답변 전문은 저장하지 않는다. `source_event_id`/`turn_id`로
+질문-라우팅-피드백-응답품질 로그를 묶는다.
+
+대표 flag: `citation_mismatch`, `missing_citation`, `missing_rag_header`,
+`duplicate_text`, `undefined_abbreviation`, `cwd_error`, `contract_violation`,
+`overlong_answer`, `not_mission_anchored`. 분석은 `bin/response-quality-mine`.
+이 로그는 시스템 개선용이며 mastery/profile 판정 근거로 직접 사용하지 않는다.
+
 ## Learning System v4-MVP (0.2.0)
 
 AGENTS.md / CLAUDE.md와 의미적으로 동일 — 어느 AI를 써도 같은 응답 규약.
