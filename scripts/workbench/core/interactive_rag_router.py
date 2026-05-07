@@ -187,13 +187,13 @@ def classify(
     has_tool = _any_match(prompt, TOOL_TOKENS)
     has_cs_domain = _any_match(signal_prompt, CS_DOMAIN_TOKENS)
     has_learning = _any_match(signal_prompt, LEARNING_CONCEPT_TOKENS)
-    has_corpus_domain = False
-    if not (has_cs_domain or has_learning):
-        has_corpus_domain = has_corpus_signal(signal_prompt)
-    has_domain = has_cs_domain or has_learning or has_corpus_domain
     has_definition = _any_match(signal_prompt, DEFINITION_SIGNALS)
     has_depth = _any_match(signal_prompt, DEPTH_SIGNALS)
     has_study_intent = _any_match(signal_prompt, STUDY_INTENT_SIGNALS)
+    has_corpus_domain = False
+    if not (has_cs_domain or has_learning) and (has_definition or has_depth or has_study_intent):
+        has_corpus_domain = has_corpus_signal(signal_prompt)
+    has_domain = has_cs_domain or has_learning or has_corpus_domain
 
     # --- Stage 3: Tier 3 (PR coaching) ---
     if has_coach_req:

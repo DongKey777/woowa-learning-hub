@@ -328,6 +328,16 @@ class BroadDomainStudyIntentRoutingTests(unittest.TestCase):
         self.assertEqual(d.tier, 1)
         self.assertEqual(d.mode, "cheap")
 
+    def test_corpus_frontmatter_alias_routes_without_signal_rule_trigger(self) -> None:
+        d = classify("XA 공부하고 싶어")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+
+    def test_corpus_frontmatter_short_alias_routes_without_signal_rule_trigger(self) -> None:
+        d = classify("2PC 공부하고 싶어")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+
     def test_study_intent_without_domain_stays_tier0(self) -> None:
         d = classify("그냥 공부하고 싶어")
         self.assertEqual(d.tier, 0)
