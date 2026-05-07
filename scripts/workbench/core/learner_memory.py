@@ -362,6 +362,7 @@ def redact_substring(needle: str) -> dict:
 def build_rag_ask_event(
     *,
     prompt: str,
+    reformulated_query: str | None = None,
     tier: int,
     mode: str | None,
     experience_level: str | None,
@@ -373,7 +374,7 @@ def build_rag_ask_event(
     catalog: dict,
 ) -> dict:
     redacted_prompt = _redact_text(prompt) or ""
-    return {
+    event = {
         "event_type": "rag_ask",
         "ts": _now_iso(),
         "learner_id": learner_id,
@@ -390,6 +391,9 @@ def build_rag_ask_event(
         "rag_ready": _extract_rag_ready(rag_result),
         "blocked": bool(blocked),
     }
+    if reformulated_query is not None:
+        event["reformulated_query"] = _redact_text(reformulated_query)
+    return event
 
 
 def _detect_current_module(max_age_hours: int = 24) -> str | None:
@@ -454,7 +458,7 @@ def build_coach_run_event(
         or session_payload.get("module_context")
         or _detect_current_module()
     )
-    return {
+    event = {
         "event_type": "coach_run",
         "ts": _now_iso(),
         "learner_id": learner_id,
@@ -473,6 +477,11 @@ def build_coach_run_event(
         "follow_up_question": response.get("follow_up_question")
         or session_payload.get("follow_up_question"),
     }
+    if session_payload.get("reformulated_query") is not None:
+        event["reformulated_query"] = _redact_text(
+            session_payload.get("reformulated_query")
+        )
+    return event
 
 
 def build_drill_answer_event(

@@ -22,6 +22,7 @@
       "enum": ["strict", "fallback", "none", "unknown", null]
     },
     "prompt": {"type": ["string", "null"]},
+    "reformulated_query": {"type": ["string", "null"]},
     "question_fingerprint": {"type": ["string", "null"]},
     "tier": {"type": ["integer", "null"]},
     "rag_mode": {"type": ["string", "null"]},

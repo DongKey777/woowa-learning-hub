@@ -199,6 +199,44 @@ class BuilderTests(_DiskIsolated):
         self.assertTrue(event["blocked"])
         self.assertIsNone(event["rag_mode"])
 
+    def test_rag_ask_event_stores_reformulated_query_when_provided(self) -> None:
+        catalog = load_catalog()
+        event = learner_memory.build_rag_ask_event(
+            prompt="그럼 IoC는?",
+            reformulated_query="Spring IoC inversion of control basics",
+            tier=2,
+            mode="full",
+            experience_level=None,
+            rag_result=None,
+            repo=None,
+            module=None,
+            learner_id="test-learner",
+            blocked=False,
+            catalog=catalog,
+        )
+        self.assertEqual(
+            event["reformulated_query"],
+            "Spring IoC inversion of control basics",
+        )
+        learner_memory.append_learner_event(event)
+
+    def test_rag_ask_event_omits_reformulated_query_when_not_provided(self) -> None:
+        catalog = load_catalog()
+        event = learner_memory.build_rag_ask_event(
+            prompt="Bean이 뭐야?",
+            tier=1,
+            mode="cheap",
+            experience_level=None,
+            rag_result=None,
+            repo=None,
+            module=None,
+            learner_id="test-learner",
+            blocked=False,
+            catalog=catalog,
+        )
+        self.assertNotIn("reformulated_query", event)
+        learner_memory.append_learner_event(event)
+
     def test_coach_run_event_picks_up_negative_feedback(self) -> None:
         catalog = load_catalog()
         event = learner_memory.build_coach_run_event(
@@ -215,6 +253,29 @@ class BuilderTests(_DiskIsolated):
         self.assertEqual(event["pr_number"], 42)
         self.assertTrue(event["had_negative_feedback"])
         self.assertIn("concept:spring/transactional", event["concept_ids"])
+
+    def test_coach_run_event_stores_reformulated_query_when_provided(self) -> None:
+        catalog = load_catalog()
+        event = learner_memory.build_coach_run_event(
+            session_payload={
+                "repo": "spring-roomescape-admin",
+                "current_pr": {"number": 42},
+                "primary_learning_points": ["transaction_consistency"],
+                "reformulated_query": "roomescape service transaction boundary",
+                "response": {"summary": ["...요약..."], "answer": ["...본문..."]},
+            },
+            learner_id="test-learner",
+            catalog=catalog,
+        )
+        self.assertEqual(
+            event["reformulated_query"],
+            "roomescape service transaction boundary",
+        )
+        learner_memory.append_learner_event(event)
+
+    def test_required_fields_enforcement_unchanged_for_reformulated_query(self) -> None:
+        self.assertNotIn("reformulated_query", learner_memory.EVENT_REQUIRED_FIELDS["rag_ask"])
+        self.assertNotIn("reformulated_query", learner_memory.EVENT_REQUIRED_FIELDS["coach_run"])
 
     def test_drill_answer_event_links_concept(self) -> None:
         catalog = load_catalog()

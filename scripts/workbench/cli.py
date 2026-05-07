@@ -628,6 +628,7 @@ def cmd_coach_run(args: argparse.Namespace) -> int:
         freshness_hours=args.freshness_hours,
         force_sync=args.force_sync,
         sync_limit=args.sync_limit,
+        reformulated_query=getattr(args, "reformulated_query", None),
     )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
@@ -961,6 +962,7 @@ def _record_rag_ask_event(
         )
         event = build_rag_ask_event(
             prompt=args.prompt,
+            reformulated_query=getattr(args, "reformulated_query", None),
             tier=decision.tier,
             mode=decision.mode,
             experience_level=decision.experience_level,
@@ -1889,6 +1891,14 @@ def build_parser() -> argparse.ArgumentParser:
     coach_run_parser.add_argument("--freshness-hours", type=int, default=6)
     coach_run_parser.add_argument("--force-sync", action="store_true")
     coach_run_parser.add_argument("--sync-limit", type=int)
+    coach_run_parser.add_argument(
+        "--reformulated-query",
+        default=None,
+        help=(
+            "Optional corpus-vocabulary reformulation of the learner's raw prompt. "
+            "Stored as learner-memory telemetry for coach-run turns."
+        ),
+    )
     coach_run_parser.set_defaults(func=cmd_coach_run)
 
     rag_ask_parser = subparsers.add_parser(

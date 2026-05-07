@@ -454,6 +454,7 @@ def _build_unified_profile(memory_profile: dict | None) -> dict | None:
 def _pre_augment_phase(
     *,
     prompt: str | None,
+    reformulated_query: str | None = None,
     learner_state_full: dict | None,
     session_payload: dict,
     pending_drill: dict | None,
@@ -520,6 +521,7 @@ def _pre_augment_phase(
             ).get("experience_level")
             augment_result = cs_augment(
                 prompt=prompt or "",
+                reformulated_query=reformulated_query,
                 learning_points=learning_points,
                 topic_hints=topic_hints,
                 cs_search_mode=cs_search_mode,
@@ -605,6 +607,7 @@ def run_coach(
     repo_name: str | None = None,
     repo_path: str | None = None,
     prompt: str | None = None,
+    reformulated_query: str | None = None,
     pr_number: int | None = None,
     reviewer: str | None = None,
     context: str = "coach",
@@ -730,6 +733,8 @@ def run_coach(
         memory_context=previous_memory,
         archive_status=archive_status,
     )
+    if reformulated_query is not None:
+        session_payload["reformulated_query"] = reformulated_query
 
     # Learning pipeline phase A — route drill → pre_decide → readiness → augment.
     # verification_required_count is derived from the same learner-state full
@@ -747,6 +752,7 @@ def run_coach(
     pre_verification = build_verification_block(learner_state_full or {}, "ready")
     phase_a = _pre_augment_phase(
         prompt=prompt,
+        reformulated_query=reformulated_query,
         learner_state_full=learner_state_full,
         session_payload=session_payload,
         pending_drill=pending_drill,
@@ -886,6 +892,7 @@ def run_coach(
             "mission_map_summary": session_payload.get("mission_map_summary", []),
             "primary_intent": session_payload.get("primary_intent"),
             "primary_topic": session_payload.get("primary_topic"),
+            "reformulated_query": session_payload.get("reformulated_query"),
             "topic_confidence": session_payload.get("topic_confidence", "low"),
             "reviewer": session_payload.get("reviewer"),
             "current_pr": session_payload.get("current_pr"),
