@@ -373,7 +373,7 @@ def build_drill_result_block(
 
 
 def _empty_follow_up_block() -> dict[str, Any]:
-    return {"markdown": None, "items": [], "reason": "none"}
+    return {"markdown": None, "items": [], "reason": "none", "applicability_hint": "omit"}
 
 
 def build_follow_up_block(
@@ -430,6 +430,37 @@ def build_follow_up_block(
         "markdown": "\n".join(lines),
         "items": items,
         "reason": "ready",
+        "applicability_hint": "supporting",
+    }
+
+
+def build_cognitive_block(
+    cognitive_trigger: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Render the single selected cognitive trigger for this turn."""
+    trigger = cognitive_trigger or {}
+    trigger_type = trigger.get("trigger_type") or "none"
+    markdown = trigger.get("markdown")
+    if trigger_type == "none" or not markdown:
+        return {
+            "markdown": None,
+            "trigger_type": "none",
+            "trigger_session_id": None,
+            "payload": {},
+            "reason": trigger.get("reason") or "none",
+            "applicability_hint": "omit",
+            "evidence": trigger.get("evidence") or {},
+            "competed_against": list(trigger.get("competed_against") or []),
+        }
+    return {
+        "markdown": markdown,
+        "trigger_type": trigger_type,
+        "trigger_session_id": trigger.get("trigger_session_id"),
+        "payload": trigger.get("payload") or {},
+        "reason": trigger.get("reason") or "ready",
+        "applicability_hint": trigger.get("applicability_hint") or "supporting",
+        "evidence": trigger.get("evidence") or {},
+        "competed_against": list(trigger.get("competed_against") or []),
     }
 
 
@@ -442,6 +473,8 @@ def build_response_contract(
     drill_offer: dict[str, Any] | None = None,
     drill_result: dict[str, Any] | None = None,
     learning_profile: dict[str, Any] | None = None,
+    cognitive_trigger: dict[str, Any] | None = None,
+    learner_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Top-level entry — returns the full ``response_contract`` payload dict.
 
@@ -471,7 +504,11 @@ def build_response_contract(
         drill_result,
         applicability_hint=_hint_from_plan(block_plan, "drill_block", "omit"),
     )
+    del learner_context  # Reserved for adaptive response-contract rules.
+    cognitive_block = build_cognitive_block(cognitive_trigger)
     follow_up_block = build_follow_up_block(learning_profile)
+    if cognitive_block.get("trigger_type") in {"self_assessment", "review_drill", "follow_up"}:
+        follow_up_block = {**follow_up_block, "applicability_hint": "omit"}
 
     return {
         "snapshot_block": snapshot_block,
@@ -479,5 +516,6 @@ def build_response_contract(
         "cs_block": cs_block,
         "drill_block": drill_block,
         "drill_result_block": drill_result_block,
+        "cognitive_block": cognitive_block,
         "follow_up_block": follow_up_block,
     }

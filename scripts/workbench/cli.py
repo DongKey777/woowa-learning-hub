@@ -1329,6 +1329,7 @@ def cmd_learn_record_code(args: argparse.Namespace) -> int:
             _resolve_learner_id,
             append_learner_event,
             build_code_attempt_event,
+            recompute_learner_profile,
         )
         catalog = load_catalog()
         module = args.module or infer_module_from_path(args.file_path)
@@ -1343,6 +1344,7 @@ def cmd_learn_record_code(args: argparse.Namespace) -> int:
             catalog=catalog,
         )
         append_learner_event(event)
+        recompute_learner_profile()
         if not getattr(args, "silent", False):
             print(json.dumps({"recorded": True, "event_id": event["event_id"]}, ensure_ascii=False))
         return 0

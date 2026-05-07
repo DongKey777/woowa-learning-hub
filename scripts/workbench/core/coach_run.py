@@ -376,6 +376,22 @@ def _check_cs_readiness() -> dict:
     }
 
 
+def _load_cross_learner_context(
+    prompt: str,
+    decision: dict,
+    catalog: dict | None = None,
+) -> dict | None:
+    """Load cross-repo learner profile and derive a per-turn context block."""
+    try:
+        from .learner_memory import build_learner_context, load_learner_profile  # noqa: WPS433
+        profile = load_learner_profile()
+        if profile is None:
+            return None
+        return build_learner_context(profile, prompt=prompt, decision=decision, catalog=catalog)
+    except Exception:
+        return None
+
+
 def _build_learning_projection(
     *,
     repo_name: str,
@@ -477,6 +493,16 @@ def _pre_augment_phase(
         pending_drill=pending_drill if drill_result is None else None,
         learner_state=learner_state_full,
     )
+    try:
+        from .concept_catalog import load_catalog  # noqa: WPS433
+        concept_catalog = load_catalog()
+    except Exception:
+        concept_catalog = {}
+    learner_context = _load_cross_learner_context(
+        prompt or "",
+        pre_result,
+        concept_catalog,
+    )
 
     cs_readiness = _check_cs_readiness()
     cs_search_mode = pre_result.get("cs_search_mode", "skip")
@@ -498,6 +524,7 @@ def _pre_augment_phase(
                 topic_hints=topic_hints,
                 cs_search_mode=cs_search_mode,
                 experience_level=learner_experience_level,
+                learner_context=learner_context,
             )
         except (ImportError, ModuleNotFoundError):
             # Defensive — find_spec said deps are present but an internal
@@ -535,6 +562,7 @@ def _pre_augment_phase(
         "drill_result": drill_result,
         "consumed_pending_id": consumed_pending_id,
         "route_signals": route_signals,
+        "learner_context": learner_context,
     }
 
 
@@ -729,6 +757,7 @@ def run_coach(
     cs_sidecar = phase_a["sidecar"]
     drill_result = phase_a["drill_result"]
     consumed_pending_id = phase_a["consumed_pending_id"]
+    learner_context = phase_a.get("learner_context")
 
     # Phase 1: compute everything in memory (no file writes).
     # Build learning_projection first so the persisted profile matches the
@@ -769,6 +798,47 @@ def run_coach(
             )
         except Exception:
             drill_offer = None
+
+    if drill_offer is not None:
+        cognitive_trigger = {
+            "trigger_type": "none",
+            "trigger_session_id": None,
+            "markdown": None,
+            "payload": {},
+            "applicability_hint": "omit",
+            "reason": "drill_offer_present",
+            "evidence": {"source": "drill_offer"},
+            "competed_against": [],
+        }
+    else:
+        try:
+            from .cognitive_trigger import (  # noqa: WPS433
+                load_pending_triggers,
+                select_cognitive_trigger,
+            )
+            cognitive_trigger = select_cognitive_trigger(
+                history=[],
+                profile=memory_profile,
+                drill_pending=pending_drill if drill_result is None else None,
+                drill_history=_drill.load_history(repo["name"], limit=10)
+                if _drill is not None
+                else [],
+                intent=pre_result,
+                learner_context=learner_context,
+                pending_triggers=load_pending_triggers(),
+                input_signals=pre_result.get("signals") or {},
+            )
+        except Exception:
+            cognitive_trigger = {
+                "trigger_type": "none",
+                "trigger_session_id": None,
+                "markdown": None,
+                "payload": {},
+                "applicability_hint": "omit",
+                "reason": "selection_error",
+                "evidence": {},
+                "competed_against": [],
+            }
 
     intent_decision = intent_finalize(
         pre_result,
@@ -841,6 +911,8 @@ def run_coach(
         "cs_augmentation": cs_augmentation_compact,
         "intent_decision": intent_decision,
         "unified_profile": unified_profile,
+        "learner_context": learner_context,
+        "cognitive_trigger": cognitive_trigger,
         "response_contract": build_response_contract(
             learner_state_full,
             "ready",
@@ -849,6 +921,8 @@ def run_coach(
             drill_offer=drill_offer,
             drill_result=drill_result,
             learning_profile=memory_profile,
+            cognitive_trigger=cognitive_trigger,
+            learner_context=learner_context,
         ),
     }
     _assert_response_contract(payload)

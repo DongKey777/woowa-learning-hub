@@ -150,6 +150,14 @@
           "type": ["object", "null"],
           "description": "Scoring of a drill answer routed in this turn (Phase 4)."
         },
+        "cognitive_block": {
+          "type": ["object", "null"],
+          "description": "Single selected cognitive trigger for this turn. Optional view; source selection is runtime policy."
+        },
+        "follow_up_block": {
+          "type": ["object", "null"],
+          "description": "Legacy follow-up queue view. May be suppressed when cognitive_block surfaces a trigger."
+        },
         "snapshot_block": {
           "type": "object",
           "required": [

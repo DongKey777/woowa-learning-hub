@@ -202,6 +202,41 @@ class BuildResponseContractTest(unittest.TestCase):
         self.assertEqual(rc["verification"]["required_count"], 0)
         self.assertEqual(rc["verification"]["thread_refs"], [])
 
+    def test_cognitive_block_follow_up_suppresses_follow_up_block(self) -> None:
+        contract = build_response_contract(
+            None,
+            "ready",
+            learning_profile={
+                "open_follow_up_queue": [
+                    {"question": "기존 follow-up", "created_at": "2026-05-07"}
+                ]
+            },
+            cognitive_trigger={
+                "trigger_type": "follow_up",
+                "markdown": "## 이어서 보면 좋은 질문\n- 새 질문",
+                "reason": "open_follow_up",
+                "applicability_hint": "supporting",
+            },
+        )
+        self.assertEqual(contract["cognitive_block"]["trigger_type"], "follow_up")
+        self.assertEqual(contract["follow_up_block"]["reason"], "ready")
+        self.assertEqual(contract["follow_up_block"]["applicability_hint"], "omit")
+
+    def test_cognitive_block_none_keeps_follow_up_block_as_is(self) -> None:
+        contract = build_response_contract(
+            None,
+            "ready",
+            learning_profile={
+                "open_follow_up_queue": [
+                    {"question": "기존 follow-up", "created_at": "2026-05-07"}
+                ]
+            },
+            cognitive_trigger={"trigger_type": "none", "markdown": None},
+        )
+        self.assertEqual(contract["cognitive_block"]["trigger_type"], "none")
+        self.assertEqual(contract["follow_up_block"]["reason"], "ready")
+        self.assertEqual(contract["follow_up_block"]["applicability_hint"], "supporting")
+
 
 if __name__ == "__main__":
     unittest.main()
