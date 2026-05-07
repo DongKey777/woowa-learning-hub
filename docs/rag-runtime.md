@@ -52,6 +52,20 @@ bin/rag-ask "RAG로 깊게 latency가 뭐야?" --via-daemon
 bin/rag-daemon stop
 ```
 
+`bin/rag-ask`의 default daemon path는 startup `runtime_fingerprint`를 검사한다.
+fingerprint에는 현재 git HEAD와 RAG runtime source/config hash가 들어가며,
+`state/rag-daemon.json`과 `/health` 응답에 같이 기록된다. wrapper의 ensure
+단계는 현재 checkout fingerprint와 running daemon fingerprint가 다르면 daemon을
+자동 stop/start한다. 따라서 PR merge, local source edit, wrapper env contract
+변경 뒤에도 healthy-but-stale Python process가 낡은 response contract를 계속
+내보내지 못한다.
+
+디버그/CI에서 daemon을 끄려면 wrapper opt-out을 쓴다:
+
+```bash
+WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "Gradle 설정 어떻게 해?"
+```
+
 As of the 2026-05-02 R3 cutover, `auto` selects the R3 runtime when
 `state/cs_rag` contains a valid `r3_lexical_sidecar.json` whose
 `corpus_hash`, `row_count`, and `document_count` match the index manifest.
@@ -178,6 +192,9 @@ bin/rag-ask "내 PR 리뷰해줘" --repo spring-roomescape-admin
 - `decision.blocked=true`면 코칭 요청이 repo/PR 부재로 실행 불가
 - `hits`는 Tier 1/2일 때만 채워짐
 - `next_command`는 Tier 3 ready일 때만 채워짐 (`bin/coach-run` 호출 명령)
+- `--reformulated-query`는 검색 품질뿐 아니라 routing rescue에도 사용됨.
+  raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition
+  감지는 raw prompt와 reformulated query를 함께 본다.
 
 ## Tier 분류 빠른 참조
 

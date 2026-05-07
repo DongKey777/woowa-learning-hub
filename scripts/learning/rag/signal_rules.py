@@ -316,6 +316,35 @@ _RULES: list[Rule] = [
         "category": "design-pattern",
     },
     {
+        "tag": "validation_boundary",
+        "triggers": {
+            "@valid",
+            "bean validation",
+            "domain invariant",
+            "dto validation",
+            "input validation vs domain invariant",
+            "invariant",
+            "request validation",
+            "validation boundary",
+            "검증 경계",
+            "도메인 검증",
+            "도메인 불변식",
+            "불변식",
+            "생성자 검증",
+            "요청 검증",
+            "형식 검증",
+        },
+        "expand": [
+            "validation boundary",
+            "input validation vs domain invariant",
+            "domain invariant",
+            "domain invariants as contracts",
+            "layered validation",
+            "request validation vs domain rule",
+        ],
+        "category": "software-engineering",
+    },
+    {
         "tag": "api_boundary",
         "triggers": {"api", "rest", "endpoint", "controller", "dto", "요청", "응답"},
         "expand": ["rest api", "dto", "controller", "request validation"],
@@ -1544,6 +1573,11 @@ _TOPIC_HINT_INLINE_CONTEXTUAL_VALUE_RE = re.compile(
 # When a specific signal family matches, drop broader generic buckets that
 # would otherwise add noisy fallback vocabulary to the expanded query.
 _SUPPRESSED_WHEN_PRESENT: dict[str, set[str]] = {
+    "validation_boundary": {
+        "api_boundary",
+        "collections_and_domain",
+        "java_value_canonicalization",
+    },
     "connection_pool_basics": {
         "resource_lifecycle",
     },

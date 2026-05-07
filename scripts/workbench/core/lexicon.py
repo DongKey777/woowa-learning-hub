@@ -95,6 +95,7 @@ DEPTH_SIGNALS: frozenset[str] = frozenset([
     # Korean
     "vs", "차이", "비교", "왜 필요", "왜 써", "왜 사용", "왜 쓰",
     "어떻게 동작", "어떻게 작동", "어떻게 돼", "어떻게 처리",
+    "어떻게 보장", "어떻게 검증", "어디서", "어느 계층", "어떤 계층",
     "방법", "해결 방법", "원리", "내부 구조", "트레이드오프",
     # 비교 표현
     "뭐가 다른", "뭐가 달라", "어떻게 달라",
@@ -102,6 +103,7 @@ DEPTH_SIGNALS: frozenset[str] = frozenset([
     "언제 쓰는", "언제 써", "언제 붙이는", "언제 사용",
     # English
     "vs.", "difference between", "why use", "why does", "how does",
+    "where", "which layer", "how to validate", "how to enforce",
     "trade-off", "tradeoff", "under the hood",
 ])
 
@@ -122,12 +124,19 @@ CS_DOMAIN_TOKENS: frozenset[str] = frozenset([
     "웹서버", "웹 서버", "애플리케이션 서버",
     "톰캣", "서블릿", "리버스 프록시",
     "네트워크", "지연", "대역폭", "처리량",
+    # 도메인 모델링 / 검증 경계
+    "도메인", "도메인 모델", "도메인 객체", "도메인 불변식",
+    "도메인 검증", "불변식", "검증 경계", "요청 검증",
     # English
     "transaction", "isolation", "normalization", "index", "cache",
     "deadlock", "thread", "concurrency", "synchronization",
     "throttle", "timeout", "architecture",
     "queue", "stack", "tree", "graph", "hash", "heap", "linked list",
     "exception", "exception handling",
+    # Domain modeling / validation boundary
+    "domain", "domain model", "domain object", "domain invariant",
+    "invariant", "rich domain model", "anemic domain model",
+    "validation boundary",
     # Infrastructure / servers
     "web server", "application server", "was",
     "tomcat", "nginx", "apache", "servlet", "reverse proxy",
@@ -157,7 +166,7 @@ LEARNING_CONCEPT_TOKENS: frozenset[str] = frozenset([
     "rest controller", "@restcontroller",
     # Persistence
     "jpa", "hibernate", "jdbc", "jdbctemplate", "entity", "dto", "vo",
-    "transactional", "savepoint", "mvcc",
+    "transactional", "savepoint", "mvcc", "@valid", "bean validation",
     # Java basics (covers woowa level-2 learning tests)
     "java", "interface", "abstract", "static", "final", "generic",
     "collection", "stream", "lambda", "optional", "enum",

@@ -109,12 +109,28 @@ Schema `v3`. Top-level fields:
 Profile is rebuilt lazily: if `history.jsonl` is newer than
 `profile.json`, the next read triggers a recompute.
 
+Per-turn `learner_context.response_hints.must_offer_next_action` is
+query-scoped. A global `next_recommendation` can remain in the context for
+the AI session's awareness, but it is promoted to a mandatory response hint
+only when the current prompt's extracted concept overlaps the recommendation
+concept. This prevents an unrelated drill (for example `concept:spring/bean`)
+from leaking into a domain-invariant answer.
+
 ## Concept catalog
 
 `knowledge/cs/concept-catalog.json` is the canonical mapping of surface
 forms ("Bean", "Spring Bean", "@Component bean", "스프링 빈") to a single
 `concept_id` like `concept:spring/bean`. Catalog is committed; runtime
 extraction is deterministic alias matching only — no ML at call time.
+
+R3 corpus hits use document-level concept ids such as
+`spring/bean-di-basics` or
+`software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge`.
+Personalization normalizes the learner-memory `concept:` prefix, reads both
+top-level hit `concept_id` and nested retriever `document.concept_id`, and
+matches same-category slug families (`spring/bean` ↔
+`spring/bean-di-basics`) without matching partial words (`spring/di` does not
+match `spring/dispatcher-servlet`).
 
 Stages (`spring-core`, `spring-mvc`, `spring-jdbc`, `spring-data-jpa`,
 `spring-http-client`, `spring-auth`) order the curriculum and let the

@@ -736,6 +736,7 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
         args.prompt,
         repo_context=_build_repo_context(args.repo),
         learner_profile=learner_profile,
+        reformulated_query=getattr(args, "reformulated_query", None),
     )
     out: dict = {
         "decision": asdict(decision),

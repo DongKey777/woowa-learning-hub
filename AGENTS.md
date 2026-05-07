@@ -102,6 +102,8 @@ Detailed v4 contract: `docs/learning-system-v4.md`.
 
 학습자 입장: 짧은 follow-up 질문에서도 dense retrieval 정확. AI 세션이 reformulation을 잘 emit하는 한 fallback regex는 거의 발화 안 함. 회귀 테스트: `tests/unit/test_r3_anaphora.py`.
 
+**Routing rescue (post-runtime-hardening)**: `bin/rag-ask`는 raw prompt와 `--reformulated-query`를 함께 `interactive_rag_router.classify()`에 넘긴다. 사용자 override(`그냥 답해`, `RAG로 깊게`, `코치 모드`)와 tool-only guard는 raw prompt 기준으로 유지하되, domain/depth/definition 감지는 reformulated query도 함께 본다. 따라서 "객체 책임이 헷갈려"처럼 raw prompt가 모호해도 reformulation에 `domain model invariant validation boundary`가 있으면 Tier 2로 승격될 수 있다.
+
 **Phase 8 v3 migration fleet** (60-worker, ChatGPT Pro 전용): 사용자가 *"migration_v3_60 시작해"* / *"v3 마이그레이션 시작"* 같은 의도를 표하면 `bin/migration-v3-60-start`를 호출한다. wrapper가 branch 격리(main 그대로, 학습자 production 무중단) + preflight 회귀 + baseline cohort_eval 측정 + fleet-start까지 한 번에 처리. ChatGPT Plus면 quota 한계로 30-worker `migration_v3` profile 권장. 상세 흐름은 `docs/migration-v3-runbook.md`.
 
 **Personalization-aware ranking** (Phase 9.2, wrapper default ON post-c12a0f5): R3가 fusion 단계 후 rerank 전에 score 조정.
@@ -110,6 +112,8 @@ Detailed v4 contract: `docs/learning-system-v4.md`.
 - `concept:` 접두사(`concept:spring/bean`)는 자동 strip해서 v3 corpus `concept_id`(`spring/bean`)와 매칭.
 - Cycle3 (2026-05-07, c12a0f5) 이후 corpus concept_id 매핑률 99% 달성 → `bin/_rag_env.sh`가 `WOOWA_RAG_PERSONALIZATION_ENABLED=1`을 wrapper default로 export. 직접 호출(wrapper 우회)은 여전히 default off라 env 명시 필요.
 - R3 hit dict에 `concept_id` 필드 노출 (downstream 도구가 hit ↔ profile 매핑할 때 사용).
+- R3 hit dict는 top-level `concept_id`뿐 아니라 retriever metadata의 `document.concept_id`도 surface한다. Personalization score adjustment도 두 위치를 모두 읽고, `concept:spring/bean` ↔ `spring/bean-di-basics`처럼 같은 category에서 slug family가 이어지는 문서를 같은 concept family로 취급한다.
+- `learner_context.response_hints.must_offer_next_action`은 현재 prompt에서 추출된 concept과 추천 concept이 겹칠 때만 채워진다. 전역 `next_recommendation`은 context에 남아도, 질문과 무관하면 답변에서 강제 제안하지 않는다.
 
 회귀 테스트: `tests/unit/test_r3_personalization_ranking.py`.
 
@@ -135,6 +139,7 @@ Detailed v4 contract: `docs/learning-system-v4.md`.
 - 학습자가 외울 명령 = 0. wrapper가 daemon ensure를 처리.
 - daemon 비활성: `WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "..."` (CI / debug).
 - 상세: `bin/rag-daemon status` / `start` / `stop`. 상태/로그는 `state/rag-daemon.json`, `state/rag-daemon.log`.
+- daemon state/health는 startup `runtime_fingerprint`를 포함한다. `bin/rag-ask` wrapper의 ensure 단계는 현재 checkout fingerprint와 daemon fingerprint가 다르면 자동 stop/start해서 merge 이후 stale Python process가 낡은 response contract를 내지 못하게 한다.
 
 ### Production R3 env defaults (silent degradation 방지)
 
@@ -150,8 +155,8 @@ Detailed v4 contract: `docs/learning-system-v4.md`.
 
 - `response_hints.must_skip_explanations_of`에 적힌 concept_id의 기본 정의를 반복하지 않는다 (예: `concept:spring/bean`이 mastered면 "Bean이란 컨테이너가…" 도입 생략).
 - `response_hints.must_include_phrases`의 표현을 답변 본문에 포함한다 (예: 4번째 반복 질문이면 "4번째 질문이야" 인지 표시 → 학습자에게 시스템이 자기를 기억하고 있음을 체감시킴).
-- 응답 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. `header_required_tags` 항목이 모두 surface 되어야 한다.
-- `response_hints.must_offer_next_action`이 채워져 있으면 답변 마지막에 자연 문장으로 제안한다 (예: "다음 턴에 DI drill 한 번 풀어볼까?").
+- 응답 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. `header_required_tags`가 비어 있으면 `· 적용:`을 만들지 않는다. 항목이 있으면 모두 surface 되어야 한다.
+- `response_hints.must_offer_next_action`이 채워져 있으면 답변 마지막에 자연 문장으로 제안한다 (예: "다음 턴에 DI drill 한 번 풀어볼까?"). 이 값은 query-scoped hint라, 비어 있으면 `learner_context.next_recommendation`만 보고 unrelated drill을 제안하지 않는다.
 - `focus_ranking` / `candidate_interpretation` / `response.evidence` 항목에 `freshness_note`가 채워져 있거나 candidate에 `cohort_caveat=true`가 있으면 본문에 자연어로 명시한다 — 이전 기수 PR이라는 사실과 미션 세부가 다를 수 있음을 학습자에게 알린다 (예: "2024년 기수 PR이지만 접근 방식 참고로..."). 누락하면 회귀 테스트 실패.
 
 이 규약은 `tests/unit/test_personalization_loop.py`로 검증된다. AGENTS 규약만 의존하지 않는 testable contract — `learner_context`가 의도대로 동작하지 않으면 회귀 테스트가 실패한다.

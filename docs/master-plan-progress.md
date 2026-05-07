@@ -53,6 +53,7 @@ The original Pilot target was 0.85.
 | A5 | unit + release-fetch test coverage | ✅ done | `85c8e98` `test(rag-r3): cover daemon reformulation forwarding + release fetch` |
 | A6 | user memory entry on local-build infeasibility | ✅ done | `memory/project_index_distribution.md` |
 | A7 | this progress doc | ✅ done | (this commit) |
+| A8 | daemon runtime fingerprint + no-daemon opt-out regression | ✅ done | `27afbbd` `Harden rag daemon runtime reuse` |
 
 ## Phase 9 — closed-loop wiring (this cycle)
 
@@ -65,6 +66,9 @@ The original Pilot target was 0.85.
 | 9.1 | production R3 anaphora — reformulation primary, regex fallback | ✅ done | `d2c6471` `feat(rag-9.1): production R3 anaphora — reformulation primary, regex fallback` |
 | 9.2 | personalization-aware fusion-stage ranking (initially default off; wrapper default ON after c12a0f5) | ✅ done | `39b95de` `feat(rag-9.2): personalization-aware fusion-stage ranking (default off)` |
 | 9.3-active | calibration → threshold=0.10 활성화 + honest cohort_eval | ✅ done | `1b593d8` `feat(rag-9.3): activate refusal threshold (calibrated 0.10) + honest cohort_eval` — F1=0.974 at threshold 0.10, OVERALL 95.5%(sham)→94.0%(honest), corpus_gap_probe 19 tier_downgraded + 1 silent_failure, 다른 cohort에 sentinel false-positive 0 |
+| 9.5-route | reformulated query routing rescue + domain invariant lexicon | ✅ done | `b644d5a` `Route domain invariant RAG questions` |
+| 9.5-signal | validation-boundary signal taxonomy / fallback key | ✅ done | `daac197` `Classify validation boundary signals` |
+| 9.5-personalization | query-scoped next action + nested R3 concept_id family matching | ✅ done | `aa34208` `Scope learner personalization hints` |
 
 Current runtime defaults (2026-05-07, cycle3/v4):
 - `WOOWA_RAG_REFUSAL_THRESHOLD=off` in learner-facing wrappers. Evaluation mode may set a calibrated threshold, but production favors best-effort answers over refusal.

@@ -73,6 +73,8 @@ Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessi
 - `uncertain_concepts` / `underexplored_in_current_stage` 매칭 → +0.10 (약한 영역 boost).
 - `concept:spring/bean` 접두사는 자동 strip → `spring/bean`으로 v3 frontmatter 매칭.
 - Cycle3 (2026-05-07, c12a0f5) 이후 corpus concept_id 매핑률 99% 달성 → `bin/_rag_env.sh`가 `WOOWA_RAG_PERSONALIZATION_ENABLED=1`을 wrapper default로 export. 직접 호출(wrapper 우회)은 여전히 default off라 env 명시 필요.
+- R3 hit / ranking은 top-level `concept_id`와 retriever metadata의 `document.concept_id`를 모두 읽는다. `concept:spring/bean` ↔ `spring/bean-di-basics`처럼 같은 category의 slug family는 같은 학습 concept family로 본다.
+- `must_offer_next_action`은 현재 질문에서 추출된 concept과 추천 concept이 겹칠 때만 채워진다. 전역 `next_recommendation`이 있어도 무관한 질문에는 강제 제안하지 않는다.
 
 회귀 테스트: `tests/unit/test_r3_personalization_ranking.py`.
 
@@ -85,6 +87,7 @@ Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessi
 - `bin/rag-ask "$prompt" --reformulated-query "$ref"` 형식
 - `$ref` 작성 규칙 + 적용/미적용 분기 + 이전 turn context fold-in: `docs/agent-query-reformulation-contract.md` (필수)
 - 적용 안 하면 graceful degradation — Pilot baseline 95.5% → 90.5%
+- raw prompt의 override/tool-only/coach 판단은 유지하되, domain/depth/definition 감지는 reformulated query도 함께 본다. 좋은 reformulation은 raw prompt가 모호해서 Tier 0으로 떨어지는 것을 구제할 수 있다.
 
 요지: AI 세션이 `bin/rag-ask` 호출 직전에 학습자 자연어 ↔ corpus 어휘 통역 한 번 emit. 학습자에게 보이는 답변 톤은 raw prompt 기준 유지.
 
@@ -96,6 +99,7 @@ Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessi
 - 학습자가 외울 명령 = 0. wrapper가 daemon ensure
 - 비활성: `WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "..."`
 - 상태/로그: `bin/rag-daemon status`, `state/rag-daemon.{json,log}`
+- daemon state/health에는 startup `runtime_fingerprint`가 들어간다. wrapper ensure는 현재 checkout과 fingerprint가 다르면 자동 재시작해 merge 이후 stale daemon을 막는다.
 
 ### Production R3 env defaults
 
@@ -111,8 +115,8 @@ Shared truth lives in `AGENTS.md` and `docs/learning-system-v4.md`. Claude sessi
 
 - `response_hints.must_skip_explanations_of` 안의 concept_id에 해당하는 기본 정의 반복 금지 (학습자가 이미 mastered).
 - `response_hints.must_include_phrases`의 표현(예: "4번째 질문이야") 본문에 포함 — 시스템이 학습자를 기억하고 있다는 체감 신호.
-- 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. 빠진 태그가 있으면 회귀 테스트 실패.
-- `response_hints.must_offer_next_action`이 있으면 답변 끝에 자연스럽게 surface (예: "다음 턴에 DI drill 한 번 풀어볼까?").
+- 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. `header_required_tags`가 비어 있으면 `· 적용:`을 만들지 않는다. 태그가 있으면 빠짐없이 surface한다.
+- `response_hints.must_offer_next_action`이 있으면 답변 끝에 자연스럽게 surface (예: "다음 턴에 DI drill 한 번 풀어볼까?"). 비어 있으면 `next_recommendation`만 보고 unrelated drill을 제안하지 않는다.
 - `focus_ranking` / `candidate_interpretation` / `response.evidence` 항목에 `freshness_note`가 채워져 있거나 candidate에 `cohort_caveat=true`가 있으면 본문에 자연어로 명시 — 이전 기수 PR이라는 사실과 미션 세부가 다를 수 있음을 학습자에게 알린다 (예: "2024년 기수 PR이지만 접근 방식 참고로..."). 누락하면 회귀 테스트 실패.
 
 이 규약은 testable — `tests/unit/test_personalization_loop.py`가 `build_learner_context()`의 출력을 검증한다. `learner_context`가 null이면 v2.2 톤 그대로 진행하고, override 키워드가 들어오면 override가 우선.

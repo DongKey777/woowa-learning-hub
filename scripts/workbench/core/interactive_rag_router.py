@@ -104,6 +104,7 @@ def classify(
     *,
     repo_context: dict | None = None,
     learner_profile: dict | None = None,
+    reformulated_query: str | None = None,
 ) -> RouterDecision:
     """Classify a learning-session prompt into Tier 0~3.
 
@@ -124,12 +125,19 @@ def classify(
       3. Cold start: when profile is None or has < 3 events, the router
          falls back to the v2.2 prompt-only behavior.
 
+    `reformulated_query` is an optional AI-session bridge into corpus
+    vocabulary. Overrides, coach routing, and tool-only guards stay anchored
+    on the learner's raw prompt; domain/depth/definition detection can use
+    the reformulation so a good query translation does not die at Tier 0
+    before retrieval.
+
     Router still does NOT do disk/network I/O itself — `learner_profile`
     must be loaded by the caller.
     """
     profile_level = _profile_experience_level(learner_profile)
     inferred_level = infer_experience_level(prompt)
     level = profile_level or inferred_level
+    signal_prompt = _join_prompt_and_reformulation(prompt, reformulated_query)
 
     # --- Stage 1: override short-circuit ---
     override = _check_override(prompt)
@@ -157,8 +165,11 @@ def classify(
         )
     if override == "force_min1":
         # Promote to Tier 2 if depth signal present, else Tier 1
-        domain = _any_match(prompt, CS_DOMAIN_TOKENS) or _any_match(prompt, LEARNING_CONCEPT_TOKENS)
-        if domain and _any_match(prompt, DEPTH_SIGNALS):
+        domain = _any_match(signal_prompt, CS_DOMAIN_TOKENS) or _any_match(
+            signal_prompt,
+            LEARNING_CONCEPT_TOKENS,
+        )
+        if domain and _any_match(signal_prompt, DEPTH_SIGNALS):
             return RouterDecision(
                 tier=2, mode="full", reason="user override: with RAG (depth signal)",
                 experience_level=level, override_active=True,
@@ -171,11 +182,11 @@ def classify(
     # --- Stage 2: detect signals/domains ---
     has_coach_req = _any_match(prompt, COACH_REQUEST_TOKENS)
     has_tool = _any_match(prompt, TOOL_TOKENS)
-    has_cs_domain = _any_match(prompt, CS_DOMAIN_TOKENS)
-    has_learning = _any_match(prompt, LEARNING_CONCEPT_TOKENS)
+    has_cs_domain = _any_match(signal_prompt, CS_DOMAIN_TOKENS)
+    has_learning = _any_match(signal_prompt, LEARNING_CONCEPT_TOKENS)
     has_domain = has_cs_domain or has_learning
-    has_definition = _any_match(prompt, DEFINITION_SIGNALS)
-    has_depth = _any_match(prompt, DEPTH_SIGNALS)
+    has_definition = _any_match(signal_prompt, DEFINITION_SIGNALS)
+    has_depth = _any_match(signal_prompt, DEPTH_SIGNALS)
 
     # --- Stage 3: Tier 3 (PR coaching) ---
     if has_coach_req:
@@ -211,7 +222,7 @@ def classify(
         # v3 closed-loop: if the learner has been asking about a concept
         # mentioned here ≥3 times in the last 7 days (uncertain), promote
         # to Tier 2 so the answer goes deeper.
-        if _profile_concept_repeated(learner_profile, prompt):
+        if _profile_concept_repeated(learner_profile, signal_prompt):
             return RouterDecision(
                 tier=2, mode="full",
                 reason="domain + definition signal · profile uncertain (repeated 7d)",
@@ -231,6 +242,13 @@ def classify(
 
 
 # === v3 profile helpers (cold-start safe) ================================
+def _join_prompt_and_reformulation(prompt: str, reformulated_query: str | None) -> str:
+    reformulated = (reformulated_query or "").strip()
+    if not reformulated:
+        return prompt
+    return f"{prompt}\n{reformulated}"
+
+
 def _profile_experience_level(profile: dict | None) -> str | None:
     """Return the rolling experience level if confidence is high enough."""
     if not profile:
