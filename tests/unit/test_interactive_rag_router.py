@@ -225,6 +225,46 @@ class DiInjectionPhraseTests(unittest.TestCase):
         self.assertEqual(d.tier, 0)
 
 
+class DomainInvariantRoutingTests(unittest.TestCase):
+    """Domain-model / invariant questions should not fall through Tier 0.
+
+    These are CS/software-design questions even when they do not mention
+    Spring-specific nouns. The reformulated query can also carry the corpus
+    vocabulary needed to route a learner's raw Korean prompt.
+    """
+
+    def test_domain_invariant_definition_routes_to_tier1(self) -> None:
+        d = classify("domain invariant가 뭐야")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+
+    def test_rich_domain_model_definition_routes_to_tier1(self) -> None:
+        d = classify("rich domain model이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_korean_domain_model_layer_question_routes_to_tier2(self) -> None:
+        d = classify("도메인 모델은 어느 계층에서 검증해?")
+        self.assertEqual(d.tier, 2)
+        self.assertEqual(d.mode, "full")
+
+    def test_anemic_to_rich_domain_model_prompt_routes_to_tier2(self) -> None:
+        d = classify(
+            "anemic domain model에서 rich domain model로 갈 때 도메인이 자기 "
+            "invariant를 어떻게 보장해야 하는지, validation을 컨트롤러/서비스/"
+            "도메인 어느 계층에 둬야 하는지 알려줘"
+        )
+        self.assertEqual(d.tier, 2)
+
+    def test_reformulated_query_can_rescue_raw_prompt_from_tier0(self) -> None:
+        d = classify(
+            "객체 책임이 헷갈려",
+            reformulated_query=(
+                "domain model invariant validation boundary which layer"
+            ),
+        )
+        self.assertEqual(d.tier, 2)
+
+
 class KoreanConceptPhraseAndColloquialSignalTests(unittest.TestCase):
     """학습자가 한글 phrase + 구어체 정의 시그널로 물을 때 router가
     매치하도록 보강한 회귀.

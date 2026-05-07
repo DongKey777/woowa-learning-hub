@@ -143,3 +143,44 @@ def test_normal_tier_1_decision_preserved_when_no_downgrade(monkeypatch):
     assert out["decision"]["reason"] == "domain definition"
     # Citation is rendered as before
     assert out["response_hints"]["citation_markdown"].startswith("참고:\n- ")
+
+
+def test_build_rag_ask_output_passes_reformulated_query_to_router(monkeypatch):
+    cli = _import_cli()
+    from scripts.workbench.core.interactive_rag_router import RouterDecision
+
+    captured: dict = {}
+
+    def fake_classify(prompt, **kwargs):
+        captured["prompt"] = prompt
+        captured["kwargs"] = kwargs
+        return RouterDecision(
+            tier=0, mode=None, reason="captured",
+            experience_level=None, override_active=False, blocked=False,
+            promoted_by_profile=False,
+        )
+
+    for module_name in (
+        "core.interactive_rag_router",
+        "scripts.workbench.core.interactive_rag_router",
+    ):
+        try:
+            mod = importlib.import_module(module_name)
+        except ImportError:
+            continue
+        monkeypatch.setattr(mod, "classify", fake_classify)
+
+    args = type("Args", (), {
+        "prompt": "객체 책임이 헷갈려",
+        "repo": None,
+        "module": None,
+        "rag_backend": None,
+        "reformulated_query": "domain model invariant validation boundary",
+    })()
+    cli.build_rag_ask_output(args)
+
+    assert captured["prompt"] == "객체 책임이 헷갈려"
+    assert (
+        captured["kwargs"]["reformulated_query"]
+        == "domain model invariant validation boundary"
+    )
